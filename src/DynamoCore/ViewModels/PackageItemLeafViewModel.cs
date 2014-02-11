@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using Dynamo.Nodes;
+﻿using System.Reflection;
+using Dynamo.Core;
 
 namespace Dynamo.PackageManager.UI
 {

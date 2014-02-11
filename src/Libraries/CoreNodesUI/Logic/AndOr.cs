@@ -42,7 +42,7 @@ namespace DSCore.Logic
             };
         }
 
-        protected override void RemoveInput()
+        public override void RemoveInput()
         {
             if (InPortData.Count > 2)
                 base.RemoveInput();

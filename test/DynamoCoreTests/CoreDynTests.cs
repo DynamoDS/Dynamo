@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Dynamo.Core;
 using Dynamo.FSchemeInterop;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -17,7 +18,7 @@ namespace Dynamo.Tests
         [Test]
         public void AddSubtractMapReduceFilterBasic()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\map_reduce_filter\map_reduce_filter.dyn");
             model.Open(openPath);
@@ -35,7 +36,7 @@ namespace Dynamo.Tests
             
             // run the expression
             //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -84,7 +85,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(examplePath, "multi.dyn");
             model.Open(openPath);
 
-            dynSettings.Controller.RunExpression();
+            DynamoSettings.Controller.RunExpression();
 
             var splitListVal = model.CurrentWorkspace.FirstNodeFromWorkspace<DeCons>().OldValue;
 
@@ -112,7 +113,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(examplePath, "partial-multi.dyn");
             model.Open(openPath);
 
-            dynSettings.Controller.RunExpression();
+            DynamoSettings.Controller.RunExpression();
 
             var firstWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("3005609b-ceaa-451f-9b6c-6ca957358ad6");
 
@@ -140,7 +141,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -178,7 +179,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -224,7 +225,7 @@ namespace Dynamo.Tests
 
             string openPath = Path.Combine(examplePath, "Add.dyn");
             model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4c5889ac-7b91-4fb5-aaad-a2128b533279");
             var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -239,7 +240,7 @@ namespace Dynamo.Tests
 
             string openPath = Path.Combine(examplePath, "Subtract.dyn");
             model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("a574df4e-2dff-4c06-bbb6-e9467060085f");
             var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -254,7 +255,7 @@ namespace Dynamo.Tests
 
             string openPath = Path.Combine(examplePath, "Multiply.dyn");
             model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4c650bcc-9f18-4d23-a769-34845fd50fab");
             var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -269,7 +270,7 @@ namespace Dynamo.Tests
 
             string openPath = Path.Combine(examplePath, "Divide.dyn");
             model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4c650bcc-9f18-4d23-a769-34845fd50fab");
             var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -284,7 +285,7 @@ namespace Dynamo.Tests
 
             string openPath = Path.Combine(examplePath, "Modulo.dyn");
             model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4a780dfb-74b1-453a-86ef-2f4a5c46792e");
             var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -299,7 +300,7 @@ namespace Dynamo.Tests
 
             string openPath = Path.Combine(examplePath, "Ceiling.dyn");
             model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("97e58c7f-9082-4980-997a-d290cf8055e1");
             var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();  
@@ -309,12 +310,12 @@ namespace Dynamo.Tests
         [Test]
         public void Floor()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Floor.dyn");
             model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("fb52d286-ebcc-449c-989e-e4ea94831125");
             var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -324,12 +325,12 @@ namespace Dynamo.Tests
         [Test]
         public void Power()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Power.dyn");
             model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("6a7b150e-f053-4b29-b672-007aa1acde24");
             var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -339,12 +340,12 @@ namespace Dynamo.Tests
         [Test]
         public void Round()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Round.dyn");
             model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("430e086e-8cf0-4e89-abba-69dc1cd94058");
             var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -354,12 +355,12 @@ namespace Dynamo.Tests
         [Test]
         public void Sine()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Sine.dyn");
             model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4d9fb747-2e90-4571-9c8f-7d59ad14a939");
             var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -369,12 +370,12 @@ namespace Dynamo.Tests
         [Test]
         public void Cosine()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Cosine.dyn");
             model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4d9fb747-2e90-4571-9c8f-7d59ad14a939");
             var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -386,27 +387,27 @@ namespace Dynamo.Tests
         {
             Assert.DoesNotThrow(delegate
                 {
-                    var model = dynSettings.Controller.DynamoModel;
+                    var model = DynamoSettings.Controller.DynamoModel;
                     var examplePath = Path.Combine(GetTestDirectory(), @"core\CASE");
                     string openPath = Path.Combine(examplePath, "case_flip_matrix.dyn");
 
                     model.Open(openPath);
 
-                    Assert.AreEqual(dynSettings.Controller.DynamoModel.CurrentWorkspace.Nodes.Count, 11);
+                    Assert.AreEqual(DynamoSettings.Controller.DynamoModel.CurrentWorkspace.Nodes.Count, 11);
 
-                    dynSettings.Controller.RunExpression(null);
+                    DynamoSettings.Controller.RunExpression(null);
                 });
         }
 
         [Test]
         public void Tangent()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Tangent.dyn");
             model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4d9fb747-2e90-4571-9c8f-7d59ad14a939");
             var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -416,12 +417,12 @@ namespace Dynamo.Tests
         [Test]
         public void StringInputNodeWorksWithSpecialCharacters()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core");
             string openPath = Path.Combine(examplePath, "StringInputTest.dyn");
             model.Open(openPath);
 
-            var strNode = (StringInput)dynSettings.Controller.DynamoModel.Nodes.First(x => x is StringInput);
+            var strNode = (StringInput)DynamoSettings.Controller.DynamoModel.Nodes.First(x => x is StringInput);
             const string expected =
                 "A node\twith tabs, and\r\ncarriage returns,\r\nand !@#$%^&* characters, and also something \"in quotes\".";
 
@@ -431,22 +432,22 @@ namespace Dynamo.Tests
         [Test]
         public void Repeat()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core");
             string openPath = Path.Combine(examplePath, "RepeatTest.dyn");
 
             //open and run the expression
             model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
-            var watch = (Watch)dynSettings.Controller.DynamoModel.Nodes.First(x => x is Watch);
+            var watch = (Watch)DynamoSettings.Controller.DynamoModel.Nodes.First(x => x is Watch);
             FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
             Assert.AreEqual(5, listWatchVal.Length);
 
             //change the value of the list
             var numNode = (DoubleInput) Controller.DynamoModel.Nodes.Last(x => x is DoubleInput);
             numNode.Value = "3";
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             Thread.Sleep(300);
 
             listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
@@ -454,21 +455,21 @@ namespace Dynamo.Tests
 
             //test the negative case to make sure it throws an error
             numNode.Value = "-1";
-            Assert.Throws<AssertionException>(() => dynSettings.Controller.RunExpression(null));
+            Assert.Throws<AssertionException>(() => DynamoSettings.Controller.RunExpression(null));
 
         }
 
         [Test]
         public void SliceList()
         {
-            dynSettings.Controller.DynamoModel.CreateNode(0, 0, "Partition List");
+            DynamoSettings.Controller.DynamoModel.CreateNode(0, 0, "Partition List");
 
             //Create a List
             //For a list of 0..20, this will have 21 elements
             //Slicing by 5 should return 6 lists, the last containing one element
             var list = Utils.ToFSharpList(Enumerable.Range(0, 21).Select(x => FScheme.Value.NewNumber(x)));
 
-            var sliceNode = (Slice)dynSettings.Controller.DynamoModel.Nodes.First(x => x is Slice);
+            var sliceNode = (Slice)DynamoSettings.Controller.DynamoModel.Nodes.First(x => x is Slice);
             var args = FSharpList<FScheme.Value>.Empty;
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
@@ -501,7 +502,7 @@ namespace Dynamo.Tests
         [Test]
         public void Diagonals()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             //0   1   2   3   4
             //5   6   7   8   9
@@ -523,7 +524,7 @@ namespace Dynamo.Tests
 
             model.CreateNode(0, 0, "Diagonal Left List");
 
-            var leftNode = (DiagonalLeftList)dynSettings.Controller.DynamoModel.Nodes.First(x => x is DiagonalLeftList);
+            var leftNode = (DiagonalLeftList)DynamoSettings.Controller.DynamoModel.Nodes.First(x => x is DiagonalLeftList);
             var args = FSharpList<FScheme.Value>.Empty;
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
@@ -547,7 +548,7 @@ namespace Dynamo.Tests
 
             model.CreateNode(0, 0, "Diagonal Right List");
 
-            var rightNode = (DiagonalRightList)dynSettings.Controller.DynamoModel.Nodes.First(x => x is DiagonalRightList);
+            var rightNode = (DiagonalRightList)DynamoSettings.Controller.DynamoModel.Nodes.First(x => x is DiagonalRightList);
             args = FSharpList<FScheme.Value>.Empty;
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
@@ -559,7 +560,7 @@ namespace Dynamo.Tests
         [Test]
         public void ReadImageFile()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\files");
 
             string openPath = Path.Combine(examplePath, "readImageFileTest.dyn");
@@ -569,7 +570,7 @@ namespace Dynamo.Tests
             var pathNode = (StringFilename)model.Nodes.First(x => x is StringFilename);
             pathNode.Value = Path.Combine(examplePath,"honey-badger.jpg");
 
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4744f516-c6b5-421c-b7f1-1731610667bb");
             var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -579,7 +580,7 @@ namespace Dynamo.Tests
         [Test]
         public void UsingDefaultValue()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\default_values");
 
             string openPath = Path.Combine(examplePath, "take-every-default.dyn");
@@ -588,7 +589,7 @@ namespace Dynamo.Tests
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("360f3b50-5f27-460a-a57a-bb6338064d98");
 
             // Run once
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var oldVal = watch.OldValue;
             Assert.IsNotNull(oldVal);
@@ -603,7 +604,7 @@ namespace Dynamo.Tests
                 });
 
             // Make sure results are still consistent
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             
             var newVal = watch.OldValue;
             Assert.IsNotNull(newVal);
@@ -615,7 +616,7 @@ namespace Dynamo.Tests
         [Test]
         public void Formula()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\formula");
 
             model.Open(Path.Combine(exPath, "formula-test.dyn"));
@@ -627,7 +628,7 @@ namespace Dynamo.Tests
                 "af0ccd4f-9fae-4f66-85eb-e5d58eb15fd8"
             }.Select(guid => model.CurrentWorkspace.NodeFromWorkspace<Watch>(guid));
 
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             foreach (var watch in watches)
             {
@@ -638,12 +639,12 @@ namespace Dynamo.Tests
         [Test]
         public void AndNode()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 
             model.Open(Path.Combine(exPath, @"and-test.dyn"));
 
-            dynSettings.Controller.RunExpression();
+            DynamoSettings.Controller.RunExpression();
 
             var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
 
@@ -654,12 +655,12 @@ namespace Dynamo.Tests
         [Test]
         public void OrNode()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 
             model.Open(Path.Combine(exPath, @"or-test.dyn"));
 
-            dynSettings.Controller.RunExpression();
+            DynamoSettings.Controller.RunExpression();
 
             var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
 
@@ -670,12 +671,12 @@ namespace Dynamo.Tests
         [Test]
         public void IfNode()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 
             model.Open(Path.Combine(exPath, @"if-test.dyn"));
 
-            dynSettings.Controller.RunExpression();
+            DynamoSettings.Controller.RunExpression();
 
             var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
 
@@ -686,7 +687,7 @@ namespace Dynamo.Tests
         [Test]
         public void PerformAllNode()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 
             model.Open(Path.Combine(exPath, @"begin-test.dyn"));
@@ -695,7 +696,7 @@ namespace Dynamo.Tests
 
             model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>().Value = textAndFileName;
 
-            dynSettings.Controller.RunExpression();
+            DynamoSettings.Controller.RunExpression();
 
             File.Delete(textAndFileName);
 
@@ -708,12 +709,12 @@ namespace Dynamo.Tests
         [Test]
         public void Constants()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 
             model.Open(Path.Combine(exPath, @"constants-test.dyn"));
 
-            dynSettings.Controller.RunExpression();
+            DynamoSettings.Controller.RunExpression();
 
             Assert.Pass();
         }
@@ -721,12 +722,12 @@ namespace Dynamo.Tests
         [Test]
         public void Thunks()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 
             model.Open(Path.Combine(exPath, @"thunk-test.dyn"));
 
-            dynSettings.Controller.RunExpression();
+            DynamoSettings.Controller.RunExpression();
 
             Assert.Pass();
         }
@@ -734,12 +735,12 @@ namespace Dynamo.Tests
         [Test]
         public void MultithreadingWithFutureAndNow()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\multithreading");
 
             model.Open(Path.Combine(exPath, @"multithread-test.dyn"));
 
-            dynSettings.Controller.RunExpression();
+            DynamoSettings.Controller.RunExpression();
 
             Assert.Pass();
         }

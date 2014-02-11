@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using Dynamo.Models;
-using GraphToDSCompiler;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
-using ProtoCore.DSDefinitions;
 using ProtoScript.Runners;
-using Type = ProtoCore.Type;
 
 namespace Dynamo.DSEngine
 {

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Xml;
+using Dynamo.Core;
 using Dynamo.Utilities;
 
 namespace Dynamo.Models
@@ -78,7 +78,7 @@ namespace Dynamo.Models
                 endPort = end.InPorts[endIndex];
 
             pStart.Connect(this);
-            this.Connect(endPort);
+            Connect(endPort);
             //sw.Stop();
             //Debug.WriteLine(string.Format("{0} elapsed for constructing connector.", sw.Elapsed));
         }
@@ -161,12 +161,12 @@ namespace Dynamo.Models
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             XmlElementHelper helper = new XmlElementHelper(element);
-            helper.SetAttribute("guid", this.GUID);
-            helper.SetAttribute("start", this.Start.Owner.GUID);
-            helper.SetAttribute("start_index", this.Start.Index);
-            helper.SetAttribute("end", this.End.Owner.GUID);
-            helper.SetAttribute("end_index", this.End.Index);
-            helper.SetAttribute("portType", ((int) this.End.PortType));
+            helper.SetAttribute("guid", GUID);
+            helper.SetAttribute("start", Start.Owner.GUID);
+            helper.SetAttribute("start_index", Start.Index);
+            helper.SetAttribute("end", End.Owner.GUID);
+            helper.SetAttribute("end_index", End.Index);
+            helper.SetAttribute("portType", ((int) End.PortType));
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
@@ -174,7 +174,7 @@ namespace Dynamo.Models
             XmlElementHelper helper = new XmlElementHelper(element);
 
             // Restore some information from the node attributes.
-            this.GUID = helper.ReadGuid("guid", this.GUID);
+            GUID = helper.ReadGuid("guid", GUID);
             Guid startNodeId = helper.ReadGuid("start");
             int startIndex = helper.ReadInteger("start_index");
             Guid endNodeId = helper.ReadGuid("end");
@@ -182,7 +182,7 @@ namespace Dynamo.Models
             PortType portType = ((PortType)helper.ReadInteger("portType"));
 
             // Get to the start and end nodes that this connector connects to.
-            WorkspaceModel workspace = dynSettings.Controller.DynamoModel.CurrentWorkspace;
+            WorkspaceModel workspace = DynamoSettings.Controller.DynamoModel.CurrentWorkspace;
             NodeModel startNode = workspace.GetModelInternal(startNodeId) as NodeModel;
             NodeModel endNode = workspace.GetModelInternal(endNodeId) as NodeModel;
 
@@ -192,7 +192,7 @@ namespace Dynamo.Models
                 endPort = endNode.InPorts[endIndex];
 
             pStart.Connect(this);
-            this.Connect(endPort);
+            Connect(endPort);
         }
 
         #endregion

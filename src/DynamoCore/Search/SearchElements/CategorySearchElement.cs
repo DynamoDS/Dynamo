@@ -1,4 +1,5 @@
-﻿using Dynamo.Utilities;
+﻿using Dynamo.Core;
+using Dynamo.Utilities;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -63,7 +64,7 @@ namespace Dynamo.Search.SearchElements
             }
             set 
             {
-                this._description = value + " nodes";
+                _description = value + " nodes";
                 _numElements = value;
             }
         }
@@ -86,7 +87,7 @@ namespace Dynamo.Search.SearchElements
         /// Add the name as the current search text </summary>
         public override void Execute()
         {
-            dynSettings.Controller.SearchViewModel.SearchText = Name + ".";
+            DynamoSettings.Controller.SearchViewModel.SearchText = Name + ".";
         }
 
     }

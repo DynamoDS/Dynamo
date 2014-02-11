@@ -5,6 +5,7 @@ using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Media;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -50,7 +51,7 @@ namespace DSCore.File
             tb.BorderThickness = new Thickness(0);
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
-            tb.TextChanged += delegate { tb.ScrollToHorizontalOffset(double.PositiveInfinity); dynSettings.ReturnFocusToSearch(); };
+            tb.TextChanged += delegate { tb.ScrollToHorizontalOffset(double.PositiveInfinity); DynamoSettings.ReturnFocusToSearch(); };
 
             var sp = new StackPanel();
             sp.Children.Add(readFileButton);

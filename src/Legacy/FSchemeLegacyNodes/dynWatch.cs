@@ -271,7 +271,7 @@ namespace Dynamo.Nodes
         internal WatchNode GetWatchNode()
         {
             //Get RuntimeMirror for input ast identifier.
-            var mirror = dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Name);
+            var mirror = DynamoSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Name);
             if(null == mirror)
                 return new WatchNode(nullString);
 

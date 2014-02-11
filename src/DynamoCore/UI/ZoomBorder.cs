@@ -1,19 +1,10 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using Dynamo.UI.Commands;
-using Dynamo.Models;
 using Dynamo.ViewModels;
-using Dynamo.Utilities;
-using Microsoft.Practices.Prism.ViewModel;
-using System.Windows.Resources;
-using System;
-using System.Windows.Shapes;
-using Dynamo.Core;
 
 namespace Dynamo.Controls
 {
@@ -50,15 +41,15 @@ namespace Dynamo.Controls
             get { return base.Child; }
             set
             {
-                if (value != null && value != this.Child)
-                    this.Initialize(value);
+                if (value != null && value != Child)
+                    Initialize(value);
                 base.Child = value;
             }
         }
 
         public void Initialize(UIElement element)
         {
-            this.child = element;
+            child = element;
             if (child != null)
             {
                 TransformGroup group = new TransformGroup();
@@ -75,10 +66,10 @@ namespace Dynamo.Controls
         void ZoomBorder_Loaded(object sender, RoutedEventArgs e)
         {
             // Uses Outer Canvas to trigger events
-            this.MouseWheel += child_MouseWheel;
-            this.MouseDown += child_MouseDown;
-            this.MouseUp += child_MouseUp;
-            this.MouseMove += child_MouseMove;
+            MouseWheel += child_MouseWheel;
+            MouseDown += child_MouseDown;
+            MouseUp += child_MouseUp;
+            MouseMove += child_MouseMove;
         }
 
         public void Reset()
@@ -208,17 +199,17 @@ namespace Dynamo.Controls
 
         public EndlessGrid()
         {
-            this.RenderTransform = new TranslateTransform();
-            this.Loaded += EndlessGrid_Loaded;
+            RenderTransform = new TranslateTransform();
+            Loaded += EndlessGrid_Loaded;
         }
 
         void EndlessGrid_Loaded(object sender, RoutedEventArgs e)
         {
             // Create ItemsControl in Canvas to bind the grid line onto it
-            this.itemsControl = new ItemsControl();
+            itemsControl = new ItemsControl();
 
             FrameworkElementFactory factoryPanel = new FrameworkElementFactory(typeof(Canvas));
-            factoryPanel.SetValue(StackPanel.IsItemsHostProperty, true);
+            factoryPanel.SetValue(IsItemsHostProperty, true);
 
             ItemsPanelTemplate template = new ItemsPanelTemplate();
             template.VisualTree = factoryPanel;
@@ -226,12 +217,12 @@ namespace Dynamo.Controls
             itemsControl.ItemsPanel = template;
             
 
-            this.Children.Add(itemsControl);
+            Children.Add(itemsControl);
 
-            this.Background = Brushes.Transparent;
+            Background = Brushes.Transparent;
 
             // Call ViewModel to compute data required for View
-            ((EndlessGridViewModel)this.DataContext).InitializeOnce();
+            ((EndlessGridViewModel)DataContext).InitializeOnce();
 
             CreateBinding();
         }
@@ -239,25 +230,25 @@ namespace Dynamo.Controls
 		private void CreateBinding()
         {
             // Visibility Binding
-            this.itemsControl.SetBinding(FrameworkElement.VisibilityProperty, new Binding("FullscreenWatchShowing")
+            itemsControl.SetBinding(VisibilityProperty, new Binding("FullscreenWatchShowing")
             {
                 Converter = new InverseBoolToVisibilityConverter(),
                 Mode = BindingMode.OneWay
             });
 
             // Size Binding
-            this.SetBinding(EndlessGrid.WidthProperty, new Binding("Width")
+            SetBinding(WidthProperty, new Binding("Width")
             {
                 Mode = BindingMode.OneWay
             });
 
-            this.SetBinding(EndlessGrid.HeightProperty, new Binding("Height")
+            SetBinding(HeightProperty, new Binding("Height")
             {
                 Mode = BindingMode.OneWay
             });
 
             // GridLine binds to ItemsControl
-            this.itemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("GridLines"){
+            itemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("GridLines"){
                 Mode = BindingMode.OneWay
             });
         }

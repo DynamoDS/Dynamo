@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Dynamo.Core;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
@@ -28,12 +29,12 @@ namespace Dynamo.Tests
             SwapCurrentModel(revitFilePath);
 
             //open the dyn file
-            Assert.True(dynSettings.Controller.DynamoViewModel.OpenCommand.CanExecute(dynamoFilePath));
-            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(dynamoFilePath);
+            Assert.True(DynamoSettings.Controller.DynamoViewModel.OpenCommand.CanExecute(dynamoFilePath));
+            DynamoSettings.Controller.DynamoViewModel.OpenCommand.Execute(dynamoFilePath);
 
             //run the expression and assert that it does not
             //throw an error
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(false));
+            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(false));
         }
 
         /// <summary>

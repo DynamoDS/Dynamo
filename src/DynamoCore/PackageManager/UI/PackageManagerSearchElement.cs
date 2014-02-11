@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Dynamo.Core;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Greg.Responses;
@@ -22,34 +23,34 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// The class constructor. </summary>
         /// <param name="header">The PackageHeader object describing the element</param>
-        public PackageManagerSearchElement(Greg.Responses.PackageHeader header)
+        public PackageManagerSearchElement(PackageHeader header)
         {
-            this.Header = header;
-            this.Weight = header.deprecated ? 0.1 : 1;
+            Header = header;
+            Weight = header.deprecated ? 0.1 : 1;
 
             if (header.keywords != null && header.keywords.Count > 0)
             {
-                this.Keywords = String.Join(" ", header.keywords);
+                Keywords = String.Join(" ", header.keywords);
             } 
             else
             {
-                this.Keywords = "";
+                Keywords = "";
             }
-            this.Votes = header.votes;
-            this.IsExpanded = false;
-            this.DownloadLatest = new DelegateCommand((Action) Execute);
-            this.UpvoteCommand = new DelegateCommand((Action) Upvote);
-            this.DownvoteCommand = new DelegateCommand((Action) Downvote);
+            Votes = header.votes;
+            IsExpanded = false;
+            DownloadLatest = new DelegateCommand((Action) Execute);
+            UpvoteCommand = new DelegateCommand((Action) Upvote);
+            DownvoteCommand = new DelegateCommand((Action) Downvote);
         }
 
         public void Upvote()
         {
-            Task<bool>.Factory.StartNew(() => dynSettings.PackageManagerClient.Upvote(this.Id))
+            Task<bool>.Factory.StartNew(() => DynamoSettings.PackageManagerClient.Upvote(Id))
                 .ContinueWith((t) =>
                 {
                     if (t.Result)
                     {
-                        this.Votes += 1;
+                        Votes += 1;
                     }
                 }
                 , TaskScheduler.FromCurrentSynchronizationContext()); 
@@ -58,21 +59,21 @@ namespace Dynamo.PackageManager
 
         public void Downvote()
         {
-            Task<bool>.Factory.StartNew(() => dynSettings.PackageManagerClient.Downvote(this.Id))
+            Task<bool>.Factory.StartNew(() => DynamoSettings.PackageManagerClient.Downvote(Id))
                 .ContinueWith((t) =>
                 {
                     if (t.Result)
                     {
-                        this.Votes -= 1;
+                        Votes -= 1;
                     }
                 } , TaskScheduler.FromCurrentSynchronizationContext()); 
         }
 
         public override void Execute()
         {
-            var version = _versionToDownload ?? this.Header.versions.Last();
+            var version = _versionToDownload ?? Header.versions.Last();
 
-            string message = "Are you sure you want to install " + this.Name +" "+ version.version + "?";
+            string message = "Are you sure you want to install " + Name +" "+ version.version + "?";
 
             var result = MessageBox.Show(message, "Package Download Confirmation",
                             MessageBoxButton.OKCancel, MessageBoxImage.Question);
@@ -83,7 +84,7 @@ namespace Dynamo.PackageManager
                 var headers = version.full_dependency_ids.Select(dep=>dep._id).Select((id) =>
                     {
                         PackageHeader pkgHeader;
-                        var res = dynSettings.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
+                        var res = DynamoSettings.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
                         
                         if (!res.Success)
                             MessageBox.Show("Failed to download package with id: " + id + ".  Please try again and report the package if you continue to have problems.", "Package Download Error",
@@ -98,7 +99,7 @@ namespace Dynamo.PackageManager
                     return;
                 }
 
-                var localPkgs = dynSettings.PackageLoader.LocalPackages;
+                var localPkgs = DynamoSettings.PackageLoader.LocalPackages;
 
                 // if a package is already installed we need to uninstall it
                 foreach ( var localPkg in headers.Select(x => localPkgs.FirstOrDefault(v => v.Name == x.name)) )
@@ -109,14 +110,14 @@ namespace Dynamo.PackageManager
                     // if the package is in use, we will not be able to uninstall it.  
                     if (!localPkg.UninstallCommand.CanExecute())
                     {
-                        msg = "Dynamo needs to uninstall " + this.Name + " to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.";
+                        msg = "Dynamo needs to uninstall " + Name + " to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.";
                         MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
                                         MessageBoxImage.Error);
                         return;
                     }
 
                     // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
-                    msg = "Dynamo has already installed " + this.Name + ".  \n\nDynamo will attempt to uninstall this package before installing.  ";
+                    msg = "Dynamo has already installed " + Name + ".  \n\nDynamo will attempt to uninstall this package before installing.  ";
                     if ( MessageBox.Show(msg, "Download Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
                         return;
                 }
@@ -143,29 +144,29 @@ namespace Dynamo.PackageManager
                         Header.versions.Select(
                             x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() =>
                                 {
-                                    this._versionToDownload = x;
-                                    this.Execute();
+                                    _versionToDownload = x;
+                                    Execute();
                                 }, () => true))).ToList();
                 } 
             }
-            public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x=>x.username)); } }
+            public string Maintainers { get { return String.Join(", ", Header.maintainers.Select(x=>x.username)); } }
             private int _votes;
             public int Votes
             {
                 get { return _votes; } 
                 set { _votes = value; RaisePropertyChanged("Votes"); }
             }
-            public bool IsDeprecated { get { return this.Header.deprecated; } }
-            public int Downloads { get { return this.Header.downloads; } }
+            public bool IsDeprecated { get { return Header.deprecated; } }
+            public int Downloads { get { return Header.downloads; } }
             public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
-            public int UsedBy { get { return this.Header.used_by.Count; } } 
+            public int UsedBy { get { return Header.used_by.Count; } } 
             public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
             
             /// <summary>
             /// Header property </summary>
             /// <value>
             /// The PackageHeader used to instantiate this object </value>
-            public Greg.Responses.PackageHeader Header { get; internal set; }
+            public PackageHeader Header { get; internal set; }
 
             /// <summary>
             /// Type property </summary>

@@ -128,33 +128,33 @@ namespace Octree.OctreeSearch
 
         public float Right
         {
-            get { return this.right; }
-            set { this.right = value; }
+            get { return right; }
+            set { right = value; }
         }
         public float Left
         {
-            get { return this.left; }
-            set { this.left = value; }
+            get { return left; }
+            set { left = value; }
         }
         public float Front
         {
-            get { return this.front; }
-            set { this.front = value; }
+            get { return front; }
+            set { front = value; }
         }
         public float Back
         {
-            get { return this.back; }
-            set { this.back = value; }
+            get { return back; }
+            set { back = value; }
         }
         public float Top
         {
-            get { return this.top; }
-            set { this.top = value; }
+            get { return top; }
+            set { top = value; }
         }
         public float Bottom
         {
-            get { return this.bottom; }
-            set { this.bottom = value; }
+            get { return bottom; }
+            set { bottom = value; }
         }
 
     }

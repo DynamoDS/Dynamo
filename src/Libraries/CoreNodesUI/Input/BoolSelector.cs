@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -69,13 +70,13 @@ namespace DSCoreNodesUI
         private static void rbFalse_Checked(object sender, RoutedEventArgs e)
         {
             //Value = false;
-            dynSettings.ReturnFocusToSearch();
+            DynamoSettings.ReturnFocusToSearch();
         }
 
         private static void rbTrue_Checked(object sender, RoutedEventArgs e)
         {
             //Value = true;
-            dynSettings.ReturnFocusToSearch();
+            DynamoSettings.ReturnFocusToSearch();
         }
     }
 }

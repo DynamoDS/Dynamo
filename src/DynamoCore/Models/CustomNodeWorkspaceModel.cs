@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml;
+using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using String = System.String;
@@ -54,7 +54,7 @@ namespace Dynamo.Models
 
         public CustomNodeDefinition CustomNodeDefinition
         {
-            get { return dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(this); }
+            get { return DynamoSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(this); }
         }
 
         public override void Modified()
@@ -64,14 +64,14 @@ namespace Dynamo.Models
             if (CustomNodeDefinition == null) 
                 return;
 
-            CustomNodeDefinition.RequiresRecalc = true;
+            //CustomNodeDefinition.RequiresRecalc = true;
             CustomNodeDefinition.SyncWithWorkspace(false, true);
         }
 
-        public List<Function> GetExistingNodes()
+        public List<CustomNodeInstance> GetExistingNodes()
         {
-            return dynSettings.Controller.DynamoModel.AllNodes
-                .OfType<Function>()
+            return DynamoSettings.Controller.DynamoModel.AllNodes
+                .OfType<CustomNodeInstance>()
                 .Where(el => el.Definition == CustomNodeDefinition)
                 .ToList();
         }
@@ -104,7 +104,7 @@ namespace Dynamo.Models
             if (originalPath == null)
             {
                 CustomNodeDefinition.AddToSearch();
-                dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync();
+                DynamoSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync();
                 CustomNodeDefinition.UpdateCustomNodeManager();
             }
 
@@ -123,17 +123,17 @@ namespace Dynamo.Models
                 var newDef = CustomNodeDefinition;
 
                 // reload the original funcdef from its path
-                dynSettings.CustomNodeManager.Remove(originalGuid);
-                dynSettings.CustomNodeManager.AddFileToPath(originalPath);
-                var origDef = dynSettings.CustomNodeManager.GetFunctionDefinition(originalGuid);
+                DynamoSettings.CustomNodeManager.Remove(originalGuid);
+                DynamoSettings.CustomNodeManager.AddFileToPath(originalPath);
+                var origDef = DynamoSettings.CustomNodeManager.GetFunctionDefinition(originalGuid);
                 if (origDef == null)
                 {
                     return false;
                 }
 
                 // reassign existing nodes to point to newly deserialized function def
-                dynSettings.Controller.DynamoModel.AllNodes
-                        .OfType<Function>()
+                DynamoSettings.Controller.DynamoModel.AllNodes
+                        .OfType<CustomNodeInstance>()
                         .Where(el => el.Definition.FunctionId == originalGuid)
                         .ToList()
                         .ForEach(node =>

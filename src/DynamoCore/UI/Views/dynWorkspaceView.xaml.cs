@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
-using System.Windows.Data;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -42,7 +41,7 @@ namespace Dynamo.Views
             ResizeHorizontal
         }
 
-        private Dynamo.Controls.DragCanvas WorkBench = null;
+        private DragCanvas WorkBench = null;
         private ZoomAndPanControl zoomAndPanControl = null;
 
         private PortViewModel snappedPort = null;
@@ -53,8 +52,8 @@ namespace Dynamo.Views
         {
             get
             {
-                if (this.DataContext is WorkspaceViewModel)
-                    return this.DataContext as WorkspaceViewModel;
+                if (DataContext is WorkspaceViewModel)
+                    return DataContext as WorkspaceViewModel;
                 else
                     return null;
             }
@@ -64,24 +63,24 @@ namespace Dynamo.Views
         {
             get
             {
-                return (this.snappedPort != null);
+                return (snappedPort != null);
             }
         }
 
         public dynWorkspaceView()
         {
-            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
-            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
-            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
-            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
-            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.ConnectorsDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.ConnectorsDictionary);
 
             InitializeComponent();
 
             selectionCanvas.Loaded += selectionCanvas_Loaded;
             DataContextChanged += dynWorkspaceView_DataContextChanged;
 
-            this.Loaded += dynWorkspaceView_Loaded;
+            Loaded += dynWorkspaceView_Loaded;
         }
 
         void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
@@ -107,7 +106,7 @@ namespace Dynamo.Views
             //============
 
             Debug.WriteLine("Workspace loaded.");
-            DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+            DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
 
             ViewModel.DragSelectionStarted += ViewModel_DragSelectionStarted;
             ViewModel.DragSelectionEnded += ViewModel_DragSelectionEnded;
@@ -161,7 +160,7 @@ namespace Dynamo.Views
 
         }
 
-        void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
             ViewModel.NodeToCodeCommand.RaiseCanExecuteChanged();
@@ -238,14 +237,14 @@ namespace Dynamo.Views
                     CanEditName = false
                 };
 
-            dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(this, args);
+            DynamoSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(this, args);
 
             if (args.Success)
             {
                 if (workspace is CustomNodeWorkspaceModel)
                 {
                     var def = (workspace as CustomNodeWorkspaceModel).CustomNodeDefinition;
-                    dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
+                    DynamoSettings.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
                 }
 
                 if (args.CanEditName) workspace.Name = args.Name;
@@ -258,8 +257,8 @@ namespace Dynamo.Views
         {
             if (e.UpdatedProps.HasFlag(SelectionBoxUpdateArgs.UpdateFlags.Position))
             {
-                Canvas.SetLeft(this.selectionBox, e.X);
-                Canvas.SetTop(this.selectionBox, e.Y);
+                Canvas.SetLeft(selectionBox, e.X);
+                Canvas.SetTop(selectionBox, e.Y);
             }
 
             if (e.UpdatedProps.HasFlag(SelectionBoxUpdateArgs.UpdateFlags.Dimension))
@@ -504,24 +503,24 @@ namespace Dynamo.Views
         {
             WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
 
-            if (this.snappedPort != null)
-                wvm.HandlePortClicked(this.snappedPort);
+            if (snappedPort != null)
+                wvm.HandlePortClicked(snappedPort);
             else
             {
-                wvm.HandleLeftButtonDown(this.WorkBench, e);
+                wvm.HandleLeftButtonDown(WorkBench, e);
             }
         }
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
         {
-            this.snappedPort = null;
+            snappedPort = null;
             WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
-            wvm.HandleMouseRelease(this.WorkBench, e);
+            wvm.HandleMouseRelease(WorkBench, e);
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            this.snappedPort = null;
+            snappedPort = null;
 
             bool mouseMessageHandled = false;
             WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
@@ -565,31 +564,31 @@ namespace Dynamo.Views
                     PortViewModel pvm = PortFromHitTestResult(dependencyObject);
 
                     if (null != pvm && (pvm.PortType == PortType.INPUT))
-                        this.Cursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
+                        Cursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
                     else
-                        this.Cursor = null;
+                        Cursor = null;
 
                     break;
                 }
             }
 
             if (false == mouseMessageHandled)
-                wvm.HandleMouseMove(this.WorkBench, e);
+                wvm.HandleMouseMove(WorkBench, e);
         }
 
         private PortViewModel GetSnappedPort(Point mouseCursor)
         {
-            if (this.FindNearestPorts(mouseCursor).Count <= 0)
+            if (FindNearestPorts(mouseCursor).Count <= 0)
                 return null;
 
             double curDistance = 1000000;
             PortViewModel nearestPort = null;
 
-            for (int i = 0; i < this.hitResultsList.Count; i++)
+            for (int i = 0; i < hitResultsList.Count; i++)
             {
                 try
                 {
-                    DependencyObject depObject = this.hitResultsList[i];
+                    DependencyObject depObject = hitResultsList[i];
                     PortViewModel pvm = PortFromHitTestResult(depObject);
 
                     if (pvm == null)
@@ -627,7 +626,7 @@ namespace Dynamo.Views
         /// <param name="e"></param>
         internal void CenterViewOnElement(object sender, EventArgs e)
         {
-            this.Dispatcher.BeginInvoke((Action)delegate
+            Dispatcher.BeginInvoke((Action)delegate
                 {
 
                     var vm = (DataContext as WorkspaceViewModel);
@@ -656,7 +655,7 @@ namespace Dynamo.Views
 
         private void WorkBench_OnLoaded(object sender, RoutedEventArgs e)
         {
-            WorkBench = sender as Dynamo.Controls.DragCanvas;
+            WorkBench = sender as DragCanvas;
             WorkBench.owningWorkspace = this;
         }
 
@@ -680,7 +679,7 @@ namespace Dynamo.Views
             return ((hitResultsList.Count > 0) ? hitResultsList[0] : null);
         }
 
-        private List<DependencyObject> FindNearestPorts(System.Windows.Point mouse)
+        private List<DependencyObject> FindNearestPorts(Point mouse)
         {
             hitResultsList.Clear();
             EllipseGeometry expandedHitTestArea = new EllipseGeometry(mouse, 50.0, 7.0);
@@ -697,7 +696,7 @@ namespace Dynamo.Views
                 hitResultsList.Clear();
             }
 
-            return this.hitResultsList;
+            return hitResultsList;
         }
 
         private HitTestFilterBehavior HitTestFilter(DependencyObject o)

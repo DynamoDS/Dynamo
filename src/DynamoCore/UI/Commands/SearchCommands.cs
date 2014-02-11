@@ -1,4 +1,5 @@
-﻿using Dynamo.Utilities;
+﻿using Dynamo.Core;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Commands
@@ -6,7 +7,7 @@ namespace Dynamo.UI.Commands
     public static partial class DynamoCommands
     {
         private static SearchViewModel _vm_search =
-            dynSettings.Controller.SearchViewModel;
+            DynamoSettings.Controller.SearchViewModel;
 
         private static DelegateCommand focusSearch;
 

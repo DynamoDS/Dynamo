@@ -11,6 +11,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -61,7 +62,7 @@ namespace Dynamo
                         visualizationManager_VisualizationUpdateComplete;
 
                     visualizationManager.RequestAlternateContextClear += CleanupVisualizations;
-                    dynSettings.Controller.DynamoModel.CleaningUp += CleanupVisualizations;
+                    DynamoSettings.Controller.DynamoModel.CleaningUp += CleanupVisualizations;
                 }
                 return visualizationManager;
             }
@@ -80,7 +81,7 @@ namespace Dynamo
             Predicate<NodeModel> manualTransactionPredicate = node => node is Transaction;
             CheckManualTransaction = new PredicateTraverser(manualTransactionPredicate);
 
-            dynSettings.Controller.DynamoViewModel.RequestAuthentication += RegisterSingleSignOn;
+            DynamoSettings.Controller.DynamoViewModel.RequestAuthentication += RegisterSingleSignOn;
 
             AddPythonBindings();
             AddWatchNodeHandler();
@@ -90,8 +91,8 @@ namespace Dynamo
             DocumentManager.GetInstance().CurrentUIApplication.ViewActivated += Revit_ViewActivated;
 
             //allow the showing of elements in context
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
+            DynamoSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
+            DynamoSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
 
             TransactionManager = new TransactionWrapper();
             TransactionManager.TransactionStarted += TransactionManager_TransactionCommitted;
@@ -140,7 +141,7 @@ namespace Dynamo
                 !VisualizationManager.DrawToAlternateContext)
                 return;
 
-            var values = dynSettings.Controller.DynamoModel.Nodes
+            var values = DynamoSettings.Controller.DynamoModel.Nodes
                                     .Where(x => !(x is SelectionBase))
                                     .Where(x => x.IsVisible)
                                     .Where(x => x.OldValue != null)
@@ -310,14 +311,14 @@ namespace Dynamo
             var selectedIds =
                 DocumentManager.GetInstance().CurrentUIDocument.Selection.Elements.Cast<Element>().Select(x => x.Id);
             var transNodes =
-                dynSettings.Controller.DynamoModel.CurrentWorkspace.Nodes
+                DynamoSettings.Controller.DynamoModel.CurrentWorkspace.Nodes
                            .OfType<RevitTransactionNode>();
             var foundNodes =
                 transNodes.Where(x => x.AllElements.Intersect(selectedIds).Any()).ToList();
 
             if (foundNodes.Any())
             {
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel
+                DynamoSettings.Controller.DynamoViewModel.CurrentSpaceViewModel
                            .OnRequestCenterViewOnElement(
                                this, new ModelEventArgs(foundNodes.First()));
 
@@ -381,8 +382,8 @@ namespace Dynamo
         /// </summary>
         private void ResetForNewDocument()
         {
-            if(dynSettings.Controller != null)
-                dynSettings.Controller.DynamoModel.Nodes.ToList().ForEach(x=>x.ResetOldValue());
+            if(DynamoSettings.Controller != null)
+                DynamoSettings.Controller.DynamoModel.Nodes.ToList().ForEach(x=>x.ResetOldValue());
 
             VisualizationManager.ClearVisualizations();
 
@@ -694,7 +695,7 @@ namespace Dynamo
                 _transaction = TransactionManager.StartTransaction(DocumentManager.GetInstance().CurrentUIDocument.Document);
 
                 //Reset all elements
-                var query = dynSettings.Controller.DynamoModel.AllNodes
+                var query = DynamoSettings.Controller.DynamoModel.AllNodes
                     .OfType<RevitTransactionNode>();
 
                 foreach (RevitTransactionNode element in query)
@@ -747,7 +748,7 @@ namespace Dynamo
 
             //If we're in a debug run or not already in the idle thread, then run the Cleanup Delegate
             //from the idle thread. Otherwise, just run it in this thread.
-            if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread && !Testing)
+            if (DynamoSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread && !Testing)
             {
                 IdlePromise.ExecuteOnIdle(cleanup, false);
                 IdlePromise.ExecuteOnIdle(rename, false);

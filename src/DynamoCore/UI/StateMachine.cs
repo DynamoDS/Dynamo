@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
+using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using Dynamo.Core;
 using Dynamo.UI;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace Dynamo.ViewModels
 {
@@ -129,7 +132,7 @@ namespace Dynamo.ViewModels
             {
                 // Define the new active connector
                 var c = new ConnectorViewModel(portModel.Connectors[0].Start);
-                this.SetActiveConnector(c);
+                SetActiveConnector(c);
 
                 // Disconnect the connector model from its start and end ports
                 // and remove it from the connectors collection. This will also
@@ -149,11 +152,11 @@ namespace Dynamo.ViewModels
                 {
                     // Create a connector view model to begin drawing
                     var connector = new ConnectorViewModel(portModel);
-                    this.SetActiveConnector(connector);
+                    SetActiveConnector(connector);
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex.Message);
                 }
             }
         }
@@ -178,7 +181,7 @@ namespace Dynamo.ViewModels
             }
 
             // Create the new connector model
-            var start = this.activeConnector.ActiveStartPort;
+            var start = activeConnector.ActiveStartPort;
             var end = portModel;
 
             // We could either connect from an input port to an output port, or 
@@ -202,16 +205,16 @@ namespace Dynamo.ViewModels
                 models.Add(connectorToRemove, UndoRedoRecorder.UserAction.Deletion);
             models.Add(newConnectorModel, UndoRedoRecorder.UserAction.Creation);
             _model.RecordModelsForUndo(models);
-            this.SetActiveConnector(null);
+            SetActiveConnector(null);
         }
 
         internal bool CheckActiveConnectorCompatibility(PortViewModel portVM)
         {
             // Check if required ports exist
-            if (this.activeConnector == null || portVM == null)
+            if (activeConnector == null || portVM == null)
                 return false;
 
-            PortModel srcPortM = this.activeConnector.ActiveStartPort;
+            PortModel srcPortM = activeConnector.ActiveStartPort;
             PortModel desPortM = portVM.PortModel;
 
             // No self connection
@@ -232,13 +235,13 @@ namespace Dynamo.ViewModels
 
         internal void CancelConnection()
         {
-            this.SetActiveConnector(null);
+            SetActiveConnector(null);
         }
 
         internal void UpdateActiveConnector(Point mouseCursor)
         {
-            if (null != this.activeConnector)
-                this.activeConnector.Redraw(mouseCursor);
+            if (null != activeConnector)
+                activeConnector.Redraw(mouseCursor);
 
         }
 
@@ -246,18 +249,18 @@ namespace Dynamo.ViewModels
         {
             if (null != connector)
             {
-                System.Diagnostics.Debug.Assert(null == activeConnector);
-                this.WorkspaceElements.Add(connector);
-                this.activeConnector = connector;
+                Debug.Assert(null == activeConnector);
+                WorkspaceElements.Add(connector);
+                activeConnector = connector;
             }
             else
             {
-                System.Diagnostics.Debug.Assert(null != activeConnector);
-                this.WorkspaceElements.Remove(activeConnector);
-                this.activeConnector = null;
+                Debug.Assert(null != activeConnector);
+                WorkspaceElements.Remove(activeConnector);
+                activeConnector = null;
             }
 
-            this.RaisePropertyChanged("ActiveConnector");
+            RaisePropertyChanged("ActiveConnector");
         }
 
         private void RecordSelectionForUndo()
@@ -272,8 +275,8 @@ namespace Dynamo.ViewModels
             List<ModelBase> models = DynamoSelection.Instance.Selection.
                 Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
 
-            this._model.RecordModelsForModification(models);
-            DynamoController controller = Dynamo.Utilities.dynSettings.Controller;
+            _model.RecordModelsForModification(models);
+            DynamoController controller = DynamoSettings.Controller;
             controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
@@ -366,7 +369,7 @@ namespace Dynamo.ViewModels
             private State currentState = State.None;
             internal State CurrentState
             {
-                get { return this.currentState; }
+                get { return currentState; }
             }
 
             private Point mouseDownPos = new Point();
@@ -407,13 +410,13 @@ namespace Dynamo.ViewModels
 
             private void SetCurrentState(State newState)
             {
-                if (newState == this.currentState)
+                if (newState == currentState)
                     return; // No state changes
 
                 // Exiting from current state
-                if (State.None != this.currentState)
+                if (State.None != currentState)
                 {
-                    switch (this.currentState)
+                    switch (currentState)
                     {
                         case State.WindowSelection:
                             CancelWindowSelection();
@@ -449,7 +452,7 @@ namespace Dynamo.ViewModels
                         break;
                 }
 
-                this.currentState = newState; // update state
+                currentState = newState; // update state
             }
 
             #endregion
@@ -469,7 +472,7 @@ namespace Dynamo.ViewModels
                 MouseClickHistory curClick = new MouseClickHistory(sender, e);
 
                 bool eventHandled = false;
-                if (this.currentState == State.Connection)
+                if (currentState == State.Connection)
                 {
                     // Clicking on the canvas while connecting simply cancels 
                     // the operation and drop the temporary connector.
@@ -477,7 +480,7 @@ namespace Dynamo.ViewModels
 
                     eventHandled = true; // Mouse event handled.
                 }
-                else if (this.currentState == State.None)
+                else if (currentState == State.None)
                 {
                     // Record the mouse down position.
                     IInputElement element = sender as IInputElement;
@@ -487,7 +490,7 @@ namespace Dynamo.ViewModels
                     // then the state machine should initiate a drag operation.
                     if (null != GetSelectableFromPoint(mouseDownPos))
                         InitiateDragSequence();
-                    else if (e.Source is Dynamo.Controls.EndlessGrid && MouseClickHistory.CheckIsDoubleClick(prevClick, curClick))
+                    else if (e.Source is EndlessGrid && MouseClickHistory.CheckIsDoubleClick(prevClick, curClick))
                     {
                         CreateCodeBlockNode(mouseDownPos); // Double clicking on background (EndlessGrid)
                         prevClick = null;
@@ -499,12 +502,12 @@ namespace Dynamo.ViewModels
 
                     eventHandled = true; // Mouse event handled.
                 }
-                else if (this.currentState == State.PanMode)
+                else if (currentState == State.PanMode)
                 {
                     owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.HandPanActive);
                 }
 
-                dynSettings.ReturnFocusToSearch();
+                DynamoSettings.ReturnFocusToSearch();
 
                 return eventHandled;
             }
@@ -517,11 +520,11 @@ namespace Dynamo.ViewModels
 
                 public MouseClickHistory(object sender, MouseButtonEventArgs e)
                 {
-                    this.Timestamp = e.Timestamp;
-                    this.Source = e.Source;
+                    Timestamp = e.Timestamp;
+                    Source = e.Source;
 
                     IInputElement element = sender as IInputElement;
-                    this.Position = e.GetPosition(element);
+                    Position = e.GetPosition(element);
                 }
 
                 public static bool CheckIsDoubleClick(MouseClickHistory prevClick, MouseClickHistory curClick)
@@ -530,7 +533,7 @@ namespace Dynamo.ViewModels
                         return false; // Click events did not come from same source
 
                     int clickInterval = curClick.Timestamp - prevClick.Timestamp;
-                    if (clickInterval > System.Windows.Forms.SystemInformation.DoubleClickTime)
+                    if (clickInterval > SystemInformation.DoubleClickTime)
                         return false; // Time difference is more than system DoubleClickTime
 
                     double diff = Math.Abs(prevClick.Position.X - curClick.Position.X);
@@ -550,12 +553,12 @@ namespace Dynamo.ViewModels
             {
                 // create node
                 var guid = Guid.NewGuid();
-                dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.CreateNodeCommand(guid, "Code Block",
+                DynamoSettings.Controller.DynamoViewModel.ExecuteCommand(
+                    new DynamoViewModel.CreateNodeCommand(guid, "Code Block",
                         cursor.X, cursor.Y, false, true));
 
                 // select node
-                var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+                var placedNode = DynamoSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
                 if (placedNode != null)
                 {
                     DynamoSelection.Instance.ClearSelection();
@@ -576,24 +579,24 @@ namespace Dynamo.ViewModels
                 if (e.ChangedButton != MouseButton.Left)
                     return false; // We only handle left mouse button for now.
 
-                if (this.currentState == State.WindowSelection)
+                if (currentState == State.WindowSelection)
                 {
                     SetCurrentState(State.None);
                     return true; // Mouse event handled.
                 }
-                else if (this.currentState == State.NodeReposition)
+                else if (currentState == State.NodeReposition)
                 {
                     Point mouseCursor = e.GetPosition(sender as IInputElement);
-                    var operation = DynCmd.DragSelectionCommand.Operation.EndDrag;
-                    var command = new DynCmd.DragSelectionCommand(mouseCursor, operation);
-                    var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                    var operation = DynamoViewModel.DragSelectionCommand.Operation.EndDrag;
+                    var command = new DynamoViewModel.DragSelectionCommand(mouseCursor, operation);
+                    var dynamoViewModel = DynamoSettings.Controller.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
 
                     SetCurrentState(State.None); // Dragging operation ended.
                 }
-                else if (this.currentState == State.DragSetup)
+                else if (currentState == State.DragSetup)
                     SetCurrentState(State.None);
-                else if (this.currentState == State.PanMode)
+                else if (currentState == State.PanMode)
                 {
                     // Change cursor back to Pan
                     owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.HandPan);
@@ -604,7 +607,7 @@ namespace Dynamo.ViewModels
 
             internal bool HandleMouseMove(object sender, Point mouseCursor)
             {
-                if (this.currentState == State.Connection)
+                if (currentState == State.Connection)
                 {
                     // If we are currently connecting and there is an active 
                     // connector, redraw it to match the new mouse coordinates.
@@ -612,7 +615,7 @@ namespace Dynamo.ViewModels
                     owningWorkspace.UpdateActiveConnector(mouseCursor);
 
                 }
-                else if (this.currentState == State.WindowSelection)
+                else if (currentState == State.WindowSelection)
                 {
                     // When the mouse is held down, reposition the drag selection box.
                     double x = Math.Min(mouseDownPos.X, mouseCursor.X);
@@ -632,16 +635,16 @@ namespace Dynamo.ViewModels
                     SelectionBoxUpdateArgs args = null;
                     args = new SelectionBoxUpdateArgs(x, y, width, height);
                     args.SetSelectionMode(isCrossSelection);
-                    this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
+                    owningWorkspace.RequestSelectionBoxUpdate(this, args);
 
                     var rect = new Rect(x, y, width, height);
 
-                    var command = new DynCmd.SelectInRegionCommand(rect, isCrossSelection);
-                    DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                    var command = new DynamoViewModel.SelectInRegionCommand(rect, isCrossSelection);
+                    DynamoViewModel dynamoViewModel = DynamoSettings.Controller.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
 
                 }
-                else if (this.currentState == State.DragSetup)
+                else if (currentState == State.DragSetup)
                 {
                     // There are something in the selection, but none is ILocatable.
                     if (!DynamoSelection.Instance.Selection.Any((x) => (x is ILocatable)))
@@ -651,15 +654,15 @@ namespace Dynamo.ViewModels
                     }
 
                     // Record and begin the drag operation for selected nodes.
-                    var operation = DynCmd.DragSelectionCommand.Operation.BeginDrag;
-                    var command = new DynCmd.DragSelectionCommand(mouseCursor, operation);
-                    DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                    var operation = DynamoViewModel.DragSelectionCommand.Operation.BeginDrag;
+                    var command = new DynamoViewModel.DragSelectionCommand(mouseCursor, operation);
+                    DynamoViewModel dynamoViewModel = DynamoSettings.Controller.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
 
                     SetCurrentState(State.NodeReposition);
                     return true;
                 }
-                else if (this.currentState == State.NodeReposition)
+                else if (currentState == State.NodeReposition)
                 {
                     // Update the dragged nodes (note: this isn't recorded).
                     owningWorkspace.UpdateDraggedSelection(mouseCursor);
@@ -683,21 +686,21 @@ namespace Dynamo.ViewModels
                     return false;
 
                 PortModel portModel = portViewModel.PortModel;
-                DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                DynamoViewModel dynamoViewModel = DynamoSettings.Controller.DynamoViewModel;
                 WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
 
-                if (this.currentState != State.Connection) // Not in a connection attempt...
+                if (currentState != State.Connection) // Not in a connection attempt...
                 {
                     PortType portType = PortType.INPUT;
                     Guid nodeId = portModel.Owner.GUID;
                     int portIndex = portModel.Owner.GetPortIndexAndType(portModel, out portType);
 
-                    dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
-                        nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.Begin));
+                    dynamoViewModel.ExecuteCommand(new DynamoViewModel.MakeConnectionCommand(
+                        nodeId, portIndex, portType, DynamoViewModel.MakeConnectionCommand.Mode.Begin));
 
                     if (null != owningWorkspace.activeConnector)
                     {
-                        this.currentState = State.Connection;
+                        currentState = State.Connection;
                         owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
                         owningWorkspace.IsCursorForced = false;
                     }
@@ -711,12 +714,12 @@ namespace Dynamo.ViewModels
                         Guid nodeId = portModel.Owner.GUID;
                         int portIndex = portModel.Owner.GetPortIndexAndType(portModel, out portType);
 
-                        dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
-                            nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.End));
+                        dynamoViewModel.ExecuteCommand(new DynamoViewModel.MakeConnectionCommand(
+                            nodeId, portIndex, portType, DynamoViewModel.MakeConnectionCommand.Mode.End));
 
                         owningWorkspace.CurrentCursor = null;
                         owningWorkspace.IsCursorForced = false;
-                        this.currentState = State.None;
+                        currentState = State.None;
                     }
                 }
 
@@ -727,10 +730,10 @@ namespace Dynamo.ViewModels
             #region Cancel State Methods
             private void CancelConnection()
             {
-                var command = new DynCmd.MakeConnectionCommand(Guid.Empty, -1,
-                        PortType.INPUT, DynCmd.MakeConnectionCommand.Mode.Cancel);
+                var command = new DynamoViewModel.MakeConnectionCommand(Guid.Empty, -1,
+                        PortType.INPUT, DynamoViewModel.MakeConnectionCommand.Mode.Cancel);
 
-                var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                var dynamoViewModel = DynamoSettings.Controller.DynamoViewModel;
                 dynamoViewModel.ExecuteCommand(command);
             }
 
@@ -741,7 +744,7 @@ namespace Dynamo.ViewModels
 
                 SelectionBoxUpdateArgs args = null;
                 args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
-                this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
+                owningWorkspace.RequestSelectionBoxUpdate(this, args);
             }
             #endregion
 
@@ -764,7 +767,7 @@ namespace Dynamo.ViewModels
             private void InitiateDragSequence()
             {
                 // The state machine must be in idle state.
-                if (this.currentState != State.None)
+                if (currentState != State.None)
                     throw new InvalidOperationException();
 
                 SetCurrentState(State.DragSetup);
@@ -773,12 +776,12 @@ namespace Dynamo.ViewModels
             private void InitiateWindowSelectionSequence()
             {
                 // The state machine must be in idle state.
-                if (this.currentState != State.None)
+                if (currentState != State.None)
                     throw new InvalidOperationException();
 
                 // Clear existing selection set.
-                var selectNothing = new DynCmd.SelectModelCommand(Guid.Empty, ModifierKeys.None);
-                DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                var selectNothing = new DynamoViewModel.SelectModelCommand(Guid.Empty, ModifierKeys.None);
+                DynamoViewModel dynamoViewModel = DynamoSettings.Controller.DynamoViewModel;
                 dynamoViewModel.ExecuteCommand(selectNothing);
 
                 // Update the selection box and make it visible 
@@ -787,7 +790,7 @@ namespace Dynamo.ViewModels
                 args = new SelectionBoxUpdateArgs(mouseDownPos.X, mouseDownPos.Y, 0, 0);
                 args.SetVisibility(Visibility.Visible);
 
-                this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
+                owningWorkspace.RequestSelectionBoxUpdate(this, args);
 
                 SetCurrentState(State.WindowSelection);
 

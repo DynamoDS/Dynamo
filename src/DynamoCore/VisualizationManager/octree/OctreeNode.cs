@@ -280,23 +280,23 @@ namespace Octree.OctreeSearch
         {
             if (branch == null)
             {
-                this.items.Add(leaf);
-                if (this.items.Count == 1)
+                items.Add(leaf);
+                if (items.Count == 1)
                 {
-                    this.allTheSamePoint = true;
-                    this.firstX = leaf.X;
-                    this.firstY = leaf.Y;
-                    this.firstZ = leaf.Z;
+                    allTheSamePoint = true;
+                    firstX = leaf.X;
+                    firstY = leaf.Y;
+                    firstZ = leaf.Z;
                 }
                 else
                 {
-                    if (this.firstX != leaf.X || this.firstY != leaf.Y || this.firstZ != leaf.Z)
+                    if (firstX != leaf.X || firstY != leaf.Y || firstZ != leaf.Z)
                     {
-                        this.allTheSamePoint = false;
+                        allTheSamePoint = false;
                     }
                 }
 
-                if (this.items.Count > maxItems && !this.allTheSamePoint)
+                if (items.Count > maxItems && !allTheSamePoint)
                     split();
                 return true;
             }
@@ -530,7 +530,7 @@ namespace Octree.OctreeSearch
             object closest = null;
             if (branch == null)
             {
-                foreach (OctreeLeaf leaf in this.items)
+                foreach (OctreeLeaf leaf in items)
                 {
                     distance = Math.Sqrt(
                                 Math.Pow(x - leaf.X, 2.0) +
@@ -588,7 +588,7 @@ namespace Octree.OctreeSearch
             double distance;
             if (branch == null)
             {
-                foreach (OctreeLeaf leaf in this.items)
+                foreach (OctreeLeaf leaf in items)
                 {
                     distance = Math.Sqrt(
                                 Math.Pow(x - leaf.X, 2.0) +
@@ -692,7 +692,7 @@ namespace Octree.OctreeSearch
         {
             if (branch == null)
             {
-                IEnumerator things = this.items.GetEnumerator();
+                IEnumerator things = items.GetEnumerator();
                 while (things.MoveNext())
                 {
                     OctreeLeaf qtl = (OctreeLeaf)things.Current;
@@ -728,7 +728,7 @@ namespace Octree.OctreeSearch
             double distance;
             if (branch == null)
             {
-                foreach (OctreeLeaf leaf in this.items)
+                foreach (OctreeLeaf leaf in items)
                 {
                     distance = Math.Sqrt(
                                 Math.Pow(x - leaf.X, 2.0) +
@@ -786,7 +786,7 @@ namespace Octree.OctreeSearch
             double distance;
             if (branch == null)
             {
-                foreach (OctreeLeaf leaf in this.items)
+                foreach (OctreeLeaf leaf in items)
                 {
                     distance = Math.Sqrt(
                                 Math.Pow(x - leaf.X, 2.0) +
@@ -844,7 +844,7 @@ namespace Octree.OctreeSearch
             ArrayList Nodes = new ArrayList();
             if (branch == null)
             {
-                foreach (OctreeLeaf leaf in this.items)
+                foreach (OctreeLeaf leaf in items)
                 {
                     double distance = Math.Sqrt(
                                 Math.Pow(x - leaf.X, 2.0) +
@@ -911,7 +911,7 @@ namespace Octree.OctreeSearch
             ArrayList Nodes = new ArrayList();
             if (branch == null)
             {
-                foreach (OctreeLeaf leaf in this.items)
+                foreach (OctreeLeaf leaf in items)
                 {
                     double distance = Math.Sqrt(
                                 Math.Pow(x - leaf.X, 2.0) +
@@ -972,7 +972,7 @@ namespace Octree.OctreeSearch
         /// <summary>Clear the tree below this node. </summary>
         public void Clear()
         {
-            this.items.Clear();
+            items.Clear();
             if (branch != null)
             {
                 for (int i = 0; i < branch.Length; i++)

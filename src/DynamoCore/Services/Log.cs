@@ -147,7 +147,7 @@ namespace net.riversofdata.dhlogger
             set;
         }
 
-        System.Diagnostics.Stopwatch sw;
+        Stopwatch sw;
 
         private Thread uploaderThread;
         private const int EMPTY_DELAY_MS = 1000;
@@ -169,13 +169,13 @@ namespace net.riversofdata.dhlogger
             try
             {
 
-                this.EnableDiagnosticsOutput = false;
+                EnableDiagnosticsOutput = false;
 
                 AppName = appName;
                 UserID = userID;
                 SessionID = sessionID;
 
-                this.sw = new System.Diagnostics.Stopwatch();
+                sw = new Stopwatch();
                 items = new Queue<Dictionary<string, string>>();
                 sw.Start();
 
@@ -252,7 +252,7 @@ namespace net.riversofdata.dhlogger
 
             //We don't need to validate the content of text as it's going to get base64
             //encoded
-            if (this.EnableDiagnosticsOutput)
+            if (EnableDiagnosticsOutput)
             {
                 System.Diagnostics.Debug.Assert(ValidateTextContent(tag));
                 System.Diagnostics.Debug.Assert(ValidateTextContent(priority));
@@ -279,8 +279,8 @@ namespace net.riversofdata.dhlogger
 
             text = splitText[0];
 
-            byte[] byteRepresentation = System.Text.Encoding.UTF8.GetBytes(text);
-            string safeStr = System.Convert.ToBase64String(byteRepresentation);
+            byte[] byteRepresentation = Encoding.UTF8.GetBytes(text);
+            string safeStr = Convert.ToBase64String(byteRepresentation);
 
 
             //Destroy the original representations to ensure runtime errors if used later in this method
@@ -317,7 +317,7 @@ namespace net.riversofdata.dhlogger
 
             lock (dbMutex)
             {
-                if (items.Count > Log.MAX_COUNT)
+                if (items.Count > MAX_COUNT)
                     return;
 
                 items.Enqueue(item);
@@ -404,7 +404,7 @@ namespace net.riversofdata.dhlogger
 
                 sb.Append("}]");
 
-                if (this.EnableDiagnosticsOutput)
+                if (EnableDiagnosticsOutput)
                     System.Diagnostics.Debug.WriteLine(sb.ToString());
 
                 WebRequest request = WebRequest.Create(URL);
@@ -426,7 +426,7 @@ namespace net.riversofdata.dhlogger
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
 
-                if (this.EnableDiagnosticsOutput)
+                if (EnableDiagnosticsOutput)
                     System.Diagnostics.Debug.WriteLine(responseFromServer);
 
                 reader.Close();
@@ -441,7 +441,7 @@ namespace net.riversofdata.dhlogger
                 Thread.Sleep(ERROR_DELAY_MS);
 
 
-                if (this.EnableDiagnosticsOutput)
+                if (EnableDiagnosticsOutput)
                     System.Diagnostics.Debug.WriteLine(e.ToString());
                 return false;
             }
@@ -476,7 +476,7 @@ namespace net.riversofdata.dhlogger
             foreach (String str in ret)
                 totalTextCount += str.Length;
 
-            if (this.EnableDiagnosticsOutput)
+            if (EnableDiagnosticsOutput)
                 System.Diagnostics.Debug.Assert(totalTextCount == len);
 #endif
 

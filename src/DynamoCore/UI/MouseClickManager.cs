@@ -44,8 +44,8 @@ namespace Dynamo.Utilities
         /// <param name="control">The control.</param>
         public MouseClickManager(int doubleClickTimeout)
         {
-            this.Clicked = false;
-            this.DoubleClickTimeout = doubleClickTimeout;
+            Clicked = false;
+            DoubleClickTimeout = doubleClickTimeout;
         }
 
         /// <summary>
@@ -57,14 +57,14 @@ namespace Dynamo.Utilities
         {
             lock (this)
             {
-                if (this.Clicked)
+                if (Clicked)
                 {
-                    this.Clicked = false;
+                    Clicked = false;
                     OnDoubleClick(sender, e);
                 }
                 else
                 {
-                    this.Clicked = true;
+                    Clicked = true;
                     ParameterizedThreadStart threadStart = ResetThread;
                     Thread thread = new Thread(threadStart);
                     thread.Start(e);
@@ -78,13 +78,13 @@ namespace Dynamo.Utilities
         /// <param name="state">The state.</param>
         private void ResetThread(object state)
         {
-            Thread.Sleep(this.DoubleClickTimeout);
+            Thread.Sleep(DoubleClickTimeout);
 
             lock (this)
             {
-                if (this.Clicked)
+                if (Clicked)
                 {
-                    this.Clicked = false;
+                    Clicked = false;
                     OnClick(this, (MouseButtonEventArgs)state);
                 }
             }

@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-
-using Octree.Tools.Point;
 
 namespace Octree.Tools.Vector
 {
@@ -233,9 +225,9 @@ namespace Octree.Tools.Vector
         public Vector3f CrossProduct(Vector3f v)
         {
             return new Vector3f(
-                (this.y * v.z) - (this.z * v.y),
-                (this.z * v.x) - (this.x * v.z),
-                (this.x * v.y) - (this.y * v.x));
+                (y * v.z) - (z * v.y),
+                (z * v.x) - (x * v.z),
+                (x * v.y) - (y * v.x));
         }
 
         /// <summary>
@@ -245,7 +237,7 @@ namespace Octree.Tools.Vector
         /// <returns>a float representing the dot product of the current vector and vector v</returns>
         public float DotProduct(Vector3f v)
         {
-            return this.x * v.x + this.y * v.y + this.z * v.z;
+            return x * v.x + y * v.y + z * v.z;
         }
 
         /// <summary>

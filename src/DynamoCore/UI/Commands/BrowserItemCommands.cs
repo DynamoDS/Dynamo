@@ -19,8 +19,8 @@ namespace Dynamo.Nodes.Search
         /// </summary>
         public void RecursivelySort()
         {
-            this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
-            this.Items.ToList().ForEach(x=>x.RecursivelySort());
+            Items = new ObservableCollection<BrowserItem>(Items.OrderBy(x => x.Name));
+            Items.ToList().ForEach(x=>x.RecursivelySort());
         }
 
         /// <summary>
@@ -29,17 +29,17 @@ namespace Dynamo.Nodes.Search
         /// <param name="items">The accumulator</param>
         public void GetVisibleLeaves(ref List<BrowserItem> items)
         {
-            if (this.Visibility == true && this.Items.Count == 0)
+            if (Visibility == true && Items.Count == 0)
             {
                 items.Add(this);
             }
-            else if (this.Visibility != true)
+            else if (Visibility != true)
             {
                 return;
             }
             else
             {
-                foreach (var item in this.Items)
+                foreach (var item in Items)
                 {
                     item.GetVisibleLeaves(ref items);
                 }
@@ -77,7 +77,7 @@ namespace Dynamo.Nodes.Search
                 elem.Parent.Items.Remove(elem);
 
             elem.Parent = this;
-            this.Items.Add(elem);
+            Items.Add(elem);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace Dynamo.Nodes.Search
         /// </summary>
         public void CollapseToLeaves()
         {
-            this.IsExpanded = false;
+            IsExpanded = false;
             foreach (var ele in Items)
             {
                 ele.CollapseToLeaves();
@@ -97,7 +97,7 @@ namespace Dynamo.Nodes.Search
         /// </summary>
         public void SetVisibilityToLeaves(bool visibility)
         {
-            this.Visibility = visibility;
+            Visibility = visibility;
             foreach (var ele in Items)
             {
                 ele.SetVisibilityToLeaves(visibility);
@@ -166,7 +166,7 @@ namespace Dynamo.Nodes.Search
 
             public ToggleIsExpandedCommand(BrowserItem i)
             {
-                this.item = i;
+                item = i;
             }
 
             public void Execute(object parameters)

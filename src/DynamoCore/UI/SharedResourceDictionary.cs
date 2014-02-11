@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Markup;
 
 namespace Dynamo.UI
 {
@@ -69,9 +68,9 @@ namespace Dynamo.UI
             {
                 if (_dynamoModernDictionary == null)
                 {
-                    System.Uri resourceLocater =
-                        new System.Uri("/DynamoCore;component/UI/Themes/DynamoModern.xaml",
-                                        System.UriKind.Relative);
+                    Uri resourceLocater =
+                        new Uri("/DynamoCore;component/UI/Themes/DynamoModern.xaml",
+                                        UriKind.Relative);
 
                     _dynamoModernDictionary =
                         (ResourceDictionary)Application.LoadComponent(resourceLocater);
@@ -87,9 +86,9 @@ namespace Dynamo.UI
             {
                 if (_dataTemplatesDictionary == null)
                 {
-                    System.Uri resourceLocater =
-                        new System.Uri("/DynamoCore;component/UI/Themes/DataTemplates.xaml",
-                                        System.UriKind.Relative);
+                    Uri resourceLocater =
+                        new Uri("/DynamoCore;component/UI/Themes/DataTemplates.xaml",
+                                        UriKind.Relative);
 
                     _dataTemplatesDictionary =
                         (ResourceDictionary)Application.LoadComponent(resourceLocater);
@@ -105,9 +104,9 @@ namespace Dynamo.UI
             {
                 if (_dynamoColorsAndBrushesDictionary == null)
                 {
-                    System.Uri resourceLocater =
-                        new System.Uri("/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml",
-                                        System.UriKind.Relative);
+                    Uri resourceLocater =
+                        new Uri("/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml",
+                                        UriKind.Relative);
 
                     _dynamoColorsAndBrushesDictionary =
                         (ResourceDictionary)Application.LoadComponent(resourceLocater);
@@ -123,9 +122,9 @@ namespace Dynamo.UI
             {
                 if (_dynamoConvertersDictionary == null)
                 {
-                    System.Uri resourceLocater =
-                        new System.Uri("/DynamoCore;component/UI/Themes/DynamoConverters.xaml",
-                                        System.UriKind.Relative);
+                    Uri resourceLocater =
+                        new Uri("/DynamoCore;component/UI/Themes/DynamoConverters.xaml",
+                                        UriKind.Relative);
 
                     _dynamoConvertersDictionary =
                         (ResourceDictionary)Application.LoadComponent(resourceLocater);
@@ -141,9 +140,9 @@ namespace Dynamo.UI
             {
                 if (_dynamoTextDictionary == null)
                 {
-                    System.Uri resourceLocater =
-                        new System.Uri("/DynamoCore;component/UI/Themes/DynamoText.xaml",
-                                        System.UriKind.Relative);
+                    Uri resourceLocater =
+                        new Uri("/DynamoCore;component/UI/Themes/DynamoText.xaml",
+                                        UriKind.Relative);
 
                     _dynamoTextDictionary =
                         (ResourceDictionary)Application.LoadComponent(resourceLocater);
@@ -159,9 +158,9 @@ namespace Dynamo.UI
             {
                 if (_menuStyleDictionary == null)
                 {
-                    System.Uri resourceLocater =
-                        new System.Uri("/DynamoCore;component/UI/Themes/MenuStyleDictionary.xaml",
-                                        System.UriKind.Relative);
+                    Uri resourceLocater =
+                        new Uri("/DynamoCore;component/UI/Themes/MenuStyleDictionary.xaml",
+                                        UriKind.Relative);
 
                     _menuStyleDictionary =
                         (ResourceDictionary)Application.LoadComponent(resourceLocater);
@@ -177,9 +176,9 @@ namespace Dynamo.UI
             {
                 if (_toolbarStyleDictionary == null)
                 {
-                    System.Uri resourceLocater =
-                        new System.Uri("/DynamoCore;component/UI/Themes/ToolbarStyleDictionary.xaml",
-                                        System.UriKind.Relative);
+                    Uri resourceLocater =
+                        new Uri("/DynamoCore;component/UI/Themes/ToolbarStyleDictionary.xaml",
+                                        UriKind.Relative);
 
                     _toolbarStyleDictionary =
                         (ResourceDictionary)Application.LoadComponent(resourceLocater);
@@ -195,9 +194,9 @@ namespace Dynamo.UI
             {
                 if (_connectorsDictionary == null)
                 {
-                    System.Uri resourceLocater =
-                        new System.Uri("/DynamoCore;component/UI/Themes/Connectors.xaml",
-                                        System.UriKind.Relative);
+                    Uri resourceLocater =
+                        new Uri("/DynamoCore;component/UI/Themes/Connectors.xaml",
+                                        UriKind.Relative);
 
                     _connectorsDictionary =
                         (ResourceDictionary)Application.LoadComponent(resourceLocater);
@@ -213,9 +212,9 @@ namespace Dynamo.UI
             {
                 if (_portsDictionary == null)
                 {
-                    System.Uri resourceLocater =
-                        new System.Uri("/DynamoCore;component/UI/Themes/Ports.xaml",
-                                        System.UriKind.Relative);
+                    Uri resourceLocater =
+                        new Uri("/DynamoCore;component/UI/Themes/Ports.xaml",
+                                        UriKind.Relative);
 
                     _portsDictionary =
                         (ResourceDictionary)Application.LoadComponent(resourceLocater);

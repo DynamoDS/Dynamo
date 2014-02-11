@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+using System.Diagnostics;
 using Microsoft.Win32;
 using net.riversofdata.dhlogger;
 
@@ -55,14 +52,14 @@ namespace Dynamo.Services
 
             if (tryGetValue != null)
             {
-                System.Diagnostics.Debug.WriteLine("User id found: " + tryGetValue);
+                Debug.WriteLine("User id found: " + tryGetValue);
                 return tryGetValue;
             }
             else
             {
                 String newGUID = Guid.NewGuid().ToString();
                 Registry.SetValue(keyName, "InstrumentationGUID", newGUID);
-                System.Diagnostics.Debug.WriteLine("New User id: " + newGUID);
+                Debug.WriteLine("New User id: " + newGUID);
                 return newGUID;
             }
         }

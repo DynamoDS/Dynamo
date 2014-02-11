@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Threading;
+using Dynamo.Core;
 using Dynamo.Utilities;
 
 namespace Dynamo.Models
@@ -30,7 +29,7 @@ namespace Dynamo.Models
         {
             (sender as DispatcherTimer).Stop();
 
-            var controller = dynSettings.Controller;
+            var controller = DynamoSettings.Controller;
             if (!controller.Running)
             {
                 controller.RunExpression(false);
@@ -41,8 +40,8 @@ namespace Dynamo.Models
         {
             base.Modified();
 
-            var controller = dynSettings.Controller;
-            if (dynSettings.Controller.DynamoViewModel.DynamicRunEnabled)
+            var controller = DynamoSettings.Controller;
+            if (DynamoSettings.Controller.DynamoViewModel.DynamicRunEnabled)
             {
 #if USE_DSENGINE
                 // This dispatch timer is to avoid updating graph too frequently.
@@ -85,7 +84,7 @@ namespace Dynamo.Models
 
         public override void OnDisplayed()
         {
-            //DynamoView bench = dynSettings.Bench; // ewwwy
+            //DynamoView bench = DynamoSettings.Bench; // ewwwy
         }
     }
 }

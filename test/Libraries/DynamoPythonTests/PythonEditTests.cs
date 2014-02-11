@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using DSIronPythonNode;
 using Dynamo;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Tests;
@@ -129,7 +130,7 @@ namespace Dynamo.Tests
             var command = new DynCmd.UpdateModelValueCommand(
                 pythonNode.GUID, "ScriptContent", value);
 
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
+            DynamoSettings.Controller.DynamoViewModel.ExecuteCommand(command);
         }
     }
 }

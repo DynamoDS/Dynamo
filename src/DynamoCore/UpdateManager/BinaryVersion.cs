@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace Dynamo.UpdateManager
+﻿namespace Dynamo.UpdateManager
 {
     public class BinaryVersion
     {
@@ -34,16 +32,16 @@ namespace Dynamo.UpdateManager
         public override string ToString()
         {
             return string.Format("{0}.{1}.{2}.{3}",
-                this.FileMajor.ToString(),
-                this.FileMinor.ToString(),
-                this.FileBuild.ToString(),
-                this.FilePrivate.ToString());
+                FileMajor.ToString(),
+                FileMinor.ToString(),
+                FileBuild.ToString(),
+                FilePrivate.ToString());
         }
 
         public override int GetHashCode()
         {
-            int high = (int)((this.Value & 0xffffffff00000000) >> 32);
-            int low = (int)(this.Value & 0x00000000ffffffff);
+            int high = (int)((Value & 0xffffffff00000000) >> 32);
+            int low = (int)(Value & 0x00000000ffffffff);
             return high ^ low;
         }
 
@@ -55,7 +53,7 @@ namespace Dynamo.UpdateManager
 
         public static bool operator <(BinaryVersion lhs, BinaryVersion rhs)
         {
-            if (System.Object.ReferenceEquals(lhs, rhs))
+            if (ReferenceEquals(lhs, rhs))
                 return false;
 
             if (((object)lhs) == null || (((object)rhs) == null))
@@ -66,7 +64,7 @@ namespace Dynamo.UpdateManager
 
         public static bool operator <=(BinaryVersion lhs, BinaryVersion rhs)
         {
-            if (System.Object.ReferenceEquals(lhs, rhs))
+            if (ReferenceEquals(lhs, rhs))
                 return false;
 
             if (((object)lhs) == null || (((object)rhs) == null))
@@ -77,7 +75,7 @@ namespace Dynamo.UpdateManager
 
         public static bool operator >(BinaryVersion lhs, BinaryVersion rhs)
         {
-            if (System.Object.ReferenceEquals(lhs, rhs))
+            if (ReferenceEquals(lhs, rhs))
                 return false;
 
             if (((object)lhs) == null || (((object)rhs) == null))
@@ -88,7 +86,7 @@ namespace Dynamo.UpdateManager
 
         public static bool operator >=(BinaryVersion lhs, BinaryVersion rhs)
         {
-            if (System.Object.ReferenceEquals(lhs, rhs))
+            if (ReferenceEquals(lhs, rhs))
                 return false;
 
             if (((object)lhs) == null || (((object)rhs) == null))
@@ -99,7 +97,7 @@ namespace Dynamo.UpdateManager
 
         public static bool operator ==(BinaryVersion lhs, BinaryVersion rhs)
         {
-            if (System.Object.ReferenceEquals(lhs, rhs))
+            if (ReferenceEquals(lhs, rhs))
                 return true;
 
             if (((object)lhs) == null || (((object)rhs) == null))
@@ -127,16 +125,16 @@ namespace Dynamo.UpdateManager
 
         private BinaryVersion(ushort major, ushort minor, ushort build, ushort priv)
         {
-            this.FileMajor = major;
-            this.FileMinor = minor;
-            this.FileBuild = build;
-            this.FilePrivate = priv;
+            FileMajor = major;
+            FileMinor = minor;
+            FileBuild = build;
+            FilePrivate = priv;
 
             ulong v1 = ((((ulong)major) << 48) & 0xffff000000000000);
             ulong v2 = ((((ulong)minor) << 32) & 0x0000ffff00000000);
             ulong v3 = ((((ulong)build) << 16) & 0x00000000ffff0000);
             ulong v4 = (((ulong)priv) & 0x000000000000ffff);
-            this.Value = v1 | v2 | v3 | v4;
+            Value = v1 | v2 | v3 | v4;
         }
     }
 }

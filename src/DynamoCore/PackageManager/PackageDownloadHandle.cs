@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
+using Dynamo.Core;
 using Dynamo.Utilities;
-using Greg.Requests;
 using Greg.Responses;
+using Greg.Utility;
 using Microsoft.Practices.Prism.ViewModel;
-using RestSharp;
 
 namespace Dynamo.PackageManager
 {
@@ -34,7 +31,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public Greg.Responses.PackageHeader Header { get; private set; }
+        public PackageHeader Header { get; private set; }
         public string Name { get { return Header.name; } }
 
         private string _downloadPath;
@@ -48,28 +45,28 @@ namespace Dynamo.PackageManager
             
         }
 
-        public PackageDownloadHandle(Greg.Responses.PackageHeader header, string version)
+        public PackageDownloadHandle(PackageHeader header, string version)
         {
-            this.Header = header;
-            this.DownloadPath = "";
-            this.VersionName = version;
+            Header = header;
+            DownloadPath = "";
+            VersionName = version;
         }
 
         public void Start()
         {
-            dynSettings.PackageManagerClient.DownloadAndInstall(this);
+            DynamoSettings.PackageManagerClient.DownloadAndInstall(this);
         }
 
         public void Error(string errorString)
         {
-            this.DownloadState = State.Error;
-            this.ErrorString = errorString;
+            DownloadState = State.Error;
+            ErrorString = errorString;
         }
         
         public void Done( string filePath )
         {
-            this.DownloadState = State.Downloaded;
-            this.DownloadPath = filePath;
+            DownloadState = State.Downloaded;
+            DownloadPath = filePath;
         }
 
         private string BuildInstallDirectoryString()
@@ -78,17 +75,17 @@ namespace Dynamo.PackageManager
 
             Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
             string location = Path.GetDirectoryName(dynamoAssembly.Location);
-            return Path.Combine(location, "dynamo_packages") + @"\" + this.Name.Replace("/","_").Replace(@"\","_");
+            return Path.Combine(location, "dynamo_packages") + @"\" + Name.Replace("/","_").Replace(@"\","_");
 
         }
 
         public bool Extract( out Package pkg )
         {
 
-            this.DownloadState = State.Installing;
+            DownloadState = State.Installing;
 
             // unzip, place files
-            var unzipPath = Greg.Utility.FileUtilities.UnZip(DownloadPath);
+            var unzipPath = FileUtilities.UnZip(DownloadPath);
             if (!Directory.Exists(unzipPath))
             {
                 throw new Exception("The package was found to be empty and was not installed.");

@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using Dynamo.Core;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using ProtoCore.AST.AssociativeAST;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Legacy
 {
     [NodeDescription("A node with customized internal functionality.")]
     [IsInteractive(false)]
@@ -66,10 +67,10 @@ namespace Dynamo.Nodes
             {
 
                 if (
-                    dynSettings.Controller.CustomNodeManager.NodeInfos.ContainsKey(
+                    DynamoSettings.Controller.CustomNodeManager.NodeInfos.ContainsKey(
                         Definition.FunctionId))
                     return
-                        dynSettings.Controller.CustomNodeManager.NodeInfos[
+                        DynamoSettings.Controller.CustomNodeManager.NodeInfos[
                             this.Definition.FunctionId].Category;
                 else
                 {
@@ -118,7 +119,7 @@ namespace Dynamo.Nodes
                 //If we're clean, then notify all internals.
                 if (!value)
                 {
-                    if (dynSettings.Controller.Running)
+                    if (DynamoSettings.Controller.Running)
                         dynSettings.FunctionWasEvaluated.Add(Definition);
                     else
                     {
@@ -336,7 +337,7 @@ namespace Dynamo.Nodes
                 Symbol = funId.ToString();
             }
 
-            Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
+            Definition = DynamoSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
         }
 
         #region Serialization/Deserialization methods
@@ -444,7 +445,7 @@ namespace Dynamo.Nodes
                     Symbol = funId.ToString();
                 }
 
-                Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
+                Definition = DynamoSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
                 Description = helper.ReadString("functionDesc");
             }
         }
@@ -456,10 +457,10 @@ namespace Dynamo.Nodes
             Guid.TryParse(Symbol, out funcId);
 
             // if the dyf does not exist on the search path...
-            if (dynSettings.Controller.CustomNodeManager.Contains(funcId))
+            if (DynamoSettings.Controller.CustomNodeManager.Contains(funcId))
                 return true;
 
-            var manager = dynSettings.Controller.CustomNodeManager;
+            var manager = DynamoSettings.Controller.CustomNodeManager;
 
             // if there is a node with this name, use it instead
             if (manager.Contains(NickName))
@@ -495,8 +496,8 @@ namespace Dynamo.Nodes
             DynamoLogger.Instance.Log(userMsg);
 
             // tell custom node loader, but don't provide path, forcing user to resave explicitly
-            dynSettings.Controller.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
-            Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
+            DynamoSettings.Controller.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
+            Definition = DynamoSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
@@ -526,163 +527,6 @@ namespace Dynamo.Nodes
             var rhs = AstFactory.BuildFunctionCall(Definition.FunctionName, inputAstNodes);
             var funcCall = AstFactory.BuildAssignment(this.AstIdentifierForPreview, rhs);
             return new AssociativeNode[] { funcCall };
-        }
-    }
-
-    [NodeName("Input")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A function parameter, use with custom nodes")]
-    [NodeSearchTags("variable", "argument", "parameter")]
-    [IsInteractive(false)]
-    [IsDesignScriptCompatible]
-    public partial class Symbol : NodeModel
-    {
-        public Symbol()
-        {
-            OutPortData.Add(new PortData("", "Symbol", typeof(object)));
-
-            RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Disabled;
-        }
-
-        public override bool RequiresRecalc
-        {
-            get { return false; }
-            set { }
-        }
-
-        private string _inputSymbol = "";
-
-        public string InputSymbol
-        {
-            get { return _inputSymbol; }
-            set
-            {
-                _inputSymbol = value;
-                ReportModification();
-                RaisePropertyChanged("InputSymbol");
-            }
-        }
-
-        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
-        {
-            if (string.IsNullOrEmpty(InputSymbol))
-                return AstIdentifierForPreview;
-            else
-                return AstFactory.BuildIdentifier(InputSymbol);
-        }
-
-        protected internal override INode Build(
-            Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
-        {
-            Dictionary<int, INode> result;
-            if (!preBuilt.TryGetValue(this, out result))
-            {
-                result = new Dictionary<int, INode>();
-                result[outPort] = new SymbolNode(GUID.ToString());
-                preBuilt[this] = result;
-            }
-            return result[outPort];
-        }
-
-        protected override void SaveNode(
-            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = xmlDoc.CreateElement("Symbol");
-            outEl.SetAttribute("value", InputSymbol);
-            nodeElement.AppendChild(outEl);
-        }
-
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                if (subNode.Name == "Symbol")
-                {
-                    InputSymbol = subNode.Attributes[0].Value;
-                }
-            }
-
-            ArgumentLacing = LacingStrategy.Disabled;
-        }
-    }
-
-    [NodeName("Output")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A function output, use with custom nodes")]
-    [IsInteractive(false)]
-    [IsDesignScriptCompatible]
-    public partial class Output : NodeModel
-    {
-        public Output()
-        {
-            InPortData.Add(new PortData("", "", typeof(object)));
-
-            RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Disabled;
-        }
-
-        public override bool RequiresRecalc
-        {
-            get { return false; }
-            set { }
-        }
-
-        private string _symbol = "";
-
-        public string Symbol
-        {
-            get { return _symbol; }
-            set
-            {
-                _symbol = value;
-                ReportModification();
-                RaisePropertyChanged("Symbol");
-            }
-        }
-
-        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
-        {
-            if (outputIndex < 0 || outputIndex > OutPortData.Count)
-                throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
-
-            return AstIdentifierForPreview;
-        }
-
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
-        {
-            AssociativeNode assignment;
-            if (null == inputAstNodes || inputAstNodes.Count == 0)
-                assignment = AstFactory.BuildAssignment(AstIdentifierForPreview, AstFactory.BuildNullNode());
-            else
-                assignment = AstFactory.BuildAssignment(AstIdentifierForPreview, inputAstNodes[0]);
-
-            return new AssociativeNode[] { assignment };
-        }
-
-        protected override void SaveNode(
-            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = xmlDoc.CreateElement("Symbol");
-            outEl.SetAttribute("value", Symbol);
-            nodeElement.AppendChild(outEl);
-        }
-
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                if (subNode.Name == "Symbol")
-                {
-                    Symbol = subNode.Attributes[0].Value;
-                }
-            }
-
-            ArgumentLacing = LacingStrategy.Disabled;
         }
     }
 }

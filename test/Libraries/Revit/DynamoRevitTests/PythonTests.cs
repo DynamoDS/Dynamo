@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Dynamo.Core;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
@@ -10,45 +11,45 @@ namespace Dynamo.Tests
         [Test]
         public void CanAddTwoInputsWithPython()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string graph = Path.Combine(_testPath, @".\Python\Python_add.dyn");
             string testPath = Path.GetFullPath(graph);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void ConnectTwoPointArraysWithoutPython()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = DynamoSettings.Controller.DynamoModel;
 
             //string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\connect two point arrays without python.dyn");
             //string testPath = Path.GetFullPath(samplePath);
 
-            //dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            //dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+            //DynamoSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            //DynamoSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
             Assert.Inconclusive("Python examples do not play well with testing.");
         }
 
         [Test]
         public void ConnectTwoPointArrays()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = DynamoSettings.Controller.DynamoModel;
 
             //string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\connect two point arrays.dyn");
             //string testPath = Path.GetFullPath(samplePath);
 
-            //dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
-            //dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+            //DynamoSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            //DynamoSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
             Assert.Inconclusive("Python examples do not play well with testing.");
         }
 
         [Test]
         public void CreateSineWaveFromSelectedCurve()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            //var model = DynamoSettings.Controller.DynamoModel;
 
             //string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\create sine wave from selected curve.dyn");
             //string testPath = Path.GetFullPath(samplePath);
@@ -73,16 +74,16 @@ namespace Dynamo.Tests
 
             //Assert.IsNotNull(cbp);
 
-            //dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+            //DynamoSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
-            //var selectionNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynCurvesBySelection).First();
+            //var selectionNode = DynamoSettings.Controller.DynamoModel.Nodes.Where(x => x is dynCurvesBySelection).First();
             //((dynCurvesBySelection)selectionNode).SelectedElement = cbp;
 
             ////delete the transaction node when testing
-            ////var transNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynTransaction).First();
+            ////var transNode = DynamoSettings.Controller.DynamoModel.Nodes.Where(x => x is dynTransaction).First();
             ////dynRevitSettings.Controller.RunCommand(vm.DeleteCommand, transNode);
 
-            //dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+            //DynamoSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
 
             Assert.Inconclusive("Python examples do not play well with testing.");
         }
@@ -90,7 +91,7 @@ namespace Dynamo.Tests
         //[Test]
         //public void CreateSineWaveFromSelectedPoints()
         //{
-        //    var model = dynSettings.Controller.DynamoModel;
+        //    var model = DynamoSettings.Controller.DynamoModel;
 
         //    string samplePath = Path.Combine(_samplesPath, @".\06 Python Node\create sine wave from selected points.dyn");
         //    string testPath = Path.GetFullPath(samplePath);
@@ -108,19 +109,19 @@ namespace Dynamo.Tests
         //        _trans.Commit();
         //    }
 
-        //    dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
+        //    DynamoSettings.Controller.DynamoViewModel.OpenCommand.Execute(testPath);
 
-        //    var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynPointBySelection);
+        //    var selectionNodes = DynamoSettings.Controller.DynamoModel.Nodes.Where(x => x is dynPointBySelection);
         //    Assert.AreEqual(2, selectionNodes.Count());
 
         //    ((dynPointBySelection)selectionNodes.ElementAt(0)).SelectedElement = p1;
         //    ((dynPointBySelection)selectionNodes.ElementAt(1)).SelectedElement = p2;
 
         //    //delete the transaction node when testing
-        //    //var transNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is dynTransaction).First();
+        //    //var transNode = DynamoSettings.Controller.DynamoModel.Nodes.Where(x => x is dynTransaction).First();
         //    //dynRevitSettings.Controller.RunCommand(vm.DeleteCommand, transNode);
 
-        //    dynSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
+        //    DynamoSettings.Controller.DynamoViewModel.RunExpressionCommand.Execute(true);
         //}
     }
 }

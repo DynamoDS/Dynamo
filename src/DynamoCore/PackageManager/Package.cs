@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Greg.Requests;
@@ -23,17 +24,17 @@ namespace Dynamo.PackageManager
 
         public string CustomNodeDirectory
         {
-            get { return Path.Combine(this.RootDirectory, "dyf"); }
+            get { return Path.Combine(RootDirectory, "dyf"); }
         }
 
         public string BinaryDirectory
         {
-            get { return Path.Combine(this.RootDirectory, "bin"); }
+            get { return Path.Combine(RootDirectory, "bin"); }
         }
 
         public string ExtraDirectory
         {
-            get { return Path.Combine(this.RootDirectory, "extra"); }
+            get { return Path.Combine(RootDirectory, "extra"); }
         }
 
         public bool Loaded { get; set; }
@@ -81,31 +82,31 @@ namespace Dynamo.PackageManager
 
         public Package(string directory, string name, string versionName)
         {
-            this.Loaded = false;
-            this.RootDirectory = directory;
-            this.Name = name;
-            this.VersionName = versionName;
-            this.LoadedTypes = new ObservableCollection<Type>();
-            this.Dependencies = new ObservableCollection<PackageDependency>();
-            this.LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
+            Loaded = false;
+            RootDirectory = directory;
+            Name = name;
+            VersionName = versionName;
+            LoadedTypes = new ObservableCollection<Type>();
+            Dependencies = new ObservableCollection<PackageDependency>();
+            LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
 
             ToggleTypesVisibleInManagerCommand = new DelegateCommand(ToggleTypesVisibleInManager, CanToggleTypesVisibleInManager);
             GetLatestVersionCommand = new DelegateCommand(GetLatestVersion, CanGetLatestVersion);
             PublishNewPackageVersionCommand = new DelegateCommand(PublishNewPackageVersion, CanPublishNewPackageVersion);
             PublishNewPackageCommand = new DelegateCommand(PublishNewPackage, CanPublishNewPackage);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
-            DeprecateCommand = new DelegateCommand(this.Deprecate, CanDeprecate);
-            UndeprecateCommand = new DelegateCommand(this.Undeprecate, CanUndeprecate);
+            DeprecateCommand = new DelegateCommand(Deprecate, CanDeprecate);
+            UndeprecateCommand = new DelegateCommand(Undeprecate, CanUndeprecate);
 
-            dynSettings.Controller.DynamoModel.NodeAdded += (node) => UninstallCommand.RaiseCanExecuteChanged();
-            dynSettings.Controller.DynamoModel.NodeDeleted += (node) => UninstallCommand.RaiseCanExecuteChanged();
-            dynSettings.Controller.DynamoModel.WorkspaceHidden += (ws) => UninstallCommand.RaiseCanExecuteChanged();
-            dynSettings.Controller.DynamoModel.Workspaces.CollectionChanged += (sender, args) => UninstallCommand.RaiseCanExecuteChanged();
+            DynamoSettings.Controller.DynamoModel.NodeAdded += (node) => UninstallCommand.RaiseCanExecuteChanged();
+            DynamoSettings.Controller.DynamoModel.NodeDeleted += (node) => UninstallCommand.RaiseCanExecuteChanged();
+            DynamoSettings.Controller.DynamoModel.WorkspaceHidden += (ws) => UninstallCommand.RaiseCanExecuteChanged();
+            DynamoSettings.Controller.DynamoModel.Workspaces.CollectionChanged += (sender, args) => UninstallCommand.RaiseCanExecuteChanged();
         }
 
         public static Package FromDirectory(string rootPath)
         {
-            return Package.FromJson(Path.Combine(rootPath, "pkg.json"));
+            return FromJson(Path.Combine(rootPath, "pkg.json"));
         }
       
         public static Package FromJson(string headerPath)
@@ -154,7 +155,7 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log("Exception when attempting to load package " + this.Name + " from " + this.RootDirectory);
+                DynamoLogger.Instance.Log("Exception when attempting to load package " + Name + " from " + RootDirectory);
                 DynamoLogger.Instance.Log(e.GetType() + ": " + e.Message);
             }
 
@@ -188,8 +189,8 @@ namespace Dynamo.PackageManager
             var guids = LoadedCustomNodes.Select(x => x.Guid);
 
             // check if any of the custom nodes is in a workspace
-            return dynSettings.Controller.DynamoModel.AllNodes.Where(x => x is Function)
-                                   .Cast<Function>()
+            return DynamoSettings.Controller.DynamoModel.AllNodes
+                                   .OfType<CustomNodeInstance>()
                                    .Any(x => guids.Contains(x.Definition.FunctionId));
 
         }
@@ -200,10 +201,10 @@ namespace Dynamo.PackageManager
             var guids = LoadedCustomNodes.Select(x => x.Guid);
 
             return
-                dynSettings.Controller.DynamoModel.Workspaces.Any(
+                DynamoSettings.Controller.DynamoModel.Workspaces.Any(
                     x =>
                         {
-                            var def = dynSettings.CustomNodeManager.GetDefinitionFromWorkspace(x);
+                            var def = DynamoSettings.CustomNodeManager.GetDefinitionFromWorkspace(x);
                             return def != null && guids.Contains(def.FunctionId);
                         });
         }
@@ -211,20 +212,20 @@ namespace Dynamo.PackageManager
         private void Uninstall()
         {
 
-            var res = MessageBox.Show("Are you sure you want to uninstall " + this.Name + "?  This will delete the packages root directory.\n\n You can always redownload the package.", "Uninstalling Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var res = MessageBox.Show("Are you sure you want to uninstall " + Name + "?  This will delete the packages root directory.\n\n You can always redownload the package.", "Uninstalling Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (res == MessageBoxResult.No) return;
 
             try
             {
-                LoadedCustomNodes.ToList().ForEach(x => dynSettings.CustomNodeManager.RemoveFromDynamo(x.Guid));
-                dynSettings.PackageLoader.LocalPackages.Remove(this);
-                Directory.Delete(this.RootDirectory, true);
+                LoadedCustomNodes.ToList().ForEach(x => DynamoSettings.CustomNodeManager.RemoveFromDynamo(x.Guid));
+                DynamoSettings.PackageLoader.LocalPackages.Remove(this);
+                Directory.Delete(RootDirectory, true);
             }
             catch( Exception e )
             {
                 MessageBox.Show("Dynamo failed to uninstall the package.  You may need to delete the package's root directory manually.", "Uninstall Failure", MessageBoxButton.OK, MessageBoxImage.Error);
-                DynamoLogger.Instance.Log("Exception when attempting to uninstall the package " + this.Name + " from " + this.RootDirectory);
+                DynamoLogger.Instance.Log("Exception when attempting to uninstall the package " + Name + " from " + RootDirectory);
                 DynamoLogger.Instance.Log(e.GetType() + ": " + e.Message);
             }
             
@@ -237,10 +238,10 @@ namespace Dynamo.PackageManager
 
         private void Deprecate()
         {
-            var res = MessageBox.Show("Are you sure you want to deprecate " + this.Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will no longer support the package, although the package will still appear when explicitly searched for.  \n\n You can always undeprecate the package.", "Deprecating Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var res = MessageBox.Show("Are you sure you want to deprecate " + Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will no longer support the package, although the package will still appear when explicitly searched for.  \n\n You can always undeprecate the package.", "Deprecating Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;
 
-            dynSettings.PackageManagerClient.Deprecate(this.Name);
+            DynamoSettings.PackageManagerClient.Deprecate(Name);
         }
 
         private bool CanDeprecate()
@@ -250,10 +251,10 @@ namespace Dynamo.PackageManager
 
         private void Undeprecate()
         {
-            var res = MessageBox.Show("Are you sure you want to undeprecate " + this.Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will continue to support the package and the package will appear when users are browsing packages.  \n\n You can always re-deprecate the package.", "Removing Package Deprecation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var res = MessageBox.Show("Are you sure you want to undeprecate " + Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will continue to support the package and the package will appear when users are browsing packages.  \n\n You can always re-deprecate the package.", "Removing Package Deprecation", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;
 
-            dynSettings.PackageManagerClient.Undeprecate(this.Name);
+            DynamoSettings.PackageManagerClient.Undeprecate(Name);
         }
 
         private bool CanUndeprecate()
@@ -263,20 +264,20 @@ namespace Dynamo.PackageManager
 
         private void RefreshCustomNodesFromDirectory()
         {
-            this.LoadedCustomNodes.Clear();
-            dynSettings.CustomNodeManager
-                        .GetInfosFromFolder(this.CustomNodeDirectory)
+            LoadedCustomNodes.Clear();
+            DynamoSettings.CustomNodeManager
+                        .GetInfosFromFolder(CustomNodeDirectory)
                         .ToList()
-                        .ForEach(x => this.LoadedCustomNodes.Add(x));
+                        .ForEach(x => LoadedCustomNodes.Add(x));
         }
 
         private void PublishNewPackageVersion()
         {
-            this.RefreshCustomNodesFromDirectory();
+            RefreshCustomNodesFromDirectory();
             var vm = PublishPackageViewModel.FromLocalPackage(this);
             vm.IsNewVersion = true;
 
-            dynSettings.Controller.DynamoViewModel.OnRequestPackagePublishDialog(vm);
+            DynamoSettings.Controller.DynamoViewModel.OnRequestPackagePublishDialog(vm);
         }
 
         private bool CanPublishNewPackageVersion()
@@ -286,11 +287,11 @@ namespace Dynamo.PackageManager
 
         private void PublishNewPackage()
         {
-            this.RefreshCustomNodesFromDirectory();
+            RefreshCustomNodesFromDirectory();
             var vm = PublishPackageViewModel.FromLocalPackage(this);
             vm.IsNewVersion = false;
 
-            dynSettings.Controller.DynamoViewModel.OnRequestPackagePublishDialog(vm);
+            DynamoSettings.Controller.DynamoViewModel.OnRequestPackagePublishDialog(vm);
         }
 
         private bool CanPublishNewPackage()
@@ -310,7 +311,7 @@ namespace Dynamo.PackageManager
 
         private void ToggleTypesVisibleInManager()
         {
-            this.TypesVisibleInManager = !this.TypesVisibleInManager;
+            TypesVisibleInManager = !TypesVisibleInManager;
         }
 
         private bool CanToggleTypesVisibleInManager()

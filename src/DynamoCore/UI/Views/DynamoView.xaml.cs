@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Windows.Input;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Prompts;
@@ -21,13 +23,10 @@ using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using String = System.String;
-using System.Collections.ObjectModel;
-using Dynamo.UI.Commands;
 using System.Windows.Data;
 using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using Dynamo.Core;
 using Dynamo.Services;
 
 namespace Dynamo.Controls
@@ -79,10 +78,10 @@ namespace Dynamo.Controls
             InitializeComponent();
 
             //LibraryManagerMenu.Visibility = System.Windows.Visibility.Collapsed;
-            this.Loaded += dynBench_Activated;
+            Loaded += dynBench_Activated;
 
             //setup InfoBubble for library items tooltip
-            InfoBubbleView InfoBubble = new InfoBubbleView { DataContext = dynSettings.Controller.InfoBubbleViewModel };
+            InfoBubbleView InfoBubble = new InfoBubbleView { DataContext = DynamoSettings.Controller.InfoBubbleViewModel };
             InfoBubbleGrid.Children.Add(InfoBubble);
         }
 
@@ -181,7 +180,7 @@ namespace Dynamo.Controls
             // If first run, Collect Info Prompt will appear
             UsageReportingManager.Instance.CheckIsFirstRun();
 
-            this.WorkspaceTabs.SelectedIndex = 0;
+            WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
             _vm.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
             _vm.PostUiActivationCommand.Execute(null);
@@ -194,9 +193,9 @@ namespace Dynamo.Controls
 
             #region Search initialization
 
-            var search = new SearchView { DataContext = dynSettings.Controller.SearchViewModel };
+            var search = new SearchView { DataContext = DynamoSettings.Controller.SearchViewModel };
             sidebarGrid.Children.Add(search);
-            dynSettings.Controller.SearchViewModel.Visible = true;
+            DynamoSettings.Controller.SearchViewModel.Visible = true;
 
             #endregion
 
@@ -212,13 +211,13 @@ namespace Dynamo.Controls
             _vm.RequestSaveImage += _vm_RequestSaveImage;
             _vm.SidebarClosed += _vm_SidebarClosed;
 
-            dynSettings.Controller.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
+            DynamoSettings.Controller.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
 
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
 
             _vm.RequestUserSaveWorkflow += _vm_RequestUserSaveWorkflow;
 
-            dynSettings.Controller.ClipBoard.CollectionChanged += ClipBoard_CollectionChanged;
+            DynamoSettings.Controller.ClipBoard.CollectionChanged += ClipBoard_CollectionChanged;
 
             //ABOUT WINDOW
             _vm.RequestAboutWindow += _vm_RequestAboutWindow;
@@ -227,7 +226,7 @@ namespace Dynamo.Controls
             _vm.BeginCommandPlayback(this);
         }
 
-        private UI.Views.AboutWindow _aboutWindow;
+        private AboutWindow _aboutWindow;
         void _vm_RequestAboutWindow(DynamoViewModel model)
         {
             if (_aboutWindow == null)
@@ -236,7 +235,7 @@ namespace Dynamo.Controls
                 _aboutWindow.Closed += (sender, args) => _aboutWindow = null;
                 _aboutWindow.Show();
 
-                if (_aboutWindow.IsLoaded && this.IsLoaded) _aboutWindow.Owner = this;
+                if (_aboutWindow.IsLoaded && IsLoaded) _aboutWindow.Owner = this;
             }
 
             _aboutWindow.Focus();
@@ -251,7 +250,7 @@ namespace Dynamo.Controls
                 _pubPkgView.Closed += (sender, args) => _pubPkgView = null;
                 _pubPkgView.Show();
 
-                if (_pubPkgView.IsLoaded && this.IsLoaded) _pubPkgView.Owner = this;
+                if (_pubPkgView.IsLoaded && IsLoaded) _pubPkgView.Owner = this;
             }
 
             _pubPkgView.Focus();
@@ -263,7 +262,7 @@ namespace Dynamo.Controls
         {
             if (_pkgSearchVM == null)
             {
-                _pkgSearchVM = new PackageManagerSearchViewModel(dynSettings.PackageManagerClient);
+                _pkgSearchVM = new PackageManagerSearchViewModel(DynamoSettings.PackageManagerClient);
             }
 
             if (_searchPkgsView == null)
@@ -272,7 +271,7 @@ namespace Dynamo.Controls
                 _searchPkgsView.Closed += (sender, args) => _searchPkgsView = null;
                 _searchPkgsView.Show();
 
-                if (_searchPkgsView.IsLoaded && this.IsLoaded) _searchPkgsView.Owner = this;
+                if (_searchPkgsView.IsLoaded && IsLoaded) _searchPkgsView.Owner = this;
             }
             
             _searchPkgsView.Focus();
@@ -288,12 +287,12 @@ namespace Dynamo.Controls
                 _installedPkgsView.Closed += (sender, args) => _installedPkgsView = null;
                 _installedPkgsView.Show();
 
-                if (_installedPkgsView.IsLoaded && this.IsLoaded) _installedPkgsView.Owner = this;
+                if (_installedPkgsView.IsLoaded && IsLoaded) _installedPkgsView.Owner = this;
             }
             _installedPkgsView.Focus();
         }
 
-        void ClipBoard_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void ClipBoard_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             _vm.CopyCommand.RaiseCanExecuteChanged();
             _vm.PasteCommand.RaiseCanExecuteChanged();
@@ -322,7 +321,7 @@ namespace Dynamo.Controls
             }
 
             var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
-            var result = System.Windows.MessageBox.Show(dialogText, "Confirmation", buttons, MessageBoxImage.Question);
+            var result = MessageBox.Show(dialogText, "Confirmation", buttons, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
             {
@@ -340,7 +339,7 @@ namespace Dynamo.Controls
             }
         }
 
-        void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             _vm.CopyCommand.RaiseCanExecuteChanged();
             _vm.PasteCommand.RaiseCanExecuteChanged();
@@ -362,7 +361,7 @@ namespace Dynamo.Controls
         {
             if (!string.IsNullOrEmpty(e.Path))
             {
-                //var bench = dynSettings.Bench;
+                //var bench = DynamoSettings.Bench;
 
                 //if (bench == null)
                 //{
@@ -377,13 +376,13 @@ namespace Dynamo.Controls
 
                 // connectors are most often within the bounding box of the nodes and notes
 
-                foreach (NodeModel n in dynSettings.Controller.DynamoModel.CurrentWorkspace.Nodes)
+                foreach (NodeModel n in DynamoSettings.Controller.DynamoModel.CurrentWorkspace.Nodes)
                 {
                     width = Math.Max(n.X + n.Width, width);
                     height = Math.Max(n.Y + n.Height, height);
                 }
 
-                foreach (NoteModel n in dynSettings.Controller.DynamoModel.CurrentWorkspace.Notes)
+                foreach (NoteModel n in DynamoSettings.Controller.DynamoModel.CurrentWorkspace.Notes)
                 {
                     width = Math.Max(n.X + n.Width, width);
                     height = Math.Max(n.Y + n.Height, height);
@@ -393,7 +392,7 @@ namespace Dynamo.Controls
                                                   Math.Max(1, (int)height),
                                                   96,
                                                   96,
-                                                  System.Windows.Media.PixelFormats.Default);
+                                                  PixelFormats.Default);
 
                 rtb.Render(control);
 
@@ -448,7 +447,7 @@ namespace Dynamo.Controls
 
             do
             {
-                var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories)
+                var dialog = new FunctionNamePrompt(DynamoSettings.Controller.SearchViewModel.Categories)
                 {
                     categoryBox = { Text = e.Category },
                     DescriptionInput = { Text = e.Description },
@@ -479,7 +478,7 @@ namespace Dynamo.Controls
                     MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
-                else if (e.Name != dialog.Text && dynSettings.Controller.BuiltInTypesByNickname.ContainsKey(dialog.Text))
+                else if (e.Name != dialog.Text && DynamoSettings.Controller.BuiltInTypesByNickname.ContainsKey(dialog.Text))
                 {
                     error = "A built-in node with the given name already exists.";
                     MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
@@ -517,9 +516,9 @@ namespace Dynamo.Controls
                 return;
             }
 
-            if (!dynSettings.Controller.Testing)
+            if (!DynamoSettings.Controller.Testing)
             {
-                dynSettings.Controller.ShutDown(false);
+                DynamoSettings.Controller.ShutDown(false);
             }
         }
 
@@ -660,8 +659,8 @@ namespace Dynamo.Controls
                 _vm.QueueLoad(path);
             else
             {
-                if (dynSettings.Controller.DynamoModel.CanGoHome(null))
-                    dynSettings.Controller.DynamoModel.Home(null);
+                if (DynamoSettings.Controller.DynamoModel.CanGoHome(null))
+                    DynamoSettings.Controller.DynamoModel.Home(null);
 
                 _vm.OpenCommand.Execute(path);
             }
@@ -861,7 +860,7 @@ namespace Dynamo.Controls
 
 		private void Button_Click(object sender, EventArgs e)
         {
-            SearchView sv = (SearchView)this.sidebarGrid.Children[0];
+            SearchView sv = (SearchView)sidebarGrid.Children[0];
             if (sv.Visibility == Visibility.Collapsed)
             {
                 //this.sidebarGrid.Width = restoreWidth;
@@ -870,11 +869,11 @@ namespace Dynamo.Controls
                 sv.Height = double.NaN;
                 sv.VerticalAlignment = VerticalAlignment.Stretch;
 
-                this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(restoreWidth);
-                this.verticalSplitter.Visibility = Visibility.Visible;
+                mainGrid.ColumnDefinitions[0].Width = new GridLength(restoreWidth);
+                verticalSplitter.Visibility = Visibility.Visible;
                 sv.Visibility = Visibility.Visible;
-                this.sidebarGrid.Visibility = Visibility.Visible;
-                this.collapsedSidebar.Visibility = Visibility.Collapsed;
+                sidebarGrid.Visibility = Visibility.Visible;
+                collapsedSidebar.Visibility = Visibility.Collapsed;
             }
             //SearchView sv = (SearchView)this.sidebarGrid.Children[0];
             //sv.Width = double.NaN;
@@ -902,26 +901,26 @@ namespace Dynamo.Controls
         private void LibraryClicked(object sender, EventArgs e)
         {
             // this.sidebarGrid.Visibility = Visibility.Collapsed;
-            restoreWidth = this.sidebarGrid.ActualWidth;
+            restoreWidth = sidebarGrid.ActualWidth;
 
             // this.sidebarGrid.Width = 0;
-            this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(0.0);
-            this.verticalSplitter.Visibility = System.Windows.Visibility.Collapsed;
-            this.sidebarGrid.Visibility = System.Windows.Visibility.Collapsed;
+            mainGrid.ColumnDefinitions[0].Width = new GridLength(0.0);
+            verticalSplitter.Visibility = Visibility.Collapsed;
+            sidebarGrid.Visibility = Visibility.Collapsed;
             
-            this.horizontalSplitter.Width = double.NaN;
-            SearchView sv = (SearchView)this.sidebarGrid.Children[0];
+            horizontalSplitter.Width = double.NaN;
+            SearchView sv = (SearchView)sidebarGrid.Children[0];
             sv.Visibility = Visibility.Collapsed;
 
-            this.sidebarGrid.Visibility = Visibility.Collapsed;
-            this.collapsedSidebar.Visibility = Visibility.Visible;
+            sidebarGrid.Visibility = Visibility.Collapsed;
+            collapsedSidebar.Visibility = Visibility.Visible;
         }
 
         private void Workspace_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (this._vm == null)
+            if (_vm == null)
                 return;
-            this._vm.WorkspaceActualSize(border.ActualWidth, border.ActualHeight);
+            _vm.WorkspaceActualSize(border.ActualWidth, border.ActualHeight);
         }
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -946,7 +945,7 @@ namespace Dynamo.Controls
        
         private void RunButton_OnClick(object sender, RoutedEventArgs e)
         {
-            dynSettings.ReturnFocusToSearch();
+            DynamoSettings.ReturnFocusToSearch();
         }
 
         private void DynamoView_OnDrop(object sender, DragEventArgs e)

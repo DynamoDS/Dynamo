@@ -9,8 +9,6 @@ using System.IO;
 using System.Windows.Controls;
 using System.Windows;
 using String = System.String;
-using ProtoCore.DSASM;
-using Dynamo.DSEngine;
 
 namespace Dynamo.Utilities
 {
@@ -36,7 +34,7 @@ namespace Dynamo.Utilities
 
         internal static void LoadPackages()
         {
-            dynSettings.PackageLoader.LoadPackages();
+            DynamoSettings.PackageLoader.LoadPackages();
         }
 
         /// <summary>
@@ -115,7 +113,7 @@ namespace Dynamo.Utilities
             }
 
 #if USE_DSENGINE
-            dynSettings.Controller.SearchViewModel.Add(dynSettings.Controller.EngineController.GetFunctionGroups());
+            DynamoSettings.Controller.SearchViewModel.Add(DynamoSettings.Controller.EngineController.GetFunctionGroups());
 #endif
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 
@@ -147,8 +145,8 @@ namespace Dynamo.Utilities
         /// <Returns>The list of node types loaded from this assembly</Returns>
         public static List<Type> LoadNodesFromAssembly(Assembly assembly)
         {
-            var controller = dynSettings.Controller;
-            var searchViewModel = dynSettings.Controller.SearchViewModel;
+            var controller = DynamoSettings.Controller;
+            var searchViewModel = DynamoSettings.Controller.SearchViewModel;
 
             AssemblyPathToTypesLoaded.Add(assembly.Location, new List<Type>());
 
@@ -194,7 +192,7 @@ namespace Dynamo.Utilities
                                 //utility was late for Vasari release, but could be available with after-post RevitAPI.dll
                                 if (t.Name.Equals("dynSkinCurveLoops"))
                                 {
-                                    MethodInfo[] specialTypeStaticMethods = t.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+                                    MethodInfo[] specialTypeStaticMethods = t.GetMethods(BindingFlags.Static | BindingFlags.Public);
                                     String nameOfMethodCreate = "noSkinSolidMethod";
                                     bool exclude = true;
                                     foreach (MethodInfo m in specialTypeStaticMethods)
@@ -352,14 +350,14 @@ namespace Dynamo.Utilities
         {
             var path = (string)((MenuItem)sender).Tag;
 
-            if (dynSettings.Controller.DynamoViewModel.IsUILocked)
-                dynSettings.Controller.DynamoViewModel.QueueLoad(path);
+            if (DynamoSettings.Controller.DynamoViewModel.IsUILocked)
+                DynamoSettings.Controller.DynamoViewModel.QueueLoad(path);
             else
             {
-                if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
-                    dynSettings.Controller.DynamoModel.ViewHomeWorkspace();
+                if (!DynamoSettings.Controller.DynamoViewModel.ViewingHomespace)
+                    DynamoSettings.Controller.DynamoModel.ViewHomeWorkspace();
 
-                dynSettings.Controller.DynamoModel.OpenWorkspace(path);
+                DynamoSettings.Controller.DynamoModel.OpenWorkspace(path);
             }
         }
 
@@ -370,8 +368,8 @@ namespace Dynamo.Utilities
         public static IEnumerable<CustomNodeInfo> LoadCustomNodes()
         {
 
-            var customNodeLoader = dynSettings.CustomNodeManager;
-            var searchViewModel = dynSettings.Controller.SearchViewModel;
+            var customNodeLoader = DynamoSettings.CustomNodeManager;
+            var searchViewModel = DynamoSettings.Controller.SearchViewModel;
             var loadedNodes = customNodeLoader.UpdateSearchPath();
 
             // add nodes to search
@@ -392,8 +390,8 @@ namespace Dynamo.Utilities
             if (!Directory.Exists(path))
                 return new List<CustomNodeInfo>();
 
-            var customNodeLoader = dynSettings.CustomNodeManager;
-            var searchViewModel = dynSettings.Controller.SearchViewModel;
+            var customNodeLoader = DynamoSettings.CustomNodeManager;
+            var searchViewModel = DynamoSettings.Controller.SearchViewModel;
 
             var loadedNodes = customNodeLoader.ScanNodeHeadersInDirectory(path).ToList();
             customNodeLoader.AddDirectoryToSearchPath(path);

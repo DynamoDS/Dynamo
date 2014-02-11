@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-
 using Octree.Tools.Point;
 
 namespace Octree.Tools.Vector
@@ -229,9 +222,9 @@ namespace Octree.Tools.Vector
         public Vector3d CrossProduct(Vector3d v)
         {
             return new Vector3d(
-                (this.y * v.z) - (this.z * v.y),
-                (this.z * v.x) - (this.x * v.z),
-                (this.x * v.y) - (this.y * v.x));
+                (y * v.z) - (z * v.y),
+                (z * v.x) - (x * v.z),
+                (x * v.y) - (y * v.x));
         }
 
         /// <summary>
@@ -241,7 +234,7 @@ namespace Octree.Tools.Vector
         /// <returns>a float representing the dot product of the current vector and vector v</returns>
         public double DotProduct(Vector3d v)
         {
-            return this.x * v.x + this.y * v.y + this.z * v.z;
+            return x * v.x + y * v.y + z * v.z;
         }
 
         public Vector3f ToVector3f()
@@ -309,7 +302,7 @@ namespace Octree.Tools.Vector
         /// </summary>
         public Point3d ToPoint3d()
         {
-            return new Point3d(this.x, this.y, this.z);
+            return new Point3d(x, y, z);
         }
        
         #endregion
@@ -353,7 +346,7 @@ namespace Octree.Tools.Vector
         /// <returns></returns>
         public override string ToString()
         {
-            return this.x + " " + this.y + " " + this.z;
+            return x + " " + y + " " + z;
         }
 
         #endregion
@@ -456,7 +449,7 @@ namespace Octree.Tools.Vector
         //}
         public bool Equals(Vector3d v)
         {
-            return (this.CompareTo(v) == 0 ? true : false);
+            return (CompareTo(v) == 0 ? true : false);
         }
         #endregion
         //public override int GetHashCode()

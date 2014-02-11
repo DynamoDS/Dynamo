@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DSCoreNodesUI.HigherOrder;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.ViewModels;
 using Microsoft.Practices.Prism;
 
 namespace Dynamo.Utilities
@@ -26,9 +26,9 @@ namespace Dynamo.Utilities
             if (args == null || !args.Success)
             {
                 args = new FunctionNamePromptEventArgs();
-                dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(null, args);
+                DynamoSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(null, args);
 
-                //if (!dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newNodeName, ref newNodeCategory))
+                //if (!DynamoSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newNodeName, ref newNodeCategory))
                 if (!args.Success)
                 {
                     return;
@@ -91,7 +91,7 @@ namespace Dynamo.Utilities
                     .Select(
                         outerNode =>
                         {
-                            var node = new Apply1();
+                            var node = new ApplyFunction();
 
                             //MVVM : Don't make direct reference to view here
                             //MVVM: no reference to view here
@@ -115,7 +115,7 @@ namespace Dynamo.Utilities
 
                             //MVVM : Can't set view location here
 
-                            //dynSettings.Bench.WorkBench.Children.Add(nodeUI);
+                            //DynamoSettings.Bench.WorkBench.Children.Add(nodeUI);
 
                             //Place it in an appropriate spot
                             //Canvas.SetLeft(nodeUI, Canvas.GetLeft(outerNode.NodeUI));
@@ -245,7 +245,7 @@ namespace Dynamo.Utilities
             #region Insert new node into the current workspace
 
             //Step 5: insert new node into original workspace
-            //var collapsedNode = dynSettings.Controller.DynamoViewModel.CreateFunction(
+            //var collapsedNode = DynamoSettings.Controller.DynamoViewModel.CreateFunction(
             //    inputs.Select(x => x.Item1.InPortData[x.Item2].NickName),
             //    outputs
             //        .Where(x => !curriedNodeArgs.Any(y => y.OuterNode == x.Item3.Item2))
@@ -482,10 +482,10 @@ namespace Dynamo.Utilities
 
             // save and load the definition from file
             newNodeDefinition.SyncWithWorkspace(true, true);
-            dynSettings.Controller.DynamoModel.Workspaces.Add(newNodeWorkspace);
+            DynamoSettings.Controller.DynamoModel.Workspaces.Add(newNodeWorkspace);
 
             string name = newNodeDefinition.FunctionId.ToString();
-            var collapsedNode = dynSettings.Controller.DynamoModel.CreateNode(avgX, avgY, name);
+            var collapsedNode = DynamoSettings.Controller.DynamoModel.CreateNode(avgX, avgY, name);
             undoRecorder.RecordCreationForUndo(collapsedNode);
 
             // place the node as intended, not centered

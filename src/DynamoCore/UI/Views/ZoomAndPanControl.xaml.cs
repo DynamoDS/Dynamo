@@ -1,17 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Dynamo.Controls;
+﻿using System.Windows.Controls;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Controls
@@ -24,7 +11,7 @@ namespace Dynamo.Controls
         public ZoomAndPanControl(WorkspaceViewModel workspaceViewModel)
         {
             InitializeComponent();
-            this.DataContext = workspaceViewModel;
+            DataContext = workspaceViewModel;
         }
     }
 }

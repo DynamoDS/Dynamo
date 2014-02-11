@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -68,7 +70,7 @@ namespace Dynamo.ViewModels
         //{
         //    get
         //    {
-        //        if(dynSettings.Controller.DynamoViewModel.CurrentWorkspace.Notes.Contains(_model))
+        //        if(DynamoSettings.Controller.DynamoViewModel.CurrentWorkspace.Notes.Contains(_model))
         //            return true;
         //        return false;
         //    }
@@ -90,7 +92,7 @@ namespace Dynamo.ViewModels
             _model = model;
             model.PropertyChanged += note_PropertyChanged;
 
-            dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
+            DynamoSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
         }
 
         private void Select(object parameter)
@@ -121,8 +123,8 @@ namespace Dynamo.ViewModels
 
         public void UpdateSizeFromView(double w, double h)
         {
-            this._model.Width = w;
-            this._model.Height = h;
+            _model.Width = w;
+            _model.Height = h;
         }
 
 
@@ -140,7 +142,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             //switch (e.PropertyName)
             //{
@@ -151,7 +153,7 @@ namespace Dynamo.ViewModels
         }
 
         //respond to changes on the model's properties
-        void note_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void note_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {

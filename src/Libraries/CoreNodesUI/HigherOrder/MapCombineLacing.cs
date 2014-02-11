@@ -54,7 +54,7 @@ namespace DSCore
             get { return "List"; }
         }
 
-        protected override void RemoveInput()
+        public override void RemoveInput()
         {
             if (InPortData.Count > 3)
                 base.RemoveInput();
@@ -165,7 +165,7 @@ namespace DSCore
             RegisterAllPorts();
         }
 
-        protected override void RemoveInput()
+        public override void RemoveInput()
         {
             if (InPortData.Count > 3)
                 base.RemoveInput();

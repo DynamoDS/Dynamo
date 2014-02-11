@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Globalization;
 using System.Xml;
-using Dynamo.Units;
 using Dynamo.Models;
+using Dynamo.Nodes;
+using Dynamo.Units;
 using Microsoft.FSharp.Collections;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Legacy
 {
     public abstract partial class MeasurementInputBase : NodeWithOneOutput
     {
@@ -71,7 +72,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Enter a length.")]
     [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
-    public class LengthInput : MeasurementInputBase
+    public class LengthInput : Legacy.MeasurementInputBase
     {
         public LengthInput()
         {
@@ -80,7 +81,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        [NodeMigrationAttribute(from:"0.6.2")]
+        [NodeMigration(@from:"0.6.2")]
         public void MigrateLengthFromFeetToMeters(XmlNode node)
         {
             //length values were previously stored as decimal feet
@@ -103,7 +104,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Enter an area.")]
     [NodeSearchTags("Imperial", "Metric", "Area", "Project", "units")]
-    public class AreaInput : MeasurementInputBase
+    public class AreaInput : Legacy.MeasurementInputBase
     {
         public AreaInput()
         {
@@ -117,7 +118,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Enter a volume.")]
     [NodeSearchTags("Imperial", "Metric", "volume", "Project", "units")]
-    public class VolumeInput : MeasurementInputBase
+    public class VolumeInput : Legacy.MeasurementInputBase
     {
         public VolumeInput()
         {

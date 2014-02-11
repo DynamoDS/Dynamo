@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.ComponentModel;
+using System.Reflection;
 using System.Windows;
 using Dynamo.UI;
 using System.Xml.Linq;
@@ -87,7 +88,7 @@ namespace Dynamo.UpdateManager
             {
                 if (null == productVersion)
                 {
-                    string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    string executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
                     FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(executingAssemblyPathName);
                     productVersion = BinaryVersion.FromString(myFileVersionInfo.FileVersion.ToString());
                 }
@@ -158,8 +159,8 @@ namespace Dynamo.UpdateManager
 
             if (false != installUpdate)
             {
-                if (this.ShutdownRequested != null)
-                    this.ShutdownRequested(this, new EventArgs());
+                if (ShutdownRequested != null)
+                    ShutdownRequested(this, new EventArgs());
             }
         }
 
@@ -234,7 +235,7 @@ namespace Dynamo.UpdateManager
                 string.Format("Product Version: {0} Available Version : {1}",
                 ProductVersion.ToString(), latestBuildVersion.ToString()));
 
-            if (updateInfo.Value.Version <= this.ProductVersion)
+            if (updateInfo.Value.Version <= ProductVersion)
             {
                 versionCheckInProgress = false;
                 return; // Up-to-date, no download required.
@@ -243,7 +244,7 @@ namespace Dynamo.UpdateManager
             DownloadUpdatePackage(updateInfo.Value.InstallerURL, updateInfo.Value.Version);
         }
 
-        private void OnDownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        private void OnDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             versionCheckInProgress = false;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Core;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
@@ -74,7 +75,7 @@ namespace Dynamo.Nodes
                         {
                             var f = (args[0] as Value.Function).Item;
 
-                            if (dynSettings.Controller.DynamoViewModel.RunInDebug)
+                            if (DynamoSettings.Controller.DynamoViewModel.RunInDebug)
                             {
                                 _node.OldValue = f.Invoke(FSharpList<Value>.Empty);
                                 return _node.OldValue;
@@ -97,7 +98,7 @@ namespace Dynamo.Nodes
                             if (_node.Controller.RunCancelled)
                                 throw new CancelEvaluationException(false);
 
-                            if (!dynSettings.Controller.DynamoViewModel.RunInDebug)
+                            if (!DynamoSettings.Controller.DynamoViewModel.RunInDebug)
                             {
                                 dynRevitSettings.Controller.InIdleThread = true;
                                 dynRevitSettings.Controller.InitTransaction();
@@ -117,7 +118,7 @@ namespace Dynamo.Nodes
                                 dynRevitSettings.Controller.EndTransaction();
                                 dynRevitSettings.Controller.InIdleThread = false;
 
-                                dynSettings.Controller.DynamoModel.OnRequestLayoutUpdate(this, EventArgs.Empty);
+                                DynamoSettings.Controller.DynamoModel.OnRequestLayoutUpdate(this, EventArgs.Empty);
                                 
                                 _node.ValidateConnections();
                             }

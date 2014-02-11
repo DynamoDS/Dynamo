@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Xml;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Revit;
@@ -116,7 +117,7 @@ namespace Dynamo.Nodes
 
         protected SelectionBase()
         {
-            dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
+            DynamoSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
         }
 
         protected SelectionBase(PortData outPortData) : this()
@@ -133,7 +134,7 @@ namespace Dynamo.Nodes
         {
             if (e.PropertyName == "RunEnabled")
             {
-                CanSelect = dynSettings.Controller.DynamoViewModel.RunEnabled;
+                CanSelect = DynamoSettings.Controller.DynamoViewModel.RunEnabled;
             }
         }
 
@@ -450,7 +451,7 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(outData);
             RegisterAllPorts();
-            dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
+            DynamoSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
             CanSelect = true;
         }
 
@@ -460,7 +461,7 @@ namespace Dynamo.Nodes
         {
             if (e.PropertyName == "RunEnabled")
             {
-                CanSelect = dynSettings.Controller.DynamoViewModel.RunEnabled;
+                CanSelect = DynamoSettings.Controller.DynamoViewModel.RunEnabled;
             }
         }
 

@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using Dynamo.Nodes;
-using Dynamo.UI.Commands;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
+﻿using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
 {

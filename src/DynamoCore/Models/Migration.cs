@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Xml;
+using Dynamo.Core;
 using Dynamo.Utilities;
 using System.Collections.Generic;
 
@@ -76,7 +77,7 @@ namespace Dynamo.Models
                     orderby result.From
                     select result).ToList();
 
-            var currentVersion = dynSettings.Controller.DynamoModel.HomeSpace.WorkspaceVersion;
+            var currentVersion = DynamoSettings.Controller.DynamoModel.HomeSpace.WorkspaceVersion;
             var workspaceVersion = String.IsNullOrEmpty(version) ? new Version() : new Version(version);
 
             while (workspaceVersion != null && workspaceVersion < currentVersion)
