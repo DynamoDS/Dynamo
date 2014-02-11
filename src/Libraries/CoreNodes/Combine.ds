@@ -25,3 +25,25 @@ def Reduce(func, acc, lists : var[]..[])
         return = acc;
     };
 }
+
+def Filter(predicate, list : var[]..[])
+{
+	return = [Imperative]
+	{
+		resultIn = {};
+		resultOut = {};
+
+		for(item in list)
+		{
+			if (Evaluate(pred, item))
+			{
+				resultIn[Count(resultIn)] = item;
+			}
+			else
+			{
+				resultOut[Count(resultOut)] = item;
+			}
+		}
+		return = { resultIn, resultOut };
+	};
+}
