@@ -50,12 +50,21 @@ namespace Dynamo.UpdateManager
 
         public UpdateRequest()
         {
-            var client = new WebClient();
-            var data = client.OpenRead(new Uri(Configurations.UpdateDownloadLocation));
-            using (var streamReader = new StreamReader(data))
+            try
             {
-                UpdateRequestData = streamReader.ReadToEnd();
+                var client = new WebClient();
+                var data = client.OpenRead(new Uri(Configurations.UpdateDownloadLocation));
+                using (var streamReader = new StreamReader(data))
+                {
+                    UpdateRequestData = streamReader.ReadToEnd();
+                }
             }
+            catch(Exception ex)
+            {
+                DynamoLogger.Instance.LogError("UpdateRequest", string.Format("Could not complete product update request:\n {0}", ex.Message));
+                UpdateRequestData = string.Empty;
+            }
+            
         }
     }
 
@@ -125,10 +134,8 @@ namespace Dynamo.UpdateManager
             {
                 if (!updateInfo.HasValue)
                 {
-                    IsUpdateAvailable(new UpdateRequest());
                     return ProductVersion;
                 }
-
                 return updateInfo.Value.Version;
             }
         }
