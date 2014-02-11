@@ -78,7 +78,7 @@ namespace Dynamo.Controls
 
             InitializeComponent();
 
-            LibraryManagerMenu.Visibility = System.Windows.Visibility.Collapsed;
+            //LibraryManagerMenu.Visibility = System.Windows.Visibility.Collapsed;
             this.Loaded += dynBench_Activated;
 
             //setup InfoBubble for library items tooltip
@@ -89,6 +89,7 @@ namespace Dynamo.Controls
         void InitializeShortcutBar()
         {
             ShortcutToolbar shortcutBar = new ShortcutToolbar();
+            shortcutBar.Name = "ShortcutToolbar";
 
             ShortcutBarItem newScriptButton = new ShortcutBarItem();
             newScriptButton.ShortcutToolTip = "New [Ctrl + N]";
