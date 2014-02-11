@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Double = System.Double;
 
@@ -495,6 +496,11 @@ namespace Dynamo.Units
             if (x is Length)
             {
                 return new Area(_value * x.Value);
+            }
+
+            if (x is Area)
+            {
+                return new Volume(_value * x.Value);
             }
 
             throw new UnitsException(GetType(), x.GetType());
