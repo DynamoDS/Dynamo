@@ -259,13 +259,17 @@ namespace Dynamo.Nodes
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
-            string nodeUVId = connector0.GetAttribute("start").ToString();
             data.ReconnectToPort(connector0, newInPortNodeU);
             data.ReconnectToPort(connector1, newInPort0);
-            data.CreateConnectorFromId(nodeUVId, 0, nodeVId, 0);
             data.CreateConnector(nodeU, 0, newNode, 1);
             data.CreateConnector(nodeV, 0, newNode, 2);
 
+            if (connector0 != null)
+            {
+                string nodeUVId = connector0.GetAttribute("start").ToString();
+                data.CreateConnectorFromId(nodeUVId, 0, nodeVId, 0);
+            }
+            
             return migrationData;
         }
     }
@@ -338,13 +342,17 @@ namespace Dynamo.Nodes
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
-            string nodeUVId = connector0.GetAttribute("start").ToString();
             data.ReconnectToPort(connector0, newInPortNodeU);
             data.ReconnectToPort(connector1, newInPort0);
-            data.CreateConnectorFromId(nodeUVId, 0, nodeVId, 0);
             data.CreateConnector(nodeU, 0, newNode, 1);
             data.CreateConnector(nodeV, 0, newNode, 2);
-            
+
+            if (connector0 != null)
+            {
+                string nodeUVId = connector0.GetAttribute("start").ToString();
+                data.CreateConnectorFromId(nodeUVId, 0, nodeVId, 0);
+            }
+
             return migrationData;
         }
     }
