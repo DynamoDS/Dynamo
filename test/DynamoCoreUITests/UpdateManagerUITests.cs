@@ -33,7 +33,7 @@ namespace DynamoCoreUITests
 
             var env = new ExecutionEnvironment();
             Controller = new DynamoController(env, typeof(DynamoViewModel), "None", null, um_mock.Object);
-
+            Controller.Testing = true;
             //create the view
             Ui = new DynamoView();
             Ui.DataContext = Controller.DynamoViewModel;
