@@ -593,6 +593,10 @@ https://helixtoolkit.codeplex.com/license
 http://ironpython.net/  
 http://opensource.org/licenses/apache2.0.php  
 
+###Moq###
+http://www.nuget.org/packages/Moq/
+http://opensource.org/licenses/bsd-license.php
+
 ###MiConvexHull###
 http://miconvexhull.codeplex.com/  
 http://miconvexhull.codeplex.com/license  
