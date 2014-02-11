@@ -1550,9 +1550,11 @@ namespace Dynamo.ViewModels
 
         private void CheckForUpdate(object obj)
         {
-            dynSettings.Controller.UpdateManager.CheckForProductUpdate();
-        }
+            //Disable the update check for 0.6.3. Just send he user to the downloads page.
+            //dynSettings.Controller.UpdateManager.CheckForProductUpdate();
 
+            Process.Start("http://dyn-builds-pub.s3-website-us-west-2.amazonaws.com/");
+        }
 
         #region IWatchViewModel interface
 
