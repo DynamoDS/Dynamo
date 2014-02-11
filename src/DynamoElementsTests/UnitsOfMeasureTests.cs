@@ -438,9 +438,13 @@ namespace Dynamo.Tests
 
             //multiplication
             Assert.AreEqual(4, (length * length).Value);
+            Assert.IsInstanceOf<Area>(length * length);
+            Assert.AreEqual(4, (length * area).Value);
+            Assert.IsInstanceOf<Volume>(length * area);
             Assert.Throws<UnitsException>(() => { var test = area * area; });
             Assert.Throws<UnitsException>(() => { var test = volume * area; });
             Assert.Throws<UnitsException>(() => { var test = length * volume; });
+            Assert.Throws<UnitsException>(() => { var test = volume * volume; });
 
             //division
             Assert.AreEqual(1, length / length);
