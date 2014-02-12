@@ -50,9 +50,8 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            newNode.SetAttribute("assembly", "ProtoGeometry.dll");
-            newNode.SetAttribute("nickname", "Geometry.Transform");
-            newNode.SetAttribute("function", "Geometry.Transform@CoordinateSystem,CoordinateSystem");
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Geometry.Transform", "Geometry.Transform@CoordinateSystem,CoordinateSystem");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -883,9 +882,8 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            newNode.SetAttribute("assembly", "ProtoGeometry.dll");
-            newNode.SetAttribute("nickname", "Curve.CoordinateSystemAtParameter");
-            newNode.SetAttribute("function", "Curve.CoordinateSystemAtParameter@double");
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Curve.CoordinateSystemAtParameter", "Curve.CoordinateSystemAtParameter@double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
