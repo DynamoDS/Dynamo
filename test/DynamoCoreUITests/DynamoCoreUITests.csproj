@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;USE_DSENGINE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;USE_DSENGINE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -79,29 +79,29 @@
     <Compile Include="VisualizationManagerUITests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DynamoAsm\DynamoAsm.csproj">
-      <Project>{95192F1A-3265-4986-8D07-50F8FD4F2439}</Project>
-      <Name>DynamoAsm</Name>
+    <ProjectReference Include="..\..\src\Engine\ProtoCore\ProtoCore.csproj">
+      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
+      <Name>ProtoCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
+    <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoElementsTests\DynamoCoreTests.csproj">
+    <ProjectReference Include="..\..\src\Libraries\DynamoPython\Python.csproj">
+      <Project>{2b0f2800-6f62-4869-9074-088c5f6dcca2}</Project>
+      <Name>Python</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
       <Name>DynamoCoreTests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoPython\DynamoPython.csproj">
-      <Project>{2B0F2800-6F62-4869-9074-088C5F6DCCA2}</Project>
-      <Name>DynamoPython</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
+    <ProjectReference Include="..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoWatch3D\DynamoWatch3D.csproj">
+    <ProjectReference Include="..\..\src\Libraries\DynamoWatch3D\Watch3D.csproj">
       <Project>{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}</Project>
-      <Name>DynamoWatch3D</Name>
+      <Name>Watch3D</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
