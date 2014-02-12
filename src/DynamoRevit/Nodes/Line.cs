@@ -179,29 +179,31 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            // Create new node
-            XmlElement translateNode = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "Geometry.Translate",
-                "Geometry.Translate@Autodesk.DesignScript.Geometry.Vector");
-            migrationData.AppendNode(translateNode);
-            string translateNodeId = MigrationManager.GetGuidFromXmlElement(translateNode);
-
             // Update connectors
             PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
             PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
             PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
-            PortId newInPortTranslate1 = new PortId(translateNodeId, 1, PortType.INPUT);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
             data.ReconnectToPort(connector1, newInPort0);
-            data.ReconnectToPort(connector0, newInPortTranslate1);
-            data.CreateConnector(translateNode, 0, newNode, 1);
-
+            
             if (connector1 != null)
             {
+                // Create new node only when the old node is connected to a normal vector
+                XmlElement translateNode = MigrationManager.CreateFunctionNode(
+                    data.Document, "ProtoGeometry.dll", "Geometry.Translate",
+                    "Geometry.Translate@Autodesk.DesignScript.Geometry.Vector");
+                migrationData.AppendNode(translateNode);
+                string translateNodeId = MigrationManager.GetGuidFromXmlElement(translateNode);
+
+                // Update connectors
+                PortId newInPortTranslate1 = new PortId(translateNodeId, 1, PortType.INPUT);
+                
                 string nodeOriginId = connector1.GetAttribute("start").ToString();
+                data.CreateConnector(translateNode, 0, newNode, 1);
                 data.CreateConnectorFromId(nodeOriginId, 0, translateNodeId, 0);
+                data.ReconnectToPort(connector0, newInPortTranslate1);
             }
             
             return migrationData;

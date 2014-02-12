@@ -238,35 +238,36 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            // Create new nodes
-            XmlElement nodeU = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "UV.U", "UV.U");
-            migrationData.AppendNode(nodeU);
-            string nodeUId = MigrationManager.GetGuidFromXmlElement(nodeU);
-            
-            XmlElement nodeV = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "UV.V", "UV.V");
-            migrationData.AppendNode(nodeV);
-            string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
-
             // Update connectors
             PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
             PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
-            
             PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
-            PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.INPUT);
             
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
-            data.ReconnectToPort(connector0, newInPortNodeU);
             data.ReconnectToPort(connector1, newInPort0);
-            data.CreateConnector(nodeU, 0, newNode, 1);
-            data.CreateConnector(nodeV, 0, newNode, 2);
 
             if (connector0 != null)
             {
+                // Create new nodes only when the old node is connected to a UV node
+                XmlElement nodeU = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "UV.U", "UV.U");
+                migrationData.AppendNode(nodeU);
+                string nodeUId = MigrationManager.GetGuidFromXmlElement(nodeU);
+
+                XmlElement nodeV = MigrationManager.CreateFunctionNode(
+                    data.Document, "ProtoGeometry.dll", "UV.V", "UV.V");
+                migrationData.AppendNode(nodeV);
+                string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
+
+                // Update connectors
+                PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.INPUT);
+
                 string nodeUVId = connector0.GetAttribute("start").ToString();
+                data.ReconnectToPort(connector0, newInPortNodeU);
+                data.CreateConnector(nodeU, 0, newNode, 1);
+                data.CreateConnector(nodeV, 0, newNode, 2);
                 data.CreateConnectorFromId(nodeUVId, 0, nodeVId, 0);
             }
             
@@ -321,35 +322,36 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            // Create new nodes
-            XmlElement nodeU = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "UV.U", "UV.U");
-            migrationData.AppendNode(nodeU);
-            string nodeUId = MigrationManager.GetGuidFromXmlElement(nodeU);
-
-            XmlElement nodeV = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "UV.V", "UV.V");
-            migrationData.AppendNode(nodeV);
-            string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
-
             // Update connectors
             PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
             PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
-
             PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
-            PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.INPUT);
 
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
-            data.ReconnectToPort(connector0, newInPortNodeU);
             data.ReconnectToPort(connector1, newInPort0);
-            data.CreateConnector(nodeU, 0, newNode, 1);
-            data.CreateConnector(nodeV, 0, newNode, 2);
 
             if (connector0 != null)
             {
+                // Create new nodes only when the old node is connected to a UV node
+                XmlElement nodeU = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "UV.U", "UV.U");
+                migrationData.AppendNode(nodeU);
+                string nodeUId = MigrationManager.GetGuidFromXmlElement(nodeU);
+
+                XmlElement nodeV = MigrationManager.CreateFunctionNode(
+                    data.Document, "ProtoGeometry.dll", "UV.V", "UV.V");
+                migrationData.AppendNode(nodeV);
+                string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
+
+                // Update connectors
+                PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.INPUT);
+
                 string nodeUVId = connector0.GetAttribute("start").ToString();
+                data.ReconnectToPort(connector0, newInPortNodeU);
+                data.CreateConnector(nodeU, 0, newNode, 1);
+                data.CreateConnector(nodeV, 0, newNode, 2);
                 data.CreateConnectorFromId(nodeUVId, 0, nodeVId, 0);
             }
 
