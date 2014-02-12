@@ -56,7 +56,7 @@ namespace Dynamo.DSEngine
             }
             else
             {
-                return Parameter + ": " + Type;
+                return Parameter + ": " + Type.Split('.').Last();
             }
         }
     }
