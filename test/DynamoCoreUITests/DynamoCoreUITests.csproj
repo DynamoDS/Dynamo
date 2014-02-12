@@ -83,6 +83,10 @@
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DynamoAsm\DynamoAsm.csproj">
+      <Project>{95192F1A-3265-4986-8D07-50F8FD4F2439}</Project>
+      <Name>DynamoAsm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
@@ -94,6 +98,10 @@
     <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
       <Name>DynamoCoreTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoPython\DynamoPython.csproj">
+      <Project>{2B0F2800-6F62-4869-9074-088C5F6DCCA2}</Project>
+      <Name>DynamoPython</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
