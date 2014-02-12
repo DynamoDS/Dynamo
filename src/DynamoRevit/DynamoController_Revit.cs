@@ -555,25 +555,52 @@ namespace Dynamo
 
         private class RevitElementWatchHandler : WatchHandler
         {
-            #region WatchHandler Members
-
             public bool AcceptsValue(object o)
             {
-                return o is Element;
+                if (o is Element || o is GeometryObject)
+                {
+                    return true;
+                }
+                return false;
             }
 
             public void ProcessNode(object value, WatchNode node)
             {
-                var element = value as Element;
+                try
+                {
+                    ProcessThing(value as dynamic, node);
+                }
+                catch(Exception ex)
+                {
+                    node.NodeLabel = value.ToString();
+                }
+            }
+
+            private void ProcessThing(Element element, WatchNode node)
+            {
                 var id = element.Id;
 
                 node.Clicked += () => dynRevitSettings.Doc.ShowElements(element);
-
                 node.Link = id.IntegerValue.ToString(CultureInfo.InvariantCulture);
+                node.NodeLabel = element.Name;
             }
 
-            #endregion
+            private void ProcessThing(XYZ pt, WatchNode node)
+            {
+                var um = UnitsManager.Instance;
+
+                ///xyzs will be in feet, but we need to show them
+                ///in the display units of choice
+                
+                var xyzStr = string.Format("{0},{1},{2}",
+                    (pt.X /SIUnit.ToFoot) * um.UiLengthConversion,
+                    (pt.Y /SIUnit.ToFoot) * um.UiLengthConversion,
+                    (pt.Z /SIUnit.ToFoot) * um.UiLengthConversion);
+
+                node.NodeLabel = "{" + xyzStr + "}";
+            }
         }
+
         #endregion
 
         public bool InIdleThread;
