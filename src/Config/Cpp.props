@@ -5,24 +5,26 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-	<FINAL_BIN Condition="'$(FINAL_BIN)' == ''">$(SolutionDir)bin\$(PlatformShortName)\$(Configuration)</FINAL_BIN>
-	<OutDir>$(FINAL_BIN)</OutDir>
+    <FINAL_BIN Condition="'$(FINAL_BIN)' == ''">$(SolutionDir)..\bin\$(Platform)\$(Configuration)</FINAL_BIN>
+    <OutDir>$(FINAL_BIN)\</OutDir>
+    <IntDir>$(FINAL_BIN)\int\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <FINAL_BIN Condition="'$(FINAL_BIN)' == ''">$(SolutionDir)bin\$(Platform)\$(Configuration)</FINAL_BIN>
-	<OutDir>$(FINAL_BIN)</OutDir>
+    <FINAL_BIN Condition="'$(FINAL_BIN)' == ''">$(SolutionDir)..\bin\$(Platform)\$(Configuration)</FINAL_BIN>
+    <OutDir>$(FINAL_BIN)\</OutDir>
+    <IntDir>$(FINAL_BIN)\int\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <FINAL_BIN Condition=" '$(FINAL_BIN)' == '' ">$(SolutionDir)bin\$(PlatformShortName)\$(Configuration)</FINAL_BIN>
-	<OutDir>$(FINAL_BIN)</OutDir>
+    <FINAL_BIN Condition="'$(FINAL_BIN)' == ''">$(SolutionDir)..\bin\$(Platform)\$(Configuration)</FINAL_BIN>
+    <OutDir>$(FINAL_BIN)\</OutDir>
+    <IntDir>$(FINAL_BIN)\int\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <FINAL_BIN Condition=" '$(FINAL_BIN)' == '' ">$(SolutionDir)bin\$(Platform)\$(Configuration)</FINAL_BIN>
-	<OutDir>$(FINAL_BIN)</OutDir>
+    <FINAL_BIN Condition="'$(FINAL_BIN)' == ''">$(SolutionDir)..\bin\$(Platform)\$(Configuration)</FINAL_BIN>
+    <OutDir>$(FINAL_BIN)\</OutDir>
+    <IntDir>$(FINAL_BIN)\int\</IntDir>
   </PropertyGroup>
-  <PropertyGroup>
-  </PropertyGroup>
- </Project>
+</Project>
