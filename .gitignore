@@ -57,3 +57,5 @@ Thumbs.db
 #documentation files
 doc/html/
 Dynamo.sln.DotSettings
+*.opensdf
+*.sdf
