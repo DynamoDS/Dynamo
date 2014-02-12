@@ -7,7 +7,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Xml;
 using Autodesk.Revit.DB;
+using ProtoCore.AST.ImperativeAST;
 using Revit.Interactivity;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -116,18 +118,11 @@ namespace Dynamo.Nodes
                     dirty = value != null;
 
                 _selected = value;
-                if (value != null)
-                {
-                    SelectButtonContent = "Change";
-                }
-                else
-                {
-                    SelectionText = "Nothing Selected";
-                    SelectButtonContent = "Select";
-                }
 
                 if (dirty)
                     RequiresRecalc = true;
+
+                RaisePropertyChanged("SelectedElement");
             }
         }
 
@@ -181,12 +176,6 @@ namespace Dynamo.Nodes
                 IsReadOnlyCaretVisible = false
             };
 
-            if (SelectedElement == null || !SelectionText.Any() || !SelectButtonContent.Any())
-            {
-                SelectionText = "Nothing Selected";
-                SelectButtonContent = "Select Element";
-            }
-
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
@@ -205,9 +194,10 @@ namespace Dynamo.Nodes
             };
             tb.SetBinding(TextBox.TextProperty, selectTextBinding);
 
-            var buttonTextBinding = new System.Windows.Data.Binding("SelectButtonContent")
+            var buttonTextBinding = new System.Windows.Data.Binding("SelectedElement")
             {
                 Mode = BindingMode.TwoWay,
+                Converter = new SelectionButtonContentConverter(),
             };
             selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
 
@@ -255,6 +245,38 @@ namespace Dynamo.Nodes
 
             return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
         }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            if (SelectedElement != null)
+            {
+                XmlElement outEl = xmlDoc.CreateElement("instance");
+                outEl.SetAttribute("id", SelectedElement.UniqueId);
+                nodeElement.AppendChild(outEl);
+            }
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            {
+                if (subNode.Name.Equals("instance"))
+                {
+                    Element saved = null;
+                    var id = subNode.Attributes[0].Value;
+                    try
+                    {
+                        saved = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id); // FamilyInstance;
+                    }
+                    catch
+                    {
+                        DynamoLogger.Instance.Log(
+                            "Unable to find element with ID: " + id);
+                    }
+                    SelectedElement = saved;
+                }
+            }
+        }
     }
 
     public abstract class DSReferenceSelection : DSSelectionBase
@@ -282,18 +304,11 @@ namespace Dynamo.Nodes
                     dirty = value != null;
 
                 _selected = value;
-                if (value != null)
-                {
-                    SelectButtonContent = "Change";
-                }
-                else
-                {
-                    SelectionText = "Nothing Selected";
-                    SelectButtonContent = "Select";
-                }
 
                 if (dirty)
                     RequiresRecalc = true;
+
+                RaisePropertyChanged("SelectedElement");
             }
         }
 
@@ -347,12 +362,6 @@ namespace Dynamo.Nodes
                 IsReadOnlyCaretVisible = false
             };
 
-            if (SelectedElement == null || !SelectionText.Any() || !SelectButtonContent.Any())
-            {
-                SelectionText = "Nothing Selected";
-                SelectButtonContent = "Select Element";
-            }
-
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
@@ -371,9 +380,10 @@ namespace Dynamo.Nodes
             };
             tb.SetBinding(TextBox.TextProperty, selectTextBinding);
 
-            var buttonTextBinding = new System.Windows.Data.Binding("SelectButtonContent")
+            var buttonTextBinding = new System.Windows.Data.Binding("SelectedElement")
             {
-                Mode = BindingMode.TwoWay,
+                Mode = BindingMode.OneWay,
+                Converter = new SelectionButtonContentConverter(),
             };
             selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
 
@@ -441,6 +451,39 @@ namespace Dynamo.Nodes
 
             return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
         }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            if (SelectedElement != null)
+            {
+                XmlElement outEl = xmlDoc.CreateElement("instance");
+                outEl.SetAttribute("id", SelectedElement.ConvertToStableRepresentation(DocumentManager.GetInstance().CurrentDBDocument));
+                nodeElement.AppendChild(outEl);
+            }
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            {
+                if (subNode.Name.Equals("instance"))
+                {
+                    Reference saved = null;
+                    var id = subNode.Attributes[0].Value;
+                    try
+                    {
+                        saved = Reference.ParseFromStableRepresentation(
+                            DocumentManager.GetInstance().CurrentDBDocument, id);
+                    }
+                    catch
+                    {
+                        DynamoLogger.Instance.Log(
+                            "Unable to find reference with stable id: " + id);
+                    }
+                    SelectedElement = saved;
+                }
+            }
+        }
     }
 
     public abstract class DSElementsSelection : DSSelectionBase
@@ -459,18 +502,11 @@ namespace Dynamo.Nodes
                 bool dirty = value != null;
 
                 _selected = value;
-                if (value != null)
-                {
-                    SelectButtonContent = "Change";
-                }
-                else
-                {
-                    SelectionText = "Nothing Selected";
-                    SelectButtonContent = "Select";
-                }
 
                 if (dirty)
                     RequiresRecalc = true;
+
+                RaisePropertyChanged("SelectedElement");
             }
         }
 
@@ -526,12 +562,6 @@ namespace Dynamo.Nodes
                 IsReadOnlyCaretVisible = false
             };
 
-            if (SelectedElement.Count == 0 || !SelectionText.Any() || !SelectButtonContent.Any())
-            {
-                SelectionText = "Nothing Selected";
-                SelectButtonContent = "Select Elements";
-            }
-
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
 
@@ -550,9 +580,10 @@ namespace Dynamo.Nodes
             };
             tb.SetBinding(TextBox.TextProperty, selectTextBinding);
 
-            var buttonTextBinding = new System.Windows.Data.Binding("SelectButtonContent")
+            var buttonTextBinding = new System.Windows.Data.Binding("SelectedElement")
             {
-                Mode = BindingMode.TwoWay,
+                Mode = BindingMode.OneWay,
+                Converter = new SelectionButtonContentConverter(),
             };
             selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
 
@@ -605,6 +636,67 @@ namespace Dynamo.Nodes
             var node = AstFactory.BuildExprList(newInputs);
 
             return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
+        }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            if (SelectedElement != null)
+            {
+                foreach (Element selectedElement in _selected.Where(x => x != null))
+                {
+                    XmlElement outEl = xmlDoc.CreateElement("instance");
+                    outEl.SetAttribute("id", selectedElement.UniqueId);
+                    nodeElement.AppendChild(outEl);
+                }
+            }
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            {
+                if (subNode.Name.Equals("instance"))
+                {
+                    Element saved = null;
+                    var id = subNode.Attributes[0].Value;
+                    try
+                    {
+                        saved = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id);
+                    }
+                    catch
+                    {
+                        DynamoLogger.Instance.Log(
+                            "Unable to find element with ID: " + id);
+                    }
+                    if (SelectedElement == null)
+                        SelectedElement = new List<Element>();
+                    SelectedElement.Add(saved);
+                }
+            }
+        }
+    }
+
+    internal class SelectionButtonContentConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+                return "Select";
+
+            if (value.GetType() == typeof (List<Element>))
+            {
+                var els = (List<Element>) value;
+                if (!els.Any())
+                    return "Select";
+            }
+
+            return value == null ? "Select" : "Change";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
         }
     }
 
