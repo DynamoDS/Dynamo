@@ -12,7 +12,7 @@ using System.Collections;
 
 namespace Dynamo.Tests
 {
-    class DSEvaluationUnitTest : DynamoUnitTest
+    public class DSEvaluationUnitTest : DynamoUnitTest
     {
         public void OpenModel(string relativeFilePath)
         {
