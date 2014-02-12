@@ -26,7 +26,7 @@ namespace ProtoCore
         private string TRACE_KEY = TraceUtils.__TEMP_REVIT_TRACE_ID;
 
         private List<Object> traceData = new List<object>();
-        private int invokeCount = 0; //Number of times the callsite has been executed within this run
+        private int invokeCount; //Number of times the callsite has been executed within this run
 
         private Guid callsiteID = Guid.Empty;
 
@@ -98,6 +98,9 @@ namespace ProtoCore
         /// <param name="core"></param>
         private void UpdateCallsiteExecutionState(Object callsiteData, Core core)
         {
+            //invokeCount = 0;
+
+
             if (core.EnableCallsiteExecutionState)
             {
                 // Get the uid of this function call
@@ -924,7 +927,9 @@ namespace ProtoCore
                     TraceUtils.ClearAllKnownTLSKeys();
                 }
 
-                ret = ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, core, funcGroup);
+
+                //TODO(Luke): swap placeholder call with actual data packet 
+                ret = ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, core, funcGroup, new List<object>());
 
 
                 //WRITE TRACE FOR NON-REPLICATED CALL
@@ -948,9 +953,17 @@ namespace ProtoCore
             }
             else
             {
+                //Extract the correct run data from the trace cache here
+
+                //This is the thing that will get unpacked from the datastore
+                List<Object> traceData = new List<object>();
+
+
                 c.IsReplicating = true;
                 ret = ExecWithRISlowPath(functionEndPoint, c, formalParameters, replicationInstructions, stackFrame,
-                                         core, funcGroup);
+                                         core, funcGroup, traceData);
+
+                //Do a trace save here
             }
 
             // Explicit calls require the GC of arguments in the function return instruction
@@ -988,11 +1001,11 @@ namespace ProtoCore
         private StackValue ExecWithRISlowPath(List<FunctionEndPoint> functionEndPoint, ProtoCore.Runtime.Context c,
                                               List<StackValue> formalParameters,
                                               List<ReplicationInstruction> replicationInstructions,
-                                              StackFrame stackFrame, Core core, FunctionGroup funcGroup)
+                                              StackFrame stackFrame, Core core, FunctionGroup funcGroup, List<Object> traceData)
         {
             //Recursion base case
             if (replicationInstructions.Count == 0)
-                return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, core, funcGroup);
+                return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, core, funcGroup, traceData);
 
             //Get the replication instruction that this call will deal with
             ReplicationInstruction ri = replicationInstructions[0];
@@ -1049,7 +1062,7 @@ namespace ProtoCore
                         newRIs.RemoveAt(0);
 
                         retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
-                                                       funcGroup);
+                                                       funcGroup, traceData);
 
                     }
                 }
@@ -1102,7 +1115,7 @@ namespace ProtoCore
                         newFormalParams.AddRange(formalParameters);
 
                         return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
-                                                  funcGroup);
+                                                  funcGroup, traceData);
                     }
 
                     //Now iterate over each of these options
@@ -1171,7 +1184,7 @@ namespace ProtoCore
                         newRIs.RemoveAt(0);
 
                         retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
-                                                        funcGroup);
+                                                        funcGroup, traceData);
 #endif
                     }
                 }
@@ -1191,7 +1204,7 @@ namespace ProtoCore
         /// </summary>
         private StackValue ExecWithZeroRI(List<FunctionEndPoint> functionEndPoint, ProtoCore.Runtime.Context c,
                                           List<StackValue> formalParameters, StackFrame stackFrame, Core core,
-                                          FunctionGroup funcGroup)
+                                          FunctionGroup funcGroup, List<Object> traceData)
         {
             //@PERF: Todo add a fast path here for the case where we have a homogenious array so we can directly dispatch
 
