@@ -33,16 +33,18 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
-    <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GraphToDSCompiler, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="FScheme, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DesignScript\GraphToDSCompiler.dll</HintPath>
+      <HintPath>..\..\bin\AnyCPU\Debug\FScheme.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FSchemeInterop, Version=0.5.3.42660, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
@@ -77,37 +79,30 @@
     <Compile Include="VisualizationManagerUITests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
+    <ProjectReference Include="..\DynamoAsm\DynamoAsm.csproj">
+      <Project>{95192F1A-3265-4986-8D07-50F8FD4F2439}</Project>
+      <Name>DynamoAsm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\DynamoUtilities\DynamoUtilities.csproj">
-      <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
-      <Name>DynamoUtilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Engine\ProtoCore\ProtoCore.csproj">
-      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
-      <Name>ProtoCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
-      <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
-      <Name>FSchemeInterop2012</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Legacy\FScheme\FScheme.2012.fsproj">
-      <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
-      <Name>FScheme.2012</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\DynamoWatch3D\Watch3D.csproj">
-      <Project>{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}</Project>
-      <Name>Watch3D</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
+    <ProjectReference Include="..\DynamoElementsTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
       <Name>DynamoCoreTests</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
+    <ProjectReference Include="..\DynamoPython\DynamoPython.csproj">
+      <Project>{2B0F2800-6F62-4869-9074-088C5F6DCCA2}</Project>
+      <Name>DynamoPython</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
+      <Name>DynamoUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoWatch3D\DynamoWatch3D.csproj">
+      <Project>{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}</Project>
+      <Name>DynamoWatch3D</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
