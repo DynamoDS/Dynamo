@@ -360,9 +360,9 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            dsRevitNode.SetAttribute("assembly", "DSRevitNodes.dll");
-            dsRevitNode.SetAttribute("nickname", "AxonometricView.ByEyePointAndTarget");
-            dsRevitNode.SetAttribute("function", "AxonometricView.ByEyePointAndTarget@Point,Point,object,string,bool");
+            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll", 
+                "AxonometricView.ByEyePointAndTarget", 
+                "AxonometricView.ByEyePointAndTarget@Point,Point,object,string,bool");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
@@ -419,9 +419,9 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            dsRevitNode.SetAttribute("assembly", "DSRevitNodes.dll");
-            dsRevitNode.SetAttribute("nickname", "PerspectiveView.ByEyePointAndTarget");
-            dsRevitNode.SetAttribute("function", "PerspectiveView.ByEyePointAndTarget@Point,Point,object,string,bool");
+            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll",
+                "PerspectiveView.ByEyePointAndTarget", 
+                "PerspectiveView.ByEyePointAndTarget@Point,Point,object,string,bool");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
