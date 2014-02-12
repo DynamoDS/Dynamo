@@ -963,9 +963,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            newNode.SetAttribute("assembly", "ProtoGeometry.dll");
-            newNode.SetAttribute("nickname", "Vector.Normalized");
-            newNode.SetAttribute("function", "Vector.Normalized");
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll", 
+                "Vector.Normalized", "Vector.Normalized");
 
             migratedData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
