@@ -232,9 +232,8 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            newNode.SetAttribute("assembly", "ProtoGeometry.dll");
-            newNode.SetAttribute("nickname", "Surface.PointAtParameter");
-            newNode.SetAttribute("function", "Surface.PointAtParameter@double,double");
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Surface.PointAtParameter", "Surface.PointAtParameter@double,double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -316,9 +315,8 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            newNode.SetAttribute("assembly", "ProtoGeometry.dll");
-            newNode.SetAttribute("nickname", "Surface.NormalAtParameter");
-            newNode.SetAttribute("function", "Surface.NormalAtParameter@double,double");
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Surface.NormalAtParameter", "Surface.NormalAtParameter@double,double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -398,7 +396,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Revit.GeometryObjects.Face.SurfaceArea", "Surface.Area");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Surface.Area", "Surface.Area");
         }
     }
 

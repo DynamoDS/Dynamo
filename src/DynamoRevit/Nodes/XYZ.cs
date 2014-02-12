@@ -100,9 +100,8 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            newNode.SetAttribute("assembly", "ProtoGeometry.dll");
-            newNode.SetAttribute("nickname", "Point.ByCylindricalCoordinates");
-            newNode.SetAttribute("function", "Point.ByCylindricalCoordinates@CoordinateSystem,double,double,double");
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Point.ByCylindricalCoordinates", "Point.ByCylindricalCoordinates@CoordinateSystem,double,double,double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -231,9 +230,8 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            newNode.SetAttribute("assembly", "ProtoGeometry.dll");
-            newNode.SetAttribute("nickname", "Point.BySphericalCoordinates");
-            newNode.SetAttribute("function", "Point.BySphericalCoordinates@CoordinateSystem,double,double,double");
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Point.BySphericalCoordinates", "Point.BySphericalCoordinates@CoordinateSystem,double,double,double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -1349,9 +1347,8 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            newNode.SetAttribute("assembly", "ProtoGeometry.dll");
-            newNode.SetAttribute("nickname", "Curve.PointAtParameter");
-            newNode.SetAttribute("function", "Curve.PointAtParameter@double");
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Curve.PointAtParameter", "Curve.PointAtParameter@double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
