@@ -33,7 +33,7 @@ namespace Dynamo.Tests
         /// </summary>
         /// <param name="varname"></param>
         /// <param name="selectedValues">Values to verify</param>
-        public void SelectivelyAssertValue(string varname, Dictionary<int, object> selectedValues)
+        public void SelectivelyAssertValues(string varname, Dictionary<int, object> selectedValues)
         {
             var mirror = GetRuntimeMirror(varname);
             //Couldn't find the variable, so expected value should be null.
@@ -46,7 +46,7 @@ namespace Dynamo.Tests
 
             Console.WriteLine(varname + " = " + mirror.GetStringData());
             var svValue = mirror.GetData();
-            SelectivelyAssertValue(svValue, selectedValues);
+            SelectivelyAssertValues(svValue, selectedValues);
         }
 
         public void AssertValue(string varname, object value)
@@ -71,10 +71,10 @@ namespace Dynamo.Tests
             AssertValue(previewVariable, value);
         }
 
-        public void SelectivelyAssertPreviewValue(string guid, Dictionary<int, object> selectedValue)
+        public void SelectivelyAssertPreviewValues(string guid, Dictionary<int, object> selectedValue)
         {
             string previewVariable = GetVarName(guid);
-            SelectivelyAssertValue(previewVariable, selectedValue);
+            SelectivelyAssertValues(previewVariable, selectedValue);
         }
 
         public void AssertClassName(string guid, string className)
@@ -101,7 +101,7 @@ namespace Dynamo.Tests
             return mirror;
         }
 
-        private void SelectivelyAssertValue(MirrorData data, Dictionary<int, object> selectedValues)
+        private void SelectivelyAssertValues(MirrorData data, Dictionary<int, object> selectedValues)
         {
             Assert.IsTrue(data.IsCollection);
 
