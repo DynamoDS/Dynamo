@@ -53,7 +53,7 @@
                                Foreground="#00bb00"
                                PreviewMouseDown="OnPreviewMouseDown"
                                HorizontalAlignment="Center">
-                        <Run Foreground="{Binding UpToDate, Converter={StaticResource IsUpToDateBrushConverter}}" Text="{Binding UpToDate, Converter={StaticResource IsUpToDateToTextConverter}, Mode=OneWay}"/>
+                        <Run Foreground="{Binding IsUpdateAvailable, Converter={StaticResource IsUpdateAvailableBrushConverter}}" Text="{Binding IsUpdateAvailable, Converter={StaticResource IsUpdateAvailableToTextConverter}, Mode=OneWay}"/>
                     </TextBlock>
                 </StackPanel>
             </Grid>
