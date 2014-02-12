@@ -592,7 +592,7 @@ namespace Dynamo
                 ///xyzs will be in feet, but we need to show them
                 ///in the display units of choice
                 
-                var xyzStr = string.Format("{0},{1},{2}",
+                var xyzStr = string.Format("{0:f3},{1:f3},{2:f3}",
                     (pt.X /SIUnit.ToFoot) * um.UiLengthConversion,
                     (pt.Y /SIUnit.ToFoot) * um.UiLengthConversion,
                     (pt.Z /SIUnit.ToFoot) * um.UiLengthConversion);
