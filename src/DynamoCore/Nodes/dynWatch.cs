@@ -24,7 +24,6 @@ namespace Dynamo.Nodes
     {
 
         public WatchTree watchTree;
-        //private WatchTreeBranch watchTreeBranch;
 
         private WatchNode _root;
         public WatchNode Root
@@ -52,7 +51,7 @@ namespace Dynamo.Nodes
 
             public void ProcessNode(object value, WatchNode node)
             {
-                foreach (var handler in handlers.Where(x => x.AcceptsValue(value)))
+                foreach (var handler in handlers)   //.Where(x => x.AcceptsValue(value)))
                 {
                     handler.ProcessNode(value, node);
                 }
@@ -142,8 +141,6 @@ namespace Dynamo.Nodes
 
         WatchNode Process(Value eIn, string prefix, int count, bool isListMember = false)
         {
-            //content += prefix + string.Format("[{0}]:", count.ToString());
-
             WatchNode node = null;
             
             if (eIn == null || eIn.IsDummy)
@@ -157,24 +154,16 @@ namespace Dynamo.Nodes
                 var value = (eIn as Value.Container).Item;
                 if (value != null)
                 {
-                    //content += (eIn as Value.Container).Item.ToString();
-
                     node = new WatchNode(value.ToString(), isListMember, count);
-
                     handlerManager.ProcessNode(value, node);
-                    
-                    //node.Link = id;
                 }
             }
             else if (eIn.IsFunction)
             {
-                //content += eIn.ToString() + "\n";
                 node = new WatchNode("<function>", isListMember, count);
             }
             else if (eIn.IsList)
             {
-                //content += "List\n";
-
                 string newPrefix = prefix + "\t";
 
                 var list = (eIn as Value.List).Item;
@@ -188,17 +177,14 @@ namespace Dynamo.Nodes
             }
             else if (eIn.IsNumber)
             {
-                //content += (eIn as Value.Number).Item.ToString() + "\n";
                 node = new WatchNode((eIn as Value.Number).Item.ToString(), isListMember, count);
             }
             else if (eIn.IsString)
             {
-                //content += (eIn as Value.String).Item.ToString() + "\n";
                 node = new WatchNode((eIn as Value.String).Item, isListMember, count);
             }
             else if (eIn.IsSymbol)
             {
-                //content += (eIn as Value.Symbol).Item.ToString() + "\n";
                 node = new WatchNode((eIn as Value.Symbol).Item, isListMember, count);
             }
 
