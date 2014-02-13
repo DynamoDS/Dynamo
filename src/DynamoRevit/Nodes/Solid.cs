@@ -339,10 +339,10 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             //create the node itself
-            XmlElement dsRevitNode = MigrationManager.CreateFunctionNode(
-                data.Document, "DSRevitNodes.dll",
-                    "Form.ByLoftingCurveReferences", 
-                    "Form.ByLoftingCurveReferences@CurveReference[],bool");
+            XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll", 
+                "Form.ByLoftingCurveReferences", 
+                "Form.ByLoftingCurveReferences@CurveReference[],bool");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
@@ -890,7 +890,7 @@ namespace Dynamo.Nodes
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "Solid.Intersect", "Solid.Intersect@Solid");
         }
     }
-    /*
+
     [NodeName("Solid from Element")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_SOLID_QUERY)]
     [NodeDescription("Creates reference to the solid in the element's geometry objects.")]
@@ -1008,9 +1008,15 @@ namespace Dynamo.Nodes
 
             return FScheme.Value.NewContainer(mySolid);
         }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+                "Solid.FromElement", "Solid.FromElement@AbstractElement");
+        }
     }
-    */
-    /*
+
     [NodeName("Cylinder")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_SOLID_PRIMITIVES)]
     [NodeDescription("Create a cylinder from the axis, origin, radius, and height")]
@@ -1040,8 +1046,9 @@ namespace Dynamo.Nodes
             var xaxis = yaxis.CrossProduct(zaxis);
 
             // create circle (this is ridiculous, but curve loop doesn't work with a circle - you need two arcs)
-            var arc1 = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(origin, radius, radius, xaxis, yaxis, 0, Circle.RevitPI);
-            var arc2 = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(origin, radius, radius, xaxis, yaxis, Circle.RevitPI, 2 * Circle.RevitPI);
+            var document = DocumentManager.GetInstance().CurrentUIDocument.Application;
+            var arc1 = document.Application.Create.NewEllipse(origin, radius, radius, xaxis, yaxis, 0, Circle.RevitPI);
+            var arc2 = document.Application.Create.NewEllipse(origin, radius, radius, xaxis, yaxis, Circle.RevitPI, 2 * Circle.RevitPI);
 
             // create curve loop from cirle
             var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { arc1, arc2 });
@@ -1061,8 +1068,49 @@ namespace Dynamo.Nodes
             // create and return geom
             return FScheme.Value.NewContainer(CylinderByAxisOriginRadiusHeight(axis, origin, radius, height));
         }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            //create the node itself
+            XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll",
+                "Solid.Cylinder", "Solid.Cylinder@Point,double,Vector,double");
+
+            migratedData.AppendNode(dsRevitNode);
+            string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
+
+            //create and reconnect the connecters
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
+
+            PortId oldInPort3 = new PortId(oldNodeId, 3, PortType.INPUT);
+            XmlElement connector3 = data.FindFirstConnector(oldInPort3);
+
+            PortId newInPort0 = new PortId(dsRevitNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(dsRevitNodeId, 1, PortType.INPUT);
+            PortId newInPort2 = new PortId(dsRevitNodeId, 2, PortType.INPUT);
+            PortId newInPort3 = new PortId(dsRevitNodeId, 3, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, newInPort2);
+            data.ReconnectToPort(connector1, newInPort0);
+            data.ReconnectToPort(connector2, newInPort1);
+            data.ReconnectToPort(connector3, newInPort3);
+
+            return migratedData;
+        }
     }
-    */
+
     [NodeName("Sphere")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_SOLID_PRIMITIVES)]
     [NodeDescription("Creates sphere from a center point and axis")]

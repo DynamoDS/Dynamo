@@ -312,10 +312,9 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             //create the node itself
-            XmlElement dsRevitNode = MigrationManager.CreateFunctionNode(
-                data.Document, "DSRevitNodes.dll",
-                "FamilyInstance.ByPoint",
-                "FamilyInstance.ByPoint@FamilySymbol,Point");
+            XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll", 
+                "FamilyInstance.ByPoint", "FamilyInstance.ByPoint@FamilySymbol,Point");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
@@ -453,10 +452,10 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             //create the node itself
-            XmlElement dsRevitNode = MigrationManager.CreateFunctionNode(
-                data.Document, "DSRevitNodes.dll",
-                "FamilyInstance.ByPointAndLevel", 
-                "FamilyInstance.ByPointAndLevel@FamilySymbol,Point,Level");
+            XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+             MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll", 
+                 "FamilyInstance.ByPointAndLevel", 
+                 "FamilyInstance.ByPointAndLevel@FamilySymbol,Point,Level");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
