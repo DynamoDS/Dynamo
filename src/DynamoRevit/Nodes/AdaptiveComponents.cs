@@ -19,88 +19,9 @@ namespace Dynamo.Nodes
     [NodeDescription("Given a list of XYZs and a family type, creates an adaptive component at that location.")]
     public class AdaptiveComponentByPoints : RevitTransactionNodeWithOneOutput
     {
-        public AdaptiveComponentByPoints()
-        {
-            InPortData.Add(new PortData("xyzs", "The XYZs that define the locations of your adaptive points.", typeof(Value.List)));
-            InPortData.Add(new PortData("family type", "The family type to create the adaptive component.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("adaptive component", "The adaptive component.", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
-            FSharpList<Value> pts = ((Value.List)args[0]).Item;
-            var fs = (FamilySymbol)((Value.Container)args[1]).Item;
-
-            FamilyInstance ac;
-
-            var instData = new List<FamilyInstanceCreationData>();
-
-            var sw = new Stopwatch();
-
-            //if the adapative component already exists, then move the points
-            if (Elements.Any())
-            {
-                //mutate
-                //...we attempt to fetch it from the document...
-                if (dynUtils.TryGetElement(Elements[0], out ac))
-                {
-                    sw.Start();
-                    ac.Symbol = fs;
-                    sw.Stop();
-                    Debug.WriteLine(string.Format("{0} elapsed for updating family type on AC.", sw.Elapsed));
-                    sw.Reset();
-                }
-                else
-                {
-                    sw.Start();
-                    //create
-                    var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
-                    ac = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(document, fs);
-                    Elements[0] = ac.Id;
-                    sw.Stop();
-                    Debug.WriteLine(string.Format("{0} elapsed for creating an AC.", sw.Elapsed));
-                    sw.Reset();
-                }
-            }
-            else
-            {
-                sw.Start();
-                //create
-                var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
-                ac = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(document, fs);
-                Elements.Add(ac.Id);
-                sw.Stop();
-                Debug.WriteLine(string.Format("{0} elapsed for creating an AC.", sw.Elapsed));
-                sw.Reset();
-            }
-
-            if (ac == null)
-                throw new Exception("An adaptive component could not be found or created.");
-
-            IList<ElementId> placePointIds = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(ac);
-
-            if (placePointIds.Count() != pts.Count())
-                throw new Exception("The input list of points does not have the same number of values required by the adaptive component.");
-
-            sw.Start();
-            // Set the position of each placement point
-            int i = 0;
-            foreach (ElementId id in placePointIds)
-            {
-                var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
-                var point = document.GetElement(id) as ReferencePoint;
-                var pt = (XYZ)((Value.Container)pts.ElementAt(i)).Item;
-                point.Position = pt;
-                i++;
-            }
-            sw.Stop();
-            Debug.WriteLine(string.Format("{0} elapsed for updating placement points of the AC.", sw.Elapsed));
-            sw.Reset();
-
-
-            return Value.NewContainer(ac);
+            return null;
         }
 
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
@@ -281,78 +202,9 @@ namespace Dynamo.Nodes
     [NodeDescription("Given a list of XYZs and a family type, creates an adaptive component at that location on the face.")]
     public class AdaptiveComponentByUvsOnFace : RevitTransactionNodeWithOneOutput
     {
-        public AdaptiveComponentByUvsOnFace()
-        {
-            InPortData.Add(new PortData("uvs", "The UVs that define the locations of your adaptive points on the face.", typeof(Value.List)));
-            InPortData.Add(new PortData("face", "The face on which to host your Adaptive Component instance.", typeof(Value.Container)));
-            InPortData.Add(new PortData("fs", "The family type to create the adaptive component.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("ac", "The adaptive component.", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
-            if(!args[0].IsList)
-                throw new Exception("A list of UVs is required to place the Adaptive Component.");
-
-            FSharpList<Value> uvs = ((Value.List)args[0]).Item;
-
-            var faceRef = ((Value.Container) args[1]).Item as Reference;
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
-            var f = faceRef == null
-                         ? (Face) ((Value.Container) args[1]).Item
-                         : (Face)document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef);
-
-            var fs = (FamilySymbol)((Value.Container)args[2]).Item;
-
-            FamilyInstance ac = null;
-
-            //if the adapative component already exists, then move the points
-            if (Elements.Any())
-            {
-                //mutate
-                //...we attempt to fetch it from the document...
-                if (dynUtils.TryGetElement(this.Elements[0], out ac))
-                {
-                    ac.Symbol = fs;
-                }
-                else
-                {
-                    //create
-                    ac = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(document, fs);
-                    Elements[0] = ac.Id;
-                }
-            }
-            else
-            {
-                //create
-                ac = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(document, fs);
-                Elements.Add(ac.Id);
-            }
-
-            if (ac == null)
-                throw new Exception("An adaptive component could not be found or created.");
-
-            IList<ElementId> placePointIds = new List<ElementId>();
-            placePointIds = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(ac);
-
-            if (placePointIds.Count() != uvs.Count())
-                throw new Exception("The input list of UVs does not have the same number of values required by the adaptive component.");
-
-            // Set the position of each placement point
-            int i = 0;
-            foreach (ElementId id in placePointIds)
-            {
-                var uv = (UV)((Value.Container)uvs.ElementAt(i)).Item;
-                var point = document.GetElement(id) as ReferencePoint;
-                var application = DocumentManager.GetInstance().CurrentUIApplication.Application;
-                var peref = application.Create.NewPointOnFace(f.Reference, uv);
-                point.SetPointElementReference(peref);
-                i++;
-            }
-
-            return Value.NewContainer(ac);
+            return null;
         }
 
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
@@ -369,79 +221,9 @@ namespace Dynamo.Nodes
     [NodeDescription("Given a list of parameters and a family type, creates an adaptive component at that location on the curve.")]
     public class AdaptiveComponentByParametersOnCurve : RevitTransactionNodeWithOneOutput
     {
-        public AdaptiveComponentByParametersOnCurve()
-        {
-            InPortData.Add(new PortData("params", "The parameters that define the locations of your adaptive points on the curve.", typeof(Value.List)));
-            InPortData.Add(new PortData("curve", "The curve on which to host your Adaptive Component instance.", typeof(Value.Container)));
-            InPortData.Add(new PortData("fs", "The family type to create the adaptive component.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("ac", "The adaptive component.", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
-            if (!args[0].IsList)
-                throw new Exception("A list of UVs is required to place the Adaptive Component.");
-
-            FSharpList<Value> parameters = ((Value.List)args[0]).Item;
-
-            var curveRef = ((Value.Container)args[1]).Item as Reference;
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
-            var c = curveRef == null
-                         ? (Curve)((Value.Container)args[1]).Item
-                         : (Curve)document.GetElement(curveRef.ElementId).GetGeometryObjectFromReference(curveRef);
-
-            var fs = (FamilySymbol)((Value.Container)args[2]).Item;
-
-            FamilyInstance ac = null;
-
-            //if the adapative component already exists, then move the points
-            if (Elements.Any())
-            {
-                //...we attempt to fetch it from the document...
-                if (dynUtils.TryGetElement(this.Elements[0], out ac))
-                {
-                    ac.Symbol = fs;
-                }
-                else
-                {
-                    //create
-                    ac = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(document, fs);
-                    Elements[0] = ac.Id;
-                }
-            }
-            else
-            {
-                //create
-                ac = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(document, fs);
-                Elements.Add(ac.Id);
-            }
-
-            if (ac == null)
-                throw new Exception("An adaptive component could not be found or created.");
-
-            IList<ElementId> placePointIds = new List<ElementId>();
-            placePointIds = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(ac);
-
-            if (placePointIds.Count() != parameters.Count())
-                throw new Exception("The input list of UVs does not have the same number of values required by the adaptive component.");
-
-            // Set the position of each placement point
-            int i = 0;
-            foreach (ElementId id in placePointIds)
-            {
-                var t = ((Value.Number)parameters.ElementAt(i)).Item;
-                var point = document.GetElement(id) as ReferencePoint;
-                var ploc = new PointLocationOnCurve(PointOnCurveMeasurementType.NonNormalizedCurveParameter, t,
-                                                    PointOnCurveMeasureFrom.Beginning);
-                var application = DocumentManager.GetInstance().CurrentUIApplication.Application;
-                var peref = application.Create.NewPointOnEdge(c.Reference, ploc);
-                point.SetPointElementReference(peref);
-                i++;
-            }
-
-            return Value.NewContainer(ac);
+            return null;
         }
 
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
