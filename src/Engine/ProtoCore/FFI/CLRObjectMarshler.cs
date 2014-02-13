@@ -473,15 +473,31 @@ namespace ProtoFFI
                         }
                         if (typeof(System.Collections.ICollection).IsAssignableFrom(type))
                         {
-                            Type arrayType = type.GetGenericArguments()[0].MakeArrayType();
-                            object arr = ConvertDSArrayToCSArray(dsObject, context, dsi, arrayType);
-                            return Activator.CreateInstance(type, new[] { arr }); //Create the collection using 
+                            if (type.IsGenericType)
+                            {
+                                Type arrayType = type.GetGenericArguments()[0].MakeArrayType();
+                                object arr = ConvertDSArrayToCSArray(dsObject, context, dsi, arrayType);
+                                return Activator.CreateInstance(type, new[] { arr }); //Create the collection using 
+                            }
+                            else
+                            {
+                                // No type specified, then conver to object array
+                                Type arrayType = typeof(object).MakeArrayType();
+                                return ConvertDSArrayToCSArray(dsObject, context, dsi, arrayType);
+                            }
                         }
                         else if (typeof(System.Collections.IEnumerable).IsAssignableFrom(type))
                         {
-                            Type arrayType = type.GetGenericArguments()[0].MakeArrayType();
-                            object arr = ConvertDSArrayToCSArray(dsObject, context, dsi, arrayType);
-                            return arr;
+                            if (type.IsGenericType)
+                            {
+                                Type arrayType = type.GetGenericArguments()[0].MakeArrayType();
+                                return ConvertDSArrayToCSArray(dsObject, context, dsi, arrayType);
+                            }
+                            else
+                            {
+                                Type arrayType = typeof(object).MakeArrayType();
+                                return ConvertDSArrayToCSArray(dsObject, context, dsi, arrayType);
+                            }
                             /*
                                                         Type genericType = type.GetGenericArguments()[0];
                                                         return ConvertDSArrayToCSList(dsObject, context, dsi, genericType);
