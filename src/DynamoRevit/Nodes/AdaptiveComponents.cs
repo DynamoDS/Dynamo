@@ -21,7 +21,7 @@ namespace Dynamo.Nodes
     {
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
@@ -204,7 +204,7 @@ namespace Dynamo.Nodes
     {
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
@@ -223,7 +223,7 @@ namespace Dynamo.Nodes
     {
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
