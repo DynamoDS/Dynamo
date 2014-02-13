@@ -87,6 +87,10 @@
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DynamoElementsTests\DynamoCoreTests.csproj">
+      <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
+      <Name>DynamoCoreTests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DynamoPython\DynamoPython.csproj">
       <Project>{2B0F2800-6F62-4869-9074-088C5F6DCCA2}</Project>
       <Name>DynamoPython</Name>
