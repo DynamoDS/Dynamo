@@ -66,9 +66,6 @@ limitations under the License.
     <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DesignScriptStudio.Renderer">
-      <HintPath>..\..\extern\DSSRenderer\DesignScriptStudio.Renderer.dll</HintPath>
-    </Reference>
     <Reference Include="FSharp.Core" />
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -433,6 +430,10 @@ limitations under the License.
     <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Render\DesignScriptStudio.Renderer\DesignScriptStudio.Renderer.vcxproj">
+      <Project>{a69e7467-7a33-4242-aea2-984b41130f54}</Project>
+      <Name>DesignScriptStudio.Renderer %28Visual Studio 2010%29</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
