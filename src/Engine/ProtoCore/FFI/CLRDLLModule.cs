@@ -339,8 +339,11 @@ namespace ProtoFFI
                 if (!IsBrowsable(m))
                     continue;
 
+                if (isStatic && m.GetBaseDefinition().DeclaringType == baseType && baseType == typeof(object))
+                    continue;
+
                 //Don't include overriden methods or generic methods
-                if (m.IsPublic && !m.IsGenericMethod && (m == m.GetBaseDefinition() || (!isStatic && m.GetBaseDefinition().DeclaringType == baseType && baseType == typeof(Object))))
+                if (m.IsPublic && !m.IsGenericMethod && (m == m.GetBaseDefinition() || (m.GetBaseDefinition().DeclaringType == baseType && baseType == typeof(Object))))
                 {
                     AssociativeNode node = ParseAndRegisterFunctionPointer(isDisposable, ref hasDisposeMethod, m);
                     classnode.funclist.Add(node);
