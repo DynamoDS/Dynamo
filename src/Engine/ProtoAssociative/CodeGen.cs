@@ -3002,7 +3002,8 @@ namespace ProtoAssociative
                 FunctionCallNode fcNode = null;
                 if (node is FunctionCallNode)
                 {
-                    fcNode = node as FunctionCallNode;
+                    //fcNode = node as FunctionCallNode;
+                    fcNode = new FunctionCallNode(node as FunctionCallNode);
 
                     List<AssociativeNode> astlistArgs = new List<AssociativeNode>();
 
@@ -3037,10 +3038,10 @@ namespace ProtoAssociative
                 bnode.LeftNode = identNode;
 
                 // Store the replication guide from the function call to the temp
-                (identNode as IdentifierNode).ReplicationGuides = GetReplicationGuidesFromASTNode(node);
+                (identNode as IdentifierNode).ReplicationGuides = GetReplicationGuidesFromASTNode(fcNode);
 
                 //Right node
-                bnode.RightNode = node;
+                bnode.RightNode = fcNode;
                 bnode.isSSAAssignment = true;
 
 
