@@ -18,7 +18,7 @@ namespace Dynamo.Tests
     {
         string listTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "list"); } }
 
-        #region Test Build Sublist -Done
+        #region Test Build Sublist  
 
         [Test]
         public void TestBuildSublistsEmptyInput()
@@ -62,7 +62,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Test Concatenate List -Done
+        #region Test Concatenate List  
 
         [Test]
         public void TestConcatenateListsEmptyInput()
@@ -94,7 +94,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Test DiagonalLeftList -Done
+        #region Test DiagonalLeftList  
 
         [Test]
         public void TestDiagonalLeftListEmptyInput()
@@ -134,7 +134,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Test DiagonalRightList -Done
+        #region Test DiagonalRightList  
 
         [Test]
         public void TestDiagonalRightListEmptyInput()
@@ -167,7 +167,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Test First Of List -Done
+        #region Test First Of List  
 
         [Test]
         public void TestFirstOfListEmptyInput()
@@ -205,7 +205,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Test Empty List -Done
+        #region Test Empty List  
 
         [Test]
         public void TestIsEmptyListEmptyInput()
@@ -247,7 +247,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Test List Length -Done
+        #region Test List Length  
 
         [Test]
         public void TestStringLengthEmptyInput()
@@ -289,7 +289,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Test Partition List -Done
+        #region Test Partition List  
 
         [Test]
         public void TestPartitionStringEmptyInput()
@@ -331,7 +331,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Test Flatten -DonePartial
+        #region Test Flatten
 
         [Test]
         public void TestFlattenEmptyInput()
@@ -357,13 +357,15 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testPlatten_normalInput.dyn");
             RunModel(testFilePath);
-            AssertPreviewValue("6e46f30d-2214-4ff7-a666-0516d2af7c64", new object[] { new object[] { 0, 1, 2, 3, 4 }, new object[] { "a", "b", "c", "d" }, "a", "b", "c", "d" });
-
+            AssertPreviewValue("6e46f30d-2214-4ff7-a666-0516d2af7c64", new object[] 
+            { 
+                new object[] { 0, 1, 2, 3, 4 }, new object[] { "a", "b", "c", "d" }, "a", "b", "c", "d" 
+            });
         }
 
         #endregion
 
-        #region Test FlattenCompletely -Done
+        #region Test FlattenCompletely  
 
         [Test]
         public void TestFlattenCompletlyEmptyInput()
@@ -394,7 +396,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Test Repeat -Done
+        #region Test Repeat  
 
         [Test]
         public void TestRepeatEmptyInput()
@@ -436,7 +438,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Test RestOfList -Done
+        #region Test RestOfList  
 
         [Test]
         public void TestRestOfListEmptyInput()
@@ -476,7 +478,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Test Transpose List -Done
+        #region Test Transpose List  
         [Test]
         public void TestTransposeEmptyInput()
         {
@@ -515,7 +517,7 @@ namespace Dynamo.Tests
         }
         #endregion
 
-        #region Sort Test Cases -Done
+        #region Sort Test Cases  
 
         [Test]
         public void Sort_NumbersfFromDiffInput()
@@ -529,8 +531,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(18, model.CurrentWorkspace.Connectors.Count);
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
 
             // fourth and last element in the list before sorting
             Dictionary<int, object> validationData = new Dictionary<int,object>()
@@ -561,9 +561,6 @@ namespace Dynamo.Tests
             // check all the nodes and connectors are loaded
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
-
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
 
             // First and last element in the list before sorting
             Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -610,9 +607,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
             Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
-
             // First and last element in the list before sorting
             Dictionary<int, object> validationData = new Dictionary<int, object>()
             {
@@ -632,7 +626,7 @@ namespace Dynamo.Tests
         }
         #endregion
 
-        #region SortBy Test Cases -Done
+        #region SortBy Test Cases  
         [Test]
         public void SortBy_SimpleTest()
         {
@@ -645,8 +639,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
             Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
 
             // First and last element in the list before sorting
             Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -667,7 +659,7 @@ namespace Dynamo.Tests
         }
         #endregion
 
-        #region Reverse Test Cases -DonePartial
+        #region Reverse Test Cases  
 
         [Test]
         public void Reverse_ListWithOneNumber()
@@ -681,8 +673,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
 
             // First element in the list before Reversing
             AssertPreviewValue("cd36fac7-d9eb-47ea-a73d-ad1bb4bbe54a", 0);
@@ -700,20 +690,20 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
             Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
 
             // First element in the list before Reversing
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("6dc62b9d-6045-4b68-a34c-2d5da999958b");
-            FSharpList<FScheme.Value> listWatchVal1 = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(6, listWatchVal1.Length);
-            Assert.AreEqual("Dynamo", listWatchVal1[0].GetStringFromFSchemeValue());
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,"Dynamo"},
+            };
+            SelectivelyAssertPreviewValues("6dc62b9d-6045-4b68-a34c-2d5da999958b", validationData);
 
             // First element in the list after Reversing
-            var reverse = model.CurrentWorkspace.NodeFromWorkspace<Reverse>("cd36fac7-d9eb-47ea-a73d-ad1bb4bbe54a");
-            FSharpList<FScheme.Value> listWatchVal = reverse.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(6, listWatchVal.Length);
-            Assert.AreEqual(54.5, listWatchVal[0].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData1 = new Dictionary<int, object>()
+            {
+                {0,54.5},
+            };
+            SelectivelyAssertPreviewValues("cd36fac7-d9eb-47ea-a73d-ad1bb4bbe54a", validationData1);
 
         }
 
@@ -729,22 +719,23 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
             Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
 
-            // First and last element in the list before Reversing
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("6dc62b9d-6045-4b68-a34c-2d5da999958b");
-            FSharpList<FScheme.Value> listWatchVal1 = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(8, listWatchVal1.Length);
-            Assert.AreEqual(-1, listWatchVal1[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(6, listWatchVal1[7].GetDoubleFromFSchemeValue());
+            // First and Last element in the list before Reversing
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,-1},
+                {7,8},
+
+            };
+            SelectivelyAssertPreviewValues("6dc62b9d-6045-4b68-a34c-2d5da999958b", validationData);
 
             // First and last element in the list after Reversing
-            var reverse = model.CurrentWorkspace.NodeFromWorkspace<Reverse>("cd36fac7-d9eb-47ea-a73d-ad1bb4bbe54a");
-            FSharpList<FScheme.Value> listWatchVal = reverse.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(8, listWatchVal.Length);
-            Assert.AreEqual(6, listWatchVal[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(-1, listWatchVal[7].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData1 = new Dictionary<int, object>()
+            {
+                {0,6},
+                {7,-1},
+            };
+            SelectivelyAssertPreviewValues("cd36fac7-d9eb-47ea-a73d-ad1bb4bbe54a", validationData1);
 
         }
 
@@ -760,22 +751,23 @@ namespace Dynamo.Tests
             Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
 
-            // First and last element in the list before Reversing
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("6dc62b9d-6045-4b68-a34c-2d5da999958b");
-            FSharpList<FScheme.Value> listWatchVal1 = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(4, listWatchVal1.Length);
-            Assert.AreEqual("Dynamo", listWatchVal1[0].GetStringFromFSchemeValue());
-            Assert.AreEqual("Script", listWatchVal1[3].GetStringFromFSchemeValue());
+            // First and Last element in the list before Reversing
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,"Dynamo"},
+                {3,"Script"},
+
+            };
+            SelectivelyAssertPreviewValues("6dc62b9d-6045-4b68-a34c-2d5da999958b", validationData);
 
             // First and last element in the list after Reversing
-            var reverse = model.CurrentWorkspace.NodeFromWorkspace<Reverse>("cd36fac7-d9eb-47ea-a73d-ad1bb4bbe54a");
-            FSharpList<FScheme.Value> listWatchVal = reverse.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(4, listWatchVal.Length);
-            Assert.AreEqual("Script", listWatchVal[0].GetStringFromFSchemeValue());
-            Assert.AreEqual("Dynamo", listWatchVal[3].GetStringFromFSchemeValue());
+            Dictionary<int, object> validationData1 = new Dictionary<int, object>()
+            {
+                {0,"Script"},
+                {3,"Dynamo"},
+            };
+            SelectivelyAssertPreviewValues("cd36fac7-d9eb-47ea-a73d-ad1bb4bbe54a", validationData1);
 
         }
 
@@ -791,22 +783,19 @@ namespace Dynamo.Tests
             Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
             Assert.AreEqual(16, model.CurrentWorkspace.Nodes.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
+            //// First and last element in the list before Reversing
+            //var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("1c9d53b6-b5e0-4282-9768-a6c53115aba4");
+            //FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
+            //Assert.AreEqual(3, listWatchVal.Length);
+            ////Assert.AreEqual(2, GetDoubleFromFSchemeValue(listWatchVal[0]));
+            ////Assert.AreEqual("Dynamo", GetDoubleFromFSchemeValue(listWatchVal[3]));
 
-            // First and last element in the list before Reversing
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("1c9d53b6-b5e0-4282-9768-a6c53115aba4");
-            FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(3, listWatchVal.Length);
-            //Assert.AreEqual(2, GetDoubleFromFSchemeValue(listWatchVal[0]));
-            //Assert.AreEqual("Dynamo", GetDoubleFromFSchemeValue(listWatchVal[3]));
-
-            // First and last element in the list after Reversing
-            var reverse = model.CurrentWorkspace.NodeFromWorkspace<Reverse>("18352d04-273b-4821-8819-bd7676dc4374");
-            FSharpList<FScheme.Value> listWatchVal1 = reverse.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(3, listWatchVal1.Length);
-            //Assert.AreEqual("Dynamo", getStringFromFSchemeValue(listWatchVal1[0]));
-            //Assert.AreEqual("Script", getStringFromFSchemeValue(listWatchVal1[3]));
+            //// First and last element in the list after Reversing
+            //var reverse = model.CurrentWorkspace.NodeFromWorkspace<Reverse>("18352d04-273b-4821-8819-bd7676dc4374");
+            //FSharpList<FScheme.Value> listWatchVal1 = reverse.GetValue(0).GetListFromFSchemeValue();
+            //Assert.AreEqual(3, listWatchVal1.Length);
+            ////Assert.AreEqual("Dynamo", getStringFromFSchemeValue(listWatchVal1[0]));
+            ////Assert.AreEqual("Script", getStringFromFSchemeValue(listWatchVal1[3]));
 
         }
 
@@ -825,27 +814,30 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            // First and last element in the list before Reversing
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("1c9d53b6-b5e0-4282-9768-a6c53115aba4");
-            FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(3, listWatchVal.Length);
-            Assert.AreEqual(10, listWatchVal[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(2, listWatchVal[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(3, listWatchVal[2].GetDoubleFromFSchemeValue());
+            //  before Reversing
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,10},
+                {1,2},
+                {2,3},
+            };
+            SelectivelyAssertPreviewValues("1c9d53b6-b5e0-4282-9768-a6c53115aba4", validationData);
 
-            // First and last element in the list after Reversing
-            var reverse = model.CurrentWorkspace.NodeFromWorkspace<Reverse>("18352d04-273b-4821-8819-bd7676dc4374");
-            FSharpList<FScheme.Value> listWatchVal1 = reverse.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(3, listWatchVal1.Length);
-            Assert.AreEqual(3, listWatchVal1[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(2, listWatchVal1[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(10, listWatchVal1[2].GetDoubleFromFSchemeValue());
+            // after Reversing
+            Dictionary<int, object> validationData1 = new Dictionary<int, object>()
+            {
+                {0,3},
+                {1,2},
+                {2,10},
 
+            };
+            SelectivelyAssertPreviewValues("18352d04-273b-4821-8819-bd7676dc4374", validationData1);
+            
         }
 
         #endregion
 
-        #region Filter Tests
+        #region Filter Tests  
 
         [Test]
         public void Filter_SimpleTest()
@@ -859,24 +851,24 @@ namespace Dynamo.Tests
             Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
+            //  before Filter
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,0},
+                {1,1},
+                {10,10},
+            };
+            SelectivelyAssertPreviewValues("a54127b5-decb-4750-aaf3-1b895be73984", validationData);
 
-            // First, Second and last element in the list before Filter
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("a54127b5-decb-4750-aaf3-1b895be73984");
-            FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(11, listWatchVal.Length);
-            Assert.AreEqual(0, listWatchVal[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, listWatchVal[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(10, listWatchVal[10].GetDoubleFromFSchemeValue());
+            // after Filter
+            Dictionary<int, object> validationData1 = new Dictionary<int, object>()
+            {
+                {0,6},
+                {1,7},
+                {4,10},
 
-            // First, Second and last element in the list after Filter
-            var filter = model.CurrentWorkspace.NodeFromWorkspace<Filter>("b03dcac5-14f1-46b8-bcb8-398561d28b83");
-            FSharpList<FScheme.Value> listWatchVal1 = filter.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(5, listWatchVal1.Length);
-            Assert.AreEqual(6, listWatchVal1[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(7, listWatchVal1[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(10, listWatchVal1[4].GetDoubleFromFSchemeValue());
+            };
+            SelectivelyAssertPreviewValues("b03dcac5-14f1-46b8-bcb8-398561d28b83", validationData1);
 
         }
 
@@ -892,22 +884,16 @@ namespace Dynamo.Tests
             Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
-
-            // First, second and last element in the list before Filter
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("1327061f-b25d-4e91-9df7-a79850cb59e0");
-            FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(6, listWatchVal.Length);
-            Assert.AreEqual(0, listWatchVal[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, listWatchVal[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(5, listWatchVal[5].GetDoubleFromFSchemeValue());
-
-            // After filter there should not
-            var filter = model.CurrentWorkspace.NodeFromWorkspace<Filter>("b03dcac5-14f1-46b8-bcb8-398561d28b83");
-            FSharpList<FScheme.Value> listWatchVal1 = filter.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(0, listWatchVal1.Length);
-
+            //  before Filter
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,0},
+                {1,1},
+                {5,5},
+            };
+            SelectivelyAssertPreviewValues("1327061f-b25d-4e91-9df7-a79850cb59e0", validationData);
+           
+            AssertPreviewValue("b03dcac5-14f1-46b8-bcb8-398561d28b83", new int[]{});
         }
 
         [Test]
@@ -922,39 +908,39 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
+            //  before Filter
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,6},
+                {1,7},
+                {4,10},
+            };
+            SelectivelyAssertPreviewValues("d957655d-57d0-4445-a5a8-c730a3cb8d28", validationData);
 
-            // First, second and last element in the first list after Filter
-            var filter = model.CurrentWorkspace.NodeFromWorkspace<Filter>("d957655d-57d0-4445-a5a8-c730a3cb8d28");
-            FSharpList<FScheme.Value> listWatchVal = filter.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(5, listWatchVal.Length);
-            Assert.AreEqual(6, listWatchVal[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(7, listWatchVal[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(10, listWatchVal[4].GetDoubleFromFSchemeValue());
+            // after Filter
+            Dictionary<int, object> validationData1 = new Dictionary<int, object>()
+            {
+                {0,0},
+                {1,1},
+                {4,4},
 
-            // First, second and last element in the second list after Filter
-            var filter1 = model.CurrentWorkspace.NodeFromWorkspace<Filter>("32e204af-cc73-486c-9add-9215f2688b98");
-            FSharpList<FScheme.Value> listWatchVal1 = filter1.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(5, listWatchVal1.Length);
-            Assert.AreEqual(0, listWatchVal1[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, listWatchVal1[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(4, listWatchVal1[4].GetDoubleFromFSchemeValue());
+            };
+            SelectivelyAssertPreviewValues("32e204af-cc73-486c-9add-9215f2688b98", validationData1);
 
-            // First, second and last elements in the list after combining above two filtered list
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("dc27f671-4cef-480f-9ddc-218d61db7e52");
-            FSharpList<FScheme.Value> listWatchVal2 = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(5, listWatchVal2.Length);
-            Assert.AreEqual(double.PositiveInfinity, listWatchVal2[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(7, listWatchVal2[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(2.5, listWatchVal2[4].GetDoubleFromFSchemeValue());
+            // after Filter and Combine
+            Dictionary<int, object> validationData2 = new Dictionary<int, object>()
+            {
+                {1,7},
+                {4,2.5},
 
+            };
+            SelectivelyAssertPreviewValues("dc27f671-4cef-480f-9ddc-218d61db7e52", validationData2);
 
         }
 
         #endregion
 
-        #region LaceShortest test cases
+        #region LaceShortest test cases  
 
         [Test]
         public void LaceShortest_Simple()
@@ -968,36 +954,40 @@ namespace Dynamo.Tests
             Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
-
             // Element from the Reverse list
-            var reverse = model.CurrentWorkspace.NodeFromWorkspace<Reverse>("c3d629f7-76a0-40bc-bf39-da45d8b8ea7a");
-            FSharpList<FScheme.Value> listReverseValue = reverse.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(2, listReverseValue.Length);
-            Assert.AreEqual(4, listReverseValue[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(2, listReverseValue[1].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,4},
+                {1,2},
+            };
+            SelectivelyAssertPreviewValues("c3d629f7-76a0-40bc-bf39-da45d8b8ea7a", validationData);
 
             // Elements from the Combine list
-            var combine = model.CurrentWorkspace.NodeFromWorkspace<Combine>("cc23b43e-3709-4ed1-bedb-f903e4ea7d75");
-            FSharpList<FScheme.Value> listCombineValue = combine.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(2, listCombineValue.Length);
-            Assert.AreEqual(-0.5, listCombineValue[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(-1, listCombineValue[1].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData1 = new Dictionary<int, object>()
+            {
+                {0,-0.5},
+                {1,-1},
+
+            };
+            SelectivelyAssertPreviewValues("cc23b43e-3709-4ed1-bedb-f903e4ea7d75", validationData1);
 
             // Elements from first LaceShortest list
-            var shortest = model.CurrentWorkspace.NodeFromWorkspace<LaceShortest>("10005d3c-3bbf-4690-b658-37b11c8402b1");
-            FSharpList<FScheme.Value> listShotestValue = shortest.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(2, listShotestValue.Length);
-            Assert.AreEqual(2, listShotestValue[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(4, listShotestValue[1].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData2 = new Dictionary<int, object>()
+            {
+                {0,2},
+                {1,4},
+
+            };
+            SelectivelyAssertPreviewValues("10005d3c-3bbf-4690-b658-37b11c8402b1", validationData2);
 
             // Elements from second LaceShortest list
-            var shortest1 = model.CurrentWorkspace.NodeFromWorkspace<LaceShortest>("ce7bf465-0f93-4e5a-8bc9-9960cd077f25");
-            FSharpList<FScheme.Value> listShotestValue1 = shortest1.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(2, listShotestValue1.Length);
-            Assert.AreEqual(-4, listShotestValue1[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(-4, listShotestValue1[1].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData3 = new Dictionary<int, object>()
+            {
+                {0,-4},
+                {1,-4},
+
+            };
+            SelectivelyAssertPreviewValues("ce7bf465-0f93-4e5a-8bc9-9960cd077f25", validationData3);
 
         }
 
@@ -1026,36 +1016,32 @@ namespace Dynamo.Tests
             Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
-
             // Element from the Reverse list
-            var reverse = model.CurrentWorkspace.NodeFromWorkspace<ConcatStrings>("1c4c75ff-735d-4431-9df3-2b187c469b3a");
-            string actual = reverse.GetValue(0).GetStringFromFSchemeValue();
-            string expected = "1Design";
-            Assert.AreEqual(expected, actual);
+            AssertPreviewValue("1c4c75ff-735d-4431-9df3-2b187c469b3a", "1Design");
 
             // Elements from first LaceShortest list
-            var shortest = model.CurrentWorkspace.NodeFromWorkspace<LaceShortest>("10005d3c-3bbf-4690-b658-37b11c8402b1");
-            FSharpList<FScheme.Value> listShotestValue = shortest.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(3, listShotestValue.Length);
-            Assert.AreEqual(1, listShotestValue[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, listShotestValue[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, listShotestValue[2].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData1 = new Dictionary<int, object>()
+            {
+                {0,1},
+                {1,1},
+                {2,1},
+            };
+            SelectivelyAssertPreviewValues("10005d3c-3bbf-4690-b658-37b11c8402b1", validationData1);
 
             // Elements from second LaceShortest list
-            var shortest1 = model.CurrentWorkspace.NodeFromWorkspace<LaceShortest>("c19f09a1-6132-4c9c-8f37-5f138e1a3067");
-            FSharpList<FScheme.Value> listShotestValue1 = shortest1.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(3, listShotestValue1.Length);
-            Assert.AreEqual("Dynamo", listShotestValue1[0].GetStringFromFSchemeValue());
-            Assert.AreEqual("Design", listShotestValue1[1].GetStringFromFSchemeValue());
-            Assert.AreEqual("Script", listShotestValue1[2].GetStringFromFSchemeValue());
+            Dictionary<int, object> validationData2 = new Dictionary<int, object>()
+            {
+                {0,"Dynamo"},
+                {1,"Design"},
+                {2,"Script"},
+            };
+            SelectivelyAssertPreviewValues("c19f09a1-6132-4c9c-8f37-5f138e1a3067", validationData2);
 
         }
 
         #endregion
 
-        #region LaceLongest test cases
+        #region LaceLongest test cases  
 
         [Test]
         public void LaceLongest_Simple()
@@ -1069,30 +1055,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
-
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("5da40769-ffc8-408b-94bb-8c5dff31132e");
-
-            FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> actualChild1 = actual[0].GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> actualChild2 = actual[1].GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> actualChild3 = actual[2].GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> actualChild4 = actual[3].GetListFromFSchemeValue();
-
-            Assert.AreEqual(4, actual.Length);
-
-            Assert.AreEqual(1, actualChild1.Length);
-            Assert.AreEqual(2, actualChild1[0].GetDoubleFromFSchemeValue());
-
-            Assert.AreEqual(1, actualChild2.Length);
-            Assert.AreEqual(8, actualChild2[0].GetDoubleFromFSchemeValue());
-
-            Assert.AreEqual(1, actualChild3.Length);
-            Assert.AreEqual(14, actualChild3[0].GetDoubleFromFSchemeValue());
-
-            Assert.AreEqual(1, actualChild4.Length);
-            Assert.AreEqual(19, actualChild4[0].GetDoubleFromFSchemeValue());
+            AssertPreviewValue("5da40769-ffc8-408b-94bb-8c5dff31132e", new int[][]
+            {
+                new int[] { 2 }, new int[] { 8 }, new int[] { 14 }, new int[] { 19 } 
+            });
 
         }
 
@@ -1122,19 +1088,17 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
-
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<LaceLongest>("25daa241-d8a4-4e74-aec1-6068358babf7");
-            FSharpList<FScheme.Value> listWatchValue = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(10000, listWatchValue.Length);
-            Assert.AreEqual(2001, listWatchValue[1000].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData2 = new Dictionary<int, object>()
+            {
+                {1000,2001},
+            };
+            SelectivelyAssertPreviewValues("25daa241-d8a4-4e74-aec1-6068358babf7", validationData2);
 
         }
 
         #endregion
 
-        #region FilterOut test cases
+        #region FilterOut test cases  
 
         [Test]
         public void FilterOut_SimpleTest()
@@ -1148,32 +1112,32 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
-
             // Element from the Number node
-            var numberRange = model.CurrentWorkspace.NodeFromWorkspace<DoubleInput>("b6571eb6-b1c2-4874-8749-b783176dc039");
-            FSharpList<FScheme.Value> listAllNumbers = numberRange.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(10, listAllNumbers.Length);
-            Assert.AreEqual(1, listAllNumbers[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(2, listAllNumbers[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(3, listAllNumbers[2].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData1 = new Dictionary<int, object>()
+            {
+                {0,1},
+                {1,2},
+                {2,3},
+            };
+            SelectivelyAssertPreviewValues("b6571eb6-b1c2-4874-8749-b783176dc039", validationData1);
 
             // Elements from first FilterOut list
-            var filterOut = model.CurrentWorkspace.NodeFromWorkspace<FilterOut>("53ec97e2-d860-4fdc-8ea5-2288bf39bcfc");
-            FSharpList<FScheme.Value> listFilteredValue = filterOut.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(8, listFilteredValue.Length);
-            Assert.AreEqual(3, listFilteredValue[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(4, listFilteredValue[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(10, listFilteredValue[7].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData2 = new Dictionary<int, object>()
+            {
+                {0,3},
+                {1,4},
+                {7,10},
+            };
+            SelectivelyAssertPreviewValues("53ec97e2-d860-4fdc-8ea5-2288bf39bcfc", validationData2);
 
             // Elements from second FilterOut list
-            var filterOut1 = model.CurrentWorkspace.NodeFromWorkspace<FilterOut>("0af3f566-1b05-4578-9fb0-297ca98d6d8c");
-            FSharpList<FScheme.Value> listFilteredValue1 = filterOut1.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(3, listFilteredValue1.Length);
-            Assert.AreEqual(1, listFilteredValue1[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(2, listFilteredValue1[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(3, listFilteredValue1[2].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData3 = new Dictionary<int, object>()
+            {
+                {0,1},
+                {1,2},
+                {2,3},
+            };
+            SelectivelyAssertPreviewValues("0af3f566-1b05-4578-9fb0-297ca98d6d8c", validationData3);
 
         }
 
@@ -1189,37 +1153,36 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
-
             // Element from the Number node
-            var numberRange = model.CurrentWorkspace.NodeFromWorkspace<DoubleInput>("b6571eb6-b1c2-4874-8749-b783176dc039");
-            FSharpList<FScheme.Value> listAllNumbers = numberRange.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(10, listAllNumbers.Length);
-            Assert.AreEqual(1, listAllNumbers[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(2, listAllNumbers[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(3, listAllNumbers[2].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData1 = new Dictionary<int, object>()
+            {
+                {0,1},
+                {1,2},
+                {2,3},
+            };
+            SelectivelyAssertPreviewValues("b6571eb6-b1c2-4874-8749-b783176dc039", validationData1);
 
             // Elements from FilterOut list
-            var filterOut = model.CurrentWorkspace.NodeFromWorkspace<FilterOut>("53ec97e2-d860-4fdc-8ea5-2288bf39bcfc");
-            FSharpList<FScheme.Value> listFilteredValue = filterOut.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(8, listFilteredValue.Length);
-            Assert.AreEqual(3, listFilteredValue[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(4, listFilteredValue[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(10, listFilteredValue[7].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData2 = new Dictionary<int, object>()
+            {
+                {0,3},
+                {1,4},
+                {7,10},
+            };
+            SelectivelyAssertPreviewValues("53ec97e2-d860-4fdc-8ea5-2288bf39bcfc", validationData2);
 
             // Elements from Take from List
-            var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<TakeList>("6921b2ef-fc5c-44b4-992f-9421c267d9ef");
-            FSharpList<FScheme.Value> takenFromList = takeFromList.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(3, takenFromList.Length);
-            Assert.AreEqual(3, takenFromList[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(4, takenFromList[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(5, takenFromList[2].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData3 = new Dictionary<int, object>()
+            {
+                {0,3},
+                {1,4},
+                {2,5},
+            };
+            SelectivelyAssertPreviewValues("6921b2ef-fc5c-44b4-992f-9421c267d9ef", validationData3);
+
 
             // Elements from Drop from List 
-            var dropFromList = model.CurrentWorkspace.NodeFromWorkspace<DropList>("57a41c41-fa71-41dd-aa25-ca2156f2ba0b");
-            FSharpList<FScheme.Value> droppedFromList = dropFromList.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(0, droppedFromList.Length); // As there where only three element in the input list so after droppping the list should be empty.
+            AssertPreviewValue("57a41c41-fa71-41dd-aa25-ca2156f2ba0b", new int[] { });
 
         }
 
@@ -1240,7 +1203,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region NumberRange test cases
+        #region NumberRange test cases -PartiallyDone
 
         [Test]
         public void NumberRange_SimpleTest()
@@ -1254,18 +1217,16 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,0},
+                {50,50},
+            
+            };
+            
+            SelectivelyAssertPreviewValues("4e781f03-5b48-4d58-a511-8c732665e961", validationData);
 
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
-
-            FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(51, actual.Length);
-            Assert.AreEqual(0, actual[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(50, actual[50].GetDoubleFromFSchemeValue());
-
-        }
+        } 
 
         [Test]
         public void NumberRange_LargeNumber()
@@ -1279,17 +1240,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {1000000,1000000},
+            
+            };
 
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
-
-            FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(1000001, actual.Length);
-
-            Assert.AreEqual(500, actual[500].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1000000, actual[1000000].GetDoubleFromFSchemeValue());
+            SelectivelyAssertPreviewValues("4e781f03-5b48-4d58-a511-8c732665e961", validationData);
 
         }
 
@@ -1305,19 +1262,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,1},
+                {1,9},
+            };
 
-            var numberRange = model.CurrentWorkspace.NodeFromWorkspace<NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
-
-            FSharpList<FScheme.Value> actual = numberRange.GetValue(0).GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> actualChild1 = actual[0].GetListFromFSchemeValue();
-
-            Assert.AreEqual(1, actual.Length);
-
-            Assert.AreEqual(10, actualChild1.Length);
-            Assert.AreEqual(1, actualChild1[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(10, actualChild1[9].GetDoubleFromFSchemeValue());
+            //this is the case of 2D array. Need to change verification
+            SelectivelyAssertPreviewValues("4e781f03-5b48-4d58-a511-8c732665e961", validationData);
 
         }
 
@@ -1333,22 +1285,17 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
+            //Dictionary<int, object> validationData = new Dictionary<int, object>()
+            //{
+            //    {9,10},
+            //};
 
-            var numberRange = model.CurrentWorkspace.NodeFromWorkspace<NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
+            //Dictionary<int, object> validationData1 = new Dictionary<int[], object>()
+            //{
+            //    {[1][9],10},
+            //};
 
-            FSharpList<FScheme.Value> actual = numberRange.GetValue(0).GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> actualChild1 = actual[0].GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> actualChild2 = actual[1].GetListFromFSchemeValue();
-
-            Assert.AreEqual(2, actual.Length);
-
-            Assert.AreEqual(10, actualChild1.Length);
-            Assert.AreEqual(10, actualChild1[9].GetDoubleFromFSchemeValue());
-
-            Assert.AreEqual(5, actualChild2.Length);
-            Assert.AreEqual(10, actualChild2[4].GetDoubleFromFSchemeValue());
+            AssertPreviewValue("4e781f03-5b48-4d58-a511-8c732665e961", new int[][] { new int[] { }, new int[] { } });
 
         }
 
@@ -1395,7 +1342,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region ListMinimum test cases
+        #region ListMinimum test cases  
 
         [Test]
         public void ListMinimum_NumberRange()
@@ -1409,12 +1356,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
-
-            var listMin = model.CurrentWorkspace.NodeFromWorkspace<ListMin>("aa8b8f1e-e8c4-4ced-bbb2-8ee43d7bb4f6");
-
-            Assert.AreEqual(-1, listMin.GetValue(0).GetDoubleFromFSchemeValue());
+            AssertPreviewValue("aa8b8f1e-e8c4-4ced-bbb2-8ee43d7bb4f6", -1);
 
         }
 
@@ -1430,18 +1372,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
-
-            var listMin = model.CurrentWorkspace.NodeFromWorkspace<ListMin>("aa8b8f1e-e8c4-4ced-bbb2-8ee43d7bb4f6");
-
-            Assert.AreEqual(5, listMin.GetValue(0).GetDoubleFromFSchemeValue());
+            AssertPreviewValue("aa8b8f1e-e8c4-4ced-bbb2-8ee43d7bb4f6", 5);
 
         }
 
         #endregion
 
-        #region AddToList test cases
+        #region AddToList test cases -NotStarted
 
         [Test]
         public void AddToList_SimpleTest()
@@ -1576,7 +1513,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region SplitList test cases
+        #region SplitList test cases -NotStarted
 
         [Test]
         public void SplitList_SimpleTest()
@@ -1702,7 +1639,7 @@ namespace Dynamo.Tests
         }
         #endregion
 
-        #region TakeFromList test cases
+        #region TakeFromList test cases -PartiallyDone
 
         [Test]
         public void TakeFromList_SimpleTest()
@@ -1747,20 +1684,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
-
-            var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.TakeList>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
-
-            FSharpList<FScheme.Value> firstOutput = takeFromList.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(4, firstOutput.Length);
-
-            Assert.AreEqual("Test", firstOutput[0].GetStringFromFSchemeValue());
-            Assert.AreEqual("Take", firstOutput[1].GetStringFromFSchemeValue());
-            Assert.AreEqual("From", firstOutput[2].GetStringFromFSchemeValue());
-            Assert.AreEqual("List", firstOutput[3].GetStringFromFSchemeValue());
-
+            AssertPreviewValue("14cb6593-24d8-4ffc-8ee5-9f4247449fc2", new string[] 
+            { 
+                "Test", "Take", "From", "List" 
+            });
         }
 
         [Test]
@@ -1775,16 +1702,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
-
-            var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.TakeList>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
-
-            FSharpList<FScheme.Value> firstOutput = takeFromList.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(1, firstOutput.Length);
-
-            Assert.AreEqual("List", firstOutput[0].GetStringFromFSchemeValue());
+            AssertPreviewValue("14cb6593-24d8-4ffc-8ee5-9f4247449fc2", new string[] { "Lsit" });
 
         }
 
@@ -1818,7 +1736,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region DropFromList test cases
+        #region DropFromList test cases  
         [Test]
         public void DropFromList_SimpleTest()
         {
@@ -1831,20 +1749,18 @@ namespace Dynamo.Tests
             Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,0},
+            };
 
-            var dropFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DropList>("e2d27010-b8fc-4eb8-8703-63bab5ce6e85");
-            FSharpList<FScheme.Value> output = dropFromList.GetValue(0).GetListFromFSchemeValue();
+            Dictionary<int, object> validationData1 = new Dictionary<int, object>()
+            {
+                {0,5},
+            };
+            SelectivelyAssertPreviewValues("e2d27010-b8fc-4eb8-8703-63bab5ce6e85", validationData);
 
-            var dropFromList1 = model.CurrentWorkspace.NodeFromWorkspace<DropList>("097e0b4b-4cbb-43b1-a21c-77a619ad1050");
-            FSharpList<FScheme.Value> secondOutput = dropFromList1.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(6, output.Length);
-            Assert.AreEqual(0, output[0].GetDoubleFromFSchemeValue());
-
-            Assert.AreEqual(6, secondOutput.Length);
-            Assert.AreEqual(5, secondOutput[0].GetDoubleFromFSchemeValue());
+            SelectivelyAssertPreviewValues("097e0b4b-4cbb-43b1-a21c-77a619ad1050", validationData1);
         }
 
         [Test]
@@ -1863,7 +1779,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region ShiftListIndices test cases
+        #region ShiftListIndices test cases -PartiallyDone
 
         [Test]
         public void ShiftListIndices_SimpleTest()
@@ -1876,16 +1792,12 @@ namespace Dynamo.Tests
             // check all the nodes and connectors are loaded
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
-
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var shiftListIndices = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.ShiftList>("7f6cbd60-b9fb-4b16-81d3-4fab26790446");
-            FSharpList<FScheme.Value> output = shiftListIndices.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(10, output.Length);
-            Assert.AreEqual(7, output[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, output[4].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,7},
+                {4,1},
+            };
+            SelectivelyAssertPreviewValues("7f6cbd60-b9fb-4b16-81d3-4fab26790446", validationData);
         }
 
         [Test]
@@ -1931,14 +1843,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var shiftListIndeces = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.ShiftList>("7f6cbd60-b9fb-4b16-81d3-4fab26790446");
-            FSharpList<FScheme.Value> output = shiftListIndeces.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(0, output.Length);
-
+            AssertPreviewValue("7f6cbd60-b9fb-4b16-81d3-4fab26790446", new int[] { });
         }
 
         [Test]
@@ -1970,7 +1875,7 @@ namespace Dynamo.Tests
         }
         #endregion
 
-        #region GetFromList test cases
+        #region GetFromList test cases PartiallyDone
 
         [Test]
         public void GetFromList_SimpleTest()
@@ -1984,14 +1889,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var getFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.GetFromList>("332093dc-4551-4c82-9f6b-061c7945211b");
-            FSharpList<FScheme.Value> output = getFromList.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(1, output.Length);
-            Assert.AreEqual(9, output[0].GetDoubleFromFSchemeValue());
+            AssertPreviewValue("332093dc-4551-4c82-9f6b-061c7945211b", new int[] { 9 });
         }
 
         [Test]
@@ -2006,15 +1904,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var getFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.GetFromList>("58d35bfa-4435-44f0-a322-c6f7350f0220");
-            FSharpList<FScheme.Value> output = getFromList.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(2, output.Length);
-            Assert.AreEqual("Get", output[0].GetStringFromFSchemeValue());
-            Assert.AreEqual("From ", output[1].GetStringFromFSchemeValue());
+            AssertPreviewValue("58d35bfa-4435-44f0-a322-c6f7350f0220", new string[] { "Get", "From" });
         }
 
         [Test]
@@ -2072,6 +1962,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
         }
+
         [Test]
         public void GetFromList_NegativeIntValue()
         {
@@ -2088,7 +1979,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region TakeEveryNth test case
+        #region TakeEveryNth test case  
 
         [Test]
         public void TakeEveryNth_SimpleTest()
@@ -2102,16 +1993,12 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.TakeEveryNth>("b18e5ac3-5732-4c78-9a3b-56b375c9beee");
-            FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(4, output.Length);
-
-            Assert.AreEqual(10, output[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(13, output[1].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,10},
+                {1,13},
+            };
+            SelectivelyAssertPreviewValues("b18e5ac3-5732-4c78-9a3b-56b375c9beee", validationData);
         }
 
         [Test]
@@ -2126,15 +2013,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(18, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.TakeEveryNth>("b18e5ac3-5732-4c78-9a3b-56b375c9beee");
-            FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(1, output.Length);
-
-            Assert.AreEqual(2.3, output[0].GetDoubleFromFSchemeValue());
+            AssertPreviewValue("b18e5ac3-5732-4c78-9a3b-56b375c9beee", new double[] { 2.3 });
         }
 
         [Test]
@@ -2149,14 +2028,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.TakeEveryNth>("b18e5ac3-5732-4c78-9a3b-56b375c9beee");
-            FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(0, output.Length);
-
+            AssertPreviewValue("b18e5ac3-5732-4c78-9a3b-56b375c9beee", new int[] { });
         }
 
         [Test]
@@ -2173,7 +2045,7 @@ namespace Dynamo.Tests
         }
         #endregion
 
-        #region DropEveryNth
+        #region DropEveryNth -PartiallyDone
 
         [Test]
         public void DropEveryNth_SimpleTest()
@@ -2187,18 +2059,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.RemoveEveryNth>("96a1ca07-83eb-4459-981e-7daed6d1d4b3");
-            FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(4, output.Length);
-
-            Assert.AreEqual(6, output[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(7, output[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(8, output[2].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(9, output[3].GetDoubleFromFSchemeValue());
+            AssertPreviewValue("96a1ca07-83eb-4459-981e-7daed6d1d4b3", new int[] { 6, 7, 8, 9 });
         }
 
         [Test]
@@ -2242,14 +2103,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.RemoveEveryNth>("a0304232-ad3a-4518-92ff-4b8893297ce4");
-            FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(0, output.Length);
-
+            AssertPreviewValue("a0304232-ad3a-4518-92ff-4b8893297ce4", new int[] { });
         }
 
         [Test]
@@ -2266,7 +2120,7 @@ namespace Dynamo.Tests
         }
         #endregion
 
-        #region RemoveFromList test cases
+        #region RemoveFromList test cases  
 
         [Test]
         public void RemoveFromList_SimpleTest()
@@ -2280,20 +2134,17 @@ namespace Dynamo.Tests
             Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0, "testRemoveFromList"},
+                {1,"Dynamo"},
+                {2,10.689},
+                {3,"Design"},
+                {4,"Script"},
+            };
 
-            var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.RemoveFromList>("396d2bbe-7b84-4a7a-a1f0-b7a438b56ca6");
-            FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(5, output.Length);
-
-            Assert.AreEqual("testRemoveFromList", output[0].GetStringFromFSchemeValue());
-            Assert.AreEqual("Dynamo", output[1].GetStringFromFSchemeValue());
-            Assert.AreEqual(10.689, output[2].GetDoubleFromFSchemeValue());
-            Assert.AreEqual("Design", output[3].GetStringFromFSchemeValue());
-            Assert.AreEqual("Script", output[4].GetStringFromFSchemeValue());
-
+            SelectivelyAssertPreviewValues("396d2bbe-7b84-4a7a-a1f0-b7a438b56ca6", validationData);
+            
         }
 
         [Test]
@@ -2335,16 +2186,12 @@ namespace Dynamo.Tests
             Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.RemoveFromList>("396d2bbe-7b84-4a7a-a1f0-b7a438b56ca6");
-            FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(2, output.Length);
-
-            Assert.AreEqual(7, output[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(8, output[1].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,7},
+                {1,8},
+            };
+            SelectivelyAssertPreviewValues("396d2bbe-7b84-4a7a-a1f0-b7a438b56ca6", validationData);
 
         }
 
@@ -2360,25 +2207,20 @@ namespace Dynamo.Tests
             Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,10},
+                {1,1},
 
-            var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.RemoveFromList>("dc581841-0221-4bc3-9010-3d2f0081a169");
-            FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
+            };
 
-            Assert.AreEqual(5, output.Length);
-            Assert.AreEqual(10, output[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, output[1].GetDoubleFromFSchemeValue());
-
-            var takeEveryNth1 = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.RemoveFromList>("396d2bbe-7b84-4a7a-a1f0-b7a438b56ca6");
-            FSharpList<FScheme.Value> output1 = takeEveryNth1.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(0, output1.Length);
+            SelectivelyAssertPreviewValues("dc581841-0221-4bc3-9010-3d2f0081a169", validationData);
+            AssertPreviewValue("396d2bbe-7b84-4a7a-a1f0-b7a438b56ca6", new int[] { });
 
         }
         #endregion
 
-        #region Slice test cases
+        #region Slice test cases  
 
         [Test]
         public void SliceList_SimpleTest()
@@ -2392,15 +2234,12 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.SliceList>("df64e6c8-3a73-40b3-b63c-34cb5936b848");
-            FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(2, output.Length);
-            Assert.AreEqual(1, output[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(4, output[1].GetDoubleFromFSchemeValue());
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,1},
+                {1,4},
+            };
+            SelectivelyAssertPreviewValues("df64e6c8-3a73-40b3-b63c-34cb5936b848", validationData);
         }
 
         [Test]
@@ -2414,17 +2253,14 @@ namespace Dynamo.Tests
             // check all the nodes and connectors are loaded
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
-
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.SliceList>("cc3ae092-8644-4a36-ad38-12ffa15cebda");
-            FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(3, output.Length);
-            Assert.AreEqual("Design", output[0].GetStringFromFSchemeValue());
-            Assert.AreEqual(4.5, output[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual("Dynamo", output[2].GetStringFromFSchemeValue());
+            
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,"Design"},
+                {1,4.5},
+                {2,"Dynamo"},
+            };
+            SelectivelyAssertPreviewValues("cc3ae092-8644-4a36-ad38-12ffa15cebda", validationData);
 
         }
 
@@ -2442,7 +2278,7 @@ namespace Dynamo.Tests
         }
         #endregion
 
-        #region Test Average
+        #region Test Average  
 
         [Test]
         public void Average_SimpleTest()
@@ -2456,12 +2292,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var averageNumber = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Average>("cafe8fae-55f0-4e58-977e-80edcbc90d2b");
-
-            Assert.AreEqual(6, averageNumber.OldValue.GetDoubleFromFSchemeValue());
+            AssertPreviewValue("cafe8fae-55f0-4e58-977e-80edcbc90d2b", 6);
         }
 
         [Test]
@@ -2480,7 +2311,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Test TrueForAny
+        #region Test TrueForAny  
 
         [Test]
         public void TrueForAny_SimpleTest()
@@ -2494,17 +2325,12 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var trueForAny = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.OrMap>("3960776a-4c6c-40d8-8b7e-dbe5db38d75b");
-
-            Assert.AreEqual(5, trueForAny.OldValue.GetDoubleFromFSchemeValue());
+            AssertPreviewValue("3960776a-4c6c-40d8-8b7e-dbe5db38d75b", 5);
         }
 
         #endregion
 
-        #region Test TrueForAll
+        #region Test TrueForAll  
 
         [Test]
         public void TrueForAll_SimpleTest()
@@ -2517,17 +2343,12 @@ namespace Dynamo.Tests
             // check all the nodes and connectors are loaded
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
-
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var trueForAll = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.AndMap>("6434eb4f-89d9-4b11-8b9b-79ed937e4b24");
-            Assert.AreEqual(1, trueForAll.OldValue.GetDoubleFromFSchemeValue());
+            AssertPreviewValue("6434eb4f-89d9-4b11-8b9b-79ed937e4b24", 1);
         }
 
         #endregion
 
-        #region Test Smooth
+        #region Test Smooth  
 
         [Test]
         public void Smooth_SimpleTest()
@@ -2541,16 +2362,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(1, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {4,14.242000000000001},
+                {5,15.240000000000002},
+            };
 
-            var smooth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Smooth>("e367bd22-e0ef-402e-b6c0-3a7aaee2be63");
-            FSharpList<FScheme.Value> output = smooth.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(6, output.Length);
-            Assert.AreEqual(10.25, output[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(14.242000000000001, output[4].GetDoubleFromFSchemeValue(), 0.000000001);
-            Assert.AreEqual(15.240000000000002, output[5].GetDoubleFromFSchemeValue(), 0.000000001);
+            SelectivelyAssertPreviewValues("e367bd22-e0ef-402e-b6c0-3a7aaee2be63", validationData);
         }
 
         [Test]
@@ -2565,16 +2383,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var smooth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Smooth>("ae41ff44-6f8c-4037-86ad-5ec3b22956a6");
-            FSharpList<FScheme.Value> output = smooth.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(4, output.Length);
-            Assert.AreEqual(54.36, output[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(21.816733333333332, output[2].GetDoubleFromFSchemeValue(), 0.000000001);
-            Assert.AreEqual(37.426796749999994, output[3].GetDoubleFromFSchemeValue(), 0.000000001);
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0, 54.36},
+                {2,21.816733333333332},
+                {3,37.426796749999994},
+            };
+            SelectivelyAssertPreviewValues("ae41ff44-6f8c-4037-86ad-5ec3b22956a6", validationData);
         }
 
         [Test]
@@ -2591,7 +2406,7 @@ namespace Dynamo.Tests
         }
         #endregion
 
-        #region Test Join List
+        #region Test Join List -PartiallyDone
 
         [Test]
         public void JoinList_SimpleTest()
@@ -2605,17 +2420,15 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,10},
+                {3,77.5},
+                {5,"Dynamo"},
+                {6,10},
 
-            var smooth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Append>("1304807f-6d18-4aef-b4cb-9cb8f469993e");
-            FSharpList<FScheme.Value> output = smooth.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(7, output.Length);
-            Assert.AreEqual(10, output[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(77.5, output[3].GetDoubleFromFSchemeValue());
-            Assert.AreEqual("Dynamo", output[5].GetStringFromFSchemeValue());
-            Assert.AreEqual(10, output[6].GetDoubleFromFSchemeValue());
+            };
+            SelectivelyAssertPreviewValues("1304807f-6d18-4aef-b4cb-9cb8f469993e", validationData);
 
         }
 
@@ -2656,7 +2469,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Test Combine
+        #region Test Combine  
 
         [Test]
         public void Combine_SimpleTest()
@@ -2670,16 +2483,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var smooth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Combine>("e0cbb116-6c81-4e74-90c6-a5235cfb9eea");
-            FSharpList<FScheme.Value> output = smooth.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(20, output.Length);
-            Assert.AreEqual(4, output[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(7.1929824561403501, output[7].GetDoubleFromFSchemeValue(), 0.000000001);
-            Assert.AreEqual(8.0332409972299157, output[14].GetDoubleFromFSchemeValue(), 0.000000001);
+            Dictionary<int, object> validationData1 = new Dictionary<int, object>()
+            {
+                {0,4},
+                {7,7.1929824561403501},
+                {14,8.0332409972299157},
+            };
+            SelectivelyAssertPreviewValues("e0cbb116-6c81-4e74-90c6-a5235cfb9eea", validationData1);
 
         }
 
@@ -2696,16 +2506,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(25, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(28, model.CurrentWorkspace.Connectors.Count);
 
-            // run expression
-            dynSettings.Controller.RunExpression(null);
-
-            var smooth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Combine>("f5b7116b-e926-499d-b784-f47c55e01e34");
-            FSharpList<FScheme.Value> output = smooth.GetValue(0).GetListFromFSchemeValue();
-
-            Assert.AreEqual(12, output.Length);
-            Assert.AreEqual(56.7, output[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(6, output[4].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(182.355, output[8].GetDoubleFromFSchemeValue(), 0.000000001);
+            Dictionary<int, object> validationData = new Dictionary<int,object>()
+            {
+                {0,56.7},
+                {4,6},
+                {8,182.355},
+            };
+            SelectivelyAssertPreviewValues("f5b7116b-e926-499d-b784-f47c55e01e34", validationData);
 
         }
 
