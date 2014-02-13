@@ -12,7 +12,7 @@ using System.Collections;
 
 namespace Dynamo.Tests
 {
-    class DSEvaluationUnitTest : DynamoUnitTest
+    public class DSEvaluationUnitTest : DynamoUnitTest
     {
         public void OpenModel(string relativeFilePath)
         {
@@ -25,6 +25,28 @@ namespace Dynamo.Tests
         {
             OpenModel(relativeDynFilePath);
             Assert.DoesNotThrow(() => Controller.RunExpression(null));
+        }
+
+        /// <summary>
+        /// To selectively verify the result, which is a collection, at some
+        /// positions.
+        /// </summary>
+        /// <param name="varname"></param>
+        /// <param name="selectedValues">Values to verify</param>
+        public void SelectivelyAssertValues(string varname, Dictionary<int, object> selectedValues)
+        {
+            var mirror = GetRuntimeMirror(varname);
+            //Couldn't find the variable, so expected value should be null.
+            if (mirror == null)
+            {
+                if (selectedValues!= null)
+                    Assert.IsNotNull(mirror, string.Format("Variable : {0}, not found.", varname));
+                return;
+            }
+
+            Console.WriteLine(varname + " = " + mirror.GetStringData());
+            var svValue = mirror.GetData();
+            SelectivelyAssertValues(svValue, selectedValues);
         }
 
         public void AssertValue(string varname, object value)
@@ -49,6 +71,12 @@ namespace Dynamo.Tests
             AssertValue(previewVariable, value);
         }
 
+        public void SelectivelyAssertPreviewValues(string guid, Dictionary<int, object> selectedValue)
+        {
+            string previewVariable = GetVarName(guid);
+            SelectivelyAssertValues(previewVariable, selectedValue);
+        }
+
         public void AssertClassName(string guid, string className)
         {
             string varname = GetVarName(guid);
@@ -71,6 +99,20 @@ namespace Dynamo.Tests
             RuntimeMirror mirror = null;
             Assert.DoesNotThrow(() => mirror = Controller.EngineController.GetMirror(varName));
             return mirror;
+        }
+
+        private void SelectivelyAssertValues(MirrorData data, Dictionary<int, object> selectedValues)
+        {
+            Assert.IsTrue(data.IsCollection);
+
+            if (data.IsCollection)
+            {
+                List<MirrorData> elements = data.GetElements();
+                foreach (var pair in selectedValues)
+                {
+                    AssertValue(elements[pair.Key], pair.Value);
+                }
+            }
         }
 
         private void AssertValue(MirrorData data, object value)
