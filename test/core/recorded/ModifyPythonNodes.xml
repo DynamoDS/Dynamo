@@ -1,6 +1,6 @@
 <Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
   <CreateNodeCommand NodeId="6f580b72-6aeb-4af2-b28b-a2e5b634721b" NodeName="Python Script" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <CreateNodeCommand NodeId="f0fc1dea-3874-40a0-a532-90c0ee10f437" NodeName="Python Script With Variable Number of Inputs" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="f0fc1dea-3874-40a0-a532-90c0ee10f437" NodeName="Python Script" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="6f580b72-6aeb-4af2-b28b-a2e5b634721b" Modifiers="0" />
   <DragSelectionCommand X="270" Y="212" DragOperation="0" />
   <DragSelectionCommand X="144" Y="112" DragOperation="1" />
