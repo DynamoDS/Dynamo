@@ -1315,11 +1315,11 @@ namespace Dynamo.Controls
         }
     }
 
-    public class IsUpToDateToTextConverter : IValueConverter
+    public class IsUpdateAvailableToTextConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((bool) value == false)
+            if ((bool) value == true)
             {
                 var latest = dynSettings.Controller.UpdateManager.AvailableVersion;
                 return latest;
@@ -1334,16 +1334,17 @@ namespace Dynamo.Controls
         }
     }
 
-    public class IsUpToDateBrushConverter : IValueConverter
+    public class IsUpdateAvailableBrushConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             SolidColorBrush brush;
 
-            brush = (bool) value ? 
-                (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["UpdateManagerUpToDateBrush"] : 
-                (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["UpdateManagerUpdateAvailableBrush"];
-            
+            brush = (bool) value
+                ? (SolidColorBrush)
+                    SharedDictionaryManager.DynamoColorsAndBrushesDictionary["UpdateManagerUpdateAvailableBrush"]
+                : (SolidColorBrush) SharedDictionaryManager.DynamoColorsAndBrushesDictionary["UpdateManagerUpToDateBrush"];
+                
             return brush;
         }
 
