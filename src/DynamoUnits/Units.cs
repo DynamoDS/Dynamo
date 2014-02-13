@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Double = System.Double;
 
@@ -175,6 +176,10 @@ namespace Dynamo.Units
             LengthUnit = DynamoLengthUnit.Meter;
             AreaUnit = DynamoAreaUnit.SquareMeter;
             VolumeUnit = DynamoVolumeUnit.CubicMeter;
+
+            HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareMeter;
+            HostApplicationInternalLengthUnit = DynamoLengthUnit.Meter;
+            HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicMeter;
         }
     }
 
@@ -497,6 +502,11 @@ namespace Dynamo.Units
                 return new Area(_value * x.Value);
             }
 
+            if (x is Area)
+            {
+                return new Volume(_value * x.Value);
+            }
+
             throw new UnitsException(GetType(), x.GetType());
         }
 
@@ -669,13 +679,7 @@ namespace Dynamo.Units
     {
         public Area():base(0.0){}
 
-        public Area(double value) : base(value)
-        {
-            if (value < 0)
-            {
-                throw new MathematicalArgumentException("You can not create a negative area.");
-            }
-        }
+        public Area(double value):base(value){}
 
         public static Area FromSquareFeet(double value)
         {
@@ -767,21 +771,21 @@ namespace Dynamo.Units
         {
             var val = _value * UnitsManager.Instance.UiAreaConversion;
             double round = Math.Round(val);
-            return new Length(round / UnitsManager.Instance.UiAreaConversion);
+            return new Area(round / UnitsManager.Instance.UiAreaConversion);
         }
 
         public override SIUnit Ceiling()
         {
             var val = _value * UnitsManager.Instance.UiAreaConversion;
             double round = Math.Ceiling(val);
-            return new Length(round / UnitsManager.Instance.UiAreaConversion);
+            return new Area(round / UnitsManager.Instance.UiAreaConversion);
         }
 
         public override SIUnit Floor()
         {
             var val = _value * UnitsManager.Instance.UiAreaConversion;
             double round = Math.Floor(val);
-            return new Length(round / UnitsManager.Instance.UiAreaConversion);
+            return new Area(round / UnitsManager.Instance.UiAreaConversion);
         }
 
         public override double ConvertToHostUnits()
@@ -807,7 +811,8 @@ namespace Dynamo.Units
             double total = 0.0;
             if (Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out total))
             {
-                _value = total/UnitsManager.Instance.UiAreaConversion;
+                var v = total/UnitsManager.Instance.UiAreaConversion;
+                _value = v;
                 return;
             }
 
@@ -887,13 +892,7 @@ namespace Dynamo.Units
     {
         public Volume():base(0.0){}
 
-        public Volume(double value) : base(value)
-        {
-            if (value < 0)
-            {
-                throw new MathematicalArgumentException("You can not create a negative volume.");
-            }
-        }
+        public Volume(double value) : base(value){}
 
         public static Volume FromCubicFeet(double value)
         {
@@ -976,21 +975,21 @@ namespace Dynamo.Units
         {
             var val = _value * UnitsManager.Instance.UiVolumeConversion;
             double round = Math.Round(val);
-            return new Length(round / UnitsManager.Instance.UiVolumeConversion);
+            return new Volume(round / UnitsManager.Instance.UiVolumeConversion);
         }
 
         public override SIUnit Ceiling()
         {
             var val = _value * UnitsManager.Instance.UiVolumeConversion;
             double round = Math.Ceiling(val);
-            return new Length(round / UnitsManager.Instance.UiVolumeConversion);
+            return new Volume(round / UnitsManager.Instance.UiVolumeConversion);
         }
 
         public override SIUnit Floor()
         {
             var val = _value * UnitsManager.Instance.UiVolumeConversion;
             double round = Math.Floor(val);
-            return new Length(round / UnitsManager.Instance.UiVolumeConversion);
+            return new Volume(round / UnitsManager.Instance.UiVolumeConversion);
         }
 
         public override double ConvertToHostUnits()
@@ -1016,7 +1015,8 @@ namespace Dynamo.Units
             double total = 0.0;
             if (Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out total))
             {
-                _value = total/UnitsManager.Instance.UiVolumeConversion;
+                var v = total/UnitsManager.Instance.UiVolumeConversion;
+                _value =  v;
                 return;
             }
 

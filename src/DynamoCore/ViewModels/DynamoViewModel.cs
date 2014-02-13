@@ -16,6 +16,7 @@ using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
+using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
@@ -482,11 +483,12 @@ namespace Dynamo.ViewModels
             get { return dynSettings.Controller.UpdateManager.ProductVersion.ToString(); }
         }
 
-        public bool UpToDate
+        public bool IsUpdateAvailable
         {
             get
             {
-                return dynSettings.Controller.UpdateManager.ProductVersion >= dynSettings.Controller.UpdateManager.AvailableVersion; ;
+                return dynSettings.Controller.UpdateManager.AvailableVersion >
+                       dynSettings.Controller.UpdateManager.ProductVersion;
             }
         }
 
@@ -1548,9 +1550,11 @@ namespace Dynamo.ViewModels
 
         private void CheckForUpdate(object obj)
         {
-            dynSettings.Controller.UpdateManager.CheckForProductUpdate();
-        }
+            //Disable the update check for 0.6.3. Just send he user to the downloads page.
+            //dynSettings.Controller.UpdateManager.CheckForProductUpdate();
 
+            Process.Start("http://dyn-builds-pub.s3-website-us-west-2.amazonaws.com/");
+        }
 
         #region IWatchViewModel interface
 

@@ -438,9 +438,13 @@ namespace Dynamo.Tests
 
             //multiplication
             Assert.AreEqual(4, (length * length).Value);
+            Assert.IsInstanceOf<Area>(length * length);
+            Assert.AreEqual(4, (length * area).Value);
+            Assert.IsInstanceOf<Volume>(length * area);
             Assert.Throws<UnitsException>(() => { var test = area * area; });
             Assert.Throws<UnitsException>(() => { var test = volume * area; });
             Assert.Throws<UnitsException>(() => { var test = length * volume; });
+            Assert.Throws<UnitsException>(() => { var test = volume * volume; });
 
             //division
             Assert.AreEqual(1, length / length);
@@ -480,17 +484,17 @@ namespace Dynamo.Tests
         [Test]
         public void UnitsNegatives()
         {
-            //construction
-            Assert.DoesNotThrow(() => { var test = new Units.Length(-2.0); });
-            Assert.Throws<MathematicalArgumentException>(() => { var test = new Area(-2.0); });
-            Assert.Throws<MathematicalArgumentException>(() => { var test = new Volume(-2.0); });
+            var length = new Length(-2.0);
+            var area = new Area(-2.0);
+            var volume = new Volume(-2.0);
 
-            var length = new Units.Length(2.0);
-            var area = new Area(2.0);
-            var volume = new Volume(2.0);
+            Assert.AreEqual(-2.0, length.Value);
+            Assert.AreEqual(-2.0, area.Value);
+            Assert.AreEqual(-2.0, volume.Value);
 
-            Assert.Throws<MathematicalArgumentException>(() => { var test = new Area(10.0) - new Area(12.0); });
-            Assert.Throws<MathematicalArgumentException>(() => { var test = new Volume(10.0) - new Volume(12.0); });
+            Assert.AreEqual(new Length(-2.0), new Length(10.0) - new Length(12.0));
+            Assert.AreEqual(new Area(-2.0), new Area(10.0) - new Area(12.0));
+            Assert.AreEqual(new Volume(-2.0), new Volume(10.0) - new Volume(12.0));
         }
 
         [Test]
