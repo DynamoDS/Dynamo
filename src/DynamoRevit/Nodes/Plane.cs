@@ -46,9 +46,8 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            newNode.SetAttribute("assembly", "ProtoGeometry.dll");
-            newNode.SetAttribute("nickname", "Plane.ByOriginNormal");
-            newNode.SetAttribute("function", "Plane.ByOriginNormal@Point,Vector");
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Plane.ByOriginNormal", "Plane.ByOriginNormal@Point,Vector");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 

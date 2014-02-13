@@ -60,8 +60,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Arc.ByPointsOnCurve",
-                "Arc.ByPointsOnCurve@Point,Point,Point");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Arc.ByThreePoints",
+                "Arc.ByThreePoints@Point,Point,Point");
         }
     }
 
@@ -127,9 +127,8 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            newNode.SetAttribute("assembly", "ProtoGeometry.dll");
-            newNode.SetAttribute("nickname", "Arc.ByCenterPointRadiusAngle");
-            newNode.SetAttribute("function", "Arc.ByCenterPointRadiusAngle@Point,double,double,double,Vector");
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Arc.ByCenterPointRadiusAngle", "Arc.ByCenterPointRadiusAngle@Point,double,double,double,Vector");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -147,23 +146,7 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(zAxisNode);
             string zAxisNodeId = MigrationManager.GetGuidFromXmlElement(zAxisNode);
 
-            XmlElement subtractionNode = MigrationManager.CreateFunctionNode(
-                data.Document, "", "-", "-@,");
-            migrationData.AppendNode(subtractionNode);
-            string subtractionNodeId = MigrationManager.GetGuidFromXmlElement(subtractionNode);
-
             // Update connectors
-            PortId oldInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
-            PortId oldInPort3 = new PortId(newNodeId, 3, PortType.INPUT);
-            PortId newInPort0 = new PortId(subtractionNodeId, 0, PortType.INPUT);
-
-            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
-            XmlElement connector3 = data.FindFirstConnector(oldInPort3);
-
-            string startAngleNodeId = connector2.GetAttribute("start").ToString();
-            data.ReconnectToPort(connector3, newInPort0);
-            data.CreateConnectorFromId(startAngleNodeId, 0, subtractionNodeId, 1);
-            data.CreateConnector(subtractionNode, 0, newNode, 3);
             data.CreateConnector(zAxisNode, 0, newNode, 4);
             data.CreateConnector(identityCoordinateSystem, 0, zAxisNode, 0);
 
