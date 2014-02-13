@@ -4,16 +4,16 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ProtoTestExe")]
+[assembly: AssemblyTitle("ProtoTestConsoleRunner")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ProtoTestExe")]
+[assembly: AssemblyProduct("ProtoTestConsoleRunner")]
 [assembly: AssemblyCopyright("Copyright ©  2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-// [assembly: AssemblyKeyFile("ProtoTestExe.snk")]
+// [assembly: AssemblyKeyFile("ProtoTestConsoleRunner.snk")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

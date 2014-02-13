@@ -8,8 +8,8 @@
     <ProjectGuid>{672BF8EC-1116-49F6-B253-DFCE5CF7D4C9}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ProtoTestExe</RootNamespace>
-    <AssemblyName>ProtoTestExe</AssemblyName>
+    <RootNamespace>ProtoTestConsoleRunner</RootNamespace>
+    <AssemblyName>ProtoTestConsoleRunner</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -45,7 +45,7 @@
     <CodeAnalysisRuleDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>ProtoTestExe.Program</StartupObject>
+    <StartupObject>ProtoTestConsoleRunner.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -75,7 +75,7 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>ProtoTestExe.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>ProtoTestConsoleRunner.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
