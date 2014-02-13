@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using Dynamo.Units;
 
@@ -250,7 +252,7 @@ namespace Dynamo.Tests
 
             length.Value = 0.35560000000142239; //1'2"
             Assert.AreEqual("1' 2\"", length.ToString(DynamoLengthUnit.FractionalFoot));
-            
+
             length.Value = -0.35560000000142239; //-1'2"
             Assert.AreEqual("-1' 2\"", length.ToString(DynamoLengthUnit.FractionalFoot));
         }
@@ -436,9 +438,13 @@ namespace Dynamo.Tests
 
             //multiplication
             Assert.AreEqual(4, (length * length).Value);
+            Assert.IsInstanceOf<Area>(length * length);
+            Assert.AreEqual(4, (length * area).Value);
+            Assert.IsInstanceOf<Volume>(length * area);
             Assert.Throws<UnitsException>(() => { var test = area * area; });
             Assert.Throws<UnitsException>(() => { var test = volume * area; });
             Assert.Throws<UnitsException>(() => { var test = length * volume; });
+            Assert.Throws<UnitsException>(() => { var test = volume * volume; });
 
             //division
             Assert.AreEqual(1, length / length);
@@ -464,13 +470,13 @@ namespace Dynamo.Tests
 
             //ensure that when a formula is unit + double it returns a unit
             //and when it is double + unit, it returns a double
-            
+
             Assert.AreEqual(new Length(length.Value + 2.0), length + 2.0);
             Assert.AreEqual(4.0, 2.0 + length);
-            
+
             Assert.AreEqual(new Area(area.Value + 2.0), area + 2.0);
             Assert.AreEqual(4.0, 2.0 + area);
-            
+
             Assert.AreEqual(new Volume(volume.Value + 2.0), volume + 2.0);
             Assert.AreEqual(4.0, 2.0 + volume);
         }
@@ -478,17 +484,21 @@ namespace Dynamo.Tests
         [Test]
         public void UnitsNegatives()
         {
-            //construction
-            Assert.DoesNotThrow(() => { var test = new Units.Length(-2.0); });
-            Assert.Throws<MathematicalArgumentException>(() => { var test = new Area(-2.0); });
-            Assert.Throws<MathematicalArgumentException>(() => { var test = new Volume(-2.0); });
+            var length = new Length(-2.0);
+            var area = new Area(-2.0);
+            var volume = new Volume(-2.0);
 
-            var length = new Units.Length(2.0);
-            var area = new Area(2.0);
-            var volume = new Volume(2.0);
+            //Units constructed with negative values should be set to 0.0.
+            Assert.AreEqual(0, area.Value);
+            Assert.AreEqual(0, volume.Value);
 
-            Assert.Throws<MathematicalArgumentException>(() => { var test = new Area(10.0) - new Area(12.0); });
-            Assert.Throws<MathematicalArgumentException>(() => { var test = new Volume(10.0) - new Volume(12.0); });
+            length = new Units.Length(2.0);
+            area = new Area(2.0);
+            volume = new Volume(2.0);
+
+            //ensure that subtractions resulting in negative values return 0.0;
+            Assert.AreEqual(new Area(0.0), new Area(10.0) - new Area(12.0));
+            Assert.AreEqual(new Volume(0.0), new Volume(10.0) - new Volume(12.0));
         }
 
         [Test]
