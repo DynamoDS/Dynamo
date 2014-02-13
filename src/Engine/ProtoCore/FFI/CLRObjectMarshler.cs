@@ -477,7 +477,8 @@ namespace ProtoFFI
                             {
                                 Type arrayType = type.GetGenericArguments()[0].MakeArrayType();
                                 object arr = ConvertDSArrayToCSArray(dsObject, context, dsi, arrayType);
-                                return Activator.CreateInstance(type, new[] { arr }); //Create the collection using 
+                                // Convert object array to an array of specified type
+                                return Activator.CreateInstance(type, new[] { arr });  
                             }
                             else
                             {
@@ -490,6 +491,7 @@ namespace ProtoFFI
                         {
                             if (type.IsGenericType)
                             {
+                                // Use specificed type as a hit to convert ds array
                                 Type arrayType = type.GetGenericArguments()[0].MakeArrayType();
                                 return ConvertDSArrayToCSArray(dsObject, context, dsi, arrayType);
                             }
@@ -498,15 +500,6 @@ namespace ProtoFFI
                                 Type arrayType = typeof(object).MakeArrayType();
                                 return ConvertDSArrayToCSArray(dsObject, context, dsi, arrayType);
                             }
-                            /*
-                                                        Type genericType = type.GetGenericArguments()[0];
-                                                        return ConvertDSArrayToCSList(dsObject, context, dsi, genericType);
-
-                                                        Type listType = typeof(List<>).MakeGenericType(genericType);
-                                                        var list = Activator.CreateInstance(listType);
-                                                        listType.GetMethod("AddRange").Invoke(list, new object[]{arr});
-                                                        return list;
-                                                        */
                         }
                         break;
                     }
