@@ -1,5 +1,4 @@
 ﻿
-#define __RUN_TESTFILE
 
 using System;
 using ProtoCore;
@@ -8,7 +7,7 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTest.TD;
 using System.IO;
 
-namespace ProtoTestExe
+namespace ProtoTestConsoleRunner
 {
     class Program
     {
@@ -52,22 +51,12 @@ namespace ProtoTestExe
 #endif
 
 
-
-#if __RUN_TESTFILE
-            ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
-            ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
-
-            // Insert test DS file here
-            ExecutionMirror mirror = runner.LoadAndExecute(@"", core);
-#else
-
             // Insert test cases here
 
-            //ProtoTest.LiveRunner.MicroFeatureTests test = new ProtoTest.LiveRunner.MicroFeatureTests();
-            //test.Setup();
-            //test.TestFunctionRedefinitionWithLanguageblocks02();
+            ProtoTest.LiveRunner.MicroFeatureTests test = new ProtoTest.LiveRunner.MicroFeatureTests();
+            test.Setup();
+            test.RegressMAGN750();
 
-#endif
 
             long ms = sw.ElapsedMilliseconds;
             sw.Stop();
