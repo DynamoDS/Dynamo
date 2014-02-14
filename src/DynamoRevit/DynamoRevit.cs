@@ -18,6 +18,7 @@ using Autodesk.Revit.UI;
 
 using Dynamo.Applications.Properties;
 using Dynamo.Controls;
+using Dynamo.Units;
 using Dynamo.Utilities;
 using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -183,7 +184,14 @@ namespace Dynamo.Applications
                     if (context == "Vasari")
                         context = "Vasari 2014";
 
-                    dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context);
+                    var units = new UnitsManager
+                    {
+                        HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot,
+                        HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot,
+                        HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot
+                    };
+
+                    dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context, units);
                         
                     dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
                     dynamoController.UIDispatcher = dynamoView.Dispatcher;

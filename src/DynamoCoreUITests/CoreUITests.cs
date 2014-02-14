@@ -6,6 +6,7 @@ using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
@@ -564,7 +565,7 @@ namespace Dynamo.Tests.UI
             tempPath = Path.Combine(tempPath, "userPreference.xml");
 
             // Force inital state
-            PreferenceSettings initalSetting = new PreferenceSettings();
+            PreferenceSettings initalSetting = new PreferenceSettings(new UnitsManager());
             PreferenceSettings resultSetting;
 
             #region First Test
@@ -574,7 +575,7 @@ namespace Dynamo.Tests.UI
             initalSetting.FullscreenWatchShowing = true;
 
             initalSetting.Save(tempPath);
-            resultSetting = PreferenceSettings.Load(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath, new UnitsManager());
 
             Assert.AreEqual(resultSetting.FullscreenWatchShowing, initalSetting.FullscreenWatchShowing);
             Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
@@ -587,7 +588,7 @@ namespace Dynamo.Tests.UI
             initalSetting.FullscreenWatchShowing = false;
 
             initalSetting.Save(tempPath);
-            resultSetting = PreferenceSettings.Load(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath, new UnitsManager());
 
             Assert.AreEqual(resultSetting.FullscreenWatchShowing, initalSetting.FullscreenWatchShowing);
             Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);

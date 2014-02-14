@@ -19,6 +19,7 @@ using Dynamo.Units;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynamoUnits;
 using Greg;
 using Length = Dynamo.Nodes.Length;
 using Transaction = Dynamo.Nodes.Transaction;
@@ -57,8 +58,8 @@ namespace Dynamo
             }
         }
 
-        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, Type viewModelType, string context)
-            : base(env, viewModelType, context, new UpdateManager.UpdateManager())
+        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, Type viewModelType, string context, IUnitsManager units)
+            : base(env, viewModelType, context, new UpdateManager.UpdateManager(), units)
         {
             Updater = updater;
             
@@ -85,10 +86,6 @@ namespace Dynamo
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
             ElementNameStore = new Dictionary<ElementId, string>();
-
-            UnitsManager.Instance.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
-            UnitsManager.Instance.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
-            UnitsManager.Instance.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
         }
 
         void CleanupVisualizations(object sender, EventArgs e)
@@ -588,17 +585,17 @@ namespace Dynamo
 
             private void ProcessThing(WatchNode root, XYZ pt, WatchNode node)
             {
-                var um = UnitsManager.Instance;
+                var um = dynSettings.Controller.UnitsManager;
 
-                if (root.ShowRawData)
+                if (!root.ShowRawData)
                 {
                     ///xyzs will be in feet, but we need to show them
                     ///in the display units of choice
 
                     var xyzStr = string.Format("{0:f3},{1:f3},{2:f3}",
-                        new Units.Length(pt.X/SIUnit.ToFoot),
-                        new Units.Length(pt.Y/SIUnit.ToFoot),
-                        new Units.Length(pt.Z/SIUnit.ToFoot));
+                        new Units.Length(pt.X/SIUnit.ToFoot, um),
+                        new Units.Length(pt.Y/SIUnit.ToFoot, um),
+                        new Units.Length(pt.Z/SIUnit.ToFoot, um));
 
                     node.NodeLabel = "{" + xyzStr + "}";
                 }
