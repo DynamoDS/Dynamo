@@ -125,7 +125,7 @@ namespace ProtoCore
         public Options()
         {
 
-            DumpByteCode = false; 
+            DumpByteCode = false;
             Verbose = false;
             DumpIL = false;
 
@@ -1112,6 +1112,8 @@ namespace ProtoCore
         public bool EnableCallsiteExecutionState { get; set; }
         public CallsiteExecutionState csExecutionState { get; set; }
 
+        public Dictionary<int, CallSite> CallsiteCache { get; set; }
+
         // A list of graphnodes that contain a function call
         public List<AssociativeGraph.GraphNode> GraphNodeCallList { get; set; }
 
@@ -1653,6 +1655,7 @@ namespace ProtoCore
             {
                 csExecutionState = new CallsiteExecutionState();
             }
+            CallsiteCache = new Dictionary<int, CallSite>();
             ForLoopBlockIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
 
             GraphNodeCallList = new List<GraphNode>();
@@ -2330,6 +2333,40 @@ namespace ProtoCore
             }
 
             return false;
+        }
+
+        public int ExecutingGraphnodeUID { get; set; }
+
+        /// <summary>
+        /// Retrieves an existing instance of a callsite associated with a UID
+        /// It creates a new callsite if non was found
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="uid"></param>
+        /// <returns></returns>
+        public CallSite GetCallSite(int uid, int classScope, string methodName)
+        {
+            Validity.Assert(null != FunctionTable);
+            CallSite csInstance = null;
+
+            // TODO Jun: Currently generates a new callsite for imperative and internally generated functions
+            // Fix the issues that cause the cache to go out of sync when attempting to cache internal functions
+            // This may require a secondary callsite cache for internal functions so they dont clash with the graphNode UID key
+            bool isInternalFunction = CoreUtils.IsInternalFunction(methodName);
+            bool isImperative = DSExecutable.instrStreamList[RunningBlock].language == Language.kImperative;
+            if (isInternalFunction || isImperative)
+            {
+                csInstance = new CallSite(classScope, methodName, FunctionTable, Options.ExecutionMode);
+            }
+            else
+            {
+                if (!CallsiteCache.TryGetValue(uid, out csInstance))
+                {
+                    csInstance = new CallSite(classScope, methodName, FunctionTable, Options.ExecutionMode);
+                    CallsiteCache.Add(uid, csInstance);
+                }
+            }
+            return csInstance;
         }
     }
 }
