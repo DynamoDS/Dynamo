@@ -8168,20 +8168,6 @@ namespace ProtoCore.DSASM
             if (core.Options.IsDeltaExecution)
             {
                 UpdateDependencyGraph(exprID, modBlkID, isSSA, Properties.executingGraphNode);
-
-                if (Properties.executingGraphNode != null)
-                {
-                    if (!isSSA)
-                    {
-                        for (int n = 0; n < istream.dependencyGraph.GraphList.Count; ++n)
-                        {
-                            ProtoCore.AssociativeGraph.GraphNode graphNode = istream.dependencyGraph.GraphList[n];
-
-                            // Update redefinition that this grapnnode may have cauased
-                            UpdateGraphNodeDependency(graphNode, Properties.executingGraphNode);
-                        }
-                    }
-                }
             }
             else
             {
