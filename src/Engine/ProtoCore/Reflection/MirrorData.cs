@@ -16,7 +16,7 @@ namespace ProtoCore
             /// <summary>
             ///  The stack value associated with this mirror data
             /// </summary>
-            private ProtoCore.DSASM.StackValue svData;
+            private StackValue svData;
 
 
             //
@@ -37,7 +37,7 @@ namespace ProtoCore
             /// Experimental constructor that takes in a core object
             /// </summary>
             /// <param name="sv"></param>
-            public MirrorData(ProtoCore.Core core, ProtoCore.DSASM.StackValue sv)
+            public MirrorData(ProtoCore.Core core, StackValue sv)
             {
                 this.core = core;
                 svData = sv;
@@ -104,7 +104,7 @@ namespace ProtoCore
             /// </summary>
             /// <returns></returns>
             [System.Obsolete("Use Data property of this class")]
-            public ProtoCore.DSASM.StackValue GetStackValue()
+            public StackValue GetStackValue()
             {
                 return svData;
             }

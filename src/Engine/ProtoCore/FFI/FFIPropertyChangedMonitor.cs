@@ -158,7 +158,7 @@ namespace ProtoFFI
                     continue;
                 }
 
-                ProtoCore.DSASM.StackValue dsValue = exe.Core.Rmem.GetAtRelative(symbolNode);
+                StackValue dsValue = exe.Core.Rmem.GetAtRelative(symbolNode);
                 if (dsValue.optype != AddressType.Pointer && dsValue.opdata != thisptr)
                 {
                     continue;

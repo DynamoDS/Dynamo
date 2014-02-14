@@ -98,7 +98,7 @@ namespace ProtoCore
             {
                 for (int n = 0; n < globsize; ++n)
                 {
-                    Stack.Add(StackUtils.BuildNull());
+                    Stack.Add(StackValue.Null);
                 }
             }
 
@@ -106,7 +106,7 @@ namespace ProtoCore
             {
                 for (int n = 0; n < size; ++n)
                 {
-                    Stack.Add(StackUtils.BuildNull());
+                    Stack.Add(StackValue.Null);
                 }
             }
 
@@ -123,19 +123,19 @@ namespace ProtoCore
                 // TODO Jun: Performance
                 // Push frame should only require adjusting the frame index instead of pushing dummy elements
                 PushFrame(locsize);
-                Push(StackUtils.BuildInt(fp));
+                Push(StackValue.BuildInt(fp));
                 PushRegisters(registers);
-                Push(StackUtils.BuildNode(AddressType.Int, executionStates));
-                Push(StackUtils.BuildNode(AddressType.Int, 0));
-                Push(StackUtils.BuildNode(AddressType.Int, depth));
-                Push(StackUtils.BuildNode(AddressType.FrameType, (int)type));
-                Push(StackUtils.BuildNode(AddressType.FrameType, (int)callerType));
-                Push(StackUtils.BuildNode(AddressType.BlockIndex, functionBlockCaller));
-                Push(StackUtils.BuildNode(AddressType.BlockIndex, functionBlockDecl));
-                Push(StackUtils.BuildInt(pc));
-                Push(StackUtils.BuildInt(funcIndex));
-                Push(StackUtils.BuildInt(classIndex));
-                Push(StackUtils.BuildPointer(ptr));
+                Push(StackValue.BuildInt(executionStates));
+                Push(StackValue.BuildInt(0));
+                Push(StackValue.BuildInt(depth));
+                Push(StackValue.BuildFrameType((int)type));
+                Push(StackValue.BuildFrameType((int)callerType));
+                Push(StackValue.BuildBlockIndex(functionBlockCaller));
+                Push(StackValue.BuildBlockIndex(functionBlockDecl));
+                Push(StackValue.BuildInt(pc));
+                Push(StackValue.BuildInt(funcIndex));
+                Push(StackValue.BuildInt(classIndex));
+                Push(StackValue.BuildPointer(ptr));
                 FramePointer = Stack.Count;
             }
 
@@ -144,18 +144,18 @@ namespace ProtoCore
                 // TODO Jun: Performance
                 // Push frame should only require adjusting the frame index instead of pushing dummy elements
                 PushFrame(locsize);
-                Push(StackUtils.BuildInt(fp));
+                Push(StackValue.BuildInt(fp));
                 PushRegisters(registers);
-                Push(StackUtils.BuildNode(AddressType.Int, executionStates));
-                Push(StackUtils.BuildNode(AddressType.Int, 0));
-                Push(StackUtils.BuildNode(AddressType.Int, depth));
-                Push(StackUtils.BuildNode(AddressType.FrameType, (int)type));
-                Push(StackUtils.BuildNode(AddressType.FrameType, (int)callerType));
-                Push(StackUtils.BuildNode(AddressType.BlockIndex, functionBlockCaller));
-                Push(StackUtils.BuildNode(AddressType.BlockIndex, functionBlockDecl));
-                Push(StackUtils.BuildInt(pc));
-                Push(StackUtils.BuildInt(funcIndex));
-                Push(StackUtils.BuildInt(classIndex));
+                Push(StackValue.BuildInt(executionStates));
+                Push(StackValue.BuildInt(0));
+                Push(StackValue.BuildInt(depth));
+                Push(StackValue.BuildFrameType((int)type));
+                Push(StackValue.BuildFrameType((int)callerType));
+                Push(StackValue.BuildBlockIndex(functionBlockCaller));
+                Push(StackValue.BuildBlockIndex(functionBlockDecl));
+                Push(StackValue.BuildInt(pc));
+                Push(StackValue.BuildInt(funcIndex));
+                Push(StackValue.BuildInt(classIndex));
                 Push(svThisPtr);
                 FramePointer = Stack.Count;
             }
@@ -400,7 +400,7 @@ namespace ProtoCore
                 }
 
                 Validity.Assert(false, "unsupported memory region, {DCA48F13-EEE1-4374-B301-C96870D44C6B}");
-                return StackUtils.BuildInt(0);
+                return StackValue.BuildInt(0);
             }
 
             public StackValue GetStackData(int blockId, int symbolindex, int classscope, int offset = 0)
@@ -419,7 +419,7 @@ namespace ProtoCore
                 int n = GetRelative(offset, GetStackIndex(symbolNode));
                 if (n > Stack.Count - 1)
                 {
-                    return StackUtils.BuildNull();
+                    return StackValue.Null;
                 }
 
                 return Stack[n];
@@ -434,7 +434,7 @@ namespace ProtoCore
                 int offset = ClassTable.ClassNodes[scope].symbols.symbolList[symbolindex].index;
 
                 if (null == Heap.Heaplist[thisptr].Stack || Heap.Heaplist[thisptr].Stack.Length == 0)
-                    return StackUtils.BuildNull();
+                    return StackValue.Null;
 
                 StackValue sv = Heap.Heaplist[thisptr].Stack[offset];
                 Validity.Assert(AddressType.Pointer == sv.optype || AddressType.ArrayPointer == sv.optype || AddressType.Invalid == sv.optype);
@@ -479,10 +479,7 @@ namespace ProtoCore
                 {
                     ptr = (int)Heap.Heaplist[ptr].Stack[0].opdata;
                 }
-                StackValue opres = new StackValue();
-                opres.optype = Heap.Heaplist[ptr].Stack[0].optype;
-                opres.opdata = Heap.Heaplist[ptr].Stack[0].opdata;
-                return opres;
+                return Heap.Heaplist[ptr].Stack[0];
             }
 
             public StackValue[] GetArrayElements(StackValue array)
@@ -520,7 +517,7 @@ namespace ProtoCore
                         Heap.IncRefCount(sv);
                         Heap.Heaplist[ptr].Stack[n] = sv;
                     }
-                    return StackUtils.BuildArrayPointer(ptr);
+                    return StackValue.BuildArrayPointer(ptr);
                 }
             }
 
@@ -531,9 +528,9 @@ namespace ProtoCore
                     int ptr = Heap.Allocate(size);
                     for (int n = 0; n < size; ++n)
                     {
-                        Heap.Heaplist[ptr].Stack[n] = StackUtils.BuildNull();
+                        Heap.Heaplist[ptr].Stack[n] = StackValue.Null;
                     }
-                    return StackUtils.BuildArrayPointer(ptr);
+                    return StackValue.BuildArrayPointer(ptr);
                 }
             }
 
@@ -548,7 +545,7 @@ namespace ProtoCore
                         Heap.IncRefCount(sv);
                         Heap.Heaplist[ptr].Stack[n] = sv;
                     }
-                    return StackUtils.BuildArrayPointer(ptr);
+                    return StackValue.BuildArrayPointer(ptr);
                 }
             }
 

@@ -230,15 +230,11 @@ namespace ProtoImperative
                     DfsEmitArraySize(array.Type);
 
                     EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regBX);
-                    ProtoCore.DSASM.StackValue opBX = new ProtoCore.DSASM.StackValue();
-                    opBX.optype = ProtoCore.DSASM.AddressType.Register;
-                    opBX.opdata = (int)ProtoCore.DSASM.Registers.BX;
+                    StackValue opBX = StackValue.BuildRegister(Registers.BX);
                     EmitPop(opBX, Constants.kGlobalScope);
 
                     EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regAX);
-                    ProtoCore.DSASM.StackValue opAX = new ProtoCore.DSASM.StackValue();
-                    opAX.optype = ProtoCore.DSASM.AddressType.Register;
-                    opAX.opdata = (int)ProtoCore.DSASM.Registers.AX;
+                    StackValue opAX = StackValue.BuildRegister(Registers.AX);
                     EmitPop(opAX, Constants.kGlobalScope);
 
                     string op = Op.GetOpName(ProtoCore.DSASM.Operator.add);
@@ -277,24 +273,13 @@ namespace ProtoImperative
                 // Avoid having to generate instructions for the current index if 'w' is 0
 
                 EmitInstrConsole(ProtoCore.DSASM.kw.push, w.ToString());
-                ProtoCore.DSASM.StackValue opWidth = new ProtoCore.DSASM.StackValue();
-                opWidth.optype = ProtoCore.DSASM.AddressType.Int;
-                opWidth.opdata = w;
+                StackValue opWidth = StackValue.BuildInt(w);
                 EmitPush(opWidth);
 
                 string op = null;
-                ProtoCore.DSASM.StackValue opAX = new ProtoCore.DSASM.StackValue();
-                opAX.optype = ProtoCore.DSASM.AddressType.Register;
-                opAX.opdata = (int)ProtoCore.DSASM.Registers.AX;
-
-                ProtoCore.DSASM.StackValue opBX = new ProtoCore.DSASM.StackValue();
-                opBX.optype = ProtoCore.DSASM.AddressType.Register;
-                opBX.opdata = (int)ProtoCore.DSASM.Registers.BX;
-
-                ProtoCore.DSASM.StackValue opRes = new ProtoCore.DSASM.StackValue();
-                opRes.optype = ProtoCore.DSASM.AddressType.Register;
-                opRes.opdata = (int)ProtoCore.DSASM.Registers.AX;
-
+                StackValue opAX = StackValue.BuildRegister(Registers.AX);
+                StackValue opBX = StackValue.BuildRegister(Registers.BX);
+                StackValue opRes = StackValue.BuildRegister(Registers.AX);
 
                 // Multiplying the max array size by the number of elements
                 EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regBX);
@@ -399,9 +384,7 @@ namespace ProtoImperative
                 int indexCnt = DfsEmitArrayIndexHeap(nodeArray);
 
                 EmitInstrConsole(ProtoCore.DSASM.kw.push, indexCnt.ToString());
-                ProtoCore.DSASM.StackValue opSize = new ProtoCore.DSASM.StackValue();
-                opSize.optype = ProtoCore.DSASM.AddressType.Int;
-                opSize.opdata = indexCnt;
+                StackValue opSize = StackValue.BuildInt(indexCnt);
                 EmitPush(opSize);
                 SetHeapData(symbol);
             }
@@ -554,7 +537,7 @@ namespace ProtoImperative
         protected override void EmitReturn(int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
-            ProtoCore.DSASM.Instruction instr = new ProtoCore.DSASM.Instruction();
+            Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.RETURN;
 
             AuditReturnLocationFromFunction(ref line, ref col, ref endline, ref endcol);
@@ -571,7 +554,7 @@ namespace ProtoImperative
         protected override void EmitRetb(int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
-            ProtoCore.DSASM.Instruction instr = new ProtoCore.DSASM.Instruction();
+            Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.RETB;
 
             AuditReturnLocationFromCodeBlock(ref line, ref col, ref endline, ref endcol);
@@ -588,14 +571,9 @@ namespace ProtoImperative
 		protected override void EmitRetcn(int blockId = Constants.kInvalidIndex, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
-            ProtoCore.DSASM.Instruction instr = new ProtoCore.DSASM.Instruction();
+            Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.RETCN;
-
-            ProtoCore.DSASM.StackValue op1 = new ProtoCore.DSASM.StackValue();
-            op1.optype = AddressType.BlockIndex;
-            op1.opdata = blockId;
-            instr.op1 = op1;
-
+            instr.op1 = StackValue.BuildBlockIndex(blockId);
             AuditReturnLocationFromCodeBlock(ref line, ref col, ref endline, ref endcol);
 
             ++pc;
@@ -609,23 +587,11 @@ namespace ProtoImperative
 
         private void EmitPushArrayKey(int symbol, int block, int classIndex)
         {
-            ProtoCore.DSASM.Instruction instr = new ProtoCore.DSASM.Instruction();
+            Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.PUSH_ARRAYKEY;
-
-            ProtoCore.DSASM.StackValue op1 = new ProtoCore.DSASM.StackValue();
-            op1.optype = ProtoCore.DSASM.AddressType.VarIndex;
-            op1.opdata = symbol;
-            instr.op1 = op1;
-
-            ProtoCore.DSASM.StackValue op2 = new ProtoCore.DSASM.StackValue();
-            op2.optype = ProtoCore.DSASM.AddressType.BlockIndex;
-            op2.opdata = block;
-            instr.op2 = op2;
-
-            ProtoCore.DSASM.StackValue op3 = new ProtoCore.DSASM.StackValue();
-            op3.optype = ProtoCore.DSASM.AddressType.ClassIndex;
-            op3.opdata = classIndex;
-            instr.op3 = op3;
+            instr.op1 = StackValue.BuildVarIndex(symbol);
+            instr.op2 = StackValue.BuildBlockIndex(block);
+            instr.op3 = StackValue.BuildClassIndex(classIndex);
 
             ++pc;
             codeBlock.instrStream.instrList.Add(instr);
@@ -860,9 +826,7 @@ namespace ProtoImperative
                         EmitCall(procNode.procId, type, depth);
                     }
                     EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regRX);
-                    ProtoCore.DSASM.StackValue opReturn = new ProtoCore.DSASM.StackValue();
-                    opReturn.optype = ProtoCore.DSASM.AddressType.Register;
-                    opReturn.opdata = (int)ProtoCore.DSASM.Registers.RX;
+                    StackValue opReturn = StackValue.BuildRegister(Registers.RX);
                     EmitPush(opReturn);
                 }
             }
@@ -910,9 +874,7 @@ namespace ProtoImperative
 
                     // The function return value
                     EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regRX);
-                    ProtoCore.DSASM.StackValue opReturn = new ProtoCore.DSASM.StackValue();
-                    opReturn.optype = ProtoCore.DSASM.AddressType.Register;
-                    opReturn.opdata = (int)ProtoCore.DSASM.Registers.RX;
+                    StackValue opReturn = StackValue.BuildRegister(Registers.RX);
                     EmitPush(opReturn);
 
                     //assign inferedType to var
@@ -1148,10 +1110,7 @@ namespace ProtoImperative
                         EmitPushVarData(runtimeIndex, 0);
 
                         EmitInstrConsole(ProtoCore.DSASM.kw.push, t.Name);
-                        ProtoCore.DSASM.StackValue opFunctionPointer = new ProtoCore.DSASM.StackValue();
-                        opFunctionPointer.optype = ProtoCore.DSASM.AddressType.FunctionPointer;
-                        opFunctionPointer.opdata = fptr;
-                        opFunctionPointer.opdata_d = fptr;
+                        StackValue opFunctionPointer = StackValue.BuildFunctionPointer(fptr);
                         EmitPush(opFunctionPointer, t.line, t.col);
                         return;
                     }
@@ -1343,9 +1302,7 @@ namespace ProtoImperative
 
                 // The callee language block will have stored its result into the RX register. 
                 EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regRX);
-                ProtoCore.DSASM.StackValue opRes = new ProtoCore.DSASM.StackValue();
-                opRes.optype = ProtoCore.DSASM.AddressType.Register;
-                opRes.opdata = (int)ProtoCore.DSASM.Registers.RX;
+                StackValue opRes = StackValue.BuildRegister(Registers.RX);
                 EmitPush(opRes);
             }
         }
@@ -1664,16 +1621,13 @@ namespace ProtoImperative
                 int bp = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
                 int L1 = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
                 int L2 = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
-                ProtoCore.DSASM.StackValue opCX = new ProtoCore.DSASM.StackValue();
-
 
                 // If-expr
                 IfStmtNode ifnode = node as IfStmtNode;
                 DfsTraverse(ifnode.IfExprNode, ref inferedType, false, graphNode, AssociativeSubCompilePass.kNone, parentNode);
 
                 EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regCX);
-                opCX.optype = ProtoCore.DSASM.AddressType.Register;
-                opCX.opdata = (int)ProtoCore.DSASM.Registers.CX;
+                StackValue opCX = StackValue.BuildRegister(Registers.CX);
                 EmitPop(opCX, Constants.kGlobalScope);
 
                 L1 = pc + 1;
@@ -1930,10 +1884,8 @@ namespace ProtoImperative
                 WhileStmtNode whileNode = node as WhileStmtNode;
                 DfsTraverse(whileNode.Expr, ref inferedType);
 
-                ProtoCore.DSASM.StackValue opCX = new ProtoCore.DSASM.StackValue();
                 EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regCX);
-                opCX.optype = ProtoCore.DSASM.AddressType.Register;
-                opCX.opdata = (int)ProtoCore.DSASM.Registers.CX;
+                StackValue opCX = StackValue.BuildRegister(Registers.CX);
                 EmitPop(opCX, Constants.kGlobalScope);
 
                 L1 = pc + 1;
@@ -2071,9 +2023,7 @@ namespace ProtoImperative
                             DfsEmitArrayIndex(array, symindex);
 
                             EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regDX);
-                            ProtoCore.DSASM.StackValue opRes = new ProtoCore.DSASM.StackValue();
-                            opRes.optype = ProtoCore.DSASM.AddressType.Register;
-                            opRes.opdata = (int)ProtoCore.DSASM.Registers.DX;
+                            StackValue opRes = StackValue.BuildRegister(Registers.DX);
                             EmitPop(opRes, Constants.kGlobalScope);
 
                             EmitInstrConsole(ProtoCore.DSASM.kw.pop, tVar.Value);
@@ -2435,9 +2385,7 @@ namespace ProtoImperative
                             EmitPushVarData(runtimeIndex, dimensions, castType.UID, castType.rank);
 
                             EmitInstrConsole(ProtoCore.DSASM.kw.pop, s);
-                            ProtoCore.DSASM.StackValue operand = new ProtoCore.DSASM.StackValue();
-                            operand.optype = ProtoCore.DSASM.AddressType.VarIndex;
-                            operand.opdata = symbol;
+                            StackValue operand = StackValue.BuildVarIndex(symbol);
                             EmitPop(operand, symbolnode.classScope, node.line, node.col, node.endLine, node.endCol);
                         }
                         else
@@ -2451,9 +2399,9 @@ namespace ProtoImperative
 
                             EmitInstrConsole(ProtoCore.DSASM.kw.popm, t.Name);
 
-                            ProtoCore.DSASM.StackValue operand = new ProtoCore.DSASM.StackValue();
-                            operand.optype = symbolnode.isStatic ? ProtoCore.DSASM.AddressType.StaticMemVarIndex : ProtoCore.DSASM.AddressType.MemVarIndex;
-                            operand.opdata = symbol;
+                            StackValue operand = symbolnode.isStatic
+                                                 ? StackValue.BuildStaticMemVarIndex(symbol)
+                                                 : StackValue.BuildMemVarIndex(symbol);
 
                             EmitPopm(operand, node.line, node.col, node.endLine, node.endCol);
                         }
@@ -2587,9 +2535,7 @@ namespace ProtoImperative
                 if (!isPrefixOperation)
                 {
                     EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regAX);
-                    ProtoCore.DSASM.StackValue opAX = new ProtoCore.DSASM.StackValue();
-                    opAX.optype = ProtoCore.DSASM.AddressType.Register;
-                    opAX.opdata = (int)ProtoCore.DSASM.Registers.AX;
+                    StackValue opAX = StackValue.BuildRegister(Registers.AX);
                     EmitPop(opAX, Constants.kGlobalScope);
 
                     string op = Op.GetUnaryOpName(u.Operator);
@@ -2597,9 +2543,7 @@ namespace ProtoImperative
                     EmitUnary(Op.GetUnaryOpCode(u.Operator), opAX);
 
                     EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regAX);
-                    ProtoCore.DSASM.StackValue opRes = new ProtoCore.DSASM.StackValue();
-                    opRes.optype = ProtoCore.DSASM.AddressType.Register;
-                    opRes.opdata = (int)ProtoCore.DSASM.Registers.AX;
+                    StackValue opRes = StackValue.BuildRegister(Registers.AX);
                     EmitPush(opRes);
                 }
             }
@@ -2723,8 +2667,6 @@ namespace ProtoImperative
                 int dimensions = 0;
                 EmitPushVarData(codeBlock.symbolTable.RuntimeIndex, dimensions);
 
-                ProtoCore.DSASM.StackValue opDest = new ProtoCore.DSASM.StackValue();
-                opDest.optype = ProtoCore.DSASM.AddressType.VarIndex;
                 if (ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex && !IsInLanguageBlockDefinedInFunction())
                 {
                     symbolIndex = core.ClassTable.ClassNodes[globalClassIndex].symbols.IndexOf(keyIdent);
@@ -2741,7 +2683,7 @@ namespace ProtoImperative
                         symbol = codeBlock.symbolTable.symbolList[symbolIndex];
                     }
                 }
-                opDest.opdata = symbolIndex;
+                StackValue opDest = StackValue.BuildVarIndex(symbolIndex);
                 EmitInstrConsole(ProtoCore.DSASM.kw.pop, keyIdent);
                 EmitPop(opDest, (symbol == null) ? globalClassIndex : symbol.classScope);
 
@@ -3050,9 +2992,7 @@ namespace ProtoImperative
                 catchHandler.Entry = pc;
 
                 EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regLX);
-                ProtoCore.DSASM.StackValue opLx = new ProtoCore.DSASM.StackValue();
-                opLx.optype = ProtoCore.DSASM.AddressType.Register;
-                opLx.opdata = (int)ProtoCore.DSASM.Registers.LX;
+                StackValue opLx = StackValue.BuildRegister(Registers.LX);
                 EmitPush(opLx);
 
                 ProtoCore.DSASM.SymbolNode excpVarSymbol = null;
@@ -3109,9 +3049,7 @@ namespace ProtoImperative
             DfsTraverse(throwNode.expression, ref inferedType, false, graphNode, subPass);
 
             EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regLX);
-            ProtoCore.DSASM.StackValue opLx = new ProtoCore.DSASM.StackValue();
-            opLx.optype = ProtoCore.DSASM.AddressType.Register;
-            opLx.opdata = (int)ProtoCore.DSASM.Registers.LX;
+            StackValue opLx = StackValue.BuildRegister(Registers.LX);
             EmitPop(opLx, Constants.kGlobalScope);
 
             EmitInstrConsole(ProtoCore.DSASM.kw.throwexception);
@@ -3324,9 +3262,7 @@ namespace ProtoImperative
             foreach (ProtoCore.DSASM.SymbolNode symbol in symbolList)
             {
                 EmitInstrConsole(ProtoCore.DSASM.kw.push, symbol.name);
-                ProtoCore.DSASM.StackValue op = new ProtoCore.DSASM.StackValue();
-                op.optype = ProtoCore.DSASM.AddressType.Int;
-                op.opdata = symbol.symbolTableIndex;
+                StackValue op = StackValue.BuildInt(symbol.symbolTableIndex);
                 EmitPush(op);
             }
         }
@@ -3335,24 +3271,11 @@ namespace ProtoImperative
         {
             EmitInstrConsole(ProtoCore.DSASM.kw.pushdep, block.ToString() + "[block]", depth.ToString() + "[depth]", classScope.ToString() + "[classScope]");
 
-            ProtoCore.DSASM.Instruction instr = new ProtoCore.DSASM.Instruction();
+            Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.PUSHDEP;
-
-            ProtoCore.DSASM.StackValue opBlock = new ProtoCore.DSASM.StackValue();
-            opBlock.optype = ProtoCore.DSASM.AddressType.BlockIndex;
-            opBlock.opdata = block;
-
-            ProtoCore.DSASM.StackValue opDepth = new ProtoCore.DSASM.StackValue();
-            opDepth.optype = ProtoCore.DSASM.AddressType.Int;
-            opDepth.opdata = depth;
-
-            ProtoCore.DSASM.StackValue opClass = new ProtoCore.DSASM.StackValue();
-            opClass.optype = ProtoCore.DSASM.AddressType.ClassIndex;
-            opClass.opdata = classScope;
-
-            instr.op1 = opBlock;
-            instr.op2 = opDepth;
-            instr.op3 = opClass;
+            instr.op1 = StackValue.BuildBlockIndex(block);
+            instr.op2 = StackValue.BuildInt(depth);
+            instr.op3 = StackValue.BuildClassIndex(classScope);
 
             ++pc;
             
@@ -3366,14 +3289,9 @@ namespace ProtoImperative
         {
             EmitInstrConsole(ProtoCore.DSASM.kw.setexpuid, exprId.ToString() + "[exprId]");
 
-            ProtoCore.DSASM.Instruction instr = new ProtoCore.DSASM.Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.SETEXPUID;
-
-            ProtoCore.DSASM.StackValue opExId = new ProtoCore.DSASM.StackValue();
-            opExId.optype = ProtoCore.DSASM.AddressType.Int;
-            opExId.opdata = exprId;
-
-            instr.op1 = opExId;
+            Instruction instr = new Instruction();
+            instr.opCode = OpCode.SETEXPUID;
+            instr.op1 = StackValue.BuildInt(exprId);
 
             ++pc;
             

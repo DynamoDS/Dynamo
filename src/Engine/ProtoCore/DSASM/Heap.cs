@@ -82,7 +82,7 @@ namespace ProtoCore.DSASM
 
             for (int i = AllocSize; i < newAllocatedSize; ++i)
             {
-                Stack[i] = StackUtils.BuildNull();
+                Stack[i] = StackValue.Null;
             }
             
             AllocSize = newAllocatedSize;
@@ -101,7 +101,7 @@ namespace ProtoCore.DSASM
             {
                 int targetPos = pos + size;
                 Stack[targetPos] = Stack[pos];
-                Stack[pos] = StackUtils.BuildNull();
+                Stack[pos] = StackValue.Null;
             }
 
             VisibleSize = VisibleSize + size;
@@ -369,11 +369,11 @@ namespace ProtoCore.DSASM
             if (pn != null)
             {
                 // TODO Jun/Jiong: Use build pointer utilities 
-                exe.rmem.Push(StackUtils.BuildNode(AddressType.ArrayDim, 0));
-                exe.rmem.Push(StackUtils.BuildPointer(svPtr.opdata, svPtr.metaData));
-                exe.rmem.Push(StackUtils.BuildNode(AddressType.BlockIndex, pn.runtimeIndex));
-                exe.rmem.Push(StackUtils.BuildNode(AddressType.ArrayDim, 0));
-                exe.rmem.Push(StackUtils.BuildStaticType((int)ProtoCore.PrimitiveType.kTypeVar));
+                exe.rmem.Push(StackValue.BuildArrayDimension(0));
+                exe.rmem.Push(StackValue.BuildPointer(svPtr.opdata, svPtr.metaData));
+                exe.rmem.Push(StackValue.BuildBlockIndex(pn.runtimeIndex));
+                exe.rmem.Push(StackValue.BuildArrayDimension(0));
+                exe.rmem.Push(StackValue.BuildStaticType((int)ProtoCore.PrimitiveType.kTypeVar));
                 
                 ++exe.Core.FunctionCallDepth;
 
