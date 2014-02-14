@@ -852,22 +852,40 @@ namespace ProtoCore.Lang.Replication
         /// <returns></returns>
         public static int GetMaxReductionDepth(StackValue sv, Core core)
         {
+            return RecursiveProtectGetMaxReductionDepth(sv, core, 0);
+            
+        }
+
+        /// <summary>
+        /// This computes the max depth to which the element can be reduced
+        /// It contains a protected envelope 
+        /// </summary>
+        /// <param name="sv"></param>
+        /// <param name="core"></param>
+        /// <param name="depthCount"></param>
+        /// <returns></returns>
+        private static int RecursiveProtectGetMaxReductionDepth(StackValue sv, Core core, int depthCount)
+        {
+            Validity.Assert(depthCount < 1000, 
+                "StackOverflow protection trap. This is almost certainly a VM cycle-in-array bug. {0B530165-2E38-431D-88D9-56B0636364CD}");
+
             //PERF(Luke): Could be non-recursive
             if (!StackUtils.IsArray(sv))
                 return 0;
 
             int maxReduction = 0;
-            
+
             //De-ref the sv
             HeapElement he = ProtoCore.Utils.ArrayUtils.GetHeapElement(sv, core);
             for (int i = 0; i < he.VisibleSize; ++i)
             {
                 StackValue subSv = he.Stack[i];
-                maxReduction = Math.Max(maxReduction, GetMaxReductionDepth(subSv, core));
+                maxReduction = Math.Max(maxReduction, RecursiveProtectGetMaxReductionDepth(subSv, core, depthCount+1));
             }
 
-            return 1 + maxReduction;
+            return 1 + maxReduction;   
         }
+
         
     }
 }
