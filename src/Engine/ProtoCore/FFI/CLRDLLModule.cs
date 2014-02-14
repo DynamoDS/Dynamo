@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
@@ -319,6 +320,11 @@ namespace ProtoFFI
                 }
             }
 
+            // There is no static class at CLR, so we have to check if all 
+            // public methods defined in this class are static or not.
+            bool isStatic = type.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Static)
+                                .All(m => m.IsStatic);
+
             BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static;
             bool isDerivedClass = (classnode.superClass != null) && classnode.superClass.Count > 0;
             if (isDerivedClass) //has base class
@@ -327,9 +333,13 @@ namespace ProtoFFI
             bool isDisposable = typeof(IDisposable).IsAssignableFrom(type);
             MethodInfo[] methods = type.GetMethods(flags);
             bool hasDisposeMethod = false;
+
             foreach (var m in methods)
             {
                 if (!IsBrowsable(m))
+                    continue;
+
+                if (isStatic && m.GetBaseDefinition().DeclaringType == baseType && baseType == typeof(object))
                     continue;
 
                 //Don't include overriden methods or generic methods
