@@ -52,3 +52,4 @@ Thumbs.db
 
 #documentation files
 doc/html/
+*.sdf
