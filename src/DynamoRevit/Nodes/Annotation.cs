@@ -133,11 +133,10 @@ namespace Dynamo.Nodes
 
             #region Create New Nodes...
 
-            // Create the "ModelText.ByTextSketchPlaneAndPosition" node itself.
-            XmlElement dsModelText = MigrationManager.CreateFunctionNode(
-                data.Document, "DSRevitNodes.dll",
-                "ModelText.ByTextSketchPlaneAndPosition",
-                "ModelText.ByTextSketchPlaneAndPosition@" +
+            XmlElement dsModelText = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(dsModelText, "DSRevitNodes.dll", 
+                "ModelText.ByTextSketchPlaneAndPosition", 
+                "ModelText.ByTextSketchPlaneAndPosition@" + 
                 "string,SketchPlane,double,double,double,ModelTextType");
 
             migratedData.AppendNode(dsModelText);
