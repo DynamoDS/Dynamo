@@ -565,7 +565,7 @@ namespace Dynamo.Tests.UI
             tempPath = Path.Combine(tempPath, "userPreference.xml");
 
             // Force inital state
-            PreferenceSettings initalSetting = new PreferenceSettings(new UnitsManager());
+            PreferenceSettings initalSetting = new PreferenceSettings();
             PreferenceSettings resultSetting;
 
             #region First Test
@@ -575,7 +575,7 @@ namespace Dynamo.Tests.UI
             initalSetting.FullscreenWatchShowing = true;
 
             initalSetting.Save(tempPath);
-            resultSetting = PreferenceSettings.Load(tempPath, new UnitsManager());
+            resultSetting = PreferenceSettings.Load(tempPath);
 
             Assert.AreEqual(resultSetting.FullscreenWatchShowing, initalSetting.FullscreenWatchShowing);
             Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
@@ -588,7 +588,7 @@ namespace Dynamo.Tests.UI
             initalSetting.FullscreenWatchShowing = false;
 
             initalSetting.Save(tempPath);
-            resultSetting = PreferenceSettings.Load(tempPath, new UnitsManager());
+            resultSetting = PreferenceSettings.Load(tempPath);
 
             Assert.AreEqual(resultSetting.FullscreenWatchShowing, initalSetting.FullscreenWatchShowing);
             Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
