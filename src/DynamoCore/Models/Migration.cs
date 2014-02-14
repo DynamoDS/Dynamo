@@ -281,7 +281,12 @@ namespace Dynamo.Models
         /// 
         public static XmlElement CloneAndChangeType(XmlElement element, string type)
         {
-            XmlElement cloned = element.CloneNode(false) as XmlElement;
+            XmlDocument document = element.OwnerDocument;
+            XmlElement cloned = document.CreateElement(type);
+            
+            foreach (XmlAttribute attribute in element.Attributes)
+                cloned.SetAttribute(attribute.Name, attribute.Value);
+            
             cloned.SetAttribute("type", type);
             return cloned;
         }
