@@ -564,11 +564,11 @@ namespace Dynamo
                 return false;
             }
 
-            public void ProcessNode(object value, WatchNode node)
+            public void ProcessNode(WatchNode root, object value, WatchNode node)
             {
                 try
                 {
-                    ProcessThing(value as dynamic, node);
+                    ProcessThing(root, value as dynamic, node);
                 }
                 catch(Exception ex)
                 {
@@ -576,7 +576,7 @@ namespace Dynamo
                 }
             }
 
-            private void ProcessThing(Element element, WatchNode node)
+            private void ProcessThing(WatchNode root, Element element, WatchNode node)
             {
                 var id = element.Id;
 
@@ -585,19 +585,27 @@ namespace Dynamo
                 node.NodeLabel = element.Name;
             }
 
-            private void ProcessThing(XYZ pt, WatchNode node)
+            private void ProcessThing(WatchNode root, XYZ pt, WatchNode node)
             {
                 var um = UnitsManager.Instance;
 
-                ///xyzs will be in feet, but we need to show them
-                ///in the display units of choice
-                
-                var xyzStr = string.Format("{0:f3},{1:f3},{2:f3}",
-                    (pt.X /SIUnit.ToFoot) * um.UiLengthConversion,
-                    (pt.Y /SIUnit.ToFoot) * um.UiLengthConversion,
-                    (pt.Z /SIUnit.ToFoot) * um.UiLengthConversion);
+                if (root.ShowRawData)
+                {
+                    ///xyzs will be in feet, but we need to show them
+                    ///in the display units of choice
 
-                node.NodeLabel = "{" + xyzStr + "}";
+                    var xyzStr = string.Format("{0:f3},{1:f3},{2:f3}",
+                        (pt.X/SIUnit.ToFoot)*um.UiLengthConversion,
+                        (pt.Y/SIUnit.ToFoot)*um.UiLengthConversion,
+                        (pt.Z/SIUnit.ToFoot)*um.UiLengthConversion);
+
+                    node.NodeLabel = "{" + xyzStr + "}";
+                }
+                else
+                {
+                    node.NodeLabel = pt.ToString();
+                }
+                
             }
         }
 

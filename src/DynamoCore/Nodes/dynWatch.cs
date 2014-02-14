@@ -13,7 +13,7 @@ namespace Dynamo.Nodes
     {
         bool AcceptsValue(object o);
 
-        void ProcessNode(object value, WatchNode node);
+        void ProcessNode(WatchNode root, object value, WatchNode node);
     }
 
     [NodeName("Watch")]
@@ -49,11 +49,11 @@ namespace Dynamo.Nodes
                 handlers = new HashSet<WatchHandler>();
             }
 
-            public void ProcessNode(object value, WatchNode node)
+            public void ProcessNode(WatchNode root, object value, WatchNode node)
             {
                 foreach (var handler in handlers)   //.Where(x => x.AcceptsValue(value)))
                 {
-                    handler.ProcessNode(value, node);
+                    handler.ProcessNode(root, value, node);
                 }
             }
         }
@@ -121,7 +121,7 @@ namespace Dynamo.Nodes
 
                     foreach (Value e in args)
                     {
-                        Root.Children.Add(Process(e, prefix, count));
+                        Root.Children.Add(Process(Root, e, prefix, count));
                         count++;
                     }
 
@@ -139,7 +139,7 @@ namespace Dynamo.Nodes
 
         }
 
-        WatchNode Process(Value eIn, string prefix, int count, bool isListMember = false)
+        WatchNode Process(WatchNode root, Value eIn, string prefix, int count, bool isListMember = false)
         {
             WatchNode node = null;
             
@@ -155,7 +155,7 @@ namespace Dynamo.Nodes
                 if (value != null)
                 {
                     node = new WatchNode(value.ToString(), isListMember, count);
-                    handlerManager.ProcessNode(value, node);
+                    handlerManager.ProcessNode(root, value, node);
                 }
             }
             else if (eIn.IsFunction)
@@ -172,7 +172,7 @@ namespace Dynamo.Nodes
 
                 foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
                 {
-                    node.Children.Add( Process(e.Element, newPrefix, e.Index, true) );
+                    node.Children.Add( Process(root, e.Element, newPrefix, e.Index, true) );
                 }
             }
             else if (eIn.IsNumber)
