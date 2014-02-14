@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;USE_DSENGINE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;USE_DSENGINE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -87,9 +87,13 @@
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\DynamoPython\Python.csproj">
-      <Project>{2b0f2800-6f62-4869-9074-088c5f6dcca2}</Project>
-      <Name>Python</Name>
+    <ProjectReference Include="..\..\src\Libraries\CoreNodesUI\CoreNodesUI.csproj">
+      <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
+      <Name>CoreNodesUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\IronPython\IronPythonUI.csproj">
+      <Project>{01de9b06-0bcb-4d8a-862e-e8170f5d6b4f}</Project>
+      <Name>IronPythonUI</Name>
     </ProjectReference>
     <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>

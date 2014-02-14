@@ -126,3 +126,95 @@ def Compose(funcs : _FunctionObject[])
 {
     return = _ComposedFunctionObject(funcs);
 }
+
+def MinimumItemByKey(functionObject: _FunctionObject, list: var[])
+{
+    return = [Imperative]
+    {
+        _count = Count(list);
+
+        if (_count == 0)
+        {
+            return = null;
+        }
+
+        _min = list[0];
+        _minProjection = functionObject.DoEvaluate(list[0]);
+
+        for (_index in 1..(_count - 1))
+        {
+            _currentProjection = functionObject.DoEvaluate(list[_index]);
+            if (_currentProjection < _minProjection)
+            {
+                _min = list[_index];
+                _minProjection = _currentProjection;
+            }
+        }
+
+        return = _min;
+    }
+}
+
+def MaximumItemByKey(functionObject: _FunctionObject, list: var[])
+{
+    return = [Imperative]
+    {
+        if (list == null)
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = null;
+        }
+
+        _max = list[0];
+        _maxProjection = functionObject.DoEvaluate(list[0]);
+
+        for (_index in 1..(_count - 1))
+        {
+            _currentProjection = functionObject.DoEvaluate(list[_index]);
+            if (_currentProjection > _maxProjection)
+            {
+                _max = list[_index];
+                _maxProjection = _currentProjection;
+            }
+        }
+
+        return = _max;
+    }
+}
+
+def Filter(functionObject: _FunctionObject, list: var[])
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = {};
+        }
+
+        _resultList = {};
+        _index = 0;
+
+        for (_i in 0..(_count - 1))
+        {
+            _value = list[_i];
+            if (functionObject.DoEvaluate(_value))
+            {
+                _resultList[_index] = _value;
+                _index = _index + 1;
+            }
+        }
+
+        return = _resultList;
+    }
+}
