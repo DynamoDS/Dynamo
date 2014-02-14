@@ -20,6 +20,7 @@ using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Greg;
+using Length = Dynamo.Nodes.Length;
 using Transaction = Dynamo.Nodes.Transaction;
 using Value = Dynamo.FScheme.Value;
 
@@ -595,9 +596,9 @@ namespace Dynamo
                     ///in the display units of choice
 
                     var xyzStr = string.Format("{0:f3},{1:f3},{2:f3}",
-                        (pt.X/SIUnit.ToFoot)*um.UiLengthConversion,
-                        (pt.Y/SIUnit.ToFoot)*um.UiLengthConversion,
-                        (pt.Z/SIUnit.ToFoot)*um.UiLengthConversion);
+                        new Units.Length(pt.X/SIUnit.ToFoot),
+                        new Units.Length(pt.Y/SIUnit.ToFoot),
+                        new Units.Length(pt.Z/SIUnit.ToFoot));
 
                     node.NodeLabel = "{" + xyzStr + "}";
                 }
