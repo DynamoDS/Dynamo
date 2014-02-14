@@ -52,7 +52,7 @@ namespace DSIronPythonNode
 
             const string highlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
             var elem = GetType().Assembly.GetManifestResourceStream(
-                        "DSIronPythonUI.Resources." + highlighting);
+                        "DSIronPythonNode.Resources." + highlighting);
 
             this.editText.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(elem), HighlightingManager.Instance);
