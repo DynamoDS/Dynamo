@@ -86,15 +86,15 @@ namespace ProtoCore.DSASM
 
             Frame = new StackValue[kStackFrameSize];
 
-            Frame[(int)AbsoluteIndex.kFramePointer] = StackUtils.BuildInt(framePointer);
-            Frame[(int)AbsoluteIndex.kStackFrameType] = StackUtils.BuildNode(AddressType.FrameType, (int)type);
-            Frame[(int)AbsoluteIndex.kCallerStackFrameType] = StackUtils.BuildNode(AddressType.FrameType, (int)callerType);
-            Frame[(int)AbsoluteIndex.kStackFrameDepth] = StackUtils.BuildInt(depth);
-            Frame[(int)AbsoluteIndex.kFunctionCallerBlock] = StackUtils.BuildNode(AddressType.BlockIndex, functionBlockCaller);
-            Frame[(int)AbsoluteIndex.kFunctionBlock] = StackUtils.BuildNode(AddressType.BlockIndex, functionBlockDecl);
-            Frame[(int)AbsoluteIndex.kReturnAddress] = StackUtils.BuildInt(pc);
-            Frame[(int)AbsoluteIndex.kFunction] = StackUtils.BuildInt(funcIndex);
-            Frame[(int)AbsoluteIndex.kClass] = StackUtils.BuildInt(classIndex);
+            Frame[(int)AbsoluteIndex.kFramePointer] = StackValue.BuildInt(framePointer);
+            Frame[(int)AbsoluteIndex.kStackFrameType] = StackValue.BuildFrameType((int)type);
+            Frame[(int)AbsoluteIndex.kCallerStackFrameType] = StackValue.BuildFrameType((int)callerType);
+            Frame[(int)AbsoluteIndex.kStackFrameDepth] = StackValue.BuildInt(depth);
+            Frame[(int)AbsoluteIndex.kFunctionCallerBlock] = StackValue.BuildBlockIndex(functionBlockCaller);
+            Frame[(int)AbsoluteIndex.kFunctionBlock] = StackValue.BuildBlockIndex(functionBlockDecl);
+            Frame[(int)AbsoluteIndex.kReturnAddress] = StackValue.BuildInt(pc);
+            Frame[(int)AbsoluteIndex.kFunction] = StackValue.BuildInt(funcIndex);
+            Frame[(int)AbsoluteIndex.kClass] = StackValue.BuildInt(classIndex);
             Frame[(int)AbsoluteIndex.kThisPtr] = svThisPtr;
 
             Frame[(int)AbsoluteIndex.kRegisterAX] = stack[0];
@@ -115,12 +115,12 @@ namespace ProtoCore.DSASM
                 ExecutionStates = new StackValue[execStateSize];
                 for (int n = 0; n < execStateSize; ++n)
                 {
-                    ExecutionStates[n] = StackUtils.BuildBoolean(execStates[n]);
+                    ExecutionStates[n] = StackValue.BuildBoolean(execStates[n]);
                 }
             }
 
-            Frame[(int)AbsoluteIndex.kExecutionStates] = StackUtils.BuildInt(execStateSize);
-            Frame[(int)AbsoluteIndex.kLocalVariables] = StackUtils.BuildInt(0);
+            Frame[(int)AbsoluteIndex.kExecutionStates] = StackValue.BuildInt(execStateSize);
+            Frame[(int)AbsoluteIndex.kLocalVariables] = StackValue.BuildInt(0);
             
             Validity.Assert(kStackFrameSize == Frame.Length);
         }
@@ -132,7 +132,7 @@ namespace ProtoCore.DSASM
 
         public StackFrame(int globalOffset)
         {
-            ProtoCore.DSASM.StackValue svThisPtr = ProtoCore.DSASM.StackUtils.BuildPointer(ProtoCore.DSASM.Constants.kInvalidPointer);
+            StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(ProtoCore.DSASM.Constants.kInvalidPointer);
             int ci = ProtoCore.DSASM.Constants.kInvalidIndex;
             int fi = ProtoCore.DSASM.Constants.kInvalidIndex;
             int returnAddr = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -144,7 +144,7 @@ namespace ProtoCore.DSASM
             int depth = -1;
             int framePointer = globalOffset;
 
-            Init(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, ProtoCore.DSASM.StackUtils.BuildInvalidRegisters(), new List<bool>());
+            Init(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, StackValue.BuildInvalidRegisters(), new List<bool>());
         }
 
         public StackValue GetAt(AbsoluteIndex index)
@@ -187,213 +187,6 @@ namespace ProtoCore.DSASM
     
     public static class StackUtils
     {
-        public static StackValue BuildInt(Int64 data)
-        {
-            StackValue value = new StackValue();
-            value.optype = AddressType.Int;
-            value.opdata = data;
-            value.opdata_d = value.opdata;
-
-            MetaData mdata = new MetaData();
-            mdata.type = (int)PrimitiveType.kTypeInt;
-            value.metaData = mdata;
-            return value;
-        }
-
-        public static StackValue BuildDouble(double data)
-        {
-            StackValue value = new StackValue();
-            value.optype = AddressType.Double;
-            value.opdata_d = data;
-            value.opdata = (long)data;
-
-            MetaData mdata = new MetaData();
-            mdata.type = (int)PrimitiveType.kTypeDouble;
-            value.metaData = mdata;
-            return value;
-        }
-
-        public static StackValue BuildChar(char ch)
-        {
-            StackValue value = new ProtoCore.DSASM.StackValue();
-            value.optype = ProtoCore.DSASM.AddressType.Char;
-            value.opdata = ProtoCore.Utils.EncodingUtils.ConvertCharacterToInt64(ch);
-            value.opdata_d = value.opdata;
-
-            MetaData mdata = new MetaData();
-            mdata.type = (int)PrimitiveType.kTypeChar;
-            value.metaData = mdata;
-            return value;
-        }
-        
-        public static StackValue BuildNull()
-        {
-            StackValue value = new StackValue();
-            value.optype = AddressType.Null;
-            value.opdata_d = 0;
-            value.opdata = 0;
-            MetaData mdata = new MetaData();
-            mdata.type = (int)PrimitiveType.kTypeNull;
-            value.metaData = mdata;
-            return value;
-        }
-
-        public static StackValue BuildPointer(Int64 data)
-        {
-            StackValue value = new StackValue();
-            value.optype = AddressType.Pointer;
-            value.opdata = data;
-            return value;
-        }
-
-        public static StackValue BuildPointer(Int64 data, MetaData mdata)
-        {
-            StackValue value = new StackValue();
-            value.optype = AddressType.Pointer;
-            value.opdata = data;
-            value.metaData = mdata;
-            return value;
-        }
-
-        public static StackValue BuildArrayPointer(Int64 data)
-        {
-            StackValue value = new StackValue();
-            value.optype = AddressType.ArrayPointer;
-            value.opdata = data;
-
-            MetaData mdata;
-            mdata.type = (int)PrimitiveType.kTypeArray;
-            value.metaData = mdata;
-            return value;
-        }
-
-        public static StackValue BuildClassIndex(int classIndex)
-        {
-            StackValue value = new StackValue();
-            value.optype = AddressType.ClassIndex;
-            value.opdata = classIndex;
-            return value;
-        }
-
-        public static StackValue BuildFunctionPointer(int fptr)
-        {
-            StackValue value = new StackValue();
-            value.optype = AddressType.FunctionPointer;
-            value.opdata = fptr;
-            return value;
-        }
-
-        public static StackValue BuildString(Int64 data)
-        {
-            StackValue value = new StackValue();
-            value.optype = AddressType.String;
-            value.opdata = data;
-
-            MetaData mdata;
-            mdata.type = (int)PrimitiveType.kTypeString;
-            value.metaData = mdata;
-            return value;
-        }
-
-        public static StackValue BuildString(string str, Heap heap)
-        {
-            var svchars = new List<StackValue>();
-
-            foreach (char ch in str)
-            {
-                svchars.Add(ProtoCore.DSASM.StackUtils.BuildChar(ch));
-            }
-
-            lock (heap.cslock)
-            {
-                int size = str.Length;
-                
-                int ptr = heap.Allocate(size);
-
-                for (int i = 0; i < size; ++i)
-                {
-                    heap.Heaplist[ptr].Stack[i] = BuildChar(str[i]);
-                }
-
-                return StackUtils.BuildString(ptr);
-            }
-        }
-
-        public static StackValue BuildBoolean(Boolean b)
-        {
-            StackValue value = new StackValue();
-            value.optype = AddressType.Boolean;
-            value.opdata = b ? 1 : 0;
-
-            MetaData mdata;
-            mdata.type = (int)PrimitiveType.kTypeBool;
-            value.metaData = mdata;
-
-            return value;
-        }
-
-        public static StackValue BuildDefaultArgument()
-        {
-            StackValue value = new StackValue();
-            value.optype = AddressType.DefaultArg;
-            value.opdata_d = value.opdata = 0;
-
-            MetaData mdata;
-            mdata.type = (int)PrimitiveType.kTypeVar;
-            value.metaData = mdata;
-
-            return value;
-        }
-
-        public static StackValue BuildDynamicBlock(int block)
-        {
-            StackValue value = new StackValue();
-            value.optype = AddressType.BlockIndex;
-            value.opdata = value.opdata = block;
-
-            MetaData mdata;
-            mdata.type = (int)PrimitiveType.kTypeVar;
-            value.metaData = mdata;
-
-            return value;
-        }
-
-        public static StackValue BuildStaticType(int UID, int rank = 0)
-        {
-            StackValue value = new StackValue();
-            value.optype = AddressType.StaticType;
-            value.metaData = new MetaData { type = UID };
-            value.opdata = rank;
-            return value;
-        }
-
-        public static StackValue BuildNode(AddressType type, Int64 data)
-        {
-            StackValue value = new StackValue();
-            value.optype = type;
-            value.opdata = data;
-            return value;
-        }
-
-        public static StackValue BuildInvalidNode()
-        {
-            StackValue value = new StackValue();
-            value.optype = AddressType.Invalid;
-            value.opdata = -1;
-            return value;
-        }
-
-        public static List<StackValue> BuildInvalidRegisters()
-        {
-            List<StackValue> registers = new List<StackValue>();
-
-            for (int i = 0; i < 10; ++i)
-            {
-                registers.Add(BuildInvalidNode());
-            }
-            return registers;
-        }
-
         public static bool IsTrue(StackValue operand)
         {
             return operand.optype == AddressType.Boolean &&
@@ -433,44 +226,42 @@ namespace ProtoCore.DSASM
             {
                 case AddressType.Boolean:
                 case AddressType.Int:
-                    return BuildBoolean(operand.opdata != 0);
+                    return StackValue.BuildBoolean(operand.opdata != 0);
                 case AddressType.Null:
-                    return BuildNull(); //BuildBoolean(false);
+                    return StackValue.Null; //BuildBoolean(false);
                 case AddressType.Double:
                     bool b = !(Double.IsNaN(operand.opdata_d) || operand.opdata_d.Equals(0.0));
-                    return BuildBoolean(b);
+                    return StackValue.BuildBoolean(b);
                 case AddressType.Pointer:
-                    return BuildBoolean(true);
+                    return StackValue.BuildBoolean(true);
                 case AddressType.String:
                     if (ArrayUtils.GetElementSize(operand, core) == 0)
                     {
-                        return BuildBoolean(false);
+                        return StackValue.BuildBoolean(false);
                     }
-                    return BuildBoolean(true);
+                    return StackValue.BuildBoolean(true);
 
                 case AddressType.Char:
                     if (EncodingUtils.ConvertInt64ToCharacter(operand.opdata)==0)
                     {
-                        return BuildBoolean(false);
+                        return StackValue.BuildBoolean(false);
                     }
-                    return BuildBoolean(true); 
+                    return StackValue.BuildBoolean(true); 
                 default:
-                    return BuildNull();
+                    return StackValue.Null;
             }
         }
-
-
 
         public static StackValue AsDouble(this StackValue operand)
         {
             switch (operand.optype)
             {
                 case AddressType.Int:
-                    return BuildDouble(operand.opdata);
+                    return StackValue.BuildDouble(operand.opdata);
                 case AddressType.Double:
-                    return BuildDouble(operand.opdata_d);
+                    return StackValue.BuildDouble(operand.opdata_d);
                 default:
-                    return BuildNull();
+                    return StackValue.Null;
             }
         }
 
@@ -481,9 +272,9 @@ namespace ProtoCore.DSASM
                 case AddressType.Int:
                     return operand;
                 case AddressType.Double:
-                    return BuildInt((Int64)Math.Round(operand.opdata_d, 0, MidpointRounding.AwayFromZero));
+                    return StackValue.BuildInt((Int64)Math.Round(operand.opdata_d, 0, MidpointRounding.AwayFromZero));
                 default:
-                    return BuildNull();
+                    return StackValue.Null;
             }
         }
 
@@ -582,7 +373,7 @@ namespace ProtoCore.DSASM
                 foreach (var key in heap1.Dict.Keys)
                 {
                     StackValue value1 = heap1.Dict[key];
-                    StackValue value2 = StackUtils.BuildNull();
+                    StackValue value2 = StackValue.Null;
                     if (!heap2.Dict.TryGetValue(key, out value2))
                     {
                         return false;
@@ -639,7 +430,7 @@ namespace ProtoCore.DSASM
             {
                 //throw new IndexOutOfRangeException();
                 core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             return hs.Stack[index];

@@ -465,7 +465,7 @@ namespace ProtoCore.DSASM
 
             if (!StackUtils.IsArray(sv))
             {
-                sv = StackUtils.BuildNull();
+                sv = StackValue.Null;
             }
 
             StackValue ret = GetIndexedArray(sv, dimensions);
@@ -571,7 +571,7 @@ namespace ProtoCore.DSASM
 
             // Jun Comment: The block where the function is called from
             Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != core.RunningBlock);
-            StackValue svBlockCaller = StackUtils.BuildNode(AddressType.BlockIndex, core.RunningBlock);
+            StackValue svBlockCaller = StackValue.BuildBlockIndex(core.RunningBlock);
 
 
             bool isMember = ProtoCore.DSASM.Constants.kInvalidIndex != classIndex;
@@ -587,7 +587,7 @@ namespace ProtoCore.DSASM
                         string message = String.Format(ProtoCore.RuntimeData.WarningMessage.KCallingConstructorOnInstance, fNode.name);
                         core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kCallingConstructorOnInstance, message);
                         isGlobScope = true;
-                        StackValue nullSv = StackUtils.BuildNull();
+                        StackValue nullSv = StackValue.Null;
                         return nullSv;
                     }
                 }
@@ -756,7 +756,7 @@ namespace ProtoCore.DSASM
 
 
             // if is dynamic call, the final pointer has been resovled in the ProcessDynamicFunction function
-            StackValue svThisPtr = new StackValue();
+            StackValue svThisPtr = StackValue.Null;
 
             if (depth > 0)
             {
@@ -776,12 +776,8 @@ namespace ProtoCore.DSASM
                 {
                     string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kInvokeMethodOnInvalidObject, fNode.name);
                     core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kDereferencingNonPointer, message);
-                    StackValue nullSv = new StackValue();
-                    nullSv.optype = AddressType.Null;
-                    nullSv.opdata = 0;
-                    nullSv.opdata_d = 0.0;
                     isGlobScope = true;
-                    return nullSv;
+                    return StackValue.Null;
                 }
             }
             else
@@ -798,7 +794,7 @@ namespace ProtoCore.DSASM
                 else
                 {
                     // Global
-                    svThisPtr = ProtoCore.DSASM.StackUtils.BuildPointer(ProtoCore.DSASM.Constants.kInvalidPointer);
+                    svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(ProtoCore.DSASM.Constants.kInvalidPointer);
                 }
             }
 
@@ -882,7 +878,7 @@ namespace ProtoCore.DSASM
             ProtoCore.DSASM.StackFrame stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, blockDepth, framePointer, registers, execStates);
 
             FunctionCounter counter = FindCounter(functionIndex, classIndex, fNode.name);
-            StackValue sv = new StackValue();
+            StackValue sv = StackValue.Null;
 
 
             if (core.Options.RecursionChecking)
@@ -923,7 +919,7 @@ namespace ProtoCore.DSASM
 
                     core.recursivePoint = new List<FunctionCounter>();
                     core.funcCounterTable = new List<FunctionCounter>();
-                    sv = StackUtils.BuildNull();
+                    sv = StackValue.Null;
                 }
             }
             else
@@ -979,7 +975,7 @@ namespace ProtoCore.DSASM
                                 }
 
                                 // Hardcoded
-                                core.ContinuationStruct.NextDispatchArgs.Add(StackUtils.BuildInt(1));
+                                core.ContinuationStruct.NextDispatchArgs.Add(StackValue.BuildInt(1));
                             }
 
                             // The Resolve function is currently hard-coded as a place holder to test debugging replication - pratapa
@@ -1612,7 +1608,7 @@ namespace ProtoCore.DSASM
 
         private void SetGraphNodeStackValueNull(AssociativeGraph.GraphNode graphNode)
         {
-            StackValue svNull = StackUtils.BuildNull();
+            StackValue svNull = StackValue.Null;
             SetGraphNodeStackValue(graphNode, svNull);
         }
 
@@ -1866,21 +1862,20 @@ namespace ProtoCore.DSASM
                 {
                     case AssociativeGraph.UpdateNodeType.kSymbol:
                         {
-                            var opSymbol = new StackValue();
+                            var opSymbol = StackValue.Null;
                             if (dimSymbol.classScope != Constants.kInvalidIndex &&
                                 dimSymbol.functionIndex == Constants.kInvalidIndex)
                             {
-                                opSymbol.optype = AddressType.MemVarIndex;
+                                opSymbol = StackValue.BuildMemVarIndex(dimSymbol.symbolTableIndex);
                             }
                             else
                             {
-                                opSymbol.optype = AddressType.VarIndex;
+                                opSymbol = StackValue.BuildVarIndex(dimSymbol.symbolTableIndex);
                             }
-                            opSymbol.opdata = dimSymbol.symbolTableIndex;
 
                             var dimValue = GetOperandData(dimSymbol.codeBlockId,
                                                           opSymbol,
-                                                          StackUtils.BuildInt(dimSymbol.classScope));
+                                                          StackValue.BuildInt(dimSymbol.classScope));
                             graphNode.updateDimensions.Add(dimValue);
                             break;
                         }
@@ -1890,7 +1885,7 @@ namespace ProtoCore.DSASM
                             int dimValue = Constants.kInvalidIndex;
                             if (Int32.TryParse(dimSymbol.name, out dimValue))
                             {
-                                graphNode.updateDimensions.Add(StackUtils.BuildInt(dimValue));
+                                graphNode.updateDimensions.Add(StackValue.BuildInt(dimValue));
                             }
                             else
                             {
@@ -2453,8 +2448,10 @@ namespace ProtoCore.DSASM
                                         continue;
                                     }
 
-                                    StackValue svSym = StackUtils.BuildNode(opAddr, firstSymbolInUpdatedRef.symbolTableIndex);
-                                    StackValue svClass = StackUtils.BuildNode(AddressType.ClassIndex, firstSymbolInUpdatedRef.classScope);
+                                    StackValue svSym = (opAddr == AddressType.MemVarIndex) 
+                                           ? StackValue.BuildMemVarIndex(firstSymbolInUpdatedRef.symbolTableIndex)
+                                           : StackValue.BuildVarIndex(firstSymbolInUpdatedRef.symbolTableIndex);
+                                    StackValue svClass = StackValue.BuildClassIndex(firstSymbolInUpdatedRef.classScope);
 
                                     runtimeVerify(DSASM.Constants.kInvalidIndex != firstSymbolInUpdatedRef.runtimeTableIndex);
                                     StackValue svGraphNode = GetOperandData(firstSymbolInUpdatedRef.runtimeTableIndex, svSym, svClass);
@@ -3303,9 +3300,7 @@ namespace ProtoCore.DSASM
 
         private StackValue GetOperandData(StackValue op1)
         {
-            StackValue op2 = new StackValue();
-            op2.optype = AddressType.ClassIndex;
-            op2.opdata = Constants.kInvalidIndex;
+            StackValue op2 = StackValue.BuildClassIndex(Constants.kInvalidIndex);
             return GetOperandData(-1, op1, op2);
         }
 
@@ -3431,7 +3426,7 @@ namespace ProtoCore.DSASM
 
         protected StackValue PopTo(int blockId, StackValue op1, StackValue op2, StackValue opVal)
         {
-            StackValue opPrev = new StackValue();
+            StackValue opPrev = StackValue.Null;
             switch (op1.optype)
             {
                 case AddressType.VarIndex:
@@ -3587,7 +3582,7 @@ namespace ProtoCore.DSASM
             {
                 if (symbolnode.staticType.rank == 0)
                 {
-                    rmem.SetAtSymbol(symbolnode, StackUtils.BuildNull());
+                    rmem.SetAtSymbol(symbolnode, StackValue.Null);
                     return value;
                 }
                 else
@@ -3609,7 +3604,7 @@ namespace ProtoCore.DSASM
             StackValue value = rmem.GetAtRelative(symbolnode);
             if (value.optype == AddressType.Invalid)
             {
-                value = StackUtils.BuildNull();
+                value = StackValue.Null;
             }
 
             Type t = symbolnode.staticType;
@@ -3619,7 +3614,7 @@ namespace ProtoCore.DSASM
                 t.IsIndexable = true;
             }
 
-            StackValue ret = StackUtils.BuildNull();
+            StackValue ret = StackValue.Null;
             if (value.optype == AddressType.ArrayPointer)
             {
                 if (t.UID != (int)PrimitiveType.kTypeVar || t.rank >= 0)
@@ -3669,7 +3664,7 @@ namespace ProtoCore.DSASM
             {
                 if (symbolnode.staticType.rank == 0)
                 {
-                    rmem.SetAtSymbol(symbolnode, StackUtils.BuildNull());
+                    rmem.SetAtSymbol(symbolnode, StackValue.Null);
                     return value;
                 }
                 else
@@ -3871,7 +3866,7 @@ namespace ProtoCore.DSASM
 
             if (isInvalidIdentList)
             {
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             if (isDotFunctionBody)
@@ -3925,16 +3920,13 @@ namespace ProtoCore.DSASM
                     //if the identifier is unbounded. Push null
                     if (!succeeded)
                     {
-                        return StackUtils.BuildNull();
+                        return StackValue.Null;
                     }
                 }
 
                 if (rtSymbols[n].Sv.optype == AddressType.StaticMemVarIndex)
                 {
-                    StackValue op2 = new StackValue();
-                    op2.optype = AddressType.ClassIndex;
-                    op2.opdata = Constants.kInvalidIndex;
-
+                    StackValue op2 = StackValue.BuildClassIndex(Constants.kInvalidIndex);
                     rtSymbols[n].Sv = GetOperandData(0, rtSymbols[n].Sv, op2);
                 }
                 else
@@ -3991,7 +3983,7 @@ namespace ProtoCore.DSASM
             if (svPtr.optype != AddressType.ArrayPointer)
             {
                 core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             //
@@ -4011,7 +4003,7 @@ namespace ProtoCore.DSASM
             if (AddressType.ArrayPointer != svPtr.optype)
             {
                 core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             int ptr = (int)svPtr.opdata;
@@ -4025,17 +4017,17 @@ namespace ProtoCore.DSASM
                     if (array.optype != AddressType.ArrayPointer)
                     {
                         core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
-                        return StackUtils.BuildNull();
+                        return StackValue.Null;
                     }
                     ptr = (int)array.opdata;
                 }
                 catch (ArgumentOutOfRangeException)
                 {
                     core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
-                    return StackUtils.BuildNull();
+                    return StackValue.Null;
                 }
             }
-            StackValue sv = StackUtils.BuildNull();
+            StackValue sv = StackValue.Null;
             try
             {
                 sv = core.Heap.Heaplist[ptr].GetValue(dimList[dimensions - 1], core);
@@ -4043,12 +4035,12 @@ namespace ProtoCore.DSASM
             catch (ArgumentOutOfRangeException)
             {
                 core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
-                sv = StackUtils.BuildNull();
+                sv = StackValue.Null;
             }
             catch (IndexOutOfRangeException)
             {
                 core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kIndexOutOfRange, RuntimeData.WarningMessage.kIndexOutOfRange);
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
             return sv;
         }
@@ -4100,7 +4092,7 @@ namespace ProtoCore.DSASM
 
                 string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kSymbolOverIndexed, varname);
                 core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, message);
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             StackValue result;
@@ -4112,7 +4104,7 @@ namespace ProtoCore.DSASM
             {
                 string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kSymbolOverIndexed, varname);
                 core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, message);
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             return result;
@@ -4150,7 +4142,7 @@ namespace ProtoCore.DSASM
 
                 string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kSymbolOverIndexed, varname);
                 core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, message);
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             StackValue result;
@@ -4162,7 +4154,7 @@ namespace ProtoCore.DSASM
             {
                 string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kSymbolOverIndexed, varname);
                 core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, message);
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             return result;
@@ -4499,19 +4491,15 @@ namespace ProtoCore.DSASM
                     //push value-not-provided default argument
                     for (int i = arglist.Count; i < procNode.argInfoList.Count; i++)
                     {
-                        rmem.Push(StackUtils.BuildDefaultArgument());
+                        rmem.Push(StackValue.BuildDefaultArgument());
                     }
 
                     // Push the function declaration block  
-                    ProtoCore.DSASM.StackValue opblock = new ProtoCore.DSASM.StackValue();
-                    opblock.optype = ProtoCore.DSASM.AddressType.BlockIndex;
-                    opblock.opdata = procNode.runtimeIndex;
+                    StackValue opblock = StackValue.BuildBlockIndex(procNode.runtimeIndex);
                     rmem.Push(opblock);
 
                     int dimensions = 0;
-                    ProtoCore.DSASM.StackValue opdim = new ProtoCore.DSASM.StackValue();
-                    opdim.optype = ProtoCore.DSASM.AddressType.ArrayDim;
-                    opdim.opdata = dimensions;
+                    StackValue opdim = StackValue.BuildArrayDimension(dimensions);
                     rmem.Push(opdim);
 
                     //Modify the operand data
@@ -4848,7 +4836,7 @@ namespace ProtoCore.DSASM
 
             MetaData metadata;
             metadata.type = type;
-            StackValue pointer = StackUtils.BuildPointer(ptr, metadata);
+            StackValue pointer = StackValue.BuildPointer(ptr, metadata);
             rmem.SetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr, pointer);
 
             // Increase reference count here to avoid that in the 
@@ -4875,7 +4863,7 @@ namespace ProtoCore.DSASM
 
             lock (core.Heap.cslock)
             {
-                core.Heap.Heaplist[thisptr].Stack[offset] = StackUtils.BuildPointer(ptr);
+                core.Heap.Heaplist[thisptr].Stack[offset] = StackValue.BuildPointer(ptr);
             }
             ++pc;
             return;
@@ -5242,12 +5230,12 @@ namespace ProtoCore.DSASM
 
             if (instruction.op1.optype == AddressType.StaticMemVarIndex)
             {
-                rmem.Push(new StackValue { optype = AddressType.BlockIndex, opdata = blockId });
+                rmem.Push(StackValue.BuildBlockIndex(blockId));
                 rmem.Push(instruction.op1);
             }
             else if (instruction.op1.optype == AddressType.ClassIndex)
             {
-                rmem.Push(new StackValue { optype = AddressType.ClassIndex, opdata = instruction.op1.opdata, metaData = new MetaData { type = (int)instruction.op1.opdata } });
+                rmem.Push(StackValue.BuildClassIndex((int)instruction.op1.opdata));
             }
             else
             {
@@ -5307,23 +5295,18 @@ namespace ProtoCore.DSASM
                 array = core.Heap.Heaplist[(int)array.opdata].Stack[0];
             }
 
-            StackValue key = StackUtils.BuildNull();
+            StackValue key = StackValue.Null;
             HeapElement he = ArrayUtils.GetHeapElement(array, core);
             if (he != null)
             {
                 if (he.VisibleSize > 0 || (he.Dict != null && he.Dict.Count > 0))
                 {
-                    key = new StackValue();
-                    key.optype = AddressType.ArrayKey;
-                    key.opdata = 0;
-                    key.opdata_d = array.opdata;
+                    key = StackValue.BuildArrayKey(0, (int)array.opdata);
                 }
             }
             else if (!StackUtils.IsNull(array))
             {
-                key = new StackValue();
-                key.optype = AddressType.ArrayKey;
-                key.opdata = Constants.kInvalidIndex;
+                key = StackValue.BuildArrayKey(Constants.kInvalidIndex, Constants.kInvalidIndex);
             }
             rmem.Push(key);
 
@@ -5370,7 +5353,7 @@ namespace ProtoCore.DSASM
             StackValue svData;
 
             // The returned stackvalue is used by watch test framework - pratapa
-            StackValue tempSvData = StackUtils.BuildNull();
+            StackValue tempSvData = StackValue.Null;
 
             bool elementBasedUpdate = core.Options.ElementBasedArrayUpdate
                                     && Properties.executingGraphNode != null
@@ -5772,7 +5755,7 @@ namespace ProtoCore.DSASM
                         int ptr = core.Heap.Allocate(DSASM.Constants.kPointerSize);
                         core.Heap.Heaplist[ptr].Stack[0] = svData;
 
-                        StackValue svNewProperty = StackUtils.BuildPointer(ptr);
+                        StackValue svNewProperty = StackValue.BuildPointer(ptr);
                         core.Heap.Heaplist[thisptr].Stack[stackIndex] = svNewProperty;
                         GCRetain(svNewProperty);
 
@@ -5805,7 +5788,7 @@ namespace ProtoCore.DSASM
                         int ptr = core.Heap.Allocate(DSASM.Constants.kPointerSize);
                         core.Heap.Heaplist[ptr].Stack[0] = svData;
 
-                        StackValue svNewProperty = StackUtils.BuildPointer(ptr);
+                        StackValue svNewProperty = StackValue.BuildPointer(ptr);
                         core.Heap.Heaplist[thisptr].Stack[stackIndex] = svNewProperty;
                         GCRetain(svNewProperty);
 
@@ -5897,7 +5880,7 @@ namespace ProtoCore.DSASM
                                     data.metaData = mdata;
                                     core.heap.heaplist[ptr].stack[0] = data;
 
-                                    core.heap.heaplist[thisptr].stack[symbol] = StackUtils.BuildPointer(ptr);
+                                    core.heap.heaplist[thisptr].stack[symbol] = StackValue.BuildPointer(ptr);
                                 }
                                 exe.classTable.list[ci].symbols.symbolList[symbol].heapIndex = ptr;
                             }
@@ -5947,7 +5930,7 @@ namespace ProtoCore.DSASM
             }
 
             // Handle depth until one before the last pointer
-            StackValue finalPointer = new StackValue();
+            StackValue finalPointer = StackValue.Null; 
             int classsccope = (int)listInfo.Last().Sv.metaData.type;
             for (int n = listInfo.Length - 1; n >= 1; --n)
             {
@@ -5963,7 +5946,7 @@ namespace ProtoCore.DSASM
                         //if the identifier is unbounded. Push null
                         if (!succeeded)
                         {
-                            finalPointer = StackUtils.BuildNull();
+                            finalPointer = StackValue.Null;
                             break;
                         }
                     }
@@ -5983,7 +5966,7 @@ namespace ProtoCore.DSASM
             }
 
             // Handle the last pointer
-            StackValue tryPointer = new StackValue();
+            StackValue tryPointer = StackValue.Null;
             StackValue data = rmem.Pop();
             GCRetain(data);
             if (finalPointer.optype != AddressType.Null)
@@ -5995,7 +5978,7 @@ namespace ProtoCore.DSASM
                     //if the identifier is unbounded. Push null
                     if (!succeeded)
                     {
-                        tryPointer = StackUtils.BuildNull();
+                        tryPointer = StackValue.Null;
                     }
                     else
                     {
@@ -6021,7 +6004,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                tryPointer = StackUtils.BuildNull();
+                tryPointer = StackValue.Null;
             }
 
             if (listInfo[0].Dimlist != null)
@@ -6058,7 +6041,7 @@ namespace ProtoCore.DSASM
                     lock (core.Heap.cslock)
                     {
                         core.Heap.Heaplist[ptr].Stack = new[] { data };
-                        data = StackUtils.BuildPointer(ptr);
+                        data = StackValue.BuildPointer(ptr);
                         // TODO Jun/Jiong,  write test case for this
                         GCRetain(data);
                     }
@@ -6143,9 +6126,7 @@ namespace ProtoCore.DSASM
         }
         private void MOV_Handler(Instruction instruction)
         {
-            StackValue opClass = new StackValue();
-            opClass.optype = AddressType.ClassIndex;
-            opClass.opdata = Constants.kInvalidIndex;
+            StackValue opClass = StackValue.BuildClassIndex(Constants.kGlobalScope);
 
             int dimensions = 0;
             int blockId = DSASM.Constants.kInvalidIndex;
@@ -6178,12 +6159,12 @@ namespace ProtoCore.DSASM
             // Need to optmize these if-elses to a table. 
             if ((AddressType.Int == opdata1.optype) && (AddressType.Int == opdata2.optype))
             {
-                opdata2 = StackUtils.BuildInt(opdata1.opdata + opdata2.opdata);
+                opdata2 = StackValue.BuildInt(opdata1.opdata + opdata2.opdata);
 
             }
             else if (StackUtils.IsNumeric(opdata1) && StackUtils.IsNumeric(opdata2))
             {
-                opdata2 = StackUtils.BuildDouble(opdata1.opdata_d + opdata2.opdata_d);
+                opdata2 = StackValue.BuildDouble(opdata1.opdata_d + opdata2.opdata_d);
             }
             else if ((StackUtils.IsString(opdata1) && (AddressType.Char == opdata2.optype || StackUtils.IsString(opdata2))) ||
                      (StackUtils.IsString(opdata2) && (AddressType.Char == opdata1.optype || StackUtils.IsString(opdata1))))
@@ -6228,12 +6209,12 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    opdata2 = StackUtils.BuildNull();
+                    opdata2 = StackValue.Null;
                 }
             }
             else
             {
-                opdata2 = StackUtils.BuildNull();
+                opdata2 = StackValue.Null;
             }
 
             SetOperandData(instruction.op1, opdata2);
@@ -6248,11 +6229,11 @@ namespace ProtoCore.DSASM
 
             if ((AddressType.Int == opdata1.optype) && (AddressType.Int == opdata2.optype))
             {
-                opdata2 = StackUtils.BuildInt(opdata1.opdata + opdata2.opdata);
+                opdata2 = StackValue.BuildInt(opdata1.opdata + opdata2.opdata);
             }
             else if (StackUtils.IsNumeric(opdata1) && StackUtils.IsNumeric(opdata2))
             {
-                opdata2 = StackUtils.BuildDouble(opdata1.opdata_d + opdata2.opdata_d);
+                opdata2 = StackValue.BuildDouble(opdata1.opdata_d + opdata2.opdata_d);
             }
             else
             {
@@ -6273,15 +6254,15 @@ namespace ProtoCore.DSASM
 
             if ((AddressType.Int == opdata1.optype) && (AddressType.Int == opdata2.optype))
             {
-                opdata2 = StackUtils.BuildInt(opdata2.opdata - opdata1.opdata);
+                opdata2 = StackValue.BuildInt(opdata2.opdata - opdata1.opdata);
             }
             else if (StackUtils.IsNumeric(opdata1) && StackUtils.IsNumeric(opdata2))
             {
-                opdata2 = StackUtils.BuildDouble(opdata2.opdata_d - opdata1.opdata_d);
+                opdata2 = StackValue.BuildDouble(opdata2.opdata_d - opdata1.opdata_d);
             }
             else
             {
-                opdata1 = StackUtils.BuildNull();
+                opdata1 = StackValue.Null;
             }
 
             Nullify(ref opdata2, ref opdata1);
@@ -6297,15 +6278,15 @@ namespace ProtoCore.DSASM
 
             if ((AddressType.Int == opdata1.optype) && (AddressType.Int == opdata2.optype))
             {
-                opdata2 = StackUtils.BuildInt(opdata2.opdata - opdata1.opdata);
+                opdata2 = StackValue.BuildInt(opdata2.opdata - opdata1.opdata);
             }
             else if (StackUtils.IsNumeric(opdata1) && StackUtils.IsNumeric(opdata2))
             {
-                opdata2 = StackUtils.BuildDouble(opdata2.opdata_d - opdata1.opdata_d);
+                opdata2 = StackValue.BuildDouble(opdata2.opdata_d - opdata1.opdata_d);
             }
             else
             {
-                opdata2 = StackUtils.BuildNull();
+                opdata2 = StackValue.Null;
             }
 
             Nullify(ref opdata2, ref opdata1);
@@ -6321,16 +6302,16 @@ namespace ProtoCore.DSASM
 
             if ((AddressType.Int == opdata1.optype) && (AddressType.Int == opdata2.optype))
             {
-                opdata2 = StackUtils.BuildInt(opdata1.opdata * opdata2.opdata);
+                opdata2 = StackValue.BuildInt(opdata1.opdata * opdata2.opdata);
             }
             else if (((AddressType.Int == opdata1.optype) || (AddressType.Double == opdata1.optype)) &&
                      ((AddressType.Int == opdata2.optype) || (AddressType.Double == opdata2.optype)))
             {
-                opdata2 = StackUtils.BuildDouble(opdata1.opdata_d * opdata2.opdata_d);
+                opdata2 = StackValue.BuildDouble(opdata1.opdata_d * opdata2.opdata_d);
             }
             else
             {
-                opdata2 = StackUtils.BuildNull();
+                opdata2 = StackValue.Null;
             }
 
             Nullify(ref opdata2, ref opdata1);
@@ -6346,16 +6327,16 @@ namespace ProtoCore.DSASM
 
             if ((AddressType.Int == opdata1.optype) && (AddressType.Int == opdata2.optype))
             {
-                opdata2 = StackUtils.BuildInt(opdata1.opdata * opdata2.opdata);
+                opdata2 = StackValue.BuildInt(opdata1.opdata * opdata2.opdata);
             }
             else if (((AddressType.Int == opdata1.optype) || (AddressType.Double == opdata1.optype)) &&
                      ((AddressType.Int == opdata2.optype) || (AddressType.Double == opdata2.optype)))
             {
-                opdata2 = StackUtils.BuildDouble(opdata1.opdata_d * opdata2.opdata_d);
+                opdata2 = StackValue.BuildDouble(opdata1.opdata_d * opdata2.opdata_d);
             }
             else
             {
-                opdata2 = StackUtils.BuildNull();
+                opdata2 = StackValue.Null;
             }
 
             Nullify(ref opdata2, ref opdata1);
@@ -6373,11 +6354,11 @@ namespace ProtoCore.DSASM
             if (((AddressType.Int == opdata1.optype) || (AddressType.Double == opdata1.optype)) &&
                 ((AddressType.Int == opdata2.optype) || (AddressType.Double == opdata2.optype)))
             {
-                opdata2 = StackUtils.BuildDouble(opdata2.opdata_d / opdata1.opdata_d);
+                opdata2 = StackValue.BuildDouble(opdata2.opdata_d / opdata1.opdata_d);
             }
             else
             {
-                opdata2 = StackUtils.BuildNull();
+                opdata2 = StackValue.Null;
             }
 
             Nullify(ref opdata2, ref opdata1);
@@ -6394,11 +6375,11 @@ namespace ProtoCore.DSASM
             if (((AddressType.Int == opdata1.optype) || (AddressType.Double == opdata1.optype)) &&
                 ((AddressType.Int == opdata2.optype) || (AddressType.Double == opdata2.optype)))
             {
-                opdata2 = StackUtils.BuildDouble(opdata2.opdata_d / opdata1.opdata_d);
+                opdata2 = StackValue.BuildDouble(opdata2.opdata_d / opdata1.opdata_d);
             }
             else
             {
-                opdata2 = StackUtils.BuildNull();
+                opdata2 = StackValue.Null;
             }
 
             Nullify(ref opdata2, ref opdata1);
@@ -6414,11 +6395,11 @@ namespace ProtoCore.DSASM
 
             if ((opdata1.optype == AddressType.Int) && (opdata2.optype == AddressType.Int))
             {
-                opdata2 = StackUtils.BuildInt(opdata2.opdata % opdata1.opdata);
+                opdata2 = StackValue.BuildInt(opdata2.opdata % opdata1.opdata);
             }
             else
             {
-                opdata2 = StackUtils.BuildNull();
+                opdata2 = StackValue.Null;
             }
 
             Nullify(ref opdata2, ref opdata1);
@@ -6439,7 +6420,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                opdata2 = StackUtils.BuildNull();
+                opdata2 = StackValue.Null;
             }
 
             Nullify(ref opdata2, ref opdata1);
@@ -6461,7 +6442,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                opdata2 = StackUtils.BuildNull();
+                opdata2 = StackValue.Null;
             }
 
             Nullify(ref opdata2, ref opdata1);
@@ -6482,7 +6463,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                opdata2 = StackUtils.BuildNull();
+                opdata2 = StackValue.Null;
             }
 
             Nullify(ref opdata2, ref opdata1);
@@ -6502,7 +6483,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                opdata1 = StackUtils.BuildNull();
+                opdata1 = StackValue.Null;
             }
 
             SetOperandData(instruction.op1, opdata1);
@@ -6529,11 +6510,11 @@ namespace ProtoCore.DSASM
             opdata2 = opdata2.AsBoolean(core);
             if (opdata1.optype == AddressType.Null || opdata2.optype == AddressType.Null)
             {
-                opdata2 = StackUtils.BuildNull();
+                opdata2 = StackValue.Null;
             }
             else
             {
-                opdata2 = StackUtils.BuildBoolean(opdata2.opdata != 0L && opdata1.opdata != 0L);
+                opdata2 = StackValue.BuildBoolean(opdata2.opdata != 0L && opdata1.opdata != 0L);
             }
             //Nullify(ref opdata2, ref opdata1);
             SetOperandData(instruction.op1, opdata2);
@@ -6550,11 +6531,11 @@ namespace ProtoCore.DSASM
             opdata2 = opdata2.AsBoolean(core);
             if (opdata1.optype == AddressType.Null || opdata2.optype == AddressType.Null)
             {
-                opdata2 = StackUtils.BuildNull();
+                opdata2 = StackValue.Null;
             }
             else
             {
-                opdata2 = StackUtils.BuildBoolean(opdata2.opdata != 0L || opdata1.opdata != 0L);
+                opdata2 = StackValue.BuildBoolean(opdata2.opdata != 0L || opdata1.opdata != 0L);
             }
 
             //Nullify(ref opdata2, ref opdata1);
@@ -6570,7 +6551,7 @@ namespace ProtoCore.DSASM
             opdata1 = opdata1.AsBoolean(core);
             if (opdata1.optype != AddressType.Null)
             {
-                opdata1 = StackUtils.BuildBoolean(opdata1.opdata == 0L ? true : false);
+                opdata1 = StackValue.BuildBoolean(opdata1.opdata == 0L ? true : false);
             }
 
             //Nullify(ref opdata1);
@@ -6590,11 +6571,11 @@ namespace ProtoCore.DSASM
                 opdata2 = opdata2.AsBoolean(core);
                 if (StackUtils.IsNull(opdata1) || StackUtils.IsNull(opdata2))
                 {
-                    opdata2 = StackUtils.BuildNull();
+                    opdata2 = StackValue.Null;
                 }
                 else
                 {
-                    opdata2 = StackUtils.BuildBoolean(opdata1.opdata == opdata2.opdata);
+                    opdata2 = StackValue.BuildBoolean(opdata1.opdata == opdata2.opdata);
                 }
             }
             else if (StackUtils.IsNumeric(opdata1) && StackUtils.IsNumeric(opdata2))
@@ -6603,25 +6584,25 @@ namespace ProtoCore.DSASM
                 {
                     opdata1 = opdata1.AsDouble();
                     opdata2 = opdata2.AsDouble();
-                    opdata2 = StackUtils.BuildBoolean(MathUtils.Equals(opdata1.opdata_d, opdata2.opdata_d));
+                    opdata2 = StackValue.BuildBoolean(MathUtils.Equals(opdata1.opdata_d, opdata2.opdata_d));
                 }
                 else
                 {
-                    opdata2 = StackUtils.BuildBoolean(opdata1.opdata == opdata2.opdata);
+                    opdata2 = StackValue.BuildBoolean(opdata1.opdata == opdata2.opdata);
                 }
             }
             else if (StackUtils.IsString(opdata1) && StackUtils.IsString(opdata2))
             {
                 int diffIndex = StringUtils.CompareString(opdata2, opdata1, core);
-                opdata2 = StackUtils.BuildBoolean(diffIndex == 0);
+                opdata2 = StackValue.BuildBoolean(diffIndex == 0);
             }
             else if (opdata1.optype == opdata2.optype)
             {
-                opdata2 = StackUtils.BuildBoolean(opdata1.opdata == opdata2.opdata);
+                opdata2 = StackValue.BuildBoolean(opdata1.opdata == opdata2.opdata);
             }
             else
             {
-                opdata2 = StackUtils.BuildBoolean(false);
+                opdata2 = StackValue.BuildBoolean(false);
             }
 
             SetOperandData(instruction.op1, opdata2);
@@ -6651,7 +6632,7 @@ namespace ProtoCore.DSASM
             {
                 opdata1 = opdata1.AsBoolean(core);
                 opdata2 = opdata2.AsBoolean(core);
-                opdata2 = StackUtils.BuildBoolean(opdata1.opdata != opdata2.opdata);
+                opdata2 = StackValue.BuildBoolean(opdata1.opdata != opdata2.opdata);
             }
             else if (StackUtils.IsNumeric(opdata1) && StackUtils.IsNumeric(opdata2))
             {
@@ -6659,25 +6640,25 @@ namespace ProtoCore.DSASM
                 {
                     opdata1 = opdata1.AsDouble();
                     opdata2 = opdata2.AsDouble();
-                    opdata2 = StackUtils.BuildBoolean(!MathUtils.Equals(opdata1.opdata_d, opdata2.opdata_d));
+                    opdata2 = StackValue.BuildBoolean(!MathUtils.Equals(opdata1.opdata_d, opdata2.opdata_d));
                 }
                 else
                 {
-                    opdata2 = StackUtils.BuildBoolean(opdata1.opdata != opdata2.opdata);
+                    opdata2 = StackValue.BuildBoolean(opdata1.opdata != opdata2.opdata);
                 }
             }
             else if (StackUtils.IsString(opdata1) && StackUtils.IsString(opdata2))
             {
                 int diffIndex = StringUtils.CompareString(opdata1, opdata2, core);
-                opdata2 = StackUtils.BuildBoolean(diffIndex != 0);
+                opdata2 = StackValue.BuildBoolean(diffIndex != 0);
             }
             else if (opdata1.optype == opdata2.optype)
             {
-                opdata2 = StackUtils.BuildBoolean(opdata1.opdata != opdata2.opdata);
+                opdata2 = StackValue.BuildBoolean(opdata1.opdata != opdata2.opdata);
             }
             else
             {
-                opdata2 = StackUtils.BuildBoolean(true); ;
+                opdata2 = StackValue.BuildBoolean(true); ;
             }
 
             SetOperandData(instruction.op1, opdata2);
@@ -6709,16 +6690,16 @@ namespace ProtoCore.DSASM
                 {
                     opdata1 = opdata1.AsDouble();
                     opdata2 = opdata2.AsDouble();
-                    opdata2 = StackUtils.BuildBoolean(MathUtils.IsGreaterThan(opdata2.opdata_d, opdata1.opdata_d));
+                    opdata2 = StackValue.BuildBoolean(MathUtils.IsGreaterThan(opdata2.opdata_d, opdata1.opdata_d));
                 }
                 else
                 {
-                    opdata2 = StackUtils.BuildBoolean(opdata2.opdata > opdata1.opdata);
+                    opdata2 = StackValue.BuildBoolean(opdata2.opdata > opdata1.opdata);
                 }
             }
             else
             {
-                opdata2 = StackUtils.BuildNull();
+                opdata2 = StackValue.Null;
             }
 
             SetOperandData(instruction.op1, opdata2);
@@ -6749,16 +6730,16 @@ namespace ProtoCore.DSASM
                 {
                     opdata1 = opdata1.AsDouble();
                     opdata2 = opdata2.AsDouble();
-                    opdata2 = StackUtils.BuildBoolean(MathUtils.IsLessThan(opdata2.opdata_d, opdata1.opdata_d));
+                    opdata2 = StackValue.BuildBoolean(MathUtils.IsLessThan(opdata2.opdata_d, opdata1.opdata_d));
                 }
                 else
                 {
-                    opdata2 = StackUtils.BuildBoolean(opdata2.opdata < opdata1.opdata);
+                    opdata2 = StackValue.BuildBoolean(opdata2.opdata < opdata1.opdata);
                 }
             }
             else
             {
-                opdata2 = StackUtils.BuildNull();
+                opdata2 = StackValue.Null;
             }
 
             SetOperandData(instruction.op1, opdata2);
@@ -6790,16 +6771,16 @@ namespace ProtoCore.DSASM
                 {
                     opdata1 = opdata1.AsDouble();
                     opdata2 = opdata2.AsDouble();
-                    opdata2 = StackUtils.BuildBoolean(MathUtils.IsGreaterThanOrEquals(opdata2.opdata_d, opdata1.opdata_d));
+                    opdata2 = StackValue.BuildBoolean(MathUtils.IsGreaterThanOrEquals(opdata2.opdata_d, opdata1.opdata_d));
                 }
                 else
                 {
-                    opdata2 = StackUtils.BuildBoolean(opdata2.opdata >= opdata1.opdata);
+                    opdata2 = StackValue.BuildBoolean(opdata2.opdata >= opdata1.opdata);
                 }
             }
             else
             {
-                opdata2 = StackUtils.BuildNull();
+                opdata2 = StackValue.Null;
             }
 
             SetOperandData(instruction.op1, opdata2);
@@ -6831,16 +6812,16 @@ namespace ProtoCore.DSASM
                 {
                     opdata1 = opdata1.AsDouble();
                     opdata2 = opdata2.AsDouble();
-                    opdata2 = StackUtils.BuildBoolean(MathUtils.IsLessThanOrEquals(opdata2.opdata_d, opdata1.opdata_d));
+                    opdata2 = StackValue.BuildBoolean(MathUtils.IsLessThanOrEquals(opdata2.opdata_d, opdata1.opdata_d));
                 }
                 else
                 {
-                    opdata2 = StackUtils.BuildBoolean(opdata2.opdata <= opdata1.opdata);
+                    opdata2 = StackValue.BuildBoolean(opdata2.opdata <= opdata1.opdata);
                 }
             }
             else
             {
-                opdata2 = StackUtils.BuildNull();
+                opdata2 = StackValue.Null;
             }
 
             SetOperandData(instruction.op1, opdata2);
@@ -6884,7 +6865,7 @@ namespace ProtoCore.DSASM
             StackValue pointer = rmem.BuildArrayFromStack(size);
             if (ProtoCore.DSASM.AddressType.String == instruction.op2.optype)
             {
-                pointer = StackUtils.BuildString(pointer.opdata);
+                pointer = StackValue.BuildString(pointer.opdata);
             }
             rmem.Push(pointer);
 
@@ -6939,7 +6920,7 @@ namespace ProtoCore.DSASM
             core.ExceptionHandlingManager.SwitchContextTo(blockId, fi, ci, pc);
 #endif
 
-            StackValue svThisPtr = ProtoCore.DSASM.StackUtils.BuildPointer(ProtoCore.DSASM.Constants.kInvalidPointer);
+            StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(ProtoCore.DSASM.Constants.kInvalidPointer);
             int returnAddr = pc + 1;
 
             Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != executingBlock);
@@ -6952,7 +6933,7 @@ namespace ProtoCore.DSASM
 
             // Comment Jun: Use the register TX to store explicit/implicit bounce state
             bounceType = ProtoCore.DSASM.CallingConvention.BounceType.kExplicit;
-            TX = StackUtils.BuildNode(AddressType.CallingConvention, (long)ProtoCore.DSASM.CallingConvention.BounceType.kExplicit);
+            TX = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kExplicit);
 
             List<StackValue> registers = new List<StackValue>();
             SaveRegisters(registers);
@@ -7028,7 +7009,7 @@ namespace ProtoCore.DSASM
                 core.DebugProps.SetUpCallrForDebug(core, this, fNode, pc, isBaseCall);
             }
 
-            StackValue svThisPointer = StackUtils.BuildInvalidNode();
+            StackValue svThisPointer = StackValue.BuildInvalid();
             int pcoffset = 0;
 
             // It is to specially handle calling base constructor 
@@ -7100,13 +7081,13 @@ namespace ProtoCore.DSASM
             // Comment Jun: the caller type is the current type in the stackframe
             StackFrameType callerType = (fepRun) ? StackFrameType.kTypeFunction : StackFrameType.kTypeLanguage;
 
-            StackValue svCallConvention = StackUtils.BuildNode(AddressType.CallingConvention, (long)CallingConvention.CallType.kExplicitBase);
+            StackValue svCallConvention = StackValue.BuildCallingConversion((int)CallingConvention.CallType.kExplicitBase);
             TX = svCallConvention;
 
 
             // On implicit call, the SX is set in JIL Fep
             // On explicit call, the SX should be directly set here
-            SX = StackUtils.BuildInt(blockDecl);
+            SX = StackValue.BuildInt(blockDecl);
 
             List<StackValue> registers = new List<StackValue>();
             SaveRegisters(registers);
@@ -7153,9 +7134,9 @@ namespace ProtoCore.DSASM
             //rmem.PushFrame(ProtoCore.DSASM.StackFrame.kStackFrameSize);
 
             //// Set fi and pc locations
-            //rmem.SetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass, StackUtils.BuildInt(type));
-            //rmem.SetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunction, StackUtils.BuildInt(fi));
-            //rmem.SetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexReturnAddress, StackUtils.BuildInt(pc + 1));
+            //rmem.SetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass, StackValue.BuildInt(type));
+            //rmem.SetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunction, StackValue.BuildInt(fi));
+            //rmem.SetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexReturnAddress, StackValue.BuildInt(pc + 1));
 
             //pc = exe.classTable.list[type].vtable.procList[fi].pc;
             //return;
@@ -7180,7 +7161,7 @@ namespace ProtoCore.DSASM
                 bool succeeded = ProcessDynamicFunction(instr);
                 if (!succeeded)
                 {
-                    RX = StackUtils.BuildNull();
+                    RX = StackValue.Null;
                     ++pc;
                     return;
                 }
@@ -7238,7 +7219,7 @@ namespace ProtoCore.DSASM
                 catch (ReplicationCaseNotCurrentlySupported e)
                 {
                     core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kReplicationWarning, e.Message);
-                    RX = StackUtils.BuildNull();
+                    RX = StackValue.Null;
                 }
             }
 
@@ -7794,15 +7775,15 @@ namespace ProtoCore.DSASM
 
             // TODO: Currently functions can be defined only in the global and level 1 blocks (BlockIndex = 0 or 1)
             // Ideally the procNode.runtimeIndex should capture this information but this needs to be tested - pratapa
-            //rmem.Push(StackUtils.BuildNode(AddressType.BlockIndex, core.DebugProps.CurrentBlockId));
-            rmem.Push(StackUtils.BuildNode(AddressType.BlockIndex, procNode.runtimeIndex));
+            //rmem.Push(StackValue.BuildNode(AddressType.BlockIndex, core.DebugProps.CurrentBlockId));
+            rmem.Push(StackValue.BuildBlockIndex(procNode.runtimeIndex));
 
             // The function call dimension for the subsequent feps are assumed to be 0 for now
             // This is not being used currently except for stack alignment - pratapa
-            rmem.Push(StackUtils.BuildNode(AddressType.ArrayDim, 0));
+            rmem.Push(StackValue.BuildArrayDimension(0));
 
             // This is unused in Callr() but needed for stack alignment
-            rmem.Push(StackUtils.BuildNode(AddressType.StaticType, (long)PrimitiveType.kTypeVar));
+            rmem.Push(StackValue.BuildStaticType((int)PrimitiveType.kTypeVar));
 
             bool explicitCall = true;
             Callr(fi, ci, core.ContinuationStruct.InitialDepth, ref explicitCall);
@@ -8268,14 +8249,16 @@ namespace ProtoCore.DSASM
                 }
 
                 // Get the current value of symbol
-                AddressType opAddr = AddressType.VarIndex;
+                StackValue svSym;
                 if (DSASM.Constants.kInvalidIndex != symnode.classScope
                     && DSASM.Constants.kInvalidIndex == symnode.functionIndex)
                 {
-                    opAddr = AddressType.MemVarIndex;
+                    svSym = StackValue.BuildMemVarIndex(symnode.symbolTableIndex);
                 }
-
-                StackValue svSym = StackUtils.BuildNode(opAddr, symnode.symbolTableIndex);
+                else
+                {
+                    svSym = StackValue.BuildVarIndex(symnode.symbolTableIndex);
+                }
                 modifiedRef.symbolData = GetOperandData(block, svSym, instruction.op3);
 
                 bool addNewModifiedRef = true;

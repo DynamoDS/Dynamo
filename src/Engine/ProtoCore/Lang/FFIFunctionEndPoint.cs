@@ -103,7 +103,7 @@ namespace ProtoCore.Lang
                     if (AddressType.Null == formalParameters[thisPtrIndex].optype)
                     {
                         core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kDereferencingNonPointer, ProtoCore.RuntimeData.WarningMessage.kDeferencingNonPointer);
-                        return StackUtils.BuildNull();
+                        return StackValue.Null;
                     }
 
                     // These are the op types allowed. 
@@ -122,7 +122,7 @@ namespace ProtoCore.Lang
 
                 if (mFunctionPointer == null)
                 {
-                    return ProtoCore.DSASM.StackUtils.BuildNull();
+                    return ProtoCore.DSASM.StackValue.Null;
                 }
 
                 List<object> ps = new List<object>(); //obsolete
@@ -139,7 +139,7 @@ namespace ProtoCore.Lang
                         interpreter.Push(formalParameters[i]);
                     }
 
-                    List<ProtoCore.DSASM.StackValue> registers = new List<DSASM.StackValue>();
+                    List<StackValue> registers = new List<DSASM.StackValue>();
                     interpreter.runtime.SaveRegisters(registers);
 
                     // Comment Jun: the depth is always 0 for a function call as we are reseting this for each function call
@@ -159,7 +159,7 @@ namespace ProtoCore.Lang
                     StackValue op;
                     if (ret == null)
                     {
-                        op = StackUtils.BuildNull();
+                        op = StackValue.Null;
                     }
                     else if (ret is StackValue)
                     {
@@ -167,15 +167,11 @@ namespace ProtoCore.Lang
                     }
                     else if (ret is Int64 || ret is int)
                     {
-                        op = new StackValue();
-                        op.optype = AddressType.Int;
-                        op.opdata = (Int64)ret;
+                        op = StackValue.BuildInt((Int64)ret);
                     }
                     else if (ret is double)
                     {
-                        op = new StackValue();
-                        op.optype = AddressType.Double;
-                        op.opdata_d = (double)ret;
+                        op = StackValue.BuildDouble((double)ret);
                     }
                     else
                     {

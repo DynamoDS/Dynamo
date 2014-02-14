@@ -208,7 +208,7 @@ namespace ProtoTestFx
                         new ExecutionMirror(c2.CurrentExecutive.CurrentDSASMExec, c2);
 
                     bool lookupOk = false;
-                    StackValue runValue = new StackValue();
+                    StackValue runValue = StackValue.Null;
 
                     if (symNode.name.StartsWith("%") || symNode.functionIndex != Constants.kInvalidIndex)
                         continue; //Don't care about internal variables

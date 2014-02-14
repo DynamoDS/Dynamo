@@ -111,13 +111,13 @@ namespace ProtoCore
         private StackValue ReportMethodNotFound(Core core, List<StackValue> arguments)
         {
             core.RuntimeStatus.LogMethodResolutionWarning(core, methodName, classScope, arguments);
-            return StackUtils.BuildNull();
+            return StackValue.Null;
         }
 
         private StackValue ReportMethodNotAccessible(Core core)
         {
             core.RuntimeStatus.LogMethodNotAccessibleWarning(core, methodName);
-            return StackUtils.BuildNull();
+            return StackValue.Null;
         }
 
         /// <summary>
@@ -1273,7 +1273,7 @@ namespace ProtoCore
             {
                 core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure,
                                               "Function dispatch could not be completed {2EB39E1B-557C-4819-94D8-CF7C9F933E8A}");
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             if (core.Options.IDEDebugMode && core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
@@ -1393,7 +1393,7 @@ namespace ProtoCore
                 core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kConversionNotPossible,
                                               ProtoCore.RuntimeData.WarningMessage.kConvertNonConvertibleTypes);
 
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
             else
             {
@@ -1604,7 +1604,7 @@ namespace ProtoCore
 
             // The second time, the array of two elements has no more next args and so this could be set to null or Done is true
             continuation.NextDispatchArgs.Clear();
-            StackValue nextArg = StackUtils.BuildInt(2);    
+            StackValue nextArg = StackValue.BuildInt(2);    
             continuation.NextDispatchArgs.Add(nextArg);
             continuation.Done = false;  // return true the second time
 
@@ -1909,8 +1909,8 @@ namespace ProtoCore
                 debugFrame.FinalFepChosen = jilFep;
             }
 
-            ProtoCore.DSASM.StackValue svThisPtr = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kThisPtr);
-            ProtoCore.DSASM.StackValue svBlockDecl = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock);
+            StackValue svThisPtr = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kThisPtr);
+            StackValue svBlockDecl = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock);
             int blockCaller = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionCallerBlock).opdata;
             int depth = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kStackFrameDepth).opdata;
             DSASM.StackFrameType type = (DSASM.StackFrameType)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kStackFrameType).opdata;
@@ -1920,19 +1920,19 @@ namespace ProtoCore
             int framePointer = core.Rmem.FramePointer;
             DSASM.StackFrameType callerType = (DSASM.StackFrameType)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kCallerStackFrameType).opdata;
 
-            StackValue svCallConvention = ProtoCore.DSASM.StackUtils.BuildNode(ProtoCore.DSASM.AddressType.CallingConvention, (long)ProtoCore.DSASM.CallingConvention.CallType.kExplicit);
+            StackValue svCallConvention = ProtoCore.DSASM.StackValue.BuildNode(ProtoCore.DSASM.AddressType.CallingConvention, (long)ProtoCore.DSASM.CallingConvention.CallType.kExplicit);
             // Set TX register 
             stackFrame.SetAt(DSASM.StackFrame.AbsoluteIndex.kRegisterTX, svCallConvention);
 
             // Set SX register 
             stackFrame.SetAt(DSASM.StackFrame.AbsoluteIndex.kRegisterSX, svBlockDecl);
 
-            List<ProtoCore.DSASM.StackValue> registers = new List<DSASM.StackValue>();
+            List<StackValue> registers = new List<DSASM.StackValue>();
             registers.AddRange(stackFrame.GetRegisters());
 
             core.Rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, (int)svBlockDecl.opdata, blockCaller, callerType, type, depth, framePointer, registers, locals, 0);
 
-            return StackUtils.BuildNode(AddressType.ExplicitCall, jilFep.procedureNode.pc);
+            return StackValue.BuildNode(AddressType.ExplicitCall, jilFep.procedureNode.pc);
 
         }
         */

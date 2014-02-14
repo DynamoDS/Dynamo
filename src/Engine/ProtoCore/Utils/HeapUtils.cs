@@ -23,7 +23,7 @@ namespace ProtoCore.Utils
             lock (heap.cslock)
             {
                 int ptr = heap.Allocate(elements);
-                StackValue overallSv = StackUtils.BuildArrayPointer(ptr);
+                StackValue overallSv = StackValue.BuildArrayPointer(ptr);
                 heap.Heaplist[ptr].Dict = dict;
                 return overallSv;
             }
