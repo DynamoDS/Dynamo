@@ -745,7 +745,8 @@ namespace ProtoCore.DSASM
                 replicationGuides = GetCachedReplicationGuides(core, arguments.Count);
             }
 
-            if (fNode.name == ProtoCore.DSASM.Constants.kDotArgMethodName)
+            bool isCallingDotArgCall = fNode.name == ProtoCore.DSASM.Constants.kDotArgMethodName;
+            if (isCallingDotArgCall)
             {
                 // Comment Jun: (Sept 8 2012) Check with Yuke what the intention of this is to the dotarg arguments
                 for (int i = 0; i < arguments.Count; ++i)
@@ -826,14 +827,31 @@ namespace ProtoCore.DSASM
             int framePointer = ProtoCore.DSASM.Constants.kInvalidIndex;
             framePointer = rmem.FramePointer;
 
-            ProtoCore.CallSite callsite = new ProtoCore.CallSite(classIndex, fNode.name, core.FunctionTable, core.Options.ExecutionMode);
 
-            // If the callsite exists, use the cached instance
-            ProtoCore.CallSite existingCallsite = callsite.GetCachedInstance(core);
-            if (null != existingCallsite)
+            bool isInDotArgCall = false;
+            int currentClassIndex = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
+            int currentFunctionIndex = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunction).opdata;
+            bool isGlobalScope = ProtoCore.DSASM.Constants.kGlobalScope == currentClassIndex && ProtoCore.DSASM.Constants.kGlobalScope == currentFunctionIndex;
+            if (core.ExecMode != InterpreterMode.kExpressionInterpreter)
             {
-                callsite = existingCallsite;
+                if (ProtoCore.DSASM.Constants.kGlobalScope != currentFunctionIndex)
+                {
+                    int currentFunctionDeclBlock = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunctionBlock).opdata;
+                    ProcedureNode currentProcCall = GetProcedureNode(currentFunctionDeclBlock, currentClassIndex, currentFunctionIndex);
+                    isInDotArgCall = currentProcCall.name == ProtoCore.DSASM.Constants.kDotArgMethodName;
+                }
             }
+
+            if (isGlobalScope || !isInDotArgCall)
+            {
+                if (null != Properties.executingGraphNode)
+                {
+                    core.ExecutingGraphnodeUID = Properties.executingGraphNode.UID;
+                }
+            }
+
+            // Get the cached callsite, creates a new one for a first-time call
+            ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnodeUID, classIndex, fNode.name);
             Validity.Assert(null != callsite);
 
 
@@ -6943,7 +6961,8 @@ namespace ProtoCore.DSASM
             int returnAddr = pc + 1;
 
             Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != executingBlock);
-            int blockDecl = executingBlock;
+            //int blockDecl = executingBlock;
+            int blockDecl = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunctionBlock).opdata;
             int blockCaller = executingBlock;
 
             StackFrameType type = StackFrameType.kTypeLanguage;

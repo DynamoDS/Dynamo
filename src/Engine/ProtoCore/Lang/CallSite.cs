@@ -380,7 +380,7 @@ namespace ProtoCore
                 {
                     bool hasFEP = funcGroup.FunctionEndPoints.Count > 0;
                     FunctionGroup visibleFuncGroup = new FunctionGroup();
-                    visibleFuncGroup.CopyPublic(funcGroup.FunctionEndPoints, funcGroup.CallsiteInstance);
+                    visibleFuncGroup.CopyPublic(funcGroup.FunctionEndPoints);
                     funcGroup = visibleFuncGroup;
 
                     if (hasFEP && funcGroup.FunctionEndPoints.Count == 0)
@@ -467,23 +467,6 @@ namespace ProtoCore
             }
             return funcGroup;
         }
-
-        /// <summary>
-        /// This is a callsite utility to determine if a callsite already exists 
-        /// </summary>
-        /// <returns></returns>
-        public CallSite GetCachedInstance(Core core)
-        {
-            CallSite csInstance = null;
-            FunctionGroup funcGroup = GetFuncGroup(core);
-            if (null != funcGroup)
-            {
-                csInstance = funcGroup.CallsiteInstance;
-            }
-            return csInstance;
-        }
-
-
 
         private FunctionEndPoint SelectFEPFromMultiple(StackFrame stackFrame, Core core,
                                                        List<FunctionEndPoint> feps, List<StackValue> argumentsList)
@@ -838,16 +821,16 @@ namespace ProtoCore
             }
 
 
-            // Now that a function group is resolved, the callsite guid can be cached
-            if (null != funcGroup.CallsiteInstance)
-            {
-                // Sanity check, if the callsite exists, then it mean the guid is identical to the cached guid
-                Validity.Assert(funcGroup.CallsiteInstance.callsiteID == this.callsiteID);
-            }
-            else
-            {
-                funcGroup.CallsiteInstance = this;
-            }
+            //// Now that a function group is resolved, the callsite guid can be cached
+            //if (null != funcGroup.CallsiteInstance)
+            //{
+            //    // Sanity check, if the callsite exists, then it mean the guid is identical to the cached guid
+            //    Validity.Assert(funcGroup.CallsiteInstance.callsiteID == this.callsiteID);
+            //}
+            //else
+            //{
+            //    funcGroup.CallsiteInstance = this;
+            //}
 
             //check accesibility of function group
             bool methodAccessible = IsFunctionGroupAccessible(core, ref funcGroup);
