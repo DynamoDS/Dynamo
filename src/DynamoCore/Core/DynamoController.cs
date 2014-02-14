@@ -89,9 +89,27 @@ namespace Dynamo
             get
             {
                 if (_preferenceSettings == null)
-                    _preferenceSettings = PreferenceSettings.Load(this.UnitsManager);
-
+                {
+                    _preferenceSettings = PreferenceSettings.Load();
+                    _preferenceSettings.PropertyChanged +=_preferenceSettings_PropertyChanged;
+                }
                 return _preferenceSettings;
+            }
+        }
+
+        void _preferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "LengthUnit":
+                    UnitsManager.LengthUnit = PreferenceSettings.LengthUnit;
+                    break;
+                case "AreaUnit":
+                    UnitsManager.AreaUnit = PreferenceSettings.AreaUnit;
+                    break;
+                case "VolumeUnit":
+                    UnitsManager.VolumeUnit = PreferenceSettings.VolumeUnit;
+                    break;
             }
         }
 
