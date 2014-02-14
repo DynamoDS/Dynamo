@@ -1062,52 +1062,61 @@ namespace ProtoCore
                 SingleRunTraceData retTrace = new SingleRunTraceData();
                 retTrace.NestedData = new List<SingleRunTraceData>(); //this will shadow the SVs as they are created
 
-
-                if (core.Options.ExecutionMode == ExecutionMode.Parallel)
-                    throw new NotImplementedException("Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
-                else
+                //Populate out the size of the list with default values
+                //@TODO:Luke perf optimisation here
+                for (int i = 0; i < retSize; i++)
                 {
-                    for (int i = 0; i < retSize; i++)
-                    {
-                        SingleRunTraceData lastExecTrace = new SingleRunTraceData();
-
-                        if (i < previousTraceData.NestedData.Count)
-                        {
-                            //There was previous data that needs loading into the cache
-                            lastExecTrace = previousTraceData.NestedData[i];
-                        }
-                        else
-                        {
-                            //We're off the edge of the previous trace window
-                            //So just pass in an empty block
-                            lastExecTrace = new SingleRunTraceData();
-                        }
-
-
-                        //Build the call
-                        List<StackValue> newFormalParams = new List<StackValue>();
-                        newFormalParams.AddRange(formalParameters);
-
-                        for (int repIi = 0; repIi < repIndecies.Count; repIi++)
-                        {
-                            newFormalParams[repIndecies[repIi]] = parameters[repIi][i];
-                        }
-
-                        List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
-                        newRIs.AddRange(replicationInstructions);
-                        newRIs.RemoveAt(0);
-
-
-                        previousTraceData = lastExecTrace;
-                        SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
-
-                        retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
-                                                       funcGroup, previousTraceData, cleanRetTrace);
-
-                        retTrace.NestedData[i] = cleanRetTrace;
-
-                    }
+                    retTrace.NestedData.Add(new SingleRunTraceData());
                 }
+
+
+                    if (core.Options.ExecutionMode == ExecutionMode.Parallel)
+                        throw new NotImplementedException("Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
+                    else
+                    {
+                        for (int i = 0; i < retSize; i++)
+                        {
+                            SingleRunTraceData lastExecTrace = new SingleRunTraceData();
+
+                            if (previousTraceData.HasNestedData && i < previousTraceData.NestedData.Count)
+                            {
+                                //There was previous data that needs loading into the cache
+                                lastExecTrace = previousTraceData.NestedData[i];
+                            }
+                            else
+                            {
+                                //We're off the edge of the previous trace window
+                                //So just pass in an empty block
+                                lastExecTrace = new SingleRunTraceData();
+                            }
+
+
+                            //Build the call
+                            List<StackValue> newFormalParams = new List<StackValue>();
+                            newFormalParams.AddRange(formalParameters);
+
+                            for (int repIi = 0; repIi < repIndecies.Count; repIi++)
+                            {
+                                newFormalParams[repIndecies[repIi]] = parameters[repIi][i];
+                            }
+
+                            List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
+                            newRIs.AddRange(replicationInstructions);
+                            newRIs.RemoveAt(0);
+
+
+                            previousTraceData = lastExecTrace;
+                            SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
+
+                            retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
+                                                           funcGroup, previousTraceData, cleanRetTrace);
+
+
+
+                            retTrace.NestedData[i] = cleanRetTrace;
+
+                        }
+                    }
 
                 StackValue ret = HeapUtils.StoreArray(retSVs, null, core);
                 GCUtils.GCRetain(ret, core);
