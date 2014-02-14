@@ -3,6 +3,8 @@ using CSMath = System.Math;
 
 namespace Math
 {
+    //the math class is legacy, the new math class is in DSCoreNode
+#if false
     public static class Math
     {
         internal static readonly double kRadiansToDegrees = 180.0 / PI;
@@ -203,4 +205,5 @@ namespace Math
 
         private static Random mRandom = new Random();
     }
+#endif
 }
