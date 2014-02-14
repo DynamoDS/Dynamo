@@ -819,7 +819,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Solid.Difference", "Solid.Difference@Solid");
+            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByBooleanDifference",
+                "Solid.ByBooleanDifference@Solid,Solid");
         }
     }
 
@@ -853,7 +854,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Solid.Union", "Solid.Union@Solid");
+            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByBooleanUnion",
+                "Solid.ByBooleanUnion@Solid,Solid");
         }
     }
 
@@ -887,7 +889,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Solid.Intersect", "Solid.Intersect@Solid");
+            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByBooleanIntersection",
+                "Solid.ByBooleanIntersection@Solid,Solid");
         }
     }
 
