@@ -2707,6 +2707,11 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("!a", "result", typeof(bool)));
             RegisterAllPorts();
         }
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "Not", "Not@,");
+        }
     }
 
     #endregion
