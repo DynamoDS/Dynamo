@@ -10,6 +10,7 @@ using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
+using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
@@ -78,8 +79,15 @@ namespace Dynamo.Tests
         {
             try
             {
+                var units = new UnitsManager
+                {
+                    HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot,
+                    HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot,
+                    HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot
+                };
+
                 //create a new instance of the ViewModel
-                Controller = new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager())
+                Controller = new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), units)
                     {
                         Testing = true
                     };

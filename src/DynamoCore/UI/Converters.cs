@@ -1282,15 +1282,15 @@ namespace Dynamo.Controls
 
             if (parameter is Length)
             {
-                measure = new Length((double)value);
+                measure = new Length((double)value, dynSettings.Controller.UnitsManager);
             }
             else if (parameter is Area)
             {
-                measure = new Area((double)value);
+                measure = new Area((double)value, dynSettings.Controller.UnitsManager);
             }
             else if (parameter is Volume)
             {
-                measure = new Volume((double)value);
+                measure = new Volume((double)value, dynSettings.Controller.UnitsManager);
             }
             return measure.ToString();
         }
@@ -1300,15 +1300,15 @@ namespace Dynamo.Controls
             SIUnit measure = null;
             if (parameter is Length)
             {
-                measure = new Length(0.0);
+                measure = new Length(0.0, dynSettings.Controller.UnitsManager);
             }
             else if (parameter is Area)
             {
-                measure = new Area(0.0);
+                measure = new Area(0.0, dynSettings.Controller.UnitsManager);
             }
             else if (parameter is Volume)
             {
-                measure = new Volume(0.0);
+                measure = new Volume(0.0, dynSettings.Controller.UnitsManager);
             }
             measure.SetValueFromString(value.ToString());
             return measure.Value;

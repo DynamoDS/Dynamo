@@ -3218,11 +3218,11 @@ namespace Dynamo.Nodes
 
                     if (y == 2)
                     {
-                        return Value.NewContainer(new Area(Math.Pow(x.Value, y)));
+                        return Value.NewContainer(new Area(Math.Pow(x.Value, y), dynSettings.Controller.UnitsManager));
                     }
                     else if (y == 3)
                     {
-                        return Value.NewContainer(new Volume(Math.Pow(x.Value, y)));
+                        return Value.NewContainer(new Volume(Math.Pow(x.Value, y), dynSettings.Controller.UnitsManager));
                     }
                 }
             }

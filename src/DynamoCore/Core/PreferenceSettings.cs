@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Serialization;
+using Dynamo.Interfaces;
 using Dynamo.Units;
 using Dynamo.Models;
+using DynamoUnits;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
@@ -13,58 +15,64 @@ namespace Dynamo
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings into the XML file.
     /// </summary>
-    public class PreferenceSettings : NotificationObject
+    public class PreferenceSettings : NotificationObject, IDynamoPreferences
     {
         public static string DYNAMO_TEST_PATH = null;
         const string DYNAMO_SETTINGS_DIRECTORY = @"Autodesk\Dynamo\";
         const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
+        private IUnitsManager _units;
 
         // Variables of the settings that will be persistent
         public bool ShowConsole { get; set; }
         public bool ShowConnector { get; set; }
         public ConnectorType ConnectorType { get; set; }
         public bool FullscreenWatchShowing { get; set; }
+        public string NumberFormat { get; set; }
         
+ 
         public DynamoLengthUnit LengthUnit
         {
-            get { return UnitsManager.Instance.LengthUnit; }
+            get { return _units.LengthUnit; }
             set
             {
-                UnitsManager.Instance.LengthUnit = value;
+                _units.LengthUnit = value;
                 RaisePropertyChanged("LengthUnit");
             }
         }
 
         public DynamoAreaUnit AreaUnit
         {
-            get { return UnitsManager.Instance.AreaUnit; }
+            get { return _units.AreaUnit; }
             set
             {
-                UnitsManager.Instance.AreaUnit = value;
+                _units.AreaUnit = value;
                 RaisePropertyChanged("AreaUnit");
             }
         }
 
         public DynamoVolumeUnit VolumeUnit
         {
-            get { return UnitsManager.Instance.VolumeUnit; }
+            get { return _units.VolumeUnit; }
             set
             {
-                UnitsManager.Instance.VolumeUnit = value;
+                _units.VolumeUnit = value;
                 RaisePropertyChanged("VolumeUnit");
             }
         }
 
-        public PreferenceSettings()
+        public PreferenceSettings(IUnitsManager units)
         {
+            _units = units;
+
             // Default Settings
-            this.ShowConsole = false;
-            this.ShowConnector = true;
-            this.ConnectorType = ConnectorType.BEZIER;
-            this.FullscreenWatchShowing = true;
-            this.LengthUnit = DynamoLengthUnit.Meter;
-            this.AreaUnit = DynamoAreaUnit.SquareMeter;
-            this.VolumeUnit = DynamoVolumeUnit.CubicMeter;
+            ShowConsole = false;
+            ShowConnector = true;
+            ConnectorType = ConnectorType.BEZIER;
+            FullscreenWatchShowing = true;
+            LengthUnit = DynamoLengthUnit.Meter;
+            AreaUnit = DynamoAreaUnit.SquareMeter;
+            VolumeUnit = DynamoVolumeUnit.CubicMeter;
+            NumberFormat = "0.000";
         }
 
         /// <summary>
@@ -111,9 +119,9 @@ namespace Dynamo
         /// Stored PreferenceSettings from xml file or
         /// Default PreferenceSettings if xml file is not found.
         /// </returns>
-        public static PreferenceSettings Load(string filePath)
+        public static PreferenceSettings Load(string filePath, IUnitsManager units)
         {
-            PreferenceSettings settings = new PreferenceSettings();
+            PreferenceSettings settings = new PreferenceSettings(units);
             
             if (string.IsNullOrEmpty(filePath) || (!File.Exists(filePath)))
                 return settings;
@@ -137,14 +145,14 @@ namespace Dynamo
         /// Stored PreferenceSettings from default xml file or
         /// Default PreferenceSettings if default xml file is not found.
         /// </returns>
-        public static PreferenceSettings Load()
+        public static PreferenceSettings Load(IUnitsManager units)
         {
             if ( DYNAMO_TEST_PATH == null )
                 // Save in User Directory Path
-                return Load(GetSettingsFilePath());
+                return Load(GetSettingsFilePath(),units);
             else
                 // Support Testing
-                return Load(DYNAMO_TEST_PATH);
+                return Load(DYNAMO_TEST_PATH, units);
         }
 
         /// <summary>
