@@ -11,14 +11,12 @@ namespace ProtoCore
     /// </summary>
 	public class FunctionGroup
 	{
-        public CallSite CallsiteInstance { get; set; }
         public List<FunctionEndPoint> FunctionEndPoints { get; private set; }
 
         //@TODO this resolution currently only operates over formal parameters, not the return type as well
 
 		public FunctionGroup ()
 		{
-            CallsiteInstance = null;
             FunctionEndPoints = new List<FunctionEndPoint>();
 		}
 
@@ -26,7 +24,6 @@ namespace ProtoCore
         {
             Validity.Assert(null != rhs);
             Validity.Assert(null == FunctionEndPoints);
-            CallsiteInstance = null;
             FunctionEndPoints = new List<FunctionEndPoint>(rhs);
         }
 
@@ -48,11 +45,10 @@ namespace ProtoCore
             }
         }
 
-        public void CopyPublic(List<FunctionEndPoint> rhs, CallSite callsite)
+        public void CopyPublic(List<FunctionEndPoint> rhs)
         {
             Validity.Assert(null != rhs);
             Validity.Assert(null != FunctionEndPoints);
-            CallsiteInstance = callsite;
 
             foreach (FunctionEndPoint fep in rhs)
             {

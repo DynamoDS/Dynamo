@@ -577,6 +577,13 @@ namespace ProtoCore.Utils
             return varname.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix);
         }
 
+        public static bool IsInternalFunction(string methodName)
+        {
+            // Jun Comment: Help function to determine if its a compiler generated temp
+            Validity.Assert(null != methodName);
+            return methodName.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix) || methodName.StartsWith(ProtoCore.DSDefinitions.Keyword.Dispose);
+        }
+
         public static bool IsPropertyTemp(string varname)
         {
             // Jun Comment: Help function to determine if its a compiler generated temp specifically for a property
