@@ -8,7 +8,7 @@ namespace ProtoTest.TD.Associative
     public class Assignment
     {
         public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Tests\\ProtoTest\\ImportFiles\\";
+        string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         [SetUp]
         public void Setup()
         {
@@ -19,7 +19,11 @@ namespace ProtoTest.TD.Associative
         public void T01_SampleTestUsingCodeWithinTestFunction()
         {
             String code =
-                @"variable;[Associative]                {	                variable = 5;                }                ";
+                @"variable;[Associative]
+                {
+	                variable = 5;
+                }
+                ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Obj o = mirror.GetValue("variable");
             Assert.IsTrue((Int64)o.Payload == 5);
@@ -1265,7 +1269,12 @@ y = x;
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 String code =
-@"a = 2;b = 4;if(a == 2)    b = 3;";
+@"
+a = 2;
+b = 4;
+if(a == 2)
+    b = 3;
+";
                 ExecutionMirror mirror = thisTest.RunScriptSource(code);
             });
         }
@@ -1277,7 +1286,13 @@ y = x;
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 String code =
-@"a = {0, 1};for(i in a){    a[i] = 0;}";
+@"
+a = {0, 1};
+for(i in a)
+{
+    a[i] = 0;
+}
+";
                 ExecutionMirror mirror = thisTest.RunScriptSource(code);
             });
         }
@@ -1289,7 +1304,13 @@ y = x;
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 String code =
-@"i = 0;while(i < 3){    i = i + 1;}";
+@"
+i = 0;
+while(i < 3)
+{
+    i = i + 1;
+}
+";
                 ExecutionMirror mirror = thisTest.RunScriptSource(code);
             });
         }
@@ -1301,7 +1322,12 @@ y = x;
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 String code =
-@"a = 0;b = 10;c = 2y1 = a..b..2;";
+@"
+a = 0;
+b = 10;
+c = 2
+y1 = a..b..2;
+";
                 ExecutionMirror mirror = thisTest.RunScriptSource(code);
             });
         }
@@ -1310,7 +1336,43 @@ y = x;
         public void T58_Modifier_Block_On_User_Defined_Classes()
         {
             String code =
-            @"class B{    x:int;	constructor B ( x1)	{	    x = x1;	}}class A{    b : B;	d : bool;	constructor A ( bb:B, d1:bool)	{	    b = bb;		d = d1;	}	def foo ( x1,x2,x3)	{	    b1 = B.B(x1+x2+x3);		return = A.A(b1, d);	}	def Scale ( xx )	{	    b2 = B.B(xx+b.x);		return = A.A(b2, d);	}}bb = B.B(1);a ={    A.A(bb,false).foo(10,0,0) => a1;    a1.Scale(2);}test = a.b.x;            ";
+            @"
+class B
+{
+    x:int;
+	constructor B ( x1)
+	{
+	    x = x1;
+	}
+}
+class A
+{
+    b : B;
+	d : bool;
+	constructor A ( bb:B, d1:bool)
+	{
+	    b = bb;
+		d = d1;
+	}
+	def foo ( x1,x2,x3)
+	{
+	    b1 = B.B(x1+x2+x3);
+		return = A.A(b1, d);
+	}
+	def Scale ( xx )
+	{
+	    b2 = B.B(xx+b.x);
+		return = A.A(b2, d);
+	}
+}
+bb = B.B(1);
+a =
+{
+    A.A(bb,false).foo(10,0,0) => a1;
+    a1.Scale(2);
+}
+test = a.b.x;
+            ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("test", 12);
         }
@@ -1319,7 +1381,11 @@ y = x;
         public void T59_Defect_1467540()
         {
             String code =
-            @"c1 = 0;x = 0..1;y = x[c];";
+            @"
+c1 = 0;
+x = 0..1;
+y = x[c];
+";
             Object n1 = null;
             thisTest.RunScriptSource(code);
             thisTest.Verify("y", n1);
@@ -1329,7 +1395,15 @@ y = x;
         public void T59_Defect_1467540_2()
         {
             String code =
-            @"y;[Imperative]{    c1 = 0;    x = 0..1;    y = x[c];}";
+            @"
+y;
+[Imperative]
+{
+    c1 = 0;
+    x = 0..1;
+    y = x[c];
+}
+";
             Object n1 = null;
             thisTest.RunScriptSource(code);
             thisTest.Verify("y", n1, 0);
@@ -1339,7 +1413,16 @@ y = x;
         public void T59_Defect_1467540_3()
         {
             String code =
-            @"def foo (){    c1 = 0;    x = 0..1;    y = x[c];    return = y;}test = y;";
+            @"
+def foo ()
+{
+    c1 = 0;
+    x = 0..1;
+    y = x[c];
+    return = y;
+}
+test = y;
+";
             Object n1 = null;
             thisTest.RunScriptSource(code);
             thisTest.Verify("test", n1);
@@ -1349,7 +1432,25 @@ y = x;
         public void T60_Defect_1467525()
         {
             String code =
-            @"def Unflatten : var[][](input1Darray : var[], length : int){    return2Darray = { };        iCount = Count(input1Darray) / length;    index = 0;      for(i in 0..iCount)    {        for(j in 0..length)        {            returm2Darray[i][j] = input1Darray[index];                        index = index + 1;        }        }}";
+            @"
+def Unflatten : var[][](input1Darray : var[], length : int)
+{
+    return2Darray = { };
+    
+    iCount = Count(input1Darray) / length;
+    index = 0;
+  
+    for(i in 0..iCount)
+    {
+        for(j in 0..length)
+        {
+            returm2Darray[i][j] = input1Darray[index];
+            
+            index = index + 1;
+        }    
+    }
+}
+";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 thisTest.RunScriptSource(code);
@@ -1360,7 +1461,14 @@ y = x;
         public void T60_Defect_1467525_2()
         {
             String code =
-            @"c = 0;a = 2;for(i in 0..a){    c = c +1;}";
+            @"
+c = 0;
+a = 2;
+for(i in 0..a)
+{
+    c = c +1;
+}
+";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 thisTest.RunScriptSource(code);
@@ -1371,7 +1479,14 @@ y = x;
         public void T60_Defect_1467525_3()
         {
             String code =
-            @"c = 0;a = 2;while(c < 1){    c = c +1;}";
+            @"
+c = 0;
+a = 2;
+while(c < 1)
+{
+    c = c +1;
+}
+";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 thisTest.RunScriptSource(code);
@@ -1382,7 +1497,14 @@ y = x;
         public void T60_Defect_1467525_4()
         {
             String code =
-            @"c = 0;a = 2;if(c < 1){    c = c +1;}";
+            @"
+c = 0;
+a = 2;
+if(c < 1)
+{
+    c = c +1;
+}
+";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 thisTest.RunScriptSource(code);
@@ -1393,7 +1515,21 @@ y = x;
         public void T60_Defect_1467525_5()
         {
             String code =
-            @"class A{    c : int;    constrcutor A ()    {        c = 0;        a = 2;        if(c < 1)        {            c = c +1;        }    }}";
+            @"
+class A
+{
+    c : int;
+    constrcutor A ()
+    {
+        c = 0;
+        a = 2;
+        if(c < 1)
+        {
+            c = c +1;
+        }
+    }
+}
+";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 thisTest.RunScriptSource(code);
@@ -1404,7 +1540,21 @@ y = x;
         public void T60_Defect_1467525_6()
         {
             String code =
-            @"class A{        def foo ()    {        c = 0;        a = 2;        if(c < 1)        {            c = c +1;        }    }}";
+            @"
+class A
+{
+    
+    def foo ()
+    {
+        c = 0;
+        a = 2;
+        if(c < 1)
+        {
+            c = c +1;
+        }
+    }
+}
+";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 thisTest.RunScriptSource(code);
@@ -1415,7 +1565,10 @@ y = x;
         public void T61_Defect_1467546_1()
         {
             String code =
-            @"a = 10b = a + 1;";
+            @"
+a = 10
+b = a + 1;
+";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 Object n1 = null;
@@ -1428,7 +1581,13 @@ y = x;
         public void T61_Defect_1467546_2()
         {
             String code =
-            @"[Imperative]{a = 10b = a + 1;}";
+            @"
+[Imperative]
+{
+a = 10
+b = a + 1;
+}
+";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 Object n1 = null;
@@ -1441,7 +1600,14 @@ y = x;
         public void T61_Defect_1467546_3()
         {
             String code =
-            @"def foo (){  a = 10  b = a + 1;}test = foo();";
+            @"
+def foo ()
+{
+  a = 10
+  b = a + 1;
+}
+test = foo();
+";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 Object n1 = null;
@@ -1454,7 +1620,17 @@ y = x;
         public void T61_Defect_1467546_4()
         {
             String code =
-            @"class A{    static def foo ()    {      a = 10      b = a + 1;    }}test = A.foo();";
+            @"
+class A
+{
+    static def foo ()
+    {
+      a = 10
+      b = a + 1;
+    }
+}
+test = A.foo();
+";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 Object n1 = null;
@@ -1467,7 +1643,17 @@ y = x;
         public void T61_Defect_1467546_5()
         {
             String code =
-            @"class A{    constructor A ()    {      a = 10      b = a + 1;    }}test = A.A();";
+            @"
+class A
+{
+    constructor A ()
+    {
+      a = 10
+      b = a + 1;
+    }
+}
+test = A.A();
+";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 Object n1 = null;
@@ -1480,7 +1666,12 @@ y = x;
         public void T61_Defect_1467546_6()
         {
             String code =
-            @"x = 1;a = 10b = a + 1; ";
+            @"
+x = 1;
+a = 10
+b = a + 1;
+ 
+";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 Object n1 = null;
@@ -1493,7 +1684,16 @@ y = x;
         public void T61_Defect_1467546_7()
         {
             String code =
-            @"def foo(){    return = 1;}x = 1;a = foo()b = a + 1; ";
+            @"
+def foo()
+{
+    return = 1;
+}
+x = 1;
+a = foo()
+b = a + 1;
+ 
+";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 Object n1 = null;
@@ -1506,7 +1706,19 @@ y = x;
         public void T61_Defect_1467546_8()
         {
             String code =
-            @"class A{    static def foo()    {        return = 1;    }}x = 1;a = A.foo()b = a + 1; ";
+            @"
+class A
+{
+    static def foo()
+    {
+        return = 1;
+    }
+}
+x = 1;
+a = A.foo()
+b = a + 1;
+ 
+";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 Object n1 = null;
@@ -1519,7 +1731,34 @@ y = x;
         public void T64_Defect_1467588()
         {
             String code =
-            @"class A{    static def foo()    {        return = ""Hello \""DesignScript\""!"";    }}def foo(){    return = ""Hello \""DesignScript\""!"";}def foo2(s : string){    return = ""New Hello \""DesignScript\""!"";}a = A.foo();b = foo();c = [Associative]{    return = [Imperative]    {        return = ""Hello \""DesignScript\""!"";    }}d = foo2(""Hello \""DesignScript\""!""); ";
+            @"
+class A
+{
+    static def foo()
+    {
+        return = ""Hello \""DesignScript\""!"";
+    }
+}
+def foo()
+{
+    return = ""Hello \""DesignScript\""!"";
+}
+def foo2(s : string)
+{
+    return = ""New Hello \""DesignScript\""!"";
+}
+a = A.foo();
+b = foo();
+c = [Associative]
+{
+    return = [Imperative]
+    {
+        return = ""Hello \""DesignScript\""!"";
+    }
+}
+d = foo2(""Hello \""DesignScript\""!"");
+ 
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", "Hello \"DesignScript\"!");
             thisTest.Verify("b", "Hello \"DesignScript\"!");
@@ -1531,7 +1770,30 @@ y = x;
         public void T65_Defect_1467597()
         {
             String code =
-            @"class A {    a;;    constructor A ( x )    {        a = x;;    }    static def foo()    {        returnValue = 0;        [Imperative]        {            for(i in { 1, 2 })            {                returnValue = returnValue + i;;             }        }        return = returnValue;    }  }x = A.foo(); y = A.A(1).a;";
+            @"
+class A 
+{
+    a;;
+    constructor A ( x )
+    {
+        a = x;;
+    }
+    static def foo()
+    {
+        returnValue = 0;
+        [Imperative]
+        {
+            for(i in { 1, 2 })
+            {
+                returnValue = returnValue + i;; 
+            }
+        }
+        return = returnValue;
+    }  
+}
+x = A.foo(); 
+y = A.A(1).a;
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 3);
             thisTest.Verify("y", 1);
@@ -1542,7 +1804,49 @@ y = x;
         public void T66_Defect_1467597()
         {
             String code =
-            @"class A {    a = { }; ;    b : int[]; ;    c = 4..6; ;    d = { 0, 2 }; ;    f : var[]; ;    constructor A ( x )    {        a = { x }; ;        i = 2..3; ;        b[i] = i; ;        c[i] = i; ;        d[i] = i; ;        f[i] = d[i]; ;    }    def foo()    {        returnValue = 0;        [Imperative]        {            for(i in { 0,1 })            {                returnValue = returnValue + i; ;                b[i] = i;;                c[i] = i;;                d[i] = i;;                f[i] = d[i]; ;                            }        }        return = returnValue;    }  }x = A.A(1); ;y1 = x.a; ;y2 = x.b; ;y3 = x.c; ;y4 = x.d; ;y5 = x.f; ;y6 = x.foo(); ;";
+            @"
+class A 
+{
+    a = { }; ;
+    b : int[]; ;
+    c = 4..6; ;
+    d = { 0, 2 }; ;
+    f : var[]; ;
+    constructor A ( x )
+    {
+        a = { x }; ;
+        i = 2..3; ;
+        b[i] = i; ;
+        c[i] = i; ;
+        d[i] = i; ;
+        f[i] = d[i]; ;
+    }
+    def foo()
+    {
+        returnValue = 0;
+        [Imperative]
+        {
+            for(i in { 0,1 })
+            {
+                returnValue = returnValue + i; ;
+                b[i] = i;;
+                c[i] = i;;
+                d[i] = i;;
+                f[i] = d[i]; ;
+                
+            }
+        }
+        return = returnValue;
+    }  
+}
+x = A.A(1); ;
+y1 = x.a; ;
+y2 = x.b; ;
+y3 = x.c; ;
+y4 = x.d; ;
+y5 = x.f; ;
+y6 = x.foo(); ;
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("y1", new Object[] { 1 });
             thisTest.Verify("y2", new Object[] { 0, 1, 2, 3 });
