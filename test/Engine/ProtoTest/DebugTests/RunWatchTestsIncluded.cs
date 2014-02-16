@@ -11,7 +11,7 @@ namespace ProtoTest.DebugTests
     public class RunWatchTests
     {
 
-        string importpath = "..\\..\\..\\Tests\\ProtoTest\\ImportFiles\\";
+        string importpath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
 
         [Test]
         [Category("WatchFx Tests")]
@@ -30461,7 +30461,12 @@ b1=a1[1][0];
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
         /*
-[Test]        [Category("WatchFx Tests")]        public void DebugWatch904_T48_Defect_1460027_4()        {            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();                string src = @"class A
+[Test]
+        [Category("WatchFx Tests")]
+        public void DebugWatch904_T48_Defect_1460027_4()
+        {
+            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
+                string src = @"class A
         {
             a : var[]..[];
 	
@@ -30484,7 +30489,8 @@ b1=a1[1][0];
 	
         ";
         WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);        }*/
+            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
+        }*/
 
         [Test]
         [Category("WatchFx Tests")]

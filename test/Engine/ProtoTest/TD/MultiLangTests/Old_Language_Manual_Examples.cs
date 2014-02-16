@@ -10,7 +10,7 @@ namespace ProtoTest.TD.MultiLangTests
     class Old_Language_Manual_Examples
     {
         readonly TestFrameWork thisTest = new TestFrameWork();
-        string importPath = "..\\..\\..\\Tests\\ProtoTest\\ImportFiles\\";
+        string importPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         [SetUp]
         public void SetUp()
         {
