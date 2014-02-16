@@ -3081,7 +3081,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "Math.dll", "Math.Pow", "Math.Pow@double,double");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Pow", "Math.Pow@double,double");
         }
     }
 
@@ -3117,7 +3117,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "Math.dll", "Math.Round", "Math.Round@double");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Round", "Math.Round@double");
         }
     }
 
@@ -3154,7 +3154,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "Math.dll", "Math.Floor", "Math.Floor@double");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Floor", "Math.Floor@double");
         }
     }
 
@@ -3191,7 +3191,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "Math.dll", "Math.Ceiling", "Math.Ceiling@double");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Ceiling", "Math.Ceiling@double");
         }
     }
 
@@ -3219,7 +3219,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "Math.dll", "Math.RandomSeed", "Math.RandomSeed@int");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.RandomSeed", "Math.RandomSeed@int");
         }
     }
 
@@ -3253,8 +3253,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            //Method Math.Random not implemented in DSGeometry/Math.cs
-            return MigrateToDsFunction(data, "Math.dll", "Math.Random", "Math.Random");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Random", "Math.Random");
         }
     }
 
@@ -3296,7 +3295,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "Math.dll", "Math.RandomList", "Math.RandomList@int");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.RandomList", "Math.RandomList@int");
         }
     }
 
@@ -3339,7 +3338,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "Math.dll", "Math.E", "Math.E");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.E", "Math.E");
         }
     }
 
@@ -3382,7 +3381,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "Math.dll", "Math.PI", "Math.PI");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.PI", "Math.PI");
         }
     }
 
@@ -3426,7 +3425,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "Math.dll", "Math.PiTimes2", "Math.PiTimes2");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.PiTimes2", "Math.PiTimes2");
         }
     }
 
@@ -3466,7 +3465,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "Math.dll", "Math.Sin", "Math.Sin@double");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Sin", "Math.Sin@double");
         }
     }
 
@@ -3506,7 +3505,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "Math.dll", "Math.Cos", "Math.Cos@double");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Cos", "Math.Cos@double");
         }
     }
 
@@ -3546,7 +3545,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "Math.dll", "Math.Tan", "Math.Tan@double");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Tan", "Math.Tan@double");
         }
     }
 
@@ -3575,7 +3574,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "Math.dll", "Math.Asin", "Math.Asin@double");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Asin", "Math.Asin@double");
         }
     }
 
@@ -3604,7 +3603,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "Math.dll", "Math.Acos", "Math.Acos@double");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Acos", "Math.Acos@double");
         }
     }
 
@@ -3633,7 +3632,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "Math.dll", "Math.Atan", "Math.Atan@double");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Atan", "Math.Atan@double");
         }
     }
 
@@ -3667,7 +3666,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "Math.dll", "Average", "Average@double[]..[]");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Average", "Average@double[]..[]");
         }
     }
 
@@ -4885,7 +4884,11 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodesUI.dll", "Dynamo.Nodes.DoubleSlider", "Dynamo.Nodes.DoubleSlider");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DoubleSlider"));
+
+            return migrationData;               
         }
     }
 
@@ -5029,7 +5032,11 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodesUI.dll", "Dynamo.Nodes.IntegerSlider", "Dynamo.Nodes.IntegerSlider");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.IntegerSlider"));
+
+            return migrationData;  
         }
     }
 
@@ -5059,7 +5066,11 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodesUI.dll", "DSCoreNodesUI.BoolSelector", "DSCoreNodesUI.BoolSelector");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "DSCoreNodesUI.BoolSelector"));
+
+            return migrationData;  
         }
     }
 
@@ -5151,7 +5162,12 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSCoreNodes.File.Directory", "DSCoreNodes.File.Directory");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "DSCore.File.Directory"));
+
+            return migrationData;            
+
         }
     }
 
@@ -5197,7 +5213,11 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSCoreNodes.File.Filename", "DSCoreNodes.File.Filename");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "DSCore.File.Filename"));
+
+            return migrationData;            
         }
     }
 
