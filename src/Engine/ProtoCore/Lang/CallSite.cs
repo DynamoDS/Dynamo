@@ -16,6 +16,57 @@ namespace ProtoCore
 {
     public class CallSite
     {
+        /// <summary>
+        /// Data structure used to carry trace data
+        /// </summary>
+        struct SingleRunTraceData
+        {
+         
+            /// <summary>
+            /// Does this struct contain any trace data
+            /// </summary>
+            public bool IsEmpty
+            {
+                get { return Data == null && NestedData == null; }
+            }
+
+            public bool HasNestedData
+            {
+                get { return NestedData != null; }
+            }
+
+            public bool HasData
+            {
+                get { return Data != null;  }
+            }
+
+            /// <summary>
+            /// This gets the zero-most, left most index
+            /// null if no data
+            /// </summary>
+            /// <returns></returns>
+            public Object GetLeftMostData()
+            {
+                if (HasData)
+                    return Data;
+                else
+                {
+                    if (!HasNestedData)
+                        return null;
+                    else
+                    {
+                        SingleRunTraceData nestedTraceData = NestedData[0];
+                        return nestedTraceData.GetLeftMostData();
+                    }
+                }
+            }
+
+
+            public List<SingleRunTraceData> NestedData;
+            public Object Data;
+        }
+
+
         private int runID;
         private readonly int classScope;
         private readonly string methodName;
@@ -26,7 +77,7 @@ namespace ProtoCore
         private string TRACE_KEY = TraceUtils.__TEMP_REVIT_TRACE_ID;
 
         private List<Object> traceData = new List<object>();
-        private int invokeCount = 0; //Number of times the callsite has been executed within this run
+        private int invokeCount; //Number of times the callsite has been executed within this run
 
         private Guid callsiteID = Guid.Empty;
 
@@ -86,8 +137,6 @@ namespace ProtoCore
             }
         }
 
-
-
         #endregion
 
         
@@ -98,6 +147,9 @@ namespace ProtoCore
         /// <param name="core"></param>
         private void UpdateCallsiteExecutionState(Object callsiteData, Core core)
         {
+            //invokeCount = 0;
+
+
             if (core.EnableCallsiteExecutionState)
             {
                 // Get the uid of this function call
@@ -806,9 +858,6 @@ namespace ProtoCore
             // TODO: Replace this with the real data
             UpdateCallsiteExecutionState(SimulateGetData(), core);
 
-
-
-
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
@@ -907,50 +956,49 @@ namespace ProtoCore
                 c.IsReplicating = false;
 
 
+                SingleRunTraceData singleRunTraceData;
                 //READ TRACE FOR NON-REPLICATED CALL
-
                 //Lookup the trace data in the cache
                 if (invokeCount < traceData.Count)
                 {
-                    Object specificTraceData = traceData[invokeCount];
-                    Dictionary<string, object> dataDict = new Dictionary<string, object>();
-                    dataDict.Add(TRACE_KEY, specificTraceData);
-
-                    TraceUtils.SetObjectToTLS(dataDict);
+                    singleRunTraceData = (SingleRunTraceData) traceData[invokeCount];
                 }
                 else
                 {
-                    //There was no trace data for this run
-                    TraceUtils.ClearAllKnownTLSKeys();
+                    //We don't have any previous stored data for the previous invoke calls, so 
+                    //gen an empty packet and push it through
+                    singleRunTraceData = new SingleRunTraceData();
                 }
 
-                ret = ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, core, funcGroup);
+                SingleRunTraceData newTraceData = new SingleRunTraceData();
+
+                ret = ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, core, funcGroup,
+                    singleRunTraceData, newTraceData);
 
 
-                //WRITE TRACE FOR NON-REPLICATED CALL
-                Dictionary<String, Object> traceRet = TraceUtils.GetObjectFromTLS();
-
-                if (traceRet.ContainsKey(TRACE_KEY))
+                //newTraceData is update with the trace cache assocaite with the single shot executions
+                
+                if (invokeCount < traceData.Count)
+                    traceData[invokeCount] = newTraceData;
+                else
                 {
-                    Object val = traceRet[TRACE_KEY];
-                    if (val != null)
-                    {
-                        while (invokeCount >= traceData.Count)
-                            traceData.Add(null);
-
-                        //Push the data into the trace cache
-                        traceData[invokeCount] = val;
-                    }
+                    traceData.Add(newTraceData);
                 }
-
-
-
+                
             }
             else
             {
+                //Extract the correct run data from the trace cache here
+
+                //This is the thing that will get unpacked from the datastore
+                SingleRunTraceData previousTraceData = new SingleRunTraceData();
+                SingleRunTraceData newTraceData = new SingleRunTraceData();
+
                 c.IsReplicating = true;
                 ret = ExecWithRISlowPath(functionEndPoint, c, formalParameters, replicationInstructions, stackFrame,
-                                         core, funcGroup);
+                                         core, funcGroup, previousTraceData, newTraceData);
+
+                //Do a trace save here
             }
 
             // Explicit calls require the GC of arguments in the function return instruction
@@ -988,11 +1036,11 @@ namespace ProtoCore
         private StackValue ExecWithRISlowPath(List<FunctionEndPoint> functionEndPoint, ProtoCore.Runtime.Context c,
                                               List<StackValue> formalParameters,
                                               List<ReplicationInstruction> replicationInstructions,
-                                              StackFrame stackFrame, Core core, FunctionGroup funcGroup)
+                                              StackFrame stackFrame, Core core, FunctionGroup funcGroup, SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
             //Recursion base case
             if (replicationInstructions.Count == 0)
-                return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, core, funcGroup);
+                return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, core, funcGroup, previousTraceData, newTraceData);
 
             //Get the replication instruction that this call will deal with
             ReplicationInstruction ri = replicationInstructions[0];
@@ -1028,6 +1076,9 @@ namespace ProtoCore
                 }
 
                 StackValue[] retSVs = new StackValue[retSize];
+                SingleRunTraceData retTrace = new SingleRunTraceData();
+                retTrace.NestedData = new List<SingleRunTraceData>(); //this will shadow the SVs as they are created
+
 
                 if (core.Options.ExecutionMode == ExecutionMode.Parallel)
                     throw new NotImplementedException("Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
@@ -1035,6 +1086,21 @@ namespace ProtoCore
                 {
                     for (int i = 0; i < retSize; i++)
                     {
+                        SingleRunTraceData lastExecTrace = new SingleRunTraceData();
+
+                        if (i < previousTraceData.NestedData.Count)
+                        {
+                            //There was previous data that needs loading into the cache
+                            lastExecTrace = previousTraceData.NestedData[i];
+                        }
+                        else
+                        {
+                            //We're off the edge of the previous trace window
+                            //So just pass in an empty block
+                            lastExecTrace = new SingleRunTraceData();
+                        }
+
+
                         //Build the call
                         List<StackValue> newFormalParams = new List<StackValue>();
                         newFormalParams.AddRange(formalParameters);
@@ -1048,8 +1114,14 @@ namespace ProtoCore
                         newRIs.AddRange(replicationInstructions);
                         newRIs.RemoveAt(0);
 
+
+                        previousTraceData = lastExecTrace;
+                        SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
+
                         retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
-                                                       funcGroup);
+                                                       funcGroup, previousTraceData, cleanRetTrace);
+
+                        retTrace.NestedData[i] = cleanRetTrace;
 
                     }
                 }
@@ -1102,7 +1174,7 @@ namespace ProtoCore
                         newFormalParams.AddRange(formalParameters);
 
                         return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
-                                                  funcGroup);
+                                                  funcGroup, previousTraceData, newTraceData);
                     }
 
                     //Now iterate over each of these options
@@ -1171,7 +1243,7 @@ namespace ProtoCore
                         newRIs.RemoveAt(0);
 
                         retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
-                                                        funcGroup);
+                                                        funcGroup, previousTraceData, newTraceData);
 #endif
                     }
                 }
@@ -1191,7 +1263,7 @@ namespace ProtoCore
         /// </summary>
         private StackValue ExecWithZeroRI(List<FunctionEndPoint> functionEndPoint, ProtoCore.Runtime.Context c,
                                           List<StackValue> formalParameters, StackFrame stackFrame, Core core,
-                                          FunctionGroup funcGroup)
+                                          FunctionGroup funcGroup, SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
             //@PERF: Todo add a fast path here for the case where we have a homogenious array so we can directly dispatch
 
@@ -1218,7 +1290,37 @@ namespace ProtoCore
             stackFrame.SetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock, funcBlock);
 
 
+            //TraceCache -> TLS
+            //Extract left most high-D pack
+            Object traceD = previousTraceData.GetLeftMostData();
+
+            if (traceD != null)
+            {
+                //There was data associated with the previous execution, push this into the TLS
+
+                Dictionary<string, object> dataDict = new Dictionary<string, object>();
+                dataDict.Add(TRACE_KEY, traceD);
+
+                TraceUtils.SetObjectToTLS(dataDict);
+            }
+            else
+            {
+                //There was no trace data for this run
+                TraceUtils.ClearAllKnownTLSKeys();
+            }
+
+            //EXECUTE
             StackValue ret = finalFep.Execute(c, coercedParameters, stackFrame, core);
+
+            //TLS -> TraceCache
+            Dictionary<String, Object> traceRet = TraceUtils.GetObjectFromTLS();
+
+            if (traceRet.ContainsKey(TRACE_KEY))
+            {
+                Object val = traceRet[TRACE_KEY];
+                newTraceData.Data = val;
+            }
+
 
             // An explicit call requires return coercion at the return instruction
             if (ret.optype != AddressType.ExplicitCall)
@@ -1838,6 +1940,7 @@ namespace ProtoCore
 
         #endregion
     }
+
 
 
 

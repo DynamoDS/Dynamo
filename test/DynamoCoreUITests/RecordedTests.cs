@@ -19,6 +19,7 @@ using Dynamo.Tests;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using Dynamo.Tests;
+using DSIronPythonNode;
 
 namespace Dynamo.Tests.UI
 {
@@ -297,6 +298,52 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
             Assert.AreEqual(cmdOne.Name, cmdTwo.Name);
             Assert.AreEqual(cmdOne.Value, cmdTwo.Value);
+        }
+
+        #endregion
+
+        #region General Node Operations Test Cases
+
+        [Test, RequiresSTA]
+        public void TestModifyPythonNodes()
+        {
+            RunCommandsFromFile("ModifyPythonNodes.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as PythonNode;
+            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonNode;
+
+            Assert.AreEqual("# Modification 3", python.Script);
+            Assert.AreEqual("# Modification 4", pvarin.Script);
+        }
+
+        [Test, RequiresSTA]
+        public void TestModifyPythonNodesUndo()
+        {
+            RunCommandsFromFile("ModifyPythonNodesUndo.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as PythonNode;
+            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonNode;
+
+            Assert.AreEqual("# Modification 1", python.Script);
+            Assert.AreEqual("# Modification 2", pvarin.Script);
+        }
+
+        [Test, RequiresSTA]
+        public void TestModifyPythonNodesUndoRedo()
+        {
+            RunCommandsFromFile("ModifyPythonNodesUndoRedo.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as PythonNode;
+            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonNode;
+
+            Assert.AreEqual("# Modification 3", python.Script);
+            Assert.AreEqual("# Modification 4", pvarin.Script);
         }
 
         #endregion
@@ -595,48 +642,6 @@ namespace Dynamo.Tests.UI
             };
 
             VerifyModelExistence(nodeExistenceMap);
-        }
-
-        [Test, RequiresSTA]
-        public void TestModifyPythonNodes()
-        {
-            RunCommandsFromFile("ModifyPythonNodes.xml");
-            Assert.AreEqual(0, workspace.Connectors.Count);
-            Assert.AreEqual(2, workspace.Nodes.Count);
-
-            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
-            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
-
-            Assert.AreEqual("# Modification 3", python.Script);
-            Assert.AreEqual("# Modification 4", pvarin.Script);
-        }
-
-        [Test, RequiresSTA]
-        public void TestModifyPythonNodesUndo()
-        {
-            RunCommandsFromFile("ModifyPythonNodesUndo.xml");
-            Assert.AreEqual(0, workspace.Connectors.Count);
-            Assert.AreEqual(2, workspace.Nodes.Count);
-
-            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
-            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
-
-            Assert.AreEqual("# Modification 1", python.Script);
-            Assert.AreEqual("# Modification 2", pvarin.Script);
-        }
-
-        [Test, RequiresSTA]
-        public void TestModifyPythonNodesUndoRedo()
-        {
-            RunCommandsFromFile("ModifyPythonNodesUndoRedo.xml");
-            Assert.AreEqual(0, workspace.Connectors.Count);
-            Assert.AreEqual(2, workspace.Nodes.Count);
-
-            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
-            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
-
-            Assert.AreEqual("# Modification 3", python.Script);
-            Assert.AreEqual("# Modification 4", pvarin.Script);
         }
 
         [Test, RequiresSTA]
