@@ -15,17 +15,17 @@ namespace ProtoCore.DSASM
         
         public void Push(int val)
         {
-            runtime.rmem.Push(StackUtils.BuildInt(val));
+            runtime.rmem.Push(StackValue.BuildInt(val));
         }
 
         public void Push(Int64 val)
         {
-            runtime.rmem.Push(StackUtils.BuildInt(val));
+            runtime.rmem.Push(StackValue.BuildInt(val));
         }
 
         public void Push(double val)
         {
-            runtime.rmem.Push(StackUtils.BuildDouble(val));
+            runtime.rmem.Push(StackValue.BuildDouble(val));
         }
 
         public void Push(StackValue val)
@@ -35,14 +35,14 @@ namespace ProtoCore.DSASM
 
         public StackValue Run(List<Instruction> breakpoints, int codeblock = Constants.kInvalidIndex, int entry = Constants.kInvalidIndex, Language lang = Language.kInvalid)
         {
-            runtime.RX = new StackValue { opdata = 0, opdata_d = 0.0, optype = AddressType.Null };
+            runtime.RX = StackValue.Null;
             runtime.Execute(codeblock, entry, breakpoints, lang);
             return runtime.RX;
         }
 
         public StackValue Run(int codeblock = Constants.kInvalidIndex, int entry = Constants.kInvalidIndex, Language lang = Language.kInvalid)
         {
-            runtime.RX = new StackValue { opdata = 0, opdata_d = 0.0, optype = AddressType.Null };
+            runtime.RX = StackValue.Null;
             runtime.Execute(codeblock, entry, lang);
             return runtime.RX;
         }

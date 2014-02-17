@@ -12,6 +12,7 @@ using System.IO;
 using System.Diagnostics;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
+using ProtoCore.DSASM;
 
 namespace ProtoTestFx.TD
 {
@@ -170,7 +171,7 @@ namespace ProtoTestFx.TD
                 
                 StackTrace trace = new StackTrace();
                 int caller = 2;
-                StackFrame frame = trace.GetFrame(caller);
+                System.Diagnostics.StackFrame frame = trace.GetFrame(caller);
                 string callerName = frame.GetMethod().Name;
                 
                 string tempPath = System.IO.Path.GetTempPath();
@@ -458,7 +459,7 @@ namespace ProtoTestFx.TD
         {
             try
             {
-                ProtoCore.DSASM.StackValue sv = testMirror.GetRawFirstValue(dsVariable);
+                StackValue sv = testMirror.GetRawFirstValue(dsVariable);
 
                 if (sv.optype != ProtoCore.DSASM.AddressType.ArrayPointer &&
                     sv.optype != ProtoCore.DSASM.AddressType.Pointer)
@@ -589,7 +590,7 @@ namespace ProtoTestFx.TD
             var helper = DLLFFIHandler.GetModuleHelper(FFILanguage.CSharp);
             var marshaller = helper.GetMarshaller(TestFrameWork.testCore);
             Obj val = testMirror.GetFirstValue(dsVariable, startBlock);
-            ProtoCore.DSASM.StackValue sv;
+            StackValue sv;
 
             if (val.Payload == null)
             {

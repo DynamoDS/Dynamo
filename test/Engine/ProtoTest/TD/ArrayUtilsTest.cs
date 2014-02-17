@@ -26,11 +26,16 @@ namespace ProtoTest.UtilsTests
         public void StackValueDiffTestDefect()
         {
             String code =
-@"[Imperative]{	a = 1;    b = 1.0;}";
+@"[Imperative]
+{
+	a = 1;
+    b = 1.0;
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
-            ProtoCore.DSASM.StackValue svA = mirror.GetRawFirstValue("a");
-            ProtoCore.DSASM.StackValue svB = mirror.GetRawFirstValue("b");
+            StackValue svA = mirror.GetRawFirstValue("a");
+            StackValue svB = mirror.GetRawFirstValue("b");
             Assert.IsTrue(svA.metaData.type != svB.metaData.type);
         }
 
@@ -38,11 +43,25 @@ namespace ProtoTest.UtilsTests
         public void StackValueDiffTestUserDefined()
         {
             String code =
-@"class A{    x : var;    constructor A()    {        x = 20;    }}[Imperative]{	a = A.A();    b = 1.0;}";
+@"
+class A
+{
+    x : var;
+    constructor A()
+    {
+        x = 20;
+    }
+}
+[Imperative]
+{
+	a = A.A();
+    b = 1.0;
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
-            ProtoCore.DSASM.StackValue svA = mirror.GetRawFirstValue("a");
-            ProtoCore.DSASM.StackValue svB = mirror.GetRawFirstValue("b");
+            StackValue svA = mirror.GetRawFirstValue("a");
+            StackValue svB = mirror.GetRawFirstValue("b");
             Assert.IsTrue(svA.metaData.type != svB.metaData.type);
         }
 
@@ -50,11 +69,25 @@ namespace ProtoTest.UtilsTests
         public void StackValueDiffTestProperty01()
         {
             String code =
-@"class A{    x : var;    constructor A()    {        x = 20;    }}[Imperative]{	a = A.A();    b = 1.0;}";
+@"
+class A
+{
+    x : var;
+    constructor A()
+    {
+        x = 20;
+    }
+}
+[Imperative]
+{
+	a = A.A();
+    b = 1.0;
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
-            ProtoCore.DSASM.StackValue svA = mirror.GetRawFirstValue("a");
-            ProtoCore.DSASM.StackValue svB = mirror.GetRawFirstValue("b");
+            StackValue svA = mirror.GetRawFirstValue("a");
+            StackValue svB = mirror.GetRawFirstValue("b");
             Assert.IsTrue(svA.metaData.type != svB.metaData.type);
         }
 
@@ -62,11 +95,26 @@ namespace ProtoTest.UtilsTests
         public void StackValueDiffTestProperty02()
         {
             String code =
-@"class A{    x : var;    constructor A()    {        x = 20;    }}[Imperative]{	a = A.A();    b = a.x;    c = 1.0;}";
+@"
+class A
+{
+    x : var;
+    constructor A()
+    {
+        x = 20;
+    }
+}
+[Imperative]
+{
+	a = A.A();
+    b = a.x;
+    c = 1.0;
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
-            ProtoCore.DSASM.StackValue svA = mirror.GetRawFirstValue("b");
-            ProtoCore.DSASM.StackValue svB = mirror.GetRawFirstValue("c");
+            StackValue svA = mirror.GetRawFirstValue("b");
+            StackValue svB = mirror.GetRawFirstValue("c");
             Assert.IsTrue(svA.metaData.type != svB.metaData.type);
         }
 
@@ -74,16 +122,24 @@ namespace ProtoTest.UtilsTests
         public void TestArrayLayerStatsSimple()
         {
             String code =
-@"a;b;c;[Imperative]{	a = {1,2,3};    b = {1.0, 2.0, 3.0, 3.0};    c = {1.0, 2.0, 9};}";
+@"
+a;b;c;
+[Imperative]
+{
+	a = {1,2,3};
+    b = {1.0, 2.0, 3.0, 3.0};
+    c = {1.0, 2.0, 9};
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
-            ProtoCore.DSASM.StackValue svA = mirror.GetRawFirstValue("a");
+            StackValue svA = mirror.GetRawFirstValue("a");
             var dict = ProtoCore.Utils.ArrayUtils.GetTypeStatisticsForLayer(svA, core);
             Assert.IsTrue(dict[dict.Keys.First()] == 3);
-            ProtoCore.DSASM.StackValue svB = mirror.GetRawFirstValue("b");
+            StackValue svB = mirror.GetRawFirstValue("b");
             var dict2 = ProtoCore.Utils.ArrayUtils.GetTypeStatisticsForLayer(svB, core);
             Assert.IsTrue(dict2[dict2.Keys.First()] == 4);
-            ProtoCore.DSASM.StackValue svC = mirror.GetRawFirstValue("c");
+            StackValue svC = mirror.GetRawFirstValue("c");
             var dict3 = ProtoCore.Utils.ArrayUtils.GetTypeStatisticsForLayer(svC, core);
             Assert.IsTrue(dict3[dict3.Keys.First()] == 2);
             Assert.IsTrue(dict3[dict3.Keys.Last()] == 1);
@@ -95,14 +151,23 @@ namespace ProtoTest.UtilsTests
         public void TestArrayRankSimple()
         {
             String code =
-@"a;b;c;d;e;[Imperative]{	a = {1,2,3};    b = {1.0, 2.0, 3.0, 3.0};    c = {1.0, 2.0, 9};    d = {{1}, {1}, {1}};    e = {{1, 2, 3}, {1, 2, 3}, {1, 2, 3}};}";
+@"a;b;c;d;e;
+[Imperative]
+{
+	a = {1,2,3};
+    b = {1.0, 2.0, 3.0, 3.0};
+    c = {1.0, 2.0, 9};
+    d = {{1}, {1}, {1}};
+    e = {{1, 2, 3}, {1, 2, 3}, {1, 2, 3}};
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
-            ProtoCore.DSASM.StackValue svA = mirror.GetRawFirstValue("a");
-            ProtoCore.DSASM.StackValue svB = mirror.GetRawFirstValue("b");
-            ProtoCore.DSASM.StackValue svC = mirror.GetRawFirstValue("c");
-            ProtoCore.DSASM.StackValue svD = mirror.GetRawFirstValue("d");
-            ProtoCore.DSASM.StackValue svE = mirror.GetRawFirstValue("e");
+            StackValue svA = mirror.GetRawFirstValue("a");
+            StackValue svB = mirror.GetRawFirstValue("b");
+            StackValue svC = mirror.GetRawFirstValue("c");
+            StackValue svD = mirror.GetRawFirstValue("d");
+            StackValue svE = mirror.GetRawFirstValue("e");
             var a = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svA, core);
             Assert.IsTrue(a == 1);
             var b = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svB, core);
@@ -120,14 +185,24 @@ namespace ProtoTest.UtilsTests
         public void TestArrayRankJagged()
         {
             String code =
-@"a;b;c;d;e;[Imperative]{	a = {1,{2},3};    b = {1.0, {2.0, 3.0, 3.0}};    c = {1.0, {2.0, {9}}};    d = {{1}, {}, {1}};    e = {{1, 2, 3}, {1, {2}, 3}, {{{1}}, 2, 3}};}";
+@"
+a;b;c;d;e;
+[Imperative]
+{
+	a = {1,{2},3};
+    b = {1.0, {2.0, 3.0, 3.0}};
+    c = {1.0, {2.0, {9}}};
+    d = {{1}, {}, {1}};
+    e = {{1, 2, 3}, {1, {2}, 3}, {{{1}}, 2, 3}};
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
-            ProtoCore.DSASM.StackValue svA = mirror.GetRawFirstValue("a");
-            ProtoCore.DSASM.StackValue svB = mirror.GetRawFirstValue("b");
-            ProtoCore.DSASM.StackValue svC = mirror.GetRawFirstValue("c");
-            ProtoCore.DSASM.StackValue svD = mirror.GetRawFirstValue("d");
-            ProtoCore.DSASM.StackValue svE = mirror.GetRawFirstValue("e");
+            StackValue svA = mirror.GetRawFirstValue("a");
+            StackValue svB = mirror.GetRawFirstValue("b");
+            StackValue svC = mirror.GetRawFirstValue("c");
+            StackValue svD = mirror.GetRawFirstValue("d");
+            StackValue svE = mirror.GetRawFirstValue("e");
             var a = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svA, core);
             Assert.IsTrue(a == 2);
             var b = ProtoCore.Utils.ArrayUtils.GetMaxRankForArray(svB, core);
@@ -145,7 +220,40 @@ namespace ProtoTest.UtilsTests
         public void TestArrayGetCommonSuperType()
         {
             String code =
-@"class A {}class B extends A {}class C extends B {}tAAA = {A.A(), A.A(), A.A()};tAAB = {A.A(), A.A(), B.B()};tAAC = {A.A(), A.A(), C.C()};tABA = {A.A(), B.B(), A.A()};tABB = {A.A(), B.B(), B.B()};tABC = {A.A(), B.B(), C.C()};tACA = {A.A(), C.C(), A.A()};tACB = {A.A(), C.C(), B.B()};tACC = {A.A(), C.C(), C.C()};//---tBAA = {B.B(), A.A(), A.A()};tBAB = {B.B(), A.A(), B.B()};tBAC = {B.B(), A.A(), C.C()};tBBA = {B.B(), B.B(), A.A()};tBBB = {B.B(), B.B(), B.B()};tBBC = {B.B(), B.B(), C.C()};tBCA = {B.B(), C.C(), A.A()};tBCB = {B.B(), C.C(), B.B()};tBCC = {B.B(), C.C(), C.C()};//---tCAA = {C.C(), A.A(), A.A()};tCAB = {C.C(), A.A(), B.B()};tCAC = {C.C(), A.A(), C.C()};tCBA = {C.C(), B.B(), A.A()};tCBB = {C.C(), B.B(), B.B()};tCBC = {C.C(), B.B(), C.C()};tCCA = {C.C(), C.C(), A.A()};tCCB = {C.C(), C.C(), B.B()};tCCC = {C.C(), C.C(), C.C()};";
+@"
+class A {}
+class B extends A {}
+class C extends B {}
+tAAA = {A.A(), A.A(), A.A()};
+tAAB = {A.A(), A.A(), B.B()};
+tAAC = {A.A(), A.A(), C.C()};
+tABA = {A.A(), B.B(), A.A()};
+tABB = {A.A(), B.B(), B.B()};
+tABC = {A.A(), B.B(), C.C()};
+tACA = {A.A(), C.C(), A.A()};
+tACB = {A.A(), C.C(), B.B()};
+tACC = {A.A(), C.C(), C.C()};
+//---
+tBAA = {B.B(), A.A(), A.A()};
+tBAB = {B.B(), A.A(), B.B()};
+tBAC = {B.B(), A.A(), C.C()};
+tBBA = {B.B(), B.B(), A.A()};
+tBBB = {B.B(), B.B(), B.B()};
+tBBC = {B.B(), B.B(), C.C()};
+tBCA = {B.B(), C.C(), A.A()};
+tBCB = {B.B(), C.C(), B.B()};
+tBCC = {B.B(), C.C(), C.C()};
+//---
+tCAA = {C.C(), A.A(), A.A()};
+tCAB = {C.C(), A.A(), B.B()};
+tCAC = {C.C(), A.A(), C.C()};
+tCBA = {C.C(), B.B(), A.A()};
+tCBB = {C.C(), B.B(), B.B()};
+tCBC = {C.C(), B.B(), C.C()};
+tCCA = {C.C(), C.C(), A.A()};
+tCCB = {C.C(), C.C(), B.B()};
+tCCC = {C.C(), C.C(), C.C()};
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
             StackValue svAAA = mirror.GetRawFirstValue("tAAA");
@@ -237,7 +345,28 @@ namespace ProtoTest.UtilsTests
         public void Defect_TestArrayGetCommonSuperType()
         {
             String code =
-@"class A{};class B extends A{};class C extends A{};class D extends C{};a = A.A();b = B.B();c = C.C();d = D.D();//ba:A = B.B();//ca:A = C.C();//dc:C = D.D();tABC = { a, b, c };tABD = { a, b, d };tACD = { a, c, d };tBCD = { b, c, d };tAB = { a, b };tAD = { a, d };tBC = { b, c };tBD = { b, d };tCD = { c, d };";
+@"
+class A{};
+class B extends A{};
+class C extends A{};
+class D extends C{};
+a = A.A();
+b = B.B();
+c = C.C();
+d = D.D();
+//ba:A = B.B();
+//ca:A = C.C();
+//dc:C = D.D();
+tABC = { a, b, c };
+tABD = { a, b, d };
+tACD = { a, c, d };
+tBCD = { b, c, d };
+tAB = { a, b };
+tAD = { a, d };
+tBC = { b, c };
+tBD = { b, d };
+tCD = { c, d };
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
             StackValue svABC = mirror.GetRawFirstValue("tABC");
@@ -274,7 +403,22 @@ namespace ProtoTest.UtilsTests
         public void Defect_TestArrayGetCommonSuperType_2_EmptyArray()
         {
             String code =
-@"class A{};class B extends A{};class C extends A{};class D extends C{};a = A.A();ba:A = B.B();ca:A = C.C();dc:C = D.D();tABC = { a, ba, ca };tABD = { a, ba, dc };tACD = { a, ca, dc };tBCD = { ba, ca, dc };tDD = {dc, D.D()};tE = {};//empty array";
+@"
+class A{};
+class B extends A{};
+class C extends A{};
+class D extends C{};
+a = A.A();
+ba:A = B.B();
+ca:A = C.C();
+dc:C = D.D();
+tABC = { a, ba, ca };
+tABD = { a, ba, dc };
+tACD = { a, ca, dc };
+tBCD = { ba, ca, dc };
+tDD = {dc, D.D()};
+tE = {};//empty array
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
             StackValue svABC = mirror.GetRawFirstValue("tABC");
@@ -303,7 +447,27 @@ namespace ProtoTest.UtilsTests
         public void Defect_TestArrayGetCommonSuperType_3()
         {
             String code =
-@"class A{};class B extends A{};class C extends B{};class D extends C{};class E extends D{};class F extends A{};class G{};class H extends G{};a = A.A();b = B.B();c = C.C();d = D.D();e = E.E();f = F.F();g = G.G();h = H.H();rABCDEF = {a,b,c,d,e,f};rBCDEF = {b,c,d,e,f};rBH = {b,h};";
+@"
+class A{};
+class B extends A{};
+class C extends B{};
+class D extends C{};
+class E extends D{};
+class F extends A{};
+class G{};
+class H extends G{};
+a = A.A();
+b = B.B();
+c = C.C();
+d = D.D();
+e = E.E();
+f = F.F();
+g = G.G();
+h = H.H();
+rABCDEF = {a,b,c,d,e,f};
+rBCDEF = {b,c,d,e,f};
+rBH = {b,h};
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
             StackValue svABCDEF = mirror.GetRawFirstValue("rABCDEF");
@@ -321,12 +485,19 @@ namespace ProtoTest.UtilsTests
         public void IsArrayTest()
         {
             String code =
-@"a;b;c;[Imperative]{	a = {1,2,3};    b = 1;    c = a;}";
+@"a;b;c;
+[Imperative]
+{
+	a = {1,2,3};
+    b = 1;
+    c = a;
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
-            ProtoCore.DSASM.StackValue svA = mirror.GetRawFirstValue("a");
-            ProtoCore.DSASM.StackValue svB = mirror.GetRawFirstValue("b");
-            ProtoCore.DSASM.StackValue svC = mirror.GetRawFirstValue("c");
+            StackValue svA = mirror.GetRawFirstValue("a");
+            StackValue svB = mirror.GetRawFirstValue("b");
+            StackValue svC = mirror.GetRawFirstValue("c");
             Assert.IsTrue(StackUtils.IsArray(svA));
             Assert.IsTrue(!StackUtils.IsArray(svB));
             Assert.IsTrue(StackUtils.IsArray(svC));
@@ -336,7 +507,11 @@ namespace ProtoTest.UtilsTests
         public void TestDepthCountOnJaggedArray()
         {
             String code =
-                @"a = {1,{{1},{3.1415}},null,1.0,12.3};b = {1,2,{3}};x = {{1},{3.1415}};";
+                @"
+a = {1,{{1},{3.1415}},null,1.0,12.3};
+b = {1,2,{3}};
+x = {{1},{3.1415}};
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
             StackValue a = mirror.GetRawFirstValue("a");
@@ -356,7 +531,12 @@ namespace ProtoTest.UtilsTests
         public void Defect_OnDepthCount()
         {
             String code =
-                @"        a = {{3.1415}};r1 = Contains(a, 3.0);r2 = Contains(a, 3.0);//t = Contains(a, null);";
+                @"
+        a = {{3.1415}};
+r1 = Contains(a, 3.0);
+r2 = Contains(a, 3.0);
+//t = Contains(a, null);
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
             StackValue a = mirror.GetRawFirstValue("a");

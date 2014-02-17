@@ -88,7 +88,7 @@ namespace ProtoScript.Runners
             Core.BuildStatus.Warnings.Clear();
 
             for (int i = 0; i < Core.watchBaseOffset; ++i )
-                Core.watchStack.Add(StackUtils.BuildNull());
+                Core.watchStack.Add(StackValue.Null);
 
             //Record the old function call depth
             //Fix IDE-523: part of error for watching non-existing member

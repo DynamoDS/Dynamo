@@ -260,7 +260,7 @@ namespace ProtoFFI
             int totalParamCount = paramCount + envSize;
 
             List<Object> parameters = new List<object>();
-            List<ProtoCore.DSASM.StackValue> s = dsi.runtime.rmem.Stack;
+            List<StackValue> s = dsi.runtime.rmem.Stack;
             Object thisObject = null;
             FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.Core);
             if (!ReflectionInfo.IsStatic)
@@ -286,7 +286,7 @@ namespace ProtoFFI
                 // Comment Jun: FFI function stack frames do not contain locals
                 int locals = 0;
                 int relative = 0 - ProtoCore.DSASM.StackFrame.kStackFrameSize - locals - i - 1;
-                ProtoCore.DSASM.StackValue opArg = dsi.runtime.rmem.GetAtRelative(relative);
+                StackValue opArg = dsi.runtime.rmem.GetAtRelative(relative);
                 try
                 {
                     Type paramType = paraminfos[i].ParameterType;
@@ -317,7 +317,7 @@ namespace ProtoFFI
             }
 
             object ret = null;
-            StackValue dsRetValue = StackUtils.BuildNull(); 
+            StackValue dsRetValue = StackValue.Null; 
             try
             {
                 ret = InvokeFunctionPointer(thisObject, parameters.Count > 0 ? parameters.ToArray() : null);
@@ -423,7 +423,7 @@ namespace ProtoFFI
         public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
         {
             Object retVal = base.Execute(c, dsi);
-            List<ProtoCore.DSASM.StackValue> s = dsi.runtime.rmem.Stack;
+            List<StackValue> s = dsi.runtime.rmem.Stack;
             FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.Core);
             marshaller.OnDispose(s.Last(), c, dsi); //Notify marshler for dispose.
 
