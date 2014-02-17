@@ -651,6 +651,15 @@ namespace Dynamo.Models
                 Version currentVersion = dynamoModel.HomeSpace.WorkspaceVersion;
                 if (fileVersion < currentVersion) // Opening an older file, migrate workspace.
                 {
+                    string backupPath = string.Empty;
+                    if (MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
+                    {
+                        string message = string.Format("Original file '{0}' gets backed up at '{1}'",
+                            Path.GetFileName(xmlPath), backupPath);
+
+                        DynamoLogger.Instance.Log(message);
+                    }
+
                     MigrationManager.Instance.ProcessWorkspaceMigrations(xmlDoc, fileVersion);
                     MigrationManager.Instance.ProcessNodesInWorkspace(xmlDoc, fileVersion);
                 }
