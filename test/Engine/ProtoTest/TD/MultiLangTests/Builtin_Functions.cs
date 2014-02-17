@@ -7,7 +7,7 @@ namespace ProtoTest.TD.MultiLangTests
     public class Builtin_Functions
     {
         public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Tests\\ProtoTest\\ImportFiles\\";
+        string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         [SetUp]
         public void Setup()
         {
@@ -629,7 +629,15 @@ result =
             thisTest.Verify("a", v1, 0);
         }
         /* 
-[Test]         public void T018_CountTrue_RangeExpression_02()         {           Assert.Fail("");           ExecutionMirror mirror = thisTest.RunScript(testPath, "T018_CountTrue_RangeExpression_02.ds");           Assert.IsTrue((Int64)mirror.GetValue("result").Payload == 0);           List<Object> li = new List<Object>() { 1, 4, 9 };           Assert.IsTrue(mirror.CompareArrays("a", li, typeof(System.Int64)));         }*/
+[Test]
+         public void T018_CountTrue_RangeExpression_02()
+         {
+           Assert.Fail("");
+           ExecutionMirror mirror = thisTest.RunScript(testPath, "T018_CountTrue_RangeExpression_02.ds");
+           Assert.IsTrue((Int64)mirror.GetValue("result").Payload == 0);
+           List<Object> li = new List<Object>() { 1, 4, 9 };
+           Assert.IsTrue(mirror.CompareArrays("a", li, typeof(System.Int64)));
+         }*/
 
         [Test]
         [Category("SmokeTest")]
@@ -1275,7 +1283,13 @@ result = a? c:b;//t";
             thisTest.Verify("result", true, 0);
         }
         /* 
-[Test]         public void T040_AllFalse_Replication()         {           ExecutionMirror mirror = thisTest.RunScript(testPath, "T040_AllFalse_Replication.ds");                  thisTest.Verify("result", true, 0);         }p*/
+[Test]
+         public void T040_AllFalse_Replication()
+         {
+           ExecutionMirror mirror = thisTest.RunScript(testPath, "T040_AllFalse_Replication.ds");
+       
+           thisTest.Verify("result", true, 0);
+         }p*/
 
         [Test]
         [Category("SmokeTest")]
@@ -1623,7 +1637,13 @@ result =
             thisTest.Verify("result", 12.0, 0);
         }
         /*
-[Test]        [Category("SmokeTest")]        public void T053_Sum_Replication()        {          ExecutionMirror mirror = thisTest.RunScript(testPath, "T053_Sum_Replication.ds");          thisTest.Verify("result", 12.0, 0);        }*/
+[Test]
+        [Category("SmokeTest")]
+        public void T053_Sum_Replication()
+        {
+          ExecutionMirror mirror = thisTest.RunScript(testPath, "T053_Sum_Replication.ds");
+          thisTest.Verify("result", 12.0, 0);
+        }*/
 
         [Test]
         [Category("SmokeTest")]
@@ -1924,7 +1944,26 @@ r2 = Print(arr2);";
         public void TV1467193_print()
         {
             String code =
- @"class A{}r1 = Print(A.A());a = A.A();r2 = Print(a);class B{fb:var;constructor B(x:int){    fb = Print(x);  }  def foo()    {        return  = 10;    }} r3 = Print(B.B(2));r4 = Print(B.B(2).foo());";
+ @"
+class A{}
+r1 = Print(A.A());
+a = A.A();
+r2 = Print(a);
+class B{
+fb:var;
+constructor B(x:int)
+{
+    fb = Print(x);
+  
+}
+  def foo()
+    {
+        return  = 10;
+    }
+}
+ r3 = Print(B.B(2));
+r4 = Print(B.B(2).foo());
+";
             thisTest.RunScriptSource(code);
         }
 
@@ -1933,7 +1972,14 @@ r2 = Print(arr2);";
         public void T068_Average_Negative_Cases()
         {
             String code =
- @"//x1 = Average(a) ;// returns null, also throws runtime error ? x2 = Average(a) ;// returns -1//x3 = Average(()); // returns null, also throws runtime error ?x4 = Average(null) ;// returns -1x5 = Average({}) ;// returns 0.0x6 = Average({null}) ;// returns 0.0";
+ @"
+//x1 = Average(a) ;// returns null, also throws runtime error ? 
+x2 = Average(a) ;// returns -1
+//x3 = Average(()); // returns null, also throws runtime error ?
+x4 = Average(null) ;// returns -1
+x5 = Average({}) ;// returns 0.0
+x6 = Average({null}) ;// returns 0.0
+";
             Object n1 = null;
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467301 rev 3778 : Builtin method 'Average' should return null for all negative cases";
@@ -1943,15 +1989,44 @@ r2 = Print(arr2);";
             thisTest.Verify("x5", n1);
             thisTest.Verify("x6", n1);
         }
-        /*       
-[Test]       [Category("Built in Functions")]       public void TV1467301_Average()       {           String code =@"";           Object n1 = null;           ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();           String errmsg = "DNL-1467301 rev 3778 : Builtin method 'Average' should return null for all negative cases";           ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);           thisTest.Verify("x2", n1);           thisTest.Verify("x4", n1);           thisTest.Verify("x5", n1);           thisTest.Verify("x6", n1);       }*/
+        /*
+       
+[Test]
+       [Category("Built in Functions")]
+       public void TV1467301_Average()
+       {
+           String code =
+@"
+";
+           Object n1 = null;
+           ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+           String errmsg = "DNL-1467301 rev 3778 : Builtin method 'Average' should return null for all negative cases";
+           ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
+           thisTest.Verify("x2", n1);
+           thisTest.Verify("x4", n1);
+           thisTest.Verify("x5", n1);
+           thisTest.Verify("x6", n1);
+       }*/
 
         [Test]
         //Test "IsRectangular"
         public void CountInClass_1467364()
         {
             String code =
-                @"class td                {                    y : int[];                    z;                    constructor td()                    {                        y = { 1, 2, 3, 4, 5 };                        rows = { 1, 2, 3 };                        z = y[Count(rows)];                    }                }                a = td.td();                c=a.z; // 4                 ";
+                @"class td
+                {
+                    y : int[];
+                    z;
+                    constructor td()
+                    {
+                        y = { 1, 2, 3, 4, 5 };
+                        rows = { 1, 2, 3 };
+                        z = y[Count(rows)];
+                    }
+                }
+                a = td.td();
+                c=a.z; // 4 
+                ";
             string error = "1467364 Sprint 27 - Rev 4053 if built-in function is used to index into an array inside class , compile error is thrown ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, error);
             thisTest.Verify("c", 4);
@@ -1961,7 +2036,32 @@ r2 = Print(arr2);";
         [Category("Built in Functions")]
         public void T068_Sort_UsingFunctionPointer()
         {
-            string code = @"            def Compare(x : bool, y : bool)            {                return = [Imperative]                {                    if (x == y)                        return = 0;                            return = !x ? -1 : 1;                }            }            def Compare(x : int, y : bool)            {                return = 1;            }            def Compare(x : bool, y : int)            {                return = -1;            }            def Compare(x : int, y : int)            {                return = (x - y);            }            arr = { 3, 5, 1, true, false, 5, 3, 0, 4, 7, true, 5, false, 12};            sorted = Sort(Compare, arr);           ";
+            string code = @"
+            def Compare(x : bool, y : bool)
+            {
+                return = [Imperative]
+                {
+                    if (x == y)
+                        return = 0;
+        
+                    return = !x ? -1 : 1;
+                }
+            }
+            def Compare(x : int, y : bool)
+            {
+                return = 1;
+            }
+            def Compare(x : bool, y : int)
+            {
+                return = -1;
+            }
+            def Compare(x : int, y : int)
+            {
+                return = (x - y);
+            }
+            arr = { 3, 5, 1, true, false, 5, 3, 0, 4, 7, true, 5, false, 12};
+            sorted = Sort(Compare, arr);
+           ";
             string error = "T068_Sort_UsingFunctionPointer failed!!";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("sorted", new Object[] { false, false, true, true, 0, 1, 3, 3, 4, 5, 5, 5, 7, 12 });
@@ -1971,7 +2071,13 @@ r2 = Print(arr2);";
         [Category("Built in Functions")]
         public void TV_1467348_Rank()
         {
-            string code = @"r1 = Rank(); //nullr2 = Rank(1);//0r3 = Rank({ });//1r4 = Rank({ {  } });//2r5 = Rank({ { ""123"" } });//2               ";
+            string code = @"
+r1 = Rank(); //null
+r2 = Rank(1);//0
+r3 = Rank({ });//1
+r4 = Rank({ {  } });//2
+r5 = Rank({ { ""123"" } });//2
+               ";
             thisTest.RunScriptSource(code);
             //thisTest.SetErrorMessage("1467348 - Language: Rank(3) should return 0");
             thisTest.Verify("r1", null);
@@ -1985,7 +2091,30 @@ r2 = Print(arr2);";
         [Category("Built in Functions")]
         public void TV_1467322_CountTrue_1()
         {
-            string code = @"                a = { { }, true, false };//1b = { 1, true };//1c = { ""c"" };//0d = { 0 };//0e = { { true }, true }; //2f = { };//0g = 1; //0h = null; //nulli = { { } }; //0j = { null }; //0k = ""string"";//0ra = CountTrue(a);rb = CountTrue(b);rc = CountTrue(c);rd = CountTrue(d);re = CountTrue(e);rf = CountTrue(f);rg = CountTrue(g);rh = CountTrue(h);ri = CountTrue(i);rj = CountTrue(j);rk = CountTrue(k);               ";
+            string code = @"
+                a = { { }, true, false };//1
+b = { 1, true };//1
+c = { ""c"" };//0
+d = { 0 };//0
+e = { { true }, true }; //2
+f = { };//0
+g = 1; //0
+h = null; //null
+i = { { } }; //0
+j = { null }; //0
+k = ""string"";//0
+ra = CountTrue(a);
+rb = CountTrue(b);
+rc = CountTrue(c);
+rd = CountTrue(d);
+re = CountTrue(e);
+rf = CountTrue(f);
+rg = CountTrue(g);
+rh = CountTrue(h);
+ri = CountTrue(i);
+rj = CountTrue(j);
+rk = CountTrue(k);
+               ";
             thisTest.RunScriptSource(code);
             thisTest.SetErrorMessage("1467420 - REV:4495 When passing in a single value in a built-in function which takes in an array, the single value should be upgraded to one dimension array");
             thisTest.Verify("ra", 1);
@@ -2005,7 +2134,21 @@ r2 = Print(arr2);";
         [Category("Built in Functions")]
         public void TV_1467322_CountTrue_2()
         {
-            string code = @"a = { { }, true, false };//1b = { 1, true };//1c = { ""c"" };//0d = { 0 };//0e = { { true }, true }; //2f = { };//0g = 1; //0h = null; //nulli = { { } }; //0j = { null }; //0k = ""string"";//0arr = {a,b,c,d,e,f,g,h,i,j,k};r = CountTrue(arr);               ";
+            string code = @"
+a = { { }, true, false };//1
+b = { 1, true };//1
+c = { ""c"" };//0
+d = { 0 };//0
+e = { { true }, true }; //2
+f = { };//0
+g = 1; //0
+h = null; //null
+i = { { } }; //0
+j = { null }; //0
+k = ""string"";//0
+arr = {a,b,c,d,e,f,g,h,i,j,k};
+r = CountTrue(arr);
+               ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 4);
         }
@@ -2014,7 +2157,33 @@ r2 = Print(arr2);";
         [Category("Built in Functions")]
         public void TV_1467322_CountTrue_ModifierStack()
         {
-            string code = @"a = { { }, true, false };//1b = { 1, true };//1c = { ""c"" };//0d = { 0 };//0e = { { true }, true }; //2f = { };//0g = 1; //0h = null; //nulli = { { } }; //0j = { null }; //0k = ""string"";//0r = {     CountTrue(a) =>ra;     CountTrue(b)=>rb ;     CountTrue(c)=>rc;     CountTrue(d)=>rd;     CountTrue(e)=>re;     CountTrue(f)=>rf;     CountTrue(g)=>rg;     CountTrue(h)=>rh;     CountTrue(i)=>ri;     CountTrue(j)=>rj;     CountTrue(k)=>rk;}               ";
+            string code = @"
+a = { { }, true, false };//1
+b = { 1, true };//1
+c = { ""c"" };//0
+d = { 0 };//0
+e = { { true }, true }; //2
+f = { };//0
+g = 1; //0
+h = null; //null
+i = { { } }; //0
+j = { null }; //0
+k = ""string"";//0
+r = 
+{
+     CountTrue(a) =>ra;
+     CountTrue(b)=>rb ;
+     CountTrue(c)=>rc;
+     CountTrue(d)=>rd;
+     CountTrue(e)=>re;
+     CountTrue(f)=>rf;
+     CountTrue(g)=>rg;
+     CountTrue(h)=>rh;
+     CountTrue(i)=>ri;
+     CountTrue(j)=>rj;
+     CountTrue(k)=>rk;
+}
+               ";
             thisTest.RunScriptSource(code);
             thisTest.SetErrorMessage("1467420 - REV:4495 When passing in a single value in a built-in function which takes in an array, the single value should be upgraded to one dimension array");
             thisTest.Verify("ra", 1);
@@ -2035,7 +2204,12 @@ r2 = Print(arr2);";
         public void TV_1467348_Rank_2()
         {
             String code =
-@"a = Rank(1);a1 = Rank({ });a2 = Rank({ { } });a3 = Rank({ 1 });a4 = Rank({ { { 1 } } });";
+@"a = Rank(1);
+a1 = Rank({ });
+a2 = Rank({ { } });
+a3 = Rank({ 1 });
+a4 = Rank({ { { 1 } } });
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", 0);
             thisTest.Verify("a1", 1);
@@ -2049,7 +2223,28 @@ r2 = Print(arr2);";
         public void TV_1467350_Flatten()
         {
             String code =
-@"a = {};b = 1;c = {{}};d = {{{}}};e = {1,2,{3,4}};f = {null};g = {{null}};h = {null,{1}};i = {""1234"", true};j = {true,{},null};fa = Flatten(a);//{}fb = Flatten(b);//{1}fc = Flatten(c);//{}fd = Flatten(d);//{}fe = Flatten(e);//{1,2,3,4}ff = Flatten(f);//{}fg = Flatten(g);//{}fh = Flatten(h);//{1}fi = Flatten(i);//{""1234"", true}fj = Flatten(j);//{true};";
+@"
+a = {};
+b = 1;
+c = {{}};
+d = {{{}}};
+e = {1,2,{3,4}};
+f = {null};
+g = {{null}};
+h = {null,{1}};
+i = {""1234"", true};
+j = {true,{},null};
+fa = Flatten(a);//{}
+fb = Flatten(b);//{1}
+fc = Flatten(c);//{}
+fd = Flatten(d);//{}
+fe = Flatten(e);//{1,2,3,4}
+ff = Flatten(f);//{}
+fg = Flatten(g);//{}
+fh = Flatten(h);//{1}
+fi = Flatten(i);//{""1234"", true}
+fj = Flatten(j);//{true};
+";
             thisTest.RunScriptSource(code);
             thisTest.SetErrorMessage("1467350 - IDE: t = Faltten(3), the output of t is \"t = {Value not yest supported for tracking}\"");
             thisTest.SetErrorMessage("1467420 - REV:4495 When passing in a single value in a built-in function which takes in an array, the single value should be upgraded to one dimension array");
@@ -2078,7 +2273,18 @@ r2 = Print(arr2);";
         public void T069_IsRectangular_DataType()
         {
             String code =
-@"a = {1};b = {1,2};c = {};d = {{},{}};e = 1;ra = IsRectangular(a);rb = IsRectangular(b);rc = IsRectangular(c);rd = IsRectangular(d);re = IsRectangular(e);";
+@"
+a = {1};
+b = {1,2};
+c = {};
+d = {{},{}};
+e = 1;
+ra = IsRectangular(a);
+rb = IsRectangular(b);
+rc = IsRectangular(c);
+rd = IsRectangular(d);
+re = IsRectangular(e);
+";
             thisTest.RunScriptSource(code);
             Object v1 = null;
             thisTest.Verify("ra", false);
@@ -2093,7 +2299,9 @@ r2 = Print(arr2);";
         public void T070_1467416_Count_Single()
         {
             String code =
-@"a = Count(1);";
+@"
+a = Count(1);
+";
             string error = "1467416 Count returns null if the input argument is single value ";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("a", 1);
@@ -2103,7 +2311,10 @@ r2 = Print(arr2);";
         [Category("Built in Functions")]
         public void T071_Insert_NegativeIndex01()
         {
-            string code = @"x = {1, 2};y = 3;z = Insert(x, y, -5);";
+            string code = @"
+x = {1, 2};
+y = 3;
+z = Insert(x, y, -5);";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("z", new object[] { 3, null, null, 1, 2 });
@@ -2113,7 +2324,10 @@ r2 = Print(arr2);";
         [Category("Built in Functions")]
         public void T072_Insert_NegativeIndex02()
         {
-            string code = @"x = {1, 2};y = 3;z = Insert(x, y, -1);";
+            string code = @"
+x = {1, 2};
+y = 3;
+z = Insert(x, y, -1);";
             string error = "DNL-1467590 Insert at negative index is giving incorrect result";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("z", new object[] { 1, 2, 3 });
@@ -2123,7 +2337,11 @@ r2 = Print(arr2);";
         [Category("Built in Functions")]
         public void T073_Insert_ShadowCopy()
         {
-            string code = @"x = { 1, 2 };y = { 4, 5 };z = Insert(x, y, 0);y[0] = 100;";
+            string code = @"
+x = { 1, 2 };
+y = { 4, 5 };
+z = Insert(x, y, 0);
+y[0] = 100;";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("z", new object[] { new object[] { 4, 5 }, 1, 2 });
@@ -2133,7 +2351,11 @@ r2 = Print(arr2);";
         [Category("Built in Functions")]
         public void T074_CountTrue()
         {
-            string code = @"C1 = CountTrue(1);// expect C = 0, get C = nullC2 = CountTrue(true);// expect C = 1, get C = null";
+            string code = @"
+C1 = CountTrue(1);
+// expect C = 0, get C = null
+C2 = CountTrue(true);
+// expect C = 1, get C = null";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("C1", 0);
@@ -2144,7 +2366,11 @@ r2 = Print(arr2);";
         [Category("Built in Functions")]
         public void T075_CountFalse()
         {
-            string code = @"C1 = CountFalse(1);// expect C = 0, get C = nullC2 = CountFalse(false);// expect C = 1, get C = null";
+            string code = @"
+C1 = CountFalse(1);
+// expect C = 0, get C = null
+C2 = CountFalse(false);
+// expect C = 1, get C = null";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("C1", 0);
@@ -2155,7 +2381,9 @@ r2 = Print(arr2);";
         [Category("Built in Functions")]
         public void T076_CountSingle()
         {
-            string code = @"a = Count(1);";
+            string code = @"
+a = Count(1);
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("a", 1);
@@ -2166,7 +2394,14 @@ r2 = Print(arr2);";
         public void T077_Defect_1467425_negative_index()
         {
             string code =
-@"x = { 1, 2 };y = 3;z = Insert(x, y, -5);  // expect z = {3, null, null, 1, 2}//            -5  -4    -3   -2  -1// but got warning Index out of range and z = null. ";
+@"
+x = { 1, 2 };
+y = 3;
+z = Insert(x, y, -5);  
+// expect z = {3, null, null, 1, 2}
+//            -5  -4    -3   -2  -1
+// but got warning Index out of range and z = null. 
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             Object n1 = null;
@@ -2178,7 +2413,11 @@ r2 = Print(arr2);";
         public void T077_Defect_1467425_negative_index_2()
         {
             string code =
-@"x = { 1, 2 };y = {3,3};z = Insert(x, y, -1);  ";
+@"
+x = { 1, 2 };
+y = {3,3};
+z = Insert(x, y, -1);  
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             Object n1 = null;
@@ -2190,7 +2429,15 @@ r2 = Print(arr2);";
         public void T077_Defect_1467425_negative_index_3()
         {
             string code =
-@"z;[Imperative]{    x = { 1, 2 };    y = {3,3};    z = Insert(x, y, -1);  }";
+@"
+z;
+[Imperative]
+{
+    x = { 1, 2 };
+    y = {3,3};
+    z = Insert(x, y, -1);  
+}
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             Object n1 = null;
@@ -2202,7 +2449,16 @@ r2 = Print(arr2);";
         public void T077_Defect_1467425_negative_index_4()
         {
             string code =
-@"def foo (){    x = { 1, 2 };    y = {3,3};    z = Insert(x, y, -1);      return = z;}z = foo();";
+@"
+def foo ()
+{
+    x = { 1, 2 };
+    y = {3,3};
+    z = Insert(x, y, -1);  
+    return = z;
+}
+z = foo();
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             Object n1 = null;
@@ -2214,7 +2470,16 @@ r2 = Print(arr2);";
         public void T077_Defect_1467425_negative_index_5()
         {
             string code =
-@"def foo (){    x = { 1, 2 };    y = {3,3};    z = Insert(1..2, 1..2, -1);      return = z;}z = foo();";
+@"
+def foo ()
+{
+    x = { 1, 2 };
+    y = {3,3};
+    z = Insert(1..2, 1..2, -1);  
+    return = z;
+}
+z = foo();
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             Object n1 = null;
@@ -2226,7 +2491,19 @@ r2 = Print(arr2);";
         public void T077_Defect_1467425_negative_index_6()
         {
             string code =
-@"class A{    static def foo ()    {        x = { 1, 2 };        y = {3,3};        z = Insert({1,2}, 1..2, -1);          return = z;    }}z = A.foo();";
+@"
+class A
+{
+    static def foo ()
+    {
+        x = { 1, 2 };
+        y = {3,3};
+        z = Insert({1,2}, 1..2, -1);  
+        return = z;
+    }
+}
+z = A.foo();
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             Object n1 = null;
@@ -2238,7 +2515,13 @@ r2 = Print(arr2);";
         public void BIM31_Sort()
         {
             String code =
-@"a = { 3, 1, 2 };def sorterFunction(a : double, b : int){    return = a > b ? 1 : -1;}sort = Sort(sorterFunction, a);";
+@"a = { 3, 1, 2 };
+def sorterFunction(a : double, b : int)
+{
+    return = a > b ? 1 : -1;
+}
+sort = Sort(sorterFunction, a);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { 1, 2, 3 });
         }
@@ -2248,7 +2531,20 @@ r2 = Print(arr2);";
         public void BIM31_Sort_null()
         {
             String code =
-@"c = { 3, 1, 2,null };def sorterFunction(a : int, b : int){    return = [Imperative]    {        if (a == null)            return = -1;        if (b == null)            return = 1;        return = a > b ? 10 : -10;    }}sort = Sort(sorterFunction, c);";
+@"c = { 3, 1, 2,null };
+def sorterFunction(a : int, b : int)
+{
+    return = [Imperative]
+    {
+        if (a == null)
+            return = -1;
+        if (b == null)
+            return = 1;
+        return = a > b ? 10 : -10;
+    }
+}
+sort = Sort(sorterFunction, c);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { null, 1, 2, 3 });
         }
@@ -2258,7 +2554,20 @@ r2 = Print(arr2);";
         public void BIM31_Sort_duplicate()
         {
             String code =
-@"c = { 3, 1, 2, 2,null };def sorterFunction(a : int, b : int){    return = [Imperative]    {        if (a == null)            return = -1;        if (b == null)            return = 1;        return = a - b;    }}sort = Sort(sorterFunction, c);";
+@"c = { 3, 1, 2, 2,null };
+def sorterFunction(a : int, b : int)
+{
+    return = [Imperative]
+    {
+        if (a == null)
+            return = -1;
+        if (b == null)
+            return = 1;
+        return = a - b;
+    }
+}
+sort = Sort(sorterFunction, c);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { null, 1, 2, 2, 3 });
         }
@@ -2268,7 +2577,18 @@ r2 = Print(arr2);";
         public void BIM31_Sort_Associative()
         {
             String code =
-@"sort;[Associative]{a = { 3, 1, 2 };def sorterFunction(a : double, b : int){    return = a > b ? 1 : -1;}sort = Sort(sorterFunction, a);}";
+@"
+sort;
+[Associative]
+{
+a = { 3, 1, 2 };
+def sorterFunction(a : double, b : int)
+{
+    return = a > b ? 1 : -1;
+}
+sort = Sort(sorterFunction, a);
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { 1, 2, 3 });
         }
@@ -2278,7 +2598,22 @@ r2 = Print(arr2);";
         public void BIM32_Sort_class()
         {
             String code =
-@"class test{a = { 3, 1, 2 };sort;def sorterFunction(a : double, b : int){    return = a > b ? 1 : -1;}def create (){sort = Sort(sorterFunction, a);}}z=test.test();y=z.create();";
+@"
+class test{
+a = { 3, 1, 2 };
+sort;
+def sorterFunction(a : double, b : int)
+{
+    return = a > b ? 1 : -1;
+}
+def create ()
+{
+sort = Sort(sorterFunction, a);
+}
+}
+z=test.test();
+y=z.create();
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { 1, 2, 3 });
         }
@@ -2288,7 +2623,23 @@ r2 = Print(arr2);";
         public void BIM33_Sort_class_2()
         {
             String code =
-@"class test{a = { 3, 1, 2 };sort;def sorterFunction(a : double, b : int){    return = a > b ? 1 : -1;}def create ()    {y=test.test();        sort = Sort(y.sorterFunction, a);}}z=test.test();y=z.create();";
+@"
+class test{
+a = { 3, 1, 2 };
+sort;
+def sorterFunction(a : double, b : int)
+{
+    return = a > b ? 1 : -1;
+}
+def create ()
+    {
+y=test.test();        
+sort = Sort(y.sorterFunction, a);
+}
+}
+z=test.test();
+y=z.create();
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y", new object[] { 1, 2, 3 });
         }
@@ -2298,7 +2649,20 @@ r2 = Print(arr2);";
         public void BIM34_Sort_imperative()
         {
             String code =
-@"sort;a1;[Imperative]{    a1 =  { 3, 1, 2 };   // c = Flatten(a1);def sorterFunction(a : double, b : int){    return = a > b ? 1 : -1;}sort = Sort(sorterFunction,a1);}";
+@"
+sort;
+a1;
+[Imperative]
+{
+    a1 =  { 3, 1, 2 };
+   // c = Flatten(a1);
+def sorterFunction(a : double, b : int)
+{
+    return = a > b ? 1 : -1;
+}
+sort = Sort(sorterFunction,a1);
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { 1, 2, 3 });
         }
@@ -2307,7 +2671,20 @@ r2 = Print(arr2);";
         public void BIM35_Sort_modifierblocks_1467446()
         {//1467446
             String code =
-            @"            sort;            a1;            [Imperative]            {                a1 =  { 3, 1, 2 };               // c = Flatten(a1);            def sorterFunction(a : double, b : int)            {                return = a > b ? 1 : -1;            }            sort = Sort(sorterFunction,a1);            }            ";
+            @"
+            sort;
+            a1;
+            [Imperative]
+            {
+                a1 =  { 3, 1, 2 };
+               // c = Flatten(a1);
+            def sorterFunction(a : double, b : int)
+            {
+                return = a > b ? 1 : -1;
+            }
+            sort = Sort(sorterFunction,a1);
+            }
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { 1, 2, 3 });
         }
@@ -2316,7 +2693,20 @@ r2 = Print(arr2);";
         public void BIM36_Sort_conditional_1467446()
         {//1467446
             String code =
-            @"          def sorterFunction(a : double, b : int)                {                      return =a > b ? 1 : -1;                }                def sorterFunction2(a : double, b : int)                {                      return =a < b ? 1 : -1;                }                sort = { { 3, 1, 3 } => toSort;                false => ascend;                ascend!=false?Sort(sorterFunction, toSort):Sort(sorterFunction2, toSort) => sort;                }            ";
+            @"
+          def sorterFunction(a : double, b : int)
+                {
+                      return =a > b ? 1 : -1;
+                }
+                def sorterFunction2(a : double, b : int)
+                {
+                      return =a < b ? 1 : -1;
+                }
+                sort = { { 3, 1, 3 } => toSort;
+                false => ascend;
+                ascend!=false?Sort(sorterFunction, toSort):Sort(sorterFunction2, toSort) => sort;
+                }
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { 1, 2, 3 });
         }
@@ -2325,7 +2715,29 @@ r2 = Print(arr2);";
         public void BIM37_Sort_nested_blocks_1467446()
         {//1467446
             String code =
-            @"                sort;                a1;                [Associative]                {                [Imperative]                {                [Associative]                {                [Imperative]                {                a1 = { 3, 1, 2 };                // c = Flatten(a1);                def sorterFunction(a : double, b : int)                {                    return = a > b ? 1 : -1;                }                sort = Sort(sorterFunction, a1);                }                }                }                }             ";
+            @"
+                sort;
+                a1;
+                [Associative]
+                {
+                [Imperative]
+                {
+                [Associative]
+                {
+                [Imperative]
+                {
+                a1 = { 3, 1, 2 };
+                // c = Flatten(a1);
+                def sorterFunction(a : double, b : int)
+                {
+                    return = a > b ? 1 : -1;
+                }
+                sort = Sort(sorterFunction, a1);
+                }
+                }
+                }
+                } 
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { 1, 2, 3 });
         }
@@ -2334,7 +2746,29 @@ r2 = Print(arr2);";
         public void BIM38_Sort_nested_blocks_1467446_2()
         {//1467446
             String code =
-            @"                sort;                a1;                [Imperative]                {                [Associative]                {                [Imperative]                {                [Associative]                {                a1 = { 3, 1, 2 };                // c = Flatten(a1);                def sorterFunction(a : double, b : int)                {                    return = a > b ? 1 : -1;                }                sort = Sort(sorterFunction, a1);                }                }                }                }             ";
+            @"
+                sort;
+                a1;
+                [Imperative]
+                {
+                [Associative]
+                {
+                [Imperative]
+                {
+                [Associative]
+                {
+                a1 = { 3, 1, 2 };
+                // c = Flatten(a1);
+                def sorterFunction(a : double, b : int)
+                {
+                    return = a > b ? 1 : -1;
+                }
+                sort = Sort(sorterFunction, a1);
+                }
+                }
+                }
+                } 
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { 1, 2, 3 });
         }
@@ -2343,7 +2777,22 @@ r2 = Print(arr2);";
         public void BIM39_Sort_multiarray_1467446()
         {//1467446
             String code =
-            @"                sort;                a1;                a1 = { { 4, 2, 3 }, { 2, 5, 1 }, { 8, 4, 6 } };                // c = Flatten(a1);                def sorterFunction(a : int, b : int)                {                    return = a > b ? 1 : -1;                }                def foo(a : int[])                {                    sort = Sort(sorterFunction, a);                    return = sort;                }                d = foo(a1);            ";
+            @"
+                sort;
+                a1;
+                a1 = { { 4, 2, 3 }, { 2, 5, 1 }, { 8, 4, 6 } };
+                // c = Flatten(a1);
+                def sorterFunction(a : int, b : int)
+                {
+                    return = a > b ? 1 : -1;
+                }
+                def foo(a : int[])
+                {
+                    sort = Sort(sorterFunction, a);
+                    return = sort;
+                }
+                d = foo(a1);
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { new object[] { 2, 3, 4 }, new object[] { 1, 2, 5 }, new object[] { 4, 6, 8 } });
         }
@@ -2352,7 +2801,22 @@ r2 = Print(arr2);";
         public void BIM40_Sort_multiarray_1467446_2()
         {//1467446
             String code =
-            @"                sort;                a1;                a1 = {  4, 2, 3 ,2, 5, 1 , 8, 4, 6  };                // c = Flatten(a1);                def sorterFunction(a : int, b : int)                {                    return = a > b ? 1 : -1;                }                def foo(a : int[])                {                    sort = Sort(sorterFunction, a);                    return = sort;                }                d = foo(a1);            ";
+            @"
+                sort;
+                a1;
+                a1 = {  4, 2, 3 ,2, 5, 1 , 8, 4, 6  };
+                // c = Flatten(a1);
+                def sorterFunction(a : int, b : int)
+                {
+                    return = a > b ? 1 : -1;
+                }
+                def foo(a : int[])
+                {
+                    sort = Sort(sorterFunction, a);
+                    return = sort;
+                }
+                d = foo(a1);
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { 1, 2, 2, 3, 4, 4, 5, 6, 8 });
         }
@@ -2361,7 +2825,17 @@ r2 = Print(arr2);";
         public void BIM37_Sort_rangeexpression_1467446()
         {//1467446
             String code =
-            @"          def sorterFunction(a : double, b : double)            {                    return =a > b ? 1 : 0;              }            sort = { (-5..5) => toSort;            Sort(sorterFunction, toSort) => sort2;            }            ";
+            @"
+          def sorterFunction(a : double, b : double)
+            {
+  
+                  return =a > b ? 1 : 0;
+  
+            }
+            sort = { (-5..5) => toSort;
+            Sort(sorterFunction, toSort) => sort2;
+            }
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("toSort", new object[] { -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5 });
         }
@@ -2370,7 +2844,22 @@ r2 = Print(arr2);";
         public void BIM41_Sort_updateinput_1467446()
         {//1467446
             String code =
-            @"          sort;a1;a1 = { { 4, 2, 3 }, { 2, 5, 1 }, { 8, 4, 6 } };def sorterFunction(a : int, b : int){    return = a > b ? 1 : -1;}    def foo(a : int[])    {        sort = Sort(sorterFunction, a);        return = sort;    }sorted= foo(a1);a1 = { { 4, 2, 3 }, { 2, 5, 1 },{ 2,11,7}, { 8, 4, 6 }  };            ";
+            @"
+          sort;
+a1;
+a1 = { { 4, 2, 3 }, { 2, 5, 1 }, { 8, 4, 6 } };
+def sorterFunction(a : int, b : int)
+{
+    return = a > b ? 1 : -1;
+}
+    def foo(a : int[])
+    {
+        sort = Sort(sorterFunction, a);
+        return = sort;
+    }
+sorted= foo(a1);
+a1 = { { 4, 2, 3 }, { 2, 5, 1 },{ 2,11,7}, { 8, 4, 6 }  };
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sorted", new object[] { new object[] { 2, 3, 4 }, new object[] { 1, 2, 5 }, new object[] { 2, 7, 11 }, new object[] { 4, 6, 8 } });
         }
@@ -2379,7 +2868,31 @@ r2 = Print(arr2);";
         public void BIM42_Sort_imperative_while_1467446()
         {//1467446
             String code =
-            @" sort;a1;a1 = { { 4, 2, 3 }, { 2, 5, 1 }, { 8, 4, 6 } };def sorterFunction(a : int, b : int){    return = a > b ? 1 : -1;}d = { };[Imperative]{    def foo(a : int[])    {        sort = Sort(sorterFunction, a);        return = sort;    }    dim = Count(a1);    i = 0;    while(i < dim)    {        d[i ] = foo(a1[i ]);        i = i + 1;    }}            ";
+            @"
+ sort;
+a1;
+a1 = { { 4, 2, 3 }, { 2, 5, 1 }, { 8, 4, 6 } };
+def sorterFunction(a : int, b : int)
+{
+    return = a > b ? 1 : -1;
+}
+d = { };
+[Imperative]
+{
+    def foo(a : int[])
+    {
+        sort = Sort(sorterFunction, a);
+        return = sort;
+    }
+    dim = Count(a1);
+    i = 0;
+    while(i < dim)
+    {
+        d[i ] = foo(a1[i ]);
+        i = i + 1;
+    }
+}
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", new object[] { new object[] { 2, 3, 4 }, new object[] { 1, 2, 5 }, new object[] { 4, 6, 8 } });
         }
@@ -2388,7 +2901,10 @@ r2 = Print(arr2);";
         public void BIM45_RemoveDuplicates_1467447()
         {//1467446
             String code =
-            @"           input = { true, true, { true, false }, { true,false } };            removeDuplicatesSetInsert = RemoveDuplicates(input);             ";
+            @"
+           input = { true, true, { true, false }, { true,false } };
+            removeDuplicatesSetInsert = RemoveDuplicates(input); 
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("removeDuplicatesSetInsert", new object[] { true, new object[] { true, false } });
         }
@@ -2397,7 +2913,10 @@ r2 = Print(arr2);";
         public void BIM46_RemoveDuplicates_1467447()
         {//1467446
             String code =
-            @"           input = {  { false,true }, { true,false } };            removeDuplicatesSetInsert = RemoveDuplicates(input);             ";
+            @"
+           input = {  { false,true }, { true,false } };
+            removeDuplicatesSetInsert = RemoveDuplicates(input); 
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("removeDuplicatesSetInsert", new object[] { new object[] { false, true }, new object[] { true, false } });
         }
@@ -2406,7 +2925,10 @@ r2 = Print(arr2);";
         public void BIM47_RemoveDuplicates_1467447()
         {//1467446
             String code =
-            @"           input = {  { false,true , true,false } };            removeDuplicatesSetInsert = RemoveDuplicates(input);             ";
+            @"
+           input = {  { false,true , true,false } };
+            removeDuplicatesSetInsert = RemoveDuplicates(input); 
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("removeDuplicatesSetInsert", new object[] { new object[] { false, true, true, false } });
         }
@@ -2415,7 +2937,10 @@ r2 = Print(arr2);";
         public void BIM48_RemoveDuplicates_1467447()
         {//1467446
             String code =
-            @"            input =   { true ,false, true,false };            removeDuplicatesSetInsert = RemoveDuplicates(input);             ";
+            @"
+            input =   { true ,false, true,false };
+            removeDuplicatesSetInsert = RemoveDuplicates(input); 
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("removeDuplicatesSetInsert", new object[] { true, false });
         }
@@ -2424,7 +2949,10 @@ r2 = Print(arr2);";
         public void BIM50_RemoveDuplicates_1467447()
         {//1467446
             String code =
-            @"            input =  { true ,false, true,false,null };            removeDuplicatesSetInsert = RemoveDuplicates(input);             ";
+            @"
+            input =  { true ,false, true,false,null };
+            removeDuplicatesSetInsert = RemoveDuplicates(input); 
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("removeDuplicatesSetInsert", new object[] { true, false, null });
         }
@@ -2433,7 +2961,10 @@ r2 = Print(arr2);";
         public void BIM51_RemoveDuplicates_1467447()
         {//1467446
             String code =
-            @"            input = { 1,-1,3,6,{1} };            removeDuplicatesSetInsert = RemoveDuplicates(input);             ";
+            @"
+            input = { 1,-1,3,6,{1} };
+            removeDuplicatesSetInsert = RemoveDuplicates(input); 
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("removeDuplicatesSetInsert", new object[] { 1, -1, 3, 6, new object[] { 1 } });
         }
@@ -2442,7 +2973,10 @@ r2 = Print(arr2);";
         public void BIM52_RemoveDuplicates_1467447()
         {//1467446
             String code =
-            @"            input = { 1,-1,3,6,0,{1} };            removeDuplicatesSetInsert = RemoveDuplicates(input);             ";
+            @"
+            input = { 1,-1,3,6,0,{1} };
+            removeDuplicatesSetInsert = RemoveDuplicates(input); 
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("removeDuplicatesSetInsert", new object[] { 1, -1, 3, 6, 0, new object[] { 1 } });
         }
@@ -2451,7 +2985,13 @@ r2 = Print(arr2);";
         public void BIM53_RemoveDuplicates_geoemtry_1467447()
         {//1467446
             String code =
-            @"            import(""ProtoGeometry.dll"");            pt = Point.ByCoordinates(1, 1, 1);            input = { pt, pt};            removeDuplicatesSetInsert = RemoveDuplicates(input);            count = Count(removeDuplicatesSetInsert);            ";
+            @"
+            import(""ProtoGeometry.dll"");
+            pt = Point.ByCoordinates(1, 1, 1);
+            input = { pt, pt};
+            removeDuplicatesSetInsert = RemoveDuplicates(input);
+            count = Count(removeDuplicatesSetInsert);
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("count", 1);
         }
@@ -2460,7 +3000,14 @@ r2 = Print(arr2);";
         public void BIM54_RemoveDuplicates_imperative_1467447()
         {//1467446
             String code =
-            @"            result;            [Imperative]            {                a = { true, true, { false, true } };                result = RemoveDuplicates(a); //            }            ";
+            @"
+            result;
+            [Imperative]
+            {
+                a = { true, true, { false, true } };
+                result = RemoveDuplicates(a); //
+            }
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result", new object[] { true, new object[] { false, true } });
         }
@@ -2469,7 +3016,10 @@ r2 = Print(arr2);";
         public void BIM55_RemoveDuplicates_modifier_1467447()
         {//1467446
             String code =
-            @"            a = { { true, true, { false, true } } => a1;            RemoveDuplicates(a1) => a2; }            ";
+            @"
+            a = { { true, true, { false, true } } => a1;
+            RemoveDuplicates(a1) => a2; }
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { true, new object[] { false, true } });
         }
@@ -2479,7 +3029,9 @@ r2 = Print(arr2);";
         public void BIM23_LoadCSV()
         {
             String code =
-@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";b = ImportFromCSV(a);";
+@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
+b = ImportFromCSV(a);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { new object[] { 1.0, 2.0, 3.0, 4.0, 5.0 }, new object[] { 2.0, 3.0, 4.0, 5.0, 6.0 }, new object[] { 3.0, 4.0, 5.0, 6.0, 7.0 } }
 );
@@ -2490,7 +3042,9 @@ r2 = Print(arr2);";
         public void BIM23_LoadCSV_2()
         {
             String code =
-@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";b = ImportFromCSV(a);";
+@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
+b = ImportFromCSV(a);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { new object[] { 1.0, 2.0, 3.0, 4.0, 5.0 }, new object[] { 2.0, 3.0, 4.0, 5.0, 6.0 }, new object[] { 3.0, 4.0, 5.0, 6.0, 7.0 } }
 );
@@ -2501,7 +3055,11 @@ r2 = Print(arr2);";
         public void BIM23_LoadCSV_replicated_3()
         {
             String code =
-@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";b = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";c = { a, b };d = ImportFromCSV(c);";
+@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
+b = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
+c = { a, b };
+d = ImportFromCSV(c);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", new object[] { new object[] { new object[] { 1.0, 2.0, 3.0, 4.0, 5.0 }, new object[] { 2.0, 3.0, 4.0, 5.0, 6.0 }, new object[] { 3.0, 4.0, 5.0, 6.0, 7.0 } }, new object[] { new object[] { 11.0, 12.0, 13.0, 14.0, 15.0 }, new object[] { 12.0, 13.0, 14.0, 15.0, 16.0 }, new object[] { 13.0, 14.0, 15.0, 16.0, 17.0 } } }
 );
@@ -2512,7 +3070,11 @@ r2 = Print(arr2);";
         public void BIM23_LoadCSV_replicated_4()
         {
             String code =
-@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";b = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";c = { a, b };d = ImportFromCSV(c);";
+@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
+b = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
+c = { a, b };
+d = ImportFromCSV(c);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", new object[] { new object[] { new object[] { 1.0, 2.0, 3.0, 4.0, 5.0 }, new object[] { 2.0, 3.0, 4.0, 5.0, 6.0 }, new object[] { 3.0, 4.0, 5.0, 6.0, 7.0 } }, new object[] { new object[] { 11.0, 12.0, 13.0, 14.0, 15.0 }, new object[] { 12.0, 13.0, 14.0, 15.0, 16.0 }, new object[] { 13.0, 14.0, 15.0, 16.0, 17.0 } } }
 );
@@ -2523,7 +3085,11 @@ r2 = Print(arr2);";
         public void BIM23_LoadCSV_replicated_5()
         {
             String code =
-@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";b = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";c = { a, b };d = ImportFromCSV(c);";
+@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
+b = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
+c = { a, b };
+d = ImportFromCSV(c);
+";
             string err = "";
             string path = @"C:\designscript\autodeskresearch\trunk\DesignScript\Prototype\Scripts\TD\";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, err, path);
@@ -2536,7 +3102,16 @@ r2 = Print(arr2);";
         public void BIM23_LoadCSV_imperative_5()
         {
             String code =
-@"d;[Imperative]{a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";b = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";c = { a, b };d = ImportFromCSV(c);}";
+@"
+d;
+[Imperative]
+{
+a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
+b = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
+c = { a, b };
+d = ImportFromCSV(c);
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", new object[] { new object[] { new object[] { 1.0, 2.0, 3.0, 4.0, 5.0 }, new object[] { 2.0, 3.0, 4.0, 5.0, 6.0 }, new object[] { 3.0, 4.0, 5.0, 6.0, 7.0 } }, new object[] { new object[] { 11.0, 12.0, 13.0, 14.0, 15.0 }, new object[] { 12.0, 13.0, 14.0, 15.0, 16.0 }, new object[] { 13.0, 14.0, 15.0, 16.0, 17.0 } } }
 );
@@ -2547,7 +3122,22 @@ r2 = Print(arr2);";
         public void BIM23_LoadCSV_nested_imperative_6()
         {
             String code =
-@"d;[Associative]{[Imperative]{[Associative]{a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";b = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";c = { a, b };d = ImportFromCSV(c);}}}";
+@"
+d;
+[Associative]
+{
+[Imperative]
+{
+[Associative]
+{
+a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
+b = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
+c = { a, b };
+d = ImportFromCSV(c);
+}
+}
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", new object[] { new object[] { new object[] { 1.0, 2.0, 3.0, 4.0, 5.0 }, new object[] { 2.0, 3.0, 4.0, 5.0, 6.0 }, new object[] { 3.0, 4.0, 5.0, 6.0, 7.0 } }, new object[] { new object[] { 11.0, 12.0, 13.0, 14.0, 15.0 }, new object[] { 12.0, 13.0, 14.0, 15.0, 16.0 }, new object[] { 13.0, 14.0, 15.0, 16.0, 17.0 } } }
 );
@@ -2558,7 +3148,10 @@ r2 = Print(arr2);";
         public void BIM24_RemoveIfNot()
         {
             String code =
-@"a = { true,null,false,true};b = RemoveIfNot(a, ""bool"");";
+@"
+a = { true,null,false,true};
+b = RemoveIfNot(a, ""bool"");
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { true, false, true }
 );
@@ -2569,7 +3162,14 @@ r2 = Print(arr2);";
         public void BIM24_RemoveIfNot_Imperative()
         {
             String code =
-@"b;[Imperative]{    a = { true,null,false,true};    b = RemoveIfNot(a, ""bool"");}";
+@"
+b;
+[Imperative]
+{
+    a = { true,null,false,true};
+    b = RemoveIfNot(a, ""bool"");
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { true, false, true }
 );
@@ -2580,7 +3180,12 @@ r2 = Print(arr2);";
         public void BIM25_RemoveIfNot_variable()
         {
             String code =
-@"b;    a = { true,null,false,true};    c=""bool"";    b = RemoveIfNot(a, c);";
+@"
+b;
+    a = { true,null,false,true};
+    c=""bool"";
+    b = RemoveIfNot(a, c);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { true, false, true }
 );
@@ -2591,7 +3196,12 @@ r2 = Print(arr2);";
         public void BIM26_RemoveIfNot_int()
         {
             String code =
-@"b;    a = { true,null,false,true};    c=""int"";    b = RemoveIfNot(a, c);";
+@"
+b;
+    a = { true,null,false,true};
+    c=""int"";
+    b = RemoveIfNot(a, c);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { }
 );
@@ -2602,7 +3212,12 @@ r2 = Print(arr2);";
         public void BIM26_RemoveIfNot_double()
         {
             String code =
-@"b;    a = { 1.0,null,1,2};    c=""double"";    b = RemoveIfNot(a, c);";
+@"
+b;
+    a = { 1.0,null,1,2};
+    c=""double"";
+    b = RemoveIfNot(a, c);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { 1.0 }
 );
@@ -2613,7 +3228,12 @@ r2 = Print(arr2);";
         public void BIM27_RemoveIfNot_heterogenous()
         {
             String code =
-@"b;    a = { true,null,{true},false};    c=""array"";    b = RemoveIfNot(a, c);";
+@"
+b;
+    a = { true,null,{true},false};
+    c=""array"";
+    b = RemoveIfNot(a, c);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { new object[] { true } }
 );
@@ -2623,7 +3243,11 @@ r2 = Print(arr2);";
         public void BIM27_1467445_Transpose()
         {
             String code =
-@"a = { 1, { 2, 3 }, { 4, 5, { 6, 7 } } };b = Transpose(a);c = Transpose(Transpose(a));";
+@"
+a = { 1, { 2, 3 }, { 4, 5, { 6, 7 } } };
+b = Transpose(a);
+c = Transpose(Transpose(a));
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { 1, new object[] { 2, 3 }, new object[] { 4, 5, new object[] { 6, 7 } } });
             thisTest.Verify("b", new object[] { new object[] { 1, 2, 4 }, new object[] { null, 3, 5 }, new object[] { null, null, new object[] { 6, 7 } } });
@@ -2634,7 +3258,11 @@ r2 = Print(arr2);";
         public void BIM27_1467445_Transpose_2()
         {
             String code =
-@"a = { 1, { 2, 3 }, {  { 6, 7 } } };b = Transpose(a);c = Transpose(Transpose(a));";
+@"
+a = { 1, { 2, 3 }, {  { 6, 7 } } };
+b = Transpose(a);
+c = Transpose(Transpose(a));
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { 1, new object[] { 2, 3 }, new object[] { new object[] { 6, 7 } } });
             thisTest.Verify("b", new object[] { new object[] { 1, 2, new object[] { 6, 7 } }, new object[] { null, 3, null } });
@@ -2645,7 +3273,11 @@ r2 = Print(arr2);";
         public void BIM27_1467445_Transpose_3()
         {
             String code =
-@"a = { 1, { 2, 3 }, { { { 6, 7 } } } };b = Transpose(a);c = Transpose(Transpose(a));";
+@"
+a = { 1, { 2, 3 }, { { { 6, 7 } } } };
+b = Transpose(a);
+c = Transpose(Transpose(a));
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { 1, new object[] { 2, 3 }, new object[] { new object[] { new object[] { 6, 7 } } } });
             thisTest.Verify("b", new object[] { new object[] { 1, 2, new object[] { new object[] { 6, 7 } } }, new object[] { null, 3, null } });
@@ -2655,7 +3287,11 @@ r2 = Print(arr2);";
         public void BIM27_1467445_Transpose_4()
         {
             String code =
-@"a = 4;b = Transpose(a);c = Transpose(Transpose(a));";
+@"
+a = 4;
+b = Transpose(a);
+c = Transpose(Transpose(a));
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", 4);
             thisTest.Verify("b", 4);
@@ -2666,7 +3302,11 @@ r2 = Print(arr2);";
         public void BIM27_1467445_Transpose_5()
         {
             String code =
-@"a = null;b = Transpose(a);c = Transpose(Transpose(a));";
+@"
+a = null;
+b = Transpose(a);
+c = Transpose(Transpose(a));
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
             thisTest.Verify("b", null);
@@ -2677,7 +3317,14 @@ r2 = Print(arr2);";
         public void BIM27_1467445_Transpose_6()
         {
             String code =
-@"def foo(){    return = { 1, { 2, 3 }, 4 };}b = Transpose(foo());c = Transpose(Transpose(foo()));";
+@"
+def foo()
+{
+    return = { 1, { 2, 3 }, 4 };
+}
+b = Transpose(foo());
+c = Transpose(Transpose(foo()));
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { new object[] { 1, 2, 4 }, new object[] { null, 3, null } });
             thisTest.Verify("c", new object[] { new object[] { 1, null }, new object[] { 2, 3 }, new object[] { 4, null } });
@@ -2687,7 +3334,16 @@ r2 = Print(arr2);";
         public void BIM27_1467445_Transpose_7()
         {
             String code =
-@" a = { 1, { 2, 3 }, { 4, 5, { 6, 7 } } }; b;c; [Imperative] {    b = Transpose(a);    c = Transpose(Transpose(a)); }";
+@"
+ a = { 1, { 2, 3 }, { 4, 5, { 6, 7 } } };
+ b;
+c;
+ [Imperative]
+ {
+    b = Transpose(a);
+    c = Transpose(Transpose(a));
+ }
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { 1, new object[] { 2, 3 }, new object[] { 4, 5, new object[] { 6, 7 } } });
             thisTest.Verify("b", new object[] { new object[] { 1, 2, 4 }, new object[] { null, 3, 5 }, new object[] { null, null, new object[] { 6, 7 } } });
@@ -2698,7 +3354,14 @@ r2 = Print(arr2);";
         public void T068_Abs_1()
         {
             String code =
-@" import (""Math.dll""); a = -1.5; b = { -3, 0, -4.5 }; a1 = Math.Abs( a ) ; b1 = Math.Abs( b ) ; c1 = Math.Abs( -2..3 ) ;";
+@"
+ import (""Math.dll"");
+ a = -1.5;
+ b = { -3, 0, -4.5 };
+ a1 = Math.Abs( a ) ;
+ b1 = Math.Abs( b ) ;
+ c1 = Math.Abs( -2..3 ) ;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 1.5);
             thisTest.Verify("b1", new object[] { 3, 0, 4.5 });
@@ -2768,7 +3431,14 @@ t7 = foo(2);
         public void T068_Cosh_1()
         {
             String code =
-@" import (""Math.dll""); a = -1.5; b = { -3, 0, -4.5 }; a1 = Math.Cosh( a ) ; b1 = Math.Cosh( b ) ; c1 = Math.Cosh( -2..3 ) ;";
+@"
+ import (""Math.dll"");
+ a = -1.5;
+ b = { -3, 0, -4.5 };
+ a1 = Math.Cosh( a ) ;
+ b1 = Math.Cosh( b ) ;
+ c1 = Math.Cosh( -2..3 ) ;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 2.3524096152432472);
             thisTest.Verify("b1", new object[] { 10.067661995777765, 1.0, 45.014120148530026 });
@@ -2838,7 +3508,11 @@ t7 = foo(2);
         public void T068_DivRem_1()
         {
             String code =
-@" import (""Math.dll""); x = 0; a1 = Math.DivRem( 1000, 300 ) ;";
+@"
+ import (""Math.dll"");
+ x = 0;
+ a1 = Math.DivRem( 1000, 300 ) ;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 100);
         }
@@ -2909,7 +3583,11 @@ t7 = foo();
         public void T068_IEEERemainder_1()
         {
             String code =
-@"import (""Math.dll"");a1 = Math.IEEERemainder( 3, 2 ) ;a2 = Math.IEEERemainder( 3..4, 2..3 ) ;";
+@"
+import (""Math.dll"");
+a1 = Math.IEEERemainder( 3, 2 ) ;
+a2 = Math.IEEERemainder( 3..4, 2..3 ) ;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", -1.0);
             thisTest.Verify("a2", new Object[] { -1.0, 1.0 });
@@ -2978,7 +3656,17 @@ t7 = foo();
         public void T068_Max_1()
         {
             String code =
-@"import (""Math.dll"");a1 = Math.Max( 1, 1.0 ) ;b1 = Math.Max( 2.5, 2.50 ) ;c1 = Math.Max( -2, -2.0 ) ;d1 = Math.Max( -2, -2.0 ) ;t1 = Math.Max( -2, 4.5 ) ;t2 = Math.Max( -2, -2.1 ) ;t3 = Math.Max( -2, -2.1 ) ;t4 = Math.Max( -2..2, -2.1..2.1 ) ;";
+@"
+import (""Math.dll"");
+a1 = Math.Max( 1, 1.0 ) ;
+b1 = Math.Max( 2.5, 2.50 ) ;
+c1 = Math.Max( -2, -2.0 ) ;
+d1 = Math.Max( -2, -2.0 ) ;
+t1 = Math.Max( -2, 4.5 ) ;
+t2 = Math.Max( -2, -2.1 ) ;
+t3 = Math.Max( -2, -2.1 ) ;
+t4 = Math.Max( -2..2, -2.1..2.1 ) ;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 1.0);
             thisTest.Verify("b1", 2.5);
@@ -3055,7 +3743,16 @@ t8 = 0;
         public void T068_Min_1()
         {
             String code =
-@"import (""Math.dll"");a1 = Math.Min( 1, 1.0 ) ;b1 = Math.Min( 2.5, 2.50 ) ;c1 = Math.Min( -2, -2.0 ) ;d1 = Math.Min( -2, -2.0 ) ;t1 = Math.Min( -2, 4.5 ) ;t2 = Math.Min( -2, -2.1 ) ;t4 = Math.Min( -2..2, -2.1..2.1 ) ;";
+@"
+import (""Math.dll"");
+a1 = Math.Min( 1, 1.0 ) ;
+b1 = Math.Min( 2.5, 2.50 ) ;
+c1 = Math.Min( -2, -2.0 ) ;
+d1 = Math.Min( -2, -2.0 ) ;
+t1 = Math.Min( -2, 4.5 ) ;
+t2 = Math.Min( -2, -2.1 ) ;
+t4 = Math.Min( -2..2, -2.1..2.1 ) ;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 1.0);
             thisTest.Verify("b1", 2.5);
@@ -3131,7 +3828,16 @@ t8 = 0;
         public void T068_Pow_1()
         {
             String code =
-@"import (""Math.dll"");a1 = Math.Pow( 2, 2 ) ;b1 = Math.Pow( -2, -2 ) ;c1 = Math.Pow( 2.5, -2 ) ;d1 = Math.Pow( -2.5, -2.5 ) ;t1 = Math.Pow( -2, 0 ) ;t2 = Math.Pow( 0, -1 ) ;t4 = Math.Pow( -2..2, -2..2 ) ;";
+@"
+import (""Math.dll"");
+a1 = Math.Pow( 2, 2 ) ;
+b1 = Math.Pow( -2, -2 ) ;
+c1 = Math.Pow( 2.5, -2 ) ;
+d1 = Math.Pow( -2.5, -2.5 ) ;
+t1 = Math.Pow( -2, 0 ) ;
+t2 = Math.Pow( 0, -1 ) ;
+t4 = Math.Pow( -2..2, -2..2 ) ;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 4.0);
             thisTest.Verify("b1", 0.25);
@@ -3207,7 +3913,17 @@ t8 = 0;
         public void T068_Round_1()
         {
             String code =
-@"import (""Math.dll"");a1 = Math.Round( 2.04, 1 ) ;b1 = Math.Round( -2, 2 ) ;c1 = Math.Round( -2.578, 2 ) ;d1 = Math.Round( 2, 2 ) ;t1 = Math.Round( -2, 0 ) ;t2 = Math.Round( 0.1, 2 ) ;t4 = Math.Round( {-2.56,0.1,2.444} , {1, 2, 3} ) ;t5 = Math.Round( 2.456, -2 ) ;";
+@"
+import (""Math.dll"");
+a1 = Math.Round( 2.04, 1 ) ;
+b1 = Math.Round( -2, 2 ) ;
+c1 = Math.Round( -2.578, 2 ) ;
+d1 = Math.Round( 2, 2 ) ;
+t1 = Math.Round( -2, 0 ) ;
+t2 = Math.Round( 0.1, 2 ) ;
+t4 = Math.Round( {-2.56,0.1,2.444} , {1, 2, 3} ) ;
+t5 = Math.Round( 2.456, -2 ) ;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 2.0);
             thisTest.Verify("b1", -2.0);
@@ -3284,7 +4000,13 @@ t8 = 0;
         public void T068_Round_3()
         {
             String code =
-@"import (""Math.dll"");a1 = Math.Round( 3.45, 1, MidpointRounding.ToEven) ;a2 = Math.Round( 3.45, 1, MidpointRounding.AwayFromZero);a3 = Math.Round( 3.45, MidpointRounding.ToEven) ;a4 = Math.Round( 3.45, MidpointRounding.AwayFromZero);";
+@"
+import (""Math.dll"");
+a1 = Math.Round( 3.45, 1, MidpointRounding.ToEven) ;
+a2 = Math.Round( 3.45, 1, MidpointRounding.AwayFromZero);
+a3 = Math.Round( 3.45, MidpointRounding.ToEven) ;
+a4 = Math.Round( 3.45, MidpointRounding.AwayFromZero);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 3.4);
             thisTest.Verify("a2", 3.5);
@@ -3296,7 +4018,14 @@ t8 = 0;
         public void T068_Sign_1()
         {
             String code =
-@" import (""Math.dll""); a = -1.5; b = { -3, 0, -4.5 }; a1 = Math.Sign( a ) ; b1 = Math.Sign( b ) ; c1 = Math.Sign( -2..3 ) ;";
+@"
+ import (""Math.dll"");
+ a = -1.5;
+ b = { -3, 0, -4.5 };
+ a1 = Math.Sign( a ) ;
+ b1 = Math.Sign( b ) ;
+ c1 = Math.Sign( -2..3 ) ;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", -1);
             thisTest.Verify("b1", new object[] { -1, 0, -1 });
@@ -3366,7 +4095,13 @@ t7 = foo(-2);
         public void T068_Sinh_1()
         {
             String code =
-@" import (""Math.dll""); a = -4.5; b = { -1.5, 0, 13.5 }; a1 = Math.Sinh( a ) ; b1 = Math.Sinh( b ) ;";
+@"
+ import (""Math.dll"");
+ a = -4.5;
+ b = { -1.5, 0, 13.5 };
+ a1 = Math.Sinh( a ) ;
+ b1 = Math.Sinh( b ) ;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", -45.003011151991785);
             thisTest.Verify("b1", new object[] { -2.1292794550948173, 0.0, 364708.18492316519 });
@@ -3376,7 +4111,13 @@ t7 = foo(-2);
         public void T068_Truncate_1()
         {
             String code =
-@" import (""Math.dll""); a = -4.567; b = { -1.5, 0.003, 13.098, 8 }; a1 = Math.Truncate( a ) ; b1 = Math.Truncate( b ) ;";
+@"
+ import (""Math.dll"");
+ a = -4.567;
+ b = { -1.5, 0.003, 13.098, 8 };
+ a1 = Math.Truncate( a ) ;
+ b1 = Math.Truncate( b ) ;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", -4.0);
             thisTest.Verify("b1", new object[] { -1.0, 0.0, 13.0, 8.0 });
@@ -3386,7 +4127,31 @@ t7 = foo(-2);
         public void T068_Rand_1()
         {
             String code =
-@"import (""Math.dll"");b1 = 1 > 0 ? Math.Rand() : 10 ;b2 = 1 > 0 ? Math.Rand(1..2, 2..3) : 10 ;test1 = 0;test2 = 0;c1 = 1;c2 = 2;[Imperative]{    if( b1>=0 && b1<=1 )    {        test1 = 1;    }    for ( i in b2 )    {        if( i>=c1 && i<=c2 )        {            test2 = test2 + 1;        }        c1 = c1+1;        c2 = c2 + 1;   }}";
+@"
+import (""Math.dll"");
+b1 = 1 > 0 ? Math.Rand() : 10 ;
+b2 = 1 > 0 ? Math.Rand(1..2, 2..3) : 10 ;
+test1 = 0;
+test2 = 0;
+c1 = 1;
+c2 = 2;
+[Imperative]
+{
+    if( b1>=0 && b1<=1 )
+    {
+        test1 = 1;
+    }
+    for ( i in b2 )
+    {
+        if( i>=c1 && i<=c2 )
+        {
+            test2 = test2 + 1;
+        }
+        c1 = c1+1;
+        c2 = c2 + 1;
+   }
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test1", 1);
             thisTest.Verify("test2", 2);
@@ -3396,7 +4161,13 @@ t7 = foo(-2);
         public void T068_Factorial_1()
         {
             String code =
-@"import (""Math.dll"");t1 = Math.Factorial(0.9);t2 = Math.Factorial(1.9);t3 = Math.Factorial(1.5);t4 = Math.Factorial(-1.5);";
+@"
+import (""Math.dll"");
+t1 = Math.Factorial(0.9);
+t2 = Math.Factorial(1.9);
+t3 = Math.Factorial(1.5);
+t4 = Math.Factorial(-1.5);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("t1", 1);
             thisTest.Verify("t2", 2);
@@ -3469,7 +4240,33 @@ t8 = Math.Factorial(arr);
         public void T069_Defect_1467556_Sort_Over_Derived_Classes()
         {
             String code =
-@"class Test{    X;    constructor(a)    {        X = a;    }}class MyTest extends Test{    Y;    constructor(a,b)    {        X = a;        Y = b;    }}def sorter(p1:Test,p2:Test) {    return = (p1.X < p2.X) ? -1 : ((p1.X > p2.X) ? 1 : 0);}t1 = Test(1);t2 = MyTest(2,2);a = {t1,t2};b = Sort(sorter,a).X; ";
+@"
+class Test
+{
+    X;
+    constructor(a)
+    {
+        X = a;
+    }
+}
+class MyTest extends Test
+{
+    Y;
+    constructor(a,b)
+    {
+        X = a;
+        Y = b;
+    }
+}
+def sorter(p1:Test,p2:Test) 
+{
+    return = (p1.X < p2.X) ? -1 : ((p1.X > p2.X) ? 1 : 0);
+}
+t1 = Test(1);
+t2 = MyTest(2,2);
+a = {t1,t2};
+b = Sort(sorter,a).X; 
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { 1, 2 });
         }
@@ -3478,7 +4275,33 @@ t8 = Math.Factorial(arr);
         public void T069_Defect_1467556_Sort_Over_Derived_Classes_2()
         {
             String code =
-@"class Test{    X;    constructor(a)    {        X = a;    }}class MyTest extends Test{    Y;    constructor(a,b)    {        X = a;        Y = b;    }}def sorter(p1:Test,p2:Test) {    return = p1.X<=p2.X?true:false;}t1 = Test(1);t2 = MyTest(2,2);a = {t1,t2};b = Sort(sorter,a).X; ";
+@"
+class Test
+{
+    X;
+    constructor(a)
+    {
+        X = a;
+    }
+}
+class MyTest extends Test
+{
+    Y;
+    constructor(a,b)
+    {
+        X = a;
+        Y = b;
+    }
+}
+def sorter(p1:Test,p2:Test) 
+{
+    return = p1.X<=p2.X?true:false;
+}
+t1 = Test(1);
+t2 = MyTest(2,2);
+a = {t1,t2};
+b = Sort(sorter,a).X; 
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.VerifyRuntimeWarningCount(2);
             // This sorter function is invalid. Meaningless to verify the 
@@ -3490,7 +4313,33 @@ t8 = Math.Factorial(arr);
         public void T069_Defect_1467556_Sort_Over_Derived_Classes_3()
         {
             String code =
-@"class Test{    X;    constructor(a)    {        X = a;    }}class MyTest extends Test{    Y;    constructor(a,b)    {        X = a;        Y = b;    }}def sorter(p1:Test,p2:MyTest) {    return = p1.X<=p2.X?1:0;}t1 = Test(1);t2 = MyTest(2,2);a = {t1,t2};b = Sort(sorter,a).X; ";
+@"
+class Test
+{
+    X;
+    constructor(a)
+    {
+        X = a;
+    }
+}
+class MyTest extends Test
+{
+    Y;
+    constructor(a,b)
+    {
+        X = a;
+        Y = b;
+    }
+}
+def sorter(p1:Test,p2:MyTest) 
+{
+    return = p1.X<=p2.X?1:0;
+}
+t1 = Test(1);
+t2 = MyTest(2,2);
+a = {t1,t2};
+b = Sort(sorter,a).X; 
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             // thisTest.VerifyRuntimeWarningCount(3);
             // This sorter function is invalid. Meaningless to verify the 
@@ -3502,7 +4351,14 @@ t8 = Math.Factorial(arr);
         public void T070_Defect_1467466_Sort_Not_Defined_Porperly()
         {
             String code =
-@"a = {3,1,2};def sorterFunction(a:double, b:double){    return = 0;}b = Sort(sorterFunction, a);  ";
+@"
+a = {3,1,2};
+def sorterFunction(a:double, b:double)
+{
+    return = 0;
+}
+b = Sort(sorterFunction, a);  
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             // It is meaningless to verify the result returned from a Sort()
             // function which uses an invalid sorterFunction() to sort an array.
@@ -3513,7 +4369,14 @@ t8 = Math.Factorial(arr);
         public void T070_Defect_1467466_Sort_Not_Defined_Porperly_2()
         {
             String code =
-@"a = {3,1,2};def sorterFunction(a:double, b:double){    return = 1;}b = Sort(sorterFunction, a);  ";
+@"
+a = {3,1,2};
+def sorterFunction(a:double, b:double)
+{
+    return = 1;
+}
+b = Sort(sorterFunction, a);  
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             // It is meaningless to verify the result returned from a Sort()
             // function which uses an invalid sorterFunction() to sort an array.
@@ -3524,7 +4387,14 @@ t8 = Math.Factorial(arr);
         public void T070_Defect_1467466_Sort_Not_Defined_Porperly_5()
         {
             String code =
-@"a = {3,1,2};def sorterFunction(a:double, b:double){    return = -1;}b = Sort(sorterFunction, a);  ";
+@"
+a = {3,1,2};
+def sorterFunction(a:double, b:double)
+{
+    return = -1;
+}
+b = Sort(sorterFunction, a);  
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             // thisTest.VerifyRuntimeWarningCount(1);
             // It is meaningless to verify the result returned from a Sort()
@@ -3536,7 +4406,14 @@ t8 = Math.Factorial(arr);
         public void T070_Defect_1467466_Sort_Not_Defined_Porperly_3()
         {
             String code =
-@"a = {3,1,2};def sorterFunction(a:double, b:double){    return = 35;}b = Sort(sorterFunction, a);  ";
+@"
+a = {3,1,2};
+def sorterFunction(a:double, b:double)
+{
+    return = 35;
+}
+b = Sort(sorterFunction, a);  
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             // It is meaningless to verify the result returned from a Sort()
             // function which uses an invalid sorterFunction() to sort an array.
@@ -3547,7 +4424,14 @@ t8 = Math.Factorial(arr);
         public void T070_Defect_1467466_Sort_Not_Defined_Porperly_4()
         {
             String code =
-@"a = {3,1,2};def sorterFunction(a:double, b:double){    return = 1.5;}b = Sort(sorterFunction, a);  ";
+@"
+a = {3,1,2};
+def sorterFunction(a:double, b:double)
+{
+    return = 1.5;
+}
+b = Sort(sorterFunction, a);  
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
             // It is meaningless to verify the result returned from a Sort()
@@ -3559,7 +4443,14 @@ t8 = Math.Factorial(arr);
         public void T071_Defect_ExD_10016_Rand()
         {
             String code =
-@"a = {3,1,2};def sorterFunction(a:double, b:double){    return = 1.5;}b = Sort(sorterFunction, a);  ";
+@"
+a = {3,1,2};
+def sorterFunction(a:double, b:double)
+{
+    return = 1.5;
+}
+b = Sort(sorterFunction, a);  
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             // The test doesn't make sense. 
             // thisTest.Verify("b", new Object[] { 3, 1, 2 });
@@ -3569,7 +4460,9 @@ t8 = Math.Factorial(arr);
         public void T072_defect_1467577()
         {
             String code =
-@"index= IndexOf(1..10.11 , {1,2});";
+@"
+index= IndexOf(1..10.11 , {1,2});
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("index", new Object[] { 1, 2 });
         }
@@ -3578,7 +4471,14 @@ t8 = Math.Factorial(arr);
         public void T072_defect_1467577_2()
         {
             String code =
-@"def testRepl(val : var[], index:int){    return = IndexOf(val,index);}z = testRepl(1..5, 1..2);z1 = IndexOf(1..5, { 1, 2 });";
+@"
+def testRepl(val : var[], index:int)
+{
+    return = IndexOf(val,index);
+}
+z = testRepl(1..5, 1..2);
+z1 = IndexOf(1..5, { 1, 2 });
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("z", new Object[] { 0, 1 });
             thisTest.Verify("z1", new Object[] { 0, 1 });
@@ -3588,7 +4488,9 @@ t8 = Math.Factorial(arr);
         public void T073_Defect_ImportFromCSV_1467579()
         {
             String code =
-@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/trailing_comma.csv"";b = ImportFromCSV(a);";
+@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/trailing_comma.csv"";
+b = ImportFromCSV(a);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { new object[] { 10, 40 }, new object[] { 20.0, 50 }, new object[] { 30.0, 60.00 } }
 );
@@ -3598,7 +4500,20 @@ t8 = Math.Factorial(arr);
         public void T074_Defect_1467750()
         {
             String code =
-@"class A{}x = A.A();x1 = Flatten(a) ; x2 = Flatten(3) ;x3 = Flatten(3.5) ;x4 = Flatten(true) ;x5 = Flatten(x) ;x6 = Flatten(null) ;x7 = Flatten({}) ;x8 = Flatten({null}) ;";
+@"
+class A
+{
+}
+x = A.A();
+x1 = Flatten(a) ; 
+x2 = Flatten(3) ;
+x3 = Flatten(3.5) ;
+x4 = Flatten(true) ;
+x5 = Flatten(x) ;
+x6 = Flatten(null) ;
+x7 = Flatten({}) ;
+x8 = Flatten({null}) ;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x1", null);
             thisTest.Verify("x2", null);
@@ -3613,7 +4528,25 @@ t8 = Math.Factorial(arr);
         public void T074_Defect_1467750_2()
         {
             String code =
-@"class A{}test = [Imperative]{    x = A.A();    x1 = Flatten(a) ;     x2 = Flatten(3) ;    x3 = Flatten(3.5) ;    x4 = Flatten(true) ;    x5 = Flatten(x) ;    x6 = Flatten(null) ;    x7 = Flatten({}) ;    x8 = Flatten({null}) ;    return = { x1, x2, x3, x4, x5, x6, x8 };}";
+@"
+class A
+{
+}
+test = 
+[Imperative]
+{
+    x = A.A();
+    x1 = Flatten(a) ; 
+    x2 = Flatten(3) ;
+    x3 = Flatten(3.5) ;
+    x4 = Flatten(true) ;
+    x5 = Flatten(x) ;
+    x6 = Flatten(null) ;
+    x7 = Flatten({}) ;
+    x8 = Flatten({null}) ;
+    return = { x1, x2, x3, x4, x5, x6, x8 };
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", new Object[] { null, null, null, null, null, null, new Object[] { null } });
         }
@@ -3622,7 +4555,28 @@ t8 = Math.Factorial(arr);
         public void T074_Defect_1467750_3()
         {
             String code =
-@"class A{}test = foo();def foo (){    return = [Imperative]    {        x = A.A();        x1 = Flatten(a) ;         x2 = Flatten(3) ;        x3 = Flatten(3.5) ;        x4 = Flatten(true) ;        x5 = Flatten(x) ;        x6 = Flatten(null) ;        x7 = Flatten({}) ;        x8 = Flatten({null}) ;        return = { x1, x2, x3, x4, x5, x6, x8 };    }}";
+@"
+class A
+{
+}
+test = foo();
+def foo ()
+{
+    return = [Imperative]
+    {
+        x = A.A();
+        x1 = Flatten(a) ; 
+        x2 = Flatten(3) ;
+        x3 = Flatten(3.5) ;
+        x4 = Flatten(true) ;
+        x5 = Flatten(x) ;
+        x6 = Flatten(null) ;
+        x7 = Flatten({}) ;
+        x8 = Flatten({null}) ;
+        return = { x1, x2, x3, x4, x5, x6, x8 };
+    }
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", new Object[] { null, null, null, null, null, null, new Object[] { null } });
         }
@@ -3631,7 +4585,31 @@ t8 = Math.Factorial(arr);
         public void T074_Defect_1467750_4()
         {
             String code =
-@"class A{}test = B.foo();class B{    static def foo ()    {        return = [Imperative]        {            x = A.A();            x1 = Flatten(a) ;             x2 = Flatten(3) ;            x3 = Flatten(3.5) ;            x4 = Flatten(true) ;            x5 = Flatten(x) ;            x6 = Flatten(null) ;            x7 = Flatten({}) ;            x8 = Flatten({null}) ;            return = { x1, x2, x3, x4, x5, x6, x8 };        }    }}";
+@"
+class A
+{
+}
+test = B.foo();
+class B
+{
+    static def foo ()
+    {
+        return = [Imperative]
+        {
+            x = A.A();
+            x1 = Flatten(a) ; 
+            x2 = Flatten(3) ;
+            x3 = Flatten(3.5) ;
+            x4 = Flatten(true) ;
+            x5 = Flatten(x) ;
+            x6 = Flatten(null) ;
+            x7 = Flatten({}) ;
+            x8 = Flatten({null}) ;
+            return = { x1, x2, x3, x4, x5, x6, x8 };
+        }
+    }
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", new Object[] { null, null, null, null, null, null, new Object[] { null } });
         }
@@ -3640,7 +4618,35 @@ t8 = Math.Factorial(arr);
         public void T074_Defect_1467750_5()
         {
             String code =
-@"class A{}test = B.foo();class B{    static def foo ()    {        return = [Imperative]        {            if ( 1 )            {                x = A.A();                x1 = Flatten(a) ;                 x2 = Flatten(3) ;                x3 = Flatten(3.5) ;                x4 = Flatten(true) ;                x5 = Flatten(x) ;                x6 = Flatten(null) ;                x7 = Flatten({}) ;                x8 = Flatten({null}) ;                return = { x1, x2, x3, x4, x5, x6, x8 };           }           else return = 1;        }    }}";
+@"
+class A
+{
+}
+test = B.foo();
+class B
+{
+    static def foo ()
+    {
+        return = [Imperative]
+        {
+            if ( 1 )
+            {
+                x = A.A();
+                x1 = Flatten(a) ; 
+                x2 = Flatten(3) ;
+                x3 = Flatten(3.5) ;
+                x4 = Flatten(true) ;
+                x5 = Flatten(x) ;
+                x6 = Flatten(null) ;
+                x7 = Flatten({}) ;
+                x8 = Flatten({null}) ;
+                return = { x1, x2, x3, x4, x5, x6, x8 };
+           }
+           else return = 1;
+        }
+    }
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", new Object[] { null, null, null, null, null, null, new Object[] { null } });
         }
@@ -3649,7 +4655,22 @@ t8 = Math.Factorial(arr);
         public void T074_Defect_1467750_6()
         {
             String code =
-@"class A{}test = { A.A() => x;        Flatten(a) => x1;         Flatten(3) => x2;        Flatten(3.5) => x3;        Flatten(true) => x4;        Flatten(x) => x5;        Flatten(null) => x6;        Flatten({}) => x7;        Flatten({ null }) => x8;}test = { x1, x2, x3, x4, x5, x6, x8 };";
+@"
+class A
+{
+}
+test = { A.A() => x;
+        Flatten(a) => x1; 
+        Flatten(3) => x2;
+        Flatten(3.5) => x3;
+        Flatten(true) => x4;
+        Flatten(x) => x5;
+        Flatten(null) => x6;
+        Flatten({}) => x7;
+        Flatten({ null }) => x8;
+}
+test = { x1, x2, x3, x4, x5, x6, x8 };
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", new Object[] { null, null, null, null, null, null, new Object[] { null } });
         }
@@ -3658,7 +4679,13 @@ t8 = Math.Factorial(arr);
         public void T074_Defect_1467301()
         {
             String code =
-@"x1 = Average(a) ;// returns null, also throws runtime error ? x2 = Average(a) ;// returns -1x4 = Average(null) ;// returns -1x5 = Average({}) ;// returns 0.0x6 = Average({null}) ;// returns 0.0";
+@"
+x1 = Average(a) ;// returns null, also throws runtime error ? 
+x2 = Average(a) ;// returns -1
+x4 = Average(null) ;// returns -1
+x5 = Average({}) ;// returns 0.0
+x6 = Average({null}) ;// returns 0.0
+";
             string errmsg = "DNL-1467301 rev 3778 : Builtin method 'Average' should return null for all negative case";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyRuntimeWarningCount(0);
@@ -3674,7 +4701,20 @@ t8 = Math.Factorial(arr);
         public void T075_Defect_1467323()
         {
             String code =
-@"class A{}x = A.A();x1 = Count(a) ; x2 = Count(3) ;x3 = Count(3.5) ;x4 = Count(true) ;x5 = Count(x) ;x6 = Count(null) ;x7 = Count({}) ;x8 = Count({null}) ;";
+@"
+class A
+{
+}
+x = A.A();
+x1 = Count(a) ; 
+x2 = Count(3) ;
+x3 = Count(3.5) ;
+x4 = Count(true) ;
+x5 = Count(x) ;
+x6 = Count(null) ;
+x7 = Count({}) ;
+x8 = Count({null}) ;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x1", 1);
             thisTest.Verify("x2", 1);
@@ -3690,7 +4730,25 @@ t8 = Math.Factorial(arr);
         public void T075_Defect_1467323_2()
         {
             String code =
-@"class A{}test = [Imperative]{    x = A.A();    x1 = Count(a) ;     x2 = Count(3) ;    x3 = Count(3.5) ;    x4 = Count(true) ;    x5 = Count(x) ;    x6 = Count(null) ;    x7 = Count({}) ;    x8 = Count({null}) ;    return = { x1, x2, x3, x4, x5, x6, x7, x8 };}";
+@"
+class A
+{
+}
+test = 
+[Imperative]
+{
+    x = A.A();
+    x1 = Count(a) ; 
+    x2 = Count(3) ;
+    x3 = Count(3.5) ;
+    x4 = Count(true) ;
+    x5 = Count(x) ;
+    x6 = Count(null) ;
+    x7 = Count({}) ;
+    x8 = Count({null}) ;
+    return = { x1, x2, x3, x4, x5, x6, x7, x8 };
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", new Object[] { 1, 1, 1, 1, 1, 1, 0, 1 });
         }
@@ -3699,7 +4757,28 @@ t8 = Math.Factorial(arr);
         public void T075_Defect_1467323_3()
         {
             String code =
-@"class A{}test = foo();def foo (){    return = [Imperative]    {        x = A.A();        x1 = Count(a) ;         x2 = Count(3) ;        x3 = Count(3.5) ;        x4 = Count(true) ;        x5 = Count(x) ;        x6 = Count(null) ;        x7 = Count({}) ;        x8 = Count({null}) ;          return = { x1, x2, x3, x4, x5, x6, x7, x8 };     }}";
+@"
+class A
+{
+}
+test = foo();
+def foo ()
+{
+    return = [Imperative]
+    {
+        x = A.A();
+        x1 = Count(a) ; 
+        x2 = Count(3) ;
+        x3 = Count(3.5) ;
+        x4 = Count(true) ;
+        x5 = Count(x) ;
+        x6 = Count(null) ;
+        x7 = Count({}) ;
+        x8 = Count({null}) ;  
+        return = { x1, x2, x3, x4, x5, x6, x7, x8 }; 
+    }
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", new Object[] { 1, 1, 1, 1, 1, 1, 0, 1 });
         }
@@ -3708,7 +4787,31 @@ t8 = Math.Factorial(arr);
         public void T075_Defect_1467323_4()
         {
             String code =
-@"class A{}test = B.foo();class B{    static def foo ()    {        return = [Imperative]        {            x = A.A();            x1 = Count(a) ;             x2 = Count(3) ;            x3 = Count(3.5) ;            x4 = Count(true) ;            x5 = Count(x) ;            x6 = Count(null) ;            x7 = Count({}) ;            x8 = Count({null}) ;            return = { x1, x2, x3, x4, x5, x6, x7, x8 };        }    }}";
+@"
+class A
+{
+}
+test = B.foo();
+class B
+{
+    static def foo ()
+    {
+        return = [Imperative]
+        {
+            x = A.A();
+            x1 = Count(a) ; 
+            x2 = Count(3) ;
+            x3 = Count(3.5) ;
+            x4 = Count(true) ;
+            x5 = Count(x) ;
+            x6 = Count(null) ;
+            x7 = Count({}) ;
+            x8 = Count({null}) ;
+            return = { x1, x2, x3, x4, x5, x6, x7, x8 };
+        }
+    }
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", new Object[] { 1, 1, 1, 1, 1, 1, 0, 1 });
         }
@@ -3717,7 +4820,35 @@ t8 = Math.Factorial(arr);
         public void T075_Defect_1467323_5()
         {
             String code =
-@"class A{}test = B.foo();class B{    static def foo ()    {        return = [Imperative]        {            if ( 1 )            {                x = A.A();                x1 = Count(a) ;                 x2 = Count(3) ;                x3 = Count(3.5) ;                x4 = Count(true) ;                x5 = Count(x) ;                x6 = Count(null) ;                x7 = Count({}) ;                x8 = Count({null}) ;                return = { x1, x2, x3, x4, x5, x6, x7, x8 };                           }           else return = 1;        }    }}";
+@"
+class A
+{
+}
+test = B.foo();
+class B
+{
+    static def foo ()
+    {
+        return = [Imperative]
+        {
+            if ( 1 )
+            {
+                x = A.A();
+                x1 = Count(a) ; 
+                x2 = Count(3) ;
+                x3 = Count(3.5) ;
+                x4 = Count(true) ;
+                x5 = Count(x) ;
+                x6 = Count(null) ;
+                x7 = Count({}) ;
+                x8 = Count({null}) ;
+                return = { x1, x2, x3, x4, x5, x6, x7, x8 };                
+           }
+           else return = 1;
+        }
+    }
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", new Object[] { 1, 1, 1, 1, 1, 1, 0, 1 });
         }
@@ -3726,7 +4857,21 @@ t8 = Math.Factorial(arr);
         public void T075_Defect_1467323_6()
         {
             String code =
-@"class A{}test = { A.A() => x;        Count(a) => x1;         Count(3) => x2;        Count(3.5) => x3;        Count(true) => x4;        Count(x) => x5;        Count(null) => x6;        Count({}) => x7;        Count({ null }) => x8;}";
+@"
+class A
+{
+}
+test = { A.A() => x;
+        Count(a) => x1; 
+        Count(3) => x2;
+        Count(3.5) => x3;
+        Count(true) => x4;
+        Count(x) => x5;
+        Count(null) => x6;
+        Count({}) => x7;
+        Count({ null }) => x8;
+}
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x1", 1);
             thisTest.Verify("x2", 1);
@@ -3743,7 +4888,9 @@ t8 = Math.Factorial(arr);
         public void Defect_ImportFromCSV_1467622()
         {
             String code =
-            @"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/nonuniform.csv"";            b = ImportFromCSV(a);            ";
+            @"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/nonuniform.csv"";
+            b = ImportFromCSV(a);
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { new object[] { 1.0, 2, 3, 4, 5, 6 }, new object[] { 2, 3.0, 4, 5, 6, 7, 8 } }
 );
@@ -3754,7 +4901,9 @@ t8 = Math.Factorial(arr);
         public void Defect_ImportFromCSV_1467622_2()
         {
             String code =
-            @"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/trailing_comma_nonuniform.csv"";            b = ImportFromCSV(a);            ";
+            @"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/trailing_comma_nonuniform.csv"";
+            b = ImportFromCSV(a);
+            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { new object[] { 10, 20, 30, null }, new object[] { 40, 50, 60, 40, null } }
 );

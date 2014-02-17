@@ -8,7 +8,7 @@ namespace ProtoTest.MultiLangTests
     {
         public ProtoCore.Core core;
         public TestFrameWork thisTest = new TestFrameWork();
-        string testCasePath = "..\\..\\..\\Tests\\ProtoTest\\ImportFiles\\";
+        string testCasePath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         [SetUp]
         public void Setup()
         {
