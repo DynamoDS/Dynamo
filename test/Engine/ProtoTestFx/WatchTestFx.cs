@@ -53,7 +53,7 @@ namespace ProtoTestFx
             ExpressionMap = new Dictionary<Expression, List<string>>();
         }
 
-        internal void Print(ProtoCore.DSASM.StackValue sv, int lineNo, string symbolName, int ci = Constants.kInvalidIndex)
+        internal void Print(StackValue sv, int lineNo, string symbolName, int ci = Constants.kInvalidIndex)
         {
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
             ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(this, Core);

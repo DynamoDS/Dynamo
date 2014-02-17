@@ -97,7 +97,7 @@ namespace ProtoFFI
         }
 
         #region DS_ARRAY_TO_CS_ARRAY
-        private object GetArray(ProtoCore.DSASM.StackValue o,
+        private object GetArray(StackValue o,
                                 ProtoCore.DSASM.Interpreter dsi,
                                 out int size)
         {
@@ -195,10 +195,10 @@ namespace ProtoFFI
                 int ptr = core.Heap.Allocate(numElems);
                 for (int n = numElems - 1; n >= 0; --n)
                 {
-                    core.Heap.Heaplist[ptr].Stack[n] = StackUtils.BuildDouble(csArray[n]);
+                    core.Heap.Heaplist[ptr].Stack[n] = StackValue.BuildDouble(csArray[n]);
                 }
-                retVal = StackUtils.BuildArrayPointer(ptr);
-                //dsi.runtime.rmem.Push(StackUtils.BuildArrayPointer(ptr));
+                retVal = StackValue.BuildArrayPointer(ptr);
+                //dsi.runtime.rmem.Push(StackValue.BuildArrayPointer(ptr));
             }
 
             return retVal;
@@ -262,7 +262,7 @@ namespace ProtoFFI
                 IntPtr arrPtr = (IntPtr)retVal;
                 if (arrPtr == IntPtr.Zero)
                 {
-                    return StackUtils.BuildNull();
+                    return StackValue.Null;
                 }
 
                 _Array arr = (_Array)Marshal.PtrToStructure(arrPtr, typeof(_Array));
@@ -313,7 +313,7 @@ namespace ProtoFFI
             int totalParamCount = paramCount + envSize;
 
             List<Object> parameters = new List<object>();
-            List<ProtoCore.DSASM.StackValue> s = dsi.runtime.rmem.Stack;
+            List<StackValue> s = dsi.runtime.rmem.Stack;
             if (IsDNI)
             {
                 parameters.Add(DLLFFIHandler.Env);
@@ -325,7 +325,7 @@ namespace ProtoFFI
                 // Comment Jun: FFI function stack frames do not contain locals
                 int locals = 0;
                 int relative = 0 - ProtoCore.DSASM.StackFrame.kStackFrameSize - locals - i - 1;
-                ProtoCore.DSASM.StackValue o = dsi.runtime.rmem.GetAtRelative(relative);
+                StackValue o = dsi.runtime.rmem.GetAtRelative(relative);
 
                 if (o.optype == ProtoCore.DSASM.AddressType.Int)
                 {

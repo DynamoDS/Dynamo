@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using ProtoCore.DSASM;
 using ProtoCore.Lang.Replication;
 using ProtoCore.Utils;
 
@@ -28,13 +29,13 @@ namespace ProtoCore.Lang
             this.activation = activation;
         }
 
-        public override bool DoesPredicateMatch(ProtoCore.Runtime.Context c, List<ProtoCore.DSASM.StackValue> formalParameters, List<ReplicationInstruction> replicationInstructions)
+        public override bool DoesPredicateMatch(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, List<ReplicationInstruction> replicationInstructions)
         {
             //@TODO: FIXME
             return true;
         }
 
-        public override ProtoCore.DSASM.StackValue Execute(ProtoCore.Runtime.Context c, List<ProtoCore.DSASM.StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core)
+        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core)
         {
             ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, true);
             ProtoCore.DSASM.Executive oldDSASMExec = null;
@@ -58,7 +59,7 @@ namespace ProtoCore.Lang
                 // Retrieveing the executing states occur on function return
                 for (int n = execStateSize - 1; n >= 0 ; --n)
                 {
-                    ProtoCore.DSASM.StackValue svState = stackFrame.ExecutionStates[n];
+                    StackValue svState = stackFrame.ExecutionStates[n];
                     Validity.Assert(svState.optype == DSASM.AddressType.Boolean);
                     interpreter.Push(svState);
                 }
@@ -71,8 +72,8 @@ namespace ProtoCore.Lang
                 interpreter.Push(formalParameters[i]);
             }
 
-            ProtoCore.DSASM.StackValue svThisPtr = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kThisPtr);
-            ProtoCore.DSASM.StackValue svBlockDecl = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock);
+            StackValue svThisPtr = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kThisPtr);
+            StackValue svBlockDecl = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock);
 
             // Jun: Make sure we have no empty or unaligned frame data
             Validity.Assert(DSASM.StackFrame.kStackFrameSize == stackFrame.Frame.Length);
@@ -98,19 +99,19 @@ namespace ProtoCore.Lang
 
             DSASM.StackFrameType callerType = (DSASM.StackFrameType)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kCallerStackFrameType).opdata;
 
-            List<ProtoCore.DSASM.StackValue> registers = new List<DSASM.StackValue>();
+            List<StackValue> registers = new List<DSASM.StackValue>();
 
-            ProtoCore.DSASM.StackValue svCallConvention;
+            StackValue svCallConvention;
             bool isDispose = procedureNode.name.Equals(ProtoCore.DSDefinitions.Keyword.Dispose);
 
             bool explicitCall = !c.IsReplicating && !c.IsImplicitCall && !isDispose;
             if (explicitCall)
             {
-                svCallConvention = ProtoCore.DSASM.StackUtils.BuildNode(ProtoCore.DSASM.AddressType.CallingConvention, (long)ProtoCore.DSASM.CallingConvention.CallType.kExplicit);
+                svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.CallType.kExplicit);
             }
             else
             {
-                svCallConvention = ProtoCore.DSASM.StackUtils.BuildNode(ProtoCore.DSASM.AddressType.CallingConvention, (long)ProtoCore.DSASM.CallingConvention.CallType.kImplicit);                
+                svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.CallType.kImplicit);                
             }
 
             stackFrame.SetAt(DSASM.StackFrame.AbsoluteIndex.kRegisterTX, svCallConvention);
@@ -136,11 +137,11 @@ namespace ProtoCore.Lang
             core.Rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, locals, execStateSize);
 
 
-            ProtoCore.DSASM.StackValue svRet;
+            StackValue svRet;
 
             if (explicitCall)
             {
-                svRet = ProtoCore.DSASM.StackUtils.BuildNode(DSASM.AddressType.ExplicitCall, activation.pc);
+                svRet = ProtoCore.DSASM.StackValue.BuildExplicitCall(activation.pc);
             }
             else
             {
