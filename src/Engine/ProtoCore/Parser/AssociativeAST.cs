@@ -1107,6 +1107,8 @@ namespace ProtoCore.AST.AssociativeAST
 
             IsBuiltIn = false;
             Signature = new ArgumentSignatureNode();
+
+            Attributes = new List<AssociativeNode>();
         }
 
         public FunctionDefinitionNode(FunctionDefinitionNode rhs)

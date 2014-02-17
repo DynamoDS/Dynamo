@@ -661,31 +661,34 @@ namespace ProtoFFI
                     var lhs = paramNode.NameNode;
  
                     var defaultValue = parameter.DefaultValue;
-                    var type = parameter.GetType();
+                    if (defaultValue != null)
+                    {
+                        var type = defaultValue.GetType();
 
-                    AssociativeNode rhs;
-                    if (type.Equals(typeof(int)))
-                    {
-                        rhs = AstFactory.BuildIntNode((int)defaultValue); 
+                        AssociativeNode rhs;
+                        if (type.Equals(typeof(int)))
+                        {
+                            rhs = AstFactory.BuildIntNode((int)defaultValue);
+                        }
+                        else if (type.Equals(typeof(double)))
+                        {
+                            rhs = AstFactory.BuildDoubleNode((double)defaultValue);
+
+                        }
+                        else if (type.Equals(typeof(bool)))
+                        {
+                            rhs = AstFactory.BuildBooleanNode((bool)defaultValue);
+                        }
+                        else if (type.Equals(typeof(string)))
+                        {
+                            rhs = AstFactory.BuildStringNode(defaultValue.ToString());
+                        }
+                        else
+                        {
+                            rhs = AstFactory.BuildNullNode();
+                        }
+                        paramNode.NameNode = AstFactory.BuildBinaryExpression(lhs, rhs, ProtoCore.DSASM.Operator.assign);
                     }
-                    else if (type.Equals(typeof(double)))
-                    {
-                        rhs = AstFactory.BuildDoubleNode((double)defaultValue);
-                    
-                    }
-                    else if (type.Equals(typeof(bool)))
-                    {
-                        rhs = AstFactory.BuildBooleanNode((bool)defaultValue);
-                    }
-                    else if (type.Equals(typeof(string)))
-                    {
-                        rhs = AstFactory.BuildStringNode(defaultValue.ToString());
-                    }
-                    else
-                    {
-                        rhs = AstFactory.BuildNullNode();
-                    }
-                    paramNode.NameNode = AstFactory.BuildBinaryExpression(lhs, rhs, ProtoCore.DSASM.Operator.assign); 
                 }
                 argumentSignature.AddArgument(paramNode);
             }
