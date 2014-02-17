@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Xml;
 using Dynamo.Utilities;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Dynamo.Models
 {
@@ -152,6 +153,130 @@ namespace Dynamo.Models
             }
 
             return migrationData;
+        }
+
+        /// <summary>
+        /// Call this method to backup the DYN file specified by originalPath. The 
+        /// new file will be backed up to a location where Dynamo has write access to.
+        /// </summary>
+        /// <param name="originalPath">Path of the original DYN file to be backed up.</param>
+        /// <param name="backupPath">Path of the backed up file. This value will be a valid 
+        /// file path only if this method returns true.</param>
+        /// <returns>Returns true if the backup was successful, or false otherwise.</returns>
+        /// 
+        internal static bool BackupOriginalFile(string originalPath, ref string backupPath)
+        {
+            backupPath = string.Empty;
+
+            if (string.IsNullOrEmpty(originalPath))
+                throw new ArgumentException("Argument cannot be empty", "originalPath");
+            if (!System.IO.File.Exists(originalPath))
+                throw new System.IO.FileNotFoundException("File not found", originalPath);
+
+            try
+            {
+                string folder = Path.GetDirectoryName(originalPath);
+                string destFileName = GetUniqueFileName(folder, Path.GetFileName(originalPath));
+                System.IO.File.Copy(originalPath, destFileName);
+                backupPath = destFileName;
+                return true;
+            }
+            catch (System.IO.IOException)
+            {
+                // If we caught an IO exception, fall through and let the rest handle this 
+                // (by saving to other locations). Any other exception will be thrown to the 
+                // caller for handling.
+            }
+
+            try
+            {
+                string folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                string destFileName = GetUniqueFileName(folder, Path.GetFileName(originalPath));
+                System.IO.File.Copy(originalPath, destFileName);
+                backupPath = destFileName;
+                return true;
+            }
+            catch (System.IO.IOException)
+            {
+                return false; // Okay I give up.
+            }
+        }
+
+        /// <summary>
+        /// Call this method to get the unique backup file name within the given folder.
+        /// </summary>
+        /// <param name="folder">The folder where file search should happen.</param>
+        /// <param name="fileNameWithExtension">The name of the original file which is 
+        /// to be backed-up. This argument should have an extension, although it is not 
+        /// mandatory.</param>
+        /// <returns>Returns the full path to a unique file name for the backup file.</returns>
+        /// 
+        internal static string GetUniqueFileName(string folder, string fileNameWithExtension)
+        {
+            string[] fileNames = Directory.GetFiles(folder, fileNameWithExtension + ".*.backup");
+            int indexToUse = GetUniqueIndex(fileNames);
+
+            // The file name will be in the form of "fileName.NNN.backup".
+            string fileName = fileNameWithExtension + string.Format(".{0}.backup", indexToUse);
+            return Path.Combine(folder, fileName);
+        }
+
+        /// <summary>
+        /// Call this method to determine the next available backup file name from the 
+        /// given set of file names.
+        /// </summary>
+        /// <param name="fileNames">An array of file names, each in the form of 
+        /// 'FileName.NNN.backup'.</param>
+        /// <returns>Returns the next available index to use as backup file name</returns>
+        /// 
+        internal static int GetUniqueIndex(string[] fileNames)
+        {
+            if (fileNames == null || (fileNames.Length <= 0))
+                return 0;
+
+            string result = fileNames.Aggregate((prevFileName, currFileName) =>
+            {
+                int prev = ExtractFileIndex(prevFileName);
+                int curr = ExtractFileIndex(currFileName);
+                return ((prev > curr) ? prevFileName : currFileName);
+            });
+
+            // Use the next larger integer as index.
+            return ExtractFileIndex(result) + 1;
+        }
+
+        /// <summary>
+        /// Call this method to extract the index of a backup file.
+        /// </summary>
+        /// <param name="fileName">The file name of a backup file. This parameter 
+        /// must be in the form of 'FileName.NNN.backup', where 'NNN' is an 
+        /// integer value. The file name must also have a '*.backup' extension.
+        /// </param>
+        /// <returns>Returns the integer equivalent of the backup file index 
+        /// 'NNN' if the call is successful.</returns>
+        /// 
+        internal static int ExtractFileIndex(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                throw new ArgumentNullException("fileName");
+
+            if (Path.GetExtension(fileName) != ".backup")
+            {
+                var msg = "File name must be in 'fileName.NNN.backup' form.";
+                throw new ArgumentException(msg, "fileName");
+            }
+
+            // Get rid of ".backup" extension.
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+            int dotIndex = fileNameWithoutExtension.LastIndexOf('.');
+            if (dotIndex == -1)
+            {
+                var msg = "File name must be in 'fileName.NNN.backup' form.";
+                throw new ArgumentException(msg, "fileName");
+            }
+
+            // Extract 'NNN' and convert it into the corresponding integer value.
+            return Int32.Parse(fileNameWithoutExtension.Substring(dotIndex + 1));
         }
 
         /// <summary>

@@ -159,5 +159,84 @@ namespace Dynamo.Tests
             Assert.AreEqual(first, data.MigratedNodes.ElementAt(0));
             Assert.AreEqual(second, data.MigratedNodes.ElementAt(1));
         }
+
+        [Test]
+        public void TestExtractFileIndex00()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                MigrationManager.ExtractFileIndex(null);
+            });
+        }
+
+        [Test]
+        public void TestExtractFileIndex01()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                MigrationManager.ExtractFileIndex(string.Empty);
+            });
+        }
+
+        [Test]
+        public void TestExtractFileIndex02()
+        {
+            Assert.Throws<ArgumentException>(() =>
+            {
+                // File name should have "*.backup" extension.
+                MigrationManager.ExtractFileIndex("abc.txt");
+            });
+        }
+
+        [Test]
+        public void TestExtractFileIndex03()
+        {
+            Assert.Throws<ArgumentException>(() =>
+            {
+                // File name should be in the form of "*.NNN.backup".
+                MigrationManager.ExtractFileIndex("abc.backup");
+            });
+        }
+
+        [Test]
+        public void TestExtractFileIndex04()
+        {
+            Assert.Throws<FormatException>(() =>
+            {
+                // "NNN" should be in numeric form.
+                MigrationManager.ExtractFileIndex("abc.NNN.backup");
+            });
+        }
+
+        [Test]
+        public void TestExtractFileIndex05()
+        {
+            Assert.AreEqual(123, MigrationManager.ExtractFileIndex("abc.123.backup"));
+        }
+
+        [Test]
+        public void TestGetUniqueIndex00()
+        {
+            Assert.AreEqual(0, MigrationManager.GetUniqueIndex(null));
+        }
+
+        [Test]
+        public void TestGetUniqueIndex01()
+        {
+            Assert.AreEqual(0, MigrationManager.GetUniqueIndex(new string[] { }));
+        }
+
+        [Test]
+        public void TestGetUniqueIndex02()
+        {
+            var fileNames = new string[]
+            {
+                "FileName.12.backup",
+                "FileName.13.backup",
+                "FileName.456.backup"
+            };
+
+            Assert.AreEqual(457, MigrationManager.GetUniqueIndex(fileNames));
+        }
     }
 }
