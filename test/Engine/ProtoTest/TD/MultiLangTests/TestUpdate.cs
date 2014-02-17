@@ -10,7 +10,7 @@ namespace ProtoTest.TD.MultiLangTests
         readonly TestFrameWork thisTest = new TestFrameWork();
         ProtoCore.Core core;
         ProtoScript.Config.RunConfiguration runnerConfig;
-        string testPath = "..\\..\\..\\Tests\\ProtoTest\\ImportFiles\\";
+        string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         ProtoScript.Runners.DebugRunner fsr;
         [SetUp]
         public void SetUp()

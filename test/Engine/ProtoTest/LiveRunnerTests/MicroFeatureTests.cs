@@ -2715,5 +2715,52 @@ z=Point.ByCoordinates(y,a,a);
                 AssertValue("r", 45);
             }
         }
+
+        [Test]
+        public void TestCodeblockModification01()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "g = 0;",
+                "def f() { g = g + 1; return = 1;}",
+                "x = f(); a = 10;",  // CBN 1
+                "x = f(); a = 11;"   // Simulate modifiying CBN 1
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            // CBN for global
+            Guid guid_global = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid_global, codes[0]));
+
+            // A CBN with function def f
+            Guid guid_func = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid_func, codes[1]));
+
+            // A new CBN that uses function f
+            Guid guid = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid, codes[2]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("g", 1);
+            AssertValue("a", 10);
+
+
+            // Redefine the CBN
+            List<Subtree> modified = new List<Subtree>();
+
+            // Mark the CBN that uses f as modified
+            modified.Add(CreateSubTreeFromCode(guid, codes[3]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Verify that x must have automatically re-executed
+            AssertValue("g", 1);    // This should not increment
+            AssertValue("a", 11);
+
+        }
     }
 }

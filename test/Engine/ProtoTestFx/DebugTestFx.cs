@@ -57,7 +57,7 @@ namespace ProtoTestFx
 
 
             ProtoScript.Config.RunConfiguration runnerConfig;
-            string testPath = @"..\..\..\Tests\ProtoTest\ImportFiles\";
+            string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
 
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
@@ -87,7 +87,7 @@ namespace ProtoTestFx
             ProtoCore.Core core;
             DebugRunner fsr;
             ProtoScript.Config.RunConfiguration runnerConfig;
-            string testPath = @"..\..\..\Tests\ProtoTest\ImportFiles\";
+            string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
 
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
@@ -123,7 +123,7 @@ namespace ProtoTestFx
             ProtoCore.Core core;
             DebugRunner fsr;
             ProtoScript.Config.RunConfiguration runnerConfig;
-            string testPath = @"..\..\..\Tests\ProtoTest\ImportFiles\";
+            string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
 
              // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
@@ -161,7 +161,7 @@ namespace ProtoTestFx
             ProtoCore.Core core;
             DebugRunner fsr;
             ProtoScript.Config.RunConfiguration runnerConfig;
-            string testPath = @"..\..\..\Tests\ProtoTest\ImportFiles\";
+            string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
 
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();

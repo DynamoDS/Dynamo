@@ -850,40 +850,176 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
+        /// Gets the only the modified nodes from the subtree by checking of the previous cached instance
+        /// </summary>
+        /// <param name="subtree"></param>
+        /// <returns></returns>
+        private List<AssociativeNode> GetModifiedNodes(Subtree subtree)
+        {
+            Subtree st;
+            if (!currentSubTreeList.TryGetValue(subtree.GUID, out st) || st.AstNodes == null)
+            {
+                // If the subtree was not cached, it means the cache was delted
+                // This means the current subtree is all modified
+                return subtree.AstNodes;
+            }
+
+            // We want to process only modified statements
+            // If the AST is identical to an existing AST in the same GUID, it means it was not modified
+            List<AssociativeNode> modifiedASTList = new List<AssociativeNode>();
+            foreach (AssociativeNode node in subtree.AstNodes)
+            {
+                // Check if node exists in the prev AST list
+                bool nodeFound = false;
+                foreach (AssociativeNode prevNode in st.AstNodes)
+                {
+                    if (prevNode.Equals(node))
+                    {
+                        nodeFound = true;
+                        break;
+                    }
+                }
+
+                if (!nodeFound)
+                {
+                    // node is modifed as it does not match any existing
+                    modifiedASTList.Add(node);
+                }
+            }
+            return modifiedASTList;
+        }
+
+
+        /// <summary>
+        /// Get the ASTs from the previous list that no longer exist in the new list
+        /// </summary>
+        /// <param name="prevASTList"></param>
+        /// <param name="newASTList"></param>
+        /// <returns></returns>
+        private List<AssociativeNode> GetInactiveASTList(List<AssociativeNode> prevASTList, List<AssociativeNode> newASTList)
+        {
+            List<AssociativeNode> removedList = new List<AssociativeNode>();
+            foreach (AssociativeNode prevNode in prevASTList)
+            {
+                bool prevNodeFoundInNewList = false;
+                foreach (AssociativeNode newNode in newASTList)
+                {
+                    if (prevNode.Equals(newNode))
+                    {
+                        // prev node still exists in the new list
+                        prevNodeFoundInNewList = true;
+                        break;
+                    }
+                }
+
+                if (!prevNodeFoundInNewList)
+                {
+                    removedList.Add(prevNode);
+                }
+            }
+            return removedList;
+        }
+
+        /// <summary>
+        /// Get the ASTs from the previous list that that still exist in the new list
+        /// </summary>
+        /// <param name="prevASTList"></param>
+        /// <param name="newASTList"></param>
+        /// <returns></returns>
+        private List<AssociativeNode> GetUnmodifiedASTList(List<AssociativeNode> prevASTList, List<AssociativeNode> newASTList)
+        {
+            List<AssociativeNode> existingList = new List<AssociativeNode>();
+            foreach (AssociativeNode prevNode in prevASTList)
+            {
+                foreach (AssociativeNode newNode in newASTList)
+                {
+                    if (prevNode.Equals(newNode))
+                    {
+                        existingList.Add(prevNode);
+                        break;
+                    }
+                }
+            }
+            return existingList;
+        }
+
+        /// <summary>
         /// Takes in a Subtree to delete or modify and marks the corresponding gragh nodes in DS inactive.
         /// This is equivalent to removing them from the VM
         /// </summary>
         /// <param name="subtree"></param>
         /// <returns></returns>
-        private List<AssociativeNode> MarkGraphNodesInactive(Subtree subtree)
+        private List<AssociativeNode> MarkGraphNodesInactive(List<AssociativeNode> modifiedASTList)
         {
-            Subtree st;
-            if (!currentSubTreeList.TryGetValue(subtree.GUID, out st) || st.AstNodes == null)
-            {
-                return null;
-            }
-
             List<AssociativeNode> astNodeList = new List<AssociativeNode>();
-            foreach (var node in st.AstNodes)
+            if (null != modifiedASTList && modifiedASTList.Count > 0)
             {
-                BinaryExpressionNode bNode = node as BinaryExpressionNode;
-                if (bNode != null)
+                foreach (var node in modifiedASTList)
                 {
-                    // TODO: Aparajit - this can be made more efficient by maintaining a map in core of 
-                    // graphnode vs expression UID 
-                    foreach (var gnode in runnerCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
+                    BinaryExpressionNode bNode = node as BinaryExpressionNode;
+                    if (bNode != null)
                     {
-                        if (gnode.exprUID == bNode.exprUID)
+                        BinaryExpressionNode newBNode = new BinaryExpressionNode(bNode);
+                        // TODO: Aparajit - this can be made more efficient by maintaining a map in core of 
+                        // graphnode vs expression UID 
+                        foreach (var gnode in runnerCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
                         {
-                            gnode.isActive = false;
+                            if (gnode.exprUID == bNode.exprUID)
+                            {
+                                gnode.isActive = false;
+                            }
                         }
+                        newBNode.RightNode = new NullNode();
+                        astNodeList.Add(newBNode);
                     }
-                    bNode.RightNode = new NullNode();
-                    astNodeList.Add(bNode);
                 }
             }
-
             return astNodeList;
+        }
+
+
+        private void DeactivateGraphnodes(List<AssociativeNode> nodeList)
+        {
+            if (null != nodeList)
+            {
+                foreach (var node in nodeList)
+                {
+                    BinaryExpressionNode bNode = node as BinaryExpressionNode;
+                    if (bNode != null)
+                    {
+                        foreach (var gnode in runnerCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
+                        {
+                            if (gnode.exprUID == bNode.exprUID)
+                            {
+                                gnode.isActive = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates the cached AST's if they were modified
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="modifiedNodes"></param>
+        private void UpdateCachedSubtree(Guid guid, List<AssociativeNode> modifiedNodes)
+        {
+            if (null != modifiedNodes && modifiedNodes.Count > 0)
+            {
+                List<AssociativeNode> cachedASTList = currentSubTreeList[guid].AstNodes;
+                foreach (AssociativeNode node in modifiedNodes)
+                {
+                    // Remove ast from cachedASTList if the current node matches an exprID
+                    // cachedASTList.RemoveUnmodified()
+
+                    if (node is BinaryExpressionNode)
+                    {
+                        cachedASTList.Add(node);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -1028,7 +1164,7 @@ namespace ProtoScript.Runners
                 {
                     if (st.AstNodes != null)
                     {
-                        var nullNodes = MarkGraphNodesInactive(st);
+                        var nullNodes = MarkGraphNodesInactive(st.AstNodes);
                         if (nullNodes != null)
                         {
                             deltaAstList.AddRange(nullNodes);
@@ -1043,7 +1179,8 @@ namespace ProtoScript.Runners
                         {
                             if (removeSubTree.AstNodes != null)
                             {
-                                var nullNodes = MarkGraphNodesInactive(removeSubTree);
+                                //List<AssociativeNode> modifiedASTList = GetModifiedNodes(removeSubTree);
+                                var nullNodes = MarkGraphNodesInactive(removeSubTree.AstNodes);
                                 if (nullNodes != null)
                                 {
                                     deltaAstList.AddRange(nullNodes);
@@ -1062,23 +1199,43 @@ namespace ProtoScript.Runners
                         currentSubTreeList.Remove(st.GUID);
                     }
                 }
-                
             }
 
             if (syncData.ModifiedSubtrees != null)
             {
                 foreach (var st in syncData.ModifiedSubtrees)
                 {
+                    Subtree oldSubTree;
+                    bool cachedTreeExists = currentSubTreeList.TryGetValue(st.GUID, out oldSubTree);
+
                     List<FunctionDefinitionNode> modifiedFunctions = new List<FunctionDefinitionNode>();
                     if (st.AstNodes != null)
                     {
-                        var nullNodes = MarkGraphNodesInactive(st);
-                        if (nullNodes != null)
-                        {
-                            deltaAstList.AddRange(nullNodes);
-                        }
-                        deltaAstList.AddRange(st.AstNodes);
+                        // Handle modifed statements
+                        //modifiedASTList = GetModifiedNodes(st);
+                        //if (null != modifiedASTList && modifiedASTList.Count > 0)
+                        //{
+                        //    var nullNodes = MarkGraphNodesInactive(modifiedASTList);
+                        //    if (nullNodes != null)
+                        //    {
+                        //        //deltaAstList.AddRange(nullNodes);
+                        //    }
+                        //    deltaAstList.AddRange(modifiedASTList);
+                        //}
 
+                        // Handle modified statements
+                        List<AssociativeNode> modifiedASTList = GetModifiedNodes(st);
+                        if (null != modifiedASTList && modifiedASTList.Count > 0)
+                        {
+                            deltaAstList.AddRange(modifiedASTList);
+                        }
+                        
+                        // Disable removed nodes from the cache
+                        List<AssociativeNode> removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+                        DeactivateGraphnodes(removedNodes);
+
+
+                        // Handle modifed functions
                         UndefineFunctions(st.AstNodes.Where(n => n is FunctionDefinitionNode));
 
                         // Get the modified function list
@@ -1089,17 +1246,43 @@ namespace ProtoScript.Runners
                                 modifiedFunctions.Add(fnode as FunctionDefinitionNode);
                             }
                         }
+                        deltaAstList.AddRange(modifiedFunctions);
+
+
+                        // Handle cached subtree
+                        if (cachedTreeExists)
+                        {
+                            if (oldSubTree.AstNodes != null)
+                            {
+                                UndefineFunctions(oldSubTree.AstNodes.Where(n => n is FunctionDefinitionNode));
+                            }
+
+                            // Update the curernt subtree list
+                            //UpdateCachedSubtree(st.GUID, modifiedASTList);
+                            //st.a = modifiedASTList;
+                            List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
+                            newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
+                            newCachedASTList.AddRange(modifiedASTList);
+
+                            st.AstNodes.Clear();
+                            st.AstNodes.AddRange(newCachedASTList);
+                            currentSubTreeList[st.GUID] = st;
+                        }
+
                     }
 
-                    Subtree oldSubTree;
-                    if (currentSubTreeList.TryGetValue(st.GUID, out oldSubTree))
-                    {
-                        if (oldSubTree.AstNodes != null)
-                        {
-                            UndefineFunctions(oldSubTree.AstNodes.Where(n => n is FunctionDefinitionNode));
-                        }
-                        currentSubTreeList[st.GUID] = st;
-                    }
+                    //Subtree oldSubTree;
+                    //if (currentSubTreeList.TryGetValue(st.GUID, out oldSubTree))
+                    //{
+                    //    if (oldSubTree.AstNodes != null)
+                    //    {
+                    //        UndefineFunctions(oldSubTree.AstNodes.Where(n => n is FunctionDefinitionNode));
+                    //    }
+
+                    //    // Update the curernt subtree list
+                    //    UpdateCachedSubtree(st.GUID, modifiedASTList);
+                    //    //currentSubTreeList[st.GUID] = st;
+                    //}
 
                     
                     // Get the AST's dependent on every function in the modified function list,
@@ -1123,7 +1306,6 @@ namespace ProtoScript.Runners
                     currentSubTreeList.Add(st.GUID, st);
                 }
             }
-
             CompileAndExecuteForDeltaExecution(deltaAstList);
         }
 

@@ -7,7 +7,7 @@ namespace ProtoTest.TD.MultiLangTests
     class Tutorial
     {
         public TestFrameWork thisTest = new TestFrameWork();
-        string importPath = "..\\..\\..\\Tests\\ProtoTest\\ImportFiles\\";
+        string importPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         [SetUp]
         public void Setup()
         {
@@ -56,7 +56,9 @@ t3 = collection[2];
             Object[] v1 = new Object[] { 1, 2.600, 4 };
             thisTest.Verify("collection", v1, 0);
             thisTest.Verify("d", 2.6, 0);
-            /*thisTest.Verify("t1", 1, 0);            thisTest.Verify("t2", 2.6, 0);            thisTest.Verify("t3", 4, 0);*/
+            /*thisTest.Verify("t1", 1, 0);
+            thisTest.Verify("t2", 2.6, 0);
+            thisTest.Verify("t3", 4, 0);*/
         }
 
         [Test]
@@ -87,7 +89,12 @@ t6 = cartesian_sum[2][0];
             Object[] v2 = new Object[] { new Object[] { 1, 0, -1 }, new Object[] { 6, 5, 4 }, new Object[] { 11, 10, 9 } };
             thisTest.Verify("zipped_sum", v1, 0);
             thisTest.Verify("cartesian_sum", v2, 0);
-            /*thisTest.Verify("t1", 1, 0);            thisTest.Verify("t2", 5, 0);            thisTest.Verify("t3", 9, 0);            thisTest.Verify("t4", 1, 0);            thisTest.Verify("t5", 6, 0);            thisTest.Verify("t5", 11, 0);*/
+            /*thisTest.Verify("t1", 1, 0);
+            thisTest.Verify("t2", 5, 0);
+            thisTest.Verify("t3", 9, 0);
+            thisTest.Verify("t4", 1, 0);
+            thisTest.Verify("t5", 6, 0);
+            thisTest.Verify("t5", 11, 0);*/
         }
 
         [Test]

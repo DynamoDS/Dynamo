@@ -379,15 +379,7 @@ namespace ProtoCore.Lang
 
                         string mangledName = ProtoCore.Utils.CoreUtils.GetMangledFunctionName(className, functionName);
 
-                        // Build a context object in JILDispatch and call the Dispatch
-                        ProtoCore.CallSite callsite = new ProtoCore.CallSite(ProtoCore.DSASM.Constants.kGlobalScope, mangledName, core.FunctionTable, core.Options.ExecutionMode);
-
-                        // If the callsite exists, use the cached instance
-                        ProtoCore.CallSite existingCallsite = callsite.GetCachedInstance(core);
-                        if (null != existingCallsite)
-                        {
-                            callsite = existingCallsite;
-                        }
+                        ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnodeUID, ProtoCore.DSASM.Constants.kGlobalScope, mangledName);
                         Validity.Assert(null != callsite);
 
                         //
@@ -588,16 +580,7 @@ namespace ProtoCore.Lang
                             }
                         }
 
-
-                        // Build a context object in JILDispatch and call the Dispatch
-                        ProtoCore.CallSite callsite = new ProtoCore.CallSite(thisPtrType, functionName, core.FunctionTable, core.Options.ExecutionMode);
-
-                        // If the callsite exists, use the cached instance
-                        ProtoCore.CallSite existingCallsite = callsite.GetCachedInstance(core);
-                        if (null != existingCallsite)
-                        {
-                            callsite = existingCallsite;
-                        }
+                        ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnodeUID, thisPtrType, functionName);
                         Validity.Assert(null != callsite);
 
                         ProtoCore.DSASM.Executive exec = core.CurrentExecutive.CurrentDSASMExec;

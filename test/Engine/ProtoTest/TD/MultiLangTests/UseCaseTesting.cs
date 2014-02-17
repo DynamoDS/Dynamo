@@ -7,7 +7,7 @@ namespace ProtoTest.TD.MultiLangTests
     public class UseCaseTesting
     {
         readonly TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Tests\\ProtoTest\\ImportFiles\\";
+        string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         [SetUp]
         public void SetUp()
         {
@@ -508,7 +508,37 @@ i = 5;
         {
             string errmsg = "";
             string code =
-    @"                     def foo  ()    {           t = [Imperative]        {              t1 = [Associative]             {                                        t2 = 6;                       return = t2;             }                return = t1;                        }        return = t;       }    def foo2  ()    {           t = [Associative]        {              t1 = [Imperative]             {                                        t2 = 6;                       return = t2;             }                return = t1;                        }        return = t;       }    p1 = foo(); // expected 6, got null    p2 = foo2();// expected 6, got 6";
+    @"
+            
+         def foo  ()
+    {   
+        t = [Imperative]
+        {
+              t1 = [Associative]
+             {                    
+                    t2 = 6;   
+                    return = t2; 
+            }     
+           return = t1;                
+        }
+        return = t;   
+    }
+    def foo2  ()
+    {   
+        t = [Associative]
+        {
+              t1 = [Imperative]
+             {                    
+                    t2 = 6;   
+                    return = t2; 
+            }     
+           return = t1;                
+        }
+        return = t;   
+    }
+    p1 = foo(); // expected 6, got null
+    p2 = foo2();// expected 6, got 6
+";
             thisTest.RunScriptSource(code,"", testPath);
 
             thisTest.Verify("p1", 6);
