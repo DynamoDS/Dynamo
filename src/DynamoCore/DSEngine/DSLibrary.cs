@@ -815,6 +815,11 @@ namespace Dynamo.DSEngine
                 new TypedParameter("y", string.Empty),
             };
 
+            var arg = new List<TypedParameter> 
+            {
+                new TypedParameter("x", string.Empty),
+            };
+
             var functions = new List<FunctionDescriptor>()
             {
                 new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.add), args, null, FunctionType.GenericFunction),
@@ -839,6 +844,8 @@ namespace Dynamo.DSEngine
                 new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwiseand), args, null, FunctionType.GenericFunction),
                 new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwiseor), args, null, FunctionType.GenericFunction),
                 new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwisexor), args, null, FunctionType.GenericFunction),
+
+                new FunctionDescriptor(null, null, Op.GetUnaryOpFunction(UnaryOperator.Not), arg, null, FunctionType.GenericFunction),
             };
 
             AddBuiltinFunctions(functions);
