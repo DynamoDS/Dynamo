@@ -4885,10 +4885,25 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DoubleSlider"));
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "Dynamo.Nodes.DoubleSlider");
 
-            return migrationData;               
+            // Get attributes from old child node
+            XmlElement newChild1 = data.Document.CreateElement("System.Double");
+            XmlElement newChild2 = data.Document.CreateElement("Range");
+            
+            foreach (XmlNode subNode in oldNode.ChildNodes)
+                foreach (XmlNode attr in subNode.Attributes)
+                    if (attr.Name.Equals("value"))
+                        newChild1.SetAttribute("value", attr.Value);
+                    else
+                        newChild2.SetAttribute(attr.Name, attr.Value);
+
+            newNode.AppendChild(newChild1);
+            newNode.AppendChild(newChild2);
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
         }
     }
 
@@ -5033,10 +5048,25 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.IntegerSlider"));
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "Dynamo.Nodes.IntegerSlider");
 
-            return migrationData;  
+            // Get attributes from old child node
+            XmlElement newChild1 = data.Document.CreateElement("System.Int32");
+            XmlElement newChild2 = data.Document.CreateElement("Range");
+
+            foreach (XmlNode subNode in oldNode.ChildNodes)
+                foreach (XmlNode attr in subNode.Attributes)
+                    if (attr.Name.Equals("value"))
+                        newChild1.SetAttribute("value", attr.Value);
+                    else
+                        newChild2.SetAttribute(attr.Name, attr.Value);
+
+            newNode.AppendChild(newChild1);
+            newNode.AppendChild(newChild2);
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
         }
     }
 
@@ -5067,10 +5097,15 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "DSCoreNodesUI.BoolSelector"));
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCoreNodesUI.BoolSelector");
 
-            return migrationData;  
+            // Clone child from old node
+            foreach (XmlNode subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode);
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
         }
     }
 
