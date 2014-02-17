@@ -290,8 +290,11 @@ namespace ProtoFFI
                 try
                 {
                     Type paramType = paraminfos[i].ParameterType;
-                    object param = marshaller.UnMarshal(opArg, c, dsi, paramType);
-
+                    object param = null;
+                    if (opArg.optype == AddressType.DefaultArg)
+                        param = Type.Missing;
+                    else 
+                        param = marshaller.UnMarshal(opArg, c, dsi, paramType);
 
                     //null is passed for a value type, so we must return null 
                     //rather than interpreting any value from null. fix defect 1462014 
