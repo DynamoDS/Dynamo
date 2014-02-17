@@ -19,7 +19,7 @@ namespace ProtoCore
         /// <summary>
         /// Data structure used to carry trace data
         /// </summary>
-        struct SingleRunTraceData
+        class SingleRunTraceData
         {
          
             /// <summary>
@@ -147,7 +147,7 @@ namespace ProtoCore
         /// <param name="core"></param>
         private void UpdateCallsiteExecutionState(Object callsiteData, Core core)
         {
-            //invokeCount = 0;
+            invokeCount = 0;
 
 
             if (core.EnableCallsiteExecutionState)
