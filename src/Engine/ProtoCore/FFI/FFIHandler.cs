@@ -84,7 +84,7 @@ namespace ProtoFFI
         /// </summary>
         /// <param name="dsObject">DS Object</param>
         /// <returns>string representation of a DS object</returns>
-        public abstract string GetStringValue(ProtoCore.DSASM.StackValue dsObject);
+        public abstract string GetStringValue(StackValue dsObject);
     }
 
     public enum FFILanguage

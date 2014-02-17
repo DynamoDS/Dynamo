@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Utils;
+using ProtoCore.DSASM;
 
 namespace ProtoScript.Runners
 {
@@ -153,7 +154,7 @@ namespace ProtoScript.Runners
                     
                     // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                     // Register TX is used for this.
-                    ProtoCore.DSASM.StackValue svCallConvention = ProtoCore.DSASM.StackUtils.BuildNode(ProtoCore.DSASM.AddressType.CallingConvention, (long)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
+                    StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
                     stackFrame.SetAt(ProtoCore.DSASM.StackFrame.AbsoluteIndex.kRegisterTX, svCallConvention);
 
                     core.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, context, stackFrame, locals, EventSink);

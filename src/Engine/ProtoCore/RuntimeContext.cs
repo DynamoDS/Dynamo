@@ -12,7 +12,7 @@ namespace ProtoCore
             
 #if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
             #region __ARRAY_UPDATE
-            public ProtoCore.DSASM.StackValue ArrayPointer { get; set; }
+            public StackValue ArrayPointer { get; set; }
             public List<List<int>> IndicesIntoArgMap { get; set; }
             #endregion
 #endif
@@ -27,7 +27,7 @@ namespace ProtoCore
 
 #if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
                 IndicesIntoArgMap = new List<List<int>>();
-                ArrayPointer = ProtoCore.DSASM.StackUtils.BuildNull();
+                ArrayPointer = ProtoCore.DSASM.StackValue.Null;
 #endif
             }
         }

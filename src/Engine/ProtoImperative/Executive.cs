@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using ProtoCore.DSASM;
 using ProtoCore.Utils;
 
 namespace ProtoImperative
@@ -58,22 +59,23 @@ namespace ProtoImperative
             return buildSucceeded;
         }
 
-        public override ProtoCore.DSASM.StackValue Execute(int codeblock, int entry, ProtoCore.Runtime.Context callContext, ProtoCore.DebugServices.EventSink sink)
+        public override StackValue Execute(int codeblock, int entry, ProtoCore.Runtime.Context callContext, ProtoCore.DebugServices.EventSink sink)
         {
-            ProtoCore.DSASM.StackValue sv = new ProtoCore.DSASM.StackValue();
             if (!core.Options.CompileToLib)
             {
                 ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core);
                 CurrentDSASMExec = interpreter.runtime;
-                sv = interpreter.Run(codeblock, entry, ProtoCore.Language.kImperative);
+                var sv = interpreter.Run(codeblock, entry, ProtoCore.Language.kImperative);
                 return sv;
             }
-
-            return new ProtoCore.DSASM.StackValue();
+            else
+            {
+                return StackValue.Null;
+            }
         }
 
 
-        public override ProtoCore.DSASM.StackValue Execute(int codeblock, int entry, ProtoCore.Runtime.Context callContext, List<ProtoCore.DSASM.Instruction> breakpoints, ProtoCore.DebugServices.EventSink sink, bool fepRun = false)
+        public override StackValue Execute(int codeblock, int entry, ProtoCore.Runtime.Context callContext, List<Instruction> breakpoints, ProtoCore.DebugServices.EventSink sink, bool fepRun = false)
         {
             ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core);
             CurrentDSASMExec = interpreter.runtime;

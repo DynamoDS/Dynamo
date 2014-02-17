@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using ProtoCore;
+using ProtoCore.DSASM;
 using ProtoCore.Utils;
 
 namespace ProtoAssociative
@@ -146,23 +147,26 @@ namespace ProtoAssociative
 
         }
 
-        public override ProtoCore.DSASM.StackValue Execute(int codeblock, int entry, ProtoCore.Runtime.Context callContext, ProtoCore.DebugServices.EventSink sink)
+        public override StackValue Execute(int codeblock, int entry, ProtoCore.Runtime.Context callContext, ProtoCore.DebugServices.EventSink sink)
         {
-            ProtoCore.DSASM.StackValue sv = new ProtoCore.DSASM.StackValue();
             if (!core.Options.CompileToLib)
             {
                 ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core);
                 CurrentDSASMExec = interpreter.runtime;
-                sv = interpreter.Run(codeblock, entry, Language.kAssociative);
+                StackValue sv = interpreter.Run(codeblock, entry, Language.kAssociative);
+                return sv;
             }
-            return sv;
+            else
+            {
+                return StackValue.Null;
+            }
         }
 
-        public override ProtoCore.DSASM.StackValue Execute(int codeblock, int entry, ProtoCore.Runtime.Context callContext, System.Collections.Generic.List<ProtoCore.DSASM.Instruction> breakpoints, ProtoCore.DebugServices.EventSink sink = null, bool fepRun = false)
+        public override StackValue Execute(int codeblock, int entry, ProtoCore.Runtime.Context callContext, System.Collections.Generic.List<Instruction> breakpoints, ProtoCore.DebugServices.EventSink sink = null, bool fepRun = false)
         {
             ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, fepRun);
             CurrentDSASMExec = interpreter.runtime;
-            ProtoCore.DSASM.StackValue sv = interpreter.Run(breakpoints, codeblock, entry, Language.kAssociative);
+            StackValue sv = interpreter.Run(breakpoints, codeblock, entry, Language.kAssociative);
             return sv;
         }
 

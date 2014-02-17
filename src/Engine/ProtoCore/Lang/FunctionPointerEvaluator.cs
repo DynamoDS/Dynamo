@@ -45,7 +45,7 @@ namespace ProtoCore.Lang
             int blockDecl = (int)mProcNode.runtimeIndex;
             int blockCaller = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionCallerBlock).opdata;
             int framePointer = mRunTime.runtime.Core.Rmem.FramePointer;
-            StackValue thisPtr = StackUtils.BuildPointer(-1);
+            StackValue thisPtr = StackValue.BuildPointer(-1);
 
 
             // Comment Jun: the caller type is the current type in the stackframe
@@ -56,10 +56,10 @@ namespace ProtoCore.Lang
             List<StackValue> registers = new List<StackValue>();
 
             // Comment Jun: Calling convention data is stored on the TX register
-            StackValue svCallconvention = StackUtils.BuildNode(AddressType.CallingConvention, (long)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
+            StackValue svCallconvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
             mRunTime.runtime.TX = svCallconvention;
 
-            StackValue svBlockDecl = StackUtils.BuildNode(AddressType.BlockIndex, blockDecl);
+            StackValue svBlockDecl = StackValue.BuildBlockIndex(blockDecl);
             mRunTime.runtime.SX = svBlockDecl;
 
             mRunTime.runtime.SaveRegisters(registers);

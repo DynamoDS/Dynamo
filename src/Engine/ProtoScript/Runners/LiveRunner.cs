@@ -13,6 +13,7 @@ using ProtoCore.AssociativeGraph;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using System.Linq;
+using ProtoCore.DSASM;
 
 namespace ProtoScript.Runners
 {
@@ -471,7 +472,7 @@ namespace ProtoScript.Runners
                     }
 
                     ProtoCore.Runtime.RuntimeMemory rmem = exec.rmem;
-                    ProtoCore.DSASM.StackValue sv = rmem.GetStackData(blockId, i, ProtoCore.DSASM.Constants.kGlobalScope);
+                    StackValue sv = rmem.GetStackData(blockId, i, ProtoCore.DSASM.Constants.kGlobalScope);
                     formattedString = formattedString + string.Format("{0} = {1}\n", symbolNode.name, execMirror.GetStringValue(sv, rmem.Heap, blockId));
 
                     //if (null != globaltrace)
