@@ -633,8 +633,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            //return MigrateToDsFunction(data, "DSCoreNodes.dll", "Function.Compose", "Function.Compose@var[]");
-            return MigrateToDsFunction(data, "Compose", "Compose@_FunctionObject[]");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Function.Compose", "Function.Compose@var[]");
         }
     }
 
@@ -1597,7 +1596,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Shuffle",
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Shuffle", 
                 "List.Shuffle@var[]");
         }
     }
