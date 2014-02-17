@@ -11,7 +11,7 @@ namespace ProtoTest.TD.Associative
         public ProtoCore.Core core;
         public TestFrameWork thisTest = new TestFrameWork();
         ProtoScript.Config.RunConfiguration runnerConfig;
-        string importPath = "..\\..\\..\\Tests\\ProtoTest\\ImportFiles\\";
+        string importPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         ProtoScript.Runners.DebugRunner fsr;
         [SetUp]
         public void Setup()
