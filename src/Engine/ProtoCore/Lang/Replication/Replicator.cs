@@ -423,7 +423,7 @@ namespace ProtoCore.Lang.Replication
                     {
                         //This should generally be a collection, so we need to do a one phase unboxing
                         StackValue target = basicList[index];
-                        StackValue reducedSV = StackUtils.BuildNull();
+                        StackValue reducedSV = StackValue.Null;
 
                         if (StackUtils.IsArray(target))
                         {
@@ -436,7 +436,7 @@ namespace ProtoCore.Lang.Replication
 
                             //The elements of the array are still type structures
                             if (he.VisibleSize == 0)
-                                reducedSV = StackUtils.BuildNull();
+                                reducedSV = StackValue.Null;
                             else
                             {
                                 var arrayStats = ArrayUtils.GetTypeExamplesForLayer(basicList[index], core).Values;
@@ -480,7 +480,7 @@ namespace ProtoCore.Lang.Replication
                     int index = ri.CartesianIndex;
                     //This should generally be a collection, so we need to do a one phase unboxing
                     StackValue target = basicList[index];
-                    StackValue reducedSV = StackUtils.BuildNull();
+                    StackValue reducedSV = StackValue.Null;
 
                     if (StackUtils.IsArray(target))
                     {
@@ -497,7 +497,7 @@ namespace ProtoCore.Lang.Replication
 
                         //The elements of the array are still type structures
                         if (he.VisibleSize == 0)
-                            reducedSV = StackUtils.BuildNull();
+                            reducedSV = StackValue.Null;
                         else
                         {
                             var arrayStats = ArrayUtils.GetTypeExamplesForLayer(basicList[index], core).Values;
@@ -564,7 +564,7 @@ namespace ProtoCore.Lang.Replication
                     {
                         //This should generally be a collection, so we need to do a one phase unboxing
                         StackValue target = reducedParamTypes[index];
-                        StackValue reducedSV = StackUtils.BuildNull();
+                        StackValue reducedSV = StackValue.Null;
 
                         if (StackUtils.IsArray(target))
                         {
@@ -581,7 +581,7 @@ namespace ProtoCore.Lang.Replication
 
                             //The elements of the array are still type structures
                             if (he.VisibleSize == 0)
-                                reducedSV = StackUtils.BuildNull();
+                                reducedSV = StackValue.Null;
                             else
                                 reducedSV = he.Stack[0];
                         }
@@ -600,7 +600,7 @@ namespace ProtoCore.Lang.Replication
                     //This should generally be a collection, so we need to do a one phase unboxing
                     int index = ri.CartesianIndex;
                     StackValue target = reducedParamTypes[index];
-                    StackValue reducedSV = new StackValue();
+                    StackValue reducedSV;
 
                     if (StackUtils.IsArray(target))
                     {
@@ -618,7 +618,7 @@ namespace ProtoCore.Lang.Replication
                         //The elements of the array are still type structures
                         //reducedType = arr.members[0].Type;
                         if (he.VisibleSize == 0)
-                            reducedSV = StackUtils.BuildNull();
+                            reducedSV = StackValue.Null;
                         else
                             reducedSV = he.Stack[0];
 
