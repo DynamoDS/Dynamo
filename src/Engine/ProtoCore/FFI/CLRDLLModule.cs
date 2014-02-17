@@ -661,7 +661,7 @@ namespace ProtoFFI
                     var lhs = paramNode.NameNode;
  
                     var defaultValue = parameter.DefaultValue;
-                    var type = parameter.GetType();
+                    var type = defaultValue.GetType();
 
                     AssociativeNode rhs;
                     if (type.Equals(typeof(int)))
