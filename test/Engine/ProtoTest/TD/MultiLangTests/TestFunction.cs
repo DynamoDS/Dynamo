@@ -9,7 +9,7 @@ namespace ProtoTest.TD.MultiLangTests
     {
         public ProtoCore.Core core;
         public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Tests\\ProtoTest\\ImportFiles\\";
+        string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         ProtoScript.Config.RunConfiguration runnerConfig;
         ProtoScript.Runners.DebugRunner fsr;
 
@@ -7649,7 +7649,23 @@ result = c.Test(c);
         public void T100_Defect_Class_inheritance_dispatch()
         {
             String code =
- @"class A{        def Test(b : B)        { return = 1; }}class B extends A{        def Test(a : A)        { return = 2; }} a = A.A();b = B.B();r1 = a.Test(a);//nullr2 = b.Test(b);//1";
+ @"
+class A
+{
+        def Test(b : B)
+        { return = 1; }
+}
+class B extends A
+{
+        def Test(a : A)
+        { return = 2; }
+}
+ 
+a = A.A();
+b = B.B();
+r1 = a.Test(a);//null
+r2 = b.Test(b);//1
+";
             thisTest.RunScriptSource(code);
             //Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch\nunecpected result" );
             thisTest.SetErrorMessage("1467307 - Sprint 25 - Rev 3784 : Method resolution failure on member function when actual parameter is the subtype of the formal parameter type");
@@ -7663,7 +7679,21 @@ result = c.Test(c);
         public void T100_Defect_Class_inheritance_dispatch_a()
         {
             String code =
- @"class A{        def Test(b : B)        { return = 1; }}class B extends A{        def Test(a : A)        { return = 2; }} b = B.B();r2 = b.Test(b);//1";
+ @"
+class A
+{
+        def Test(b : B)
+        { return = 1; }
+}
+class B extends A
+{
+        def Test(a : A)
+        { return = 2; }
+}
+ 
+b = B.B();
+r2 = b.Test(b);//1
+";
             thisTest.RunScriptSource(code);
             //Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch\nunecpected result" );
             thisTest.SetErrorMessage("1467307 - Sprint 25 - Rev 3784 : Method resolution failure on member function when actual parameter is the subtype of the formal parameter type");
@@ -7674,7 +7704,36 @@ result = c.Test(c);
         public void T100_Defect_Class_inheritance_replication_1()
         {
             String code =
- @"class A{        def Test(b : B)        { return = 1; }}class B extends A{        def Test(a : A)        { return = 2; }}class C extends B{    def Test(c:C)    {return = 3;}} a = A.A();b = B.B();c = C.C();r1 = a.Test(a);//nullr2 = b.Test(b);//1r3 = c.Test(c);//3r4 = a.Test(b);//1r5 = a.Test(c);//1r6 = b.Test(a);//2r7 = b.Test(c);//1r8 = c.Test(a);//2r9 = c.Test(b);//1";
+ @"
+class A
+{
+        def Test(b : B)
+        { return = 1; }
+}
+class B extends A
+{
+        def Test(a : A)
+        { return = 2; }
+}
+class C extends B
+{
+    def Test(c:C)
+    {return = 3;}
+}
+ 
+a = A.A();
+b = B.B();
+c = C.C();
+r1 = a.Test(a);//null
+r2 = b.Test(b);//1
+r3 = c.Test(c);//3
+r4 = a.Test(b);//1
+r5 = a.Test(c);//1
+r6 = b.Test(a);//2
+r7 = b.Test(c);//1
+r8 = c.Test(a);//2
+r9 = c.Test(b);//1
+";
             thisTest.RunScriptSource(code);
             //Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch\nunecpected result");
             thisTest.SetErrorMessage("1467307 - Sprint 25 - Rev 3784 : Method resolution failure on member function when actual parameter is the subtype of the formal parameter type");
@@ -7981,7 +8040,18 @@ b=prop(convert);
         public void TV103_Defect_1455090_Rank_Of_Arg()
         {
             String code =
-@"b;[Associative]{def foo : int ( a : double[][] ){return = a[0][0] ; }a = { { 0, 1}, {2, 3} };b = foo ( a );}";
+@"
+b;
+[Associative]
+{
+def foo : int ( a : double[][] )
+{
+return = a[0][0] ; 
+}
+a = { { 0, 1}, {2, 3} };
+b = foo ( a );
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", 0);
@@ -7992,7 +8062,21 @@ b=prop(convert);
         public void TV103_Defect_1455090_Rank_Of_Arg_2()
         {
             String code =
-@"class A{    X : var[][][];    constructor A ( b : double[]..[] )    {        X = b;    }    def foo : var[][][] (  )    {        return = X ;     }}a = { { { 0, 1} }, { {2, 3} } };b = A.A ( a );c = b.foo();";
+@"class A
+{
+    X : var[][][];
+    constructor A ( b : double[]..[] )
+    {
+        X = b;
+    }
+    def foo : var[][][] (  )
+    {
+        return = X ; 
+    }
+}
+a = { { { 0, 1} }, { {2, 3} } };
+b = A.A ( a );
+c = b.foo();";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("c", new Object[] { new Object[] { new Object[] { 0.0, 1.0 } }, new Object[] { new Object[] { 2.0, 3.0 } } });
@@ -8003,7 +8087,21 @@ b=prop(convert);
         public void TV103_Defect_1455090_Rank_Of_Arg_3()
         {
             String code =
-@"class A{    X : var[][][];    constructor A ( b : double[]..[] )    {        X = b;    }    def foo : var[][][] (  )    {        return = X ;     }}a = { { { 0, 1} },  {2, 3}  };b = A.A ( a );c = b.foo();";
+@"class A
+{
+    X : var[][][];
+    constructor A ( b : double[]..[] )
+    {
+        X = b;
+    }
+    def foo : var[][][] (  )
+    {
+        return = X ; 
+    }
+}
+a = { { { 0, 1} },  {2, 3}  };
+b = A.A ( a );
+c = b.foo();";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
@@ -8016,7 +8114,21 @@ b=prop(convert);
         public void TV103_Defect_1455090_Rank_Of_Arg_4()
         {
             String code =
-@"  class A{    X : var[][];    constructor A ( b : double[][] )    {        X = b;    }    def foo : var[][][] (  )    {        return = X ;     }}a = { { 0, 1} ,  2  };b = A.A ( a );c = b.foo();";
+@"  class A
+{
+    X : var[][];
+    constructor A ( b : double[][] )
+    {
+        X = b;
+    }
+    def foo : var[][][] (  )
+    {
+        return = X ; 
+    }
+}
+a = { { 0, 1} ,  2  };
+b = A.A ( a );
+c = b.foo();";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
@@ -8029,7 +8141,12 @@ b=prop(convert);
         public void TV103_Defect_1455090_Rank_Of_Arg_4a()
         {
             String code =
-@"def foo : var[] (  ){    return = 1 ; }c = foo();";
+@"
+def foo : var[] (  )
+{
+    return = 1 ; 
+}
+c = foo();";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
@@ -8041,7 +8158,12 @@ b=prop(convert);
         public void TV103_Defect_1455090_Rank_Of_Arg_4b()
         {
             String code =
-@"def foo : int[] (  ){    return = 1 ; }c = foo();";
+@"
+def foo : int[] (  )
+{
+    return = 1 ; 
+}
+c = foo();";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
@@ -8054,7 +8176,21 @@ b=prop(convert);
         public void TV103_Defect_1455090_Rank_Of_Arg_5()
         {
             String code =
-                @"class A                {                    X : var[][];                    constructor A ( b : double[][] )                    {                        X = b;                    }                    def foo : var[][][] (  )                    {                        return = X ;                     }                }                a = { 3, { 0, 1} ,  2  };                b = A.A ( a );                c = b.foo();";
+                @"class A
+                {
+                    X : var[][];
+                    constructor A ( b : double[][] )
+                    {
+                        X = b;
+                    }
+                    def foo : var[][][] (  )
+                    {
+                        return = X ; 
+                    }
+                }
+                a = { 3, { 0, 1} ,  2  };
+                b = A.A ( a );
+                c = b.foo();";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
@@ -8067,7 +8203,13 @@ b=prop(convert);
         public void TV103_Defect_1455090_Rank_Of_Arg_6()
         {
             String code =
-@"def foo  ( x : int[][] ){        return = x ; }a = { 3, { 0, 1} ,  2  };b = foo ( a );";
+@"
+def foo  ( x : int[][] )
+{
+        return = x ; 
+}
+a = { 3, { 0, 1} ,  2  };
+b = foo ( a );";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
@@ -8080,7 +8222,31 @@ b=prop(convert);
         public void TV104_Defect_1467112()
         {
             String code =
-@"class A{     public x : var ;         public def foo1 (a)    {      return = 1;    }     }class B extends A{    public def foo1 (a)    {        return = 2;    }        }class C extends B{    public def foo1 (a)    {        return = 3;    }         }b = C.C();b1 = b.foo1(1);test = b1;";
+@"class A
+{ 
+    public x : var ;     
+    public def foo1 (a)
+    {
+      return = 1;
+    }     
+}
+class B extends A
+{
+    public def foo1 (a)
+    {
+        return = 2;
+    }        
+}
+class C extends B
+{
+    public def foo1 (a)
+    {
+        return = 3;
+    }         
+}
+b = C.C();
+b1 = b.foo1(1);
+test = b1;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", 3);
@@ -8091,7 +8257,11 @@ b=prop(convert);
         public void TV105_Defect_1467244()
         {
             String code =
-@"def foo(x:int = 2.3){return = x;}d = foo();";
+@"def foo(x:int = 2.3)
+{
+return = x;
+}
+d = foo();";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", 2);
@@ -8102,7 +8272,11 @@ b=prop(convert);
         public void TV105_Defect_1467244_2()
         {
             String code =
-@"def foo(x:double = 2){return = x;}d = foo();";
+@"def foo(x:double = 2)
+{
+return = x;
+}
+d = foo();";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", 2.0);
@@ -8113,7 +8287,11 @@ b=prop(convert);
         public void TV105_Defect_1467244_3()
         {
             String code =
-@"def foo(x:int = 2){return = x;}d = foo(1.5);";
+@"def foo(x:int = 2)
+{
+return = x;
+}
+d = foo(1.5);";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", 2);
@@ -8124,7 +8302,18 @@ b=prop(convert);
         public void TV106_Defect_1467132()
         {
             String code =
-@"def foo : double (x :var[]){        return = Average(x);}a = {1,2,2,1};b = {1,{}};c = Average(a);c1= foo(a);c2 = foo(b);c3 = Average({});result = {foo(a),foo(b)};";
+@"def foo : double (x :var[])
+{
+    
+    return = Average(x);
+}
+a = {1,2,2,1};
+b = {1,{}};
+c = Average(a);
+c1= foo(a);
+c2 = foo(b);
+c3 = Average({});
+result = {foo(a),foo(b)};";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             string errmsg = "1467301 - rev 3778 : Builtin method 'Average' returns 0.0 when an empty array is passed to it";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -8136,7 +8325,15 @@ b=prop(convert);
         public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank()
         {
             String code =
-@"def foo(x:var[]..[]){return = 2;}def foo(x:var[]){return = 1;}d = foo({1,2});";
+@"def foo(x:var[]..[])
+{
+return = 2;
+}
+def foo(x:var[])
+{
+return = 1;
+}
+d = foo({1,2});";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -8148,7 +8345,15 @@ b=prop(convert);
         public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank_2()
         {
             String code =
-@"def foo(x:int[]..[]){return = 2;}def foo(x:int[]){return = 1;}d = foo({1,2});";
+@"def foo(x:int[]..[])
+{
+return = 2;
+}
+def foo(x:int[])
+{
+return = 1;
+}
+d = foo({1,2});";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -8160,7 +8365,15 @@ b=prop(convert);
         public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank_3()
         {
             String code =
-@"def foo(x:double[]..[]){return = 2;}def foo(x:int[]){return = 1;}d = foo({1.5,2.5});";
+@"def foo(x:double[]..[])
+{
+return = 2;
+}
+def foo(x:int[])
+{
+return = 1;
+}
+d = foo({1.5,2.5});";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -8172,7 +8385,20 @@ b=prop(convert);
         public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank_4()
         {
             String code =
-@"class A{    def foo(x:int[]..[])    {        return = 2;    }    def foo(x:int[])    {        return = 1;    }}a = A.A();d = a.foo({1,2});";
+@"
+class A
+{
+    def foo(x:int[]..[])
+    {
+        return = 2;
+    }
+    def foo(x:int[])
+    {
+        return = 1;
+    }
+}
+a = A.A();
+d = a.foo({1,2});";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -8184,7 +8410,20 @@ b=prop(convert);
         public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank_4a()
         {
             String code =
-@"class A{    def foo(x:int[]..[])    {        return = 2;    }    def foo(x:int[])    {        return = 1;    }}a = A.A();d = a.foo({1.0,2.2});";
+@"
+class A
+{
+    def foo(x:int[]..[])
+    {
+        return = 2;
+    }
+    def foo(x:int[])
+    {
+        return = 1;
+    }
+}
+a = A.A();
+d = a.foo({1.0,2.2});";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -8196,7 +8435,14 @@ b=prop(convert);
         public void TV104_Defect_1467379()
         {
             String code =
-@"def foo (f:function){   return = true;}      a = foo(test);b = 1;";
+@"
+def foo (f:function)
+{   
+return = true;
+}      
+a = foo(test);
+b = 1;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             string err = "1467379 Sprint 27 - Rev 4193 - after throwing warning / error in the attached code it should execute rest of the code ";
             thisTest.RunScriptSource(code, err);
@@ -8208,7 +8454,32 @@ b=prop(convert);
         public void TV105_Defect_1467409()
         {
             String code =
-@"def foo ( x1: int, y1 : int ){    return = x1;}class A {}a=A.A();r=a.foo(); // calling a non-exist function shouldn't get a warning at complie timeb = foo1();d = foo(2, A.A() );f = foo3();r1;b1;d1;[Imperative]{    r1=a.foo();     b1 = foo1();    d1 = foo(2, A.A() );}def foo3(){    r2=a.foo();     b2 = foo1();    d2 = foo(2, A.A() );    return = { r2, b2, d2 };}";
+@"
+def foo ( x1: int, y1 : int )
+{
+    return = x1;
+}
+class A {}
+a=A.A();
+r=a.foo(); // calling a non-exist function shouldn't get a warning at complie time
+b = foo1();
+d = foo(2, A.A() );
+f = foo3();
+r1;b1;d1;
+[Imperative]
+{
+    r1=a.foo(); 
+    b1 = foo1();
+    d1 = foo(2, A.A() );
+}
+def foo3()
+{
+    r2=a.foo(); 
+    b2 = foo1();
+    d2 = foo(2, A.A() );
+    return = { r2, b2, d2 };
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             string err = "DNL-1467409 Please disable static analysis warnings for function resolution"; ;
             thisTest.RunScriptSource(code, err);
@@ -8228,7 +8499,13 @@ b=prop(convert);
         public void TV106_1467455()
         {
             String code =
-                @"                def foo ()                {                    return 2;                }                a= foo()                ";
+                @"
+                def foo ()
+                {
+                    return 2;
+                }
+                a= foo()
+                ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             string err = ""; ;
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -8298,7 +8575,10 @@ result3 =
         [Category("SmokeTest")]
         public void T63_Function_notDeclared()
         {
-            String code = @"            import(""Math.dll"");            def foo : double(arg : double) = arg + 1;            a = foo(""a""); ";
+            String code = @"
+            import(""Math.dll"");
+            def foo : double(arg : double) = arg + 1;
+            a = foo(""a""); ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", null);
@@ -8309,7 +8589,9 @@ result3 =
         [Category("SmokeTest")]
         public void T64_Function_notDeclared_2()
         {
-            String code = @"x = foo(); // null";
+            String code = @"
+x = foo(); // null
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x", null);
@@ -8320,7 +8602,11 @@ result3 =
         [Category("SmokeTest")]
         public void T64_Function_notDeclared_3()
         {
-            String code = @"import(""Math.dll"");c = Math.Floor(3.0);d = Floor(3);";
+            String code = @"
+import(""Math.dll"");
+c = Math.Floor(3.0);
+d = Floor(3);
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", null);
@@ -8331,7 +8617,15 @@ result3 =
         [Category("SmokeTest")]
         public void T64_Function_notDeclared_imperative_4()
         {
-            String code = @"import(""Math.dll"");c;d;[Imperative]{    c = Math.Floor(3.0);    d = Floor(3);}";
+            String code = @"
+import(""Math.dll"");
+c;d;
+[Imperative]
+{
+    c = Math.Floor(3.0);
+    d = Floor(3);
+}
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("d", null);
@@ -8342,7 +8636,12 @@ result3 =
         [Category("SmokeTest")]
         public void T65_1467115_warning_on_function_resolution_1()
         {
-            String code = @"x = { 1,2};t = 0;y = x[null];p = y + 1;";
+            String code = @"
+x = { 1,2};
+t = 0;
+y = x[null];
+p = y + 1;
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("p", null);
@@ -8353,7 +8652,18 @@ result3 =
         [Category("SmokeTest")]
         public void T65_1467115_warning_on_function_resolution_2()
         {
-            String code = @"a ;b ;[Associative]{    a = 10;    b = a * 2;    a = { 5, 10, 15 };        a = 5..15..2;}";
+            String code = @"
+a ;
+b ;
+[Associative]
+{
+    a = 10;
+    b = a * 2;
+    a = { 5, 10, 15 };
+    
+    a = 5..15..2;
+}
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", new Object[] { 10, 14, 18, 22, 26, 30 });
@@ -8364,7 +8674,22 @@ result3 =
         [Category("SmokeTest")]
         public void T65_1467115_warning_on_function_resolution_3()
         {
-            String code = @"def foo (a : int){    return = 1;}def foo(b : double){    return = 2;}def foo(b : double[]){    return = 3;}x = { 1.0, 5, 2.4};p = foo(x);";
+            String code = @"
+def foo (a : int)
+{
+    return = 1;
+}
+def foo(b : double)
+{
+    return = 2;
+}
+def foo(b : double[])
+{
+    return = 3;
+}
+x = { 1.0, 5, 2.4};
+p = foo(x);
+";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("p", new Object[] { 2, 1, 1 });
