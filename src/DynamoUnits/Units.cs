@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
 using System.Text.RegularExpressions;
 using DynamoUnits;
 using Double = System.Double;
@@ -394,56 +393,67 @@ namespace Dynamo.Units
             return x % y.Value;
         }
 
+        public static bool operator >(double x, SIUnit y)
+        {
+            return x > y.Value;
+        }
+
+        public static bool operator >(SIUnit x, double y)
+        {
+            return x.Value > y;
+        }
+
+        public static bool operator >(SIUnit x, SIUnit y)
+        {
+            return x.GetType() == y.GetType() && x.Value > y.Value;
+        }
+
+        public static bool operator <(double x, SIUnit y)
+        {
+            return x < y.Value;
+        }
+
+        public static bool operator <(SIUnit x, double y)
+        {
+            return x.Value < y;
+        }
+
+        public static bool operator <(SIUnit x, SIUnit y)
+        {
+            return x.GetType() == y.GetType() && x.Value < y.Value;
+        }
+
+        public static bool operator >=(double x, SIUnit y)
+        {
+            return x >= y.Value;
+        }
+
+        public static bool operator >=(SIUnit x, double y)
+        {
+            return x.Value >= y;
+        }
+
+        public static bool operator >=(SIUnit x, SIUnit y)
+        {
+            return x.GetType() == y.GetType() && x.Value >= y.Value;
+        }
+
+        public static bool operator <=(double x, SIUnit y)
+        {
+            return x <= y.Value;
+        }
+
+        public static bool operator <=(SIUnit x, double y)
+        {
+            return x.Value <= y;
+        }
+
+        public static bool operator <=(SIUnit x, SIUnit y)
+        {
+            return x.GetType() == y.GetType() && x.Value <= y.Value;
+        }
+
         #endregion
-
-        /// <summary>
-        /// Unwrap an FScheme value containing a number or a unit to a double.
-        /// If the value contains a unit object, convert the internal value of the
-        /// unit object to the units required by the host application as specified
-        /// in the preference settings. If the value contains a number, do not 
-        /// apply a conversion.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static FScheme.Value UnwrapToDoubleWithHostUnitConversion(FScheme.Value value)
-        {
-            if (value.IsList)
-            {
-                //recursively convert items in list
-                return ConvertListToHostUnits((FScheme.Value.List)value);
-            }
-
-            if (value.IsContainer)
-            {
-                var unit = ((FScheme.Value.Container)value).Item as SIUnit;
-                if (unit != null)
-                {
-                    return FScheme.Value.NewNumber(unit.ConvertToHostUnits());
-                }
-            }
-
-            return value;
-        }
-
-        public static FScheme.Value ConvertListToHostUnits(FScheme.Value.List value)
-        {
-            var list = value.Item;
-            return FScheme.Value.NewList(FSchemeInterop.Utils.ToFSharpList(list.Select(UnwrapToDoubleWithHostUnitConversion)));
-        }
-
-        public static SIUnit UnwrapToSIUnit(FScheme.Value value)
-        {
-            if (value.IsContainer)
-            {
-                var measure = ((FScheme.Value.Container)value).Item as SIUnit;
-                if (measure != null)
-                {
-                    return measure;
-                }
-            }
-
-            throw new Exception("The value was not convertible to a unit of measure.");
-        }
 
         public abstract double ConvertToHostUnits();
     }
@@ -663,6 +673,21 @@ namespace Dynamo.Units
             else
                 throw new ArgumentException("Object is not a Length");
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+
+            var length = obj as Length;
+            if (length == null)
+            {
+                return false;
+            }
+            return length.Value == _value;
+        }
     }
 
     /// <summary>
@@ -832,17 +857,6 @@ namespace Dynamo.Units
             return BuildString(_units.AreaUnit);
         }
 
-        public int CompareTo(object obj)
-        {
-            if (obj == null) return 1;
-
-            var otherArea = obj as Area;
-            if (otherArea != null)
-                return _value.CompareTo(otherArea.Value);
-            else
-                throw new ArgumentException("Object is not an Area");
-        }
-
         public string ToString(DynamoAreaUnit unit)
         {
             return BuildString(unit);
@@ -874,6 +888,31 @@ namespace Dynamo.Units
 
         #endregion
 
+        public int CompareTo(object obj)
+        {
+            if (obj == null) return 1;
+
+            var otherArea = obj as Area;
+            if (otherArea != null)
+                return _value.CompareTo(otherArea.Value);
+            else
+                throw new ArgumentException("Object is not an Area");
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+
+            var area = obj as Area;
+            if (area == null)
+            {
+                return false;
+            }
+            return area.Value == _value;
+        }
     }
 
     /// <summary>
@@ -1076,6 +1115,20 @@ namespace Dynamo.Units
                 throw new ArgumentException("Object is not a Volume");
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+
+            var volume = obj as Volume;
+            if (volume == null)
+            {
+                return false;
+            }
+            return volume.Value == _value;
+        }
     }
 
     /// <summary>
