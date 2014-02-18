@@ -73,25 +73,16 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
 
             string openPath = Path.Combine(examplePath, "multi.dyn");
-            model.Open(openPath);
+            RunModel(openPath);
 
-            dynSettings.Controller.RunExpression();
+            Dictionary<int, object> validationData = new Dictionary<int,object>()
+            {
 
-            var splitListVal = model.CurrentWorkspace.FirstNodeFromWorkspace<DeCons>().OldValue;
+                {1,0},
+            };
 
-            Assert.IsInstanceOf<FScheme.Value.List>(splitListVal);
+            SelectivelyAssertPreviewValues("a4d6ecce-0fe7-483d-a4f2-cd8cddefa25c", validationData);
 
-            var outs = (splitListVal as FScheme.Value.List).Item;
-
-            Assert.AreEqual(2, outs.Length);
-
-            var out1 = outs[0];
-            Assert.IsInstanceOf<FScheme.Value.Number>(out1);
-            Assert.AreEqual(0, (out1 as FScheme.Value.Number).Item);
-
-            var out2 = outs[1];
-            Assert.IsInstanceOf<FScheme.Value.List>(out2);
-            Assert.IsTrue((out2 as FScheme.Value.List).Item.IsEmpty);
         }
 
         [Test]
@@ -101,21 +92,11 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
 
             string openPath = Path.Combine(examplePath, "partial-multi.dyn");
-            model.Open(openPath);
+            RunModel(openPath);
 
-            dynSettings.Controller.RunExpression();
+            AssertPreviewValue("3005609b-ceaa-451f-9b6c-6ca957358ad6", new int[]{0});
 
-            var firstWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("3005609b-ceaa-451f-9b6c-6ca957358ad6");
-
-            Assert.IsInstanceOf<FScheme.Value.List>(firstWatch.OldValue);
-            Assert.IsInstanceOf<FScheme.Value.Number>((firstWatch.OldValue as FScheme.Value.List).Item[0]);
-            Assert.AreEqual(0, ((firstWatch.OldValue as FScheme.Value.List).Item[0] as FScheme.Value.Number).Item);
-
-            var restWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("2787f566-7612-41d1-8cec-8212fea58c8b");
-
-            Assert.IsInstanceOf<FScheme.Value.List>(restWatch.OldValue);
-            Assert.IsInstanceOf<FScheme.Value.List>((restWatch.OldValue as FScheme.Value.List).Item[0]);
-            Assert.IsTrue(((restWatch.OldValue as FScheme.Value.List).Item[0] as FScheme.Value.List).Item.IsEmpty);
+            AssertPreviewValue("2787f566-7612-41d1-8cec-8212fea58c8b", new int[]{});
         }
 
         [Test]
@@ -535,11 +516,9 @@ namespace Dynamo.Tests
             var pathNode = (StringFilename)model.Nodes.First(x => x is StringFilename);
             pathNode.Value = Path.Combine(examplePath,"honey-badger.jpg");
 
-            dynSettings.Controller.RunExpression(null);
+            RunModel(openPath);
 
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4744f516-c6b5-421c-b7f1-1731610667bb");
-            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
-            Assert.AreEqual(25, doubleWatchVal, 0.00001);
+            AssertPreviewValue("4744f516-c6b5-421c-b7f1-1731610667bb", 25);
         }
 
         [Test]

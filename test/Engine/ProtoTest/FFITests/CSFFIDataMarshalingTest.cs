@@ -93,6 +93,12 @@ namespace ProtoFFITests
                 yield return item * 2;
             }
         }
+
+        public static int AddWithDefaultArgument(int x, int y = 100)
+        {
+            return x + y;
+        }
+
         public object[] GetMixedObjects()
         {
             object[] objs = { new DerivedDummy(), new Derived1(), new TestDispose(), new DummyDispose() };
@@ -430,6 +436,7 @@ namespace ProtoFFITests
             return 0;
         }
     }
+
     class CSFFIDataMarshalingTest : FFITestSetup
     {
 
@@ -774,6 +781,18 @@ namespace ProtoFFITests
             string code =
                 @" t = TestData.TestData();                   d = t.GetDictionary();                     r1 = d[""weight""];";
             ValidationData[] data = { new ValidationData { ValueName = "r1", ExpectedValue = 42, BlockIndex = 0 } };
+            Type dummy = Type.GetType("ProtoFFITests.TestData");
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void Test_DefaultArgument()
+        {
+            string code =
+                @" d = TestData.AddWithDefaultArgument(42);  
+";
+            ValidationData[] data = { new ValidationData { ValueName = "d", ExpectedValue = 142} };
             Type dummy = Type.GetType("ProtoFFITests.TestData");
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ExecuteAndVerify(code, data);

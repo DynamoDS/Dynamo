@@ -624,7 +624,7 @@ namespace ProtoCore.Utils
             if (StackUtils.IsString(array) && value.optype != AddressType.Char)
             {
                 core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, RuntimeData.WarningMessage.kAssignNonCharacterToString);
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             lock (core.Heap.cslock)
@@ -666,7 +666,7 @@ namespace ProtoCore.Utils
                 StackValue oldValue;
                 if (!he.Dict.TryGetValue(index, out oldValue))
                 {
-                    oldValue = StackUtils.BuildNull();
+                    oldValue = StackValue.Null;
                 }
 
                 GCUtils.GCRetain(index, core);
@@ -739,7 +739,7 @@ namespace ProtoCore.Utils
             StackValue[][] zippedIndices = ArrayUtils.GetZippedIndices(indices, core);
             if (zippedIndices == null || zippedIndices.Length == 0)
             {
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             if (zippedIndices.Length == 1)
@@ -805,7 +805,7 @@ namespace ProtoCore.Utils
             Validity.Assert(StackUtils.IsArray(array) || StackUtils.IsString(array));
             if (!StackUtils.IsArray(array) && !StackUtils.IsString(array))
             {
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             HeapElement he = GetHeapElement(array, core);
@@ -826,7 +826,7 @@ namespace ProtoCore.Utils
             Validity.Assert(StackUtils.IsArray(array) || StackUtils.IsString(array));
             if (!StackUtils.IsArray(array) && !StackUtils.IsString(array))
             {
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             if (StackUtils.IsNumeric(index))
@@ -860,12 +860,12 @@ namespace ProtoCore.Utils
                     }
                 }
 
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
             else
             {
                 HeapElement he = GetHeapElement(array, core);
-                StackValue value = StackUtils.BuildNull();
+                StackValue value = StackValue.Null;
 
                 if (he.Dict != null && he.Dict.TryGetValue(index, out value))
                 {
@@ -873,7 +873,7 @@ namespace ProtoCore.Utils
                 }
                 else
                 {
-                    return StackUtils.BuildNull();
+                    return StackValue.Null;
                 }
             }
         }
@@ -904,7 +904,7 @@ namespace ProtoCore.Utils
                     if (array.optype != AddressType.ArrayPointer)
                     {
                         core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
-                        return StackUtils.BuildNull();
+                        return StackValue.Null;
                     }
                     array = GetValueFromIndex(array, index, core);
                 }
@@ -912,7 +912,7 @@ namespace ProtoCore.Utils
                 if (!StackUtils.IsArray(array) && !StackUtils.IsString(array))
                 {
                     core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
-                    return StackUtils.BuildNull();
+                    return StackValue.Null;
                 }
             }
 
@@ -936,13 +936,13 @@ namespace ProtoCore.Utils
             else if (!StackUtils.IsArray(array) && !StackUtils.IsString(array))
             {
                 core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             StackValue[][] zippedIndices = ArrayUtils.GetZippedIndices(indices, core);
             if (zippedIndices == null || zippedIndices.Length == 0)
             {
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             StackValue[] values = new StackValue[zippedIndices.Length];
@@ -990,7 +990,7 @@ namespace ProtoCore.Utils
             Validity.Assert(StackUtils.IsArray(array));
             if (!StackUtils.IsArray(array))
             {
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             HeapElement he = GetHeapElement(array, core);
@@ -1139,7 +1139,7 @@ namespace ProtoCore.Utils
 
             for (int i = 0; i < he.VisibleSize; ++i)
             {
-                keys.Add(StackUtils.BuildInt(i));
+                keys.Add(StackValue.BuildInt(i));
             }
 
             if (he.Dict != null)
@@ -1205,7 +1205,7 @@ namespace ProtoCore.Utils
                 if (index >= 0 && index < he.VisibleSize)
                 {
                     StackValue oldValue = he.Stack[index];
-                    he.Stack[index] = StackUtils.BuildNull();
+                    he.Stack[index] = StackValue.Null;
 
                     if (index == he.VisibleSize - 1)
                     {
@@ -1242,7 +1242,7 @@ namespace ProtoCore.Utils
                 key.opdata < 0 ||
                 key.opdata_d < 0)
             {
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             int ptr = (int)key.opdata_d;
@@ -1257,7 +1257,7 @@ namespace ProtoCore.Utils
                 return newKey;
             }
 
-            return StackUtils.BuildNull();
+            return StackValue.Null;
         }
     }
 }

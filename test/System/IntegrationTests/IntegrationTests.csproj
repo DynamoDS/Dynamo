@@ -113,9 +113,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Engine\GraphToDSCompiler\GraphToDSCompiler.csproj">
+      <Project>{593be9fc-7482-4cd6-9f87-77e7ac5cdff2}</Project>
+      <Name>GraphToDSCompiler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
       <Name>ProtoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Engine\ProtoScript\ProtoScript.csproj">
+      <Project>{A4794476-7D0E-41C0-AD83-4AB929C0A46C}</Project>
+      <Name>ProtoScript</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Engine\FFITarget\FFITarget.csproj">
       <Project>{c70fe632-5500-4c57-b3d6-9b5574137551}</Project>

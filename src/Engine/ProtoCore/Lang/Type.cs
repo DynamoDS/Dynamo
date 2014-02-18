@@ -328,7 +328,7 @@ namespace ProtoCore
             return classTable.IndexOf(ident);
         }
 
-        public int GetType(ProtoCore.DSASM.StackValue sv)
+        public int GetType(StackValue sv)
         {
             int type = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
             if (sv.IsReferenceType())
@@ -366,7 +366,7 @@ namespace ProtoCore
             //@TODO: Add proper coersion testing here.
 
             if (targetType.UID == (int)PrimitiveType.kTypeBool)
-                return StackUtils.BuildBoolean(true);
+                return StackValue.BuildBoolean(true);
 
             return sv.ShallowClone();
         }
@@ -397,7 +397,7 @@ namespace ProtoCore
                 || sv.optype == AddressType.ArrayPointer))
             {
                 core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kConversionNotPossible, ProtoCore.RuntimeData.WarningMessage.kConvertNonConvertibleTypes);
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
             //if it's an array
@@ -407,7 +407,7 @@ namespace ProtoCore
                 //this may only be performed in recursion and is illegal here
                 string errorMessage = String.Format(ProtoCore.RuntimeData.WarningMessage.kConvertArrayToNonArray, core.TypeSystem.GetType(targetType.UID));
                 core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kConversionNotPossible, errorMessage);
-                return StackUtils.BuildNull();
+                return StackValue.Null;
             }
 
 
@@ -521,7 +521,7 @@ namespace ProtoCore
                     if (sv.metaData.type != (int)PrimitiveType.kTypeFunctionPointer)
                     {
                         core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, ProtoCore.RuntimeData.WarningMessage.kFailToConverToFunction);
-                        return StackUtils.BuildNull();
+                        return StackValue.Null;
                     }
                     return sv.ShallowClone();
 
@@ -546,7 +546,7 @@ namespace ProtoCore
                         if (sv.metaData.type != (int)PrimitiveType.kTypeNull)
                         {
                             core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, ProtoCore.RuntimeData.WarningMessage.kFailToConverToNull);
-                            return StackUtils.BuildNull();
+                            return StackValue.Null;
                         }
                         return sv.ShallowClone();
                     }
@@ -556,7 +556,7 @@ namespace ProtoCore
                         if (sv.metaData.type != (int)PrimitiveType.kTypeNull)
                         {
                             core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, ProtoCore.RuntimeData.WarningMessage.kFailToConverToPointer);
-                            return StackUtils.BuildNull();
+                            return StackValue.Null;
                         }
                         StackValue ret = sv.ShallowClone();
                         return ret;
@@ -569,7 +569,7 @@ namespace ProtoCore
                         if (sv.metaData.type == (int)PrimitiveType.kTypeChar)
                         {
                             char ch = ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(newSV.opdata);
-                            newSV = StackUtils.BuildString(ch.ToString(), core.Heap);
+                            newSV = StackValue.BuildString(ch.ToString(), core.Heap);
                         }
                         return newSV;
                     }
@@ -586,7 +586,7 @@ namespace ProtoCore
 
                 default:
                     if (sv.optype == AddressType.Null)
-                        return StackUtils.BuildNull();
+                        return StackValue.Null;
                     else
                         throw new NotImplementedException("Requested coercion not implemented");
             }

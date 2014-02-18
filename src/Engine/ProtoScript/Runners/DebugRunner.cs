@@ -551,11 +551,11 @@ namespace ProtoScript.Runners
 
             if (core.DebugProps.FirstStackFrame != null)
             {
-                core.DebugProps.FirstStackFrame.SetAt(ProtoCore.DSASM.StackFrame.AbsoluteIndex.kFramePointer, StackUtils.BuildInt(core.GlobOffset));
+                core.DebugProps.FirstStackFrame.SetAt(ProtoCore.DSASM.StackFrame.AbsoluteIndex.kFramePointer, StackValue.BuildInt(core.GlobOffset));
 
                 // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                 // Register TX is used for this.
-                StackValue svCallConvention = StackUtils.BuildNode(AddressType.CallingConvention, (long)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
+                StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
                 core.DebugProps.FirstStackFrame.SetAt(ProtoCore.DSASM.StackFrame.AbsoluteIndex.kRegisterTX, svCallConvention);
             }
             core.Bounce(resumeBlockID, programCounterToExecuteFrom, context, breakpoints, core.DebugProps.FirstStackFrame, locals, null, EventSink, fepRun);

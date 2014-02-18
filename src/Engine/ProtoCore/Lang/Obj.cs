@@ -1,4 +1,5 @@
 ﻿using System;
+using ProtoCore.DSASM;
 
 namespace ProtoCore.Lang
 {
@@ -8,9 +9,9 @@ namespace ProtoCore.Lang
         /// <summary>
         /// This represents a tieback value into the DSASM execution engine
         /// </summary>
-        public ProtoCore.DSASM.StackValue DsasmValue { get; private set; }
+        public StackValue DsasmValue { get; private set; }
 
-        public Obj(ProtoCore.DSASM.StackValue dsasmValue)
+        public Obj(StackValue dsasmValue)
         {
             DsasmValue = dsasmValue;
         }
