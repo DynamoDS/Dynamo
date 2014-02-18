@@ -19,19 +19,7 @@ namespace Dynamo
         [SetUp]
         public virtual void Init()
         {
-            ExecutingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string tempPath = Path.GetTempPath();
-
-            TempFolder = Path.Combine(tempPath, "dynamoTmp");
-
-            if (!Directory.Exists(TempFolder))
-            {
-                Directory.CreateDirectory(TempFolder);
-            }
-            else
-            {
-                EmptyTempFolder();
-            }
+            SetupDirectories();
         }
 
         [TearDown]
@@ -72,5 +60,17 @@ namespace Dynamo
             return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
         }
 
+        protected void SetupDirectories()
+        {
+            ExecutingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string tempPath = Path.GetTempPath();
+
+            TempFolder = Path.Combine(tempPath, "dynamoTmp");
+
+            if (!Directory.Exists(TempFolder))
+                Directory.CreateDirectory(TempFolder);
+            else
+                EmptyTempFolder();
+        }
     }
 }

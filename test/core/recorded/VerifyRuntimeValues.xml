@@ -1,7 +1,7 @@
 <Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
   <CreateNodeCommand NodeId="76b951e9-a815-4fb9-bec1-fbd1178fa113" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <CreateNodeCommand NodeId="1a3efb71-52df-46e8-95ab-a130e9a885ce" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <CreateNodeCommand NodeId="9182323d-a4fd-40eb-905b-8ec415d17926" NodeName="Add" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="9182323d-a4fd-40eb-905b-8ec415d17926" NodeName="+@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="76b951e9-a815-4fb9-bec1-fbd1178fa113" Modifiers="0" />
   <DragSelectionCommand X="260" Y="217" DragOperation="0" />
   <DragSelectionCommand X="126" Y="116" DragOperation="1" />
