@@ -84,6 +84,29 @@ cleanB = mtcB.WasCreatedWithTrace();
 
         }
 
+        [Test]
+        [Category("Trace")]
+        public void ReplicatedCallsToFEPWithIDs()
+        {
+            //Verify that multiple calls to the same FEP from different callsites
+            //do not over-increment
+
+            var mirror = thisTest.RunScriptSource(
+@"import(""FFITarget.dll"");
+mtcA = IncrementerTracedClass.IncrementerTracedClass(0..3);
+cleanA = mtcA.WasCreatedWithTrace();
+ids = mtcA.ID;
+//cleanA == {false, false, false, false}
+
+"
+);
+
+            List<Object> allFalse4 = new List<Object> { false, false, false, false };
+            Assert.IsTrue(mirror.CompareArrays("cleanA", allFalse4, typeof(bool)));
+
+        }
+
+
 
         [Test]
         [Category("Trace")]
@@ -236,8 +259,71 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             AssertValue("mtcAID", 0);
             AssertValue("mtcAWasTraced", true);
         }
-        
 
+        [Test]
+        [Category("Trace")]
+        public void IntermediateValueIncrementerIDTestUpdate1DReplicated()
+        {
+            string setupCode =
+            @"import(""FFITarget.dll""); 
+x = 0..2; 
+mtcA = IncrementerTracedClass.IncrementerTracedClass(x); 
+mtcAID = mtcA.ID;
+mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
+
+
+            // Create 2 CBNs
+
+            List<Subtree> added = new List<Subtree>();
+
+
+            // Simulate a new new CBN
+            Guid guid1 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("mtcAID", new List<int>()
+                {
+                    0,
+                    1,
+                    2
+                });
+            AssertValue("mtcAWasTraced", new List<bool>()
+                {
+                    false,
+                    false,
+                    false
+                });
+
+
+
+            // Simulate a new new CBN
+            Guid guid2 = System.Guid.NewGuid();
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid2, "x = 1..3;"));
+
+
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Verify that a is re-executed
+            AssertValue("mtcAID",new List<int>()
+            {
+                0,
+                1 ,
+                2
+            }
+        );
+            AssertValue("mtcAWasTraced", new List<bool>()
+                {
+                    true,
+                    true,
+                    true
+                });
+        }
+        
         
         //Migrate this code into the test framework
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
