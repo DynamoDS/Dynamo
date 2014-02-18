@@ -218,3 +218,35 @@ def Filter(functionObject: _FunctionObject, list: var[])
         return = _resultList;
     }
 }
+
+def FilterOut(functionObject: _FunctionObject, list: var[])
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = {};
+        }
+
+        _resultList = {};
+        _index = 0;
+
+        for (_i in 0..(_count - 1))
+        {
+            _value = list[_i];
+            if (!functionObject.DoEvaluate(_value))
+            {
+                _resultList[_index] = _value;
+                _index = _index + 1;
+            }
+        }
+
+        return = _resultList;
+    }
+}
