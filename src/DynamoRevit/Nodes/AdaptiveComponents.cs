@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.Creation;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
@@ -53,7 +54,7 @@ namespace Dynamo.Nodes
                     {
                         //if we've found an instance, change its symbol if it needs
                         //changing
-                        if (instance.Symbol != symbol)
+                        if (instance.Symbol.Id != symbol.Id)
                             instance.Symbol = symbol;
 
                         //update the placement points and add the 
@@ -90,9 +91,11 @@ namespace Dynamo.Nodes
             FSharpList<Value> results = FSharpList<Value>.Empty;
 
             sw.Start();
+            
+            ICollection<ElementId> ids = new List<ElementId>();
+
             if (instData.Any())
-            {
-                ICollection<ElementId> ids;
+            {    
                 if (DocumentManager.GetInstance().CurrentUIDocument.Document.IsFamilyDocument)
                 {
                     ids = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewFamilyInstances2(instData);
@@ -100,6 +103,13 @@ namespace Dynamo.Nodes
                 else
                 {
                     ids = DocumentManager.GetInstance().CurrentUIDocument.Document.Create.NewFamilyInstances2(instData);
+                }
+                if (ids.Count > 0)
+                {
+                    //hack to force regeneration. There should be a better way!!
+                    XYZ moveVec = new XYZ(0.0, 0.0, 0.0);
+                    ElementTransformUtils.MoveElement(this.UIDocument.Document, ids.ElementAt(0), moveVec);
+
                 }
 
                 //add our batch-created instances ids'
@@ -111,27 +121,42 @@ namespace Dynamo.Nodes
             sw.Reset();
 
             sw.Start();
+           
             //make sure the ids list and the XYZ sets list
             //have the same length
             if (count != xyzs.Count())
             {
+                foreach (var eId in ids)
+                {
+                    DeleteElement(eId);
+                }
                 throw new Exception("There are more adaptive component instances than there are points to adjust.");
             }
-
-            for (var j = 0; j < Elements.Count; j++)
+            try
             {
-                if (updated.Contains(Elements[j]))
+                for (var j = 0; j < Elements.Count; j++)
                 {
-                    continue;
-                }
+                    if (updated.Contains(Elements[j]))
+                    {
+                        continue;
+                    }
 
-                FamilyInstance ac;
-                if (!dynUtils.TryGetElement(Elements[j], out ac))
+                    FamilyInstance ac;
+                    if (!dynUtils.TryGetElement(Elements[j], out ac))
+                    {
+                        continue;
+                    }
+
+                    UpdatePlacementPoints(ac, xyzs, j);
+                }
+            }
+            catch (Exception ex)
+            {
+                foreach (var eId in ids)
                 {
-                    continue;
+                    DeleteElement(eId);
                 }
-
-                UpdatePlacementPoints(ac, xyzs, j);
+                throw ex;
             }
             sw.Stop();
             Debug.WriteLine(string.Format("{0} elapsed for updating remaining instance locations.", sw.Elapsed));
