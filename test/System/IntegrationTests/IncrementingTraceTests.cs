@@ -186,9 +186,60 @@ x = 1;
             AssertValue("a", 3);
 
         }
+
+
+
+        [Test]
+        [Category("Trace")]
+        public void IntermediateValueIncrementerIDTestUpdate()
+        {
+            //Test to ensure that the first time the code is executed the wasTraced attribute is marked as false
+            //and the secodn time it is marked as true
+
+
+            string setupCode = 
+            @"import(""FFITarget.dll""); 
+x = 0; 
+mtcA = IncrementerTracedClass.IncrementerTracedClass(x); 
+mtcAID = mtcA.ID;
+mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
+            
+
+            
+            // Create 2 CBNs
+
+            List<Subtree> added = new List<Subtree>();
+
+
+            // Simulate a new new CBN
+            Guid guid1 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("mtcAID", 0);
+            AssertValue("mtcAWasTraced", false);
+
+
+
+            // Simulate a new new CBN
+            Guid guid2 = System.Guid.NewGuid();
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid2, "x = 1;"));
+
+
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Verify that a is re-executed
+            AssertValue("mtcAID", 0);
+            AssertValue("mtcAWasTraced", true);
+        }
         
+
         
-        
+        //Migrate this code into the test framework
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
             CodeBlockNode commentCode;
