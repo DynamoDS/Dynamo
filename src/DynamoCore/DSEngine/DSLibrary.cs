@@ -492,6 +492,7 @@ namespace Dynamo.DSEngine
             {
                 "ProtoGeometry.dll",
                 "DSCoreNodes.dll",
+                "DSOffice.dll",
                 "FunctionObject.ds"
             };
 
