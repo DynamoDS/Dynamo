@@ -41,18 +41,18 @@ namespace ProtoCore.Utils
                 return -1;
         }
 
-        public static string GetStringValue(ProtoCore.DSASM.StackValue sv, Core core)
+        public static string GetStringValue(StackValue sv, Core core)
         {
             ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(new ProtoCore.DSASM.Executive(core), core);
             return mirror.GetStringValue(sv, core.Heap, 0, true);
         }
 
-        public static ProtoCore.DSASM.StackValue ConvertToString(ProtoCore.DSASM.StackValue sv, Core core, ProtoCore.Runtime.RuntimeMemory rmem)
+        public static StackValue ConvertToString(StackValue sv, Core core, ProtoCore.Runtime.RuntimeMemory rmem)
         {
-            ProtoCore.DSASM.StackValue returnSV;
+            StackValue returnSV;
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
             ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(new ProtoCore.DSASM.Executive(core), core);
-            returnSV = ProtoCore.DSASM.StackUtils.BuildString(mirror.GetStringValue(sv, core.Heap,0, true),core.Heap);
+            returnSV = ProtoCore.DSASM.StackValue.BuildString(mirror.GetStringValue(sv, core.Heap,0, true),core.Heap);
             return returnSV;
         }
 
@@ -61,7 +61,7 @@ namespace ProtoCore.Utils
             StackValue[] v1 = (AddressType.String == op1.optype) ? rmem.GetArrayElements(op1) : new StackValue[] { op1 };
             StackValue[] v2 = (AddressType.String == op2.optype) ? rmem.GetArrayElements(op2) : new StackValue[] { op2 };
             StackValue tmp = rmem.BuildArray(v1.Concat(v2).ToArray());
-            return StackUtils.BuildString(tmp.opdata);
+            return StackValue.BuildString(tmp.opdata);
         }
     }
 }

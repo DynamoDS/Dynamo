@@ -81,7 +81,7 @@ namespace ProtoCore.Lang
         //    object returnedData = mFunctionPointer.Execute(c, interpreter);
 
         //    // Build the result
-        //    StackValue sv = StackUtils.BuildInt((int)returnedData);
+        //    StackValue sv = StackValue.BuildInt((int)returnedData);
 
         //    return DSASM.Mirror.ExecutionMirror.Unpack(sv, core.heap, core);
             
@@ -142,7 +142,7 @@ namespace ProtoCore.Lang
             object returnedData = mFunctionPointer.Execute(c, interpreter);
 
             // Build the result
-            StackValue sv = StackUtils.BuildInt((int)returnedData);
+            StackValue sv = StackValue.BuildInt((int)returnedData);
 
             return sv; //DSASM.Mirror.ExecutionMirror.Unpack(sv, core.heap, core);
 

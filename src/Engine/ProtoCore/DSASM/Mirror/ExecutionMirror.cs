@@ -238,11 +238,7 @@ namespace ProtoCore.DSASM.Mirror
                         string propValue = "";
                         if (symbol.isStatic)
                         {
-                            StackValue opSymbol = new StackValue();
-                            opSymbol.opdata = symbol.symbolTableIndex;
-                            opSymbol.optype = AddressType.StaticMemVarIndex;
-
-                            StackValue staticProp = this.core.Rmem.GetStackData(langblock, (int)opSymbol.opdata, Constants.kGlobalScope);
+                            StackValue staticProp = this.core.Rmem.GetStackData(langblock, symbol.symbolTableIndex, Constants.kGlobalScope);
                             propValue = GetStringValue(staticProp, heap, langblock, forPrint);
                         }
                         else
@@ -820,11 +816,11 @@ namespace ProtoCore.DSASM.Mirror
             StackValue sv;
             if (null == value)
             {
-                sv = StackUtils.BuildNull();
+                sv = StackValue.Null;
             }
             else
             {
-                sv = StackUtils.BuildInt((long)value);
+                sv = StackValue.BuildInt((long)value);
             }
             MirrorTarget.Modify_istream_instrList_FromSetValue(blockId, startpc, sv);
             return true;
@@ -869,11 +865,11 @@ namespace ProtoCore.DSASM.Mirror
             StackValue sv;
             if (null == value)
             {
-                sv = StackUtils.BuildNull();
+                sv = StackValue.Null;
             }
             else
             {
-                sv = StackUtils.BuildInt((long)value);
+                sv = StackValue.BuildInt((long)value);
             }
             MirrorTarget.Core.Rmem.Stack[globalStackIndex] = sv;
 
@@ -927,7 +923,7 @@ namespace ProtoCore.DSASM.Mirror
 
                         // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                         // Register TX is used for this.
-                        StackValue svCallConvention = StackUtils.BuildNode(AddressType.CallingConvention, (long)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
+                        StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
                         stackFrame.SetAt(ProtoCore.DSASM.StackFrame.AbsoluteIndex.kRegisterTX, svCallConvention);
 
                         core.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, context, stackFrame, locals, new ProtoCore.DebugServices.ConsoleEventSink());
@@ -948,7 +944,7 @@ namespace ProtoCore.DSASM.Mirror
             RuntimeMemory rmem = core.Rmem;
             SymbolNode symbol;
             int index = GetSymbolIndex(name, out classcope, ref block, out symbol);
-            StackValue sv = new StackValue();
+            StackValue sv;
             if (symbol.functionIndex == -1 && classcope != Constants.kInvalidIndex)
                 sv = rmem.GetMemberData(index, classcope);
             else
@@ -1043,7 +1039,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 }
             }
-            return StackUtils.BuildNull();
+            return StackValue.Null;
         }
 
         public StackValue GetRawFirstValue(string name, int startBlock = 0, int classcope = Constants.kGlobalScope)
@@ -1349,7 +1345,7 @@ namespace ProtoCore.DSASM.Mirror
                         heap.Heaplist[ptr].Stack[n] = sv[n];
                     }
 
-                    StackValue overallSv = StackUtils.BuildArrayPointer(ptr);
+                    StackValue overallSv = StackValue.BuildArrayPointer(ptr);
 
                     return overallSv;
                 }
