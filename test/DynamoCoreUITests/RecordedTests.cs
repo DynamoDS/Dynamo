@@ -1670,6 +1670,306 @@ namespace Dynamo.Tests.UI
         }
        
         #endregion
+
+        #region Tests moved from FScheme
+
+        [Test]
+        public void Defect_MAGN_159_AnotherScenario()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-159
+
+            RunCommandsFromFile("Defect_MAGN_159.xml", true);
+
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            AssertPreviewValue("045decd1-7454-4b85-b92e-d59d35f31ab2", 8);
+        }
+
+        [Ignore]
+        public void Defect_MAGN_160()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-160
+
+            // List node cannot be created  ( current limitation for button click)
+            RunCommandsFromFile("Defect_MAGN_160.xml");
+
+            //Assert.AreEqual(1, workspace.Nodes.Count);
+            //Assert.AreEqual(0, workspace.Connectors.Count);
+
+            //var number1 = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
+            //Assert.AreEqual(8, (number1.OldValue as FScheme.Value.Number).Item);
+        }
+
+        [Test]
+        public void Defect_MAGN_164()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-164
+
+            RunCommandsFromFile("Defect_MAGN_164.xml", true);
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            AssertPreviewValue("2e1e5f33-52fc-4cc9-9d4a-33e46ec64a53", 30);
+
+            AssertPreviewValue("a4ba7320-3cb8-4524-bc8c-8688d7abc599", "Dynamo");
+        }
+
+        [Test]
+        public void Defect_MAGN_190()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-190
+            RunCommandsFromFile("Defect_MAGN_190.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count);
+
+        }
+
+        [Test]
+        public void Defect_MAGN_225()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-225
+
+            // TODO: Rename this XML to match the test case name.
+            RunCommandsFromFile("TestConnectionReplacementUndo.xml");
+            var nodes = workspaceViewModel.Nodes;
+
+            Assert.NotNull(nodes);
+            Assert.AreEqual(3, nodes.Count);
+        }
+
+        [Test]
+        public void Defect_MAGN_397()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-397
+            RunCommandsFromFile("Defect_MAGN_397.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count);
+        }
+
+        [Test]
+        public void Defect_MAGN_429()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-429
+            RunCommandsFromFile("Defect_MAGN_429.xml");
+
+            Assert.AreEqual(0, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+        }
+
+        [Test]
+        public void Defect_MAGN_478()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-478
+            RunCommandsFromFile("Defect_MAGN_478.xml");
+
+            Assert.AreEqual(1, workspace.Notes.Count);
+        }
+
+        [Test]
+        public void Defect_MAGN_491()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-491
+
+            // TODO: Rename this XML to match the test case name.
+            RunCommandsFromFile("Defect-MAGN-491.xml");
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(connectors);
+            Assert.AreEqual(2, connectors.Count);
+
+            // Get to the only two connectors in the session.
+            ConnectorViewModel firstConnector = connectors[0];
+            ConnectorViewModel secondConnector = connectors[1];
+
+            // Find out the corresponding ports they connect to.
+            Point firstPoint = firstConnector.ConnectorModel.End.Center;
+            Point secondPoint = secondConnector.ConnectorModel.End.Center;
+
+            Assert.AreEqual(firstPoint.X, firstConnector.CurvePoint3.X);
+            Assert.AreEqual(firstPoint.Y, firstConnector.CurvePoint3.Y);
+            Assert.AreEqual(secondPoint.X, secondConnector.CurvePoint3.X);
+            Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
+        }
+
+        [Test]
+        public void Defect_MAGN_520()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
+            RunCommandsFromFile("Defect_MAGN_520.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+        }
+
+        [Test]
+        public void Defect_MAGN_520_WithCrossSelection()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
+            RunCommandsFromFile("Defect_MAGN_520_WithCrossSelection.xml");
+
+            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+        }
+
+        [Test]
+        public void Defect_MAGN_57()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-57
+            RunCommandsFromFile("Defect_MAGN_57.xml");
+
+            Assert.AreEqual(7, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Connectors.Count);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_581()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-581
+            RunCommandsFromFile("Defect_MAGN_581.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count);
+        }
+
+        [Test]
+        public void ShiftSelectAllNode()
+        {
+            RunCommandsFromFile("ShiftSelectAllNode.xml");
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Connectors.Count);
+        }
+
+        [Test]
+        public void TestCreateConnectors()
+        {
+            RunCommandsFromFile("CreateNodesAndConnectors.xml");
+            Assert.AreEqual(4, workspace.Connectors.Count);
+        }
+
+        [Test]
+        public void TestCreateNodesAndRunExpression()
+        {
+            RunCommandsFromFile("CreateNodesAndRunExpression.xml");
+            AssertPreviewValue("cf8c52b1-fbee-4674-ba73-6ee0d09463f2", 6);
+
+        }
+
+        [Test]
+        public void TestCreateNodes()
+        {
+            RunCommandsFromFile("CreateNodesAndConnectors.xml");
+            Assert.AreEqual(5, workspace.Nodes.Count);
+        }
+
+        [Test]
+        public void TestDeleteCommands()
+        {
+            RunCommandsFromFile("CreateAndDeleteNodes.xml");
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+
+            // This dictionary maps each of the node GUIDs, to a Boolean 
+            // flag indicating that if the node exists or deleted.
+            Dictionary<string, bool> nodeExistenceMap = new Dictionary<string, bool>()
+            {
+                { "ba59fa31-919d-4e67-b7c6-b58589a7093f", true },
+                { "42058bba-c2fd-4e49-8d76-44c45d0dc597", false },
+                { "5c92e961-8095-49bb-828d-1f3c14f9a005", true },
+                { "d5ad0ff6-9314-4e22-947f-7ba967ad4758", false },
+                { "4d2b71b4-d2c1-4695-afcf-6f7ec05c71f5", true },
+                { "a71328b2-dee7-45d6-8070-44ecebc358d9", true },
+            };
+
+            VerifyModelExistence(nodeExistenceMap);
+        }
+
+        [Test]
+        public void TestUndoRedoNodesAndConnections()
+        {
+            RunCommandsFromFile("UndoRedoNodesAndConnections.xml");
+            Assert.AreEqual(2, workspace.Connectors.Count);
+
+            // This dictionary maps each of the node GUIDs, to a Boolean 
+            // flag indicating that if the node exists or deleted.
+            Dictionary<string, bool> nodeExistenceMap = new Dictionary<string, bool>()
+            {
+                { "fec0ae4f-f3b7-4b33-b728-c75e5415d73c", true },
+                { "168298c7-f003-48f8-a346-0061086f8e3a", true },
+                { "69ee3a47-0a9a-4746-ace3-6643d508f235", true },
+            };
+
+            VerifyModelExistence(nodeExistenceMap);
+        }
+
+        [Test]
+        public void TestUpdateNodeCaptions()
+        {
+            RunCommandsFromFile("UpdateNodeCaptions.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Notes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var number = GetNode("0b171995-528b-480a-b203-9cee49fcec9d") as DoubleInput;
+            var strIn = GetNode("d17de86f-0665-4e22-abd4-d16360ee17d7") as StringInput;
+            var note = GetNode("6aed237b-beb6-4a24-8774-9b7e29615be1") as NoteModel;
+
+            Assert.IsNotNull(number);
+            Assert.IsNotNull(strIn);
+            Assert.IsNotNull(note);
+
+            Assert.AreEqual("Caption 1", number.NickName);
+            Assert.AreEqual("Caption 2", strIn.NickName);
+            Assert.AreEqual("Caption 3", note.Text);
+        }
+
+        [Test]
+        public void TestUpdateNodeContents()
+        {
+            RunCommandsFromFile("UpdateNodeContents.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count);
+
+            var number = GetNode("2ba65a2e-c3dd-4d27-9d18-9bf123835fb8") as DoubleInput;
+            var slider = GetNode("2279f845-4ba9-4300-a6c3-a566cd8b4a32") as DoubleSliderInput;
+            var strIn = GetNode("d33abcb6-50fd-4d18-ac89-87adb2d28053") as StringInput;
+            var formula = GetNode("540fffbb-4f5b-4496-9231-eba5b04e388c") as Formula;
+            var sublist = GetNode("0a60f132-25a0-4b7c-85f2-3c31f39ef9da") as Sublists;
+
+            Assert.IsNotNull(number);
+            Assert.IsNotNull(slider);
+            Assert.IsNotNull(strIn);
+            Assert.IsNotNull(formula);
+            Assert.IsNotNull(sublist);
+
+            Assert.AreEqual("12.34", number.Value);
+            Assert.AreEqual(23.45, slider.Min, 0.000001);
+            Assert.AreEqual(34.56, slider.Value, 0.000001);
+            Assert.AreEqual(45.67, slider.Max, 0.000001);
+            Assert.AreEqual("Test String Input", strIn.Value);
+            Assert.AreEqual("d", sublist.Value);
+
+            Assert.AreEqual("a+b+c", formula.FormulaString);
+            Assert.AreEqual(3, formula.InPorts.Count);
+            Assert.AreEqual(1, formula.OutPorts.Count);
+        }
+
+        [Test]
+        public void TestVerifyRuntimeValues()
+        {
+            RunCommandsFromFile("VerifyRuntimeValues.xml", true);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count);
+
+            AssertPreviewValue("9182323d-a4fd-40eb-905b-8ec415d17926", 69.12);
+        }
+
+        #endregion
     }
 
 #endif
