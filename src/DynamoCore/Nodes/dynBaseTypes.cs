@@ -5114,13 +5114,17 @@ namespace Dynamo.Nodes
             // Get attributes from old child node
             XmlElement newChild1 = data.Document.CreateElement("System.Double");
             XmlElement newChild2 = data.Document.CreateElement("Range");
-            
+
             foreach (XmlNode subNode in oldNode.ChildNodes)
+            {
                 foreach (XmlNode attr in subNode.Attributes)
+                {
                     if (attr.Name.Equals("value"))
                         newChild1.SetAttribute("value", attr.Value);
                     else
                         newChild2.SetAttribute(attr.Name, attr.Value);
+                }
+            }
 
             newNode.AppendChild(newChild1);
             newNode.AppendChild(newChild2);
@@ -5279,11 +5283,15 @@ namespace Dynamo.Nodes
             XmlElement newChild2 = data.Document.CreateElement("Range");
 
             foreach (XmlNode subNode in oldNode.ChildNodes)
+            {
                 foreach (XmlNode attr in subNode.Attributes)
+                {
                     if (attr.Name.Equals("value"))
                         newChild1.SetAttribute("value", attr.Value);
                     else
                         newChild2.SetAttribute(attr.Name, attr.Value);
+                }
+            }
 
             newNode.AppendChild(newChild1);
             newNode.AppendChild(newChild2);
