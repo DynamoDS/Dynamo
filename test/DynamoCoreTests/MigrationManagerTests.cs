@@ -138,6 +138,38 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestCreateCodeBlockNodeFrom00()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                MigrationManager.CreateCodeBlockNodeFrom(null);
+            });
+        }
+
+        [Test]
+        public void TestCreateCodeBlockNodeFrom01()
+        {
+            XmlElement srcElement = xmlDocument.CreateElement("Element");
+            srcElement.SetAttribute("isVisible", "true");
+            srcElement.SetAttribute("isUpstreamVisible", "false");
+            srcElement.SetAttribute("lacing", "Longest");
+
+            XmlElement dstElement = MigrationManager.CreateCodeBlockNodeFrom(srcElement);
+            Assert.IsNotNull(dstElement);
+            Assert.IsNotNull(dstElement.Attributes);
+
+            XmlAttributeCollection attribs = dstElement.Attributes;
+            Assert.AreEqual(7, attribs.Count);
+            Assert.AreEqual("true", attribs["isVisible"].Value);
+            Assert.AreEqual("false", attribs["isUpstreamVisible"].Value);
+            Assert.AreEqual("Disabled", attribs["lacing"].Value);
+            Assert.AreEqual("Dynamo.Nodes.CodeBlockNodeModel", attribs["type"].Value);
+            Assert.AreEqual(string.Empty, attribs["CodeText"].Value);
+            Assert.AreEqual("false", attribs["ShouldFocus"].Value);
+            Assert.AreEqual("Code Block", attribs["nickname"].Value);
+        }
+
+        [Test]
         public void NodeMigrationData00()
         {
             // Should have a default list that is empty.

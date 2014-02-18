@@ -395,6 +395,36 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Call this method to create an empty Code Block node, with all 
+        /// attributes carried over from an existing src XmlElement.
+        /// </summary>
+        /// <param name="srcElement">The source element from which the Code 
+        /// Block node XmlElement is constructed. All attributes of the source 
+        /// XmlElement will be copied over, and Code Block node specific 
+        /// attributes will be added.</param>
+        /// <returns>Returns an XmlElement that represents the resulting Code
+        /// Block node.</returns>
+        /// 
+        public static XmlElement CreateCodeBlockNodeFrom(XmlElement srcElement)
+        {
+            if (srcElement == null)
+                throw new ArgumentNullException("srcElement");
+
+            XmlDocument document = srcElement.OwnerDocument;
+            XmlElement dstElement = document.CreateElement("Dynamo.Nodes.CodeBlockNodeModel");
+
+            foreach (XmlAttribute attribute in srcElement.Attributes)
+                dstElement.SetAttribute(attribute.Name, attribute.Value);
+
+            dstElement.SetAttribute("CodeText", string.Empty);
+            dstElement.SetAttribute("ShouldFocus", "false");
+            dstElement.SetAttribute("nickname", "Code Block");
+            dstElement.SetAttribute("lacing", "Disabled");
+            dstElement.SetAttribute("type", "Dynamo.Nodes.CodeBlockNodeModel");
+            return dstElement;
+        }
+
+        /// <summary>
         /// Call this method to create a clone of the original XmlElement and 
         /// change its type at one go. This method preserves all the attributes 
         /// while updating only the type name.
