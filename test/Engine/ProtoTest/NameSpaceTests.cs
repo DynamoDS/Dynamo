@@ -121,5 +121,19 @@ namespace ProtoTest
             Assert.AreEqual("Com.Autodesk.Point", symbol.FullName);
             Assert.AreEqual(123, symbol.Id);
         }
+
+        [Test]
+        public void ResolveSymbol()
+        {
+            SymbolTable table = new SymbolTable();
+            table.AddSymbol("Com.Autodesk.Point");
+            table.AddSymbol("Com.Autodesk.Geometry.Point");
+
+            Symbol symbol = null;
+            Assert.IsTrue(table.TryGetUniqueSymbol("Com.Autodesk.Point", out symbol));
+            Assert.IsTrue(table.TryGetUniqueSymbol("Com.Autodesk.Geometry.Point", out symbol));
+            Assert.IsFalse(table.TryGetUniqueSymbol("Com.Point", out symbol));
+            Assert.IsFalse(table.TryGetUniqueSymbol("Point", out symbol));
+        }
     }
 }
