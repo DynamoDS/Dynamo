@@ -1253,6 +1253,12 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
         }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ForEach", "ForEach@_FunctionObject,var[]");
+        }
     }
 
     [NodeName("True For All")]
@@ -1269,6 +1275,12 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
         }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "TrueForAll", "TrueForAll@_FunctionObject,var[]");
+        }
     }
 
     [NodeName("True For Any")]
@@ -1284,6 +1296,12 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("any?", "Whether or not any elements satisfy the given predicate.", typeof(Value.List)));
 
             RegisterAllPorts();
+        }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "TrueForAny", "TrueForAny@_FunctionObject,var[]");
         }
     }
 

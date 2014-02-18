@@ -250,3 +250,90 @@ def FilterOut(functionObject: _FunctionObject, list: var[])
         return = _resultList;
     }
 }
+
+def TrueForAll(functionObject: _FunctionObject, list: var[])
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = true;
+        }
+
+        _index = 0;
+
+        for (_i in 0..(_count - 1))
+        {
+            _value = list[_i];
+            if (!functionObject.DoEvaluate(_value))
+            {
+                return = false;
+            }
+        }
+
+		return = true;
+    }
+}
+
+def TrueForAny(functionObject: _FunctionObject, list: var[])
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = true;
+        }
+
+        _index = 0;
+
+        for (_i in 0..(_count - 1))
+        {
+            _value = list[_i];
+            if (functionObject.DoEvaluate(_value))
+            {
+                return = true;
+            }
+        }
+
+		return = false;
+    }
+}
+
+def ForEach(functionObject: _FunctionObject, list: var[])
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = null;
+        }
+
+        _index = 0;
+
+        for (_i in 0..(_count - 1))
+        {
+            _value = list[_i];
+            list[_i] = functionObject.DoEvaluate(_value);
+        }
+
+		return = list;
+    }
+}
