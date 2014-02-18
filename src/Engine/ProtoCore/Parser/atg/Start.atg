@@ -400,7 +400,7 @@ COMPILER DesignScriptParser
     {
         var ident = new ProtoCore.AST.ImperativeAST.IdentifierNode();
         ident.Name = ident.Value = name;
-        ident.datatype = core.TypeSystem.BuildTypeObject(type, false);
+        ident.datatype = TypeSystem.BuildPrimitiveTypeObject(type, false);
         return ident;
     }
 
