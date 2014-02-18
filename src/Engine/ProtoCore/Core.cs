@@ -1736,7 +1736,7 @@ namespace ProtoCore
                     throw new NotImplementedException("Context that's aren't double are not yet supported @TODO: Jun,Sharad,Luke ASAP");
 
                 double dValue = Convert.ToDouble(global.Value);
-                StackValue svData = StackUtils.BuildDouble(dValue);
+                StackValue svData = StackValue.BuildDouble(dValue);
                 Rmem.SetGlobalStackData(stackIndex, svData);
             }
         }
@@ -2052,7 +2052,7 @@ namespace ProtoCore
         {
             if (stackFrame != null)
             {
-                ProtoCore.DSASM.StackValue svThisPtr = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kThisPtr);
+                StackValue svThisPtr = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kThisPtr);
                 int ci = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kClass).opdata;
                 int fi = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunction).opdata;
                 int returnAddr = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kReturnAddress).opdata;
@@ -2071,7 +2071,7 @@ namespace ProtoCore
 
             ProtoCore.Language id = DSExecutable.instrStreamList[exeblock].language;
             CurrentExecutive = Executives[id];
-            ProtoCore.DSASM.StackValue sv = Executives[id].Execute(exeblock, entry, context, sink);
+            StackValue sv = Executives[id].Execute(exeblock, entry, context, sink);
             return sv;
         }
 
@@ -2080,7 +2080,7 @@ namespace ProtoCore
         {
             if (stackFrame != null)
             {
-                ProtoCore.DSASM.StackValue svThisPtr = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kThisPtr);
+                StackValue svThisPtr = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kThisPtr);
                 int ci = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kClass).opdata;
                 int fi = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunction).opdata;
                 int returnAddr = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kReturnAddress).opdata;
@@ -2102,7 +2102,7 @@ namespace ProtoCore
             ProtoCore.Language id = DSExecutable.instrStreamList[exeblock].language;
             CurrentExecutive = Executives[id];
 
-            ProtoCore.DSASM.StackValue sv = Executives[id].Execute(exeblock, entry, context, breakpoints, sink, fepRun);
+            StackValue sv = Executives[id].Execute(exeblock, entry, context, breakpoints, sink, fepRun);
             return sv;
         }
 
