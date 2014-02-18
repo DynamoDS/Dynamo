@@ -2609,10 +2609,9 @@ namespace Dynamo.Nodes
 
     #region Boolean
 
-    public abstract class Comparison : BuiltinFunction
+    public abstract class Comparison : NodeWithOneOutput
     {
-        protected Comparison(FSharpFunc<FSharpList<Value>, Value> op, string name)
-            : base(op)
+        protected Comparison(string name)
         {
             InPortData.Add(new PortData("x", "operand", typeof(Value.Number)));
             InPortData.Add(new PortData("y", "operand", typeof(Value.Number)));
@@ -2628,12 +2627,30 @@ namespace Dynamo.Nodes
     [NodeSearchTags("less", "than", "<")]
     public class LessThan : Comparison
     {
-        public LessThan() : base(FScheme.LT, "<") { }
+        public LessThan() : base("<") { }
 
         // might be moved back to Comparision
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
             return builder.Build(this, inputs);
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var x = args[0].ToDynamic();
+            var y = args[1].ToDynamic();
+
+            bool result;
+            if (x is string && y is string)
+            {
+                result = ((string)x).CompareTo(y) < 0;
+            }
+            else
+            {
+                result = x < y;
+            }
+
+            return Value.NewNumber(result ? 1 : 0);
         }
     }
 
@@ -2643,12 +2660,30 @@ namespace Dynamo.Nodes
     [NodeSearchTags("<=")]
     public class LessThanEquals : Comparison
     {
-        public LessThanEquals() : base(FScheme.LTE, "≤") { }
+        public LessThanEquals() : base("≤") { }
 
         // might be moved back to Comparision
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
             return builder.Build(this, inputs);
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var x = args[0].ToDynamic();
+            var y = args[1].ToDynamic();
+
+            bool result;
+            if (x is string && y is string)
+            {
+                result = ((string)x).CompareTo(y) <= 0;
+            }
+            else
+            {
+                result = x <= y;
+            }
+
+            return Value.NewNumber(result ? 1 : 0);
         }
     }
 
@@ -2658,11 +2693,29 @@ namespace Dynamo.Nodes
     [NodeSearchTags(">")]
     public class GreaterThan : Comparison
     {
-        public GreaterThan() : base(FScheme.GT, ">") { }
+        public GreaterThan() : base(">"){}
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
             return builder.Build(this, inputs);
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var x = args[0].ToDynamic();
+            var y = args[1].ToDynamic();
+
+            bool result;
+            if (x is string && y is string)
+            {
+                result = ((string) x).CompareTo(y) > 0;
+            }
+            else
+            {
+                result = x > y;
+            }
+
+            return Value.NewNumber(result ? 1 : 0);
         }
     }
 
@@ -2672,11 +2725,30 @@ namespace Dynamo.Nodes
     [NodeSearchTags(">=", "Greater Than Or Equal")]
     public class GreaterThanEquals : Comparison
     {
-        public GreaterThanEquals() : base(FScheme.GTE, "≥") { }
+        public GreaterThanEquals() : base("≥") { }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
             return builder.Build(this, inputs);
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            bool result;
+
+            var x = args[0].ToDynamic();
+            var y = args[1].ToDynamic();
+
+            if (x is string && y is string)
+            {
+                result = ((string) x).CompareTo(y) >= 0;
+            }
+            else
+            {
+                result = x >= y;
+            }
+
+            return Value.NewNumber(result ? 1 : 0);
         }
     }
 
@@ -2686,11 +2758,17 @@ namespace Dynamo.Nodes
     [NodeSearchTags("=")]
     public class Equal : Comparison
     {
-        public Equal() : base(FSharpFunc<FSharpList<Value>, Value>.FromConverter(FScheme.EQ), "=") { }
+        public Equal() : base("=") { }
          
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
             return builder.Build(this, inputs);
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            bool x = args[0].ToDynamic().Equals(args[1].ToDynamic());
+            return Value.NewNumber(x ? 1 : 0);
         }
     }
 
@@ -2911,14 +2989,14 @@ namespace Dynamo.Nodes
             if (args[0].IsNumber && args[1].IsContainer)
             {
                 var x = ((Value.Number)args[0]).Item;
-                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                var y = Utils.UnwrapToSIUnit(args[1]);
                 return Value.NewNumber(x + y);
             }
 
             //unit + double
             if (args[0].IsContainer && args[1].IsNumber)
             {
-                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var x = Utils.UnwrapToSIUnit(args[0]);
                 var y = ((Value.Number)args[1]).Item;
                 return Value.NewContainer(x + y);
             }
@@ -2926,8 +3004,8 @@ namespace Dynamo.Nodes
             //unit + unit
             if (args[0].IsContainer && args[1].IsContainer)
             {
-                var x = SIUnit.UnwrapToSIUnit(args[0]);
-                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                var x = Utils.UnwrapToSIUnit(args[0]);
+                var y = Utils.UnwrapToSIUnit(args[1]);
                 return Value.NewContainer(x + y);
             }
 
@@ -2969,14 +3047,14 @@ namespace Dynamo.Nodes
             if (args[0].IsNumber && args[1].IsContainer)
             {
                 var x = ((Value.Number)args[0]).Item;
-                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                var y = Utils.UnwrapToSIUnit(args[1]);
                 return Value.NewNumber(x - y);
             }
 
             //unit - double
             if (args[0].IsContainer && args[1].IsNumber)
             {
-                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var x = Utils.UnwrapToSIUnit(args[0]);
                 var y = ((Value.Number)args[1]).Item;
                 return Value.NewContainer(x - y);
             }
@@ -2984,8 +3062,8 @@ namespace Dynamo.Nodes
             //unit - unit
             if (args[0].IsContainer && args[1].IsContainer)
             {
-                var x = SIUnit.UnwrapToSIUnit(args[0]);
-                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                var x = Utils.UnwrapToSIUnit(args[0]);
+                var y = Utils.UnwrapToSIUnit(args[1]);
                 return Value.NewContainer(x - y);
             }
 
@@ -3026,14 +3104,14 @@ namespace Dynamo.Nodes
             if (args[0].IsNumber && args[1].IsContainer)
             {
                 var x = ((Value.Number)args[0]).Item;
-                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                var y = Utils.UnwrapToSIUnit(args[1]);
                 return Value.NewNumber(x * y);
             }
 
             //unit * double
             if (args[0].IsContainer && args[1].IsNumber)
             {
-                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var x = Utils.UnwrapToSIUnit(args[0]);
                 var y = ((Value.Number)args[1]).Item;
                 
                 return Value.NewContainer(x * y);
@@ -3042,8 +3120,8 @@ namespace Dynamo.Nodes
             //unit * unit
             if (args[0].IsContainer && args[1].IsContainer)
             {
-                var x = SIUnit.UnwrapToSIUnit(args[0]);
-                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                var x = Utils.UnwrapToSIUnit(args[0]);
+                var y = Utils.UnwrapToSIUnit(args[1]);
 
                 return Value.NewContainer(x * y);
             }
@@ -3085,7 +3163,7 @@ namespace Dynamo.Nodes
             if (args[0].IsNumber && args[1].IsContainer)
             {
                 var x = ((Value.Number)args[0]).Item;
-                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                var y = Utils.UnwrapToSIUnit(args[1]);
 
                 return Value.NewNumber(x / y);
             }
@@ -3093,7 +3171,7 @@ namespace Dynamo.Nodes
             //unit / double
             if (args[0].IsContainer && args[1].IsNumber)
             {
-                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var x = Utils.UnwrapToSIUnit(args[0]);
                 var y = ((Value.Number)args[1]).Item;
 
                 return Value.NewContainer(x / y);
@@ -3103,8 +3181,8 @@ namespace Dynamo.Nodes
             if (args[0].IsContainer && args[1].IsContainer)
             {
                 //units of same type will cancel
-                var x = SIUnit.UnwrapToSIUnit(args[0]);
-                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                var x = Utils.UnwrapToSIUnit(args[0]);
+                var y = Utils.UnwrapToSIUnit(args[1]);
 
                 if (x.GetType() == y.GetType())
                 {
@@ -3152,14 +3230,14 @@ namespace Dynamo.Nodes
             if (args[0].IsNumber && args[1].IsContainer)
             {
                 var x = ((Value.Number)args[0]).Item;
-                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                var y = Utils.UnwrapToSIUnit(args[1]);
                 return Value.NewNumber(x % y);
             }
 
             //unit % number
             if (args[0].IsContainer && args[1].IsNumber)
             {
-                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var x = Utils.UnwrapToSIUnit(args[0]);
                 var y = ((Value.Number)args[1]).Item;
                 return Value.NewContainer(x % y);
             }
@@ -3167,8 +3245,8 @@ namespace Dynamo.Nodes
             //unit % unit
             if (args[0].IsContainer && args[1].IsContainer)
             {
-                var x = SIUnit.UnwrapToSIUnit(args[0]);
-                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                var x = Utils.UnwrapToSIUnit(args[0]);
+                var y = Utils.UnwrapToSIUnit(args[1]);
                 return Value.NewContainer(x % y);
             }
             
@@ -3213,7 +3291,7 @@ namespace Dynamo.Nodes
                 var length = (((Value.Container) args[0]).Item) as Units.Length;
                 if (length != null)
                 {
-                    var x = SIUnit.UnwrapToSIUnit(args[0]);
+                    var x = Utils.UnwrapToSIUnit(args[0]);
                     var y = ((Value.Number)args[1]).Item;
 
                     if (y == 2)
@@ -3259,7 +3337,7 @@ namespace Dynamo.Nodes
             
             if (args[0].IsContainer)
             {
-                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var x = Utils.UnwrapToSIUnit(args[0]);
                 return Value.NewContainer(x.Round());
             }
 
@@ -3295,7 +3373,7 @@ namespace Dynamo.Nodes
 
             if (args[0].IsContainer)
             {
-                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var x = Utils.UnwrapToSIUnit(args[0]);
                 return Value.NewContainer(x.Floor());
             }
 
@@ -3331,7 +3409,7 @@ namespace Dynamo.Nodes
 
             if (args[0].IsContainer)
             {
-                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var x = Utils.UnwrapToSIUnit(args[0]);
                 return Value.NewContainer(x.Ceiling());
             }
             

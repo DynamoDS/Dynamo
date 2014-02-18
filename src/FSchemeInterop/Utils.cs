@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.LibG;
-
+using Dynamo.Units;
 using Microsoft.FSharp.Core;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
@@ -52,7 +52,7 @@ namespace Dynamo.FSchemeInterop
         /// <param name="value">A Value object that returns true for IsNumber</param>
         /// <param name="convertedValue">The holder for the obtained value</param>
         /// <returns>False if the first param returns false for IsNumber</returns>
-        public static bool Convert(FScheme.Value value, ref double convertedValue)
+        public static bool Convert(Value value, ref double convertedValue)
         {
             if (!value.IsNumber)
                 return false;
@@ -66,17 +66,17 @@ namespace Dynamo.FSchemeInterop
         /// <param name="value">A Value object that returns true for IsNumber</param>
         /// <param name="convertedValue">The holder for the obtained value</param>
         /// <returns>False if the first param returns false for IsNumber</returns>
-        public static bool Convert(FScheme.Value value, ref string convertedValue)
+        public static bool Convert(Value value, ref string convertedValue)
         {
             if (value.IsString)
             {
-                convertedValue = ((FScheme.Value.String)value).Item;
+                convertedValue = ((Value.String)value).Item;
                 return true;
             }
 
             if (value.IsSymbol)
             {
-                convertedValue = ((FScheme.Value.Symbol)value).Item;
+                convertedValue = ((Value.Symbol)value).Item;
                 return true;
             }
 
@@ -89,11 +89,11 @@ namespace Dynamo.FSchemeInterop
         /// <param name="value">A Value object that returns true for IsNumber</param>
         /// <param name="convertedValue">The holder for the obtained value</param>
         /// <returns>False if the first param returns false for IsNumber</returns>
-        public static bool Convert(FScheme.Value value, ref FSharpList<Value> convertedValue)
+        public static bool Convert(Value value, ref FSharpList<Value> convertedValue)
         {
             if (!value.IsList)
                 return false;
-            convertedValue = ((FScheme.Value.List)value).Item;
+            convertedValue = ((Value.List)value).Item;
             return true;
         }
 
@@ -103,13 +103,13 @@ namespace Dynamo.FSchemeInterop
         /// <param name="value">A Value object that returns Container</param>
         /// <param name="convertedValue">The holder for the obtained value</param>
         /// <returns>False if the first param returns false for IsContainer</returns>
-        public static bool Convert(FScheme.Value value, ref Autodesk.LibG.Geometry convertedValue)
+        public static bool Convert(Value value, ref Geometry convertedValue)
         {
             convertedValue = null;
             if (!value.IsContainer)
                 return false;
             object itemValue = (value as Value.Container).Item;
-            convertedValue = itemValue as Autodesk.LibG.Geometry;
+            convertedValue = itemValue as Geometry;
             return (convertedValue != null);
         }
 
@@ -176,7 +176,7 @@ namespace Dynamo.FSchemeInterop
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static bool IsListOfLists(FScheme.Value value)
+        public static bool IsListOfLists(Value value)
         {
             if (value.IsList)
             {
@@ -191,7 +191,8 @@ namespace Dynamo.FSchemeInterop
 
             return false;
         }
-        public static bool IsListOfListsOfLists(FScheme.Value value)
+        
+        public static bool IsListOfListsOfLists(Value value)
         {
             if (value.IsList)
             {
@@ -210,5 +211,78 @@ namespace Dynamo.FSchemeInterop
 
             return false;
         }
+
+        public static dynamic ToDynamic(this Value value)
+        {
+            if (value.IsContainer)
+            {
+                var item = ((Value.Container) value).Item;
+                return item;
+            }
+            
+            if (value.IsNumber)
+            {
+                var item = ((Value.Number)value).Item;
+                return item;
+            }
+
+            if (value.IsString)
+            {
+                var item = ((Value.String) value).Item;
+                return item;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Unwrap an FScheme value containing a number or a unit to a double.
+        /// If the value contains a unit object, convert the internal value of the
+        /// unit object to the units required by the host application as specified
+        /// in the preference settings. If the value contains a number, do not 
+        /// apply a conversion.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static Value UnwrapToDoubleWithHostUnitConversion(Value value)
+        {
+            if (value.IsList)
+            {
+                //recursively convert items in list
+                return ConvertListToHostUnits((Value.List)value);
+            }
+
+            if (value.IsContainer)
+            {
+                var unit = ((FScheme.Value.Container)value).Item as SIUnit;
+                if (unit != null)
+                {
+                    return Value.NewNumber(unit.ConvertToHostUnits());
+                }
+            }
+
+            return value;
+        }
+
+        private static Value ConvertListToHostUnits(Value.List value)
+        {
+            var list = value.Item;
+            return Value.NewList(ToFSharpList(list.Select(UnwrapToDoubleWithHostUnitConversion)));
+        }
+
+        public static SIUnit UnwrapToSIUnit(Value value)
+        {
+            if (value.IsContainer)
+            {
+                var measure = ((Value.Container)value).Item as SIUnit;
+                if (measure != null)
+                {
+                    return measure;
+                }
+            }
+
+            throw new Exception("The value was not convertible to a unit of measure.");
+        }
+
     }
 }
