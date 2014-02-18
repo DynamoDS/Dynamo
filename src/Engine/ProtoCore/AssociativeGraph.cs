@@ -234,7 +234,7 @@ namespace ProtoCore.AssociativeGraph
             isActive = true;
 
 #if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
-            ArrayPointer = ProtoCore.DSASM.StackUtils.BuildNull();
+            ArrayPointer = ProtoCore.DSASM.StackValue.Null;
 #endif
             symbolListWithinExpression = new List<SymbolNode>();
             reExecuteExpression = false;
@@ -930,7 +930,7 @@ namespace ProtoCore.AssociativeGraph
     {
         public int block { get; set; }
         public List<UpdateNode> nodeList { get; set; }
-        public ProtoCore.DSASM.StackValue symbolData { get; set; }
+        public StackValue symbolData { get; set; }
 
         public UpdateNodeRef()
         {
