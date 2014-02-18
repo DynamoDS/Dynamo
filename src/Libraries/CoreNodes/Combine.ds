@@ -38,7 +38,7 @@ def Reduce(func, acc, lists : var[]..[])
     };
 }
 
-def Filter(predicate, list : var[]..[])
+def Filter(list : var[]..[], predicate)
 {
 	return = [Imperative]
 	{
@@ -227,3 +227,4 @@ def SortByComparator(func, list : var[]..[])
 {
 }
 
+Print("a" == "b");
