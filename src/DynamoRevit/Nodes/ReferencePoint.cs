@@ -197,8 +197,8 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             //create the node itself
-            XmlElement dsReferencePoint = MigrationManager.CreateFunctionNode(
-                data.Document, "DSRevitNodes.dll",
+            XmlElement dsReferencePoint = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(dsReferencePoint, "DSRevitNodes.dll",
                 "ReferencePoint.ByParametersOnFaceReference",
                 "ReferencePoint.ByParametersOnFaceReference@FaceReference,double,double");
 
@@ -221,15 +221,23 @@ namespace Dynamo.Nodes
             PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
-            XmlElement connector2 = MigrationManager.CreateFunctionNodeFrom(connector1);
-            data.CreateConnector(connector2);
+            XmlElement connector2 = null;
+            if (connector1!=null)
+            {
+                connector2 = MigrationManager.CreateFunctionNodeFrom(connector1);
+                data.CreateConnector(connector2);
+            }
 
             PortId newInPort = new PortId(dsReferencePointId, 0, PortType.INPUT);
             data.ReconnectToPort(connector0, newInPort);
             newInPort = new PortId(uvUId, 0, PortType.INPUT);
             data.ReconnectToPort(connector1, newInPort);
-            newInPort = new PortId(uvVId, 0, PortType.INPUT);
-            data.ReconnectToPort(connector2, newInPort);
+
+            if (connector2 != null)
+            {
+                newInPort = new PortId(uvVId, 0, PortType.INPUT);
+                data.ReconnectToPort(connector2, newInPort);
+            }
 
             data.CreateConnector(uvU, 0, dsReferencePoint, 1);
             data.CreateConnector(uvV, 0, dsReferencePoint, 2);
