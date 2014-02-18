@@ -399,10 +399,6 @@ limitations under the License.
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DynamoUnits\Units.csproj">
-      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
-      <Name>Units</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Engine\GraphToDSCompiler\GraphToDSCompiler.csproj">
       <Project>{593be9fc-7482-4cd6-9f87-77e7ac5cdff2}</Project>
       <Name>GraphToDSCompiler</Name>

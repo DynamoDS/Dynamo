@@ -106,6 +106,10 @@
     <Compile Include="ViewTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Libraries\DynamoUnits\Units.csproj">
+      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
+      <Name>Units</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ED-1067-4B2C-8737-3839A6143EB2}</Project>
       <Name>DynamoCoreTests</Name>
@@ -126,9 +130,6 @@
     <ProjectReference Include="..\..\..\..\src\Libraries\Revit\RevitServices\RevitServices.csproj">
       <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
       <Name>RevitServices</Name>
-    <ProjectReference Include="..\DynamoUnits\DynamoUnits.csproj">
-      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
-      <Name>DynamoUnits</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

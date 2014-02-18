@@ -92,7 +92,7 @@
       <Project>{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}</Project>
       <Name>IronPythonUI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\DynamoElementsTests\DynamoCoreTests.csproj">
+    <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
       <Name>DynamoCoreTests</Name>
     </ProjectReference>
