@@ -79,6 +79,7 @@ namespace Dynamo.Controls
             InitializeComponent();
 
             //LibraryManagerMenu.Visibility = System.Windows.Visibility.Collapsed;
+
             this.Loaded += dynBench_Activated;
 
             //setup InfoBubble for library items tooltip
@@ -219,6 +220,9 @@ namespace Dynamo.Controls
             _vm.RequestUserSaveWorkflow += _vm_RequestUserSaveWorkflow;
 
             dynSettings.Controller.ClipBoard.CollectionChanged += ClipBoard_CollectionChanged;
+
+            //ABOUT WINDOW
+            _vm.RequestAboutWindow += _vm_RequestAboutWindow;
 
             //ABOUT WINDOW
             _vm.RequestAboutWindow += _vm_RequestAboutWindow;

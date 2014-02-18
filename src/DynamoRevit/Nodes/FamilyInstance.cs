@@ -596,22 +596,24 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Set Family Instance Parameter")]
+    [NodeName("Set Element Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
-    [NodeDescription("Modifies a parameter on a family instance.")]
+    [NodeDescription("Modifies a parameter on an element.")]
     public class FamilyInstanceParameterSetter : RevitTransactionNodeWithOneOutput
     {
         public FamilyInstanceParameterSetter()
         {
-            InPortData.Add(new PortData("fi", "Family instance.", typeof (Value.Container)));
+            InPortData.Add(new PortData("element", "An Element.", typeof (Value.Container)));
             InPortData.Add(new PortData("param", "Parameter to modify (string).", typeof (Value.String)));
             InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof (object)));
-            OutPortData.Add(new PortData("fi", "Modified family instance.", typeof (Value.Container)));
+            OutPortData.Add(new PortData("element", "Modified Element.", typeof (Value.Container)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
-        private static Value setParam(FamilyInstance fi, string paramName, Value valueExpr)
+        private static Value setParam(Element fi, string paramName, Value valueExpr)
         {
             var p = fi.get_Parameter(paramName);
             if (p != null)
@@ -621,7 +623,7 @@ namespace Dynamo.Nodes
             throw new Exception("Parameter \"" + paramName + "\" was not found!");
         }
 
-        private static Value setParam(FamilyInstance fi, Definition paramDef, Value valueExpr)
+        private static Value setParam(Element fi, Definition paramDef, Value valueExpr)
         {
             var p = fi.get_Parameter(paramDef);
             if (p != null)
@@ -631,7 +633,7 @@ namespace Dynamo.Nodes
             throw new Exception("Parameter \"" + paramDef.Name + "\" was not found!");
         }
 
-        private static Value _setParam(FamilyInstance ft, Parameter p, Value valueExpr)
+        private static Value _setParam(Element ft, Parameter p, Value valueExpr)
         {
             if (p.StorageType == StorageType.Double)
             {
@@ -663,184 +665,98 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var valueExpr = args[2];
+            var fs = (Element)((Value.Container)args[0]).Item;
 
             var param = args[1];
             if (param.IsString)
             {
                 var paramName = ((Value.String) param).Item;
-
-                var input = args[0];
-                if (input.IsList)
-                {
-                    var fiList = (input as Value.List).Item;
-                    return Value.NewList(
-                        Utils.SequenceToFSharpList(
-                            fiList.Select(
-                                x =>
-                                setParam(
-                                    (FamilyInstance) ((Value.Container) x).Item,
-                                    paramName,
-                                    valueExpr))));
-                }
-                else
-                {
-                    var fs = (FamilyInstance) ((Value.Container) input).Item;
-
-                    return setParam(fs, paramName, valueExpr);
-                }
+                return setParam(fs, paramName, valueExpr);
             }
-            else
-            {
-                var paramDef = (Definition) ((Value.Container) param).Item;
-
-                var input = args[0];
-                if (input.IsList)
-                {
-                    var fiList = (input as Value.List).Item;
-                    return Value.NewList(
-                        Utils.SequenceToFSharpList(
-                            fiList.Select(
-                                x =>
-                                setParam(
-                                    (FamilyInstance) ((Value.Container) x).Item,
-                                    paramDef,
-                                    valueExpr))));
-                }
-                else
-                {
-                    var fs = (FamilyInstance) ((Value.Container) input).Item;
-
-                    return setParam(fs, paramDef, valueExpr);
-                }
-            }
+            var paramDef = (Definition) ((Value.Container) param).Item;
+            return setParam(fs, paramDef, valueExpr);
         }
     }
 
-    [NodeName("Get Family Instance Parameter Value")]
+    [NodeName("Get Element Parameter Value")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
-    [NodeDescription("Fetches the value of a parameter of a Family Instance.")]
+    [NodeDescription("Fetches the value of a parameter of an element.")]
     public class FamilyInstanceParameterGetter : RevitTransactionNodeWithOneOutput
     {
         public FamilyInstanceParameterGetter()
         {
-            InPortData.Add(new PortData("fi", "Family instance.", typeof (Value.Container)));
+            InPortData.Add(new PortData("element", "An Element.", typeof (Value.Container)));
             InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof (Value.String)));
 
             OutPortData.Add(new PortData("val", "Parameter value.", typeof (object)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
-        private static Value getParam(FamilyInstance fi, string paramName)
+        private static Value getParam(Element fi, string paramName)
         {
             var p = fi.get_Parameter(paramName);
             if (p != null)
             {
-                return _getParam(fi, p);
+                return _getParam(p);
             }
             throw new Exception("Parameter \"" + paramName + "\" was not found!");
         }
 
-        private static Value getParam(FamilyInstance fi, Definition paramDef)
+        private static Value getParam(Element fi, Definition paramDef)
         {
             var p = fi.get_Parameter(paramDef);
             if (p != null)
             {
-                return _getParam(fi, p);
+                return _getParam(p);
             }
             throw new Exception("Parameter \"" + paramDef.Name + "\" was not found!");
         }
 
-        private static Value _getParam(FamilyInstance fi, Parameter p)
+        private static Value _getParam(Parameter p)
         {
-            if (p.StorageType == StorageType.Double)
+            switch (p.StorageType)
             {
-                switch (p.Definition.ParameterType)
+                case StorageType.ElementId:
+                    return Value.NewContainer(p.AsElementId());
+                case StorageType.String:
+                    return Value.NewString(p.AsString());
+                case StorageType.Integer:
+                case StorageType.Double:
+                    switch (p.Definition.ParameterType)
                 {
                     case ParameterType.Length:
-                        return Value.NewContainer(Units.Length.FromFeet(p.AsDouble()));
-                        break;
+                        return Value.NewContainer(Units.Length.FromFeet(p.AsDouble(), dynSettings.Controller.UnitsManager));
                     case ParameterType.Area:
-                        return Value.NewContainer(Units.Area.FromSquareFeet(p.AsDouble()));
-                        break;
+                        return Value.NewContainer(Units.Area.FromSquareFeet(p.AsDouble(), dynSettings.Controller.UnitsManager));
                     case ParameterType.Volume:
-                        return Value.NewContainer(Units.Volume.FromCubicFeet(p.AsDouble()));
-                        break;
+                        return Value.NewContainer(Units.Volume.FromCubicFeet(p.AsDouble(), dynSettings.Controller.UnitsManager));
                     default:
                         return Value.NewNumber(p.AsDouble());
-                        break;
                 }
-            }
-            else if (p.StorageType == StorageType.Integer)
-            {
-                return Value.NewNumber(p.AsInteger());
-            }
-            else if (p.StorageType == StorageType.String)
-            {
-                return Value.NewString(p.AsString());
-            }
-            else
-            {
-                return Value.NewContainer(p.AsElementId());
+                default:
+                    throw new Exception(string.Format("Parameter {0} has no storage type.", p));
             }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+            var fi = (Element)((Value.Container)args[0]).Item;
+
             var param = args[1];
             if (param.IsString)
             {
                 var paramName = ((Value.String) param).Item;
 
-                var input = args[0];
-                if (input.IsList)
-                {
-                    var fiList = (input as Value.List).Item;
-                    return Value.NewList(
-                        Utils.SequenceToFSharpList(
-                            fiList.Select(
-                                x =>
-                                getParam(
-                                    (FamilyInstance) ((Value.Container) x).Item,
-                                    paramName
-                                    )
-                                )
-                            )
-                        );
-                }
-                else
-                {
-                    var fi = (FamilyInstance) ((Value.Container) input).Item;
-
-                    return getParam(fi, paramName);
-                }
+                return getParam(fi, paramName);
             }
             else
             {
                 var paramDef = (Definition) ((Value.Container) param).Item;
 
-                var input = args[0];
-                if (input.IsList)
-                {
-                    var fiList = (input as Value.List).Item;
-                    return Value.NewList(
-                        Utils.SequenceToFSharpList(
-                            fiList.Select(
-                                x =>
-                                getParam(
-                                    (FamilyInstance) ((Value.Container) x).Item,
-                                    paramDef
-                                    )
-                                )
-                            )
-                        );
-                }
-                else
-                {
-                    var fi = (FamilyInstance) ((Value.Container) input).Item;
-
-                    return getParam(fi, paramDef);
-                }
+                return getParam(fi, paramDef);
             }
         }
     }
@@ -942,13 +858,13 @@ namespace Dynamo.Nodes
                             switch (param.Definition.ParameterType)
                             {
                                 case ParameterType.Length:
-                                    outPuts[pd] = Value.NewContainer(Units.Length.FromFeet(param.AsDouble()));
+                                    outPuts[pd] = Value.NewContainer(Units.Length.FromFeet(param.AsDouble(), dynSettings.Controller.UnitsManager));
                                     break;
                                 case ParameterType.Area:
-                                    outPuts[pd] = Value.NewContainer(Units.Area.FromSquareFeet(param.AsDouble()));
+                                    outPuts[pd] = Value.NewContainer(Units.Area.FromSquareFeet(param.AsDouble(), dynSettings.Controller.UnitsManager));
                                     break;
                                 case ParameterType.Volume:
-                                    outPuts[pd] = Value.NewContainer(Units.Volume.FromCubicFeet(param.AsDouble()));
+                                    outPuts[pd] = Value.NewContainer(Units.Volume.FromCubicFeet(param.AsDouble(), dynSettings.Controller.UnitsManager));
                                     break;
                                 default:
                                     outPuts[pd] = Value.NewNumber(param.AsDouble());

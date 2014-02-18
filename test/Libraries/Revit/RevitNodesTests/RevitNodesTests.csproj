@@ -127,7 +127,7 @@
       <Project>{0bc2a611-bd0e-4fcc-a1de-81f14ed369b2}</Project>
       <Name>RevitNodes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\DynamoTestFramework\DynamoTestFramework.csproj">
+    <ProjectReference Include="..\..\..\..\src\DynamoTestFramework\DynamoTestFramework.csproj">
       <Project>{745cca0f-549e-4756-a31e-41bf7f905b8a}</Project>
       <Name>DynamoTestFramework</Name>
     </ProjectReference>

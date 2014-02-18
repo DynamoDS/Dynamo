@@ -157,9 +157,9 @@ namespace Dynamo.ViewModels
             dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
 
             // Render EndlessGrid for the first time
+            RecalculateSize();
             RecalculateLeft();
             RecalculateTop();
-            RecalculateSize();
         }
 
         void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)

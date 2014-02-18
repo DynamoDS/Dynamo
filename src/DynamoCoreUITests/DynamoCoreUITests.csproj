@@ -95,11 +95,23 @@
       <Project>{01de9b06-0bcb-4d8a-862e-e8170f5d6b4f}</Project>
       <Name>IronPythonUI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
+    <ProjectReference Include="..\DynamoElementsTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
       <Name>DynamoCoreTests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\DynamoUtilities\DynamoUtilities.csproj">
+    <ProjectReference Include="..\DynamoElementsTests\DynamoCoreTests.csproj">
+      <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
+      <Name>DynamoCoreTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\DynamoPython\Python.csproj">
+      <Project>{2B0F2800-6F62-4869-9074-088C5F6DCCA2}</Project>
+      <Name>DynamoPython</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoUnits\Units.csproj">
+      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
+      <Name>DynamoUnits</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
     </ProjectReference>
