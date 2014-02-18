@@ -113,7 +113,6 @@ namespace Dynamo.FSchemeInterop
             return (convertedValue != null);
         }
 
-
         /// <summary>
         /// Converts a Func to an FSharpFunc.
         /// </summary>
@@ -233,6 +232,16 @@ namespace Dynamo.FSchemeInterop
             }
 
             return null;
+        }
+
+        public static Value ToValue(SIUnit input)
+        {
+            return Value.NewContainer(input);
+        }
+
+        public static Value ToValue(double input)
+        {
+            return Value.NewNumber(input);
         }
 
         /// <summary>
