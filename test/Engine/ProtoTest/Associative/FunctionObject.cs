@@ -280,5 +280,92 @@ r = f.i;
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 103);
         }
+
+        [Test]
+        public void TestSortByKey()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+class Point
+{
+    constructor Point(_x, _y, _z)
+    {
+        x = _x;
+        y = _y;
+        z = _z;
+    }
+    
+    x; y; z;
+}
+
+p1 = Point(1, 2, 3);
+p2 = Point(2, 3, 4);
+p3 = Point(2, 1, 3);
+
+def getCoordinateValue(p : Point)
+{
+    return = p.x + p.y + p.z;
+}
+
+getPointKey = _SingleFunctionObject(getCoordinateValue, 1, { }, { });
+r1 = SortByKey(null, getPointKey);
+r2 = SortByKey({ }, getPointKey);
+
+r3 = SortByKey({ p1 }, getPointKey);
+t1 = Map(r3, getPointKey);
+
+r4 = SortByKey({ p1, p1, p1 }, getPointKey);
+t2 = Map(r4, getPointKey);
+
+r5 = SortByKey({ p1, p2, p3 }, getPointKey);
+t3 = Map(r5, getPointKey);
+
+r6 = SortByKey({ p2, p1 }, getPointKey);
+t4 = Map(r6, getPointKey);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("t1", new object[]{6});
+            thisTest.Verify("t2", new object[] { 6, 6, 6 });
+            thisTest.Verify("t3", new object[] { 6, 6, 9 });
+            thisTest.Verify("t4", new object[] { 6, 9});
+        }
+
+        [Test]
+        public void TestGroupByKey()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+class Point
+{
+    constructor Point(_x, _y, _z)
+    {
+        x = _x;
+        y = _y;
+        z = _z;
+    }
+    
+    x; y; z;
+}
+
+p1 = Point(1, 2, 3);
+p2 = Point(2, 3, 4);
+p3 = Point(2, 1, 3);
+
+def getCoordinateValue(p : Point)
+{
+    return = p.x + p.y + p.z;
+}
+
+getPointKey = _SingleFunctionObject(getCoordinateValue, 1, { }, { });
+r = GroupByKey({ p1, p2, p3 }, getPointKey);
+t1 = Map(r[0], getPointKey);
+t2 = Map(r[1], getPointKey);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("t1", new object[] { 6, 6});
+            thisTest.Verify("t2", new object[] { 9 });
+        }
     }
 }
