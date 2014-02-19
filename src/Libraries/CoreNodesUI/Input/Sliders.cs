@@ -77,7 +77,7 @@ namespace Dynamo.Nodes
             {
                 Width = double.NaN,
                 Background =
-                    new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
             // input value textbox
@@ -91,7 +91,7 @@ namespace Dynamo.Nodes
             {
                 Width = double.NaN,
                 Background =
-                    new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
             var sliderGrid = new Grid();
