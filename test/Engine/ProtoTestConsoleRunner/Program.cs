@@ -55,7 +55,7 @@ namespace ProtoTestConsoleRunner
 
             ProtoTest.LiveRunner.MicroFeatureTests test = new ProtoTest.LiveRunner.MicroFeatureTests();
             test.Setup();
-            test.RegressMAGN750();
+            test.TestDeleteNode01();
 
 
             long ms = sw.ElapsedMilliseconds;

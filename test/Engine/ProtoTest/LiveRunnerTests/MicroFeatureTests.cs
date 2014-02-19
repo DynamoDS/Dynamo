@@ -2762,5 +2762,47 @@ z=Point.ByCoordinates(y,a,a);
             AssertValue("a", 11);
 
         }
+
+        [Test]
+        public void TestDeleteNode01()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 1;",
+                "b = a;"
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            // CBN 1
+            Guid guid1 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+
+
+            // CBN 2
+            Guid guid2 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("a", 1);
+            AssertValue("b", 1);
+
+
+            // Delete the CBN
+            List<Subtree> deleted = new List<Subtree>();
+
+            // Mark the CBN that uses f as modified
+            deleted.Add(CreateSubTreeFromCode(guid1, codes[0]));
+
+            syncData = new GraphSyncData(deleted, null, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Verify that b is null
+            ProtoCore.Mirror.RuntimeMirror mirror = astLiveRunner.InspectNodeValue("a");
+            Assert.IsTrue(mirror.GetData().IsNull);
+
+        }
     }
 }

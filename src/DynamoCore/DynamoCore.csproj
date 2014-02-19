@@ -129,6 +129,7 @@ limitations under the License.
   <ItemGroup>
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="Nodes\CustomNodeInstance.cs" />
+    <Compile Include="Interfaces\IDynamoPreferences.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
@@ -417,10 +418,6 @@ limitations under the License.
     <ProjectReference Include="..\Legacy\FScheme\FScheme.2012.fsproj">
       <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
       <Name>FScheme.2012</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
-      <Project>{6E0A079E-85F1-45A1-AD5B-9855E4344809}</Project>
-      <Name>Units</Name>
     </ProjectReference>
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>

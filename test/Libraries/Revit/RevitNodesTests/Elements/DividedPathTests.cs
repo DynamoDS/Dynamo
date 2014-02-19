@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Autodesk.DesignScript.Geometry;
-using Revit;
 using Revit.Elements;
-using Revit.GeometryObjects;
-using Revit.References;
 using NUnit.Framework;
 using ArgumentNullException = Autodesk.Revit.Exceptions.ArgumentNullException;
 
@@ -15,6 +9,18 @@ namespace DSRevitNodesTests
     [TestFixture]
     class DividedPathTests 
     {
+        [SetUp]
+        public void Setup()
+        {
+            HostFactory.Instance.StartUp();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            HostFactory.Instance.ShutDown();
+        }
+
         [Test]
         public void ByCurveAndEqualDivisions_ValidArgs()
         {
