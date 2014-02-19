@@ -367,5 +367,25 @@ t2 = Map(r[1], getPointKey);
             thisTest.Verify("t1", new object[] { 6, 6});
             thisTest.Verify("t2", new object[] { 9 });
         }
+
+        [Test]
+        public void TestFilter()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+def odd(x)
+{
+    return = x % 2 == 1;
+}
+
+pred = _SingleFunctionObject(odd, 1, { }, { });
+r1 = Filter(1..10, pred);
+r2 = FilterOut(1..10, pred);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { 1, 3, 5, 7, 9 });
+            thisTest.Verify("r2", new object[] { 2, 4, 6, 8, 10 });
+        }
     }
 }
