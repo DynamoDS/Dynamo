@@ -36,7 +36,7 @@ namespace Dynamo.Nodes
             return new WatchNode(unit.ToString(), tag);
         }
 
-        internal WatchNode ProcessTing(double value, string tag, bool showRawData = true)
+        internal WatchNode ProcessThing(double value, string tag, bool showRawData = true)
         {
             return new WatchNode(value.ToString("0.000"), tag);
         }
