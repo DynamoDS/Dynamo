@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Structure;
 using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
@@ -40,18 +41,45 @@ namespace Dynamo.Nodes
             var height = ((FScheme.Value.Number)args[3]).Item;
 
             Wall wall = null;
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var document = DocumentManager.GetInstance().CurrentDBDocument;
             if (this.Elements.Any())
             {
-
+                bool bSuccess = false;
                 if (dynUtils.TryGetElement(this.Elements[0], out wall))
                 {
-                    //Delete the existing floor. Revit API does not allow update of floor sketch.
-                    DocumentManager.GetInstance().CurrentUIDocument.Document.Delete(wall.Id);
-                }
+                    if (wall.Location is LocationCurve)
+                    {
+                        var wallLocation = wall.Location as LocationCurve;
+                        if ((wallLocation.Curve is Line == curve is Line) || (wallLocation.Curve is Arc == curve is Arc))
+                        {
+                            wallLocation.Curve = curve;
 
-                wall = Wall.Create(document, curve, wallType.Id, level.Id, height, 0.0, false, false);
-                this.Elements[0] = wall.Id;
+                            Parameter baseLevelParameter =
+                                wall.get_Parameter(Autodesk.Revit.DB.BuiltInParameter.WALL_BASE_CONSTRAINT);
+                            Parameter topOffsetParameter =
+                                wall.get_Parameter(Autodesk.Revit.DB.BuiltInParameter.WALL_USER_HEIGHT_PARAM);
+                            Parameter wallTypeParameter =
+                                wall.get_Parameter(Autodesk.Revit.DB.BuiltInParameter.ELEM_TYPE_PARAM);
+                            if (baseLevelParameter.AsElementId() != level.Id)
+                                baseLevelParameter.Set(level.Id);
+                            if (Math.Abs(topOffsetParameter.AsDouble() - height) > 1.0e-10)
+                                topOffsetParameter.Set(height);
+                            if (wallTypeParameter.AsElementId() != wallType.Id)
+                                wallTypeParameter.Set(wallType.Id);
+                            bSuccess = true;
+                        }
+                    }
+                    if (!bSuccess)
+                    {
+                        DocumentManager.GetInstance().CurrentDBDocument.Delete(wall.Id);
+                    }
+                    //Delete the existing floor. Revit API does not allow update of floor sketch.
+                }
+                if (!bSuccess)
+                {
+                    wall = Wall.Create(document, curve, wallType.Id, level.Id, height, 0.0, false, false);
+                    this.Elements[0] = wall.Id;
+                }
 
             }
             else

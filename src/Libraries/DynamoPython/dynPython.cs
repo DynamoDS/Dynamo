@@ -17,8 +17,8 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Python Script")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
+    [NodeName("LEGACY Python Script")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING + ".Legacy")]
     [NodeDescription("Runs an embedded IronPython script")]
     public class Python : NodeWithOneOutput
     {
@@ -224,8 +224,8 @@ namespace Dynamo.Nodes
         #endregion
     }
 
-    [NodeName("Python Script With Variable Number of Inputs")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
+    [NodeName("LEGACY Python Script With Variable Number of Inputs")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING + ".Legacy")]
     [NodeDescription("Runs an embedded IronPython script")]
     public class PythonVarIn : VariableInput
     {
@@ -478,8 +478,8 @@ namespace Dynamo.Nodes
         #endregion
     }
 
-    [NodeName("Python Script From String")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
+    [NodeName("LEGACY Python Script From String")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING + ".Legacy")]
     [NodeDescription("Runs a IronPython script from a string")]
     public class PythonString : NodeWithOneOutput
     {

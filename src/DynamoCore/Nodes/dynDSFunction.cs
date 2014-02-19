@@ -97,10 +97,11 @@ namespace Dynamo.Nodes
                 foreach (var arg in Definition.Parameters)
                 {
                     InPortData.Add(
-                        new PortData(
-                            arg.Parameter,
-                            string.IsNullOrEmpty(arg.Type) ? "var" : arg.Type,
-                            typeof(object)));
+                         new PortData(
+                             arg.Parameter,
+                             string.IsNullOrEmpty(arg.Type) ? "var" : arg.Type,
+                             typeof(object),
+                             arg.DefaultValue));
                 }
             }
 
@@ -209,8 +210,7 @@ namespace Dynamo.Nodes
 
         private bool HasUnconnectedInput()
         {
-            return !Enumerable.Range(0, InPortData.Count)
-                              .All(x => this.HasConnectedInput(x));
+            return !Enumerable.Range(0, InPortData.Count).All(HasInput);
         }
 
         private List<AssociativeNode> GetConnectedInputs()
