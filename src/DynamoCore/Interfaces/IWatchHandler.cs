@@ -4,9 +4,16 @@ using Dynamo.ViewModels;
 
 namespace Dynamo.Interfaces
 {
+    /// <summary>
+    /// An object implementing the IWatchHandler interface is registered 
+    /// on the controller at startup, and defines the methods for processing
+    /// objects into string representations for visualizing in the Watch.
+    /// To create a custom watch visualization scheme, you can create a simply
+    /// replace this WatchHandler with one of your own creation.
+    /// </summary>
     public interface IWatchHandler
     {
-        WatchNode Process(dynamic value, string tag, bool showRawData = true);
+        WatchItem Process(dynamic value, string tag, bool showRawData = true);
     }
 
     /// <summary>
@@ -14,31 +21,31 @@ namespace Dynamo.Interfaces
     /// </summary>
     public class DefaultWatchHandler : IWatchHandler
     {
-        internal WatchNode ProcessThing(object value, string tag, bool showRawData = true)
+        internal WatchItem ProcessThing(object value, string tag, bool showRawData = true)
         {
-            var node = new WatchNode(value.ToString(), tag);
+            var node = new WatchItem(value.ToString(), tag);
             return node;
         }
 
-        internal WatchNode ProcessThing(SIUnit unit, string tag, bool showRawData = true)
+        internal WatchItem ProcessThing(SIUnit unit, string tag, bool showRawData = true)
         {
             if (showRawData)
-                return new WatchNode(unit.Value.ToString(CultureInfo.InvariantCulture), tag);
+                return new WatchItem(unit.Value.ToString(CultureInfo.InvariantCulture), tag);
 
-            return new WatchNode(unit.ToString(), tag);
+            return new WatchItem(unit.ToString(), tag);
         }
 
-        internal WatchNode ProcessThing(double value, string tag, bool showRawData = true)
+        internal WatchItem ProcessThing(double value, string tag, bool showRawData = true)
         {
-            return new WatchNode(value.ToString("0.000"), tag);
+            return new WatchItem(value.ToString("0.000"), tag);
         }
 
-        internal WatchNode ProcessThing(string value, string tag, bool showRawData = true)
+        internal WatchItem ProcessThing(string value, string tag, bool showRawData = true)
         {
-            return new WatchNode(value, tag);
+            return new WatchItem(value, tag);
         }
 
-        public WatchNode Process(dynamic value, string tag, bool showRawData = true)
+        public WatchItem Process(dynamic value, string tag, bool showRawData = true)
         {
             return ProcessThing(value, tag, showRawData);
         }

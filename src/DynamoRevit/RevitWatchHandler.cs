@@ -7,24 +7,31 @@ using Dynamo.ViewModels;
 
 namespace Dynamo.Applications
 {
+    /// <summary>
+    /// An Revit-specific implementation of IWatchHandler that is set on the Controller at startup.
+    /// The main Process method dynamically dispatches to the appropriate
+    /// internal method based on the type. For every time for which you would like
+    /// to have a custom representation in the watch, you will need an additional
+    /// method on this handler
+    /// </summary>
     public class RevitWatchHandler : IWatchHandler
     {
-        internal WatchNode ProcessThing(Element element, string tag, bool showRawData = true)
+        internal WatchItem ProcessThing(Element element, string tag, bool showRawData = true)
         {
             var id = element.Id;
 
-            var node = new WatchNode(element.Name);
+            var node = new WatchItem(element.Name);
             node.Clicked += () => dynRevitSettings.Doc.ShowElements(element);
             node.Link = id.IntegerValue.ToString(CultureInfo.InvariantCulture);
 
             return node;
         }
 
-        internal WatchNode ProcessThing(XYZ pt, string tag, bool showRawData = true)
+        internal WatchItem ProcessThing(XYZ pt, string tag, bool showRawData = true)
         {
             var um = dynSettings.Controller.UnitsManager;
 
-            var node = new WatchNode();
+            var node = new WatchItem();
 
             if (!showRawData)
             {
@@ -47,31 +54,31 @@ namespace Dynamo.Applications
             return node;
         }
 
-        internal WatchNode ProcessThing(object value, string tag, bool showRawData = true)
+        internal WatchItem ProcessThing(object value, string tag, bool showRawData = true)
         {
-            var node = new WatchNode(value.ToString(), tag);
+            var node = new WatchItem(value.ToString(), tag);
             return node;
         }
 
-        internal WatchNode ProcessThing(SIUnit unit, string tag, bool showRawData = true)
+        internal WatchItem ProcessThing(SIUnit unit, string tag, bool showRawData = true)
         {
             if (showRawData)
-                return new WatchNode(unit.Value.ToString(CultureInfo.InvariantCulture), tag);
+                return new WatchItem(unit.Value.ToString(CultureInfo.InvariantCulture), tag);
 
-            return new WatchNode(unit.ToString(), tag);
+            return new WatchItem(unit.ToString(), tag);
         }
 
-        internal WatchNode ProcessThing(double value, string tag, bool showRawData = true)
+        internal WatchItem ProcessThing(double value, string tag, bool showRawData = true)
         {
-            return new WatchNode(value.ToString("0.000"), tag);
+            return new WatchItem(value.ToString("0.000"), tag);
         }
 
-        internal WatchNode ProcessThing(string value, string tag, bool showRawData = true)
+        internal WatchItem ProcessThing(string value, string tag, bool showRawData = true)
         {
-            return new WatchNode(value, tag);
+            return new WatchItem(value, tag);
         }
 
-        public WatchNode Process(dynamic value, string tag, bool showRawData = true)
+        public WatchItem Process(dynamic value, string tag, bool showRawData = true)
         {
             return ProcessThing(value, tag, showRawData);
         }
