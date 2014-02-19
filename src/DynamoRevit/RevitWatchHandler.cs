@@ -7,8 +7,7 @@ using Dynamo.ViewModels;
 
 namespace Dynamo.Applications
 {
-
-    public class RevitWatchHandler : DefaultWatchHandler
+    public class RevitWatchHandler : IWatchHandler
     {
         internal WatchNode ProcessThing(Element element, string tag, bool showRawData = true)
         {
@@ -46,6 +45,35 @@ namespace Dynamo.Applications
             }
 
             return node;
+        }
+
+        internal WatchNode ProcessThing(object value, string tag, bool showRawData = true)
+        {
+            var node = new WatchNode(value.ToString(), tag);
+            return node;
+        }
+
+        internal WatchNode ProcessThing(SIUnit unit, string tag, bool showRawData = true)
+        {
+            if (showRawData)
+                return new WatchNode(unit.Value.ToString(CultureInfo.InvariantCulture), tag);
+
+            return new WatchNode(unit.ToString(), tag);
+        }
+
+        internal WatchNode ProcessThing(double value, string tag, bool showRawData = true)
+        {
+            return new WatchNode(value.ToString("0.000"), tag);
+        }
+
+        internal WatchNode ProcessThing(string value, string tag, bool showRawData = true)
+        {
+            return new WatchNode(value, tag);
+        }
+
+        public WatchNode Process(dynamic value, string tag, bool showRawData = true)
+        {
+            return ProcessThing(value, tag, showRawData);
         }
     }
 }
