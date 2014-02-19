@@ -1,0 +1,12 @@
+<Workspace Version="0.6.3.27649" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="dc27fc31-fdad-40b5-906e-bbba9caf43a6" nickname="String" x="33" y="78.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="First line&#xD;&#xA;Second line with	tab&#xD;&#xA;Third line with &quot;quotes&quot;" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.StringLen type="Dynamo.Nodes.StringLen" guid="f6d7a6c3-5df4-45c0-911b-04d39b4c1959" nickname="String Length" x="543" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="dc27fc31-fdad-40b5-906e-bbba9caf43a6" start_index="0" end="f6d7a6c3-5df4-45c0-911b-04d39b4c1959" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
