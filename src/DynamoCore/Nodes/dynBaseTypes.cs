@@ -963,7 +963,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Filter", "List.Filter@var[],var");
+            return MigrateToDsFunction(data, "Filter", "Filter@_FunctionObject,var[]");
         }
     }
 
@@ -992,7 +992,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.FilterOut", "List.FilterOut@var[],var");
+            return MigrateToDsFunction(data, "FilterOut", "FilterOut@_FunctionObject,var[]");
         }
     }
 
@@ -5379,19 +5379,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                if (subNode.Name.Equals(typeof(string).FullName))
-                {
-                    foreach (XmlAttribute attr in subNode.Attributes)
-                    {
-                        if (attr.Name.Equals("value"))
-                        {
-                            Value = DeserializeValue(attr.Value);
-                        }
-                    }
-                }
-            }
+            Value = GetValueAttributeString(nodeElement);
         }
 
         [NodeMigration(from:"0.5.3.0")]
@@ -5405,6 +5393,40 @@ namespace Dynamo.Nodes
 
             foreach (XmlAttribute attr in query)
                 attr.Value = HttpUtility.HtmlEncode(HttpUtility.UrlDecode(attr.Value));
+        }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement original = data.MigratedNodes.ElementAt(0);
+
+            // Escape special characters for display in code block node.
+            string content = GetValueAttributeString(original);
+            content = content.Replace("\r\n", "\\n");
+            content = content.Replace("\t", "\\t");
+            content = content.Replace("\"", "\\\"");
+            content = string.Format("\"{0}\";", content);
+
+            XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(original);
+            newNode.SetAttribute("CodeText", content);
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
+
+        private static string GetValueAttributeString(XmlNode nodeElement)
+        {
+            var stringTypeName = typeof(string).FullName;
+            var query = from XmlNode childNode in nodeElement.ChildNodes
+                        where childNode.Name.Equals(stringTypeName)
+                        from XmlAttribute attribute in childNode.Attributes
+                        where attribute.Name.Equals("value")
+                        select attribute;
+
+            foreach (XmlAttribute attribute in query)
+                return attribute.Value;
+
+            return string.Empty;
         }
     }
 
