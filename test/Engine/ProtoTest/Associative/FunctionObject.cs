@@ -464,5 +464,31 @@ r2 = FilterOut(1..10, pred);
             thisTest.Verify("r1", new object[] { 1, 3, 5, 7, 9 });
             thisTest.Verify("r2", new object[] { 2, 4, 6, 8, 10 });
         }
+
+        [Test]
+        public void TestReduce()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+def mul(x, y)
+{
+    return = x * y;
+}
+
+def sum(x, y)
+{
+    return = x + y;
+}
+
+acc1 = _SingleFunctionObject(mul, 2, { }, { });
+acc2 = _SingleFunctionObject(sum, 2, { }, { });
+v1 = Reduce(1..10, 1, acc1);
+v2 = Reduce(1..10, 0, acc2);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("v1", 3628800);
+            thisTest.Verify("v2", 55);
+        }
     }
 }
