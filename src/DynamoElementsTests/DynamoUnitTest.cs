@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.FSchemeInterop;
+using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.Units;
 using Dynamo.UpdateManager;

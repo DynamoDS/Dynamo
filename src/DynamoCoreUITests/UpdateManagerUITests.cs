@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
-using Dynamo.Nodes;
+using Dynamo.Interfaces;
 using Dynamo.Tests.UI;
 using Dynamo.UI.Controls;
 using Dynamo.Units;
