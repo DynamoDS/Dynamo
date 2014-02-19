@@ -2396,7 +2396,7 @@ namespace ProtoAssociative
                 }
                 else if (identList.RightNode is FunctionCallNode)
                 {
-                    FunctionCallNode fcNode = identList.RightNode as FunctionCallNode;
+                    FunctionCallNode fcNode = new FunctionCallNode(identList.RightNode as FunctionCallNode);
                     arrayDimension = fcNode.ArrayDimensions;
 
                     List<AssociativeNode> astlistArgs = new List<AssociativeNode>();
@@ -2976,7 +2976,6 @@ namespace ProtoAssociative
                 FunctionCallNode fcNode = null;
                 if (node is FunctionCallNode)
                 {
-                    //fcNode = node as FunctionCallNode;
                     fcNode = new FunctionCallNode(node as FunctionCallNode);
 
                     List<AssociativeNode> astlistArgs = new List<AssociativeNode>();
