@@ -332,6 +332,83 @@ t4 = Map(r6, getPointKey);
         }
 
         [Test]
+        public void TestSortByComparision()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+class Point
+{
+    constructor Point(_x, _y, _z)
+    {
+        x = _x;
+        y = _y;
+        z = _z;
+    }
+    
+    x; y; z;
+}
+
+p1 = Point(2, 1, 3);
+p2 = Point(1, 3, 3);
+p3 = Point(1, 2, 4);
+p4 = Point(3, 1, 2);
+
+def comparePoint(p1 : Point, p2: Point)
+{
+    return = [Imperative]
+    {
+        if (p1.x > p2.x)
+        {
+            return = 1;
+        }
+        else if (p1.x < p2.x)
+        {
+            return = -1;
+        }
+        else
+        {
+            if (p1.y > p2.y)
+            {
+                return = 1;
+            }
+            else if (p1.y < p2.y)
+            {
+                return = -1;
+            }
+            else
+            {
+                if (p1.z > p2.z)
+                {
+                    return = 1;
+                }
+                else if (p1.z < p2.z)
+                {
+                    return = -1;
+                }
+                else
+                {
+                    return = 0;
+                }
+            }
+        }
+    }
+}
+
+pointComparer = _SingleFunctionObject(comparePoint, 2, { }, { });
+
+r = SortByComparsion({ p1, p2, p3, p4 }, pointComparer);
+r1 = r.x;
+r2 = r.y;
+r3 = r.z;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { 1, 1, 2, 3 });
+            thisTest.Verify("r2", new object[] { 2, 3, 1, 1});
+            thisTest.Verify("r3", new object[] { 4, 3, 3, 2 });
+        }
+
+        [Test]
         public void TestGroupByKey()
         {
             string code =
