@@ -11,6 +11,7 @@ using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Units;
 using Dynamo.UpdateManager;
@@ -77,6 +78,7 @@ namespace Dynamo
         public Dispatcher UIDispatcher { get; set; }
         public IUpdateManager UpdateManager { get; set; }
         public IUnitsManager UnitsManager { get; set; }
+        public IWatchHandler WatchHandler { get; set; }
 
         public virtual VisualizationManager VisualizationManager
         {
@@ -233,13 +235,13 @@ namespace Dynamo
 
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
-                return new DynamoController(env, typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager(), new UnitsManager());
+                return new DynamoController(env, typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager(), new UnitsManager(), new DefaultWatchHandler());
 
-            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager(), new UnitsManager());
+            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager(), new UnitsManager(), new DefaultWatchHandler());
         }
 
-        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context, IUpdateManager updateManager, IUnitsManager units) : 
-            this(env, viewModelType, context, null, updateManager, units)
+        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context, IUpdateManager updateManager, IUnitsManager units, IWatchHandler watchHandler) : 
+            this(env, viewModelType, context, null, updateManager, units, watchHandler)
         {
         }
 
@@ -247,7 +249,7 @@ namespace Dynamo
         ///     Class constructor
         /// </summary>
         public DynamoController(ExecutionEnvironment env,
-            Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager, IUnitsManager units)
+            Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager, IUnitsManager units, IWatchHandler watchHandler)
         {
             DynamoLogger.Instance.StartLogging();
 
@@ -264,6 +266,8 @@ namespace Dynamo
             UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
             UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
             UpdateManager.CheckForProductUpdate();
+
+            WatchHandler = watchHandler;
 
             //create the view model to which the main window will bind
             //the DynamoModel is created therein

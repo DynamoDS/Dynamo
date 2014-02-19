@@ -231,6 +231,18 @@ namespace Dynamo.FSchemeInterop
                 return item;
             }
 
+            if (value.IsSymbol)
+            {
+                var item = ((Value.String) value).Item;
+                return item;
+            }
+
+            if (value.IsFunction)
+            {
+                var item = ((Value.Function) value).Item;
+                return item;
+            }
+
             return null;
         }
 

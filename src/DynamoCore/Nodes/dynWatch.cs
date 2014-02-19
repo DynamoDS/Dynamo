@@ -1,19 +1,55 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Dynamo.Controls;
+using Dynamo.FSchemeInterop;
 using Dynamo.Models;
+using Dynamo.Units;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
-    public interface WatchHandler
+    public interface IWatchHandler
     {
-        bool AcceptsValue(object o);
+        WatchNode Process(dynamic value, string tag, bool showRawData = true);
+    }
 
-        void ProcessNode(WatchNode root, object value, WatchNode node);
+    /// <summary>
+    /// The default watch handler.
+    /// </summary>
+    public class DefaultWatchHandler : IWatchHandler
+    {
+        internal WatchNode ProcessThing(object value, string tag, bool showRawData = true)
+        {
+            var node = new WatchNode(value.ToString(), tag);
+            return node;
+        }
+
+        internal WatchNode ProcessThing(SIUnit unit, string tag, bool showRawData = true)
+        {
+            if (showRawData)
+                return new WatchNode(unit.Value.ToString(CultureInfo.InvariantCulture), tag);
+
+            return new WatchNode(unit.ToString(), tag);
+        }
+
+        internal WatchNode ProcessTing(double value, string tag, bool showRawData = true)
+        {
+            return new WatchNode(value.ToString("0.000"), tag);
+        }
+
+        internal WatchNode ProcessThing(string value, string tag, bool showRawData = true)
+        {
+            return new WatchNode(value, tag);
+        }
+
+        public WatchNode Process(dynamic value, string tag, bool showRawData = true)
+        {
+            return ProcessThing(value, tag, showRawData);
+        }
     }
 
     [NodeName("Watch")]
@@ -22,10 +58,10 @@ namespace Dynamo.Nodes
     [NodeSearchTags("print", "output", "display")]
     public partial class Watch: NodeWithOneOutput
     {
-
         public WatchTree watchTree;
 
         private WatchNode _root;
+        
         public WatchNode Root
         {
             get { return _root; }
@@ -35,30 +71,6 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("Root");
             }
         }
-
-        private class WatchHandlers
-        {
-            public HashSet<WatchHandler> handlers
-            {
-                get;
-                private set;
-            }
-
-            public WatchHandlers()
-            {
-                handlers = new HashSet<WatchHandler>();
-            }
-
-            public void ProcessNode(WatchNode root, object value, WatchNode node)
-            {
-                foreach (var handler in handlers)   //.Where(x => x.AcceptsValue(value)))
-                {
-                    handler.ProcessNode(root, value, node);
-                }
-            }
-        }
-
-        static WatchHandlers handlerManager = new WatchHandlers();
 
         public event EventHandler RequestBindingUnhook;
         protected virtual void OnRequestBindingUnhook(EventArgs e)
@@ -74,16 +86,6 @@ namespace Dynamo.Nodes
                 RequestBindingRehook(this, e);
         }
 
-        public static void AddWatchHandler(WatchHandler h)
-        {
-            handlerManager.handlers.Add(h);
-        }
-
-        public static void RemoveWatchHandler(WatchHandler h)
-        {
-            handlerManager.handlers.Remove(h);
-        }
-
         public Watch()
         {
             InPortData.Add(new PortData("", "Node to evaluate.", typeof(object)));
@@ -97,6 +99,36 @@ namespace Dynamo.Nodes
             {
                 p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
             }
+        }
+
+        public WatchNode Process(Value value, string tag, bool showRawData = true)
+        {
+            WatchNode node;
+
+            if (value == null || value.IsDummy)
+            {
+                node = new WatchNode("null");
+            }
+            else if (value.IsFunction)
+            {
+                node = new WatchNode("<function>");
+            }
+            else if (value.IsList)
+            {
+                var list = ((Value.List)value).Item;
+                node = new WatchNode(list.IsEmpty ? "Empty List" : "List");
+
+                foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
+                {
+                    node.Children.Add(Process(e.Element, "[" + e.Index + "]", showRawData));
+                }
+            }
+            else
+            {
+                node = dynSettings.Controller.WatchHandler.Process(value.ToDynamic(), tag, showRawData);
+            }
+
+            return node ?? (new WatchNode("null"));
         }
 
         void p_PortDisconnected(object sender, EventArgs e)
@@ -121,7 +153,7 @@ namespace Dynamo.Nodes
 
                     foreach (Value e in args)
                     {
-                        Root.Children.Add(Process(Root, e, prefix, count));
+                        Root.Children.Add(Process(e, count.ToString(CultureInfo.InvariantCulture), Root.ShowRawData));
                         count++;
                     }
 
@@ -138,63 +170,7 @@ namespace Dynamo.Nodes
         {
 
         }
-
-        WatchNode Process(WatchNode root, Value eIn, string prefix, int count, bool isListMember = false)
-        {
-            WatchNode node = null;
-            
-            if (eIn == null || eIn.IsDummy)
-            {
-                node = new WatchNode("null");
-                return node;
-            }
-
-            if (eIn.IsContainer)
-            {
-                var value = (eIn as Value.Container).Item;
-                if (value != null)
-                {
-                    node = new WatchNode(value.ToString(), isListMember, count);
-                    handlerManager.ProcessNode(root, value, node);
-                }
-            }
-            else if (eIn.IsFunction)
-            {
-                node = new WatchNode("<function>", isListMember, count);
-            }
-            else if (eIn.IsList)
-            {
-                string newPrefix = prefix + "\t";
-
-                var list = (eIn as Value.List).Item;
-
-                node = new WatchNode(list.IsEmpty ? "Empty List" : "List", isListMember, count);
-
-                foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
-                {
-                    node.Children.Add( Process(root, e.Element, newPrefix, e.Index, true) );
-                }
-            }
-            else if (eIn.IsNumber)
-            {
-                node = new WatchNode((eIn as Value.Number).Item.ToString(), isListMember, count);
-            }
-            else if (eIn.IsString)
-            {
-                node = new WatchNode((eIn as Value.String).Item, isListMember, count);
-            }
-            else if (eIn.IsSymbol)
-            {
-                node = new WatchNode((eIn as Value.Symbol).Item, isListMember, count);
-            }
-
-            // This is a fix for the following defect. "VirtualizingStackPanel" 
-            // does not quite work well with "WatchNode" being 'null' value.
-            // 
-            //      https://github.com/ikeough/Dynamo/issues/832
-            // 
-            return node ?? (new WatchNode("null"));
-        }
+ 
     }
 
 }

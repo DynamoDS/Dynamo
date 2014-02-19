@@ -71,10 +71,9 @@ namespace Dynamo.ViewModels
             IsNodeExpanded = true;
         }
 
-        public WatchNode( string label, bool isListMember, int count )
+        public WatchNode(string label, string tag)
         {
-            _label = isListMember ? "[" + count + "] " + label : label;
-            IsNodeExpanded = true;
+            _label = string.Format("[{0}] {1}", tag, label);
         }
     }
 
