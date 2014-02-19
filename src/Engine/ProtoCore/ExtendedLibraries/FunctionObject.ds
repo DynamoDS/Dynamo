@@ -404,3 +404,23 @@ def GroupByKey(list : var[], keyProjector: _FunctionObject)
         return = _finalGroupedList;
     }
 }
+
+def Reduce(list : var[], seed:var, accumulator : _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null)
+        {
+            return = seed;
+        }
+        
+        _acc = seed;
+        for (_index in 0..(Count(list) - 1))
+        {
+            _accFunc = Apply(accumulator, _acc);
+            _acc = Apply(_accFunc, list[_index]);
+        }
+        
+        return = _acc;
+    }
+}
