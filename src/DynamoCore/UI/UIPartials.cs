@@ -1095,20 +1095,20 @@ namespace Dynamo.Nodes
         {
             var nodeUI = ui as dynNodeView;
 
-            watchTree = new WatchTree();
+            _watchTree = new WatchTree();
 
-            nodeUI.grid.Children.Add(watchTree);
-            watchTree.SetValue(Grid.RowProperty, 2);
-            watchTree.SetValue(Grid.ColumnSpanProperty, 3);
-            watchTree.Margin = new Thickness(5, 0, 5, 5);
+            nodeUI.grid.Children.Add(_watchTree);
+            _watchTree.SetValue(Grid.RowProperty, 2);
+            _watchTree.SetValue(Grid.ColumnSpanProperty, 3);
+            _watchTree.Margin = new Thickness(5, 0, 5, 5);
 
             if (Root == null)
-                Root = new WatchNode();
-            watchTree.DataContext = Root;
+                Root = new WatchItem();
+            _watchTree.DataContext = Root;
 
             this.RequestBindingUnhook += new EventHandler(delegate
             {
-                BindingOperations.ClearAllBindings(watchTree.treeView1);
+                BindingOperations.ClearAllBindings(_watchTree.treeView1);
             });
 
             this.RequestBindingRehook += new EventHandler(delegate
@@ -1118,7 +1118,7 @@ namespace Dynamo.Nodes
                     Mode = BindingMode.TwoWay,
                     Source = Root,
                 };
-                watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
+                _watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
             });
 
             var checkedBinding = new Binding("ShowRawData")
