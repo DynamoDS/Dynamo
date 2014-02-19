@@ -316,6 +316,53 @@ def SortByKey(list : var[], keyProjector:_FunctionObject)
     }
 }
 
+def SortByComparsion(list : var[], comparer:_FunctionObject)
+{
+    return = [Imperative]
+    {
+        _count = Count(list);
+        if (_count < 2)
+        {
+            return = list;
+        }
+        
+        _pivotComparer = Apply(comparer, list[0]);
+        // The position of last element that < privot
+        _last = 0;
+        
+        for (_current in 1..(_count - 1))
+        {
+            // comparer(pivot, current) >= 0 ?
+            if (Apply(_pivotComparer, list[_current]) > 0)
+            {
+                _last = _last + 1;
+                
+                _temp = list[_current];
+                list[_current] = list[_last];
+                list[_last] = _temp;
+            }
+        }        
+        
+        _temp = list[_last];
+        list[_last] = list[0];
+        list[0] = _temp;
+        
+        _leftList = { };
+        if (_last >= 1)
+        {
+            _leftList = list[0.._last - 1];
+        }
+        
+        _rightList = { };
+        if (_last < _count - 1)
+        {
+            _rightList = list[(_last + 1)..(_count - 1)];
+        }
+        
+        return = Concat(Concat(SortByComparsion(_leftList, comparer), { list[_last] }), SortByComparsion(_rightList, comparer));
+    }
+}
+
 def GroupByKey(list : var[], keyProjector: _FunctionObject)
 {
     return = [Imperative]
