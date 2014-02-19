@@ -201,20 +201,52 @@ def Filter(list: var[], predicate: _FunctionObject)
             return = {};
         }
 
-        _resultList = {};
-        _index = 0;
+        _filteredList = {};
+        _current = 0;
 
         for (_index in 0..(_count - 1))
         {
             _value = list[_index];
             if (Apply(predicate, _value))
             {
-                _resultList[_index] = _value;
-                _index = _index + 1;
+                _filteredList[_current] = _value;
+                _current = _current + 1;
             }
         }
 
-        return = _resultList;
+        return = _filteredList;
+    }
+}
+
+def FilterOut(list: var[], predicate: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = {};
+        }
+
+        _filteredList = {};
+        _current = 0;
+
+        for (_index in 0..(_count - 1))
+        {
+            _value = list[_index];
+            if (!Apply(predicate, _value))
+            {
+                _filteredList[_current] = _value;
+                _current = _current + 1;
+            }
+        }
+
+        return = _filteredList;
     }
 }
 
