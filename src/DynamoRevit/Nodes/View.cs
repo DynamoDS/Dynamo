@@ -829,7 +829,7 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
 
-            ArgumentLacing = LacingStrategy.Shortest;
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override Value Evaluate(FSharpList<Value> args)

@@ -17,8 +17,8 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Python Script")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
+    [NodeName("LEGACY Python Script")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING + ".Legacy")]
     [NodeDescription("Runs an embedded IronPython script")]
     public class Python : NodeWithOneOutput
     {
@@ -224,8 +224,8 @@ namespace Dynamo.Nodes
         #endregion
     }
 
-    [NodeName("Python Script With Variable Number of Inputs")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
+    [NodeName("LEGACY Python Script With Variable Number of Inputs")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING + ".Legacy")]
     [NodeDescription("Runs an embedded IronPython script")]
     public class PythonVarIn : VariableInput
     {
@@ -476,10 +476,24 @@ namespace Dynamo.Nodes
         }
 
         #endregion
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            System.Xml.XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
+            var element = MigrationManager.CloneAndChangeType(xmlNode, "DSIronPythonNode.PythonNode");
+            element.SetAttribute("nickname", "Python Script");
+            element.SetAttribute("inputcount", xmlNode.GetAttribute("inputs"));
+            element.RemoveAttribute("inputs");
+
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(element);
+            return migrationData;
+        }
     }
 
-    [NodeName("Python Script From String")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
+    [NodeName("LEGACY Python Script From String")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING + ".Legacy")]
     [NodeDescription("Runs a IronPython script from a string")]
     public class PythonString : NodeWithOneOutput
     {
@@ -525,6 +539,18 @@ namespace Dynamo.Nodes
             };
             var value = PythonEngine.Evaluator(RequiresRecalc, script, bindings, inputs);
             return value;
+        }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            System.Xml.XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
+            var element = MigrationManager.CloneAndChangeType(xmlNode, "DSIronPythonNode.PythonStringNode");
+            element.SetAttribute("inputcount", "2");
+
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(element);
+            return migrationData;
         }
     }
 }

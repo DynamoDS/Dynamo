@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Web.UI;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
 using Dynamo.FSchemeInterop;
@@ -247,6 +249,57 @@ namespace Dynamo.Nodes
     }
 
     #region FScheme Builtin Interop
+
+    public class PreviewUpdate : InputNode
+    {
+        private readonly NodeModel _node;
+
+        public PreviewUpdate(NodeModel node)
+            : base(new[] { " __wrapped " })
+        {
+            _node = node;
+        }
+
+        public INode WrappedNode
+        {
+            set
+            {
+                ConnectInput("__wrapped", value);
+            }
+        }
+
+        protected override FScheme.Expression compileBody(
+            Dictionary<INode, string> symbols, Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds, HashSet<string> conditionalIds)
+        {
+            /* (let ((__result <__wrapped>))
+             *    (updateNodeOldValue __result)
+             *    __result)
+             */
+            return FScheme.Expression.NewLet(
+                new[] { "__result" }.ToFSharpList(),
+                new[]
+                {
+                    arguments["__wrapped"].compile(
+                        symbols,
+                        letEntries,
+                        initializedIds,
+                        conditionalIds)
+                }.ToFSharpList(),
+                FScheme.Expression.NewBegin(
+                    new[]
+                    {
+                        FScheme.Expression.NewList_E(
+                            new[]
+                            {
+                                FScheme.Expression.NewFunction_E(
+                                    Utils.ConvertToFSchemeFunc(args => _node.OldValue = args[0])),
+                                FScheme.Expression.NewId("__result")
+                            }.ToFSharpList()),
+                        FScheme.Expression.NewId("__result")
+                    }.ToFSharpList()));
+        }
+    }
 
     public abstract class BuiltinFunction : NodeWithOneOutput
     {
@@ -602,7 +655,7 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var nullity = args[0] == null || (args[0] as dynamic).Item == null;
-            return FScheme.Value.NewNumber(nullity ? 1 : 0);
+            return Value.NewNumber(nullity ? 1 : 0);
         }
     }
 
@@ -945,7 +998,90 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Filter by Boolean Mask")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
+    [NodeDescription("Filters a sequence by lookng up corresponding indices in a separate list of booleans.")]
+    public class FilterMask : NodeModel
+    {
+        public FilterMask()
+        {
+            InPortData.Add(new PortData("seq", "Sequence to filter.", typeof(Value.List)));
+            InPortData.Add(new PortData("mask", "List of booleans to mask with.", typeof(Value.List)));
+            OutPortData.Add(new PortData("in", "Elements whose mask index was true.", typeof(Value.List)));
+            OutPortData.Add(new PortData("out", "Elements whose mask index was false.", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        {
+            var list = ((Value.List) args[0]).Item;
+            var mask = ((Value.List) args[1]).Item;
+
+            var zipped = list.Zip(mask, (i, m) => new {Item = i, Mask = FScheme.ValueToBool(m)});
+
+            var inList = new List<Value>();
+            var outList = new List<Value>();
+
+            foreach (var p in zipped)
+            {
+                if (p.Mask)
+                {
+                    inList.Add(p.Item);
+                }
+                else
+                {
+                    outList.Add(p.Item);
+                }
+            }
+
+            outPuts[OutPortData[0]] = Value.NewList(inList.ToFSharpList());
+            outPuts[OutPortData[1]] = Value.NewList(outList.ToFSharpList());
+        }
+    }
+
     [NodeName("Filter")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
+    [NodeDescription("Filters a sequence by a given predicate \"p\" such that for an arbitrary element \"x\" p(x) = True or False.")]
+    public class FilterInAndOut : NodeModel
+    {
+        public FilterInAndOut()
+        {
+            InPortData.Add(new PortData("p(x)", "Predicate", typeof(object)));
+            InPortData.Add(new PortData("seq", "Sequence to filter", typeof(Value.List)));
+            OutPortData.Add(new PortData("in", "Sequence containing all elements \"x\" where p(x) = True", typeof(Value.List)));
+            OutPortData.Add(new PortData("out", "Sequence containing all elements \"x\" where p(x) = False", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        {
+            var pred = ((Value.Function) args[0]).Item;
+            var list = ((Value.List) args[1]).Item;
+
+            var inList = new List<Value>();
+            var outList = new List<Value>();
+
+            foreach (var item in list)
+            {
+                if (FScheme.ValueToBool(pred.Invoke(Utils.MakeFSharpList(item))))
+                {
+                    inList.Add(item);
+                }
+                else
+                {
+                    outList.Add(item);
+                }
+            }
+
+            outPuts[OutPortData[0]] = Value.NewList(inList.ToFSharpList());
+            outPuts[OutPortData[1]] = Value.NewList(outList.ToFSharpList());
+        }
+    }
+
+
+    [NodeName("Filter In")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Filters a sequence by a given predicate \"p\" such that for an arbitrary element \"x\" p(x) = True.")]
     public class Filter : BuiltinFunction
@@ -1931,7 +2067,7 @@ namespace Dynamo.Nodes
             if (!preBuilt.TryGetValue(this, out result))
             {
                 result = new Dictionary<int, INode>();
-                result[outPort] = new SymbolNode("empty");
+                result[outPort] = new PreviewUpdate(this) { WrappedNode = new SymbolNode("empty") };
                 preBuilt[this] = result;
             }
             return result[outPort];
@@ -2046,7 +2182,7 @@ namespace Dynamo.Nodes
             : base(FScheme.Last)
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
-            OutPortData.Add(new PortData("first", "First element in the list", typeof(object)));
+            OutPortData.Add(new PortData("Last", "Last element in the list", typeof(object)));
 
             RegisterAllPorts();
         }
@@ -2796,6 +2932,8 @@ namespace Dynamo.Nodes
             if (preBuilt.TryGetValue(this, out result)) 
                 return result[outPort];
 
+            INode resultNode;
+
             if (Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
                 var ifNode = new ConditionalNode();
@@ -2803,7 +2941,7 @@ namespace Dynamo.Nodes
                 ifNode.ConnectInput("true", Inputs[1].Item2.Build(preBuilt, Inputs[1].Item1));
                 ifNode.ConnectInput("false", new NumberNode(0));
                 result = new Dictionary<int, INode>();
-                result[outPort] = ifNode;
+                resultNode = ifNode;
             }
             else
             {
@@ -2830,8 +2968,9 @@ namespace Dynamo.Nodes
                 OnEvaluate(); //TODO: insert call into actual ast using a begin
 
                 result = new Dictionary<int, INode>();
-                result[outPort] = node;
+                resultNode = node;
             }
+            result[outPort] = new PreviewUpdate(this) { WrappedNode = resultNode };
             preBuilt[this] = result;
             return result[outPort];
         }
@@ -2862,6 +3001,8 @@ namespace Dynamo.Nodes
             if (preBuilt.TryGetValue(this, out result)) 
                 return result[outPort];
 
+            INode resultNode;
+
             if (Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
                 var ifNode = new ConditionalNode();
@@ -2870,7 +3011,7 @@ namespace Dynamo.Nodes
                 ifNode.ConnectInput("false", Inputs[1].Item2.Build(preBuilt, Inputs[1].Item1));
 
                 result = new Dictionary<int, INode>();
-                result[outPort] = ifNode;
+                resultNode = ifNode;
             }
             else
             {
@@ -2897,8 +3038,9 @@ namespace Dynamo.Nodes
                 OnEvaluate(); //TODO: insert call into actual ast using a begin
 
                 result = new Dictionary<int, INode>();
-                result[outPort] = node;
+                resultNode = node;
             }
+            result[outPort] = new PreviewUpdate(this) { WrappedNode = resultNode };
             preBuilt[this] = result;
             return result[outPort];
         }
@@ -3300,11 +3442,11 @@ namespace Dynamo.Nodes
 
                     if (y == 2)
                     {
-                        return Value.NewContainer(new Area(Math.Pow(x.Value, y)));
+                        return Value.NewContainer(new Area(Math.Pow(x.Value, y), dynSettings.Controller.UnitsManager));
                     }
                     else if (y == 3)
                     {
-                        return Value.NewContainer(new Volume(Math.Pow(x.Value, y)));
+                        return Value.NewContainer(new Volume(Math.Pow(x.Value, y), dynSettings.Controller.UnitsManager));
                     }
                 }
             }
@@ -3564,7 +3706,7 @@ namespace Dynamo.Nodes
             if (!preBuilt.TryGetValue(this, out result))
             {
                 result = new Dictionary<int, INode>();
-                result[outPort] = new NumberNode(Math.E);
+                result[outPort] = new PreviewUpdate(this) { WrappedNode = new NumberNode(Math.E) };
                 preBuilt[this] = result;
             }
             return result[outPort];
@@ -3607,7 +3749,7 @@ namespace Dynamo.Nodes
             if (!preBuilt.TryGetValue(this, out result))
             {
                 result = new Dictionary<int, INode>();
-                result[outPort] = new NumberNode(3.14159265358979);
+                result[outPort] = new PreviewUpdate(this) { WrappedNode = new NumberNode(3.14159265358979) };
                 preBuilt[this] = result;
             }
             return result[outPort];
@@ -3651,7 +3793,7 @@ namespace Dynamo.Nodes
             if (!preBuilt.TryGetValue(this, out result))
             {
                 result = new Dictionary<int, INode>();
-                result[outPort] = new NumberNode(3.14159265358979 * 2);
+                result[outPort] = new PreviewUpdate(this) { WrappedNode = new NumberNode(3.14159265358979 * 2) };
                 preBuilt[this] = result;
             }
             return result[outPort];
@@ -4001,13 +4143,18 @@ namespace Dynamo.Nodes
             Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
             {
-                result = new Dictionary<int, INode>(); 
-                result[outPort] = 
+                result = new Dictionary<int, INode>();
+
+                var begins =
                     nestedBegins(
                         new Stack<Tuple<int, NodeModel>>(
-                            Enumerable.Range(0, InPortData.Count).Select(
-                                x => HasInput(x) ? Inputs[x] : null)),
-                    preBuilt);
+                            Enumerable.Range(0, InPortData.Count)
+                                      .Select(x => HasInput(x) ? Inputs[x] : null)),
+                        preBuilt);
+
+                var previewUpdate = new PreviewUpdate(this) { WrappedNode = begins };
+
+                result[outPort] = previewUpdate;
                 preBuilt[this] = result;
             }
             return result[outPort];
@@ -4142,9 +4289,9 @@ namespace Dynamo.Nodes
             if (!HasInput(0))
             {
                 Error("Test input must be connected.");
-                throw new Exception("If Node requires test input to be connected.");
+                return new ObjectNode(null);
             }
-            return base.Build(preBuilt, outPort);
+            return new PreviewUpdate(this) { WrappedNode = base.Build(preBuilt, outPort) };
         }
 
         protected override InputNode Compile(IEnumerable<string> portNames)
@@ -5126,10 +5273,29 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DoubleSlider"));
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "Dynamo.Nodes.DoubleSlider");
 
-            return migrationData;               
+            // Get attributes from old child node
+            XmlElement newChild1 = data.Document.CreateElement("System.Double");
+            XmlElement newChild2 = data.Document.CreateElement("Range");
+
+            foreach (XmlNode subNode in oldNode.ChildNodes)
+            {
+                foreach (XmlNode attr in subNode.Attributes)
+                {
+                    if (attr.Name.Equals("value"))
+                        newChild1.SetAttribute("value", attr.Value);
+                    else
+                        newChild2.SetAttribute(attr.Name, attr.Value);
+                }
+            }
+
+            newNode.AppendChild(newChild1);
+            newNode.AppendChild(newChild2);
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
         }
     }
 
@@ -5274,10 +5440,29 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.IntegerSlider"));
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "Dynamo.Nodes.IntegerSlider");
 
-            return migrationData;  
+            // Get attributes from old child node
+            XmlElement newChild1 = data.Document.CreateElement("System.Int32");
+            XmlElement newChild2 = data.Document.CreateElement("Range");
+
+            foreach (XmlNode subNode in oldNode.ChildNodes)
+            {
+                foreach (XmlNode attr in subNode.Attributes)
+                {
+                    if (attr.Name.Equals("value"))
+                        newChild1.SetAttribute("value", attr.Value);
+                    else
+                        newChild2.SetAttribute(attr.Name, attr.Value);
+                }
+            }
+
+            newNode.AppendChild(newChild1);
+            newNode.AppendChild(newChild2);
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
         }
     }
 
@@ -5308,10 +5493,15 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "DSCoreNodesUI.BoolSelector"));
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCoreNodesUI.BoolSelector");
 
-            return migrationData;  
+            // Clone child from old node
+            foreach (XmlNode subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode);
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
         }
     }
 
@@ -5354,19 +5544,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                if (subNode.Name.Equals(typeof(string).FullName))
-                {
-                    foreach (XmlAttribute attr in subNode.Attributes)
-                    {
-                        if (attr.Name.Equals("value"))
-                        {
-                            Value = DeserializeValue(attr.Value);
-                        }
-                    }
-                }
-            }
+            Value = GetValueAttributeString(nodeElement);
         }
 
         [NodeMigration(from:"0.5.3.0")]
@@ -5380,6 +5558,40 @@ namespace Dynamo.Nodes
 
             foreach (XmlAttribute attr in query)
                 attr.Value = HttpUtility.HtmlEncode(HttpUtility.UrlDecode(attr.Value));
+        }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement original = data.MigratedNodes.ElementAt(0);
+
+            // Escape special characters for display in code block node.
+            string content = GetValueAttributeString(original);
+            content = content.Replace("\r\n", "\\n");
+            content = content.Replace("\t", "\\t");
+            content = content.Replace("\"", "\\\"");
+            content = string.Format("\"{0}\";", content);
+
+            XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(original);
+            newNode.SetAttribute("CodeText", content);
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
+
+        private static string GetValueAttributeString(XmlNode nodeElement)
+        {
+            var stringTypeName = typeof(string).FullName;
+            var query = from XmlNode childNode in nodeElement.ChildNodes
+                        where childNode.Name.Equals(stringTypeName)
+                        from XmlAttribute attribute in childNode.Attributes
+                        where attribute.Name.Equals("value")
+                        select attribute;
+
+            foreach (XmlAttribute attribute in query)
+                return attribute.Value;
+
+            return string.Empty;
         }
     }
 

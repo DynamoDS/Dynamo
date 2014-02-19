@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.Revit.DB;
+﻿using System.Linq;
+using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using NUnit.Framework;
 using RevitServices.Persistence;
@@ -14,6 +11,18 @@ namespace DSRevitNodesTests.Elements
     [TestFixture]
     public class FormTests
     {
+        [SetUp]
+        public void Setup()
+        {
+            HostFactory.Instance.StartUp();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            HostFactory.Instance.ShutDown();
+        }
+
         [Test]
         public void ByLoftingCurveReferences_ValidArgs()
         {

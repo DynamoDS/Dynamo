@@ -1,1 +1,1 @@
-python ..\..\src\DynamoTestFramework\RunRevitTests.py -i DSRevitNodesTests.xml -r DSRevitNodesTestsResults.xml
+python ..\..\DynamoTestFramework\RunRevitTests.py -i DSRevitNodesTests.xml -r DSRevitNodesTestsResults.xml

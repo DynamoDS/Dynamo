@@ -16,8 +16,7 @@ namespace Dynamo.Nodes
     public interface WatchHandler
     {
         bool AcceptsValue(object o);
-
-        void ProcessNode(object value, WatchNode node);
+        void ProcessNode(object value, WatchNode node, bool showRawData);
     }
 
     [NodeName("Watch")]
@@ -29,7 +28,6 @@ namespace Dynamo.Nodes
     {
 
         public WatchTree watchTree;
-        //private WatchTreeBranch watchTreeBranch;
 
         private WatchNode _root;
         public WatchNode Root
@@ -55,11 +53,11 @@ namespace Dynamo.Nodes
                 handlers = new HashSet<WatchHandler>();
             }
 
-            public void ProcessNode(object value, WatchNode node)
+            public void ProcessNode(object value, WatchNode node, bool showRawData)
             {
-                foreach (var handler in handlers.Where(x => x.AcceptsValue(value)))
+                foreach (var handler in handlers)   //.Where(x => x.AcceptsValue(value)))
                 {
-                    handler.ProcessNode(value, node);
+                    handler.ProcessNode(value, node, showRawData);
                 }
             }
         }
@@ -131,7 +129,7 @@ namespace Dynamo.Nodes
 
                     foreach (Value e in args)
                     {
-                        Root.Children.Add(Process(e, prefix, count));
+                        Root.Children.Add(Process(e, prefix, count, Root.ShowRawData));
                         count++;
                     }
 
@@ -149,10 +147,8 @@ namespace Dynamo.Nodes
 
         }
 
-        WatchNode Process(Value eIn, string prefix, int count, bool isListMember = false)
+        WatchNode Process(Value eIn, string prefix, int count, bool isListMember = false, bool showRawData = true)
         {
-            //content += prefix + string.Format("[{0}]:", count.ToString());
-
             WatchNode node = null;
             
             if (eIn == null || eIn.IsDummy)
@@ -163,26 +159,19 @@ namespace Dynamo.Nodes
 
             if (eIn.IsContainer)
             {
-                if ((eIn as Value.Container).Item != null)
+                var value = (eIn as Value.Container).Item;
+                if (value != null)
                 {
-                    //content += (eIn as Value.Container).Item.ToString();
-
-                    node = new WatchNode((eIn as Value.Container).Item.ToString(), isListMember, count);
-
-                    handlerManager.ProcessNode((eIn as Value.Container).Item, node);
-                    
-                    //node.Link = id;
+                    node = new WatchNode(value.ToString(), isListMember, count);
+                    handlerManager.ProcessNode(value, node, showRawData);
                 }
             }
             else if (eIn.IsFunction)
             {
-                //content += eIn.ToString() + "\n";
                 node = new WatchNode("<function>", isListMember, count);
             }
             else if (eIn.IsList)
             {
-                //content += "List\n";
-
                 string newPrefix = prefix + "\t";
 
                 var list = (eIn as Value.List).Item;
@@ -191,23 +180,20 @@ namespace Dynamo.Nodes
 
                 foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
                 {
-                    node.Children.Add( Process(e.Element, newPrefix, e.Index, true) );
+                    node.Children.Add( Process(e.Element, newPrefix, e.Index, true, showRawData) );
                 }
             }
             else if (eIn.IsNumber)
             {
-                //content += (eIn as Value.Number).Item.ToString() + "\n";
                 node = new WatchNode((eIn as Value.Number).Item.ToString(), isListMember, count);
             }
             else if (eIn.IsString)
             {
-                //content += (eIn as Value.String).Item.ToString() + "\n";
-                node = new WatchNode((eIn as Value.String).Item.ToString(), isListMember, count);
+                node = new WatchNode((eIn as Value.String).Item, isListMember, count);
             }
             else if (eIn.IsSymbol)
             {
-                //content += (eIn as Value.Symbol).Item.ToString() + "\n";
-                node = new WatchNode((eIn as Value.Symbol).Item.ToString(), isListMember, count);
+                node = new WatchNode((eIn as Value.Symbol).Item, isListMember, count);
             }
 
             // This is a fix for the following defect. "VirtualizingStackPanel" 
@@ -215,10 +201,7 @@ namespace Dynamo.Nodes
             // 
             //      https://github.com/ikeough/Dynamo/issues/832
             // 
-            if (null == node)
-                node = new WatchNode("null");
-
-            return node;
+            return node ?? (new WatchNode("null"));
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
@@ -318,7 +301,7 @@ namespace Dynamo.Nodes
             {
                 WatchNode node = new WatchNode(classMirror.ClassName, isListMember, index);
 
-                handlerManager.ProcessNode(data.Data, node);
+                handlerManager.ProcessNode(data.Data, node, true);
                 return node;
             }
 

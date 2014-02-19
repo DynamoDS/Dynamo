@@ -1229,10 +1229,16 @@ namespace ProtoScript.Runners
                         {
                             deltaAstList.AddRange(modifiedASTList);
                         }
-                        
+
                         // Disable removed nodes from the cache
-                        List<AssociativeNode> removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
-                        DeactivateGraphnodes(removedNodes);
+                        if (cachedTreeExists)
+                        {
+                            if (null != oldSubTree.AstNodes)
+                            {
+                                List<AssociativeNode> removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+                                DeactivateGraphnodes(removedNodes);
+                            }
+                        }
 
 
                         // Handle modifed functions
@@ -1257,16 +1263,17 @@ namespace ProtoScript.Runners
                                 UndefineFunctions(oldSubTree.AstNodes.Where(n => n is FunctionDefinitionNode));
                             }
 
-                            // Update the curernt subtree list
-                            //UpdateCachedSubtree(st.GUID, modifiedASTList);
-                            //st.a = modifiedASTList;
-                            List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
-                            newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
-                            newCachedASTList.AddRange(modifiedASTList);
+                            // Update the current subtree list
+                            if (null != oldSubTree.AstNodes)
+                            {
+                                List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
+                                newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
+                                newCachedASTList.AddRange(modifiedASTList);
 
-                            st.AstNodes.Clear();
-                            st.AstNodes.AddRange(newCachedASTList);
-                            currentSubTreeList[st.GUID] = st;
+                                st.AstNodes.Clear();
+                                st.AstNodes.AddRange(newCachedASTList);
+                                currentSubTreeList[st.GUID] = st;
+                            }
                         }
 
                     }

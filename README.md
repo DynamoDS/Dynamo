@@ -33,15 +33,22 @@ February 2014
 
 New
 
-- Dynamo Sandbox:   Explore Dynamo without Revit or Vasari installed
+- Dynamo Sandbox:   Explore Dynamo without Revit or Vasari installed (Dynamo Installation folder>Core>DynamoSandbox.exe)
 - Application level settings for Imperial and Metric Units
+- Daylighting with cloud Rendering service sample files
+- Set Parameters Node (not restricted to Families)
 - Add name to reference plane node.
 - Convert to Unitzed measures (Length, Area, Volume)
+- Explode Node (Solids to Faces, Faces to Edges) 
+- Solids from Elements handles lists
+- Select All Elements of Type and Category Nodes
+- Wall nodes element IDs persist after changes
 - Area Node
 - Volume Measure node
 - Length from Curve Node
-- Topography from Points, Points from Topography Nodes
+- Topography from Points and Points from Topography Nodes
 - Last of List Node
+- Fileter by Boolean Mask
 - Group by Key Node
 - Is Null node (for filtering out null values) 
 - Explode Node (replaces Explode Solid)
