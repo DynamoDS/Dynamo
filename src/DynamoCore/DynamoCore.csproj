@@ -430,7 +430,7 @@ limitations under the License.
     </ProjectReference>
     <ProjectReference Include="..\Render\DesignScriptStudio.Renderer\DesignScriptStudio.Renderer.vcxproj">
       <Project>{a69e7467-7a33-4242-aea2-984b41130f54}</Project>
-      <Name>DesignScriptStudio.Renderer %28Visual Studio 2010%29</Name>
+      <Name>DesignScriptStudio.Renderer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
