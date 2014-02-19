@@ -218,6 +218,7 @@
       <DependentUpon>Resource_en_us.resx</DependentUpon>
     </Compile>
     <Compile Include="RevitToLibGConversions.cs" />
+    <Compile Include="RevitWatchHandler.cs" />
     <Compile Include="Views\Partials.cs" />
     <Compile Include="ViewModels\DynamoRevitViewModel.cs" />
     <Compile Include="VisualizationManager\VisualizationManagerRevit.cs" />

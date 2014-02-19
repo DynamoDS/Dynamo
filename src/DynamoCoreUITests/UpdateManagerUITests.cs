@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
+using Dynamo.Nodes;
 using Dynamo.Tests.UI;
 using Dynamo.UI.Controls;
 using Dynamo.Units;
@@ -26,7 +27,7 @@ namespace DynamoCoreUITests
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
 
             var env = new ExecutionEnvironment();
-            Controller = new DynamoController(env, typeof(DynamoViewModel), "None", null, updateManager, new UnitsManager())
+            Controller = new DynamoController(env, typeof(DynamoViewModel), "None", null, updateManager, new UnitsManager(), new DefaultWatchHandler())
             {
                 Testing = true
             };

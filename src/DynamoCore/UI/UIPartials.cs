@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -1173,7 +1174,7 @@ namespace Dynamo.Nodes
 
                     Root.Children.Clear();
 
-                    Root.Children.Add(Process(Root, OldValue, prefix, count));
+                    Root.Children.Add(Process(OldValue, count.ToString(CultureInfo.InvariantCulture), Root.ShowRawData));
                     count++;
 
                     //rehook the binding

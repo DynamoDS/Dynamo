@@ -87,7 +87,7 @@ namespace Dynamo.Tests
                 };
 
                 //create a new instance of the ViewModel
-                Controller = new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), units)
+                Controller = new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), units, new DefaultWatchHandler())
                     {
                         Testing = true
                     };

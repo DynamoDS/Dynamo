@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,19 +8,16 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using Dynamo.Applications;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Revit;
 using Dynamo.Selection;
-using Dynamo.Units;
-using Dynamo.UpdateManager;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using DynamoUnits;
 using Greg;
-using Length = Dynamo.Nodes.Length;
 using Transaction = Dynamo.Nodes.Transaction;
 using Value = Dynamo.FScheme.Value;
 
@@ -59,7 +55,7 @@ namespace Dynamo
         }
 
         public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, Type viewModelType, string context, IUnitsManager units)
-            : base(env, viewModelType, context, new UpdateManager.UpdateManager(), units)
+            : base(env, viewModelType, context, new UpdateManager.UpdateManager(), units, new RevitWatchHandler())
         {
             Updater = updater;
             
@@ -74,7 +70,6 @@ namespace Dynamo
             dynSettings.Controller.DynamoViewModel.RequestAuthentication += RegisterSingleSignOn;
 
             AddPythonBindings();
-            AddWatchNodeHandler();
 
             dynRevitSettings.Revit.Application.DocumentClosed += Application_DocumentClosed;
             dynRevitSettings.Revit.Application.DocumentOpened += Application_DocumentOpened;
@@ -543,71 +538,6 @@ namespace Dynamo
 
             return result;
         }
-        #endregion
-
-        #region Watch Node Revit Hooks
-        void AddWatchNodeHandler()
-        {
-            Watch.AddWatchHandler(new RevitElementWatchHandler());
-        }
-
-        private class RevitElementWatchHandler : WatchHandler
-        {
-            public bool AcceptsValue(object o)
-            {
-                if (o is Element || o is GeometryObject)
-                {
-                    return true;
-                }
-                return false;
-            }
-
-            public void ProcessNode(WatchNode root, object value, WatchNode node)
-            {
-                try
-                {
-                    ProcessThing(root, value as dynamic, node);
-                }
-                catch(Exception ex)
-                {
-                    node.NodeLabel = value.ToString();
-                }
-            }
-
-            private void ProcessThing(WatchNode root, Element element, WatchNode node)
-            {
-                var id = element.Id;
-
-                node.Clicked += () => dynRevitSettings.Doc.ShowElements(element);
-                node.Link = id.IntegerValue.ToString(CultureInfo.InvariantCulture);
-                node.NodeLabel = element.Name;
-            }
-
-            private void ProcessThing(WatchNode root, XYZ pt, WatchNode node)
-            {
-                var um = dynSettings.Controller.UnitsManager;
-
-                if (!root.ShowRawData)
-                {
-                    ///xyzs will be in feet, but we need to show them
-                    ///in the display units of choice
-                    /// 
-
-                    var xyzStr = string.Format("{0:f3}, {1:f3}, {2:f3}",
-                        new Units.Length(pt.X/SIUnit.ToFoot, um),
-                        new Units.Length(pt.Y/SIUnit.ToFoot, um),
-                        new Units.Length(pt.Z/SIUnit.ToFoot, um));
-
-                    node.NodeLabel = "{" + xyzStr + "}";
-                }
-                else
-                {
-                    node.NodeLabel = pt.ToString();
-                }
-                
-            }
-        }
-
         #endregion
 
         public bool InIdleThread;
