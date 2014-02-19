@@ -41,9 +41,9 @@ namespace Revit.GeometryConversion
             }
 
             // presumably checking if the curve is circular is quite expensive, we don't do it
-            return Autodesk.Revit.DB.NurbSpline.Create(crv.GetControlVertices().ToXyzs(),
-               Enumerable.Repeat(1.0, crv.GetControlVertices().Count()).ToList(),
-                crv.GetKnots(),
+            return Autodesk.Revit.DB.NurbSpline.Create(crv.ControlPoints().ToXyzs(),
+               Enumerable.Repeat(1.0, crv.ControlPoints().Count()).ToList(),
+                crv.Knots(),
                 crv.Degree,
                 crv.IsClosed,
                 false);

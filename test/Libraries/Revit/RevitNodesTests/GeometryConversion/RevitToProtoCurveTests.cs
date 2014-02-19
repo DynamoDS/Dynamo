@@ -53,7 +53,7 @@ namespace DSRevitNodesTests.GeometryConversion
             Assert.AreEqual(revitSpline.Degree, protoSpline.Degree);
            
             Assert.IsTrue(protoSpline.IsRational);
-            Assert.AreEqual(revitSpline.CtrlPoints.Count, protoSpline.GetControlVertices().Count());
+            Assert.AreEqual(revitSpline.CtrlPoints.Count, protoSpline.ControlPoints().Count());
 
             // need more tests here for rational curves
             // Assert.AreEqual(revitSpline.Weights.Cast<double>().Count(), protoSpline.Weights.Count);
