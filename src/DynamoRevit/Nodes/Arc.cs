@@ -126,6 +126,8 @@ namespace Dynamo.Nodes
 
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Arc.ByCenterPointRadiusAngle", "Arc.ByCenterPointRadiusAngle@Point,double,double,double,Vector");
@@ -146,7 +148,32 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(zAxisNode);
             string zAxisNodeId = MigrationManager.GetGuidFromXmlElement(zAxisNode);
 
+            XmlElement toDegreeNodeStart = MigrationManager.CreateFunctionNode(
+                data.Document, "DSCoreNodes.dll", 
+                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
+            migrationData.AppendNode(toDegreeNodeStart);
+            string toDegreeNodeStartId = MigrationManager.GetGuidFromXmlElement(toDegreeNodeStart);
+
+            XmlElement toDegreeNodeEnd = MigrationManager.CreateFunctionNode(
+                data.Document, "DSCoreNodes.dll",
+                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
+            migrationData.AppendNode(toDegreeNodeEnd);
+            string toDegreeNodeEndId = MigrationManager.GetGuidFromXmlElement(toDegreeNodeEnd);
+
+            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
+
+            PortId oldInPort3 = new PortId(oldNodeId, 3, PortType.INPUT);
+            XmlElement connector3 = data.FindFirstConnector(oldInPort3);
+
+            PortId toDegreeNodeStartPort = new PortId(toDegreeNodeStartId, 0, PortType.INPUT);
+            PortId toDegreeNodeEndPort = new PortId(toDegreeNodeEndId, 0, PortType.INPUT);
+
             // Update connectors
+            data.ReconnectToPort(connector2, toDegreeNodeStartPort);
+            data.ReconnectToPort(connector3, toDegreeNodeEndPort);
+            data.CreateConnector(toDegreeNodeStart, 0, newNode, 2);
+            data.CreateConnector(toDegreeNodeEnd, 0, newNode, 3);
             data.CreateConnector(zAxisNode, 0, newNode, 4);
             data.CreateConnector(identityCoordinateSystem, 0, zAxisNode, 0);
 
