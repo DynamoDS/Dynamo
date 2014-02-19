@@ -350,9 +350,9 @@ namespace Dynamo.Units
             return x.Multiply(y);
         }
 
-        public static double operator *(double x, SIUnit y)
+        public static SIUnit operator *(double x, SIUnit y)
         {
-            return x*y.Value;
+            return y.Multiply(x);
         }
 
         public static dynamic operator /(SIUnit x, SIUnit y)
@@ -362,10 +362,8 @@ namespace Dynamo.Units
             {
                 return x.Value / y.Value;
             }    
-            else
-            {
-                return x.Divide(y);
-            }
+
+            return x.Divide(y);
         }
 
         public static SIUnit operator /(SIUnit x, double y)
@@ -373,10 +371,10 @@ namespace Dynamo.Units
             return x.Divide(y);
         }
 
-        public static double operator /(double x, SIUnit y)
-        {
-            return x/y.Value;
-        }
+        //public static double operator /(double x, SIUnit y)
+        //{
+        //    return x/y.Value;
+        //}
 
         public static SIUnit operator %(SIUnit x, SIUnit y)
         {
