@@ -122,6 +122,52 @@ namespace DSOffice
 
     public class Excel
     {
+        #region Helper methods
+
+        private static object[][] ConvertToJaggedArray(object[,] input)
+        {
+            int rows = input.GetUpperBound(0) + 1;
+            int cols = input.GetUpperBound(1) + 1;
+
+            object[][] output = new object[rows][];
+
+            for (int i = 0; i < rows; i++)
+            {
+                output[i] = new object[cols];
+
+                for (int j = 0; j < cols; j++)
+                {
+                    output[i][j] = input[i, j];
+                }
+            }
+
+            return output;
+        }
+
+        public static object[,] ConvertToDimensionalArray(object[][] input, out int rows, out int cols)
+        {
+            rows = input.GetUpperBound(0) + 1;
+            cols = 0;
+            for (int i = 0; i < rows; i++)
+                cols = Math.Max(cols, input[i].GetUpperBound(0) + 1);
+
+            object[,] output = new object[rows, cols];
+            
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    if (j > input[i].GetUpperBound(0))
+                        output[i, j] = "";
+                    else
+                        output[i, j] = input[i][j];
+                }
+            }
+
+            return output;
+        }
+
+        #endregion
 
         public static Workbook ReadExcelFile(string path)
         {
@@ -144,7 +190,7 @@ namespace DSOffice
         public static Worksheet GetExcelWorksheetByName(Workbook workbook, string name)
         {
             var sheet = workbook.Worksheets.Cast<Worksheet>().FirstOrDefault(ws => ws.Name == name);
-            
+
             if (sheet == null)
             {
                 throw new Exception("Could not find a worksheet in the workbook with that name.");
@@ -153,17 +199,59 @@ namespace DSOffice
             return sheet;
         }
 
-        public static object GetDataFromExcelWorksheet(Worksheet worksheet)
+        public static object[][] GetDataFromExcelWorksheet(Worksheet worksheet)
         {
-            return worksheet.UsedRange.get_Value();
+            var vals = worksheet.UsedRange.get_Value();
+
+            return ConvertToJaggedArray(vals);
         }
 
         public static Worksheet WriteDataToExcelWorksheet(
-            Worksheet worksheet, int rowStart, int colStart, object data)
+            Worksheet worksheet, int startRow, int startColumn, object data)
         {
-            throw new NotImplementedException();
-        }
+            // clear existing elements for dynamic update
+            var usedRange = worksheet.UsedRange;
+            usedRange.Cells.ClearContents();
 
+            object[][] data2D;
+
+            if (!data.GetType().IsArray)
+            {
+                // single-valued data
+                data2D = new object[][]
+                {
+                    new object[] { data }
+                };
+            }
+            else if (!((object[])data)[0].GetType().IsArray)
+            {
+                // one-dimensional data
+                data2D = new object[][]
+                {
+                    (object[])data
+                };
+            }
+            else
+            {
+                // two-dimensional data
+                data2D = (object[][])data;
+            }
+
+            startRow = Math.Max(0, startRow);
+            startColumn = Math.Max(0, startColumn);
+            
+            int numRows, numColumns;
+            
+            object[,] rangeData = ConvertToDimensionalArray(data2D, out numRows, out numColumns);
+
+            var c1 = (Range)worksheet.Cells[startRow + 1, startColumn + 1];
+            var c2 = (Range)worksheet.Cells[startRow + numRows, startColumn + numColumns];
+            var range = worksheet.get_Range(c1, c2);
+            range.Value = rangeData;
+            
+            return worksheet;
+        }
+        
         public static Worksheet AddExcelWorksheetToWorkbook(Workbook workbook, string name)
         {
             var worksheet = workbook.Worksheets.Add();
@@ -190,6 +278,5 @@ namespace DSOffice
 
             return workbook;
         }
-
     }
 }
