@@ -371,11 +371,6 @@ namespace Dynamo.Units
             return x.Divide(y);
         }
 
-        //public static double operator /(double x, SIUnit y)
-        //{
-        //    return x/y.Value;
-        //}
-
         public static SIUnit operator %(SIUnit x, SIUnit y)
         {
             return x.Modulo(y);
