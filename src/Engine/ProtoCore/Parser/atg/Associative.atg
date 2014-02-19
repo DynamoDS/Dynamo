@@ -2035,63 +2035,122 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
     [ 
         IF(IsReplicationGuide())
         (
-                                        (. var guides = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();.)
-        lessthan
-        number                          (. 
-                                            ProtoCore.AST.AssociativeAST.AssociativeNode numNode = new ProtoCore.AST.AssociativeAST.IdentifierNode() { Value = t.val };
-                                            NodeUtils.SetNodeLocation(numNode, t); 
-                                        .)
-        greaterthan
-                                        (. guides.Add(numNode); .)
-        {                   
+                                            (. var guides = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();.)
             lessthan
-            number                      (. 
-                                            numNode = new ProtoCore.AST.AssociativeAST.IdentifierNode() { Value = t.val };
-                                            NodeUtils.SetNodeLocation(numNode, t); 
-                                        .)
-            greaterthan                 
-                                        (. 
-                                            guides.Add(numNode); 
-                                        .)
-        }
-                                        (. 
-                                            nameNode.ReplicationGuides = guides; 
-                                            if (groupExprNode != null)
-                                            {
-                                                var expr = groupExprNode.Expression;
-                                                if (expr is ProtoCore.AST.AssociativeAST.IdentifierListNode)
+                                            (.
+                                                string repguide = String.Empty;
+                                                bool isLongest = false;
+                                                ProtoCore.AST.AssociativeAST.AssociativeNode numNode = null;
+                                                ProtoCore.AST.AssociativeAST.ReplicationGuideNode repGuideNode = null;
+                                            .)
+       
+            (IF(IsPostfixedReplicationGuide())
+            (
+                postfixed_replicationguide                         
+                                                (. 
+                                                    repguide = t.val;
+                                                    repguide = repguide.Remove(repguide.Length - 1);
+                                                    isLongest = true;
+
+                                                    numNode = new ProtoCore.AST.AssociativeAST.IdentifierNode() { Value = repguide };
+                                                    repGuideNode = new ProtoCore.AST.AssociativeAST.ReplicationGuideNode();
+                                                    repGuideNode.RepGuide = numNode;
+                                                    repGuideNode.IsLongest = isLongest;
+                                                    NodeUtils.SetNodeLocation(numNode, t); 
+                                                .)
+        
+                )
+                |
+                (
+                    number                      (. 
+                                                    repguide = t.val;
+                                                    isLongest = false;
+                                                    numNode = new ProtoCore.AST.AssociativeAST.IdentifierNode() { Value = repguide };
+                                                    repGuideNode = new ProtoCore.AST.AssociativeAST.ReplicationGuideNode();
+                                                    repGuideNode.RepGuide = numNode;
+                                                    repGuideNode.IsLongest = isLongest;
+                                                    NodeUtils.SetNodeLocation(numNode, t); 
+                                                .)
+                )
+            )
+            greaterthan
+                                                (. guides.Add(repGuideNode); .)
+            {                   
+                lessthan
+
+                (IF(IsPostfixedReplicationGuide())
+                (
+                    postfixed_replicationguide                         
+                                                    (. 
+                                                        repguide = t.val;
+                                                        repguide = repguide.Remove(repguide.Length - 1);
+                                                        isLongest = true;
+
+                                                        numNode = new ProtoCore.AST.AssociativeAST.IdentifierNode() { Value = repguide };
+                                                        repGuideNode = new ProtoCore.AST.AssociativeAST.ReplicationGuideNode();
+                                                        repGuideNode.RepGuide = numNode;
+                                                        repGuideNode.IsLongest = isLongest;
+                                                        NodeUtils.SetNodeLocation(numNode, t); 
+                                                    .)
+        
+                    )
+                    |
+                    (
+                        number                      (. 
+                                                        repguide = t.val;
+                                                        isLongest = false;
+                                                        numNode = new ProtoCore.AST.AssociativeAST.IdentifierNode() { Value = repguide };
+                                                        repGuideNode = new ProtoCore.AST.AssociativeAST.ReplicationGuideNode();
+                                                        repGuideNode.RepGuide = numNode;
+                                                        repGuideNode.IsLongest = isLongest;
+                                                        NodeUtils.SetNodeLocation(numNode, t); 
+                                                    .)
+                    )
+                )
+                greaterthan              
+               
+                                            (. 
+                                                guides.Add(repGuideNode); 
+                                            .)
+            }
+                                            (. 
+                                                nameNode.ReplicationGuides = guides; 
+                                                if (groupExprNode != null)
                                                 {
-                                                    var rightNode = (expr as ProtoCore.AST.AssociativeAST.IdentifierListNode).RightNode;
-                                                    if (rightNode is ProtoCore.AST.AssociativeAST.ArrayNameNode)
+                                                    var expr = groupExprNode.Expression;
+                                                    if (expr is ProtoCore.AST.AssociativeAST.IdentifierListNode)
                                                     {
-                                                        var rightMostArrayNameNode = rightNode as ProtoCore.AST.AssociativeAST.ArrayNameNode;
-                                                        if (rightMostArrayNameNode.ReplicationGuides == null)
+                                                        var rightNode = (expr as ProtoCore.AST.AssociativeAST.IdentifierListNode).RightNode;
+                                                        if (rightNode is ProtoCore.AST.AssociativeAST.ArrayNameNode)
                                                         {
-                                                            rightMostArrayNameNode.ReplicationGuides = guides;
+                                                            var rightMostArrayNameNode = rightNode as ProtoCore.AST.AssociativeAST.ArrayNameNode;
+                                                            if (rightMostArrayNameNode.ReplicationGuides == null)
+                                                            {
+                                                                rightMostArrayNameNode.ReplicationGuides = guides;
+                                                            }
+                                                            else
+                                                            {
+                                                                rightMostArrayNameNode.ReplicationGuides.InsertRange(0, guides);
+                                                            }
+                                                            groupExprNode.ReplicationGuides = null;
+                                                        }
+                                                    }
+                                                    else if (expr is ProtoCore.AST.AssociativeAST.FunctionDotCallNode)
+                                                    {
+                                                        var functionCall = (expr as ProtoCore.AST.AssociativeAST.FunctionDotCallNode).FunctionCall;
+                                                        var function = (functionCall.Function as ProtoCore.AST.AssociativeAST.ArrayNameNode);
+                                                        if (function.ReplicationGuides == null)
+                                                        {
+                                                            function.ReplicationGuides = guides;
                                                         }
                                                         else
                                                         {
-                                                            rightMostArrayNameNode.ReplicationGuides.InsertRange(0, guides);
+                                                            function.ReplicationGuides.InsertRange(0, guides);
                                                         }
                                                         groupExprNode.ReplicationGuides = null;
                                                     }
                                                 }
-                                                else if (expr is ProtoCore.AST.AssociativeAST.FunctionDotCallNode)
-                                                {
-                                                    var functionCall = (expr as ProtoCore.AST.AssociativeAST.FunctionDotCallNode).FunctionCall;
-                                                    var function = (functionCall.Function as ProtoCore.AST.AssociativeAST.ArrayNameNode);
-                                                    if (function.ReplicationGuides == null)
-                                                    {
-                                                        function.ReplicationGuides = guides;
-                                                    }
-                                                    else
-                                                    {
-                                                        function.ReplicationGuides.InsertRange(0, guides);
-                                                    }
-                                                    groupExprNode.ReplicationGuides = null;
-                                                }
-                                            }
-                                        .)
+                                            .)
         )
     ]
                                         (. 
