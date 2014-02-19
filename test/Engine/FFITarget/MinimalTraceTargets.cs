@@ -33,6 +33,11 @@ namespace FFITarget
 
     public class IncrementerTracedClass
     {
+        public static void ResetForNextTest()
+        {
+            nextID = -1;
+        }
+
         public static int nextID = -1;
 
         private const string __TEMP_REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";

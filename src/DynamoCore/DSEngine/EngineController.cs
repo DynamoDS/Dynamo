@@ -212,10 +212,10 @@ namespace Dynamo.DSEngine
                             ElementState.Active == n.State ||
                             (ElementState.Error != n.State && n is DSFunction));
 
-            if (!activeNodes.Any())
-                return false;
-
-            astBuilder.CompileToAstNodes(activeNodes, true);
+            if (activeNodes.Any())
+            {
+                astBuilder.CompileToAstNodes(activeNodes, true);
+            }
             return VerifyGraphSyncData();
         }
 

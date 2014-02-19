@@ -1,3 +1,4 @@
+
 //#define ENABLE_INC_DEC_FIX
 using System;
 using System.Collections.Generic;
@@ -578,7 +579,7 @@ public Node root { get; set; }
 	public Parser(Scanner scanner, ProtoCore.Core coreObj, bool _builtinMethodsLoaded = false) {
 		this.scanner = scanner;
 		errors = new Errors();
-        errors.core = coreObj;
+		errors.core = coreObj;
         core = coreObj;
 		builtinMethodsLoaded = _builtinMethodsLoaded;
         commentNode = new CodeBlockNode();
@@ -992,34 +993,35 @@ public Node root { get; set; }
 		ProtoCore.AST.AssociativeAST.AssociativeNode rightNode = null;
 		 
 		Associative_Expression(out rightNode);
-        bool allowIdentList = core.Options.FullSSA && rightNode is ProtoCore.AST.AssociativeAST.IdentifierListNode;
-        
-
+		bool allowIdentList = core.Options.FullSSA && rightNode is ProtoCore.AST.AssociativeAST.IdentifierListNode;
+		
+		//Try to make a false binary expression node.
 		if (rightNode is ProtoCore.AST.AssociativeAST.FunctionDotCallNode 
-            || rightNode is ProtoCore.AST.AssociativeAST.FunctionCallNode
-            || allowIdentList)
+		   || rightNode is ProtoCore.AST.AssociativeAST.FunctionCallNode
+		   || allowIdentList)
+		
 		{
-			ProtoCore.AST.AssociativeAST.BinaryExpressionNode expressionNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-			ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
-			leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
+		ProtoCore.AST.AssociativeAST.BinaryExpressionNode expressionNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
+		ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
+		leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
 		
-			var unknownType = new ProtoCore.Type();
-			unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
-			unknownType.Name = "var";
-			unknownType.rank = 0;
-			unknownType.IsIndexable = true;
+		var unknownType = new ProtoCore.Type();
+		unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
+		unknownType.Name = "var";
+		unknownType.rank = 0;
+		unknownType.IsIndexable = true;
 		
-			leftNode.datatype = unknownType;
-			leftNode.line = rightNode.line;
-			leftNode.col = rightNode.col;
-			leftNode.endLine = rightNode.endLine;
-			leftNode.endCol = rightNode.endCol;
+		leftNode.datatype = unknownType;
+		leftNode.line = rightNode.line;
+		leftNode.col = rightNode.col;
+		leftNode.endLine = rightNode.endLine;
+		leftNode.endCol = rightNode.endCol;
 		
-			expressionNode.LeftNode = leftNode;
-			expressionNode.RightNode = rightNode;
-			expressionNode.Optr = Operator.assign;
-			NodeUtils.UpdateBinaryExpressionLocation(expressionNode);
-			node = expressionNode;
+		expressionNode.LeftNode = leftNode;
+		expressionNode.RightNode = rightNode;
+		expressionNode.Optr = Operator.assign;
+		NodeUtils.UpdateBinaryExpressionLocation(expressionNode);
+		node = expressionNode;
 		}
 		
 		if (la.val != ";")
@@ -1984,154 +1986,127 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		} else if (la.kind == 1 || la.kind == 9 || la.kind == 44) {
 			Associative_IdentifierList(out node);
 		} else SynErr(94);
+	}
 
-    }
-
-
-    void Associative_IdentifierList(out ProtoCore.AST.AssociativeAST.AssociativeNode node)
-    {
-        if (core.Options.FullSSA)
-        {
-            node = null;
-            if (isInClass && IsIdentList())
-            {
-                disableKwCheck = true;
-            }
-            Associative_NameReference(out node);
-            disableKwCheck = false;
-            ProtoCore.AST.AssociativeAST.AssociativeNode inode = node;
-
-            while (la.kind == 6)
-            {
-                Get();
-                ProtoCore.AST.AssociativeAST.AssociativeNode rnode = null;
-                Associative_NameReference(out rnode);
-                if ((inode is ProtoCore.AST.AssociativeAST.IdentifierNode) &&
-                    (inode as ProtoCore.AST.AssociativeAST.IdentifierNode).Name == ProtoCore.DSDefinitions.Keyword.This &&
-                    (rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode))
-                {
-                    node = rnode;
-                    return;
-                }
-
-                ProtoCore.AST.AssociativeAST.IdentifierListNode bnode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
-                bnode.LeftNode = node;
-                bnode.Optr = Operator.dot;
-                bnode.RightNode = rnode;
-                node = bnode;
-                NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
-            }
-        }
-        else
-        {
-            Associative_NameReference(out node);
-            disableKwCheck = false;
-            ProtoCore.AST.AssociativeAST.AssociativeNode inode = node;
-
-            while (la.kind == 6)
-            {
-                Get();
-                ProtoCore.AST.AssociativeAST.AssociativeNode rnode = null;
-                Associative_NameReference(out rnode);
-                if ((inode is ProtoCore.AST.AssociativeAST.IdentifierNode) &&
-                    (inode as ProtoCore.AST.AssociativeAST.IdentifierNode).Name == ProtoCore.DSDefinitions.Keyword.This &&
-                    (rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode))
-                {
-                    node = rnode;
-                    return;
-                }
-
-                ProtoCore.AST.AssociativeAST.IdentifierListNode bnode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
-                bnode.LeftNode = node;
-                bnode.Optr = Operator.dot;
-                bnode.RightNode = rnode;
-                inode = bnode;
-                NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
-
-
-                bool isNeitherIdentOrFunctionCall = !(rnode is ProtoCore.AST.AssociativeAST.IdentifierNode || rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode);
-                if (isLeft || isNeitherIdentOrFunctionCall)
-                {
-                    node = inode;
-                }
-                else
-                {
-                    if (rnode is ProtoCore.AST.AssociativeAST.IdentifierNode)
-                    {
-                        ProtoCore.AST.AssociativeAST.FunctionCallNode rcall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-                        rcall.Function = rnode;
-                        rcall.Function.Name = ProtoCore.DSASM.Constants.kGetterPrefix + rcall.Function.Name;
-                        bnode.RightNode = rcall;
-
-                        NodeUtils.SetNodeLocation(rcall, rnode, rnode);
-                        node = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(bnode.LeftNode, rcall, core);
-                    }
-                    else
-                    {
-                        string rhsName = null;
-                        ProtoCore.AST.AssociativeAST.ExprListNode dimList = null;
-                        int dim = 0;
-                        if (rnode is ProtoCore.AST.AssociativeAST.IdentifierNode)
-                        {
-                            rhsName = rnode.Name;
-                            ProtoCore.AST.AssociativeAST.IdentifierNode rhsINode = rnode as ProtoCore.AST.AssociativeAST.IdentifierNode;
-                            if (rhsINode.ArrayDimensions != null)
-                            {
-                                dimList = ProtoCore.Utils.CoreUtils.BuildArrayExprList(rhsINode.ArrayDimensions);
-                                dim = dimList.list.Count;
-                            }
-                            else
-                            {
-                                dimList = new ProtoCore.AST.AssociativeAST.ExprListNode();
-                            }
-                        }
-                        else if (rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode)
-                        {
-                            ProtoCore.AST.AssociativeAST.FunctionCallNode rhsFNode = rnode as ProtoCore.AST.AssociativeAST.FunctionCallNode;
-                            node = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(node, rhsFNode, core);
-                        }
-                    }
-                }
-            }
-
-            if (!isModifier && withinModifierCheckScope)
-            {
-                if (isLeftVarIdentList)
-                {
-                    if (inode is ProtoCore.AST.AssociativeAST.IdentifierListNode)
-                    {
-                        isModifier = false;
-                        if (node is ProtoCore.AST.AssociativeAST.FunctionDotCallNode)
-                        {
-                            ProtoCore.AST.AssociativeAST.FunctionDotCallNode fdotCall = node as ProtoCore.AST.AssociativeAST.FunctionDotCallNode;
-                            string checkVar = ProtoCore.Utils.CoreUtils.GenerateIdentListNameString(fdotCall.GetIdentList());
-                            isModifier = (leftVar == checkVar);
-                        }
-                    }
-                }
-                else if (inode is ProtoCore.AST.AssociativeAST.IdentifierNode)
-                {
-                    isModifier = (leftVar == inode.Name);
-                }
-
-                // The LHS is an identifier
-                else
-                {
-                    // It is a modifier if the lhs is:
-                    //   1. the same as the current node
-                    //   2. the current node starts with the lhs identifier
-                    isModifier = (leftVar == inode.Name);
-                    if (!isModifier)
-                    {
-                        string rhsString = ProtoCore.Utils.CoreUtils.GenerateIdentListNameString(inode);
-
-                        isModifier = rhsString.StartsWith(leftVar);
-                    }
-                }
-            }
-        }
-    }
-
+	void Associative_IdentifierList(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
+		node = null;
+		if (isInClass && IsIdentList())
+		{
+		   disableKwCheck = true;
+		}
+		
+		Associative_NameReference(out node);
+		disableKwCheck = false; 
+		ProtoCore.AST.AssociativeAST.AssociativeNode inode = node; 
+		
+		while (la.kind == 6) {
+			Get();
+			ProtoCore.AST.AssociativeAST.AssociativeNode rnode = null; 
+			Associative_NameReference(out rnode);
+			if ((inode is ProtoCore.AST.AssociativeAST.IdentifierNode) &&
+			   (inode as ProtoCore.AST.AssociativeAST.IdentifierNode).Name == ProtoCore.DSDefinitions.Keyword.This &&
+			   (rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode))
+			{
+			   node = rnode;
+			   return;
+			}
+			
+			
+			ProtoCore.AST.AssociativeAST.IdentifierListNode bnode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+			bnode.LeftNode = node;
+			bnode.Optr = Operator.dot;
+			bnode.RightNode = rnode;
+			node = bnode;
+			NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
+			
+			if (!core.Options.FullSSA)
+			{
+			bool isNeitherIdentOrFunctionCall = !(rnode is ProtoCore.AST.AssociativeAST.IdentifierNode || rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode);
+			if (isLeft || isNeitherIdentOrFunctionCall)
+			{
+			   node = inode;
+			}
+			else 
+			{
+			   if (rnode is ProtoCore.AST.AssociativeAST.IdentifierNode)
+			   {
+			       ProtoCore.AST.AssociativeAST.FunctionCallNode rcall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
+			       rcall.Function = rnode;
+			       rcall.Function.Name = ProtoCore.DSASM.Constants.kGetterPrefix + rcall.Function.Name;
+			       bnode.RightNode = rcall;
+			
+			       NodeUtils.SetNodeLocation(rcall, rnode, rnode);
+			       node = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(bnode.LeftNode, rcall, core);
+			   }
+			   else
+			   {
+			       string rhsName = null;
+			       ProtoCore.AST.AssociativeAST.ExprListNode dimList = null;
+			       int dim = 0;
+			       if (rnode is ProtoCore.AST.AssociativeAST.IdentifierNode)
+			       {
+			           rhsName = rnode.Name;
+			           ProtoCore.AST.AssociativeAST.IdentifierNode rhsINode = rnode as ProtoCore.AST.AssociativeAST.IdentifierNode;
+			           if (rhsINode.ArrayDimensions != null)
+			           {
+			               dimList = ProtoCore.Utils.CoreUtils.BuildArrayExprList(rhsINode.ArrayDimensions);
+			               dim = dimList.list.Count;
+			           }
+			           else
+			           {
+			               dimList = new ProtoCore.AST.AssociativeAST.ExprListNode();
+			           }
+			       }
+			       else if (rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode)
+			       {
+			           ProtoCore.AST.AssociativeAST.FunctionCallNode rhsFNode = rnode as ProtoCore.AST.AssociativeAST.FunctionCallNode;
+			           node = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(node, rhsFNode, core);
+			       }
+			   }
+			}
+			}
+			
+		}
+		if (!core.Options.FullSSA)
+		{
+		   if (!isModifier && withinModifierCheckScope)
+		   {
+		       if (isLeftVarIdentList)
+		       {
+		           if (inode is ProtoCore.AST.AssociativeAST.IdentifierListNode)
+		           {
+		               isModifier = false;
+		               if (node is ProtoCore.AST.AssociativeAST.FunctionDotCallNode)
+		               {
+		                   ProtoCore.AST.AssociativeAST.FunctionDotCallNode fdotCall = node as ProtoCore.AST.AssociativeAST.FunctionDotCallNode;
+		                   string checkVar = ProtoCore.Utils.CoreUtils.GenerateIdentListNameString(fdotCall.GetIdentList());
+		                   isModifier = (leftVar == checkVar);
+		               }
+		           }
+		       }
+		       else if (inode is ProtoCore.AST.AssociativeAST.IdentifierNode)
+		       {
+		           isModifier = (leftVar == inode.Name);
+		       }   
+		
+		       // The LHS is an identifier
+		       else
+		       {
+		           // It is a modifier if the lhs is:
+		           //   1. the same as the current node
+		           //   2. the current node starts with the lhs identifier
+		           isModifier = (leftVar == inode.Name);
+		           if (!isModifier)
+		           {
+		               string rhsString = ProtoCore.Utils.CoreUtils.GenerateIdentListNameString(inode);
+		
+		               isModifier = rhsString.StartsWith(leftVar);
+		           }
+		       }
+		   }
+		}
+		
+	}
 
 	void Associative_LogicalExpression(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
 		Associative_ComparisonExpression(out node);
@@ -2589,7 +2564,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		if (la.kind == 9) {
 			Get();
 			Associative_Expression(out node);
-			if (node is ProtoCore.AST.AssociativeAST.ArrayNameNode) 
+			if (node is ProtoCore.AST.AssociativeAST.ArrayNameNode)
 			{
 			   nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode;
 			}
@@ -4294,4 +4269,5 @@ public class Errors {
 
 public class FatalError: Exception {
 	public FatalError(string m): base(m) {}
-}}
+}
+}

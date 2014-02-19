@@ -1135,7 +1135,32 @@ namespace Dynamo.Nodes
                 watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
             };
 
+            var checkedBinding = new Binding("ShowRawData")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = Root
+            };
+
+            var rawDataMenuItem = new System.Windows.Controls.MenuItem
+            {
+                Header = "Show Raw Data", 
+                IsCheckable = true,
+            };
+            rawDataMenuItem.SetBinding(System.Windows.Controls.MenuItem.IsCheckedProperty, checkedBinding);
+
+            nodeUI.MainContextMenu.Items.Add(rawDataMenuItem);
+
             dynSettings.Controller.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+
+            Root.PropertyChanged += Root_PropertyChanged;
+        }
+
+        void Root_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ShowRawData")
+            {
+                ResetWatch("");
+            }
         }
 
         void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -1147,25 +1172,29 @@ namespace Dynamo.Nodes
                 e.PropertyName == "VolumeUnit")
             {
                 string prefix = "";
-                int count = 0;
 
-                DispatchOnUIThread(
-                    delegate
-                    {
-                        //unhook the binding
-                        OnRequestBindingUnhook(EventArgs.Empty);
-
-                        Root.Children.Clear();
-
-                        Root.Children.Add(Process(OldValue, prefix, count));
-                        count++;
-
-                        //rehook the binding
-                        OnRequestBindingRehook(EventArgs.Empty);
-                    });
+                ResetWatch(prefix);
             }
         }
 
+        private void ResetWatch(string prefix)
+        {
+            int count = 0;
+            DispatchOnUIThread(
+                delegate
+                {
+                    //unhook the binding
+                    OnRequestBindingUnhook(EventArgs.Empty);
+
+                    Root.Children.Clear();
+
+                    Root.Children.Add(Process(OldValue, prefix, count));
+                    count++;
+
+                    //rehook the binding
+                    OnRequestBindingRehook(EventArgs.Empty);
+                });
+        }
     }
 
     public partial class StringDirectory

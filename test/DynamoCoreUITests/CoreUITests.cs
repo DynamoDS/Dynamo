@@ -6,6 +6,7 @@ using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;

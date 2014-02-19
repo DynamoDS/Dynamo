@@ -5,22 +5,22 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
 using Dynamo.Controls;
-using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Revit;
 using Dynamo.Selection;
 using Dynamo.Units;
-using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynamoUnits;
 using Greg;
 using RevitServices.Elements;
 using RevitServices.Persistence;
@@ -30,7 +30,6 @@ using CurveLoop = Autodesk.Revit.DB.CurveLoop;
 using Transaction = Dynamo.Nodes.Transaction;
 using Value = Dynamo.FScheme.Value;
 using RevThread = RevitServices.Threading;
-using Dynamo.DSEngine;
 
 namespace Dynamo
 {
@@ -67,8 +66,8 @@ namespace Dynamo
             }
         }
 
-        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, RevitServicesUpdater updater, Type viewModelType, string context)
-            : base(env, viewModelType, context, new UpdateManager.UpdateManager())
+        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, RevitServicesUpdater updater, Type viewModelType, string context, IUnitsManager units)
+            : base(env, viewModelType, context, new UpdateManager.UpdateManager(), units)
         {
             Updater = updater;
 
@@ -100,10 +99,6 @@ namespace Dynamo
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
             ElementNameStore = new Dictionary<ElementId, string>();
-
-            UnitsManager.Instance.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
-            UnitsManager.Instance.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
-            UnitsManager.Instance.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
             EngineController.ImportLibrary("DSRevitNodes.dll");
         }
@@ -552,24 +547,58 @@ namespace Dynamo
 
         private class RevitElementWatchHandler : WatchHandler
         {
-            #region WatchHandler Members
-
             public bool AcceptsValue(object o)
             {
-                return o is Element;
+                if (o is Element || o is GeometryObject)
+                {
+                    return true;
+                }
+                return false;
             }
 
-            public void ProcessNode(object value, WatchNode node)
+            public void ProcessNode(object value, WatchNode node, bool showRawData)
             {
-                var element = value as Element;
+                try
+                {
+                    ProcessThing(value as dynamic, node, showRawData);
+                }
+                catch(Exception ex)
+                {
+                    node.NodeLabel = value.ToString();
+                }
+            }
+
+            private void ProcessThing(Element element, WatchNode node, bool showRawData)
+            {
                 var id = element.Id;
 
                 node.Clicked += () => DocumentManager.GetInstance().CurrentUIDocument.ShowElements(element);
-
                 node.Link = id.IntegerValue.ToString(CultureInfo.InvariantCulture);
+                node.NodeLabel = element.Name;
             }
 
-            #endregion
+            private void ProcessThing(XYZ pt, WatchNode node, bool showRawData)
+            {
+                var um = dynSettings.Controller.UnitsManager;
+
+                if (!showRawData)
+                {
+                    ///xyzs will be in feet, but we need to show them
+                    ///in the display units of choice
+
+                    var xyzStr = string.Format("{0:f3}, {1:f3}, {2:f3}",
+                        new Units.Length(pt.X/SIUnit.ToFoot, um),
+                        new Units.Length(pt.Y/SIUnit.ToFoot, um),
+                        new Units.Length(pt.Z/SIUnit.ToFoot, um));
+
+                    node.NodeLabel = "{" + xyzStr + "}";
+                }
+                else
+                {
+                    node.NodeLabel = pt.ToString();
+                }
+                
+            }
         }
 
         #endregion

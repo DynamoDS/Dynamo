@@ -158,10 +158,10 @@ namespace Dynamo
             #endregion
 
             // color the node to define its connectivity
-            foreach (var ele in topMost)
-            {
-                ele.Item2.ValidateConnections();
-            }
+            //foreach (var ele in topMost)
+            //{
+            //    ele.Item2.ValidateConnections();
+            //}
 
             //Find function entry point, and then compile
             var variables = functionWorkspace.Nodes.OfType<Symbol>().ToList();
@@ -174,9 +174,13 @@ namespace Dynamo
                 .ToList()
                 .ForEach(node =>
                 {
+                    node.DisableReporting();
+
                     node.SetInputs(inputNames);
                     node.SetOutputs(outputNames);
                     node.RegisterAllPorts();
+
+                    node.EnableReporting();
                 });
 
             //Call OnSave for all saved elements
