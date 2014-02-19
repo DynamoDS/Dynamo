@@ -24,14 +24,14 @@ namespace DSIronPythonNode
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        protected override string InputRootName
+        protected override string GetInputName(int index)
         {
-            get { return "IN"; }
+            return string.Format("IN[{0}]", index);
         }
 
-        protected override string TooltipRootName
+        protected override string GetInputTooltip(int index)
         {
-            get { return "Input #"; }
+            return "Input #" + index;
         }
 
         protected AssociativeNode CreateOutputAST(
