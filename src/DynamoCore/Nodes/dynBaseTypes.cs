@@ -861,6 +861,24 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var unsorted = ((Value.List)args[0]).Item;
+
+            try
+            {
+                var sorted = unsorted.Select(SortBy.ToComparable).ToList();
+                sorted.Sort();
+                var vals = sorted.Select(x => Utils.ToValue(x as dynamic)).Cast<Value>();
+
+                return Value.NewList(vals.ToFSharpList());
+            }
+            catch (ArgumentException e)
+            {
+                throw e; //TODO: Better error message
+            }
+        }
+
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
             return builder.Build(this, inputs);
