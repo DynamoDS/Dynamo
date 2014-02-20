@@ -801,27 +801,6 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        internal static IComparable ToComparable(Value value)
-        {
-            if (value.IsNumber)
-                return (value as Value.Number).Item;
-
-            if (value.IsString)
-                return (value as Value.String).Item;
-
-            if (value.IsContainer)
-            {
-                var unboxed = (value as Value.Container).Item;
-                if (unboxed is IComparable)
-                    return unboxed as IComparable;
-            }
-
-            throw new Exception(
-                string.Format(
-                    "Key mapper result {0} is not Comparable, and thus cannot be sorted.",
-                    (value as dynamic).Item));
-        }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
             var keyMapper = ((Value.Function)args[0]).Item;
@@ -832,7 +811,7 @@ namespace Dynamo.Nodes
                 return
                     Value.NewList(
                         unsorted.OrderBy(
-                            x => ToComparable(keyMapper.Invoke(Utils.MakeFSharpList(x)))).ToFSharpList());
+                            x => Utils.ToComparable(keyMapper.Invoke(Utils.MakeFSharpList(x)))).ToFSharpList());
             }
             catch (ArgumentException e)
             {
@@ -867,7 +846,7 @@ namespace Dynamo.Nodes
 
             try
             {
-                var sorted = unsorted.Select(SortBy.ToComparable).ToList();
+                var sorted = unsorted.Select(Utils.ToComparable).ToList();
                 sorted.Sort();
                 var vals = sorted.Select(x => Utils.ToValue(x as dynamic)).Cast<Value>();
 
@@ -914,7 +893,7 @@ namespace Dynamo.Nodes
 
             foreach (var item in list)
             {
-                var mapped = SortBy.ToComparable(keyMapper.Invoke(Utils.MakeFSharpList(item)));
+                var mapped = Utils.ToComparable(keyMapper.Invoke(Utils.MakeFSharpList(item)));
                 if (min == null)
                 {
                     min = item;
@@ -967,7 +946,7 @@ namespace Dynamo.Nodes
 
             foreach (var item in list)
             {
-                var mapped = SortBy.ToComparable(keyMapper.Invoke(Utils.MakeFSharpList(item)));
+                var mapped = Utils.ToComparable(keyMapper.Invoke(Utils.MakeFSharpList(item)));
                 if (max == null)
                 {
                     max = item;
@@ -2655,20 +2634,10 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var x = args[0].ToDynamic();
-            var y = args[1].ToDynamic();
+            var x = Utils.ToComparable(args[0]);
+            var y = Utils.ToComparable(args[1]);
 
-            bool result;
-            if (x is string && y is string)
-            {
-                result = ((string)x).CompareTo(y) < 0;
-            }
-            else
-            {
-                result = x < y;
-            }
-
-            return Value.NewNumber(result ? 1 : 0);
+            return Value.NewNumber(x.CompareTo(y) < 0 ? 1 : 0);
         }
     }
 
@@ -2688,20 +2657,10 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var x = args[0].ToDynamic();
-            var y = args[1].ToDynamic();
+            var x = Utils.ToComparable(args[0]);
+            var y = Utils.ToComparable(args[1]);
 
-            bool result;
-            if (x is string && y is string)
-            {
-                result = ((string)x).CompareTo(y) <= 0;
-            }
-            else
-            {
-                result = x <= y;
-            }
-
-            return Value.NewNumber(result ? 1 : 0);
+            return Value.NewNumber(x.CompareTo(y) <= 0 ? 1 : 0);
         }
     }
 
@@ -2720,20 +2679,10 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var x = args[0].ToDynamic();
-            var y = args[1].ToDynamic();
+            var x = Utils.ToComparable(args[0]);
+            var y = Utils.ToComparable(args[1]);
 
-            bool result;
-            if (x is string && y is string)
-            {
-                result = ((string) x).CompareTo(y) > 0;
-            }
-            else
-            {
-                result = x > y;
-            }
-
-            return Value.NewNumber(result ? 1 : 0);
+            return Value.NewNumber(x.CompareTo(y) > 0 ? 1 : 0);
         }
     }
 
@@ -2752,21 +2701,10 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            bool result;
+            var x = Utils.ToComparable(args[0]);
+            var y = Utils.ToComparable(args[1]);
 
-            var x = args[0].ToDynamic();
-            var y = args[1].ToDynamic();
-
-            if (x is string && y is string)
-            {
-                result = ((string) x).CompareTo(y) >= 0;
-            }
-            else
-            {
-                result = x >= y;
-            }
-
-            return Value.NewNumber(result ? 1 : 0);
+            return Value.NewNumber(x.CompareTo(y) >= 0 ? 1 : 0);
         }
     }
 
@@ -2785,8 +2723,10 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            bool x = args[0].ToDynamic().Equals(args[1].ToDynamic());
-            return Value.NewNumber(x ? 1 : 0);
+            var x = Utils.ToComparable(args[0]);
+            var y = Utils.ToComparable(args[1]);
+
+            return Value.NewNumber(x.GetType() == y.GetType() && x.CompareTo(y) == 0 ? 1 : 0);
         }
     }
 
