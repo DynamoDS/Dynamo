@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -256,6 +257,16 @@ namespace Dynamo.FSchemeInterop
             return Value.NewNumber(input);
         }
 
+        public static Value ToValue(string input)
+        {
+            return Value.NewString(input);
+        }
+
+        public static Value ToValue(object input)
+        {
+            return Value.NewContainer(input);
+        }
+        
         /// <summary>
         /// Unwrap an FScheme value containing a number or a unit to a double.
         /// If the value contains a unit object, convert the internal value of the
