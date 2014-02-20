@@ -232,11 +232,13 @@ namespace Dynamo
             Services.InstrumentationLogger.Start();
 
             PreferenceSettings = preferences;
+            ((PreferenceSettings) PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
             UnitsManager = units;
             UnitsManager.LengthUnit = PreferenceSettings.LengthUnit;
             UnitsManager.AreaUnit = PreferenceSettings.AreaUnit;
             UnitsManager.VolumeUnit = PreferenceSettings.VolumeUnit;
+            UnitsManager.NumberFormat = PreferenceSettings.NumberFormat;
 
             UpdateManager = updateManager;
             UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
@@ -288,7 +290,13 @@ namespace Dynamo
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
         }
 
-        void _preferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        /// <summary>
+        /// Responds to property update notifications on the preferences,
+        /// and synchronizes with the Units Manager.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void PreferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -300,6 +308,9 @@ namespace Dynamo
                     break;
                 case "VolumeUnit":
                     UnitsManager.VolumeUnit = PreferenceSettings.VolumeUnit;
+                    break;
+                case "NumberFormat":
+                    UnitsManager.NumberFormat = PreferenceSettings.NumberFormat;
                     break;
             }
         }
