@@ -21,6 +21,7 @@ namespace DSIronPythonNode
     {
         protected PythonNodeBase()
         {
+            OutPortData.Add(new PortData("OUT", "Result of the python script"));
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
@@ -76,7 +77,6 @@ namespace DSIronPythonNode
                 + "#The input to this node will be stored in the IN0...INX variable(s).\n"
                 + "dataEnteringNode = IN0\n\n" + "#Assign your output to the OUT variable\n"
                 + "OUT = 0";
-            OutPortData.Add(new PortData("OUT", "Result of the python script"));
             RegisterAllPorts();
         }
 
