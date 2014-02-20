@@ -1422,5 +1422,81 @@ namespace Dynamo.Nodes
             var pt = origin + direction.Multiply(distance);
             return FScheme.Value.NewContainer(pt);
         }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            //create the node itself
+            XmlElement translateNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(translateNode, "ProtoGeometry.dll",
+                "Geometry.Translate", "Geometry.Translate@Autodesk.DesignScript.Geometry.Vector,double");
+
+            migratedData.AppendNode(translateNode);
+            string translateNodeId = MigrationManager.GetGuidFromXmlElement(translateNode);
+
+            XmlElement distanceToNode = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "Geometry.DistanceTo", "DistanceTo@Geometry");
+            migratedData.AppendNode(distanceToNode);
+            string distanceToNodeId = MigrationManager.GetGuidFromXmlElement(distanceToNode);
+
+            XmlElement multiplyNode = MigrationManager.CreateFunctionNode(
+                data.Document, "", "*", "*@,");
+            migratedData.AppendNode(multiplyNode);
+            string multiplyNodeId = MigrationManager.GetGuidFromXmlElement(multiplyNode);
+
+            XmlElement asVectorNode = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "Point.AsVector", "Point.AsVector");
+            migratedData.AppendNode(asVectorNode);
+            string asVectorNodeId = MigrationManager.GetGuidFromXmlElement(asVectorNode);
+
+
+            //create and reconnect the connecters
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            XmlElement connector3 = null;
+            if (connector0 != null)
+            {
+                connector3 = MigrationManager.CreateFunctionNodeFrom(connector0);
+                data.CreateConnector(connector3);
+            }
+
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            XmlElement connector4 = null;
+            if (connector1 != null)
+            {
+                connector4 = MigrationManager.CreateFunctionNodeFrom(connector1);
+                data.CreateConnector(connector4);
+            }
+
+            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
+
+            PortId newInPort0 = new PortId(translateNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(translateNodeId, 1, PortType.INPUT);
+            PortId newInPort2 = new PortId(translateNodeId, 2, PortType.INPUT);
+            PortId newInPort3 = new PortId(distanceToNodeId, 0, PortType.INPUT);
+            PortId newInPort4 = new PortId(distanceToNodeId, 1, PortType.INPUT);
+            PortId newInPort5 = new PortId(multiplyNodeId, 1, PortType.INPUT);
+            PortId newInPort6 = new PortId(asVectorNodeId, 0, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, newInPort0);
+            data.ReconnectToPort(connector1, newInPort6);
+            data.ReconnectToPort(connector2, newInPort5);
+            data.ReconnectToPort(connector3, newInPort3);
+            data.ReconnectToPort(connector4, newInPort4);
+
+            data.CreateConnector(distanceToNode, 0, multiplyNode, 0);
+            data.CreateConnector(asVectorNode, 0, translateNode, 1);
+            data.CreateConnector(multiplyNode, 0, translateNode, 2);
+
+            return migratedData;
+        }
     }
 }
