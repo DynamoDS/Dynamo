@@ -49,7 +49,7 @@ namespace DSRevitNodesTests.GeometryConversion
             var revitSpline = (Autodesk.Revit.DB.NurbSpline) revitCurve;
 
             Assert.AreEqual( bspline.Degree, revitSpline.Degree );
-            Assert.AreEqual( bspline.GetControlVertices().Count(), revitSpline.CtrlPoints.Count );
+            Assert.AreEqual(bspline.ControlPoints().Count(), revitSpline.CtrlPoints.Count);
 
             // ClosestPointTo fails in ProtoGeometry
 

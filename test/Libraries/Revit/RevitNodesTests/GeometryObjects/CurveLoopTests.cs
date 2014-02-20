@@ -1,16 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Geometry;
+﻿using Autodesk.DesignScript.Geometry;
 using Revit.GeometryObjects;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.GeometryObjects
 {
     [TestFixture]
-    class CurveLoopTests
+    internal class CurveLoopTests
     {
+        [SetUp]
+        public void Setup()
+        {
+            HostFactory.Instance.StartUp();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            HostFactory.Instance.ShutDown();
+        }
+
         [Test]
         public void RectangleByCurves_ValidArgs()
         {

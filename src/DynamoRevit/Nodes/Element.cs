@@ -2,6 +2,7 @@
 using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
 namespace Dynamo.Nodes
@@ -121,7 +122,7 @@ namespace Dynamo.Nodes
         {
             var a = ((FScheme.Value.Container)args[0]).Item;
 
-            return FScheme.Value.NewContainer(Units.Length.FromFeet(getHeight(a)));
+            return FScheme.Value.NewContainer(Units.Length.FromFeet(getHeight(a), dynSettings.Controller.UnitsManager));
         }
     }
 }

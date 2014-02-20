@@ -17,6 +17,7 @@ namespace Dynamo.ViewModels
         WatchTreeBranch _children = new WatchTreeBranch();
         string _label;
         string _link;
+        private bool _showRawData;
 
         public WatchTreeBranch Children
         {
@@ -46,11 +47,22 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool ShowRawData
+        {
+            get { return _showRawData; }
+            set
+            {
+                _showRawData = value;
+                RaisePropertyChanged("ShowRawData");
+            }
+        }
+
         public bool IsNodeExpanded { get; set; }
 
         public WatchNode()
         {
             IsNodeExpanded = true;
+            _showRawData = true;
         }
 
         public WatchNode(string label)

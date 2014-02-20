@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Autodesk.DesignScript.Geometry;
-using Revit;
 using Revit.Elements;
-using Revit.GeometryObjects;
 using NUnit.Framework;
 using Solid = Revit.Elements.Solid;
 
@@ -15,6 +10,18 @@ namespace DSRevitNodesTests.Elements
     [TestFixture]
     public class FreeFormTests
     {
+        [SetUp]
+        public void Setup()
+        {
+            HostFactory.Instance.StartUp();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            HostFactory.Instance.ShutDown();
+        }
+
         [Test]
         public void BySolid_ValidArgs()
         {
