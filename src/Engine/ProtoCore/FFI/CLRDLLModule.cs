@@ -653,9 +653,9 @@ namespace ProtoFFI
             return constr;
         }
 
-        private ProtoCore.AST.AssociativeAST.ArgumentSignatureNode ParseArgumentSignature(MethodBase method)
+        private ArgumentSignatureNode ParseArgumentSignature(MethodBase method)
         {
-            ProtoCore.AST.AssociativeAST.ArgumentSignatureNode argumentSignature = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
+            ArgumentSignatureNode argumentSignature = new ArgumentSignatureNode();
             ParameterInfo[] parameters = method.GetParameters();
             foreach (var parameter in parameters)
             {
@@ -671,27 +671,24 @@ namespace ProtoFFI
                 if (parameter.IsOptional)
                 {
                     var lhs = paramNode.NameNode;
- 
+
                     var defaultValue = parameter.DefaultValue;
                     if (defaultValue != null)
                     {
-                        var type = defaultValue.GetType();
-
                         AssociativeNode rhs;
-                        if (type.Equals(typeof(int)))
+                        if (defaultValue is int)
                         {
                             rhs = AstFactory.BuildIntNode((int)defaultValue);
                         }
-                        else if (type.Equals(typeof(double)))
+                        else if (defaultValue is double)
                         {
                             rhs = AstFactory.BuildDoubleNode((double)defaultValue);
-
                         }
-                        else if (type.Equals(typeof(bool)))
+                        else if (defaultValue is bool)
                         {
                             rhs = AstFactory.BuildBooleanNode((bool)defaultValue);
                         }
-                        else if (type.Equals(typeof(string)))
+                        else if (defaultValue is string)
                         {
                             rhs = AstFactory.BuildStringNode(defaultValue.ToString());
                         }
@@ -704,6 +701,9 @@ namespace ProtoFFI
                 }
                 argumentSignature.AddArgument(paramNode);
             }
+
+            argumentSignature.IsVarArg = parameters.Any()
+                && parameters.Last().GetCustomAttributes(typeof(ParamArrayAttribute), false).Any();
 
             return argumentSignature;
         }

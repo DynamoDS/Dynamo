@@ -131,6 +131,15 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
+        /// Does the function accept a variable number of arguments?
+        /// </summary>
+        public bool IsVarArg 
+        { 
+            get; 
+            private set; 
+        }
+
+        /// <summary>
         /// Function type.
         /// </summary>
         public FunctionType Type
@@ -302,7 +311,8 @@ namespace Dynamo.DSEngine
                             IEnumerable<TypedParameter> parameters,
                             string returnType,
                             FunctionType type,
-                            IEnumerable<string> returnKeys = null)
+                            IEnumerable<string> returnKeys = null,
+                            bool isVarArg = false)
         {
             Assembly = assembly;
             ClassName = className;
@@ -311,6 +321,7 @@ namespace Dynamo.DSEngine
             ReturnType = returnType;
             Type = type;
             ReturnKeys = returnKeys;
+            IsVarArg = isVarArg;
         }
     }
 
@@ -961,7 +972,7 @@ namespace Dynamo.DSEngine
                 returnKeys = proc.MethodAttribute.MutilReturnMap.Keys;
             }
 
-            var function = new FunctionDescriptor(library, className, procName, arguments, proc.returntype.ToString(), type, returnKeys);
+            var function = new FunctionDescriptor(library, className, procName, arguments, proc.returntype.ToString(), type, returnKeys, proc.isVarArg);
             AddImportedFunctions(library, new FunctionDescriptor[] { function });
         }
 
