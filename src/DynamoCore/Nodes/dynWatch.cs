@@ -99,7 +99,7 @@ namespace Dynamo.Nodes
             else if (value.IsList)
             {
                 var list = ((Value.List) value).Item;
-                node = new WatchItem(list.IsEmpty ? "Empty List" : "List");
+                node = new WatchItem(list.IsEmpty ? "Empty List" : string.Format("[{0}] List", tag));
 
                 foreach (var e in list.Select((x, i) => new {Element = x, Index = i}))
                 {
