@@ -74,6 +74,10 @@ limitations under the License.
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DynamoUnits\DynamoUnits.csproj">
+      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
+      <Name>DynamoUnits</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FScheme\FScheme.fsproj">
       <Project>{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}</Project>
       <Name>FScheme</Name>
