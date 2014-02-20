@@ -93,9 +93,8 @@ namespace Dynamo.Tests
 
             foreach (var test in tests)
             {
-                Assert.AreEqual(
-                    test.Value,
-                    model.CurrentWorkspace.NodeFromWorkspace(test.Key).OldValue.UnwrapFSchemeValue());
+                var runResult = model.CurrentWorkspace.NodeFromWorkspace(test.Key).OldValue.UnwrapFSchemeValue();
+                Assert.AreEqual(test.Value, runResult);
             }
         }
     }

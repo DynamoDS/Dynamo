@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Dynamo.Utilities;
 using NUnit.Framework;
 using Dynamo.Units;
 
@@ -614,11 +615,9 @@ namespace Dynamo.Tests
         [Test]
         public void CanMapOverUnits()
         {
-            var units = new UnitsManager();
-
-            var length = FSchemeInterop.Utils.ToFSharpList(Enumerable.Range(1, 5).Select(x => new Length(x,units)));
-            var area = FSchemeInterop.Utils.ToFSharpList(Enumerable.Range(1, 5).Select(x => new Area(x,units)));
-            var volume = FSchemeInterop.Utils.ToFSharpList(Enumerable.Range(1, 5).Select(x => new Volume(x,units)));
+            var length = FSchemeInterop.Utils.ToFSharpList(Enumerable.Range(1, 5).Select(x => new Length(x,dynSettings.Controller.UnitsManager)));
+            var area = FSchemeInterop.Utils.ToFSharpList(Enumerable.Range(1, 5).Select(x => new Area(x, dynSettings.Controller.UnitsManager)));
+            var volume = FSchemeInterop.Utils.ToFSharpList(Enumerable.Range(1, 5).Select(x => new Volume(x, dynSettings.Controller.UnitsManager)));
 
             RunExampleTest(
                 Path.Combine(GetTestDirectory(), @"core\units\map-numbers-to-units.dyn"),

@@ -608,6 +608,9 @@ namespace Dynamo.Units
 
         public bool Equals(Length other)
         {
+            if (other == null)
+                return false;
+
             if (Math.Abs(other.Value - _value) < SIUnit.Epsilon)
                 return true;
 
@@ -679,7 +682,7 @@ namespace Dynamo.Units
             {
                 return false;
             }
-            return length.Value == _value;
+            return Math.Abs(length.Value - _value) < SIUnit.Epsilon;
         }
     }
 
@@ -839,6 +842,9 @@ namespace Dynamo.Units
 
         public bool Equals(Area other)
         {
+            if (other == null)
+                return false;
+
             if (Math.Abs(other.Value - _value) < SIUnit.Epsilon)
                 return true;
 
@@ -904,7 +910,7 @@ namespace Dynamo.Units
             {
                 return false;
             }
-            return area.Value == _value;
+            return Math.Abs(area.Value - _value) < SIUnit.Epsilon;
         }
     }
 
@@ -1055,6 +1061,9 @@ namespace Dynamo.Units
 
         public bool Equals(Volume other)
         {
+            if (other == null)
+                return false;
+
             if (Math.Abs(other.Value - _value) < SIUnit.Epsilon)
                 return true;
 
@@ -1120,7 +1129,7 @@ namespace Dynamo.Units
             {
                 return false;
             }
-            return volume.Value == _value;
+            return Math.Abs(volume.Value - _value) < SIUnit.Epsilon;
         }
     }
 
