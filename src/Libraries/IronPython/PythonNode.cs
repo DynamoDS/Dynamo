@@ -51,7 +51,8 @@ namespace DSIronPythonNode
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    "DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript",//backendMethod.GetFullName(),
+                    backendMethod.Method.DeclaringType.FullName,
+                    backendMethod.Method.Name,
                     new List<AssociativeNode>
                     {
                         codeInputNode,
