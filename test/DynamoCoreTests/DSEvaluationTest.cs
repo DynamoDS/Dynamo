@@ -27,6 +27,11 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => Controller.RunExpression(null));
         }
 
+        public void RunCurrentModel() // Run currently loaded model.
+        {
+            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+        }
+
         /// <summary>
         /// To selectively verify the result, which is a collection, at some
         /// positions.
