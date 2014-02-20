@@ -13,6 +13,12 @@ namespace Dynamo.Applications
     /// internal method based on the type. For every time for which you would like
     /// to have a custom representation in the watch, you will need an additional
     /// method on this handler
+    /// 
+    /// NOTE:
+    /// Many of these methods duplicate those found in the DefaultWatchHandler.
+    /// As such, this class should extend DefaultWatchHandler. However, because the processsing
+    /// methods are dynamically dispatched, it doesn't play nicely with inheritance and these
+    /// methods have to be duplicated here.
     /// </summary>
     public class RevitWatchHandler : IWatchHandler
     {
@@ -57,14 +63,14 @@ namespace Dynamo.Applications
         internal WatchItem ProcessThing(SIUnit unit, string tag, bool showRawData = true)
         {
             if (showRawData)
-                return new WatchItem(unit.Value.ToString(CultureInfo.InvariantCulture), tag);
+                return new WatchItem(unit.Value.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
 
             return new WatchItem(unit.ToString(), tag);
         }
 
         internal WatchItem ProcessThing(double value, string tag, bool showRawData = true)
         {
-            return new WatchItem(value.ToString("0.000"), tag);
+            return new WatchItem(value.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
         }
 
         internal WatchItem ProcessThing(string value, string tag, bool showRawData = true)
