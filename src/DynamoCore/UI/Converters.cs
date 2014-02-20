@@ -1278,38 +1278,12 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            SIUnit measure = null;
-
-            if (parameter is Length)
-            {
-                measure = new Length((double)value, dynSettings.Controller.UnitsManager);
-            }
-            else if (parameter is Area)
-            {
-                measure = new Area((double)value, dynSettings.Controller.UnitsManager);
-            }
-            else if (parameter is Volume)
-            {
-                measure = new Volume((double)value, dynSettings.Controller.UnitsManager);
-            }
-            return measure.ToString();
+            return parameter.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            SIUnit measure = null;
-            if (parameter is Length)
-            {
-                measure = new Length(0.0, dynSettings.Controller.UnitsManager);
-            }
-            else if (parameter is Area)
-            {
-                measure = new Area(0.0, dynSettings.Controller.UnitsManager);
-            }
-            else if (parameter is Volume)
-            {
-                measure = new Volume(0.0, dynSettings.Controller.UnitsManager);
-            }
+            var measure = (SIUnit) parameter;
             measure.SetValueFromString(value.ToString());
             return measure.Value;
         }
