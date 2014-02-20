@@ -89,7 +89,9 @@ namespace Dynamo.Nodes
         {
             if (IsInstanceMember())
             {
-                InPortData.Add(new PortData("this", Definition.ClassName, typeof(object)));
+                string varname = Definition.ClassName.Split('.').Last();
+                varname = char.ToLowerInvariant(varname[0]) + varname.Substring(1);
+                InPortData.Add(new PortData(varname, Definition.ClassName, typeof(object)));
             }
 
             if (Definition.Parameters != null)
