@@ -369,9 +369,9 @@ namespace Dynamo.Nodes
                     if (needsRemake)
                     {
                         if (sp == null)
-                            sp = dynRevitSettings.Doc.Document.IsFamilyDocument ?
-                                dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(plane) :
-                                dynRevitSettings.Doc.Document.Create.NewSketchPlane(plane);
+                            sp = this.UIDocument.Document.IsFamilyDocument ?
+                                this.UIDocument.Document.FamilyCreate.NewSketchPlane(plane) :
+                                this.UIDocument.Document.Create.NewSketchPlane(plane);
                         if (dynRevitUtils.GetPlaneFromCurve(listCurves[index], true) == null)
                         {
 
@@ -403,9 +403,9 @@ namespace Dynamo.Nodes
                 else
                 {
                     if (sp == null)
-                        sp = dynRevitSettings.Doc.Document.IsFamilyDocument ?
-                                dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(plane) :
-                                dynRevitSettings.Doc.Document.Create.NewSketchPlane(plane);
+                        sp = this.UIDocument.Document.IsFamilyDocument ?
+                                this.UIDocument.Document.FamilyCreate.NewSketchPlane(plane) :
+                                this.UIDocument.Document.Create.NewSketchPlane(plane);
 
                     if (dynRevitUtils.GetPlaneFromCurve(listCurves[index], true) == null)
                     {
