@@ -287,7 +287,7 @@ namespace Dynamo.FSchemeInterop
 
             if (value.IsContainer)
             {
-                var unit = ((FScheme.Value.Container)value).Item as SIUnit;
+                var unit = ((Value.Container)value).Item as SIUnit;
                 if (unit != null)
                 {
                     return Value.NewNumber(unit.ConvertToHostUnits());
@@ -317,5 +317,25 @@ namespace Dynamo.FSchemeInterop
             throw new Exception("The value was not convertible to a unit of measure.");
         }
 
+        public static IComparable ToComparable(Value value)
+        {
+            if (value.IsNumber)
+                return (value as Value.Number).Item;
+
+            if (value.IsString)
+                return (value as Value.String).Item;
+
+            if (value.IsContainer)
+            {
+                var unboxed = (value as Value.Container).Item;
+                if (unboxed is IComparable)
+                    return unboxed as IComparable;
+            }
+
+            throw new Exception(
+                string.Format(
+                    "Key mapper result {0} is not Comparable, and thus cannot be sorted.",
+                    (value as dynamic).Item));
+        }
     }
 }
