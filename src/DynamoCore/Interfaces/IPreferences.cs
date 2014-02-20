@@ -3,7 +3,7 @@ using Dynamo.Units;
 
 namespace Dynamo.Interfaces
 {
-    public interface IDynamoPreferences
+    public interface IPreferences
     {
         bool ShowConsole { get; set; }
         bool ShowConnector { get; set; }

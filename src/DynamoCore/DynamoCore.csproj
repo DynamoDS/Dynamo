@@ -151,7 +151,7 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\UndoRedoRecorder.cs" />
-    <Compile Include="Interfaces\IDynamoPreferences.cs" />
+    <Compile Include="Interfaces\IPreferences.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">

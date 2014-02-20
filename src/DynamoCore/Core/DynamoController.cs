@@ -79,19 +79,11 @@ namespace Dynamo
         public IUpdateManager UpdateManager { get; set; }
         public IUnitsManager UnitsManager { get; set; }
         public IWatchHandler WatchHandler { get; set; }
+        public IPreferences PreferenceSettings { get; set; }
 
         public virtual VisualizationManager VisualizationManager
         {
             get { return visualizationManager ?? (visualizationManager = new VisualizationManagerASM()); }
-        }
-
-        private PreferenceSettings _preferenceSettings;
-        public PreferenceSettings PreferenceSettings
-        {
-            get
-            {
-                return _preferenceSettings;
-            }
         }
 
         /// <summary>
@@ -214,13 +206,13 @@ namespace Dynamo
 
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
-                return new DynamoController(env, typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager(), new UnitsManager(), new DefaultWatchHandler());
+                return new DynamoController(env, typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager(), new UnitsManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
 
-            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager(), new UnitsManager(), new DefaultWatchHandler());
+            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager(), new UnitsManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
         }
 
-        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context, IUpdateManager updateManager, IUnitsManager units, IWatchHandler watchHandler) : 
-            this(env, viewModelType, context, null, updateManager, units, watchHandler)
+        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context, IUpdateManager updateManager, IUnitsManager units, IWatchHandler watchHandler, IPreferences preferences) : 
+            this(env, viewModelType, context, null, updateManager, units, watchHandler, preferences)
         {
         }
 
@@ -228,7 +220,7 @@ namespace Dynamo
         ///     Class constructor
         /// </summary>
         public DynamoController(ExecutionEnvironment env,
-            Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager, IUnitsManager units, IWatchHandler watchHandler)
+            Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager, IUnitsManager units, IWatchHandler watchHandler, IPreferences preferences)
         {
             DynamoLogger.Instance.StartLogging();
 
@@ -239,11 +231,9 @@ namespace Dynamo
             //Start heartbeat reporting
             Services.InstrumentationLogger.Start();
 
+            PreferenceSettings = preferences;
+
             UnitsManager = units;
-
-            _preferenceSettings = PreferenceSettings.Load();
-            _preferenceSettings.PropertyChanged += _preferenceSettings_PropertyChanged;
-
             UnitsManager.LengthUnit = PreferenceSettings.LengthUnit;
             UnitsManager.AreaUnit = PreferenceSettings.AreaUnit;
             UnitsManager.VolumeUnit = PreferenceSettings.VolumeUnit;
