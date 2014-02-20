@@ -1500,7 +1500,7 @@ namespace Dynamo.Units
         public static void ParseLengthFromString(string value, out double feet, 
             out double inch, out double m, out double cm, out double mm, out double numerator, out double denominator )
         {
-            string pattern = @"(((?<ft>((\+|-)?\d+([.,]\d{1,2})?))( ?)('|ft))*\s*((?<in>(?<num>(\+|-)?\d+([.,]\d{1,2})?)/(?<den>\d+([.,]\d{1,2})?)*( ?)(""|in))|(?<in>(?<wholeInch>(\+|-)?\d+([.,]\d{1,2})?)*(\s|-)*(?<num>(\+|-)?\d+([.,]\d{1,2})?)/(?<den>\d+([.,]\d{1,2})?)*( ?)(""|in))|(?<in>(?<wholeInch>(\+|-)?\d+([.,]\d{1,2})?)( ?)(""|in)))?)*((?<m>((\+|-)?\d+([.,]\d{1,2})?))( ?)m($|\s))*((?<cm>((\+|-)?\d+([.,]\d{1,2})?))( ?)cm($|\s))*((?<mm>((\+|-)?\d+([.,]\d{1,2})?))( ?)mm($|\s))*";
+            string pattern = @"(((?<ft>((\+|-)?\d?([.,]\d{1,})?))( ?)('|ft))*\s*((?<in>(?<num>(\+|-)?\d?([.,]\d{1,})?)/(?<den>\d?([.,]\d{1,})?)*( ?)(""|in))|(?<in>(?<wholeInch>(\+|-)?\d?([.,]\d{1,})?)*(\s|-)*(?<num>(\+|-)?\d?([.,]\d{1,})?)/(?<den>\d?([.,]\d{1,})?)*( ?)(""|in))|(?<in>(?<wholeInch>(\+|-)?\d?([.,]\d{1,})?)( ?)(""|in)))?)*((?<m>((\+|-)?\d?([.,]\d{1,})?))( ?)m($|\s))*((?<cm>((\+|-)?\d?([.,]\d{1,})?))( ?)cm($|\s))*((?<mm>((\+|-)?\d?([.,]\d{1,})?))( ?)mm($|\s))*";
 
             feet = 0.0;
             inch = 0.0;
@@ -1533,7 +1533,7 @@ namespace Dynamo.Units
         public static void ParseAreaFromString(string value, out double square_inch, out double square_foot, out double square_millimeter,  out double square_centimeter, out double square_meter)
         {
             const string pattern =
-                @"((?<square_inches>((\+|-)?\d+([.,]\d{1,})?))( ?)(in2|sqin|in²))*\s*((?<square_feet>((\+|-)?\d+([.,]\d{1,})?))( ?)(ft2|sqft|ft²))*\s*((?<square_millimeters>((\+|-)?\d+([.,]\d{1,})?))( ?)(mm2|sqmm|mm²))*\s*((?<square_centimeters>((\+|-)?\d+([.,]\d{1,})?))( ?)(cm2|sqcm|cm²))*\s*((?<square_meters>((\+|-)?\d+([.,]\d{1,})?))( ?)(m2|sqm|m²))*\s*";
+                @"((?<square_inches>((\+|-)?\d?([.,]\d{1,})?))( ?)(in2|sqin|in²))*\s*((?<square_feet>((\+|-)?\d?([.,]\d{1,})?))( ?)(ft2|sqft|ft²))*\s*((?<square_millimeters>((\+|-)?\d?([.,]\d{1,})?))( ?)(mm2|sqmm|mm²))*\s*((?<square_centimeters>((\+|-)?\d?([.,]\d{1,})?))( ?)(cm2|sqcm|cm²))*\s*((?<square_meters>((\+|-)?\d?([.,]\d{1,})?))( ?)(m2|sqm|m²))*\s*";
             
             square_inch = 0.0;
             square_foot = 0.0;
@@ -1563,7 +1563,7 @@ namespace Dynamo.Units
         public static void ParseVolumeFromString(string value, out double cubic_inch, out double cubic_foot, out double cubic_millimeter, out double cubic_centimeter, out double cubic_meter)
         {
             const string pattern =
-                @"((?<cubic_inches>((\+|-)?\d+([.,]\d{1,})?))( ?)(in3|cuin|in³))*\s*((?<cubic_feet>((\+|-)?\d+([.,]\d{1,})?))( ?)(ft3|cuft|ft³))*\s*((?<cubic_millimeters>((\+|-)?\d+([.,]\d{1,})?))( ?)(mm3|cumm|mm³))*\s*((?<cubic_centimeters>((\+|-)?\d+([.,]\d{1,})?))( ?)(cm3|cucm|cm³))*\s*((?<cubic_meters>((\+|-)?\d+([.,]\d{1,})?))( ?)(m3|cum|m³))*\s*";
+                @"((?<cubic_inches>((\+|-)?\d?([.,]\d{1,})?))( ?)(in3|cuin|in³))*\s*((?<cubic_feet>((\+|-)?\d?([.,]\d{1,})?))( ?)(ft3|cuft|ft³))*\s*((?<cubic_millimeters>((\+|-)?\d?([.,]\d{1,})?))( ?)(mm3|cumm|mm³))*\s*((?<cubic_centimeters>((\+|-)?\d?([.,]\d{1,})?))( ?)(cm3|cucm|cm³))*\s*((?<cubic_meters>((\+|-)?\d?([.,]\d{1,})?))( ?)(m3|cum|m³))*\s*";
 
             cubic_inch = 0.0;
             cubic_foot = 0.0;
