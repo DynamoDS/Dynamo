@@ -24,13 +24,23 @@ namespace Dynamo
         private DynamoLengthUnit _lengthUnit;
         private DynamoAreaUnit _areaUnit;
         private DynamoVolumeUnit _volumeUnit;
+        private string _numberFormat;
 
         // Variables of the settings that will be persistent
         public bool ShowConsole { get; set; }
         public bool ShowConnector { get; set; }
         public ConnectorType ConnectorType { get; set; }
         public bool FullscreenWatchShowing { get; set; }
-        public string NumberFormat { get; set; }
+
+        public string NumberFormat
+        {
+            get { return _numberFormat; }
+            set
+            {
+                _numberFormat = value;
+                RaisePropertyChanged("NumberFormat");
+            }
+        }
 
         public DynamoLengthUnit LengthUnit
         {
@@ -72,7 +82,7 @@ namespace Dynamo
             LengthUnit = DynamoLengthUnit.Meter;
             AreaUnit = DynamoAreaUnit.SquareMeter;
             VolumeUnit = DynamoVolumeUnit.CubicMeter;
-            NumberFormat = "0.000";
+            NumberFormat = "f3";
         }
 
         /// <summary>

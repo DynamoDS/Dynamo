@@ -169,7 +169,7 @@ namespace Dynamo.Units
             HostApplicationInternalLengthUnit = DynamoLengthUnit.Meter;
             HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicMeter;
 
-            NumberFormat = "0.000";
+            NumberFormat = "f3";
         }
     }
 
