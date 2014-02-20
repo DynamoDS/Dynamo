@@ -2396,7 +2396,7 @@ namespace ProtoAssociative
                 }
                 else if (identList.RightNode is FunctionCallNode)
                 {
-                    FunctionCallNode fcNode = identList.RightNode as FunctionCallNode;
+                    FunctionCallNode fcNode = new FunctionCallNode(identList.RightNode as FunctionCallNode);
                     arrayDimension = fcNode.ArrayDimensions;
 
                     List<AssociativeNode> astlistArgs = new List<AssociativeNode>();
@@ -2976,7 +2976,6 @@ namespace ProtoAssociative
                 FunctionCallNode fcNode = null;
                 if (node is FunctionCallNode)
                 {
-                    //fcNode = node as FunctionCallNode;
                     fcNode = new FunctionCallNode(node as FunctionCallNode);
 
                     List<AssociativeNode> astlistArgs = new List<AssociativeNode>();
@@ -5490,6 +5489,8 @@ namespace ProtoAssociative
                         ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, isDefault = aIsDefault, defaultExpression = aDefaultExpression };
                         localProcedure.argInfoList.Add(argInfo);
                     }
+
+                    localProcedure.isVarArg = funcDef.Signature.IsVarArg;
                 }
 
                 int findex = core.ClassTable.ClassNodes[globalClassIndex].vtable.Append(localProcedure);
@@ -5841,6 +5842,7 @@ namespace ProtoAssociative
                         functionDescription += argNode.ArgumentType.ToString();
                     }
                     localProcedure.HashID = functionDescription.GetHashCode();
+                    localProcedure.isVarArg = funcDef.Signature.IsVarArg;
                 }
 
                 if (ProtoCore.DSASM.Constants.kInvalidIndex == globalClassIndex)
