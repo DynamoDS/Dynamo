@@ -16,7 +16,7 @@ namespace Dynamo
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings into the XML file.
     /// </summary>
-    public class PreferenceSettings : NotificationObject, IDynamoPreferences
+    public class PreferenceSettings : NotificationObject, IPreferences
     {
         public static string DYNAMO_TEST_PATH = null;
         const string DYNAMO_SETTINGS_DIRECTORY = @"Autodesk\Dynamo\";

@@ -55,7 +55,7 @@ namespace Dynamo
         }
 
         public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, Type viewModelType, string context, IUnitsManager units)
-            : base(env, viewModelType, context, new UpdateManager.UpdateManager(), units, new RevitWatchHandler())
+            : base(env, viewModelType, context, new UpdateManager.UpdateManager(), units, new RevitWatchHandler(), Dynamo.PreferenceSettings.Load())
         {
             Updater = updater;
             

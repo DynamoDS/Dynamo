@@ -1136,7 +1136,7 @@ namespace Dynamo.Nodes
 
             nodeUI.MainContextMenu.Items.Add(rawDataMenuItem);
 
-            dynSettings.Controller.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+            ((PreferenceSettings)dynSettings.Controller.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
             Root.PropertyChanged += Root_PropertyChanged;
         }
@@ -1266,7 +1266,7 @@ namespace Dynamo.Nodes
 
             tb.OnChangeCommitted += delegate { RequiresRecalc = true; };
 
-            dynSettings.Controller.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+            ((PreferenceSettings)dynSettings.Controller.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
         }
 
         void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
