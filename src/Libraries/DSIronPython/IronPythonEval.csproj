@@ -34,10 +34,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL" />
+    <Reference Include="IronPython">
+      <HintPath>..\..\..\extern\IronPython\IronPython.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Scripting">
-      <HintPath>..\..\extern\IronPython\Microsoft.Scripting.dll</HintPath>
+      <HintPath>..\..\..\extern\IronPython\Microsoft.Scripting.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="ProtoInterface, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

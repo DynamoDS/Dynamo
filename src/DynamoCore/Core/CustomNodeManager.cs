@@ -657,6 +657,8 @@ namespace Dynamo.Utilities
                     WorkspaceModel = ws
                 };
 
+                def.IsBeingLoaded = true;
+
                 // load a dummy version, so any nodes depending on this node
                 // will find an (empty) identifier on compilation
                 FScheme.Expression dummyExpression = FScheme.Expression.NewNumber_E(0);
@@ -842,6 +844,8 @@ namespace Dynamo.Utilities
 
                 foreach (var e in ws.Nodes)
                     e.EnableReporting();
+
+                def.IsBeingLoaded = false;
 #if USE_DSENGINE
                 def.Compile(controller.EngineController);
 #else
