@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Autodesk.DesignScript.Runtime;
 using IronPython.Hosting;
 
 namespace DSIronPython
@@ -25,7 +26,10 @@ namespace DSIronPython
         /// <param name="bindingNames"></param>
         /// <param name="bindingValues"></param>
         /// <returns></returns>
-        public static object EvaluateIronPythonScript(string code, IList bindingNames, IList bindingValues)
+        public static object EvaluateIronPythonScript(
+            string code, 
+            IList bindingNames, 
+            [ArbitraryDimensionArrayImport] IList bindingValues)
         {
             var engine = Python.CreateEngine();
             var scope = engine.CreateScope();

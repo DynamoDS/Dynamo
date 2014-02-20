@@ -237,21 +237,53 @@ COMPILER DesignScriptParser
    
     private bool IsReplicationGuide()
     {
+        bool isRepGuide = false;
         Token pt = la;
-        if( _lessthan == pt.kind ) 
+        if (_lessthan == pt.kind)
         {
             pt = scanner.Peek();
-            if( _number == pt.kind ) 
+            if (_number == pt.kind || _postfixed_replicationguide == pt.kind)
             {
                 pt = scanner.Peek();
-                scanner.ResetPeek();
-                if( _greaterthan == pt.kind ) 
+                if (_greaterthan == pt.kind)
                 {
-                    return true;
+                    isRepGuide = true;
                 }
             }
+
         }
         scanner.ResetPeek();
+        return isRepGuide;
+    }
+
+    private bool IsPostfixedReplicationGuide()
+    {
+        bool isPostFixedRepGuide = false;
+        Token pt = la;
+        if (_postfixed_replicationguide == pt.kind)
+        {
+            pt = scanner.Peek();
+            if (_greaterthan == pt.kind)
+            {
+                isPostFixedRepGuide = true;
+            }
+        }
+
+        scanner.ResetPeek();
+        return isPostFixedRepGuide;
+    }
+
+
+    private bool IsPostfixedNumber(string number)
+    {
+        if (number.Length > 1)
+        {
+            char lastChar = number[number.Length-1];
+            if (lastChar == ProtoCore.DSASM.Constants.kLongestPostfix)
+            {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -524,6 +556,7 @@ TOKENS
     textstring = '"' {anyButDoubleQuote | "\\\""} '"'.
     char = '\'' (anyButQuote | "\\\'" | "\\\"" | "\\\\" | "\\0" | "\\a" | "\\b" | "\\f" | "\\n" | "\\r" | "\\t" | "\\v" | "\\u") '\''.
     period = '.'.
+    postfixed_replicationguide = digit {digit} 'L'.
 
     openbracket = '['.
     closebracket = ']'.
@@ -564,6 +597,7 @@ TOKENS
     literal_true = "true".
     literal_false = "false".
     literal_null = "null".
+    replicationguide_postfix = 'L'.
 
 //COMMENTS FROM "/*" TO "*/" 
 //COMMENTS FROM "//" TO lf
