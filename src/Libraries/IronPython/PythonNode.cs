@@ -21,17 +21,18 @@ namespace DSIronPythonNode
     {
         protected PythonNodeBase()
         {
+            OutPortData.Add(new PortData("OUT", "Result of the python script"));
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        protected override string InputRootName
+        protected override string GetInputName(int index)
         {
-            get { return "IN"; }
+            return string.Format("IN[{0}]", index);
         }
 
-        protected override string TooltipRootName
+        protected override string GetInputTooltip(int index)
         {
-            get { return "Input #"; }
+            return "Input #" + index;
         }
 
         protected AssociativeNode CreateOutputAST(
@@ -52,7 +53,8 @@ namespace DSIronPythonNode
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    "DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript",//backendMethod.GetFullName(),
+                    backendMethod.Method.DeclaringType.FullName,
+                    backendMethod.Method.Name,
                     new List<AssociativeNode>
                     {
                         codeInputNode,
@@ -75,7 +77,6 @@ namespace DSIronPythonNode
                 + "#The input to this node will be stored in the IN0...INX variable(s).\n"
                 + "dataEnteringNode = IN0\n\n" + "#Assign your output to the OUT variable\n"
                 + "OUT = 0";
-            OutPortData.Add(new PortData("OUT", "Result of the python script"));
             RegisterAllPorts();
         }
 
