@@ -1021,11 +1021,12 @@ namespace Dynamo.Models
 
         protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
-            //var t = GetType();
-            //if (t != typeof(Watch) && !typeof(MathBase).IsAssignableFrom(t) )
-            //{
-            //    args = Utils.ToFSharpList(args.Select(SIUnit.UnwrapToDoubleWithHostUnitConversion));
-            //}
+            //HACK: This allows us to apply a host units conversion for all 
+            //types in the DynamoRevit library
+            if (GetType().Assembly.GetName().Name == "DynamoRevit")
+            {
+                args = args.Select(Utils.UnwrapToDoubleWithHostUnitConversion).ToFSharpList();
+            }
 
             _errorCount = 0;
             __eval_internal_recursive(args, outPuts);
