@@ -1255,7 +1255,8 @@ namespace Dynamo.Nodes
         {
             if (e.PropertyName == "AreaUnit" ||
                 e.PropertyName == "VolumeUnit" ||
-                e.PropertyName == "LengthUnit")
+                e.PropertyName == "LengthUnit" ||
+                e.PropertyName == "NumberFormat")
             {
                 RaisePropertyChanged("Value");
                 RequiresRecalc = true;
