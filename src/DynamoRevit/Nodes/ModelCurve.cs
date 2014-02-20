@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Autodesk.Revit.DB;
+using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
@@ -287,6 +288,149 @@ namespace Dynamo.Nodes
             }
 
             return FScheme.Value.NewContainer(mc);
+        }
+    }
+
+    [NodeName("Model Curves From Curve Loop")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
+    [NodeDescription("Creates a model curve.")]
+    [NodeSearchTags("curve", "model", "line", "revit")]
+    public class ModelCurveFromCurveLoop : RevitTransactionNodeWithOneOutput
+    {
+        public ModelCurveFromCurveLoop()
+        {
+            InPortData.Add(new PortData("cl", "A Geometric Planar Curve Loop.", typeof (FScheme.Value.Container)));
+            OutPortData.Add(new PortData("mcs", "Model Curves", typeof (FScheme.Value.List)));
+
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            Autodesk.Revit.DB.CurveLoop cl = (Autodesk.Revit.DB.CurveLoop)((FScheme.Value.Container)args[0]).Item;
+
+            if (cl == null)
+                throw new InvalidOperationException("No curve loop");
+
+            Autodesk.Revit.DB.Plane plane = cl.GetPlane();
+            if (plane == null)
+                throw new InvalidOperationException("Curve loop is not planar");
+          
+            var mcs = new System.Collections.Generic.List<Autodesk.Revit.DB.ModelCurve>();
+
+            var listCurves = new System.Collections.Generic.List<Curve> ();
+            CurveLoopIterator CLiter = cl.GetCurveLoopIterator();
+            for (; CLiter.MoveNext(); )
+            {
+                listCurves.Add(CLiter.Current.Clone());
+            }
+
+            int numCurves = listCurves.Count;
+            Autodesk.Revit.DB.SketchPlane sp = null;
+            for (int index = 0; index < numCurves; index++)
+            {
+
+                //instead of changing Revit curve keep it "as is"
+                //user might have trouble modifying curve in Revit if it is off the sketch plane
+                Autodesk.Revit.DB.ModelCurve mc = null;
+                if (this.Elements.Any() && index < this.Elements.Count)
+                {
+                    bool needsRemake = false;
+                    if (dynUtils.TryGetElement(this.Elements[index], out mc))
+                    {
+                        ElementId idSpUnused = ModelCurve.resetSketchPlaneMethod(mc, listCurves[index], plane, out needsRemake);
+
+                        if (idSpUnused != ElementId.InvalidElementId && index == numCurves - 1)
+                        {
+                            this.DeleteElement(idSpUnused);
+                        }
+                        if (!needsRemake)
+                        {
+                            if (!mc.GeometryCurve.IsBound && listCurves[index].IsBound)
+                            {
+                                listCurves[index] = listCurves[index].Clone();
+                                listCurves[index].MakeUnbound();
+                            }
+                            ModelCurve.setCurveMethod(mc, listCurves[index]); // mc.GeometryCurve = c;
+                        }
+                        else
+                            this.DeleteElement(this.Elements[index]);
+
+                    }
+                    else
+                        needsRemake = true;
+                    if (needsRemake)
+                    {
+                        if (sp == null)
+                            sp = dynRevitSettings.Doc.Document.IsFamilyDocument ?
+                                dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(plane) :
+                                dynRevitSettings.Doc.Document.Create.NewSketchPlane(plane);
+                        if (dynRevitUtils.GetPlaneFromCurve(listCurves[index], true) == null)
+                        {
+
+                            mc = this.UIDocument.Document.IsFamilyDocument
+                                ? this.UIDocument.Document.FamilyCreate.NewModelCurve(listCurves[index], sp)
+                                : this.UIDocument.Document.Create.NewModelCurve(listCurves[index], sp);
+
+                            ModelCurve.setCurveMethod(mc, listCurves[index]);
+                        }
+                        else
+                        {
+                            mc = this.UIDocument.Document.IsFamilyDocument
+                                ? this.UIDocument.Document.FamilyCreate.NewModelCurve(listCurves[index], sp)
+                                : this.UIDocument.Document.Create.NewModelCurve(listCurves[index], sp);
+                        }
+                        if (index < this.Elements.Count)
+                           this.Elements[index] = mc.Id;
+                        else
+                        {
+                            this.Elements.Add( mc.Id);
+                        }
+                        if (mc.SketchPlane.Id != sp.Id && index == numCurves - 1)
+                        {
+                            //THIS BIZARRE as Revit could use different existing SP, so if Revit had found better plane  this sketch plane has no use
+                            this.DeleteElement(sp.Id);
+                        }
+                    }
+                }
+                else
+                {
+                    if (sp == null)
+                        sp = dynRevitSettings.Doc.Document.IsFamilyDocument ?
+                                dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(plane) :
+                                dynRevitSettings.Doc.Document.Create.NewSketchPlane(plane);
+
+                    if (dynRevitUtils.GetPlaneFromCurve(listCurves[index], true) == null)
+                    {
+                        mc = this.UIDocument.Document.IsFamilyDocument
+                            ? this.UIDocument.Document.FamilyCreate.NewModelCurve(listCurves[index], sp)
+                            : this.UIDocument.Document.Create.NewModelCurve(listCurves[index], sp);
+
+                        ModelCurve.setCurveMethod(mc, listCurves[index]);
+                    }
+                    else
+                    {
+                        mc = this.UIDocument.Document.IsFamilyDocument
+                            ? this.UIDocument.Document.FamilyCreate.NewModelCurve(listCurves[index], sp)
+                            : this.UIDocument.Document.Create.NewModelCurve(listCurves[index], sp);
+                    }
+                    this.Elements.Add(mc.Id);
+                    if (mc.SketchPlane.Id != sp.Id && index == numCurves - 1) 
+                    {
+                        //found better plane
+                        this.DeleteElement(sp.Id);
+                    }
+                }
+                if (mc != null)
+                   mcs.Add(mc);
+            }
+           FSharpList<FScheme.Value> results = FSharpList<FScheme.Value>.Empty;
+               
+           foreach (var mc in mcs)
+           {
+               results = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewContainer(mc), results);
+           }
+           return FScheme.Value.NewList(Utils.SequenceToFSharpList(results.Reverse()));
         }
     }
 }

@@ -929,15 +929,15 @@ namespace Dynamo.ViewModels
         {
             var vm = dynSettings.Controller.DynamoViewModel;
 
-            if (vm.Model.CurrentWorkspace.FileName != null)
-            {
-                if (_model.CanSave(parameter))
-                    _model.Save(parameter);
-            }
-            else
+            if (string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
             {
                 if (CanShowSaveDialogAndSaveResult(parameter))
                     ShowSaveDialogAndSaveResult(parameter);
+            }
+            else
+            {
+                if (_model.CanSave(parameter))
+                    _model.Save(parameter);
             }
         }
 

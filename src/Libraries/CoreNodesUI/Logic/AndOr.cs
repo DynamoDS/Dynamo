@@ -48,14 +48,14 @@ namespace DSCore.Logic
                 base.RemoveInput();
         }
 
-        protected override string InputRootName
+        protected override string GetInputName(int index)
         {
-            get { return "bool"; }
+            return "bool" + index;
         }
 
-        protected override string TooltipRootName
+        protected override string GetInputTooltip(int index)
         {
-            get { return "Boolean #"; }
+            return "Boolean #" + index;
         }
     }
 
