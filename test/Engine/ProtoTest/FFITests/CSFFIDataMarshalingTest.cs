@@ -427,7 +427,7 @@ namespace ProtoFFITests
         {
             return f;
         }
-        public int foo(double x)
+        public int foo(int x)
         {
             return 1;
         }
