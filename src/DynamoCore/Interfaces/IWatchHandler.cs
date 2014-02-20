@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using Dynamo.Units;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Interfaces
@@ -30,14 +31,14 @@ namespace Dynamo.Interfaces
         internal WatchItem ProcessThing(SIUnit unit, string tag, bool showRawData = true)
         {
             if (showRawData)
-                return new WatchItem(unit.Value.ToString(CultureInfo.InvariantCulture), tag);
+                return new WatchItem(unit.Value.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
 
             return new WatchItem(unit.ToString(), tag);
         }
 
         internal WatchItem ProcessThing(double value, string tag, bool showRawData = true)
         {
-            return new WatchItem(value.ToString("0.000"), tag);
+            return new WatchItem(value.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
         }
 
         internal WatchItem ProcessThing(string value, string tag, bool showRawData = true)
