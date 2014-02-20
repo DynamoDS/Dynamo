@@ -24,7 +24,7 @@ namespace DSOffice
             }
         }
 
-        public static bool _showOnStartup = true;
+        private static bool _showOnStartup = true;
         public static bool ShowOnStartup
         {
             get { return _showOnStartup; }
@@ -126,8 +126,8 @@ namespace DSOffice
 
         private static object[][] ConvertToJaggedArray(object[,] input)
         {
-            int rows = input.GetUpperBound(0) + 1;
-            int cols = input.GetUpperBound(1) + 1;
+            int rows = input.GetUpperBound(0);
+            int cols = input.GetUpperBound(1);
 
             object[][] output = new object[rows][];
 
@@ -137,7 +137,7 @@ namespace DSOffice
 
                 for (int j = 0; j < cols; j++)
                 {
-                    output[i][j] = input[i, j];
+                    output[i][j] = input[i + 1, j + 1];
                 }
             }
 
@@ -169,48 +169,61 @@ namespace DSOffice
 
         #endregion
 
-        public static Workbook ReadExcelFile(string path)
+        public static object ReadExcelFile(string path)
         {
-            var workbook =
-                ExcelInterop.App.Workbooks.Cast<Workbook>().FirstOrDefault(e => e.FullName == path);
+            var workbookOpen = ExcelInterop.App.Workbooks.Cast<Workbook>()
+                .FirstOrDefault(e => e.FullName == path);
 
-            if (workbook == null && File.Exists(path))
-            {
-                workbook = ExcelInterop.App.Workbooks.Open(path, true, false);
-            }
+            if (workbookOpen != null)
+                return workbookOpen;
+            
+            if (File.Exists(path))
+                return ExcelInterop.App.Workbooks.Open(path, true, false);
 
-            return workbook;
+            return null;
         }
 
-        public static Worksheet[] GetWorksheetsFromExcelWorkbook(Workbook workbook)
+        public static object[] GetWorksheetsFromExcelWorkbook(object workbook)
         {
-            return workbook.Worksheets.Cast<Worksheet>().ToArray();
+            Workbook wb = (Workbook)workbook;
+
+            return wb.Worksheets.Cast<Worksheet>().ToArray();
         }
 
-        public static Worksheet GetExcelWorksheetByName(Workbook workbook, string name)
+        public static object GetExcelWorksheetByName(object workbook, string name)
         {
-            var sheet = workbook.Worksheets.Cast<Worksheet>().FirstOrDefault(ws => ws.Name == name);
+            Workbook wb = (Workbook)workbook;
 
+            var sheet = wb.Worksheets.Cast<Worksheet>().FirstOrDefault(ws => ws.Name == name);
+            
             if (sheet == null)
-            {
                 throw new Exception("Could not find a worksheet in the workbook with that name.");
-            }
-
+            
             return sheet;
         }
 
-        public static object[][] GetDataFromExcelWorksheet(Worksheet worksheet)
+        public static object[][] GetDataFromExcelWorksheet(object worksheet)
         {
-            var vals = worksheet.UsedRange.get_Value();
+            var vals = ((Worksheet)worksheet).UsedRange.get_Value();
+
+            // if worksheet is empty
+            if (vals == null)
+                return new object[0][];
+
+            // if worksheet contains a single value
+            if (!vals.GetType().IsArray)
+                return new object[][] { new object[] { vals } };
 
             return ConvertToJaggedArray(vals);
         }
 
-        public static Worksheet WriteDataToExcelWorksheet(
-            Worksheet worksheet, int startRow, int startColumn, object data)
+        public static object WriteDataToExcelWorksheet(
+            object worksheet, int startRow, int startColumn, object data)
         {
+            Worksheet ws = (Worksheet)worksheet;
+
             // clear existing elements for dynamic update
-            var usedRange = worksheet.UsedRange;
+            var usedRange = ws.UsedRange;
             usedRange.Cells.ClearContents();
 
             object[][] data2D;
@@ -244,37 +257,36 @@ namespace DSOffice
             
             object[,] rangeData = ConvertToDimensionalArray(data2D, out numRows, out numColumns);
 
-            var c1 = (Range)worksheet.Cells[startRow + 1, startColumn + 1];
-            var c2 = (Range)worksheet.Cells[startRow + numRows, startColumn + numColumns];
-            var range = worksheet.get_Range(c1, c2);
+            var c1 = (Range)ws.Cells[startRow + 1, startColumn + 1];
+            var c2 = (Range)ws.Cells[startRow + numRows, startColumn + numColumns];
+            var range = ws.get_Range(c1, c2);
             range.Value = rangeData;
             
             return worksheet;
         }
-        
-        public static Worksheet AddExcelWorksheetToWorkbook(Workbook workbook, string name)
+
+        public static object AddExcelWorksheetToWorkbook(object workbook, string name)
         {
-            var worksheet = workbook.Worksheets.Add();
+            Workbook wb = (Workbook)workbook;
+
+            var worksheet = wb.Worksheets.Add();
             worksheet.Name = name;
 
-            return worksheet;
+            return wb;
         }
 
-        public static Workbook NewExcelWorkbook()
+        public static object NewExcelWorkbook()
         {
             return ExcelInterop.App.Workbooks.Add();
         }
 
-        public static Workbook SaveAsExcelWorkbook(Workbook workbook, string filename)
+        public static object SaveAsExcelWorkbook(object workbook, string filename)
         {
-            if (workbook.FullName == filename)
-            {
-                workbook.Save();
-            }
+            Workbook wb = (Workbook)workbook;
+            if (wb.FullName == filename)
+                wb.Save();
             else
-            {
-                workbook.SaveAs(filename);
-            }
+                wb.SaveAs(filename);
 
             return workbook;
         }
