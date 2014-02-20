@@ -412,7 +412,7 @@ namespace Dynamo.DSEngine
 
                 Signature = new ArgumentSignatureNode 
                 { 
-                    Arguments = parameters.Select(p => AstFactory.BuildParamNode(p)).ToList()
+                    Arguments = parameters.Select(AstFactory.BuildParamNode).ToList()
                 },
 
                 FunctionBody = functionBody,

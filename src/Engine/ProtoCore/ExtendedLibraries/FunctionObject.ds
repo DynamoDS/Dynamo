@@ -442,7 +442,7 @@ def TrueForAll(list: var[], predicate: _FunctionObject)
 
         _index = 0;
 
-        for (_i in 0..(_count - 1))
+        for (_index in 0..(_count - 1))
         {
             _value = list[_i];
             if (!Apply(predicate, _value))
