@@ -16,7 +16,8 @@ using Dynamo.Services;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
+using Dynamo.Units;
+using DynamoUnits;
 using Microsoft.Practices.Prism.ViewModel;
 using NUnit.Framework;
 using String = System.String;
@@ -74,6 +75,7 @@ namespace Dynamo
         public DynamoModel DynamoModel { get; set; }
         public Dispatcher UIDispatcher { get; set; }
         public IUpdateManager UpdateManager { get; set; }
+        public IUnitsManager UnitsManager { get; set; }
 
         public virtual VisualizationManager VisualizationManager
         {
@@ -86,9 +88,27 @@ namespace Dynamo
             get
             {
                 if (_preferenceSettings == null)
+                {
                     _preferenceSettings = PreferenceSettings.Load();
-
+                    _preferenceSettings.PropertyChanged +=_preferenceSettings_PropertyChanged;
+                }
                 return _preferenceSettings;
+            }
+        }
+
+        void _preferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "LengthUnit":
+                    UnitsManager.LengthUnit = PreferenceSettings.LengthUnit;
+                    break;
+                case "AreaUnit":
+                    UnitsManager.AreaUnit = PreferenceSettings.AreaUnit;
+                    break;
+                case "VolumeUnit":
+                    UnitsManager.VolumeUnit = PreferenceSettings.VolumeUnit;
+                    break;
             }
         }
 
@@ -210,17 +230,17 @@ namespace Dynamo
 
         public static DynamoController MakeSandbox(string commandFilePath = null)
         {
-            ExecutionEnvironment env = new ExecutionEnvironment();
+            var env = new ExecutionEnvironment();
 
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
-                return new DynamoController(env, typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager());
+                return new DynamoController(env, typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager(), new UnitsManager());
 
-            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager());
+            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager(), new UnitsManager());
         }
 
-        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context, IUpdateManager updateManager) : 
-            this(env, viewModelType, context, null, updateManager)
+        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context, IUpdateManager updateManager, IUnitsManager units) : 
+            this(env, viewModelType, context, null, updateManager, units)
         {
         }
 
@@ -228,7 +248,7 @@ namespace Dynamo
         ///     Class constructor
         /// </summary>
         public DynamoController(ExecutionEnvironment env,
-            Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager)
+            Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager, IUnitsManager units)
         {
             DynamoLogger.Instance.StartLogging();
 
@@ -238,6 +258,13 @@ namespace Dynamo
 
             //Start heartbeat reporting
             InstrumentationLogger.Start();
+
+            UpdateManager = updateManager;
+            UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
+            UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
+            UpdateManager.CheckForProductUpdate();
+
+            UnitsManager = units;
 
             UpdateManager = updateManager;
             UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;

@@ -308,16 +308,19 @@ namespace Dynamo.DSEngine
                 AssociativeNode inputNode;
                 if (!node.TryGetInput(index, out inputTuple))
                 {
-                    inputNode = new NullNode(); 
+                    if (!node.InPortData[index].HasDefaultValue)
+                    {
+                        inputNode = new NullNode();
+                        inputAstNodes.Add(inputNode);
+                    }
                 }
                 else
                 {
                     int outputIndexOfInput = inputTuple.Item1;
                     NodeModel inputModel = inputTuple.Item2;
                     inputNode = inputModel.GetAstIdentifierForOutputIndex(outputIndexOfInput);
+                    inputAstNodes.Add(inputNode);
                 }
-
-                inputAstNodes.Add(inputNode);
             }
 
             //TODO: This should do something more than just log a generic message. --SJE

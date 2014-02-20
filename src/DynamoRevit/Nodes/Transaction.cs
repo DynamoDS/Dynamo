@@ -20,7 +20,8 @@ namespace Dynamo.Nodes
     {
         public Transaction()
         {
-            InPortData.Add(new PortData("expr", "Expression to run in a transaction.", typeof(object)));
+            InPortData.Add(
+                new PortData("expr", "Expression to run in a transaction.", typeof(object)));
             OutPortData.Add(new PortData("result", "Result of the expression.", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -32,14 +33,15 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        protected override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+        protected override INode Build(
+            Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
                 Error("Input must be connected.");
                 throw new Exception("Transaction Node requires all inputs to be connected.");
             }
-            return base.Build(preBuilt, outPort);
+            return new PreviewUpdate(this) { WrappedNode = base.Build(preBuilt, outPort) };
         }
 
         protected override InputNode Compile(IEnumerable<string> portNames)
@@ -50,7 +52,7 @@ namespace Dynamo.Nodes
         private class TransactionProcedureNode : InputNode
         {
             private readonly Transaction _node;
-            
+
             public TransactionProcedureNode(Transaction node, IEnumerable<string> inputNames)
                 : base(inputNames)
             {
@@ -58,110 +60,109 @@ namespace Dynamo.Nodes
             }
 
             protected override Expression compileBody(
-                Dictionary<INode, string> symbols,
-                Dictionary<INode, List<INode>> letEntries,
-                HashSet<string> initializedIds,
-                HashSet<string> conditionalIds)
+                Dictionary<INode, string> symbols, Dictionary<INode, List<INode>> letEntries,
+                HashSet<string> initializedIds, HashSet<string> conditionalIds)
             {
-                var arg =  arguments.First().Value.compile(
-                    symbols, letEntries, initializedIds, conditionalIds);
-                
+                var arg = arguments.First()
+                                   .Value.compile(
+                                       symbols,
+                                       letEntries,
+                                       initializedIds,
+                                       conditionalIds);
+
                 //idle :: (() -> A) -> A
                 //Evaluates the given function in the Revit Idle thread.
-                var idle = Expression.NewFunction_E(
-                    FSharpFunc<FSharpList<Value>, Value>.FromConverter(
-                        args =>
-                        {
-                            var f = (args[0] as Value.Function).Item;
-
-                            if (dynSettings.Controller.DynamoViewModel.RunInDebug)
+                var idle =
+                    Expression.NewFunction_E(
+                        FSharpFunc<FSharpList<Value>, Value>.FromConverter(
+                            args =>
                             {
-                                _node.OldValue = f.Invoke(FSharpList<Value>.Empty);
-                                return _node.OldValue;
-                            }
-                            
-                            return RevitServices.Threading.IdlePromise<Value>.ExecuteOnIdle(
+                                var f = (args[0] as Value.Function).Item;
+
+                                if (dynSettings.Controller.DynamoViewModel.RunInDebug)
+                                {
+                                    _node.OldValue = f.Invoke(FSharpList<Value>.Empty);
+                                    return _node.OldValue;
+                                }
+
+                                return RevitServices.Threading.IdlePromise<Value>.ExecuteOnIdle(
                                 () =>
                                     {
                                         _node.OldValue = f.Invoke(FSharpList<Value>.Empty);
                                         return _node.OldValue;
                                     });
-                        }));
+                            }));
 
                 //startTransaction :: () -> ()
                 //Starts a Dynamo Transaction.
-                var startTransaction = Expression.NewFunction_E(
-                    FSharpFunc<FSharpList<Value>, Value>.FromConverter(
-                        _ =>
-                        {
-                            if (_node.Controller.RunCancelled)
-                                throw new CancelEvaluationException(false);
-
-                            if (!dynSettings.Controller.DynamoViewModel.RunInDebug)
+                var startTransaction =
+                    Expression.NewFunction_E(
+                        FSharpFunc<FSharpList<Value>, Value>.FromConverter(
+                            _ =>
                             {
-                                dynRevitSettings.Controller.InIdleThread = true;
-                                dynRevitSettings.Controller.InitTransaction();
-                            }
+                                if (_node.Controller.RunCancelled)
+                                    throw new CancelEvaluationException(false);
 
-                            return Value.NewDummy("started transaction");
-                        }));
+                                if (!dynSettings.Controller.DynamoViewModel.RunInDebug)
+                                {
+                                    dynRevitSettings.Controller.InIdleThread = true;
+                                    dynRevitSettings.Controller.InitTransaction();
+                                }
+
+                                return Value.NewDummy("started transaction");
+                            }));
 
                 //endTransaction :: () -> ()
                 //Ends a Dynamo Transaction.
-                var endTransaction = Expression.NewFunction_E(
-                    FSharpFunc<FSharpList<Value>, Value>.FromConverter(
-                        _ =>
-                        {
-                            if (!dynRevitSettings.Controller.DynamoViewModel.RunInDebug)
+                var endTransaction =
+                    Expression.NewFunction_E(
+                        FSharpFunc<FSharpList<Value>, Value>.FromConverter(
+                            _ =>
                             {
-                                dynRevitSettings.Controller.EndTransaction();
-                                dynRevitSettings.Controller.InIdleThread = false;
+                                if (!dynRevitSettings.Controller.DynamoViewModel.RunInDebug)
+                                {
+                                    dynRevitSettings.Controller.EndTransaction();
+                                    dynRevitSettings.Controller.InIdleThread = false;
 
-                                dynSettings.Controller.DynamoModel.OnRequestLayoutUpdate(this, EventArgs.Empty);
-                                
-                                _node.ValidateConnections();
-                            }
+                                    dynSettings.Controller.DynamoModel.OnRequestLayoutUpdate(
+                                        this,
+                                        EventArgs.Empty);
 
-                            return Value.NewDummy("ended transaction");
-                        }));
+                                    _node.ValidateConnections();
+                                }
+
+                                return Value.NewDummy("ended transaction");
+                            }));
 
                 /*  (define (idleArg)
                  *    (startTransaction)
                  *    (let ((a <arg>))
                  *      (endTransaction)
                  *      a))
-                 */              
+                 */
                 var idleArg = Expression.NewFun(
                     FSharpList<FScheme.Parameter>.Empty,
                     Expression.NewBegin(
-                        Utils.SequenceToFSharpList(new List<Expression>
+                        new[]
                         {
                             Expression.NewList_E(
-                                Utils.SequenceToFSharpList(
-                                    new List<Expression> { startTransaction })),
+                                new[] { startTransaction }.SequenceToFSharpList()),
                             Expression.NewLet(
-                                Utils.SequenceToFSharpList(
-                                    new List<string> { "__result" }),
-                                Utils.SequenceToFSharpList(
-                                    new List<Expression> { arg }),
+                                new[] { "__result" }.SequenceToFSharpList(),
+                                new[] { arg }.SequenceToFSharpList(),
                                 Expression.NewBegin(
-                                    Utils.SequenceToFSharpList(
-                                        new List<Expression>
-                                        {
-                                            Expression.NewList_E(
-                                                Utils.SequenceToFSharpList(
-                                                    new List<Expression> { endTransaction })),
-                                            Expression.NewId("__result") 
-                                        }))) 
-                        })));
+                                    new[]
+                                    {
+                                        Expression.NewList_E(
+                                            new[] { endTransaction }.SequenceToFSharpList()),
+                                        Expression.NewId("__result")
+                                    }.SequenceToFSharpList()))
+                        }.SequenceToFSharpList()));
 
                 // (idle idleArg)
-                return Expression.NewList_E(
-                    Utils.SequenceToFSharpList(new List<Expression>
-                    {
-                        idle,
-                        idleArg 
-                    }));
+                return
+                    Expression.NewList_E(
+                        new[] { idle, idleArg }.SequenceToFSharpList());
             }
         }
     }

@@ -191,6 +191,14 @@ namespace ProtoCore.Namespace
         /// <exception cref="System.Collections.Generic.KeyNotFoundException"></exception>
         public string GetFullyQualifiedName(string partialName)
         {
+            // If this partialName is actually fully qualified, try to get
+            // the symbol.
+            Symbol symbol = null;
+            if (TryGetExactSymbol(partialName, out symbol))
+            {
+                return symbol.FullName;
+            }
+
             var symbols = GetMatchingSymbols(partialName);
             if (symbols == null || symbols.Length != 1)
                 throw new System.Collections.Generic.KeyNotFoundException(string.Format("Failed to get unique matching symbol for {0}.", partialName));
@@ -225,6 +233,11 @@ namespace ProtoCore.Namespace
         /// partial name.</returns>
         public bool TryGetUniqueSymbol(string partialName, out Symbol symbol)
         {
+            if (TryGetExactSymbol(partialName, out symbol))
+            {
+                return true;
+            }
+
             Symbol[] symbols = TryGetSymbols(partialName, (Symbol s) => s.Matches(partialName));
             if (symbols.Length == 1)
                 symbol = symbols[0];
