@@ -194,6 +194,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand SetVolumeUnitCommand { get; set; }
         public DelegateCommand ShowAboutWindowCommand { get; set; }
         public DelegateCommand CheckForUpdateCommand { get; set; }
+        public DelegateCommand SetNumberFormatCommand { get; set; }
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -586,6 +587,7 @@ namespace Dynamo.ViewModels
             SetVolumeUnitCommand = new DelegateCommand(SetVolumeUnit, CanSetVolumeUnit);
             ShowAboutWindowCommand = new DelegateCommand(ShowAboutWindow, CanShowAboutWindow);
             CheckForUpdateCommand = new DelegateCommand(CheckForUpdate, CanCheckForUpdate);
+            SetNumberFormatCommand = new DelegateCommand(SetNumberFormat, CanSetNumberFormat);
 
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
@@ -1554,6 +1556,16 @@ namespace Dynamo.ViewModels
             //dynSettings.Controller.UpdateManager.CheckForProductUpdate();
 
             Process.Start("http://dyn-builds-pub.s3-website-us-west-2.amazonaws.com/");
+        }
+
+        private void SetNumberFormat(object parameter)
+        {
+            dynSettings.Controller.PreferenceSettings.NumberFormat = parameter.ToString();
+        }
+
+        private bool CanSetNumberFormat(object parameter)
+        {
+            return true;
         }
 
         #region IWatchViewModel interface
