@@ -373,6 +373,15 @@ namespace Dynamo.Nodes
         }
     }
 
+    /// <summary>
+    /// DS Function Node that support Variable Arguments.
+    /// </summary>
+    [NodeName("Function Node w/ VarArgs")]
+    [NodeDescription("DesignScript Builtin Functions")]
+    [IsInteractive(false)]
+    [NodeHiddenInBrowser]
+    [NodeSearchable(false)]
+    [IsMetaNode]
     public class DSVarArgFunction : VariableInputNode
     {
         public FunctionDescriptor Definition { get; set; }
