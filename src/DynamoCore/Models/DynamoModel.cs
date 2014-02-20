@@ -1284,7 +1284,11 @@ namespace Dynamo.Models
 #if USE_DSENGINE
             FunctionDescriptor functionItem = (dynSettings.Controller.EngineController.GetFunctionDescriptor(name));
             if (functionItem != null)
+            {
+                if (functionItem.IsVarArg) 
+                    return new DSVarArgFunction(functionItem);
                 return new DSFunction(functionItem);
+            }
 #endif
             if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(name))
             {
