@@ -500,7 +500,8 @@ namespace Dynamo.DSEngine
             {
                 "ProtoGeometry.dll",
                 "DSCoreNodes.dll",
-                "FunctionObject.ds"
+                "FunctionObject.ds",
+                "DSIronPython.dll"
             };
 
             GraphUtilities.PreloadAssembly(_libraries);
