@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -360,6 +361,18 @@ namespace Dynamo.Nodes
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
+
+            ((PreferenceSettings)Controller.PreferenceSettings).PropertyChanged += Preferences_PropertyChanged;
+        }
+
+        void Preferences_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "NumberFormat":
+                    RaisePropertyChanged("Value");
+                    break;
+            }
         }
 
         protected override bool UpdateValueCore(string name, string value)
@@ -465,36 +478,6 @@ namespace Dynamo.Nodes
         }
 
     }  
-
-    //public partial class AngleInput : DoubleInput
-    //{
-
-    //    public override void SetupCustomUIElements(object ui)
-    //    {
-    //        var nodeUI = ui as dynNodeView;
-
-    //        //add a text box to the input grid of the control
-    //        var tb = new dynTextBox();
-    //        tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-    //        tb.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-    //        nodeUI.inputGrid.Children.Add(tb);
-    //        System.Windows.Controls.Grid.SetColumn(tb, 0);
-    //        System.Windows.Controls.Grid.SetRow(tb, 0);
-    //        tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-
-    //        tb.DataContext = this;
-    //        var bindingVal = new System.Windows.Data.Binding("Value")
-    //        {
-    //            Mode = BindingMode.TwoWay,
-    //            Converter = new RadianToDegreesConverter(),
-    //            NotifyOnValidationError = false,
-    //            Source = this,
-    //            UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-    //        };
-    //        tb.SetBinding(TextBox.TextProperty, bindingVal);
-    //    }
-
-    //}
 
     public partial class DoubleSliderInput : Double
     {
@@ -1145,7 +1128,7 @@ namespace Dynamo.Nodes
         {
             if (e.PropertyName == "ShowRawData")
             {
-                ResetWatch("");
+                ResetWatch();
             }
         }
 
@@ -1155,15 +1138,14 @@ namespace Dynamo.Nodes
             //to immediately update to show unit objects in the correct format
             if (e.PropertyName == "LengthUnit" ||
                 e.PropertyName == "AreaUnit" ||
-                e.PropertyName == "VolumeUnit")
+                e.PropertyName == "VolumeUnit" ||
+                e.PropertyName == "NumberFormat")
             {
-                string prefix = "";
-
-                ResetWatch(prefix);
+                ResetWatch();
             }
         }
 
-        private void ResetWatch(string prefix)
+        private void ResetWatch()
         {
             int count = 0;
             DispatchOnUIThread(
