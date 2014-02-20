@@ -40,24 +40,24 @@ def Reduce(func, acc, lists : var[]..[])
 
 def Filter(list : var[]..[], predicate)
 {
-	return = [Imperative]
-	{
-		resultIn = {};
-		resultOut = {};
+    return = [Imperative]
+    {
+        resultIn = {};
+        resultOut = {};
 
-		for(item in list)
-		{
-			if (Evaluate(predicate, item))
-			{
-				resultIn[Count(resultIn)] = item;
-			}
-			else
-			{
-				resultOut[Count(resultOut)] = item;
-			}
-		}
-		return = { resultIn, resultOut };
-	};
+        for(item in list)
+        {
+            if (Evaluate(predicate, item))
+            {
+                resultIn[Count(resultIn)] = item;
+            }
+            else
+            {
+                resultOut[Count(resultOut)] = item;
+            }
+        }
+        return = { resultIn, resultOut };
+    };
 }
 
 def LaceShortest(func, lists : var[]..[])
