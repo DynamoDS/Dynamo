@@ -291,5 +291,6 @@ namespace Dynamo.Search
             SearchTextBox.Text = "";
             Keyboard.Focus(SearchTextBox);
         }
+
     }
 }
