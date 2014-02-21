@@ -24,7 +24,7 @@ namespace DSOffice
             }
         }
 
-        private static bool _showOnStartup = true;
+        private static bool _showOnStartup = false;
         public static bool ShowOnStartup
         {
             get { return _showOnStartup; }
@@ -144,7 +144,7 @@ namespace DSOffice
             return output;
         }
 
-        public static object[,] ConvertToDimensionalArray(object[][] input, out int rows, out int cols)
+        private static object[,] ConvertToDimensionalArray(object[][] input, out int rows, out int cols)
         {
             rows = input.GetUpperBound(0) + 1;
             cols = 0;
@@ -171,8 +171,6 @@ namespace DSOffice
 
         public static object ReadExcelFile(string path)
         {
-            ExcelInterop.ShowOnStartup = false;
-
             var workbookOpen = ExcelInterop.App.Workbooks.Cast<Workbook>()
                 .FirstOrDefault(e => e.FullName == path);
 
@@ -196,17 +194,13 @@ namespace DSOffice
         {
             Workbook wb = (Workbook)workbook;
 
-            var sheet = wb.Worksheets.Cast<Worksheet>().FirstOrDefault(ws => ws.Name == name);
-            
-            if (sheet == null)
-                throw new Exception("Could not find a worksheet in the workbook with that name.");
-            
-            return sheet;
+            return wb.Worksheets.Cast<Worksheet>().FirstOrDefault(ws => ws.Name == name);
         }
 
         public static object[][] GetDataFromExcelWorksheet(object worksheet)
         {
-            var vals = ((Worksheet)worksheet).UsedRange.get_Value();
+            Worksheet ws = (Worksheet)worksheet;
+            var vals = ws.UsedRange.get_Value();
 
             // if worksheet is empty
             if (vals == null)
