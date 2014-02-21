@@ -5,7 +5,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using NUnit.Framework;
 using ModelCurve = Autodesk.Revit.DB.ModelCurve;
-
+using XYZ = Autodesk.Revit.DB.XYZ;
 namespace Dynamo.Tests
 {
     [TestFixture]
@@ -526,7 +526,65 @@ namespace Dynamo.Tests
 
             //dynSettings.Controller.RunExpression(true);
         }
+        [Test]
+        public void Rendering_hill_climbing_simple()
+        {
+            // referencing the samples directly from the samples folder
+            // and the custom nodes from the distrib folder
 
+            var model = dynSettings.Controller.DynamoModel;
+            // look at the sample folder and one directory up to get the distrib folder and combine with defs folder
+            string customNodePath = Path.Combine(Path.Combine(_samplesPath,@"..\\"), @".\dynamo_packages\Dynamo Sample Custom Nodes\dyf\");
+            // get the full path to the distrib folder and def folder
+            string fullCustomNodePath = Path.GetFullPath(customNodePath);
+
+            string samplePath = Path.Combine(_samplesPath, @".\25 Rendering\hill_climbing_simple.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+           
+            // make sure that the two custom nodes we need exist
+            string customDefPath1 = Path.Combine(fullCustomNodePath, "ProduceChild.dyf");
+            string customDefPath2 = Path.Combine(fullCustomNodePath, "DecideNewParent.dyf");
+
+            Assert.IsTrue(File.Exists(customDefPath1), "Cannot find specified custom definition to load for testing at." + customDefPath1);
+            Assert.IsTrue(File.Exists(customDefPath2), "Cannot find specified custom definition to load for testing."+ customDefPath2);
+            
+ Assert.DoesNotThrow(() =>
+              dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath2));
+ Assert.DoesNotThrow(() =>
+               dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath1));
+
+
+
+            model.Open(testPath);
+            Assert.AreEqual(2, dynSettings.Controller.CustomNodeManager.LoadedCustomNodes.Count);
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+           
+             Assert.DoesNotThrow(() =>dynSettings.Controller.RunExpression(true));
+
+           
+            var workspace = model.CurrentWorkspace;
+            
+            var produceChildCustomNode =
+                (Function)workspace.Nodes.First(x => x is Function);
+            //// ensure that recursive custom nodes returns a list
+            Assert.IsTrue(produceChildCustomNode.OldValue.IsList);
+            var resultList =((FScheme.Value.List)produceChildCustomNode.OldValue).Item;
+           
+            //// ensure that last item is a 0, we return a 0 for the last item in the recursive call to make sure the recursion has returned something
+            var lastItemInList = resultList[resultList.Length - 1].GetDoubleFromFSchemeValue();
+             Assert.AreEqual(0, lastItemInList);
+
+            //// the second to last item in the list should be our solution to the hill climbing problem - it should be within 10 ft of point 100,100,100
+            var secondToLastItem = resultList[resultList.Length - 2];
+            //// get xyz from this fscheme object
+            var xyzSecondToLastItem = secondToLastItem.GetObjectFromFSchemeValue<XYZ>();
+            var distance = xyzSecondToLastItem.DistanceTo(new XYZ(100,100,100));
+            Assert.LessOrEqual(distance, 10);
+  
+
+        }
         #region 14 Curves
 
         [Test]
