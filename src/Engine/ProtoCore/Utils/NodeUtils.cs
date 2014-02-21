@@ -90,6 +90,10 @@ namespace ProtoCore.Utils
             {
                 return new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode(rhsNode as ProtoCore.AST.AssociativeAST.FunctionDefinitionNode);
             }
+            else if (rhsNode is ProtoCore.AST.AssociativeAST.ReplicationGuideNode)
+            {
+                return new ProtoCore.AST.AssociativeAST.ReplicationGuideNode(rhsNode as ProtoCore.AST.AssociativeAST.ReplicationGuideNode);
+            }
             else if (rhsNode is ProtoCore.AST.AssociativeAST.IntNode)
             {
                 return new ProtoCore.AST.AssociativeAST.IntNode(rhsNode as ProtoCore.AST.AssociativeAST.IntNode);
@@ -180,6 +184,14 @@ namespace ProtoCore.Utils
             else if (rhsNode is ProtoCore.AST.ImperativeAST.RangeExprNode)
             {
                 return new ProtoCore.AST.ImperativeAST.RangeExprNode(rhsNode as ProtoCore.AST.ImperativeAST.RangeExprNode);
+            }
+            else if (rhsNode is ProtoCore.AST.ImperativeAST.BreakNode)
+            {
+                return new ProtoCore.AST.ImperativeAST.BreakNode();
+            }
+            else if (rhsNode is ProtoCore.AST.ImperativeAST.ContinueNode)
+            {
+                return new ProtoCore.AST.ImperativeAST.ContinueNode();
             }
             else if (rhsNode is ProtoCore.AST.ImperativeAST.IntNode)
             {
