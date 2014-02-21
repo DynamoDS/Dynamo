@@ -276,14 +276,6 @@ namespace Dynamo
             DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
                 viewModelType, new object[] { this, commandFilePath });
 
-
-            EngineController = new EngineController(this, false);            
-            //This is necessary to avoid a race condition by causing a thread join
-            //inside the vm exec
-            //TODO(Luke): Push this into a resync call with the engine controller
-            ResetEngine();
-
-
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");
@@ -301,6 +293,12 @@ namespace Dynamo
 
             DynamoViewModel.Model.CurrentWorkspace.X = 0;
             DynamoViewModel.Model.CurrentWorkspace.Y = 0;
+
+            EngineController = new EngineController(this, false);
+            //This is necessary to avoid a race condition by causing a thread join
+            //inside the vm exec
+            //TODO(Luke): Push this into a resync call with the engine controller
+            ResetEngine();
 
             DynamoLogger.Instance.Log(String.Format(
                 "Dynamo -- Build {0}",
