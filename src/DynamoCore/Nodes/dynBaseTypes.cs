@@ -843,7 +843,18 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var unsorted = ((Value.List)args[0]).Item;
+            FSharpList<Value> unsorted = null;
+
+            if (args[0].IsList)
+            {
+                unsorted = ((Value.List)args[0]).Item;
+            }
+            else
+            {
+                //promote the single item to a list
+                unsorted = FSharpList<Value>.Empty;
+                unsorted = FSharpList<Value>.Cons(args[0], unsorted);
+            }
 
             try
             {
