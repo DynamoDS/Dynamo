@@ -20,7 +20,7 @@ using Moq;
 namespace DynamoCoreUITests
 {
     [TestFixture]
-    public class UpdateManagerNotUpToDateTests : DynamoTestUI
+    public class UpdateManagerUITests : DynamoTestUI
     {
         private void Init(IUpdateManager updateManager)
         {
