@@ -305,7 +305,7 @@ namespace Dynamo.Nodes
     {
         public Func<FSharpList<Value>, Value> Func { get; protected internal set; }
 
-        internal BuiltinFunction(FSharpFunc<FSharpList<Value>, Value> builtIn)
+        internal BuiltinFunction(FSharpFunc<FSharpList<Value>, Value> builtIn) 
             : this(builtIn.Invoke)
         { }
 
@@ -316,7 +316,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Func(args);
+           return Func(args);
         }
     }
 
@@ -665,7 +665,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_FUNCTIONS)]
     [NodeDescription("Composes two single parameter functions into one function.")]
     public class ComposeFunctions : NodeWithOneOutput
-    {
+    { 
         public ComposeFunctions()
         {
             InPortData.Add(new PortData("f", "A Function", typeof(Value.Function)));
@@ -868,7 +868,7 @@ namespace Dynamo.Nodes
                 throw e; //TODO: Better error message
             }
         }
-
+        
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -969,8 +969,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var keyMapper = ((Value.Function)args[0]).Item;
-            var list = ((Value.List)args[1]).Item;
+            var keyMapper = ((Value.Function) args[0]).Item;
+            var list = ((Value.List) args[1]).Item;
 
             Value min = null;
             IComparable minMapped = null;
@@ -1146,10 +1146,10 @@ namespace Dynamo.Nodes
 
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
-            var list = ((Value.List)args[0]).Item;
-            var mask = ((Value.List)args[1]).Item;
+            var list = ((Value.List) args[0]).Item;
+            var mask = ((Value.List) args[1]).Item;
 
-            var zipped = list.Zip(mask, (i, m) => new { Item = i, Mask = FScheme.ValueToBool(m) });
+            var zipped = list.Zip(mask, (i, m) => new {Item = i, Mask = FScheme.ValueToBool(m) });
 
             var inList = new List<Value>();
             var outList = new List<Value>();
@@ -1188,8 +1188,8 @@ namespace Dynamo.Nodes
 
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
-            var pred = ((Value.Function)args[0]).Item;
-            var list = ((Value.List)args[1]).Item;
+            var pred = ((Value.Function) args[0]).Item;
+            var list = ((Value.List) args[1]).Item;
 
             var inList = new List<Value>();
             var outList = new List<Value>();
@@ -2006,7 +2006,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Shuffle",
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Shuffle", 
                 "List.Shuffle@var[]");
         }
     }
@@ -2022,22 +2022,22 @@ namespace Dynamo.Nodes
                 new PortData(
                     "f(x)",
                     "Key Mapper: items from the list are passed in, items for which the function produces the same output are grouped together.",
-                    typeof(object)));
-            InPortData.Add(new PortData("list", "List of items to be grouped.", typeof(Value.List)));
+                    typeof (object)));
+            InPortData.Add(new PortData("list", "List of items to be grouped.", typeof (Value.List)));
 
             OutPortData.Add(
                 new PortData(
                     "grouped",
                     "List of lists, where each sub-list contains items for which the Key Mapper produced the same value.",
-                    typeof(Value.List)));
+                    typeof (Value.List)));
 
             RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var mapper = ((Value.Function)args[0]).Item;
-            var list = ((Value.List)args[1]).Item;
+            var mapper = ((Value.Function) args[0]).Item;
+            var list = ((Value.List) args[1]).Item;
 
             var wrapped = Utils.ConvertToFSharpFunc(
                 (Value x) => mapper.Invoke(Utils.MakeFSharpList(x)));
@@ -2384,7 +2384,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.IsEmpty",
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.IsEmpty", 
                 "List.IsEmpty@var[]");
         }
     }
@@ -2431,7 +2431,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Join",
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Join", 
                 "List.Join@var[][]");
         }
     }
@@ -2520,9 +2520,9 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            if (!args[0].IsList)
+            if(!args[0].IsList)
                 throw new Exception("A list is required to slice.");
-            if (args.Length != 2)
+            if(args.Length != 2)
                 throw new Exception("A number is required to specify the sublist length.");
 
             FSharpList<Value> lst = ((Value.List)args[0]).Item;
@@ -2606,7 +2606,7 @@ namespace Dynamo.Nodes
             //int count = 0;
 
             var startIndices = new List<int>();
-
+            
             //get indices along 'side' of array
             for (int i = n; i < lst.Count(); i += n)
             {
@@ -2621,13 +2621,13 @@ namespace Dynamo.Nodes
                 startIndices.Add(i);
             }
 
-            foreach (int start in startIndices)
+            foreach(int start in startIndices)
             {
                 int index = start;
 
                 while (index < lst.Count())
                 {
-                    var currentRow = (int)Math.Ceiling((index + 1) / (double)n);
+                    var currentRow = (int) Math.Ceiling((index + 1) / (double)n);
                     currList.Add(lst.ElementAt(index));
                     index += n + 1;
 
@@ -2703,7 +2703,7 @@ namespace Dynamo.Nodes
             }
 
             //get indices along 'side' of array
-            for (int i = n - 1 + n; i < lst.Count(); i += n)
+            for (int i = n-1 + n; i < lst.Count(); i += n)
             {
                 startIndices.Add(i);
             }
@@ -2749,7 +2749,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Swaps rows and columns in a list of lists.")]
     public class Transpose : BuiltinFunction
     {
-        public Transpose()
+        public Transpose() 
             : base(FScheme.Transpose)
         {
             InPortData.Add(new PortData("lists", "The list of lists to transpose.", typeof(Value.List)));
@@ -2949,7 +2949,7 @@ namespace Dynamo.Nodes
 
             var paramLookup = args.Skip(2)
                                   .Select(
-                                      (x, i) => new { Name = InPortData[i + 2].NickName, Argument = x })
+                                      (x, i) => new { Name = InPortData[i+2].NickName, Argument = x })
                                   .ToDictionary(x => x.Name, x => ((Value.Number)x.Argument).Item);
 
             var ranges = _parsed
@@ -2959,14 +2959,14 @@ namespace Dynamo.Nodes
             //move through the list, creating sublists
             var finalList = new List<Value>();
 
-            for (int j = 0; j < len; j += offset)
+            for (int j = 0; j < len; j+=offset)
             {
                 var currList = new List<Value>();
 
                 var query = ranges.Where(r => r[0] + j <= len - 1 && r.Last() + j <= len - 1);
                 foreach (var range in query)
                 {
-                    currList.AddRange(range.Select(i => list.ElementAt(j + i)));
+                    currList.AddRange(range.Select(i => list.ElementAt(j+i)));
                 }
 
                 if (currList.Any())
@@ -3000,9 +3000,9 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            int n = Convert.ToInt16(((Value.Number)args[1]).Item);
+            int n = Convert.ToInt16(((Value.Number) args[1]).Item);
 
-            if (n < 0)
+            if (n<0)
                 throw new Exception("Can't make a repeated list of a negative amount.");
 
             return Value.NewList(Enumerable.Repeat(args[0], n).ToList().ToFSharpList());
@@ -3011,7 +3011,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Repeat",
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Repeat", 
                 "List.Repeat@var,int");
         }
     }
@@ -3216,7 +3216,7 @@ namespace Dynamo.Nodes
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
-            if (preBuilt.TryGetValue(this, out result))
+            if (preBuilt.TryGetValue(this, out result)) 
                 return result[outPort];
 
             INode resultNode;
@@ -3285,7 +3285,7 @@ namespace Dynamo.Nodes
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
-            if (preBuilt.TryGetValue(this, out result))
+            if (preBuilt.TryGetValue(this, out result)) 
                 return result[outPort];
 
             INode resultNode;
@@ -3617,7 +3617,7 @@ namespace Dynamo.Nodes
 
                 if (x.GetType() == y.GetType())
                 {
-                    return Value.NewNumber(x / y);
+                    return Value.NewNumber(x/y);
                 }
 
                 return Value.NewContainer(x / y);
@@ -3681,7 +3681,7 @@ namespace Dynamo.Nodes
                 var y = SIUnit.UnwrapToSIUnit(args[1]);
                 return Value.NewContainer(x % y);
             }
-
+            
             throw new MathematicalArgumentException();
         }
 
@@ -3721,7 +3721,7 @@ namespace Dynamo.Nodes
             //unit ^ number
             if (args[0].IsContainer && args[1].IsNumber)
             {
-                var length = (((Value.Container)args[0]).Item) as Units.Length;
+                var length = (((Value.Container) args[0]).Item) as Units.Length;
                 if (length != null)
                 {
                     var x = SIUnit.UnwrapToSIUnit(args[0]);
@@ -3739,7 +3739,7 @@ namespace Dynamo.Nodes
             }
 
             throw new MathematicalArgumentException();
-
+            
         }
 
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
@@ -3768,7 +3768,7 @@ namespace Dynamo.Nodes
             {
                 return Value.NewNumber(Math.Round(((Value.Number)args[0]).Item));
             }
-
+            
             if (args[0].IsContainer)
             {
                 var x = SIUnit.UnwrapToSIUnit(args[0]);
@@ -3848,7 +3848,7 @@ namespace Dynamo.Nodes
                 var x = SIUnit.UnwrapToSIUnit(args[0]);
                 return Value.NewContainer(x.Ceiling());
             }
-
+            
             throw new MathematicalArgumentException();
         }
 
@@ -3876,7 +3876,7 @@ namespace Dynamo.Nodes
         private static System.Random random = new System.Random();
         public override Value Evaluate(FSharpList<Value> args)
         {
-            random = new System.Random((int)((Value.Number)args[0]).Item);
+            random = new System.Random((int) ( (Value.Number) args[0] ).Item);
             return Value.NewNumber(random.NextDouble());
         }
 
@@ -4062,7 +4062,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("3.14159...*2", "2*pi", typeof(Value.Number)));
             RegisterAllPorts();
 
-            OldValue = Value.NewNumber(Math.PI * 2);
+            OldValue = Value.NewNumber(Math.PI*2);
         }
 
         public override bool RequiresRecalc
@@ -4421,7 +4421,7 @@ namespace Dynamo.Nodes
                 newBegin.ConnectInput("expr2", firstVal);
                 return newBegin;
             }
-
+            
             return firstVal;
         }
 
@@ -4596,7 +4596,7 @@ namespace Dynamo.Nodes
             return migrationData;
         }
     }
-
+    
     [NodeName("Debug Breakpoint")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
     [NodeDescription("Halts execution until user clicks button.")]
@@ -4886,7 +4886,7 @@ namespace Dynamo.Nodes
             get { return _value; }
             set
             {
-                if (_value != null && _value.Equals(value))
+                if (_value != null && _value.Equals(value)) 
                     return;
 
                 _value = value;
@@ -4901,7 +4901,7 @@ namespace Dynamo.Nodes
 
                     foreach (var id in idList)
                     {
-                        InPortData.Add(new PortData(id, "variable", typeof(Value.Number)));
+                        InPortData.Add(new PortData(id, "variable", typeof (Value.Number)));
                     }
 
                     RegisterInputPorts();
