@@ -280,5 +280,215 @@ r = f.i;
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 103);
         }
+
+        [Test]
+        public void TestSortByKey()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+class Point
+{
+    constructor Point(_x, _y, _z)
+    {
+        x = _x;
+        y = _y;
+        z = _z;
+    }
+    
+    x; y; z;
+}
+
+p1 = Point(1, 2, 3);
+p2 = Point(2, 3, 4);
+p3 = Point(2, 1, 3);
+
+def getCoordinateValue(p : Point)
+{
+    return = p.x + p.y + p.z;
+}
+
+getPointKey = _SingleFunctionObject(getCoordinateValue, 1, { }, { });
+r1 = SortByKey(null, getPointKey);
+r2 = SortByKey({ }, getPointKey);
+
+r3 = SortByKey({ p1 }, getPointKey);
+t1 = Map(r3, getPointKey);
+
+r4 = SortByKey({ p1, p1, p1 }, getPointKey);
+t2 = Map(r4, getPointKey);
+
+r5 = SortByKey({ p1, p2, p3 }, getPointKey);
+t3 = Map(r5, getPointKey);
+
+r6 = SortByKey({ p2, p1 }, getPointKey);
+t4 = Map(r6, getPointKey);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("t1", new object[]{6});
+            thisTest.Verify("t2", new object[] { 6, 6, 6 });
+            thisTest.Verify("t3", new object[] { 6, 6, 9 });
+            thisTest.Verify("t4", new object[] { 6, 9});
+        }
+
+        [Test]
+        public void TestSortByComparision()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+class Point
+{
+    constructor Point(_x, _y, _z)
+    {
+        x = _x;
+        y = _y;
+        z = _z;
+    }
+    
+    x; y; z;
+}
+
+p1 = Point(2, 1, 3);
+p2 = Point(1, 3, 3);
+p3 = Point(1, 2, 4);
+p4 = Point(3, 1, 2);
+
+def comparePoint(p1 : Point, p2: Point)
+{
+    return = [Imperative]
+    {
+        if (p1.x > p2.x)
+        {
+            return = 1;
+        }
+        else if (p1.x < p2.x)
+        {
+            return = -1;
+        }
+        else
+        {
+            if (p1.y > p2.y)
+            {
+                return = 1;
+            }
+            else if (p1.y < p2.y)
+            {
+                return = -1;
+            }
+            else
+            {
+                if (p1.z > p2.z)
+                {
+                    return = 1;
+                }
+                else if (p1.z < p2.z)
+                {
+                    return = -1;
+                }
+                else
+                {
+                    return = 0;
+                }
+            }
+        }
+    }
+}
+
+pointComparer = _SingleFunctionObject(comparePoint, 2, { }, { });
+
+r = SortByComparsion({ p1, p2, p3, p4 }, pointComparer);
+r1 = r.x;
+r2 = r.y;
+r3 = r.z;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { 1, 1, 2, 3 });
+            thisTest.Verify("r2", new object[] { 2, 3, 1, 1});
+            thisTest.Verify("r3", new object[] { 4, 3, 3, 2 });
+        }
+
+        [Test]
+        public void TestGroupByKey()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+class Point
+{
+    constructor Point(_x, _y, _z)
+    {
+        x = _x;
+        y = _y;
+        z = _z;
+    }
+    
+    x; y; z;
+}
+
+p1 = Point(1, 2, 3);
+p2 = Point(2, 3, 4);
+p3 = Point(2, 1, 3);
+
+def getCoordinateValue(p : Point)
+{
+    return = p.x + p.y + p.z;
+}
+
+getPointKey = _SingleFunctionObject(getCoordinateValue, 1, { }, { });
+r = GroupByKey({ p1, p2, p3 }, getPointKey);
+t1 = Map(r[0], getPointKey);
+t2 = Map(r[1], getPointKey);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("t1", new object[] { 6, 6});
+            thisTest.Verify("t2", new object[] { 9 });
+        }
+
+        [Test]
+        public void TestFilter()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+def odd(x)
+{
+    return = x % 2 == 1;
+}
+
+pred = _SingleFunctionObject(odd, 1, { }, { });
+r1 = Filter(1..10, pred);
+r2 = FilterOut(1..10, pred);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { 1, 3, 5, 7, 9 });
+            thisTest.Verify("r2", new object[] { 2, 4, 6, 8, 10 });
+        }
+
+        [Test]
+        public void TestReduce()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+def mul(x, y)
+{
+    return = x * y;
+}
+
+def sum(x, y)
+{
+    return = x + y;
+}
+
+acc1 = _SingleFunctionObject(mul, 2, { }, { });
+acc2 = _SingleFunctionObject(sum, 2, { }, { });
+v1 = Reduce(1..10, 1, acc1);
+v2 = Reduce(1..10, 0, acc2);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("v1", 3628800);
+            thisTest.Verify("v2", 55);
+        }
     }
 }

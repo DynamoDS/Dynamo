@@ -974,14 +974,35 @@ namespace ProtoCore
                 //Extract the correct run data from the trace cache here
 
                 //This is the thing that will get unpacked from the datastore
-                SingleRunTraceData previousTraceData = new SingleRunTraceData();
+
+                SingleRunTraceData singleRunTraceData;
                 SingleRunTraceData newTraceData = new SingleRunTraceData();
+
+                //READ TRACE FOR NON-REPLICATED CALL
+                //Lookup the trace data in the cache
+                if (invokeCount < traceData.Count)
+                {
+                    singleRunTraceData = (SingleRunTraceData)traceData[invokeCount];
+                }
+                else
+                {
+                    //We don't have any previous stored data for the previous invoke calls, so 
+                    //gen an empty packet and push it through
+                    singleRunTraceData = new SingleRunTraceData();
+                }
+
 
                 c.IsReplicating = true;
                 ret = ExecWithRISlowPath(functionEndPoint, c, formalParameters, replicationInstructions, stackFrame,
-                                         core, funcGroup, previousTraceData, newTraceData);
+                                         core, funcGroup, singleRunTraceData, newTraceData);
 
                 //Do a trace save here
+                if (invokeCount < traceData.Count)
+                    traceData[invokeCount] = newTraceData;
+                else
+                {
+                    traceData.Add(newTraceData);
+                }
             }
 
             // Explicit calls require the GC of arguments in the function return instruction
@@ -1019,8 +1040,13 @@ namespace ProtoCore
         private StackValue ExecWithRISlowPath(List<FunctionEndPoint> functionEndPoint, ProtoCore.Runtime.Context c,
                                               List<StackValue> formalParameters,
                                               List<ReplicationInstruction> replicationInstructions,
-                                              StackFrame stackFrame, Core core, FunctionGroup funcGroup, SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
+                                              StackFrame stackFrame, Core core, FunctionGroup funcGroup, 
+            SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
+            if (core.Options.ExecutionMode == ExecutionMode.Parallel)
+                throw new NotImplementedException("Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
+
+
             //Recursion base case
             if (replicationInstructions.Count == 0)
                 return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, core, funcGroup, previousTraceData, newTraceData);
@@ -1042,8 +1068,6 @@ namespace ProtoCore
 
                 foreach (int repIndex in repIndecies)
                 {
-                    //if (StackUtils.IsArray(formalParameters[repIndex]))
-                    //    throw new NotImplementedException("Replication Case not implemented - Jagged Arrays - Slow path: {8606D4AA-9225-4F34-BE53-74270B8D0A90}");
 
                     StackValue[] subParameters = null;
                     if (StackUtils.IsArray(formalParameters[repIndex]))
@@ -1070,53 +1094,48 @@ namespace ProtoCore
                 }
 
 
-                    if (core.Options.ExecutionMode == ExecutionMode.Parallel)
-                        throw new NotImplementedException("Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
+                for (int i = 0; i < retSize; i++)
+                {
+                    SingleRunTraceData lastExecTrace = new SingleRunTraceData();
+
+                    if (previousTraceData.HasNestedData && i < previousTraceData.NestedData.Count)
+                    {
+                        //There was previous data that needs loading into the cache
+                        lastExecTrace = previousTraceData.NestedData[i];
+                    }
                     else
                     {
-                        for (int i = 0; i < retSize; i++)
-                        {
-                            SingleRunTraceData lastExecTrace = new SingleRunTraceData();
-
-                            if (previousTraceData.HasNestedData && i < previousTraceData.NestedData.Count)
-                            {
-                                //There was previous data that needs loading into the cache
-                                lastExecTrace = previousTraceData.NestedData[i];
-                            }
-                            else
-                            {
-                                //We're off the edge of the previous trace window
-                                //So just pass in an empty block
-                                lastExecTrace = new SingleRunTraceData();
-                            }
-
-
-                            //Build the call
-                            List<StackValue> newFormalParams = new List<StackValue>();
-                            newFormalParams.AddRange(formalParameters);
-
-                            for (int repIi = 0; repIi < repIndecies.Count; repIi++)
-                            {
-                                newFormalParams[repIndecies[repIi]] = parameters[repIi][i];
-                            }
-
-                            List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
-                            newRIs.AddRange(replicationInstructions);
-                            newRIs.RemoveAt(0);
-
-
-                            previousTraceData = lastExecTrace;
-                            SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
-
-                            retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
-                                                           funcGroup, previousTraceData, cleanRetTrace);
-
-
-
-                            retTrace.NestedData[i] = cleanRetTrace;
-
-                        }
+                        //We're off the edge of the previous trace window
+                        //So just pass in an empty block
+                        lastExecTrace = new SingleRunTraceData();
                     }
+
+
+                    //Build the call
+                    List<StackValue> newFormalParams = new List<StackValue>();
+                    newFormalParams.AddRange(formalParameters);
+
+                    for (int repIi = 0; repIi < repIndecies.Count; repIi++)
+                    {
+                        newFormalParams[repIndecies[repIi]] = parameters[repIi][i];
+                    }
+
+                    List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
+                    newRIs.AddRange(replicationInstructions);
+                    newRIs.RemoveAt(0);
+
+
+                    previousTraceData = lastExecTrace;
+                    SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
+
+                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
+                                                    funcGroup, previousTraceData, cleanRetTrace);
+
+
+
+                    retTrace.NestedData[i] = cleanRetTrace;
+
+                }
 
                 StackValue ret = HeapUtils.StoreArray(retSVs, null, core);
                 GCUtils.GCRetain(ret, core);
@@ -1152,92 +1171,128 @@ namespace ProtoCore
 
                 StackValue[] retSVs = new StackValue[retSize];
 
-                if (core.Options.ExecutionMode == ExecutionMode.Parallel)
-                    throw new NotImplementedException("Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
-                else
+                SingleRunTraceData retTrace = newTraceData;
+                retTrace.NestedData = new List<SingleRunTraceData>(); //this will shadow the SVs as they are created
+
+                //Populate out the size of the list with default values
+                //@TODO:Luke perf optimisation here
+                for (int i = 0; i < retSize; i++)
                 {
-                    if (supressArray)
-                    {
-                        List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
-                        newRIs.AddRange(replicationInstructions);
-                        newRIs.RemoveAt(0);
+                    retTrace.NestedData.Add(new SingleRunTraceData());
+                }
 
-                        List<StackValue> newFormalParams = new List<StackValue>();
-                        newFormalParams.AddRange(formalParameters);
+ 
+                if (supressArray)
+                {
 
-                        return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
-                                                  funcGroup, previousTraceData, newTraceData);
-                    }
+                    List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
+                    newRIs.AddRange(replicationInstructions);
+                    newRIs.RemoveAt(0);
 
-                    //Now iterate over each of these options
-                    for (int i = 0; i < retSize; i++)
-                    {
+                    List<StackValue> newFormalParams = new List<StackValue>();
+                    newFormalParams.AddRange(formalParameters);
+
+                    return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
+                                                funcGroup, previousTraceData, newTraceData);
+                }
+
+
+                    
+
+                //Now iterate over each of these options
+                for (int i = 0; i < retSize; i++)
+                {
 #if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
 
-                        // Comment Jun: If the array pointer passed in was of type DS Null, 
-                        // then it means this is the first time the results are being computed.
-                        bool executeAll = c.ArrayPointer.optype == AddressType.Null;
+                    // Comment Jun: If the array pointer passed in was of type DS Null, 
+                    // then it means this is the first time the results are being computed.
+                    bool executeAll = c.ArrayPointer.optype == AddressType.Null;
 
-                        if (executeAll || ProtoCore.AssociativeEngine.ArrayUpdate.IsIndexInElementUpdateList(i, c.IndicesIntoArgMap))
+                    if (executeAll || ProtoCore.AssociativeEngine.ArrayUpdate.IsIndexInElementUpdateList(i, c.IndicesIntoArgMap))
+                    {
+                        List<List<int>> prevIndexIntoList = new List<List<int>>();
+
+                        foreach (List<int> dimList in c.IndicesIntoArgMap)
                         {
-                            List<List<int>> prevIndexIntoList = new List<List<int>>();
-
-                            foreach (List<int> dimList in c.IndicesIntoArgMap)
-                            {
-                                prevIndexIntoList.Add(new List<int>(dimList));
-                            }
-
-
-                            StackValue svPrevPtr = c.ArrayPointer;
-                            if (!executeAll)
-                            {
-                                c.IndicesIntoArgMap = ProtoCore.AssociativeEngine.ArrayUpdate.UpdateIndexIntoList(i, c.IndicesIntoArgMap);
-                                c.ArrayPointer = ProtoCore.Utils.ArrayUtils.GetArrayElementAt(c.ArrayPointer, i, core);
-                            }
-
-                            //Build the call
-                            List<StackValue> newFormalParams = new List<StackValue>();
-                            newFormalParams.AddRange(formalParameters);
-
-                            if (he != null)
-                            {
-                                //It was an array pack the arg with the current value
-                                newFormalParams[cartIndex] = he.Stack[i];
-                            }
-
-                            List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
-                            newRIs.AddRange(replicationInstructions);
-                            newRIs.RemoveAt(0);
-
-                            retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core, funcGroup);
-
-                            // Restore the context properties for arrays
-                            c.IndicesIntoArgMap = new List<List<int>>(prevIndexIntoList);
-                            c.ArrayPointer = svPrevPtr;
+                            prevIndexIntoList.Add(new List<int>(dimList));
                         }
-                        else
+
+
+                        StackValue svPrevPtr = c.ArrayPointer;
+                        if (!executeAll)
                         {
-                            retSVs[i] = ProtoCore.Utils.ArrayUtils.GetArrayElementAt(c.ArrayPointer, i, core);
+                            c.IndicesIntoArgMap = ProtoCore.AssociativeEngine.ArrayUpdate.UpdateIndexIntoList(i, c.IndicesIntoArgMap);
+                            c.ArrayPointer = ProtoCore.Utils.ArrayUtils.GetArrayElementAt(c.ArrayPointer, i, core);
                         }
-#else
+
                         //Build the call
                         List<StackValue> newFormalParams = new List<StackValue>();
                         newFormalParams.AddRange(formalParameters);
 
-                        if (parameters != null)
+                        if (he != null)
                         {
                             //It was an array pack the arg with the current value
-                            newFormalParams[cartIndex] = parameters[i];
+                            newFormalParams[cartIndex] = he.Stack[i];
                         }
 
                         List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
                         newRIs.AddRange(replicationInstructions);
                         newRIs.RemoveAt(0);
 
-                        retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
-                                                        funcGroup, previousTraceData, newTraceData);
-#endif
+                        retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core, funcGroup);
+
+                        // Restore the context properties for arrays
+                        c.IndicesIntoArgMap = new List<List<int>>(prevIndexIntoList);
+                        c.ArrayPointer = svPrevPtr;
                     }
+                    else
+                    {
+                        retSVs[i] = ProtoCore.Utils.ArrayUtils.GetArrayElementAt(c.ArrayPointer, i, core);
+                    }
+#else
+                    //Build the call
+                    List<StackValue> newFormalParams = new List<StackValue>();
+                    newFormalParams.AddRange(formalParameters);
+
+                    if (parameters != null)
+                    {
+                        //It was an array pack the arg with the current value
+                        newFormalParams[cartIndex] = parameters[i];
+                    }
+
+                    List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
+                    newRIs.AddRange(replicationInstructions);
+                    newRIs.RemoveAt(0);
+
+
+                    SingleRunTraceData lastExecTrace;
+
+                    if (previousTraceData.HasNestedData && i < previousTraceData.NestedData.Count)
+                    {
+                        //There was previous data that needs loading into the cache
+                        lastExecTrace = previousTraceData.NestedData[i];
+                    }
+                    else
+                    {
+                        //We're off the edge of the previous trace window
+                        //So just pass in an empty block
+                        lastExecTrace = new SingleRunTraceData();
+                    }
+
+
+                    //previousTraceData = lastExecTrace;
+                    SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
+
+                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
+                                                    funcGroup, lastExecTrace, cleanRetTrace);
+
+
+
+                    retTrace.NestedData[i] = cleanRetTrace;
+
+//                        retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
+//                                                        funcGroup, previousTraceData, newTraceData);
+#endif
                 }
 
                 StackValue ret = HeapUtils.StoreArray(retSVs, null, core);
