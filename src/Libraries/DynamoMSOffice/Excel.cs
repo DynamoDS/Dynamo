@@ -236,7 +236,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSOffice.dll", "Excel.GetWorksheetsFromExcelWorkbook",
-                "Excel.GetWorksheetsFromExcelWorkbook@var");
+                "Excel.GetWorksheetsFromExcelWorkbook@Workbook");
         }
     }
 
@@ -272,7 +272,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSOffice.dll", "Excel.GetExcelWorksheetByName",
-                "Excel.GetExcelWorksheetByName@var,string");
+                "Excel.GetExcelWorksheetByName@Workbook,string");
         }
     }
 
@@ -340,7 +340,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSOffice.dll", "Excel.GetDataFromExcelWorksheet",
-                "Excel.GetDataFromExcelWorksheet@var");
+                "Excel.GetDataFromExcelWorksheet@Worksheet");
         }
     }
 
@@ -466,7 +466,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSOffice.dll", "Excel.WriteDataToExcelWorksheet",
-                "Excel.WriteDataToExcelWorksheet@var,int,int,var");
+                "Excel.WriteDataToExcelWorksheet@Worksheet,int,int,var[][]");
         }
     }
 
@@ -501,7 +501,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSOffice.dll", "Excel.AddExcelWorksheetToWorkbook",
-                "Excel.AddExcelWorksheetToWorkbook@var,string");
+                "Excel.AddExcelWorksheetToWorkbook@Workbook,string");
         }
     }
 
@@ -551,7 +551,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSOffice.dll", "Excel.SaveAsExcelWorkbook",
-                "Excel.SaveAsExcelWorkbook@var,string");
+                "Excel.SaveAsExcelWorkbook@Workbook,string");
         }
     }
 }
