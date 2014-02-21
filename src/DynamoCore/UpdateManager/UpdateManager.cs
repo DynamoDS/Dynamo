@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.ComponentModel;
 using System.Windows;
+using Dynamo.Interfaces;
 using Dynamo.UI;
 using System.Xml.Linq;
 using Microsoft.Practices.Prism.ViewModel;
@@ -32,9 +33,10 @@ namespace Dynamo.UpdateManager
     {
         BinaryVersion ProductVersion { get; }
         BinaryVersion AvailableVersion { get; }
+        IAppVersionInfo UpdateInfo { get; set; }
         event UpdateDownloadedEventHandler UpdateDownloaded;
         event ShutdownRequestedEventHandler ShutdownRequested;
-        void CheckForProductUpdate();
+        void CheckForProductUpdate(IAsynchronousRequest request);
         void QuitAndInstallUpdate();
         void HostApplicationBeginQuit(object sender, EventArgs e);
     }
@@ -46,16 +48,95 @@ namespace Dynamo.UpdateManager
         string InstallerURL { get; set; }
     }
 
+    /// <summary>
+    /// An interface to describe an asynchronous web
+    /// request for update data.
+    /// </summary>
     public interface IAsynchronousRequest
     {
-
+        ILogger Logger { get; set; }
+        string Data { get; set; }
+        string Error { get; set; }
+        void ReadResult(object sender, OpenReadCompletedEventArgs e);
+        event EventHandler UpdateDataAvailable;
     }
 
-    public class AppVersionInfo:IAppVersionInfo
+    public class AppVersionInfo : IAppVersionInfo
     {
         public BinaryVersion Version { get; set; }
         public string VersionInfoURL { get; set; }
         public string InstallerURL { get; set; }
+    }
+
+    /// <summary>
+    /// The UpdateRequest class encapsulates a request for 
+    /// update information from the web.
+    /// </summary>
+    internal class UpdateRequest : IAsynchronousRequest
+    {
+        public ILogger Logger { get; set; }
+
+        /// <summary>
+        /// The data returned from the request.
+        /// </summary>
+        public string Data { get; set; }
+
+        /// <summary>
+        /// Any error information returned from the request.
+        /// </summary>
+        public string Error { get; set; }
+
+        /// <summary>
+        /// Event triggered when data is available from the request
+        /// </summary>
+        public event EventHandler UpdateDataAvailable;
+        protected virtual void OnUpdateDataAvailable(EventArgs e)
+        {
+            if (UpdateDataAvailable != null)
+                UpdateDataAvailable(this, e);
+        }
+
+        public UpdateRequest(ILogger log)
+        {
+            Logger = log;
+            Error = string.Empty;
+            Data = string.Empty;
+
+            var client = new WebClient();
+            client.OpenReadAsync(new Uri(Configurations.UpdateDownloadLocation));
+            client.OpenReadCompleted += ReadResult;
+        }
+
+        /// <summary>
+        /// Event handler for the web client's requestion completed event. Reads
+        /// the request's result information and subsequently triggers
+        /// the UpdateDataAvailable event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void ReadResult(object sender, OpenReadCompletedEventArgs e)
+        {
+            try
+            {
+                if (null == e || e.Error != null)
+                {
+                    Error = "Unspecified error";
+                    if (null != e && (null != e.Error))
+                        Error = e.Error.Message;
+                }
+
+                using (var sr = new StreamReader(e.Result))
+                {
+                    Data = sr.ReadToEnd();
+                }
+
+                OnUpdateDataAvailable(EventArgs.Empty);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
     }
 
     /// <summary>
@@ -65,10 +146,10 @@ namespace Dynamo.UpdateManager
     {
         #region Private Class Data Members
 
-        private bool _versionCheckInProgress = false;
-        private BinaryVersion _productVersion = null;
+        private bool _versionCheckInProgress;
+        private BinaryVersion _productVersion;
         private IAppVersionInfo _updateInfo;
-        private DynamoLogger logger = null;
+        private ILogger _logger;
 
         #endregion
 
@@ -83,11 +164,6 @@ namespace Dynamo.UpdateManager
         #endregion
 
         #region Public Class Properties
-
-        public UpdateManager()
-        {
-            logger = DynamoLogger.Instance;
-        }
 
         /// <summary>
         /// Obtains product version string
@@ -132,15 +208,33 @@ namespace Dynamo.UpdateManager
             {
                 _updateInfo = value;
                 RaisePropertyChanged("UpdateInfo");
-
-                if (_updateInfo != null)
-                {
-                    DownloadUpdatePackageAsynchronously(_updateInfo.InstallerURL, _updateInfo.Version); 
-                }
             }
         }
 
         #endregion
+
+        public UpdateManager()
+        {
+            _logger = DynamoLogger.Instance;
+            PropertyChanged += UpdateManager_PropertyChanged;
+        }
+
+        void UpdateManager_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "UpdateInfo":
+                    if (_updateInfo != null)
+                    {
+                        //HOLD for post 0.7.0
+                        //When the UpdateInfo property changes, this will be reflected in the UI
+                        //by the vsisibility of the download cloud. The most up to date version will
+                        //be downloaded asynchronously.
+                        //DownloadUpdatePackageAsynchronously(_updateInfo.InstallerURL, _updateInfo.Version);
+                    }
+                    break;
+            }
+        }
 
         #region Public Class Operational Methods
 
@@ -149,9 +243,9 @@ namespace Dynamo.UpdateManager
         /// This call raises UpdateFound event notification, if an update is
         /// found.
         /// </summary>
-        public void CheckForProductUpdate()
+        public void CheckForProductUpdate(IAsynchronousRequest request)
         {
-            logger.Log("RequestUpdateVersionInfo", "RequestUpdateVersionInfo");
+            _logger.Log("RequestUpdateVersionInfo", "RequestUpdateVersionInfo");
 
             try
             {
@@ -160,9 +254,7 @@ namespace Dynamo.UpdateManager
 
                 _versionCheckInProgress = true;
 
-                var client = new WebClient();
-                client.OpenReadAsync(new Uri(Configurations.UpdateDownloadLocation));
-                client.OpenReadCompleted += client_OpenReadCompleted;
+                request.UpdateDataAvailable += request_UpdateDataAvailable;
             }
             catch (Exception ex)
             {
@@ -171,79 +263,24 @@ namespace Dynamo.UpdateManager
             }
         }
 
-        public void QuitAndInstallUpdate()
-        {
-            string message = string.Format("An update is available for {0}.\n\n" +
-                "Click OK to close {0} and install\nClick CANCEL to cancel the update.", "Dynamo");
-
-            MessageBoxResult result = MessageBox.Show(message, "Install Dynamo", MessageBoxButton.OKCancel);
-            bool installUpdate = result == MessageBoxResult.OK;
-
-            logger.LogInfo("UpdateManager-QuitAndInstallUpdate",
-                (installUpdate ? "Install button clicked" : "Cancel button clicked"));
-
-            if (false != installUpdate)
-            {
-                if (this.ShutdownRequested != null)
-                    this.ShutdownRequested(this, new EventArgs());
-            }
-        }
-
-        public void HostApplicationBeginQuit(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(UpdateFileLocation))
-            {
-                if (File.Exists(UpdateFileLocation))
-                    Process.Start(UpdateFileLocation);
-            }
-        }
-
-        #endregion
-
-        #region Private Event Handlers
-
-        private void OnDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            _versionCheckInProgress = false;
-
-            if (e == null)
-                return;
-
-            string errorMessage = ((null == e.Error) ? "Successful" : e.Error.Message);
-            logger.LogInfo("UpdateManager-OnDownloadFileCompleted", errorMessage);
-
-            UpdateFileLocation = string.Empty;
-            if (e.Error == null)
-                UpdateFileLocation = (string)e.UserState;
-
-            if (null != UpdateDownloaded)
-                UpdateDownloaded(this, new UpdateDownloadedEventArgs(e.Error, UpdateFileLocation));
-        }
-
-        private void client_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
+        /// <summary>
+        /// Handler for the UpdateRequest's UpdateDataAvailable event.
+        /// Reads the request's data, and parses for available versions. 
+        /// If a more recent version is available, the UpdateInfo object 
+        /// will be set. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void request_UpdateDataAvailable(object sender, EventArgs e)
         {
             UpdateInfo = null;
 
-            if (null == e || e.Error != null)
-            {
-                string errorMessage = "Unspecified error";
-                if (null != e && (null != e.Error))
-                    errorMessage = e.Error.Message;
+            var request = sender as IAsynchronousRequest;
 
-                logger.LogError("UpdateManager-OnUpdateVersionRequested",
-                    string.Format("Request failure: {0}", errorMessage));
-
-                _versionCheckInProgress = false;
-                return;
-            }
-
-            string data;
-            using (var sr = new StreamReader(e.Result))
-            {
-                data = sr.ReadToEnd();
-            }
-
-            if (string.IsNullOrEmpty(data))
+            //If there is error data or the request data is empty
+            //bail out.
+            if (!string.IsNullOrEmpty(request.Error) || 
+                string.IsNullOrEmpty(request.Data))
             {
                 _versionCheckInProgress = false;
                 return;
@@ -252,7 +289,7 @@ namespace Dynamo.UpdateManager
             XNamespace ns = "http://s3.amazonaws.com/doc/2006-03-01/";
 
             XDocument doc = null;
-            using (TextReader td = new StringReader(data))
+            using (TextReader td = new StringReader(request.Data))
             {
                 doc = XDocument.Load(td);
             }
@@ -287,6 +324,55 @@ namespace Dynamo.UpdateManager
             }
 
             _versionCheckInProgress = false;
+        }
+
+        public void QuitAndInstallUpdate()
+        {
+            string message = string.Format("An update is available for {0}.\n\n" +
+                "Click OK to close {0} and install\nClick CANCEL to cancel the update.", "Dynamo");
+
+            MessageBoxResult result = MessageBox.Show(message, "Install Dynamo", MessageBoxButton.OKCancel);
+            bool installUpdate = result == MessageBoxResult.OK;
+
+            _logger.Log("UpdateManager-QuitAndInstallUpdate",
+                (installUpdate ? "Install button clicked" : "Cancel button clicked"));
+
+            if (installUpdate)
+            {
+                if (ShutdownRequested != null)
+                    ShutdownRequested(this, new EventArgs());
+            }
+        }
+
+        public void HostApplicationBeginQuit(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(UpdateFileLocation))
+            {
+                if (File.Exists(UpdateFileLocation))
+                    Process.Start(UpdateFileLocation);
+            }
+        }
+
+        #endregion
+
+        #region Private Event Handlers
+
+        private void OnDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            _versionCheckInProgress = false;
+
+            if (e == null)
+                return;
+
+            string errorMessage = ((null == e.Error) ? "Successful" : e.Error.Message);
+            _logger.Log("UpdateManager-OnDownloadFileCompleted", errorMessage);
+
+            UpdateFileLocation = string.Empty;
+            if (e.Error == null)
+                UpdateFileLocation = (string)e.UserState;
+
+            if (null != UpdateDownloaded)
+                UpdateDownloaded(this, new UpdateDownloadedEventArgs(e.Error, UpdateFileLocation));
         }
 
         #endregion
