@@ -2627,12 +2627,12 @@ namespace Dynamo.Nodes
 
                 while (index < lst.Count())
                 {
-                    var currentRow = (int) Math.Ceiling((index + 1)/(double)n);
+                    var currentRow = (int)Math.Ceiling((index + 1)/(double)n);
                     currList.Add(lst.ElementAt(index));
                     index += n + 1;
 
                     //ensure we are skipping a row to get the next index
-                    var nextRow = (int)Math.Ceiling((index + 1)/(double)n);
+                    var nextRow = (int) Math.Ceiling((index + 1)/(double)n);
                     if (nextRow > currentRow + 1 || nextRow == currentRow)
                         break;
                 }
@@ -3002,7 +3002,7 @@ namespace Dynamo.Nodes
         {
             int n = Convert.ToInt16(((Value.Number) args[1]).Item);
 
-            if (n<0)
+            if(n<0)
                 throw new Exception("Can't make a repeated list of a negative amount.");
 
             return Value.NewList(Enumerable.Repeat(args[0], n).ToList().ToFSharpList());
@@ -6237,7 +6237,7 @@ namespace Dynamo.Nodes
             data.ReconnectToPort(connector0, newInPort1);
             data.ReconnectToPort(connector1, newInPort0);
 
-            return migratedData;            
+            return migratedData;           
         }
     }
 
