@@ -4966,6 +4966,52 @@ namespace Dynamo.Nodes
 
         #endregion
 
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement original = data.MigratedNodes.ElementAt(0);
+
+            // Escape special characters for display in code block node.
+            string content = ExtensionMethods.GetChildNodeDoubleValue(original);
+
+            bool isValidContent = false;
+
+            try
+            {
+                var identifiers = new List<string>();
+                var doubleSequences = DoubleInput.ParseValue(content,
+                    new[] { '\n' }, identifiers, (x) => { return x; });
+
+                if (doubleSequences != null && (doubleSequences.Count == 1))
+                {
+                    IDoubleSequence sequence = doubleSequences[0];
+                    if (sequence is DoubleInput.Range) // A range expression.
+                        isValidContent = true;
+                    else if (sequence is DoubleInput.Sequence) // A sequence.
+                        isValidContent = true;
+                    else if (sequence is DoubleInput.OneNumber) // A number.
+                        isValidContent = true;
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            if (isValidContent == false)
+            {
+                // TODO(Ben): Convert into a dummy node here?
+            }
+            else
+            {
+                XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(original);
+                newNode.SetAttribute("CodeText", content);
+                migrationData.AppendNode(newNode);
+            }
+
+            return migrationData;
+        }
+
         public static List<IDoubleSequence> ParseValue(string text, char[] seps, List<string> identifiers, ConversionDelegate convertToken)
         {
             var idSet = new HashSet<string>(identifiers);
@@ -5831,7 +5877,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            Value = GetValueAttributeString(nodeElement);
+            Value = ExtensionMethods.GetChildNodeStringValue(nodeElement);
         }
 
         [NodeMigration(from: "0.5.3.0")]
@@ -5854,7 +5900,7 @@ namespace Dynamo.Nodes
             XmlElement original = data.MigratedNodes.ElementAt(0);
 
             // Escape special characters for display in code block node.
-            string content = GetValueAttributeString(original);
+            string content = ExtensionMethods.GetChildNodeStringValue(original);
             content = content.Replace("\r\n", "\\n");
             content = content.Replace("\t", "\\t");
             content = content.Replace("\"", "\\\"");
@@ -5866,20 +5912,6 @@ namespace Dynamo.Nodes
             return migrationData;
         }
 
-        private static string GetValueAttributeString(XmlNode nodeElement)
-        {
-            var stringTypeName = typeof(string).FullName;
-            var query = from XmlNode childNode in nodeElement.ChildNodes
-                        where childNode.Name.Equals(stringTypeName)
-                        from XmlAttribute attribute in childNode.Attributes
-                        where attribute.Name.Equals("value")
-                        select attribute;
-
-            foreach (XmlAttribute attribute in query)
-                return attribute.Value;
-
-            return string.Empty;
-        }
     }
 
     [NodeName("Directory")]
