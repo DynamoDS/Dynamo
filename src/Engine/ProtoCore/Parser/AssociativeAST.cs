@@ -157,6 +157,54 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
+    public class ReplicationGuideNode : AssociativeNode
+    {
+        public bool IsLongest { get; set; }
+        public AssociativeNode RepGuide { get; set; }
+
+        public ReplicationGuideNode() 
+        {
+            IsLongest = false;
+            RepGuide = null;
+        }
+
+        public ReplicationGuideNode(ReplicationGuideNode rhs)
+            : base(rhs)
+        {
+            if (null != rhs.RepGuide)
+            {
+                IsLongest = rhs.IsLongest;
+                RepGuide = NodeUtils.Clone(rhs.RepGuide);
+            }
+        }
+
+        public override bool Equals(object other)
+        {
+            var otherNode = other as ReplicationGuideNode;
+            if (null == otherNode)
+                return false;
+
+            return  IsLongest == otherNode.IsLongest
+                    && EqualityComparer<AssociativeNode>.Default.Equals(RepGuide, otherNode.RepGuide);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder buf = new StringBuilder();
+
+            if (RepGuide != null)
+            {
+                buf.Append(RepGuide.ToString());
+                if (IsLongest)
+                {
+                    buf.Append("L");
+                }
+            }
+            return buf.ToString();
+        }
+    }
+
+
     public class ArrayNameNode : AssociativeNode
     {
         public ArrayNode ArrayDimensions
@@ -833,7 +881,11 @@ namespace ProtoCore.AST.AssociativeAST
                 VarDeclNode newNode = new VarDeclNode(aNode);
                 Arguments.Add(newNode);
             }
+
+            IsVarArg = rhs.IsVarArg;
         }
+
+        public bool IsVarArg { get; set; }
 
         public List<VarDeclNode> Arguments { get; set; }
 
