@@ -185,18 +185,49 @@ namespace Dynamo.Nodes.Search
                 var endState = !item.IsExpanded;
                 if (item is BrowserInternalElement)
                 {
-                    foreach (var ele in ((BrowserInternalElement)item).Siblings)
-                    {
+                    BrowserInternalElement element = (BrowserInternalElement) item;
+                    foreach (var ele in element.Siblings)
                         ele.IsExpanded = false;
+
+                    //Walk down the tree expanding anything nested one layer deep
+                    //this can be removed when we have the hierachy implemented properly
+                    if (element.Items.Count == 1)
+                    {
+                        BrowserItem subElement = element.Items[0];
+                        
+                        while (subElement.Items.Count == 1)
+                        {
+                            subElement.IsExpanded = true;
+                            subElement = subElement.Items[0];
+                        }
+
+                        subElement.IsExpanded = true;
                     }
                 }
 
                 if (item is BrowserRootElement)
                 {
-                    foreach (var ele in ((BrowserRootElement)item).Siblings)
-                    {
+                    BrowserRootElement element = (BrowserRootElement)item;
+                    foreach (var ele in element.Siblings)
                         ele.IsExpanded = false;
+
+
+                    //Walk down the tree expanding anything nested one layer deep
+                    //this can be removed when we have the hierachy implemented properly
+                    if (element.Items.Count == 1)
+                    {
+                        BrowserItem subElement = element.Items[0];
+
+                        while (subElement.Items.Count == 1)
+                        {
+                            subElement.IsExpanded = true;
+                            subElement = subElement.Items[0];
+                        }
+
+                        subElement.IsExpanded = true;
+
                     }
+
                 }
                 item.IsExpanded = endState;
             }
