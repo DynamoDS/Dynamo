@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Moq;
 using NUnit.Framework;
@@ -8,7 +7,7 @@ namespace Dynamo.Tests
 {
     public class UpdateManagerTestNotUpToDate : DynamoUnitTest
     {
-        [Test]
+        /*[Test]
         public void IsUpdateAvailableReturnsTrueWhenNewerVersionAvaialable()
         {
             var updateRequest = new Mock<IUpdateRequest>();
@@ -58,7 +57,7 @@ namespace Dynamo.Tests
 
             var update = dynSettings.Controller.UpdateManager.IsUpdateAvailable(updateRequest.Object);
             Assert.False(update);
-        }
+        }*/
     }
 
     public static class UpdateManagerTestHelpers
