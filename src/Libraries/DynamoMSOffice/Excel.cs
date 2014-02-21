@@ -466,7 +466,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSOffice.dll", "Excel.WriteDataToExcelWorksheet",
-                "Excel.WriteDataToExcelWorksheet@var,int,int,var");
+                "Excel.WriteDataToExcelWorksheet@var,int,int,var[][]");
         }
     }
 

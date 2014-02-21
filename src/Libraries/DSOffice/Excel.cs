@@ -171,6 +171,8 @@ namespace DSOffice
 
         public static object ReadExcelFile(string path)
         {
+            ExcelInterop.ShowOnStartup = false;
+
             var workbookOpen = ExcelInterop.App.Workbooks.Cast<Workbook>()
                 .FirstOrDefault(e => e.FullName == path);
 
@@ -218,51 +220,21 @@ namespace DSOffice
         }
 
         public static object WriteDataToExcelWorksheet(
-            object worksheet, int startRow, int startColumn, object data)
+            object worksheet, int startRow, int startColumn, object[][] data)
         {
             Worksheet ws = (Worksheet)worksheet;
-
-            // clear existing elements for dynamic update
-            var usedRange = ws.UsedRange;
-            usedRange.Cells.ClearContents();
-
-            object[][] data2D;
-
-            if (!data.GetType().IsArray)
-            {
-                // single-valued data
-                data2D = new object[][]
-                {
-                    new object[] { data }
-                };
-            }
-            else if (!((object[])data)[0].GetType().IsArray)
-            {
-                // one-dimensional data
-                data2D = new object[][]
-                {
-                    (object[])data
-                };
-            }
-            else
-            {
-                // two-dimensional data
-                data2D = (object[][])data;
-            }
-
             startRow = Math.Max(0, startRow);
             startColumn = Math.Max(0, startColumn);
-            
             int numRows, numColumns;
-            
-            object[,] rangeData = ConvertToDimensionalArray(data2D, out numRows, out numColumns);
+
+            object[,] rangeData = ConvertToDimensionalArray(data, out numRows, out numColumns);
 
             var c1 = (Range)ws.Cells[startRow + 1, startColumn + 1];
             var c2 = (Range)ws.Cells[startRow + numRows, startColumn + numColumns];
             var range = ws.get_Range(c1, c2);
             range.Value = rangeData;
             
-            return worksheet;
+            return ws;
         }
 
         public static object AddExcelWorksheetToWorkbook(object workbook, string name)
@@ -288,7 +260,7 @@ namespace DSOffice
             else
                 wb.SaveAs(filename);
 
-            return workbook;
+            return wb;
         }
     }
 }
