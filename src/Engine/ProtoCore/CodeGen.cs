@@ -2342,8 +2342,11 @@ namespace ProtoCore
                 replicationGuides = replicationGuidesList.Count;
                 for (int n = 0; n < replicationGuides; ++n)
                 {
-                    Validity.Assert(replicationGuidesList[n] is ProtoCore.AST.AssociativeAST.IdentifierNode);
-                    ProtoCore.AST.AssociativeAST.IdentifierNode nodeGuide = replicationGuidesList[n] as ProtoCore.AST.AssociativeAST.IdentifierNode;
+                    Validity.Assert(replicationGuidesList[n] is ProtoCore.AST.AssociativeAST.ReplicationGuideNode);
+                    ProtoCore.AST.AssociativeAST.ReplicationGuideNode repGuideNode = replicationGuidesList[n] as ProtoCore.AST.AssociativeAST.ReplicationGuideNode;
+
+                    Validity.Assert(repGuideNode.RepGuide is ProtoCore.AST.AssociativeAST.IdentifierNode);
+                    ProtoCore.AST.AssociativeAST.IdentifierNode nodeGuide = repGuideNode.RepGuide as ProtoCore.AST.AssociativeAST.IdentifierNode;
 
                     EmitInstrConsole(ProtoCore.DSASM.kw.push, nodeGuide.Value);
                     StackValue opguide = StackValue.BuildInt(System.Convert.ToInt64(nodeGuide.Value));

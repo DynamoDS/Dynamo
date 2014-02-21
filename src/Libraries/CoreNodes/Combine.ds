@@ -1,3 +1,5 @@
+//import("DSCoreNodes.dll");
+
 def Combine(func, lists : var[]..[])
 {
     argList = Transpose(lists);
@@ -40,24 +42,24 @@ def Reduce(func, acc, lists : var[]..[])
 
 def Filter(list : var[]..[], predicate)
 {
-	return = [Imperative]
-	{
-		resultIn = {};
-		resultOut = {};
+    return = [Imperative]
+    {
+        resultIn = {};
+        resultOut = {};
 
-		for(item in list)
-		{
-			if (Evaluate(predicate, item))
-			{
-				resultIn[Count(resultIn)] = item;
-			}
-			else
-			{
-				resultOut[Count(resultOut)] = item;
-			}
-		}
-		return = { resultIn, resultOut };
-	};
+        for(item in list)
+        {
+            if (Evaluate(predicate, item))
+            {
+                resultIn[Count(resultIn)] = item;
+            }
+            else
+            {
+                resultOut[Count(resultOut)] = item;
+            }
+        }
+        return = { resultIn, resultOut };
+    };
 }
 
 def LaceShortest(func, lists : var[]..[])
@@ -207,24 +209,30 @@ def TrueForAll(predicate, list : var[]..[])
     };
 }
 
-def MinByKey(func, list : var[]..[])
+def __map(func, list : var[]..[])
 {
     return = [Imperative]
     {
-        
+        mapped = { };
+        for(item in list)
+        {
+            mapped[Count(mapped)] = Evaluate(func, { item });
+        }
+        return = mapped;
     };
+}
+
+def MinByKey(func, list : var[]..[])
+{
+    return = DSCore.Sorting.minByKey(list, __map(func, list));
 }
 
 def MaxByKey(func, list : var[]..[])
 {
+    return = DSCore.Sorting.maxByKey(list, __map(func, list));
 }
 
 def SortByKey(func, list : var[]..[])
 {
+    return = DSCore.Sorting.sortByKey(list, __map(func, list));
 }
-
-def SortByComparator(func, list : var[]..[])
-{
-}
-
-Print("a" == "b");

@@ -1,23 +1,23 @@
 def __flatten(list : var[]..[], amt : int, acc : var[]..[])
 {
-	return = [Imperative]
-	{
-		if (amt == 0)
-		{
-			for (item in list)
-			{
+    return = [Imperative]
+    {
+        if (amt == 0)
+        {
+            for (item in list)
+            {
                 acc[Count(acc)] = item;
-			}
-		}
-		else
-		{
-			for (item in list)
-			{
-				acc = __flatten(item, amt-1, acc);
-			}
-		}
-		return = acc;
-	};
+            }
+        }
+        else
+        {
+            for (item in list)
+            {
+                acc = __flatten(item, amt-1, acc);
+            }
+        }
+        return = acc;
+    };
 }
 
 def __flatten(item : var, amt : int, acc : var[]..[])
@@ -28,5 +28,5 @@ def __flatten(item : var, amt : int, acc : var[]..[])
 
 def FlattenByAmount(list : var[]..[], amt : int)
 {
-	return = __flatten(list, amt, {});
+    return = __flatten(list, amt, {});
 }

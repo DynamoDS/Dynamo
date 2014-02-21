@@ -58,14 +58,14 @@ namespace DSCore
             RegisterAllPorts();
         }
 
-        protected override string InputRootName
+        protected override string GetInputName(int index)
         {
-            get { return "list"; }
+            return "list" + index;
         }
 
-        protected override string TooltipRootName
+        protected override string GetInputTooltip(int index)
         {
-            get { return "List"; }
+            return "List" + index;
         }
 
         protected override void RemoveInput()
@@ -274,14 +274,14 @@ namespace DSCore
                 base.RemoveInput();
         }
 
-        protected override string InputRootName
+        protected override string GetInputName(int index)
         {
-            get { return "list"; }
+            return "list" + index;
         }
 
-        protected override string TooltipRootName
+        protected override string GetInputTooltip(int index)
         {
-            get { return "List"; }
+            return "List" + index;
         }
 
         protected override int GetInputIndex()

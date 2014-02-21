@@ -1,6 +1,6 @@
 class _FunctionObject
 {
-    def DoEvaluate(v:var[]..[])
+    def DoEvaluation(v:var[]..[])
     {
         return = null;
     }
@@ -40,13 +40,13 @@ class _SingleFunctionObject extends _FunctionObject
         }
     }
     
-    private def DoEvaluateImp(fptr : function, 
+    private def DoEvaluationImp(fptr : function, 
                               params : var[]..[])
     {
         return = Evaluate(fptr, params);
     }
     
-    def DoEvaluate(param: var[]..[])
+    def DoEvaluation(param: var[]..[])
     {      
         return = [Imperative]
         {           
@@ -67,7 +67,7 @@ class _SingleFunctionObject extends _FunctionObject
                 _nextParamPosition = GetNextEmptyParamPos(_hasParamAt);
                 if (_nextParamPosition < 0)
                 {
-                    return = DoEvaluateImp(__functionPointers, _params);
+                    return = DoEvaluationImp(__functionPointers, _params);
                 }
                 else
                 {
@@ -100,7 +100,7 @@ class _ComposedFunctionObject extends _FunctionObject
         __funcs = funcs;
     }
     
-    def DoEvaluate(param:var[]..[])
+    def DoEvaluation(param:var[]..[])
     {
         return = [Imperative]
         {
@@ -110,7 +110,7 @@ class _ComposedFunctionObject extends _FunctionObject
             for(_i in _count - 1.. 0)
             {
                 _f = __funcs[_i];
-                _v = _f.DoEvaluate(_v);
+                _v = _f.DoEvaluation(_v);
             }
             return = _v;
         }
@@ -119,7 +119,7 @@ class _ComposedFunctionObject extends _FunctionObject
 
 def Apply(functionObject: _FunctionObject, param: var[]..[])
 {
-    return = functionObject.DoEvaluate(param);
+    return = functionObject.DoEvaluation(param);
 }
 
 def Compose(funcs : _FunctionObject[])
@@ -127,23 +127,22 @@ def Compose(funcs : _FunctionObject[])
     return = _ComposedFunctionObject(funcs);
 }
 
-def MinimumItemByKey(functionObject: _FunctionObject, list: var[])
+def MinimumItemByKey(list: var[], keyProjector: _FunctionObject)
 {
     return = [Imperative]
     {
         _count = Count(list);
-
         if (_count == 0)
         {
             return = null;
         }
 
         _min = list[0];
-        _minProjection = functionObject.DoEvaluate(list[0]);
+        _minProjection = Apply(keyProjector, list[0]);
 
         for (_index in 1..(_count - 1))
         {
-            _currentProjection = functionObject.DoEvaluate(list[_index]);
+            _currentProjection = Apply(keyProjector, list[_index]);
             if (_currentProjection < _minProjection)
             {
                 _min = list[_index];
@@ -155,7 +154,7 @@ def MinimumItemByKey(functionObject: _FunctionObject, list: var[])
     }
 }
 
-def MaximumItemByKey(functionObject: _FunctionObject, list: var[])
+def MaximumItemByKey(list: var[], keyProjector: _FunctionObject)
 {
     return = [Imperative]
     {
@@ -171,11 +170,11 @@ def MaximumItemByKey(functionObject: _FunctionObject, list: var[])
         }
 
         _max = list[0];
-        _maxProjection = functionObject.DoEvaluate(list[0]);
+        _maxProjection = Apply(keyProjector, list[0]);
 
         for (_index in 1..(_count - 1))
         {
-            _currentProjection = functionObject.DoEvaluate(list[_index]);
+            _currentProjection = Apply(keyProjector, list[_index]);
             if (_currentProjection > _maxProjection)
             {
                 _max = list[_index];
@@ -187,7 +186,7 @@ def MaximumItemByKey(functionObject: _FunctionObject, list: var[])
     }
 }
 
-def Filter(functionObject: _FunctionObject, list: var[])
+def Filter(list: var[], predicate: _FunctionObject)
 {
     return = [Imperative]
     {
@@ -202,20 +201,227 @@ def Filter(functionObject: _FunctionObject, list: var[])
             return = {};
         }
 
-        _resultList = {};
-        _index = 0;
+        _filteredList = {};
+        _current = 0;
 
-        for (_i in 0..(_count - 1))
+        for (_index in 0..(_count - 1))
         {
-            _value = list[_i];
-            if (functionObject.DoEvaluate(_value))
+            _value = list[_index];
+            if (Apply(predicate, _value))
             {
-                _resultList[_index] = _value;
-                _index = _index + 1;
+                _filteredList[_current] = _value;
+                _current = _current + 1;
             }
         }
 
-        return = _resultList;
+        return = _filteredList;
+    }
+}
+
+def FilterOut(list: var[], predicate: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = {};
+        }
+
+        _filteredList = {};
+        _current = 0;
+
+        for (_index in 0..(_count - 1))
+        {
+            _value = list[_index];
+            if (!Apply(predicate, _value))
+            {
+                _filteredList[_current] = _value;
+                _current = _current + 1;
+            }
+        }
+
+        return = _filteredList;
+    }
+}
+
+def Map(list : var[], projector: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null)
+        {
+            return= null;
+        }
+        
+        _mappedList = { };
+        for (_index in 0..(Count(list) - 1))
+        {
+            _mappedList[_index] = Apply(projector, list[_index]);
+        }
+                
+        return = _mappedList;
+    }
+}
+
+def SortByKey(list : var[], keyProjector:_FunctionObject)
+{
+    return = [Imperative]
+    {
+        _count = Count(list);
+        if (_count < 2)
+        {
+            return = list;
+        }
+        
+        _pivotKey = Apply(keyProjector, list[0]);
+        // The position of last element that < privot
+        _last = 0;
+        
+        for (_current in 1..(_count - 1))
+        {
+            _currentKey = Apply(keyProjector, list[_current]);
+            if (_currentKey < _pivotKey)
+            {
+                _last = _last + 1;
+                
+                _temp = list[_current];
+                list[_current] = list[_last];
+                list[_last] = _temp;
+            }
+        }        
+        
+        _temp = list[_last];
+        list[_last] = list[0];
+        list[0] = _temp;
+        
+        _leftList = { };
+        if (_last >= 1)
+        {
+            _leftList = list[0.._last - 1];
+        }
+        
+        _rightList = { };
+        if (_last < _count - 1)
+        {
+            _rightList = list[(_last + 1)..(_count - 1)];
+        }
+        
+        return = Concat(Concat(SortByKey(_leftList, keyProjector), { list[_last] }), SortByKey(_rightList, keyProjector));
+    }
+}
+
+def SortByComparsion(list : var[], comparer:_FunctionObject)
+{
+    return = [Imperative]
+    {
+        _count = Count(list);
+        if (_count < 2)
+        {
+            return = list;
+        }
+        
+        _pivotComparer = Apply(comparer, list[0]);
+        // The position of last element that < privot
+        _last = 0;
+        
+        for (_current in 1..(_count - 1))
+        {
+            // comparer(pivot, current) >= 0 ?
+            if (Apply(_pivotComparer, list[_current]) > 0)
+            {
+                _last = _last + 1;
+                
+                _temp = list[_current];
+                list[_current] = list[_last];
+                list[_last] = _temp;
+            }
+        }        
+        
+        _temp = list[_last];
+        list[_last] = list[0];
+        list[0] = _temp;
+        
+        _leftList = { };
+        if (_last >= 1)
+        {
+            _leftList = list[0.._last - 1];
+        }
+        
+        _rightList = { };
+        if (_last < _count - 1)
+        {
+            _rightList = list[(_last + 1)..(_count - 1)];
+        }
+        
+        return = Concat(Concat(SortByComparsion(_leftList, comparer), { list[_last] }), SortByComparsion(_rightList, comparer));
+    }
+}
+
+def GroupByKey(list : var[], keyProjector: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null)
+        {
+            return= null;
+        }
+        
+        _groupedList = { };
+        for (_index in 0..(Count(list) - 1))
+        {
+            _key = Apply(keyProjector, list[_index]);
+            if (!ContainsKey(_groupedList, _key))
+            {
+                _groupedList[_key] = { };
+            }
+            
+            _subList = _groupedList[_key];
+            _groupedList[_key] = Concat(_subList, { list[_index] });
+        }
+        
+        _finalGroupedList = { };
+        _current = 0;
+        _keys = GetKeys(_groupedList);
+        
+        for (_index in 0..(Count(_keys) - 1))
+        {
+            _key = _keys[_index];
+            _subList = _groupedList[_keys[_index]];
+            
+            if (_subList!= null)
+            {
+                _finalGroupedList[_current] = _subList;
+                _current = _current + 1;
+            }
+        }
+        
+        return = _finalGroupedList;
+    }
+}
+
+def Reduce(list : var[], seed:var, accumulator : _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null)
+        {
+            return = seed;
+        }
+        
+        _acc = seed;
+        for (_index in 0..(Count(list) - 1))
+        {
+            _accFunc = Apply(accumulator, _acc);
+            _acc = Apply(_accFunc, list[_index]);
+        }
+        
+        return = _acc;
     }
 }
 
