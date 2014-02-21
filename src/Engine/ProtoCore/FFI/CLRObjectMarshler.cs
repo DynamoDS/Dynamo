@@ -1075,11 +1075,28 @@ namespace ProtoFFI
         }
 
         private readonly Dictionary<StackValue, Object> DSObjectMap = new Dictionary<StackValue, object>(new PointerValueComparer());
-        private readonly Dictionary<Object, StackValue> CLRObjectMap = new Dictionary<object, StackValue>();
+        private readonly Dictionary<Object, StackValue> CLRObjectMap = new Dictionary<object, StackValue>(new ReferenceEqualityComparer());
         private static readonly Dictionary<ProtoCore.Core, CLRObjectMarshler> mObjectMarshlers = new Dictionary<ProtoCore.Core, CLRObjectMarshler>();
         private static List<IDisposable> mPendingDisposables = new List<IDisposable>();
         private static readonly Object syncroot = new Object();
         #endregion
+    }
+
+    /// <summary>
+    /// This class compares two CLR objects. It is used in CLRObjectMap to 
+    /// avoid hash collision. 
+    /// </summary>
+    public class ReferenceEqualityComparer: IEqualityComparer<object>
+    {
+        public bool Equals(object x, object y)
+        {
+            return object.ReferenceEquals(x, y);
+        }
+
+        public int GetHashCode(object obj)
+        {
+            return obj.GetHashCode();
+        }
     }
 
     /// <summary>

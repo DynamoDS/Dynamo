@@ -107,6 +107,9 @@ namespace Dynamo.Models
                 typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
                 System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
 
+                if (type == null) // Error messages displayed, move on.
+                    continue;
+
                 // Migrate the given node into one or more new nodes.
                 NodeMigrationData migrationData = this.MigrateXmlNode(elNode, type, workspaceVersion);
                 migratedNodes.AddRange(migrationData.MigratedNodes);

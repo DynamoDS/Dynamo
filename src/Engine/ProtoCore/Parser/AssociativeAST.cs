@@ -881,7 +881,11 @@ namespace ProtoCore.AST.AssociativeAST
                 VarDeclNode newNode = new VarDeclNode(aNode);
                 Arguments.Add(newNode);
             }
+
+            IsVarArg = rhs.IsVarArg;
         }
+
+        public bool IsVarArg { get; set; }
 
         public List<VarDeclNode> Arguments { get; set; }
 

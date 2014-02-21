@@ -6,11 +6,10 @@ using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.UI;
 using Dynamo.Utilities;
 
-namespace DSCoreNodesUI
+namespace Dynamo.Nodes
 {
     public abstract class VariableInputNode : NodeModel, IWpfNode
     {
@@ -33,8 +32,8 @@ namespace DSCoreNodesUI
             view.inputGrid.Children.Add(wp);
         }
 
-        protected abstract string InputRootName { get; }
-        protected abstract string TooltipRootName { get; }
+        protected abstract string GetInputName(int index);
+        protected abstract string GetInputTooltip(int index);
 
         /// <summary>
         /// Fetches the index number to use for the next port.
@@ -65,7 +64,7 @@ namespace DSCoreNodesUI
         {
             var idx = GetInputIndex();
             InPortData.Add(
-                new PortData(InputRootName + idx, TooltipRootName + idx, typeof(object)));
+                new PortData(GetInputName(idx), GetInputTooltip(idx), typeof(object)));
         }
 
         /// <summary>
