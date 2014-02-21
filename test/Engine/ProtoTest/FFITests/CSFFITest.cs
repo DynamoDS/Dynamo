@@ -125,18 +125,37 @@ namespace ProtoFFITests
         [Test]
         public void TestProperty()
         {
-            String code =
+            /*String code =
             @"               import(Point from ""ProtoGeometry.dll"");               import(Line from ""ProtoGeometry.dll"");               p1 = Point.ByCoordinates(1,2,3);               p2 = Point.ByCoordinates(3,4,5);               l = Line.ByStartPointEndPoint(p1, p2);               success = l.StartPoint.IsCoincident(p1);            ";
             ValidationData[] data = { new ValidationData { ValueName = "success", ExpectedValue = true, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
+            ExecuteAndVerify(code, data);*/
+
+            String code =
+           @"              import(""FFITarget.dll"");              cf1 = ClassFunctionality.ClassFunctionality(1);              cf2 = ClassFunctionality.ClassFunctionality(2);              v = cf1.IntVal;              t = cf1.IsEqualTo(cf2);           ";
+           ValidationData[] data =
+               {
+                   new ValidationData { ValueName = "v", ExpectedValue = 1, BlockIndex = 0 },
+                   new ValidationData { ValueName = "t", ExpectedValue = false, BlockIndex = 0 }
+
+               };
+           ExecuteAndVerify(code, data);
+
         }
 
         [Test]
         public void TestStaticProperty()
         {
             String code =
-            @"               import(Vector from ""ProtoGeometry.dll"");               import(CoordinateSystem from ""ProtoGeometry.dll"");               v = Vector.ByCoordinates(1,0,0);               success = CoordinateSystem.WCS.XAxis.Equals(v);            ";
-            ValidationData[] data = { new ValidationData { ValueName = "success", ExpectedValue = true, BlockIndex = 0 } };
+           @"              import(""FFITarget.dll"");              cf1 = ClassFunctionality.ClassFunctionality(1);              cf2 = ClassFunctionality.ClassFunctionality(2);              ClassFunctionality.StaticProp = 42;              v = cf1.StaticProp;              t = cf2.StaticProp;              s = ClassFunctionality.StaticProp;           ";
+
+            ValidationData[] data =
+               {
+                   new ValidationData { ValueName = "v", ExpectedValue = 42, BlockIndex = 0 },
+                   new ValidationData { ValueName = "s", ExpectedValue = 42, BlockIndex = 0 },
+                   new ValidationData { ValueName = "t", ExpectedValue = 42, BlockIndex = 0 }
+
+               };
+            
             ExecuteAndVerify(code, data);
         }
 

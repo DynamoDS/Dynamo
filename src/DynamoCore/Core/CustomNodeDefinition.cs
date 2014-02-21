@@ -59,6 +59,8 @@ namespace Dynamo
             }
         }
 
+        public bool IsBeingLoaded { get; set; }
+
         private IEnumerable<CustomNodeDefinition> FindAllDependencies(HashSet<CustomNodeDefinition> dependencySet)
         {
             var query = DirectDependencies.Where(def => !dependencySet.Contains(def));
@@ -265,6 +267,11 @@ namespace Dynamo
         /// <param name="controller"></param>
         public void Compile(EngineController controller)
         {
+            // If we are loading dyf file, dont compile it until all nodes are loaded
+            // otherwise some intermediate function defintions will be created.
+            if (IsBeingLoaded)
+                return;
+
             #region Outputs and Inputs and UI updating
 
             #region Find outputs
