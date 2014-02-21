@@ -134,7 +134,7 @@ namespace Dynamo.UpdateManager
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Logger.Log("UpdateRequest", "The update request could not be completed.\n" + ex.Message);
             }
         }
     }
