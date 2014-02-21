@@ -332,12 +332,23 @@ namespace Dynamo
             Parameters = inputNodes.Select(x => x.InputSymbol);
 
             //Update existing function nodes which point to this function to match its changes
-            var instances =
-                dynSettings.Controller.DynamoModel.AllNodes.OfType<CustomNodeInstance>()
-                           .Where(el => el.Definition != null && el.Definition == this);
+            dynSettings.Controller.DynamoModel.AllNodes
+                        .OfType<Function>()
+                        .Where(el => el.Definition != null && el.Definition == this)
+                        .ToList()
+                        .ForEach(node =>
+                        {
+                            node.DisableReporting();
+                            node.SetInputs(Parameters);
+                            node.SetOutputs(ReturnKeys);
+                            node.RegisterAllPorts();
+                            node.EnableReporting();
+                        });
 
+            /*
             foreach (var node in instances)
                 node.ResyncWithDefinition();
+            */
 
             //Call OnSave for all saved elements
             foreach (var node in WorkspaceModel.Nodes)

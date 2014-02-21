@@ -13,6 +13,7 @@ using Dynamo.ViewModels;
 using NUnit.Framework;
 using Enum = System.Enum;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Utilities
 {
@@ -326,6 +327,23 @@ namespace Dynamo.Utilities
         public bool Contains(Guid guid)
         {
             return IsInitialized(guid) || NodeInfos.ContainsKey(guid);
+        }
+
+        /// <summary>
+        /// Recompile all custom nodes
+        /// </summary>
+        public void RecompileAllNodes(EngineController engine)
+        {
+            HashSet<Guid> compiledNodes = new HashSet<Guid>();
+
+            foreach (var idDefPair in LoadedCustomNodes)
+            {
+                if (!compiledNodes.Contains(idDefPair.Key))
+                {
+                    idDefPair.Value.Compile(engine);
+                    compiledNodes.Add(idDefPair.Key);
+                }
+            }
         }
 
         /// <summary>
