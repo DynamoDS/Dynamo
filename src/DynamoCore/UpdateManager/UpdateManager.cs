@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Windows;
 using Dynamo.UI;
 using System.Xml.Linq;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.UpdateManager
 {
@@ -36,56 +37,37 @@ namespace Dynamo.UpdateManager
         void CheckForProductUpdate();
         void QuitAndInstallUpdate();
         void HostApplicationBeginQuit(object sender, EventArgs e);
-        bool IsUpdateAvailable(IUpdateRequest request);
     }
 
-    public interface IUpdateRequest
+    public interface IAppVersionInfo
     {
-        string UpdateRequestData { get; set; }
+        BinaryVersion Version { get; set; }
+        string VersionInfoURL { get; set; }
+        string InstallerURL { get; set; }
     }
 
-    public class UpdateRequest : IUpdateRequest
+    public interface IAsynchronousRequest
     {
-        public string UpdateRequestData { get; set; }
 
-        public UpdateRequest()
-        {
-            try
-            {
-                var client = new WebClient();
-                var data = client.OpenRead(new Uri(Configurations.UpdateDownloadLocation));
-                using (var streamReader = new StreamReader(data))
-                {
-                    UpdateRequestData = streamReader.ReadToEnd();
-                }
-            }
-            catch(Exception ex)
-            {
-                DynamoLogger.Instance.LogError("UpdateRequest", string.Format("Could not complete product update request:\n {0}", ex.Message));
-                UpdateRequestData = string.Empty;
-            }
-            
-        }
+    }
+
+    public class AppVersionInfo:IAppVersionInfo
+    {
+        public BinaryVersion Version { get; set; }
+        public string VersionInfoURL { get; set; }
+        public string InstallerURL { get; set; }
     }
 
     /// <summary>
     /// This class provides services for product update management.
     /// </summary>
-    public class UpdateManager:IUpdateManager
+    public class UpdateManager: NotificationObject, IUpdateManager
     {
         #region Private Class Data Members
 
-        struct AppVersionInfo
-        {
-            public BinaryVersion Version;
-            public string VersionInfoURL;
-            public string InstallerURL;
-        }
-
-        private static UpdateManager instance = null;
-        private bool versionCheckInProgress = false;
-        private BinaryVersion productVersion = null;
-        private AppVersionInfo? updateInfo;
+        private bool _versionCheckInProgress = false;
+        private BinaryVersion _productVersion = null;
+        private IAppVersionInfo _updateInfo;
         private DynamoLogger logger = null;
 
         #endregion
@@ -114,14 +96,14 @@ namespace Dynamo.UpdateManager
         {
             get
             {
-                if (null == productVersion)
+                if (null == _productVersion)
                 {
                     string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
                     FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(executingAssemblyPathName);
-                    productVersion = BinaryVersion.FromString(myFileVersionInfo.FileVersion);
+                    _productVersion = BinaryVersion.FromString(myFileVersionInfo.FileVersion);
                 }
 
-                return productVersion;
+                return _productVersion;
             }
         }
 
@@ -132,11 +114,9 @@ namespace Dynamo.UpdateManager
         {
             get
             {
-                if (!updateInfo.HasValue)
-                {
-                    return ProductVersion;
-                }
-                return updateInfo.Value.Version;
+                return _updateInfo == null ? 
+                    ProductVersion : 
+                    _updateInfo.Version;
             }
         }
 
@@ -144,6 +124,21 @@ namespace Dynamo.UpdateManager
         /// Obtains downloaded update file location.
         /// </summary>
         public string UpdateFileLocation { get; private set; }
+
+        public IAppVersionInfo UpdateInfo
+        {
+            get { return _updateInfo; }
+            set
+            {
+                _updateInfo = value;
+                RaisePropertyChanged("UpdateInfo");
+
+                if (_updateInfo != null)
+                {
+                    DownloadUpdatePackageAsynchronously(_updateInfo.InstallerURL, _updateInfo.Version); 
+                }
+            }
+        }
 
         #endregion
 
@@ -158,9 +153,21 @@ namespace Dynamo.UpdateManager
         {
             logger.Log("RequestUpdateVersionInfo", "RequestUpdateVersionInfo");
 
-            if (IsUpdateAvailable(new UpdateRequest()))
+            try
             {
-                DownloadUpdatePackageAsynchronously(updateInfo.Value.InstallerURL, updateInfo.Value.Version);
+                if (_versionCheckInProgress)
+                    return;
+
+                _versionCheckInProgress = true;
+
+                var client = new WebClient();
+                client.OpenReadAsync(new Uri(Configurations.UpdateDownloadLocation));
+                client.OpenReadCompleted += client_OpenReadCompleted;
+            }
+            catch (Exception ex)
+            {
+                _versionCheckInProgress = false;
+                DynamoLogger.Instance.LogError("UpdateRequest", string.Format("Could not complete product update request:\n {0}", ex.Message));
             }
         }
 
@@ -195,91 +202,9 @@ namespace Dynamo.UpdateManager
 
         #region Private Event Handlers
 
-        private void OnUpdateVersionRequested(object sender, OpenReadCompletedEventArgs e)
+        private void OnDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            if (null == e || e.Error != null)
-            {
-                string errorMessage = "Unspecified error";
-                if (null != e && (null != e.Error))
-                    errorMessage = e.Error.Message;
-
-                logger.LogError("UpdateManager-OnUpdateVersionRequested",
-                    string.Format("Request failure: {0}", errorMessage));
-
-                versionCheckInProgress = false;
-                return;
-            }
-
-            
-
-            logger.LogInfo("UpdateManager-OnUpdateVersionRequested",
-                string.Format("Product Version: {0} Available Version : {1}",
-                ProductVersion.ToString(), updateInfo.Value.Version));
-
-            if (updateInfo.Value.Version <= this.ProductVersion)
-            {
-                versionCheckInProgress = false;
-                return; // Up-to-date, no download required.
-            }
-
-            DownloadUpdatePackageAsynchronously(updateInfo.Value.InstallerURL, updateInfo.Value.Version);
-        }
-
-        /// <summary>
-        /// Is a Dynamo update available.
-        /// </summary>
-        /// <returns>True if a newer version is available, and sets the update info. 
-        /// Returns false if no newer update is available, or nothing is returned from the request.</returns>
-        public bool IsUpdateAvailable(IUpdateRequest request)
-        {
-            if (string.IsNullOrEmpty(request.UpdateRequestData))
-                return false;
-
-            XNamespace ns = "http://s3.amazonaws.com/doc/2006-03-01/";
-
-            XDocument doc = null;
-            using (TextReader td = new StringReader(request.UpdateRequestData))
-            {
-                doc = XDocument.Load(td);
-            }
-            
-            var bucketresult = doc.Element(ns + "ListBucketResult");
-            var builds = bucketresult.Descendants(ns + "LastModified").
-                OrderByDescending(x => DateTime.Parse(x.Value)).
-                Where(x => x.Parent.Value.Contains("DynamoInstall")).
-                Select(x => x.Parent);
-
-            var xElements = builds as XElement[] ?? builds.ToArray();
-            if (!xElements.Any())
-            {
-                return false;
-            }
-
-            var latestBuild = xElements.First();
-            var latestBuildFileName = latestBuild.Element(ns + "Key").Value;
-
-            var latestBuildDownloadUrl = Path.Combine(Configurations.UpdateDownloadLocation, latestBuildFileName);
-            var latestBuildVersion = BinaryVersion.FromString(Path.GetFileNameWithoutExtension(latestBuildFileName).Remove(0, 13));
-
-            if (latestBuildVersion > ProductVersion)
-            {
-                updateInfo = new AppVersionInfo()
-                {
-                    Version = latestBuildVersion,
-                    VersionInfoURL = Configurations.UpdateDownloadLocation,
-                    InstallerURL = latestBuildDownloadUrl
-                };
-                return true;
-            }
-
-            updateInfo = null;
-
-            return false;
-        }
-
-        private void OnDownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
-        {
-            versionCheckInProgress = false;
+            _versionCheckInProgress = false;
 
             if (e == null)
                 return;
@@ -293,6 +218,75 @@ namespace Dynamo.UpdateManager
 
             if (null != UpdateDownloaded)
                 UpdateDownloaded(this, new UpdateDownloadedEventArgs(e.Error, UpdateFileLocation));
+        }
+
+        private void client_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
+        {
+            UpdateInfo = null;
+
+            if (null == e || e.Error != null)
+            {
+                string errorMessage = "Unspecified error";
+                if (null != e && (null != e.Error))
+                    errorMessage = e.Error.Message;
+
+                logger.LogError("UpdateManager-OnUpdateVersionRequested",
+                    string.Format("Request failure: {0}", errorMessage));
+
+                _versionCheckInProgress = false;
+                return;
+            }
+
+            string data;
+            using (var sr = new StreamReader(e.Result))
+            {
+                data = sr.ReadToEnd();
+            }
+
+            if (string.IsNullOrEmpty(data))
+            {
+                _versionCheckInProgress = false;
+                return;
+            }
+
+            XNamespace ns = "http://s3.amazonaws.com/doc/2006-03-01/";
+
+            XDocument doc = null;
+            using (TextReader td = new StringReader(data))
+            {
+                doc = XDocument.Load(td);
+            }
+
+            var bucketresult = doc.Element(ns + "ListBucketResult");
+            var builds = bucketresult.Descendants(ns + "LastModified").
+                OrderByDescending(x => DateTime.Parse(x.Value)).
+                Where(x => x.Parent.Value.Contains("DynamoInstall")).
+                Select(x => x.Parent);
+
+            var xElements = builds as XElement[] ?? builds.ToArray();
+            if (!xElements.Any())
+            {
+                _versionCheckInProgress = false;
+                return;
+            }
+
+            var latestBuild = xElements.First();
+            var latestBuildFileName = latestBuild.Element(ns + "Key").Value;
+
+            var latestBuildDownloadUrl = Path.Combine(Configurations.UpdateDownloadLocation, latestBuildFileName);
+            var latestBuildVersion = BinaryVersion.FromString(Path.GetFileNameWithoutExtension(latestBuildFileName).Remove(0, 13));
+
+            if (latestBuildVersion > ProductVersion)
+            {
+                UpdateInfo = new AppVersionInfo()
+                {
+                    Version = latestBuildVersion,
+                    VersionInfoURL = Configurations.UpdateDownloadLocation,
+                    InstallerURL = latestBuildDownloadUrl
+                };
+            }
+
+            _versionCheckInProgress = false;
         }
 
         #endregion
@@ -310,7 +304,7 @@ namespace Dynamo.UpdateManager
         {
             if (string.IsNullOrEmpty(url) || (null == version))
             {
-                versionCheckInProgress = false;
+                _versionCheckInProgress = false;
                 return false;
             }
 
@@ -328,7 +322,7 @@ namespace Dynamo.UpdateManager
             }
             catch (Exception)
             {
-                versionCheckInProgress = false;
+                _versionCheckInProgress = false;
                 return false;
             }
 
