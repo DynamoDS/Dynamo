@@ -1149,7 +1149,7 @@ namespace Dynamo.Nodes
             var list = ((Value.List) args[0]).Item;
             var mask = ((Value.List) args[1]).Item;
 
-            var zipped = list.Zip(mask, (i, m) => new {Item = i, Mask = FScheme.ValueToBool(m) });
+            var zipped = list.Zip(mask, (i, m) => new {Item = i, Mask = FScheme.ValueToBool(m)});
 
             var inList = new List<Value>();
             var outList = new List<Value>();
@@ -2627,12 +2627,12 @@ namespace Dynamo.Nodes
 
                 while (index < lst.Count())
                 {
-                    var currentRow = (int) Math.Ceiling((index + 1) / (double)n);
+                    var currentRow = (int) Math.Ceiling((index + 1)/(double)n);
                     currList.Add(lst.ElementAt(index));
                     index += n + 1;
 
                     //ensure we are skipping a row to get the next index
-                    var nextRow = (int)Math.Ceiling((index + 1) / (double)n);
+                    var nextRow = (int)Math.Ceiling((index + 1)/(double)n);
                     if (nextRow > currentRow + 1 || nextRow == currentRow)
                         break;
                 }
@@ -3876,7 +3876,7 @@ namespace Dynamo.Nodes
         private static System.Random random = new System.Random();
         public override Value Evaluate(FSharpList<Value> args)
         {
-            random = new System.Random((int) ( (Value.Number) args[0] ).Item);
+            random = new System.Random((int) ( (Value.Number) args[0] ).Item );
             return Value.NewNumber(random.NextDouble());
         }
 
@@ -5129,8 +5129,8 @@ namespace Dynamo.Nodes
                     ? new List<AssociativeNode> { _parsed[0].GetAstNode(paramDict) }
                     : _parsed.Select(x => x.GetAstNode(paramDict)).ToList();
 
-                rhs = newInputs.Count == 1
-                        ? newInputs[0]
+                rhs = newInputs.Count == 1 
+                        ? newInputs[0] 
                         : AstFactory.BuildExprList(newInputs);
             }
 
@@ -5151,7 +5151,7 @@ namespace Dynamo.Nodes
             private readonly IDoubleInputToken _token;
             private readonly double? _result;
             private readonly ConversionDelegate _convert;
-
+ 
             public OneNumber(IDoubleInputToken t, ConversionDelegate convertToken)
             {
                 _token = t;
@@ -5315,8 +5315,8 @@ namespace Dynamo.Nodes
 
                 var countingUp = start < end;
 
-                return countingUp
-                    ? FScheme.Range(start, step, end)
+                return countingUp 
+                    ? FScheme.Range(start, step, end) 
                     : FScheme.Range(end, step, start).Reverse();
             }
 
@@ -5366,7 +5366,7 @@ namespace Dynamo.Nodes
 
         private class ApproxRange : Range
         {
-            public ApproxRange(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end, ConversionDelegate convertToken)
+            public ApproxRange(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end, ConversionDelegate convertToken) 
                 : base(start, step, end, convertToken)
             { }
 
@@ -5380,13 +5380,13 @@ namespace Dynamo.Nodes
                 var stepnum = 1;
                 if (dist != 0)
                 {
-                    var ceil = (int)Math.Ceiling(dist / a);
-                    var floor = (int)Math.Floor(dist / a);
+                    var ceil = (int)Math.Ceiling(dist/a);
+                    var floor = (int)Math.Floor(dist/a);
 
                     if (ceil != 0 && floor != 0)
                     {
-                        var ceilApprox = Math.Abs(dist / ceil - a);
-                        var floorApprox = Math.Abs(dist / floor - a);
+                        var ceilApprox = Math.Abs(dist/ceil - a);
+                        var floorApprox = Math.Abs(dist/floor - a);
                         stepnum = ceilApprox < floorApprox ? ceil : floor;
                     }
                 }
@@ -5475,7 +5475,7 @@ namespace Dynamo.Nodes
         public DoubleSliderInput()
         {
             RegisterAllPorts();
-
+            
             Min = 0.0;
             Max = 100.0;
             Value = 50.0;
@@ -5495,7 +5495,7 @@ namespace Dynamo.Nodes
                 Debug.WriteLine(string.Format("Min:{0},Max:{1},Value:{2}", Min.ToString(CultureInfo.InvariantCulture), Max.ToString(CultureInfo.InvariantCulture), Value.ToString(CultureInfo.InvariantCulture)));
             }
         }
-
+        
         public double Max
         {
             get { return max; }
@@ -5521,7 +5521,7 @@ namespace Dynamo.Nodes
                     Value = min;
 
                 RaisePropertyChanged("Min");
-            }
+            } 
         }
 
         protected override double DeserializeValue(string val)
@@ -5880,7 +5880,7 @@ namespace Dynamo.Nodes
             Value = ExtensionMethods.GetChildNodeStringValue(nodeElement);
         }
 
-        [NodeMigration(from: "0.5.3.0")]
+        [NodeMigration(from:"0.5.3.0")]
         public static void Migrate_0530_to_0600(XmlNode nodeElement)
         {
             var query = from XmlNode subNode in nodeElement.ChildNodes
@@ -5938,7 +5938,7 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(MigrationManager.CloneAndChangeType(
                 data.MigratedNodes.ElementAt(0), "DSCore.File.Directory"));
 
-            return migrationData;
+            return migrationData;            
 
         }
     }
@@ -5953,7 +5953,7 @@ namespace Dynamo.Nodes
         public StringFilename()
         {
             RegisterAllPorts();
-
+            
             Value = "";
         }
 
@@ -5989,7 +5989,7 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(MigrationManager.CloneAndChangeType(
                 data.MigratedNodes.ElementAt(0), "DSCore.File.Filename"));
 
-            return migrationData;
+            return migrationData;            
         }
     }
 
@@ -6143,7 +6143,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewString(NodeModel.PrintValue(args[0], 0, 10000, 0, 25));
+            return Value.NewString(NodeModel.PrintValue(args[0],0,10000,0, 25));
         }
 
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
@@ -6237,7 +6237,7 @@ namespace Dynamo.Nodes
             data.ReconnectToPort(connector0, newInPort1);
             data.ReconnectToPort(connector1, newInPort0);
 
-            return migratedData;
+            return migratedData;            
         }
     }
 
@@ -6308,7 +6308,7 @@ namespace Dynamo.Nodes
     /// <summary>
     /// A class used to store a name and associated item for a drop down menu
     /// </summary>
-    public class DynamoDropDownItem : IComparable
+    public class DynamoDropDownItem:IComparable
     {
         public string Name { get; set; }
         public object Item { get; set; }
