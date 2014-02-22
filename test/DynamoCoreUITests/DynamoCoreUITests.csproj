@@ -93,7 +93,7 @@
       <Project>{01de9b06-0bcb-4d8a-862e-e8170f5d6b4f}</Project>
       <Name>IronPythonUI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoElementsTests\DynamoCoreTests.csproj">
+    <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
       <Name>DynamoCoreTests</Name>
     </ProjectReference>
@@ -105,7 +105,7 @@
       <Project>{2B0F2800-6F62-4869-9074-088C5F6DCCA2}</Project>
       <Name>DynamoPython</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoUnits\Units.csproj">
+    <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>DynamoUnits</Name>
     </ProjectReference>
@@ -117,7 +117,7 @@
       <Project>{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}</Project>
       <Name>Watch3D</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FSchemeInterop\FSchemeInterop2012.csproj">
+    <ProjectReference Include="..\..\src\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
       <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
       <Name>FSchemeInterop2012</Name>
     </ProjectReference>

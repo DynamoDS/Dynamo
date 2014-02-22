@@ -45,7 +45,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoUtilities", "DynamoUt
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FScheme.2012", "Legacy\FScheme\FScheme.2012.fsproj", "{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSchemeInterop2012", "FSchemeInterop\FSchemeInterop2012.csproj", "{126C6420-C7A2-43B0-8B08-206C6C4C1348}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSchemeInterop2012", "Legacy\FSchemeInterop\FSchemeInterop2012.csproj", "{126C6420-C7A2-43B0-8B08-206C6C4C1348}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F4D44BC0-32CF-4E58-AD2A-F19CE1450B00}"
 EndProject
@@ -63,9 +63,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodesTests", "..\test\Libraries\CoreNodesTests\CoreNodesTests.csproj", "{09EC17AF-24D2-4542-A913-0C27AE345C18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreTests", "DynamoElementsTests\DynamoCoreTests.csproj", "{472084ED-1067-4B2C-8737-3839A6143EB2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreTests", "..\test\DynamoCoreTests\DynamoCoreTests.csproj", "{472084ED-1067-4B2C-8737-3839A6143EB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreUITests", "DynamoCoreUITests\DynamoCoreUITests.csproj", "{7DD8077A-201E-4C56-96C5-3C901A51BDF3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreUITests", "..\test\DynamoCoreUITests\DynamoCoreUITests.csproj", "{7DD8077A-201E-4C56-96C5-3C901A51BDF3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonTests", "..\test\Libraries\DynamoPythonTests\IronPythonTests.csproj", "{773988FE-EDF6-45CB-A63F-482955EB3553}"
 EndProject
@@ -93,9 +93,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Python", "Libraries\DynamoP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoTestConsoleRunner", "..\test\Engine\ProtoTestConsoleRunner\ProtoTestConsoleRunner.csproj", "{672BF8EC-1116-49F6-B253-DFCE5CF7D4C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevitTests", "DynamoRevitTests\DynamoRevitTests.csproj", "{9ADADC68-36A3-4A21-9B54-298154A88720}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevitTests", "..\test\Libraries\Revit\DynamoRevitTests\DynamoRevitTests.csproj", "{9ADADC68-36A3-4A21-9B54-298154A88720}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Units", "DynamoUnits\Units.csproj", "{6E0A079E-85F1-45A1-AD5B-9855E4344809}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Units", "Libraries\DynamoUnits\Units.csproj", "{6E0A079E-85F1-45A1-AD5B-9855E4344809}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

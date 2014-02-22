@@ -119,7 +119,7 @@
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FSchemeInterop\FSchemeInterop2012.csproj">
+    <ProjectReference Include="..\..\src\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
       <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
       <Name>FSchemeInterop2012</Name>
     </ProjectReference>
@@ -127,7 +127,7 @@
       <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
       <Name>FScheme.2012</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoUnits\Units.csproj">
+    <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
     </ProjectReference>
