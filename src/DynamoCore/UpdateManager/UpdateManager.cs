@@ -246,18 +246,10 @@ namespace Dynamo.UpdateManager
         {
             _logger.Log("RequestUpdateVersionInfo", "RequestUpdateVersionInfo");
 
-            try
-            {
-                if (_versionCheckInProgress)
-                    return;
+            if (_versionCheckInProgress)
+                return;
 
-                _versionCheckInProgress = true;
-            }
-            catch (Exception ex)
-            {
-                _versionCheckInProgress = false;
-                DynamoLogger.Instance.LogError("UpdateRequest", string.Format("Could not complete product update request:\n {0}", ex.Message));
-            }
+            _versionCheckInProgress = true;
         }
 
         /// <summary>
