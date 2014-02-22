@@ -63,15 +63,6 @@ namespace Dynamo.Tests
 
             Assert.Null(Controller.UpdateManager.UpdateInfo);
         }
-
-        [Test]
-        public void UpdateCheckDoesNotBarfWhenGivenABadUrl()
-        {
-            Controller.UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri("http://asdfasdfsasdf.com"), DynamoLogger.Instance, Controller.UpdateManager.UpdateDataAvailable));
-
-            Assert.Null(Controller.UpdateManager.UpdateInfo);
-            Assert.False(Controller.UpdateManager.IsVersionCheckInProgress());
-        }
     }
 
     internal static class UpdateManagerTestHelpers
