@@ -13,7 +13,7 @@ namespace Dynamo.Tests
     public class UpdateManagerTestNotUpToDate : DynamoUnitTest
     {
         [Test]
-        public void IsUpdateAvailableReturnsTrueWhenNewerVersionAvaialable()
+        public void UpdateCheckReturnsInfoWhenNewerVersionAvaialable()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.updateAvailableData);
@@ -23,7 +23,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void IsUpdateAvailableReturnsCorrectVersionWhenAvailable()
+        public void UpdateCheckReturnsCorrectVersionWhenAvailable()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.updateAvailableData);
@@ -34,7 +34,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void IsUpdateAvailableReturnsFalseWhenNoNewerVersionAvailable()
+        public void UpdateCheckReturnsNothingWhenNoNewerVersionAvailable()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.noUpdateAvailableData);
@@ -44,7 +44,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void IsUpdateAvailableReturnsFalseWhenNoVersionsAvailable()
+        public void UpdateCheckReturnsNothingWhenNoVersionsAvailable()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.noData);
@@ -54,7 +54,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void IsUpdateAvaialableReturnsFalseWhenNoConnected()
+        public void UpdateCheckReturnsNothingWhenNotConnected()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(string.Empty);
@@ -62,6 +62,15 @@ namespace Dynamo.Tests
             Controller.UpdateManager.CheckForProductUpdate(updateRequest.Object);
 
             Assert.Null(Controller.UpdateManager.UpdateInfo);
+        }
+
+        [Test]
+        public void UpdateCheckDoesNotBarfWhenGivenABadUrl()
+        {
+            Controller.UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri("http://asdfasdfsasdf.com"), DynamoLogger.Instance, Controller.UpdateManager.UpdateDataAvailable));
+
+            Assert.Null(Controller.UpdateManager.UpdateInfo);
+            Assert.False(Controller.UpdateManager.IsVersionCheckInProgress());
         }
     }
 
