@@ -415,7 +415,7 @@ limitations under the License.
       <Project>{a4794476-7d0e-41c0-ad83-4ab929c0a46c}</Project>
       <Name>ProtoScript</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FSchemeInterop\FSchemeInterop2012.csproj">
+    <ProjectReference Include="..\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
       <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
       <Name>FSchemeInterop2012</Name>
     </ProjectReference>
@@ -428,7 +428,7 @@ limitations under the License.
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoUnits\Units.csproj">
+    <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
     </ProjectReference>

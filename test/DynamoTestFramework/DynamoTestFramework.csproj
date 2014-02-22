@@ -93,7 +93,7 @@
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\FSchemeInterop\FSchemeInterop2012.csproj">
+    <ProjectReference Include="..\..\src\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
       <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
       <Name>FSchemeInterop2012</Name>
     </ProjectReference>
@@ -101,7 +101,7 @@
       <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>
       <Name>RevitServices</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\DynamoUnits\Units.csproj">
+    <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>DynamoUnits</Name>
     </ProjectReference>

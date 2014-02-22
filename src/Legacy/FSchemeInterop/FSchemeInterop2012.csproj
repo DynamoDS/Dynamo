@@ -65,11 +65,11 @@ limitations under the License.
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DynamoUnits\Units.csproj">
+    <ProjectReference Include="..\..\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Legacy\FScheme\FScheme.2012.fsproj">
+    <ProjectReference Include="..\FScheme\FScheme.2012.fsproj">
       <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
       <Name>FScheme.2012</Name>
     </ProjectReference>
