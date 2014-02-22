@@ -129,7 +129,9 @@ limitations under the License.
   <ItemGroup>
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="Nodes\CustomNodeInstance.cs" />
-    <Compile Include="Interfaces\IDynamoPreferences.cs" />
+    <Compile Include="Interfaces\ILogger.cs" />
+    <Compile Include="Interfaces\IPreferences.cs" />
+    <Compile Include="Interfaces\IWatchHandler.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
@@ -199,6 +201,7 @@ limitations under the License.
     <Compile Include="UpdateManager\BinaryVersion.cs" />
     <Compile Include="UpdateManager\UpdateManager.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
+    <Compile Include="Utilities\MathUtils.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="ViewModels\EndlessGridViewModel.cs" />
     <Compile Include="ViewModels\InfoBubbleViewModel.cs" />
@@ -412,7 +415,7 @@ limitations under the License.
       <Project>{a4794476-7d0e-41c0-ad83-4ab929c0a46c}</Project>
       <Name>ProtoScript</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
+    <ProjectReference Include="..\FSchemeInterop\FSchemeInterop2012.csproj">
       <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
       <Name>FSchemeInterop2012</Name>
     </ProjectReference>
@@ -425,7 +428,7 @@ limitations under the License.
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
+    <ProjectReference Include="..\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
     </ProjectReference>

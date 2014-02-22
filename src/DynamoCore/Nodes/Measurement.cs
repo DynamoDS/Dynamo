@@ -138,7 +138,7 @@ namespace Dynamo.Nodes
 
             ArgumentLacing = LacingStrategy.Longest;
 
-            dynSettings.Controller.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+            ((PreferenceSettings)dynSettings.Controller.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
         }
 
         public virtual void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
