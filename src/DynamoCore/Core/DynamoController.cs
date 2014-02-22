@@ -243,7 +243,7 @@ namespace Dynamo
             UpdateManager = updateManager;
             UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
             UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
-            UpdateManager.CheckForProductUpdate(new UpdateRequest(DynamoLogger.Instance));
+            UpdateManager.CheckForProductUpdate(new UpdateRequest(DynamoLogger.Instance, UpdateManager.UpdateDataAvailable));
 
             WatchHandler = watchHandler;
 
