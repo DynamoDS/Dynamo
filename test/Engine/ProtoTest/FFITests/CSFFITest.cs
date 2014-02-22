@@ -1049,15 +1049,6 @@ z1 = z.a;";
         }
 
         [Test]
-        public void TestGeometryExample()
-        {
-            string code =
-                @"import(""ProtoGeometry.dll"");                  import(""GeometryExample.dll"");                //Create origin for symbol                origin = Point.ByCoordinates(3,3,0);                //Create symbol at the origin                sym = FixitySymbol.FromOriginSize(origin, 5, FixityType.Arrow);                sym.Color = Color.Red;                sym = sym.Move(-3,-3,3);                color = sym.Color.RedValue;                neworigin = Point.ByCoordinates(0,0,3);                success = neworigin.Equals(sym.Origin);";
-            ValidationData[] data = { new ValidationData { ValueName = "color", ExpectedValue = (Int64)255, BlockIndex = 0 },                                      new ValidationData { ValueName = "success", ExpectedValue = true, BlockIndex = 0} };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
         public void TestColorComparison()
         {
             string code =
