@@ -13,6 +13,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
+using Dynamo.UI;
 using Dynamo.Units;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
@@ -243,7 +244,7 @@ namespace Dynamo
             UpdateManager = updateManager;
             UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
             UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
-            UpdateManager.CheckForProductUpdate(new UpdateRequest(DynamoLogger.Instance, UpdateManager.UpdateDataAvailable));
+            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation),DynamoLogger.Instance, UpdateManager.UpdateDataAvailable));
 
             WatchHandler = watchHandler;
 

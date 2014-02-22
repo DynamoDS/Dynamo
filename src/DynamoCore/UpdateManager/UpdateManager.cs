@@ -44,6 +44,7 @@ namespace Dynamo.UpdateManager
         void QuitAndInstallUpdate();
         void HostApplicationBeginQuit(object sender, EventArgs e);
         void UpdateDataAvailable(IAsynchronousRequest request);
+        bool IsVersionCheckInProgress();
     }
 
     /// <summary>
@@ -66,6 +67,7 @@ namespace Dynamo.UpdateManager
         ILogger Logger { get; set; }
         string Data { get; set; }
         string Error { get; set; }
+        Uri Path { get; set; }
         Action<IAsynchronousRequest>  OnRequestCompleted { get; set; }
     }
 
@@ -82,6 +84,10 @@ namespace Dynamo.UpdateManager
     /// </summary>
     internal class UpdateRequest : IAsynchronousRequest
     {
+        /// <summary>
+        /// An action to be invoked upon completion of the request.
+        /// This action is invoked regardless of the success of the request.
+        /// </summary>
         public Action<IAsynchronousRequest> OnRequestCompleted { get; set; }
 
         public ILogger Logger { get; set; }
@@ -96,22 +102,37 @@ namespace Dynamo.UpdateManager
         /// </summary>
         public string Error { get; set; }
 
+        public Uri Path { get; set; }
+
         /// <summary>
         /// The constructor.
         /// </summary>
         /// <param name="log">A logger to which to write info.</param>
         /// <param name="onRequestCompleted">A callback which is invoked when data is returned from the request.</param>
-        public UpdateRequest(ILogger log, Action<IAsynchronousRequest> onRequestCompleted)
+        public UpdateRequest(Uri path, ILogger log, Action<IAsynchronousRequest> onRequestCompleted)
         {
             OnRequestCompleted = onRequestCompleted;
 
             Logger = log;
             Error = string.Empty;
             Data = string.Empty;
+            Path = path;
 
-            var client = new WebClient();
-            client.OpenReadAsync(new Uri(Configurations.UpdateDownloadLocation));
-            client.OpenReadCompleted += ReadResult;
+            InitiateRequest(path);
+        }
+
+        private void InitiateRequest(Uri path)
+        {
+            try
+            {
+                var client = new WebClient();
+                client.OpenReadAsync(path);
+                client.OpenReadCompleted += ReadResult;
+            }
+            catch
+            {
+                OnRequestCompleted.Invoke(this);
+            }
         }
 
         /// <summary>
@@ -136,13 +157,18 @@ namespace Dynamo.UpdateManager
                 {
                     Data = sr.ReadToEnd();
                 }
-
-                OnRequestCompleted.Invoke(this);
             }
             catch (Exception ex)
             {
+                Error = string.Empty;
+                Data = string.Empty;
+
                 Logger.Log("UpdateRequest", "The update request could not be completed.\n" + ex.Message);
             }
+
+            //regardless of the success of the above logic
+            //invoke the completion callback
+            OnRequestCompleted.Invoke(this);
         }
     }
 
@@ -345,6 +371,11 @@ namespace Dynamo.UpdateManager
                 if (File.Exists(UpdateFileLocation))
                     Process.Start(UpdateFileLocation);
             }
+        }
+
+        public bool IsVersionCheckInProgress()
+        {
+            return _versionCheckInProgress;
         }
 
         #endregion
