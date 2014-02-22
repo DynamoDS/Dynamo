@@ -39,6 +39,7 @@ namespace Dynamo.UpdateManager
         void CheckForProductUpdate(IAsynchronousRequest request);
         void QuitAndInstallUpdate();
         void HostApplicationBeginQuit(object sender, EventArgs e);
+        void UpdateDataAvailable(IAsynchronousRequest request);
     }
 
     public interface IAppVersionInfo
@@ -57,8 +58,7 @@ namespace Dynamo.UpdateManager
         ILogger Logger { get; set; }
         string Data { get; set; }
         string Error { get; set; }
-        void ReadResult(object sender, OpenReadCompletedEventArgs e);
-        event EventHandler UpdateDataAvailable;
+        Action<IAsynchronousRequest>  OnRequestCompleted { get; set; }
     }
 
     public class AppVersionInfo : IAppVersionInfo
@@ -74,6 +74,8 @@ namespace Dynamo.UpdateManager
     /// </summary>
     internal class UpdateRequest : IAsynchronousRequest
     {
+        public Action<IAsynchronousRequest> OnRequestCompleted { get; set; }
+
         public ILogger Logger { get; set; }
 
         /// <summary>
@@ -87,17 +89,14 @@ namespace Dynamo.UpdateManager
         public string Error { get; set; }
 
         /// <summary>
-        /// Event triggered when data is available from the request
+        /// The constructor.
         /// </summary>
-        public event EventHandler UpdateDataAvailable;
-        protected virtual void OnUpdateDataAvailable(EventArgs e)
+        /// <param name="log">A logger to which to write info.</param>
+        /// <param name="onRequestCompleted">A callback which is invoked when data is returned from the request.</param>
+        public UpdateRequest(ILogger log, Action<IAsynchronousRequest> onRequestCompleted)
         {
-            if (UpdateDataAvailable != null)
-                UpdateDataAvailable(this, e);
-        }
+            OnRequestCompleted = onRequestCompleted;
 
-        public UpdateRequest(ILogger log)
-        {
             Logger = log;
             Error = string.Empty;
             Data = string.Empty;
@@ -114,7 +113,7 @@ namespace Dynamo.UpdateManager
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void ReadResult(object sender, OpenReadCompletedEventArgs e)
+        private void ReadResult(object sender, OpenReadCompletedEventArgs e)
         {
             try
             {
@@ -130,7 +129,7 @@ namespace Dynamo.UpdateManager
                     Data = sr.ReadToEnd();
                 }
 
-                OnUpdateDataAvailable(EventArgs.Empty);
+                OnRequestCompleted.Invoke(this);
             }
             catch (Exception ex)
             {
@@ -253,8 +252,6 @@ namespace Dynamo.UpdateManager
                     return;
 
                 _versionCheckInProgress = true;
-
-                request.UpdateDataAvailable += request_UpdateDataAvailable;
             }
             catch (Exception ex)
             {
@@ -264,18 +261,15 @@ namespace Dynamo.UpdateManager
         }
 
         /// <summary>
-        /// Handler for the UpdateRequest's UpdateDataAvailable event.
+        /// Callback for the UpdateRequest's UpdateDataAvailable event.
         /// Reads the request's data, and parses for available versions. 
         /// If a more recent version is available, the UpdateInfo object 
         /// will be set. 
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void request_UpdateDataAvailable(object sender, EventArgs e)
+        /// <param name="request">An instance of an update request.</param>
+        public void UpdateDataAvailable(IAsynchronousRequest request)
         {
             UpdateInfo = null;
-
-            var request = sender as IAsynchronousRequest;
 
             //If there is error data or the request data is empty
             //bail out.
