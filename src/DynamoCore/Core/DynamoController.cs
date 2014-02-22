@@ -9,7 +9,9 @@ using System.Reflection;
 using System.Windows.Threading;
 using Dynamo.DSEngine;
 using Dynamo.FSchemeInterop;
+using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Services;
@@ -76,40 +78,12 @@ namespace Dynamo
         public Dispatcher UIDispatcher { get; set; }
         public IUpdateManager UpdateManager { get; set; }
         public IUnitsManager UnitsManager { get; set; }
+        public IWatchHandler WatchHandler { get; set; }
+        public IPreferences PreferenceSettings { get; set; }
 
         public virtual VisualizationManager VisualizationManager
         {
             get { return visualizationManager ?? (visualizationManager = new VisualizationManagerASM()); }
-        }
-
-        private PreferenceSettings _preferenceSettings;
-        public PreferenceSettings PreferenceSettings
-        {
-            get
-            {
-                if (_preferenceSettings == null)
-                {
-                    _preferenceSettings = PreferenceSettings.Load();
-                    _preferenceSettings.PropertyChanged +=_preferenceSettings_PropertyChanged;
-                }
-                return _preferenceSettings;
-            }
-        }
-
-        void _preferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "LengthUnit":
-                    UnitsManager.LengthUnit = PreferenceSettings.LengthUnit;
-                    break;
-                case "AreaUnit":
-                    UnitsManager.AreaUnit = PreferenceSettings.AreaUnit;
-                    break;
-                case "VolumeUnit":
-                    UnitsManager.VolumeUnit = PreferenceSettings.VolumeUnit;
-                    break;
-            }
         }
 
         /// <summary>
@@ -234,13 +208,13 @@ namespace Dynamo
 
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
-                return new DynamoController(env, typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager(), new UnitsManager());
+                return new DynamoController(env, typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager(), new UnitsManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
 
-            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager(), new UnitsManager());
+            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager(), new UnitsManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
         }
 
-        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context, IUpdateManager updateManager, IUnitsManager units) : 
-            this(env, viewModelType, context, null, updateManager, units)
+        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context, IUpdateManager updateManager, IUnitsManager units, IWatchHandler watchHandler, IPreferences preferences) : 
+            this(env, viewModelType, context, null, updateManager, units, watchHandler, preferences)
         {
         }
 
@@ -248,7 +222,7 @@ namespace Dynamo
         ///     Class constructor
         /// </summary>
         public DynamoController(ExecutionEnvironment env,
-            Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager, IUnitsManager units)
+            Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager, IUnitsManager units, IWatchHandler watchHandler, IPreferences preferences)
         {
             DynamoLogger.Instance.StartLogging();
 
@@ -259,17 +233,21 @@ namespace Dynamo
             //Start heartbeat reporting
             InstrumentationLogger.Start();
 
-            UpdateManager = updateManager;
-            UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
-            UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
-            UpdateManager.CheckForProductUpdate();
+            PreferenceSettings = preferences;
+            ((PreferenceSettings) PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
             UnitsManager = units;
+            UnitsManager.LengthUnit = PreferenceSettings.LengthUnit;
+            UnitsManager.AreaUnit = PreferenceSettings.AreaUnit;
+            UnitsManager.VolumeUnit = PreferenceSettings.VolumeUnit;
+            UnitsManager.NumberFormat = PreferenceSettings.NumberFormat;
 
             UpdateManager = updateManager;
             UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
             UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
-            UpdateManager.CheckForProductUpdate();
+            UpdateManager.CheckForProductUpdate(new UpdateRequest(DynamoLogger.Instance));
+
+            WatchHandler = watchHandler;
 
             //create the view model to which the main window will bind
             //the DynamoModel is created therein
@@ -318,6 +296,31 @@ namespace Dynamo
             AddPythonBindings();
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
+        }
+
+        /// <summary>
+        /// Responds to property update notifications on the preferences,
+        /// and synchronizes with the Units Manager.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void PreferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "LengthUnit":
+                    UnitsManager.LengthUnit = PreferenceSettings.LengthUnit;
+                    break;
+                case "AreaUnit":
+                    UnitsManager.AreaUnit = PreferenceSettings.AreaUnit;
+                    break;
+                case "VolumeUnit":
+                    UnitsManager.VolumeUnit = PreferenceSettings.VolumeUnit;
+                    break;
+                case "NumberFormat":
+                    UnitsManager.NumberFormat = PreferenceSettings.NumberFormat;
+                    break;
+            }
         }
 
         void updateManager_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)

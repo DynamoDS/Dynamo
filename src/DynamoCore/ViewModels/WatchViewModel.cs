@@ -4,7 +4,7 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
 {
-    public class WatchNode : NotificationObject
+    public class WatchItem : NotificationObject
     {
         public event Action Clicked;
 
@@ -14,12 +14,15 @@ namespace Dynamo.ViewModels
                 Clicked();
         }
 
-        WatchTreeBranch _children = new WatchTreeBranch();
+        ObservableCollection<WatchItem> _children = new ObservableCollection<WatchItem>();
         string _label;
         string _link;
         private bool _showRawData;
 
-        public WatchTreeBranch Children
+        /// <summary>
+        /// A collection of child WatchItems.
+        /// </summary>
+        public ObservableCollection<WatchItem> Children
         {
             get { return _children; }
             set
@@ -28,6 +31,10 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("Children");
             }
         }
+        
+        /// <summary>
+        /// The string lable visibile in the watch.
+        /// </summary>
         public string NodeLabel
         {
             get { return _label; }
@@ -37,6 +44,10 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("NodeLabel");
             }
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
         public string Link
         {
             get { return _link; }
@@ -47,6 +58,12 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// A flag used to determine whether the item
+        /// should be process to draw 'raw' data or data
+        /// treated in some context. An example is the drawing
+        /// of watch items with or without units.
+        /// </summary>
         public bool ShowRawData
         {
             get { return _showRawData; }
@@ -59,27 +76,26 @@ namespace Dynamo.ViewModels
 
         public bool IsNodeExpanded { get; set; }
 
-        public WatchNode()
+        public WatchItem()
         {
             IsNodeExpanded = true;
             _showRawData = true;
         }
 
-        public WatchNode(string label)
+        public WatchItem(string label)
         {
             _label = label;
             IsNodeExpanded = true;
         }
 
-        public WatchNode( string label, bool isListMember, int count )
+        public WatchItem(string label, string tag)
         {
-            _label = isListMember ? "[" + count + "] " + label : label;
-            IsNodeExpanded = true;
+            _label = string.Format("[{0}] {1}", tag, label);
         }
     }
 
-    public class WatchTreeBranch : ObservableCollection<WatchNode>
-    {
+    //public class WatchTreeBranch : ObservableCollection<WatchItem>
+    //{
 
-    }
+    //}
 }

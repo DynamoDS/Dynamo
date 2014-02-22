@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using Dynamo.Interfaces;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -16,16 +17,16 @@ namespace Dynamo.UI.Views
     /// </summary>
     public partial class AboutWindow : Window
     {
-        bool ignoreClose = false;
-        DynamoLogger logger = null;
+        bool ignoreClose;
+        ILogger logger;
 
-        public AboutWindow(DynamoLogger logger, DynamoViewModel model)
+        public AboutWindow(ILogger logger, DynamoViewModel model)
         {
             InitializeComponent();
             this.logger = logger;
-            this.InstallNewUpdate = false;
-            this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
-            this.DataContext = model;
+            InstallNewUpdate = false;
+            PreviewKeyDown += new KeyEventHandler(HandleEsc);
+            DataContext = model;
         }
 
         public bool InstallNewUpdate { get; private set; }
@@ -34,8 +35,8 @@ namespace Dynamo.UI.Views
         {
             //Request a check for update version info
             DisplayVersionInformation(null);
-            dynSettings.Controller.UpdateManager.UpdateDownloaded += new UpdateDownloadedEventHandler(OnUpdatePackageDownloaded);
-            dynSettings.Controller.UpdateManager.CheckForProductUpdate();
+            dynSettings.Controller.UpdateManager.UpdateDownloaded += OnUpdatePackageDownloaded;
+            dynSettings.Controller.UpdateManager.CheckForProductUpdate(new UpdateRequest(DynamoLogger.Instance));
         }
 
         private void HandleEsc(object sender, KeyEventArgs e)
@@ -69,7 +70,7 @@ namespace Dynamo.UI.Views
 
         private void OnUpdateInfoMouseUp(object sender, MouseButtonEventArgs e)
         {
-            logger.LogInfo("AboutWindow-OnUpdateInfoMouseUp", "AboutWindow-OnUpdateInfoMouseUp");
+            logger.Log("AboutWindow-OnUpdateInfoMouseUp", "AboutWindow-OnUpdateInfoMouseUp");
             this.InstallNewUpdate = true;
             this.Close();
         }
