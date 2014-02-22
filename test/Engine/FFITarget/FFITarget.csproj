@@ -45,7 +45,7 @@
     <Compile Include="ClassFunctionality.cs" />
     <Compile Include="Minimal.cs" />
     <Compile Include="MinimalTraceTargets.cs" />
-    <Compile Include="TestNSConflict.cs" />
+    <Compile Include="TestNamespaceConflict.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\NodeServices\NodeServices.csproj">

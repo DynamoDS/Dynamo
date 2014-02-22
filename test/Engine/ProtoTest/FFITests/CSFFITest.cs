@@ -125,11 +125,6 @@ namespace ProtoFFITests
         [Test]
         public void TestProperty()
         {
-            /*String code =
-            @"               import(Point from ""ProtoGeometry.dll"");               import(Line from ""ProtoGeometry.dll"");               p1 = Point.ByCoordinates(1,2,3);               p2 = Point.ByCoordinates(3,4,5);               l = Line.ByStartPointEndPoint(p1, p2);               success = l.StartPoint.IsCoincident(p1);            ";
-            ValidationData[] data = { new ValidationData { ValueName = "success", ExpectedValue = true, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);*/
-
             String code =
            @"              import(""FFITarget.dll"");              cf1 = ClassFunctionality.ClassFunctionality(1);              cf2 = ClassFunctionality.ClassFunctionality(2);              v = cf1.IntVal;              t = cf1.IsEqualTo(cf2);           ";
            ValidationData[] data =
@@ -748,20 +743,22 @@ namespace ProtoFFITests
 
         [Test]
         [Category("Update")]
-        public void GeometryPropertyUpdate()
+        public void PropertyReadback()
         {
             string code =
-                @"import(""ProtoGeometry.dll"");                WCS = CoordinateSystem.Identity();                pt0 = Point.ByCartesianCoordinates(WCS, 5,  5, 0);                pt1 = Point.ByCartesianCoordinates(WCS, 5, 10, 0);                myLine = Line.ByStartPointEndPoint(pt0, pt1);                myLine.Color = Color.Red;   // in debug: color is set first time, but not set after the move of pt0 (line15)                            // in run: color is not set                length = myLine.Length;                color = myLine.Color.RedValue;                pt0 = Point.ByCartesianCoordinates(WCS, 10,  5, 0);";
-            ValidationData[] data = { new ValidationData { ValueName = "color", ExpectedValue = (Int64)255, BlockIndex = 0 } };
+                @"import(""FFITarget.dll"");                cls = ClassFunctionality.ClassFunctionality();                cls.IntVal = 3;                readback = cls.IntVal;";
+            ValidationData[] data = { new ValidationData { ValueName = "readback", ExpectedValue = (Int64)3, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
         }
 
         [Test]
-        public void GeometryPropertyUpdateUsingSetMethod()
+        [Category("Update")]
+        public void PropertyUpdate()
         {
             string code =
-                @"import(""ProtoGeometry.dll"");                WCS = CoordinateSystem.Identity();                pt0 = Point.ByCartesianCoordinates(WCS, 5,  5, 0);                pt1 = Point.ByCartesianCoordinates(WCS, 5, 10, 0);                myLine = Line.ByStartPointEndPoint(pt0, pt1);                neglect = myLine.SetColor(Color.Red);                length = myLine.Length;                color = myLine.Color.RedValue;                pt0 = Point.ByCartesianCoordinates(WCS, 10,  5, 0);";
-            ValidationData[] data = { new ValidationData { ValueName = "color", ExpectedValue = (Int64)255, BlockIndex = 0 } };
+                @"import(""FFITarget.dll"");                cls = ClassFunctionality.ClassFunctionality();                cls.IntVal = 3;                readback = cls.IntVal;
+                cls.IntVal = 4;";
+            ValidationData[] data = { new ValidationData { ValueName = "readback", ExpectedValue = (Int64)4, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
         }
 
@@ -1103,21 +1100,41 @@ z1 = z.a;";
         public void TestNamespaceClassResolution()
         {
             string code =
-                @"import(Point from ""ProtoTest.dll"");
-                    x = 1..5;
-                    y = 6..10;
-                    z = 0;
-                    dsPoint = DesignScript.Point.XYZ(x, y, z);
-                    dyPoint = Dynamo.Point.XYZ(y, x, z);
+                @"import(""FFITarget.dll"");
+                    x = 1..2;
+                    aDup = A.DupTargetTest(x);
+                    bDup = B.DupTargetTest(x);
 
-                    check = Equals(dsPoint.dX, dyPoint.Y);";
+                    check = Equals(aDup.Prop,bDup.Prop);";
 
             TestFrameWork theTest = new TestFrameWork();
             var mirror = theTest.RunScriptSource(code);
             theTest.Verify("check", true);
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kMultipleSymbolFound);
-            string[] classes = theTest.GetAllMatchingClasses("Point");
-            Assert.True(classes.Length > 1, "More than one implementation of Point class expected");
+            string[] classes = theTest.GetAllMatchingClasses("DupTargetTest");
+            Assert.True(classes.Length > 1, "More than one implementation of DupTargetTest class expected");
+        }
+
+        [Test]
+        public void TestSubNamespaceClassResolution()
+        {
+            string code =
+                @"import(""FFITarget.dll"");
+                    aDup = A.DupTargetTest(0);
+                    bDup = B.DupTargetTest(1); //This should match exactly B.DupTargetTest
+                    cDup = C.B.DupTargetTest(2);
+
+                    check = Equals(aDup.Prop,bDup.Prop);
+                    check = Equals(bDup.Prop,cDup.Prop);
+
+";
+
+            TestFrameWork theTest = new TestFrameWork();
+            var mirror = theTest.RunScriptSource(code);
+            theTest.Verify("check", true);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kMultipleSymbolFound);
+            string[] classes = theTest.GetAllMatchingClasses("DupTargetTest");
+            Assert.True(classes.Length > 1, "More than one implementation of DupTargetTest class expected");
         }
     }
 

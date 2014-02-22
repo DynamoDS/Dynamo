@@ -5,9 +5,11 @@ using System.Text;
 
 namespace FFITarget
 {
+    /// <summary>
+    /// Tests for basic functional testing of FFI implementations
+    /// </summary>
     public class ClassFunctionality
     {
-
         public int IntVal { get; set; }
 
         public ClassFunctionality()
