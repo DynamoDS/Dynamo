@@ -99,7 +99,7 @@ namespace Dynamo.Nodes
         /// <param name="index">Index of input data if it is a part of a collection.</param>
         /// <param name="isListMember">Specifies if this data belongs to a collection.</param>
         /// <returns>WatchNode</returns>
-        public WatchItem Process(MirrorData data, string prefix, int index, bool showRawData = true)
+        public WatchItem Process(MirrorData data, int index, bool showRawData = true)
         {
             WatchItem node;
 
@@ -117,7 +117,7 @@ namespace Dynamo.Nodes
                 foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
                 {
                     //node.Children.Add(ProcessMirrorData(e.Element, newPrefix, e.Index, true));
-                    node.Children.Add(dynSettings.Controller.WatchHandler.Process(e.Element, e.Index.ToString(CultureInfo.InvariantCulture), true));
+                    node.Children.Add(Process(e.Element, e.Index, true));
                 }
             }
             else
@@ -238,7 +238,7 @@ namespace Dynamo.Nodes
 
             //Get MirrorData from the RuntimeMirror
             var mirrorData = mirror.GetData();
-            return dynSettings.Controller.WatchHandler.Process(mirrorData as dynamic, "0", false);
+            return Process(mirrorData, 0, false);
         }
 
         #endregion
