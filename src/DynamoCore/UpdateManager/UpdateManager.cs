@@ -118,21 +118,9 @@ namespace Dynamo.UpdateManager
             Data = string.Empty;
             Path = path;
 
-            InitiateRequest(path);
-        }
-
-        private void InitiateRequest(Uri path)
-        {
-            try
-            {
-                var client = new WebClient();
-                client.OpenReadAsync(path);
-                client.OpenReadCompleted += ReadResult;
-            }
-            catch
-            {
-                OnRequestCompleted.Invoke(this);
-            }
+            var client = new WebClient();
+            client.OpenReadAsync(path);
+            client.OpenReadCompleted += ReadResult;
         }
 
         /// <summary>
