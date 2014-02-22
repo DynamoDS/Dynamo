@@ -29,6 +29,10 @@ namespace Dynamo.UpdateManager
         public Exception Error { get; private set; }
     }
 
+    /// <summary>
+    /// An interface which describes properties and methods for
+    /// updating the application.
+    /// </summary>
     public interface IUpdateManager
     {
         BinaryVersion ProductVersion { get; }
@@ -42,6 +46,10 @@ namespace Dynamo.UpdateManager
         void UpdateDataAvailable(IAsynchronousRequest request);
     }
 
+    /// <summary>
+    /// An interface to describe available
+    /// application update info.
+    /// </summary>
     public interface IAppVersionInfo
     {
         BinaryVersion Version { get; set; }
@@ -70,7 +78,7 @@ namespace Dynamo.UpdateManager
 
     /// <summary>
     /// The UpdateRequest class encapsulates a request for 
-    /// update information from the web.
+    /// getting update information from the web.
     /// </summary>
     internal class UpdateRequest : IAsynchronousRequest
     {
