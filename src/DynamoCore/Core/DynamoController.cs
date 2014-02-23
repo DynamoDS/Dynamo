@@ -11,20 +11,19 @@ using Dynamo.DSEngine;
 using Dynamo.FSchemeInterop;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Services;
+using Dynamo.UI;
+using Dynamo.Units;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Units;
 using DynamoUnits;
 using Microsoft.Practices.Prism.ViewModel;
 using NUnit.Framework;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
-using Dynamo.UI;
 
 namespace Dynamo
 {
@@ -245,7 +244,7 @@ namespace Dynamo
             UpdateManager = updateManager;
             UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
             UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
-            UpdateManager.CheckForProductUpdate(new UpdateRequest(DynamoLogger.Instance));
+            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation),DynamoLogger.Instance, UpdateManager.UpdateDataAvailable));
 
             WatchHandler = watchHandler;
 

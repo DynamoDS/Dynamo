@@ -13,62 +13,53 @@ namespace Dynamo.Tests
     public class UpdateManagerTestNotUpToDate : DynamoUnitTest
     {
         [Test]
-        public void IsUpdateAvailableReturnsTrueWhenNewerVersionAvaialable()
+        public void UpdateCheckReturnsInfoWhenNewerVersionAvaialable()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.updateAvailableData);
-
-            Controller.UpdateManager.CheckForProductUpdate(updateRequest.Object);
-            updateRequest.Raise(x => x.UpdateDataAvailable += null, EventArgs.Empty);
+            dynSettings.Controller.UpdateManager.UpdateDataAvailable(updateRequest.Object);
 
             Assert.NotNull(Controller.UpdateManager.UpdateInfo);
         }
 
         [Test]
-        public void IsUpdateAvailableReturnsCorrectVersionWhenAvailable()
+        public void UpdateCheckReturnsCorrectVersionWhenAvailable()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.updateAvailableData);
-
-            dynSettings.Controller.UpdateManager.CheckForProductUpdate(updateRequest.Object);
-            updateRequest.Raise(x=>x.UpdateDataAvailable += null, EventArgs.Empty);
+            dynSettings.Controller.UpdateManager.UpdateDataAvailable(updateRequest.Object);
 
             Assert.NotNull(Controller.UpdateManager.UpdateInfo);
             Assert.AreEqual(Controller.UpdateManager.AvailableVersion.ToString(), "9.9.9.0");
         }
 
         [Test]
-        public void IsUpdateAvailableReturnsFalseWhenNoNewerVersionAvailable()
+        public void UpdateCheckReturnsNothingWhenNoNewerVersionAvailable()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.noUpdateAvailableData);
-
-            Controller.UpdateManager.CheckForProductUpdate(updateRequest.Object);
-            updateRequest.Raise(x => x.UpdateDataAvailable += null, EventArgs.Empty);
+            dynSettings.Controller.UpdateManager.UpdateDataAvailable(updateRequest.Object);
 
             Assert.Null(Controller.UpdateManager.UpdateInfo);
         }
 
         [Test]
-        public void IsUpdateAvailableReturnsFalseWhenNoVersionsAvailable()
+        public void UpdateCheckReturnsNothingWhenNoVersionsAvailable()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.noData);
-
-            Controller.UpdateManager.CheckForProductUpdate(updateRequest.Object);
-            updateRequest.Raise(x => x.UpdateDataAvailable += null, EventArgs.Empty);
+            dynSettings.Controller.UpdateManager.UpdateDataAvailable(updateRequest.Object);
 
             Assert.Null(Controller.UpdateManager.UpdateInfo);
         }
 
         [Test]
-        public void IsUpdateAvaialableReturnsFalseWhenNoConnected()
+        public void UpdateCheckReturnsNothingWhenNotConnected()
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(string.Empty);
 
             Controller.UpdateManager.CheckForProductUpdate(updateRequest.Object);
-            updateRequest.Raise(x => x.UpdateDataAvailable += null, EventArgs.Empty);
 
             Assert.Null(Controller.UpdateManager.UpdateInfo);
         }
