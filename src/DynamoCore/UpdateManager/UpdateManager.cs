@@ -29,6 +29,10 @@ namespace Dynamo.UpdateManager
         public Exception Error { get; private set; }
     }
 
+    /// <summary>
+    /// An interface which describes properties and methods for
+    /// updating the application.
+    /// </summary>
     public interface IUpdateManager
     {
         BinaryVersion ProductVersion { get; }
@@ -39,8 +43,14 @@ namespace Dynamo.UpdateManager
         void CheckForProductUpdate(IAsynchronousRequest request);
         void QuitAndInstallUpdate();
         void HostApplicationBeginQuit(object sender, EventArgs e);
+        void UpdateDataAvailable(IAsynchronousRequest request);
+        bool IsVersionCheckInProgress();
     }
 
+    /// <summary>
+    /// An interface to describe available
+    /// application update info.
+    /// </summary>
     public interface IAppVersionInfo
     {
         BinaryVersion Version { get; set; }
@@ -57,8 +67,8 @@ namespace Dynamo.UpdateManager
         ILogger Logger { get; set; }
         string Data { get; set; }
         string Error { get; set; }
-        void ReadResult(object sender, OpenReadCompletedEventArgs e);
-        event EventHandler UpdateDataAvailable;
+        Uri Path { get; set; }
+        Action<IAsynchronousRequest>  OnRequestCompleted { get; set; }
     }
 
     public class AppVersionInfo : IAppVersionInfo
@@ -70,10 +80,16 @@ namespace Dynamo.UpdateManager
 
     /// <summary>
     /// The UpdateRequest class encapsulates a request for 
-    /// update information from the web.
+    /// getting update information from the web.
     /// </summary>
     internal class UpdateRequest : IAsynchronousRequest
     {
+        /// <summary>
+        /// An action to be invoked upon completion of the request.
+        /// This action is invoked regardless of the success of the request.
+        /// </summary>
+        public Action<IAsynchronousRequest> OnRequestCompleted { get; set; }
+
         public ILogger Logger { get; set; }
 
         /// <summary>
@@ -86,24 +102,24 @@ namespace Dynamo.UpdateManager
         /// </summary>
         public string Error { get; set; }
 
-        /// <summary>
-        /// Event triggered when data is available from the request
-        /// </summary>
-        public event EventHandler UpdateDataAvailable;
-        protected virtual void OnUpdateDataAvailable(EventArgs e)
-        {
-            if (UpdateDataAvailable != null)
-                UpdateDataAvailable(this, e);
-        }
+        public Uri Path { get; set; }
 
-        public UpdateRequest(ILogger log)
+        /// <summary>
+        /// The constructor.
+        /// </summary>
+        /// <param name="log">A logger to which to write info.</param>
+        /// <param name="onRequestCompleted">A callback which is invoked when data is returned from the request.</param>
+        public UpdateRequest(Uri path, ILogger log, Action<IAsynchronousRequest> onRequestCompleted)
         {
+            OnRequestCompleted = onRequestCompleted;
+
             Logger = log;
             Error = string.Empty;
             Data = string.Empty;
+            Path = path;
 
             var client = new WebClient();
-            client.OpenReadAsync(new Uri(Configurations.UpdateDownloadLocation));
+            client.OpenReadAsync(path);
             client.OpenReadCompleted += ReadResult;
         }
 
@@ -114,7 +130,7 @@ namespace Dynamo.UpdateManager
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void ReadResult(object sender, OpenReadCompletedEventArgs e)
+        private void ReadResult(object sender, OpenReadCompletedEventArgs e)
         {
             try
             {
@@ -129,13 +145,18 @@ namespace Dynamo.UpdateManager
                 {
                     Data = sr.ReadToEnd();
                 }
-
-                OnUpdateDataAvailable(EventArgs.Empty);
             }
             catch (Exception ex)
             {
+                Error = string.Empty;
+                Data = string.Empty;
+
                 Logger.Log("UpdateRequest", "The update request could not be completed.\n" + ex.Message);
             }
+
+            //regardless of the success of the above logic
+            //invoke the completion callback
+            OnRequestCompleted.Invoke(this);
         }
     }
 
@@ -247,35 +268,22 @@ namespace Dynamo.UpdateManager
         {
             _logger.Log("RequestUpdateVersionInfo", "RequestUpdateVersionInfo");
 
-            try
-            {
-                if (_versionCheckInProgress)
-                    return;
+            if (_versionCheckInProgress)
+                return;
 
-                _versionCheckInProgress = true;
-
-                request.UpdateDataAvailable += request_UpdateDataAvailable;
-            }
-            catch (Exception ex)
-            {
-                _versionCheckInProgress = false;
-                DynamoLogger.Instance.LogError("UpdateRequest", string.Format("Could not complete product update request:\n {0}", ex.Message));
-            }
+            _versionCheckInProgress = true;
         }
 
         /// <summary>
-        /// Handler for the UpdateRequest's UpdateDataAvailable event.
+        /// Callback for the UpdateRequest's UpdateDataAvailable event.
         /// Reads the request's data, and parses for available versions. 
         /// If a more recent version is available, the UpdateInfo object 
         /// will be set. 
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void request_UpdateDataAvailable(object sender, EventArgs e)
+        /// <param name="request">An instance of an update request.</param>
+        public void UpdateDataAvailable(IAsynchronousRequest request)
         {
             UpdateInfo = null;
-
-            var request = sender as IAsynchronousRequest;
 
             //If there is error data or the request data is empty
             //bail out.
@@ -351,6 +359,11 @@ namespace Dynamo.UpdateManager
                 if (File.Exists(UpdateFileLocation))
                     Process.Start(UpdateFileLocation);
             }
+        }
+
+        public bool IsVersionCheckInProgress()
+        {
+            return _versionCheckInProgress;
         }
 
         #endregion
