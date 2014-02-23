@@ -114,12 +114,18 @@ namespace ProtoFFITests
 
         [Test]
         [Category("Method Resolution")]
-        public void TestImportPointAndVectorClass()
+        public void TestInstanceMethodResolution()
         {
             String code =
-            @"               import(Point from ""ProtoGeometry.dll"");               import(Vector from ""ProtoGeometry.dll"");               p1 = Point.ByCoordinates(1,2,3);               p2 = Point.ByCoordinates(3,4,5);               v = Vector.ByCoordinates(2,1.99999999,2.00000001);               p3 = p1.Translate(v,v.GetLength());               success = p3.IsCoincident(p2);            ";
-            ValidationData[] data = { new ValidationData { ValueName = "success", ExpectedValue = true, BlockIndex = 0 } };
-            Assert.True(0 == ExecuteAndVerify(code, data));
+            @"            import(""FFITarget.dll"");            cf1 = ClassFunctionality.ClassFunctionality(1);            vc2 = ValueContainer.ValueContainer(2);            o = cf1.AddWithValueContainer(vc2);            o2 = vc2.Square().SomeValue;            ";
+            ValidationData[] data =
+                {
+                    new ValidationData { ValueName = "o", ExpectedValue = 3, BlockIndex = 0 },
+                    new ValidationData { ValueName = "o2", ExpectedValue = 4, BlockIndex = 0 }
+
+                };
+
+            ExecuteAndVerify(code, data);
         }
 
         [Test]

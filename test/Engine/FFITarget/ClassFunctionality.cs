@@ -29,5 +29,25 @@ namespace FFITarget
 
         static public int StaticProp { get; set; }
 
+        public int AddWithValueContainer(ValueContainer valueContainer)
+        {
+            return IntVal + valueContainer.SomeValue;
+        }
+
+    }
+
+    public class ValueContainer
+    {
+        public ValueContainer(int value)
+        {
+            this.SomeValue = value;
+        }
+
+        public ValueContainer Square()
+        {
+            return  new ValueContainer(SomeValue * SomeValue);
+        }
+
+        public int SomeValue { get; set; }
     }
 }
