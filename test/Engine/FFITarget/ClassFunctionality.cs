@@ -8,8 +8,10 @@ namespace FFITarget
     /// <summary>
     /// Tests for basic functional testing of FFI implementations
     /// </summary>
-    public class ClassFunctionality
+    public class ClassFunctionality : IDisposable
     {
+
+
         public int IntVal { get; set; }
 
         public ClassFunctionality()
@@ -34,6 +36,11 @@ namespace FFITarget
             return IntVal + valueContainer.SomeValue;
         }
 
+
+        public void Dispose()
+        {
+            StaticProp++;
+        }
     }
 
     public class ValueContainer

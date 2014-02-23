@@ -13,16 +13,9 @@ namespace ProtoFFITests
         public void Dispose01_NoFunctionCall()
         {
             String code =
-            @"              import(""ProtoGeometry.dll"");pt1 = Point.ByCoordinates(0, 0, 0);[Associative]{    //vec1 = Vector.ByCoordinates(1, 1, 1);    //vec2 = Vector.ByCoordinates(1, 0, 0);    //vec3 = Vector.ByCoordinates(0, 1, 0);    //vecarr = { vec1, vec2, vec3 };    //pt2 = Point.ByCoordinates(0, 0, 0);    //pt3 = Point.ByCoordinates(0, 0, 0);    //ptarr = { pt1, pt2, pt3 };x = 2;}            ";
+            @"              import(""FFITarget.dll"");cf1 = ClassFunctionality.ClassFunctionality(2);[Associative]{    x = 2;}            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //thisTest.VerifyFFIObjectOutOfScope("vec1");
-            //thisTest.VerifyFFIObjectOutOfScope("vec2");
-            //thisTest.VerifyFFIObjectOutOfScope("vec3");
-            //thisTest.VerifyReferenceCount("vecarr", 0);
-            thisTest.VerifyFFIObjectStillInScope("pt1", 0);
-            //thisTest.VerifyFFIObjectOutOfScope("pt2");
-            //thisTest.VerifyFFIObjectOutOfScope("pt3");
-            //thisTest.VerifyReferenceCount("ptarr", 0);
+            thisTest.VerifyFFIObjectStillInScope("cf1", 0);
         }
 
         [Test]
