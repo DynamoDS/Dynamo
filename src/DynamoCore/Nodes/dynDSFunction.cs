@@ -403,7 +403,9 @@ namespace Dynamo.Nodes
             return Definition.Type == FunctionType.Constructor;
         }
 
-        public DSVarArgFunction() { }
+        // A 'DSVarArgFunction' function cannot live without its 'Definition'
+        // (a 'FunctionDescriptor'), therefore this constructor shouldn't be used.
+        private DSVarArgFunction() { }
 
         public DSVarArgFunction(FunctionDescriptor definition)
         {
