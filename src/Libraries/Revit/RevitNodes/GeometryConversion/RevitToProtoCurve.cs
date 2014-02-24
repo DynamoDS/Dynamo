@@ -23,7 +23,6 @@ namespace Revit.GeometryConversion
             return RevitToProtoCurve.Convert(dyCrv);
         }
 
-
         /// <summary>
         /// Convert a Revit NurbSpline to a ProtoGeometry curve
         /// </summary>
