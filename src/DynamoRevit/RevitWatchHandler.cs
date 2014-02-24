@@ -85,7 +85,7 @@ namespace Dynamo.Applications
             var classMirror = data.Class;
             if (null != classMirror)
             {
-                return new WatchItem(classMirror.ClassName, tag);
+                return ProcessThing(data.Data, tag);
             }
 
             //Finally for all else get the string representation of data as watch content.
