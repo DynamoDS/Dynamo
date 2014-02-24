@@ -235,12 +235,17 @@ namespace Dynamo.Nodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            // When there's no selection, this returns an invalid ID.
+            ElementId selectedElementId = ElementId.InvalidElementId;
+            if (SelectedElement != null)
+                selectedElementId = SelectedElement.Id;
+
             var node = AstFactory.BuildFunctionCall(
                 "Revit.Elements.ElementSelector",
                 "ByElementId",
                 new List<AssociativeNode>
                 {
-                    AstFactory.BuildIntNode(SelectedElement.Id.IntegerValue),
+                    AstFactory.BuildIntNode(selectedElementId.IntegerValue)
                 });
 
             return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
