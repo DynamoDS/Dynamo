@@ -106,7 +106,7 @@ namespace ProtoAssociative
         Dictionary<string, string> ssaTempToFirstPointerMap = new Dictionary<string, string>();
 
         private Stack<SymbolNode> expressionSSATempSymbolList = null;
-        
+
         // This constructor is only called for Preloading of assemblies and 
         // precompilation of CodeBlockNode nodes in GraphUI for global language blocks - pratapa
         public CodeGen(Core coreObj) : base(coreObj)
@@ -1355,7 +1355,7 @@ namespace ProtoAssociative
                                 varname = (exprList.list[0] as IdentifierNode).Name;
 
                                 // TODO Jun: deprecate SSA flag and do full SSA
-                                if (core.Options.FullSSA)
+                                if (core.Options.GenerateSSA)
                                 {
                                     // Only allow the acutal function variables and SSA temp vars
                                     // TODO Jun: determine what temp could be passed in that is autodegenerated and non-SSA
@@ -2920,7 +2920,7 @@ namespace ProtoAssociative
             {
                 IdentifierNode ident = node as IdentifierNode;
 
-                if (core.Options.FullSSA)
+                if (core.Options.GenerateSSA)
                 {
                     string ssaTempName = string.Empty;
                     if (null == ident.ArrayDimensions)
@@ -3300,7 +3300,7 @@ namespace ProtoAssociative
             }
             else if (node is GroupExpressionNode)
             {
-                if (core.Options.FullSSA)
+                if (core.Options.GenerateSSA)
                 {
                     GroupExpressionNode groupExpr = node as GroupExpressionNode;
                     if (null == groupExpr.ArrayDimensions)
@@ -3420,7 +3420,7 @@ namespace ProtoAssociative
                         BinaryExpressionNode bnode = (node as BinaryExpressionNode);
                         int generatedUID = ProtoCore.DSASM.Constants.kInvalidIndex;
 
-                        if (core.Options.FullSSA)
+                        if (core.Options.GenerateSSA)
                         {
                             node.IsModifier = true;
                         }
@@ -3525,7 +3525,7 @@ namespace ProtoAssociative
                     {
                         ModifierStackNode modStack = node as ModifierStackNode;
 
-                        if (core.Options.FullSSA)
+                        if (core.Options.GenerateSSA)
                         {
                             List<AssociativeNode> modStackNewElements = new List<AssociativeNode>();
 
@@ -3768,6 +3768,11 @@ namespace ProtoAssociative
             throw new NotSupportedException();
         }
 
+        public List<AssociativeNode> EmitSSA(List<AssociativeNode> astList)
+        {
+            return BuildSSA(astList, new ProtoCore.CompileTime.Context());
+        }
+
         private int EmitExpressionInterpreter(ProtoCore.AST.Node codeBlockNode)
         {
             core.startPC = this.pc;
@@ -3901,16 +3906,19 @@ namespace ProtoAssociative
             while (ProtoCore.DSASM.AssociativeCompilePass.kDone != compilePass)
             {
                 // Emit SSA only after generating the class definitions
-                if (compilePass > AssociativeCompilePass.kClassName && !ssaTransformed)
+                if (core.Options.GenerateSSA)
                 {
-                    //Audit class table for multiple symbol definition and emit warning.
-                    this.core.ClassTable.AuditMultipleDefinition(this.core.BuildStatus);
-                    codeblock.Body = BuildSSA(codeblock.Body, context);
-                    ssaTransformed = true;
-                    if (core.Options.DumpIL)
+                    if (compilePass > AssociativeCompilePass.kClassName && !ssaTransformed)
                     {
-                        CodeGenDS codegenDS = new CodeGenDS(codeblock.Body);
-                        EmitCompileLog(codegenDS.GenerateCode());
+                        //Audit class table for multiple symbol definition and emit warning.
+                        this.core.ClassTable.AuditMultipleDefinition(this.core.BuildStatus);
+                        codeblock.Body = BuildSSA(codeblock.Body, context);
+                        ssaTransformed = true;
+                        if (core.Options.DumpIL)
+                        {
+                            CodeGenDS codegenDS = new CodeGenDS(codeblock.Body);
+                            EmitCompileLog(codegenDS.GenerateCode());
+                        }
                     }
                 }
 
@@ -4438,7 +4446,7 @@ namespace ProtoAssociative
                             var curDep = graphNode.dependentList[curDepIndex].updateNodeRefList[0].nodeList[0];
                             curDep.dimensionNodeList.Add(updateNode);
 
-                            if (core.Options.FullSSA)
+                            if (core.Options.GenerateSSA)
                             {
                                 if (null != firstSSAGraphNode)
                                 {
@@ -6232,7 +6240,7 @@ namespace ProtoAssociative
 
 
             // Handle static calls to reflect the original call
-            if (core.Options.FullSSA)
+            if (core.Options.GenerateSSA)
             {
                 BuildRealDependencyForIdentList(graphNode);
 
@@ -6407,7 +6415,7 @@ namespace ProtoAssociative
                         {
                             name = ident.Value;
                         }
-                        if (core.Options.FullSSA)
+                        if (core.Options.GenerateSSA)
                         {
                             // For SSA'd ident lists, the lhs (class name) is stored in fnode.staticLHSIdent
                             if (null != fnode.staticLHSIdent)
@@ -6434,7 +6442,7 @@ namespace ProtoAssociative
                             {
                                 ////////////////////////////////      
                                 BinaryExpressionNode previousElementNode = null;
-                                if (core.Options.FullSSA)
+                                if (core.Options.GenerateSSA)
                                 {
                                     Validity.Assert(null != prevElement && prevElement is BinaryExpressionNode);
                                     previousElementNode = prevElement as BinaryExpressionNode; 
@@ -7400,7 +7408,7 @@ namespace ProtoAssociative
                     }
                     else if (ProtoCore.DSASM.Constants.kInvalidIndex != index && ProtoCore.DSASM.Constants.kGlobalScope != firstProc.classScope)
                     {
-                        if (core.Options.FullSSA)
+                        if (core.Options.GenerateSSA)
                         {
                             foreach (ProtoCore.AssociativeGraph.GraphNode dependent in graphNode.dependentList)
                             {
@@ -7447,7 +7455,7 @@ namespace ProtoAssociative
                         // For every single arguments' modified statements
                         foreach (ProtoCore.AssociativeGraph.UpdateNodeRef nodeRef in argNameModifiedStatementsPair.Value)
                         {
-                            if (core.Options.FullSSA)
+                            if (core.Options.GenerateSSA)
                             {
                                 //
                                 // We just trigger update from whichever statement is dependent on the first pointer associatied with this SSA stmt
@@ -7791,7 +7799,7 @@ namespace ProtoAssociative
                     EmitDependency(binaryExpr.exprUID, binaryExpr.modBlkUID, false);
                 }
 
-                if (core.Options.FullSSA)
+                if (core.Options.GenerateSSA)
                 {
                     if (!graphNode.IsSSANode())
                     {
@@ -7805,6 +7813,7 @@ namespace ProtoAssociative
                             bool isWithinSameExpressionID = currentNode.exprUID == graphNode.exprUID;
                             if (isWithinSameScope && isWithinSameExpressionID)
                             {
+                                graphNode.IsLastNodeInSSA = true;
                                 codeBlock.instrStream.dependencyGraph.GraphList[n].lastGraphNode = graphNode;
                             }
                         }
@@ -7965,13 +7974,14 @@ namespace ProtoAssociative
                     EmitCompileLog("==============Start Node==============\n");
                     graphNode = new ProtoCore.AssociativeGraph.GraphNode();
                     graphNode.isParent = true;
+                    //graphNode.UID = bnode.ID;
                     graphNode.exprUID = bnode.exprUID;
                     graphNode.modBlkUID = bnode.modBlkUID;
                     graphNode.procIndex = globalProcIndex;
                     graphNode.classIndex = globalClassIndex;
                     graphNode.languageBlockId = codeBlock.codeBlockId;
 
-                    if (core.Options.FullSSA)
+                    //if (core.Options.GenerateSSA)
                     {
                         if (bnode.isSSAFirstAssignment)
                         {
@@ -8575,7 +8585,7 @@ namespace ProtoAssociative
                         }
                     }
 
-                    if (core.Options.FullSSA)
+                    //if (core.Options.GenerateSSA)
                     {
                         if (!graphNode.IsSSANode())
                         {
@@ -8589,6 +8599,7 @@ namespace ProtoAssociative
                                 bool isWithinSameExpressionID = currentNode.exprUID == graphNode.exprUID;
                                 if (isWithinSameScope && isWithinSameExpressionID)
                                 {
+                                    graphNode.IsLastNodeInSSA = true;
                                     if (null == codeBlock.instrStream.dependencyGraph.GraphList[n].lastGraphNode)
                                     {
                                         codeBlock.instrStream.dependencyGraph.GraphList[n].lastGraphNode = graphNode;
@@ -8600,6 +8611,18 @@ namespace ProtoAssociative
 
                     graphNode.ResolveLHSArrayIndex();
                     graphNode.updateBlock.endpc = pc - 1;
+
+                    string identName = t.Name;
+                    if (ProtoCore.Utils.CoreUtils.IsSSATemp(identName))
+                    {
+                        // Extract the SSA subscript from the ID
+                        // TODO Jun: Store the subscript before embedding it into the ID so we dont need to parse and extract it here
+                        int first = identName.IndexOf('_');
+                        int last = identName.LastIndexOf('_');
+                        string subscript = identName.Substring(first + 1, last - first - 1);
+                        graphNode.SSASubscript = Convert.ToInt32(subscript);
+                    }
+
                     codeBlock.instrStream.dependencyGraph.Push(graphNode);
 
                     SymbolNode cyclicSymbol1 = null;
