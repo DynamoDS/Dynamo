@@ -551,7 +551,9 @@ namespace ProtoCore.Utils
         {
             // Jun Comment: The current convention for auto generated SSA variables begin with '%'
             // This ensures that the variables is compiler generated as the '%' symbol cannot be used as an identifier and will fail compilation
-            string SSATemp = ProtoCore.DSASM.Constants.kSSATempPrefix + core.SSASubscript.ToString() + "_" + core.SSASubscript_GUID.ToString();
+            string sGUID = core.SSASubscript_GUID.ToString();
+            sGUID = sGUID.Replace("-", string.Empty);
+            string SSATemp = ProtoCore.DSASM.Constants.kSSATempPrefix + core.SSASubscript.ToString() + "_" + sGUID;
             ++core.SSASubscript;
             return SSATemp;
         }
