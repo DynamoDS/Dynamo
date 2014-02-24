@@ -748,7 +748,11 @@ namespace Dynamo.Utilities
                         continue;
                     }
 
-                    NodeModel el = dynSettings.Controller.DynamoModel.CreateNodeInstance(type, nickname, guid);
+                    // Retrieve optional 'function' attribute (only for DSFunction).
+                    XmlAttribute signatureAttrib = elNode.Attributes["function"];
+                    var signature = signatureAttrib == null ? null : signatureAttrib.Value;
+                    var dynamoModel = dynSettings.Controller.DynamoModel;
+                    NodeModel el = dynamoModel.CreateNodeInstance(type, nickname, signature, guid);
 
                     if (lacingAttrib != null)
                     {

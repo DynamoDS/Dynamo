@@ -22,7 +22,7 @@ namespace ProtoFFITests
         public void Dispose02_FunctionNonArray()
         {
             String code =
-            @"              import(""ProtoGeometry.dll"");def foo(p:Point){    return = null;}pt1 = Point.ByCoordinates(0, 0, 0);[Associative]{    vec1 = Vector.ByCoordinates(1, 1, 1);    vec2 = Vector.ByCoordinates(1, 0, 0);    vec3 = Vector.ByCoordinates(0, 1, 0);    vecarr = { vec1, vec2, vec3 };        pt2 = Point.ByCoordinates(0, 0, 0);    pt3 = Point.ByCoordinates(0, 0, 0);    ptarr = { pt1, pt2, pt3 };    test = foo(pt1);}            ";
+            @"              import(""FFITarget.dll"");def foo(p:ClassFunctionality){    return = null;}pt1 = ClassFunctionality.ClassFunctionality(0);[Associative]{    vec1 = ClassFunctionality.ClassFunctionality(1);    vec2 = ClassFunctionality.ClassFunctionality(2);    vec3 = ClassFunctionality.ClassFunctionality(0);    vecarr = { vec1, vec2, vec3 };        pt2 = ClassFunctionality.ClassFunctionality(1);    pt3 = ClassFunctionality.ClassFunctionality(2);    ptarr = { pt1, pt2, pt3 };    test = foo(pt1);}            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.VerifyFFIObjectOutOfScope("vec1");
             thisTest.VerifyFFIObjectOutOfScope("vec2");
@@ -39,7 +39,7 @@ namespace ProtoFFITests
         public void Dispose03_FunctionReplication()
         {
             String code =
-            @"              import(""ProtoGeometry.dll"");def foo(p:Point){    return = null;}pt1 = Point.ByCoordinates(0, 0, 0);[Associative]{    vec1 = Vector.ByCoordinates(1, 1, 1);    vec2 = Vector.ByCoordinates(1, 0, 0);    vec3 = Vector.ByCoordinates(0, 1, 0);    vecarr = { vec1, vec2, vec3 };        pt2 = Point.ByCoordinates(0, 0, 0);    pt3 = Point.ByCoordinates(0, 0, 0);    ptarr = { pt1, pt2, pt3 };    test = foo(ptarr);}            ";
+            @"              import(""FFITarget.dll"");def foo(p:ClassFunctionality){    return = null;}pt1 = ClassFunctionality.ClassFunctionality(0);[Associative]{    vec1 = ClassFunctionality.ClassFunctionality(1);    vec2 = ClassFunctionality.ClassFunctionality(2);    vec3 = ClassFunctionality.ClassFunctionality(0);    vecarr = { vec1, vec2, vec3 };        pt2 = ClassFunctionality.ClassFunctionality(0);    pt3 = ClassFunctionality.ClassFunctionality(1);    ptarr = { pt1, pt2, pt3 };    test = foo(ptarr);}            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.VerifyFFIObjectOutOfScope("vec1");
             thisTest.VerifyFFIObjectOutOfScope("vec2");
@@ -56,7 +56,7 @@ namespace ProtoFFITests
         public void Dispose04_FunctionArray()
         {
             String code =
-            @"              import(""ProtoGeometry.dll"");def foo(p:Point[]){    return = null;}pt1 = Point.ByCoordinates(0, 0, 0);[Associative]{    vec1 = Vector.ByCoordinates(1, 1, 1);    vec2 = Vector.ByCoordinates(1, 0, 0);    vec3 = Vector.ByCoordinates(0, 1, 0);    vecarr = { vec1, vec2, vec3 };        pt2 = Point.ByCoordinates(0, 0, 0);    pt3 = Point.ByCoordinates(0, 0, 0);    ptarr = { pt1, pt2, pt3 };    test = foo(ptarr);}            ";
+            @"              import(""FFITarget.dll"");def foo(p:ClassFunctionality[]){    return = null;}pt1 = ClassFunctionality.ClassFunctionality(0);[Associative]{    vec1 = ClassFunctionality.ClassFunctionality(1);    vec2 = ClassFunctionality.ClassFunctionality(1);    vec3 = ClassFunctionality.ClassFunctionality(0);    vecarr = { vec1, vec2, vec3 };        pt2 = ClassFunctionality.ClassFunctionality(0);    pt3 = ClassFunctionality.ClassFunctionality(0);    ptarr = { pt1, pt2, pt3 };    test = foo(ptarr);}            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.VerifyFFIObjectOutOfScope("vec1");
             thisTest.VerifyFFIObjectOutOfScope("vec2");
@@ -73,7 +73,7 @@ namespace ProtoFFITests
         public void Dispose05_StaticFunctionNonArray()
         {
             String code =
-            @"              import(""ProtoGeometry.dll"");    class A{    def foo(p : Point)     {        return = null;    }    def bar(p : Point[])    {        return = null;    }    static def ding(p : Point)    {        return = null;    }    static def dong(p : Point[])    {        return = null;    }    }pt1 = Point.ByCoordinates(0, 0, 0);[Associative]{    a1 = A.A();    a2 = A.A();    a3 = A.A();    as = {a1, a2, a3};    vec1 = Vector.ByCoordinates(1, 1, 1);    vec2 = Vector.ByCoordinates(1, 0, 0);    vec3 = Vector.ByCoordinates(0, 1, 0);    vecarr = { vec1, vec2, vec3 };        pt2 = Point.ByCoordinates(0, 0, 0);    pt3 = Point.ByCoordinates(0, 0, 0);    ptarr = { pt1, pt2, pt3 };    test = A.ding(pt1);}            ";
+            @"              import(""FFITarget.dll"");    class A{    def foo(p : ClassFunctionality)     {        return = null;    }    def bar(p : ClassFunctionality[])    {        return = null;    }    static def ding(p : ClassFunctionality)    {        return = null;    }    static def dong(p : ClassFunctionality[])    {        return = null;    }    }pt1 = ClassFunctionality.ClassFunctionality(0);[Associative]{    a1 = A.A();    a2 = A.A();    a3 = A.A();    as = {a1, a2, a3};    vec1 = ClassFunctionality.ClassFunctionality(1);    vec2 = ClassFunctionality.ClassFunctionality(1);    vec3 = ClassFunctionality.ClassFunctionality(0);    vecarr = { vec1, vec2, vec3 };        pt2 = ClassFunctionality.ClassFunctionality(0);    pt3 = ClassFunctionality.ClassFunctionality(0);    ptarr = { pt1, pt2, pt3 };    test = A.ding(pt1);}            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.VerifyFFIObjectOutOfScope("vec1");
             thisTest.VerifyFFIObjectOutOfScope("vec2");
@@ -94,7 +94,7 @@ namespace ProtoFFITests
         public void Dispose06_StaticFunctionReplication()
         {
             String code =
-            @"              import(""ProtoGeometry.dll"");    class A{    def foo(p : Point)     {        return = null;    }    def bar(p : Point[])    {        return = null;    }    static def ding(p : Point)    {        return = null;    }    static def dong(p : Point[])    {        return = null;    }    }pt1 = Point.ByCoordinates(0, 0, 0);[Associative]{    a1 = A.A();    a2 = A.A();    a3 = A.A();    as = {a1, a2, a3};    vec1 = Vector.ByCoordinates(1, 1, 1);    vec2 = Vector.ByCoordinates(1, 0, 0);    vec3 = Vector.ByCoordinates(0, 1, 0);    vecarr = { vec1, vec2, vec3 };        pt2 = Point.ByCoordinates(0, 0, 0);    pt3 = Point.ByCoordinates(0, 0, 0);    ptarr = { pt1, pt2, pt3 };    test = A.ding(ptarr);}            ";
+            @"              import(""FFITarget.dll"");    class A{    def foo(p : ClassFunctionality)     {        return = null;    }    def bar(p : ClassFunctionality[])    {        return = null;    }    static def ding(p : ClassFunctionality)    {        return = null;    }    static def dong(p : ClassFunctionality[])    {        return = null;    }    }pt1 = ClassFunctionality.ClassFunctionality(0, 0, 0);[Associative]{    a1 = A.A();    a2 = A.A();    a3 = A.A();    as = {a1, a2, a3};    vec1 = ClassFunctionality(1, 1, 1);    vec2 = ClassFunctionality.ClassFunctionality(1, 0, 0);    vec3 = ClassFunctionality.ClassFunctionality(0, 1, 0);    vecarr = { vec1, vec2, vec3 };        pt2 = ClassFunctionality.ClassFunctionality(0, 0, 0);    pt3 = ClassFunctionality.ClassFunctionality(0, 0, 0);    ptarr = { pt1, pt2, pt3 };    test = A.ding(ptarr);}            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.VerifyFFIObjectOutOfScope("vec1");
             thisTest.VerifyFFIObjectOutOfScope("vec2");

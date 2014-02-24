@@ -583,6 +583,25 @@ namespace Dynamo.Tests
             Assert.AreEqual(4.0, val);
 
         }
+
+        [Test]
+        public void CanOpenDSVarArgFunctionFile()
+        {
+            string openPath = Path.Combine(GetTestDirectory(),
+                @"core\dsfunction\dsvarargfunction.dyn");
+
+            var dynamoModel = dynSettings.Controller.DynamoModel;
+            var workspace = dynamoModel.CurrentWorkspace;
+            dynamoModel.Open(openPath);
+            Assert.AreEqual(1, workspace.Nodes.Count);
+
+            var node = workspace.NodeFromWorkspace<DSVarArgFunction>(
+                Guid.Parse("a182d3f8-bb7d-4480-8aa5-eaacd6161415"));
+
+            Assert.IsNotNull(node);
+            Assert.IsNotNull(node.Definition);
+            Assert.AreEqual(3, node.InPorts.Count);
+        }
         
         [Test]
         public void SelectionDoesNotChangeWhenAddingAlreadySelectedNode()
