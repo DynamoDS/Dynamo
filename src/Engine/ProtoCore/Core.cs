@@ -129,7 +129,8 @@ namespace ProtoCore
             Verbose = false;
             DumpIL = false;
 
-            FullSSA = true;
+            GenerateSSA = true;
+            ExecuteSSA = true;
             GCTempVarsOnDebug = true;
 
             DumpFunctionResolverLogic = false;
@@ -176,7 +177,8 @@ namespace ProtoCore
 
         public bool DumpByteCode { get; set; }
         public bool DumpIL { get; private set; }
-        public bool FullSSA { get; set; }
+        public bool GenerateSSA { get; set; }
+        public bool ExecuteSSA { get; set; }
         public bool GCTempVarsOnDebug { get; set; }
         public bool Verbose { get; set; }
         public bool DumpOperatorToMethodByteCode { get; set; }
@@ -662,8 +664,8 @@ namespace ProtoCore
                 {
                     core.DebugProps.InlineConditionOptions.isInlineConditional = true;
                     core.DebugProps.InlineConditionOptions.startPc = pc;
-                    
-                    core.DebugProps.InlineConditionOptions.endPc = FindEndPCForAssocGraphNode(pc, istream, fNode, exec.Properties.executingGraphNode, core.Options.FullSSA);
+
+                    core.DebugProps.InlineConditionOptions.endPc = FindEndPCForAssocGraphNode(pc, istream, fNode, exec.Properties.executingGraphNode, core.Options.ExecuteSSA);
 
 
                     core.DebugProps.InlineConditionOptions.instructionStream = core.RunningBlock;
@@ -823,7 +825,7 @@ namespace ProtoCore
                 istream = core.DSExecutable.instrStreamList[core.RunningBlock];
                 if (istream.language == Language.kAssociative)
                 {
-                    limit = FindEndPCForAssocGraphNode(pc, istream, fNode, graphNode, core.Options.FullSSA);
+                    limit = FindEndPCForAssocGraphNode(pc, istream, fNode, graphNode, core.Options.ExecuteSSA);
                     //Validity.Assert(limit != ProtoCore.DSASM.Constants.kInvalidIndex);
                 }
                 else if (istream.language == Language.kImperative)
@@ -1429,7 +1431,7 @@ namespace ProtoCore
             // Comment Jun:
             // Disable SSA for the previous graphcompiler as it clashes with the way code recompilation behaves
             // SSA is enabled for the new graph strategy of delta compilation and execution
-            Options.FullSSA = false;
+            Options.GenerateSSA = false;
 
 
             //Initialize the function pointer table
@@ -1608,6 +1610,7 @@ namespace ProtoCore
             RuntimeStatus = new RuntimeStatus(this);
 
             SSASubscript = 0;
+            SSASubscript_GUID = System.Guid.NewGuid();
             ExpressionUID = 0;
             ModifierBlockUID = 0;
             ModifierStateSubscript = 0;
@@ -1664,6 +1667,8 @@ namespace ProtoCore
         // The unique subscript for SSA temporaries
         // TODO Jun: Organize these variables in core into proper enums/classes/struct
         public int SSASubscript { get; set; }
+        public Guid SSASubscript_GUID { get; set; }
+
         /// <summary> 
         /// ExpressionUID is used as the unique id to identify an expression
         /// It is incremented by 1 after mapping tis current value to an expression
@@ -2367,6 +2372,12 @@ namespace ProtoCore
                 }
             }
             return csInstance;
+        }
+
+        public void ResetSSASubscript(Guid guid, int subscript)
+        {
+            SSASubscript_GUID = guid;
+            SSASubscript = subscript;
         }
     }
 }
