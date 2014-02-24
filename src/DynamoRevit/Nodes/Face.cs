@@ -291,7 +291,7 @@ namespace Dynamo.Nodes
             }
 
             //Fin
-            return FScheme.Value.NewContainer(Units.Area.FromSquareFeet(area, dynSettings.Controller.UnitsManager));
+            return FScheme.Value.NewContainer(Units.Area.FromSquareFeet(area));
         }
     }
 
