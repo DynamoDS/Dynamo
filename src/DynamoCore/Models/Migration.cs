@@ -403,7 +403,7 @@ namespace Dynamo.Models
                 throw new ArgumentNullException("srcElement");
 
             int childNumber = srcElement.ChildNodes.Count;
-            string myString = childNumber.ToString();
+            string childNumberString = childNumber.ToString();
 
             XmlDocument document = srcElement.OwnerDocument;
             XmlElement dstElement = document.CreateElement("Dynamo.Nodes.DSVarArgFunction");
@@ -412,7 +412,7 @@ namespace Dynamo.Models
                 dstElement.SetAttribute(attribute.Name, attribute.Value);
 
             dstElement.SetAttribute("type", "Dynamo.Nodes.DSVarArgFunction");
-            dstElement.SetAttribute("inputcount", myString);
+            dstElement.SetAttribute("inputcount", childNumberString);
             return dstElement;
         }
 
