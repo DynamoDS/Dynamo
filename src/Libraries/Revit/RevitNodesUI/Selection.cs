@@ -426,18 +426,28 @@ namespace Dynamo.Nodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            GeometryObject geob = null;
+            string stableRep = string.Empty;
+
+            if (SelectedElement != null)
+            {
+                var dbDocument = DocumentManager.GetInstance().CurrentDBDocument;
+                if (dbDocument != null)
+                {
+                    var geomRef = SelectedElement as Reference;
+                    var element = dbDocument.GetElement(geomRef);
+                    if (element != null)
+                        geob = element.GetGeometryObjectFromReference(geomRef);
+                }
+
+                stableRep = SelectedElement.ConvertToStableRepresentation(dbDocument);
+            }
+
             AssociativeNode node = null;
-
-            var geomRef = SelectedElement as Reference;
-            var geob =
-                    DocumentManager.GetInstance()
-                        .CurrentDBDocument.GetElement(geomRef)
-                        .GetGeometryObjectFromReference(geomRef);
-
-            var stringNode = AstFactory.BuildStringNode(SelectedElement.ConvertToStableRepresentation(
-                DocumentManager.GetInstance().CurrentDBDocument));
-
-            var args = new List<AssociativeNode> {stringNode};
+            var args = new List<AssociativeNode>
+            {
+                AstFactory.BuildStringNode(stableRep)
+            };
 
             if (geob is Curve)
             {
@@ -454,7 +464,7 @@ namespace Dynamo.Nodes
                     args);
             }
 
-            return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
