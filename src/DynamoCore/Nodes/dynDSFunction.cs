@@ -403,8 +403,6 @@ namespace Dynamo.Nodes
             return Definition.Type == FunctionType.Constructor;
         }
 
-        public DSVarArgFunction() { }
-
         public DSVarArgFunction(FunctionDescriptor definition)
         {
             Definition = definition;
