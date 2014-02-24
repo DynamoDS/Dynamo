@@ -248,8 +248,12 @@ namespace Dynamo.Nodes
 
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            base.InitializeUI(nodeUI);
-            
+            // Do not call 'NodeModel.InitializeUI' here since it will cause 
+            // that method to dispatch the call back to 'SetupCustomUIElements'
+            // method, resulting in an eventual stack overflow.
+            // 
+            // base.InitializeUI(nodeUI);
+
             var drawPlane = new Image
                 {
                     Stretch = Stretch.Fill,
