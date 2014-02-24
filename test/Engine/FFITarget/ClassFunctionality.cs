@@ -5,8 +5,12 @@ using System.Text;
 
 namespace FFITarget
 {
-    public class ClassFunctionality
+    /// <summary>
+    /// Tests for basic functional testing of FFI implementations
+    /// </summary>
+    public class ClassFunctionality : IDisposable
     {
+
 
         public int IntVal { get; set; }
 
@@ -27,5 +31,30 @@ namespace FFITarget
 
         static public int StaticProp { get; set; }
 
+        public int AddWithValueContainer(ValueContainer valueContainer)
+        {
+            return IntVal + valueContainer.SomeValue;
+        }
+
+
+        public void Dispose()
+        {
+            StaticProp++;
+        }
+    }
+
+    public class ValueContainer
+    {
+        public ValueContainer(int value)
+        {
+            this.SomeValue = value;
+        }
+
+        public ValueContainer Square()
+        {
+            return  new ValueContainer(SomeValue * SomeValue);
+        }
+
+        public int SomeValue { get; set; }
     }
 }

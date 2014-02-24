@@ -39,11 +39,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IUnitsManager.cs" />
@@ -65,18 +60,8 @@
       </ItemGroup>
     </When>
     <!-- Visual Studio 2012: Select FSchemeInterop2012.csproj -->
-    <When Condition=" '$(VisualStudioVersion)'=='11.0' ">
-      <ItemGroup>
-        <ProjectReference Include="..\..\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
-          <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
-          <Name>FSchemeInterop2012</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\..\Legacy\FScheme\FScheme.2012.fsproj">
-          <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
-          <Name>FScheme.2012</Name>
-        </ProjectReference>
-      </ItemGroup>
-    </When>
+    <When Condition=" '$(VisualStudioVersion)'=='11.0' " />
+    <When Condition=" '$(VisualStudioVersion)'=='11.0' " />
   </Choose>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
