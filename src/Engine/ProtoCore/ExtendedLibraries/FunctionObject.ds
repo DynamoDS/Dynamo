@@ -425,7 +425,7 @@ def Reduce(list : var[], seed:var, accumulator : _FunctionObject)
     }
 }
 
-def FilterOut(functionObject: _FunctionObject, list: var[])
+def TrueForAll(list: var[], predicate: _FunctionObject)
 {
     return = [Imperative]
     {
@@ -437,22 +437,77 @@ def FilterOut(functionObject: _FunctionObject, list: var[])
         _count = Count(list);
         if (_count == 0)
         {
-            return = {};
+            return = true;
         }
 
-        _resultList = {};
+        _index = 0;
+
+        for (_index in 0..(_count - 1))
+        {
+            _value = list[_i];
+            if (!Apply(predicate, _value))
+            {
+                return = false;
+            }
+        }
+
+		return = true;
+    }
+}
+
+def TrueForAny(list: var[], predicate: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = true;
+        }
+
         _index = 0;
 
         for (_i in 0..(_count - 1))
         {
             _value = list[_i];
-            if (!functionObject.DoEvaluate(_value))
+            if (Apply(predicate, _value))
             {
-                _resultList[_index] = _value;
-                _index = _index + 1;
+                return = true;
             }
         }
 
-        return = _resultList;
+		return = false;
+    }
+}
+
+def ForEach(list: var[], functionObject: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = null;
+        }
+
+        _index = 0;
+
+        for (_i in 0..(_count - 1))
+        {
+            _value = list[_i];
+            list[_i] = Apply(functionObject, _value);
+        }
+
+		return = list;
     }
 }
