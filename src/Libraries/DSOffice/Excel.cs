@@ -24,7 +24,7 @@ namespace DSOffice
             }
         }
 
-        public static bool _showOnStartup = true;
+        private static bool _showOnStartup = false;
         public static bool ShowOnStartup
         {
             get { return _showOnStartup; }
@@ -122,74 +122,139 @@ namespace DSOffice
 
     public class Excel
     {
+        #region Helper methods
 
-        public static Workbook ReadExcelFile(string path)
+        private static object[][] ConvertToJaggedArray(object[,] input)
         {
-            var workbook =
-                ExcelInterop.App.Workbooks.Cast<Workbook>().FirstOrDefault(e => e.FullName == path);
+            int rows = input.GetUpperBound(0);
+            int cols = input.GetUpperBound(1);
 
-            if (workbook == null && File.Exists(path))
+            object[][] output = new object[rows][];
+
+            for (int i = 0; i < rows; i++)
             {
-                workbook = ExcelInterop.App.Workbooks.Open(path, true, false);
+                output[i] = new object[cols];
+
+                for (int j = 0; j < cols; j++)
+                {
+                    output[i][j] = input[i + 1, j + 1];
+                }
             }
 
-            return workbook;
+            return output;
         }
 
-        public static Worksheet[] GetWorksheetsFromExcelWorkbook(Workbook workbook)
+        private static object[,] ConvertToDimensionalArray(object[][] input, out int rows, out int cols)
         {
-            return workbook.Worksheets.Cast<Worksheet>().ToArray();
-        }
+            rows = input.GetUpperBound(0) + 1;
+            cols = 0;
+            for (int i = 0; i < rows; i++)
+                cols = Math.Max(cols, input[i].GetUpperBound(0) + 1);
 
-        public static Worksheet GetExcelWorksheetByName(Workbook workbook, string name)
-        {
-            var sheet = workbook.Worksheets.Cast<Worksheet>().FirstOrDefault(ws => ws.Name == name);
+            object[,] output = new object[rows, cols];
             
-            if (sheet == null)
+            for (int i = 0; i < rows; i++)
             {
-                throw new Exception("Could not find a worksheet in the workbook with that name.");
+                for (int j = 0; j < cols; j++)
+                {
+                    if (j > input[i].GetUpperBound(0))
+                        output[i, j] = "";
+                    else
+                        output[i, j] = input[i][j];
+                }
             }
 
-            return sheet;
+            return output;
         }
 
-        public static object GetDataFromExcelWorksheet(Worksheet worksheet)
+        #endregion
+
+        public static object ReadExcelFile(string path)
         {
-            return worksheet.UsedRange.get_Value();
+            var workbookOpen = ExcelInterop.App.Workbooks.Cast<Workbook>()
+                .FirstOrDefault(e => e.FullName == path);
+
+            if (workbookOpen != null)
+                return workbookOpen;
+            
+            if (File.Exists(path))
+                return ExcelInterop.App.Workbooks.Open(path, true, false);
+
+            return null;
         }
 
-        public static Worksheet WriteDataToExcelWorksheet(
-            Worksheet worksheet, int rowStart, int colStart, object data)
+        public static object[] GetWorksheetsFromExcelWorkbook(object workbook)
         {
-            throw new NotImplementedException();
+            Workbook wb = (Workbook)workbook;
+
+            return wb.Worksheets.Cast<Worksheet>().ToArray();
         }
 
-        public static Worksheet AddExcelWorksheetToWorkbook(Workbook workbook, string name)
+        public static object GetExcelWorksheetByName(object workbook, string name)
         {
-            var worksheet = workbook.Worksheets.Add();
+            Workbook wb = (Workbook)workbook;
+
+            return wb.Worksheets.Cast<Worksheet>().FirstOrDefault(ws => ws.Name == name);
+        }
+
+        public static object[][] GetDataFromExcelWorksheet(object worksheet)
+        {
+            Worksheet ws = (Worksheet)worksheet;
+            var vals = ws.UsedRange.get_Value();
+
+            // if worksheet is empty
+            if (vals == null)
+                return new object[0][];
+
+            // if worksheet contains a single value
+            if (!vals.GetType().IsArray)
+                return new object[][] { new object[] { vals } };
+
+            return ConvertToJaggedArray(vals);
+        }
+
+        public static object WriteDataToExcelWorksheet(
+            object worksheet, int startRow, int startColumn, object[][] data)
+        {
+            Worksheet ws = (Worksheet)worksheet;
+            startRow = Math.Max(0, startRow);
+            startColumn = Math.Max(0, startColumn);
+            int numRows, numColumns;
+
+            object[,] rangeData = ConvertToDimensionalArray(data, out numRows, out numColumns);
+
+            var c1 = (Range)ws.Cells[startRow + 1, startColumn + 1];
+            var c2 = (Range)ws.Cells[startRow + numRows, startColumn + numColumns];
+            var range = ws.get_Range(c1, c2);
+            range.Value = rangeData;
+            
+            return ws;
+        }
+
+        public static object AddExcelWorksheetToWorkbook(object workbook, string name)
+        {
+            Workbook wb = (Workbook)workbook;
+
+            var worksheet = wb.Worksheets.Add();
             worksheet.Name = name;
 
-            return worksheet;
+            return wb;
         }
 
-        public static Workbook NewExcelWorkbook()
+        public static object NewExcelWorkbook()
         {
             return ExcelInterop.App.Workbooks.Add();
         }
 
-        public static Workbook SaveAsExcelWorkbook(Workbook workbook, string filename)
+        public static object SaveAsExcelWorkbook(object workbook, string filename)
         {
-            if (workbook.FullName == filename)
-            {
-                workbook.Save();
-            }
+            Workbook wb = (Workbook)workbook;
+            if (wb.FullName == filename)
+                wb.Save();
             else
-            {
-                workbook.SaveAs(filename);
-            }
+                wb.SaveAs(filename);
 
-            return workbook;
+            return wb;
         }
-
     }
 }
