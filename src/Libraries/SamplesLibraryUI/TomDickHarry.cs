@@ -19,6 +19,10 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class TomDickHarryList : EnumBase
     {
+        /// <summary>
+        /// This exmple shows how to extend EnumBase to show an Enum as a 
+        /// list of values in a drop-down on a node.
+        /// </summary>
         public TomDickHarryList() : base(typeof(TomDickHarry)) { }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
