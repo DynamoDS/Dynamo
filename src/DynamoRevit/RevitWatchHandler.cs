@@ -37,8 +37,6 @@ namespace Dynamo.Applications
 
         internal WatchItem ProcessThing(XYZ pt, string tag, bool showRawData = true)
         {
-            var um = dynSettings.Controller.UnitsManager;
-
             if (!showRawData)
             {
                 ///xyzs will be in feet, but we need to show them
@@ -46,9 +44,9 @@ namespace Dynamo.Applications
                 /// 
 
                 var xyzStr = string.Format("{0:f3}, {1:f3}, {2:f3}",
-                    new Units.Length(pt.X / SIUnit.ToFoot, um),
-                    new Units.Length(pt.Y / SIUnit.ToFoot, um),
-                    new Units.Length(pt.Z / SIUnit.ToFoot, um));
+                    new Units.Length(pt.X / SIUnit.ToFoot),
+                    new Units.Length(pt.Y / SIUnit.ToFoot),
+                    new Units.Length(pt.Z / SIUnit.ToFoot));
 
                 return new WatchItem("{" + xyzStr + "}", tag);
             }

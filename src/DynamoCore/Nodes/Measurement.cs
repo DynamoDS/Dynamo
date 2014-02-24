@@ -76,7 +76,7 @@ namespace Dynamo.Nodes
     {
         public LengthInput()
         {
-            _measure = new Units.Length(0.0, dynSettings.Controller.UnitsManager);
+            _measure = new Units.Length(0.0);
             OutPortData.Add(new PortData("length", "The length. Stored internally as decimal meters.", typeof(FScheme.Value.Container)));
             RegisterAllPorts();
         }
@@ -108,7 +108,7 @@ namespace Dynamo.Nodes
     {
         public AreaInput()
         {
-            _measure = new Area(0.0, dynSettings.Controller.UnitsManager);
+            _measure = new Area(0.0);
             OutPortData.Add(new PortData("area", "The area. Stored internally as decimal meters squared.", typeof(FScheme.Value.Container)));
             RegisterAllPorts();
         }
@@ -122,7 +122,7 @@ namespace Dynamo.Nodes
     {
         public VolumeInput()
         {
-            _measure = new Volume(0.0, dynSettings.Controller.UnitsManager);
+            _measure = new Volume(0.0);
             OutPortData.Add(new PortData("volume", "The volume. Stored internally as decimal meters cubed.", typeof(FScheme.Value.Container)));
             RegisterAllPorts();
         }
@@ -164,7 +164,7 @@ namespace Dynamo.Nodes
     {
         protected override SIUnit ConvertToMeasurement(double value)
         {
-            return new Units.Length(value / dynSettings.Controller.UnitsManager.UiLengthConversion, dynSettings.Controller.UnitsManager);
+            return new Units.Length(value / SIUnit.UiLengthConversion);
         }
 
         public override void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -184,7 +184,7 @@ namespace Dynamo.Nodes
     {
         protected override SIUnit ConvertToMeasurement(double value)
         {
-            return new Area(value / dynSettings.Controller.UnitsManager.UiAreaConversion, dynSettings.Controller.UnitsManager);
+            return new Area(value / SIUnit.UiAreaConversion);
         }
 
         public override void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -204,7 +204,7 @@ namespace Dynamo.Nodes
     {
         protected override SIUnit ConvertToMeasurement(double value)
         {
-            return new Volume(value / dynSettings.Controller.UnitsManager.UiVolumeConversion, dynSettings.Controller.UnitsManager);
+            return new Volume(value / SIUnit.UiVolumeConversion);
         }
 
         public override void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

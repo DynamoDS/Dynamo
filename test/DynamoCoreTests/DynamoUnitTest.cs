@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.FSchemeInterop;
 using Dynamo.Interfaces;
-using Dynamo.Nodes;
-using Dynamo.Units;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynamoUnits;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -54,7 +51,7 @@ namespace Dynamo.Tests
         protected void StartDynamo()
         {
             //create a new instance of the ViewModel
-            Controller = new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), new UnitsManager(), new DefaultWatchHandler(), new PreferenceSettings())
+            Controller = new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), new PreferenceSettings())
             {
                 Testing = true
             };
@@ -64,10 +61,10 @@ namespace Dynamo.Tests
         /// Enables starting Dynamo with a mock IUpdateManager
         /// </summary>
         /// <param name="updateManager"></param>
-        protected void StartDynamo(IUpdateManager updateManager, IUnitsManager unitsManager, IWatchHandler watchHandler, IPreferences preferences)
+        protected void StartDynamo(IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences)
         {
             //create a new instance of the ViewModel
-            Controller = new DynamoController(new ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE, updateManager, unitsManager, watchHandler, preferences)
+            Controller = new DynamoController(new ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE, updateManager, watchHandler, preferences)
             {
                 Testing = true
             };

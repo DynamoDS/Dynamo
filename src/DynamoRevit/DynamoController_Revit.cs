@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using Autodesk.Revit.DB;
@@ -17,9 +16,7 @@ using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Revit;
 using Dynamo.Selection;
-using Dynamo.Units;
 using Dynamo.Utilities;
-using DynamoUnits;
 using Greg;
 using RevitServices.Elements;
 using RevitServices.Persistence;
@@ -65,8 +62,8 @@ namespace Dynamo
             }
         }
 
-        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, RevitServicesUpdater updater, Type viewModelType, string context, IUnitsManager units)
-            : base(env, viewModelType, context, new UpdateManager.UpdateManager(), units, new RevitWatchHandler(), Dynamo.PreferenceSettings.Load())
+        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, RevitServicesUpdater updater, Type viewModelType, string context)
+            : base(env, viewModelType, context, new UpdateManager.UpdateManager(), new RevitWatchHandler(), Dynamo.PreferenceSettings.Load())
         {
             Updater = updater;
 

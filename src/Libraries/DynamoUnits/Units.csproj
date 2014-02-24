@@ -41,7 +41,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IUnitsManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Units.cs" />
   </ItemGroup>
