@@ -124,7 +124,40 @@ namespace DSRevitNodesTests.GeometryConversion
 
             Assert.AreEqual(line.StartPoint, revitArc.GetEndPoint(0).ToPoint());
             Assert.AreEqual(line.EndPoint, revitArc.GetEndPoint(1).ToPoint());
-        } 
+        }
 
+
+        [Test]
+        public void Helix_Basic()
+        {
+            var sp = Point.Origin();
+            var z = Vector.ZAxis();
+            var s = Vector.XAxis().AsPoint();
+            var p = 5.0;
+            var a = 3240;
+
+            var helix = Autodesk.DesignScript.Geometry.Helix.ByAxis(sp, z, s, p, a);
+
+            var revitCurve = helix.ToRevitType();
+
+            Assert.NotNull(revitCurve);
+
+            Assert.IsAssignableFrom<Autodesk.Revit.DB.CylindricalHelix>(revitCurve);
+
+            Assert.AreEqual(helix.StartPoint, revitCurve.GetEndPoint(0).ToPoint());
+            Assert.AreEqual(helix.EndPoint, revitCurve.GetEndPoint(1).ToPoint());
+
+            var revitHelix = (Autodesk.Revit.DB.CylindricalHelix)revitCurve;
+
+            //Assert.AreEqual( );
+
+
+        }
+
+        [Test]
+        public void Ellipse_Basic()
+        {
+
+        } 
     }
 }
