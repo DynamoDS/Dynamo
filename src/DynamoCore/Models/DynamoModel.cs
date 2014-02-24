@@ -517,11 +517,32 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="elementType"> The Type object from which the node can be activated </param>
         /// <param name="nickName"> A nickname for the node.  If null, the nickName is loaded from the NodeNameAttribute of the node </param>
+        /// <param name="signature"> The signature of the function along with parameter information </param>
         /// <param name="guid"> The unique identifier for the node in the workspace. </param>
         /// <returns> The newly instantiated dynNode</returns>
-        public NodeModel CreateNodeInstance(Type elementType, string nickName, Guid guid)
+        public NodeModel CreateNodeInstance(Type elementType, string nickName, string signature, Guid guid)
         {
-            var node = (NodeModel)Activator.CreateInstance(elementType);
+            NodeModel node = null;
+            if (elementType.IsAssignableFrom(typeof(DSVarArgFunction)))
+            {
+                // If we are looking at a 'DSVarArgFunction', we'd better had 
+                // 'signature' readily available, otherwise we have a problem.
+                if (string.IsNullOrEmpty(signature))
+                {
+                    var message = "Unknown function signature";
+                    throw new ArgumentException(message, "signature");
+                }
+
+                // Invoke the constructor that takes in a 'FunctionDescriptor'.
+                var engine = dynSettings.Controller.EngineController;
+                var functionDescriptor = engine.GetFunctionDescriptor(signature);
+                node = (NodeModel)Activator.CreateInstance(
+                    elementType, new object[] { functionDescriptor });
+            }
+            else
+            {
+                node = (NodeModel)Activator.CreateInstance(elementType);
+            }
 
             if (!string.IsNullOrEmpty(nickName))
             {
@@ -738,7 +759,10 @@ namespace Dynamo.Models
                     if (isUpstreamVisAttrib != null)
                         isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
 
-                    NodeModel el = CreateNodeInstance(type, nickname, guid);
+                    // Retrieve optional 'function' attribute (only for DSFunction).
+                    XmlAttribute signatureAttrib = elNode.Attributes["function"];
+                    var signature = signatureAttrib == null ? null : signatureAttrib.Value;
+                    NodeModel el = CreateNodeInstance(type, nickname, signature, guid);
                     el.WorkSpace = CurrentWorkspace;
 
                     el.Load(elNode);
