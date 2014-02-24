@@ -19,12 +19,17 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("Dynamo.Nodes.StringInput-0.6.3.27649.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var cbn = workspace.FirstNodeFromWorkspace<CodeBlockNodeModel>();
+            var cbn = workspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                "dc27fc31-fdad-40b5-906e-bbba9caf43a6");
+
             Assert.AreEqual(2, workspace.Nodes.Count);
             Assert.AreEqual(1, workspace.Connectors.Count);
 
             Assert.NotNull(cbn); // Ensure the StringInput node is migrated.
             Assert.AreEqual("\"First line\\nSecond line with\\ttab\\nThird line with \\\"quotes\\\"\";", cbn.Code);
+
+            RunCurrentModel(); // Execute the opened file.
+            AssertPreviewValue("f6d7a6c3-5df4-45c0-911b-04d39b4c1959", 56);
         }
 
         [Test]
