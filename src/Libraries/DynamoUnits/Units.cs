@@ -923,7 +923,7 @@ namespace Dynamo.Units
     /// <summary>
     /// A volume stored as cubic meters.
     /// </summary>
-    public class Volume : SIUnit, IComparable, IEquatable<Volume>, IFormattable
+    public class Volume : SIUnit, IComparable, IEquatable<Volume>
     {
         public Volume(double value) : base(value){}
 
@@ -1136,11 +1136,6 @@ namespace Dynamo.Units
                 return false;
             }
             return Math.Abs(volume.Value - _value) < SIUnit.Epsilon;
-        }
-
-        public string ToString(string format, IFormatProvider formatProvider)
-        {
-            throw new NotImplementedException();
         }
     }
 
