@@ -69,15 +69,12 @@ namespace Dynamo.Tests
         {
             try
             {
-                var units = new UnitsManager
-                {
-                    HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot,
-                    HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot,
-                    HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot
-                };
+                SIUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
+                SIUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
+                SIUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
                 //create a new instance of the ViewModel
-                Controller = new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), units, new DefaultWatchHandler(), new PreferenceSettings())
+                Controller = new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), new PreferenceSettings())
                     {
                         Testing = true
                     };

@@ -19,7 +19,6 @@ using Dynamo.Units;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynamoUnits;
 using Microsoft.Practices.Prism.ViewModel;
 using NUnit.Framework;
 using String = System.String;
@@ -76,7 +75,6 @@ namespace Dynamo
         public DynamoModel DynamoModel { get; set; }
         public Dispatcher UIDispatcher { get; set; }
         public IUpdateManager UpdateManager { get; set; }
-        public IUnitsManager UnitsManager { get; set; }
         public IWatchHandler WatchHandler { get; set; }
         public IPreferences PreferenceSettings { get; set; }
 
@@ -207,13 +205,13 @@ namespace Dynamo
 
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
-                return new DynamoController(env, typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager(), new UnitsManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
+                return new DynamoController(env, typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
 
-            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager(), new UnitsManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
+            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
         }
 
-        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context, IUpdateManager updateManager, IUnitsManager units, IWatchHandler watchHandler, IPreferences preferences) : 
-            this(env, viewModelType, context, null, updateManager, units, watchHandler, preferences)
+        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context, IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences) : 
+            this(env, viewModelType, context, null, updateManager, watchHandler, preferences)
         {
         }
 
@@ -221,7 +219,7 @@ namespace Dynamo
         ///     Class constructor
         /// </summary>
         public DynamoController(ExecutionEnvironment env,
-            Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager, IUnitsManager units, IWatchHandler watchHandler, IPreferences preferences)
+            Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences)
         {
             DynamoLogger.Instance.StartLogging();
 
@@ -235,11 +233,10 @@ namespace Dynamo
             PreferenceSettings = preferences;
             ((PreferenceSettings) PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
-            UnitsManager = units;
-            UnitsManager.LengthUnit = PreferenceSettings.LengthUnit;
-            UnitsManager.AreaUnit = PreferenceSettings.AreaUnit;
-            UnitsManager.VolumeUnit = PreferenceSettings.VolumeUnit;
-            UnitsManager.NumberFormat = PreferenceSettings.NumberFormat;
+            SIUnit.LengthUnit = PreferenceSettings.LengthUnit;
+            SIUnit.AreaUnit = PreferenceSettings.AreaUnit;
+            SIUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
+            SIUnit.NumberFormat = PreferenceSettings.NumberFormat;
 
             UpdateManager = updateManager;
             UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
@@ -308,16 +305,16 @@ namespace Dynamo
             switch (e.PropertyName)
             {
                 case "LengthUnit":
-                    UnitsManager.LengthUnit = PreferenceSettings.LengthUnit;
+                    SIUnit.LengthUnit = PreferenceSettings.LengthUnit;
                     break;
                 case "AreaUnit":
-                    UnitsManager.AreaUnit = PreferenceSettings.AreaUnit;
+                    SIUnit.AreaUnit = PreferenceSettings.AreaUnit;
                     break;
                 case "VolumeUnit":
-                    UnitsManager.VolumeUnit = PreferenceSettings.VolumeUnit;
+                    SIUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
                     break;
                 case "NumberFormat":
-                    UnitsManager.NumberFormat = PreferenceSettings.NumberFormat;
+                    SIUnit.NumberFormat = PreferenceSettings.NumberFormat;
                     break;
             }
         }

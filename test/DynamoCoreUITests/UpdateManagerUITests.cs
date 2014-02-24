@@ -28,7 +28,7 @@ namespace DynamoCoreUITests
 
             var env = new ExecutionEnvironment();
 
-            Controller = new DynamoController(env, typeof(DynamoViewModel), "None", null, updateManager, new UnitsManager(), new DefaultWatchHandler(), new PreferenceSettings())
+            Controller = new DynamoController(env, typeof(DynamoViewModel), "None", null, updateManager, new DefaultWatchHandler(), new PreferenceSettings())
             {
                 Testing = true
             };
