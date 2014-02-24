@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using Dynamo.FSchemeInterop;
 using Dynamo.Units;
 using Dynamo.Nodes;
 using System.Xml;
@@ -1698,11 +1699,11 @@ namespace Dynamo.Models
 
         protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
-            var t = GetType();
-
-            if (t != typeof(Watch) && !typeof(MathBase).IsAssignableFrom(t))
+            //HACK: This allows us to apply a host units conversion for all 
+            //types in the DynamoRevit library
+            if (GetType().Assembly.GetName().Name == "DynamoRevit")
             {
-                args = Utils.ToFSharpList(args.Select(SIUnit.UnwrapToDoubleWithHostUnitConversion));
+                args = args.Select(Utils.UnwrapToDoubleWithHostUnitConversion).ToFSharpList();
             }
 
             _errorCount = 0;

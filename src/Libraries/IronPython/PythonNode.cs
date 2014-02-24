@@ -73,8 +73,9 @@ namespace DSIronPythonNode
         public PythonNode()
         {
             _script = "# Default imports\n\n"
-                + "#The input to this node will be stored in the IN0...INX variable(s).\n"
-                + "dataEnteringNode = IN0\n\n" + "#Assign your output to the OUT variable\n"
+                + "#The inputs to this node will be stored as a list in the IN variable.\n"
+                + "dataEnteringNode = IN\n\n"
+                + "#Assign your output to the OUT variable\n"
                 + "OUT = 0";
             RegisterAllPorts();
         }

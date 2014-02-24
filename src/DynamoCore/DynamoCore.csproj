@@ -129,7 +129,9 @@ limitations under the License.
   <ItemGroup>
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="Nodes\CustomNodeInstance.cs" />
-    <Compile Include="Interfaces\IDynamoPreferences.cs" />
+    <Compile Include="Interfaces\ILogger.cs" />
+    <Compile Include="Interfaces\IPreferences.cs" />
+    <Compile Include="Interfaces\IWatchHandler.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
@@ -199,6 +201,7 @@ limitations under the License.
     <Compile Include="UpdateManager\BinaryVersion.cs" />
     <Compile Include="UpdateManager\UpdateManager.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
+    <Compile Include="Utilities\MathUtils.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="ViewModels\EndlessGridViewModel.cs" />
     <Compile Include="ViewModels\InfoBubbleViewModel.cs" />
