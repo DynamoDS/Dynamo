@@ -899,7 +899,11 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            base.InitializeUI(nodeUI);
+            // Do not call 'NodeModel.InitializeUI' here since it will cause 
+            // that method to dispatch the call back to 'SetupCustomUIElements'
+            // method, resulting in an eventual stack overflow.
+            // 
+            // base.InitializeUI(nodeUI);
 
             //add a drop down list to the window
             var combo = new ComboBox
