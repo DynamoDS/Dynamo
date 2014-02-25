@@ -532,7 +532,7 @@ namespace Dynamo.Nodes
             XYZ ptB = this.getXYZ(((Value.Container)args[1]).Item);
 
             //Return the calculated distance.
-            return Value.NewContainer(Units.Length.FromFeet(ptA.DistanceTo(ptB), dynSettings.Controller.UnitsManager));
+            return Value.NewContainer(Units.Length.FromFeet(ptA.DistanceTo(ptB)));
         }
     }
 }
