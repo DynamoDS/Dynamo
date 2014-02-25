@@ -785,16 +785,27 @@ y = x.DoEvaluate();
 @"
 def foo(x)
 {
-    return = x == 0 ? 1 : x * Evaluate(foo, { x - 1 });
+    Print(x);
+    return = [Imperative]
+    {
+        if (x == 0)
+        {
+            return=1;
+        }
+        else
+        {
+            return = x * Evaluate(foo, { x - 1 });
+        }
+    }
 }
 
 x = foo(5);
 ";
-            // ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            // thisTest.Verify("x", 120);
+             ExecutionMirror mirror = thisTest.RunScriptSource(code);
+             thisTest.Verify("x", 120);
 
             // This case crashes nunit 
-            Assert.Fail("This test case crashes Nunit");
+            //Assert.Fail("This test case crashes Nunit");
         }
     }
     class MathematicalFunctionMethodsTest
