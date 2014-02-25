@@ -803,11 +803,11 @@ namespace Dynamo.Nodes
                     switch (p.Definition.ParameterType)
                 {
                     case ParameterType.Length:
-                        return Value.NewContainer(Units.Length.FromFeet(p.AsDouble(), dynSettings.Controller.UnitsManager));
+                        return Value.NewContainer(Units.Length.FromFeet(p.AsDouble()));
                     case ParameterType.Area:
-                        return Value.NewContainer(Units.Area.FromSquareFeet(p.AsDouble(), dynSettings.Controller.UnitsManager));
+                        return Value.NewContainer(Units.Area.FromSquareFeet(p.AsDouble()));
                     case ParameterType.Volume:
-                        return Value.NewContainer(Units.Volume.FromCubicFeet(p.AsDouble(), dynSettings.Controller.UnitsManager));
+                        return Value.NewContainer(Units.Volume.FromCubicFeet(p.AsDouble()));
                     default:
                         return Value.NewNumber(p.AsDouble());
                 }
@@ -933,13 +933,13 @@ namespace Dynamo.Nodes
                             switch (param.Definition.ParameterType)
                             {
                                 case ParameterType.Length:
-                                    outPuts[pd] = Value.NewContainer(Units.Length.FromFeet(param.AsDouble(), dynSettings.Controller.UnitsManager));
+                                    outPuts[pd] = Value.NewContainer(Units.Length.FromFeet(param.AsDouble()));
                                     break;
                                 case ParameterType.Area:
-                                    outPuts[pd] = Value.NewContainer(Units.Area.FromSquareFeet(param.AsDouble(), dynSettings.Controller.UnitsManager));
+                                    outPuts[pd] = Value.NewContainer(Units.Area.FromSquareFeet(param.AsDouble()));
                                     break;
                                 case ParameterType.Volume:
-                                    outPuts[pd] = Value.NewContainer(Units.Volume.FromCubicFeet(param.AsDouble(), dynSettings.Controller.UnitsManager));
+                                    outPuts[pd] = Value.NewContainer(Units.Volume.FromCubicFeet(param.AsDouble()));
                                     break;
                                 default:
                                     outPuts[pd] = Value.NewNumber(param.AsDouble());
