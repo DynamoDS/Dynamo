@@ -357,7 +357,6 @@ limitations under the License.
     <Compile Include="VisualizationManager\Visualization.cs" />
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
     <Compile Include="VisualizationManager\VisualizationManagerASM.cs" />
-    <Compile Include="DSEngine\VisualizationManagerDSGeometry.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

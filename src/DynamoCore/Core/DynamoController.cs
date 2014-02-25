@@ -342,7 +342,7 @@ namespace Dynamo
 
             PreferenceSettings.Save();
 
-            VisualizationManager.ClearVisualizations();
+            //VisualizationManager.ClearVisualizations();
 
             dynSettings.Controller.DynamoModel.OnCleanup(null);
             dynSettings.Controller = null;
@@ -666,7 +666,7 @@ namespace Dynamo
 
         public void RequestClearDrawables()
         {
-            VisualizationManager.ClearRenderables();
+            //VisualizationManager.ClearRenderables();
         }
 
         public void CancelRunCmd(object parameter)

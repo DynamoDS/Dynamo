@@ -374,7 +374,9 @@ namespace Dynamo
             if(dynSettings.Controller != null)
                 dynSettings.Controller.DynamoModel.Nodes.ToList().ForEach(x=>x.ResetOldValue());
 
-            VisualizationManager.ClearVisualizations();
+            //VisualizationManager.ClearVisualizations();
+            dynSettings.Controller.DynamoModel.Nodes.Where(x => x.RenderPackage != null).ToList()
+                .ForEach(x => x.RenderPackage = null);
 
             OnRevitDocumentChanged();
         }

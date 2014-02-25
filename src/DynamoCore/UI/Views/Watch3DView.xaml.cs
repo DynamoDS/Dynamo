@@ -287,7 +287,8 @@ namespace Dynamo.Controls
             var sw = new Stopwatch();
             sw.Start();
 
-            var rd = e.Description;
+            
+            //var rd = e.Packages;
 
             HelixPoints = null;
             HelixLines = null;
@@ -300,40 +301,66 @@ namespace Dynamo.Controls
             HelixMeshSelected = null;
             HelixText = null;
 
-            HelixPoints = rd.Points;
-            HelixLines = rd.Lines;
-            HelixPointsSelected = rd.SelectedPoints;
-            HelixLinesSelected = rd.SelectedLines;
-            HelixXAxes = rd.XAxisPoints;
-            HelixYAxes = rd.YAxisPoints;
-            HelixZAxes = rd.ZAxisPoints;
-            HelixMesh = VisualizationManager.MergeMeshes(rd.Meshes);
-            HelixMeshSelected = VisualizationManager.MergeMeshes(rd.SelectedMeshes);
-            HelixText = rd.Text;
+            var pts = new ThreadSafeList<Point3D>();
+            var ptsSelected = new ThreadSafeList<Point3D>();
+            int ptCount = 0;
+            foreach(var package in e.Packages)
+            {
+                if (package.Selected)
+                {
+                    for (int i = 0; i <= package.PointVertices.Count - 3; i += 3)
+                    {
+                        var a = package.PointVertices[i + ptCount];
+                        var b = package.PointVertices[i + 1 + ptCount];
+                        var c = package.PointVertices[i + 2 + ptCount];
+                        ptsSelected.Add(new Point3D(a,b,c));
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i <= package.PointVertices.Count - 3; i += 3)
+                    {
+                        var a = package.PointVertices[i + ptCount];
+                        var b = package.PointVertices[i + 1 + ptCount];
+                        var c = package.PointVertices[i + 2 + ptCount];
+                        pts.Add(new Point3D(a, b, c));
+                    }
+                }
+                ptCount += package.PointVertices.Count;
+            }
+            HelixPoints = pts;
+            HelixPointsSelected = ptsSelected;
 
-            // http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
-            //Dispatcher.CurrentDispatcher.BeginInvoke(
-            //    DispatcherPriority.Background,
-            //    new Action(() =>
-            //    {
-                    var sb = new StringBuilder();
-                    sb.AppendLine();
-                    sb.AppendLine(string.Format("Rendering complete:"));
-                    sb.AppendLine(string.Format("Points: {0}", rd.Points.Count + rd.SelectedPoints.Count));
-                    sb.AppendLine(string.Format("Line segments: {0}", rd.Lines.Count / 2 + rd.SelectedLines.Count / 2));
-                    sb.AppendLine(string.Format("Mesh vertices: {0}",
-                        rd.Meshes.SelectMany(x => x.Positions).Count() +
-                        rd.SelectedMeshes.SelectMany(x => x.Positions).Count()));
-                    sb.Append(string.Format("Mesh faces: {0}",
-                        rd.Meshes.SelectMany(x => x.TriangleIndices).Count() / 3 +
-                        rd.SelectedMeshes.SelectMany(x => x.TriangleIndices).Count() / 3));
-                    //DynamoLogger.Instance.Log(sb.ToString());
-                    Debug.WriteLine(sb.ToString());
-                    sw.Stop();
-                    //DynamoLogger.Instance.Log(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
+            //HelixPoints = rd.Points;
+            //HelixLines = rd.Lines;
+            //HelixPointsSelected = rd.SelectedPoints;
+            //HelixLinesSelected = rd.SelectedLines;
+            //HelixXAxes = rd.XAxisPoints;
+            //HelixYAxes = rd.YAxisPoints;
+            //HelixZAxes = rd.ZAxisPoints;
+            //HelixMesh = VisualizationManager.MergeMeshes(rd.Meshes);
+            //HelixMeshSelected = VisualizationManager.MergeMeshes(rd.SelectedMeshes);
+            //HelixText = rd.Text;
 
-                    Debug.WriteLine(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
-                //}));
+
+            //var sb = new StringBuilder();
+            //sb.AppendLine();
+            //sb.AppendLine(string.Format("Rendering complete:"));
+            //sb.AppendLine(string.Format("Points: {0}", rd.Points.Count + rd.SelectedPoints.Count));
+            //sb.AppendLine(string.Format("Line segments: {0}", rd.Lines.Count / 2 + rd.SelectedLines.Count / 2));
+            //sb.AppendLine(string.Format("Mesh vertices: {0}",
+            //    rd.Meshes.SelectMany(x => x.Positions).Count() +
+            //    rd.SelectedMeshes.SelectMany(x => x.Positions).Count()));
+            //sb.Append(string.Format("Mesh faces: {0}",
+            //    rd.Meshes.SelectMany(x => x.TriangleIndices).Count() / 3 +
+            //    rd.SelectedMeshes.SelectMany(x => x.TriangleIndices).Count() / 3));
+            ////DynamoLogger.Instance.Log(sb.ToString());
+            //Debug.WriteLine(sb.ToString());
+             
+            sw.Stop();
+            //DynamoLogger.Instance.Log(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
+
+            Debug.WriteLine(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
 
         }
 
