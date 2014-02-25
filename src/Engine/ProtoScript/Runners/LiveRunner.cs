@@ -1067,6 +1067,8 @@ namespace ProtoScript.Runners
             staticContext = new ProtoCore.CompileTime.Context();
 
             currentSubTreeList = new Dictionary<Guid, Subtree>();
+
+            CLRModuleType.ClearTypes();
         }
 
         /// <summary>
