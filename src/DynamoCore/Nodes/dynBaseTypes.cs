@@ -5780,10 +5780,15 @@ namespace Dynamo.Nodes
             Value = ExtensionMethods.GetChildNodeStringValue(nodeElement);
         }
 
-        [NodeMigration(from:"0.5.3.0")]
-        public static void Migrate_0530_to_0600(XmlNode nodeElement)
+        [NodeMigration(from: "0.5.3.0", to: "0.6.3.0")]
+        public static NodeMigrationData Migrate_0530_to_0600(NodeMigrationData data)
         {
-            var query = from XmlNode subNode in nodeElement.ChildNodes
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlNode nodeElement = data.MigratedNodes.ElementAt(0);
+            XmlNode newNode = nodeElement.CloneNode(true);
+
+            var query = from XmlNode subNode in newNode.ChildNodes
                         where subNode.Name.Equals(typeof(string).FullName)
                         from XmlAttribute attr in subNode.Attributes
                         where attr.Name.Equals("value")
@@ -5791,9 +5796,12 @@ namespace Dynamo.Nodes
 
             foreach (XmlAttribute attr in query)
                 attr.Value = HttpUtility.HtmlEncode(HttpUtility.UrlDecode(attr.Value));
+
+            migrationData.AppendNode(newNode as XmlElement);
+            return migrationData;
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
