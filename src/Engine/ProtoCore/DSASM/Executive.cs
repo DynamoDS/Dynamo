@@ -2048,17 +2048,17 @@ namespace ProtoCore.DSASM
                     bool allowSSADownstream = false;
                     if (core.Options.ExecuteSSA)
                     {
-                        allowSSADownstream = graphNode.UID > executingGraphNode.UID;
+                        //allowSSADownstream = graphNode.UID > executingGraphNode.UID;
 
-                        //// Is within the same ssa range
-                        //if (exprUID == graphNode.exprUID)
-                        //{
-                        //    // Make sure these are valid subscripts - Assert perhaps?
-                        //    if (graphNode.SSASubscript != ProtoCore.DSASM.Constants.kInvalidIndex && executingGraphNode.SSASubscript != ProtoCore.DSASM.Constants.kInvalidIndex)
-                        //    {
-                        //        allowSSADownstream = graphNode.SSASubscript > executingGraphNode.SSASubscript;
-                        //    }
-                        //}
+                        // Is within the same ssa range
+                        if (exprUID == graphNode.exprUID)
+                        {
+                            // Make sure these are valid subscripts - Assert perhaps?
+                            if (graphNode.SSASubscript != ProtoCore.DSASM.Constants.kInvalidIndex && executingGraphNode.SSASubscript != ProtoCore.DSASM.Constants.kInvalidIndex)
+                            {
+                                allowSSADownstream = graphNode.SSASubscript > executingGraphNode.SSASubscript;
+                            }
+                        }
                     }
 
 
@@ -2073,14 +2073,14 @@ namespace ProtoCore.DSASM
 
                     // TODO Jun: Optimization - Reimplement update delta evaluation using registers
                     //if (IsNodeModified(EX, FX))
-                    //bool isLastSSAAssignment = (exprUID == graphNode.exprUID) && graphNode.IsLastNodeInSSA && !graphNode.isReturn;
+                    bool isLastSSAAssignment = (exprUID == graphNode.exprUID) && graphNode.IsLastNodeInSSA && !graphNode.isReturn;
                     if (exprUID != graphNode.exprUID && modBlkId != graphNode.modBlkUID)
                     {
                         UpdateModifierBlockDependencyGraph(graphNode);
                     }
                     else if (allowSSADownstream
                               || isSSAAssign
-                                /*|| isLastSSAAssignment*/
+                                || isLastSSAAssignment
                               || (exprUID != graphNode.exprUID
                                  && modBlkId == Constants.kInvalidIndex
                                  && graphNode.modBlkUID == Constants.kInvalidIndex)
@@ -8176,16 +8176,7 @@ namespace ProtoCore.DSASM
                     }
                 }
             }
-
-            // TODO Jun: Whats the main diff again on non-delta execution???
-            if (core.Options.IsDeltaExecution)
-            {
-                UpdateDependencyGraph(exprID, modBlkID, isSSA, Properties.executingGraphNode);
-            }
-            else
-            {
-                UpdateGraph(exprID, modBlkID, isSSA);
-            }
+            UpdateGraph(exprID, modBlkID, isSSA);
 
             // Get the next graph to be executed
             SetupNextExecutableGraph(fi, ci);
