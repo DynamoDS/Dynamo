@@ -652,6 +652,13 @@ namespace Dynamo.Nodes
 
             return Value.NewDummy("wrote image file"); //NewContainer(image);
         }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+                "AbstractPlanView.ExportAsImage", "AbstractPlanView.ExportAsImage@string");
+        }
     }
 
     [NodeName("Watch Image")]
