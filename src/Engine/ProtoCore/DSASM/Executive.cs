@@ -1376,7 +1376,7 @@ namespace ProtoCore.DSASM
                     if (graphNode.isReturn || graphNode.updateNodeRefList[0].nodeList.Count > 0)
                     {
                         graphNode.isDirty = false;
-                        if (core.Options.FullSSA)
+                        if (core.Options.ExecuteSSA)
                         {
                             ProtoCore.AssociativeEngine.Utils.SetFinalGraphNodeRuntimeDependents(graphNode);
                         }
@@ -1669,7 +1669,7 @@ namespace ProtoCore.DSASM
                     int exprUID = node.exprUID;
                     int modBlkId = node.modBlkUID;
                     bool isSSAAssign = node.IsSSANode();
-                    if (core.Options.FullSSA)
+                    if (core.Options.ExecuteSSA)
                     {
                         UpdateDependencyGraph(exprUID, modBlkId, isSSAAssign, node.lastGraphNode, true);
                     }
@@ -1699,7 +1699,7 @@ namespace ProtoCore.DSASM
                 // Remove this condition when full SSA is enabled
                 bool isssa = (!Properties.executingGraphNode.IsSSANode() && Properties.executingGraphNode.DependsOnTempSSA());
 
-                if (core.Options.FullSSA)
+                if (core.Options.ExecuteSSA)
                 {
                     isssa = Properties.executingGraphNode.IsSSANode();
                 }
@@ -1964,7 +1964,7 @@ namespace ProtoCore.DSASM
                 //      This is clarifying the intention that if the graphnode is within the same SSA expression, we still allow update
                 //
                 bool allowUpdateWithinSSA = false;
-                if (core.Options.FullSSA)
+                if (core.Options.ExecuteSSA)
                 {
                     allowUpdateWithinSSA = true;
                     isSSAAssign = false; // Remove references to this when ssa flag is removed
@@ -1996,7 +1996,7 @@ namespace ProtoCore.DSASM
                     }
 
                     // Jun: only allow update to other expr id's (other statements) if this is the final SSA assignment
-                    if (core.Options.FullSSA && !propertyChanged)
+                    if (core.Options.ExecuteSSA && !propertyChanged)
                     {
                         if (null != Properties.executingGraphNode && Properties.executingGraphNode.IsSSANode())
                         {
@@ -2046,10 +2046,21 @@ namespace ProtoCore.DSASM
                     // Overrride this if allowing within SSA update
                     // TODO Jun: Remove this code when SSA is completely enabled
                     bool allowSSADownstream = false;
-                    if (core.Options.FullSSA)
+                    if (core.Options.ExecuteSSA)
                     {
-                        allowSSADownstream = graphNode.UID > executingGraphNode.UID;
+                        //allowSSADownstream = graphNode.UID > executingGraphNode.UID;
+
+                        // Is within the same ssa range
+                        if (exprUID == graphNode.exprUID)
+                        {
+                            // Make sure these are valid subscripts - Assert perhaps?
+                            if (graphNode.SSASubscript != ProtoCore.DSASM.Constants.kInvalidIndex && executingGraphNode.SSASubscript != ProtoCore.DSASM.Constants.kInvalidIndex)
+                            {
+                                allowSSADownstream = graphNode.SSASubscript > executingGraphNode.SSASubscript;
+                            }
+                        }
                     }
+
 
                     // Comment Jun: 
                     //      If the triggered dependent graphnode is LHS 
@@ -2062,12 +2073,14 @@ namespace ProtoCore.DSASM
 
                     // TODO Jun: Optimization - Reimplement update delta evaluation using registers
                     //if (IsNodeModified(EX, FX))
+                    bool isLastSSAAssignment = (exprUID == graphNode.exprUID) && graphNode.IsLastNodeInSSA && !graphNode.isReturn;
                     if (exprUID != graphNode.exprUID && modBlkId != graphNode.modBlkUID)
                     {
                         UpdateModifierBlockDependencyGraph(graphNode);
                     }
                     else if (allowSSADownstream
                               || isSSAAssign
+                                || isLastSSAAssignment
                               || (exprUID != graphNode.exprUID
                                  && modBlkId == Constants.kInvalidIndex
                                  && graphNode.modBlkUID == Constants.kInvalidIndex)
@@ -2252,7 +2265,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            if (core.Options.FullSSA)
+            if (core.Options.ExecuteSSA)
             {
                 ProtoCore.AssociativeEngine.Utils.SetFinalGraphNodeRuntimeDependents(entryNode);
             }
@@ -2292,7 +2305,7 @@ namespace ProtoCore.DSASM
 
             Properties.executingGraphNode = entryNode;
 
-            if (core.Options.FullSSA)
+            if (core.Options.ExecuteSSA)
             {
                 ProtoCore.AssociativeEngine.Utils.SetFinalGraphNodeRuntimeDependents(entryNode);
             }
@@ -4572,7 +4585,7 @@ namespace ProtoCore.DSASM
                     && !sn.name.Equals(Constants.kWatchResultVar);
                     /*&& !CoreUtils.IsSSATemp(sn.name)*/
 
-                if (core.Options.GCTempVarsOnDebug && core.Options.FullSSA)
+                if (core.Options.GCTempVarsOnDebug && core.Options.ExecuteSSA)
                 {
                     if (core.Options.IDEDebugMode)
                     {
@@ -4594,7 +4607,7 @@ namespace ProtoCore.DSASM
                     }
                     if (n >= 0)
                     {
-                        if (core.Options.FullSSA)
+                        if (core.Options.ExecuteSSA)
                         { 
                             // if this block is not the outer most one, gc all the local variables 
                             // if this block is the outer most one, gc the temp variables only
@@ -4686,7 +4699,7 @@ namespace ProtoCore.DSASM
                 bool allowGC = symbol.functionIndex == functionIndex
                     && !symbol.name.Equals(ProtoCore.DSASM.Constants.kWatchResultVar);
 
-                if (core.Options.GCTempVarsOnDebug && core.Options.FullSSA)
+                if (core.Options.GCTempVarsOnDebug && core.Options.ExecuteSSA)
                 {
                     if (core.Options.IDEDebugMode)
                     {
@@ -5407,7 +5420,7 @@ namespace ProtoCore.DSASM
                 tempSvData = coercedValue;
                 EX = PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
 
-                if (core.Options.FullSSA)
+                if (core.Options.ExecuteSSA)
                 {
                     if (!isSSANode)
                     {
@@ -7528,7 +7541,7 @@ namespace ProtoCore.DSASM
 
             ProcedureNode procNode = GetProcedureNode(blockId, ci, fi);
 
-            if (core.Options.FullSSA)
+            if (core.Options.ExecuteSSA)
             {
                 if (core.Options.GCTempVarsOnDebug && core.Options.IDEDebugMode)
                 {
@@ -8137,7 +8150,7 @@ namespace ProtoCore.DSASM
                         istream.xUpdateList.Add(Properties.executingGraphNode.updateNodeRefList[0]);
                     }
                 }
-                if (core.Options.FullSSA)
+                if (core.Options.ExecuteSSA)
                 {
                     if (core.Options.GCTempVarsOnDebug && core.Options.IDEDebugMode)
                     {
@@ -8150,8 +8163,8 @@ namespace ProtoCore.DSASM
                         }
                     }
                 }
-                
-                if (core.Options.FullSSA)
+
+                if (core.Options.ExecuteSSA)
                 {
                     if (!Properties.executingGraphNode.IsSSANode())
                     {
@@ -8163,16 +8176,7 @@ namespace ProtoCore.DSASM
                     }
                 }
             }
-
-            // TODO Jun: Whats the main diff again on non-delta execution???
-            if (core.Options.IsDeltaExecution)
-            {
-                UpdateDependencyGraph(exprID, modBlkID, isSSA, Properties.executingGraphNode);
-            }
-            else
-            {
-                UpdateGraph(exprID, modBlkID, isSSA);
-            }
+            UpdateGraph(exprID, modBlkID, isSSA);
 
             // Get the next graph to be executed
             SetupNextExecutableGraph(fi, ci);

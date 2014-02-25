@@ -31,22 +31,20 @@ namespace Revit.GeometryConversion
         /// </summary>
         /// <param name="crv"></param>
         /// <returns></returns>
-        private static Autodesk.Revit.DB.Curve Convert(Autodesk.DesignScript.Geometry.NurbsCurve crv)
+        private static Autodesk.Revit.DB.NurbSpline Convert(Autodesk.DesignScript.Geometry.NurbsCurve crv)
         {
-            // TODO PB: degree elevation algorithm
-
-            if (crv.Degree < 2)
+            if (crv.Degree <= 2)
             {
-                throw new Exception("No conversion");
+                throw new Exception("Could not convert the curve to a Revit curve");
             }
 
             // presumably checking if the curve is circular is quite expensive, we don't do it
             return Autodesk.Revit.DB.NurbSpline.Create(crv.ControlPoints().ToXyzs(),
-               Enumerable.Repeat(1.0, crv.ControlPoints().Count()).ToList(),
+                crv.Weights(),
                 crv.Knots(),
                 crv.Degree,
                 crv.IsClosed,
-                false);
+                crv.IsRational );
         }
 
         /// <summary>
@@ -56,19 +54,16 @@ namespace Revit.GeometryConversion
         /// <returns></returns>
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Arc arc)
         {
-            // This is not the way to do this, but ProtoGeometry is so broken it's the only thing that works
-            var p0 = arc.PointAtParameter(0);
-            var p05 = arc.PointAtParameter(0.5);
-            var p1 = arc.PointAtParameter(1);
+            var center = arc.CenterPoint.ToXyz();
+            var n = arc.Normal.ToXyz();
+            n.Normalize();
+            var sp = arc.StartPoint.ToXyz();
+            var x = sp - center;
+            x.Normalize();
+            var y = n.CrossProduct(x);
 
-            return Autodesk.Revit.DB.Arc.Create(p0.ToXyz(), p1.ToXyz(), p05.ToXyz());
-
-            //var center = arc.CenterPoint;
-            //var xaxis = arc.ContextCoordinateSystem.XAxis;
-            //var yaxis = arc.ContextCoordinateSystem.YAxis;
-            //var plane = new Autodesk.Revit.DB.Plane(xaxis.ToXyz(), yaxis.ToXyz(), center.ToXyz());
-
-            //return Autodesk.Revit.DB.Arc.Create(plane, arc.Radius, arc.StartAngle, arc.EndAngle);
+            var plane = new Autodesk.Revit.DB.Plane(x, y, center);
+            return Autodesk.Revit.DB.Arc.Create(plane, arc.Radius, 0, arc.SweepAngle.ToRadians());
         }
 
         /// <summary>
@@ -78,26 +73,16 @@ namespace Revit.GeometryConversion
         /// <returns></returns>
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Circle circ)
         {
-            // This is a mess, but ProtoGeometry is so broken it's the only thing that works
-            var p0 = circ.PointAtParameter(0);
-            var p075 = circ.PointAtParameter(0.75);
-            var p025 = circ.PointAtParameter(0.25);
-            var p05 = circ.PointAtParameter(0.5);
+            var center = circ.CenterPoint.ToXyz();
+            var n = circ.Normal.ToXyz();
+            n.Normalize();
+            var sp = circ.StartPoint.ToXyz();
+            var x = sp - center;
+            x.Normalize();
+            var y = n.CrossProduct(x);
 
-            var xaxis = Vector.ByTwoPoints(p0, p05).Normalized();
-            var yaxis = Vector.ByTwoPoints(p025, p075).Normalized();
-
-            return Autodesk.Revit.DB.Arc.Create(circ.CenterPoint.ToXyz(), circ.Radius, 0, 2*Math.PI, xaxis.ToXyz(),
-                yaxis.ToXyz());
-
-            //var center = circ.CenterPoint;
-            //var xaxis = circ.ContextCoordinateSystem.XAxis;
-            //var yaxis = circ.ContextCoordinateSystem.YAxis;
-            //var plane = new Autodesk.Revit.DB.Plane(xaxis.ToXyz(), yaxis.ToXyz(), center.ToXyz());
-            return Autodesk.Revit.DB.Arc.Create(circ.PointAtParameter(0.0).ToXyz(),
-                circ.PointAtParameter(0.5).ToXyz(), circ.PointAtParameter(1.0).ToXyz());
-            
-            //return Autodesk.Revit.DB.Arc.Create(plane, circ.Radius, 0, 2*System.Math.PI);
+            var plane = new Autodesk.Revit.DB.Plane(x, y, center);
+            return Autodesk.Revit.DB.Arc.Create(plane, circ.Radius, 0, 2 * System.Math.PI);
         }
 
         /// <summary>
@@ -108,6 +93,43 @@ namespace Revit.GeometryConversion
         private static Autodesk.Revit.DB.Line Convert(Autodesk.DesignScript.Geometry.Line line)
         {
             return Autodesk.Revit.DB.Line.CreateBound(line.StartPoint.ToXyz(), line.EndPoint.ToXyz());
+        }
+
+        /// <summary>
+        /// Convert a DS Helix to a Revit Helix
+        /// </summary>
+        /// <param name="crv"></param>
+        /// <returns></returns>
+        private static Autodesk.Revit.DB.CylindricalHelix Convert(Autodesk.DesignScript.Geometry.Helix crv)
+        {
+            var sp = crv.StartPoint.ToXyz();
+            var ap = crv.AxisPoint.ToXyz();
+            var ad = crv.AxisDirection.ToXyz();
+            ad.Normalize();
+            var x = sp - ap;
+            x.Normalize();
+            var p = crv.Pitch;
+            var a = crv.Angle.ToRadians();
+
+            return Autodesk.Revit.DB.CylindricalHelix.Create(sp, crv.Radius, x, ad, p, 0, a);
+        }
+
+        /// <summary>
+        /// Convert a DS Ellipse to a Revit ellipse
+        /// </summary>
+        /// <param name="crv"></param>
+        /// <returns></returns>
+        private static Autodesk.Revit.DB.Ellipse Convert(Autodesk.DesignScript.Geometry.Ellipse crv)
+        {
+            var center = crv.CenterPoint.ToXyz();
+            var x = crv.MajorAxis.ToXyz();
+            x.Normalize();
+            var y = crv.MinorAxis.ToXyz();
+            y.Normalize();
+            var xw = crv.MajorAxis.Length;
+            var yw = crv.MinorAxis.Length;
+
+            return Autodesk.Revit.DB.Ellipse.Create(center, xw, yw, x, y, 0, 2*Math.PI);
         }
 
     }

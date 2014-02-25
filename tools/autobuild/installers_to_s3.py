@@ -20,7 +20,7 @@ def main():
 	(options, args) = parser.parse_args()
 
 	repo_root = options.root
-	installer_dir =  form_path( [repo_root, 'scripts/install'] )
+	installer_dir =  form_path( [repo_root, 'tools/install'] )
 	installer_bin_dir = 'Installers'
 
 	print "Publishing to s3"
