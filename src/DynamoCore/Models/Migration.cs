@@ -468,6 +468,19 @@ namespace Dynamo.Models
             return cloned;
         }
 
+        public static XmlElement CloneAndChangeName(XmlElement element, string type, string nickname)
+        {
+            XmlDocument document = element.OwnerDocument;
+            XmlElement cloned = document.CreateElement(type);
+
+            foreach (XmlAttribute attribute in element.Attributes)
+                cloned.SetAttribute(attribute.Name, attribute.Value);
+
+            cloned.SetAttribute("type", type);
+            cloned.SetAttribute("nickname", nickname);
+            return cloned;
+        }
+
         public static void SetFunctionSignature(XmlElement element,
             string assemblyName, string methodName, string signature)
         {
