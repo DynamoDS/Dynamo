@@ -62,7 +62,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(vd);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSRevitNodes.dll", "DraftingView.ByName", "DraftingView.ByName@string");
@@ -351,7 +351,7 @@ namespace Dynamo.Nodes
             isPerspective = false;
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -410,7 +410,7 @@ namespace Dynamo.Nodes
             isPerspective = true;
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -542,7 +542,7 @@ namespace Dynamo.Nodes
             return view;
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSRevitNodes.dll",
@@ -568,7 +568,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(DocumentManager.GetInstance().CurrentUIDocument.ActiveView);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSRevitNodes.dll",
@@ -653,7 +653,7 @@ namespace Dynamo.Nodes
             return Value.NewDummy("wrote image file"); //NewContainer(image);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSRevitNodes.dll",
@@ -936,7 +936,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(sheet);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSRevitNodes.dll",

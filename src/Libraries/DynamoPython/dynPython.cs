@@ -477,7 +477,7 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             System.Xml.XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
@@ -541,7 +541,7 @@ namespace Dynamo.Nodes
             return value;
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             System.Xml.XmlElement xmlNode = data.MigratedNodes.ElementAt(0);

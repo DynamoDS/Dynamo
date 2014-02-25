@@ -313,6 +313,17 @@ namespace ProtoFFITests
         }
 
         [Test]
+        public void TestCtor()
+        {
+            String code =
+            @"               value = Dummy.Return100();            ";
+            Type dummy = Type.GetType("ProtoFFITests.Dummy");
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ValidationData[] data = { new ValidationData { ValueName = "value", ExpectedValue = (Int64)100, BlockIndex = 0 } };
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
         public void TestInheritanceBaseClassMethodCall()
         {
             String code =

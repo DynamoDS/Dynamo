@@ -34,7 +34,7 @@ namespace Dynamo.Nodes
             return Value.NewNumber(c.GetBrightness());
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.Brightness", "DSColor.Brightness@DSColor");
@@ -63,7 +63,7 @@ namespace Dynamo.Nodes
             return Value.NewNumber(c.GetSaturation());
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.Saturation", "DSColor.Saturation@DSColor");
@@ -99,7 +99,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(System.Drawing.Color.FromArgb(a, r, g, b));
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.ByARGB",
@@ -148,7 +148,7 @@ namespace Dynamo.Nodes
             outPuts[_blueOut] = Value.NewNumber(c.B);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.Components",
@@ -178,7 +178,7 @@ namespace Dynamo.Nodes
             return Value.NewNumber(c.GetHue());
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.Hue", "DSColor.Hue@DSColor");
@@ -248,8 +248,12 @@ namespace Dynamo.Nodes
 
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            base.InitializeUI(nodeUI);
-            
+            // Do not call 'NodeModel.InitializeUI' here since it will cause 
+            // that method to dispatch the call back to 'SetupCustomUIElements'
+            // method, resulting in an eventual stack overflow.
+            // 
+            // base.InitializeUI(nodeUI);
+
             var drawPlane = new Image
                 {
                     Stretch = Stretch.Fill,
@@ -308,7 +312,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.ColorRange",
