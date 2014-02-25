@@ -395,7 +395,7 @@ namespace ProtoTest.Associative
         public void BIM23_LoadCSV()
         {
             String code =
-@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set1/test1.csv"";b = ImportFromCSV(a);c = ImportFromCSV(a, false);d = ImportFromCSV(a, true);x = b[0][2];y = c[0][2];z = d[0][2];";
+@"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv"";b = ImportFromCSV(a);c = ImportFromCSV(a, false);d = ImportFromCSV(a, true);x = b[0][2];y = c[0][2];z = d[0][2];";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 3.0);
             thisTest.Verify("y", 3.0);
