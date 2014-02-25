@@ -1,7 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using RevitServices.Persistence;
 
-namespace Revit.Application
+namespace Revit.Elements
 {
     public class Category
     {
