@@ -41,7 +41,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(pt);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.ByCoordinates",
@@ -93,7 +93,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(FromPolarCoordinates(r, theta, phi));
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -173,7 +173,7 @@ namespace Dynamo.Nodes
 
             ToPolarCoordinates(xyz, out r, out theta, out phi);
 
-            outPuts[_rPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(r, dynSettings.Controller.UnitsManager));
+            outPuts[_rPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(r));
             outPuts[_thetaPort] = FScheme.Value.NewNumber(theta);
             outPuts[_offsetPort] = FScheme.Value.NewNumber(phi);
         }
@@ -223,7 +223,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(FromPolarCoordinates(r, theta, phi));
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -344,7 +344,7 @@ namespace Dynamo.Nodes
 
             ToSphericalCoordinates(xyz, out r, out theta, out phi);
 
-            outPuts[_rPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(r, dynSettings.Controller.UnitsManager));
+            outPuts[_rPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(r));
             outPuts[_thetaPort] = FScheme.Value.NewNumber(theta);
             outPuts[_phiPort] = FScheme.Value.NewNumber(phi);
         }
@@ -415,7 +415,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(point.Position);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.ReferencePoint", "Point.ReferencePoint");
@@ -451,9 +451,9 @@ namespace Dynamo.Nodes
             var y = xyz.Y;
             var z = xyz.Z;
 
-            outPuts[_xPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(x, dynSettings.Controller.UnitsManager));
-            outPuts[_yPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(y, dynSettings.Controller.UnitsManager));
-            outPuts[_zPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(z, dynSettings.Controller.UnitsManager));
+            outPuts[_xPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(x));
+            outPuts[_yPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(y));
+            outPuts[_zPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(z));
         }
     }
 
@@ -474,10 +474,10 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             var xyz = (XYZ) ((FScheme.Value.Container) args[0]).Item;
-            return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.X, dynSettings.Controller.UnitsManager));
+            return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.X));
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.X", "Point.X");
@@ -501,10 +501,10 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             var xyz = (XYZ) ((FScheme.Value.Container) args[0]).Item;
-            return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.Y, dynSettings.Controller.UnitsManager));
+            return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.Y));
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.Y", "Point.Y");
@@ -528,10 +528,10 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             var xyz = (XYZ) ((FScheme.Value.Container) args[0]).Item;
-            return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.Z, dynSettings.Controller.UnitsManager));
+            return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.Z));
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.Z", "Point.Z");
@@ -558,10 +558,10 @@ namespace Dynamo.Nodes
             var a = (XYZ)((FScheme.Value.Container)args[0]).Item;
             var b = (XYZ)((FScheme.Value.Container)args[1]).Item;
 
-            return FScheme.Value.NewContainer(Units.Length.FromFeet(a.DistanceTo(b), dynSettings.Controller.UnitsManager));
+            return FScheme.Value.NewContainer(Units.Length.FromFeet(a.DistanceTo(b)));
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "Geometry.DistanceTo", "Geometry.DistanceTo@Geometry");
@@ -585,10 +585,10 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             var xyz = (XYZ) ((FScheme.Value.Container) args[0]).Item;
-            return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.GetLength(), dynSettings.Controller.UnitsManager));
+            return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.GetLength()));
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.Length", "Vector.Length");
@@ -614,7 +614,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(((XYZ)((FScheme.Value.Container)args[0]).Item).Normalize());
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.Normalized", "Vector.Normalized");
@@ -882,7 +882,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(a.CrossProduct(b));
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.Cross", "Vector.Cross@Vector");
@@ -912,7 +912,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewNumber(a.DotProduct(b));
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.Dot", "Vector.Dot@Vector");
@@ -942,7 +942,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer((b - a).Normalize());
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -1372,7 +1372,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(result);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1423,7 +1423,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(pt);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);

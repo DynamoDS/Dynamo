@@ -24,6 +24,11 @@ namespace FFITarget
             this.IntVal = intVal;
         }
 
+        public ClassFunctionality(int i1, int i2, int i3)
+        {
+            IntVal = i1 + i2 + i3;
+        }
+
         public bool IsEqualTo(ClassFunctionality cf)
         {
             return this.IntVal == cf.IntVal;

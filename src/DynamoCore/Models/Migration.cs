@@ -291,7 +291,7 @@ namespace Dynamo.Models
         /// work).
         /// </summary>
         /// <param name="version">The version string to convert into Version 
-        /// object. Valid examples include "0.6.3" and "0.6.3.20048".</param>
+        /// object. Valid examples include "0.6.3.0" and "0.6.3.20048".</param>
         /// <returns>Returns the Version object representation of 'version' 
         /// argument, except without the 'revision number'.</returns>
         /// 
