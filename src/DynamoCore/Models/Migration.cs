@@ -397,6 +397,25 @@ namespace Dynamo.Models
             return dstElement;
         }
 
+        public static XmlElement CreateVarArgFunctionNodeFrom(XmlElement srcElement)
+        {
+            if (srcElement == null)
+                throw new ArgumentNullException("srcElement");
+
+            int childNumber = srcElement.ChildNodes.Count;
+            string childNumberString = childNumber.ToString();
+
+            XmlDocument document = srcElement.OwnerDocument;
+            XmlElement dstElement = document.CreateElement("Dynamo.Nodes.DSVarArgFunction");
+
+            foreach (XmlAttribute attribute in srcElement.Attributes)
+                dstElement.SetAttribute(attribute.Name, attribute.Value);
+
+            dstElement.SetAttribute("type", "Dynamo.Nodes.DSVarArgFunction");
+            dstElement.SetAttribute("inputcount", childNumberString);
+            return dstElement;
+        }
+
         /// <summary>
         /// Call this method to create an empty Code Block node, with all 
         /// attributes carried over from an existing src XmlElement.
