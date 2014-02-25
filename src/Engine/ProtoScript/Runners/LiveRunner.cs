@@ -924,6 +924,7 @@ namespace ProtoScript.Runners
                                 {
                                     if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
                                     {
+                                        bnode.InheritID(prevBinaryNode.ID);
                                         bnode.exprUID = prevBinaryNode.exprUID;
                                     }
                                 }
@@ -1035,6 +1036,7 @@ namespace ProtoScript.Runners
                     {
                         foreach (var gnode in runnerCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
                         {
+                            //if (gnode.exprUID == bNode.exprUID)
                             if (gnode.UID == bNode.ID)
                             {
                                 gnode.isActive = false;
