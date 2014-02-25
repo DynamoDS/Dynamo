@@ -138,6 +138,65 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CreateVarArgFunctionNodeFrom00()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                MigrationManager.CreateFunctionNodeFrom(null);
+            });
+        }
+
+        [Test]
+        public void CreateVarArgFunctionNodeFrom01()
+        {
+            XmlElement srcElement = xmlDocument.CreateElement("Element");
+            XmlElement dstElement = MigrationManager.CreateVarArgFunctionNodeFrom(srcElement);
+
+            Assert.IsNotNull(dstElement);
+            Assert.IsNotNull(dstElement.Attributes);
+            Assert.AreEqual(2, dstElement.Attributes.Count);
+            Assert.AreEqual("Dynamo.Nodes.DSVarArgFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("0", dstElement.Attributes["inputcount"].Value);
+        }
+
+        [Test]
+        public void CreateVarArgFunctionNodeFrom02()
+        {
+            XmlElement srcElement = xmlDocument.CreateElement("Element");
+            srcElement.SetAttribute("one", "1");
+            srcElement.SetAttribute("two", "2");
+            srcElement.SetAttribute("three", "3");
+
+            XmlElement dstElement = MigrationManager.CreateVarArgFunctionNodeFrom(srcElement);
+
+            Assert.IsNotNull(dstElement);
+            Assert.IsNotNull(dstElement.Attributes);
+            Assert.AreEqual(5, dstElement.Attributes.Count);
+            Assert.AreEqual("1", dstElement.Attributes["one"].Value);
+            Assert.AreEqual("2", dstElement.Attributes["two"].Value);
+            Assert.AreEqual("3", dstElement.Attributes["three"].Value);
+            Assert.AreEqual("Dynamo.Nodes.DSVarArgFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("0", dstElement.Attributes["inputcount"].Value);
+        }
+
+        [Test]
+        public void CreateVarArgFunctionNodeFrom03()
+        {
+            XmlElement srcElement = xmlDocument.CreateElement("Element");
+            XmlElement input1 = xmlDocument.CreateElement("Element");
+            XmlElement input2 = xmlDocument.CreateElement("Element");
+            srcElement.PrependChild(input1);
+            srcElement.PrependChild(input2);
+            XmlElement dstElement = MigrationManager.CreateVarArgFunctionNodeFrom(srcElement);
+
+            Assert.IsNotNull(dstElement);
+            Assert.IsNotNull(dstElement.Attributes);
+            Assert.AreEqual(2, dstElement.Attributes.Count);
+            Assert.AreEqual("Dynamo.Nodes.DSVarArgFunction", dstElement.Attributes["type"].Value);
+            Assert.AreEqual("2", dstElement.Attributes["inputcount"].Value);
+        }
+
+        [Test]
         public void TestCreateCodeBlockNodeFrom00()
         {
             Assert.Throws<ArgumentNullException>(() =>
