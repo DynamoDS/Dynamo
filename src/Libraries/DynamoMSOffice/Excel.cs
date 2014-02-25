@@ -154,7 +154,7 @@ namespace Dynamo.Nodes
             this.MarkDirty();
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSOffice.dll", "Excel.NewExcelWorkbook",
@@ -203,7 +203,7 @@ namespace Dynamo.Nodes
             this.MarkDirty();
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSOffice.dll", "Excel.ReadExcelFile",
@@ -232,7 +232,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewList(Utils.SequenceToFSharpList(l));
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSOffice.dll", "Excel.GetWorksheetsFromExcelWorkbook",
@@ -268,7 +268,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(sheet);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSOffice.dll", "Excel.GetExcelWorksheetByName",
@@ -336,7 +336,7 @@ namespace Dynamo.Nodes
                 : FScheme.Value.NewString(element.ToString());
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSOffice.dll", "Excel.GetDataFromExcelWorksheet",
@@ -462,7 +462,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(worksheet);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSOffice.dll", "Excel.WriteDataToExcelWorksheet",
@@ -497,7 +497,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(worksheet);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSOffice.dll", "Excel.AddExcelWorksheetToWorkbook",
@@ -547,7 +547,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(wb);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSOffice.dll", "Excel.SaveAsExcelWorkbook",

@@ -331,7 +331,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -397,7 +397,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(result);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByRevolve", "Solid.ByRevolve@Curve[],CoordinateSystem,double,double");
@@ -555,7 +555,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(result);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByExtrusion", "Solid.ByExtrusion@Curve[],Vector,double");
@@ -816,7 +816,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(result);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByBooleanDifference",
@@ -851,7 +851,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(result);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByBooleanUnion",
@@ -886,7 +886,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(result);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByBooleanIntersection",
@@ -1012,7 +1012,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(mySolid);
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSRevitNodes.dll",
@@ -1072,7 +1072,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(CylinderByAxisOriginRadiusHeight(axis, origin, radius, height));
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -1160,7 +1160,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(SphereByCenterRadius(center, radius));
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.Sphere", "Solid.Sphere@Point,double");
@@ -1229,7 +1229,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(TorusByAxisOriginRadiusCrossSectionRadius(axis, center, radius, sectionradius));
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.Torus", "Solid.Torus@Vector,Point,double,double");
@@ -1305,7 +1305,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(AlignedBoxByTwoCorners(bottom, top));
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.BoxByTwoCorners",
@@ -1352,7 +1352,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(AlignedBoxByCenterAndDimensions(center, x, y, z));
         }
 
-        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.BoxByCenterAndDimensions",
