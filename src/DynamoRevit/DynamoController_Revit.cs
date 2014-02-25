@@ -774,13 +774,7 @@ namespace Dynamo
                 TransMode = TransactionMode.Automatic; //Automatic transaction control
                 Debug.WriteLine("Adding a run to the idle stack.");
                 InIdleThread = true; //Now in the idle thread.
-                RevThread.IdlePromise.ExecuteOnIdleSync(() =>
-                {
-                    // Clear the active document.  This is a temporary fix 
-                    // until trace cleanup is in place
-                    DocumentManager.GetInstance().ClearCurrentDocument();
-                    base.Run();
-                });
+                RevThread.IdlePromise.ExecuteOnIdleSync(() => base.Run());
             }
             else
             {
