@@ -50,6 +50,14 @@ namespace ProtoCore.Utils
             {
                 return new ProtoCore.AST.AssociativeAST.FunctionDotCallNode(rhsNode as ProtoCore.AST.AssociativeAST.FunctionDotCallNode);
             }
+            else if (rhsNode is ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode)
+            {
+                return new ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode(rhsNode as ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode);
+            }
+            else if (rhsNode is ProtoCore.AST.AssociativeAST.ArgumentSignatureNode)
+            {
+                return new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode(rhsNode as ProtoCore.AST.AssociativeAST.ArgumentSignatureNode);
+            }
             else if (rhsNode is ProtoCore.AST.AssociativeAST.ExprListNode)
             {
                 return new ProtoCore.AST.AssociativeAST.ExprListNode(rhsNode as ProtoCore.AST.AssociativeAST.ExprListNode);
