@@ -498,7 +498,8 @@ namespace Dynamo.Utilities
             if (c is HermiteSpline)
             {
                 var hs = c as HermiteSpline;
-                plane = GetPlaneFromCurve(c, false);
+                if (plane == null)
+                    plane = GetPlaneFromCurve(c, false);
                 var projPoints = new List<XYZ>();
                 foreach (var pt in hs.ControlPoints)
                 {
@@ -514,7 +515,8 @@ namespace Dynamo.Utilities
                 var ns = c as NurbSpline;
                 BestFitLine.PrincipalComponentsAnalysis(ns.CtrlPoints.ToList(), out meanPt, out orderedEigenvectors);
                 normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]).Normalize();
-                plane = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewPlane(normal, meanPt);
+                if (plane == null)
+                   plane = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewPlane(normal, meanPt);
 
                 var projPoints = new List<XYZ>();
                 foreach (var pt in ns.CtrlPoints)
