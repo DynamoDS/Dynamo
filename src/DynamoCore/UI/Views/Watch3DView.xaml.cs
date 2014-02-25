@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Linq;
 using System.Windows.Threading;
+using Dynamo.DSEngine;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -287,9 +288,6 @@ namespace Dynamo.Controls
             var sw = new Stopwatch();
             sw.Start();
 
-            
-            //var rd = e.Packages;
-
             HelixPoints = null;
             HelixLines = null;
             HelixMesh = null;
@@ -301,47 +299,34 @@ namespace Dynamo.Controls
             HelixMeshSelected = null;
             HelixText = null;
 
-            var pts = new ThreadSafeList<Point3D>();
-            var ptsSelected = new ThreadSafeList<Point3D>();
-            int ptCount = 0;
-            foreach(var package in e.Packages)
+            var points = new ThreadSafeList<Point3D>();
+            var pointsSelected = new ThreadSafeList<Point3D>();
+            var lines = new ThreadSafeList<Point3D>();
+            var linesSelected = new ThreadSafeList<Point3D>();
+            var redLines = new ThreadSafeList<Point3D>();
+            var greenLines = new ThreadSafeList<Point3D>();
+            var blueLines = new ThreadSafeList<Point3D>();
+            var text = new ThreadSafeList<BillboardTextItem>();
+            var meshes = new ThreadSafeList<MeshGeometry3D>();
+            var meshesSelected = new ThreadSafeList<MeshGeometry3D>();
+
+            foreach (var package in e.Packages)
             {
-                if (package.Selected)
-                {
-                    for (int i = 0; i <= package.PointVertices.Count - 3; i += 3)
-                    {
-                        var a = package.PointVertices[i];
-                        var b = package.PointVertices[i+1];
-                        var c = package.PointVertices[i+2];
-                        ptsSelected.Add(new Point3D(a,b,c));
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i <= package.PointVertices.Count - 3; i += 3)
-                    {
-                        var a = package.PointVertices[i];
-                        var b = package.PointVertices[i+1];
-                        var c = package.PointVertices[i+2];
-                        pts.Add(new Point3D(a, b, c));
-                    }
-                }
-                ptCount += package.PointVertices.Count;
+                ConvertPoints(package, points, pointsSelected, text );
+                ConvertLines(package, lines, linesSelected, redLines, greenLines, blueLines, text);
+                ConvertMeshes(package, meshes, meshesSelected);
             }
-            HelixPoints = pts;
-            HelixPointsSelected = ptsSelected;
 
-            //HelixPoints = rd.Points;
-            //HelixLines = rd.Lines;
-            //HelixPointsSelected = rd.SelectedPoints;
-            //HelixLinesSelected = rd.SelectedLines;
-            //HelixXAxes = rd.XAxisPoints;
-            //HelixYAxes = rd.YAxisPoints;
-            //HelixZAxes = rd.ZAxisPoints;
-            //HelixMesh = VisualizationManager.MergeMeshes(rd.Meshes);
-            //HelixMeshSelected = VisualizationManager.MergeMeshes(rd.SelectedMeshes);
-            //HelixText = rd.Text;
-
+            HelixPoints = points;
+            HelixPointsSelected = pointsSelected;
+            HelixLines = lines;
+            HelixLinesSelected = linesSelected;
+            HelixXAxes = redLines;
+            HelixYAxes = greenLines;
+            HelixZAxes = blueLines;
+            HelixMesh = MergeMeshes(meshes);
+            HelixMeshSelected = MergeMeshes(meshesSelected);
+            HelixText = text;
 
             //var sb = new StringBuilder();
             //sb.AppendLine();
@@ -362,6 +347,221 @@ namespace Dynamo.Controls
 
             Debug.WriteLine(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
 
+        }
+
+        private void ConvertPoints(RenderPackage p, 
+            ThreadSafeList<Point3D> points,
+            ThreadSafeList<Point3D> pointsSelected, 
+            ThreadSafeList<BillboardTextItem> text)
+        {
+            for (int i = 0; i < p.PointVertices.Count; i += 3)
+            {
+                var pos = new Point3D(
+                    p.PointVertices[i],
+                    p.PointVertices[i + 1],
+                    p.PointVertices[i + 2]);
+
+                if (p.Selected)
+                {
+                    pointsSelected.Add(pos);
+                }
+                else
+                {
+                    points.Add(pos);
+                }
+
+                if (p.DisplayLabels)
+                {
+                    text.Add(new BillboardTextItem {Text = p.Tag, Position = pos});
+                }
+            }
+        }
+
+        private void ConvertLines(RenderPackage p, 
+            ThreadSafeList<Point3D> lines,
+            ThreadSafeList<Point3D> linesSelected, 
+            ThreadSafeList<Point3D> redLines,
+            ThreadSafeList<Point3D> greenLines,
+            ThreadSafeList<Point3D> blueLines,
+            ThreadSafeList<BillboardTextItem> text)
+        {
+            for (int i = 0; i < p.LineStripVertices.Count - 3; i += 3)
+            {
+                var start = new Point3D(
+                    p.LineStripVertices[i],
+                    p.LineStripVertices[i + 1],
+                    p.LineStripVertices[i + 2]);
+
+                var end = new Point3D(
+                    p.LineStripVertices[i + 3],
+                    p.LineStripVertices[i + 4],
+                    p.LineStripVertices[i + 5]);
+
+                //HACK: test for line color using only 
+                //the start value
+                var startColor = Color.FromRgb(
+                    p.LineStripVertexColors[i],
+                    p.LineStripVertexColors[i + 1],
+                    p.LineStripVertexColors[i + 2]);
+
+                //var endColor = new Point3D(
+                //    p.LineStripVertexColors[i + 3],
+                //    p.LineStripVertexColors[i + 4],
+                //    p.LineStripVertexColors[i + 5]);
+
+                //draw a label at the start of the curve
+                if (p.DisplayLabels && i == 0)
+                {
+                    text.Add(new BillboardTextItem {Text = p.Tag, Position = start});
+                }
+
+                bool isAxis = false;
+                if (startColor == Colors.Red)
+                {
+                    redLines.Add(start);
+                    redLines.Add(end);
+                    isAxis = true;
+                }
+                else if (startColor == Colors.Green)
+                {
+                    greenLines.Add(start);
+                    greenLines.Add(end);
+                    isAxis = true;
+                }
+                else if (startColor == Colors.Blue)
+                {
+                    blueLines.Add(start);
+                    blueLines.Add(end);
+                    isAxis = true;
+                }
+
+                if (!isAxis)
+                {
+                    if (p.Selected)
+                    {
+                        linesSelected.Add(start);
+                        linesSelected.Add(end);
+                    }
+                    else
+                    {
+                        lines.Add(start);
+                        lines.Add(end);
+                    }
+                }
+            }
+        }
+
+        private void ConvertMeshes(RenderPackage p,
+            ThreadSafeList<MeshGeometry3D> meshes,
+            ThreadSafeList<MeshGeometry3D> meshesSelected)
+        {
+            //var sw = new Stopwatch();
+            //sw.Start();
+
+            var builder = new MeshBuilder();
+            var points = new Point3DCollection();
+            var tex = new PointCollection();
+            var norms = new Vector3DCollection();
+            var tris = new List<int>();
+
+            for (int i = 0; i < p.TriangleVertices.Count; i+=3)
+            {
+                var new_point = new Point3D(p.TriangleVertices[i],
+                                            p.TriangleVertices[i + 1],
+                                            p.TriangleVertices[i + 2]);
+
+                var normal = new Vector3D(p.TriangleNormals[i],
+                                            p.TriangleNormals[i + 1],
+                                            p.TriangleNormals[i + 2]);
+
+                //find a matching point
+                //compare the angle between the normals
+                //to discern a 'break' angle for adjacent faces
+                //int foundIndex = -1;
+                //for (int j = 0; j < points.Count; j++)
+                //{
+                //    var testPt = points[j];
+                //    var testNorm = norms[j];
+                //    var ang = Vector3D.AngleBetween(normal, testNorm);
+
+                //    if (new_point.X == testPt.X &&
+                //        new_point.Y == testPt.Y &&
+                //        new_point.Z == testPt.Z &&
+                //        ang > 90.0000)
+                //    {
+                //        foundIndex = j;
+                //        break;
+                //    }
+                //}
+
+                //if (foundIndex != -1)
+                //{
+                //    tris.Add(foundIndex);
+                //    continue;
+                //}
+                    
+                tris.Add(points.Count);
+                points.Add(new_point);
+                norms.Add(normal);
+                tex.Add(new System.Windows.Point(0,0));
+
+                //octree.AddNode(new_point.X, new_point.Y, new_point.Z, node.GUID.ToString());
+            }
+
+            builder.Append(points, tris, norms, tex);
+
+            //don't add empty meshes
+            if (builder.Positions.Count > 0)
+            {
+                if (p.Selected)
+                {
+                    meshesSelected.Add(builder.ToMesh(true));
+                }
+                else
+                {
+                    meshes.Add(builder.ToMesh(true));
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// A utility method for merging multiple meshes into one.
+        /// </summary>
+        /// <param name="meshes"></param>
+        /// <returns></returns>
+        private MeshGeometry3D MergeMeshes(ThreadSafeList<MeshGeometry3D> meshes)
+        {
+            if (meshes.Count == 0)
+                return null;
+
+            int offset = 0;
+
+            var builder = new MeshBuilder();
+
+            foreach (MeshGeometry3D m in meshes)
+            {
+                foreach (var pos in m.Positions)
+                {
+                    builder.Positions.Add(pos);
+                }
+                foreach (var index in m.TriangleIndices)
+                {
+                    builder.TriangleIndices.Add(index + offset);
+                }
+                foreach (var norm in m.Normals)
+                {
+                    builder.Normals.Add(norm);
+                }
+                foreach (var tc in m.TextureCoordinates)
+                {
+                    builder.TextureCoordinates.Add(tc);
+                }
+
+                offset += m.Positions.Count;
+            }
+
+            return builder.ToMesh(false);
         }
 
         protected void mi_Click(object sender, RoutedEventArgs e)

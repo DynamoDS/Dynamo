@@ -20,11 +20,25 @@ namespace Dynamo.DSEngine
         private List<double> triangleNormals = new List<double>();
 
         private bool selected;
+        private bool displayLabels;
+        private string tag;
 
         public bool Selected
         {
             get { return selected; }
             set { selected = value; }
+        }
+
+        public bool DisplayLabels
+        {
+            get { return displayLabels; }
+            set { displayLabels = value; }
+        }
+
+        public string Tag
+        {
+            get { return tag; }
+            set { tag = value; }
         }
 
         public List<double> LineStripVertices
@@ -51,10 +65,18 @@ namespace Dynamo.DSEngine
             set { triangleNormals = value; }
         }
 
-        public RenderPackage(bool selected)
+        public List<byte> LineStripVertexColors
+        {
+            get { return lineStripVertexColors; }
+            set { lineStripVertexColors = value; }
+        }
+
+        public RenderPackage(bool selected, bool displayLabels)
         {
             nativeRenderPackage = DesignScriptStudio.Renderer.RenderPackageUtils.CreateNativeRenderPackage(this);
             Selected = selected;
+            DisplayLabels = false;
+            Tag = string.Empty;
         }
 
         public void Clear()
