@@ -9,7 +9,7 @@ namespace Dynamo
 {
     public class VisualizationManagerASM : VisualizationManager
     {
-        public VisualizationManagerASM()
+        public VisualizationManagerASM(DynamoController controller):base(controller)
         {
             AlternateDrawingContextAvailable = false;
             DrawToAlternateContext = false;

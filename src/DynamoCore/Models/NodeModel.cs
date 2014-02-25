@@ -17,6 +17,7 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using Utils = Dynamo.FSchemeInterop.Utils;
@@ -84,7 +85,7 @@ namespace Dynamo.Models
         private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> _previousOutputPortMappings =
             new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
-        private IRenderPackage _renderPackage;
+        private IRenderPackage _renderPackage = new RenderPackage(false);
 
         #endregion
 
@@ -512,21 +513,6 @@ namespace Dynamo.Models
                 {
                     case ("OverrideName"):
                         RaisePropertyChanged("NickName");
-                        break;
-                    case ("IsUpdated"):
-                        UpdateRenderPackage();
-                        break;
-                    case ("IsVisible"):
-                        UpdateRenderPackage();
-                        break;
-                    case ("IsUpstreamVisible"):
-                        UpdateRenderPackage();
-                        break;
-                    case ("DisplayLabels"):
-                        UpdateRenderPackage();
-                        break;
-                    case("IsSelected"):
-                        UpdateRenderPackage();
                         break;
                 }
             };
@@ -2053,44 +2039,58 @@ namespace Dynamo.Models
 
         #endregion
 
-        public bool isUpdatingRenderPackage = false;
-
-        private void UpdateRenderPackage()
-        {
-            if (dynSettings.Controller == null)
-                return;
-
-            if (isUpdatingRenderPackage)
-                return;
-
-            isUpdatingRenderPackage = true;
-            var worker = new BackgroundWorker();
-            worker.DoWork += UpdateRenderPackageThread;
-
-            if (dynSettings.Controller.Testing)
-                UpdateRenderPackageThread(null, null);
-            else
-                worker.RunWorkerAsync();
-        }
-
-        private void UpdateRenderPackageThread(object s, DoWorkEventArgs args)
+        public void UpdateRenderPackage()
         {
             //dispose of the current render package
-            RenderPackage = null;
+            ((RenderPackage)RenderPackage).Clear();
+
+            if (State == ElementState.Error || !IsVisible)
+            {
+                return;
+            }
 
             RenderPackage = new RenderPackage(IsSelected);
 
             IEnumerable<string> drawableIds = GetDrawableIds();
+
+            var graphItems = new List<IGraphicItem>();
+
             foreach (var varName in drawableIds)
             {
-                var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
-                if (graphItems != null && graphItems.Any())
-                {
-                    graphItems.ForEach(x => x.Tessellate(RenderPackage));
-                }
+                var mirrorData = dynSettings.Controller.EngineController.GetMirror(varName).GetData();
+
+                ProcessGraphicItems(mirrorData, graphItems);
+
+                // graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
+                //if (graphItems != null && graphItems.Any())
+                //{
+                //    graphItems.ForEach(x => x.Tessellate(RenderPackage));
+                //}
             }
 
-            isUpdatingRenderPackage = false;
+            graphItems.ForEach(x => x.Tessellate(RenderPackage));
+        }
+
+        /// <summary>
+        /// Recursively process MirrorData to find graphic items.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="graphicItems"></param>
+        private void ProcessGraphicItems(MirrorData data, List<IGraphicItem> graphicItems)
+        {
+            if (data.IsCollection)
+            {
+                var list = data.GetElements();
+                list.ForEach(x => ProcessGraphicItems(x, graphicItems));
+            }
+            else
+            {
+                var g = data.Data as IGraphicItem;
+                if (g != null)
+                {
+                    graphicItems.Add(data.Data as IGraphicItem);
+                }
+            }
         }
 
         /// <summary>

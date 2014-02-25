@@ -1417,7 +1417,7 @@ namespace Dynamo.Models
         /// Called when a node is added to a workspace
         /// </summary>
         /// <param name="node"></param>
-        private void OnNodeAdded(NodeModel node)
+        public void OnNodeAdded(NodeModel node)
         {
             if (NodeAdded != null && node != null)
             {

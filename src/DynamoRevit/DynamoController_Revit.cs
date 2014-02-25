@@ -50,7 +50,7 @@ namespace Dynamo
             {
                 if (visualizationManager == null)
                 {
-                    visualizationManager = new VisualizationManagerRevit();
+                    visualizationManager = new VisualizationManagerRevit(this);
 
                     visualizationManager.VisualizationUpdateComplete +=
                         visualizationManager_VisualizationUpdateComplete;
