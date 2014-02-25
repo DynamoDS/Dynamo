@@ -76,7 +76,7 @@ namespace Dynamo.Nodes
             return TopographySurface.Create(document, points);
         }
 
-        [NodeMigration(from:"0.6.3")]
+        [NodeMigration(from:"0.6.3.0")]
         public static NodeMigrationData Migrate(NodeMigrationData data)
         {
             //Migrate the topography node from 0.6.3 to 0.7.0
