@@ -1815,7 +1815,7 @@ z=Point.ByCoordinates(y,a,a);
             List<string> codes = new List<string>() 
             {
                 "a = 1;",
-                "b = a; b = b + 1;",
+                "b = a; c = b + 1;",
             };
             List<Guid> guids = Enumerable.Range(0, codes.Count).Select(_ => System.Guid.NewGuid()).ToList();
 
@@ -1826,7 +1826,7 @@ z=Point.ByCoordinates(y,a,a);
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
 
-            ProtoCore.Mirror.RuntimeMirror mirror = astLiveRunner.InspectNodeValue("b");
+            ProtoCore.Mirror.RuntimeMirror mirror = astLiveRunner.InspectNodeValue("c");
             var value = (Int64)mirror.GetData().Data;
             Assert.AreEqual(value, 2);
 
@@ -1838,8 +1838,8 @@ z=Point.ByCoordinates(y,a,a);
                 syncData = new GraphSyncData(null, null, modified);
                 astLiveRunner.UpdateGraph(syncData);
 
-                Console.WriteLine("b = " + astLiveRunner.InspectNodeValue("b").GetStringData());
-                AssertValue("b", i + 1);
+                Console.WriteLine("c = " + astLiveRunner.InspectNodeValue("c").GetStringData());
+                AssertValue("c", i + 1);
             }
         }
 
@@ -1851,7 +1851,7 @@ z=Point.ByCoordinates(y,a,a);
             List<string> codes = new List<string>() 
             {
                 "a = 1;",
-                "b = a; b = b + 1;",
+                "b = a; c = b + 1;",
             };
             List<Guid> guids = Enumerable.Range(0, codes.Count).Select(_ => System.Guid.NewGuid()).ToList();
 
@@ -1862,7 +1862,7 @@ z=Point.ByCoordinates(y,a,a);
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
 
-            ProtoCore.Mirror.RuntimeMirror mirror = astLiveRunner.InspectNodeValue("b");
+            ProtoCore.Mirror.RuntimeMirror mirror = astLiveRunner.InspectNodeValue("c");
             var value = (Int64)mirror.GetData().Data;
             Assert.AreEqual(value, 2);
 
@@ -1873,8 +1873,8 @@ z=Point.ByCoordinates(y,a,a);
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
 
-            Console.WriteLine("b = " + astLiveRunner.InspectNodeValue("b").GetStringData());
-            AssertValue("b", newval + 1);
+            Console.WriteLine("c = " + astLiveRunner.InspectNodeValue("c").GetStringData());
+            AssertValue("c", newval + 1);
             
         }
 
@@ -1951,8 +1951,7 @@ z=Point.ByCoordinates(y,a,a);
             }
         }
 
-        [Test]
-        public void RegressMAGN773()
+        [Test]public void RegressMAGN773()
         {
             List<string> codes = new List<string>() 
             {
@@ -2803,6 +2802,103 @@ z=Point.ByCoordinates(y,a,a);
             ProtoCore.Mirror.RuntimeMirror mirror = astLiveRunner.InspectNodeValue("a");
             Assert.IsTrue(mirror.GetData().IsNull);
 
+        }
+
+        [Test]
+        public void TestCachingSSA01()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 1;",
+                "a = a + 1;"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("a", 2);
+
+        }
+
+        [Test]
+        public void TestCachingSSA02()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "global = 0;",
+                "def f(i:int) { return = i; } def g(j:int) { global = global + 1; return = j; }",
+                "x = 1;",               // Simulate input to function in this CBN
+                "z = 10;",              // Simulate another input to the function
+                "a = f(x) + g(2);",     // CBN with function call 
+                "a = f(z) + g(2);"      // Same CBN with function call where the input to function 'f' was changed
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+            Guid guid4 = System.Guid.NewGuid();
+            Guid guid5 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+            added.Add(CreateSubTreeFromCode(guid5, codes[4]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("a", 3);
+            AssertValue("global", 1);
+
+
+            // Modify the function call CBN so it connects to the input 'z'
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid5, codes[5]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("a", 12);
+
+            // Verify that function 'g' was not re-executed
+            AssertValue("global", 1);
+        }
+
+        [Test]
+        public void TestExecution()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "class JPoint{ X:int; Y:int; Z:int; constructor ByCoord(a:int,b:int,c:int){X = a; Y = b; Z = c;}}",
+                "a=10;b=20;c=30;",
+                "p = JPoint.ByCoord(a,b,c);",
+                "x = p.X; "
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+            Guid guid4 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x", 10);
         }
     }
 }
