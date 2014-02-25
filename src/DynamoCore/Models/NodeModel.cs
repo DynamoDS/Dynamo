@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.FSchemeInterop;
 using Dynamo.Nodes;
@@ -2061,7 +2062,7 @@ namespace Dynamo.Models
 
                 ProcessGraphicItems(mirrorData, graphItems);
 
-                // graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
+                //graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
                 //if (graphItems != null && graphItems.Any())
                 //{
                 //    graphItems.ForEach(x => x.Tessellate(RenderPackage));
@@ -2085,8 +2086,7 @@ namespace Dynamo.Models
             }
             else
             {
-                var g = data.Data as IGraphicItem;
-                if (g != null)
+                if (data.Data is IGraphicItem)
                 {
                     graphicItems.Add(data.Data as IGraphicItem);
                 }
