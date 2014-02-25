@@ -241,6 +241,12 @@ namespace Dynamo.Nodes
             return Process(mirrorData, 0, false);
         }
 
+        public override void UpdateRenderPackage()
+        {
+            //do nothing
+            //a watch should not draw its outputs
+        }
+
         #endregion
 #endif
     }

@@ -2046,8 +2046,13 @@ namespace Dynamo.Models
         /// each of the node's ports and processing the underlying
         /// CLR data as IGraphicItems.
         /// </summary>
-        public void UpdateRenderPackage()
+        public virtual void UpdateRenderPackage()
         {
+            //Avoid attempting an update after the controller 
+            //has shut down.
+            if (dynSettings.Controller == null)
+                return;
+
             //dispose of the current render package
             ((RenderPackage)RenderPackage).Clear();
 
