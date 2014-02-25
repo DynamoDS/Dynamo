@@ -11,8 +11,8 @@
     <ProjectGuid>{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DSRevitNodes</RootNamespace>
-    <AssemblyName>DSRevitNodes</AssemblyName>
+    <RootNamespace>Revit</RootNamespace>
+    <AssemblyName>RevitNodes</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -73,7 +73,7 @@
     <Compile Include="AnalysisDisplay\PointAnalysisDisplay.cs" />
     <Compile Include="AnalysisDisplay\VectorAnalysisDisplay.cs" />
     <Compile Include="Application\Document.cs" />
-    <Compile Include="DSCategory.cs" />
+    <Compile Include="Category.cs" />
     <Compile Include="Elements\AbstractElement.cs" />
     <Compile Include="Elements\AbstractFamilyInstance.cs" />
     <Compile Include="Elements\Element.cs" />

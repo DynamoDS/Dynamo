@@ -10,6 +10,7 @@ using Microsoft.FSharp.Collections;
 using RevitServices.Persistence;
 using Line = Autodesk.Revit.DB.Line;
 using Solid = Autodesk.Revit.DB.Solid;
+using RevitGeometry = Revit.Geometry;
 
 namespace Dynamo.Nodes
 {
@@ -332,7 +333,7 @@ namespace Dynamo.Nodes
             var min = Vector.ByCoordinates(bbox.Min.U, bbox.Min.V,0);
             var max = Vector.ByCoordinates(bbox.Max.U, bbox.Max.V,0);
 
-            return FScheme.Value.NewContainer(DSCoreNodes.Domain2D.ByMinimumAndMaximum(min, max));
+            return FScheme.Value.NewContainer(RevitGeometry.Domain2D.ByMinimumAndMaximum(min, max));
         }
     }
 }
