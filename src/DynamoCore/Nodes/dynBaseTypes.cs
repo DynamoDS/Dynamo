@@ -6058,7 +6058,35 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.Concat", "String.Concat@string[]");
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            XmlElement stringNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(stringNode, "",
+                "String.Concat", "String.Concat@string[]");
+            migratedData.AppendNode(stringNode);
+            string stringNodeId = MigrationManager.GetGuidFromXmlElement(stringNode);
+
+            int numberOfArgs = oldNode.ChildNodes.Count + 2;
+            string numberOfArgsString = numberOfArgs.ToString();
+            XmlElement listCreatNode = MigrationManager.CreateVarArgFunctionNode(
+                data.Document, "DSCoreNodes.dll", "List.Create", "List.Create@var[]", numberOfArgsString);
+            migratedData.AppendNode(listCreatNode);
+            string listCreatNodeId = MigrationManager.GetGuidFromXmlElement(listCreatNode);
+
+            //create and reconnect the connecters
+            while (numberOfArgs > 0)
+            {
+                PortId oldInPort = new PortId(oldNodeId, numberOfArgs - 1, PortType.INPUT);
+                XmlElement connector = data.FindFirstConnector(oldInPort);
+                PortId newInPort = new PortId(listCreatNodeId, numberOfArgs - 1, PortType.INPUT);
+                data.ReconnectToPort(connector, newInPort);
+                numberOfArgs--;
+            }
+            data.CreateConnector(listCreatNode, 0, stringNode, 0);
+
+            return migratedData;
         }
     }
 
