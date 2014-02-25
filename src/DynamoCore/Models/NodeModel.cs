@@ -2040,6 +2040,12 @@ namespace Dynamo.Models
 
         #endregion
 
+        /// <summary>
+        /// Updates the render package for this node by
+        /// getting the MirrorData objects corresponding to
+        /// each of the node's ports and processing the underlying
+        /// CLR data as IGraphicItems.
+        /// </summary>
         public void UpdateRenderPackage()
         {
             //dispose of the current render package
@@ -2061,12 +2067,6 @@ namespace Dynamo.Models
                 var mirrorData = dynSettings.Controller.EngineController.GetMirror(varName).GetData();
 
                 ProcessGraphicItems(mirrorData, graphItems);
-
-                //graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
-                //if (graphItems != null && graphItems.Any())
-                //{
-                //    graphItems.ForEach(x => x.Tessellate(RenderPackage));
-                //}
             }
 
             graphItems.ForEach(x => x.Tessellate(RenderPackage));
