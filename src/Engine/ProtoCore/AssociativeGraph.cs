@@ -193,6 +193,8 @@ namespace ProtoCore.AssociativeGraph
         /// </summary>
         public bool isActive { get; set; }
 
+        public int SSASubscript { get; set; }
+        public bool IsLastNodeInSSA { get; set; }
 
 
         
@@ -238,6 +240,8 @@ namespace ProtoCore.AssociativeGraph
 #endif
             symbolListWithinExpression = new List<SymbolNode>();
             reExecuteExpression = false;
+            SSASubscript = ProtoCore.DSASM.Constants.kInvalidIndex;
+            IsLastNodeInSSA = false;
         }
 
 
