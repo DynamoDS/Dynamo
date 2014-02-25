@@ -1299,7 +1299,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Category("Not Migrated")]
         public void NumberRange_LacingCrossProduct()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -1378,9 +1378,9 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region AddToList test cases -NotStarted
+        #region AddToList test cases -PartiallyDone
 
-        [Test]
+        [Test, Category("Not Migrated")]
         public void AddToList_SimpleTest()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -1420,19 +1420,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
+            //AssertPreviewValue("1976caa7-d45e-4a44-9faf-345d98337bbb", new int[]{new int[]{null,0}});
 
-            var addToList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.List>("1976caa7-d45e-4a44-9faf-345d98337bbb");
-
-            FSharpList<FScheme.Value> actual = addToList.GetValue(0).GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> childList = actual[0].GetListFromFSchemeValue();
-
-            Assert.AreEqual(1, actual.Length);
-
-            Assert.AreEqual(2, childList.Length);
-            Assert.IsEmpty(childList[0].GetStringFromFSchemeValue());
-            Assert.AreEqual(0, childList[1].GetDoubleFromFSchemeValue());
         }
 
         [Test]
@@ -1447,26 +1436,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
-
-            var addToList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.List>("cfdfc020-05d0-4442-96df-8d97aad9c38c");
-
-            FSharpList<FScheme.Value> actual = addToList.GetValue(0).GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> childList1 = actual[0].GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> childList2 = actual[1].GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> childList3 = actual[2].GetListFromFSchemeValue();
-
-            Assert.AreEqual(3, actual.Length);
-
-            Assert.AreEqual(1, childList1.Length);
-            Assert.AreEqual(3, childList1[0].GetDoubleFromFSchemeValue());
-
-            Assert.AreEqual(1, childList2.Length);
-            Assert.AreEqual(6, childList2[0].GetDoubleFromFSchemeValue());
-
-            Assert.AreEqual(1, childList3.Length);
-            Assert.AreEqual(9, childList3[0].GetDoubleFromFSchemeValue());
+            AssertPreviewValue("cfdfc020-05d0-4442-96df-8d97aad9c38c", new int[][]
+                {
+                    new int[]{3}, new int[]{6}, new int[]{9}
+                });
 
         }
 
@@ -1485,15 +1458,12 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            var addToList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.List>("31d0eb4e-8657-4eb1-a852-5e9b766eddd7");
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+            {3, "Design"},
+            };
 
-            FSharpList<FScheme.Value> actual = addToList.GetValue(0).GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> childList1 = actual[2].GetListFromFSchemeValue();
-
-            Assert.AreEqual(6, actual.Length);
-
-            Assert.AreEqual(4, childList1.Length);
-            Assert.AreEqual(-10, childList1[0].GetDoubleFromFSchemeValue());
+            SelectivelyAssertPreviewValues("31d0eb4e-8657-4eb1-a852-5e9b766eddd7", validationData);
 
         }
 
@@ -1513,7 +1483,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region SplitList test cases -NotStarted
+        #region SplitList test cases -PartiallyDone
 
         [Test]
         public void SplitList_SimpleTest()
@@ -1527,20 +1497,9 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
+            AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", "Dynamo");
 
-            var splitList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DeCons>("8226a43b-fd5e-45f6-a5f7-32815c12084a");
-
-            Assert.AreEqual("Dynamo", splitList.GetValue(0).GetStringFromFSchemeValue());
-
-            FSharpList<FScheme.Value> secondOutput = splitList.GetValue(1).GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> childList = secondOutput[0].GetListFromFSchemeValue();
-
-            Assert.AreEqual(1, secondOutput.Length);
-
-            Assert.AreEqual(2, childList.Length);
-            Assert.AreEqual(0, childList[0].GetDoubleFromFSchemeValue());
+            AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", new int[][]{new int[]{0,1}});
         }
 
         [Test]
@@ -1555,19 +1514,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
+            AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", "Dynamo");
 
-            var splitList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DeCons>("8226a43b-fd5e-45f6-a5f7-32815c12084a");
+            AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", new int[][] { new int[] { 0, 1 } });
 
-            FSharpList<FScheme.Value> firstOutput = splitList.GetValue(0).GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> secondOutput = splitList.GetValue(1).GetListFromFSchemeValue();
-
-            Assert.AreEqual(2, firstOutput.Length);
-            Assert.AreEqual(0, firstOutput[0].GetDoubleFromFSchemeValue());
-
-            Assert.AreEqual(1, secondOutput.Length);
-            Assert.AreEqual("Dynamo", secondOutput[0].GetStringFromFSchemeValue());
 
         }
 
@@ -1583,26 +1533,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
 
-            // run the expression
-            dynSettings.Controller.RunExpression(null);
+            AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", new int[] { 3 });
 
-            var splitList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DeCons>("8226a43b-fd5e-45f6-a5f7-32815c12084a");
+            AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", new int[][] { new int[] { 6 }, new int[] { 9 } });
 
-            FSharpList<FScheme.Value> firstOutput = splitList.GetValue(0).GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> secondOutput = splitList.GetValue(1).GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> child = secondOutput[0].GetListFromFSchemeValue();
-
-            Assert.AreEqual(1, firstOutput.Length);
-            Assert.AreEqual(3, firstOutput[0].GetDoubleFromFSchemeValue());
-
-            Assert.AreEqual(2, secondOutput.Length);
-
-            Assert.AreEqual(1, child.Length);
-            Assert.AreEqual(6, child[0].GetDoubleFromFSchemeValue());
 
         }
 
-        [Test]
+        [Test, Category("Not Migrated")]
         public void SplitList_ComplexAnotherExample()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -1641,7 +1579,7 @@ namespace Dynamo.Tests
 
         #region TakeFromList test cases -PartiallyDone
 
-        [Test]
+        [Test, Category("Not Migrated")]
         public void TakeFromList_SimpleTest()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -1800,7 +1738,7 @@ namespace Dynamo.Tests
             SelectivelyAssertPreviewValues("7f6cbd60-b9fb-4b16-81d3-4fab26790446", validationData);
         }
 
-        [Test]
+        [Test, Category("Not Migrated")]
         public void ShiftListIndices_Complex()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -1907,7 +1845,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("58d35bfa-4435-44f0-a322-c6f7350f0220", new string[] { "Get", "From" });
         }
 
-        [Test]
+        [Test, Category("Not Migrated")]
         public void GetFromList_AmtAsRangeExpn()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -2062,7 +2000,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("96a1ca07-83eb-4459-981e-7daed6d1d4b3", new int[] { 6, 7, 8, 9 });
         }
 
-        [Test]
+        [Test, Category("Not Migrated")]
         public void DropEveryNth_ComplexTest()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -2432,7 +2370,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Category("Not Migrated")]
         public void JoinList_MoreLists()
         {
             var model = dynSettings.Controller.DynamoModel;
