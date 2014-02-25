@@ -1846,7 +1846,7 @@ namespace Dynamo.Tests
         }
 
         [Test, Category("Not Migrated")]
-        public void GetFromList_AmtAsRangeExpnd()
+        public void GetFromList_AmtAsRangeExpn()
         {
             var model = dynSettings.Controller.DynamoModel;
 
