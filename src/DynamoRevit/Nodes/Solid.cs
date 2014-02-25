@@ -1967,7 +1967,7 @@ namespace Dynamo.Nodes
             }
 
             //Fin
-            return FScheme.Value.NewContainer(Units.Volume.FromCubicFeet(volume, dynSettings.Controller.UnitsManager));
+            return FScheme.Value.NewContainer(Units.Volume.FromCubicFeet(volume));
         }
     }
 
