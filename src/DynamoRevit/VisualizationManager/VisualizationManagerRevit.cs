@@ -19,7 +19,7 @@ namespace Dynamo
 {
     class VisualizationManagerRevit : VisualizationManager
     {
-        public VisualizationManagerRevit()
+        public VisualizationManagerRevit(DynamoController controller):base(controller)
         {
             if (dynSettings.Controller.Context == Context.VASARI_2014)
             {

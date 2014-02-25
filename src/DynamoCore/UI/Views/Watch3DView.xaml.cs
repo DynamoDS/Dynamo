@@ -310,9 +310,9 @@ namespace Dynamo.Controls
                 {
                     for (int i = 0; i <= package.PointVertices.Count - 3; i += 3)
                     {
-                        var a = package.PointVertices[i + ptCount];
-                        var b = package.PointVertices[i + 1 + ptCount];
-                        var c = package.PointVertices[i + 2 + ptCount];
+                        var a = package.PointVertices[i];
+                        var b = package.PointVertices[i+1];
+                        var c = package.PointVertices[i+2];
                         ptsSelected.Add(new Point3D(a,b,c));
                     }
                 }
@@ -320,9 +320,9 @@ namespace Dynamo.Controls
                 {
                     for (int i = 0; i <= package.PointVertices.Count - 3; i += 3)
                     {
-                        var a = package.PointVertices[i + ptCount];
-                        var b = package.PointVertices[i + 1 + ptCount];
-                        var c = package.PointVertices[i + 2 + ptCount];
+                        var a = package.PointVertices[i];
+                        var b = package.PointVertices[i+1];
+                        var c = package.PointVertices[i+2];
                         pts.Add(new Point3D(a, b, c));
                     }
                 }

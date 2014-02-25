@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Models;
-using HelixToolkit.Wpf;
+using Microsoft.Practices.Prism.Regions.Behaviors;
 
 namespace Dynamo.DSEngine
 {
@@ -59,6 +55,18 @@ namespace Dynamo.DSEngine
         {
             nativeRenderPackage = DesignScriptStudio.Renderer.RenderPackageUtils.CreateNativeRenderPackage(this);
             Selected = selected;
+        }
+
+        public void Clear()
+        {
+            lineStripVertices.Clear();
+            lineStripVertexColors.Clear();
+            lineStripVertexCounts.Clear();
+            pointVertices.Clear();
+            pointVertexColors.Clear();
+            triangleVertices.Clear();
+            triangleVertexColor.Clear();
+            triangleNormals.Clear();
         }
 
         public IntPtr NativeRenderPackage
@@ -180,7 +188,7 @@ namespace Dynamo.DSEngine
 
         public void Dispose()
         {
-            DesignScriptStudio.Renderer.RenderPackageUtils.DestroyNativeRenderPackage(nativeRenderPackage);
+            //DesignScriptStudio.Renderer.RenderPackageUtils.DestroyNativeRenderPackage(nativeRenderPackage);
         }
 
         public bool IsNotEmpty()

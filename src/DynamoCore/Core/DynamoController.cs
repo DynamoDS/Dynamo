@@ -80,7 +80,7 @@ namespace Dynamo
 
         public virtual VisualizationManager VisualizationManager
         {
-            get { return visualizationManager ?? (visualizationManager = new VisualizationManagerASM()); }
+            get { return visualizationManager ?? (visualizationManager = new VisualizationManager(this)); }
         }
 
         /// <summary>
