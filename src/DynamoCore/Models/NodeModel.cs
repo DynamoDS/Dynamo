@@ -2020,7 +2020,7 @@ namespace Dynamo.Models
             return migrationData;
         }
 
-        protected static NodeMigrationData MigrateToDsDSVarArgFunction(
+        protected static NodeMigrationData MigrateToDsVarArgFunction(
             NodeMigrationData data, string assembly, string nickname, string funcName)
         {
             XmlElement xmlNode = data.MigratedNodes.ElementAt(0);

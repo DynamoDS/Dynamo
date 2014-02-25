@@ -796,7 +796,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsDSVarArgFunction(data, "DSCoreNodes.dll", "List.Create", "List.Create@var[]");
+            return MigrateToDsVarArgFunction(data, "DSCoreNodes.dll", "List.Create", "List.Create@var[]");
         }
     }
 
@@ -2158,6 +2158,8 @@ namespace Dynamo.Nodes
             migratedData.AppendNode(dsCoreNode);
             string dsCoreNodeId = MigrationManager.GetGuidFromXmlElement(dsCoreNode);
 
+
+
             //create and reconnect the connecters
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
@@ -2470,8 +2472,33 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Join", 
-                "List.Join@var[][]");
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            XmlElement listJoinNode = MigrationManager.CreateVarArgFunctionNode(
+                data.Document, "DSCoreNodes.dll", "List.Join", "List.Join", "2");
+            foreach (XmlAttribute attribute in oldNode.Attributes)
+                listJoinNode.SetAttribute(attribute.Name, attribute.Value);
+            MigrationManager.SetFunctionSignature(listJoinNode, "DSCoreNodes.dll", "List.Join", "List.Join");
+            listJoinNode.SetAttribute("type", "Dynamo.Nodes.DSVarArgFunction");
+            migratedData.AppendNode(listJoinNode);
+            string listJoinNodeId = MigrationManager.GetGuidFromXmlElement(listJoinNode);
+
+            //create and reconnect the connecters
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            PortId newInPort0 = new PortId(listJoinNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(listJoinNodeId, 1, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, newInPort0);
+            data.ReconnectToPort(connector1, newInPort1);
+
+            return migratedData;
         }
     }
 
