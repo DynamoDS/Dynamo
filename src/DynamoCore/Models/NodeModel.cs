@@ -6,8 +6,8 @@ using System.Linq;
 using System.Windows;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using Autodesk.DesignScript.Interfaces;
 using Dynamo.FSchemeInterop;
-using Dynamo.Units;
 using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.DSEngine;
@@ -84,6 +84,8 @@ namespace Dynamo.Models
         private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> _previousOutputPortMappings =
             new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
+        private IRenderPackage _renderPackage;
+
         #endregion
 
         #region public members
@@ -96,6 +98,15 @@ namespace Dynamo.Models
         public Dictionary<int, HashSet<Tuple<int, NodeModel>>> Outputs =
             new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
+        public IRenderPackage RenderPackage
+        {
+            get { return _renderPackage; }
+            set
+            {
+                _renderPackage = value;
+                RaisePropertyChanged("RenderPackage");
+            }
+        }
 
         #endregion
 
@@ -497,8 +508,27 @@ namespace Dynamo.Models
 
             PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
             {
-                if (args.PropertyName == "OverrideName")
-                    RaisePropertyChanged("NickName");
+                switch (args.PropertyName)
+                {
+                    case ("OverrideName"):
+                        RaisePropertyChanged("NickName");
+                        break;
+                    case ("IsUpdated"):
+                        UpdateRenderPackage();
+                        break;
+                    case ("IsVisible"):
+                        UpdateRenderPackage();
+                        break;
+                    case ("IsUpstreamVisible"):
+                        UpdateRenderPackage();
+                        break;
+                    case ("DisplayLabels"):
+                        UpdateRenderPackage();
+                        break;
+                    case("IsSelected"):
+                        UpdateRenderPackage();
+                        break;
+                }
             };
 
             //Fetch the element name from the custom attribute.
@@ -2022,9 +2052,81 @@ namespace Dynamo.Models
         }
 
         #endregion
+
+        public bool isUpdatingRenderPackage = false;
+
+        private void UpdateRenderPackage()
+        {
+            if (dynSettings.Controller == null)
+                return;
+
+            if (isUpdatingRenderPackage)
+                return;
+
+            isUpdatingRenderPackage = true;
+            var worker = new BackgroundWorker();
+            worker.DoWork += UpdateRenderPackageThread;
+
+            if (dynSettings.Controller.Testing)
+                UpdateRenderPackageThread(null, null);
+            else
+                worker.RunWorkerAsync();
+        }
+
+        private void UpdateRenderPackageThread(object s, DoWorkEventArgs args)
+        {
+            //dispose of the current render package
+            RenderPackage = null;
+
+            RenderPackage = new RenderPackage(IsSelected);
+
+            IEnumerable<string> drawableIds = GetDrawableIds();
+            foreach (var varName in drawableIds)
+            {
+                var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
+                if (graphItems != null && graphItems.Any())
+                {
+                    graphItems.ForEach(x => x.Tessellate(RenderPackage));
+                }
+            }
+
+            isUpdatingRenderPackage = false;
+        }
+
+        /// <summary>
+        /// Gets list of drawable Ids as registered with visualization manager 
+        /// for all the output port of the given node.
+        /// </summary>
+        /// <param name="node">Node</param>
+        /// <returns>List of Drawable Ids</returns>
+        private IEnumerable<string> GetDrawableIds()
+        {
+            var drawables = new List<String>();
+            for (int i = 0; i < OutPortData.Count; ++i)
+            {
+                string identifier = GetDrawableId(i);
+                if (!string.IsNullOrEmpty(identifier))
+                    drawables.Add(identifier);
+            }
+
+            return drawables;
+        }
+
+        /// <summary>
+        /// Gets the drawable Id as registered with visualization manager for
+        /// the given output port on the given node.
+        /// </summary>
+        /// <param name="node">Node</param>
+        /// <param name="outPortIndex">Output port index</param>
+        /// <returns>Drawable Id</returns>
+        private string
+            GetDrawableId(int outPortIndex)
+        {
+            var output = GetAstIdentifierForOutputIndex(outPortIndex);
+            return output.ToString();
+        }
     }
-    
-    
+
     public enum ElementState
     {
         Dead,
