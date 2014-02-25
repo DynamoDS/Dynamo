@@ -32,6 +32,24 @@ namespace Dynamo.Models
         }
     }
 
+    public class NodeMigrationException : Exception
+    {
+        internal NodeMigrationException(string nodeType)
+        {
+            this.NodeType = nodeType;
+        }
+
+        public override string Message
+        {
+            get
+            {
+                return string.Format("NodeMigrationException: {0}", NodeType);
+            }
+        }
+
+        public string NodeType { get; private set; }
+    }
+
     public class MigrationManager
     {
         private static MigrationManager _instance;
@@ -107,8 +125,15 @@ namespace Dynamo.Models
                 typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
                 System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
 
-                if (type == null) // Error messages displayed, move on.
-                    continue;
+                if (type == null)
+                {
+                    // For the duration of migration work, we display exception
+                    // so that it shows up in the NUnit result. This may need to
+                    // be disabled (and simply 'continue') if there are still 
+                    // nodes left to be migrated.
+                    // 
+                    throw new NodeMigrationException(typeName);
+                }
 
                 // Migrate the given node into one or more new nodes.
                 NodeMigrationData migrationData = this.MigrateXmlNode(elNode, type, workspaceVersion);
@@ -136,6 +161,16 @@ namespace Dynamo.Models
                               let result = new { method, attribute.From, attribute.To }
                               orderby result.From
                               select result).ToList();
+
+            if (migrations == null || (migrations.Count <= 0))
+            {
+                // For the duration of migration work, we display exception
+                // so that it shows up in the NUnit result. This may need to
+                // be disabled (and simply 'continue') if there are still 
+                // nodes left to be migrated.
+                // 
+                throw new NodeMigrationException(type.FullName);
+            }
 
             Version currentVersion = dynSettings.Controller.DynamoModel.HomeSpace.WorkspaceVersion;
 
