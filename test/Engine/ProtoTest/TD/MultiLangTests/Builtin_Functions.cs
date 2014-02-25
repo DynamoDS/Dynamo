@@ -3995,6 +3995,7 @@ t8 = 0;
             thisTest.Verify("t8", new Object[] { -1.0, -2.0, 1.0 });
         }
 
+        
         [Test]
         public void T068_Round_3()
         {
@@ -4009,8 +4010,8 @@ a4 = Math.Round( 3.45, MidpointRounding.AwayFromZero);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 3.4);
             thisTest.Verify("a2", 3.5);
-            thisTest.Verify("a3", 3.4);
-            thisTest.Verify("a4", 3.5);
+            thisTest.Verify("a3", 3.0);
+            thisTest.Verify("a4", 3.0);
         }
 
         [Test]
