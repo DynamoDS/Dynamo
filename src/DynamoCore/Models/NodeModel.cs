@@ -86,7 +86,7 @@ namespace Dynamo.Models
         private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> _previousOutputPortMappings =
             new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
-        private IRenderPackage _renderPackage = new RenderPackage(false);
+        private IRenderPackage _renderPackage = new RenderPackage(false, false);
 
         #endregion
 
@@ -2061,7 +2061,8 @@ namespace Dynamo.Models
                 return;
             }
 
-            RenderPackage = new RenderPackage(IsSelected);
+            ((RenderPackage) RenderPackage).Selected = IsSelected;
+            ((RenderPackage) RenderPackage).DisplayLabels = DisplayLabels;
 
             IEnumerable<string> drawableIds = GetDrawableIds();
 
