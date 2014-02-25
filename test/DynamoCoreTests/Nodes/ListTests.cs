@@ -1299,7 +1299,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Category("Not Migrated")]
         public void NumberRange_LacingCrossProduct()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -1380,8 +1380,8 @@ namespace Dynamo.Tests
 
         #region AddToList test cases -PartiallyDone
 
-        [Test]
-        public void AddToList_SimpleTest_NotMigrated()
+        [Test, Category("Not Migrated")]
+        public void AddToList_SimpleTest()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -1436,7 +1436,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
-            AssertPreviewValue("cfdfc020-05d0-4442-96df-8d97aad9c38c", new int[][]{new int[]{3}, new int[]{6}, new int[]{9}});
+            AssertPreviewValue("cfdfc020-05d0-4442-96df-8d97aad9c38c", new int[][]
+                {
+                    new int[]{3}, new int[]{6}, new int[]{9}
+                });
 
         }
 
@@ -1537,8 +1540,8 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
-        public void SplitList_ComplexAnotherExample_NotMigrated()
+        [Test, Category("Not Migrated")]
+        public void SplitList_ComplexAnotherExample()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -1576,8 +1579,8 @@ namespace Dynamo.Tests
 
         #region TakeFromList test cases -PartiallyDone
 
-        [Test]
-        public void TakeFromList_SimpleTest_NotMigrated()
+        [Test, Category("Not Migrated")]
+        public void TakeFromList_SimpleTest()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -1735,8 +1738,8 @@ namespace Dynamo.Tests
             SelectivelyAssertPreviewValues("7f6cbd60-b9fb-4b16-81d3-4fab26790446", validationData);
         }
 
-        [Test]
-        public void ShiftListIndices_Complex_NotMigrated()
+        [Test, Category("Not Migrated")]
+        public void ShiftListIndices_Complex()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -1842,8 +1845,8 @@ namespace Dynamo.Tests
             AssertPreviewValue("58d35bfa-4435-44f0-a322-c6f7350f0220", new string[] { "Get", "From" });
         }
 
-        [Test]
-        public void GetFromList_AmtAsRangeExpn_NotMigrated()
+        [Test, Category("Not Migrated")]
+        public void GetFromList_AmtAsRangeExpnd()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -1997,8 +2000,8 @@ namespace Dynamo.Tests
             AssertPreviewValue("96a1ca07-83eb-4459-981e-7daed6d1d4b3", new int[] { 6, 7, 8, 9 });
         }
 
-        [Test]
-        public void DropEveryNth_ComplexTest_NotMigrated()
+        [Test, Category("Not Migrated")]
+        public void DropEveryNth_ComplexTest()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -2367,8 +2370,8 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
-        public void JoinList_MoreLists_NotMigrated()
+        [Test, Category("Not Migrated")]
+        public void JoinList_MoreLists()
         {
             var model = dynSettings.Controller.DynamoModel;
 
