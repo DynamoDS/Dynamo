@@ -390,7 +390,7 @@ namespace Dynamo.Nodes
             }
 
             //Fin
-            return FScheme.Value.NewContainer(Units.Area.FromSquareFeet(area, dynSettings.Controller.UnitsManager));
+            return FScheme.Value.NewContainer(Units.Area.FromSquareFeet(area));
         }
 
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]

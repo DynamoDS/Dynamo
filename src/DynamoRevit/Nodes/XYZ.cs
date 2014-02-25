@@ -173,7 +173,7 @@ namespace Dynamo.Nodes
 
             ToPolarCoordinates(xyz, out r, out theta, out phi);
 
-            outPuts[_rPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(r, dynSettings.Controller.UnitsManager));
+            outPuts[_rPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(r));
             outPuts[_thetaPort] = FScheme.Value.NewNumber(theta);
             outPuts[_offsetPort] = FScheme.Value.NewNumber(phi);
         }
@@ -344,7 +344,7 @@ namespace Dynamo.Nodes
 
             ToSphericalCoordinates(xyz, out r, out theta, out phi);
 
-            outPuts[_rPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(r, dynSettings.Controller.UnitsManager));
+            outPuts[_rPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(r));
             outPuts[_thetaPort] = FScheme.Value.NewNumber(theta);
             outPuts[_phiPort] = FScheme.Value.NewNumber(phi);
         }
@@ -451,9 +451,9 @@ namespace Dynamo.Nodes
             var y = xyz.Y;
             var z = xyz.Z;
 
-            outPuts[_xPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(x, dynSettings.Controller.UnitsManager));
-            outPuts[_yPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(y, dynSettings.Controller.UnitsManager));
-            outPuts[_zPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(z, dynSettings.Controller.UnitsManager));
+            outPuts[_xPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(x));
+            outPuts[_yPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(y));
+            outPuts[_zPort] = FScheme.Value.NewContainer(Units.Length.FromFeet(z));
         }
     }
 
@@ -474,7 +474,7 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             var xyz = (XYZ) ((FScheme.Value.Container) args[0]).Item;
-            return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.X, dynSettings.Controller.UnitsManager));
+            return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.X));
         }
 
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
@@ -501,7 +501,7 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             var xyz = (XYZ) ((FScheme.Value.Container) args[0]).Item;
-            return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.Y, dynSettings.Controller.UnitsManager));
+            return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.Y));
         }
 
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
@@ -528,7 +528,7 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             var xyz = (XYZ) ((FScheme.Value.Container) args[0]).Item;
-            return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.Z, dynSettings.Controller.UnitsManager));
+            return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.Z));
         }
 
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
@@ -558,7 +558,7 @@ namespace Dynamo.Nodes
             var a = (XYZ)((FScheme.Value.Container)args[0]).Item;
             var b = (XYZ)((FScheme.Value.Container)args[1]).Item;
 
-            return FScheme.Value.NewContainer(Units.Length.FromFeet(a.DistanceTo(b), dynSettings.Controller.UnitsManager));
+            return FScheme.Value.NewContainer(Units.Length.FromFeet(a.DistanceTo(b)));
         }
 
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
@@ -585,7 +585,7 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             var xyz = (XYZ) ((FScheme.Value.Container) args[0]).Item;
-            return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.GetLength(), dynSettings.Controller.UnitsManager));
+            return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.GetLength()));
         }
 
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
