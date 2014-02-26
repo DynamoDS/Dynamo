@@ -1,0 +1,50 @@
+<Workspace Version="0.6.3.25815" X="43.446657890625" Y="61.2294058756954" zoom="0.822695359375" Description="Create and Send Cloud Daylight Job" Category="Misc" Name="Create Cloud Daylight Job and Send" ID="7e16bb87-b0e2-4069-b8b9-0db9d9dc3f61">
+  <Elements>
+    <Dynamo.Nodes.ExportDocumentRenderData type="Dynamo.Nodes.ExportDocumentRenderData" guid="763eba97-3cae-4b05-8872-29ece919a7fe" nickname="Export Render Data" x="404.410786366855" y="-59.5603213773142" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Transaction type="Dynamo.Nodes.Transaction" guid="15bf1c89-f993-4dd5-bd87-da41f8a26e1b" nickname="Transaction" x="690.885549640518" y="0.327252442429799" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.UploadRenderData type="Dynamo.Nodes.UploadRenderData" guid="493330d0-186b-419b-bb0a-f8e1bc5ff82f" nickname="Upload Render Data" x="881.311592227844" y="3.8278352342567" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CloudDaylightingJob type="Dynamo.Nodes.CloudDaylightingJob" guid="acf63e6f-8f6a-4e83-aa3b-76967948d790" nickname="Cloud Daylighting Job" x="613.027041842572" y="167.425443680711" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.BoolSelector type="Dynamo.Nodes.BoolSelector" guid="119891c2-b069-4032-ae83-cab81157bb96" nickname="Boolean" x="907.927921541315" y="260.418050561432" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean value="False" />
+    </Dynamo.Nodes.BoolSelector>
+    <Dynamo.Nodes.CloudRender type="Dynamo.Nodes.CloudRender" guid="902fcdfa-0976-4379-8b3f-9efbcbee7b1f" nickname="Cloud Render" x="1003.26737800769" y="143.135771520393" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="0198a03e-5fb8-43f6-9011-b65fc7bcb064" nickname="Input" x="1.21551676280234" y="68.0689387169305" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="viewname" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="17afd90f-a20d-467f-929a-89f861e9a84b" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="xDivisions" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="20fd0c63-b56e-4849-beb6-7623c518acf8" nickname="Input" x="18.2327514420349" y="453.646550288407" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="environment" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="cfe46776-0d06-41b6-b30a-4438781a556b" nickname="Output" x="1252.26737800769" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="result" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4486f307-f38d-4b5b-b52c-5943b79731d5" nickname="Input" x="3.99152144770767" y="233.380504701847" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bottom left" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="5503eec7-6534-47fb-bb7c-0e6a3dab4b26" nickname="Input" x="17.0345803883245" y="302.664960181579" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bottom right" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a75f5667-0b4f-4ba3-9066-f1352fb24baa" nickname="Input" x="16.7069549381155" y="370.73389889851" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="top left" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="763eba97-3cae-4b05-8872-29ece919a7fe" start_index="0" end="15bf1c89-f993-4dd5-bd87-da41f8a26e1b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="15bf1c89-f993-4dd5-bd87-da41f8a26e1b" start_index="0" end="493330d0-186b-419b-bb0a-f8e1bc5ff82f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="493330d0-186b-419b-bb0a-f8e1bc5ff82f" start_index="0" end="902fcdfa-0976-4379-8b3f-9efbcbee7b1f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="acf63e6f-8f6a-4e83-aa3b-76967948d790" start_index="0" end="902fcdfa-0976-4379-8b3f-9efbcbee7b1f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="119891c2-b069-4032-ae83-cab81157bb96" start_index="0" end="902fcdfa-0976-4379-8b3f-9efbcbee7b1f" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="902fcdfa-0976-4379-8b3f-9efbcbee7b1f" start_index="0" end="cfe46776-0d06-41b6-b30a-4438781a556b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0198a03e-5fb8-43f6-9011-b65fc7bcb064" start_index="0" end="acf63e6f-8f6a-4e83-aa3b-76967948d790" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0198a03e-5fb8-43f6-9011-b65fc7bcb064" start_index="0" end="763eba97-3cae-4b05-8872-29ece919a7fe" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="17afd90f-a20d-467f-929a-89f861e9a84b" start_index="0" end="acf63e6f-8f6a-4e83-aa3b-76967948d790" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="17afd90f-a20d-467f-929a-89f861e9a84b" start_index="0" end="acf63e6f-8f6a-4e83-aa3b-76967948d790" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="20fd0c63-b56e-4849-beb6-7623c518acf8" start_index="0" end="acf63e6f-8f6a-4e83-aa3b-76967948d790" end_index="6" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4486f307-f38d-4b5b-b52c-5943b79731d5" start_index="0" end="acf63e6f-8f6a-4e83-aa3b-76967948d790" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5503eec7-6534-47fb-bb7c-0e6a3dab4b26" start_index="0" end="acf63e6f-8f6a-4e83-aa3b-76967948d790" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a75f5667-0b4f-4ba3-9066-f1352fb24baa" start_index="0" end="acf63e6f-8f6a-4e83-aa3b-76967948d790" end_index="5" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
