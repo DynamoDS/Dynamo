@@ -235,6 +235,25 @@ namespace Dynamo.Nodes
         }
 
         #endregion
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            var converter = new DoubleDisplay();
+            switch (name)
+            {
+                case "Min":
+                    Min = ((double)converter.ConvertBack(value, typeof(double), null, null));
+                    return true; // UpdateValueCore handled.
+                case "Max":
+                    Max = ((double)converter.ConvertBack(value, typeof(double), null, null));
+                    return true; // UpdateValueCore handled.
+                case "Value":
+                    Value = ((double)converter.ConvertBack(value, typeof(double), null, null));
+                    return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
     }
 
 
