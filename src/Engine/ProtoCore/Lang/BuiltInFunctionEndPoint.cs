@@ -516,6 +516,7 @@ namespace ProtoCore.Lang
 
                         // If the function still isnt found, then it may be a function pointer
                         ProtoCore.DSASM.ProcedureNode procPointedTo = null;
+                        string dynamicFunctionName = string.Empty;
                         if (ProtoCore.DSASM.Constants.kInvalidIndex == fi)
                         {
                             int memvarIndex = interpreter.runtime.exe.classTable.ClassNodes[thisPtrType].GetFirstVisibleSymbolNoAccessCheck(dynamicFunctionNode.functionName);
@@ -534,7 +535,7 @@ namespace ProtoCore.Lang
                                         thisPtrType = ProtoCore.DSASM.Constants.kGlobalScope;
                                         fi = (int)svFunctionPtr.opdata;
                                         procPointedTo = interpreter.runtime.exe.procedureTable[0].procList[fi];
-                                        dynamicFunctionNode.functionName = procPointedTo.name;
+                                        dynamicFunctionName = procPointedTo.name;
                                     }
                                 }
                             }
@@ -565,7 +566,11 @@ namespace ProtoCore.Lang
                         {
                             replicationGuides = interpreter.runtime.GetCachedReplicationGuides(core, arguments.Count);
                         }
-                        string functionName = dynamicFunctionNode.functionName;
+                        string functionName = dynamicFunctionName;
+                        if (string.Empty == functionName)
+                        {
+                            functionName = dynamicFunctionNode.functionName;
+                        }
 
                         ProcedureNode fNode = null;
                         if (procPointedTo != null)

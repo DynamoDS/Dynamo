@@ -251,6 +251,7 @@ namespace ProtoScript.Runners
             coreOptions.WebRunner = false;
             coreOptions.ExecutionMode = ProtoCore.ExecutionMode.Serial;
 
+
             // This should have been set in the consturctor
             Validity.Assert(executionOptions != null);
         }
@@ -653,6 +654,9 @@ namespace ProtoScript.Runners
 
         private bool Compile(List<AssociativeNode> astList, out int blockId)
         {
+            // The ASTs have already been transformed to SSA
+            runnerCore.Options.GenerateSSA = false;
+
             bool succeeded = runner.Compile(astList, runnerCore, out blockId);
             if (succeeded)
             {
@@ -664,6 +668,16 @@ namespace ProtoScript.Runners
                 staticContext.symbolTable = runnerCore.DSExecutable.runtimeSymbols[0];
             }
             return succeeded;
+        }
+
+        private bool CompileToSSA(Guid guid, List<AssociativeNode> astList, out List<AssociativeNode> ssaAstList)
+        {
+            runnerCore.Options.GenerateSSA = true;
+            runnerCore.ResetSSASubscript(guid, 0);
+            ProtoAssociative.CodeGen codegen = new ProtoAssociative.CodeGen(runnerCore, null);
+            ssaAstList = new List<AssociativeNode>();
+            ssaAstList = codegen.EmitSSA(astList);
+            return true;
         }
 
 
@@ -794,14 +808,23 @@ namespace ProtoScript.Runners
 
         private void CompileAndExecuteForDeltaExecution(List<AssociativeNode> astList)
         {
+            // Make a copy of the ASTs to be executed
+            // We dont want the compiler to modify the ASTs cached in the liverunner
+            List<AssociativeNode> dispatchASTList = new List<AssociativeNode>();
+            foreach (AssociativeNode astNode in astList)
+            {
+                AssociativeNode newNode = NodeUtils.Clone(astNode);
+                dispatchASTList.Add(newNode);
+            }
+
             if (coreOptions.Verbose)
             {
-                string code = DebugCodeEmittedForDeltaAst(astList);
+                string code = DebugCodeEmittedForDeltaAst(dispatchASTList);
                 System.Diagnostics.Debug.WriteLine(code);
             }
 
             ResetForDeltaASTExecution();
-            bool succeeded = CompileAndExecute(astList);
+            bool succeeded = CompileAndExecute(dispatchASTList);
 
             if (succeeded)
             {
@@ -884,6 +907,30 @@ namespace ProtoScript.Runners
                 {
                     // node is modifed as it does not match any existing
                     modifiedASTList.Add(node);
+
+                    // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
+                    // this means that it was a modified variable within the orevious expression.
+                    // Inherit its expression ID 
+                    BinaryExpressionNode bnode = node as BinaryExpressionNode;
+                    if (null != bnode && bnode.LeftNode is IdentifierNode)
+                    {
+                        foreach (AssociativeNode prevNode in st.AstNodes)
+                        {
+                            BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
+                            if (null != prevBinaryNode)
+                            {
+                                IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
+                                if (null != prevIdent)
+                                {
+                                    if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
+                                    {
+                                        bnode.InheritID(prevBinaryNode.ID);
+                                        bnode.exprUID = prevBinaryNode.exprUID;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
             return modifiedASTList;
@@ -989,7 +1036,8 @@ namespace ProtoScript.Runners
                     {
                         foreach (var gnode in runnerCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
                         {
-                            if (gnode.exprUID == bNode.exprUID)
+                            //if (gnode.exprUID == bNode.exprUID)
+                            if (gnode.UID == bNode.ID)
                             {
                                 gnode.isActive = false;
                             }
@@ -1067,6 +1115,8 @@ namespace ProtoScript.Runners
             staticContext = new ProtoCore.CompileTime.Context();
 
             currentSubTreeList = new Dictionary<Guid, Subtree>();
+
+            CLRModuleType.ClearTypes();
         }
 
         /// <summary>
@@ -1145,6 +1195,53 @@ namespace ProtoScript.Runners
             return libs;
         }
 
+        /// <summary>
+        ///  Compiles all ASTs within the syncData to SSA
+        /// </summary>
+        /// <param name="syncData"></param>
+        private void CompileToSSA(GraphSyncData syncData)
+        {
+            List<AssociativeNode> newASTList = null;
+            if (null != syncData.AddedSubtrees)
+            {
+                foreach (Subtree st in syncData.AddedSubtrees)
+                {
+                    if (null != st.AstNodes)
+                    {
+                        CompileToSSA(st.GUID, st.AstNodes, out newASTList);
+                        st.AstNodes.Clear();
+                        st.AstNodes.AddRange(newASTList);
+                    }
+                }
+            }
+
+            if (null != syncData.ModifiedSubtrees)
+            {
+                foreach (Subtree st in syncData.ModifiedSubtrees)
+                {
+                    if (null != st.AstNodes)
+                    {
+                        CompileToSSA(st.GUID, st.AstNodes, out newASTList);
+                        st.AstNodes.Clear();
+                        st.AstNodes.AddRange(newASTList);
+                    }
+                }
+            }
+
+            if (null != syncData.DeletedSubtrees)
+            {
+                foreach (Subtree st in syncData.DeletedSubtrees)
+                {
+                    if (null != st.AstNodes)
+                    {
+                        CompileToSSA(st.GUID, st.AstNodes, out newASTList);
+                        st.AstNodes.Clear();
+                        st.AstNodes.AddRange(newASTList);
+                    }
+                }
+            }
+        }
+
         private void SynchronizeInternal(GraphSyncData syncData)
         {
             runnerCore.Options.IsDeltaCompile = true;
@@ -1157,6 +1254,7 @@ namespace ProtoScript.Runners
                 return;
             }
 
+            CompileToSSA(syncData);
 
             if (syncData.DeletedSubtrees != null)
             {
@@ -1179,7 +1277,6 @@ namespace ProtoScript.Runners
                         {
                             if (removeSubTree.AstNodes != null)
                             {
-                                //List<AssociativeNode> modifiedASTList = GetModifiedNodes(removeSubTree);
                                 var nullNodes = MarkGraphNodesInactive(removeSubTree.AstNodes);
                                 if (nullNodes != null)
                                 {
@@ -1211,18 +1308,6 @@ namespace ProtoScript.Runners
                     List<FunctionDefinitionNode> modifiedFunctions = new List<FunctionDefinitionNode>();
                     if (st.AstNodes != null)
                     {
-                        // Handle modifed statements
-                        //modifiedASTList = GetModifiedNodes(st);
-                        //if (null != modifiedASTList && modifiedASTList.Count > 0)
-                        //{
-                        //    var nullNodes = MarkGraphNodesInactive(modifiedASTList);
-                        //    if (nullNodes != null)
-                        //    {
-                        //        //deltaAstList.AddRange(nullNodes);
-                        //    }
-                        //    deltaAstList.AddRange(modifiedASTList);
-                        //}
-
                         // Handle modified statements
                         List<AssociativeNode> modifiedASTList = GetModifiedNodes(st);
                         if (null != modifiedASTList && modifiedASTList.Count > 0)
@@ -1278,20 +1363,6 @@ namespace ProtoScript.Runners
 
                     }
 
-                    //Subtree oldSubTree;
-                    //if (currentSubTreeList.TryGetValue(st.GUID, out oldSubTree))
-                    //{
-                    //    if (oldSubTree.AstNodes != null)
-                    //    {
-                    //        UndefineFunctions(oldSubTree.AstNodes.Where(n => n is FunctionDefinitionNode));
-                    //    }
-
-                    //    // Update the curernt subtree list
-                    //    UpdateCachedSubtree(st.GUID, modifiedASTList);
-                    //    //currentSubTreeList[st.GUID] = st;
-                    //}
-
-                    
                     // Get the AST's dependent on every function in the modified function list,
                     // and append them to the list of AST's to be compiled and executed
                     foreach (FunctionDefinitionNode fnode in modifiedFunctions)
@@ -1313,6 +1384,7 @@ namespace ProtoScript.Runners
                     currentSubTreeList.Add(st.GUID, st);
                 }
             }
+
             CompileAndExecuteForDeltaExecution(deltaAstList);
         }
 
