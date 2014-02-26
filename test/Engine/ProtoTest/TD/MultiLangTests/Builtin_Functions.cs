@@ -2116,7 +2116,6 @@ rj = CountTrue(j);
 rk = CountTrue(k);
                ";
             thisTest.RunScriptSource(code);
-            thisTest.SetErrorMessage("1467420 - REV:4495 When passing in a single value in a built-in function which takes in an array, the single value should be upgraded to one dimension array");
             thisTest.Verify("ra", 1);
             thisTest.Verify("rb", 1);
             thisTest.Verify("rc", 0);
@@ -2124,7 +2123,7 @@ rk = CountTrue(k);
             thisTest.Verify("re", 2);
             thisTest.Verify("rf", 0);
             thisTest.Verify("rg", 0);
-            thisTest.Verify("rh", null);
+            thisTest.Verify("rh", 0);
             thisTest.Verify("ri", 0);
             thisTest.Verify("rj", 0);
             thisTest.Verify("rk", 0);
@@ -3029,7 +3028,7 @@ d = { };
         public void BIM23_LoadCSV()
         {
             String code =
-@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
+@"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
 b = ImportFromCSV(a);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -3042,7 +3041,7 @@ b = ImportFromCSV(a);
         public void BIM23_LoadCSV_2()
         {
             String code =
-@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
+@"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
 b = ImportFromCSV(a);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -3055,8 +3054,8 @@ b = ImportFromCSV(a);
         public void BIM23_LoadCSV_replicated_3()
         {
             String code =
-@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
-b = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
+@"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
+b = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
 c = { a, b };
 d = ImportFromCSV(c);
 ";
@@ -3070,8 +3069,8 @@ d = ImportFromCSV(c);
         public void BIM23_LoadCSV_replicated_4()
         {
             String code =
-@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
-b = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
+@"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
+b = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
 c = { a, b };
 d = ImportFromCSV(c);
 ";
@@ -3085,8 +3084,8 @@ d = ImportFromCSV(c);
         public void BIM23_LoadCSV_replicated_5()
         {
             String code =
-@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
-b = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
+@"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
+b = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
 c = { a, b };
 d = ImportFromCSV(c);
 ";
@@ -3106,8 +3105,8 @@ d = ImportFromCSV(c);
 d;
 [Imperative]
 {
-a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
-b = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
+a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
+b = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
 c = { a, b };
 d = ImportFromCSV(c);
 }
@@ -3130,8 +3129,8 @@ d;
 {
 [Associative]
 {
-a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
-b = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
+a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test.csv"";
+b = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/test2.csv"";
 c = { a, b };
 d = ImportFromCSV(c);
 }
@@ -3996,6 +3995,7 @@ t8 = 0;
             thisTest.Verify("t8", new Object[] { -1.0, -2.0, 1.0 });
         }
 
+        
         [Test]
         public void T068_Round_3()
         {
@@ -4010,8 +4010,8 @@ a4 = Math.Round( 3.45, MidpointRounding.AwayFromZero);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 3.4);
             thisTest.Verify("a2", 3.5);
-            thisTest.Verify("a3", 3.4);
-            thisTest.Verify("a4", 3.5);
+            thisTest.Verify("a3", 3.0);
+            thisTest.Verify("a4", 3.0);
         }
 
         [Test]
@@ -4488,7 +4488,7 @@ z1 = IndexOf(1..5, { 1, 2 });
         public void T073_Defect_ImportFromCSV_1467579()
         {
             String code =
-@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/trailing_comma.csv"";
+@"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/trailing_comma.csv"";
 b = ImportFromCSV(a);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -4888,7 +4888,7 @@ test = { A.A() => x;
         public void Defect_ImportFromCSV_1467622()
         {
             String code =
-            @"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/nonuniform.csv"";
+            @"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/nonuniform.csv"";
             b = ImportFromCSV(a);
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -4901,7 +4901,7 @@ test = { A.A() => x;
         public void Defect_ImportFromCSV_1467622_2()
         {
             String code =
-            @"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set2/trailing_comma_nonuniform.csv"";
+            @"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set2/trailing_comma_nonuniform.csv"";
             b = ImportFromCSV(a);
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
