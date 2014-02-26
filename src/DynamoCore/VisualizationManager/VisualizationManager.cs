@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Text;
 using System.Linq;
 using Dynamo.Models;
@@ -49,7 +48,8 @@ namespace Dynamo
             {
                 if (!value && updatingPaused)
                 {
-                    OnVisualizationUpdateComplete(this, EventArgs.Empty);
+                    //OnVisualizationUpdateComplete(this, EventArgs.Empty);
+                    UpdateVisualizations();
                 }
 
                 updatingPaused = value;
@@ -255,8 +255,17 @@ namespace Dynamo
             try
             {
                 var updated = _controller.DynamoModel.Nodes.Where(node => node.IsUpdated);
-                updated.ToList().ForEach(x => x.UpdateRenderPackage());
-                OnVisualizationUpdateComplete(this, EventArgs.Empty);
+                if (updated.Any())
+                {
+                    updated.ToList().ForEach(x => x.UpdateRenderPackage());
+
+                    Debug.WriteLine(string.Format("Visualization updating {0} objects", updated.Count()));
+                    OnVisualizationUpdateComplete(this, EventArgs.Empty);
+                }
+                else
+                {
+                    Debug.WriteLine("Visualization update deffered: all nodes up to date.");
+                }
             }
             catch (Exception ex)
             {
