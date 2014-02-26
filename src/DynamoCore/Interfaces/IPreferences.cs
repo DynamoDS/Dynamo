@@ -3,7 +3,7 @@ using Dynamo.Units;
 
 namespace Dynamo.Interfaces
 {
-    public interface IDynamoPreferences
+    public interface IPreferences
     {
         bool ShowConsole { get; set; }
         bool ShowConnector { get; set; }
@@ -13,6 +13,8 @@ namespace Dynamo.Interfaces
         DynamoLengthUnit LengthUnit { get; set; }
         DynamoAreaUnit AreaUnit { get; set; }
         DynamoVolumeUnit VolumeUnit { get; set; }
+        bool IsUsageReportingApproved { get; set; }
+        bool IsFirstRun { get; set; }
 
         /// <summary>
         /// Save PreferenceSettings in XML File Path if possible,

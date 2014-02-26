@@ -43,7 +43,7 @@ namespace Dynamo.Controls
             if (fe == null)
                 return;
 
-            var node = (WatchNode)fe.DataContext;
+            var node = (WatchItem)fe.DataContext;
 
             if (node != null)
                 node.Click();

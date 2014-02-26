@@ -1,26 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
+using Dynamo.Applications;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Revit;
 using Dynamo.Selection;
-using Dynamo.Units;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using DynamoUnits;
 using Greg;
 using RevitServices.Elements;
 using RevitServices.Persistence;
@@ -66,8 +62,8 @@ namespace Dynamo
             }
         }
 
-        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, RevitServicesUpdater updater, Type viewModelType, string context, IUnitsManager units)
-            : base(env, viewModelType, context, new UpdateManager.UpdateManager(), units)
+        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, RevitServicesUpdater updater, Type viewModelType, string context)
+            : base(env, viewModelType, context, new UpdateManager.UpdateManager(), new RevitWatchHandler(), Dynamo.PreferenceSettings.Load())
         {
             Updater = updater;
 
@@ -82,7 +78,6 @@ namespace Dynamo
             dynSettings.Controller.DynamoViewModel.RequestAuthentication += RegisterSingleSignOn;
 
             AddPythonBindings();
-            AddWatchNodeHandler();
 
             DocumentManager.GetInstance().CurrentUIApplication.Application.DocumentClosed += Application_DocumentClosed;
             DocumentManager.GetInstance().CurrentUIApplication.Application.DocumentOpened += Application_DocumentOpened;
@@ -538,71 +533,6 @@ namespace Dynamo
 
         #endregion
 
-        #region Watch Node Revit Hooks
-
-        private void AddWatchNodeHandler()
-        {
-            Watch.AddWatchHandler(new RevitElementWatchHandler());
-        }
-
-        private class RevitElementWatchHandler : WatchHandler
-        {
-            public bool AcceptsValue(object o)
-            {
-                if (o is Element || o is GeometryObject)
-                {
-                    return true;
-                }
-                return false;
-            }
-
-            public void ProcessNode(object value, WatchNode node, bool showRawData)
-            {
-                try
-                {
-                    ProcessThing(value as dynamic, node, showRawData);
-                }
-                catch(Exception ex)
-                {
-                    node.NodeLabel = value.ToString();
-                }
-            }
-
-            private void ProcessThing(Element element, WatchNode node, bool showRawData)
-            {
-                var id = element.Id;
-
-                node.Clicked += () => DocumentManager.GetInstance().CurrentUIDocument.ShowElements(element);
-                node.Link = id.IntegerValue.ToString(CultureInfo.InvariantCulture);
-                node.NodeLabel = element.Name;
-            }
-
-            private void ProcessThing(XYZ pt, WatchNode node, bool showRawData)
-            {
-                var um = dynSettings.Controller.UnitsManager;
-
-                if (!showRawData)
-                {
-                    ///xyzs will be in feet, but we need to show them
-                    ///in the display units of choice
-
-                    var xyzStr = string.Format("{0:f3}, {1:f3}, {2:f3}",
-                        new Units.Length(pt.X/SIUnit.ToFoot, um),
-                        new Units.Length(pt.Y/SIUnit.ToFoot, um),
-                        new Units.Length(pt.Z/SIUnit.ToFoot, um));
-
-                    node.NodeLabel = "{" + xyzStr + "}";
-                }
-                else
-                {
-                    node.NodeLabel = pt.ToString();
-                }
-                
-            }
-        }
-
-        #endregion
-
         #region Element Persistence Management
 
         private readonly List<ElementId> _transElements = new List<ElementId>();
@@ -844,13 +774,7 @@ namespace Dynamo
                 TransMode = TransactionMode.Automatic; //Automatic transaction control
                 Debug.WriteLine("Adding a run to the idle stack.");
                 InIdleThread = true; //Now in the idle thread.
-                RevThread.IdlePromise.ExecuteOnIdleSync(() =>
-                {
-                    // Clear the active document.  This is a temporary fix 
-                    // until trace cleanup is in place
-                    DocumentManager.GetInstance().ClearCurrentDocument();
-                    base.Run();
-                });
+                RevThread.IdlePromise.ExecuteOnIdleSync(() => base.Run());
             }
             else
             {

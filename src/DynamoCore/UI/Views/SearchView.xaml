@@ -436,16 +436,14 @@
 
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="Focusable" Value="False"></Setter>
-                    <Setter Property="IsExpanded" Value="{Binding IsExpanded}"></Setter>
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=OneWay}"></Setter>
                     <Setter Property="IsSelected" Value="{Binding IsSelected}"></Setter>
                     <Setter Property="Visibility" Value="{Binding Visibility, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}"></Setter>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TreeViewItem}">
-
                                 <Button Command="{Binding ToggleIsExpanded}">
                                     <Button.Focusable>False</Button.Focusable>
-
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <ContentPresenter />
@@ -476,7 +474,7 @@
                                                         <RowDefinition Height="*" />
                                                     </Grid.RowDefinitions>
 
-                                                    <ToggleButton Margin="5,0,0,0" Grid.Row="0" VerticalAlignment="Center" x:Name="Expander" Background="Transparent" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded}"/>
+                                                    <ToggleButton Margin="5,0,0,0" Grid.Row="0" VerticalAlignment="Center" x:Name="Expander" Background="Transparent" IsHitTestVisible="False" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded, Mode=OneWay}"/>
 
                                                     <Border Margin="5,0,5,0" Name="NodeName" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
                                                         <ContentPresenter Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ContentSource="Header"/>
@@ -500,11 +498,6 @@
 
                                     <Trigger Property="IsExpanded" Value="false">
                                         <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
-                                    </Trigger>
-
-                                    <Trigger Property="IsExpanded" Value="true">
-
-                                        <!--<Setter Property="BorderBrush" TargetName="ContainerLight" Value="White"/>-->
                                     </Trigger>
 
                                     <Trigger Property="HasItems" Value="false">

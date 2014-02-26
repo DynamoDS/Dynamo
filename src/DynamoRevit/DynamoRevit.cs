@@ -170,14 +170,11 @@ namespace Dynamo.Applications
                     if (context == "Vasari")
                         context = "Vasari 2014";
 
-                    var units = new UnitsManager
-                    {
-                        HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot,
-                        HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot,
-                        HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot
-                    };
+                    SIUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
+                    SIUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
+                    SIUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
-                    dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context, units);
+                    dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context);
                         
                     dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
                     dynamoController.UIDispatcher = dynamoView.Dispatcher;

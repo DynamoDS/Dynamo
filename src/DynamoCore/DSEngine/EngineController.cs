@@ -37,14 +37,13 @@ namespace Dynamo.DSEngine
             liveRunnerServices = new LiveRunnerServices(this);
             liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
 
-            GraphToDSCompiler.GraphUtilities.Reset();
-            GraphToDSCompiler.GraphUtilities.PreloadAssembly(libraryServices.Libraries.ToList());
-
             astBuilder = new AstBuilder(this);
             syncDataManager = new SyncDataManager();
 
             this.controller = controller;
             this.controller.DynamoModel.NodeDeleted += NodeDeleted;
+
+            this.controller.CustomNodeManager.RecompileAllNodes(this);
         }
 
         public void Dispose()
