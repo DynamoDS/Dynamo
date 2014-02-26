@@ -132,7 +132,8 @@ namespace Dynamo.Models
                     // be disabled (and simply 'continue') if there are still 
                     // nodes left to be migrated.
                     // 
-                    throw new NodeMigrationException(typeName);
+                    // throw new NodeMigrationException(typeName);
+                    continue;
                 }
 
                 // Migrate the given node into one or more new nodes.
@@ -169,7 +170,7 @@ namespace Dynamo.Models
                 // be disabled (and simply 'continue') if there are still 
                 // nodes left to be migrated.
                 // 
-                throw new NodeMigrationException(type.FullName);
+                // throw new NodeMigrationException(type.FullName);
             }
 
             Version currentVersion = dynSettings.Controller.DynamoModel.HomeSpace.WorkspaceVersion;
@@ -537,9 +538,51 @@ namespace Dynamo.Models
             
             foreach (XmlAttribute attribute in element.Attributes)
                 cloned.SetAttribute(attribute.Name, attribute.Value);
-            
+
             cloned.SetAttribute("type", type);
             return cloned;
+        }
+
+        /// <summary>
+        /// Call this method to create a dummy node, should a node failed to be 
+        /// migrated. This results in a dummy node with a description of what the 
+        /// original node type was, and also retain the number of input and output
+        /// ports.
+        /// </summary>
+        /// <param name="element">XmlElement representing the original node which
+        /// has failed migration.</param>
+        /// <param name="inportCount">The number of input ports required on the 
+        /// new dummy node. This number must be a positive number greater or 
+        /// equal to zero.</param>
+        /// <param name="outportCount">The number of output ports required on the 
+        /// new dummy node. This number must be a positive number greater or 
+        /// equal to zero.</param>
+        /// <returns>Returns a new XmlElement representing the dummy node.</returns>
+        /// 
+        public static XmlElement CreateDummyNode(
+            XmlElement element, int inportCount, int outportCount)
+        {
+            if (element == null)
+                throw new ArgumentNullException("element");
+
+            if (inportCount < 0 || (outportCount < 0))
+            {
+                var message = "Argument value must be equal or larger than zero";
+                throw new ArgumentException(message, "inportCount/outportCount");
+            }
+
+            var dummyNodeName = "DSCoreNodesUI.DummyNode";
+            XmlDocument document = element.OwnerDocument;
+            XmlElement dummy = document.CreateElement(dummyNodeName);
+
+            foreach (XmlAttribute attribute in element.Attributes)
+                dummy.SetAttribute(attribute.Name, attribute.Value);
+
+            dummy.SetAttribute("type", dummyNodeName);
+            dummy.SetAttribute("legacyNodeName", element.GetAttribute("type"));
+            dummy.SetAttribute("inputCount", inportCount.ToString());
+            dummy.SetAttribute("outputCount", outportCount.ToString());
+            return dummy;
         }
 
         public static void SetFunctionSignature(XmlElement element,
