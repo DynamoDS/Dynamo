@@ -100,13 +100,17 @@ namespace Dynamo.Models
         public Dictionary<int, HashSet<Tuple<int, NodeModel>>> Outputs =
             new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
+        private Object mutex = new object();
         public IRenderPackage RenderPackage
         {
             get { return _renderPackage; }
             set
             {
-                _renderPackage = value;
-                RaisePropertyChanged("RenderPackage");
+                lock (mutex)
+                {
+                    _renderPackage = value;
+                    RaisePropertyChanged("RenderPackage");
+                } 
             }
         }
 
@@ -2071,10 +2075,13 @@ namespace Dynamo.Models
             int count = 0;
             foreach (var varName in drawableIds)
             {
-                var mirrorData = dynSettings.Controller.EngineController.GetMirror(varName).GetData();
+                var mirror = dynSettings.Controller.EngineController.GetMirror(varName);
+                if (mirror == null)
+                    continue;
+
+                var mirrorData = mirror.GetData();
                 ProcessGraphicItems(mirrorData, graphItems, (RenderPackage)RenderPackage, string.Format("[{0}]", count));
                 count++;
-
             }
 
             graphItems.ForEach(x => x.Tessellate(RenderPackage));

@@ -46,12 +46,12 @@ namespace Dynamo
             get { return updatingPaused; }
             set
             {
-                if (!value && updatingPaused)
+                if (updatingPaused && value == false)
                 {
                     //OnVisualizationUpdateComplete(this, EventArgs.Empty);
-                    UpdateVisualizations();
+                    UpdateRenderPackages();
                 }
-
+                Debug.WriteLine("Updating paused = " + value.ToString());
                 updatingPaused = value;
             }
         }
@@ -185,22 +185,34 @@ namespace Dynamo
         {
             if (e.PropertyName == "IsVisible" ||
                 e.PropertyName == "IsUpstreamVisible" ||
-                e.PropertyName == "DisplayLabels" ||
-                e.PropertyName == "State")
+                e.PropertyName == "DisplayLabels")
             {
-                UpdateVisualizations();
+                UpdateRenderPackages();
             }
         }
         
         void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            ////don't trigger an update if the changes in the selection
-            ////had no effect on the current visualizations
-            ////don't trigger an update either if the paused flag is set
-            if (!updatingPaused)
+            if (updatingPaused)
+                return;
+
+            var changes = new List<ISelectable>();
+
+            if (e.OldItems != null && e.OldItems.Cast<ISelectable>().Any())
             {
-                UpdateVisualizations();
+                changes.AddRange(e.OldItems.Cast<ISelectable>());
             }
+
+            if (e.NewItems != null && e.NewItems.Cast<ISelectable>().Any())
+            {
+                changes.AddRange(e.NewItems.Cast<ISelectable>());
+            }
+
+            Debug.WriteLine("Selection changed. Visualization updating...");
+            UpdateRenderPackages(
+                changes.Any()? 
+                changes.Where(sel => sel is NodeModel).Cast<NodeModel>():
+                null);
         }
 
         /// <summary>
@@ -210,7 +222,7 @@ namespace Dynamo
         /// <param name="e"></param>
         void Update(object sender, EventArgs e)
         {
-            UpdateVisualizations();
+            UpdateRenderPackages();
         }
 
         void Clear(object sender, EventArgs e)
@@ -232,7 +244,7 @@ namespace Dynamo
         /// Finds all nodes marked as upated in the graph and calls their,
         /// update methods in paralell.
         /// </summary>
-        public virtual void UpdateVisualizations()
+        private void UpdateRenderPackages(IEnumerable<NodeModel> toUpdate = null)
         {
             if (_controller == null)
                 return;
@@ -242,30 +254,37 @@ namespace Dynamo
 
             isUpdating = true;
             var worker = new BackgroundWorker();
-            worker.DoWork += worker_DoWork;
+
+            worker.DoWork += UpdateRenderPackagesThread;
 
             if (_controller.Testing)
-                worker_DoWork(null, null);
+                UpdateRenderPackagesThread(null, new DoWorkEventArgs(toUpdate));
             else
-                worker.RunWorkerAsync();   
+                worker.RunWorkerAsync(toUpdate);   
         }
 
-        void worker_DoWork(object sender, DoWorkEventArgs e)
+        void UpdateRenderPackagesThread(object sender, DoWorkEventArgs e)
         {
             try
             {
-                var updated = _controller.DynamoModel.Nodes.Where(node => node.IsUpdated);
-                if (updated.Any())
-                {
-                    updated.ToList().ForEach(x => x.UpdateRenderPackage());
+                //If the the event arguments contains a list of nodes,
+                //then update those nodes, otherwise process any nodes
+                //that are marked for updating.
 
-                    Debug.WriteLine(string.Format("Visualization updating {0} objects", updated.Count()));
+                var toUpdate = e.Argument as IEnumerable<NodeModel> ??
+                               _controller.DynamoModel.Nodes.Where(node => node.IsUpdated);
+
+                if (toUpdate.Any())
+                {
+                    toUpdate.ToList().ForEach(x => x.UpdateRenderPackage());
+                    Debug.WriteLine(string.Format("Visualization updating {0} objects", toUpdate.Count()));
                     OnVisualizationUpdateComplete(this, EventArgs.Empty);
                 }
                 else
                 {
                     Debug.WriteLine("Visualization update deffered: all nodes up to date.");
                 }
+
             }
             catch (Exception ex)
             {
@@ -275,7 +294,6 @@ namespace Dynamo
             {
                 isUpdating = false;
             }
-            
         }
 
         /// <summary>
@@ -298,14 +316,16 @@ namespace Dynamo
                 packages =
                     _controller.DynamoModel.Nodes.Where(x => ((RenderPackage)x.RenderPackage) != null && ((RenderPackage)x.RenderPackage).IsNotEmpty())
                         .Select(x=>x.RenderPackage).Cast<RenderPackage>().ToList();
-                OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages, string.Empty));
+
+                if (packages.Any())
+                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages, string.Empty));
             }
             else
             {
                 //send back renderables for the branch
                 packages = GetUpstreamPackages(node.Inputs);
-
-                OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages, node.GUID.ToString()));
+                if (packages.Any())
+                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages, node.GUID.ToString()));
             }
 
             watch.Stop();
@@ -337,7 +357,6 @@ namespace Dynamo
 
                 if (node.IsUpstreamVisible)
                     packages.AddRange(GetUpstreamPackages(node.Inputs));
-
             }
 
             return packages;
