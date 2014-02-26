@@ -385,6 +385,7 @@ namespace Dynamo.Controls
             ThreadSafeList<Point3D> blueLines,
             ThreadSafeList<BillboardTextItem> text)
         {
+            int colorCount = 0;
             for (int i = 0; i < p.LineStripVertices.Count - 3; i += 3)
             {
                 var start = new Point3D(
@@ -400,9 +401,9 @@ namespace Dynamo.Controls
                 //HACK: test for line color using only 
                 //the start value
                 var startColor = Color.FromRgb(
-                    p.LineStripVertexColors[i],
-                    p.LineStripVertexColors[i + 1],
-                    p.LineStripVertexColors[i + 2]);
+                    p.LineStripVertexColors[colorCount],
+                    p.LineStripVertexColors[colorCount + 1],
+                    p.LineStripVertexColors[colorCount + 2]);
 
                 //var endColor = new Point3D(
                 //    p.LineStripVertexColors[i + 3],
@@ -422,13 +423,13 @@ namespace Dynamo.Controls
                     redLines.Add(end);
                     isAxis = true;
                 }
-                else if (startColor == Color.FromRgb(150,255,0))
+                else if (startColor == Color.FromRgb(0,255,0))
                 {
                     greenLines.Add(start);
                     greenLines.Add(end);
                     isAxis = true;
                 }
-                else if (startColor == Color.FromRgb(0,150,255))
+                else if (startColor == Color.FromRgb(0,255,255))
                 {
                     blueLines.Add(start);
                     blueLines.Add(end);
@@ -448,6 +449,8 @@ namespace Dynamo.Controls
                         lines.Add(end);
                     }
                 }
+
+                colorCount += 4;
             }
         }
 
