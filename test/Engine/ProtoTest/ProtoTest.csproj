@@ -214,6 +214,10 @@
       <Project>{A4794476-7D0E-41C0-AD83-4AB929C0A46C}</Project>
       <Name>ProtoScript</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FFITarget\FFITarget.csproj">
+      <Project>{C70FE632-5500-4C57-B3D6-9B5574137551}</Project>
+      <Name>FFITarget</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProtoTestFx\ProtoTestFx.csproj">
       <Project>{2235F7CA-AB25-4177-92BC-4B574D2D5DF6}</Project>
       <Name>ProtoTestFx</Name>

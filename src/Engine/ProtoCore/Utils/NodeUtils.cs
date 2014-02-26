@@ -90,6 +90,10 @@ namespace ProtoCore.Utils
             {
                 return new ProtoCore.AST.AssociativeAST.ClassDeclNode(rhsNode as ProtoCore.AST.AssociativeAST.ClassDeclNode);
             }
+            else if (rhsNode is ProtoCore.AST.AssociativeAST.ImportNode)
+            {
+                return new ProtoCore.AST.AssociativeAST.ImportNode(rhsNode as ProtoCore.AST.AssociativeAST.ImportNode);
+            }
             else if (rhsNode is ProtoCore.AST.AssociativeAST.VarDeclNode)
             {
                 return new ProtoCore.AST.AssociativeAST.VarDeclNode(rhsNode as ProtoCore.AST.AssociativeAST.VarDeclNode);
