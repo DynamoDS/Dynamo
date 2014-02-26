@@ -416,19 +416,19 @@ namespace Dynamo.Controls
                 }
 
                 bool isAxis = false;
-                if (startColor == Colors.Red)
+                if (startColor == Color.FromRgb(255,0,0))
                 {
                     redLines.Add(start);
                     redLines.Add(end);
                     isAxis = true;
                 }
-                else if (startColor == Colors.Green)
+                else if (startColor == Color.FromRgb(150,255,0))
                 {
                     greenLines.Add(start);
                     greenLines.Add(end);
                     isAxis = true;
                 }
-                else if (startColor == Colors.Blue)
+                else if (startColor == Color.FromRgb(0,150,255))
                 {
                     blueLines.Add(start);
                     blueLines.Add(end);
