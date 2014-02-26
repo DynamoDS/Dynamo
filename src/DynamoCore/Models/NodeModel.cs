@@ -2068,11 +2068,13 @@ namespace Dynamo.Models
 
             var graphItems = new List<IGraphicItem>();
 
+            int count = 0;
             foreach (var varName in drawableIds)
             {
                 var mirrorData = dynSettings.Controller.EngineController.GetMirror(varName).GetData();
+                ProcessGraphicItems(mirrorData, graphItems, (RenderPackage)RenderPackage, string.Format("[{0}]", count));
+                count++;
 
-                ProcessGraphicItems(mirrorData, graphItems);
             }
 
             graphItems.ForEach(x => x.Tessellate(RenderPackage));
@@ -2083,18 +2085,22 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="data"></param>
         /// <param name="graphicItems"></param>
-        private void ProcessGraphicItems(MirrorData data, List<IGraphicItem> graphicItems)
+        private void ProcessGraphicItems(MirrorData data, List<IGraphicItem> graphicItems, RenderPackage package, string tag)
         {
             if (data.IsCollection)
             {
                 var list = data.GetElements();
-                list.ForEach(x => ProcessGraphicItems(x, graphicItems));
+                for (int i = 0; i < list.Count; i++)
+                {
+                    ProcessGraphicItems(list[i], graphicItems, package, string.Format("{0}[{1}]", tag, i));
+                }
             }
             else
             {
                 if (data.Data is IGraphicItem)
                 {
                     graphicItems.Add(data.Data as IGraphicItem);
+                    package.Tag = tag;
                 }
             }
         }
