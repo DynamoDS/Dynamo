@@ -2158,7 +2158,10 @@ namespace Dynamo.Nodes
             migratedData.AppendNode(dsCoreNode);
             string dsCoreNodeId = MigrationManager.GetGuidFromXmlElement(dsCoreNode);
 
+            XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeModelNode(
+                data.Document,"1;");   
 
+            migratedData.AppendNode(codeBlockNode);
 
             //create and reconnect the connecters
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
@@ -2177,6 +2180,7 @@ namespace Dynamo.Nodes
             data.ReconnectToPort(connector0, newInPort1);
             data.ReconnectToPort(connector1, newInPort2);
             data.ReconnectToPort(connector2, newInPort0);
+            data.CreateConnector(codeBlockNode, 0, dsCoreNode, 3);
 
             return migratedData;
         }
