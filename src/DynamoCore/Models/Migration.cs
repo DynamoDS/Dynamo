@@ -391,6 +391,25 @@ namespace Dynamo.Models
             return element;
         }
 
+        public static XmlElement CreateCodeBlockNodeModelNode(XmlDocument document, string codeTest)
+        {
+            XmlElement element = document.CreateElement("Dynamo.Nodes.CodeBlockNodeModel");
+            element.SetAttribute("type", "Dynamo.Nodes.CodeBlockNodeModel");
+
+            element.SetAttribute("nickname", "Code Block");
+            element.SetAttribute("CodeText", codeTest);
+            element.SetAttribute("ShouldFocus", "false");
+
+            // Attributes with default values (as in DynamoModel.OpenWorkspace).
+            element.SetAttribute("isVisible", "true");
+            element.SetAttribute("isUpstreamVisible", "true");
+            element.SetAttribute("lacing", "Disabled");
+            element.SetAttribute("x", "0.0");
+            element.SetAttribute("y", "0.0");
+            element.SetAttribute("guid", Guid.NewGuid().ToString());
+            return element;
+        }
+
         /// <summary>
         /// Call this method to create a XmlElement with a set of attributes 
         /// carried over from the source XmlElement. The new XmlElement will 
@@ -459,25 +478,6 @@ namespace Dynamo.Models
                 throw new ArgumentNullException("srcElement");
 
             int childNumber = srcElement.ChildNodes.Count;
-            string childNumberString = childNumber.ToString();
-
-            XmlDocument document = srcElement.OwnerDocument;
-            XmlElement dstElement = document.CreateElement("Dynamo.Nodes.DSVarArgFunction");
-
-            foreach (XmlAttribute attribute in srcElement.Attributes)
-                dstElement.SetAttribute(attribute.Name, attribute.Value);
-
-            dstElement.SetAttribute("type", "Dynamo.Nodes.DSVarArgFunction");
-            dstElement.SetAttribute("inputcount", childNumberString);
-            return dstElement;
-        }
-
-        public static XmlElement CreateVarArgFunctionNodeFromDSFunction(XmlElement srcElement)
-        {
-            if (srcElement == null)
-                throw new ArgumentNullException("srcElement");
-
-            int childNumber = 0;
             string childNumberString = childNumber.ToString();
 
             XmlDocument document = srcElement.OwnerDocument;
