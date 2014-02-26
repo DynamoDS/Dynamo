@@ -275,7 +275,15 @@ namespace ProtoAssociative
             if (ProtoCore.DSASM.Constants.kGlobalScope == globalProcIndex && globalClassIndex == ProtoCore.DSASM.Constants.kGlobalScope && !isEntrySet)
             {
                 isEntrySet = true;
-                codeBlock.instrStream.entrypoint = pc;
+                if (ProtoCore.DSASM.Constants.kInvalidIndex != core.newEntryPoint && core.newEntryPoint < pc)
+                {
+                    codeBlock.instrStream.entrypoint = core.newEntryPoint;
+                    core.SetNewEntryPoint(ProtoCore.DSASM.Constants.kInvalidIndex);
+                }
+                else
+                {
+                    codeBlock.instrStream.entrypoint = pc;
+                }
             }
         }
 
