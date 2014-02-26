@@ -395,7 +395,7 @@ namespace ProtoTest.Associative
         public void BIM23_LoadCSV()
         {
             String code =
-@"a = ""../../../Tests/ProtoTest/ImportFiles/CSV/Set1/test1.csv"";b = ImportFromCSV(a);c = ImportFromCSV(a, false);d = ImportFromCSV(a, true);x = b[0][2];y = c[0][2];z = d[0][2];";
+@"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv"";b = ImportFromCSV(a);c = ImportFromCSV(a, false);d = ImportFromCSV(a, true);x = b[0][2];y = c[0][2];z = d[0][2];";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 3.0);
             thisTest.Verify("y", 3.0);
@@ -496,12 +496,12 @@ namespace ProtoTest.Associative
         public void BIM30_RemoveDuplicate()
         {
             String code =
-@"import(""ProtoGeometry.dll"");pt1 = Point.ByCoordinates(0, 0, 0);pt2 = Point.ByCoordinates(0, 0, 1);class C{    x : int;    y : Point;    constructor(p : int, q : Point)    {        x = p;        y = q;    }}a = {null,20,30,null,20,15,true,true,5,false};b = {1,2,3,4,9,4,2,5,6,7,8,7,1,0,2};c1 = C.C(1, pt1);c2 = C.C(2, pt2);c3 = C.C(1, pt1);c4 = C.C(2, pt2);rda = RemoveDuplicates(a);rdb = RemoveDuplicates(b);rdc = RemoveDuplicates({c1,c2,c3,c4});rdd = RemoveDuplicates({{1,2,{5,{6}}}, {1,2,{5,6}}, {1,2,{5,{6}}}});rde = RemoveDuplicates({""hello2"", ""hello"", 'r', ""hello2"", 's', 's', ""hello"", ' '});rdf = RemoveDuplicates({});rdg = RemoveDuplicates(1);rdh = RemoveDuplicates({{c1,c2,c3},{c3,c2,c1},{c1,c2},{c2,c3,c1},{c3,c2,c1}});p = rda[3];q = rdb[4];l = rdc[0];z = l.x;m1 = rdc[1].y.Z;m2 = rdd[0][2][0];m3 = rde[4];m4 = rdh[2][1].x;res1 = Count(rda);res2 = Count(rdb);res3 = Count(rdc);res4 = Count(rdd);res5 = Count(rde);res6 = Count(rdf);res7 = Count(rdh);";
+@"import(""FFITarget.dll"");pt1 = ClassFunctionality.ClassFunctionality(0, 0, 0);pt2 = ClassFunctionality.ClassFunctionality(0, 0, 1);class C{    x : int;    y : ClassFunctionality;    constructor(p : int, q : ClassFunctionality)    {        x = p;        y = q;    }}a = {null,20,30,null,20,15,true,true,5,false};b = {1,2,3,4,9,4,2,5,6,7,8,7,1,0,2};c1 = C.C(1, pt1);c2 = C.C(2, pt2);c3 = C.C(1, pt1);c4 = C.C(2, pt2);rda = RemoveDuplicates(a);rdb = RemoveDuplicates(b);rdc = RemoveDuplicates({c1,c2,c3,c4});rdd = RemoveDuplicates({{1,2,{5,{6}}}, {1,2,{5,6}}, {1,2,{5,{6}}}});rde = RemoveDuplicates({""hello2"", ""hello"", 'r', ""hello2"", 's', 's', ""hello"", ' '});rdf = RemoveDuplicates({});rdg = RemoveDuplicates(1);rdh = RemoveDuplicates({{c1,c2,c3},{c3,c2,c1},{c1,c2},{c2,c3,c1},{c3,c2,c1}});p = rda[3];q = rdb[4];l = rdc[0];z = l.x;m1 = rdc[1].y.IntVal;m2 = rdd[0][2][0];m3 = rde[4];m4 = rdh[2][1].x;res1 = Count(rda);res2 = Count(rdb);res3 = Count(rdc);res4 = Count(rdd);res5 = Count(rde);res6 = Count(rdf);res7 = Count(rdh);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((Int64)mirror.GetValue("p").Payload == 15);
             Assert.IsTrue((Int64)mirror.GetValue("q").Payload == 9);
             Assert.IsTrue((Int64)mirror.GetValue("z").Payload == 1);
-            thisTest.Verify("m1", 1.0);
+            thisTest.Verify("m1", 1);
             thisTest.Verify("m2", 5);
             thisTest.Verify("m3", ' ');
             thisTest.Verify("m4", 1);
@@ -785,16 +785,27 @@ y = x.DoEvaluate();
 @"
 def foo(x)
 {
-    return = x == 0 ? 1 : x * Evaluate(foo, { x - 1 });
+    Print(x);
+    return = [Imperative]
+    {
+        if (x == 0)
+        {
+            return=1;
+        }
+        else
+        {
+            return = x * Evaluate(foo, { x - 1 });
+        }
+    }
 }
 
 x = foo(5);
 ";
-            // ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            // thisTest.Verify("x", 120);
+             ExecutionMirror mirror = thisTest.RunScriptSource(code);
+             thisTest.Verify("x", 120);
 
             // This case crashes nunit 
-            Assert.Fail("This test case crashes Nunit");
+            //Assert.Fail("This test case crashes Nunit");
         }
     }
     class MathematicalFunctionMethodsTest

@@ -5655,7 +5655,9 @@ namespace ProtoTest.DebugTests
         [Test]
         public void DebugEQT002_BasicImport_AbsoluteDirectory()
         {
-            string code = @"import (""..\..\..\Tests\ProtoTest\ImportFiles\basicImport.ds"");a = {1.1,2.2};b = 2;c = Scale(a,b);";
+
+
+            string code = @"import (""..\..\..\test\Engine\ProtoTest\ImportFiles\basicImport.ds"");a = {1.1,2.2};b = 2;c = Scale(a,b);";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
