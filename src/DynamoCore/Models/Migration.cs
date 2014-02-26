@@ -132,7 +132,8 @@ namespace Dynamo.Models
                     // be disabled (and simply 'continue') if there are still 
                     // nodes left to be migrated.
                     // 
-                    throw new NodeMigrationException(typeName);
+                    // throw new NodeMigrationException(typeName);
+                    continue;
                 }
 
                 // Migrate the given node into one or more new nodes.
@@ -169,7 +170,7 @@ namespace Dynamo.Models
                 // be disabled (and simply 'continue') if there are still 
                 // nodes left to be migrated.
                 // 
-                throw new NodeMigrationException(type.FullName);
+                // throw new NodeMigrationException(type.FullName);
             }
 
             Version currentVersion = dynSettings.Controller.DynamoModel.HomeSpace.WorkspaceVersion;
