@@ -933,7 +933,8 @@ namespace ProtoAssociative
             int classIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
             string className = string.Empty;
 
-            ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCall = node as ProtoCore.AST.AssociativeAST.FunctionDotCallNode;
+            //ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCall = node as ProtoCore.AST.AssociativeAST.FunctionDotCallNode; 
+            ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCall = new FunctionDotCallNode(node as ProtoCore.AST.AssociativeAST.FunctionDotCallNode);
             funcCall = dotCall.DotCall;
             procName = dotCall.FunctionCall.Function.Name;
 
@@ -3011,7 +3012,10 @@ namespace ProtoAssociative
                 bnode.LeftNode = identNode;
 
                 // Store the replication guide from the function call to the temp
-                (identNode as IdentifierNode).ReplicationGuides = GetReplicationGuidesFromASTNode(fcNode);
+                if (null != fcNode)
+                {
+                    (identNode as IdentifierNode).ReplicationGuides = GetReplicationGuidesFromASTNode(fcNode);
+                }
 
                 //Right node
                 bnode.RightNode = fcNode;
@@ -6240,7 +6244,7 @@ namespace ProtoAssociative
 
 
             // Handle static calls to reflect the original call
-            if (core.Options.GenerateSSA)
+            //if (core.Options.GenerateSSA)
             {
                 BuildRealDependencyForIdentList(graphNode);
 

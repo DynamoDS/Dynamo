@@ -738,6 +738,7 @@ namespace ProtoCore.AST.AssociativeAST
         {
             DotCall = new FunctionCallNode();
             FunctionCall = callNode;
+            lhsName = string.Empty;
             isLastSSAIdentListFactor = false;
             staticLHSIdent = null;
         }
@@ -1084,6 +1085,47 @@ namespace ProtoCore.AST.AssociativeAST
         public ProtoCore.DSASM.AccessSpecifier access { get; set; }
         public bool IsExternLib { get; set; }
         public string ExternLibName { get; set; }
+
+        public ConstructorDefinitionNode()
+        {
+        }
+
+        public ConstructorDefinitionNode(ConstructorDefinitionNode rhs)
+            : base(rhs)
+        {
+            this.localVars = rhs.localVars;
+
+            Attributes = new List<AssociativeNode>();
+            if (null != rhs.Attributes)
+            {
+                foreach (AssociativeNode elemNode in rhs.Attributes)
+                {
+                    AssociativeNode tempNode = NodeUtils.Clone(elemNode);
+                    Attributes.Add(tempNode);
+                }
+            }
+
+            if (null != rhs.Signature)
+            {
+                this.Signature = NodeUtils.Clone(rhs.Signature) as ArgumentSignatureNode;
+            }
+            if (null != rhs.Pattern)
+            {
+                Pattern = NodeUtils.Clone(rhs.Pattern);
+            }
+            this.ReturnType = rhs.ReturnType;
+            if (null != rhs.FunctionBody)
+            {
+                this.FunctionBody = NodeUtils.Clone(rhs.FunctionBody) as CodeBlockNode;
+            }
+            if (null != rhs.baseConstr)
+            {
+                this.baseConstr = NodeUtils.Clone(rhs.baseConstr) as FunctionCallNode;
+            }
+            this.access = rhs.access;
+            this.IsExternLib = rhs.IsExternLib;
+            this.ExternLibName = rhs.ExternLibName;
+        }
 
         public override string ToString()
         {
