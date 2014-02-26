@@ -67,7 +67,7 @@
                   VirtualizingStackPanel.IsVirtualizing="True"
                   VirtualizingStackPanel.VirtualizationMode="Recycling">
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}" DataType="{x:Type viewModels:WatchNode}">
+                <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}" DataType="{x:Type viewModels:WatchItem}">
                     <VirtualizingStackPanel Orientation="Horizontal"
                                     Width="Auto">
                         <TextBlock Text="{Binding Path=NodeLabel}" 

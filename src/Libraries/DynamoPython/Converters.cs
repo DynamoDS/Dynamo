@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using Dynamo;
 using Dynamo.FSchemeInterop;
 using IronPython.Runtime;
 using Microsoft.FSharp.Collections;
-using Microsoft.FSharp.Core;
 using Microsoft.Scripting.Hosting;
 
 namespace DynamoPython

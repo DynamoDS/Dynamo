@@ -42,10 +42,6 @@
       <HintPath>..\..\bin\AnyCPU\Debug\FScheme.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="FSchemeInterop, Version=0.5.3.42660, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
@@ -85,10 +81,6 @@
       <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
       <Name>ProtoCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoAsm\DynamoAsm.csproj">
-      <Project>{95192F1A-3265-4986-8D07-50F8FD4F2439}</Project>
-      <Name>DynamoAsm</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
@@ -124,6 +116,10 @@
     <ProjectReference Include="..\..\src\Libraries\DynamoWatch3D\Watch3D.csproj">
       <Project>{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}</Project>
       <Name>Watch3D</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
+      <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
+      <Name>FSchemeInterop2012</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

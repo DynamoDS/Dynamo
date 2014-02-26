@@ -1,6 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using FFITarget;
 using NUnit.Framework;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
+using ProtoCore.Mirror;
+using ProtoScript.Runners;
 using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoFFITests
@@ -8,28 +14,32 @@ namespace ProtoFFITests
     class CSFFIDispose : FFITestSetup
     {
         readonly TestFrameWork thisTest = new TestFrameWork();
+        private ILiveRunner astLiveRunner = null;
+
+
+        [SetUp]
+        public void Setup()
+        {
+            DisposeTracer.DisposeCount = 0;
+            AbstractDerivedDisposeTracer2.DisposeCount = 0;
+            astLiveRunner = new LiveRunner();
+        }
+
 
         [Test]
         public void Dispose01_NoFunctionCall()
         {
             String code =
-            @"              import(""ProtoGeometry.dll"");pt1 = Point.ByCoordinates(0, 0, 0);[Associative]{    //vec1 = Vector.ByCoordinates(1, 1, 1);    //vec2 = Vector.ByCoordinates(1, 0, 0);    //vec3 = Vector.ByCoordinates(0, 1, 0);    //vecarr = { vec1, vec2, vec3 };    //pt2 = Point.ByCoordinates(0, 0, 0);    //pt3 = Point.ByCoordinates(0, 0, 0);    //ptarr = { pt1, pt2, pt3 };x = 2;}            ";
+            @"              import(""FFITarget.dll"");cf1 = ClassFunctionality.ClassFunctionality(2);[Associative]{    x = 2;}            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //thisTest.VerifyFFIObjectOutOfScope("vec1");
-            //thisTest.VerifyFFIObjectOutOfScope("vec2");
-            //thisTest.VerifyFFIObjectOutOfScope("vec3");
-            //thisTest.VerifyReferenceCount("vecarr", 0);
-            thisTest.VerifyFFIObjectStillInScope("pt1", 0);
-            //thisTest.VerifyFFIObjectOutOfScope("pt2");
-            //thisTest.VerifyFFIObjectOutOfScope("pt3");
-            //thisTest.VerifyReferenceCount("ptarr", 0);
+            thisTest.VerifyFFIObjectStillInScope("cf1", 0);
         }
 
         [Test]
         public void Dispose02_FunctionNonArray()
         {
             String code =
-            @"              import(""ProtoGeometry.dll"");def foo(p:Point){    return = null;}pt1 = Point.ByCoordinates(0, 0, 0);[Associative]{    vec1 = Vector.ByCoordinates(1, 1, 1);    vec2 = Vector.ByCoordinates(1, 0, 0);    vec3 = Vector.ByCoordinates(0, 1, 0);    vecarr = { vec1, vec2, vec3 };        pt2 = Point.ByCoordinates(0, 0, 0);    pt3 = Point.ByCoordinates(0, 0, 0);    ptarr = { pt1, pt2, pt3 };    test = foo(pt1);}            ";
+            @"              import(""FFITarget.dll"");def foo(p:ClassFunctionality){    return = null;}pt1 = ClassFunctionality.ClassFunctionality(0);[Associative]{    vec1 = ClassFunctionality.ClassFunctionality(1);    vec2 = ClassFunctionality.ClassFunctionality(2);    vec3 = ClassFunctionality.ClassFunctionality(0);    vecarr = { vec1, vec2, vec3 };        pt2 = ClassFunctionality.ClassFunctionality(1);    pt3 = ClassFunctionality.ClassFunctionality(2);    ptarr = { pt1, pt2, pt3 };    test = foo(pt1);}            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.VerifyFFIObjectOutOfScope("vec1");
             thisTest.VerifyFFIObjectOutOfScope("vec2");
@@ -46,7 +56,7 @@ namespace ProtoFFITests
         public void Dispose03_FunctionReplication()
         {
             String code =
-            @"              import(""ProtoGeometry.dll"");def foo(p:Point){    return = null;}pt1 = Point.ByCoordinates(0, 0, 0);[Associative]{    vec1 = Vector.ByCoordinates(1, 1, 1);    vec2 = Vector.ByCoordinates(1, 0, 0);    vec3 = Vector.ByCoordinates(0, 1, 0);    vecarr = { vec1, vec2, vec3 };        pt2 = Point.ByCoordinates(0, 0, 0);    pt3 = Point.ByCoordinates(0, 0, 0);    ptarr = { pt1, pt2, pt3 };    test = foo(ptarr);}            ";
+            @"              import(""FFITarget.dll"");def foo(p:ClassFunctionality){    return = null;}pt1 = ClassFunctionality.ClassFunctionality(0);[Associative]{    vec1 = ClassFunctionality.ClassFunctionality(1);    vec2 = ClassFunctionality.ClassFunctionality(2);    vec3 = ClassFunctionality.ClassFunctionality(0);    vecarr = { vec1, vec2, vec3 };        pt2 = ClassFunctionality.ClassFunctionality(0);    pt3 = ClassFunctionality.ClassFunctionality(1);    ptarr = { pt1, pt2, pt3 };    test = foo(ptarr);}            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.VerifyFFIObjectOutOfScope("vec1");
             thisTest.VerifyFFIObjectOutOfScope("vec2");
@@ -63,7 +73,7 @@ namespace ProtoFFITests
         public void Dispose04_FunctionArray()
         {
             String code =
-            @"              import(""ProtoGeometry.dll"");def foo(p:Point[]){    return = null;}pt1 = Point.ByCoordinates(0, 0, 0);[Associative]{    vec1 = Vector.ByCoordinates(1, 1, 1);    vec2 = Vector.ByCoordinates(1, 0, 0);    vec3 = Vector.ByCoordinates(0, 1, 0);    vecarr = { vec1, vec2, vec3 };        pt2 = Point.ByCoordinates(0, 0, 0);    pt3 = Point.ByCoordinates(0, 0, 0);    ptarr = { pt1, pt2, pt3 };    test = foo(ptarr);}            ";
+            @"              import(""FFITarget.dll"");def foo(p:ClassFunctionality[]){    return = null;}pt1 = ClassFunctionality.ClassFunctionality(0);[Associative]{    vec1 = ClassFunctionality.ClassFunctionality(1);    vec2 = ClassFunctionality.ClassFunctionality(1);    vec3 = ClassFunctionality.ClassFunctionality(0);    vecarr = { vec1, vec2, vec3 };        pt2 = ClassFunctionality.ClassFunctionality(0);    pt3 = ClassFunctionality.ClassFunctionality(0);    ptarr = { pt1, pt2, pt3 };    test = foo(ptarr);}            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.VerifyFFIObjectOutOfScope("vec1");
             thisTest.VerifyFFIObjectOutOfScope("vec2");
@@ -80,7 +90,7 @@ namespace ProtoFFITests
         public void Dispose05_StaticFunctionNonArray()
         {
             String code =
-            @"              import(""ProtoGeometry.dll"");    class A{    def foo(p : Point)     {        return = null;    }    def bar(p : Point[])    {        return = null;    }    static def ding(p : Point)    {        return = null;    }    static def dong(p : Point[])    {        return = null;    }    }pt1 = Point.ByCoordinates(0, 0, 0);[Associative]{    a1 = A.A();    a2 = A.A();    a3 = A.A();    as = {a1, a2, a3};    vec1 = Vector.ByCoordinates(1, 1, 1);    vec2 = Vector.ByCoordinates(1, 0, 0);    vec3 = Vector.ByCoordinates(0, 1, 0);    vecarr = { vec1, vec2, vec3 };        pt2 = Point.ByCoordinates(0, 0, 0);    pt3 = Point.ByCoordinates(0, 0, 0);    ptarr = { pt1, pt2, pt3 };    test = A.ding(pt1);}            ";
+            @"              import(""FFITarget.dll"");    class A{    def foo(p : ClassFunctionality)     {        return = null;    }    def bar(p : ClassFunctionality[])    {        return = null;    }    static def ding(p : ClassFunctionality)    {        return = null;    }    static def dong(p : ClassFunctionality[])    {        return = null;    }    }pt1 = ClassFunctionality.ClassFunctionality(0);[Associative]{    a1 = A.A();    a2 = A.A();    a3 = A.A();    as = {a1, a2, a3};    vec1 = ClassFunctionality.ClassFunctionality(1);    vec2 = ClassFunctionality.ClassFunctionality(1);    vec3 = ClassFunctionality.ClassFunctionality(0);    vecarr = { vec1, vec2, vec3 };        pt2 = ClassFunctionality.ClassFunctionality(0);    pt3 = ClassFunctionality.ClassFunctionality(0);    ptarr = { pt1, pt2, pt3 };    test = A.ding(pt1);}            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.VerifyFFIObjectOutOfScope("vec1");
             thisTest.VerifyFFIObjectOutOfScope("vec2");
@@ -101,7 +111,7 @@ namespace ProtoFFITests
         public void Dispose06_StaticFunctionReplication()
         {
             String code =
-            @"              import(""ProtoGeometry.dll"");    class A{    def foo(p : Point)     {        return = null;    }    def bar(p : Point[])    {        return = null;    }    static def ding(p : Point)    {        return = null;    }    static def dong(p : Point[])    {        return = null;    }    }pt1 = Point.ByCoordinates(0, 0, 0);[Associative]{    a1 = A.A();    a2 = A.A();    a3 = A.A();    as = {a1, a2, a3};    vec1 = Vector.ByCoordinates(1, 1, 1);    vec2 = Vector.ByCoordinates(1, 0, 0);    vec3 = Vector.ByCoordinates(0, 1, 0);    vecarr = { vec1, vec2, vec3 };        pt2 = Point.ByCoordinates(0, 0, 0);    pt3 = Point.ByCoordinates(0, 0, 0);    ptarr = { pt1, pt2, pt3 };    test = A.ding(ptarr);}            ";
+            @"              import(""FFITarget.dll"");    class A{    def foo(p : ClassFunctionality)     {        return = null;    }    def bar(p : ClassFunctionality[])    {        return = null;    }    static def ding(p : ClassFunctionality)    {        return = null;    }    static def dong(p : ClassFunctionality[])    {        return = null;    }    }pt1 = ClassFunctionality.ClassFunctionality(0, 0, 0);[Associative]{    a1 = A.A();    a2 = A.A();    a3 = A.A();    as = {a1, a2, a3};    vec1 = ClassFunctionality(1, 1, 1);    vec2 = ClassFunctionality.ClassFunctionality(1, 0, 0);    vec3 = ClassFunctionality.ClassFunctionality(0, 1, 0);    vecarr = { vec1, vec2, vec3 };        pt2 = ClassFunctionality.ClassFunctionality(0, 0, 0);    pt3 = ClassFunctionality.ClassFunctionality(0, 0, 0);    ptarr = { pt1, pt2, pt3 };    test = A.ding(ptarr);}            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.VerifyFFIObjectOutOfScope("vec1");
             thisTest.VerifyFFIObjectOutOfScope("vec2");
@@ -1356,5 +1366,123 @@ namespace ProtoFFITests
             ValidationData[] data = { new ValidationData { ValueName = "carr", ExpectedValue = a, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
         }
+
+
+        [Test]
+        public void Dispose_FFITarget()
+        {
+            String code =
+            @"              import(""FFITarget.dll"");[Associative]{ x = DisposeTracer.DisposeTracer();}s1 = DisposeTracer.DisposeCount;            ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.VerifyFFIObjectOutOfScope("x");
+            thisTest.VerifyReferenceCount("x", 0);
+            thisTest.Verify("s1", 1);
+        }
+
+        [Test]
+        public void Dispose_FFITarget_Inherited()
+        {
+            String code =
+            @"              import(""FFITarget.dll"");[Associative]{ x = DerivedDisposeTracer2.DerivedDisposeTracer2();}s1 = DerivedDisposeTracer2.DisposeCount;            ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.VerifyFFIObjectOutOfScope("x");
+            thisTest.VerifyReferenceCount("x", 0);
+            thisTest.Verify("s1", 1);
+        }
+
+        [Test]
+        public void Dispose_FFITarget_Overridden()
+        {
+            String code =
+            @"              import(""FFITarget.dll"");[Associative]{ x = AbstractDerivedDisposeTracer2.AbstractDerivedDisposeTracer2();}s1 = AbstractDerivedDisposeTracer2.DisposeCount;            ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.VerifyFFIObjectOutOfScope("x");
+            thisTest.VerifyReferenceCount("x", 0);
+            thisTest.Verify("s1", 1);
+        }
+
+
+        [Test]
+        [Category("Trace")]
+        public void IntermediateValueIncrementerIDTestUpdate1DReplicated()
+        {
+            string setupCode =
+            @"import(""FFITarget.dll""); 
+x = AbstractDerivedDisposeTracer2.AbstractDerivedDisposeTracer2(); 
+s1 = AbstractDerivedDisposeTracer2.DisposeCount;
+";
+
+            // Create 2 CBNs
+
+            List<Subtree> added = new List<Subtree>();
+
+
+            // Simulate a new new CBN
+            Guid guid1 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("s1", 0);
+
+
+            // Simulate a new new CBN
+            Guid guid2 = System.Guid.NewGuid();
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid2,
+                "x = null;" +
+                "s2 = AbstractDerivedDisposeTracer2.DisposeCount; "));
+
+
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("s2", 1);
+        }
+
+
+        //Migrate this code into the test framework
+        private Subtree CreateSubTreeFromCode(Guid guid, string code)
+        {
+            CodeBlockNode commentCode;
+            var cbn = GraphToDSCompiler.GraphUtilities.Parse(code, out commentCode) as CodeBlockNode;
+            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
+            return subtree;
+        }
+
+        private void AssertValue(string varname, object value)
+        {
+            var mirror = astLiveRunner.InspectNodeValue(varname);
+            MirrorData data = mirror.GetData();
+            object svValue = data.Data;
+            if (value is double)
+            {
+                Assert.AreEqual((double)svValue, Convert.ToDouble(value));
+            }
+            else if (value is int)
+            {
+                Assert.AreEqual((Int64)svValue, Convert.ToInt64(value));
+            }
+            else if (value is bool)
+            {
+                Assert.AreEqual((bool)svValue, Convert.ToBoolean(value));
+            }
+            else if (value is IEnumerable<int>)
+            {
+                Assert.IsTrue(data.IsCollection);
+                var values = (value as IEnumerable<int>).ToList().Select(v => (object)v).ToList();
+                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(Int64)));
+            }
+            else if (value is IEnumerable<double>)
+            {
+                Assert.IsTrue(data.IsCollection);
+                var values = (value as IEnumerable<double>).ToList().Select(v => (object)v).ToList();
+                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(double)));
+            }
+        }
+
+
+
     }
 }

@@ -2094,7 +2094,7 @@ namespace ProtoCore
                             ProtoCore.AssociativeGraph.UpdateNode currentDependentNode = graphNode.dependentList[lastDependentIndex].updateNodeRefList[0].nodeList[0];
                             currentDependentNode.dimensionNodeList.Add(intNode);
 
-                            if (core.Options.FullSSA)
+                            if (core.Options.GenerateSSA)
                             {
                                 if (null != firstSSAGraphNode)
                                 {
@@ -2234,7 +2234,7 @@ namespace ProtoCore
                         ProtoCore.AssociativeGraph.UpdateNode currentDependentNode = graphNode.dependentList[lastDependentIndex].updateNodeRefList[0].nodeList[0];
                         currentDependentNode.dimensionNodeList.Add(intNode);
 
-                        if (core.Options.FullSSA)
+                        if (core.Options.GenerateSSA)
                         {
                             if (null != firstSSAGraphNode)
                             {
@@ -2669,7 +2669,7 @@ namespace ProtoCore
             }
 
             BuildSSADependency(node, graphNode);
-            if (core.Options.FullSSA)
+            if (core.Options.GenerateSSA)
             {
                 BuildRealDependencyForIdentList(graphNode);
 

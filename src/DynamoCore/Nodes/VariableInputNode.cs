@@ -155,6 +155,11 @@ namespace Dynamo.Nodes
 
         private void RecordModels()
         {
+            if (InPorts.Count == 0)
+            {
+                return;
+            }
+
             var connectors = InPorts[InPorts.Count - 1].Connectors;
             if (connectors.Count != 0)
             {

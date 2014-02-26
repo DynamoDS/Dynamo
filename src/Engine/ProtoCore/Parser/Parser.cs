@@ -1027,7 +1027,7 @@ public Node root { get; set; }
 		ProtoCore.AST.AssociativeAST.AssociativeNode rightNode = null;
 		 
 		Associative_Expression(out rightNode);
-		bool allowIdentList = core.Options.FullSSA && rightNode is ProtoCore.AST.AssociativeAST.IdentifierListNode;
+		bool allowIdentList = core.Options.GenerateSSA && rightNode is ProtoCore.AST.AssociativeAST.IdentifierListNode;
 		
 		//Try to make a false binary expression node.
 		if (rightNode is ProtoCore.AST.AssociativeAST.FunctionDotCallNode 
@@ -2053,7 +2053,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			node = bnode;
 			NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
 			
-			if (!core.Options.FullSSA)
+			if (!core.Options.GenerateSSA)
 			{
 			bool isNeitherIdentOrFunctionCall = !(rnode is ProtoCore.AST.AssociativeAST.IdentifierNode || rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode);
 			if (isLeft || isNeitherIdentOrFunctionCall)
@@ -2101,7 +2101,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			}
 			
 		}
-		if (!core.Options.FullSSA)
+		if (!core.Options.GenerateSSA)
 		{
 		   if (!isModifier && withinModifierCheckScope)
 		   {

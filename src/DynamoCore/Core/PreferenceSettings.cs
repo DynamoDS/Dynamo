@@ -14,7 +14,7 @@ namespace Dynamo
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings into the XML file.
     /// </summary>
-    public class PreferenceSettings : NotificationObject, IDynamoPreferences
+    public class PreferenceSettings : NotificationObject, IPreferences
     {
         public static string DYNAMO_TEST_PATH = null;
         const string DYNAMO_SETTINGS_DIRECTORY = @"Autodesk\Dynamo\";
@@ -22,6 +22,7 @@ namespace Dynamo
         private DynamoLengthUnit _lengthUnit;
         private DynamoAreaUnit _areaUnit;
         private DynamoVolumeUnit _volumeUnit;
+        private string _numberFormat;
 
         // Variables of the settings that will be persistent
 
@@ -34,7 +35,15 @@ namespace Dynamo
         public bool ShowConnector { get; set; }
         public ConnectorType ConnectorType { get; set; }
         public bool FullscreenWatchShowing { get; set; }
-        public string NumberFormat { get; set; }
+        public string NumberFormat
+        {
+            get { return _numberFormat; }
+            set
+            {
+                _numberFormat = value;
+                RaisePropertyChanged("NumberFormat");
+            }
+        }
 
         public DynamoLengthUnit LengthUnit
         {
@@ -78,7 +87,7 @@ namespace Dynamo
             LengthUnit = DynamoLengthUnit.Meter;
             AreaUnit = DynamoAreaUnit.SquareMeter;
             VolumeUnit = DynamoVolumeUnit.CubicMeter;
-            NumberFormat = "0.000";
+            NumberFormat = "f3";
         }
 
         /// <summary>

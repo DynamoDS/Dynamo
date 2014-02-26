@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
 using Microsoft.Practices.Prism.ViewModel;
@@ -10,7 +11,7 @@ namespace Dynamo
     public enum LogLevel{Console, File, Warning}
     public enum WarningLevel{Mild, Moderate, Error}
 
-    public class DynamoLogger:NotificationObject
+    public class DynamoLogger:NotificationObject, ILogger
     {
         const string DYNAMO_LOG_DIRECTORY = @"Autodesk\Dynamo\Logs\";
 

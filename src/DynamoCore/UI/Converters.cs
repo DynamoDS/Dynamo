@@ -1044,9 +1044,9 @@ namespace Dynamo.Controls
             double dbl;
             if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
             {
-                return(dbl.ToString("0.000", CultureInfo.InvariantCulture));
+                return(dbl.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture));
             }
-            return value ?? "0.000";
+            return value ?? 0.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat);
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1278,38 +1278,12 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            SIUnit measure = null;
-
-            if (parameter is Length)
-            {
-                measure = new Length((double)value, dynSettings.Controller.UnitsManager);
-            }
-            else if (parameter is Area)
-            {
-                measure = new Area((double)value, dynSettings.Controller.UnitsManager);
-            }
-            else if (parameter is Volume)
-            {
-                measure = new Volume((double)value, dynSettings.Controller.UnitsManager);
-            }
-            return measure.ToString();
+            return parameter.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            SIUnit measure = null;
-            if (parameter is Length)
-            {
-                measure = new Length(0.0, dynSettings.Controller.UnitsManager);
-            }
-            else if (parameter is Area)
-            {
-                measure = new Area(0.0, dynSettings.Controller.UnitsManager);
-            }
-            else if (parameter is Volume)
-            {
-                measure = new Volume(0.0, dynSettings.Controller.UnitsManager);
-            }
+            var measure = (SIUnit) parameter;
             measure.SetValueFromString(value.ToString());
             return measure.Value;
         }
@@ -1346,6 +1320,21 @@ namespace Dynamo.Controls
                 : (SolidColorBrush) SharedDictionaryManager.DynamoColorsAndBrushesDictionary["UpdateManagerUpToDateBrush"];
                 
             return brush;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class NumberFormatToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if(parameter.ToString() == dynSettings.Controller.PreferenceSettings.NumberFormat)
+                return true;
+            return false;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
