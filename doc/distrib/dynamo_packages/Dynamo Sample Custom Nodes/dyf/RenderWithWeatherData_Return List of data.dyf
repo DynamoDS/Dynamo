@@ -1,4 +1,4 @@
-<Workspace Version="0.6.3.18002" X="185.701752884101" Y="-396.535073470987" zoom="0.519270883692339" Description="" Category="Misc" Name="RenderWithWeatherData_Return List of data" ID="06b90774-4fd6-460e-9b34-88ba28be36a7">
+<Workspace Version="0.6.3.18002" X="-1987.98381718492" Y="-69.9636055509821" zoom="0.824237172510421" Description="" Category="Misc" Name="RenderWithWeatherData_Return List of data" ID="4dac969f-c00e-4d1b-b65c-00bb7d4e80b1">
   <Elements>
     <Dynamo.Nodes.WatchImage type="Dynamo.Nodes.WatchImage" guid="00f8c900-a7f3-4665-b0b9-f9194aa5dc04" nickname="Watch Image" x="3331.72076849908" y="136.35032806581" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.GetDaylightingColors type="Dynamo.Nodes.GetDaylightingColors" guid="6f90c90f-0b0f-4842-bae8-cb93f696af8f" nickname="Get Daylighting Grid Colors" x="3055.95156193665" y="369.408019296727" isVisible="true" isUpstreamVisible="true" lacing="Longest">
@@ -23,7 +23,7 @@
     </Dynamo.Nodes.NewList>
     <Dynamo.Nodes.ParseSDF type="Dynamo.Nodes.ParseSDF" guid="bfc7b0a7-8377-4353-b573-64adc98bc8e7" nickname="Parse Daylighting File" x="2801.4365198464" y="415.148889419152" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.DoubleSliderInput type="Dynamo.Nodes.DoubleSliderInput" guid="2cddcd40-afdc-4198-941c-ed1c2a7fc70f" nickname="Number Slider" x="2549.75231718976" y="254.848062532018" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="48210.015" min="0" max="120000" />
+      <System.Double value="7000" min="0" max="120000" />
     </Dynamo.Nodes.DoubleSliderInput>
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="7e85ba7e-b3ba-4f95-87f6-7d7d7661bd45" nickname="Number" x="2804.55798323833" y="336.533506466742" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="0.000" />
