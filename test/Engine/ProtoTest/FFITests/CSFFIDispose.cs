@@ -1,4 +1,5 @@
 using System;
+using FFITarget;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
 using ProtoTest.TD;
@@ -8,6 +9,14 @@ namespace ProtoFFITests
     class CSFFIDispose : FFITestSetup
     {
         readonly TestFrameWork thisTest = new TestFrameWork();
+
+        [SetUp]
+        public void Setup()
+        {
+            DisposeTracer.DisposeCount = 0;
+            AbstractDerivedDisposeTracer2.DisposeCount = 0;
+        }
+
 
         [Test]
         public void Dispose01_NoFunctionCall()
@@ -1348,6 +1357,40 @@ namespace ProtoFFITests
             object[] a = new object[] { 0.0, 0.0, 0.0 };
             ValidationData[] data = { new ValidationData { ValueName = "carr", ExpectedValue = a, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
+        }
+
+
+        [Test]
+        public void Dispose_FFITarget()
+        {
+            String code =
+            @"              import(""FFITarget.dll"");[Associative]{ x = DisposeTracer.DisposeTracer();}s1 = DisposeTracer.DisposeCount;            ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.VerifyFFIObjectOutOfScope("x");
+            thisTest.VerifyReferenceCount("x", 0);
+            thisTest.Verify("s1", 1);
+        }
+
+        [Test]
+        public void Dispose_FFITarget_Inherited()
+        {
+            String code =
+            @"              import(""FFITarget.dll"");[Associative]{ x = DerivedDisposeTracer2.DerivedDisposeTracer2();}s1 = DerivedDisposeTracer2.DisposeCount;            ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.VerifyFFIObjectOutOfScope("x");
+            thisTest.VerifyReferenceCount("x", 0);
+            thisTest.Verify("s1", 1);
+        }
+
+        [Test]
+        public void Dispose_FFITarget_Overridden()
+        {
+            String code =
+            @"              import(""FFITarget.dll"");[Associative]{ x = AbstractDerivedDisposeTracer2.AbstractDerivedDisposeTracer2();}s1 = AbstractDerivedDisposeTracer2.DisposeCount;            ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.VerifyFFIObjectOutOfScope("x");
+            thisTest.VerifyReferenceCount("x", 0);
+            thisTest.Verify("s1", 1);
         }
     }
 }
