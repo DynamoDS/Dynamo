@@ -650,6 +650,35 @@ namespace Dynamo.Models
             return null;
         }
 
+        public void RemoveFirstConnector(PortId portId)
+        {
+            if (connectorRoot == null || (connectorRoot.ChildNodes == null))
+                return;
+
+            foreach (XmlNode node in connectorRoot.ChildNodes)
+            {
+                XmlElement connector = node as XmlElement;
+                XmlAttributeCollection attribs = connector.Attributes;
+
+                if (portId.PortType == PortType.INPUT)
+                {
+                    if (portId.OwningNode != attribs["end"].Value)
+                        continue;
+                    if (portId.PortIndex != Convert.ToInt16(attribs["end_index"].Value))
+                        continue;
+                }
+                else
+                {
+                    if (portId.OwningNode != attribs["start"].Value)
+                        continue;
+                    if (portId.PortIndex != Convert.ToInt16(attribs["start_index"].Value))
+                        continue;
+                }
+
+                connectorRoot.RemoveChild(connector);
+            }
+        }
+
         /// <summary>
         /// Given a port, get all connectors that connect to it.
         /// </summary>
