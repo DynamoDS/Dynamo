@@ -1,4 +1,4 @@
-<Workspace Version="0.6.3.18002" X="179.960280085611" Y="76.0045940353876" zoom="0.582741384903387" Description="" Category="" Name="Home">
+<Workspace Version="0.6.3.18002" X="85.960280085611" Y="-76.9954059646124" zoom="0.582741384903387" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="4cdc3603-e657-4379-8611-8ab93cb2153b" nickname="RenderWithWeatherData_Return List of data" x="410.827856881008" y="-88.5209149910124" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <ID value="06b90774-4fd6-460e-9b34-88ba28be36a7" />
@@ -136,7 +136,7 @@ sys.path.append(path)
 sys.path.append(exec_path)
 clr.AddReference('LibGNet')
 from Autodesk.LibG import *
-
+sys.path.append(r'C:\Program Files (x86)\IronPython 2.7\Lib')
 from os.path import join, abspath
 clr.AddReference('DynamoPython')
 clr.AddReference('DynamoCore')
@@ -171,7 +171,7 @@ sys.path.append(path)
 sys.path.append(exec_path)
 clr.AddReference('LibGNet')
 from Autodesk.LibG import *
-
+sys.path.append(r'C:\Program Files (x86)\IronPython 2.7\Lib')
 from os.path import join, abspath
 clr.AddReference('DynamoPython')
 clr.AddReference('DynamoCore')
