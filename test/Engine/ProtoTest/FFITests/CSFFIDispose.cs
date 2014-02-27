@@ -1,7 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using FFITarget;
 using NUnit.Framework;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
+using ProtoCore.Mirror;
+using ProtoScript.Runners;
 using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoFFITests
@@ -9,12 +14,15 @@ namespace ProtoFFITests
     class CSFFIDispose : FFITestSetup
     {
         readonly TestFrameWork thisTest = new TestFrameWork();
+        private ILiveRunner astLiveRunner = null;
+
 
         [SetUp]
         public void Setup()
         {
             DisposeTracer.DisposeCount = 0;
             AbstractDerivedDisposeTracer2.DisposeCount = 0;
+            astLiveRunner = new LiveRunner();
         }
 
 
@@ -1392,5 +1400,89 @@ namespace ProtoFFITests
             thisTest.VerifyReferenceCount("x", 0);
             thisTest.Verify("s1", 1);
         }
+
+
+        [Test]
+        [Category("Trace")]
+        public void IntermediateValueIncrementerIDTestUpdate1DReplicated()
+        {
+            string setupCode =
+            @"import(""FFITarget.dll""); 
+x = AbstractDerivedDisposeTracer2.AbstractDerivedDisposeTracer2(); 
+s1 = AbstractDerivedDisposeTracer2.DisposeCount;
+";
+
+            // Create 2 CBNs
+
+            List<Subtree> added = new List<Subtree>();
+
+
+            // Simulate a new new CBN
+            Guid guid1 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("s1", 0);
+
+
+            // Simulate a new new CBN
+            Guid guid2 = System.Guid.NewGuid();
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid2,
+                "x = null;" +
+                "s2 = AbstractDerivedDisposeTracer2.DisposeCount; "));
+
+
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("s2", 1);
+        }
+
+
+        //Migrate this code into the test framework
+        private Subtree CreateSubTreeFromCode(Guid guid, string code)
+        {
+            CodeBlockNode commentCode;
+            var cbn = GraphToDSCompiler.GraphUtilities.Parse(code, out commentCode) as CodeBlockNode;
+            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
+            return subtree;
+        }
+
+        private void AssertValue(string varname, object value)
+        {
+            var mirror = astLiveRunner.InspectNodeValue(varname);
+            MirrorData data = mirror.GetData();
+            object svValue = data.Data;
+            if (value is double)
+            {
+                Assert.AreEqual((double)svValue, Convert.ToDouble(value));
+            }
+            else if (value is int)
+            {
+                Assert.AreEqual((Int64)svValue, Convert.ToInt64(value));
+            }
+            else if (value is bool)
+            {
+                Assert.AreEqual((bool)svValue, Convert.ToBoolean(value));
+            }
+            else if (value is IEnumerable<int>)
+            {
+                Assert.IsTrue(data.IsCollection);
+                var values = (value as IEnumerable<int>).ToList().Select(v => (object)v).ToList();
+                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(Int64)));
+            }
+            else if (value is IEnumerable<double>)
+            {
+                Assert.IsTrue(data.IsCollection);
+                var values = (value as IEnumerable<double>).ToList().Select(v => (object)v).ToList();
+                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(double)));
+            }
+        }
+
+
+
     }
 }

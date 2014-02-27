@@ -134,8 +134,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Nodes\AnalysisDisplay.cs" />
+    <Compile Include="Nodes\Annotation.cs" />
+    <Compile Include="Nodes\Circle.cs" />
+    <Compile Include="Nodes\DividedCurve.cs" />
+    <Compile Include="Nodes\DividedSurface.cs" />
     <Compile Include="Nodes\Facet.cs" />
+    <Compile Include="Nodes\Floor.cs" />
+    <Compile Include="Nodes\Grid.cs" />
+    <Compile Include="Nodes\Material.cs" />
+    <Compile Include="Nodes\ModelCurve.cs" />
+    <Compile Include="Nodes\NurbsSpline.cs" />
+    <Compile Include="Nodes\ReferencePlane.cs" />
+    <Compile Include="Nodes\ReferencePoint.cs" />
+    <Compile Include="Nodes\Solid.cs" />
+    <Compile Include="Nodes\StructuralFraming.cs" />
     <Compile Include="Nodes\Topography.cs" />
+    <Compile Include="Nodes\View.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Nodes\Wall.cs" />
     <Compile Include="Packing\CygonRectanglePacker.cs" />
     <Compile Include="DynamoController_Revit.cs" />

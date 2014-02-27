@@ -235,12 +235,17 @@ namespace Dynamo.Nodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            // When there's no selection, this returns an invalid ID.
+            ElementId selectedElementId = ElementId.InvalidElementId;
+            if (SelectedElement != null)
+                selectedElementId = SelectedElement.Id;
+
             var node = AstFactory.BuildFunctionCall(
-                "Revit.Elements.ElementSelector",
+                "ElementSelector",
                 "ByElementId",
                 new List<AssociativeNode>
                 {
-                    AstFactory.BuildIntNode(SelectedElement.Id.IntegerValue),
+                    AstFactory.BuildIntNode(selectedElementId.IntegerValue)
                 });
 
             return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
@@ -421,35 +426,45 @@ namespace Dynamo.Nodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            GeometryObject geob = null;
+            string stableRep = string.Empty;
+
+            if (SelectedElement != null)
+            {
+                var dbDocument = DocumentManager.GetInstance().CurrentDBDocument;
+                if (dbDocument != null)
+                {
+                    var geomRef = SelectedElement as Reference;
+                    var element = dbDocument.GetElement(geomRef);
+                    if (element != null)
+                        geob = element.GetGeometryObjectFromReference(geomRef);
+                }
+
+                stableRep = SelectedElement.ConvertToStableRepresentation(dbDocument);
+            }
+
             AssociativeNode node = null;
-
-            var geomRef = SelectedElement as Reference;
-            var geob =
-                    DocumentManager.GetInstance()
-                        .CurrentDBDocument.GetElement(geomRef)
-                        .GetGeometryObjectFromReference(geomRef);
-
-            var stringNode = AstFactory.BuildStringNode(SelectedElement.ConvertToStableRepresentation(
-                DocumentManager.GetInstance().CurrentDBDocument));
-
-            var args = new List<AssociativeNode> {stringNode};
+            var args = new List<AssociativeNode>
+            {
+                AstFactory.BuildStringNode(stableRep)
+            };
 
             if (geob is Curve)
             {
                 node = AstFactory.BuildFunctionCall(
-                    "Revit.GeometryObjects.GeometryObjectSelector",
+                    "GeometryObjectSelector",
                     "ByCurve", 
                     args);
             }
             else
             {
                 node = AstFactory.BuildFunctionCall(
-                    "Revit.GeometryObjects.GeometryObjectSelector",
-                    "ByReferenceId", 
+                    "GeometryObjectSelector",
+                    "ByReferenceStableRepresentation",
                     args);
             }
 
-            return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -625,7 +640,7 @@ namespace Dynamo.Nodes
 
             var newInputs = els.Select(el => 
                 AstFactory.BuildFunctionCall(
-                "Revit.Elements.ElementSelector",
+                "ElementSelector",
                 "ByElementId",
                 new List<AssociativeNode>
                 {
