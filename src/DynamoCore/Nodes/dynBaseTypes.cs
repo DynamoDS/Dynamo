@@ -1371,6 +1371,24 @@ namespace Dynamo.Nodes
 
             ArgumentLacing = LacingStrategy.Longest;
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            // Escape special characters for display in code block node.
+            int start = MigrationManager.GetNextCodeBlockInputIndex();
+            int end = MigrationManager.GetNextCodeBlockInputIndex();
+            int step = MigrationManager.GetNextCodeBlockInputIndex();
+            string content = "start" + start + ".." + "end" + end + ".." + "step" + step + ";";
+
+            XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
+            newNode.SetAttribute("CodeText", content);
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
     }
 
     [NodeName("Number Sequence")]
@@ -1408,6 +1426,25 @@ namespace Dynamo.Nodes
                 start += step;
             }
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            // Escape special characters for display in code block node.
+            int start = MigrationManager.GetNextCodeBlockInputIndex();
+            int amount = MigrationManager.GetNextCodeBlockInputIndex();
+            int step = MigrationManager.GetNextCodeBlockInputIndex();
+            string content = "start"+start+".."+"amount"+amount+"*step"+step+"-step"+step+"+start"+start+".."+"step"+step+";";
+
+            XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
+            newNode.SetAttribute("CodeText", content);
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
+
     }
 
     [NodeName("Combine")]
