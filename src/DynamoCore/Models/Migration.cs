@@ -515,6 +515,7 @@ namespace Dynamo.Models
             cloned.SetAttribute("type", type);
             cloned.SetAttribute("nickname", nickname);
             return cloned;
+        }
 
         /// <summary>
         /// Call this method to create a dummy node, should a node failed to be 
