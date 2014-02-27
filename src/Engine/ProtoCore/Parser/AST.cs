@@ -32,5 +32,14 @@
             Name = rhs.Name;
             skipMe = rhs.skipMe;
         }
+
+        /// <summary>
+        /// An explicit mechanism to manually set the ID of an AST node
+        /// </summary>
+        /// <param name="id"></param>
+        public void InheritID(int id)
+        {
+            ID = id;
+        }
     }
 }

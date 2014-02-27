@@ -1,7 +1,7 @@
 <Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
   <CreateNodeCommand NodeId="352fce2a-1da6-4ab2-9bbf-88820771425d" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <CreateNodeCommand NodeId="56a48246-9c19-46b8-b128-7a3d2aa5a8bf" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <CreateNodeCommand NodeId="8d2cd321-832d-4f55-848e-6be8120ed337" NodeName="Add" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="8d2cd321-832d-4f55-848e-6be8120ed337" NodeName="+@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <CreateNodeCommand NodeId="1764d612-9951-4cb7-87f3-10b1355fc124" NodeName="Map" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <CreateNodeCommand NodeId="12a4a87f-f887-4fb6-b368-10485ce67e3a" NodeName="String" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <CreateNodeCommand NodeId="5cafbfcc-ce28-4578-bff5-b06223a4c2e6" NodeName="Watch" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />

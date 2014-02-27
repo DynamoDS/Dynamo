@@ -419,7 +419,9 @@ namespace ProtoCore.Utils
                 leftNode = iNode.LeftNode;
                 if (iNode.RightNode is ProtoCore.AST.AssociativeAST.IdentifierNode)
                 {
-                    stringList.Add((iNode.RightNode as ProtoCore.AST.AssociativeAST.IdentifierNode).Value);
+                    ProtoCore.AST.AssociativeAST.IdentifierNode currentNode = (iNode.RightNode as ProtoCore.AST.AssociativeAST.IdentifierNode);
+                    stringList.Add(currentNode.ToString());
+
                 }
                 else if (iNode.RightNode is ProtoCore.AST.AssociativeAST.FunctionCallNode)
                 {
@@ -431,7 +433,7 @@ namespace ProtoCore.Utils
                     return string.Empty;
                 }
             }
-            stringList.Add(leftNode.Name);
+            stringList.Add(leftNode.ToString());
 
             stringList.Reverse();
 
@@ -551,7 +553,9 @@ namespace ProtoCore.Utils
         {
             // Jun Comment: The current convention for auto generated SSA variables begin with '%'
             // This ensures that the variables is compiler generated as the '%' symbol cannot be used as an identifier and will fail compilation
-            string SSATemp = ProtoCore.DSASM.Constants.kSSATempPrefix + core.SSASubscript.ToString();
+            string sGUID = core.SSASubscript_GUID.ToString();
+            sGUID = sGUID.Replace("-", string.Empty);
+            string SSATemp = ProtoCore.DSASM.Constants.kSSATempPrefix + core.SSASubscript.ToString() + "_" + sGUID;
             ++core.SSASubscript;
             return SSATemp;
         }
@@ -611,7 +615,7 @@ namespace ProtoCore.Utils
             funCallNode.Name = ProtoCore.DSASM.Constants.kDotArgMethodName;
             NodeUtils.CopyNodeLocation(funCallNode, lhs);
             int rhsIdx = ProtoCore.DSASM.Constants.kInvalidIndex;
-            string lhsName = null;
+            string lhsName = string.Empty;
             if (lhs is ProtoCore.AST.AssociativeAST.IdentifierNode)
             {
                 lhsName = (lhs as ProtoCore.AST.AssociativeAST.IdentifierNode).Name;
@@ -626,8 +630,16 @@ namespace ProtoCore.Utils
                 if (argNum >= 0)
                 {
                     ProtoCore.DSASM.DynamicFunctionNode dynamicFunctionNode = new ProtoCore.DSASM.DynamicFunctionNode(rhsName, new List<ProtoCore.Type>());
-                    core.DynamicFunctionTable.functionTable.Add(dynamicFunctionNode);
-                    rhsIdx = core.DynamicFunctionTable.functionTable.Count - 1;
+                    int index = core.DynamicFunctionTable.functionTable.FindIndex(dynnode => dynnode.functionName == rhsName);
+                    if (index >= 0)
+                    {
+                        rhsIdx = index;
+                    }
+                    else
+                    {
+                        core.DynamicFunctionTable.functionTable.Add(dynamicFunctionNode);
+                        rhsIdx = core.DynamicFunctionTable.functionTable.Count - 1;
+                    }
                 }
                 else
                 {

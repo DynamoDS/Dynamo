@@ -12,6 +12,9 @@ namespace DSCore
     {
         private System.Drawing.Color color = System.Drawing.Color.FromArgb(255, 0, 0, 0);
 
+        // Exposed only for unit test purposes.
+        internal System.Drawing.Color InternalColor { get { return this.color; } }
+
         private DSColor(int a, int r, int g, int b)
         {
             this.color = System.Drawing.Color.FromArgb(a, r, g, b);
@@ -21,118 +24,39 @@ namespace DSCore
         {
             return new DSColor(a, r, g, b);
         }
+
+        // This fails "GraphUtilities.PreloadAssembly", fix later.
+        // After fixing, restore "TestConstructorBySystemColor" test case.
+        // 
+#if false
+        public static DSColor BySystemColor(System.Drawing.Color c)
+        {
+            return new DSColor(c.A, c.R, c.G, c.B);
+        }
+#endif
+
+        public static float Brightness(DSColor c)
+        {
+            return c.color.GetBrightness();
+        }
+
+        public static float Saturation(DSColor c)
+        {
+            return c.color.GetSaturation();
+        }
+
+        public static float Hue(DSColor c)
+        {
+            return c.color.GetHue();
+        }
+
+        public static byte[] Components(DSColor c)
+        {
+            return new byte[] { c.color.A, c.color.R, c.color.G, c.color.B };
+        }
     }
 
 #if false
-    public class ColorBrightness
-    {
-        public ColorBrightness()
-        {
-            InPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
-            OutPortData.Add(new PortData("mag", "The magnitude of the color vector", typeof(Value.Number)));
-
-            RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Longest;
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var c = (System.Drawing.Color)((Value.Container)args[0]).Item;
-
-            return Value.NewNumber(c.GetBrightness());
-        }
-    }
-
-    public class ColorBrightness
-    {
-        public ColorBrightness()
-        {
-            InPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
-            OutPortData.Add(new PortData("mag", "The magnitude of the color vector", typeof(Value.Number)));
-
-            RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Longest;
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var c = (System.Drawing.Color)((Value.Container)args[0]).Item;
-
-            return Value.NewNumber(c.GetBrightness());
-        } 
-    }
-
-    class ColorSaturation
-    {
-        public ColorSaturation()
-        {
-            InPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
-            OutPortData.Add(new PortData("sat", "The saturation of the color as a number between 0 and 1", typeof(Value.Number)));
-
-            RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Longest;
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var c = (System.Drawing.Color)((Value.Container)args[0]).Item;
-
-            return Value.NewNumber(c.GetSaturation());
-        }
-    }
-
-    class ColorComponents
-    {
-        private readonly PortData _alphaOut = new PortData(
-            "A", "The alpha part of the color between 0 and 255", typeof(Value.Number));
-
-        private readonly PortData _redOut = new PortData(
-            "R", "The red part of the color between 0 and 255", typeof(Value.Number));
-
-        private readonly PortData _greenOut = new PortData(
-            "G", "The green part of the color between 0 and 255", typeof(Value.Number));
-
-        private readonly PortData _blueOut = new PortData(
-            "B", "The blue part of the color between 0 and 255", typeof(Value.Number));
-
-        public ColorComponents()
-        {
-            InPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
-            OutPortData.Add(_alphaOut);
-            OutPortData.Add(_redOut);
-            OutPortData.Add(_greenOut);
-            OutPortData.Add(_blueOut);
-        }
-
-        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
-        {
-            var c = (System.Drawing.Color)((Value.Container)args[0]).Item;
-
-            outPuts[_alphaOut] = Value.NewNumber(c.A);
-            outPuts[_redOut] = Value.NewNumber(c.R);
-            outPuts[_greenOut] = Value.NewNumber(c.G);
-            outPuts[_blueOut] = Value.NewNumber(c.B);
-        }
-    }
-
-    class ColorHue
-    {
-        public ColorHue()
-        {
-            InPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
-            OutPortData.Add(new PortData("hue", "The hue of the color as a number between 0 and 1", typeof(Value.Number)));
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var c = (System.Drawing.Color)((Value.Container)args[0]).Item;
-
-            return Value.NewNumber(c.GetHue());
-        }
-    }
 
     class ColorRange
     {

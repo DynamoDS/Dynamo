@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Xml;
 
 namespace Dynamo.Utilities
 {
@@ -182,6 +183,30 @@ namespace Dynamo.Utilities
                 throw new ArgumentException("Delegate has no declaring type.", @"del");
 
             return String.Format("{0}.{1}", del.Method.DeclaringType.FullName, del.Method.Name);
+        }
+
+        public static string GetChildNodeStringValue(XmlNode nodeElement)
+        {
+            return GetChildNodeValue(nodeElement, typeof(string).FullName);
+        }
+
+        public static string GetChildNodeDoubleValue(XmlNode nodeElement)
+        {
+            return GetChildNodeValue(nodeElement, typeof(double).FullName);
+        }
+
+        private static string GetChildNodeValue(XmlNode nodeElement, string typeName)
+        {
+            var query = from XmlNode childNode in nodeElement.ChildNodes
+                        where childNode.Name.Equals(typeName)
+                        from XmlAttribute attribute in childNode.Attributes
+                        where attribute.Name.Equals("value")
+                        select attribute;
+
+            foreach (XmlAttribute attribute in query)
+                return attribute.Value;
+
+            return string.Empty;
         }
     }
 }

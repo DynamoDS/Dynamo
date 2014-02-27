@@ -8,6 +8,8 @@ using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.FSharp.Collections;
 using RevitServices.Persistence;
+using System.Xml;
+using System.Linq;
 
 namespace Dynamo.Nodes
 {
@@ -37,6 +39,13 @@ namespace Dynamo.Nodes
             var pt = new XYZ(x, y, z);
 
             return FScheme.Value.NewContainer(pt);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.ByCoordinates",
+                "Point.ByCoordinates@double,double,double");
         }
     }
 
@@ -82,6 +91,37 @@ namespace Dynamo.Nodes
             var phi = ((FScheme.Value.Number)args[2]).Item;
 
             return FScheme.Value.NewContainer(FromPolarCoordinates(r, theta, phi));
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Point.ByCylindricalCoordinates", "Point.ByCylindricalCoordinates@CoordinateSystem,double,double,double");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Create new node
+            XmlElement identityCoordinateSystem = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll",
+                "CoordinateSystem.Identity",
+                "CoordinateSystem.Identity");
+            migrationData.AppendNode(identityCoordinateSystem);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId newInPort3 = new PortId(newNodeId, 3, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            data.ReconnectToPort(connector0, newInPort3);
+            data.CreateConnector(identityCoordinateSystem, 0, newNode, 0);
+
+            return migrationData;
         }
     }
 
@@ -181,6 +221,48 @@ namespace Dynamo.Nodes
             var phi = ((FScheme.Value.Number)args[2]).Item;
 
             return FScheme.Value.NewContainer(FromPolarCoordinates(r, theta, phi));
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Point.BySphericalCoordinates", "Point.BySphericalCoordinates@CoordinateSystem,double,double,double");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Create new node
+            XmlElement identityCoordinateSystem = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll",
+                "CoordinateSystem.Identity",
+                "CoordinateSystem.Identity");
+            migrationData.AppendNode(identityCoordinateSystem);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            PortId oldInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
+
+            PortId newInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            PortId newInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
+            PortId newInPort3 = new PortId(newNodeId, 3, PortType.INPUT);
+
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
+
+            data.ReconnectToPort(connector0, newInPort3);
+            data.ReconnectToPort(connector1, newInPort2);
+            data.ReconnectToPort(connector2, newInPort1);
+            
+            data.CreateConnector(identityCoordinateSystem, 0, newNode, 0);
+
+            return migrationData;
         }
     }
 
@@ -332,6 +414,12 @@ namespace Dynamo.Nodes
 
             return FScheme.Value.NewContainer(point.Position);
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.ReferencePoint", "Point.ReferencePoint");
+        }
     }
 
     [NodeName("XYZ Components")]
@@ -388,6 +476,12 @@ namespace Dynamo.Nodes
             var xyz = (XYZ) ((FScheme.Value.Container) args[0]).Item;
             return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.X));
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.X", "Point.X");
+        }
     }
 
     [NodeName("XYZ Y")]
@@ -409,6 +503,12 @@ namespace Dynamo.Nodes
             var xyz = (XYZ) ((FScheme.Value.Container) args[0]).Item;
             return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.Y));
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.Y", "Point.Y");
+        }
     }
 
     [NodeName("XYZ Z")]
@@ -429,6 +529,12 @@ namespace Dynamo.Nodes
         {
             var xyz = (XYZ) ((FScheme.Value.Container) args[0]).Item;
             return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.Z));
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.Z", "Point.Z");
         }
     }
 
@@ -454,6 +560,12 @@ namespace Dynamo.Nodes
 
             return FScheme.Value.NewContainer(Units.Length.FromFeet(a.DistanceTo(b)));
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Geometry.DistanceTo", "Geometry.DistanceTo@Geometry");
+        }
     }
 
     [NodeName("XYZ Length")]
@@ -475,6 +587,12 @@ namespace Dynamo.Nodes
             var xyz = (XYZ) ((FScheme.Value.Container) args[0]).Item;
             return FScheme.Value.NewContainer(Units.Length.FromFeet(xyz.GetLength()));
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.Length", "Vector.Length");
+        }
     }
 
     [NodeName("Unitize XYZ")]
@@ -494,6 +612,12 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             return FScheme.Value.NewContainer(((XYZ)((FScheme.Value.Container)args[0]).Item).Normalize());
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.Normalized", "Vector.Normalized");
         }
     }
 
@@ -757,6 +881,12 @@ namespace Dynamo.Nodes
 
             return FScheme.Value.NewContainer(a.CrossProduct(b));
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.Cross", "Vector.Cross@Vector");
+        }
     }
 
     [NodeName("XYZ Dot Product")]
@@ -781,6 +911,12 @@ namespace Dynamo.Nodes
 
             return FScheme.Value.NewNumber(a.DotProduct(b));
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.Dot", "Vector.Dot@Vector");
+        }
     }
 
     [NodeName("Direction to XYZ")]
@@ -804,6 +940,45 @@ namespace Dynamo.Nodes
             XYZ b = (XYZ)((FScheme.Value.Container)args[1]).Item;
 
             return FScheme.Value.NewContainer((b - a).Normalize());
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            //create the node itself
+            XmlElement newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll", 
+                "Vector.Normalized", "Vector.Normalized");
+
+            migratedData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            XmlElement vectorNode = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", 
+                "Vector.ByTwoPoints", "Vector.ByTwoPoints@Point,Point");
+            migratedData.AppendNode(vectorNode);
+            string vectorNodeId = MigrationManager.GetGuidFromXmlElement(vectorNode);
+
+            //create and reconnect the connecters
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            PortId newInPort0 = new PortId(vectorNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(vectorNodeId, 1, PortType.INPUT);
+            PortId newInPort2 = new PortId(newNodeId, 0, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, newInPort0);
+            data.ReconnectToPort(connector1, newInPort1);
+            data.CreateConnector(vectorNode, 0, newNode,0);
+
+            return migratedData;
         }
     }
 
@@ -870,6 +1045,18 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewList(
                ListModule.Reverse(result)
             );
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 9, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 
@@ -1196,6 +1383,30 @@ namespace Dynamo.Nodes
 
             return FScheme.Value.NewContainer(result);
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Curve.PointAtParameter", "Curve.PointAtParameter@double");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+            data.ReconnectToPort(connector0, oldInPort1);
+            data.ReconnectToPort(connector1, oldInPort0);
+
+            return migrationData;
+        }
     }
 
     [NodeName("XYZ By Offset from Origin")]
@@ -1222,6 +1433,82 @@ namespace Dynamo.Nodes
 
             var pt = origin + direction.Multiply(distance);
             return FScheme.Value.NewContainer(pt);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            //create the node itself
+            XmlElement translateNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(translateNode, "ProtoGeometry.dll",
+                "Geometry.Translate", "Geometry.Translate@Autodesk.DesignScript.Geometry.Vector,double");
+
+            migratedData.AppendNode(translateNode);
+            string translateNodeId = MigrationManager.GetGuidFromXmlElement(translateNode);
+
+            XmlElement distanceToNode = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "Geometry.DistanceTo", "DistanceTo@Geometry");
+            migratedData.AppendNode(distanceToNode);
+            string distanceToNodeId = MigrationManager.GetGuidFromXmlElement(distanceToNode);
+
+            XmlElement multiplyNode = MigrationManager.CreateFunctionNode(
+                data.Document, "", "*", "*@,");
+            migratedData.AppendNode(multiplyNode);
+            string multiplyNodeId = MigrationManager.GetGuidFromXmlElement(multiplyNode);
+
+            XmlElement asVectorNode = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "Point.AsVector", "Point.AsVector");
+            migratedData.AppendNode(asVectorNode);
+            string asVectorNodeId = MigrationManager.GetGuidFromXmlElement(asVectorNode);
+
+
+            //create and reconnect the connecters
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            XmlElement connector3 = null;
+            if (connector0 != null)
+            {
+                connector3 = MigrationManager.CreateFunctionNodeFrom(connector0);
+                data.CreateConnector(connector3);
+            }
+
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            XmlElement connector4 = null;
+            if (connector1 != null)
+            {
+                connector4 = MigrationManager.CreateFunctionNodeFrom(connector1);
+                data.CreateConnector(connector4);
+            }
+
+            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
+
+            PortId newInPort0 = new PortId(translateNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(translateNodeId, 1, PortType.INPUT);
+            PortId newInPort2 = new PortId(translateNodeId, 2, PortType.INPUT);
+            PortId newInPort3 = new PortId(distanceToNodeId, 0, PortType.INPUT);
+            PortId newInPort4 = new PortId(distanceToNodeId, 1, PortType.INPUT);
+            PortId newInPort5 = new PortId(multiplyNodeId, 1, PortType.INPUT);
+            PortId newInPort6 = new PortId(asVectorNodeId, 0, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, newInPort0);
+            data.ReconnectToPort(connector1, newInPort6);
+            data.ReconnectToPort(connector2, newInPort5);
+            data.ReconnectToPort(connector3, newInPort3);
+            data.ReconnectToPort(connector4, newInPort4);
+
+            data.CreateConnector(distanceToNode, 0, multiplyNode, 0);
+            data.CreateConnector(asVectorNode, 0, translateNode, 1);
+            data.CreateConnector(multiplyNode, 0, translateNode, 2);
+
+            return migratedData;
         }
     }
 }

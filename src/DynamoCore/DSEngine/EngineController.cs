@@ -37,9 +37,6 @@ namespace Dynamo.DSEngine
             liveRunnerServices = new LiveRunnerServices(this);
             liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
 
-            GraphToDSCompiler.GraphUtilities.Reset();
-            GraphToDSCompiler.GraphUtilities.PreloadAssembly(libraryServices.Libraries.ToList());
-
             astBuilder = new AstBuilder(this);
             syncDataManager = new SyncDataManager();
 

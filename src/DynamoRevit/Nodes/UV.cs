@@ -1,4 +1,6 @@
-﻿using Autodesk.DesignScript.Geometry;
+﻿using System.Linq;
+using System.Xml;
+using Autodesk.DesignScript.Geometry;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 using RevitGeometryObjects = Revit.Geometry;
@@ -53,6 +55,13 @@ namespace Dynamo.Nodes
 
             return FScheme.Value.NewContainer(RevitGeometryObjects.Domain2D.ByMinimumAndMaximum(vmin, vmax));
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+                "Domain2D.ByMinimumAndMaximum", "Domain2D.ByMinimumAndMaximum@Vector,Vector");
+        }
     }
 
     [NodeName("UV Grid")]
@@ -99,6 +108,18 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewList(
                ListModule.Reverse(result)
             );
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 3, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 
@@ -152,6 +173,18 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewList(
                ListModule.Reverse(result)
             );
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 3, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 }
