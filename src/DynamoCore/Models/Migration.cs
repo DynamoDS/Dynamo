@@ -371,6 +371,45 @@ namespace Dynamo.Models
             return element;
         }
 
+        public static XmlElement CreateVarArgFunctionNode(XmlDocument document,
+            string assembly, string nickname, string signature, string inputcount)
+        {
+            XmlElement element = document.CreateElement("Dynamo.Nodes.DSVarArgFunction");
+            element.SetAttribute("type", "Dynamo.Nodes.DSVarArgFunction");
+            element.SetAttribute("assembly", assembly);
+            element.SetAttribute("nickname", nickname);
+            element.SetAttribute("function", signature);
+            element.SetAttribute("inputcount", inputcount);
+
+            // Attributes with default values (as in DynamoModel.OpenWorkspace).
+            element.SetAttribute("isVisible", "true");
+            element.SetAttribute("isUpstreamVisible", "true");
+            element.SetAttribute("lacing", "Disabled");
+            element.SetAttribute("x", "0.0");
+            element.SetAttribute("y", "0.0");
+            element.SetAttribute("guid", Guid.NewGuid().ToString());
+            return element;
+        }
+
+        public static XmlElement CreateCodeBlockNodeModelNode(XmlDocument document, string codeTest)
+        {
+            XmlElement element = document.CreateElement("Dynamo.Nodes.CodeBlockNodeModel");
+            element.SetAttribute("type", "Dynamo.Nodes.CodeBlockNodeModel");
+
+            element.SetAttribute("nickname", "Code Block");
+            element.SetAttribute("CodeText", codeTest);
+            element.SetAttribute("ShouldFocus", "false");
+
+            // Attributes with default values (as in DynamoModel.OpenWorkspace).
+            element.SetAttribute("isVisible", "true");
+            element.SetAttribute("isUpstreamVisible", "true");
+            element.SetAttribute("lacing", "Disabled");
+            element.SetAttribute("x", "0.0");
+            element.SetAttribute("y", "0.0");
+            element.SetAttribute("guid", Guid.NewGuid().ToString());
+            return element;
+        }
+
         /// <summary>
         /// Call this method to create a XmlElement with a set of attributes 
         /// carried over from the source XmlElement. The new XmlElement will 
@@ -501,6 +540,19 @@ namespace Dynamo.Models
                 cloned.SetAttribute(attribute.Name, attribute.Value);
 
             cloned.SetAttribute("type", type);
+            return cloned;
+        }
+
+        public static XmlElement CloneAndChangeName(XmlElement element, string type, string nickname)
+        {
+            XmlDocument document = element.OwnerDocument;
+            XmlElement cloned = document.CreateElement(type);
+
+            foreach (XmlAttribute attribute in element.Attributes)
+                cloned.SetAttribute(attribute.Name, attribute.Value);
+
+            cloned.SetAttribute("type", type);
+            cloned.SetAttribute("nickname", nickname);
             return cloned;
         }
 
@@ -677,6 +729,35 @@ namespace Dynamo.Models
             }
 
             return null;
+        }
+
+        public void RemoveFirstConnector(PortId portId)
+        {
+            if (connectorRoot == null || (connectorRoot.ChildNodes == null))
+                return;
+
+            foreach (XmlNode node in connectorRoot.ChildNodes)
+            {
+                XmlElement connector = node as XmlElement;
+                XmlAttributeCollection attribs = connector.Attributes;
+
+                if (portId.PortType == PortType.INPUT)
+                {
+                    if (portId.OwningNode != attribs["end"].Value)
+                        continue;
+                    if (portId.PortIndex != Convert.ToInt16(attribs["end_index"].Value))
+                        continue;
+                }
+                else
+                {
+                    if (portId.OwningNode != attribs["start"].Value)
+                        continue;
+                    if (portId.PortIndex != Convert.ToInt16(attribs["start_index"].Value))
+                        continue;
+                }
+
+                connectorRoot.RemoveChild(connector);
+            }
         }
 
         /// <summary>

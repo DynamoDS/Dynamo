@@ -95,7 +95,7 @@ namespace Dynamo
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
             ElementNameStore = new Dictionary<ElementId, string>();
 
-            EngineController.ImportLibrary("DSRevitNodes.dll");
+            EngineController.ImportLibrary("RevitNodes.dll");
         }
 
         private void CleanupVisualizations(object sender, EventArgs e)

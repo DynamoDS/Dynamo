@@ -103,11 +103,11 @@
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\DynamoPython\Python.csproj">
       <Project>{2B0F2800-6F62-4869-9074-088C5F6DCCA2}</Project>
-      <Name>DynamoPython</Name>
+      <Name>Python</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
-      <Name>DynamoUnits</Name>
+      <Name>Units</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>

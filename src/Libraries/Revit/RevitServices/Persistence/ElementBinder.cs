@@ -44,7 +44,6 @@ namespace RevitServices.Persistence
     {
         private const string REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
 
-
         /// <summary>
         /// Get an ElementId from trace
         /// </summary>
@@ -61,6 +60,26 @@ namespace RevitServices.Persistence
 
             var traceDataInt = id.IntID;
             return new Autodesk.Revit.DB.ElementId(traceDataInt);
+        }
+
+        /// <summary>
+        /// Set the element associated with the current operation from trace
+        /// null if there is no object, or it's of the wrong type etc.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static void SetElementForTrace(ElementId elementId)
+        {
+            SerializableId id = new SerializableId();
+            id.IntID = elementId.IntegerValue;
+
+            // if we're mutating the current Element id, that means we need to 
+            // clean up the old object
+
+            // TODO(Push the GUID into the object)
+
+            // Set the element ID cached in the callsite
+            TraceUtils.SetTraceData(REVIT_TRACE_ID, id);
         }
 
         /// <summary>
@@ -104,25 +123,7 @@ namespace RevitServices.Persistence
             SetElementForTrace(newTraceId);
         }
 
-        /// <summary>
-        /// Set the element associated with the current operation from trace
-        /// null if there is no object, or it's of the wrong type etc.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static void SetElementForTrace(ElementId elementId)
-        {
-            SerializableId id = new SerializableId();
-            id.IntID = elementId.IntegerValue;
 
-            // if we're mutating the current Element id, that means we need to 
-            // clean up the old object
-            
-            // TODO(Push the GUID into the object)
-
-            // Set the element ID cached in the callsite
-            TraceUtils.SetTraceData(REVIT_TRACE_ID, id);
-        }
 
 
     }
