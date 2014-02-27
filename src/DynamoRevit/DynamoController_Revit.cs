@@ -134,10 +134,8 @@ namespace Dynamo
                                     .Where(x => !(x is SelectionBase))
                                     .Where(x => x.IsVisible)
                                     .Where(x => x.OldValue != null)
-                                    .Where(
-                                        x =>
-                                        x.OldValue is Value.Container || x.OldValue is Value.List)
-                                    .Select(x => x.OldValue);
+                                    //.Where(x => x.OldValue is Value.Container || x.OldValue is Value.List)
+                                    .Select(x => x.OldValue.Data as Value);
 
             var geoms = values.ToList().SelectMany(RevitGeometryFromNodes).ToList();
 

@@ -83,18 +83,16 @@ namespace Dynamo.Tests
         protected void RunExampleTest(
             string exampleFilePath, IEnumerable<KeyValuePair<Guid, object>> tests)
         {
-            //var model = dynSettings.Controller.DynamoModel;
-            //model.Open(exampleFilePath);
+            var model = dynSettings.Controller.DynamoModel;
+            model.Open(exampleFilePath);
 
-            //dynSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
-            //foreach (var test in tests)
-            //{
-            //    var runResult = model.CurrentWorkspace.NodeFromWorkspace(test.Key).OldValue.UnwrapFSchemeValue();
-            //    Assert.AreEqual(test.Value, runResult);
-            //}
-
-            Assert.Inconclusive("FScheme");
+            foreach (var test in tests)
+            {
+                var runResult = model.CurrentWorkspace.NodeFromWorkspace(test.Key).OldValue.Data;
+                Assert.AreEqual(test.Value, runResult);
+            }
         }
     }
 }

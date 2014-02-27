@@ -16,145 +16,135 @@ namespace Dynamo.Tests
         [Test]
         public void CanCollapseNodesAndGetSameResult()
         {
-            //var model = Controller.DynamoModel;
-            //var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
 
-            //string openPath = Path.Combine(examplePath, "collapse.dyn");
-            //model.Open(openPath);
+            string openPath = Path.Combine(examplePath, "collapse.dyn");
+            model.Open(openPath);
 
-            //var watchNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watchNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            //var numNodesPreCollapse = model.CurrentWorkspace.Nodes.Count;
+            var numNodesPreCollapse = model.CurrentWorkspace.Nodes.Count;
 
-            //Controller.RunExpression();
+            Controller.RunExpression();
 
-            //var valuePreCollapse = (watchNode.OldValue as FScheme.Value.Number).Item;
+            var valuePreCollapse = watchNode.OldValue;
 
-            //var nodesToCollapse = new[]
-            //{
-            //    "1da395b9-2539-4705-a479-1f6e575df01d", 
-            //    "b8130bf5-dd14-4784-946d-9f4705df604e",
-            //    "a54c7cfa-450a-4edc-b7a5-b3e15145a9e1"
-            //};
+            var nodesToCollapse = new[]
+            {
+                "1da395b9-2539-4705-a479-1f6e575df01d", 
+                "b8130bf5-dd14-4784-946d-9f4705df604e",
+                "a54c7cfa-450a-4edc-b7a5-b3e15145a9e1"
+            };
 
-            //foreach (var guid in nodesToCollapse)
-            //{
-            //    var node = model.Nodes.First(x => x.GUID == Guid.Parse(guid));
-            //    model.AddToSelection(node);
-            //}
+            foreach (var guid in nodesToCollapse)
+            {
+                var node = model.Nodes.First(x => x.GUID == Guid.Parse(guid));
+                model.AddToSelection(node);
+            }
 
-            //NodeCollapser.Collapse(
-            //    DynamoSelection.Instance.Selection.OfType<NodeModel>(),
-            //    model.CurrentWorkspace,
-            //    new FunctionNamePromptEventArgs
-            //    {
-            //        Category = "Testing",
-            //        Description = "",
-            //        Name = "__CollapseTest__",
-            //        Success = true
-            //    });
+            NodeCollapser.Collapse(
+                DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                model.CurrentWorkspace,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
 
-            //var numNodesPostCollapse = model.CurrentWorkspace.Nodes.Count;
+            var numNodesPostCollapse = model.CurrentWorkspace.Nodes.Count;
 
-            //Assert.AreNotEqual(numNodesPreCollapse, numNodesPostCollapse);
-            //Assert.AreEqual(nodesToCollapse.Length, numNodesPreCollapse - numNodesPostCollapse + 1);
+            Assert.AreNotEqual(numNodesPreCollapse, numNodesPostCollapse);
+            Assert.AreEqual(nodesToCollapse.Length, numNodesPreCollapse - numNodesPostCollapse + 1);
 
-            //Controller.RunExpression();
+            Controller.RunExpression();
 
-            //var valuePostCollapse = (watchNode.OldValue as FScheme.Value.Number).Item;
+            var valuePostCollapse = watchNode.OldValue;
 
-            //Assert.AreEqual(valuePreCollapse, valuePostCollapse);
-
-            Assert.Inconclusive("FScheme");
+            Assert.AreEqual(valuePreCollapse, valuePostCollapse);
         }
 
         [Test]
         public void CanCollapseNodesWithDefaultValues()
         {
-            //var model = Controller.DynamoModel;
-            //var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
 
-            //string openPath = Path.Combine(examplePath, "collapse-defaults.dyn");
-            //model.Open(openPath);
+            string openPath = Path.Combine(examplePath, "collapse-defaults.dyn");
+            model.Open(openPath);
 
-            ////Confirm that everything is working OK.
-            //Controller.RunExpression();
+            //Confirm that everything is working OK.
+            Controller.RunExpression();
 
-            //var minNode = model.CurrentWorkspace.FirstNodeFromWorkspace<ListMin>();
-            //var numNode = model.CurrentWorkspace.FirstNodeFromWorkspace<DoubleInput>();
+            var minNode = model.CurrentWorkspace.FirstNodeFromWorkspace<ListMin>();
+            var numNode = model.CurrentWorkspace.FirstNodeFromWorkspace<DoubleInput>();
 
-            //Assert.IsInstanceOf<FScheme.Value.Number>(minNode.OldValue);
-            //Assert.AreEqual(10, (minNode.OldValue as FScheme.Value.Number).Item);
+            Assert.AreEqual(10, minNode.OldValue.Data);
 
-            //model.AddToSelection(minNode);
-            //model.AddToSelection(numNode);
+            model.AddToSelection(minNode);
+            model.AddToSelection(numNode);
 
-            //NodeCollapser.Collapse(
-            //    DynamoSelection.Instance.Selection.OfType<NodeModel>(),
-            //    model.CurrentWorkspace,
-            //    new FunctionNamePromptEventArgs
-            //    {
-            //        Category = "Testing",
-            //        Description = "",
-            //        Name = "__CollapseTest__",
-            //        Success = true
-            //    });
+            NodeCollapser.Collapse(
+                DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                model.CurrentWorkspace,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
 
-            //Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
 
-            //Controller.RunExpression();
+            Controller.RunExpression();
 
-            //var collapsedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
+            var collapsedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
 
-            //Assert.IsInstanceOf<FScheme.Value.Number>(collapsedNode.OldValue);
-            //Assert.AreEqual(10, (collapsedNode.OldValue as FScheme.Value.Number).Item);
-
-            Assert.Inconclusive("FScheme");
+            Assert.AreEqual(10, collapsedNode.OldValue.Data);
         }
 
         [Test]
         public void CanCollapseWith1NodeHoleInSelection()
         {
-            //var model = Controller.DynamoModel;
-            //var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
 
-            //string openPath = Path.Combine(examplePath, "collapse-function.dyn");
-            //model.Open(openPath);
+            string openPath = Path.Combine(examplePath, "collapse-function.dyn");
+            model.Open(openPath);
 
-            ////Confirm that everything is working OK.
-            //Controller.RunExpression();
+            //Confirm that everything is working OK.
+            Controller.RunExpression();
 
-            //var mulNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Multiplication>();
+            var mulNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Multiplication>();
 
-            //Assert.IsInstanceOf<FScheme.Value.Number>(mulNode.OldValue);
-            //Assert.AreEqual(0, (mulNode.OldValue as FScheme.Value.Number).Item);
+            Assert.AreEqual(0, mulNode.OldValue.Data);
 
-            //foreach (var node in model.CurrentWorkspace.Nodes.Where(x => !(x is Addition)))
-            //{
-            //    model.AddToSelection(node);
-            //}
+            foreach (var node in model.CurrentWorkspace.Nodes.Where(x => !(x is Addition)))
+            {
+                model.AddToSelection(node);
+            }
 
-            //NodeCollapser.Collapse(
-            //    DynamoSelection.Instance.Selection.OfType<NodeModel>(),
-            //    model.CurrentWorkspace,
-            //    new FunctionNamePromptEventArgs
-            //    {
-            //        Category = "Testing",
-            //        Description = "",
-            //        Name = "__CollapseTest__",
-            //        Success = true
-            //    });
+            NodeCollapser.Collapse(
+                DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                model.CurrentWorkspace,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
 
-            //Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
 
-            //Controller.RunExpression();
+            Controller.RunExpression();
 
-            //var collapsedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
+            var collapsedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
 
-            //Assert.IsInstanceOf<FScheme.Value.Number>(collapsedNode.OldValue);
-            //Assert.AreEqual(0, (collapsedNode.OldValue as FScheme.Value.Number).Item);
-
-            Assert.Inconclusive("FScheme");
+            Assert.AreEqual(0, collapsedNode.OldValue.Data);
         }
 
         [Test]
@@ -327,146 +317,84 @@ namespace Dynamo.Tests
             Assert.AreEqual(numNodes - 1, model.CurrentWorkspace.Nodes.Count);
         }
 
-        [Test]
-        public void CombineWithCustomNodes()
-        {
-            //var model = Controller.DynamoModel;
-            //var examplePath = Path.Combine(GetTestDirectory(), @"core\combine\");
-
-            //string openPath = Path.Combine(examplePath, "combine-with-three.dyn");
-            //model.Open(openPath);
-
-            //// check all the nodes and connectors are loaded
-            //Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
-            //Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
-
-            //// run the expression
-            //dynSettings.Controller.RunExpression(null);
-
-            //// wait for the expression to complete
-            //while (Controller.Running)
-            //    Thread.Sleep(100);
-
-            //// [[0,3,6], [2,5,4], [0,5,8]]
-
-            //// check the output values are correctly computed
-            //var watchNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-            //Assert.IsNotNull(watchNode);
-
-            //var expected = new List<List<double>>
-            //{
-            //    new List<double> { 0, 3, 6 },
-            //    new List<double> { 1, 4, 7 },
-            //    new List<double> { 2, 5, 8 },
-            //};
-
-            //// 50 elements between -1 and 1
-            //Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode.OldValue);
-            //var outerList = (watchNode.OldValue as FScheme.Value.List).Item;
-
-            //Assert.AreEqual(3, outerList.Count());
-            //int i = 0;
-            //foreach (var innerList in outerList)
-            //{
-            //    var fList = innerList.GetListFromFSchemeValue();
-            //    int j = 0;
-            //    foreach (var ele in fList)
-            //    {
-            //        var num = (ele as FScheme.Value.Number).Item;
-            //        Assert.AreEqual(num, expected[i][j], 0.001);
-            //        j++;
-            //    }
-            //    i++;
-            //}
-
-        }
-
         [Test, Ignore]
         public void ReduceAndRecursion()
         {
-            //var model = Controller.DynamoModel;
+            var model = Controller.DynamoModel;
 
-            //var examplePath = Path.Combine(GetTestDirectory(), @"core\reduce_and_recursion\");
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\reduce_and_recursion\");
 
-            //string openPath = Path.Combine(examplePath, "reduce-example.dyn");
-            //model.Open(openPath);
+            string openPath = Path.Combine(examplePath, "reduce-example.dyn");
+            model.Open(openPath);
 
-            //// check all the nodes and connectors are loaded
-            //Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
-            //Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
 
-            //// run the expression
-            //dynSettings.Controller.RunExpression(null);
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
 
-            //// wait for the expression to complete
-            //Thread.Sleep(500);
+            // wait for the expression to complete
+            Thread.Sleep(500);
 
-            //// check the output values are correctly computed
-            //var watch =
-            //    model.CurrentWorkspace.NodeFromWorkspace<Watch>(
-            //        "157557d2-2452-413a-9944-1df3df793cee");
-            //var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
-            //Assert.AreEqual(doubleWatchVal, 15.0, 0.001);
+            // check the output values are correctly computed
+            var watch =
+                model.CurrentWorkspace.NodeFromWorkspace<Watch>(
+                    "157557d2-2452-413a-9944-1df3df793cee");
+            var doubleWatchVal = (double)watch.OldValue.Data;
+            Assert.AreEqual(15.0, doubleWatchVal, 0.001);
 
-            //var watch2 =
-            //    model.CurrentWorkspace.NodeFromWorkspace<Watch>(
-            //        "068dd555-a5d5-4f11-af05-e4fa0cc015c9");
-            //var doubleWatchVal1 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            //Assert.AreEqual(doubleWatchVal1, 15.0, 0.001);
+            var watch2 =
+                model.CurrentWorkspace.NodeFromWorkspace<Watch>(
+                    "068dd555-a5d5-4f11-af05-e4fa0cc015c9");
+            var doubleWatchVal1 = (double)watch2.OldValue.Data;
+            Assert.AreEqual(15.0, doubleWatchVal1, 0.001);
 
-            //var watch3 =
-            //    model.CurrentWorkspace.NodeFromWorkspace<Watch>(
-            //        "1aca382d-ca81-4955-a6c1-0f549df19fd7");
-            //var doubleWatchVal2 = watch3.GetValue(0).GetDoubleFromFSchemeValue();
-            //Assert.AreEqual(doubleWatchVal2, 15.0, 0.001);
-
-            Assert.Inconclusive("FScheme");
-
+            var watch3 =
+                model.CurrentWorkspace.NodeFromWorkspace<Watch>(
+                    "1aca382d-ca81-4955-a6c1-0f549df19fd7");
+            var doubleWatchVal2 = (double)watch3.OldValue.Data;
+            Assert.AreEqual(15.0, doubleWatchVal2, 0.001);
         }
 
         [Test]
         public void FilterWithCustomNode()
         {
-            //var model = Controller.DynamoModel;
-            //var examplePath = Path.Combine(GetTestDirectory(), @"core\filter\");
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\filter\");
 
-            //Assert.IsTrue(
-            //    Controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "IsOdd.dyf"))
-            //    != null);
+            Assert.IsTrue(
+                Controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "IsOdd.dyf"))
+                != null);
 
-            //string openPath = Path.Combine(examplePath, "filter-example.dyn");
-            //model.Open(openPath);
+            string openPath = Path.Combine(examplePath, "filter-example.dyn");
+            model.Open(openPath);
 
-            //// check all the nodes and connectors are loaded
-            //Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
-            //Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
 
-            //// run the expression
-            //dynSettings.Controller.RunExpression(null);
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
 
-            //// wait for the expression to complete
-            //Thread.Sleep(500);
+            // wait for the expression to complete
+            Thread.Sleep(500);
 
-            //// check the output values are correctly computed
-            //var watchNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-            //Assert.IsNotNull(watchNode);
+            // check the output values are correctly computed
+            var watchNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            Assert.IsNotNull(watchNode);
 
-            //// odd numbers between 0 and 5
-            //Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode.OldValue);
-            //var list = (watchNode.OldValue as FScheme.Value.List).Item;
+            // odd numbers between 0 and 5
+            Assert.IsTrue(watchNode.OldValue.IsCollection);
+            var list = watchNode.OldValue.GetElements();
 
-            //Assert.AreEqual(3, list.Count());
-            //var count = 1;
-            //list.ToList().ForEach(
-            //    x =>
-            //    {
-            //        Assert.IsAssignableFrom(typeof(FScheme.Value.Number), x);
-            //        var val = (x as FScheme.Value.Number).Item;
-            //        Assert.AreEqual(count, val, 0.0001);
-            //        count += 2;
-            //    });
-
-            Assert.Inconclusive("FScheme");
+            Assert.AreEqual(3, list.Count());
+            foreach (var pair in list.Enumerate())
+            {
+                    Assert.IsAssignableFrom<double>(pair.Element.Data);
+                    var val = (double)pair.Element.Data;
+                    Assert.AreEqual(pair.Index*2, val, 0.0001);
+            }
         }
 
         /// <summary>
@@ -511,56 +439,53 @@ namespace Dynamo.Tests
         [Test]
         public void MultipleOutputs()
         {
-            //var model = Controller.DynamoModel;
-            //var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
 
-            //string openPath = Path.Combine(examplePath, "multi-custom.dyn");
-            //model.Open(openPath);
+            string openPath = Path.Combine(examplePath, "multi-custom.dyn");
+            model.Open(openPath);
 
-            //dynSettings.Controller.RunExpression();
+            dynSettings.Controller.RunExpression();
 
-            //var splitListVal = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>().OldValue;
+            var splitListVal = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>().OldValue;
 
-            //Assert.IsInstanceOf<FScheme.Value.List>(splitListVal);
+            Assert.IsTrue(splitListVal.IsCollection);
 
-            //var outs = (splitListVal as FScheme.Value.List).Item;
+            var outs = splitListVal.GetElements();
 
-            //Assert.AreEqual(2, outs.Length);
+            Assert.AreEqual(2, outs.Count);
 
-            //var out1 = outs[0];
-            //Assert.IsInstanceOf<FScheme.Value.Number>(out1);
-            //Assert.AreEqual(0, (out1 as FScheme.Value.Number).Item);
+            var out1 = outs[0];
+            Assert.IsAssignableFrom<double>(out1.Data);
+            Assert.AreEqual(0, out1.Data);
 
-            //var out2 = outs[1];
-            //Assert.IsInstanceOf<FScheme.Value.List>(out2);
-            //Assert.IsTrue((out2 as FScheme.Value.List).Item.IsEmpty);
-            Assert.Inconclusive("FScheme");
+            var out2 = outs[1];
+            Assert.IsTrue(out2.IsCollection);
+            Assert.IsFalse(out2.GetElements().Any());
         }
 
         [Test]
         public void PartialApplicationWithMultipleOutputs()
         {
-            //var model = Controller.DynamoModel;
-            //var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
 
-            //string openPath = Path.Combine(examplePath, "partial-multi-custom.dyn");
-            //model.Open(openPath);
+            string openPath = Path.Combine(examplePath, "partial-multi-custom.dyn");
+            model.Open(openPath);
 
-            //dynSettings.Controller.RunExpression();
+            dynSettings.Controller.RunExpression();
 
-            //var firstWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("d824e8dd-1009-449f-b5d6-1cd83bd180d6");
+            var firstWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("d824e8dd-1009-449f-b5d6-1cd83bd180d6");
 
-            //Assert.IsInstanceOf<FScheme.Value.List>(firstWatch.OldValue);
-            //Assert.IsInstanceOf<FScheme.Value.Number>((firstWatch.OldValue as FScheme.Value.List).Item[0]);
-            //Assert.AreEqual(0, ((firstWatch.OldValue as FScheme.Value.List).Item[0] as FScheme.Value.Number).Item);
+            Assert.IsTrue(firstWatch.OldValue.IsCollection);
+            Assert.IsAssignableFrom<double>(firstWatch.OldValue.GetElements()[0].Data);
+            Assert.AreEqual(0, firstWatch.OldValue.GetElements()[0].Data);
 
-            //var restWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("af7ada9a-4316-475b-8582-742acc40fc1b");
+            var restWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("af7ada9a-4316-475b-8582-742acc40fc1b");
 
-            //Assert.IsInstanceOf<FScheme.Value.List>(restWatch.OldValue);
-            //Assert.IsInstanceOf<FScheme.Value.List>((restWatch.OldValue as FScheme.Value.List).Item[0]);
-            //Assert.IsTrue(((restWatch.OldValue as FScheme.Value.List).Item[0] as FScheme.Value.List).Item.IsEmpty);
-
-            Assert.Inconclusive("FScheme");
+            Assert.IsTrue(restWatch.OldValue.IsCollection);
+            Assert.IsTrue(restWatch.OldValue.GetElements()[0].IsCollection);
+            Assert.IsFalse(restWatch.OldValue.GetElements()[0].GetElements().Any());
         }
 
         //[Test]
