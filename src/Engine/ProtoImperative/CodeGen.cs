@@ -162,6 +162,15 @@ namespace ProtoImperative
             if (ProtoCore.DSASM.Constants.kGlobalScope == globalProcIndex && !isEntrySet)
             {
                 isEntrySet = true;
+                if (ProtoCore.DSASM.Constants.kInvalidIndex != core.newEntryPoint && core.newEntryPoint < pc)
+                {
+                    codeBlock.instrStream.entrypoint = core.newEntryPoint;
+                    core.SetNewEntryPoint(ProtoCore.DSASM.Constants.kInvalidIndex);
+                }
+                else
+                {
+                    codeBlock.instrStream.entrypoint = pc;
+                }
                 codeBlock.instrStream.entrypoint = pc;
             }
         }
