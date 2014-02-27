@@ -42,7 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractDisposeTracert.cs" />
     <Compile Include="ClassFunctionality.cs" />
+    <Compile Include="DisposeTracer.cs" />
     <Compile Include="Minimal.cs" />
     <Compile Include="MinimalTraceTargets.cs" />
     <Compile Include="TestNamespaceConflict.cs" />

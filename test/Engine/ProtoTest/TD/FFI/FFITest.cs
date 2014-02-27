@@ -2838,11 +2838,9 @@ class Math
         public void T020_Sample_Test()
         {
             string code = @"
-import (Vector from ""ProtoGeometry.dll"");
-	vec =  Vector.ByCoordinates(3.0,4.0,0.0); 
-	vec_X = vec.get_X(); 
-	vec_Y = vec.get_Y();
-	vec_Z = vec.get_Z();
+import (""FFITarget.dll"");
+	vec =  ClassFunctionality.ClassFunctionality(3,4,0); 
+	o = vec.Int
 	
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2956,5 +2954,26 @@ twice_arr = dummy.Twice(arr);
             object[] Expectedresult2 = { 0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0, 20.0 };
             thisTest.Verify("twice_arr", Expectedresult2, 0);
         }
+    
+
+        [Test]
+        public void T023_MethodOverload()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+cf1 = ClassFunctionality.ClassFunctionality(1);
+cf2 = ClassFunctionality.ClassFunctionality(2);
+i = 3;
+
+o1 = cf1.OverloadedAdd(cf2);
+o2 = cf1.OverloadedAdd(i);
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("o1", 3);
+            thisTest.Verify("o2", 4);
+
+
+        }
+    
     }
 }
