@@ -121,7 +121,11 @@ namespace DSIronPythonNode
         {
             var editWindow = new ScriptEditorWindow();
             editWindow.Initialize(GUID, "ScriptContent", Script);
-            editWindow.ShowDialog();
+            bool? acceptChanged = editWindow.ShowDialog();
+            if (acceptChanged.HasValue && acceptChanged.Value)
+            {
+                this.RequiresRecalc = true;
+            }
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(
