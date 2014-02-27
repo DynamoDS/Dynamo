@@ -170,6 +170,59 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestCreateDummyNode00()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                XmlElement dummy = MigrationManager.CreateDummyNode(null, 1, 2);
+            });
+        }
+
+        [Test]
+        public void TestCreateDummyNode01()
+        {
+            Assert.Throws<ArgumentException>(() =>
+            {
+                XmlElement srcElement = xmlDocument.CreateElement("OldNamespace.OldClass");
+                XmlElement dummy = MigrationManager.CreateDummyNode(srcElement, -1, 2);
+            });
+        }
+
+        [Test]
+        public void TestCreateDummyNode02()
+        {
+            Assert.Throws<ArgumentException>(() =>
+            {
+                XmlElement srcElement = xmlDocument.CreateElement("OldNamespace.OldClass");
+                XmlElement dummy = MigrationManager.CreateDummyNode(srcElement, 2, -1);
+            });
+        }
+
+        [Test]
+        public void TestCreateDummyNode03()
+        {
+            XmlElement srcElement = xmlDocument.CreateElement("OldNamespace.OldClass");
+            srcElement.SetAttribute("type", srcElement.Name);
+            srcElement.SetAttribute("a", "1");
+            srcElement.SetAttribute("b", "2");
+            srcElement.SetAttribute("c", "3");
+
+            XmlElement dummy = MigrationManager.CreateDummyNode(srcElement, 6, 8);
+
+            // Ensure existing attributes are retained.
+            var attribs = dummy.Attributes;
+            Assert.AreEqual("1", attribs["a"].Value);
+            Assert.AreEqual("2", attribs["b"].Value);
+            Assert.AreEqual("3", attribs["c"].Value);
+
+            Assert.AreEqual("DSCoreNodesUI.DummyNode", dummy.Name);
+            Assert.AreEqual("DSCoreNodesUI.DummyNode", attribs["type"].Value);
+            Assert.AreEqual("OldNamespace.OldClass", attribs["legacyNodeName"].Value);
+            Assert.AreEqual("6", attribs["inputCount"].Value);
+            Assert.AreEqual("8", attribs["outputCount"].Value);
+        }
+
+        [Test]
         public void NodeMigrationData00()
         {
             // Should have a default list that is empty.
