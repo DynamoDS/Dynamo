@@ -47,7 +47,7 @@ namespace Dynamo.Nodes
             set
             {
                 _min = value;
-                if (_min < Value)
+                if (_min > Value)
                     Value = _min;
                 RaisePropertyChanged("Min");
             }
@@ -65,7 +65,8 @@ namespace Dynamo.Nodes
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 MinWidth = 150,
-                TickPlacement = TickPlacement.None
+                TickPlacement = TickPlacement.None,
+                Value = Value
             };
 
             tbSlider.PreviewMouseUp += delegate
@@ -81,7 +82,7 @@ namespace Dynamo.Nodes
             };
 
             // input value textbox
-            var valtb = new DynamoTextBox
+            var valtb = new DynamoTextBox(SerializeValue())
             {
                 Width = double.NaN,
                 Margin = new Thickness(0, 0, 10, 0)
