@@ -759,8 +759,10 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol("list"))
-                .Item.Invoke(args);
+            //return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol("list"))
+            //    .Item.Invoke(args);
+
+            throw new NotImplementedException("FSchemeEnvironment has been removed.");
         }
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]

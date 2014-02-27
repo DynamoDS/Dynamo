@@ -51,12 +51,10 @@ namespace Dynamo.Tests
         protected void StartDynamo()
         {
             ////create a new instance of the ViewModel
-            //Controller = new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), new PreferenceSettings())
-            //{
-            //    Testing = true
-            //};
-
-            Assert.Inconclusive("FScheme");
+            Controller = new DynamoController(typeof(DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), new PreferenceSettings())
+            {
+                Testing = true
+            };
         }
 
         /// <summary>
@@ -66,12 +64,10 @@ namespace Dynamo.Tests
         protected void StartDynamo(IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences)
         {
             //create a new instance of the ViewModel
-            //Controller = new DynamoController(new ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE, updateManager, watchHandler, preferences)
-            //{
-            //    Testing = true
-            //};
-
-            Assert.Inconclusive("FScheme");
+            Controller = new DynamoController(typeof(DynamoViewModel), Context.NONE, updateManager, watchHandler, preferences)
+            {
+                Testing = true
+            };
         }
 
         /// <summary>
