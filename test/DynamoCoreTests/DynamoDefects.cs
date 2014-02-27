@@ -104,16 +104,14 @@ namespace Dynamo.Tests
         [Test]
         public void Defect_MAGN_1206()
         {
-            ////Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1206
-            //DynamoModel model = Controller.DynamoModel;
-            //string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1206.dyn");
-            //model.Open(openPath);
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1206
+            DynamoModel model = Controller.DynamoModel;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1206.dyn");
+            model.Open(openPath);
 
-            //dynSettings.Controller.RunExpression(null);
-            //var add = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Addition>("ccb2eda9-0966-4ab8-a186-0d5f844559c1");
-            //Assert.AreEqual(20, add.OldValue.GetDoubleFromFSchemeValue());
-
-            Assert.Inconclusive("Fscheme");
+            dynSettings.Controller.RunExpression(null);
+            var add = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Addition>("ccb2eda9-0966-4ab8-a186-0d5f844559c1");
+            Assert.AreEqual(20, add.OldValue.Data);
         }
 
     }

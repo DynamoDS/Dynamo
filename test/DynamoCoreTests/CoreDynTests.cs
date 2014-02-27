@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -94,94 +95,58 @@ namespace Dynamo.Tests
         [Test]
         public void Sequence()
         {
-            //var model = Controller.DynamoModel;
+            var model = Controller.DynamoModel;
 
-            //string openPath = Path.Combine(GetTestDirectory(), @"core\sequence\sequence.dyn");
-            //model.Open(openPath);
+            string openPath = Path.Combine(GetTestDirectory(), @"core\sequence\sequence.dyn");
+            model.Open(openPath);
 
-            //// check all the nodes and connectors are loaded
-            //Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
-            //Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
 
-            //// run the expression
-            //dynSettings.Controller.RunExpression(null);
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
 
-            //// wait for the expression to complete
-            //Thread.Sleep(500);
+            // wait for the expression to complete
+            Thread.Sleep(500);
 
-            //// check the output values are correctly computed
-            //var watchNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-            //Assert.IsNotNull(watchNode);
+            // check the output values are correctly computed
+            var watchNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            Assert.IsNotNull(watchNode);
 
-            //// 50 elements between -1 and 1
-            //Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode.OldValue);
-            //var list = (watchNode.OldValue as FScheme.Value.List).Item;
+            //TODO: cannot finish test until migration is completed for Sequence and Formula nodes
+            Assert.Inconclusive("TODO: What is the expected result?");
 
-            //Assert.AreEqual(50, list.Count());
-            //list.ToList().ForEach(x =>
-            //    {
-            //        Assert.IsAssignableFrom(typeof(FScheme.Value.Number), x);
-            //        var val = (x as FScheme.Value.Number).Item;
-            //        Assert.IsTrue((val < 1.0));
-            //        Assert.IsTrue((val > -1.0));
-            //    });
-
-            Assert.Inconclusive("FScheme");
-
+            AssertPreviewValue(watchNode.GUID.ToString(), new int[]{ });
         }
 
         [Test]
         public void Sorting()
         {
-            //var model = Controller.DynamoModel;
-            //var examplePath = Path.Combine(GetTestDirectory(), @"core\sorting\");
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\sorting\");
 
-            //string openPath = Path.Combine(examplePath, "sorting.dyn");
-            //model.Open(openPath);
+            string openPath = Path.Combine(examplePath, "sorting.dyn");
+            model.Open(openPath);
 
-            //// check all the nodes and connectors are loaded
-            //Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
-            //Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
 
-            //// run the expression
-            //dynSettings.Controller.RunExpression(null);
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
 
-            //// wait for the expression to complete
-            //Thread.Sleep(500);
+            // wait for the expression to complete
+            Thread.Sleep(500);
 
-            //// check the output values are correctly computed
-            //var watchNode1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("d8ee9c7c-c456-4a38-a5d8-07eca624ebfe");
-            //var watchNode2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("c966ac1d-5caa-4cfe-bb0c-f6db9e5697c4");
-            //Assert.IsNotNull(watchNode1);
-            //Assert.IsNotNull(watchNode2);
+            // check the output values are correctly computed
+            var watchNode1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("d8ee9c7c-c456-4a38-a5d8-07eca624ebfe");
+            var watchNode2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("c966ac1d-5caa-4cfe-bb0c-f6db9e5697c4");
+            Assert.IsNotNull(watchNode1);
+            Assert.IsNotNull(watchNode2);
 
-            //// odd numbers between 0 and 5
-            //Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode1.OldValue);
-            //Assert.IsAssignableFrom(typeof(FScheme.Value.List), watchNode2.OldValue);
-            //var list1 =
-            //    (watchNode1.OldValue as FScheme.Value.List).Item.Select(x => (x as FScheme.Value.String).Item).ToList();
-            //var list2 =
-            //    (watchNode2.OldValue as FScheme.Value.List).Item.Select(x => (x as FScheme.Value.String).Item).ToList();
-
-            //Assert.AreEqual(5, list1.Count);
-            //Assert.AreEqual(5, list2.Count);
-
-            //var values = new List<string> {"aaaaa", "bbb", "aa", "c", "dddd"};
-
-            //values.Sort(String.Compare);
-            //for (var i = 0; i < 5; i++)
-            //{
-            //    Assert.AreEqual(list1[i], values[i]);
-            //}
-
-            //values.Sort((e1, e2) => e1.Count().CompareTo(e2.Count()));
-            //for (var i = 0; i < 5; i++)
-            //{
-            //    Assert.AreEqual(list2[i], values[i]);
-            //}
-
-            Assert.Inconclusive("FScheme");
-
+            AssertPreviewValue(watchNode1.GUID.ToString(), new List<string> { "aa", "aaaaa", "bbb", "c", "dddd" });
+            AssertPreviewValue(watchNode2.GUID.ToString(), new List<string> { "c", "aa", "bbb", "dddd", "aaaaa" });
         }
 
         [Test]
@@ -374,135 +339,32 @@ namespace Dynamo.Tests
         [Test]
         public void Repeat()
         {
-            //var model = dynSettings.Controller.DynamoModel;
-            //var examplePath = Path.Combine(GetTestDirectory(), @"core");
-            //string openPath = Path.Combine(examplePath, "RepeatTest.dyn");
+            var model = dynSettings.Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core");
+            string openPath = Path.Combine(examplePath, "RepeatTest.dyn");
 
-            ////open and run the expression
-            //model.Open(openPath);
-            //dynSettings.Controller.RunExpression(null);
+            //open and run the expression
+            model.Open(openPath);
+            dynSettings.Controller.RunExpression(null);
 
-            //var watch = (Watch)dynSettings.Controller.DynamoModel.Nodes.First(x => x is Watch);
-            //FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
-            //Assert.AreEqual(5, listWatchVal.Length);
+            var watch = (Watch)dynSettings.Controller.DynamoModel.Nodes.First(x => x is Watch);
+            var watchData = watch.GetValue(0);
+            Assert.IsTrue(watchData.IsCollection);
+            Assert.AreEqual(5, watchData.GetElements().Count);
 
-            ////change the value of the list
-            //var numNode = (DoubleInput) Controller.DynamoModel.Nodes.Last(x => x is DoubleInput);
-            //numNode.Value = "3";
-            //dynSettings.Controller.RunExpression(null);
-            //Thread.Sleep(300);
+            //change the value of the list
+            var numNode = (DoubleInput)Controller.DynamoModel.Nodes.Last(x => x is DoubleInput);
+            numNode.Value = "3";
+            dynSettings.Controller.RunExpression(null);
+            Thread.Sleep(300);
 
-            //listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
-            //Assert.AreEqual(3, listWatchVal.Length);
+            watchData = watch.GetValue(0);
+            Assert.IsTrue(watchData.IsCollection);
+            Assert.AreEqual(3, watchData.GetElements().Count);
 
-            ////test the negative case to make sure it throws an error
-            //numNode.Value = "-1";
-            //Assert.Throws<AssertionException>(() => dynSettings.Controller.RunExpression(null));
-
-            Assert.Inconclusive("FScheme");
-
-        }
-
-        [Test]
-        public void SliceList()
-        {
-            //dynSettings.Controller.DynamoModel.CreateNode(0, 0, "Partition List");
-
-            ////Create a List
-            ////For a list of 0..20, this will have 21 elements
-            ////Slicing by 5 should return 6 lists, the last containing one element
-            //var list = Utils.ToFSharpList(Enumerable.Range(0, 21).Select(x => FScheme.Value.NewNumber(x)));
-
-            //var sliceNode = (Slice)dynSettings.Controller.DynamoModel.Nodes.First(x => x is Slice);
-            //var args = FSharpList<FScheme.Value>.Empty;
-            //args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
-            //args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
-            //var res = sliceNode.Evaluate(args);
-
-            ////confirm we have a list
-            //Assert.IsTrue(res.IsList);
-
-            ////confirm the correct number of sublists
-            //Assert.AreEqual(5, ((FScheme.Value.List)res).Item.Count());
-
-            ////test if you pass in an empty list
-            ////should return just one list - the original
-            //args = FSharpList<FScheme.Value>.Empty;
-            //args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
-            //args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(FSharpList<FScheme.Value>.Empty), args);
-            //res = sliceNode.Evaluate(args);
-            //Assert.AreEqual(0, ((FScheme.Value.List)res).Item.Count());
-
-            ////test if you pass in a list wwith less elements than the
-            ////slice, you should just get back the same list
-            //list = Utils.ToFSharpList(Enumerable.Range(0, 1).Select(x => FScheme.Value.NewNumber(x)));
-            //args = FSharpList<FScheme.Value>.Empty;
-            //args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
-            //args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
-            //res = sliceNode.Evaluate(args);
-            //Assert.AreEqual(1, ((FScheme.Value.List)res).Item.Count());
-
-            Assert.Inconclusive("FScheme");
-        }
-
-        [Test]
-        public void Diagonals()
-        {
-            //var model = dynSettings.Controller.DynamoModel;
-
-            ////0   1   2   3   4
-            ////5   6   7   8   9
-            ////10  11  12  13  14
-            ////15  16  17  18  19
-          
-            ////diagonal left
-            ////should yield the following sublists
-            ////0
-            ////1,5
-            ////2,6,10
-            ////3,7,11,15
-            ////4,8,12,16
-            ////9,13,17
-            ////14,18
-            ////19
-
-            //var list = Utils.ToFSharpList(Enumerable.Range(0, 20).Select(x => FScheme.Value.NewNumber(x)));
-
-            //model.CreateNode(0, 0, "Diagonal Left List");
-
-            //var leftNode = (DiagonalLeftList)dynSettings.Controller.DynamoModel.Nodes.First(x => x is DiagonalLeftList);
-            //var args = FSharpList<FScheme.Value>.Empty;
-            //args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
-            //args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
-            //var res = leftNode.Evaluate(args);
-
-            //Assert.AreEqual(8, ((FScheme.Value.List)res).Item.Count());
-
-            //model.Clear(null);
-
-            ////diagonal right
-            ////diagonal left
-            ////should yield the following sublists
-            ////15
-            ////10,16
-            ////5,11,17
-            ////0,6,12,18
-            ////1,7,13,19
-            ////2,8,14
-            ////3,9
-            ////4
-
-            //model.CreateNode(0, 0, "Diagonal Right List");
-
-            //var rightNode = (DiagonalRightList)dynSettings.Controller.DynamoModel.Nodes.First(x => x is DiagonalRightList);
-            //args = FSharpList<FScheme.Value>.Empty;
-            //args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
-            //args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
-            //res = rightNode.Evaluate(args);
-
-            //Assert.AreEqual(8, ((FScheme.Value.List)res).Item.Count());
-
-            Assert.Inconclusive("FScheme");
+            //test the negative case to make sure it throws an error
+            numNode.Value = "-1";
+            Assert.Throws<AssertionException>(() => dynSettings.Controller.RunExpression(null));
         }
 
         [Test]
@@ -526,61 +388,57 @@ namespace Dynamo.Tests
         [Test]
         public void UsingDefaultValue()
         {
-            //var model = dynSettings.Controller.DynamoModel;
-            //var examplePath = Path.Combine(GetTestDirectory(), @"core\default_values");
+            var model = dynSettings.Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\default_values");
 
-            //string openPath = Path.Combine(examplePath, "take-every-default.dyn");
-            //RunModel(openPath);
+            string openPath = Path.Combine(examplePath, "take-every-default.dyn");
+            RunModel(openPath);
 
-            //var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("360f3b50-5f27-460a-a57a-bb6338064d98");
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("360f3b50-5f27-460a-a57a-bb6338064d98");
 
-            //var oldVal = watch.OldValue;
-            //Assert.IsNotNull(oldVal);
-            //Assert.IsTrue(oldVal.IsList);
+            var oldVal = watch.OldValue;
+            Assert.IsNotNull(oldVal.Data);
+            Assert.IsTrue(oldVal.IsCollection);
 
-            //// Pretend we never ran
-            //model.Nodes.ForEach(
-            //    x =>
-            //    {
-            //        x.RequiresRecalc = true;
-            //        x.ResetOldValue();
-            //    });
+            // Pretend we never ran
+            model.Nodes.ForEach(
+                x =>
+                {
+                    x.RequiresRecalc = true;
+                    x.ResetOldValue();
+                });
 
-            //// Make sure results are still consistent
-            //dynSettings.Controller.RunExpression(null);
-            
-            //var newVal = watch.OldValue;
-            //Assert.IsNotNull(newVal);
-            //Assert.IsTrue(newVal.IsList);
+            // Make sure results are still consistent
+            dynSettings.Controller.RunExpression(null);
 
-            //Assert.IsTrue(oldVal.Print() == newVal.Print());
+            var newVal = watch.OldValue;
+            Assert.IsNotNull(newVal.Data);
+            Assert.IsTrue(newVal.IsCollection);
 
-            Assert.Inconclusive("FScheme");
+            Assert.AreEqual(oldVal, newVal);
         }
 
         [Test]
         public void Formula()
         {
-            //var model = dynSettings.Controller.DynamoModel;
-            //var exPath = Path.Combine(GetTestDirectory(), @"core\formula");
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\formula");
 
-            //model.Open(Path.Combine(exPath, "formula-test.dyn"));
+            model.Open(Path.Combine(exPath, "formula-test.dyn"));
 
-            //var watches = new[]
-            //{
-            //    "2a8f6086-dd36-49f6-b9c1-dfd5dbc683ea", 
-            //    "226f0d3a-7578-46f8-9f60-9fc24dd82c48",
-            //    "af0ccd4f-9fae-4f66-85eb-e5d58eb15fd8"
-            //}.Select(guid => model.CurrentWorkspace.NodeFromWorkspace<Watch>(guid));
+            var watches = new[]
+            {
+                "2a8f6086-dd36-49f6-b9c1-dfd5dbc683ea", 
+                "226f0d3a-7578-46f8-9f60-9fc24dd82c48",
+                "af0ccd4f-9fae-4f66-85eb-e5d58eb15fd8"
+            }.Select(guid => model.CurrentWorkspace.NodeFromWorkspace<Watch>(guid));
 
-            //dynSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
-            //foreach (var watch in watches)
-            //{
-            //    Assert.AreEqual((watch.OldValue as FScheme.Value.Number).Item, 19);   
-            //}
-
-            Assert.Inconclusive("FScheme");
+            foreach (var watch in watches)
+            {
+                Assert.AreEqual(19, watch.OldValue.Data);
+            }
         }
 
         [Test]
@@ -620,25 +478,23 @@ namespace Dynamo.Tests
         [Test]
         public void PerformAllNode()
         {
-            //var model = dynSettings.Controller.DynamoModel;
-            //var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 
-            //model.Open(Path.Combine(exPath, @"begin-test.dyn"));
+            model.Open(Path.Combine(exPath, @"begin-test.dyn"));
 
-            //var textAndFileName = @"test.txt";
+            const string textAndFileName = @"test.txt";
 
-            //model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>().Value = textAndFileName;
+            model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>().Value = textAndFileName;
 
-            //dynSettings.Controller.RunExpression();
+            dynSettings.Controller.RunExpression();
 
-            //File.Delete(textAndFileName);
+            File.Delete(textAndFileName);
 
-            //var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
+            var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
 
-            //Assert.IsAssignableFrom<FScheme.Value.String>(watchValue);
-            //Assert.AreEqual(textAndFileName, (watchValue as FScheme.Value.String).Item);
-
-            Assert.Inconclusive("FScheme");
+            Assert.IsAssignableFrom<string>(watchValue.Data);
+            Assert.AreEqual(textAndFileName, watchValue.Data);
         }
 
         [Test]

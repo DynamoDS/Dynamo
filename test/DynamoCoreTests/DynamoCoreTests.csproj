@@ -80,7 +80,6 @@
     <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WorkspaceHeaderTests.cs" />
     <Compile Include="WorkspaceSaving.cs" />
-    <Compile Include="PrintValue.cs" />
     <Compile Include="CoreTests.cs" />
     <Compile Include="CoreDynTests.cs" />
     <Compile Include="CustomNodes.cs" />
