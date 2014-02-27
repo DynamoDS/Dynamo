@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -123,6 +124,18 @@ namespace Dynamo.Nodes
             var a = ((FScheme.Value.Container)args[0]).Item;
 
             return FScheme.Value.NewContainer(Units.Length.FromFeet(getHeight(a)));
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 1, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 }
