@@ -236,7 +236,7 @@ namespace Dynamo.Nodes
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var node = AstFactory.BuildFunctionCall(
-                "Revit.Elements.ElementSelector",
+                "ElementSelector",
                 "ByElementId",
                 new List<AssociativeNode>
                 {
@@ -437,15 +437,15 @@ namespace Dynamo.Nodes
             if (geob is Curve)
             {
                 node = AstFactory.BuildFunctionCall(
-                    "Revit.GeometryObjects.GeometryObjectSelector",
+                    "GeometryObjectSelector",
                     "ByCurve", 
                     args);
             }
             else
             {
                 node = AstFactory.BuildFunctionCall(
-                    "Revit.GeometryObjects.GeometryObjectSelector",
-                    "ByReferenceId", 
+                    "GeometryObjectSelector",
+                    "ByReferenceStableRepresentation",
                     args);
             }
 
@@ -625,7 +625,7 @@ namespace Dynamo.Nodes
 
             var newInputs = els.Select(el => 
                 AstFactory.BuildFunctionCall(
-                "Revit.Elements.ElementSelector",
+                "ElementSelector",
                 "ByElementId",
                 new List<AssociativeNode>
                 {
