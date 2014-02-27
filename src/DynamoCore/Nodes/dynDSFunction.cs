@@ -13,6 +13,17 @@ using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 
 namespace Dynamo.Nodes
 {
+    public class UnresolvedFunctionException : Exception
+    {
+        public UnresolvedFunctionException(string functionName)
+            : base("Cannot find function: " + functionName)
+        {
+            this.FunctionName = functionName;
+        }
+
+        public string FunctionName { get; private set; }
+    }
+
     /// <summary>
     /// DesignScript function node. All functions from DesignScript share the
     /// same function node but internally have different procedure.
@@ -192,7 +203,7 @@ namespace Dynamo.Nodes
 
             if (null == Definition)
             {
-                throw new Exception("Cannot find function: " + function);
+                throw new UnresolvedFunctionException(function);
             }
 
             Initialize();
