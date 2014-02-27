@@ -525,6 +525,41 @@ namespace Dynamo.Nodes
 
             return FScheme.Value.NewContainer(result);
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Autodesk.DesignScript.Geometry.Solid.BySweep",
+                "Autodesk.DesignScript.Geometry.Solid.BySweep@" + 
+                "Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            PortId oldInPort3 = new PortId(newNodeId, 3, PortType.INPUT);
+
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            XmlElement connector3 = data.FindFirstConnector(oldInPort3);
+            data.RemoveFirstConnector(oldInPort1);
+
+            //connector1.RemoveAll();
+            data.ReconnectToPort(connector0, newInPort1);
+            data.ReconnectToPort(connector3, newInPort0);
+
+            return migrationData;
+        }
     }
 
     [NodeName("Extrude")]
@@ -599,6 +634,41 @@ namespace Dynamo.Nodes
             var result = GeometryCreationUtilities.CreateBlendGeometry(firstLoop, secondLoop, vertPairs);
 
             return FScheme.Value.NewContainer(result);
+        }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll",
+                "Solid.ByBlend", "Solid.ByBlend@Curve[][]");
+            migratedData.AppendNode(dsRevitNode);
+            string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
+
+            XmlElement listCreatNode = MigrationManager.CreateVarArgFunctionNode(
+                data.Document, "DSCoreNodes.dll", "List.Create", "List.Create@var[]", "2");
+            migratedData.AppendNode(listCreatNode);
+            string listCreatNodeId = MigrationManager.GetGuidFromXmlElement(listCreatNode);
+
+            //create and reconnect the connecters
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            PortId newInPort0 = new PortId(listCreatNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(listCreatNodeId, 1, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, newInPort0);
+            data.ReconnectToPort(connector1, newInPort1);
+            data.CreateConnector(listCreatNode, 0, dsRevitNode, 0);
+
+            return migratedData;
         }
     }
 
@@ -786,6 +856,18 @@ namespace Dynamo.Nodes
             Solid result = BooleanOperationsUtils.ExecuteBooleanOperation(firstSolid, secondSolid, opType);
 
             return FScheme.Value.NewContainer(result);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 2, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 
