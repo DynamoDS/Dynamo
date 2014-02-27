@@ -378,7 +378,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Ignore]
         public void ReduceAndRecursion()
         {
             var model = Controller.DynamoModel;

@@ -555,6 +555,19 @@ namespace Dynamo.Models
             return cloned;
         }
 
+        public static XmlElement CloneAndChangeName(XmlElement element, string type, string nickname)
+        {
+            XmlDocument document = element.OwnerDocument;
+            XmlElement cloned = document.CreateElement(type);
+
+            foreach (XmlAttribute attribute in element.Attributes)
+                cloned.SetAttribute(attribute.Name, attribute.Value);
+
+            cloned.SetAttribute("type", type);
+            cloned.SetAttribute("nickname", nickname);
+            return cloned;
+        }
+
         /// <summary>
         /// Call this method to create a dummy node, should a node failed to be 
         /// migrated. This results in a dummy node with a description of what the 
@@ -728,6 +741,35 @@ namespace Dynamo.Models
             }
 
             return null;
+        }
+
+        public void RemoveFirstConnector(PortId portId)
+        {
+            if (connectorRoot == null || (connectorRoot.ChildNodes == null))
+                return;
+
+            foreach (XmlNode node in connectorRoot.ChildNodes)
+            {
+                XmlElement connector = node as XmlElement;
+                XmlAttributeCollection attribs = connector.Attributes;
+
+                if (portId.PortType == PortType.INPUT)
+                {
+                    if (portId.OwningNode != attribs["end"].Value)
+                        continue;
+                    if (portId.PortIndex != Convert.ToInt16(attribs["end_index"].Value))
+                        continue;
+                }
+                else
+                {
+                    if (portId.OwningNode != attribs["start"].Value)
+                        continue;
+                    if (portId.PortIndex != Convert.ToInt16(attribs["start_index"].Value))
+                        continue;
+                }
+
+                connectorRoot.RemoveChild(connector);
+            }
         }
 
         /// <summary>
