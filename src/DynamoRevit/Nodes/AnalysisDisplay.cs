@@ -9,6 +9,8 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
+using RevitServices.Persistence;
+using System.Xml;
 
 namespace Dynamo.Nodes
 {
@@ -51,8 +53,8 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             Autodesk.Revit.DB.Analysis.SpatialFieldManager SpatialFieldManager;
-
-            SpatialFieldManager = Autodesk.Revit.DB.Analysis.SpatialFieldManager.GetSpatialFieldManager(dynRevitSettings.Doc.ActiveView);
+            var activeView = DocumentManager.GetInstance().CurrentUIDocument.ActiveView;
+            SpatialFieldManager = Autodesk.Revit.DB.Analysis.SpatialFieldManager.GetSpatialFieldManager(activeView);
             
             if (SpatialFieldManager != null)
             {
@@ -60,7 +62,7 @@ namespace Dynamo.Nodes
             }
             else
             {
-                SpatialFieldManager = Autodesk.Revit.DB.Analysis.SpatialFieldManager.CreateSpatialFieldManager(dynRevitSettings.Doc.ActiveView, (int) ((Value.Number)args[0]).Item );
+                SpatialFieldManager = Autodesk.Revit.DB.Analysis.SpatialFieldManager.CreateSpatialFieldManager(activeView, (int)((Value.Number)args[0]).Item);
             }
 
             return Value.NewContainer(SpatialFieldManager);
@@ -94,7 +96,7 @@ namespace Dynamo.Nodes
         {
             AnalysisDisplayStyle analysisDisplayStyle = null;
 
-            Document doc = dynRevitSettings.Doc.Document;
+            Document doc = DocumentManager.GetInstance().CurrentUIDocument.Document;
 
             // Look for an existing analysis display style with a specific name
             FilteredElementCollector collector1 = new FilteredElementCollector(doc);
@@ -174,9 +176,11 @@ namespace Dynamo.Nodes
             SpatialFieldManager = ((Value.Container)args[2]).Item as Autodesk.Revit.DB.Analysis.SpatialFieldManager;
 
             var reference = (args[3] as Value.Container).Item as Reference;
+
+            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
             var face = (reference == null) ?
                 ((args[3] as Value.Container).Item as Face) :
-                dynRevitSettings.Doc.Document.GetElement(reference).GetGeometryObjectFromReference(reference) as Face;
+                document.GetElement(reference).GetGeometryObjectFromReference(reference) as Face;
 
            
             //if we received a face instead of a reference
@@ -231,6 +235,48 @@ namespace Dynamo.Nodes
             PastResultIds.Add(idx);
 
             return Value.NewContainer(idx);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            //create the node itself
+            XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll",
+                "FaceAnalysisDisplay.ByViewFacePointsAndValues",
+                "FaceAnalysisDisplay.ByViewFacePointsAndValues@var,FaceReference,double[][],double[]");
+
+            migratedData.AppendNode(dsRevitNode);
+            string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
+
+            //create and reconnect the connecters
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
+
+            PortId oldInPort3 = new PortId(oldNodeId, 3, PortType.INPUT);
+            XmlElement connector3 = data.FindFirstConnector(oldInPort3);
+
+            PortId newInPort0 = new PortId(dsRevitNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(dsRevitNodeId, 1, PortType.INPUT);
+            PortId newInPort2 = new PortId(dsRevitNodeId, 2, PortType.INPUT);
+            PortId newInPort3 = new PortId(dsRevitNodeId, 3, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, newInPort3);
+            data.ReconnectToPort(connector1, newInPort2);
+            data.ReconnectToPort(connector2, newInPort0);
+            data.ReconnectToPort(connector3, newInPort1);
+
+            return migratedData;
         }
 
     }
@@ -316,6 +362,42 @@ namespace Dynamo.Nodes
             return Value.NewContainer(idx);
         }
 
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            //create the node itself
+            XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll",
+                "PointAnalysisDisplay.ByViewPointsAndValues",
+                "PointAnalysisDisplay.ByViewPointsAndValues@var,Point[],double[]");
+
+            migratedData.AppendNode(dsRevitNode);
+            string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
+
+            //create and reconnect the connecters
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
+
+            PortId newInPort0 = new PortId(dsRevitNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(dsRevitNodeId, 1, PortType.INPUT);
+            PortId newInPort2 = new PortId(dsRevitNodeId, 2, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, newInPort2);
+            data.ReconnectToPort(connector1, newInPort1);
+            data.ReconnectToPort(connector2, newInPort0);
+
+            return migratedData;
+        }
     }
 
     [NodeName("Display Analysis Vectors")]
@@ -401,6 +483,43 @@ namespace Dynamo.Nodes
 
             PastResultIds.Clear();
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            //create the node itself
+            XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll",
+                "VectorAnalysisDisplay.ByViewPointsAndVectorValues", 
+                "VectorAnalysisDisplay.ByViewPointsAndVectorValues@var,Point[],Vector[]");
+
+            migratedData.AppendNode(dsRevitNode);
+            string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
+
+            //create and reconnect the connecters
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
+
+            PortId newInPort0 = new PortId(dsRevitNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(dsRevitNodeId, 1, PortType.INPUT);
+            PortId newInPort2 = new PortId(dsRevitNodeId, 2, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, newInPort2);
+            data.ReconnectToPort(connector1, newInPort1);
+            data.ReconnectToPort(connector2, newInPort0);
+
+            return migratedData;
+        }
     }
 
     [NodeName("Display Analysis Curve")]
@@ -456,8 +575,7 @@ namespace Dynamo.Nodes
             Transform trf = Transform.Identity;
 
             //http://thebuildingcoder.typepad.com/blog/2012/09/sphere-creation-for-avf-and-filtering.html#3
-
-            var create = dynRevitSettings.Doc.Application.Application.Create;
+            var create = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create;
 
             Transform t = curve.ComputeDerivatives(0, true);
 
@@ -466,9 +584,9 @@ namespace Dynamo.Nodes
                 t.BasisX.CrossProduct(XYZ.BasisY).Normalize() : 
                 t.BasisX.CrossProduct(XYZ.BasisZ).Normalize();
             XYZ z = x.CrossProduct(y);
-
-            Autodesk.Revit.DB.Ellipse arc1 = dynRevitSettings.Revit.Application.Create.NewEllipse(t.Origin, .1, .1, y,z,-Math.PI, 0);
-            Autodesk.Revit.DB.Ellipse arc2 = dynRevitSettings.Revit.Application.Create.NewEllipse(t.Origin, .1, .1, y, z, 0, Math.PI);
+            var application = DocumentManager.GetInstance().CurrentUIApplication.Application;
+            Autodesk.Revit.DB.Ellipse arc1 = application.Create.NewEllipse(t.Origin, .1, .1, y, z, -Math.PI, 0);
+            Autodesk.Revit.DB.Ellipse arc2 = application.Create.NewEllipse(t.Origin, .1, .1, y, z, 0, Math.PI);
 
             var pathLoop = new Autodesk.Revit.DB.CurveLoop();
             pathLoop.Append(curve);

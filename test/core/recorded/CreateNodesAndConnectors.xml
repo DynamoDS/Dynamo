@@ -2,8 +2,8 @@
   <CreateNodeCommand NodeId="40e6c06b-aea9-45dc-a1a4-a06cee83db23" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <CreateNodeCommand NodeId="f653dc4f-24ab-4c45-a6b0-1a71f04db588" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <CreateNodeCommand NodeId="f63decb5-84f1-45b1-8b41-bb4ceb0dca70" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <CreateNodeCommand NodeId="11b01141-6d4d-4a9f-a946-147ddc7c3d2c" NodeName="Add" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <CreateNodeCommand NodeId="27025873-2ec8-4db9-b501-ed54e529c92e" NodeName="Multiply" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="11b01141-6d4d-4a9f-a946-147ddc7c3d2c" NodeName="+@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="27025873-2ec8-4db9-b501-ed54e529c92e" NodeName="*@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="40e6c06b-aea9-45dc-a1a4-a06cee83db23" Modifiers="0" />
   <DragSelectionCommand X="345" Y="199.6" DragOperation="0" />
   <DragSelectionCommand X="163" Y="88.6" DragOperation="1" />

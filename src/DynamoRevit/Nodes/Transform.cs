@@ -2,6 +2,8 @@
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
+using System.Xml;
+using System.Linq;
 
 namespace Dynamo.Nodes
 {
@@ -22,6 +24,13 @@ namespace Dynamo.Nodes
             Transform t = Transform.Identity;
 
             return Value.NewContainer(t);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "CoordinateSystem.Identity",
+                "CoordinateSystem.Identity");
         }
     }
 
@@ -56,6 +65,76 @@ namespace Dynamo.Nodes
             return Value.NewContainer(
                t
             );
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            //create the node itself
+            XmlElement coordinateNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(coordinateNode, "ProtoGeometry.dll",
+                "CoordinateSystem.ByOriginVectors",
+                "CoordinateSystem.ByOriginVectors@Autodesk.DesignScript.Geometry.Point," + 
+                "Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector," + 
+                "Autodesk.DesignScript.Geometry.Vector");
+
+            migratedData.AppendNode(coordinateNode);
+            string coordinateNodeId = MigrationManager.GetGuidFromXmlElement(coordinateNode);
+
+            XmlElement asVectorNode0 = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "Point.AsVector", "Point.AsVector");
+            migratedData.AppendNode(asVectorNode0);
+            string asVectorNode0Id = MigrationManager.GetGuidFromXmlElement(asVectorNode0);
+
+            XmlElement asVectorNode1 = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "Point.AsVector", "Point.AsVector");
+            migratedData.AppendNode(asVectorNode1);
+            string asVectorNode1Id = MigrationManager.GetGuidFromXmlElement(asVectorNode1);
+
+            XmlElement vectorCrossNode = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "Vector.Cross", "Vector.Cross@Vector");
+            migratedData.AppendNode(vectorCrossNode);
+            string vectorCrossNodeId = MigrationManager.GetGuidFromXmlElement(vectorCrossNode);
+
+            XmlElement vectorReverseNode = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "Vector.Reverse", "Vector.Reverse");
+            migratedData.AppendNode(vectorReverseNode);
+            string vectorReverseNodeId = MigrationManager.GetGuidFromXmlElement(vectorReverseNode);
+
+            //create and reconnect the connecters
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
+
+            PortId newInPort0 = new PortId(coordinateNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(coordinateNodeId, 1, PortType.INPUT);
+            PortId newInPort2 = new PortId(coordinateNodeId, 2, PortType.INPUT);
+            PortId newInPort3 = new PortId(coordinateNodeId, 3, PortType.INPUT);
+
+            PortId newInPort4 = new PortId(asVectorNode0Id, 0, PortType.INPUT);
+            PortId newInPort5 = new PortId(asVectorNode1Id, 0, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, newInPort0);
+            data.ReconnectToPort(connector1, newInPort4);
+            data.ReconnectToPort(connector2, newInPort5);
+
+            data.CreateConnector(asVectorNode0, 0, vectorCrossNode, 0);
+            data.CreateConnector(asVectorNode1, 0, vectorCrossNode, 1);
+            data.CreateConnector(vectorCrossNode, 0, vectorReverseNode, 0);
+            data.CreateConnector(vectorReverseNode, 0, coordinateNode, 1);
+            data.CreateConnector(asVectorNode1, 0, coordinateNode, 2);
+            data.CreateConnector(asVectorNode0, 0, coordinateNode, 3);
+
+            return migratedData;
         }
     }
 
@@ -257,6 +336,12 @@ namespace Dynamo.Nodes
             return new XYZ(xTemp, yTemp, zTemp);
         }
 
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Geometry.Translate",
+                "Geometry.Translate@Autodesk.DesignScript.Geometry.Vector");
+        }
     }
 
     [NodeName("Multiply Transform")]
@@ -283,6 +368,12 @@ namespace Dynamo.Nodes
             return Value.NewContainer(t);
         }
 
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "CoordinateSystem.PostMultiplyBy",
+                "CoordinateSystem.PostMultiplyBy@CoordinateSystem");
+        }
     }
 
     [NodeName("Transform to Curve Point")]
@@ -347,6 +438,12 @@ namespace Dynamo.Nodes
 
             return Value.NewContainer(t);
 
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "CoordinateSystem.Inverse", "CoordinateSystem.Inverse");
         }
     }
 

@@ -289,6 +289,13 @@ namespace Dynamo.Nodes
 
             return FScheme.Value.NewContainer(mc);
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSRevitNodes.dll", 
+                "ModelCurve.ByPlanarCurve", "ModelCurve.ByPlanarCurve@Curve");
+        }
     }
 
     [NodeName("Model Curves From Curve Loop")]
@@ -362,9 +369,9 @@ namespace Dynamo.Nodes
                     if (needsRemake)
                     {
                         if (sp == null)
-                            sp = dynRevitSettings.Doc.Document.IsFamilyDocument ?
-                                dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(plane) :
-                                dynRevitSettings.Doc.Document.Create.NewSketchPlane(plane);
+                            sp = this.UIDocument.Document.IsFamilyDocument ?
+                                this.UIDocument.Document.FamilyCreate.NewSketchPlane(plane) :
+                                this.UIDocument.Document.Create.NewSketchPlane(plane);
                         if (dynRevitUtils.GetPlaneFromCurve(listCurves[index], true) == null)
                         {
 
@@ -396,9 +403,9 @@ namespace Dynamo.Nodes
                 else
                 {
                     if (sp == null)
-                        sp = dynRevitSettings.Doc.Document.IsFamilyDocument ?
-                                dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(plane) :
-                                dynRevitSettings.Doc.Document.Create.NewSketchPlane(plane);
+                        sp = this.UIDocument.Document.IsFamilyDocument ?
+                                this.UIDocument.Document.FamilyCreate.NewSketchPlane(plane) :
+                                this.UIDocument.Document.Create.NewSketchPlane(plane);
 
                     if (dynRevitUtils.GetPlaneFromCurve(listCurves[index], true) == null)
                     {

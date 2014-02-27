@@ -4,6 +4,7 @@ using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 
 namespace Dynamo.Nodes
 {
@@ -30,10 +31,16 @@ namespace Dynamo.Nodes
                 throw new Exception("Not enough reference points to make a curve.");
             }
 
-            var ns = dynRevitSettings.Revit.Application.Create.NewNurbSpline(
+            var ns = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewNurbSpline(
                     pts, Enumerable.Repeat(1.0, pts.Count).ToList());
 
             return FScheme.Value.NewContainer(ns);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "NurbsCurve.ByPoints", "NurbsCurve.ByPoints@Point[]");
         }
     }
 }
