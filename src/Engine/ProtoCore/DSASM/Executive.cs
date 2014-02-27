@@ -375,6 +375,11 @@ namespace ProtoCore.DSASM
                         {
                             SetupGraphEntryPoint(pc);
                         }
+
+                        if (core.Options.ExecuteSSA)
+                        {
+                            ProtoCore.AssociativeEngine.Utils.SetFinalGraphNodeRuntimeDependents(Properties.executingGraphNode);
+                        }
                     }
                 }
             }
