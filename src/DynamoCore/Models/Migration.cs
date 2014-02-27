@@ -54,6 +54,18 @@ namespace Dynamo.Models
     {
         private static MigrationManager _instance;
 
+        private static int codeBlockInputIndex = 0;
+
+        public static int GetNextCodeBlockInputIndex()
+        {
+            return codeBlockInputIndex++;
+        }
+
+        public static void ResetCodeBlockInputIndex()
+        {
+            codeBlockInputIndex = 0;
+        }
+
         /// <summary>
         /// The singleton instance property.
         /// </summary>
