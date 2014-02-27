@@ -101,25 +101,35 @@ namespace Revit.Elements
         {
             if (curve == null)
             {
-                throw new ArgumentNullException("curves");
+                throw new ArgumentNullException("curve");
+            }
+
+            if (divisions < 2)
+            {
+                throw new Exception("The number of divisions must be greater than 2!");
             }
 
             return new DividedPath(new[] { curve }, divisions);
         }
 
-        public static DividedPath ByCurvesAndDivisions(CurveReference[] curve, int divisions)
+        public static DividedPath ByCurvesAndDivisions(CurveReference[] curves, int divisions)
         {
-            if (curve == null)
+            if (curves == null)
             {
                 throw new ArgumentNullException("curves");
             }
 
-            if (curve.Any(x => x == null))
+            if (divisions < 2)
             {
-                throw new ArgumentNullException(String.Format("curves[{0}]",  Array.FindIndex(curve, x => x == null)) );
+                throw new Exception("The number of divisions must be greater than 2!");
             }
 
-            return new DividedPath(curve, divisions);
+            if (curves.Any(x => x == null))
+            {
+                throw new ArgumentNullException(String.Format("curves[{0}]",  Array.FindIndex(curves, x => x == null)) );
+            }
+
+            return new DividedPath(curves, divisions);
         }
 
         #endregion
