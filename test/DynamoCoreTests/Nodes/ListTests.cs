@@ -88,7 +88,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testConcatenateLists_normalInput.dyn");
             RunModel(testFilePath);
-            AssertPreviewValue("364b303f-8f0b-4964-b333-e937299c8352", new object[] { 9, 10, 20, 10, 20, 10, "a", "b", "a", "b" });
+            AssertPreviewValue("364b303f-8f0b-4964-b333-e937299c8352", new object[] { 10, 20, 10, 20, 10, "a", "b", "a", "b" });
 
         }
 
@@ -161,7 +161,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testDiagonaRightList_numberInput.dyn");
             RunModel(testFilePath);
-            AssertPreviewValue("e84bf89e-e7a0-427c-adae-adcd61646e4e", new int[][] { new int[] { 3 }, new int[] { 1, 4 }, new int[] { 2 } });
+            AssertPreviewValue("e84bf89e-e7a0-427c-adae-adcd61646e4e", new int[][] { new int[] { 5 }, new int[] { 3 }, new int[] { 1, 4 }, new int[] { 2 } });
 
         }
 
@@ -1842,7 +1842,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
 
-            AssertPreviewValue("58d35bfa-4435-44f0-a322-c6f7350f0220", new string[] { "Get", "From" });
+            AssertPreviewValue("58d35bfa-4435-44f0-a322-c6f7350f0220", new string[] { "Get", "From " });
         }
 
         [Test, Category("Not Migrated")]
@@ -2169,8 +2169,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4 + 1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3 + 1, model.CurrentWorkspace.Connectors.Count);
 
             Dictionary<int, object> validationData = new Dictionary<int, object>()
             {
@@ -2189,8 +2189,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(11 + 1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(12 + 1, model.CurrentWorkspace.Connectors.Count);
             
             Dictionary<int, object> validationData = new Dictionary<int, object>()
             {
@@ -2211,8 +2211,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(11 + 1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(12 + 1, model.CurrentWorkspace.Connectors.Count);
         }
         #endregion
 
