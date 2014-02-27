@@ -27,9 +27,9 @@ namespace ProtoTest.LiveRunner
         [SetUp]
         public void Setup()
         {
-            GraphToDSCompiler.GraphUtilities.PreloadAssembly(new List<string> { "ProtoGeometry.dll", "Math.dll" });
+            GraphToDSCompiler.GraphUtilities.PreloadAssembly(new List<string> { "ProtoGeometry.dll"});
             astLiveRunner = new ProtoScript.Runners.LiveRunner();
-            astLiveRunner.ResetVMAndResyncGraph(new List<string> { "ProtoGeometry.dll", "Math.dll" });
+            astLiveRunner.ResetVMAndResyncGraph(new List<string> { "ProtoGeometry.dll"});
         }
 
         [TearDown]
@@ -570,7 +570,6 @@ namespace ProtoTest.LiveRunner
 
             ///////////////////////////////////////////////////////////////////////////////
             libs = new List<string>();
-            libs.Add("Math.dll");
             libs.Add("ProtoGeometry.dll");
             liveRunner.ResetVMAndResyncGraph(libs);
 
@@ -629,42 +628,6 @@ namespace ProtoTest.LiveRunner
 
             mirror = liveRunner.InspectNodeValue("xval");
             Assert.IsTrue((double)mirror.GetData().Data == 10.0);
-
-
-            astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-
-            constructorCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-            constructorCall.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("Sin");
-            listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("90.0"));
-
-            constructorCall.FormalArguments = listArgs;
-
-            className = "Math";
-            inode = new ProtoCore.AST.AssociativeAST.IdentifierNode(className);
-
-            dotCall = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(inode, constructorCall, liveRunner.Core);
-            //==============================================
-            // Build the binary expression 
-            // p = Point.ByCoordinates(10,10,10)
-            //==============================================
-            stmt1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("m"),
-                dotCall,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt1);
-
-            // Instantiate GraphSyncData
-            addedList = new List<Subtree>();
-            addedList.Add(new Subtree(astList, System.Guid.NewGuid()));
-            syncData = new GraphSyncData(null, addedList, null);
-
-            liveRunner.UpdateGraph(syncData);
-
-
-            mirror = liveRunner.InspectNodeValue("m");
-            var res = (double)mirror.GetData().Data;
-            Assert.IsTrue(res == 1.0);
         }
 
         [Test]
@@ -740,7 +703,6 @@ namespace ProtoTest.LiveRunner
 
             ///////////////////////////////////////////////////////////////////////////////
             libs = new List<string>();
-            libs.Add("Math.dll");
             libs.Add("ProtoGeometry.dll");
             libMirrors = liveRunner.ResetVMAndImportLibrary(libs);
 
@@ -795,37 +757,6 @@ namespace ProtoTest.LiveRunner
 
             mirror = liveRunner.InspectNodeValue("xval");
             Assert.IsTrue((double)mirror.GetData().Data == 10.0);
-
-
-            astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-
-            constructorCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-            constructorCall.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("Sin");
-            listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("90.0"));
-
-            constructorCall.FormalArguments = listArgs;
-
-            className = "Math";
-            inode = new ProtoCore.AST.AssociativeAST.IdentifierNode(className);
-
-            dotCall = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(inode, constructorCall, liveRunner.Core);
-            //==============================================
-            // Build the binary expression 
-            // p = Point.ByCoordinates(10,10,10)
-            //==============================================
-            stmt1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                new ProtoCore.AST.AssociativeAST.IdentifierNode("m"),
-                dotCall,
-                ProtoCore.DSASM.Operator.assign);
-            astList.Add(stmt1);
-
-            cNode.Body = astList;
-            liveRunner.UpdateGraph(cNode);
-
-            mirror = liveRunner.InspectNodeValue("m");
-            var res = (double)mirror.GetData().Data;
-            Assert.IsTrue(res == 1.0);
         }
 
         [Test]
@@ -1703,7 +1634,7 @@ z=Point.ByCoordinates(y,a,a);
             for (int i = 0; i < shuffleCount; ++i)
             {
                 ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
-                liveRunner.ResetVMAndResyncGraph(new List<string> { "ProtoGeometry.dll", "Math.dll" });
+                liveRunner.ResetVMAndResyncGraph(new List<string> { "ProtoGeometry.dll"});
 
                 index = index.OrderBy(_ => randomGen.Next());
                 var added = index.Select(idx => CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
@@ -1884,7 +1815,7 @@ z=Point.ByCoordinates(y,a,a);
             List<string> codes = new List<string>() 
             {
                 "t = 1..2;",
-                "x = t; a = Math.Abs(x);",
+                "x = t; a = x;",
                 "z = a; pts = Point.ByCoordinates(z, 10, 2); ptsx = pts.X;"
             };
             List<Guid> guids = Enumerable.Range(0, codes.Count).Select(_ => System.Guid.NewGuid()).ToList();
