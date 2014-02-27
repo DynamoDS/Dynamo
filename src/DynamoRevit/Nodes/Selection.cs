@@ -618,6 +618,16 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectionText");
             }
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSFamilyInstanceSelection"));
+
+            return migrationData;
+        }
     }
 
     [NodeName("Select Divided Surface Families")]
@@ -710,6 +720,16 @@ namespace Dynamo.Nodes
                 _selectionText = value;
                 RaisePropertyChanged("SelectionText");
             }
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSDividedSurfaceFamiliesSelection"));
+
+            return migrationData;
         }
     }
 
@@ -804,6 +824,16 @@ namespace Dynamo.Nodes
             }
             catch { }
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSFaceSelection"));
+
+            return migrationData;
+        }
     }
 
     [NodeName("Select Edge")]
@@ -855,6 +885,16 @@ namespace Dynamo.Nodes
                     SelectedElement = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(_reference.ElementId);
             }
             catch { }
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSEdgeSelection"));
+
+            return migrationData;
         }
     }
 
@@ -910,7 +950,17 @@ namespace Dynamo.Nodes
                         SelectedElement = saved;
                 }
             }
-        }  
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSCurveElementSelection"));
+
+            return migrationData;
+        }
     }
 
     [NodeName("Select Elements")]
@@ -956,6 +1006,16 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectionText");
             }
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSModelElementsSelection"));
+
+            return migrationData;
+        }
     }
 
     [NodeName("Select Reference Point")]
@@ -985,6 +1045,16 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectionText");
             }
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSReferencePointSelection"));
+
+            return migrationData;
+        }
     }
 
     [NodeName("Select Level")]
@@ -1013,6 +1083,16 @@ namespace Dynamo.Nodes
                 _selectionText = value;
                 RaisePropertyChanged("SelectionText");
             }
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSLevelSelection"));
+
+            return migrationData;
         }
     }
 
@@ -1044,6 +1124,16 @@ namespace Dynamo.Nodes
                 _selectionText = value;
                 RaisePropertyChanged("SelectionText");
             }
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSModelElementSelection"));
+
+            return migrationData;
         }
     }
 
@@ -1280,6 +1370,16 @@ namespace Dynamo.Nodes
                 _init = true;
             }
             catch { }
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSPointOnElementSelection"));
+
+            return migrationData;
         }
     }
 

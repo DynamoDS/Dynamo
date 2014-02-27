@@ -79,6 +79,19 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Converts the given string to all uppercase characters or all
+        ///     lowercase characters based on a boolean parameter.
+        /// </summary>
+        /// <param name="str">String to be made uppercase or lowercase.</param>
+        /// <param name="upper">
+        ///     True to convert to uppercase, false to convert to lowercase.
+        /// </param>
+        public static string StringCase(string str, bool upper)
+        {
+            return upper ? str.ToUpper() : str.ToLower();
+        }
+
+        /// <summary>
         ///     Retrieves a substring from the given string. The substring starts at the given
         ///     character position and has the given length.
         /// </summary>
@@ -259,7 +272,7 @@ namespace DSCore
             if (padChar.Length != 1)
                 throw new ArgumentException("padChar string must contain a single character.", "padChar");
 
-            var padHalf = (newWidth - str.Length)/2 + str.Length;
+            var padHalf = (newWidth - str.Length)/ 2 + str.Length;
 
             return str.PadLeft(padHalf, padChar[0]).PadRight(newWidth - padHalf, padChar[0]);
         }

@@ -9,12 +9,31 @@ using Autodesk.Revit.DB.Structure;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using RevitServices.Persistence;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
+using RevitServices.Persistence;
 
 namespace Dynamo.Nodes
 {
+    [NodeName("Adaptive Component by XYZs")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
+    [NodeDescription("Given a list of XYZs and a family type, creates an adaptive component at that location.")]
+    public class AdaptiveComponentByPoints : RevitTransactionNodeWithOneOutput
+    {
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+                "AdaptiveComponent.ByPoints", "AdaptiveComponent.ByPoints@Point[],FamilySymbol");
+        }
+
+    }
+
     [NodeName("Adaptive Component Batch by XYZs")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Given sets of points, create adaptive components at those location.")]
@@ -95,14 +114,15 @@ namespace Dynamo.Nodes
             ICollection<ElementId> ids = new List<ElementId>();
 
             if (instData.Any())
-            {    
-                if (DocumentManager.GetInstance().CurrentUIDocument.Document.IsFamilyDocument)
+            {
+                var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+                if (document.IsFamilyDocument)
                 {
-                    ids = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewFamilyInstances2(instData);
+                    ids = document.FamilyCreate.NewFamilyInstances2(instData);
                 }
                 else
                 {
-                    ids = DocumentManager.GetInstance().CurrentUIDocument.Document.Create.NewFamilyInstances2(instData);
+                    ids = document.Create.NewFamilyInstances2(instData);
                 }
                 if (ids.Count > 0)
                 {
@@ -186,12 +206,57 @@ namespace Dynamo.Nodes
             int i = 0;
             foreach (ElementId id in placePointIds)
             {
-                var point = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id) as ReferencePoint;
+                var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+                var point = document.GetElement(id) as ReferencePoint;
                 var pt = (XYZ) ((Value.Container) pts.ElementAt(i)).Item;
                 point.Position = pt;
                 i++;
             }
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+                "AdaptiveComponent.ByPoints", "AdaptiveComponent.ByPoints@Point[],FamilySymbol");
+        }
     }
 
+    [NodeName("Adaptive Component by UVs on Face")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
+    [NodeDescription("Given a list of XYZs and a family type, creates an adaptive component at that location on the face.")]
+    public class AdaptiveComponentByUvsOnFace : RevitTransactionNodeWithOneOutput
+    {
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+                "AdaptiveComponent.ByPointsOnFace",
+                "AdaptiveComponent.ByPointsOnFace@double[][],Face,FamilySymbol");
+        }
+    }
+
+    [NodeName("Adaptive Component by Parameter on Curve")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
+    [NodeDescription("Given a list of parameters and a family type, creates an adaptive component at that location on the curve.")]
+    public class AdaptiveComponentByParametersOnCurve : RevitTransactionNodeWithOneOutput
+    {
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            throw new NotImplementedException();
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+                "AdaptiveComponent.ByPointsOnCurve",
+                "AdaptiveComponent.ByPointsOnCurve@double[],Curve,FamilySymbol");
+        }
+    }
 }

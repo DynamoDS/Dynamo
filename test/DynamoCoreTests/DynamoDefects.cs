@@ -4,11 +4,17 @@ using Dynamo.Utilities;
 using Dynamo.Nodes;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
+using System.Text;
+using Dynamo.DSEngine;
+using ProtoCore.DSASM;
+using ProtoCore.Mirror;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class DynamoDefects : DynamoUnitTest
+    class DynamoDefects : DSEvaluationUnitTest
     {
         // Note: Pelase only add test cases those are related to defects.
 
@@ -17,14 +23,13 @@ namespace Dynamo.Tests
         {
             DynamoModel model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_110.dyn");
-            model.Open(openPath);
+            RunModel(openPath);
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {2,1},
+            };
 
-            dynSettings.Controller.RunExpression(null);
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("339dd778-8d2c-4ae2-9fdc-26c1572f8eb6");
-            FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(6, actual.Length);
-
-            Assert.AreEqual(1, actual[2].GetDoubleFromFSchemeValue());
+            SelectivelyAssertPreviewValues("339dd778-8d2c-4ae2-9fdc-26c1572f8eb6", validationData);
         }
 
         [Test]
@@ -32,16 +37,16 @@ namespace Dynamo.Tests
         {
             DynamoModel model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_942_Equal.dyn");
-            model.Open(openPath);
+            RunModel(openPath);
 
-            dynSettings.Controller.RunExpression(null);
-            var equal = model.CurrentWorkspace.NodeFromWorkspace<Map>("3806c656-56bd-4878-9082-b2d27644abd1");
-            FSharpList<FScheme.Value> actual = equal.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(11, actual.Length);
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,0},
+                {5,1},
+                {10,0},          
+            };
 
-            Assert.AreEqual(0, actual[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, actual[5].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(0, actual[10].GetDoubleFromFSchemeValue());
+            SelectivelyAssertPreviewValues("3806c656-56bd-4878-9082-b2d27644abd1", validationData);
         }
 
         [Test]
@@ -49,17 +54,17 @@ namespace Dynamo.Tests
         {
             DynamoModel model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_942_GreaterThan.dyn");
-            model.Open(openPath);
+            RunModel(openPath);
 
-            dynSettings.Controller.RunExpression(null);
-            var equal = model.CurrentWorkspace.NodeFromWorkspace<Map>("7ec8271d-be03-4d53-ae78-b94c4db484e1");
-            FSharpList<FScheme.Value> actual = equal.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(11, actual.Length);
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {0,0},
+                {1,0},
+                {7,1},    
+                {9,1},
+            };
 
-            Assert.AreEqual(0, actual[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(0, actual[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, actual[7].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, actual[9].GetDoubleFromFSchemeValue());
+            SelectivelyAssertPreviewValues("7ec8271d-be03-4d53-ae78-b94c4db484e1", validationData);
 
         }
 
@@ -68,39 +73,28 @@ namespace Dynamo.Tests
         {
             DynamoModel model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_942_GreaterThanOrEqual.dyn");
-            model.Open(openPath);
+            RunModel(openPath);
 
-            dynSettings.Controller.RunExpression(null);
-            var equal = model.CurrentWorkspace.NodeFromWorkspace<Map>("3806c656-56bd-4878-9082-b2d27644abd1");
-            FSharpList<FScheme.Value> actual = equal.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(11, actual.Length);
+            Dictionary<int, object> validationData = new Dictionary<int, object>()
+            {
+                {2,0},
+                {4,0},
+                {6,1},    
+                {8,1},
+            };
 
-            Assert.AreEqual(0, actual[2].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(0, actual[4].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, actual[6].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, actual[8].GetDoubleFromFSchemeValue());
+            SelectivelyAssertPreviewValues("3806c656-56bd-4878-9082-b2d27644abd1", validationData);
 
         }
-
-
+        
         [Test]
         public void Defect_MAGN_942_LessThan()
         {
             DynamoModel model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_942_LessThan.dyn");
-            model.Open(openPath);
+            RunModel(openPath);
 
-            dynSettings.Controller.RunExpression(null);
-            var equal = model.CurrentWorkspace.NodeFromWorkspace<Map>("7ec8271d-be03-4d53-ae78-b94c4db484e1");
-            FSharpList<FScheme.Value> actual = equal.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(5, actual.Length);
-
-            Assert.AreEqual(1, actual[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, actual[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, actual[2].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, actual[3].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, actual[4].GetDoubleFromFSchemeValue());
-
+            AssertPreviewValue("7ec8271d-be03-4d53-ae78-b94c4db484e1", new int[] { 1, 1, 1, 1, 1 });
         }
 
         [Test]
@@ -108,19 +102,10 @@ namespace Dynamo.Tests
         {
             DynamoModel model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_942_LessThanOrEqual.dyn");
-            model.Open(openPath);
+            RunModel(openPath);
 
-            dynSettings.Controller.RunExpression(null);
-            var equal = model.CurrentWorkspace.NodeFromWorkspace<Map>("6adba162-ef10-4664-9c9c-d0280a56a52a");
-            FSharpList<FScheme.Value> actual = equal.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(6, actual.Length);
+            AssertPreviewValue("6adba162-ef10-4664-9c9c-d0280a56a52a", new int[] { 0, 1, 1, 1, 0, 1 });
 
-            Assert.AreEqual(0, actual[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, actual[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, actual[2].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, actual[3].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(0, actual[4].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(1, actual[5].GetDoubleFromFSchemeValue());
         }
 
         [Test]

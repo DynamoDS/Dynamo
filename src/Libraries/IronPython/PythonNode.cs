@@ -11,7 +11,6 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using DynamoUtilities;
 using IronPython.Hosting;
 using ProtoCore.AST.AssociativeAST;
 

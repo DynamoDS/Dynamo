@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Xml;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Dynamo.Controls;
@@ -38,6 +39,18 @@ namespace Dynamo.Nodes
                             select double.Parse(values[1])).Sum();
 
             return Value.NewNumber(sumValue);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 1, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 
@@ -106,6 +119,16 @@ namespace Dynamo.Nodes
             }
 
             throw new Exception("No data selected!");
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSAnalysisResultSelection"));
+
+            return migrationData;
         }
     }
 }
