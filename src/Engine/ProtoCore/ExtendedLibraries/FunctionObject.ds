@@ -424,3 +424,90 @@ def Reduce(list : var[], seed:var, accumulator : _FunctionObject)
         return = _acc;
     }
 }
+
+def TrueForAll(list: var[], predicate: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = true;
+        }
+
+        _index = 0;
+
+        for (_index in 0..(_count - 1))
+        {
+            _value = list[_i];
+            if (!Apply(predicate, _value))
+            {
+                return = false;
+            }
+        }
+
+		return = true;
+    }
+}
+
+def TrueForAny(list: var[], predicate: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = true;
+        }
+
+        _index = 0;
+
+        for (_i in 0..(_count - 1))
+        {
+            _value = list[_i];
+            if (Apply(predicate, _value))
+            {
+                return = true;
+            }
+        }
+
+		return = false;
+    }
+}
+
+def ForEach(list: var[], functionObject: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = null;
+        }
+
+        _index = 0;
+
+        for (_i in 0..(_count - 1))
+        {
+            _value = list[_i];
+            list[_i] = Apply(functionObject, _value);
+        }
+
+		return = list;
+    }
+}

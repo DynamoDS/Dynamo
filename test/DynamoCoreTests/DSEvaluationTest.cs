@@ -12,7 +12,7 @@ using System.Collections;
 
 namespace Dynamo.Tests
 {
-    class DSEvaluationUnitTest : DynamoUnitTest
+    public class DSEvaluationUnitTest : DynamoUnitTest
     {
         public void OpenModel(string relativeFilePath)
         {
@@ -24,6 +24,11 @@ namespace Dynamo.Tests
         public void RunModel(string relativeDynFilePath)
         {
             OpenModel(relativeDynFilePath);
+            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+        }
+
+        public void RunCurrentModel() // Run currently loaded model.
+        {
             Assert.DoesNotThrow(() => Controller.RunExpression(null));
         }
 
