@@ -309,23 +309,33 @@ namespace ProtoFFI
                 CLRModuleType.GetInstance(baseType, Module, string.Empty);
             }
 
-            ConstructorInfo[] ctors = type.GetConstructors();
-            foreach (var c in ctors)
-            {
-                if (c.IsPublic && !c.IsGenericMethod && IsBrowsable(c))
-                {
-                    ConstructorDefinitionNode node = ParseConstructor(c, type);
-                    classnode.funclist.Add(node);
-
-                    List<ProtoCore.Type> argTypes = GetArgumentTypes(node);
-                    RegisterFunctionPointer(node.Name, c, argTypes, node.ReturnType);
-                }
-            }
-
             // There is no static class at CLR, so we have to check if all 
             // public methods defined in this class are static or not.
-            bool isStatic = type.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Static)
+            // 
+            // For static class, it is abstract and sealed. But here we just
+            // check all methods are static. 
+            bool isStatic = type.GetMethods(BindingFlags.DeclaredOnly |
+                                            BindingFlags.Public |
+                                            BindingFlags.Static)
                                 .All(m => m.IsStatic);
+
+            if (!isStatic)
+            {
+                // If all methods are static, it doesn't make sense to expose
+                // constructor. 
+                ConstructorInfo[] ctors = type.GetConstructors();
+                foreach (var c in ctors)
+                {
+                    if (c.IsPublic && !c.IsGenericMethod && IsBrowsable(c))
+                    {
+                        ConstructorDefinitionNode node = ParseConstructor(c, type);
+                        classnode.funclist.Add(node);
+
+                        List<ProtoCore.Type> argTypes = GetArgumentTypes(node);
+                        RegisterFunctionPointer(node.Name, c, argTypes, node.ReturnType);
+                    }
+                }
+            }
 
             BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static;
             bool isDerivedClass = (classnode.superClass != null) && classnode.superClass.Count > 0;
