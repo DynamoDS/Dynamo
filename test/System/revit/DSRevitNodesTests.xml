@@ -104,8 +104,8 @@
         <test name="ByCurve_ValidArgs" modelPath=".\empty.rfa"/>
       </testFixture>
 	  
-	    <testFixture name="FreeFormTests">
-		    <test name="BySolid_ValidArgs" modelPath=".\empty.rfa"/>
+	  <testFixture name="FreeFormTests">
+		<test name="BySolid_ValidArgs" modelPath=".\empty.rfa"/>
         <test name="BySolid_NullArgument" modelPath=".\empty.rfa"/>
       </testFixture>
       
