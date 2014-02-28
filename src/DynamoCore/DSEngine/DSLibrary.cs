@@ -184,7 +184,7 @@ namespace Dynamo.DSEngine
         {
             get
             {
-                return FunctionType.GenericFunction == Type ? UserFriendlyName : ClassName + "." + Name;
+                return FunctionType.GenericFunction == Type ? UserFriendlyName : ClassName + "." + UserFriendlyName;
             }
         }
 
@@ -272,7 +272,7 @@ namespace Dynamo.DSEngine
                 var idx = ClassName.LastIndexOf('.');
                 return idx < 0
                     ? QualifiedName
-                    : string.Format("{0}.{1}", ClassName.Substring(idx + 1), Name);
+                    : string.Format("{0}.{1}", ClassName.Substring(idx + 1), UserFriendlyName);
             }
         }
 
