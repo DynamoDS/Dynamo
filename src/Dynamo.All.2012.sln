@@ -100,9 +100,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesLibraryUI", "Libraries\SamplesLibraryUI\SamplesLibraryUI.csproj", "{227B776D-8866-49E8-8C93-809CCF86AF12}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{09831AAA-B7EB-451D-9F25-79D28C5F8AF2}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\designscript\Scripts\jun.ds = ..\..\designscript\Scripts\jun.ds
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
