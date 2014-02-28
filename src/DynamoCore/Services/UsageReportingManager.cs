@@ -86,7 +86,7 @@ namespace Dynamo.Services
             {
                 this.FirstRun = false;
 
-                if (!dynSettings.Controller.Testing)
+                if (!DynamoController.IsTestMode)
                     ShowUsageReportingPrompt();
             }
         }
