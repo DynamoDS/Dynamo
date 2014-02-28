@@ -242,10 +242,8 @@ namespace Dynamo.Tests
             var r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
             string context = r.Replace(RevitData.Application.Application.VersionName, "");
 
-            var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context, units)
-                {
-                    Testing = true
-                };
+            var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context, units);
+            DynamoController.IsTestMode = true;
         }
 
         private void CalculateTotalsOnResultsRoot(resultType result)
