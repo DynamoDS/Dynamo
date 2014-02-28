@@ -26,10 +26,8 @@ namespace DynamoCoreUITests
 
             //var env = new ExecutionEnvironment();
 
-            Controller = new DynamoController(typeof(DynamoViewModel), "None", null, updateManager, new DefaultWatchHandler(), new PreferenceSettings())
-            {
-                Testing = true
-            };
+            Controller = new DynamoController(typeof(DynamoViewModel), "None", null, updateManager, new DefaultWatchHandler(), new PreferenceSettings());
+            DynamoController.Testing = true;
 
             //create the view
             Ui = new DynamoView { DataContext = Controller.DynamoViewModel };

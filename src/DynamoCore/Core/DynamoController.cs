@@ -64,7 +64,7 @@ namespace Dynamo
         private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
             new Dictionary<string, TypeLoadData>();
 
-        private bool testing = false;
+        private static bool testing = false;
 
         protected VisualizationManager visualizationManager;
 
@@ -88,10 +88,10 @@ namespace Dynamo
         /// with the assumption that the entire test will be wrapped in an
         /// idle thread call.
         /// </summary>
-        public bool Testing 
+        public static bool Testing 
         {
-            get { return testing; }
-            set { testing = value; }
+            get { return DynamoController.testing; }
+            set { DynamoController.testing = value; }
         }
 
         ObservableCollection<ModelBase> clipBoard = new ObservableCollection<ModelBase>();

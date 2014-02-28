@@ -74,10 +74,8 @@ namespace Dynamo.Tests
                 SIUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
                 //create a new instance of the ViewModel
-                Controller = new DynamoController(typeof (DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), new PreferenceSettings())
-                    {
-                        Testing = true
-                    };
+                Controller = new DynamoController(typeof (DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), new PreferenceSettings());
+                DynamoController.Testing = true;
             }
             catch (Exception ex)
             {
