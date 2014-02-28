@@ -40,6 +40,9 @@ namespace Dynamo.Services
         {
             get
             {
+                if (DynamoController.IsTestMode) // Do not want logging in unit tests.
+                    return false;
+
                 return dynSettings.Controller.PreferenceSettings.IsUsageReportingApproved;
             }
             private set
@@ -86,7 +89,7 @@ namespace Dynamo.Services
             {
                 this.FirstRun = false;
 
-                if (!dynSettings.Controller.Testing)
+                if (!DynamoController.IsTestMode)
                     ShowUsageReportingPrompt();
             }
         }

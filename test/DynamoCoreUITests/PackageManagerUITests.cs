@@ -22,7 +22,7 @@ namespace Dynamo.Tests.UI
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
 
             Controller = DynamoController.MakeSandbox();
-            Controller.Testing = true;
+            DynamoController.IsTestMode = true;
 
             //create the view
             Ui = new DynamoView();

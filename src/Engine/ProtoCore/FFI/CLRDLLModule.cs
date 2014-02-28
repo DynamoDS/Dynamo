@@ -7,6 +7,7 @@ using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
+using ProtoCore.DSASM;
 
 namespace ProtoFFI
 {
@@ -309,23 +310,34 @@ namespace ProtoFFI
                 CLRModuleType.GetInstance(baseType, Module, string.Empty);
             }
 
-            ConstructorInfo[] ctors = type.GetConstructors();
-            foreach (var c in ctors)
-            {
-                if (c.IsPublic && !c.IsGenericMethod && IsBrowsable(c))
-                {
-                    ConstructorDefinitionNode node = ParseConstructor(c, type);
-                    classnode.funclist.Add(node);
-
-                    List<ProtoCore.Type> argTypes = GetArgumentTypes(node);
-                    RegisterFunctionPointer(node.Name, c, argTypes, node.ReturnType);
-                }
-            }
-
             // There is no static class at CLR, so we have to check if all 
             // public methods defined in this class are static or not.
-            bool isStatic = type.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Static)
+            // 
+            // For static class, it is abstract and sealed. But here we just
+            // check all methods are static. 
+            bool isStatic = type.GetMethods(BindingFlags.DeclaredOnly |
+                                            BindingFlags.Instance |
+                                            BindingFlags.Public |
+                                            BindingFlags.Static)
                                 .All(m => m.IsStatic);
+
+            if (!isStatic)
+            {
+                // If all methods are static, it doesn't make sense to expose
+                // constructor. 
+                ConstructorInfo[] ctors = type.GetConstructors();
+                foreach (var c in ctors)
+                {
+                    if (c.IsPublic && !c.IsGenericMethod && IsBrowsable(c))
+                    {
+                        ConstructorDefinitionNode node = ParseConstructor(c, type);
+                        classnode.funclist.Add(node);
+
+                        List<ProtoCore.Type> argTypes = GetArgumentTypes(node);
+                        RegisterFunctionPointer(node.Name, c, argTypes, node.ReturnType);
+                    }
+                }
+            }
 
             BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static;
             bool isDerivedClass = (classnode.superClass != null) && classnode.superClass.Count > 0;
@@ -462,6 +474,14 @@ namespace ProtoFFI
             return (null == indexParams || indexParams.Length == nParams);
         }
 
+        private bool isOverloadedOperator(MethodInfo m)
+        {
+            if (null == m || !m.IsSpecialName)
+                return false;
+
+            return m.Name.StartsWith("op_");
+        }
+
         private bool isDisposeMethod(MethodInfo m)
         {
             ParameterInfo[] ps = m.GetParameters();
@@ -580,7 +600,12 @@ namespace ProtoFFI
         {
             ProtoCore.Type retype = CLRModuleType.GetProtoCoreType(method.ReturnType, Module);
             bool propaccessor = isPropertyAccessor(method);
-            if (method.IsStatic && method.DeclaringType == method.ReturnType && !propaccessor)
+            bool isOperator = isOverloadedOperator(method);
+
+            if (method.IsStatic &&
+                method.DeclaringType == method.ReturnType && 
+                !propaccessor &&
+                !isOperator)
             {
                 //case for named constructor. Must return a pointer type
                 if (!Object.Equals(method.ReturnType, CLRType))
@@ -594,9 +619,17 @@ namespace ProtoFFI
 
             FFIMethodAttributes mattrs = new FFIMethodAttributes(method);
 
-            string prefix = propaccessor ? "%" : "";
+            string prefix = (isOperator || propaccessor) ? "%" : "";
             ProtoCore.AST.AssociativeAST.FunctionDefinitionNode func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
-            func.Name = string.Format("{0}{1}", prefix, method.Name);
+
+            if (isOperator)
+            {
+                func.Name = string.Format("{0}{1}", prefix, GetDSOperatorName(method.Name));
+            }
+            else
+            {
+                func.Name = string.Format("{0}{1}", prefix, method.Name);
+            }
             func.Pattern = null;
             func.Signature = ParseArgumentSignature(method);
 
@@ -612,6 +645,46 @@ namespace ProtoFFI
             func.MethodAttributes = mattrs;
 
             return func;
+        }
+
+        /// <summary>
+        /// Convert C# overloaded opeator name to DS operator name
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <returns></returns>
+        private string GetDSOperatorName(string methodName)
+        {
+            switch (methodName)
+            {
+                case "op_Addition":
+                    return Operator.add.ToString();
+                case "op_Subtraction":
+                    return Operator.sub.ToString();
+                case "op_Multiply":
+                    return Operator.mul.ToString();
+                case "op_Division":
+                    return Operator.div.ToString();
+                case "op_Modulus":
+                    return Operator.mod.ToString();
+                case "op_LogicalAnd":
+                    return Operator.and.ToString();
+                case "op_LogicalOr":
+                    return Operator.or.ToString();
+                case "op_Equality":
+                    return Operator.eq.ToString();
+                case "op_GreaterThan":
+                    return Operator.gt.ToString();
+                case "op_LessThan":
+                    return Operator.lt.ToString();
+                case "op_Inequality":
+                    return Operator.nq.ToString();
+                case "op_GreaterThanOrEqual":
+                    return Operator.ge.ToString();
+                case "op_LessThanOrEqual":
+                    return Operator.le.ToString();
+                default:
+                    return methodName;
+            }
         }
 
         private void RegisterFunctionPointer(string functionName, MemberInfo method, List<ProtoCore.Type> argTypes, ProtoCore.Type retype)

@@ -5,11 +5,9 @@ using System.Windows;
 using System.Windows.Controls;
 using Dynamo;
 using Dynamo.Controls;
-using Dynamo.FSchemeInterop;
 using Dynamo.Interfaces;
 using Dynamo.Tests.UI;
 using Dynamo.UI.Controls;
-using Dynamo.Units;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -26,12 +24,10 @@ namespace DynamoCoreUITests
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
 
-            var env = new ExecutionEnvironment();
+            //var env = new ExecutionEnvironment();
 
-            Controller = new DynamoController(env, typeof(DynamoViewModel), "None", null, updateManager, new DefaultWatchHandler(), new PreferenceSettings())
-            {
-                Testing = true
-            };
+            Controller = new DynamoController(typeof(DynamoViewModel), "None", null, updateManager, new DefaultWatchHandler(), new PreferenceSettings());
+            DynamoController.IsTestMode = true;
 
             //create the view
             Ui = new DynamoView { DataContext = Controller.DynamoViewModel };
