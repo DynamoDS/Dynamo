@@ -81,15 +81,17 @@ namespace Dynamo.Nodes
 
                                 if (dynSettings.Controller.DynamoViewModel.RunInDebug)
                                 {
-                                    _node.OldValue = f.Invoke(FSharpList<Value>.Empty);
-                                    return _node.OldValue;
+                                    //_node.OldValue = f.Invoke(FSharpList<Value>.Empty);
+                                    //return _node.OldValue;
+                                    return f.Invoke(FSharpList<Value>.Empty);
                                 }
 
                                 return RevitServices.Threading.IdlePromise<Value>.ExecuteOnIdle(
                                 () =>
                                     {
-                                        _node.OldValue = f.Invoke(FSharpList<Value>.Empty);
-                                        return _node.OldValue;
+                                        //_node.OldValue = f.Invoke(FSharpList<Value>.Empty);
+                                        //return _node.OldValue;
+                                        return f.Invoke(FSharpList<Value>.Empty);
                                     });
                             }));
 
