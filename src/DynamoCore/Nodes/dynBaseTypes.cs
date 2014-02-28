@@ -6033,10 +6033,25 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "DSCore.File.Filename"));
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.File.Filename");
 
-            return migrationData;            
+            // Get attributes from old child node
+            XmlElement newChild = data.Document.CreateElement("System.String");
+
+            foreach (XmlNode subNode in oldNode.ChildNodes)
+            {
+                foreach (XmlNode attr in subNode.Attributes)
+                {
+                    if (attr.Name.Equals("value"))
+                        newChild.InnerText = attr.Value;
+                }
+            }
+
+            newNode.AppendChild(newChild);
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
         }
     }
 
