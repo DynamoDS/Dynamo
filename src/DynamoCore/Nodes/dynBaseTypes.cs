@@ -294,7 +294,7 @@ namespace Dynamo.Nodes
                             new[]
                             {
                                 FScheme.Expression.NewFunction_E(
-                                    Utils.ConvertToFSchemeFunc(args => _node.OldValue = args[0])),
+                                    Utils.ConvertToFSchemeFunc(args => /*(_node.OldValue = args[0]) as Value)*/ args[0])),
                                 FScheme.Expression.NewId("__result")
                             }.ToFSharpList()),
                         FScheme.Expression.NewId("__result")
@@ -801,8 +801,10 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol("list"))
-                .Item.Invoke(args);
+            //return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol("list"))
+            //    .Item.Invoke(args);
+
+            throw new NotImplementedException("FSchemeEnvironment has been removed.");
         }
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
@@ -3960,7 +3962,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("2.71828...", "e", typeof(Value.Number)));
             RegisterAllPorts();
 
-            OldValue = Value.NewNumber(Math.E);
+            //OldValue = Value.NewNumber(Math.E);
         }
 
         public override bool RequiresRecalc
@@ -4003,7 +4005,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("3.14159...", "pi", typeof(Value.Number)));
             RegisterAllPorts();
 
-            OldValue = Value.NewNumber(Math.PI);
+            //OldValue = Value.NewNumber(Math.PI);
         }
 
         public override bool RequiresRecalc
@@ -4047,7 +4049,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("3.14159...*2", "2*pi", typeof(Value.Number)));
             RegisterAllPorts();
 
-            OldValue = Value.NewNumber(Math.PI*2);
+            //OldValue = Value.NewNumber(Math.PI*2);
         }
 
         public override bool RequiresRecalc
@@ -5645,7 +5647,7 @@ namespace Dynamo.Nodes
                 foreach (XmlNode attr in subNode.Attributes)
                 {
                     if (attr.Name.Equals("value"))
-                        newChild1.SetAttribute("value", attr.Value);
+                        newChild1.InnerText = attr.Value;
                     else
                         newChild2.SetAttribute(attr.Name, attr.Value);
                 }
@@ -5812,7 +5814,7 @@ namespace Dynamo.Nodes
                 foreach (XmlNode attr in subNode.Attributes)
                 {
                     if (attr.Name.Equals("value"))
-                        newChild1.SetAttribute("value", attr.Value);
+                        newChild1.InnerText = attr.Value;
                     else
                         newChild2.SetAttribute(attr.Name, attr.Value);
                 }
@@ -5856,9 +5858,19 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCoreNodesUI.BoolSelector");
 
-            // Clone child from old node
+            // Get attribute from old child node
+            XmlElement newChild = data.Document.CreateElement("System.Boolean");
+
             foreach (XmlNode subNode in oldNode.ChildNodes)
-                newNode.AppendChild(subNode);
+            {
+                foreach (XmlNode attr in subNode.Attributes)
+                {
+                    if (attr.Name.Equals("value"))
+                        newChild.InnerText = attr.Value;
+                }
+            }
+
+            newNode.AppendChild(newChild);
 
             migrationData.AppendNode(newNode);
             return migrationData;

@@ -1,9 +1,9 @@
-﻿using Autodesk.DesignScript.Geometry;
+﻿using System.Linq;
+using System.Xml;
+using Autodesk.DesignScript.Geometry;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
-using Autodesk.Revit.DB;
-using System.Linq;
-using System.Xml;
+using RevitGeometryObjects = Revit.Geometry;
 
 namespace Dynamo.Nodes
 {
@@ -53,7 +53,7 @@ namespace Dynamo.Nodes
             var vmax = Vector.ByCoordinates(max.U, max.V,0);
             var vmin = Vector.ByCoordinates(min.U, min.V,0);
 
-            return FScheme.Value.NewContainer(DSCoreNodes.Domain2D.ByMinimumAndMaximum(vmin, vmax));
+            return FScheme.Value.NewContainer(RevitGeometryObjects.Domain2D.ByMinimumAndMaximum(vmin, vmax));
         }
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
@@ -82,7 +82,7 @@ namespace Dynamo.Nodes
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            var domain = (DSCoreNodes.Domain2D)((FScheme.Value.Container)args[0]).Item;
+            var domain = (RevitGeometryObjects.Domain2D)((FScheme.Value.Container)args[0]).Item;
             double ui = ((FScheme.Value.Number)args[1]).Item;
             double vi = ((FScheme.Value.Number)args[2]).Item;
             double us = domain.USpan / ui;
@@ -143,7 +143,7 @@ namespace Dynamo.Nodes
         {
             double ui, vi;
 
-            var domain = (DSCoreNodes.Domain2D)((FScheme.Value.Container)args[0]).Item;
+            var domain = (RevitGeometryObjects.Domain2D)((FScheme.Value.Container)args[0]).Item;
             ui = ((FScheme.Value.Number)args[1]).Item;
             vi = ((FScheme.Value.Number)args[2]).Item;
 
