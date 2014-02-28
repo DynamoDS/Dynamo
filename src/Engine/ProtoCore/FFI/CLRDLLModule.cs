@@ -7,6 +7,7 @@ using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
+using ProtoCore.DSASM;
 
 namespace ProtoFFI
 {
@@ -472,6 +473,14 @@ namespace ProtoFFI
             return (null == indexParams || indexParams.Length == nParams);
         }
 
+        private bool isOverloadedOperator(MethodInfo m)
+        {
+            if (null == m || !m.IsSpecialName)
+                return false;
+
+            return m.Name.StartsWith("op_");
+        }
+
         private bool isDisposeMethod(MethodInfo m)
         {
             ParameterInfo[] ps = m.GetParameters();
@@ -590,7 +599,12 @@ namespace ProtoFFI
         {
             ProtoCore.Type retype = CLRModuleType.GetProtoCoreType(method.ReturnType, Module);
             bool propaccessor = isPropertyAccessor(method);
-            if (method.IsStatic && method.DeclaringType == method.ReturnType && !propaccessor)
+            bool isOperator = isOverloadedOperator(method);
+
+            if (method.IsStatic &&
+                method.DeclaringType == method.ReturnType && 
+                !propaccessor &&
+                !isOperator)
             {
                 //case for named constructor. Must return a pointer type
                 if (!Object.Equals(method.ReturnType, CLRType))
@@ -604,9 +618,17 @@ namespace ProtoFFI
 
             FFIMethodAttributes mattrs = new FFIMethodAttributes(method);
 
-            string prefix = propaccessor ? "%" : "";
+            string prefix = (isOperator || propaccessor) ? "%" : "";
             ProtoCore.AST.AssociativeAST.FunctionDefinitionNode func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
-            func.Name = string.Format("{0}{1}", prefix, method.Name);
+
+            if (isOperator)
+            {
+                func.Name = string.Format("{0}{1}", prefix, GetDSOperatorName(method.Name));
+            }
+            else
+            {
+                func.Name = string.Format("{0}{1}", prefix, method.Name);
+            }
             func.Pattern = null;
             func.Signature = ParseArgumentSignature(method);
 
@@ -622,6 +644,46 @@ namespace ProtoFFI
             func.MethodAttributes = mattrs;
 
             return func;
+        }
+
+        /// <summary>
+        /// Convert C# overloaded opeator name to DS operator name
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <returns></returns>
+        private string GetDSOperatorName(string methodName)
+        {
+            switch (methodName)
+            {
+                case "op_Addition":
+                    return Operator.add.ToString();
+                case "op_Subtraction":
+                    return Operator.sub.ToString();
+                case "op_Multiply":
+                    return Operator.mul.ToString();
+                case "op_Division":
+                    return Operator.div.ToString();
+                case "op_Modulus":
+                    return Operator.mod.ToString();
+                case "op_LogicalAnd":
+                    return Operator.and.ToString();
+                case "op_LogicalOr":
+                    return Operator.or.ToString();
+                case "op_Equality":
+                    return Operator.eq.ToString();
+                case "op_GreaterThan":
+                    return Operator.gt.ToString();
+                case "op_LessThan":
+                    return Operator.lt.ToString();
+                case "op_Inequality":
+                    return Operator.nq.ToString();
+                case "op_GreaterThanOrEqual":
+                    return Operator.ge.ToString();
+                case "op_LessThanOrEqual":
+                    return Operator.le.ToString();
+                default:
+                    return methodName;
+            }
         }
 
         private void RegisterFunctionPointer(string functionName, MemberInfo method, List<ProtoCore.Type> argTypes, ProtoCore.Type retype)
