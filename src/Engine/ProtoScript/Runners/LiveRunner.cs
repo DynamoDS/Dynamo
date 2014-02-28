@@ -1259,7 +1259,7 @@ namespace ProtoScript.Runners
             {
                 foreach (var st in syncData.DeletedSubtrees)
                 {
-                    if (st.AstNodes != null)
+                    if (st.AstNodes != null && st.AstNodes.Count > 0)
                     {
                         var nullNodes = MarkGraphNodesInactive(st.AstNodes);
                         if (nullNodes != null)
