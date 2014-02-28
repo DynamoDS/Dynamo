@@ -474,6 +474,11 @@ namespace Dynamo.Python
                 return ImportedTypes[name];
             }
 
+            if (VariableTypes.ContainsKey(name))
+            {
+                return VariableTypes[name];
+            }
+
             string tryGetType = name + ".GetType()";
             dynamic type = null;
             try
@@ -627,9 +632,9 @@ namespace Dynamo.Python
                     var type = Type.GetType(import.Key);
                     this.ImportedTypes.Add(import.Key, type);
                 }
-                catch
+                catch (Exception exception)
                 {
-                    Console.WriteLine();
+                    Console.WriteLine(exception.Message);
                 }
             }
 

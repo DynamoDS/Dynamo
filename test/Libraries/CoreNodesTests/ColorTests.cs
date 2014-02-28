@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Geometry;
-using DSCoreNodes;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using DSCore;
-using List = DSCore.List;
 
 namespace DSCoreNodesTests
 {

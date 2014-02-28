@@ -12,6 +12,7 @@ using Dynamo.Revit;
 using System.Reflection;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using MathNet.Numerics.LinearAlgebra.Double;
+using RevitGeometry = Revit.Geometry;
 using System.Xml;
 
 namespace Dynamo.Nodes
@@ -1003,7 +1004,7 @@ namespace Dynamo.Nodes
             var start = curve.get_EndParameter(0);
             var end = curve.get_EndParameter(1);
 
-            return Value.NewContainer(DSCoreNodes.Domain.ByMinimumAndMaximum(start, end));
+            return Value.NewContainer(RevitGeometry.Domain.ByMinimumAndMaximum(start, end));
         }
     }
     [NodeName("Curve Length")]
