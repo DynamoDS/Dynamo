@@ -314,7 +314,7 @@ namespace Dynamo.Tests.UI
             this.Controller = DynamoController.MakeSandbox(commandFilePath);
             var controller = this.Controller;
             controller.DynamoViewModel.DynamicRunEnabled = autoRun;
-            controller.Testing = true;
+            DynamoController.IsTestMode = true;
 
             // Create the view.
             var dynamoView = new DynamoView();

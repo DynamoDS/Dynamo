@@ -39,7 +39,7 @@ namespace Dynamo.Tests.UI
             PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
             Controller = DynamoController.MakeSandbox();
-            Controller.Testing = true;
+            DynamoController.IsTestMode = true;
 
             //create the view
             Ui = new DynamoView();
@@ -625,7 +625,7 @@ namespace Dynamo.Tests.UI
             PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
             Controller = DynamoController.MakeSandbox();
-            Controller.Testing = true;
+            DynamoController.IsTestMode = true;
 
             //create the view
             Ui = new DynamoView();
