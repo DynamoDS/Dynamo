@@ -2832,6 +2832,8 @@ z=Point.ByCoordinates(y,a,a);
             AssertValue("x", 10);
         }
 
+       
+
         [Test]
         public void RegressMAGN747_01()
         {
@@ -2944,6 +2946,79 @@ z=Point.ByCoordinates(y,a,a);
                 AssertValue("a", 24);
                 AssertValue("b", 24);
             }
+        }
+
+        [Test]
+        public void TestPythonCodeExecution()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"import(""D:\jun\AutodeskResearch\git\Dynamo\bin\AnyCPU\Debug\DSIronPython.dll"");",
+                @"x = IronPythonEvaluator.EvaluateIronPythonScript(""# Default imports
+
+#The inputs to this node will be stored as a list in the IN variable.
+dataEnteringNode = IN
+
+#Assign your output to the OUT variable
+OUT = 1"", {""IN""}, {{}}); x = x;",
+                            @"x = IronPythonEvaluator.EvaluateIronPythonScript(""# Default imports
+
+#The inputs to this node will be stored as a list in the IN variable.
+dataEnteringNode = IN
+
+#Assign your output to the OUT variable
+OUT = 100"", {""IN""}, {{}}); x = x;"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x", 1);
+
+
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid2, codes[2]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x", 100);
+        }
+
+        [Test]
+        public void TestEmptyArray()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"def foo(i:int, j : var[]..[]) { return = i; }",
+                @"x = 1; p = foo(x, {{}});",
+                @"x = 10;"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid2, codes[2]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
         }
     }
 

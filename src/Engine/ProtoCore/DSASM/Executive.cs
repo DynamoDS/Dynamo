@@ -2205,6 +2205,12 @@ namespace ProtoCore.DSASM
                 {
                     return;
                 }
+
+                if (gnode.ssaExprID == executingNode.ssaExprID)
+                {
+                    // These nodes are within the same expression, no redifinition can occur
+                    return;
+                }
             }
 
             //if (executingNode.dependentList.Count > 0)
