@@ -244,10 +244,8 @@ namespace Dynamo.Tests
             // create the transaction manager object
             TransactionManager.SetupManager(new DebugTransactionStrategy());
 
-            var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context)
-                {
-                    Testing = true
-                };
+            var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context);
+            DynamoController.IsTestMode = true;
         }
 
         private void CalculateTotalsOnResultsRoot(resultType result)

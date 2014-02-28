@@ -899,7 +899,7 @@ namespace Dynamo.Utilities
                 dynSettings.Controller.DynamoModel.WriteToLog("There was an error opening the workbench.");
                 dynSettings.Controller.DynamoModel.WriteToLog(ex);
 
-                if (controller.Testing)
+                if (DynamoController.IsTestMode)
                     Assert.Fail(ex.Message);
 
                 def = null;
