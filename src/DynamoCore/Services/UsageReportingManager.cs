@@ -40,6 +40,9 @@ namespace Dynamo.Services
         {
             get
             {
+                if (DynamoController.Testing) // We do not want logging in unit tests.
+                    return false;
+
                 return dynSettings.Controller.PreferenceSettings.IsUsageReportingApproved;
             }
             private set
