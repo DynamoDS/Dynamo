@@ -765,7 +765,26 @@ namespace Dynamo.Models
                     NodeModel el = CreateNodeInstance(type, nickname, signature, guid);
                     el.WorkSpace = CurrentWorkspace;
 
-                    el.Load(elNode);
+                    try
+                    {
+                        el.Load(elNode);
+                    }
+                    catch (UnresolvedFunctionException)
+                    {
+                        // If a given function is not found during file load, then convert the 
+                        // function node into a dummy node (instead of crashing the workflow).
+                        // 
+                        var e = elNode as XmlElement;
+                        var elNode2 = MigrationManager.CreateDummyNodeForFunction(e);
+
+                        // The new type representing the dummy node.
+                        typeName = elNode2.GetAttribute("type");
+                        type = Dynamo.Nodes.Utilities.ResolveType(typeName);
+
+                        el = CreateNodeInstance(type, nickname, string.Empty, guid);
+                        el.WorkSpace = CurrentWorkspace;
+                        el.Load(elNode2);
+                    }
 
                     CurrentWorkspace.Nodes.Add(el);
 
