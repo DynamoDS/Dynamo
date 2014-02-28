@@ -251,9 +251,20 @@ namespace ProtoCore.AST.AssociativeAST
             var otherNode = other as ArrayNameNode;
             if (null == otherNode)
                 return false;
-            
-            return EqualityComparer<ArrayNode>.Default.Equals(ArrayDimensions, otherNode.ArrayDimensions) &&
-                   Enumerable.SequenceEqual(ReplicationGuides, otherNode.ReplicationGuides);
+
+            bool arrayDimEqual = (null == ArrayDimensions && null == otherNode.ArrayDimensions);
+            if (null != ArrayDimensions && null != otherNode.ArrayDimensions)
+            {
+                arrayDimEqual = EqualityComparer<ArrayNode>.Default.Equals(ArrayDimensions, otherNode.ArrayDimensions);
+            }
+
+            bool repGuidesEqual = (null == ReplicationGuides && null == otherNode.ReplicationGuides);
+            if (null != ReplicationGuides && null != otherNode.ReplicationGuides)
+            {
+                repGuidesEqual = Enumerable.SequenceEqual(ReplicationGuides, otherNode.ReplicationGuides);
+            }
+
+            return arrayDimEqual && repGuidesEqual;
         }
 
         public override string ToString()
@@ -1354,6 +1365,7 @@ namespace ProtoCore.AST.AssociativeAST
     public class BinaryExpressionNode : AssociativeNode
     {
         public int exprUID { get; set; }
+        public int ssaExprID { get; set; }
         public int modBlkUID { get; set; }
         public bool isSSAAssignment { get; set; }
         public bool isSSAPointerAssignment { get; set; }
