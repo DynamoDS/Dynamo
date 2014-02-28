@@ -70,6 +70,8 @@
 
       <testFixture name="DividedPathTests">
         <test name="ByCurveAndEqualDivisions_ValidArgs" modelPath=".\empty.rfa"/>
+		<test name="ByCurveAndEqualDivisions_NullArgument" modelPath=".\empty.rfa"/>
+		<test name="ByCurveAndEqualDivisions_InvalidDivisions" modelPath=".\empty.rfa"/>
       </testFixture>
       
       <testFixture name="DividedSurfaceTests">
