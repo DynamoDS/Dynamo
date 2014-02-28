@@ -105,8 +105,8 @@ namespace Revit.Elements
 
             //flatten the beam line onto the XZ plane
             //using the start's z coordinate
-            var start = curve.get_EndPoint(0);
-            var end = curve.get_EndPoint(1);
+            var start = curve.GetEndPoint(0);
+            var end = curve.GetEndPoint(1);
             var newEnd = new XYZ(end.X, end.Y, start.Z); //drop end point to plane
 
             //catch the case where the end is directly above
