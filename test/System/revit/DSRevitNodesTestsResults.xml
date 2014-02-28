@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="1" failures="0" not-run="0" date="2014-02-28" time="13:10:29" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
-  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="1.4821482" asserts="2" type="TestFixture" result="Success" executed="True">
+<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="1" failures="0" not-run="0" date="2014-02-28" time="17:01:14" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
+  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="0.5180518" asserts="19" type="TestFixture" result="Success" executed="True">
     <results>
-      <test-suite name="FreeFormTests" description="Unit tests in Revit." time="1.4821482" asserts="2" type="TestFixture" result="Success" executed="True">
+      <test-suite name="SolidTests" description="Unit tests in Revit." time="0.5180518" asserts="19" type="TestFixture" result="Success" executed="True">
         <results>
-          <test-case name="BySolid_ValidArgs" success="True" time="1.4821482" executed="True" asserts="2" result="Success" />
+          <test-case name="BySweptBlend_ValidArgs" success="True" time="0.5180518" executed="True" asserts="19" result="Success" />
         </results>
       </test-suite>
     </results>

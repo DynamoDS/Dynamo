@@ -160,44 +160,38 @@ namespace DSRevitNodesTests.GeometryObjects
 
             //make the path curve
             var p1 = Point.ByCoordinates(0, 0, 0);
-            var p2 = Point.ByCoordinates(3, .5, .25);
-            var p3 = Point.ByCoordinates(6, -.5, 0);
-            var p4 = Point.ByCoordinates(9, 0, .25);
+            var p5 = Point.ByCoordinates(0, 0, 4);
 
-            var spine = NurbsCurve.ByPoints(new []{p1,p2,p3,p4});
+            var spine = Line.ByStartPointEndPoint(p1, p5);
+            var spineRev = spine.ToRevitType();
 
-            var csA = spine.CoordinateSystemAtParameter(0);
-            var csB = spine.CoordinateSystemAtParameter(.25);
-            var csC = spine.CoordinateSystemAtParameter(.75);
-            var csD = spine.CoordinateSystemAtParameter(1);
 
-            DrawCS(csA, package);
-            DrawCS(csB, package);
-            DrawCS(csC, package);
-            DrawCS(csD, package);
             DrawCurve(spine.ToRevitType(), package);
 
-            var profCSA = CoordinateSystem.ByOriginVectors(spine.PointAtParameter(0), csA.YAxis, csA.ZAxis);
-            var profCSB = CoordinateSystem.ByOriginVectors(spine.PointAtParameter(.25), csB.YAxis, csB.ZAxis);
-            var profCSC = CoordinateSystem.ByOriginVectors(spine.PointAtParameter(.75), csC.YAxis, csC.ZAxis);
-            var profCSD = CoordinateSystem.ByOriginVectors(spine.PointAtParameter(1), csD.YAxis, csD.ZAxis);
-
-            var cs1 = rect1.Select(crv => crv.Transform(CoordinateSystem.Identity(), profCSA)).Cast<Curve>().ToList();
-            var cs2 = rect1.Select(crv => crv.Transform(CoordinateSystem.Identity(), profCSB)).Cast<Curve>().ToList();
-            var cs3 = rect1.Select(crv => crv.Transform(CoordinateSystem.Identity(), profCSC)).Cast<Curve>().ToList();
-            var cs4 = rect1.Select(crv => crv.Transform(CoordinateSystem.Identity(), profCSD)).Cast<Curve>().ToList();
+            var cs1 = rect1.Select(crv => crv.Translate(0,0,0)).Cast<Curve>().ToList();
+            var cs2 = rect1.Select(crv => crv.Translate(0,0,1)).Cast<Curve>().ToList();
+            var cs3 = rect1.Select(crv => crv.Translate(0,0,3)).Cast<Curve>().ToList();
+            var cs4 = rect1.Select(crv => crv.Translate(0, 0, 4)).Cast<Curve>().ToList();
 
             cs1.ForEach(x => DrawCurve(x.ToRevitType(), package));
             cs2.ForEach(x => DrawCurve(x.ToRevitType(), package));
             cs3.ForEach(x => DrawCurve(x.ToRevitType(), package));
             cs4.ForEach(x => DrawCurve(x.ToRevitType(), package));
 
+            cs1[0].StartPoint.ShouldBeApproximately(0, 0, 0);
+            cs2[0].StartPoint.ShouldBeApproximately(0, 0, 1);
+            cs3[0].StartPoint.ShouldBeApproximately(0, 0, 3);
+            cs4[0].StartPoint.ShouldBeApproximately(0, 0, 4);
+
+            spine.EndPoint.ShouldBeApproximately(Point.ByCoordinates(0, 0, 4));
+            spine.StartPoint.ShouldBeApproximately(Point.ByCoordinates(0, 0, 0));
+
             var modelPath = Path.Combine(TestGeometryDirectory, @"BySweptBlend_ValidArgs_Setup.obj");
             if (File.Exists(modelPath))
                 File.Delete(modelPath);
             WriteToOBJ(modelPath, new List<RenderPackage>() { package });
 
-            var blend = Solid.BySweptBlend(new List<List<Curve>> { cs1,cs2,cs3,cs4}, spine, new List<double>{0,.25,.75,1});
+            var blend = Solid.BySweptBlend(new List<List<Curve>> { cs1, cs2, cs3, cs4 }, spine, new List<double> {0, 0.25, 0.75, 1});
             Assert.NotNull(blend);
 
             blend.Tessellate(package);
@@ -416,8 +410,20 @@ namespace DSRevitNodesTests.GeometryObjects
                         var b = Point.ByCoordinates(package.LineStripVertices[i + 3], package.LineStripVertices[i + 4], package.LineStripVertices[i + 5]);
                         var v1 = Vector.ByCoordinates(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
                         var vNorm = v1.Cross(Vector.ByCoordinates(0, 0, 1));
-                        var c =(Point) b.Translate(vNorm, .025);
-                        var d =(Point) a.Translate(vNorm, .025);
+
+                        Point c;
+                        Point d;
+
+                        if (vNorm.Length > 1e-8)
+                        {
+                            c = (Point)b.Translate(vNorm, .025);
+                            d = (Point)a.Translate(vNorm, .025);
+                        }
+                        else
+                        {
+                            c = b;
+                            d = a;
+                        }
 
                         tw.WriteLine(string.Format("v {0} {1} {2}", a.X, a.Y, a.Z));
                         tw.WriteLine(string.Format("v {0} {1} {2}", b.X, b.Y, c.Z));
