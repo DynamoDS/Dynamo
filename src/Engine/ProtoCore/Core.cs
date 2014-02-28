@@ -1119,6 +1119,13 @@ namespace ProtoCore
         // A list of graphnodes that contain a function call
         public List<AssociativeGraph.GraphNode> GraphNodeCallList { get; set; }
 
+        public int newEntryPoint { get; private set; }
+
+        public void SetNewEntryPoint(int pc)
+        {
+            newEntryPoint = pc;
+        }
+
         /// <summary>
         /// Sets the function to an inactive state where it can no longer be used by the front-end and backend
         /// </summary>
@@ -1662,6 +1669,8 @@ namespace ProtoCore
             ForLoopBlockIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
 
             GraphNodeCallList = new List<GraphNode>();
+
+            newEntryPoint = ProtoCore.DSASM.Constants.kInvalidIndex;
         }
 
         // The unique subscript for SSA temporaries

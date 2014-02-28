@@ -1,13 +1,13 @@
 ﻿using Autodesk.Revit.DB;
 using RevitServices.Persistence;
 
-namespace Revit
+namespace Revit.Elements
 {
-    public class DSCategory
+    public class Category
     {
         #region private members
 
-        private Category internal_category;
+        private Autodesk.Revit.DB.Category internal_category;
 
         #endregion
 
@@ -22,20 +22,20 @@ namespace Revit
 
         #region public static constructors
 
-        public static DSCategory ByName(string name)
+        public static Category ByName(string name)
         {
             Settings documentSettings = DocumentManager.GetInstance().CurrentDBDocument.Settings;
             var groups = documentSettings.Categories;
             var builtInCat = (BuiltInCategory)System.Enum.Parse(typeof(BuiltInCategory), name);
             var category = groups.get_Item(builtInCat);
-            return new DSCategory(category);
+            return new Category(category);
         }
 
         #endregion
 
         #region private constructors
 
-        private DSCategory(Autodesk.Revit.DB.Category category)
+        private Category(Autodesk.Revit.DB.Category category)
         {
             internal_category = category;
         }

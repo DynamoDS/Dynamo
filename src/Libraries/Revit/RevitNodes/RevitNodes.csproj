@@ -11,8 +11,8 @@
     <ProjectGuid>{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DSRevitNodes</RootNamespace>
-    <AssemblyName>DSRevitNodes</AssemblyName>
+    <RootNamespace>Revit</RootNamespace>
+    <AssemblyName>RevitNodes</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -73,7 +73,7 @@
     <Compile Include="AnalysisDisplay\PointAnalysisDisplay.cs" />
     <Compile Include="AnalysisDisplay\VectorAnalysisDisplay.cs" />
     <Compile Include="Application\Document.cs" />
-    <Compile Include="DSCategory.cs" />
+    <Compile Include="Elements\Category.cs" />
     <Compile Include="Elements\AbstractElement.cs" />
     <Compile Include="Elements\AbstractFamilyInstance.cs" />
     <Compile Include="Elements\Element.cs" />
@@ -81,7 +81,7 @@
     <Compile Include="Elements\ModelText.cs" />
     <Compile Include="Elements\ModelTextType.cs" />
     <Compile Include="Elements\StructuralType.cs" />
-    <Compile Include="Elements\ElementWrappingExtensions.cs" />
+    <Compile Include="Elements\InternalUtilities\ElementWrappingExtensions.cs" />
     <Compile Include="Elements\Views\AbstractPlanView.cs" />
     <Compile Include="Elements\Views\AbstractView.cs" />
     <Compile Include="Elements\Views\Packing\CygonRectanglePacker.cs" />
@@ -107,7 +107,7 @@
     <Compile Include="References\AbstractReference.cs" />
     <Compile Include="References\FaceReference.cs" />
     <Compile Include="GeometryObjects\CurveLoop.cs" />
-    <Compile Include="Elements\ElementSelector.cs" />
+    <Compile Include="Elements\InternalUtilities\ElementSelector.cs" />
     <Compile Include="Elements\Family.cs" />
     <Compile Include="GeometryConversion\Extensions.cs" />
     <Compile Include="GeometryObjects\Edge.cs" />

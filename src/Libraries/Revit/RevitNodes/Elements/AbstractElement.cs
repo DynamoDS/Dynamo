@@ -64,6 +64,28 @@ namespace Revit.Elements
         }
 
         /// <summary>
+        /// Get the Element Id for this element
+        /// </summary>
+        public int Id
+        {
+            get
+            {
+                return this.InternalElementId.IntegerValue;
+            }
+        }
+
+        /// <summary>
+        /// Get the Element Unique Id for this element
+        /// </summary>
+        public string UniqueId
+        {
+            get
+            {
+                return this.InternalUniqueId;
+            }
+        }
+
+        /// <summary>
         /// A reference to the element
         /// </summary>
         [Browsable(false)]
