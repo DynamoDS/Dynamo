@@ -187,7 +187,12 @@ namespace Dynamo.Nodes
 
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
-                if (subNode.Name.Equals("Range"))
+                if (subNode.Name.Equals("System.Double"))
+                {
+                    Value = Convert.ToDouble(subNode.InnerText, CultureInfo.InvariantCulture);
+                }
+
+                else if (subNode.Name.Equals("Range"))
                 {
                     double min = Min;
                     double max = Max;
@@ -200,6 +205,8 @@ namespace Dynamo.Nodes
                                 min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                             else if (attr.Name.Equals("max"))
                                 max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                            else if (attr.Name.Equals("value"))
+                                Value = Convert.ToDouble(subNode.InnerText, CultureInfo.InvariantCulture);
                         }
                     }
 
@@ -455,7 +462,12 @@ namespace Dynamo.Nodes
         {
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
-                if (subNode.Name.Equals("Range"))
+                if (subNode.Name.Equals("System.Int32"))
+                {
+                    Value = Convert.ToInt32(subNode.InnerText, CultureInfo.InvariantCulture);
+                }
+                
+                else if (subNode.Name.Equals("Range"))
                 {
                     int min = Min;
                     int max = Max;
@@ -468,6 +480,8 @@ namespace Dynamo.Nodes
                                 min = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
                             else if (attr.Name.Equals("max"))
                                 max = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
+                            else if (attr.Name.Equals("value"))
+                                Value = Convert.ToInt32(subNode.InnerText, CultureInfo.InvariantCulture);
                         }
                     }
 
