@@ -11,7 +11,6 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using DynamoUtilities;
 using IronPython.Hosting;
 using ProtoCore.AST.AssociativeAST;
 
@@ -121,7 +120,11 @@ namespace DSIronPythonNode
         {
             var editWindow = new ScriptEditorWindow();
             editWindow.Initialize(GUID, "ScriptContent", Script);
-            editWindow.ShowDialog();
+            bool? acceptChanged = editWindow.ShowDialog();
+            if (acceptChanged.HasValue && acceptChanged.Value)
+            {
+                this.RequiresRecalc = true;
+            }
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(

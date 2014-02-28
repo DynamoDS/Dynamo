@@ -517,8 +517,10 @@ namespace Dynamo.Nodes
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            return ((FScheme.Value.Function)Controller.FSchemeEnvironment.LookupSymbol(Symbol))
-                .Item.Invoke(args);
+            //return ((FScheme.Value.Function)Controller.FSchemeEnvironment.LookupSymbol(Symbol))
+            //    .Item.Invoke(args);
+
+            throw new NotImplementedException("FSchemeEnvironment has been removed.");
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
@@ -607,6 +609,20 @@ namespace Dynamo.Nodes
 
             ArgumentLacing = LacingStrategy.Disabled;
         }
+
+        /*
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 0, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
+        }
+        */
     }
 
     [NodeName("Output")]
@@ -684,5 +700,19 @@ namespace Dynamo.Nodes
 
             ArgumentLacing = LacingStrategy.Disabled;
         }
+
+        /*
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 1, 0);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
+        }
+        */
     }
 }

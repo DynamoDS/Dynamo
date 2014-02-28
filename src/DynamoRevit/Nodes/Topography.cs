@@ -76,8 +76,8 @@ namespace Dynamo.Nodes
             return TopographySurface.Create(document, points);
         }
 
-        [NodeMigration(from:"0.6.3")]
-        public static void Migrate(XmlDocument doc, XmlElement oldNodeElement)
+        [NodeMigration(from:"0.6.3.0")]
+        public static NodeMigrationData Migrate(NodeMigrationData data)
         {
             //Migrate the topography node from 0.6.3 to 0.7.0
             //No connectors need to be altered as the new version of this node
@@ -87,16 +87,16 @@ namespace Dynamo.Nodes
             //for the node library. This will need work as we might be loading
             //the assemblies from a package. How do we convey this?
             var assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var assemblyPath = Path.Combine(assemblyDir, "DSRevitNodes.dll");
 
-            var oldAttribs = GetOldAttributesToCarryOver(oldNodeElement);
+            var oldNodeElement = data.MigratedNodes.ElementAt(0);
+            var newNodeElement = MigrationManager.CreateFunctionNodeFrom(oldNodeElement);
+            MigrationManager.SetFunctionSignature(newNodeElement, assemblyPath,
+                "DSTopography.ByPoints", "DSTopography.ByPoints@double[]..[]");
 
-            var newNodeElement = CreateNewFunctionNodeElement(doc, oldAttribs, assemblyDir, 
-                "DSTopography.ByPoints", "DSRevitNodes.dll", "DSTopography.ByPoints@list");
-
-            var elements = doc.GetElementsByTagName("Elements");
-            var elementsRoot = elements[0];
-            elementsRoot.RemoveChild(oldNodeElement);   //remove the old
-            elementsRoot.AppendChild(newNodeElement);   //add the new
+            NodeMigrationData migrated = new NodeMigrationData(data.Document);
+            migrated.AppendNode(newNodeElement);
+            return migrated;
         }
 
         private static XmlElement CreateNewFunctionNodeElement(

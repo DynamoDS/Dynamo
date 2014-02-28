@@ -122,6 +122,20 @@ def Apply(functionObject: _FunctionObject, param: var[]..[])
     return = functionObject.DoEvaluation(param);
 }
 
+def ApplyList(functionObject: _FunctionObject, params: var[]..[])
+{
+	return = [Imperative]
+	{
+		_count = Count(params);
+		_result = functionObject;
+		for(_i in 0.._count-1)
+		{
+			_result = Apply(_result, params[_i]);
+		}
+		return = _result;
+	}
+}
+
 def Compose(funcs : _FunctionObject[])
 {
     return = _ComposedFunctionObject(funcs);
@@ -202,71 +216,157 @@ def Filter(list: var[], predicate: _FunctionObject)
         }
 
         _filteredList = {};
-        _current = 0;
+        _currentIn = 0;
+
+        _filteredOutList = {};
+        _currentOut = 0;
 
         for (_index in 0..(_count - 1))
         {
             _value = list[_index];
             if (Apply(predicate, _value))
             {
-                _filteredList[_current] = _value;
-                _current = _current + 1;
+                _filteredList[_currentIn] = _value;
+                _currentIn = _currentIn + 1;
             }
-        }
-
-        return = _filteredList;
-    }
-}
-
-def FilterOut(list: var[], predicate: _FunctionObject)
-{
-    return = [Imperative]
-    {
-        if (list == null) 
-        {
-            return = null;
-        }
-
-        _count = Count(list);
-        if (_count == 0)
-        {
-            return = {};
-        }
-
-        _filteredList = {};
-        _current = 0;
-
-        for (_index in 0..(_count - 1))
-        {
-            _value = list[_index];
-            if (!Apply(predicate, _value))
+            else
             {
-                _filteredList[_current] = _value;
-                _current = _current + 1;
+                _filteredOutList[_currentOut] = _value;
+                _currentOut = _currentOut + 1;
             }
         }
 
-        return = _filteredList;
+        return = { _filteredList, _filteredOutList };
     }
 }
 
-def Map(list : var[], projector: _FunctionObject)
+def Combine(func : _FunctionObject, lists : var[]..[])
+{
+    argList = Transpose(lists);
+    return = [Imperative]
+    {
+        result = { };
+        for(args in argList)
+        {
+            result[Count(result)] = ApplyList(func, args);
+        }
+        return = result;
+    };
+}
+
+def LaceShortest(func : _FunctionObject, lists : var[]..[])
 {
     return = [Imperative]
     {
-        if (list == null)
+        shortestLen = -1;
+        for(item in lists)
         {
-            return= null;
+            count = Count(item);
+            if (shortestLen < 0 || count < shortestLen)
+            {
+                shortestLen = count;
+            }
+        }
+        shortenedLists = { };
+        for(item in lists)
+        {
+            if (shortestLen == 1)
+            {
+                shortenedLists[Count(shortenedLists)] = { item[0] };
+            }
+            else
+            {
+                shortenedLists[Count(shortenedLists)] = item[0..shortestLen - 1];
+            }
+        }
+        return = Combine(func, shortenedLists);
+    };
+}
+
+def LaceLongest(func : _FunctionObject, lists : var[]..[])
+{
+    return = [Imperative]
+    {
+        longestLen = 0;
+        for(item in lists)
+        {
+            count = Count(item);
+            if (count > longestLen)
+            {
+                longestLen = count;
+            }
+        }
+        stretchedLists = { };
+        for(item in lists)
+        {
+            count = Count(item);
+            last = item[count-1];
+            amtToAdd = longestLen - count;
+            if (amtToAdd == 0)
+            {
+                stretchedLists[Count(stretchedLists)] = item[0..count - 1];
+            }
+            else
+            {
+                repeated = { };
+                repeated[0..amtToAdd-1] = last;
+                stretchedLists[Count(stretchedLists)] = Concat(item, repeated);
+            }
+        }
+        return = Combine(func, stretchedLists);
+    };
+}
+
+def CartesianProduct(func : _FunctionObject, lists : var[]..[])
+{
+    return = [Imperative]
+    {
+        count = Count(lists);
+        if (count == 0)
+        {
+            return = lists;
         }
         
-        _mappedList = { };
-        for (_index in 0..(Count(list) - 1))
+        argLists = { };
+        for(item in lists[0])
         {
-            _mappedList[_index] = Apply(projector, list[_index]);
+            argLists[Count(argLists)] = { item };
         }
-                
-        return = _mappedList;
-    }
+
+        if (count > 1)
+        {
+            nextLists = { };
+            
+            if (count == 2)
+            {
+                nextLists = { lists[1] };
+            }
+            else
+            {
+                nextLists = lists[1..count - 1];
+            }
+            
+            for(list in nextLists)
+            {
+                newArgs = { };
+                for(item in list)
+                {
+                    for(argList in argLists)
+                    {
+                        newArgs[Count(newArgs)] = Concat(argList, { item });
+                    }
+                }
+                argLists = newArgs;
+            }
+        }
+        
+        results = { };
+        for(args in argLists)
+        {
+            results[Count(results)] = ApplyList(func, args);
+        }
+        return = results;
+    };
 }
 
 def SortByKey(list : var[], keyProjector:_FunctionObject)
@@ -422,5 +522,92 @@ def Reduce(list : var[], seed:var, accumulator : _FunctionObject)
         }
         
         return = _acc;
+    }
+}
+
+def TrueForAll(list: var[], predicate: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = true;
+        }
+
+        _index = 0;
+
+        for (_index in 0..(_count - 1))
+        {
+            _value = list[_i];
+            if (!Apply(predicate, _value))
+            {
+                return = false;
+            }
+        }
+
+        return = true;
+    }
+}
+
+def TrueForAny(list: var[], predicate: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = true;
+        }
+
+        _index = 0;
+
+        for (_i in 0..(_count - 1))
+        {
+            _value = list[_i];
+            if (Apply(predicate, _value))
+            {
+                return = true;
+            }
+        }
+
+        return = false;
+    }
+}
+
+def ForEach(list: var[], functionObject: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = null;
+        }
+
+        _index = 0;
+
+        for (_i in 0..(_count - 1))
+        {
+            _value = list[_i];
+            list[_i] = Apply(functionObject, _value);
+        }
+
+        return = list;
     }
 }

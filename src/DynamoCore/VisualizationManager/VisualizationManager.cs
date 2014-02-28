@@ -237,7 +237,8 @@ namespace Dynamo
         void DynamoModel_ConnectorDeleted(ConnectorModel connector)
         {
             //tell the watches that they require re-binding.
-            OnVisualizationUpdateComplete(this, EventArgs.Empty);
+            //OnVisualizationUpdateComplete(this, EventArgs.Empty);
+            UpdateRenderPackages();
         }
 
         /// <summary>
@@ -496,7 +497,7 @@ namespace Dynamo
                 sb.Remove(sb.Length - 1, 1);    //remove the last ,
             return sb.ToString();
         }
-        
+
         #endregion
     }
 
