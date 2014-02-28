@@ -53,7 +53,7 @@ namespace DSCoreNodesUI
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement(typeof(T).FullName);
-            outEl.SetAttribute("value", SerializeValue());
+            outEl.InnerText = SerializeValue();
             nodeElement.AppendChild(outEl);
         }
 
@@ -65,7 +65,7 @@ namespace DSCoreNodesUI
                                .Where(subNode => subNode.Name.Equals(typeof(T).FullName)))
             {
 // ReSharper disable once PossibleNullReferenceException
-                Value = DeserializeValue(subNode.Attributes[0].Value);
+                Value = DeserializeValue(subNode.InnerText);
             }
         }
 

@@ -17,6 +17,7 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using Utils = Dynamo.FSchemeInterop.Utils;
@@ -51,7 +52,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Get the last computed value from the node.
         /// </summary>
-        private FScheme.Value _oldValue;
+        private object _oldValue;
 
         /// <summary>
         ///     Should changes be reported to the containing workspace?
@@ -294,13 +295,13 @@ namespace Dynamo.Models
             }
         }
 
-        public virtual FScheme.Value OldValue
+        public virtual MirrorData OldValue
         {
-            get { return _oldValue; }
-            protected internal set
+            get
             {
-                _oldValue = value;
-                RaisePropertyChanged("OldValue");
+                return
+                    dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Value)
+                               .GetData();
             }
         }
 
@@ -449,7 +450,6 @@ namespace Dynamo.Models
 
         public void ResetOldValue()
         {
-            OldValue = null;
             RequiresRecalc = true;
         }
 
@@ -1227,6 +1227,7 @@ namespace Dynamo.Models
 
             return accString;
         }
+        
 
         /// <summary>
         ///     Creates a Scheme representation of this dynNode and all connected dynNodes.
@@ -1475,7 +1476,7 @@ namespace Dynamo.Models
             //If this is a partial application, then remember not to re-eval.
             if (partial)
             {
-                OldValue = FScheme.Value.NewFunction(null); // cache an old value for display to the user
+                //OldValue = FScheme.Value.NewFunction(null); // cache an old value for display to the user
                 RequiresRecalc = false;
             }
 
@@ -1594,27 +1595,28 @@ namespace Dynamo.Models
 
         private FScheme.Value evalIfDirty(FSharpList<FScheme.Value> args)
         {
-            // should I re-evaluate?
-            if (OldValue == null || !SaveResult || RequiresRecalc)
-            {
-                // re-evaluate
-                FScheme.Value result = evaluateNode(args);
+            //// should I re-evaluate?
+            //if (OldValue == null || !SaveResult || RequiresRecalc)
+            //{
+            //    // re-evaluate
+            //    FScheme.Value result = evaluateNode(args);
 
-                // if it was a failure, the old value is null
-                if (result.IsString && (result as FScheme.Value.String).Item == FailureString)
-                    OldValue = null;
-                else // cache the old value
-                    OldValue = result;
-            }
-            //else
-            //    OnEvaluate();
+            //    // if it was a failure, the old value is null
+            //    if (result.IsString && (result as FScheme.Value.String).Item == FailureString)
+            //        OldValue = null;
+            //    else // cache the old value
+            //        OldValue = result;
+            //}
+            ////else
+            ////    OnEvaluate();
 
-            return OldValue;
+            return OldValue.Data as FScheme.Value;
         }
 
-        public FScheme.Value GetValue(int outPortIndex)
+        public MirrorData GetValue(int outPortIndex)
         {
-            return _evaluationDict.Values.ElementAt(outPortIndex);
+            return dynSettings.Controller.EngineController.GetMirror(
+                GetAstIdentifierForOutputIndex(outPortIndex).Value).GetData();
         }
 
         protected internal virtual FScheme.Value evaluateNode(FSharpList<FScheme.Value> args)
@@ -2020,7 +2022,7 @@ namespace Dynamo.Models
             return migrationData;
         }
 
-        protected static NodeMigrationData MigrateToDsDSVarArgFunction(
+        protected static NodeMigrationData MigrateToDsVarArgFunction(
             NodeMigrationData data, string assembly, string nickname, string funcName)
         {
             XmlElement xmlNode = data.MigratedNodes.ElementAt(0);

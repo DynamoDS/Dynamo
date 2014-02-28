@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tests pluginClass='Dynamo.Tests.DynamoTestFramework' pluginGUID='487f9ff0-5b34-4e7e-97bf-70fbff69194f'>
 	<testAssemblies>
-		<testAssembly name="DSRevitNodesTests.dll">
+		<testAssembly name="RevitNodesTests.dll">
 		
 			<testFixture name="ReferencePointTests">
 				<test name="ByCoordinates_ValidInput" modelPath=".\empty.rfa"/>
@@ -20,25 +20,25 @@
 			<testFixture name="FamilyTests">
 				<test name="ByName_ValidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
 				<test name="ByName_InvalidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
-        <test name="ByName_NonexistentName" modelPath=".\MassWithBoxAndCone.rfa"/>
-        <test name="ByName_NullInput" modelPath=".\MassWithBoxAndCone.rfa"/>
+				<test name="ByName_NonexistentName" modelPath=".\MassWithBoxAndCone.rfa"/>
+				<test name="ByName_NullInput" modelPath=".\MassWithBoxAndCone.rfa"/>
 			</testFixture>
 			
 			<testFixture name="FamilySymbolTests">
 				<test name="ByName_GoodArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
 				<test name="ByName_BadArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
-        <test name="ByFamilyAndName_GoodArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
-        <test name="ByFamilyAndName_BadArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
+				<test name="ByFamilyAndName_GoodArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
+				<test name="ByFamilyAndName_BadArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
 			</testFixture>
 
-      <testFixture name="AdaptiveComponentTests">
-        <test name="ByPoints_ValidInput" modelPath=".\AdaptiveComponents.rfa"/>
-        <test name="ByPoints_NonMatchingNumberOfPoints" modelPath=".\AdaptiveComponents.rfa"/>
-        <test name="ByPoints_NullFamilySymbol" modelPath=".\AdaptiveComponents.rfa"/>
-        <test name="ByPoints_NullPts" modelPath=".\AdaptiveComponents.rfa"/>
-        <test name="ByPointsOnCurve_ValidInput" modelPath=".\AdaptiveComponents.rfa"/>
-        <test name="ByPointsOnFace_ValidInput" modelPath=".\AdaptiveComponents.rfa"/>
-      </testFixture>
+		  <testFixture name="AdaptiveComponentTests">
+				<test name="ByPoints_ValidInput" modelPath=".\AdaptiveComponents.rfa"/>
+				<test name="ByPoints_NonMatchingNumberOfPoints" modelPath=".\AdaptiveComponents.rfa"/>
+				<test name="ByPoints_NullFamilySymbol" modelPath=".\AdaptiveComponents.rfa"/>
+				<test name="ByPoints_NullPts" modelPath=".\AdaptiveComponents.rfa"/>
+				<test name="ByPointsOnCurve_ValidInput" modelPath=".\AdaptiveComponents.rfa"/>
+				<test name="ByPointsOnFace_ValidInput" modelPath=".\AdaptiveComponents.rfa"/>
+		  </testFixture>
       
 			<testFixture name="FamilyInstanceTests">
 				<test name="ByCoordinates_ValidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
@@ -70,8 +70,6 @@
 
       <testFixture name="DividedPathTests">
         <test name="ByCurveAndEqualDivisions_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="ByCurveAndEqualDivisions_NullArgument" modelPath=".\empty.rfa"/>
-        <test name="ByCurveAndEqualDivisions_InvalidDivisions" modelPath=".\empty.rfa"/>
       </testFixture>
       
       <testFixture name="DividedSurfaceTests">
@@ -111,8 +109,8 @@
       
 	  
       <testFixture name="FormTests">
-        <test name="ByLoftingCurveReferences_ValidArgs" modelPath=".\block.rfa"/>
-        <test name="FaceReferencesProperty_ValidObject" modelPath=".\block.rfa"/>
+			<test name="ByLoftingCurveReferences_ValidArgs" modelPath=".\block.rfa"/>
+			<test name="FaceReferencesProperty_ValidObject" modelPath=".\block.rfa"/>
 		    <test name="SolidsProperty_ValidObject" modelPath=".\block.rfa"/>
       </testFixture>
 

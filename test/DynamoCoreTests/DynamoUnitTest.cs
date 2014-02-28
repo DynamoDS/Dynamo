@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dynamo.FSchemeInterop;
 using Dynamo.Interfaces;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
@@ -51,8 +50,8 @@ namespace Dynamo.Tests
 
         protected void StartDynamo()
         {
-            //create a new instance of the ViewModel
-            Controller = new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), new PreferenceSettings())
+            ////create a new instance of the ViewModel
+            Controller = new DynamoController(typeof(DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), new PreferenceSettings())
             {
                 Testing = true
             };
@@ -65,7 +64,7 @@ namespace Dynamo.Tests
         protected void StartDynamo(IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences)
         {
             //create a new instance of the ViewModel
-            Controller = new DynamoController(new ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE, updateManager, watchHandler, preferences)
+            Controller = new DynamoController(typeof(DynamoViewModel), Context.NONE, updateManager, watchHandler, preferences)
             {
                 Testing = true
             };
@@ -91,7 +90,7 @@ namespace Dynamo.Tests
 
             foreach (var test in tests)
             {
-                var runResult = model.CurrentWorkspace.NodeFromWorkspace(test.Key).OldValue.UnwrapFSchemeValue();
+                var runResult = model.CurrentWorkspace.NodeFromWorkspace(test.Key).OldValue.Data;
                 Assert.AreEqual(test.Value, runResult);
             }
         }
