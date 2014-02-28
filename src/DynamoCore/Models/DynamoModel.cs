@@ -614,7 +614,7 @@ namespace Dynamo.Models
             DynamoLogger.Instance.Log("Opening home workspace " + xmlPath + "...");
 
             CleanWorkbench();
-            MigrationManager.ResetCodeBlockInputIndex();
+            MigrationManager.ResetIdentifierIndex();
 
             //clear the renderables
             dynSettings.Controller.VisualizationManager.ClearRenderables();

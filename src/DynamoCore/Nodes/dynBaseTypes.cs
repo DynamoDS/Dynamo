@@ -1391,9 +1391,9 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             // Escape special characters for display in code block node.
-            int start = MigrationManager.GetNextCodeBlockInputIndex();
-            int end = MigrationManager.GetNextCodeBlockInputIndex();
-            int step = MigrationManager.GetNextCodeBlockInputIndex();
+            int start = MigrationManager.GetNextIdentifierIndex();
+            int end = MigrationManager.GetNextIdentifierIndex();
+            int step = MigrationManager.GetNextIdentifierIndex();
             string content = "start" + start + ".." + "end" + end + ".." + "step" + step + ";";
 
             XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
@@ -1446,10 +1446,10 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             // Escape special characters for display in code block node.
-            int start = MigrationManager.GetNextCodeBlockInputIndex();
-            int amount = MigrationManager.GetNextCodeBlockInputIndex();
-            int step = MigrationManager.GetNextCodeBlockInputIndex();
-            string content = "start"+start+".."+"amount"+amount+"*step"+step+"-step"+step+"+start"+start+".."+"step"+step+";";
+            int start = MigrationManager.GetNextIdentifierIndex();
+            int amount = MigrationManager.GetNextIdentifierIndex();
+            int step = MigrationManager.GetNextIdentifierIndex();
+            string content = string.Format("start{0}.. amount{1}*step{2}-step{2}+start{0}..step{2};", start, amount, step);
 
             XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
             newNode.SetAttribute("CodeText", content);
