@@ -1383,7 +1383,7 @@ namespace ProtoFFITests
         public void Dispose_FFITarget_Inherited()
         {
             String code =
-            @"              import(""FFITarget.dll"");[Associative]{ x = DerivedDisposeTracer2.DerivedDisposeTracer2();}s1 = DerivedDisposeTracer2.DisposeCount;            ";
+            @"              import(""FFITarget.dll"");[Associative]{ x = DerivedDisposeTracer.DerivedDisposeTracer();}s1 = DerivedDisposeTracer.DisposeCount;            ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.VerifyFFIObjectOutOfScope("x");
             thisTest.VerifyReferenceCount("x", 0);
@@ -1439,6 +1439,121 @@ s1 = AbstractDerivedDisposeTracer2.DisposeCount;
             astLiveRunner.UpdateGraph(syncData);
 
             AssertValue("s2", 1);
+        }
+
+        [Test]
+        [Category("Trace")]
+        public void IntermediatePatch()
+        {
+            string setupCode =
+            @"import(""FFITarget.dll""); 
+x = DerivedDisposeTracer.DerivedDisposeTracer(); 
+";
+
+            // Create 2 CBNs
+
+            List<Subtree> added = new List<Subtree>();
+
+
+            // Simulate a new new CBN
+            Guid guid1 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            // Simulate a new new CBN
+            Guid guid2 = System.Guid.NewGuid();
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid2,
+                "x = null;" ));
+
+
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+        }
+
+        [Test]
+        public void CleanupAfterPropertyAccess()
+        {
+            String code =
+            @"import(""FFITarget.dll""); 
+x = AbstractDerivedDisposeTracer2.AbstractDerivedDisposeTracer2(1);
+so = x.I;
+s1 = AbstractDerivedDisposeTracer2.DisposeCount;
+x = null;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("s1", 1);
+        }
+
+        [Test]
+        [Category("Trace")]
+        public void CleanupAfterPropertyAccessLR()
+        {
+            string setupCode =
+            @"import(""FFITarget.dll""); 
+x = AbstractDerivedDisposeTracer2.AbstractDerivedDisposeTracer2(1);
+so = x.I;
+s1 = AbstractDerivedDisposeTracer2.DisposeCount;
+";
+
+            // Create 2 CBNs
+
+            List<Subtree> added = new List<Subtree>();
+
+
+            // Simulate a new new CBN
+            Guid guid1 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("s1", 0);
+
+
+            // Simulate a new new CBN
+            Guid guid2 = System.Guid.NewGuid();
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid2,
+                "x = null;" +
+                "s2 = AbstractDerivedDisposeTracer2.DisposeCount; "));
+
+
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("s2", 1);
+        }
+
+
+        //MOVE THIS TEST
+        [Test]
+        [Category("Trace")]
+        public void InheritenceLiveRunner()
+        {
+            string setupCode =
+            @"import(""FFITarget.dll"");o = InheritenceDriver.Gen();o.Y = 4;oy = o.Y;
+";
+
+            // Create 2 CBNs
+
+            List<Subtree> added = new List<Subtree>();
+
+
+            // Simulate a new new CBN
+            Guid guid1 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("oy", 4);
+
+
         }
 
 
