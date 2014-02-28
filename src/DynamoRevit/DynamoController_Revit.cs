@@ -706,7 +706,7 @@ namespace Dynamo
 
             //If we're in a debug run or not already in the idle thread, then run the Cleanup Delegate
             //from the idle thread. Otherwise, just run it in this thread.
-            if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread && !Testing)
+            if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread && !IsTestMode)
             {
                 IdlePromise.ExecuteOnIdle(cleanup, false);
                 IdlePromise.ExecuteOnIdle(rename, false);

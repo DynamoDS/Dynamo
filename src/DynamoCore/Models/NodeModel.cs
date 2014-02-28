@@ -1692,7 +1692,7 @@ namespace Dynamo.Models
 
                     Error(ex.Message);
 
-                    if (dynSettings.Controller.Testing)
+                    if (DynamoController.IsTestMode)
                         throw new Exception(ex.Message);
 
                     _errorCount++;

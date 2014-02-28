@@ -258,7 +258,7 @@ namespace Dynamo
 
             worker.DoWork += UpdateRenderPackagesThread;
 
-            if (_controller.Testing)
+            if (DynamoController.IsTestMode)
                 UpdateRenderPackagesThread(null, new DoWorkEventArgs(toUpdate));
             else
                 worker.RunWorkerAsync(toUpdate);   
@@ -273,7 +273,7 @@ namespace Dynamo
                 //that are marked for updating.
 
                 var toUpdate = e.Argument as IEnumerable<NodeModel> ??
-                               _controller.DynamoModel.Nodes.Where(node => node.IsUpdated);
+                               _controller.DynamoModel.Nodes.Where(node => node.IsUpdated || node.RequiresRecalc);
 
                 if (toUpdate.Any())
                 {

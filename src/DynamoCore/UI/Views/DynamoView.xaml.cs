@@ -521,7 +521,7 @@ namespace Dynamo.Controls
                 return;
             }
 
-            if (!dynSettings.Controller.Testing)
+            if (!DynamoController.IsTestMode)
             {
                 dynSettings.Controller.ShutDown(false);
             }

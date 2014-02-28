@@ -2908,6 +2908,9 @@ z=Point.ByCoordinates(y,a,a);
                 AssertValue("b", 42);
             }
 
+            added = new List<Subtree>();
+            added.Add(new Subtree(null, guid1));
+
             Guid guid2 = System.Guid.NewGuid();
             List<Subtree> added2 = new List<Subtree>();
             {
