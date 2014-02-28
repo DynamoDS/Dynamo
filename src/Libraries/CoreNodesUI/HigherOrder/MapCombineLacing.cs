@@ -148,7 +148,7 @@ namespace DSCore
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair resulting from a longest lacing of the input lists. All lists have their last element repeated to match the length of the longest input.")]
     [IsDesignScriptCompatible]
-    public class LaceLongest : NodeModel
+    public class LaceLongest : CombinatorNode
     {
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -172,7 +172,7 @@ namespace DSCore
     [NodeDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
     [IsDesignScriptCompatible]
     ///<search>cross</search>
-    public class CartesianProduct : NodeModel
+    public class CartesianProduct : CombinatorNode
     {
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
