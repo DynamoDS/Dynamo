@@ -53,7 +53,8 @@ namespace DSCore
         /// <param name="numbers">List of numbers to be averaged.</param>
         public static double Average(IList numbers)
         {
-            return numbers.Cast<double>().Average();
+            return (numbers.OfType<double>().Cast<double>().Sum() + 
+                numbers.OfType<int>().Cast<int>().Sum()) / numbers.Cast<object>().Count();
         }
 
         /// <summary>

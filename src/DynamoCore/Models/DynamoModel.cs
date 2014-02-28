@@ -666,7 +666,25 @@ namespace Dynamo.Models
                     }
                 }
 
-                MigrationManager.Instance.ProcessWorkspaceMigrations(xmlDoc, version);
+                Version fileVersion = MigrationManager.VersionFromString(version);
+
+                var dynamoModel = dynSettings.Controller.DynamoModel;
+                Version currentVersion = dynamoModel.HomeSpace.WorkspaceVersion;
+                if (fileVersion < currentVersion) // Opening an older file, migrate workspace.
+                {
+                    string backupPath = string.Empty;
+                    bool isTesting = dynSettings.Controller.Testing; // No backup during test.
+                    if (!isTesting && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
+                    {
+                        string message = string.Format("Original file '{0}' gets backed up at '{1}'",
+                            Path.GetFileName(xmlPath), backupPath);
+
+                        DynamoLogger.Instance.Log(message);
+                    }
+
+                    MigrationManager.Instance.ProcessWorkspaceMigrations(xmlDoc, fileVersion);
+                    MigrationManager.Instance.ProcessNodesInWorkspace(xmlDoc, fileVersion);
+                }
 
                 //set the zoom and offsets and trigger events
                 //to get the view to position iteself
@@ -747,11 +765,26 @@ namespace Dynamo.Models
                     NodeModel el = CreateNodeInstance(type, nickname, signature, guid);
                     el.WorkSpace = CurrentWorkspace;
 
-                    el.Load(
-                        elNode, 
-                        string.IsNullOrEmpty(version)
-                            ? new Version(0, 0, 0, 0) 
-                            : new Version(version));
+                    try
+                    {
+                        el.Load(elNode);
+                    }
+                    catch (UnresolvedFunctionException)
+                    {
+                        // If a given function is not found during file load, then convert the 
+                        // function node into a dummy node (instead of crashing the workflow).
+                        // 
+                        var e = elNode as XmlElement;
+                        var elNode2 = MigrationManager.CreateDummyNodeForFunction(e);
+
+                        // The new type representing the dummy node.
+                        typeName = elNode2.GetAttribute("type");
+                        type = Dynamo.Nodes.Utilities.ResolveType(typeName);
+
+                        el = CreateNodeInstance(type, nickname, string.Empty, guid);
+                        el.WorkSpace = CurrentWorkspace;
+                        el.Load(elNode2);
+                    }
 
                     CurrentWorkspace.Nodes.Add(el);
 
@@ -1272,7 +1305,7 @@ namespace Dynamo.Models
             node.WorkSpace = CurrentWorkspace;
 
             if (null != xmlNode)
-                node.Load(xmlNode, HomeSpace.WorkspaceVersion);
+                node.Load(xmlNode);
 
             // Override the guid so we can store for connection lookup
             node.GUID = nodeId;

@@ -20,7 +20,7 @@ namespace Revit.AnalysisDisplay
     /// Note: We're using the user facing name from Revit (Analysis Display), rather than the same name that the Revit API
     /// uses (Spatial Field)
     /// </summary>
-    [Browsable(false)]
+    //[Browsable(false)]
     public abstract class AbstractAnalysisDisplay : IDisposable
     {
         #region Static properties

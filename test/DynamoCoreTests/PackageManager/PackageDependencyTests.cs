@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using Dynamo;
-using Dynamo.Controls;
-using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
-using Dynamo.Search;
-using Dynamo.FSchemeInterop;
-using Dynamo.ViewModels;
-using Microsoft.FSharp.Collections;
 using NUnit.Framework;
 
 namespace Dynamo.Tests

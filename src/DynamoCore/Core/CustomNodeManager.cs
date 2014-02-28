@@ -192,7 +192,7 @@ namespace Dynamo.Utilities
             dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
 
             // remove from fscheme environment
-            dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
+            //dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
         }
 
         /// <summary>
@@ -647,6 +647,26 @@ namespace Dynamo.Utilities
                     }
                 }
 
+                Version fileVersion = MigrationManager.VersionFromString(version);
+
+                var dynamoModel = dynSettings.Controller.DynamoModel;
+                Version currentVersion = dynamoModel.HomeSpace.WorkspaceVersion;
+                if (fileVersion < currentVersion) // Opening an older file, migrate workspace.
+                {
+                    string backupPath = string.Empty;
+                    bool isTesting = dynSettings.Controller.Testing; // No backup during test.
+                    if (!isTesting && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
+                    {
+                        string message = string.Format("Original file '{0}' gets backed up at '{1}'",
+                            Path.GetFileName(xmlPath), backupPath);
+
+                        DynamoLogger.Instance.Log(message);
+                    }
+
+                    MigrationManager.Instance.ProcessWorkspaceMigrations(xmlDoc, fileVersion);
+                    MigrationManager.Instance.ProcessNodesInWorkspace(xmlDoc, fileVersion);
+                }
+
                 // we have a dyf and it lacks an ID field, we need to assign it
                 // a deterministic guid based on its name.  By doing it deterministically,
                 // files remain compatible
@@ -679,8 +699,8 @@ namespace Dynamo.Utilities
 
                 // load a dummy version, so any nodes depending on this node
                 // will find an (empty) identifier on compilation
-                FScheme.Expression dummyExpression = FScheme.Expression.NewNumber_E(0);
-                controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
+                //FScheme.Expression dummyExpression = FScheme.Expression.NewNumber_E(0);
+                //controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
 
                 // set the node as loaded
                 LoadedCustomNodes.Add(def.FunctionId, def);
@@ -751,7 +771,6 @@ namespace Dynamo.Utilities
                     // Retrieve optional 'function' attribute (only for DSFunction).
                     XmlAttribute signatureAttrib = elNode.Attributes["function"];
                     var signature = signatureAttrib == null ? null : signatureAttrib.Value;
-                    var dynamoModel = dynSettings.Controller.DynamoModel;
                     NodeModel el = dynamoModel.CreateNodeInstance(type, nickname, signature, guid);
 
                     if (lacingAttrib != null)
@@ -776,11 +795,7 @@ namespace Dynamo.Utilities
 
                     el.DisableReporting();
 
-                    el.Load(
-                        elNode,
-                        string.IsNullOrEmpty(version)
-                            ? new Version(0, 0, 0, 0) 
-                            : new Version(version));
+                    el.Load(elNode);
                 }
 
                 #endregion
@@ -871,7 +886,7 @@ namespace Dynamo.Utilities
 #if USE_DSENGINE
                 def.Compile(controller.EngineController);
 #else
-                def.CompileAndAddToEnvironment(controller.FSchemeEnvironment); 
+                //def.CompileAndAddToEnvironment(controller.FSchemeEnvironment); 
 #endif
 
                 ws.WatchChanges = true;

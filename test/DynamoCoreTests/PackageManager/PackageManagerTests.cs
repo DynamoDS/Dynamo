@@ -6,7 +6,6 @@ using System.Text;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
-using Dynamo.Tests;
 using Dynamo.Utilities;
 using NUnit.Framework;
 

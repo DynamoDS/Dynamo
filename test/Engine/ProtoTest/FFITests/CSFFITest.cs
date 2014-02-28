@@ -1144,7 +1144,20 @@ z1 = z.a;";
             string[] classes = theTest.GetAllMatchingClasses("DupTargetTest");
             Assert.True(classes.Length > 1, "More than one implementation of DupTargetTest class expected");
         }
+
+
+        [Test]
+        public void FFI_Target_Inheritence()
+        {
+            String code =
+            @"              import(""FFITarget.dll"");o = InheritenceDriver.Gen();oy = o.y;            ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("oy", 2);
+        }
+
     }
+
+
 
     // the following classes are used to test Dispose method call on FFI
     public class DisposeVerify

@@ -38,14 +38,9 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FSharp.Core" />
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
-    </Reference>
-    <Reference Include="HelixToolkit.Wpf, Version=2012.4.24.1, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -64,7 +59,6 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.XML" />
     <Reference Include="WindowsBase" />
@@ -78,13 +72,14 @@
     <Compile Include="DSFunctionNodeTest.cs" />
     <Compile Include="DSLibraryTest.cs" />
     <Compile Include="DynamoDefects.cs" />
+    <Compile Include="MigrationManagerTests.cs" />
+    <Compile Include="NodeMigrationTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="UpdateManagerTests.cs" />
     <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WorkspaceHeaderTests.cs" />
     <Compile Include="WorkspaceSaving.cs" />
-    <Compile Include="PrintValue.cs" />
     <Compile Include="CoreTests.cs" />
     <Compile Include="CoreDynTests.cs" />
     <Compile Include="CustomNodes.cs" />
@@ -118,14 +113,6 @@
     <ProjectReference Include="..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
-      <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
-      <Name>FSchemeInterop2012</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Legacy\FScheme\FScheme.2012.fsproj">
-      <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
-      <Name>FScheme.2012</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
