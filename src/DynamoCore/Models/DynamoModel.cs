@@ -99,7 +99,7 @@ namespace Dynamo.Models
                 DynamoLogger.Instance.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
 
-                if (dynSettings.Controller.Testing)
+                if (DynamoController.Testing)
                     Assert.Fail(ex.Message);
 
                 return null;
@@ -673,7 +673,7 @@ namespace Dynamo.Models
                 if (fileVersion < currentVersion) // Opening an older file, migrate workspace.
                 {
                     string backupPath = string.Empty;
-                    bool isTesting = dynSettings.Controller.Testing; // No backup during test.
+                    bool isTesting = DynamoController.Testing; // No backup during test.
                     if (!isTesting && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
                     {
                         string message = string.Format("Original file '{0}' gets backed up at '{1}'",

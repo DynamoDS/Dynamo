@@ -654,7 +654,7 @@ namespace Dynamo.Utilities
                 if (fileVersion < currentVersion) // Opening an older file, migrate workspace.
                 {
                     string backupPath = string.Empty;
-                    bool isTesting = dynSettings.Controller.Testing; // No backup during test.
+                    bool isTesting = DynamoController.Testing; // No backup during test.
                     if (!isTesting && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
                     {
                         string message = string.Format("Original file '{0}' gets backed up at '{1}'",
@@ -899,7 +899,7 @@ namespace Dynamo.Utilities
                 dynSettings.Controller.DynamoModel.WriteToLog("There was an error opening the workbench.");
                 dynSettings.Controller.DynamoModel.WriteToLog(ex);
 
-                if (controller.Testing)
+                if (DynamoController.Testing)
                     Assert.Fail(ex.Message);
 
                 def = null;

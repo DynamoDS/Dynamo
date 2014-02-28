@@ -374,7 +374,7 @@ namespace Dynamo
             var worker = new BackgroundWorker();
             worker.DoWork += VisualizationUpdateThread;
 
-            if(dynSettings.Controller.Testing)
+            if (DynamoController.Testing)
                 VisualizationUpdateThread(null,null);
             else
                 worker.RunWorkerAsync();
