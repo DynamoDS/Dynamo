@@ -57,7 +57,6 @@
   <ItemGroup>
     <Compile Include="Color.cs" />
     <Compile Include="Logic.cs" />
-    <Compile Include="Optimize.cs" />
     <Compile Include="Function.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
@@ -73,7 +72,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Combine.ds">
+    <None Include="Optimize.ds">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Flatten.ds">

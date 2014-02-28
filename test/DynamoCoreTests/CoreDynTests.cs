@@ -5,14 +5,20 @@ using System.Linq;
 using System.Threading;
 using Dynamo.FSchemeInterop;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using System.Text;
+using Dynamo.DSEngine;
+using Dynamo.Utilities;
 using NUnit.Framework;
+using ProtoCore.DSASM;
+using ProtoCore.Mirror;
+using System.Collections;
 using String = System.String;
+
 
 namespace Dynamo.Tests
 {
-    internal class CoreDynTests : DynamoUnitTest
+    internal class CoreDynTests : DSEvaluationUnitTest
     {
         [Test]
         public void AddSubtractMapReduceFilterBasic()
@@ -20,7 +26,7 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\map_reduce_filter\map_reduce_filter.dyn");
-            model.Open(openPath);
+            RunModel(openPath);
 
 
             // check all the nodes and connectors are loaded
@@ -43,32 +49,17 @@ namespace Dynamo.Tests
             // check the output values are correctly computed
 
             // add-subtract -3.0
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4a2363b6-ef64-44f5-be64-18832586e574");
-            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
-            Assert.AreEqual(-3.0, doubleWatchVal);
+            AssertPreviewValue("4a2363b6-ef64-44f5-be64-18832586e574", -3.0);
 
             // map - list of three 6's 
-            watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("fcad8d7a-1c9f-4604-a03b-53393e36ea0b");
-            FSharpList<FScheme.Value> listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(3, listWatchVal.Length);
-            Assert.AreEqual(6, listWatchVal[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(6, listWatchVal[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(6, listWatchVal[2].GetDoubleFromFSchemeValue());
+            AssertPreviewValue("fcad8d7a-1c9f-4604-a03b-53393e36ea0b", new int[] {6,6,6});
 
             // reduce - 6.0
-            watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("e892c469-47e6-4006-baea-ec4afea5a04e");
-            doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
-            Assert.AreEqual(6.0, doubleWatchVal);
+            AssertPreviewValue("e892c469-47e6-4006-baea-ec4afea5a04e", 6.0);
 
             // filter - list of 6-10
-            watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("41279a88-2f0b-4bd3-bef1-1be693df5c7e");
-            listWatchVal = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(5, listWatchVal.Length);
-            Assert.AreEqual(6, listWatchVal[0].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(7, listWatchVal[1].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(8, listWatchVal[2].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(9, listWatchVal[3].GetDoubleFromFSchemeValue());
-            Assert.AreEqual(10, listWatchVal[4].GetDoubleFromFSchemeValue());
+            AssertPreviewValue("41279a88-2f0b-4bd3-bef1-1be693df5c7e", new int[] { 5, 6, 7, 8, 9, 10 });
+
 
         }
 
@@ -82,25 +73,16 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
 
             string openPath = Path.Combine(examplePath, "multi.dyn");
-            model.Open(openPath);
+            RunModel(openPath);
 
-            dynSettings.Controller.RunExpression();
+            Dictionary<int, object> validationData = new Dictionary<int,object>()
+            {
 
-            var splitListVal = model.CurrentWorkspace.FirstNodeFromWorkspace<DeCons>().OldValue;
+                {1,0},
+            };
 
-            Assert.IsInstanceOf<FScheme.Value.List>(splitListVal);
+            SelectivelyAssertPreviewValues("a4d6ecce-0fe7-483d-a4f2-cd8cddefa25c", validationData);
 
-            var outs = (splitListVal as FScheme.Value.List).Item;
-
-            Assert.AreEqual(2, outs.Length);
-
-            var out1 = outs[0];
-            Assert.IsInstanceOf<FScheme.Value.Number>(out1);
-            Assert.AreEqual(0, (out1 as FScheme.Value.Number).Item);
-
-            var out2 = outs[1];
-            Assert.IsInstanceOf<FScheme.Value.List>(out2);
-            Assert.IsTrue((out2 as FScheme.Value.List).Item.IsEmpty);
         }
 
         [Test]
@@ -110,21 +92,11 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
 
             string openPath = Path.Combine(examplePath, "partial-multi.dyn");
-            model.Open(openPath);
+            RunModel(openPath);
 
-            dynSettings.Controller.RunExpression();
+            AssertPreviewValue("3005609b-ceaa-451f-9b6c-6ca957358ad6", new int[]{0});
 
-            var firstWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("3005609b-ceaa-451f-9b6c-6ca957358ad6");
-
-            Assert.IsInstanceOf<FScheme.Value.List>(firstWatch.OldValue);
-            Assert.IsInstanceOf<FScheme.Value.Number>((firstWatch.OldValue as FScheme.Value.List).Item[0]);
-            Assert.AreEqual(0, ((firstWatch.OldValue as FScheme.Value.List).Item[0] as FScheme.Value.Number).Item);
-
-            var restWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("2787f566-7612-41d1-8cec-8212fea58c8b");
-
-            Assert.IsInstanceOf<FScheme.Value.List>(restWatch.OldValue);
-            Assert.IsInstanceOf<FScheme.Value.List>((restWatch.OldValue as FScheme.Value.List).Item[0]);
-            Assert.IsTrue(((restWatch.OldValue as FScheme.Value.List).Item[0] as FScheme.Value.List).Item.IsEmpty);
+            AssertPreviewValue("2787f566-7612-41d1-8cec-8212fea58c8b", new int[]{});
         }
 
         [Test]
@@ -223,12 +195,10 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Add.dyn");
-            model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            RunModel(openPath);
 
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4c5889ac-7b91-4fb5-aaad-a2128b533279");
-            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
-            Assert.AreEqual(4.0, doubleWatchVal);
+            AssertPreviewValue("4c5889ac-7b91-4fb5-aaad-a2128b533279" , 4.0);
+
         }
 
         [Test]
@@ -238,12 +208,10 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Subtract.dyn");
-            model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            RunModel(openPath);
 
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("a574df4e-2dff-4c06-bbb6-e9467060085f");
-            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
-            Assert.AreEqual(0.0, doubleWatchVal);
+            AssertPreviewValue("a574df4e-2dff-4c06-bbb6-e9467060085f", 0.0);
+
         }
 
         [Test]
@@ -253,12 +221,10 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Multiply.dyn");
-            model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            RunModel(openPath);
 
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4c650bcc-9f18-4d23-a769-34845fd50fab");
-            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
-            Assert.AreEqual(4.0, doubleWatchVal);
+            AssertPreviewValue("4c650bcc-9f18-4d23-a769-34845fd50fab", 4.0);
+
         }
 
         [Test]
@@ -268,12 +234,10 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Divide.dyn");
-            model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            RunModel(openPath);
 
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4c650bcc-9f18-4d23-a769-34845fd50fab");
-            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
-            Assert.AreEqual(1.0, doubleWatchVal);
+            AssertPreviewValue("4c650bcc-9f18-4d23-a769-34845fd50fab", 1.0);
+
         }
 
         [Test]
@@ -283,12 +247,10 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Modulo.dyn");
-            model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            RunModel(openPath);
 
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4a780dfb-74b1-453a-86ef-2f4a5c46792e");
-            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
-            Assert.AreEqual(0.0, doubleWatchVal);
+            AssertPreviewValue("4a780dfb-74b1-453a-86ef-2f4a5c46792e", 0.0);
+
         }
 
         [Test]
@@ -298,12 +260,10 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Ceiling.dyn");
-            model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            RunModel(openPath);
 
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("97e58c7f-9082-4980-997a-d290cf8055e1");
-            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();  
-            Assert.AreEqual(2.0, doubleWatchVal);
+            AssertPreviewValue("97e58c7f-9082-4980-997a-d290cf8055e1", 2.0);
+
         }
 
         [Test]
@@ -313,12 +273,10 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Floor.dyn");
-            model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            RunModel(openPath);
 
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("fb52d286-ebcc-449c-989e-e4ea94831125");
-            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
-            Assert.AreEqual(1.0, doubleWatchVal);
+            AssertPreviewValue("fb52d286-ebcc-449c-989e-e4ea94831125", 1.0);
+
         }
 
         [Test]
@@ -328,12 +286,10 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Power.dyn");
-            model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            RunModel(openPath);
 
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("6a7b150e-f053-4b29-b672-007aa1acde24");
-            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
-            Assert.AreEqual(4.0, doubleWatchVal);
+            AssertPreviewValue("6a7b150e-f053-4b29-b672-007aa1acde24", 4.0);
+
         }
 
         [Test]
@@ -343,12 +299,10 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Round.dyn");
-            model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            RunModel(openPath);
 
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("430e086e-8cf0-4e89-abba-69dc1cd94058");
-            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
-            Assert.AreEqual(1.0, doubleWatchVal);
+            AssertPreviewValue("430e086e-8cf0-4e89-abba-69dc1cd94058", 1.0);
+
         }
 
         [Test]
@@ -358,12 +312,10 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Sine.dyn");
-            model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            RunModel(openPath);
 
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4d9fb747-2e90-4571-9c8f-7d59ad14a939");
-            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
-            Assert.AreEqual(1.0, doubleWatchVal);
+            AssertPreviewValue("4d9fb747-2e90-4571-9c8f-7d59ad14a939", 1.0);
+
         }
 
         [Test]
@@ -373,12 +325,10 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Cosine.dyn");
-            model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            RunModel(openPath);
 
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4d9fb747-2e90-4571-9c8f-7d59ad14a939");
-            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
-            Assert.AreEqual(-1.0, doubleWatchVal);
+            AssertPreviewValue("4d9fb747-2e90-4571-9c8f-7d59ad14a939", -1.0);
+
         }
 
         [Test]
@@ -390,11 +340,10 @@ namespace Dynamo.Tests
                     var examplePath = Path.Combine(GetTestDirectory(), @"core\CASE");
                     string openPath = Path.Combine(examplePath, "case_flip_matrix.dyn");
 
-                    model.Open(openPath);
+                    RunModel(openPath);
 
                     Assert.AreEqual(dynSettings.Controller.DynamoModel.CurrentWorkspace.Nodes.Count, 11);
 
-                    dynSettings.Controller.RunExpression(null);
                 });
         }
 
@@ -405,12 +354,10 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
 
             string openPath = Path.Combine(examplePath, "Tangent.dyn");
-            model.Open(openPath);
-            dynSettings.Controller.RunExpression(null);
+            RunModel(openPath);
 
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4d9fb747-2e90-4571-9c8f-7d59ad14a939");
-            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
-            Assert.AreEqual(0.0, doubleWatchVal, 0.00001);
+            AssertPreviewValue("4d9fb747-2e90-4571-9c8f-7d59ad14a939", 0.0);
+
         }
 
         [Test]
@@ -569,11 +516,9 @@ namespace Dynamo.Tests
             var pathNode = (StringFilename)model.Nodes.First(x => x is StringFilename);
             pathNode.Value = Path.Combine(examplePath,"honey-badger.jpg");
 
-            dynSettings.Controller.RunExpression(null);
+            RunModel(openPath);
 
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("4744f516-c6b5-421c-b7f1-1731610667bb");
-            var doubleWatchVal = watch.GetValue(0).GetDoubleFromFSchemeValue();
-            Assert.AreEqual(25, doubleWatchVal, 0.00001);
+            AssertPreviewValue("4744f516-c6b5-421c-b7f1-1731610667bb", 25);
         }
 
         [Test]
@@ -583,12 +528,9 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\default_values");
 
             string openPath = Path.Combine(examplePath, "take-every-default.dyn");
-            model.Open(openPath);
+            RunModel(openPath);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("360f3b50-5f27-460a-a57a-bb6338064d98");
-
-            // Run once
-            dynSettings.Controller.RunExpression(null);
 
             var oldVal = watch.OldValue;
             Assert.IsNotNull(oldVal);
@@ -641,14 +583,9 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 
-            model.Open(Path.Combine(exPath, @"and-test.dyn"));
+            RunModel(Path.Combine(exPath, @"and-test.dyn"));
 
-            dynSettings.Controller.RunExpression();
-
-            var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
-
-            Assert.IsAssignableFrom<FScheme.Value.Number>(watchValue);
-            Assert.AreEqual(0, (watchValue as FScheme.Value.Number).Item);
+            AssertPreviewValue("a3d8097e-1eb9-4ed0-8d48-9c14cdfb0340", 0.0);
         }
 
         [Test]
@@ -657,14 +594,9 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 
-            model.Open(Path.Combine(exPath, @"or-test.dyn"));
+            RunModel(Path.Combine(exPath, @"or-test.dyn"));
 
-            dynSettings.Controller.RunExpression();
-
-            var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
-
-            Assert.IsAssignableFrom<FScheme.Value.Number>(watchValue);
-            Assert.AreEqual(1, (watchValue as FScheme.Value.Number).Item);
+            AssertPreviewValue("a3d8097e-1eb9-4ed0-8d48-9c14cdfb0340", 1.0);
         }
 
         [Test]
@@ -673,14 +605,10 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 
-            model.Open(Path.Combine(exPath, @"if-test.dyn"));
+            RunModel(Path.Combine(exPath, @"if-test.dyn"));
 
-            dynSettings.Controller.RunExpression();
+            AssertPreviewValue("317384f2-7921-49cb-b1d9-be8b2718bde1", "can't divide by 0");
 
-            var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
-
-            Assert.IsAssignableFrom<FScheme.Value.String>(watchValue);
-            Assert.AreEqual("can't divide by 0", (watchValue as FScheme.Value.String).Item);
         }
 
         [Test]
@@ -711,9 +639,7 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 
-            model.Open(Path.Combine(exPath, @"constants-test.dyn"));
-
-            dynSettings.Controller.RunExpression();
+            RunModel(Path.Combine(exPath, @"constants-test.dyn"));
 
             Assert.Pass();
         }
@@ -724,9 +650,7 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 
-            model.Open(Path.Combine(exPath, @"thunk-test.dyn"));
-
-            dynSettings.Controller.RunExpression();
+            RunModel(Path.Combine(exPath, @"thunk-test.dyn"));
 
             Assert.Pass();
         }
@@ -737,9 +661,7 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\multithreading");
 
-            model.Open(Path.Combine(exPath, @"multithread-test.dyn"));
-
-            dynSettings.Controller.RunExpression();
+            RunModel(Path.Combine(exPath, @"multithread-test.dyn"));
 
             Assert.Pass();
         }

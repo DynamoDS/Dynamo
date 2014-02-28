@@ -1,21 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using NUnit.Framework;
 using Dynamo.ViewModels;
 using System.IO;
 using System.Reflection;
-using Dynamo.Utilities;
 using Dynamo.Nodes;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
+using System.Text;
+using Dynamo.DSEngine;
+using Dynamo.Utilities;
+using NUnit.Framework;
+using ProtoCore.DSASM;
+using ProtoCore.Mirror;
+using System.Collections;
 using String = System.String;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    public class ComparisonTests : DynamoUnitTest
+    class ComparisonTests : DSEvaluationUnitTest
     {
         private string logicTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "comparison"); } }
 
@@ -25,17 +29,10 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testLessThanNumberInput.dyn");
 
-            model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
-            LessThan watch1 = model.CurrentWorkspace.NodeFromWorkspace<LessThan>("604e36a9-df28-43ac-b86e-11f932a9f6e4");
-            LessThan watch2 = model.CurrentWorkspace.NodeFromWorkspace<LessThan>("20a2f416-2a13-4afe-af00-c041d5997f40");
+            RunModel(testFilePath);
+            AssertPreviewValue("fee9b04f-420f-4e2e-8dc1-20b7732d038c", 1);
+            AssertPreviewValue("9093b858-7e36-4cc9-b665-3297bbabd280", 0);
 
-            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            double expectedResult1 = 1;
-            double expectedResult2 = 0;
-            Assert.AreEqual(expectedResult1, actualResult1);
-            Assert.AreEqual(expectedResult2, actualResult2);
         }
 
         [Test]
@@ -44,17 +41,10 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testLessThanStringInput.dyn");
 
-            model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
-            LessThan watch1 = model.CurrentWorkspace.NodeFromWorkspace<LessThan>("604e36a9-df28-43ac-b86e-11f932a9f6e4");
-            LessThan watch2 = model.CurrentWorkspace.NodeFromWorkspace<LessThan>("20a2f416-2a13-4afe-af00-c041d5997f40");
+            RunModel(testFilePath);
+            AssertPreviewValue("b300d0f8-dee2-4eb8-ac13-e77e337ebbf2", 1);
+            AssertPreviewValue("f4e793a3-f01f-42d8-b084-884e4155dbd8", 0);
 
-            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            double expectedResult1 = 1;
-            double expectedResult2 = 0;
-            Assert.AreEqual(expectedResult1, actualResult1);
-            Assert.AreEqual(expectedResult2, actualResult2);
         }
 
         [Test]
@@ -63,11 +53,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testLessThanInvalidInput.dyn");
 
-            model.Open(testFilePath);
-            Assert.Throws<AssertionException>(() =>
-            {
-                dynSettings.Controller.RunExpression(null);
-            });
+            RunModel(testFilePath);
         }
 
         [Test]
@@ -76,11 +62,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testEqualInvalidInput.dyn");
 
-            model.Open(testFilePath);
-            
-            dynSettings.Controller.RunExpression();
-
-            Assert.AreEqual(0, model.CurrentWorkspace.FirstNodeFromWorkspace<Equal>().OldValue.GetDoubleFromFSchemeValue());
+            RunModel(testFilePath);
         }
 
         [Test]
@@ -89,17 +71,10 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testEqualNumberInput.dyn");
 
-            model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
-            Equal watch1 = model.CurrentWorkspace.NodeFromWorkspace<Equal>("8c3ffac4-60e3-4898-9c8d-ffb5ccee2211");
-            Equal watch2 = model.CurrentWorkspace.NodeFromWorkspace<Equal>("f935bd04-cade-4b63-9d4c-a85c778cafea");
+            RunModel(testFilePath);
+            AssertPreviewValue("75e739ed-082f-4eaa-8fd4-d0b88f44eaf4", 1);
+            AssertPreviewValue("40e72290-42ce-457b-9153-23f4d63b7a9b", 0);
 
-            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            double expectedResult1 = 1;
-            double expectedResult2 = 0;
-            Assert.AreEqual(expectedResult1, actualResult1);
-            Assert.AreEqual(expectedResult2, actualResult2);
         }
 
         [Test]
@@ -108,17 +83,10 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testEqualStringInput.dyn");
 
-            model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
-            Equal watch1 = model.CurrentWorkspace.NodeFromWorkspace<Equal>("8c3ffac4-60e3-4898-9c8d-ffb5ccee2211");
-            Equal watch2 = model.CurrentWorkspace.NodeFromWorkspace<Equal>("f935bd04-cade-4b63-9d4c-a85c778cafea");
+            RunModel(testFilePath);
+            AssertPreviewValue("171ec867-1434-444c-aa3a-8e61e167c477", 1);
+            AssertPreviewValue("ce42fdfb-6fca-4da5-a8a5-fb65dd03567d", 0);
 
-            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            double expectedResult1 = 1;
-            double expectedResult2 = 0;
-            Assert.AreEqual(expectedResult1, actualResult1);
-            Assert.AreEqual(expectedResult2, actualResult2);
         }
 
         [Test]
@@ -127,11 +95,8 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testGreaterThanInvalidInput.dyn");
 
-            model.Open(testFilePath);
-            Assert.Throws<AssertionException>(() =>
-            {
-                dynSettings.Controller.RunExpression(null);
-            });
+            RunModel(testFilePath);
+            //AssertPreviewValue("e52633e8-d520-473a-a0fb-9c835cf633dc", null);
         }
 
         [Test]
@@ -140,17 +105,10 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testGreaterThanNumberInput.dyn");
 
-            model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
-            GreaterThan watch1 = model.CurrentWorkspace.NodeFromWorkspace<GreaterThan>("e52633e8-d520-473a-a0fb-9c835cf633dc");
-            GreaterThan watch2 = model.CurrentWorkspace.NodeFromWorkspace<GreaterThan>("4fa1ffcf-4e8a-49c6-9917-9353caa9305c");
+            RunModel(testFilePath);
+            AssertPreviewValue("97646425-6c25-4692-87c8-23c0a1aeda09", 0);
+            AssertPreviewValue("3483359c-8fb4-4c37-be95-e56827920430", 1);
 
-            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            double expectedResult1 = 0;
-            double expectedResult2 = 1;
-            Assert.AreEqual(expectedResult1, actualResult1);
-            Assert.AreEqual(expectedResult2, actualResult2);
         }
 
         [Test]
@@ -159,17 +117,10 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testGreaterThanStringInput.dyn");
 
-            model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
-            GreaterThan watch1 = model.CurrentWorkspace.NodeFromWorkspace<GreaterThan>("e52633e8-d520-473a-a0fb-9c835cf633dc");
-            GreaterThan watch2 = model.CurrentWorkspace.NodeFromWorkspace<GreaterThan>("4fa1ffcf-4e8a-49c6-9917-9353caa9305c");
+            RunModel(testFilePath);
+            AssertPreviewValue("bc06bc35-51f7-4db4-bbb5-f687449ec87b", 0);
+            AssertPreviewValue("8c4d02fe-e6cb-4ff7-9093-82f246e1a88d", 1);
 
-            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            double expectedResult1 = 0;
-            double expectedResult2 = 1;
-            Assert.AreEqual(expectedResult1, actualResult1);
-            Assert.AreEqual(expectedResult2, actualResult2);
         }
 
         [Test]
@@ -178,11 +129,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testGreaterThanOrEqualInvalidInput.dyn");
 
-            model.Open(testFilePath);
-            Assert.Throws<AssertionException>(() =>
-            {
-                dynSettings.Controller.RunExpression(null);
-            });
+            RunModel(testFilePath);
         }
 
         [Test]
@@ -191,21 +138,11 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testGreaterThanOrEqualNumberInput.dyn");
 
-            model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
-            GreaterThanEquals watch1 = model.CurrentWorkspace.NodeFromWorkspace<GreaterThanEquals>("a212d397-5c07-48da-9321-9df27bddb2a4");
-            GreaterThanEquals watch2 = model.CurrentWorkspace.NodeFromWorkspace<GreaterThanEquals>("24f8d658-86f4-4b62-92e6-1cf3868f53f7");
-            GreaterThanEquals watch3 = model.CurrentWorkspace.NodeFromWorkspace<GreaterThanEquals>("19028dd3-7a41-45be-ac99-8d5de14cd590");
+            RunModel(testFilePath);
+            AssertPreviewValue("40101492-816b-4e68-9a14-d29f99239542", 0);
+            AssertPreviewValue("e598cfcd-227c-4a7b-b26e-e7de6fbb6e2b", 1);
+            AssertPreviewValue("c8962c58-3bfa-424e-baa3-f8c18a0a563f", 1);
 
-            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult3 = watch3.GetValue(0).GetDoubleFromFSchemeValue();
-            double expectedResult1 = 0;
-            double expectedResult2 = 1;
-            double expectedResult3 = 1;
-            Assert.AreEqual(expectedResult1, actualResult1);
-            Assert.AreEqual(expectedResult2, actualResult2);
-            Assert.AreEqual(expectedResult3, actualResult3);
         }
 
         [Test]
@@ -214,21 +151,12 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testGreaterThanOrEqualStringInput.dyn");
 
-            model.Open(testFilePath);
+            RunModel(testFilePath);
             dynSettings.Controller.RunExpression(null);
-            GreaterThanEquals watch1 = model.CurrentWorkspace.NodeFromWorkspace<GreaterThanEquals>("a212d397-5c07-48da-9321-9df27bddb2a4");
-            GreaterThanEquals watch2 = model.CurrentWorkspace.NodeFromWorkspace<GreaterThanEquals>("19028dd3-7a41-45be-ac99-8d5de14cd590");
-            GreaterThanEquals watch3 = model.CurrentWorkspace.NodeFromWorkspace<GreaterThanEquals>("24f8d658-86f4-4b62-92e6-1cf3868f53f7");
+            AssertPreviewValue("b5b07b97-bd27-4a31-bca1-59d791150b4b", 0);
+            AssertPreviewValue("370abb34-9866-465e-98f0-8df73cad39ba", 1);
+            AssertPreviewValue("6b703733-fb5a-431d-9180-08538dffbd8c", 1);
 
-            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult3 = watch3.GetValue(0).GetDoubleFromFSchemeValue();
-            double expectedResult1 = 0;
-            double expectedResult2 = 1;
-            double expectedResult3 = 1;
-            Assert.AreEqual(expectedResult1, actualResult1);
-            Assert.AreEqual(expectedResult2, actualResult2);
-            Assert.AreEqual(expectedResult3, actualResult3);
         }
 
         [Test]
@@ -237,11 +165,8 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testLessThanOrEqualInvalidInput.dyn");
 
-            model.Open(testFilePath);
-            Assert.Throws<AssertionException>(() =>
-            {
-                dynSettings.Controller.RunExpression(null);
-            });
+            RunModel(testFilePath);
+
         }
 
         [Test]
@@ -250,21 +175,12 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testLessThanOrEqualNumberInput.dyn");
 
-            model.Open(testFilePath);
+            RunModel(testFilePath);
             dynSettings.Controller.RunExpression(null);
-            LessThanEquals watch1 = model.CurrentWorkspace.NodeFromWorkspace<LessThanEquals>("8ed276d0-d1e0-4e38-bcaa-77c2c3b4819f");
-            LessThanEquals watch2 = model.CurrentWorkspace.NodeFromWorkspace<LessThanEquals>("4f115ff1-17b2-4386-a38b-4546e7bf39b6");
-            LessThanEquals watch3 = model.CurrentWorkspace.NodeFromWorkspace<LessThanEquals>("c3167b61-df46-4034-8319-aefc9e7565d4");
+            AssertPreviewValue("49723f58-2a48-4cf8-815d-899bf3691938", 1);
+            AssertPreviewValue("cfd23808-b7da-46f5-acb7-ffe9bd80da53", 1);
+            AssertPreviewValue("0643bd3b-8d20-4300-aa96-1c1789b90303", 0);
 
-            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult3 = watch3.GetValue(0).GetDoubleFromFSchemeValue();
-            double expectedResult1 = 1;
-            double expectedResult2 = 1;
-            double expectedResult3 = 0;
-            Assert.AreEqual(expectedResult1, actualResult1);
-            Assert.AreEqual(expectedResult2, actualResult2);
-            Assert.AreEqual(expectedResult3, actualResult3);
         }
 
         [Test]
@@ -273,106 +189,57 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testLessThanOrEqualStringInput.dyn");
 
-            model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
-            LessThanEquals watch1 = model.CurrentWorkspace.NodeFromWorkspace<LessThanEquals>("8ed276d0-d1e0-4e38-bcaa-77c2c3b4819f");
-            LessThanEquals watch2 = model.CurrentWorkspace.NodeFromWorkspace<LessThanEquals>("4f115ff1-17b2-4386-a38b-4546e7bf39b6");
-            LessThanEquals watch3 = model.CurrentWorkspace.NodeFromWorkspace<LessThanEquals>("c3167b61-df46-4034-8319-aefc9e7565d4");
+            RunModel(testFilePath);
+            AssertPreviewValue("05e8d59e-e183-4c20-a37f-03b6e97e465a", 1);
+            AssertPreviewValue("8e37eefc-8555-417c-a2af-bf75e6d986db", 1);
+            AssertPreviewValue("90bb3906-b6fe-4be5-b3cb-a97d92409a70", 0);
 
-            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult3 = watch3.GetValue(0).GetDoubleFromFSchemeValue();
-            double expectedResult1 = 1;
-            double expectedResult2 = 1;
-            double expectedResult3 = 0;
-            Assert.AreEqual(expectedResult1, actualResult1);
-            Assert.AreEqual(expectedResult2, actualResult2);
-            Assert.AreEqual(expectedResult3, actualResult3);
         }
     }
 
     [TestFixture]
-    public class ConditionalTest : DynamoUnitTest
+    class ConditionalTest : DSEvaluationUnitTest
     {
         private string logicTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "conditional"); } }
 
-        [Ignore]
+        [Test]
         public void testAnd_NumberInput()
         {
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testAndNumberInput.dyn");
 
-            model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
-            And watch1 = model.CurrentWorkspace.NodeFromWorkspace<And>("24a185da-6176-4b08-bba3-214ccc379dc7");
-            And watch2 = model.CurrentWorkspace.NodeFromWorkspace<And>("1db98a6e-0fde-4911-9da5-800dc820fab3");
-            And watch3 = model.CurrentWorkspace.NodeFromWorkspace<And>("be726ccd-686c-40d9-a9fa-ed4990434906");
+            RunModel(testFilePath);
+            AssertPreviewValue("893a8746-b74f-4078-a125-8b96a48ec782", 0);
+            AssertPreviewValue("6fa95218-d960-4069-ab38-0fec7c815e06", 1);
+            AssertPreviewValue("aa4b3295-6c95-4a0a-b848-69bf72353c36", 0);
 
-            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult3 = watch3.GetValue(0).GetDoubleFromFSchemeValue();
-            double expectedResult1 = 0;
-            double expectedResult2 = 1;
-            double expectedResult3 = 0;
-            Assert.AreEqual(expectedResult1, actualResult1);
-            Assert.AreEqual(expectedResult2, actualResult2);
-            Assert.AreEqual(expectedResult3, actualResult3);
         }
 
-        [Ignore]
+        [Test]
         public void testAnd_StringInput()
         {
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testAndStringInput.dyn");
 
-            model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
-            And watch1 = model.CurrentWorkspace.NodeFromWorkspace<And>("9d18c5d9-7678-4818-b4f6-474c29c358ff");
-            And watch2 = model.CurrentWorkspace.NodeFromWorkspace<And>("2e685247-b78a-4f0d-8e43-57ca740857c8");
+            RunModel(testFilePath);
+            AssertPreviewValue("893a8746-b74f-4078-a125-8b96a48ec782", "b");
+            AssertPreviewValue("6fa95218-d960-4069-ab38-0fec7c815e06", "a");
 
-            String actualResult1 = watch1.GetValue(0).GetStringFromFSchemeValue();
-            String actualResult2 = watch2.GetValue(0).GetStringFromFSchemeValue();
-            String expectedResult1 = "b";
-            String expectedResult2 = "a";
-            Assert.AreEqual(expectedResult1, actualResult1);
-            Assert.AreEqual(expectedResult2, actualResult2);
         }
 
-        [Ignore]
+        [Test]
         public void testIf_StringInput()
         {
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testIfNumberInput.dyn");
 
-            model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
-            Conditional watch1 = model.CurrentWorkspace.NodeFromWorkspace<Conditional>("a00a70d6-6806-46d3-9bbc-52e30108499b");
-            Conditional watch2 = model.CurrentWorkspace.NodeFromWorkspace<Conditional>("f1c1e1bb-c112-41ad-b38e-67e2512d2c97");
-            Conditional watch3 = model.CurrentWorkspace.NodeFromWorkspace<Conditional>("66361adf-57db-4bcf-9bec-3e7c07bf025b");
-            Conditional watch4 = model.CurrentWorkspace.NodeFromWorkspace<Conditional>("8f4b6aa0-5c1d-4dd3-90cb-bd66e4d921ac");
-            Conditional watch5 = model.CurrentWorkspace.NodeFromWorkspace<Conditional>("38f7e43f-9361-45de-9ef1-cd51af9afe6c");
-            Conditional watch6 = model.CurrentWorkspace.NodeFromWorkspace<Conditional>("b6f5ae7a-cb3b-4eed-88a5-259ea2a12302");
-
-            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult3 = watch3.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult4 = watch4.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult5 = watch5.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult6 = watch6.GetValue(0).GetDoubleFromFSchemeValue();
-
-            double expectedResult1 = 1;
-            double expectedResult2 = 0;
-            double expectedResult3 = 0;
-            double expectedResult4 = 0;
-            double expectedResult5 = 1;
-            double expectedResult6 = 3;
-
-            Assert.AreEqual(expectedResult1, actualResult1);
-            Assert.AreEqual(expectedResult2, actualResult2);
-            Assert.AreEqual(expectedResult3, actualResult3);
-            Assert.AreEqual(expectedResult4, actualResult4);
-            Assert.AreEqual(expectedResult5, actualResult5);
-            Assert.AreEqual(expectedResult6, actualResult6);
+            RunModel(testFilePath);
+            AssertPreviewValue("1e99e389-04ba-4a9f-9ef4-d188058f734f", 1);
+            AssertPreviewValue("ae08cfd2-3fb3-41e0-94f4-a70ead3e7466", 0);
+            AssertPreviewValue("75da9972-b458-45d7-8673-42e7c74e42b6", 0);
+            AssertPreviewValue("1faadb07-62e9-42f1-9c01-18b6673e53cf", 0);
+            AssertPreviewValue("a1cb3c11-4939-40fb-ac7b-ad80c9e3c576", 1);
+            AssertPreviewValue("6a3cc1a4-a353-4870-8c1c-848298ebe050", 3);
         }
 
         [Test]
@@ -381,40 +248,23 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testNotNumberInput.dyn");
 
-            model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
-            Not watch1 = model.CurrentWorkspace.NodeFromWorkspace<Not>("40a668a4-f2db-424e-bfea-0e380920dd9f");
-            Not watch2 = model.CurrentWorkspace.NodeFromWorkspace<Not>("cad4dc45-b62c-4f0b-b091-fb290efb14eb");
+            RunModel(testFilePath);
+            AssertPreviewValue("893a8746-b74f-4078-a125-8b96a48ec782", 0);
+            AssertPreviewValue("6fa95218-d960-4069-ab38-0fec7c815e06", 1);
 
-            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            double expectedResult1 = 0;
-            double expectedResult2 = 1;
-            Assert.AreEqual(expectedResult1, actualResult1);
-            Assert.AreEqual(expectedResult2, actualResult2);
         }
 
-        [Ignore]
+        [Test]
         public void testOr_NumberInput()
         {
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testOrNumberInput.dyn");
 
-            model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
-            Or watch1 = model.CurrentWorkspace.NodeFromWorkspace<Or>("ae73676a-b5fb-4745-b1d1-2b757d659a7e");
-            Or watch2 = model.CurrentWorkspace.NodeFromWorkspace<Or>("b148eef2-3bfc-4b00-a3ab-837f0c83e0ba");
-            Or watch3 = model.CurrentWorkspace.NodeFromWorkspace<Or>("5932a88d-c798-4bdb-8a0e-d58b08c71134");
+            RunModel(testFilePath);
+            AssertPreviewValue("3892c87e-ee6b-4e57-9132-85ac4512f676", 1);
+            AssertPreviewValue("d133fab7-91d3-4e1e-ada5-69a32def1bb5", 1);
+            AssertPreviewValue("bbbd263e-f424-400c-839e-34c86b6e4c64", 0);
 
-            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult3 = watch3.GetValue(0).GetDoubleFromFSchemeValue();
-            double expectedResult1 = 1;
-            double expectedResult2 = 1;
-            double expectedResult3 = 0;
-            Assert.AreEqual(expectedResult1, actualResult1);
-            Assert.AreEqual(expectedResult2, actualResult2);
-            Assert.AreEqual(expectedResult3, actualResult3);
         }
 
         [Test]
@@ -423,21 +273,12 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(logicTestFolder, "testXorNumberInput.dyn");
 
-            model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
-            Xor watch1 = model.CurrentWorkspace.NodeFromWorkspace<Xor>("3dd18676-abe9-49db-a60c-badecf2322fd");
-            Xor watch2 = model.CurrentWorkspace.NodeFromWorkspace<Xor>("29930505-2c52-40a0-a37c-9be2d383b4b5");
-            Xor watch3 = model.CurrentWorkspace.NodeFromWorkspace<Xor>("06f44e0b-824b-46a9-9e39-efa4500640b6");
+            RunModel(testFilePath);
+            AssertPreviewValue("893a8746-b74f-4078-a125-8b96a48ec782", 1);
+            AssertPreviewValue("6fa95218-d960-4069-ab38-0fec7c815e06", 0);
+            AssertPreviewValue("aa4b3295-6c95-4a0a-b848-69bf72353c36", 0);
 
-            double actualResult1 = watch1.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult2 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            double actualResult3 = watch2.GetValue(0).GetDoubleFromFSchemeValue();
-            double expectedResult1 = 1;
-            double expectedResult2 = 0;
-            double expectedResult3 = 0;
-            Assert.AreEqual(expectedResult1, actualResult1);
-            Assert.AreEqual(expectedResult2, actualResult2);
-            Assert.AreEqual(expectedResult3, actualResult3);
         }
+
     }
 }

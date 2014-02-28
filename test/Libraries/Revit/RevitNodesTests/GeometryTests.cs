@@ -1,6 +1,6 @@
 ﻿using Autodesk.DesignScript.Geometry;
-using DSCoreNodes;
 using NUnit.Framework;
+using Revit.Geometry;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSCoreNodesTests

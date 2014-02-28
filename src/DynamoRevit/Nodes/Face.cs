@@ -10,6 +10,8 @@ using Microsoft.FSharp.Collections;
 using RevitServices.Persistence;
 using Line = Autodesk.Revit.DB.Line;
 using Solid = Autodesk.Revit.DB.Solid;
+using RevitGeometry = Revit.Geometry;
+using System.Xml;
 
 namespace Dynamo.Nodes
 {
@@ -72,6 +74,18 @@ namespace Dynamo.Nodes
             }
 
             return FScheme.Value.NewList(result);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 2, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 
@@ -150,6 +164,18 @@ namespace Dynamo.Nodes
 
             return FScheme.Value.NewContainer(result);
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 2, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
+        }
     }
 
     [NodeName("Surface Derivatives")]
@@ -222,6 +248,55 @@ namespace Dynamo.Nodes
 
             return FScheme.Value.NewContainer(face_point);
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Surface.PointAtParameter", "Surface.PointAtParameter@double,double");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            data.ReconnectToPort(connector1, newInPort0);
+
+            if (connector0 != null)
+            {
+                // Create new nodes only when the old node is connected to a UV node
+                XmlElement nodeU = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "UV.U", "UV.U");
+                migrationData.AppendNode(nodeU);
+                string nodeUId = MigrationManager.GetGuidFromXmlElement(nodeU);
+
+                XmlElement nodeV = MigrationManager.CreateFunctionNode(
+                    data.Document, "ProtoGeometry.dll", "UV.V", "UV.V");
+                migrationData.AppendNode(nodeV);
+                string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
+
+                // Update connectors
+                PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.INPUT);
+
+                string nodeUVId = connector0.GetAttribute("start").ToString();
+                data.ReconnectToPort(connector0, newInPortNodeU);
+                data.CreateConnector(nodeU, 0, newNode, 1);
+                data.CreateConnector(nodeV, 0, newNode, 2);
+                data.CreateConnectorFromId(nodeUVId, 0, nodeVId, 0);
+            }
+            
+            return migrationData;
+        }
     }
 
     [NodeName("Surface Normal")]
@@ -255,6 +330,55 @@ namespace Dynamo.Nodes
             }
 
             return FScheme.Value.NewContainer(norm);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Surface.NormalAtParameter", "Surface.NormalAtParameter@double,double");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            data.ReconnectToPort(connector1, newInPort0);
+
+            if (connector0 != null)
+            {
+                // Create new nodes only when the old node is connected to a UV node
+                XmlElement nodeU = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "UV.U", "UV.U");
+                migrationData.AppendNode(nodeU);
+                string nodeUId = MigrationManager.GetGuidFromXmlElement(nodeU);
+
+                XmlElement nodeV = MigrationManager.CreateFunctionNode(
+                    data.Document, "ProtoGeometry.dll", "UV.V", "UV.V");
+                migrationData.AppendNode(nodeV);
+                string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
+
+                // Update connectors
+                PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.INPUT);
+
+                string nodeUVId = connector0.GetAttribute("start").ToString();
+                data.ReconnectToPort(connector0, newInPortNodeU);
+                data.CreateConnector(nodeU, 0, newNode, 1);
+                data.CreateConnector(nodeV, 0, newNode, 2);
+                data.CreateConnectorFromId(nodeUVId, 0, nodeVId, 0);
+            }
+
+            return migrationData;
         }
     }
 
@@ -292,6 +416,12 @@ namespace Dynamo.Nodes
 
             //Fin
             return FScheme.Value.NewContainer(Units.Area.FromSquareFeet(area));
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Surface.Area", "Surface.Area");
         }
     }
 
@@ -332,7 +462,7 @@ namespace Dynamo.Nodes
             var min = Vector.ByCoordinates(bbox.Min.U, bbox.Min.V,0);
             var max = Vector.ByCoordinates(bbox.Max.U, bbox.Max.V,0);
 
-            return FScheme.Value.NewContainer(DSCoreNodes.Domain2D.ByMinimumAndMaximum(min, max));
+            return FScheme.Value.NewContainer(RevitGeometry.Domain2D.ByMinimumAndMaximum(min, max));
         }
     }
 }
