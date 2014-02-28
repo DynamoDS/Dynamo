@@ -192,7 +192,7 @@ namespace Dynamo.Utilities
             dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
 
             // remove from fscheme environment
-            dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
+            //dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
         }
 
         /// <summary>
@@ -699,8 +699,8 @@ namespace Dynamo.Utilities
 
                 // load a dummy version, so any nodes depending on this node
                 // will find an (empty) identifier on compilation
-                FScheme.Expression dummyExpression = FScheme.Expression.NewNumber_E(0);
-                controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
+                //FScheme.Expression dummyExpression = FScheme.Expression.NewNumber_E(0);
+                //controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
 
                 // set the node as loaded
                 LoadedCustomNodes.Add(def.FunctionId, def);
@@ -886,7 +886,7 @@ namespace Dynamo.Utilities
 #if USE_DSENGINE
                 def.Compile(controller.EngineController);
 #else
-                def.CompileAndAddToEnvironment(controller.FSchemeEnvironment); 
+                //def.CompileAndAddToEnvironment(controller.FSchemeEnvironment); 
 #endif
 
                 ws.WatchChanges = true;

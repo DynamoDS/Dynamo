@@ -1,14 +1,7 @@
 ﻿using System.IO;
 using NUnit.Framework;
 using Dynamo.Utilities;
-using Dynamo.Nodes;
 using Dynamo.Models;
-using Microsoft.FSharp.Collections;
-using System.Text;
-using Dynamo.DSEngine;
-using ProtoCore.DSASM;
-using ProtoCore.Mirror;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Dynamo.Tests
@@ -118,7 +111,7 @@ namespace Dynamo.Tests
 
             dynSettings.Controller.RunExpression(null);
             var add = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Addition>("ccb2eda9-0966-4ab8-a186-0d5f844559c1");
-            Assert.AreEqual(20, add.OldValue.GetDoubleFromFSchemeValue());
+            Assert.AreEqual(20, add.OldValue.Data);
         }
 
     }

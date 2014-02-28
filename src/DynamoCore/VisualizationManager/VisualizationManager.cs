@@ -893,10 +893,15 @@ namespace Dynamo
                 sb.Remove(sb.Length - 1, 1);    //remove the last ,
             return sb.ToString();
         }
-        
+
         public static NodeModel FindNodeWithDrawable(object drawable)
         {
-            return GetDrawableNodesInModel().FirstOrDefault(x => GetDrawableFromValue(new List<int>(), x.OldValue).ContainsValue(drawable));
+            return
+                GetDrawableNodesInModel()
+                    .FirstOrDefault(
+                        x =>
+                            GetDrawableFromValue(new List<int>(), x.OldValue.Data as FScheme.Value)
+                                .ContainsValue(drawable));
         }
 
         #endregion
