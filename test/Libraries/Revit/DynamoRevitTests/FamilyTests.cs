@@ -22,23 +22,22 @@ namespace Dynamo.Tests
             model.Open(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
-            var node =
-                (CurvesFromFamilyInstance)dynSettings.Controller.DynamoModel.Nodes.First(x => x is CurvesFromFamilyInstance);
-            Assert.IsTrue(node.OldValue.IsList);
+            var node = (CurvesFromFamilyInstance)dynSettings.Controller.DynamoModel.Nodes.First(x => x is CurvesFromFamilyInstance);
+            Assert.IsTrue(node.OldValue.IsCollection);
 
             // check that we get the correct number of curves back from the instance
-            var list = ((FScheme.Value.List)node.OldValue).Item;
+            var list = node.OldValue.GetElements();
             Assert.AreEqual(4, list.Count());
 
             // get the filter node from dynamo and  make sure it has an empty list as output
             //we've filtered the list of distances by 0 to make sure distances between orginal points
             // and end points of new curves are 0.
             var filterNode = (FilterOut)dynSettings.Controller.DynamoModel.Nodes.First(x => x is FilterOut);
-            Assert.IsTrue(filterNode.OldValue.IsList);
+            Assert.IsTrue(filterNode.OldValue.IsCollection);
             
             // ensure it is empty
-            var filterList = ((FScheme.Value.List)filterNode.OldValue).Item;
-            Assert.AreEqual(0.0,filterList.Length);
+            var filterList = filterNode.OldValue.GetElements();
+            Assert.AreEqual(0.0,filterList.Count);
 
         }
         
@@ -55,9 +54,9 @@ namespace Dynamo.Tests
 
             var node =
                 (GetFamilyInstancesByType)dynSettings.Controller.DynamoModel.Nodes.First(x => x is GetFamilyInstancesByType);
-            Assert.IsTrue(node.OldValue.IsList);
+            Assert.IsTrue(node.OldValue.IsCollection);
 
-            var list = ((FScheme.Value.List)node.OldValue).Item;
+            var list = node.OldValue.GetElements();
             Assert.AreEqual(100, list.Count());
         }
 
@@ -88,11 +87,11 @@ namespace Dynamo.Tests
             //returned has the 4 corner points
             var locNode = model.AllNodes.FirstOrDefault(x => x is GetFamilyInstanceLocation);
             Assert.IsNotNull(locNode);
-            var locs = locNode.OldValue.GetListFromFSchemeValue();
+            var locs = locNode.OldValue.GetElements();
             Assert.AreEqual(4, locs.Count());
 
             //asert that the list is full of XYZs
-            var xyzs = locs.Select(x=>x.GetObjectFromFSchemeValue<XYZ>());
+            Assert.IsTrue(locs.All(x => x.Data is XYZ));
         }
 
         [Test]
@@ -110,13 +109,13 @@ namespace Dynamo.Tests
             //with 5 lists each with 5 lists of 4 points
             var locNode = model.AllNodes.FirstOrDefault(x => x is GetFamilyInstanceLocation);
             Assert.IsNotNull(locNode);
-            var rows = locNode.OldValue.GetListFromFSchemeValue();
+            var rows = locNode.OldValue.GetElements();
             Assert.AreEqual(5, rows.Count());
 
-            var column = rows.First().GetListFromFSchemeValue();
+            var column = rows.First().GetElements();
             Assert.AreEqual(5, column.Count());
 
-            var cell = column.First().GetListFromFSchemeValue();
+            var cell = column.First().GetElements();
             Assert.AreEqual(4, cell.Count());
         }
     }
