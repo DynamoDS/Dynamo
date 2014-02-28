@@ -316,6 +316,7 @@ namespace ProtoFFI
             // For static class, it is abstract and sealed. But here we just
             // check all methods are static. 
             bool isStatic = type.GetMethods(BindingFlags.DeclaredOnly |
+                                            BindingFlags.Instance |
                                             BindingFlags.Public |
                                             BindingFlags.Static)
                                 .All(m => m.IsStatic);

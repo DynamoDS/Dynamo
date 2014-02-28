@@ -5647,7 +5647,7 @@ namespace Dynamo.Nodes
                 foreach (XmlNode attr in subNode.Attributes)
                 {
                     if (attr.Name.Equals("value"))
-                        newChild1.SetAttribute("value", attr.Value);
+                        newChild1.InnerText = attr.Value;
                     else
                         newChild2.SetAttribute(attr.Name, attr.Value);
                 }
@@ -5814,7 +5814,7 @@ namespace Dynamo.Nodes
                 foreach (XmlNode attr in subNode.Attributes)
                 {
                     if (attr.Name.Equals("value"))
-                        newChild1.SetAttribute("value", attr.Value);
+                        newChild1.InnerText = attr.Value;
                     else
                         newChild2.SetAttribute(attr.Name, attr.Value);
                 }
@@ -5858,9 +5858,19 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCoreNodesUI.BoolSelector");
 
-            // Clone child from old node
+            // Get attribute from old child node
+            XmlElement newChild = data.Document.CreateElement("System.Boolean");
+
             foreach (XmlNode subNode in oldNode.ChildNodes)
-                newNode.AppendChild(subNode);
+            {
+                foreach (XmlNode attr in subNode.Attributes)
+                {
+                    if (attr.Name.Equals("value"))
+                        newChild.InnerText = attr.Value;
+                }
+            }
+
+            newNode.AppendChild(newChild);
 
             migrationData.AppendNode(newNode);
             return migrationData;
