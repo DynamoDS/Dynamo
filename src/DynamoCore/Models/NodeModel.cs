@@ -299,9 +299,8 @@ namespace Dynamo.Models
         {
             get
             {
-                return
-                    dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Value)
-                               .GetData();
+                var mirrorData = dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Value);
+                return mirrorData == null ? null : mirrorData.GetData();
             }
         }
 
