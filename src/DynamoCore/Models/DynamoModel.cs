@@ -99,7 +99,7 @@ namespace Dynamo.Models
                 DynamoLogger.Instance.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
 
-                if (dynSettings.Controller.Testing)
+                if (DynamoController.IsTestMode)
                     Assert.Fail(ex.Message);
 
                 return null;

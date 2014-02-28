@@ -51,10 +51,8 @@ namespace Dynamo.Tests
         protected void StartDynamo()
         {
             ////create a new instance of the ViewModel
-            Controller = new DynamoController(typeof(DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), new PreferenceSettings())
-            {
-                Testing = true
-            };
+            Controller = new DynamoController(typeof(DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), new PreferenceSettings());
+            DynamoController.IsTestMode = true;
         }
 
         /// <summary>
@@ -65,9 +63,7 @@ namespace Dynamo.Tests
         {
             //create a new instance of the ViewModel
             Controller = new DynamoController(typeof(DynamoViewModel), Context.NONE, updateManager, watchHandler, preferences)
-            {
-                Testing = true
-            };
+            DynamoController.IsTestMode = true;
         }
 
         /// <summary>

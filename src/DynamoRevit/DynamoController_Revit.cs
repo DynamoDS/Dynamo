@@ -704,7 +704,7 @@ namespace Dynamo
 
             //If we're in a debug run or not already in the idle thread, then run the Cleanup Delegate
             //from the idle thread. Otherwise, just run it in this thread.
-            if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread && !Testing)
+            if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread && !IsTestMode)
             {
                 IdlePromise.ExecuteOnIdle(cleanup, false);
                 IdlePromise.ExecuteOnIdle(rename, false);
@@ -763,6 +763,7 @@ namespace Dynamo
 
             if (!DynamoViewModel.RunInDebug)
             {
+<<<<<<< HEAD
                 // As we use a generic function node to represent all functions,
                 // we don't know if a node has something to do with Revit or 
                 // not, neither we know that the re-execution of a dirty node
@@ -773,6 +774,39 @@ namespace Dynamo
                 Debug.WriteLine("Adding a run to the idle stack.");
                 InIdleThread = true; //Now in the idle thread.
                 RevThread.IdlePromise.ExecuteOnIdleSync(() => base.Run());
+=======
+                //Do we need manual transaction control?
+                bool manualTrans = topElements.Any(CheckManualTransaction.TraverseUntilAny);
+
+                //Can we avoid running everything in the Revit Idle thread?
+                bool noIdleThread = manualTrans || 
+                    !topElements.Any(CheckRequiresTransaction.TraverseUntilAny);
+
+                //If we don't need to be in the idle thread...
+                if (noIdleThread || IsTestMode)
+                {
+                    //DynamoLogger.Instance.Log("Running expression in evaluation thread...");
+                    TransMode = TransactionMode.Manual; //Manual transaction control
+
+                    if (IsTestMode)
+                        TransMode = TransactionMode.Automatic;
+
+                    InIdleThread = false; //Not in idle thread at the moment
+                    base.Run(topElements, runningExpression); //Just run the Run Delegate
+                }
+                else //otherwise...
+                {
+                    //DynamoLogger.Instance.Log("Running expression in Revit's Idle thread...");
+                    TransMode = TransactionMode.Automatic; //Automatic transaction control
+
+                    Debug.WriteLine("Adding a run to the idle stack.");
+                    InIdleThread = true; //Now in the idle thread.
+                    IdlePromise.ExecuteOnIdle(
+                        () => base.Run(topElements, runningExpression),
+                        false); //Execute the Run Delegate in the Idle thread.
+                    
+                }
+>>>>>>> master
             }
             else
             {
