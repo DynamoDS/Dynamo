@@ -49,7 +49,8 @@ namespace DSCore
         ///     Creates a new list containing the given items.
         /// </summary>
         /// <param name="items">Items to be stored in the new list.</param>
-        public static IList Create(params object[] items)
+        public static IList Create(
+            [ArbitraryDimensionArrayImport] params object[] items)
         {
             return items.ToList();
         }
