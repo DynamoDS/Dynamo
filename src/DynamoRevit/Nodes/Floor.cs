@@ -6,6 +6,7 @@ using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
 using Value = Dynamo.FScheme.Value;
+using RevitServices.Persistence;
 
 namespace Dynamo.Nodes
 {
@@ -29,7 +30,7 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Value> args)
         {
             //if we're in a family document, don't even try to add a floor
-            if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+            if (DocumentManager.GetInstance().CurrentUIDocument.Document.IsFamilyDocument)
             {
                 throw new Exception("Floors can not be created in family documents.");
             }
@@ -51,7 +52,7 @@ namespace Dynamo.Nodes
                 if (dynUtils.TryGetElement(this.Elements[0], out floor))
                 {
                     //Delete the existing floor. Revit API does not allow update of floor sketch.
-                    dynRevitSettings.Doc.Document.Delete(floor.Id);
+                    DocumentManager.GetInstance().CurrentUIDocument.Document.Delete(floor.Id);
                 }
 
                 floor = CreateFloor(edges, floorType, level);
@@ -70,8 +71,15 @@ namespace Dynamo.Nodes
         {
             var ca = new CurveArray();
             edges.ToList().ForEach(x => ca.Append((Curve) ((Value.Container) x).Item));
-            var floor = dynRevitSettings.Doc.Document.Create.NewFloor(ca, floorType, level, false);
+            var floor = DocumentManager.GetInstance().CurrentUIDocument.Document.Create.NewFloor(ca, floorType, level, false);
             return floor;
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+                "Floor.ByOutlineTypeAndLevel", "Floor.ByOutlineTypeAndLevel@Curve[],FloorType,Level");
         }
     }
 
@@ -91,7 +99,7 @@ namespace Dynamo.Nodes
 
         public override void PopulateItems()
         {
-            var floorTypesColl = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            var floorTypesColl = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             floorTypesColl.OfClass(typeof (FloorType));
 
             Items.Clear();
@@ -99,6 +107,16 @@ namespace Dynamo.Nodes
             floorTypesColl.ToElements().ToList().ForEach(x=>Items.Add(new DynamoDropDownItem(x.Name, x)));
 
             Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeName(
+                data.MigratedNodes.ElementAt(0), "DSRevitNodesUI.FloorType", "Floor Type"));
+
+            return migrationData;
         }
     }
 }

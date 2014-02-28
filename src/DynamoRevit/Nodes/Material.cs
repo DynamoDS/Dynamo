@@ -3,6 +3,7 @@ using System.Linq;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Autodesk.Revit.DB;
+using RevitServices.Persistence;
 
 namespace Dynamo.Nodes
 {
@@ -23,7 +24,8 @@ namespace Dynamo.Nodes
         {
             var matName = ((FScheme.Value.String) args[0]).Item;
 
-            var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var fec = new FilteredElementCollector(document);
 
             Autodesk.Revit.DB.Material foundMat;
 
@@ -38,6 +40,13 @@ namespace Dynamo.Nodes
             }
 
             return FScheme.Value.NewContainer(foundMat.Id);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+                "Material.ByName", "Material.ByName@string");
         }
     }
 }

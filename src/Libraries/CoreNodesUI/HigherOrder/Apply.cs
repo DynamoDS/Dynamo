@@ -45,8 +45,13 @@ namespace DSCoreNodesUI.HigherOrder
                     GetAstIdentifierForOutputIndex(0),
                     new FunctionCallNode
                     {
-                        Function = inputAstNodes[0],
-                        FormalArguments = inputAstNodes.Skip(1).ToList()
+                        Function = AstFactory.BuildIdentifier("ApplyList"),
+                        FormalArguments =
+                            new List<AssociativeNode>
+                            {
+                                inputAstNodes[0],
+                                AstFactory.BuildExprList(inputAstNodes.Skip(1).ToList())
+                            }
                     })
             };
         }

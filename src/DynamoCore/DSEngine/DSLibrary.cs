@@ -511,6 +511,7 @@ namespace Dynamo.DSEngine
             {
                 "ProtoGeometry.dll",
                 "DSCoreNodes.dll",
+                "DSOffice.dll",
                 "FunctionObject.ds",
                 "DSIronPython.dll"
             };
@@ -834,12 +835,37 @@ namespace Dynamo.DSEngine
                 new TypedParameter("y", string.Empty),
             };
 
+            var arg = new List<TypedParameter> 
+            {
+                new TypedParameter("x", string.Empty),
+            };
+
             var functions = new List<FunctionDescriptor>()
             {
                 new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.add), args, null, FunctionType.GenericFunction),
                 new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.sub), args, null, FunctionType.GenericFunction),
                 new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.mul), args, null, FunctionType.GenericFunction),
                 new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.div), args, null, FunctionType.GenericFunction),
+
+                //add new operators
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.eq), args, null, FunctionType.GenericFunction),               
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.ge), args, null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.gt), args, null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.mod), args, null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.le), args, null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.lt), args, null, FunctionType.GenericFunction),
+
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.and), args, null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.or), args, null, FunctionType.GenericFunction),
+               
+
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.nq), args, null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.assign), args, null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwiseand), args, null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwiseor), args, null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwisexor), args, null, FunctionType.GenericFunction),
+
+                new FunctionDescriptor(null, null, Op.GetUnaryOpFunction(UnaryOperator.Not), arg, null, FunctionType.GenericFunction),
             };
 
             AddBuiltinFunctions(functions);
