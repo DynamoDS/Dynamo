@@ -61,7 +61,6 @@
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SanityCheck.cs" />
     <Compile Include="Sorting.cs" />
     <Compile Include="String.cs" />
   </ItemGroup>

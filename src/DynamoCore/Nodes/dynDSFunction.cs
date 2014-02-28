@@ -13,6 +13,17 @@ using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 
 namespace Dynamo.Nodes
 {
+    public class UnresolvedFunctionException : Exception
+    {
+        public UnresolvedFunctionException(string functionName)
+            : base("Cannot find function: " + functionName)
+        {
+            this.FunctionName = functionName;
+        }
+
+        public string FunctionName { get; private set; }
+    }
+
     /// <summary>
     /// DesignScript function node. All functions from DesignScript share the
     /// same function node but internally have different procedure.
@@ -44,10 +55,14 @@ namespace Dynamo.Nodes
             return Definition.Type == FunctionType.Constructor;
         }
 
-        public DSFunction() { }
+        public DSFunction() 
+        {
+            ArgumentLacing = LacingStrategy.Shortest;
+        }
 
         public DSFunction(FunctionDescriptor definition)
         {
+            ArgumentLacing = LacingStrategy.Shortest;
             Definition = definition;
             Initialize();
         }
@@ -192,7 +207,7 @@ namespace Dynamo.Nodes
 
             if (null == Definition)
             {
-                throw new Exception("Cannot find function: " + function);
+                throw new UnresolvedFunctionException(function);
             }
 
             Initialize();
@@ -237,6 +252,46 @@ namespace Dynamo.Nodes
             return AstFactory.BuildFunctionCall("_SingleFunctionObject", inputParams);
         }
 
+        /// <summary>
+        /// Apppend replication guide to the input parameter based on lacing
+        /// strategy.
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <returns></returns>
+        private void AppendReplicationGuides(List<AssociativeNode> inputs)
+        {
+            if (ArgumentLacing == null || inputs == null || inputs.Count() == 0)
+            {
+                return;
+            }
+
+            switch (ArgumentLacing)
+            {
+                case LacingStrategy.CrossProduct:
+
+                    int guide = 1;
+                    for (int i = 0; i < inputs.Count(); ++i)
+                    {
+                        if (inputs[i] is ArrayNameNode)
+                        {
+                            var astNode = NodeUtils.Clone(inputs[i]) as ArrayNameNode;
+                            astNode.ReplicationGuides = new List<AssociativeNode>();
+
+                            var guideNode = new ReplicationGuideNode();
+                            guideNode.RepGuide = AstFactory.BuildIdentifier(guide.ToString());
+
+                            astNode.ReplicationGuides.Add(guideNode);
+                            inputs[i] = astNode;
+                            guide++;
+                        }
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             string function = Definition.Name;
@@ -257,6 +312,7 @@ namespace Dynamo.Nodes
                     }
                     else
                     {
+                        AppendReplicationGuides(inputAstNodes);
                         rhs = AstFactory.BuildFunctionCall(Definition.ClassName,
                                                            Definition.Name,
                                                            inputAstNodes);
@@ -296,6 +352,8 @@ namespace Dynamo.Nodes
                 case FunctionType.InstanceMethod:
 
                     rhs = new NullNode();
+                    AppendReplicationGuides(inputAstNodes);
+
                     if (inputAstNodes != null && inputAstNodes.Count >= 1)
                     {
                         var thisNode = inputAstNodes[0];
@@ -322,6 +380,7 @@ namespace Dynamo.Nodes
                     }
                     else
                     {
+                        AppendReplicationGuides(inputAstNodes);
                         rhs = AstFactory.BuildFunctionCall(function, inputAstNodes);
                     }
                     break;

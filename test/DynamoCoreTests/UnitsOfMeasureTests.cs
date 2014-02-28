@@ -597,9 +597,9 @@ namespace Dynamo.Tests
         [Test]
         public void CanMapOverUnits()
         {
-            var length = FSchemeInterop.Utils.ToFSharpList(Enumerable.Range(1, 5).Select(x => new Length(x)));
-            var area = FSchemeInterop.Utils.ToFSharpList(Enumerable.Range(1, 5).Select(x => new Area(x)));
-            var volume = FSchemeInterop.Utils.ToFSharpList(Enumerable.Range(1, 5).Select(x => new Volume(x)));
+            var length = Enumerable.Range(1, 5).Select(x => new Length(x)).ToList();
+            var area = Enumerable.Range(1, 5).Select(x => new Area(x)).ToList();
+            var volume = Enumerable.Range(1, 5).Select(x => new Volume(x)).ToList();
 
             RunExampleTest(
                 Path.Combine(GetTestDirectory(), @"core\units\map-numbers-to-units.dyn"),

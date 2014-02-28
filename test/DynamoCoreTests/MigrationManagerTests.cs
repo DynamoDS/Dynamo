@@ -282,6 +282,194 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestCreateDummyNodeForFunction00()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                XmlElement dummy = MigrationManager.CreateDummyNodeForFunction(null);
+            });
+        }
+
+        [Test]
+        public void TestCreateDummyNodeForFunction01()
+        {
+            XmlElement element = xmlDocument.CreateElement("InvalidName");
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                XmlElement dummy = MigrationManager.CreateDummyNodeForFunction(element);
+            });
+        }
+
+        [Test]
+        public void TestCreateDummyNodeForFunction02()
+        {
+            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
+            element.SetAttribute("type", "InvalidName");
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                XmlElement dummy = MigrationManager.CreateDummyNodeForFunction(element);
+            });
+        }
+
+        [Test]
+        public void TestCreateDummyNodeForFunction03()
+        {
+            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
+            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                // Test an XmlElement without a "function" attribute.
+                XmlElement dummy = MigrationManager.CreateDummyNodeForFunction(element);
+            });
+        }
+
+        [Test]
+        public void TestCreateDummyNodeForFunction04()
+        {
+            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
+            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
+            element.SetAttribute("function", "");
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                // Test an XmlElement with an empty "function" attribute.
+                XmlElement dummy = MigrationManager.CreateDummyNodeForFunction(element);
+            });
+        }
+
+        [Test]
+        public void TestCreateDummyNodeForFunction05()
+        {
+            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
+            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
+            element.SetAttribute("function", "Foo");
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                // Test an XmlElement without a "nickname" attribute.
+                XmlElement dummy = MigrationManager.CreateDummyNodeForFunction(element);
+            });
+        }
+
+        [Test]
+        public void TestCreateDummyNodeForFunction06()
+        {
+            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
+            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
+            element.SetAttribute("function", "Foo");
+            element.SetAttribute("nickname", "");
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                // Test an XmlElement with an empty "nickname" attribute.
+                XmlElement dummy = MigrationManager.CreateDummyNodeForFunction(element);
+            });
+        }
+
+        [Test]
+        public void TestCreateDummyNodeForFunction07()
+        {
+            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
+            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
+            element.SetAttribute("function", "Foo.Bar");
+            element.SetAttribute("nickname", "Foo.Bar");
+
+            // Test an XmlElement with no argument.
+            XmlElement dummy = MigrationManager.CreateDummyNodeForFunction(element);
+            Assert.AreEqual("1", dummy.Attributes["inputCount"].Value);
+            Assert.AreEqual("1", dummy.Attributes["outputCount"].Value);
+            Assert.AreEqual("Foo.Bar", dummy.Attributes["legacyNodeName"].Value);
+        }
+
+        [Test]
+        public void TestCreateDummyNodeForFunction08()
+        {
+            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
+            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
+            element.SetAttribute("function", "Foo.Bar@");
+            element.SetAttribute("nickname", "Foo.Bar");
+
+            // Test an XmlElement with no argument.
+            XmlElement dummy = MigrationManager.CreateDummyNodeForFunction(element);
+            Assert.AreEqual("1", dummy.Attributes["inputCount"].Value);
+            Assert.AreEqual("1", dummy.Attributes["outputCount"].Value);
+            Assert.AreEqual("Foo.Bar", dummy.Attributes["legacyNodeName"].Value);
+        }
+
+        [Test]
+        public void TestCreateDummyNodeForFunction09()
+        {
+            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
+            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
+            element.SetAttribute("function", "Foo.Bar@,");
+            element.SetAttribute("nickname", "Foo.Bar");
+
+            // Test an XmlElement with no argument.
+            XmlElement dummy = MigrationManager.CreateDummyNodeForFunction(element);
+            Assert.AreEqual("2", dummy.Attributes["inputCount"].Value);
+            Assert.AreEqual("1", dummy.Attributes["outputCount"].Value);
+            Assert.AreEqual("Foo.Bar", dummy.Attributes["legacyNodeName"].Value);
+        }
+
+        [Test]
+        public void TestCreateDummyNodeForFunction10()
+        {
+            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
+            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
+            element.SetAttribute("function", "Foo.Bar@,,");
+            element.SetAttribute("nickname", "Foo.Bar");
+
+            // Test an XmlElement with no argument.
+            XmlElement dummy = MigrationManager.CreateDummyNodeForFunction(element);
+            Assert.AreEqual("3", dummy.Attributes["inputCount"].Value);
+            Assert.AreEqual("1", dummy.Attributes["outputCount"].Value);
+            Assert.AreEqual("Foo.Bar", dummy.Attributes["legacyNodeName"].Value);
+        }
+
+        [Test]
+        public void TestCreateDummyNodeForFunction11()
+        {
+            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
+            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
+            element.SetAttribute("nickname", "Foo.Bar");
+
+            var childElement = xmlDocument.CreateElement("Dynamo.DSEngine.FunctionItem");
+            childElement.SetAttribute("DisplayName", "Foo.Bar");
+            childElement.SetAttribute("Parameters", "o;p;q;x;y;z");
+            childElement.SetAttribute("Type", "InstanceMethod");
+            element.AppendChild(childElement);
+
+            // Test an XmlElement with no argument.
+            XmlElement dummy = MigrationManager.CreateDummyNodeForFunction(element);
+            Assert.AreEqual("7", dummy.Attributes["inputCount"].Value);
+            Assert.AreEqual("1", dummy.Attributes["outputCount"].Value);
+            Assert.AreEqual("Foo.Bar", dummy.Attributes["legacyNodeName"].Value);
+        }
+
+        [Test]
+        public void TestCreateDummyNodeForFunction12()
+        {
+            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSFunction");
+            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
+            element.SetAttribute("nickname", "Foo.Bar");
+
+            var childElement = xmlDocument.CreateElement("Dynamo.DSEngine.FunctionItem");
+            childElement.SetAttribute("DisplayName", "Foo.Bar");
+            childElement.SetAttribute("Parameters", "o;p;q;x;y;z");
+            childElement.SetAttribute("Type", "StaticProperty");
+            element.AppendChild(childElement);
+
+            // Test an XmlElement with no argument.
+            XmlElement dummy = MigrationManager.CreateDummyNodeForFunction(element);
+            Assert.AreEqual("6", dummy.Attributes["inputCount"].Value);
+            Assert.AreEqual("1", dummy.Attributes["outputCount"].Value);
+            Assert.AreEqual("Foo.Bar", dummy.Attributes["legacyNodeName"].Value);
+        }
+
+        [Test]
         public void NodeMigrationData00()
         {
             // Should have a default list that is empty.
