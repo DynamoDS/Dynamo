@@ -6,10 +6,8 @@ namespace DSCore
     /// <summary>
     /// TODO: Move contents somewhere else.
     /// </summary>
-    public class Function
+    public static class Function
     {
-        private Function() { }
-
         /// <summary>
         ///     Returns whatever is passed in.
         /// </summary>
