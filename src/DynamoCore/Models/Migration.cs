@@ -54,16 +54,16 @@ namespace Dynamo.Models
     {
         private static MigrationManager _instance;
 
-        private static int codeBlockInputIndex = 0;
+        private static int IdentifierIndex = 0;
 
-        public static int GetNextCodeBlockInputIndex()
+        public static int GetNextIdentifierIndex()
         {
-            return codeBlockInputIndex++;
+            return IdentifierIndex++;
         }
 
-        public static void ResetCodeBlockInputIndex()
+        public static void ResetIdentifierIndex()
         {
-            codeBlockInputIndex = 0;
+            IdentifierIndex = 0;
         }
 
         /// <summary>
