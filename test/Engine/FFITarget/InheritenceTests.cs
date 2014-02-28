@@ -5,14 +5,14 @@ using System.Text;
 
 namespace FFITarget
 {
-    public class BaseTest
+    public abstract class BaseTest
     {
-        public int x;
+        public int X { get; set; }
     }
 
     public class DerivedTest : BaseTest
     {
-        public int y;
+        public int Y { get; set; }
     }
 
     public class InheritenceDriver
@@ -23,7 +23,7 @@ namespace FFITarget
         {
             DerivedTest dt = new DerivedTest();
             //dt.x = 1;
-            dt.y = 2;
+            dt.Y = 2;
 
             return dt;
         }
