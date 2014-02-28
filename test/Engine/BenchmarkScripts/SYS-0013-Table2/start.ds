@@ -1,0 +1,48 @@
+import("ProtoGeometry.dll");
+import("Math.dll");
+//import("Utils.dll");
+
+WCS = CoordinateSystem.Identity();
+
+size = 2;
+
+class cube
+{
+    solid : Solid;
+    
+    constructor basic(centerPt : Point)
+    {
+        p = { }; q = { };
+        
+        p[0] = Point.ByCoordinates(centerPt.X + size/2, centerPt.Y + size/2, 0);
+        p[1] = Point.ByCoordinates(centerPt.X + size/2, centerPt.Y - size/2, 0);
+        p[2] = Point.ByCoordinates(centerPt.X - size/2, centerPt.Y - size/2, 0);
+        p[3] = Point.ByCoordinates(centerPt.X - size/2, centerPt.Y + size/2, 0);
+        
+        q[0] = Point.ByCoordinates(centerPt.X + size/2, centerPt.Y + size/2, 2);
+        q[1] = Point.ByCoordinates(centerPt.X + size/2, centerPt.Y - size/2, 1);
+        q[2] = Point.ByCoordinates(centerPt.X - size/2, centerPt.Y - size/2, 1);
+        q[3] = Point.ByCoordinates(centerPt.X - size/2, centerPt.Y + size/2, 2);
+        
+        cur1 = BSplineCurve.ByControlVertices(p, 1, true);
+        cur2 = BSplineCurve.ByControlVertices(q, 1, true);
+        
+        solid = Solid.LoftFromCrossSections({ cur1, cur2 });
+        
+        a = Math.Round(Math.Rand(0, 3));
+        TCS = WCS.Rotate(a * 90, WCS.ZAxis, centerPt);
+        solid = solid.Transform(WCS, TCS);
+        Sleep(531);
+    }
+    
+}
+
+cubes = cube.basic(Point.ByCoordinates((-10..10..size)<1>, (-16..16..size)<2>, 0));
+legs = Cuboid.ByLengths(WCS, size, size, 20).Translate({ 8, -8 }<1>, { - 14, 14 }<2>, -10);
+
+p = Point.ByCoordinates({ 10, -10, -10, 10 }, { 16, 16, -16, -16 }, 2);
+curve = Arc.ByCenterPointRadiusAngle(Flatten(p), 3, { 0, 90, 180, 270 }, { 90, 90, 90, 90 }, WCS.ZAxis);
+lines = Line.ByStartPointEndPoint(curve[{ - 1, 0, 1, 2 }].EndPoint, curve[{ 0, 1, 2, 3 }].StartPoint);
+
+tableCurve = Curve.Composite({ lines[0], curve[0], lines[1], curve[1], lines[2], curve[2], lines[3], curve[3] });
+tableTop = Surface.CreateFromCurve(tableCurve).Thicken(0.2, false);

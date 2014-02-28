@@ -6,6 +6,7 @@ using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 
 namespace Dynamo.Nodes
 {
@@ -61,7 +62,7 @@ namespace Dynamo.Nodes
                 else
                 {
                     var reference = rClosest.GetReference();
-                    var referenceElement = dynRevitSettings.Doc.Document.GetElement(reference);
+                    var referenceElement = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(reference);
                     bounceElements = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewContainer(referenceElement), bounceElements);
                     var referenceObject = referenceElement.GetGeometryObjectFromReference(reference);
                     var endpt = reference.GlobalPoint;
@@ -105,7 +106,7 @@ namespace Dynamo.Nodes
             foreach (ReferenceWithContext r in references)
             {
                 Reference reference = r.GetReference();
-                Element referenceElement = dynRevitSettings.Doc.Document.GetElement(reference);
+                Element referenceElement = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(reference);
                 GeometryObject referenceGeometryObject = referenceElement.GetGeometryObjectFromReference(reference);
                 currFace = null;
                 currFace = referenceGeometryObject as Face;

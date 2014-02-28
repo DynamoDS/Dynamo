@@ -1,0 +1,1706 @@
+400 1703 10 0
+17 Autodesk AModeler 13 ASM 7.0.2 NT 24 Mon Feb 18 14:54:34 2013
+304.8 1e-06 1e-10
+body $-1 $10 $-1 $-1 #
+body $-1 $11 $-1 $-1 #
+body $-1 $12 $-1 $-1 #
+body $-1 $13 $-1 $-1 #
+body $-1 $14 $-1 $-1 #
+body $-1 $15 $-1 $-1 #
+body $-1 $16 $-1 $-1 #
+body $-1 $17 $-1 $-1 #
+body $-1 $18 $-1 $-1 #
+body $-1 $-1 $-1 $-1 #
+lump $-1 $-1 $19 $0 #
+lump $-1 $-1 $20 $1 #
+lump $-1 $-1 $21 $2 #
+lump $-1 $-1 $22 $3 #
+lump $-1 $-1 $23 $4 #
+lump $-1 $-1 $24 $5 #
+lump $-1 $-1 $25 $6 #
+lump $-1 $-1 $26 $7 #
+lump $-1 $-1 $27 $8 #
+shell $-1 $-1 $-1 $28 $-1 $10 #
+shell $-1 $-1 $-1 $35 $-1 $11 #
+shell $-1 $-1 $-1 $53 $-1 $12 #
+shell $-1 $-1 $-1 $59 $-1 $13 #
+shell $-1 $-1 $-1 $81 $-1 $14 #
+shell $-1 $-1 $-1 $87 $-1 $15 #
+shell $-1 $-1 $-1 $93 $-1 $16 #
+shell $-1 $-1 $-1 $99 $-1 $17 #
+shell $-1 $-1 $-1 $106 $-1 $18 #
+face $1409 $29 $115 $19 $-1 $969 forward single #
+face $1414 $30 $116 $19 $-1 $970 forward single #
+face $1418 $31 $117 $19 $-1 $971 forward single #
+face $1420 $32 $118 $19 $-1 $972 forward single #
+face $1425 $33 $119 $19 $-1 $973 forward single #
+face $1427 $34 $120 $19 $-1 $974 forward single #
+face $1428 $-1 $121 $19 $-1 $975 forward single #
+face $1431 $36 $122 $20 $-1 $976 forward single #
+face $1437 $37 $123 $20 $-1 $977 forward single #
+face $1445 $38 $124 $20 $-1 $978 forward single #
+face $1449 $39 $125 $20 $-1 $979 forward single #
+face $1452 $40 $126 $20 $-1 $980 forward single #
+face $1456 $41 $127 $20 $-1 $981 forward single #
+face $1459 $42 $128 $20 $-1 $982 forward single #
+face $1463 $43 $129 $20 $-1 $983 forward single #
+face $1467 $44 $130 $20 $-1 $984 forward single #
+face $1470 $45 $131 $20 $-1 $985 forward single #
+face $1474 $46 $132 $20 $-1 $986 forward single #
+face $1478 $47 $133 $20 $-1 $987 forward single #
+face $1480 $48 $134 $20 $-1 $988 forward single #
+face $1481 $49 $135 $20 $-1 $989 forward single #
+face $1485 $50 $136 $20 $-1 $990 forward single #
+face $1488 $51 $137 $20 $-1 $991 forward single #
+face $1491 $52 $138 $20 $-1 $992 forward single #
+face $1494 $-1 $139 $20 $-1 $993 forward single #
+face $1497 $54 $140 $21 $-1 $994 forward single #
+face $1498 $55 $141 $21 $-1 $995 forward single #
+face $1500 $56 $142 $21 $-1 $996 forward single #
+face $1503 $57 $143 $21 $-1 $997 forward single #
+face $1507 $58 $144 $21 $-1 $998 forward single #
+face $1510 $-1 $145 $21 $-1 $999 forward single #
+face $1515 $60 $146 $22 $-1 $1000 forward single #
+face $1523 $61 $147 $22 $-1 $1001 forward single #
+face $1531 $62 $148 $22 $-1 $1002 forward single #
+face $1536 $63 $149 $22 $-1 $1003 forward single #
+face $1539 $64 $150 $22 $-1 $1004 forward single #
+face $1543 $65 $151 $22 $-1 $1005 forward single #
+face $1545 $66 $152 $22 $-1 $1006 forward single #
+face $1550 $67 $153 $22 $-1 $1007 forward single #
+face $1552 $68 $154 $22 $-1 $1008 forward single #
+face $1557 $69 $155 $22 $-1 $1009 forward single #
+face $1559 $70 $156 $22 $-1 $1010 forward single #
+face $1564 $71 $157 $22 $-1 $1011 forward single #
+face $1565 $72 $158 $22 $-1 $1012 forward single #
+face $1569 $73 $159 $22 $-1 $1013 forward single #
+face $1574 $74 $160 $22 $-1 $1014 forward single #
+face $1577 $75 $161 $22 $-1 $1015 forward single #
+face $1581 $76 $162 $22 $-1 $1016 forward single #
+face $1586 $77 $163 $22 $-1 $1017 forward single #
+face $1588 $78 $164 $22 $-1 $1018 forward single #
+face $1589 $79 $165 $22 $-1 $1019 forward single #
+face $1591 $80 $166 $22 $-1 $1020 forward single #
+face $1595 $-1 $167 $22 $-1 $1021 forward single #
+face $1597 $82 $168 $23 $-1 $1022 forward single #
+face $1600 $83 $169 $23 $-1 $1023 forward single #
+face $1601 $84 $170 $23 $-1 $1024 forward single #
+face $1606 $85 $171 $23 $-1 $1025 forward single #
+face $1610 $86 $172 $23 $-1 $1026 forward single #
+face $1613 $-1 $173 $23 $-1 $1027 forward single #
+face $1615 $88 $174 $24 $-1 $1028 forward single #
+face $1616 $89 $175 $24 $-1 $1029 forward single #
+face $1617 $90 $176 $24 $-1 $1030 forward single #
+face $1620 $91 $177 $24 $-1 $1031 forward single #
+face $1625 $92 $178 $24 $-1 $1032 forward single #
+face $1628 $-1 $179 $24 $-1 $1033 forward single #
+face $1633 $94 $180 $25 $-1 $1034 forward single #
+face $1638 $95 $181 $25 $-1 $1035 forward single #
+face $1641 $96 $182 $25 $-1 $1036 forward single #
+face $1642 $97 $183 $25 $-1 $1037 forward single #
+face $1644 $98 $184 $25 $-1 $1038 forward single #
+face $1647 $-1 $185 $25 $-1 $1039 forward single #
+face $1651 $100 $186 $26 $-1 $1040 forward single #
+face $1657 $101 $187 $26 $-1 $1041 forward single #
+face $1662 $102 $188 $26 $-1 $1042 forward single #
+face $1664 $103 $189 $26 $-1 $1043 forward single #
+face $1666 $104 $190 $26 $-1 $1044 forward single #
+face $1668 $105 $191 $26 $-1 $1045 forward single #
+face $1671 $-1 $192 $26 $-1 $1046 forward single #
+face $1673 $107 $193 $27 $-1 $1047 forward single #
+face $1675 $108 $194 $27 $-1 $1048 forward single #
+face $1676 $109 $195 $27 $-1 $1049 forward single #
+face $1680 $110 $196 $27 $-1 $1050 forward single #
+face $1684 $111 $197 $27 $-1 $1051 forward single #
+face $1689 $112 $198 $27 $-1 $1052 forward single #
+face $1692 $113 $199 $27 $-1 $1053 forward single #
+face $1696 $114 $200 $27 $-1 $1054 forward single #
+face $1700 $-1 $201 $27 $-1 $1055 forward single #
+loop $-1 $-1 $409 $28 #
+loop $-1 $-1 $414 $29 #
+loop $-1 $-1 $419 $30 #
+loop $-1 $-1 $423 $31 #
+loop $-1 $-1 $427 $32 #
+loop $-1 $-1 $431 $33 #
+loop $-1 $-1 $435 $34 #
+loop $-1 $-1 $439 $35 #
+loop $-1 $-1 $455 $36 #
+loop $-1 $-1 $471 $37 #
+loop $-1 $-1 $475 $38 #
+loop $-1 $-1 $479 $39 #
+loop $-1 $-1 $483 $40 #
+loop $-1 $-1 $487 $41 #
+loop $-1 $-1 $491 $42 #
+loop $-1 $-1 $495 $43 #
+loop $-1 $-1 $499 $44 #
+loop $-1 $-1 $503 $45 #
+loop $-1 $-1 $507 $46 #
+loop $-1 $-1 $511 $47 #
+loop $-1 $-1 $515 $48 #
+loop $-1 $-1 $519 $49 #
+loop $-1 $-1 $523 $50 #
+loop $-1 $-1 $527 $51 #
+loop $-1 $-1 $531 $52 #
+loop $-1 $-1 $535 $53 #
+loop $-1 $-1 $539 $54 #
+loop $-1 $-1 $543 $55 #
+loop $-1 $-1 $547 $56 #
+loop $-1 $-1 $551 $57 #
+loop $-1 $-1 $555 $58 #
+loop $-1 $-1 $559 $59 #
+loop $-1 $-1 $579 $60 #
+loop $-1 $-1 $599 $61 #
+loop $-1 $-1 $603 $62 #
+loop $-1 $-1 $607 $63 #
+loop $-1 $-1 $611 $64 #
+loop $-1 $-1 $615 $65 #
+loop $-1 $-1 $619 $66 #
+loop $-1 $-1 $623 $67 #
+loop $-1 $-1 $627 $68 #
+loop $-1 $-1 $631 $69 #
+loop $-1 $-1 $635 $70 #
+loop $-1 $-1 $639 $71 #
+loop $-1 $-1 $643 $72 #
+loop $-1 $-1 $647 $73 #
+loop $-1 $-1 $651 $74 #
+loop $-1 $-1 $655 $75 #
+loop $-1 $-1 $659 $76 #
+loop $-1 $-1 $663 $77 #
+loop $-1 $-1 $667 $78 #
+loop $-1 $-1 $671 $79 #
+loop $-1 $-1 $675 $80 #
+loop $-1 $-1 $679 $81 #
+loop $-1 $-1 $683 $82 #
+loop $-1 $-1 $687 $83 #
+loop $-1 $-1 $691 $84 #
+loop $-1 $-1 $695 $85 #
+loop $-1 $-1 $699 $86 #
+loop $-1 $-1 $703 $87 #
+loop $-1 $-1 $707 $88 #
+loop $-1 $-1 $711 $89 #
+loop $-1 $-1 $715 $90 #
+loop $-1 $-1 $719 $91 #
+loop $-1 $-1 $723 $92 #
+loop $-1 $-1 $727 $93 #
+loop $-1 $-1 $731 $94 #
+loop $-1 $-1 $735 $95 #
+loop $-1 $-1 $739 $96 #
+loop $-1 $-1 $743 $97 #
+loop $-1 $-1 $747 $98 #
+loop $-1 $-1 $751 $99 #
+loop $-1 $-1 $756 $100 #
+loop $-1 $-1 $761 $101 #
+loop $-1 $-1 $765 $102 #
+loop $-1 $-1 $769 $103 #
+loop $-1 $-1 $773 $104 #
+loop $-1 $-1 $777 $105 #
+loop $-1 $-1 $781 $106 #
+loop $-1 $-1 $788 $107 #
+loop $-1 $-1 $795 $108 #
+loop $-1 $-1 $799 $109 #
+loop $-1 $-1 $803 $110 #
+loop $-1 $-1 $807 $111 #
+loop $-1 $-1 $811 $112 #
+loop $-1 $-1 $815 $113 #
+loop $-1 $-1 $819 $114 #
+edge $1410 $830 $829 $410 $1056 forward #
+edge $1411 $829 $828 $411 $1057 forward #
+edge $1412 $828 $832 $412 $1058 forward #
+edge $1413 $832 $831 $413 $1059 forward #
+edge $1415 $823 $824 $414 $1060 forward #
+edge $1416 $824 $825 $415 $1061 forward #
+edge $1417 $826 $827 $417 $1062 forward #
+edge $1419 $832 $827 $420 $1063 forward #
+edge $1421 $830 $831 $423 $1064 forward #
+edge $1422 $831 $826 $424 $1065 forward #
+edge $1423 $826 $825 $425 $1066 forward #
+edge $1424 $825 $830 $426 $1067 forward #
+edge $1426 $824 $829 $430 $1068 forward #
+edge $1429 $828 $823 $436 $1069 forward #
+edge $1430 $823 $827 $437 $1070 forward #
+edge $1432 $862 $861 $440 $1071 forward #
+edge $1433 $861 $860 $441 $1072 forward #
+edge $1434 $855 $854 $447 $1073 forward #
+edge $1435 $854 $853 $448 $1074 forward #
+edge $1436 $850 $849 $452 $1075 forward #
+edge $1438 $835 $836 $457 $1076 forward #
+edge $1439 $836 $837 $458 $1077 forward #
+edge $1440 $837 $838 $459 $1078 forward #
+edge $1441 $838 $839 $460 $1079 forward #
+edge $1442 $841 $842 $463 $1080 forward #
+edge $1443 $846 $847 $468 $1081 forward #
+edge $1444 $848 $833 $470 $1082 forward #
+edge $1446 $863 $864 $471 $1083 forward #
+edge $1447 $864 $848 $472 $1084 forward #
+edge $1448 $848 $847 $473 $1085 forward #
+edge $1450 $862 $863 $475 $1086 forward #
+edge $1451 $863 $847 $476 $1087 forward #
+edge $1453 $862 $846 $480 $1088 forward #
+edge $1454 $846 $845 $481 $1089 forward #
+edge $1455 $845 $861 $482 $1090 forward #
+edge $1457 $845 $844 $485 $1091 forward #
+edge $1458 $844 $860 $486 $1092 forward #
+edge $1460 $859 $860 $487 $1093 forward #
+edge $1461 $844 $843 $489 $1094 forward #
+edge $1462 $843 $859 $490 $1095 forward #
+edge $1464 $858 $859 $491 $1096 forward #
+edge $1465 $843 $842 $493 $1097 forward #
+edge $1466 $842 $858 $494 $1098 forward #
+edge $1468 $857 $858 $495 $1099 forward #
+edge $1469 $841 $857 $498 $1100 forward #
+edge $1471 $856 $857 $499 $1101 forward #
+edge $1472 $841 $840 $501 $1102 forward #
+edge $1473 $840 $856 $502 $1103 forward #
+edge $1475 $855 $856 $503 $1104 forward #
+edge $1476 $840 $839 $505 $1105 forward #
+edge $1477 $839 $855 $506 $1106 forward #
+edge $1479 $838 $854 $510 $1107 forward #
+edge $1482 $852 $853 $515 $1108 forward #
+edge $1483 $853 $837 $516 $1109 forward #
+edge $1484 $836 $852 $518 $1110 forward #
+edge $1486 $851 $852 $519 $1111 forward #
+edge $1487 $835 $851 $522 $1112 forward #
+edge $1489 $850 $851 $523 $1113 forward #
+edge $1490 $835 $834 $525 $1114 forward #
+edge $1492 $850 $834 $528 $1115 forward #
+edge $1493 $834 $833 $529 $1116 forward #
+edge $1495 $864 $849 $531 $1117 forward #
+edge $1496 $849 $833 $532 $1118 forward #
+edge $1499 $865 $866 $539 $1119 forward #
+edge $1501 $871 $872 $543 $1120 forward #
+edge $1502 $868 $867 $545 $1121 forward #
+edge $1504 $870 $871 $547 $1122 forward #
+edge $1505 $871 $867 $548 $1123 forward #
+edge $1506 $867 $866 $549 $1124 forward #
+edge $1508 $869 $870 $551 $1125 forward #
+edge $1509 $870 $866 $552 $1126 forward #
+edge $1511 $872 $869 $555 $1127 forward #
+edge $1512 $869 $865 $556 $1128 forward #
+edge $1513 $865 $868 $557 $1129 forward #
+edge $1514 $868 $872 $558 $1130 forward #
+edge $1516 $909 $908 $561 $1131 forward #
+edge $1517 $907 $906 $563 $1132 forward #
+edge $1518 $905 $904 $565 $1133 forward #
+edge $1519 $903 $902 $567 $1134 forward #
+edge $1520 $897 $896 $573 $1135 forward #
+edge $1521 $896 $895 $574 $1136 forward #
+edge $1522 $895 $894 $575 $1137 forward #
+edge $1524 $873 $874 $579 $1138 forward #
+edge $1525 $874 $875 $580 $1139 forward #
+edge $1526 $875 $876 $581 $1140 forward #
+edge $1527 $876 $877 $582 $1141 forward #
+edge $1528 $882 $883 $588 $1142 forward #
+edge $1529 $889 $890 $595 $1143 forward #
+edge $1530 $892 $873 $598 $1144 forward #
+edge $1532 $911 $912 $599 $1145 forward #
+edge $1533 $912 $892 $600 $1146 forward #
+edge $1534 $892 $891 $601 $1147 forward #
+edge $1535 $891 $911 $602 $1148 forward #
+edge $1537 $910 $911 $603 $1149 forward #
+edge $1538 $891 $890 $605 $1150 forward #
+edge $1540 $909 $910 $607 $1151 forward #
+edge $1541 $910 $890 $608 $1152 forward #
+edge $1542 $889 $909 $610 $1153 forward #
+edge $1544 $889 $888 $613 $1154 forward #
+edge $1546 $907 $908 $615 $1155 forward #
+edge $1547 $908 $888 $616 $1156 forward #
+edge $1548 $888 $887 $617 $1157 forward #
+edge $1549 $887 $907 $618 $1158 forward #
+edge $1551 $887 $886 $621 $1159 forward #
+edge $1553 $905 $906 $623 $1160 forward #
+edge $1554 $906 $886 $624 $1161 forward #
+edge $1555 $886 $885 $625 $1162 forward #
+edge $1556 $885 $905 $626 $1163 forward #
+edge $1558 $885 $884 $629 $1164 forward #
+edge $1560 $903 $904 $631 $1165 forward #
+edge $1561 $904 $884 $632 $1166 forward #
+edge $1562 $884 $883 $633 $1167 forward #
+edge $1563 $883 $903 $634 $1168 forward #
+edge $1566 $901 $902 $639 $1169 forward #
+edge $1567 $902 $882 $640 $1170 forward #
+edge $1568 $882 $881 $641 $1171 forward #
+edge $1570 $900 $901 $643 $1172 forward #
+edge $1571 $901 $881 $644 $1173 forward #
+edge $1572 $881 $880 $645 $1174 forward #
+edge $1573 $880 $900 $646 $1175 forward #
+edge $1575 $899 $900 $647 $1176 forward #
+edge $1576 $880 $879 $649 $1177 forward #
+edge $1578 $898 $899 $651 $1178 forward #
+edge $1579 $899 $879 $652 $1179 forward #
+edge $1580 $879 $878 $653 $1180 forward #
+edge $1582 $897 $898 $655 $1181 forward #
+edge $1583 $898 $878 $656 $1182 forward #
+edge $1584 $878 $877 $657 $1183 forward #
+edge $1585 $877 $897 $658 $1184 forward #
+edge $1587 $876 $896 $662 $1185 forward #
+edge $1590 $895 $875 $668 $1186 forward #
+edge $1592 $893 $894 $671 $1187 forward #
+edge $1593 $894 $874 $672 $1188 forward #
+edge $1594 $873 $893 $674 $1189 forward #
+edge $1596 $912 $893 $675 $1190 forward #
+edge $1598 $918 $917 $680 $1191 forward #
+edge $1599 $917 $920 $681 $1192 forward #
+edge $1602 $919 $920 $687 $1193 forward #
+edge $1603 $920 $916 $688 $1194 forward #
+edge $1604 $916 $915 $689 $1195 forward #
+edge $1605 $915 $919 $690 $1196 forward #
+edge $1607 $918 $919 $691 $1197 forward #
+edge $1608 $915 $914 $693 $1198 forward #
+edge $1609 $914 $918 $694 $1199 forward #
+edge $1611 $914 $913 $697 $1200 forward #
+edge $1612 $913 $917 $698 $1201 forward #
+edge $1614 $913 $916 $701 $1202 forward #
+edge $1618 $927 $928 $711 $1203 forward #
+edge $1619 $924 $923 $713 $1204 forward #
+edge $1621 $926 $927 $715 $1205 forward #
+edge $1622 $927 $923 $716 $1206 forward #
+edge $1623 $923 $922 $717 $1207 forward #
+edge $1624 $922 $926 $718 $1208 forward #
+edge $1626 $925 $926 $719 $1209 forward #
+edge $1627 $922 $921 $721 $1210 forward #
+edge $1629 $928 $925 $723 $1211 forward #
+edge $1630 $925 $921 $724 $1212 forward #
+edge $1631 $921 $924 $725 $1213 forward #
+edge $1632 $924 $928 $726 $1214 forward #
+edge $1634 $935 $934 $727 $1215 forward #
+edge $1635 $934 $933 $728 $1216 forward #
+edge $1636 $933 $936 $729 $1217 forward #
+edge $1637 $936 $935 $730 $1218 forward #
+edge $1639 $930 $931 $732 $1219 forward #
+edge $1640 $931 $932 $733 $1220 forward #
+edge $1643 $935 $931 $740 $1221 forward #
+edge $1645 $934 $930 $744 $1222 forward #
+edge $1646 $930 $929 $745 $1223 forward #
+edge $1648 $933 $929 $748 $1224 forward #
+edge $1649 $929 $932 $749 $1225 forward #
+edge $1650 $932 $936 $750 $1226 forward #
+edge $1652 $945 $944 $751 $1227 forward #
+edge $1653 $944 $943 $752 $1228 forward #
+edge $1654 $943 $942 $753 $1229 forward #
+edge $1655 $942 $946 $754 $1230 forward #
+edge $1656 $946 $945 $755 $1231 forward #
+edge $1658 $937 $938 $756 $1232 forward #
+edge $1659 $938 $939 $757 $1233 forward #
+edge $1660 $939 $940 $758 $1234 forward #
+edge $1661 $941 $937 $760 $1235 forward #
+edge $1663 $941 $940 $763 $1236 forward #
+edge $1665 $945 $940 $766 $1237 forward #
+edge $1667 $944 $939 $770 $1238 forward #
+edge $1669 $943 $938 $774 $1239 forward #
+edge $1670 $937 $942 $776 $1240 forward #
+edge $1672 $941 $946 $780 $1241 forward #
+edge $1674 $954 $960 $786 $1242 forward #
+edge $1677 $959 $960 $795 $1243 forward #
+edge $1678 $960 $953 $796 $1244 forward #
+edge $1679 $953 $952 $797 $1245 forward #
+edge $1681 $958 $959 $799 $1246 forward #
+edge $1682 $959 $952 $800 $1247 forward #
+edge $1683 $952 $951 $801 $1248 forward #
+edge $1685 $957 $958 $803 $1249 forward #
+edge $1686 $958 $951 $804 $1250 forward #
+edge $1687 $951 $950 $805 $1251 forward #
+edge $1688 $950 $957 $806 $1252 forward #
+edge $1690 $956 $957 $807 $1253 forward #
+edge $1691 $950 $949 $809 $1254 forward #
+edge $1693 $955 $956 $811 $1255 forward #
+edge $1694 $956 $949 $812 $1256 forward #
+edge $1695 $949 $948 $813 $1257 forward #
+edge $1697 $954 $955 $815 $1258 forward #
+edge $1698 $955 $948 $816 $1259 forward #
+edge $1699 $948 $947 $817 $1260 forward #
+edge $1701 $954 $947 $820 $1261 forward #
+edge $1702 $947 $953 $821 $1262 forward #
+coedge $-1 $410 $413 $423 $210 reversed $115 $-1 #
+coedge $-1 $411 $409 $427 $202 forward $115 $-1 #
+coedge $-1 $412 $410 $431 $203 forward $115 $-1 #
+coedge $-1 $413 $411 $435 $204 forward $115 $-1 #
+coedge $-1 $409 $412 $419 $205 forward $115 $-1 #
+coedge $-1 $415 $418 $433 $206 forward $116 $-1 #
+coedge $-1 $416 $414 $429 $207 forward $116 $-1 #
+coedge $-1 $417 $415 $425 $212 reversed $116 $-1 #
+coedge $-1 $418 $416 $421 $208 forward $116 $-1 #
+coedge $-1 $414 $417 $437 $216 reversed $116 $-1 #
+coedge $-1 $420 $422 $413 $205 reversed $117 $-1 #
+coedge $-1 $421 $419 $438 $209 forward $117 $-1 #
+coedge $-1 $422 $420 $417 $208 reversed $117 $-1 #
+coedge $-1 $419 $421 $424 $211 reversed $117 $-1 #
+coedge $-1 $424 $426 $409 $210 forward $118 $-1 #
+coedge $-1 $425 $423 $422 $211 forward $118 $-1 #
+coedge $-1 $426 $424 $416 $212 forward $118 $-1 #
+coedge $-1 $423 $425 $428 $213 forward $118 $-1 #
+coedge $-1 $428 $430 $410 $202 reversed $119 $-1 #
+coedge $-1 $429 $427 $426 $213 reversed $119 $-1 #
+coedge $-1 $430 $428 $415 $207 reversed $119 $-1 #
+coedge $-1 $427 $429 $432 $214 forward $119 $-1 #
+coedge $-1 $432 $434 $411 $203 reversed $120 $-1 #
+coedge $-1 $433 $431 $430 $214 reversed $120 $-1 #
+coedge $-1 $434 $432 $414 $206 reversed $120 $-1 #
+coedge $-1 $431 $433 $436 $215 reversed $120 $-1 #
+coedge $-1 $436 $438 $412 $204 reversed $121 $-1 #
+coedge $-1 $437 $435 $434 $215 forward $121 $-1 #
+coedge $-1 $438 $436 $418 $216 forward $121 $-1 #
+coedge $-1 $435 $437 $420 $209 reversed $121 $-1 #
+coedge $-1 $440 $454 $475 $232 reversed $122 $-1 #
+coedge $-1 $441 $439 $479 $217 forward $122 $-1 #
+coedge $-1 $442 $440 $483 $218 forward $122 $-1 #
+coedge $-1 $443 $441 $487 $239 reversed $122 $-1 #
+coedge $-1 $444 $442 $491 $242 reversed $122 $-1 #
+coedge $-1 $445 $443 $495 $245 reversed $122 $-1 #
+coedge $-1 $446 $444 $499 $247 reversed $122 $-1 #
+coedge $-1 $447 $445 $503 $250 reversed $122 $-1 #
+coedge $-1 $448 $446 $507 $219 forward $122 $-1 #
+coedge $-1 $449 $447 $511 $220 forward $122 $-1 #
+coedge $-1 $450 $448 $515 $254 reversed $122 $-1 #
+coedge $-1 $451 $449 $519 $257 reversed $122 $-1 #
+coedge $-1 $452 $450 $523 $259 reversed $122 $-1 #
+coedge $-1 $453 $451 $527 $221 forward $122 $-1 #
+coedge $-1 $454 $452 $531 $263 reversed $122 $-1 #
+coedge $-1 $439 $453 $471 $229 reversed $122 $-1 #
+coedge $-1 $456 $470 $529 $262 reversed $123 $-1 #
+coedge $-1 $457 $455 $525 $260 reversed $123 $-1 #
+coedge $-1 $458 $456 $521 $222 forward $123 $-1 #
+coedge $-1 $459 $457 $517 $223 forward $123 $-1 #
+coedge $-1 $460 $458 $513 $224 forward $123 $-1 #
+coedge $-1 $461 $459 $509 $225 forward $123 $-1 #
+coedge $-1 $462 $460 $505 $251 reversed $123 $-1 #
+coedge $-1 $463 $461 $501 $248 reversed $123 $-1 #
+coedge $-1 $464 $462 $497 $226 forward $123 $-1 #
+coedge $-1 $465 $463 $493 $243 reversed $123 $-1 #
+coedge $-1 $466 $464 $489 $240 reversed $123 $-1 #
+coedge $-1 $467 $465 $485 $237 reversed $123 $-1 #
+coedge $-1 $468 $466 $481 $235 reversed $123 $-1 #
+coedge $-1 $469 $467 $477 $227 forward $123 $-1 #
+coedge $-1 $470 $468 $473 $231 reversed $123 $-1 #
+coedge $-1 $455 $469 $533 $228 forward $123 $-1 #
+coedge $-1 $472 $474 $454 $229 forward $124 $-1 #
+coedge $-1 $473 $471 $534 $230 forward $124 $-1 #
+coedge $-1 $474 $472 $469 $231 forward $124 $-1 #
+coedge $-1 $471 $473 $476 $233 reversed $124 $-1 #
+coedge $-1 $476 $478 $439 $232 forward $125 $-1 #
+coedge $-1 $477 $475 $474 $233 forward $125 $-1 #
+coedge $-1 $478 $476 $468 $227 reversed $125 $-1 #
+coedge $-1 $475 $477 $480 $234 reversed $125 $-1 #
+coedge $-1 $480 $482 $440 $217 reversed $126 $-1 #
+coedge $-1 $481 $479 $478 $234 forward $126 $-1 #
+coedge $-1 $482 $480 $467 $235 forward $126 $-1 #
+coedge $-1 $479 $481 $484 $236 forward $126 $-1 #
+coedge $-1 $484 $486 $441 $218 reversed $127 $-1 #
+coedge $-1 $485 $483 $482 $236 reversed $127 $-1 #
+coedge $-1 $486 $484 $466 $237 forward $127 $-1 #
+coedge $-1 $483 $485 $488 $238 forward $127 $-1 #
+coedge $-1 $488 $490 $442 $239 forward $128 $-1 #
+coedge $-1 $489 $487 $486 $238 reversed $128 $-1 #
+coedge $-1 $490 $488 $465 $240 forward $128 $-1 #
+coedge $-1 $487 $489 $492 $241 forward $128 $-1 #
+coedge $-1 $492 $494 $443 $242 forward $129 $-1 #
+coedge $-1 $493 $491 $490 $241 reversed $129 $-1 #
+coedge $-1 $494 $492 $464 $243 forward $129 $-1 #
+coedge $-1 $491 $493 $496 $244 forward $129 $-1 #
+coedge $-1 $496 $498 $444 $245 forward $130 $-1 #
+coedge $-1 $497 $495 $494 $244 reversed $130 $-1 #
+coedge $-1 $498 $496 $463 $226 reversed $130 $-1 #
+coedge $-1 $495 $497 $500 $246 forward $130 $-1 #
+coedge $-1 $500 $502 $445 $247 forward $131 $-1 #
+coedge $-1 $501 $499 $498 $246 reversed $131 $-1 #
+coedge $-1 $502 $500 $462 $248 forward $131 $-1 #
+coedge $-1 $499 $501 $504 $249 forward $131 $-1 #
+coedge $-1 $504 $506 $446 $250 forward $132 $-1 #
+coedge $-1 $505 $503 $502 $249 reversed $132 $-1 #
+coedge $-1 $506 $504 $461 $251 forward $132 $-1 #
+coedge $-1 $503 $505 $508 $252 forward $132 $-1 #
+coedge $-1 $508 $510 $447 $219 reversed $133 $-1 #
+coedge $-1 $509 $507 $506 $252 reversed $133 $-1 #
+coedge $-1 $510 $508 $460 $225 reversed $133 $-1 #
+coedge $-1 $507 $509 $512 $253 forward $133 $-1 #
+coedge $-1 $512 $514 $448 $220 reversed $134 $-1 #
+coedge $-1 $513 $511 $510 $253 reversed $134 $-1 #
+coedge $-1 $514 $512 $459 $224 reversed $134 $-1 #
+coedge $-1 $511 $513 $516 $255 reversed $134 $-1 #
+coedge $-1 $516 $518 $449 $254 forward $135 $-1 #
+coedge $-1 $517 $515 $514 $255 forward $135 $-1 #
+coedge $-1 $518 $516 $458 $223 reversed $135 $-1 #
+coedge $-1 $515 $517 $520 $256 forward $135 $-1 #
+coedge $-1 $520 $522 $450 $257 forward $136 $-1 #
+coedge $-1 $521 $519 $518 $256 reversed $136 $-1 #
+coedge $-1 $522 $520 $457 $222 reversed $136 $-1 #
+coedge $-1 $519 $521 $524 $258 forward $136 $-1 #
+coedge $-1 $524 $526 $451 $259 forward $137 $-1 #
+coedge $-1 $525 $523 $522 $258 reversed $137 $-1 #
+coedge $-1 $526 $524 $456 $260 forward $137 $-1 #
+coedge $-1 $523 $525 $528 $261 reversed $137 $-1 #
+coedge $-1 $528 $530 $452 $221 reversed $138 $-1 #
+coedge $-1 $529 $527 $526 $261 forward $138 $-1 #
+coedge $-1 $530 $528 $455 $262 forward $138 $-1 #
+coedge $-1 $527 $529 $532 $264 reversed $138 $-1 #
+coedge $-1 $532 $534 $453 $263 forward $139 $-1 #
+coedge $-1 $533 $531 $530 $264 forward $139 $-1 #
+coedge $-1 $534 $532 $470 $228 reversed $139 $-1 #
+coedge $-1 $531 $533 $472 $230 reversed $139 $-1 #
+coedge $-1 $536 $538 $547 $268 reversed $140 $-1 #
+coedge $-1 $537 $535 $551 $271 reversed $140 $-1 #
+coedge $-1 $538 $536 $555 $273 reversed $140 $-1 #
+coedge $-1 $535 $537 $543 $266 reversed $140 $-1 #
+coedge $-1 $540 $542 $553 $265 forward $141 $-1 #
+coedge $-1 $541 $539 $549 $270 reversed $141 $-1 #
+coedge $-1 $542 $540 $545 $267 reversed $141 $-1 #
+coedge $-1 $539 $541 $557 $275 reversed $141 $-1 #
+coedge $-1 $544 $546 $538 $266 forward $142 $-1 #
+coedge $-1 $545 $543 $558 $276 reversed $142 $-1 #
+coedge $-1 $546 $544 $541 $267 forward $142 $-1 #
+coedge $-1 $543 $545 $548 $269 reversed $142 $-1 #
+coedge $-1 $548 $550 $535 $268 forward $143 $-1 #
+coedge $-1 $549 $547 $546 $269 forward $143 $-1 #
+coedge $-1 $550 $548 $540 $270 forward $143 $-1 #
+coedge $-1 $547 $549 $552 $272 reversed $143 $-1 #
+coedge $-1 $552 $554 $536 $271 forward $144 $-1 #
+coedge $-1 $553 $551 $550 $272 forward $144 $-1 #
+coedge $-1 $554 $552 $539 $265 reversed $144 $-1 #
+coedge $-1 $551 $553 $556 $274 reversed $144 $-1 #
+coedge $-1 $556 $558 $537 $273 forward $145 $-1 #
+coedge $-1 $557 $555 $554 $274 forward $145 $-1 #
+coedge $-1 $558 $556 $542 $275 forward $145 $-1 #
+coedge $-1 $555 $557 $544 $276 forward $145 $-1 #
+coedge $-1 $560 $578 $603 $295 reversed $146 $-1 #
+coedge $-1 $561 $559 $607 $297 reversed $146 $-1 #
+coedge $-1 $562 $560 $611 $277 forward $146 $-1 #
+coedge $-1 $563 $561 $615 $301 reversed $146 $-1 #
+coedge $-1 $564 $562 $619 $278 forward $146 $-1 #
+coedge $-1 $565 $563 $623 $306 reversed $146 $-1 #
+coedge $-1 $566 $564 $627 $279 forward $146 $-1 #
+coedge $-1 $567 $565 $631 $311 reversed $146 $-1 #
+coedge $-1 $568 $566 $635 $280 forward $146 $-1 #
+coedge $-1 $569 $567 $639 $315 reversed $146 $-1 #
+coedge $-1 $570 $568 $643 $318 reversed $146 $-1 #
+coedge $-1 $571 $569 $647 $322 reversed $146 $-1 #
+coedge $-1 $572 $570 $651 $324 reversed $146 $-1 #
+coedge $-1 $573 $571 $655 $327 reversed $146 $-1 #
+coedge $-1 $574 $572 $659 $281 forward $146 $-1 #
+coedge $-1 $575 $573 $663 $282 forward $146 $-1 #
+coedge $-1 $576 $574 $667 $283 forward $146 $-1 #
+coedge $-1 $577 $575 $671 $333 reversed $146 $-1 #
+coedge $-1 $578 $576 $675 $336 reversed $146 $-1 #
+coedge $-1 $559 $577 $599 $291 reversed $146 $-1 #
+coedge $-1 $580 $598 $673 $284 forward $147 $-1 #
+coedge $-1 $581 $579 $669 $285 forward $147 $-1 #
+coedge $-1 $582 $580 $665 $286 forward $147 $-1 #
+coedge $-1 $583 $581 $661 $287 forward $147 $-1 #
+coedge $-1 $584 $582 $657 $329 reversed $147 $-1 #
+coedge $-1 $585 $583 $653 $326 reversed $147 $-1 #
+coedge $-1 $586 $584 $649 $323 reversed $147 $-1 #
+coedge $-1 $587 $585 $645 $320 reversed $147 $-1 #
+coedge $-1 $588 $586 $641 $317 reversed $147 $-1 #
+coedge $-1 $589 $587 $637 $288 forward $147 $-1 #
+coedge $-1 $590 $588 $633 $313 reversed $147 $-1 #
+coedge $-1 $591 $589 $629 $310 reversed $147 $-1 #
+coedge $-1 $592 $590 $625 $308 reversed $147 $-1 #
+coedge $-1 $593 $591 $621 $305 reversed $147 $-1 #
+coedge $-1 $594 $592 $617 $303 reversed $147 $-1 #
+coedge $-1 $595 $593 $613 $300 reversed $147 $-1 #
+coedge $-1 $596 $594 $609 $289 forward $147 $-1 #
+coedge $-1 $597 $595 $605 $296 reversed $147 $-1 #
+coedge $-1 $598 $596 $601 $293 reversed $147 $-1 #
+coedge $-1 $579 $597 $677 $290 forward $147 $-1 #
+coedge $-1 $600 $602 $578 $291 forward $148 $-1 #
+coedge $-1 $601 $599 $678 $292 forward $148 $-1 #
+coedge $-1 $602 $600 $597 $293 forward $148 $-1 #
+coedge $-1 $599 $601 $604 $294 forward $148 $-1 #
+coedge $-1 $604 $606 $559 $295 forward $149 $-1 #
+coedge $-1 $605 $603 $602 $294 reversed $149 $-1 #
+coedge $-1 $606 $604 $596 $296 forward $149 $-1 #
+coedge $-1 $603 $605 $608 $298 reversed $149 $-1 #
+coedge $-1 $608 $610 $560 $297 forward $150 $-1 #
+coedge $-1 $609 $607 $606 $298 forward $150 $-1 #
+coedge $-1 $610 $608 $595 $289 reversed $150 $-1 #
+coedge $-1 $607 $609 $612 $299 forward $150 $-1 #
+coedge $-1 $612 $614 $561 $277 reversed $151 $-1 #
+coedge $-1 $613 $611 $610 $299 reversed $151 $-1 #
+coedge $-1 $614 $612 $594 $300 forward $151 $-1 #
+coedge $-1 $611 $613 $616 $302 reversed $151 $-1 #
+coedge $-1 $616 $618 $562 $301 forward $152 $-1 #
+coedge $-1 $617 $615 $614 $302 forward $152 $-1 #
+coedge $-1 $618 $616 $593 $303 forward $152 $-1 #
+coedge $-1 $615 $617 $620 $304 forward $152 $-1 #
+coedge $-1 $620 $622 $563 $278 reversed $153 $-1 #
+coedge $-1 $621 $619 $618 $304 reversed $153 $-1 #
+coedge $-1 $622 $620 $592 $305 forward $153 $-1 #
+coedge $-1 $619 $621 $624 $307 reversed $153 $-1 #
+coedge $-1 $624 $626 $564 $306 forward $154 $-1 #
+coedge $-1 $625 $623 $622 $307 forward $154 $-1 #
+coedge $-1 $626 $624 $591 $308 forward $154 $-1 #
+coedge $-1 $623 $625 $628 $309 forward $154 $-1 #
+coedge $-1 $628 $630 $565 $279 reversed $155 $-1 #
+coedge $-1 $629 $627 $626 $309 reversed $155 $-1 #
+coedge $-1 $630 $628 $590 $310 forward $155 $-1 #
+coedge $-1 $627 $629 $632 $312 reversed $155 $-1 #
+coedge $-1 $632 $634 $566 $311 forward $156 $-1 #
+coedge $-1 $633 $631 $630 $312 forward $156 $-1 #
+coedge $-1 $634 $632 $589 $313 forward $156 $-1 #
+coedge $-1 $631 $633 $636 $314 forward $156 $-1 #
+coedge $-1 $636 $638 $567 $280 reversed $157 $-1 #
+coedge $-1 $637 $635 $634 $314 reversed $157 $-1 #
+coedge $-1 $638 $636 $588 $288 reversed $157 $-1 #
+coedge $-1 $635 $637 $640 $316 reversed $157 $-1 #
+coedge $-1 $640 $642 $568 $315 forward $158 $-1 #
+coedge $-1 $641 $639 $638 $316 forward $158 $-1 #
+coedge $-1 $642 $640 $587 $317 forward $158 $-1 #
+coedge $-1 $639 $641 $644 $319 reversed $158 $-1 #
+coedge $-1 $644 $646 $569 $318 forward $159 $-1 #
+coedge $-1 $645 $643 $642 $319 forward $159 $-1 #
+coedge $-1 $646 $644 $586 $320 forward $159 $-1 #
+coedge $-1 $643 $645 $648 $321 forward $159 $-1 #
+coedge $-1 $648 $650 $570 $322 forward $160 $-1 #
+coedge $-1 $649 $647 $646 $321 reversed $160 $-1 #
+coedge $-1 $650 $648 $585 $323 forward $160 $-1 #
+coedge $-1 $647 $649 $652 $325 reversed $160 $-1 #
+coedge $-1 $652 $654 $571 $324 forward $161 $-1 #
+coedge $-1 $653 $651 $650 $325 forward $161 $-1 #
+coedge $-1 $654 $652 $584 $326 forward $161 $-1 #
+coedge $-1 $651 $653 $656 $328 reversed $161 $-1 #
+coedge $-1 $656 $658 $572 $327 forward $162 $-1 #
+coedge $-1 $657 $655 $654 $328 forward $162 $-1 #
+coedge $-1 $658 $656 $583 $329 forward $162 $-1 #
+coedge $-1 $655 $657 $660 $330 forward $162 $-1 #
+coedge $-1 $660 $662 $573 $281 reversed $163 $-1 #
+coedge $-1 $661 $659 $658 $330 reversed $163 $-1 #
+coedge $-1 $662 $660 $582 $287 reversed $163 $-1 #
+coedge $-1 $659 $661 $664 $331 forward $163 $-1 #
+coedge $-1 $664 $666 $574 $282 reversed $164 $-1 #
+coedge $-1 $665 $663 $662 $331 reversed $164 $-1 #
+coedge $-1 $666 $664 $581 $286 reversed $164 $-1 #
+coedge $-1 $663 $665 $668 $332 reversed $164 $-1 #
+coedge $-1 $668 $670 $575 $283 reversed $165 $-1 #
+coedge $-1 $669 $667 $666 $332 forward $165 $-1 #
+coedge $-1 $670 $668 $580 $285 reversed $165 $-1 #
+coedge $-1 $667 $669 $672 $334 reversed $165 $-1 #
+coedge $-1 $672 $674 $576 $333 forward $166 $-1 #
+coedge $-1 $673 $671 $670 $334 forward $166 $-1 #
+coedge $-1 $674 $672 $579 $284 reversed $166 $-1 #
+coedge $-1 $671 $673 $676 $335 forward $166 $-1 #
+coedge $-1 $676 $678 $577 $336 forward $167 $-1 #
+coedge $-1 $677 $675 $674 $335 reversed $167 $-1 #
+coedge $-1 $678 $676 $598 $290 reversed $167 $-1 #
+coedge $-1 $675 $677 $600 $292 reversed $167 $-1 #
+coedge $-1 $680 $682 $691 $343 reversed $168 $-1 #
+coedge $-1 $681 $679 $695 $337 forward $168 $-1 #
+coedge $-1 $682 $680 $699 $338 forward $168 $-1 #
+coedge $-1 $679 $681 $687 $339 reversed $168 $-1 #
+coedge $-1 $684 $686 $697 $346 reversed $169 $-1 #
+coedge $-1 $685 $683 $693 $344 reversed $169 $-1 #
+coedge $-1 $686 $684 $689 $341 reversed $169 $-1 #
+coedge $-1 $683 $685 $701 $348 reversed $169 $-1 #
+coedge $-1 $688 $690 $682 $339 forward $170 $-1 #
+coedge $-1 $689 $687 $702 $340 forward $170 $-1 #
+coedge $-1 $690 $688 $685 $341 forward $170 $-1 #
+coedge $-1 $687 $689 $692 $342 forward $170 $-1 #
+coedge $-1 $692 $694 $679 $343 forward $171 $-1 #
+coedge $-1 $693 $691 $690 $342 reversed $171 $-1 #
+coedge $-1 $694 $692 $684 $344 forward $171 $-1 #
+coedge $-1 $691 $693 $696 $345 forward $171 $-1 #
+coedge $-1 $696 $698 $680 $337 reversed $172 $-1 #
+coedge $-1 $697 $695 $694 $345 reversed $172 $-1 #
+coedge $-1 $698 $696 $683 $346 forward $172 $-1 #
+coedge $-1 $695 $697 $700 $347 forward $172 $-1 #
+coedge $-1 $700 $702 $681 $338 reversed $173 $-1 #
+coedge $-1 $701 $699 $698 $347 reversed $173 $-1 #
+coedge $-1 $702 $700 $686 $348 forward $173 $-1 #
+coedge $-1 $699 $701 $688 $340 reversed $173 $-1 #
+coedge $-1 $704 $706 $715 $351 reversed $174 $-1 #
+coedge $-1 $705 $703 $719 $355 reversed $174 $-1 #
+coedge $-1 $706 $704 $723 $357 reversed $174 $-1 #
+coedge $-1 $703 $705 $711 $349 reversed $174 $-1 #
+coedge $-1 $708 $710 $721 $356 reversed $175 $-1 #
+coedge $-1 $709 $707 $717 $353 reversed $175 $-1 #
+coedge $-1 $710 $708 $713 $350 reversed $175 $-1 #
+coedge $-1 $707 $709 $725 $359 reversed $175 $-1 #
+coedge $-1 $712 $714 $706 $349 forward $176 $-1 #
+coedge $-1 $713 $711 $726 $360 reversed $176 $-1 #
+coedge $-1 $714 $712 $709 $350 forward $176 $-1 #
+coedge $-1 $711 $713 $716 $352 reversed $176 $-1 #
+coedge $-1 $716 $718 $703 $351 forward $177 $-1 #
+coedge $-1 $717 $715 $714 $352 forward $177 $-1 #
+coedge $-1 $718 $716 $708 $353 forward $177 $-1 #
+coedge $-1 $715 $717 $720 $354 forward $177 $-1 #
+coedge $-1 $720 $722 $704 $355 forward $178 $-1 #
+coedge $-1 $721 $719 $718 $354 reversed $178 $-1 #
+coedge $-1 $722 $720 $707 $356 forward $178 $-1 #
+coedge $-1 $719 $721 $724 $358 reversed $178 $-1 #
+coedge $-1 $724 $726 $705 $357 forward $179 $-1 #
+coedge $-1 $725 $723 $722 $358 forward $179 $-1 #
+coedge $-1 $726 $724 $710 $359 forward $179 $-1 #
+coedge $-1 $723 $725 $712 $360 forward $179 $-1 #
+coedge $-1 $728 $730 $739 $361 forward $180 $-1 #
+coedge $-1 $729 $727 $743 $362 forward $180 $-1 #
+coedge $-1 $730 $728 $747 $363 forward $180 $-1 #
+coedge $-1 $727 $729 $735 $364 forward $180 $-1 #
+coedge $-1 $732 $734 $745 $369 reversed $181 $-1 #
+coedge $-1 $733 $731 $741 $365 forward $181 $-1 #
+coedge $-1 $734 $732 $737 $366 forward $181 $-1 #
+coedge $-1 $731 $733 $749 $371 reversed $181 $-1 #
+coedge $-1 $736 $738 $730 $364 reversed $182 $-1 #
+coedge $-1 $737 $735 $750 $372 reversed $182 $-1 #
+coedge $-1 $738 $736 $733 $366 reversed $182 $-1 #
+coedge $-1 $735 $737 $740 $367 reversed $182 $-1 #
+coedge $-1 $740 $742 $727 $361 reversed $183 $-1 #
+coedge $-1 $741 $739 $738 $367 forward $183 $-1 #
+coedge $-1 $742 $740 $732 $365 reversed $183 $-1 #
+coedge $-1 $739 $741 $744 $368 reversed $183 $-1 #
+coedge $-1 $744 $746 $728 $362 reversed $184 $-1 #
+coedge $-1 $745 $743 $742 $368 forward $184 $-1 #
+coedge $-1 $746 $744 $731 $369 forward $184 $-1 #
+coedge $-1 $743 $745 $748 $370 reversed $184 $-1 #
+coedge $-1 $748 $750 $729 $363 reversed $185 $-1 #
+coedge $-1 $749 $747 $746 $370 forward $185 $-1 #
+coedge $-1 $750 $748 $734 $371 forward $185 $-1 #
+coedge $-1 $747 $749 $736 $372 forward $185 $-1 #
+coedge $-1 $752 $755 $765 $373 forward $186 $-1 #
+coedge $-1 $753 $751 $769 $374 forward $186 $-1 #
+coedge $-1 $754 $752 $773 $375 forward $186 $-1 #
+coedge $-1 $755 $753 $777 $376 forward $186 $-1 #
+coedge $-1 $751 $754 $761 $377 forward $186 $-1 #
+coedge $-1 $757 $760 $775 $378 forward $187 $-1 #
+coedge $-1 $758 $756 $771 $379 forward $187 $-1 #
+coedge $-1 $759 $757 $767 $380 forward $187 $-1 #
+coedge $-1 $760 $758 $763 $382 reversed $187 $-1 #
+coedge $-1 $756 $759 $779 $381 forward $187 $-1 #
+coedge $-1 $762 $764 $755 $377 reversed $188 $-1 #
+coedge $-1 $763 $761 $780 $387 reversed $188 $-1 #
+coedge $-1 $764 $762 $759 $382 forward $188 $-1 #
+coedge $-1 $761 $763 $766 $383 reversed $188 $-1 #
+coedge $-1 $766 $768 $751 $373 reversed $189 $-1 #
+coedge $-1 $767 $765 $764 $383 forward $189 $-1 #
+coedge $-1 $768 $766 $758 $380 reversed $189 $-1 #
+coedge $-1 $765 $767 $770 $384 reversed $189 $-1 #
+coedge $-1 $770 $772 $752 $374 reversed $190 $-1 #
+coedge $-1 $771 $769 $768 $384 forward $190 $-1 #
+coedge $-1 $772 $770 $757 $379 reversed $190 $-1 #
+coedge $-1 $769 $771 $774 $385 reversed $190 $-1 #
+coedge $-1 $774 $776 $753 $375 reversed $191 $-1 #
+coedge $-1 $775 $773 $772 $385 forward $191 $-1 #
+coedge $-1 $776 $774 $756 $378 reversed $191 $-1 #
+coedge $-1 $773 $775 $778 $386 forward $191 $-1 #
+coedge $-1 $778 $780 $754 $376 reversed $192 $-1 #
+coedge $-1 $779 $777 $776 $386 reversed $192 $-1 #
+coedge $-1 $780 $778 $760 $381 reversed $192 $-1 #
+coedge $-1 $777 $779 $762 $387 forward $192 $-1 #
+coedge $-1 $782 $787 $799 $392 reversed $193 $-1 #
+coedge $-1 $783 $781 $803 $395 reversed $193 $-1 #
+coedge $-1 $784 $782 $807 $399 reversed $193 $-1 #
+coedge $-1 $785 $783 $811 $401 reversed $193 $-1 #
+coedge $-1 $786 $784 $815 $404 reversed $193 $-1 #
+coedge $-1 $787 $785 $819 $388 forward $193 $-1 #
+coedge $-1 $781 $786 $795 $389 reversed $193 $-1 #
+coedge $-1 $789 $794 $817 $406 reversed $194 $-1 #
+coedge $-1 $790 $788 $813 $403 reversed $194 $-1 #
+coedge $-1 $791 $789 $809 $400 reversed $194 $-1 #
+coedge $-1 $792 $790 $805 $397 reversed $194 $-1 #
+coedge $-1 $793 $791 $801 $394 reversed $194 $-1 #
+coedge $-1 $794 $792 $797 $391 reversed $194 $-1 #
+coedge $-1 $788 $793 $821 $408 reversed $194 $-1 #
+coedge $-1 $796 $798 $787 $389 forward $195 $-1 #
+coedge $-1 $797 $795 $822 $390 forward $195 $-1 #
+coedge $-1 $798 $796 $793 $391 forward $195 $-1 #
+coedge $-1 $795 $797 $800 $393 reversed $195 $-1 #
+coedge $-1 $800 $802 $781 $392 forward $196 $-1 #
+coedge $-1 $801 $799 $798 $393 forward $196 $-1 #
+coedge $-1 $802 $800 $792 $394 forward $196 $-1 #
+coedge $-1 $799 $801 $804 $396 reversed $196 $-1 #
+coedge $-1 $804 $806 $782 $395 forward $197 $-1 #
+coedge $-1 $805 $803 $802 $396 forward $197 $-1 #
+coedge $-1 $806 $804 $791 $397 forward $197 $-1 #
+coedge $-1 $803 $805 $808 $398 forward $197 $-1 #
+coedge $-1 $808 $810 $783 $399 forward $198 $-1 #
+coedge $-1 $809 $807 $806 $398 reversed $198 $-1 #
+coedge $-1 $810 $808 $790 $400 forward $198 $-1 #
+coedge $-1 $807 $809 $812 $402 reversed $198 $-1 #
+coedge $-1 $812 $814 $784 $401 forward $199 $-1 #
+coedge $-1 $813 $811 $810 $402 forward $199 $-1 #
+coedge $-1 $814 $812 $789 $403 forward $199 $-1 #
+coedge $-1 $811 $813 $816 $405 reversed $199 $-1 #
+coedge $-1 $816 $818 $785 $404 forward $200 $-1 #
+coedge $-1 $817 $815 $814 $405 forward $200 $-1 #
+coedge $-1 $818 $816 $788 $406 forward $200 $-1 #
+coedge $-1 $815 $817 $820 $407 reversed $200 $-1 #
+coedge $-1 $820 $822 $786 $388 reversed $201 $-1 #
+coedge $-1 $821 $819 $818 $407 forward $201 $-1 #
+coedge $-1 $822 $820 $794 $408 forward $201 $-1 #
+coedge $-1 $819 $821 $796 $390 reversed $201 $-1 #
+vertex $-1 $206 $1263 #
+vertex $-1 $207 $1264 #
+vertex $-1 $212 $1265 #
+vertex $-1 $208 $1266 #
+vertex $-1 $216 $1267 #
+vertex $-1 $204 $1268 #
+vertex $-1 $203 $1269 #
+vertex $-1 $202 $1270 #
+vertex $-1 $210 $1271 #
+vertex $-1 $205 $1272 #
+vertex $-1 $262 $1273 #
+vertex $-1 $260 $1274 #
+vertex $-1 $222 $1275 #
+vertex $-1 $223 $1276 #
+vertex $-1 $224 $1277 #
+vertex $-1 $225 $1278 #
+vertex $-1 $251 $1279 #
+vertex $-1 $248 $1280 #
+vertex $-1 $226 $1281 #
+vertex $-1 $243 $1282 #
+vertex $-1 $240 $1283 #
+vertex $-1 $237 $1284 #
+vertex $-1 $235 $1285 #
+vertex $-1 $227 $1286 #
+vertex $-1 $231 $1287 #
+vertex $-1 $228 $1288 #
+vertex $-1 $263 $1289 #
+vertex $-1 $221 $1290 #
+vertex $-1 $259 $1291 #
+vertex $-1 $257 $1292 #
+vertex $-1 $254 $1293 #
+vertex $-1 $220 $1294 #
+vertex $-1 $219 $1295 #
+vertex $-1 $250 $1296 #
+vertex $-1 $247 $1297 #
+vertex $-1 $245 $1298 #
+vertex $-1 $242 $1299 #
+vertex $-1 $239 $1300 #
+vertex $-1 $218 $1301 #
+vertex $-1 $217 $1302 #
+vertex $-1 $232 $1303 #
+vertex $-1 $229 $1304 #
+vertex $-1 $265 $1305 #
+vertex $-1 $270 $1306 #
+vertex $-1 $267 $1307 #
+vertex $-1 $275 $1308 #
+vertex $-1 $273 $1309 #
+vertex $-1 $271 $1310 #
+vertex $-1 $268 $1311 #
+vertex $-1 $266 $1312 #
+vertex $-1 $284 $1313 #
+vertex $-1 $285 $1314 #
+vertex $-1 $286 $1315 #
+vertex $-1 $287 $1316 #
+vertex $-1 $329 $1317 #
+vertex $-1 $326 $1318 #
+vertex $-1 $323 $1319 #
+vertex $-1 $320 $1320 #
+vertex $-1 $317 $1321 #
+vertex $-1 $288 $1322 #
+vertex $-1 $313 $1323 #
+vertex $-1 $310 $1324 #
+vertex $-1 $308 $1325 #
+vertex $-1 $305 $1326 #
+vertex $-1 $303 $1327 #
+vertex $-1 $300 $1328 #
+vertex $-1 $289 $1329 #
+vertex $-1 $296 $1330 #
+vertex $-1 $293 $1331 #
+vertex $-1 $290 $1332 #
+vertex $-1 $336 $1333 #
+vertex $-1 $333 $1334 #
+vertex $-1 $283 $1335 #
+vertex $-1 $282 $1336 #
+vertex $-1 $281 $1337 #
+vertex $-1 $327 $1338 #
+vertex $-1 $324 $1339 #
+vertex $-1 $322 $1340 #
+vertex $-1 $318 $1341 #
+vertex $-1 $315 $1342 #
+vertex $-1 $280 $1343 #
+vertex $-1 $311 $1344 #
+vertex $-1 $279 $1345 #
+vertex $-1 $306 $1346 #
+vertex $-1 $278 $1347 #
+vertex $-1 $301 $1348 #
+vertex $-1 $277 $1349 #
+vertex $-1 $297 $1350 #
+vertex $-1 $295 $1351 #
+vertex $-1 $291 $1352 #
+vertex $-1 $346 $1353 #
+vertex $-1 $344 $1354 #
+vertex $-1 $341 $1355 #
+vertex $-1 $348 $1356 #
+vertex $-1 $338 $1357 #
+vertex $-1 $337 $1358 #
+vertex $-1 $343 $1359 #
+vertex $-1 $339 $1360 #
+vertex $-1 $356 $1361 #
+vertex $-1 $353 $1362 #
+vertex $-1 $350 $1363 #
+vertex $-1 $359 $1364 #
+vertex $-1 $357 $1365 #
+vertex $-1 $355 $1366 #
+vertex $-1 $351 $1367 #
+vertex $-1 $349 $1368 #
+vertex $-1 $369 $1369 #
+vertex $-1 $365 $1370 #
+vertex $-1 $366 $1371 #
+vertex $-1 $371 $1372 #
+vertex $-1 $363 $1373 #
+vertex $-1 $362 $1374 #
+vertex $-1 $361 $1375 #
+vertex $-1 $364 $1376 #
+vertex $-1 $378 $1377 #
+vertex $-1 $379 $1378 #
+vertex $-1 $380 $1379 #
+vertex $-1 $382 $1380 #
+vertex $-1 $381 $1381 #
+vertex $-1 $376 $1382 #
+vertex $-1 $375 $1383 #
+vertex $-1 $374 $1384 #
+vertex $-1 $373 $1385 #
+vertex $-1 $377 $1386 #
+vertex $-1 $406 $1387 #
+vertex $-1 $403 $1388 #
+vertex $-1 $400 $1389 #
+vertex $-1 $397 $1390 #
+vertex $-1 $394 $1391 #
+vertex $-1 $391 $1392 #
+vertex $-1 $408 $1393 #
+vertex $-1 $388 $1394 #
+vertex $-1 $404 $1395 #
+vertex $-1 $401 $1396 #
+vertex $-1 $399 $1397 #
+vertex $-1 $395 $1398 #
+vertex $-1 $392 $1399 #
+vertex $-1 $389 $1400 #
+vertex $-1 $-1 $1401 #
+vertex $-1 $-1 $1402 #
+vertex $-1 $-1 $1403 #
+vertex $-1 $-1 $1404 #
+vertex $-1 $-1 $1405 #
+vertex $-1 $-1 $1406 #
+vertex $-1 $-1 $1407 #
+vertex $-1 $-1 $1408 #
+plane-surface $-1 -19.6850393700787 538.0577427821522 140.5646926621236 0 -4.908392045527495e-17 1 1 0 -0 forward_v I I I I #
+plane-surface $-1 -19.6850393700787 538.0577427821522 0 0 0 -1 -1 0 0 forward_v I I I I #
+plane-surface $-1 118.1102362204725 465.8792650918635 0 -0.4640069946705576 -0.8858315352801553 0 0.8858315352801553 -0.4640069946705576 0 forward_v I I I I #
+plane-surface $-1 282.1522309711286 406.8241469816273 0 -0.3387194682727416 -0.9408874118687268 0 0.9408874118687268 -0.3387194682727416 0 forward_v I I I I #
+plane-surface $-1 301.8372703412074 551.1811023622047 0 0.9908301680442989 -0.1351132047333136 0 0.1351132047333136 0.9908301680442989 -0 forward_v I I I I #
+plane-surface $-1 111.5485564304462 669.2913385826771 0 0.5273628617781427 0.8496401661981191 0 -0.8496401661981191 0.5273628617781427 0 forward_v I I I I #
+plane-surface $-1 -19.68503937007866 538.0577427821522 0 -0.7071067811865476 0.7071067811865477 0 -0.7071067811865476 -0.7071067811865475 0 forward_v I I I I #
+plane-surface $-1 -91.86351706036746 446.1942257217848 140.5646926621237 0 0 1 1 0 0 forward_v I I I I #
+plane-surface $-1 -91.86351706036746 446.1942257217848 0 0 0 -1 -1 0 0 forward_v I I I I #
+plane-surface $-1 -81.52933592452973 430.2709044911909 0 -0.8388280113736724 -0.5443965166447066 0 0.5443965166447066 -0.8388280113736724 0 forward_v I I I I #
+plane-surface $-1 -72.66697344747524 413.4838264224417 0 -0.8843300407787038 -0.4668622698144881 0 0.4668622698144882 -0.8843300407787039 0 forward_v I I I I #
+plane-surface $-1 -65.34805519055757 395.9686645816381 0 -0.922684920001537 -0.3855548448687388 0 0.3855548448687388 -0.922684920001537 0 forward_v I I I I #
+plane-surface $-1 -59.63173260803174 377.8669764036396 0 -0.953582665134142 -0.301131367937096 0 0.3011313679370961 -0.9535826651341421 0 forward_v I I I I #
+plane-surface $-1 -55.56420498534912 359.3250596257091 0 -0.9767735607822962 -0.2142741490630022 0 0.2142741490630023 -0.9767735607822964 0 forward_v I I I I #
+plane-surface $-1 -53.17834605680473 340.492769910062 0 -0.9920701782639344 -0.1256851677779259 0 0.1256851677779259 -0.9920701782639345 0 forward_v I I I I #
+plane-surface $-1 -52.49343832020996 321.5223097112861 0 -0.9993488904066415 -0.03608039970696501 0 0.03608039970696501 -0.9993488904066415 0 forward_v I I I I #
+plane-surface $-1 -27.97566472065741 319.9149388499866 0 -0.06541897780791256 -0.9978578843415368 0 0.9978578843415368 -0.06541897780791256 0 forward_v I I I I #
+plane-surface $-1 -3.627649704251354 316.6166016741453 0 -0.1342402377102509 -0.9909488173359385 0 0.9909488173359386 -0.1342402377102509 0 forward_v I I I I #
+plane-surface $-1 20.43412336549839 311.6430777620144 0 -0.2024192787542309 -0.9792989510811378 0 0.979298951081138 -0.2024192787542309 0 forward_v I I I I #
+plane-surface $-1 44.09454053547132 305.0181609544218 0 -0.2696299255199742 -0.9629640197141809 0 0.9629640197141809 -0.2696299255199742 0 forward_v I I I I #
+plane-surface $-1 67.24040797971713 296.7735455226342 0 -0.3355506354836189 -0.9420221711969095 0 0.9420221711969096 -0.335550635483619 0 forward_v I I I I #
+plane-surface $-1 89.7609935301538 286.9486745397594 0 -0.3998660373093104 -0.9165735934482017 0 0.9165735934482017 -0.3998660373093104 0 forward_v I I I I #
+plane-surface $-1 111.5485564304462 275.5905511811024 0 -0.4622684396174769 -0.886740035034859 0 0.8867400350348591 -0.462268439617477 0 forward_v I I I I #
+plane-surface $-1 104.9868766404199 406.8241469816273 0 0.9987523388778446 0.04993761694389232 0 -0.04993761694389232 0.9987523388778448 0 forward_v I I I I #
+plane-surface $-1 -91.86351706036746 446.1942257217848 0 0.1961161351381842 0.9805806756909201 0 -0.9805806756909201 0.1961161351381842 0 forward_v I I I I #
+plane-surface $-1 160.243589897539 249.7968308110805 140.5646926621237 0 0 1 1 0 0 forward_v I I I I #
+plane-surface $-1 160.243589897539 249.7968308110805 0 0 0 -1 -1 0 0 forward_v I I I I #
+plane-surface $-1 313.4545622848959 144.6390506476593 0 -0.5658900370158788 -0.8244807250664914 0 0.8244807250664914 -0.5658900370158788 0 forward_v I I I I #
+plane-surface $-1 305.2143868427806 329.5626485238429 0 0.9990086840501102 0.0445157184875965 0 -0.04451571848759651 0.9990086840501103 0 forward_v I I I I #
+plane-surface $-1 158.5137897257126 384.82222041523 0 0.3525035799172384 0.9358104648621597 0 -0.9358104648621597 0.3525035799172384 0 forward_v I I I I #
+plane-surface $-1 160.243589897539 249.7968308110805 0 -0.9999179501965977 -0.01280987410688557 0 0.01280987410688557 -0.9999179501965978 0 forward_v I I I I #
+plane-surface $-1 405.9157780739678 359.6607603675012 140.5646926621237 0 -7.188678137277285e-17 1 1 0 -0 forward_v I I I I #
+plane-surface $-1 405.9157780739678 359.6607603675012 0 0 0 -1 -1 0 0 forward_v I I I I #
+plane-surface $-1 532.1189097510817 282.2327382218922 0 -0.5229435604530367 -0.8523673108353588 0 0.8523673108353588 -0.5229435604530367 0 forward_v I I I I #
+plane-surface $-1 525.3587545836324 330.1998561572769 0 0.9902144614840435 0.1395540048435223 0 -0.1395540048435223 0.9902144614840435 0 forward_v I I I I #
+plane-surface $-1 515.5669623496357 377.6410292642032 0 0.9793570617173148 0.2021379372221542 0 -0.2021379372221542 0.9793570617173148 0 forward_v I I I I #
+plane-surface $-1 502.7830393246517 424.3648498807407 0 0.9645483168825432 0.2639063174671137 0 -0.2639063174671137 0.9645483168825432 0 forward_v I I I I #
+plane-surface $-1 487.0585639300438 470.1828045980726 0 0.9458479748113959 0.3246099329120734 0 -0.3246099329120734 0.945847974811396 0 forward_v I I I I #
+plane-surface $-1 468.4569786330457 514.9100348426741 0 0.9233314844971986 0.3840038668245407 0 -0.3840038668245407 0.9233314844971986 0 forward_v I I I I #
+plane-surface $-1 447.0533339797701 558.3660827125784 0 0.8970896916860366 0.4418484865546695 0 -0.4418484865546695 0.8970896916860366 0 forward_v I I I I #
+plane-surface $-1 422.933985793894 600.3756190585511 0 0.8672284723476128 0.497910410364782 0 -0.4979104103647821 0.8672284723476129 0 forward_v I I I I #
+plane-surface $-1 385.7149514345406 550.0755554791299 0 -0.8038649205403343 0.5948118942360535 0 -0.5948118942360535 -0.8038649205403343 0 forward_v I I I I #
+plane-surface $-1 384.0979137771776 547.9821150214552 0 -0.7913985497612549 0.6113005279204186 0 -0.6113005279204186 -0.7913985497612549 0 forward_v I I I I #
+plane-surface $-1 382.7266734401454 545.7200355194803 0 -0.85515039644172 0.518379975949659 0 -0.5183799759496591 -0.8551503964417201 0 forward_v I I I I #
+plane-surface $-1 381.6186431557966 543.318042050687 0 -0.9080430927806138 0.4188767618923467 0 -0.4188767618923467 -0.9080430927806138 0 forward_v I I I I #
+plane-surface $-1 380.7878932765403 540.8066363938339 0 -0.9494049794488153 0.3140544299923098 0 -0.3140544299923098 -0.9494049794488153 0 forward_v I I I I #
+plane-surface $-1 380.2449731020932 538.2177097012955 0 -0.9787108214144918 0.2052440694543225 0 -0.2052440694543225 -0.9787108214144918 0 forward_v I I I I #
+plane-surface $-1 379.9967769189137 535.5841375284067 0 -0.9955884776541035 0.0938274115724429 0 -0.0938274115724429 -0.9955884776541035 0 forward_v I I I I #
+plane-surface $-1 380.0464564529186 532.9393623623366 0 -0.9998236267953312 -0.01878071622249942 0 0.01878071622249943 -0.9998236267953313 0 forward_v I I I I #
+plane-surface $-1 382.7437466119131 497.4845166671217 0 -0.9971186636591555 -0.07585756773440711 0 0.07585756773440711 -0.9971186636591555 0 forward_v I I I I #
+plane-surface $-1 390.2206883926307 399.2029816889752 0 -0.9971186636591554 -0.07585756773440844 0 0.07585756773440844 -0.9971186636591554 0 forward_v I I I I #
+plane-surface $-1 405.5617561100782 400.3700805769088 0 0.07585756773440952 -0.9971186636591552 0 0.9971186636591552 0.07585756773440952 -0 forward_v I I I I #
+plane-surface $-1 405.9157780739678 359.6607603675012 0 -0.9999621890067949 -0.008696008092162701 0 0.008696008092162703 -0.999962189006795 0 forward_v I I I I #
+plane-surface $-1 402.5132021364658 70.08316939195015 140.5646926621237 0 0 1 1 0 0 forward_v I I I I #
+plane-surface $-1 402.5132021364658 70.08316939195015 0 0 0 -1 -1 0 0 forward_v I I I I #
+plane-surface $-1 535.6574441784668 -23.71609963268946 0 -0.5759252137796839 -0.8175023841756215 0 0.8175023841756215 -0.5759252137796839 0 forward_v I I I I #
+plane-surface $-1 530.9775224509344 220.1803268730278 0 0.9998159582290954 0.01918462067479388 0 -0.01918462067479388 0.9998159582290954 0 forward_v I I I I #
+plane-surface $-1 395.9205217851087 286.8806661213526 0 0.442809795627056 0.8966155725263336 0 -0.8966155725263336 0.442809795627056 0 forward_v I I I I #
+plane-surface $-1 402.5132021364658 70.08316939195015 0 -0.9995379548246114 -0.03039534281815432 0 0.03039534281815432 -0.9995379548246114 0 forward_v I I I I #
+plane-surface $-1 464.7479600524895 -249.5486386302497 0 0 0 -1 -1 0 0 forward_v I I I I #
+plane-surface $-1 464.7479600524895 -249.5486386302497 140.5646926621237 0 0 1 1 0 0 forward_v I I I I #
+plane-surface $-1 400.4465941373786 -2.582836101075088 140.5646926621237 -0.9677363175746541 -0.2519651159328377 0 0.2519651159328377 -0.9677363175746541 0 forward_v I I I I #
+plane-surface $-1 530.2140298928597 -90.6373647450057 140.5646926621237 0.561492923356207 0.8274815387795068 0 -0.8274815387795069 0.5614929233562072 0 forward_v I I I I #
+plane-surface $-1 529.209728706829 -263.686835383972 140.5646926621237 0.9999831598314192 -0.0058034518668063 0 0.005803451866806301 0.9999831598314193 -0 forward_v I I I I #
+plane-surface $-1 464.7479600524895 -249.5486386302497 140.5646926621237 -0.2142345735392624 -0.9767822415976092 0 0.9767822415976093 -0.2142345735392624 0 forward_v I I I I #
+plane-surface $-1 617.918524370092 -312.6423964692427 140.5646926621237 0 0 1 1 0 0 forward_v I I I I #
+plane-surface $-1 617.918524370092 -312.6423964692427 0 0 0 -1 -1 0 0 forward_v I I I I #
+plane-surface $-1 736.5135445453524 -361.7667115854867 0 -0.3826877499771491 -0.9238777440859948 0 0.9238777440859949 -0.3826877499771492 0 forward_v I I I I #
+plane-surface $-1 766.5060408165639 -191.8735298566594 0 0.9847723009156367 -0.1738491166193341 0 0.1738491166193341 0.9847723009156367 -0 forward_v I I I I #
+plane-surface $-1 616.0632997521382 -148.411259369037 0 0.2775457482790183 0.9607124219100323 0 -0.9607124219100323 0.2775457482790183 0 forward_v I I I I #
+plane-surface $-1 617.9185243700921 -312.6423964692427 0 -0.9999362015042209 -0.01129570366599823 0 0.01129570366599823 -0.999936201504221 0 forward_v I I I I #
+plane-surface $-1 612.1804937265736 -66.23786411326594 140.5646926621237 0 0 1 1 0 0 forward_v I I I I #
+plane-surface $-1 612.1804937265736 -66.23786411326594 0 0 0 -1 -1 0 0 forward_v I I I I #
+plane-surface $-1 788.3837207777392 -124.538028486591 0 -0.3141212481425658 -0.9493828740109844 0 0.9493828740109844 -0.3141212481425658 0 forward_v I I I I #
+plane-surface $-1 825.6406536755565 -57.25302336315815 0 0.8748387903276126 -0.4844141729327492 0 0.4844141729327492 0.8748387903276126 -0 forward_v I I I I #
+plane-surface $-1 703.3591173036582 170.3009528568136 0 0.8808707649947506 0.4733568372565913 0 -0.4733568372565913 0.8808707649947506 0 forward_v I I I I #
+plane-surface $-1 615.2597618661393 197.0966518057681 0 0.2909911736819469 0.9567257375231436 0 -0.9567257375231436 0.2909911736819469 0 forward_v I I I I #
+plane-surface $-1 612.1804937265734 -66.23786411326594 0 -0.9999316395500109 0.01169257143775572 0 -0.01169257143775572 -0.999931639550011 0 forward_v I I I I #
+plane-surface $-1 1006.963235498897 -475.4970844803108 140.5646926621237 0 -8.59621218249202e-17 1 1 0 -0 forward_v I I I I #
+plane-surface $-1 1006.963235498897 -475.4970844803108 0 0 0 -1 -1 0 0 forward_v I I I I #
+plane-surface $-1 1050.98450058844 -377.8883478202206 0 0.9115810212689135 -0.4111204709842657 0 0.4111204709842657 0.9115810212689136 -0 forward_v I I I I #
+plane-surface $-1 911.1040563414513 -236.9706192588204 0 0.7097140312039018 0.7044898820510535 0 -0.7044898820510535 0.7097140312039018 0 forward_v I I I I #
+plane-surface $-1 796.9517174324935 -202.5260511375036 0 0.2888776485086725 0.9573660241475566 0 -0.9573660241475567 0.2888776485086725 0 forward_v I I I I #
+plane-surface $-1 771.1504951387275 -351.3871434278394 0 -0.98530954300226 0.1707779390573547 0 -0.1707779390573547 -0.98530954300226 0 forward_v I I I I #
+plane-surface $-1 817.8269919153207 -369.9601260639466 0 -0.3697149412042261 -0.9291452320549008 0 0.9291452320549008 -0.3697149412042261 0 forward_v I I I I #
+plane-surface $-1 810.9996935460181 -387.1180794509311 0 -0.9291452320549007 0.3697149412042263 0 -0.3697149412042263 -0.9291452320549008 0 forward_v I I I I #
+plane-surface $-1 1006.963235498897 -475.4970844803107 0 -0.4111204709842657 -0.9115810212689136 0 0.9115810212689136 -0.4111204709842657 0 forward_v I I I I #
+straight-curve $-1 282.1522309711286 406.8241469816273 140.5646926621237 0.1351132047333136 0.9908301680442989 0 I I #
+straight-curve $-1 301.8372703412074 551.1811023622047 140.5646926621237 -0.8496401661981192 0.5273628617781428 0 I I #
+straight-curve $-1 111.5485564304462 669.2913385826771 140.5646926621237 -0.7071067811865476 -0.7071067811865475 0 I I #
+straight-curve $-1 -19.6850393700787 538.0577427821522 140.5646926621237 0.8858315352801553 -0.4640069946705577 0 I I #
+straight-curve $-1 111.5485564304462 669.2913385826771 0 0.8496401661981192 -0.5273628617781428 0 I I #
+straight-curve $-1 301.8372703412074 551.1811023622047 0 -0.1351132047333136 -0.9908301680442989 0 I I #
+straight-curve $-1 118.1102362204725 465.8792650918635 0 -0.8858315352801553 0.4640069946705577 0 I I #
+straight-curve $-1 -19.6850393700787 538.0577427821522 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 282.1522309711286 406.8241469816273 140.5646926621237 -0.9408874118687269 0.3387194682727416 0 I I #
+straight-curve $-1 118.1102362204725 465.8792650918635 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 118.1102362204725 465.8792650918635 0 0.9408874118687269 -0.3387194682727416 0 I I #
+straight-curve $-1 282.1522309711286 406.8241469816273 0 0 0 1 I I #
+straight-curve $-1 301.8372703412074 551.1811023622047 0 0 0 1 I I #
+straight-curve $-1 111.5485564304462 669.2913385826771 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 111.5485564304462 669.2913385826771 0 -0.7071067811865476 -0.7071067811865475 0 I I #
+straight-curve $-1 -72.66697344747524 413.4838264224417 140.5646926621237 0.3855548448687388 -0.922684920001537 0 I I #
+straight-curve $-1 -65.34805519055757 395.9686645816381 140.5646926621237 0.301131367937096 -0.953582665134142 0 I I #
+straight-curve $-1 -3.627649704251361 316.6166016741453 140.5646926621237 0.979298951081138 -0.2024192787542309 0 I I #
+straight-curve $-1 20.43412336549839 311.6430777620144 140.5646926621237 0.9629640197141809 -0.2696299255199742 0 I I #
+straight-curve $-1 111.5485564304462 275.5905511811023 140.5646926621237 -0.04993761694389232 0.9987523388778446 0 I I #
+straight-curve $-1 89.7609935301538 286.9486745397594 0 -0.9165735934482016 0.3998660373093103 0 I I #
+straight-curve $-1 67.24040797971712 296.7735455226341 0 -0.9420221711969095 0.335550635483619 0 I I #
+straight-curve $-1 44.09454053547133 305.0181609544219 0 -0.9629640197141809 0.2696299255199742 0 I I #
+straight-curve $-1 20.43412336549839 311.6430777620144 0 -0.979298951081138 0.2024192787542309 0 I I #
+straight-curve $-1 -52.49343832020998 321.5223097112861 0 -0.03608039970696501 0.9993488904066415 0 I I #
+straight-curve $-1 -72.66697344747524 413.4838264224417 0 -0.4668622698144881 0.8843300407787039 0 I I #
+straight-curve $-1 -91.86351706036746 446.1942257217848 0 0.9805806756909202 -0.1961161351381842 0 I I #
+straight-curve $-1 -81.52933592452976 430.2709044911909 140.5646926621237 -0.5443965166447066 0.8388280113736724 0 I I #
+straight-curve $-1 -91.86351706036746 446.1942257217848 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 -91.86351706036746 446.1942257217848 0 0.5443965166447066 -0.8388280113736724 0 I I #
+straight-curve $-1 -72.66697344747524 413.4838264224417 140.5646926621237 -0.4668622698144881 0.8843300407787039 0 I I #
+straight-curve $-1 -81.52933592452976 430.2709044911909 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 -72.66697344747524 413.4838264224417 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 -72.66697344747524 413.4838264224417 0 0.3855548448687388 -0.922684920001537 0 I I #
+straight-curve $-1 -65.34805519055757 395.9686645816381 0 0 0 1 I I #
+straight-curve $-1 -65.34805519055757 395.9686645816381 0 0.301131367937096 -0.953582665134142 0 I I #
+straight-curve $-1 -59.63173260803175 377.8669764036396 0 0 0 1 I I #
+straight-curve $-1 -55.56420498534911 359.3250596257091 140.5646926621237 -0.2142741490630022 0.9767735607822964 0 I I #
+straight-curve $-1 -59.63173260803175 377.8669764036396 0 0.2142741490630022 -0.9767735607822964 0 I I #
+straight-curve $-1 -55.56420498534911 359.3250596257091 0 0 0 1 I I #
+straight-curve $-1 -53.17834605680474 340.492769910062 140.5646926621237 -0.1256851677779259 0.9920701782639345 0 I I #
+straight-curve $-1 -55.56420498534911 359.3250596257091 0 0.1256851677779259 -0.9920701782639345 0 I I #
+straight-curve $-1 -53.17834605680474 340.492769910062 0 0 0 1 I I #
+straight-curve $-1 -52.49343832020998 321.5223097112861 140.5646926621237 -0.03608039970696501 0.9993488904066415 0 I I #
+straight-curve $-1 -52.49343832020998 321.5223097112861 0 0 0 1 I I #
+straight-curve $-1 -27.97566472065741 319.9149388499866 140.5646926621237 -0.9978578843415368 0.06541897780791256 0 I I #
+straight-curve $-1 -52.49343832020998 321.5223097112861 0 0.9978578843415368 -0.06541897780791256 0 I I #
+straight-curve $-1 -27.97566472065741 319.9149388499866 0 0 0 1 I I #
+straight-curve $-1 -3.627649704251361 316.6166016741453 140.5646926621237 -0.9909488173359386 0.1342402377102509 0 I I #
+straight-curve $-1 -27.97566472065741 319.9149388499866 0 0.9909488173359386 -0.1342402377102509 0 I I #
+straight-curve $-1 -3.627649704251361 316.6166016741453 0 0 0 1 I I #
+straight-curve $-1 20.43412336549839 311.6430777620144 0 0 0 1 I I #
+straight-curve $-1 67.24040797971712 296.7735455226341 140.5646926621237 -0.9420221711969095 0.335550635483619 0 I I #
+straight-curve $-1 44.09454053547133 305.0181609544219 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 67.24040797971712 296.7735455226341 0 0 0 1 I I #
+straight-curve $-1 89.7609935301538 286.9486745397594 140.5646926621237 -0.9165735934482016 0.3998660373093103 0 I I #
+straight-curve $-1 89.7609935301538 286.9486745397594 0 0 0 1 I I #
+straight-curve $-1 111.5485564304462 275.5905511811023 140.5646926621237 -0.8867400350348591 0.462268439617477 0 I I #
+straight-curve $-1 89.7609935301538 286.9486745397594 0 0.8867400350348591 -0.462268439617477 0 I I #
+straight-curve $-1 111.5485564304462 275.5905511811023 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 111.5485564304462 275.5905511811023 0 -0.04993761694389232 0.9987523388778446 0 I I #
+straight-curve $-1 -91.86351706036746 446.1942257217848 140.5646926621237 0.9805806756909202 -0.1961161351381842 0 I I #
+straight-curve $-1 104.98687664042 406.8241469816273 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 158.5137897257126 384.82222041523 0 0.9358104648621595 -0.3525035799172383 0 I I #
+straight-curve $-1 313.4545622848959 144.6390506476593 140.5646926621237 -0.8244807250664914 0.5658900370158787 0 I I #
+straight-curve $-1 160.243589897539 249.7968308110805 0 0.8244807250664914 -0.5658900370158787 0 I I #
+straight-curve $-1 305.2143868427806 329.5626485238429 140.5646926621237 0.0445157184875965 -0.9990086840501102 0 I I #
+straight-curve $-1 313.4545622848959 144.6390506476593 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 313.4545622848959 144.6390506476593 0 -0.0445157184875965 0.9990086840501102 0 I I #
+straight-curve $-1 158.5137897257126 384.82222041523 140.5646926621237 0.9358104648621595 -0.3525035799172383 0 I I #
+straight-curve $-1 305.2143868427806 329.5626485238429 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 160.243589897539 249.7968308110805 140.5646926621237 -0.01280987410688557 0.9999179501965977 0 I I #
+straight-curve $-1 158.5137897257126 384.82222041523 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 158.5137897257126 384.82222041523 0 0.01280987410688557 -0.9999179501965977 0 I I #
+straight-curve $-1 160.243589897539 249.7968308110805 0 0 0 1 I I #
+straight-curve $-1 515.5669623496358 377.6410292642032 140.5646926621237 -0.2639063174671137 0.9645483168825433 0 I I #
+straight-curve $-1 487.0585639300438 470.1828045980726 140.5646926621237 -0.3840038668245407 0.9233314844971986 0 I I #
+straight-curve $-1 447.0533339797701 558.3660827125784 140.5646926621237 -0.497910410364782 0.8672284723476128 0 I I #
+straight-curve $-1 385.7149514345407 550.0755554791299 140.5646926621237 -0.6113005279204187 -0.7913985497612551 0 I I #
+straight-curve $-1 379.9967769189136 535.5841375284067 140.5646926621237 0.01878071622249942 -0.9998236267953313 0 I I #
+straight-curve $-1 380.0464564529185 532.9393623623366 140.5646926621237 0.07585756773440711 -0.9971186636591555 0 I I #
+straight-curve $-1 382.7437466119131 497.4845166671217 140.5646926621237 0.07585756773440844 -0.9971186636591552 0 I I #
+straight-curve $-1 405.5617561100782 400.3700805769088 0 -0.9971186636591552 -0.07585756773440952 0 I I #
+straight-curve $-1 390.2206883926307 399.2029816889752 0 -0.07585756773440844 0.9971186636591552 0 I I #
+straight-curve $-1 382.7437466119131 497.4845166671217 0 -0.07585756773440711 0.9971186636591555 0 I I #
+straight-curve $-1 380.0464564529185 532.9393623623366 0 -0.01878071622249942 0.9998236267953313 0 I I #
+straight-curve $-1 384.0979137771776 547.9821150214552 0 0.6113005279204187 0.7913985497612551 0 I I #
+straight-curve $-1 515.5669623496358 377.6410292642032 0 0.2021379372221542 -0.9793570617173148 0 I I #
+straight-curve $-1 405.9157780739678 359.6607603675012 0 -0.008696008092162701 0.9999621890067948 0 I I #
+straight-curve $-1 532.1189097510817 282.2327382218922 140.5646926621237 -0.8523673108353587 0.5229435604530367 0 I I #
+straight-curve $-1 405.9157780739678 359.6607603675012 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 405.9157780739678 359.6607603675012 0 0.8523673108353587 -0.5229435604530367 0 I I #
+straight-curve $-1 532.1189097510817 282.2327382218922 0 0 0 1 I I #
+straight-curve $-1 525.3587545836323 330.1998561572769 140.5646926621237 0.1395540048435223 -0.9902144614840435 0 I I #
+straight-curve $-1 532.1189097510817 282.2327382218922 0 -0.1395540048435223 0.9902144614840435 0 I I #
+straight-curve $-1 515.5669623496358 377.6410292642032 140.5646926621237 0.2021379372221542 -0.9793570617173148 0 I I #
+straight-curve $-1 525.3587545836323 330.1998561572769 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 515.5669623496358 377.6410292642032 0 0 0 1 I I #
+straight-curve $-1 515.5669623496358 377.6410292642032 0 -0.2639063174671137 0.9645483168825433 0 I I #
+straight-curve $-1 487.0585639300438 470.1828045980726 140.5646926621237 0.3246099329120734 -0.945847974811396 0 I I #
+straight-curve $-1 502.7830393246517 424.3648498807407 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 502.7830393246517 424.3648498807407 0 -0.3246099329120734 0.945847974811396 0 I I #
+straight-curve $-1 487.0585639300438 470.1828045980726 0 0 0 1 I I #
+straight-curve $-1 487.0585639300438 470.1828045980726 0 -0.3840038668245407 0.9233314844971986 0 I I #
+straight-curve $-1 447.0533339797701 558.3660827125784 140.5646926621237 0.4418484865546696 -0.8970896916860366 0 I I #
+straight-curve $-1 468.4569786330457 514.9100348426741 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 468.4569786330457 514.9100348426741 0 -0.4418484865546696 0.8970896916860366 0 I I #
+straight-curve $-1 447.0533339797701 558.3660827125784 0 0 0 1 I I #
+straight-curve $-1 447.0533339797701 558.3660827125784 0 -0.497910410364782 0.8672284723476128 0 I I #
+straight-curve $-1 385.7149514345407 550.0755554791299 140.5646926621237 0.5948118942360535 0.8038649205403343 0 I I #
+straight-curve $-1 422.933985793894 600.3756190585511 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 422.933985793894 600.3756190585511 0 -0.5948118942360535 -0.8038649205403343 0 I I #
+straight-curve $-1 385.7149514345407 550.0755554791299 0 0 0 1 I I #
+straight-curve $-1 382.7266734401454 545.7200355194803 140.5646926621237 0.5183799759496591 0.85515039644172 0 I I #
+straight-curve $-1 384.0979137771776 547.9821150214552 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 384.0979137771776 547.9821150214552 0 -0.5183799759496591 -0.85515039644172 0 I I #
+straight-curve $-1 381.6186431557966 543.318042050687 140.5646926621237 0.4188767618923466 0.9080430927806138 0 I I #
+straight-curve $-1 382.7266734401454 545.7200355194803 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 382.7266734401454 545.7200355194803 0 -0.4188767618923466 -0.9080430927806138 0 I I #
+straight-curve $-1 381.6186431557966 543.318042050687 0 0 0 1 I I #
+straight-curve $-1 380.7878932765402 540.8066363938339 140.5646926621237 0.3140544299923099 0.9494049794488153 0 I I #
+straight-curve $-1 381.6186431557966 543.318042050687 0 -0.3140544299923099 -0.9494049794488153 0 I I #
+straight-curve $-1 380.2449731020932 538.2177097012955 140.5646926621237 0.2052440694543225 0.9787108214144918 0 I I #
+straight-curve $-1 380.7878932765402 540.8066363938339 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 380.7878932765402 540.8066363938339 0 -0.2052440694543225 -0.9787108214144918 0 I I #
+straight-curve $-1 379.9967769189136 535.5841375284067 140.5646926621237 0.09382741157244291 0.9955884776541036 0 I I #
+straight-curve $-1 380.2449731020932 538.2177097012955 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 380.2449731020932 538.2177097012955 0 -0.09382741157244291 -0.9955884776541036 0 I I #
+straight-curve $-1 379.9967769189136 535.5841375284067 0 0 0 1 I I #
+straight-curve $-1 380.0464564529185 532.9393623623366 0 0 0 1 I I #
+straight-curve $-1 382.7437466119131 497.4845166671217 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 405.5617561100782 400.3700805769088 140.5646926621237 -0.9971186636591552 -0.07585756773440952 0 I I #
+straight-curve $-1 390.2206883926307 399.2029816889752 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 405.5617561100782 400.3700805769088 0 0 0 1 I I #
+straight-curve $-1 405.9157780739678 359.6607603675012 140.5646926621237 -0.008696008092162701 0.9999621890067948 0 I I #
+straight-curve $-1 530.9775224509344 220.1803268730278 140.5646926621237 -0.8966155725263336 0.442809795627056 0 I I #
+straight-curve $-1 395.9205217851087 286.8806661213526 140.5646926621237 0.03039534281815432 -0.9995379548246114 0 I I #
+straight-curve $-1 535.6574441784668 -23.71609963268946 140.5646926621237 -0.8175023841756215 0.575925213779684 0 I I #
+straight-curve $-1 402.5132021364658 70.08316939195015 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 402.5132021364658 70.08316939195015 0 0.8175023841756215 -0.575925213779684 0 I I #
+straight-curve $-1 535.6574441784668 -23.71609963268946 0 0 0 1 I I #
+straight-curve $-1 530.9775224509344 220.1803268730278 140.5646926621237 0.01918462067479388 -0.9998159582290954 0 I I #
+straight-curve $-1 535.6574441784668 -23.71609963268946 0 -0.01918462067479388 0.9998159582290954 0 I I #
+straight-curve $-1 530.9775224509344 220.1803268730278 0 0 0 1 I I #
+straight-curve $-1 530.9775224509344 220.1803268730278 0 -0.8966155725263336 0.442809795627056 0 I I #
+straight-curve $-1 395.9205217851087 286.8806661213526 0 0 0 1 I I #
+straight-curve $-1 395.9205217851087 286.8806661213526 0 0.03039534281815432 -0.9995379548246114 0 I I #
+straight-curve $-1 400.4465941373786 -2.582836101075088 0 0.2519651159328377 -0.9677363175746541 0 I I #
+straight-curve $-1 464.7479600524895 -249.5486386302497 140.5646926621237 -0.2519651159328377 0.9677363175746541 0 I I #
+straight-curve $-1 530.2140298928597 -90.6373647450057 0 -0.8274815387795069 0.5614929233562072 0 I I #
+straight-curve $-1 400.4465941373786 -2.582836101075088 0 0 0 1 I I #
+straight-curve $-1 400.4465941373786 -2.582836101075088 140.5646926621237 0.8274815387795069 -0.5614929233562072 0 I I #
+straight-curve $-1 530.2140298928597 -90.6373647450057 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 529.2097287068289 -263.686835383972 0 0.005803451866806299 0.9999831598314192 0 I I #
+straight-curve $-1 530.2140298928597 -90.6373647450057 140.5646926621237 -0.005803451866806299 -0.9999831598314192 0 I I #
+straight-curve $-1 464.7479600524895 -249.5486386302497 0 0.9767822415976094 -0.2142345735392625 0 I I #
+straight-curve $-1 529.2097287068289 -263.686835383972 0 0 0 1 I I #
+straight-curve $-1 529.2097287068289 -263.686835383972 140.5646926621237 -0.9767822415976094 0.2142345735392625 0 I I #
+straight-curve $-1 464.7479600524895 -249.5486386302497 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 736.5135445453524 -361.7667115854867 140.5646926621237 0.1738491166193341 0.9847723009156367 0 I I #
+straight-curve $-1 766.5060408165639 -191.8735298566594 140.5646926621237 -0.9607124219100321 0.2775457482790182 0 I I #
+straight-curve $-1 616.0632997521382 -148.411259369037 140.5646926621237 0.01129570366599822 -0.9999362015042209 0 I I #
+straight-curve $-1 617.918524370092 -312.6423964692427 140.5646926621237 0.9238777440859949 -0.3826877499771492 0 I I #
+straight-curve $-1 766.5060408165639 -191.8735298566594 0 -0.1738491166193341 -0.9847723009156367 0 I I #
+straight-curve $-1 736.5135445453524 -361.7667115854867 0 -0.9238777440859949 0.3826877499771492 0 I I #
+straight-curve $-1 736.5135445453524 -361.7667115854867 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 766.5060408165639 -191.8735298566594 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 766.5060408165639 -191.8735298566594 0 -0.9607124219100321 0.2775457482790182 0 I I #
+straight-curve $-1 616.0632997521382 -148.411259369037 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 616.0632997521382 -148.411259369037 0 0.01129570366599822 -0.9999362015042209 0 I I #
+straight-curve $-1 617.918524370092 -312.6423964692427 0 0 0 1 I I #
+straight-curve $-1 788.3837207777392 -124.5380284865909 140.5646926621237 0.4844141729327492 0.8748387903276127 0 I I #
+straight-curve $-1 825.6406536755565 -57.25302336315815 140.5646926621237 -0.4733568372565913 0.8808707649947506 0 I I #
+straight-curve $-1 703.3591173036582 170.3009528568136 140.5646926621237 -0.9567257375231435 0.2909911736819469 0 I I #
+straight-curve $-1 615.2597618661393 197.0966518057681 140.5646926621237 -0.01169257143775572 -0.999931639550011 0 I I #
+straight-curve $-1 612.1804937265736 -66.23786411326594 140.5646926621237 0.9493828740109843 -0.3141212481425658 0 I I #
+straight-curve $-1 615.2597618661393 197.0966518057681 0 0.9567257375231435 -0.2909911736819469 0 I I #
+straight-curve $-1 703.3591173036582 170.3009528568136 0 0.4733568372565913 -0.8808707649947506 0 I I #
+straight-curve $-1 825.6406536755565 -57.25302336315815 0 -0.4844141729327492 -0.8748387903276127 0 I I #
+straight-curve $-1 612.1804937265736 -66.23786411326594 0 0.01169257143775572 0.999931639550011 0 I I #
+straight-curve $-1 612.1804937265736 -66.23786411326594 0 0.9493828740109843 -0.3141212481425658 0 I I #
+straight-curve $-1 788.3837207777392 -124.5380284865909 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 825.6406536755565 -57.25302336315815 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 703.3591173036582 170.3009528568136 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 615.2597618661393 197.0966518057681 0 0 0 1 I I #
+straight-curve $-1 612.1804937265736 -66.23786411326594 0 0 0 1 I I #
+straight-curve $-1 810.999693546018 -387.1180794509311 140.5646926621237 0.9115810212689136 -0.4111204709842657 0 I I #
+straight-curve $-1 1050.98450058844 -377.8883478202205 140.5646926621237 -0.4111204709842657 -0.9115810212689136 0 I I #
+straight-curve $-1 1006.963235498897 -475.4970844803108 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 1006.963235498897 -475.4970844803108 0 0.4111204709842657 0.9115810212689136 0 I I #
+straight-curve $-1 911.1040563414513 -236.9706192588204 140.5646926621237 0.7044898820510535 -0.7097140312039018 0 I I #
+straight-curve $-1 1050.98450058844 -377.8883478202205 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 1050.98450058844 -377.8883478202205 0 -0.7044898820510535 0.7097140312039018 0 I I #
+straight-curve $-1 796.9517174324935 -202.5260511375036 140.5646926621237 0.9573660241475566 -0.2888776485086725 0 I I #
+straight-curve $-1 911.1040563414513 -236.9706192588204 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 911.1040563414513 -236.9706192588204 0 -0.9573660241475566 0.2888776485086725 0 I I #
+straight-curve $-1 796.9517174324935 -202.5260511375036 0 0 0 1 I I #
+straight-curve $-1 771.1504951387276 -351.3871434278394 140.5646926621237 0.1707779390573547 0.98530954300226 0 I I #
+straight-curve $-1 796.9517174324935 -202.5260511375036 0 -0.1707779390573547 -0.98530954300226 0 I I #
+straight-curve $-1 817.8269919153207 -369.9601260639465 140.5646926621237 -0.9291452320549008 0.3697149412042261 0 I I #
+straight-curve $-1 771.1504951387276 -351.3871434278394 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 771.1504951387276 -351.3871434278394 0 0.9291452320549008 -0.3697149412042261 0 I I #
+straight-curve $-1 810.999693546018 -387.1180794509311 140.5646926621237 0.3697149412042263 0.9291452320549007 0 I I #
+straight-curve $-1 817.8269919153207 -369.9601260639465 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 817.8269919153207 -369.9601260639465 0 -0.3697149412042263 -0.9291452320549007 0 I I #
+straight-curve $-1 810.999693546018 -387.1180794509311 140.5646926621237 0 0 -1 I I #
+straight-curve $-1 810.999693546018 -387.1180794509311 0 0.9115810212689136 -0.4111204709842657 0 I I #
+point $-1 111.5485564304462 669.2913385826771 0 #
+point $-1 301.8372703412074 551.1811023622047 0 #
+point $-1 282.1522309711286 406.8241469816273 0 #
+point $-1 118.1102362204725 465.8792650918635 0 #
+point $-1 -19.6850393700787 538.0577427821522 0 #
+point $-1 111.5485564304462 669.2913385826771 140.5646926621237 #
+point $-1 301.8372703412074 551.1811023622047 140.5646926621237 #
+point $-1 282.1522309711286 406.8241469816273 140.5646926621237 #
+point $-1 118.1102362204725 465.8792650918635 140.5646926621237 #
+point $-1 -19.6850393700787 538.0577427821522 140.5646926621237 #
+point $-1 104.98687664042 406.8241469816273 0 #
+point $-1 111.5485564304462 275.5905511811023 0 #
+point $-1 89.7609935301538 286.9486745397594 0 #
+point $-1 67.24040797971712 296.7735455226341 0 #
+point $-1 44.09454053547133 305.0181609544219 0 #
+point $-1 20.43412336549839 311.6430777620144 0 #
+point $-1 -3.627649704251361 316.6166016741453 0 #
+point $-1 -27.97566472065741 319.9149388499866 0 #
+point $-1 -52.49343832020998 321.5223097112861 0 #
+point $-1 -53.17834605680474 340.492769910062 0 #
+point $-1 -55.56420498534911 359.3250596257091 0 #
+point $-1 -59.63173260803175 377.8669764036396 0 #
+point $-1 -65.34805519055757 395.9686645816381 0 #
+point $-1 -72.66697344747524 413.4838264224417 0 #
+point $-1 -81.52933592452976 430.2709044911909 0 #
+point $-1 -91.86351706036746 446.1942257217848 0 #
+point $-1 104.98687664042 406.8241469816273 140.5646926621237 #
+point $-1 111.5485564304462 275.5905511811023 140.5646926621237 #
+point $-1 89.7609935301538 286.9486745397594 140.5646926621237 #
+point $-1 67.24040797971712 296.7735455226341 140.5646926621237 #
+point $-1 44.09454053547133 305.0181609544219 140.5646926621237 #
+point $-1 20.43412336549839 311.6430777620144 140.5646926621237 #
+point $-1 -3.627649704251361 316.6166016741453 140.5646926621237 #
+point $-1 -27.97566472065741 319.9149388499866 140.5646926621237 #
+point $-1 -52.49343832020998 321.5223097112861 140.5646926621237 #
+point $-1 -53.17834605680474 340.492769910062 140.5646926621237 #
+point $-1 -55.56420498534911 359.3250596257091 140.5646926621237 #
+point $-1 -59.63173260803175 377.8669764036396 140.5646926621237 #
+point $-1 -65.34805519055757 395.9686645816381 140.5646926621237 #
+point $-1 -72.66697344747524 413.4838264224417 140.5646926621237 #
+point $-1 -81.52933592452976 430.2709044911909 140.5646926621237 #
+point $-1 -91.86351706036746 446.1942257217848 140.5646926621237 #
+point $-1 158.5137897257126 384.82222041523 0 #
+point $-1 305.2143868427806 329.5626485238429 0 #
+point $-1 313.4545622848959 144.6390506476593 0 #
+point $-1 160.243589897539 249.7968308110805 0 #
+point $-1 158.5137897257126 384.82222041523 140.5646926621237 #
+point $-1 305.2143868427806 329.5626485238429 140.5646926621237 #
+point $-1 313.4545622848959 144.6390506476593 140.5646926621237 #
+point $-1 160.243589897539 249.7968308110805 140.5646926621237 #
+point $-1 405.5617561100782 400.3700805769088 0 #
+point $-1 390.2206883926307 399.2029816889752 0 #
+point $-1 382.7437466119131 497.4845166671217 0 #
+point $-1 380.0464564529185 532.9393623623366 0 #
+point $-1 379.9967769189136 535.5841375284067 0 #
+point $-1 380.2449731020932 538.2177097012955 0 #
+point $-1 380.7878932765402 540.8066363938339 0 #
+point $-1 381.6186431557966 543.318042050687 0 #
+point $-1 382.7266734401454 545.7200355194803 0 #
+point $-1 384.0979137771776 547.9821150214552 0 #
+point $-1 385.7149514345407 550.0755554791299 0 #
+point $-1 422.933985793894 600.3756190585511 0 #
+point $-1 447.0533339797701 558.3660827125784 0 #
+point $-1 468.4569786330457 514.9100348426741 0 #
+point $-1 487.0585639300438 470.1828045980726 0 #
+point $-1 502.7830393246517 424.3648498807407 0 #
+point $-1 515.5669623496358 377.6410292642032 0 #
+point $-1 525.3587545836323 330.1998561572769 0 #
+point $-1 532.1189097510817 282.2327382218922 0 #
+point $-1 405.9157780739678 359.6607603675012 0 #
+point $-1 405.5617561100782 400.3700805769088 140.5646926621237 #
+point $-1 390.2206883926307 399.2029816889752 140.5646926621237 #
+point $-1 382.7437466119131 497.4845166671217 140.5646926621237 #
+point $-1 380.0464564529185 532.9393623623366 140.5646926621237 #
+point $-1 379.9967769189136 535.5841375284067 140.5646926621237 #
+point $-1 380.2449731020932 538.2177097012955 140.5646926621237 #
+point $-1 380.7878932765402 540.8066363938339 140.5646926621237 #
+point $-1 381.6186431557966 543.318042050687 140.5646926621237 #
+point $-1 382.7266734401454 545.7200355194803 140.5646926621237 #
+point $-1 384.0979137771776 547.9821150214552 140.5646926621237 #
+point $-1 385.7149514345407 550.0755554791299 140.5646926621237 #
+point $-1 422.933985793894 600.3756190585511 140.5646926621237 #
+point $-1 447.0533339797701 558.3660827125784 140.5646926621237 #
+point $-1 468.4569786330457 514.9100348426741 140.5646926621237 #
+point $-1 487.0585639300438 470.1828045980726 140.5646926621237 #
+point $-1 502.7830393246517 424.3648498807407 140.5646926621237 #
+point $-1 515.5669623496358 377.6410292642032 140.5646926621237 #
+point $-1 525.3587545836323 330.1998561572769 140.5646926621237 #
+point $-1 532.1189097510817 282.2327382218922 140.5646926621237 #
+point $-1 405.9157780739678 359.6607603675012 140.5646926621237 #
+point $-1 395.9205217851087 286.8806661213526 0 #
+point $-1 530.9775224509344 220.1803268730278 0 #
+point $-1 535.6574441784668 -23.71609963268946 0 #
+point $-1 402.5132021364658 70.08316939195015 0 #
+point $-1 395.9205217851087 286.8806661213526 140.5646926621237 #
+point $-1 530.9775224509344 220.1803268730278 140.5646926621237 #
+point $-1 535.6574441784668 -23.71609963268946 140.5646926621237 #
+point $-1 402.5132021364658 70.08316939195015 140.5646926621237 #
+point $-1 529.2097287068289 -263.686835383972 140.5646926621237 #
+point $-1 530.2140298928597 -90.6373647450057 140.5646926621237 #
+point $-1 400.4465941373786 -2.582836101075088 140.5646926621237 #
+point $-1 464.7479600524895 -249.5486386302497 140.5646926621237 #
+point $-1 529.2097287068289 -263.686835383972 0 #
+point $-1 530.2140298928597 -90.6373647450057 0 #
+point $-1 400.4465941373786 -2.582836101075088 0 #
+point $-1 464.7479600524895 -249.5486386302497 0 #
+point $-1 616.0632997521382 -148.411259369037 0 #
+point $-1 766.5060408165639 -191.8735298566594 0 #
+point $-1 736.5135445453524 -361.7667115854867 0 #
+point $-1 617.918524370092 -312.6423964692427 0 #
+point $-1 616.0632997521382 -148.411259369037 140.5646926621237 #
+point $-1 766.5060408165639 -191.8735298566594 140.5646926621237 #
+point $-1 736.5135445453524 -361.7667115854867 140.5646926621237 #
+point $-1 617.918524370092 -312.6423964692427 140.5646926621237 #
+point $-1 615.2597618661393 197.0966518057681 0 #
+point $-1 703.3591173036582 170.3009528568136 0 #
+point $-1 825.6406536755565 -57.25302336315815 0 #
+point $-1 788.3837207777392 -124.5380284865909 0 #
+point $-1 612.1804937265736 -66.23786411326594 0 #
+point $-1 615.2597618661393 197.0966518057681 140.5646926621237 #
+point $-1 703.3591173036582 170.3009528568136 140.5646926621237 #
+point $-1 825.6406536755565 -57.25302336315815 140.5646926621237 #
+point $-1 788.3837207777392 -124.5380284865909 140.5646926621237 #
+point $-1 612.1804937265736 -66.23786411326594 140.5646926621237 #
+point $-1 810.999693546018 -387.1180794509311 0 #
+point $-1 817.8269919153207 -369.9601260639465 0 #
+point $-1 771.1504951387276 -351.3871434278394 0 #
+point $-1 796.9517174324935 -202.5260511375036 0 #
+point $-1 911.1040563414513 -236.9706192588204 0 #
+point $-1 1050.98450058844 -377.8883478202205 0 #
+point $-1 1006.963235498897 -475.4970844803108 0 #
+point $-1 810.999693546018 -387.1180794509311 140.5646926621237 #
+point $-1 817.8269919153207 -369.9601260639465 140.5646926621237 #
+point $-1 771.1504951387276 -351.3871434278394 140.5646926621237 #
+point $-1 796.9517174324935 -202.5260511375036 140.5646926621237 #
+point $-1 911.1040563414513 -236.9706192588204 140.5646926621237 #
+point $-1 1050.98450058844 -377.8883478202205 140.5646926621237 #
+point $-1 1006.963235498897 -475.4970844803108 140.5646926621237 #
+point $-1 160.147292471494 257.3136513556593 31.8220357544393 #
+point $-1 160.147292471494 257.3136513556593 70.28234633106182 #
+point $-1 160.243589897539 249.7968308110805 70.28234633106183 #
+point $-1 160.243589897539 249.7968308110804 31.82203575443931 #
+point $-1 160.147292471494 257.3136513556593 31.8220357544393 #
+point $-1 160.147292471494 257.3136513556593 70.28234633106182 #
+point $-1 160.243589897539 249.7968308110805 70.28234633106183 #
+point $-1 160.243589897539 249.7968308110804 31.82203575443931 #
+rgb_color-st-attrib $-1 $-1 $-1 $28 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $202 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $203 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $204 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $205 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $29 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $206 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $207 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $208 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $30 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $209 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $31 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $210 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $211 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $212 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $213 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $32 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $214 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $33 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $34 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $215 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $216 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $35 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $217 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $218 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $219 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $220 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $221 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $36 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $222 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $223 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $224 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $225 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $226 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $227 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $228 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $37 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $229 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $230 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $231 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $38 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $232 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $233 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $39 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $234 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $235 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $236 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $40 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $237 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $238 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $41 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $239 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $240 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $241 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $42 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $242 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $243 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $244 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $43 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $245 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $246 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $44 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $247 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $248 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $249 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $45 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $250 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $251 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $252 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $46 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $253 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $47 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $48 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $254 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $255 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $256 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $49 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $257 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $258 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $50 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $259 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $260 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $51 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $261 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $262 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $52 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $263 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $264 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $53 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $54 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $265 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $55 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $266 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $267 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $56 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $268 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $269 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $270 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $57 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $271 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $272 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $58 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $273 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $274 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $275 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $276 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $59 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $277 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $278 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $279 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $280 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $281 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $282 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $283 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $60 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $284 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $285 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $286 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $287 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $288 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $289 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $290 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $61 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $291 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $292 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $293 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $294 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $62 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $295 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $296 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $63 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $297 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $298 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $299 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $64 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $300 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $65 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $301 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $302 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $303 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $304 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $66 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $305 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $67 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $306 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $307 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $308 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $309 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $68 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $310 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $69 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $311 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $312 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $313 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $314 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $70 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $71 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $315 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $316 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $317 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $72 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $318 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $319 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $320 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $321 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $73 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $322 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $323 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $74 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $324 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $325 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $326 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $75 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $327 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $328 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $329 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $330 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $76 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $331 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $77 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $78 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $332 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $79 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $333 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $334 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $335 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $80 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $336 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $81 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $337 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $338 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $82 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $83 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $339 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $340 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $341 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $342 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $84 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $343 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $344 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $345 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $85 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $346 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $347 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $86 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $348 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $87 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $88 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $89 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $349 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $350 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $90 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $351 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $352 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $353 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $354 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $91 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $355 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $356 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $92 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $357 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $358 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $359 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $360 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $93 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $361 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $362 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $363 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $364 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $94 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $365 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $366 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $95 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $96 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $367 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $97 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $368 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $369 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $98 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $370 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $371 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $372 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $99 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $373 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $374 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $375 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $376 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $377 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $100 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $378 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $379 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $380 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $381 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $101 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $382 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $102 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $383 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $103 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $384 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $104 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $385 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $386 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $105 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $387 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $106 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $388 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $107 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $108 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $389 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $390 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $391 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $109 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $392 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $393 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $394 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $110 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $395 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $396 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $397 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $398 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $111 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $399 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $400 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $112 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $401 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $402 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $403 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $113 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $404 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $405 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $406 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $114 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $407 1 1 1 #
+rgb_color-st-attrib $-1 $-1 $-1 $408 1 1 1 #

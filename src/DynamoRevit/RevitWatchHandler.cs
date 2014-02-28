@@ -4,6 +4,8 @@ using Dynamo.Interfaces;
 using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using ProtoCore.Mirror;
+using RevitServices.Persistence;
 
 namespace Dynamo.Applications
 {
@@ -27,7 +29,7 @@ namespace Dynamo.Applications
             var id = element.Id;
 
             var node = new WatchItem(element.Name);
-            node.Clicked += () => dynRevitSettings.Doc.ShowElements(element);
+            node.Clicked += () => DocumentManager.GetInstance().CurrentUIDocument.ShowElements(element);
             node.Link = id.IntegerValue.ToString(CultureInfo.InvariantCulture);
 
             return node;
@@ -35,8 +37,6 @@ namespace Dynamo.Applications
 
         internal WatchItem ProcessThing(XYZ pt, string tag, bool showRawData = true)
         {
-            var um = dynSettings.Controller.UnitsManager;
-
             if (!showRawData)
             {
                 ///xyzs will be in feet, but we need to show them
@@ -44,9 +44,9 @@ namespace Dynamo.Applications
                 /// 
 
                 var xyzStr = string.Format("{0:f3}, {1:f3}, {2:f3}",
-                    new Units.Length(pt.X / SIUnit.ToFoot, um),
-                    new Units.Length(pt.Y / SIUnit.ToFoot, um),
-                    new Units.Length(pt.Z / SIUnit.ToFoot, um));
+                    new Units.Length(pt.X / SIUnit.ToFoot),
+                    new Units.Length(pt.Y / SIUnit.ToFoot),
+                    new Units.Length(pt.Z / SIUnit.ToFoot));
 
                 return new WatchItem("{" + xyzStr + "}", tag);
             }
@@ -76,6 +76,21 @@ namespace Dynamo.Applications
         internal WatchItem ProcessThing(string value, string tag, bool showRawData = true)
         {
             return new WatchItem(value, tag);
+        }
+
+        internal WatchItem ProcessThing(MirrorData data, string tag, bool showRawData = true)
+        {
+            //If the input data is an instance of a class, create a watch node
+            //with the class name and let WatchHandler process the underlying CLR data
+            var classMirror = data.Class;
+            if (null != classMirror)
+            {
+                return ProcessThing(data.Data, tag);
+            }
+
+            //Finally for all else get the string representation of data as watch content.
+            string previewData = data.Data.ToString();
+            return new WatchItem(previewData, tag);
         }
 
         public WatchItem Process(dynamic value, string tag, bool showRawData = true)

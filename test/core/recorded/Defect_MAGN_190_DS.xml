@@ -1,0 +1,13 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand NodeId="abf28666-d34a-4965-bab6-7f0f7e001c1b" NodeName="+@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="55cf8f57-5eff-4e0b-b547-3d6cb26bc236" NodeName="Code Block" X="68.3030303030303" Y="223.166666666667" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="55cf8f57-5eff-4e0b-b547-3d6cb26bc236" Name="Code" Value="a=10;" />
+  <MakeConnectionCommand NodeId="55cf8f57-5eff-4e0b-b547-3d6cb26bc236" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="abf28666-d34a-4965-bab6-7f0f7e001c1b" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="30.8030303030303" Y="143.166666666667" Width="314.166666666667" Height="212.5" IsCrossSelection="true" />
+  <DeleteModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" />
+  <UndoRedoCommand CmdOperation="0" />
+</Commands>

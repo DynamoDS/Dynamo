@@ -28,7 +28,7 @@
     </ResourceDictionary.MergedDictionaries>
 
     <DataTemplate DataType="{x:Type viewModels:PortViewModel}">
-        <Grid Name="mainGrid" Background="Transparent" IsHitTestVisible="True" Height="20" Width="{Binding Path=PortName, Converter={StaticResource PortNameToWidthConverter}}">
+        <Grid Name="mainGrid" Background="Transparent" IsHitTestVisible="True" Margin="{Binding Path=MarginThickness}" Height="{StaticResource port_height}" Width="{Binding Path=PortName, Converter={StaticResource PortNameToWidthConverter}}">
             <interactivity:Interaction.Triggers>
                 <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
                     <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}"/>

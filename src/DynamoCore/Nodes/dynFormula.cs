@@ -185,9 +185,10 @@ namespace Dynamo.Nodes
             {
                 InPortData.Add(new PortData(p.Item1, "variable", p.Item2));
             }
-
-            RegisterInputs();
+            
+            RegisterInputPorts();
             ClearError();
+
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -211,7 +212,7 @@ namespace Dynamo.Nodes
                     }
                     else if (arg.Value.IsContainer)
                     {
-                        e.Parameters[parameter] = Utils.UnwrapToSIUnit(arg.Value).Value * dynSettings.Controller.UnitsManager.UiLengthConversion;  
+                        e.Parameters[parameter] = Utils.UnwrapToSIUnit(arg.Value).Value * SIUnit.UiLengthConversion;  
                     }
                 }  
             }

@@ -197,7 +197,7 @@ namespace Dynamo.PackageManager
             /// <summary>
             /// Guid property </summary>
             /// <value>
-            /// A string that uniquely defines the FunctionDefinition </value>
+            /// A string that uniquely defines the CustomNodeDefinition </value>
             public Guid Guid { get; internal set; }
 
             /// <summary>

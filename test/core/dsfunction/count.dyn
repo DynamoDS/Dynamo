@@ -1,0 +1,14 @@
+<Workspace Version="0.6.3.21110" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="007b5942-12b0-4cea-aa05-b43531b6ccb8" nickname="Count" x="215" y="241.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="" Category="Builtin Functions" ClassName="" Name="Count" DisplayName="Count" Type="GenericFunction" Parameters="array" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="7587d6cf-1ed7-4ee4-857e-d20d35a32463" nickname="Number" x="70" y="220.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1..10" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="7587d6cf-1ed7-4ee4-857e-d20d35a32463" start_index="0" end="007b5942-12b0-4cea-aa05-b43531b6ccb8" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

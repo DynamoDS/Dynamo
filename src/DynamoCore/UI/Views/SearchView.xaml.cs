@@ -27,7 +27,7 @@ namespace Dynamo.Search
         public SearchView()
         {
             InitializeComponent();
-            this.Loaded += new RoutedEventHandler(SearchView_Loaded);
+            this.Loaded += SearchView_Loaded;
 
             SearchTextBox.IsVisibleChanged += delegate
             {
@@ -52,8 +52,8 @@ namespace Dynamo.Search
             this.SearchTextBox.PreviewKeyDown += new KeyEventHandler(OnSearchBoxPreviewKeyDown);
             this.SearchTextBox.KeyDown += new KeyEventHandler(OnSearchBoxKeyDown);
 
-            dynSettings.Controller.SearchViewModel.RequestFocusSearch += new EventHandler(SearchViewModel_RequestFocusSearch);
-            dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += new EventHandler(SearchViewModel_RequestReturnFocusToSearch);
+            dynSettings.Controller.SearchViewModel.RequestFocusSearch += SearchViewModel_RequestFocusSearch;
+            dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += SearchViewModel_RequestReturnFocusToSearch;
 
         }
 
@@ -291,5 +291,6 @@ namespace Dynamo.Search
             SearchTextBox.Text = "";
             Keyboard.Focus(SearchTextBox);
         }
+
     }
 }

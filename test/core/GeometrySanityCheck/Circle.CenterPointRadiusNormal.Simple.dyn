@@ -1,0 +1,13 @@
+<Workspace Version="0.6.3.21749" X="103.914580178806" Y="-38.3929046278543" zoom="0.915597835894024" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="ec7e9403-3631-4d80-b74a-0fc90574fbfe" nickname="Code Block" x="-14.4081224009536" y="123.050157672387" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="p1 = Point.ByCoordinates(00,0,0);" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="ed84faf2-ec5a-4ba2-93c4-2ded4ef274bd" nickname="Code Block" x="-43.7664626759151" y="241.026331447706" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="5;&#xA;normal = Vector.ByCoordinates(0,0,1);" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="95e288fe-2dd2-4a0b-8321-378a0cac2ac7" nickname="Circle.ByCenterPointRadius" x="347.888148862618" y="168.559945194448" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Circle.ByCenterPointRadius@Point,double,Vector" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ec7e9403-3631-4d80-b74a-0fc90574fbfe" start_index="0" end="95e288fe-2dd2-4a0b-8321-378a0cac2ac7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ed84faf2-ec5a-4ba2-93c4-2ded4ef274bd" start_index="0" end="95e288fe-2dd2-4a0b-8321-378a0cac2ac7" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ed84faf2-ec5a-4ba2-93c4-2ded4ef274bd" start_index="1" end="95e288fe-2dd2-4a0b-8321-378a0cac2ac7" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

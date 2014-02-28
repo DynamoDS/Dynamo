@@ -1,0 +1,18 @@
+<Workspace Version="0.6.3.33167" X="-117.674033900572" Y="-105.348878236961" zoom="1.05429821501133" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="c476bf73-b1ae-45d5-939d-4ce66f313f8f" nickname="Code Block" x="240" y="349" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="firstPoint  = Point.ByCoordinates(0, 0, 0);&#xA;secondPoint = Point.ByCoordinates(0, 10, 0);&#xA;thirdPoint  = Point.ByCoordinates(5, 5, 0);&#xA;{firstPoint , secondPoint,thirdPoint};" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="898a4f1c-827d-4595-bc4b-612804551488" nickname="Polygon.ByPoints" x="711.132787214467" y="382.735966784515" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Polygon.ByPoints@Point[]" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="4454b391-2f47-40e7-b0a6-fdc5c61ca2c2" nickname="Polygon.Vertices" x="951.713937620176" y="552.183632348712" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Polygon.Vertices" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="31d5dd39-49e2-4b99-935b-5b8914c1fe94" nickname="Polygon.Normal" x="951.713937620176" y="437.604531514433" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Polygon.Normal" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="3c0b4918-2479-4d0d-a8b1-b349a6e4305d" nickname="Polygon.Edges" x="951.713937620176" y="323.025430680154" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Polygon.Edges" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="bcb5dffc-0a44-4edd-b875-67dd134937b3" nickname="Polygon.Plane" x="951.713937620176" y="208.446329845874" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Polygon.Plane" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c476bf73-b1ae-45d5-939d-4ce66f313f8f" start_index="3" end="898a4f1c-827d-4595-bc4b-612804551488" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="898a4f1c-827d-4595-bc4b-612804551488" start_index="0" end="bcb5dffc-0a44-4edd-b875-67dd134937b3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="898a4f1c-827d-4595-bc4b-612804551488" start_index="0" end="3c0b4918-2479-4d0d-a8b1-b349a6e4305d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="898a4f1c-827d-4595-bc4b-612804551488" start_index="0" end="31d5dd39-49e2-4b99-935b-5b8914c1fe94" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="898a4f1c-827d-4595-bc4b-612804551488" start_index="0" end="4454b391-2f47-40e7-b0a6-fdc5c61ca2c2" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

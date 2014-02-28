@@ -1095,6 +1095,7 @@ namespace Dynamo.Controls
 
         private void InfoBubble_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            e.Handled = true;
             if (this.IsDisconnected)
                 return;
 

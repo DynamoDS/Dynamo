@@ -62,7 +62,7 @@ namespace Dynamo.Controls
 
             this.SizeChanged += OnSizeChanged;
             this.DataContextChanged += OnDataContextChanged;
-            
+
             Canvas.SetZIndex(this, 1);
         }
 
@@ -116,14 +116,12 @@ namespace Dynamo.Controls
             // ViewModel to be valid earlier (e.g. OnSizeChanged is called before
             // OnNodeViewLoaded, and it needs ViewModel for size computation).
             // 
-            // ViewModel = this.DataContext as NodeViewModel
-            ViewModel.NodeLogic.DispatchedToUI += new DispatchedToUIThreadHandler(NodeLogic_DispatchedToUI);
+            // ViewModel = this.DataContext as NodeViewModel;
+            ViewModel.NodeLogic.DispatchedToUI += NodeLogic_DispatchedToUI;
             ViewModel.RequestShowNodeHelp += ViewModel_RequestShowNodeHelp;
-            ViewModel.RequestShowNodeRename += new EventHandler(ViewModel_RequestShowNodeRename);
-            ViewModel.RequestsSelection += new EventHandler(ViewModel_RequestsSelection);
-
-            ViewModel.NodeLogic.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(NodeLogic_PropertyChanged);
-            
+            ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
+            ViewModel.RequestsSelection += ViewModel_RequestsSelection;
+            ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
         }
 
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -219,8 +217,8 @@ namespace Dynamo.Controls
             }
 
             //set the state using the view model's command
-            if (ViewModel.SetStateCommand.CanExecute(ElementState.DEAD))
-                ViewModel.SetStateCommand.Execute(ElementState.DEAD);
+            if (ViewModel.SetStateCommand.CanExecute(ElementState.Dead))
+                ViewModel.SetStateCommand.Execute(ElementState.Dead);
         }
 
         internal void EnableInteraction()
@@ -260,15 +258,19 @@ namespace Dynamo.Controls
         {
             if (ViewModel == null) return;
 
+            var view = WPF.FindUpVisualTree<DynamoView>(this);
+
             dynSettings.ReturnFocusToSearch();
 
-            var view = WPF.FindUpVisualTree<DynamoView>(this);
             view.mainGrid.Focus();
 
-            Guid nodeGuid = this.ViewModel.NodeModel.GUID;
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers));
-
+            var node = this.ViewModel.NodeModel;
+            if (node.WorkSpace.Nodes.Contains(node))
+            {
+                Guid nodeGuid = this.ViewModel.NodeModel.GUID;
+                dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers));
+            }
             if (e.ClickCount == 2)
             {
                 if (ViewModel.GotoWorkspaceCommand.CanExecute(null))

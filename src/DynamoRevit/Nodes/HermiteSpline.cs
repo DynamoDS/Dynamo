@@ -5,6 +5,7 @@ using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 
 namespace Dynamo.Nodes
 {
@@ -43,10 +44,17 @@ namespace Dynamo.Nodes
             }
             if (pts.Count() > 0)
             {
-                hs = dynRevitSettings.Doc.Application.Application.Create.NewHermiteSpline(ctrlPts, false);
+                var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+                hs = document.Application.Create.NewHermiteSpline(ctrlPts, false);
             }
 
             return FScheme.Value.NewContainer(hs);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "NurbsCurve.ByPoints", "NurbsCurve.ByPoints@Point[]");
         }
     }
 }

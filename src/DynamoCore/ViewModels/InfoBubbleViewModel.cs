@@ -180,6 +180,7 @@ namespace Dynamo.ViewModels
         private void UpdatePosition(object parameter)
         {
             InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
+
             TargetTopLeft = data.TopLeft;
             TargetBotRight = data.BotRight;
         }

@@ -1,0 +1,5 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="ebcaa0d3-3f8a-48a7-b5c0-986e383357de" NodeName="Code Block" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <UpdateModelValueCommand ModelGuid="ebcaa0d3-3f8a-48a7-b5c0-986e383357de" Name="Code" Value="//Testing single line comment&#xD;&#xA;&#xD;&#xA;a=3;&#xD;&#xA;&#xD;&#xA;/* Testing multi&#xD;&#xA;line comment&#xD;&#xA;b=4; */&#xD;&#xA;&#xD;&#xA;c=2;" />
+</Commands>

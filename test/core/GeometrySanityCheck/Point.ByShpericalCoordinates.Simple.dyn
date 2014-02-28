@@ -1,0 +1,14 @@
+<Workspace Version="0.6.3.33167" X="-119.069275233287" Y="-134.249903631144" zoom="1.04226481803877" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="cb83857f-db65-4850-9e0e-98781032bd1b" nickname="Point.BySphericalCoordinates" x="457.720815481915" y="438.279433354408" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Point.BySphericalCoordinates@CoordinateSystem,double,double,double" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="c5f27ef2-46fe-4178-a2a4-57c12d465de8" nickname="CoordinateSystem.WCS" x="210.671715934355" y="443.308422658175" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="CoordinateSystem.WCS" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="c0bfbb3d-01d8-47af-933f-d011d3395329" nickname="Code Block" x="219.090624319264" y="549.713763370291" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;&#xA;0..180..10;&#xA;45;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c5f27ef2-46fe-4178-a2a4-57c12d465de8" start_index="0" end="cb83857f-db65-4850-9e0e-98781032bd1b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c0bfbb3d-01d8-47af-933f-d011d3395329" start_index="0" end="cb83857f-db65-4850-9e0e-98781032bd1b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c0bfbb3d-01d8-47af-933f-d011d3395329" start_index="1" end="cb83857f-db65-4850-9e0e-98781032bd1b" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c0bfbb3d-01d8-47af-933f-d011d3395329" start_index="1" end="cb83857f-db65-4850-9e0e-98781032bd1b" end_index="3" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

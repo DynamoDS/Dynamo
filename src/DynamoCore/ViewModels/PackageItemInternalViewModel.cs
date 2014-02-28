@@ -27,7 +27,7 @@ namespace Dynamo.PackageManager.UI
             this.Parent = parent;
         }
 
-        public PackageItemInternalViewModel(FunctionDefinition def, PackageItemViewModel parent)
+        public PackageItemInternalViewModel(CustomNodeDefinition def, PackageItemViewModel parent)
         {
             this.DependencyType = DependencyType.CustomNode;
             this.Definition = def;

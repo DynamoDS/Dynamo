@@ -1,0 +1,12 @@
+<Workspace Version="0.6.3.33167" X="-217.452591715355" Y="-589.076915272488" zoom="0.977675781369908" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="6bc582e2-12e4-4b9b-97d7-2c26e25a6af9" nickname="Code Block" x="302.947612734972" y="743.059487978387" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="WCS = CoordinateSystem.Identity();&#xA;p1 = WCS.Origin;&#xA;    p2 = p1.Translate(10, 0, 10);&#xA;    line = Line.ByStartPointEndPoint(p1, p2);&#xA;    arc = Arc.ByCenterPointRadiusAngle(p1.Translate(0, 10, 0), 3, 90, 245,&#xA;                                       Vector.ByCoordinates(0, 0, 1));&#xA;    pspline = p1.Translate(0, 20, 0);&#xA;    ptsArray = { pspline, pspline.Translate(5, 3, 0), pspline.Translate(9, 6, 0),&#xA;                 pspline.Translate(2, 10, 0) };&#xA;    spline = NurbsCurve.ByPoints(ptsArray);&#xA;    psplineclosed = p1.Translate(0, 40, 0);&#xA;    ptsArray1 = { psplineclosed, psplineclosed.Translate(5, 3, 0),&#xA;                  psplineclosed.Translate(9, 6, 0), psplineclosed.Translate(2, 10, 0) };&#xA;    splineClosed = NurbsCurve.ByPoints(ptsArray1, true);&#xA;    circle = Circle.ByCenterPointRadius(p1.Translate(0, 60, 0), 10,&#xA;                                        Vector.ByCoordinates(0, 1, 0));&#xA;&#xA;curves = { line, arc, spline, splineClosed, circle };" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="3060fdcf-ad26-4a66-9e86-00d9b0f03fb8" nickname="Code Block" x="579.91076803242" y="1225.28346198784" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Point.ByCoordinates(10,28,0);" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="fd0f2822-6c6f-4bbc-bf85-e855ccf699cc" nickname="Point.SelectNearest" x="1031.23844389241" y="1209.69744545895" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Point.SelectNearest@Geometry[]" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6bc582e2-12e4-4b9b-97d7-2c26e25a6af9" start_index="12" end="fd0f2822-6c6f-4bbc-bf85-e855ccf699cc" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3060fdcf-ad26-4a66-9e86-00d9b0f03fb8" start_index="0" end="fd0f2822-6c6f-4bbc-bf85-e855ccf699cc" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

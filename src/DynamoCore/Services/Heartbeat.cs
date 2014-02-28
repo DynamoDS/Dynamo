@@ -52,7 +52,8 @@ namespace Dynamo.Services
                 try
                 {
 
-                    InstrumentationLogger.LogInfo("Heartbeat-Uptime-s",
+
+                    InstrumentationLogger.FORCE_LogInfo("Heartbeat-Uptime-s",
                                                   DateTime.Now.Subtract(startTime)
                                                           .TotalSeconds.ToString(CultureInfo.InvariantCulture));
 
@@ -128,7 +129,7 @@ namespace Dynamo.Services
 
             foreach (var node in dynSettings.Controller.DynamoModel.AllNodes)
             {
-                if (node.State != ElementState.ERROR)
+                if (node.State != ElementState.Error)
                     continue;
 
                 string fullName = node.GetType().FullName;

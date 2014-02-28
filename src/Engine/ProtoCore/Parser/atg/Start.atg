@@ -1,0 +1,635 @@
+
+COMPILER DesignScriptParser
+
+    public Node root { get; set; }
+    public CodeBlockNode commentNode { get; set; }
+    public ProtoFFI.ImportModuleHandler ImportModuleHandler { get; set; }
+    
+    //used for isModifier check
+    private string leftVar { get; set; }
+    private bool isModifier = false;
+    private bool withinModifierCheckScope = false;
+    private bool isLeftVarIdentList = false;
+    //end
+
+    private int localVarCount = 0;
+    private bool isGlobalScope = true;
+
+    private bool isInClass = false;
+    private bool disableKwCheck = false;
+
+    private bool isLeft = false; // check if it is left hand side of the assignment expression
+
+    // This is used by GraphIDE mode parsing when determining how many statements the parser has processed
+    private int stmtsParsed = 0;
+
+
+    private static string GetEscapedString(string s)
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+        int i = 0;
+        while (i < s.Length)
+        {
+            if (s[i] == '\\' && (i + 1) < s.Length)
+            {
+                i = i + 1;
+                switch (s[i])
+                {
+                    case '\\':
+                        sb.Append('\\');
+                        break;
+                    case '"':
+                        sb.Append('"');
+                        break;
+                    case 'a':
+                        sb.Append('\a');
+                        break;
+                    case 'b':
+                        sb.Append('\b');
+                        break;
+                    case 'f':
+                        sb.Append('\f');
+                        break;
+                    case 'n':
+                        sb.Append('\n');
+                        break;
+                    case 'r':
+                        sb.Append('\r');
+                        break;
+                    case 't':
+                        sb.Append('\t');
+                        break;
+                    case 'v':
+                        sb.Append('\v');
+                        break;
+                    case '0':
+                        sb.Append('\0');
+                        break;
+                    default:
+                        i = i - 1;
+                        sb.Append(s[i]);
+                        break;
+                }
+            }
+            else
+            {
+                sb.Append(s[i]);
+            }
+            i = i + 1;
+        }
+        return sb.ToString();
+    }
+
+    
+    public List<Node> GetParsedASTList(ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlockNode)
+    {
+        Validity.Assert(null != codeBlockNode);
+        List<Node> astNodes = new List<Node>();
+        for (int n = 0; n < stmtsParsed; n++)
+        {
+            astNodes.Add(codeBlockNode.Body[n]);
+        }
+        return astNodes;
+    }
+
+    private bool IsIdentList()
+    {
+        Token pt = la;
+        if (_ident == pt.kind)
+        {
+            pt = scanner.Peek();
+            if ("." == pt.val)
+            {
+                pt = scanner.Peek();
+                scanner.ResetPeek();
+                if (_ident == pt.kind)
+                    return true;
+            }
+        }
+        scanner.ResetPeek();
+        return false;
+    }
+
+	private bool IsModifierStack()
+	{
+		Token pt = la;
+		if(pt.val != "{")
+		{
+			scanner.ResetPeek();
+			return false;
+		}
+
+		int counter = 1;
+		pt = scanner.Peek();
+		while(counter != 0 && pt.kind != _EOF)
+		{
+			if(pt.val == "{")
+				counter++;
+			else if(pt.val == "}")
+				counter--;
+
+			if(pt.val == ";" && counter == 1)
+			{
+				scanner.ResetPeek();
+				return true;
+			}
+
+			pt = scanner.Peek();
+		}
+		
+		scanner.ResetPeek();
+		return false;
+	}
+
+    private bool IsFunctionCall()
+    {
+        Token pt = la;
+        if( _ident == pt.kind ) 
+        {
+            pt = scanner.Peek();
+            scanner.ResetPeek();
+            if( _openparen == pt.kind ) {
+                return true;
+            }
+        }
+        scanner.ResetPeek();
+        return false;
+    }
+
+	private bool IsFunctionCallStatement()
+	{
+        Token pt = la;
+        while (pt.kind != _EOF)
+        {
+			if( _ident == pt.kind ) 
+			{
+				pt = scanner.Peek();
+				if( _openparen == pt.kind )
+				{
+					scanner.ResetPeek();
+					return true;
+				}
+				else if( _period == pt.kind )
+				{
+					pt = scanner.Peek();
+					continue;
+				}
+			}
+			else
+			{
+				break;
+			}			
+		}
+
+        scanner.ResetPeek();
+        return false;
+	}
+
+    private bool IsAssignmentStatement()
+    {
+        Token pt = la;
+        while (pt.kind != _EOF)
+        {
+            if (pt.val == ";")
+            {
+                scanner.ResetPeek();
+                return false;
+            }
+            else if (pt.val == "=")
+            {
+                scanner.ResetPeek();
+                return true;
+            }
+
+            pt = scanner.Peek();
+        }
+
+        scanner.ResetPeek();
+        return false;
+    }
+
+    private bool IsVariableDeclaration()
+    {
+        Token t = la;
+        if (_ident == t.kind) {
+            t = scanner.Peek();
+            if (":" == t.val) {
+                t = scanner.Peek();
+                if (_ident == t.kind) {
+                    t = scanner.Peek();
+                    scanner.ResetPeek();
+                    return (_endline == t.kind || "[" == t.val);
+                }
+                scanner.ResetPeek();
+                return false;
+            }
+            else if (_endline == t.kind) {
+                scanner.ResetPeek();
+                return true;
+            }
+
+            scanner.ResetPeek();
+            return false;
+        }
+        return false;
+    }
+   
+    private bool IsReplicationGuide()
+    {
+        bool isRepGuide = false;
+        Token pt = la;
+        if (_lessthan == pt.kind)
+        {
+            pt = scanner.Peek();
+            if (_number == pt.kind || _postfixed_replicationguide == pt.kind)
+            {
+                pt = scanner.Peek();
+                if (_greaterthan == pt.kind)
+                {
+                    isRepGuide = true;
+                }
+            }
+
+        }
+        scanner.ResetPeek();
+        return isRepGuide;
+    }
+
+    private bool IsPostfixedReplicationGuide()
+    {
+        bool isPostFixedRepGuide = false;
+        Token pt = la;
+        if (_postfixed_replicationguide == pt.kind)
+        {
+            pt = scanner.Peek();
+            if (_greaterthan == pt.kind)
+            {
+                isPostFixedRepGuide = true;
+            }
+        }
+
+        scanner.ResetPeek();
+        return isPostFixedRepGuide;
+    }
+
+
+    private bool IsPostfixedNumber(string number)
+    {
+        if (number.Length > 1)
+        {
+            char lastChar = number[number.Length-1];
+            if (lastChar == ProtoCore.DSASM.Constants.kLongestPostfix)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private bool IsNumber()
+    {
+        Token pt = la;
+
+        if (pt.val == "-") {
+            pt = scanner.Peek();
+            scanner.ResetPeek();
+        }
+
+        return ((_number == pt.kind) || (_float == pt.kind));
+    }
+
+    private bool IsTypedVariable()
+    {
+        Token pt = la;
+
+        if (_ident == pt.kind) {
+            pt = scanner.Peek();
+            scanner.ResetPeek();
+            if (":" == pt.val) 
+                return true;
+        }
+        scanner.ResetPeek();
+        return false;
+    }
+	
+	private bool IsFullClosure()
+    {
+        Token pt = la;
+        int closureCount = 0;
+
+        while (true)
+        {
+            pt = scanner.Peek();
+            if (pt.val == "(") { closureCount++; continue; }
+            if (pt.val == ")") { closureCount--; continue; }
+			if ((pt.kind == 0)||(pt.kind == _endline)) break;
+		}
+        scanner.ResetPeek();
+        return (closureCount > 0) ? false : true;
+    }
+
+    private bool HasMoreAssignmentStatements()
+    {
+        Token pt = la;
+
+        if (pt.kind != _ident)
+            return false;
+
+        bool gotAssignmentToken = false;
+        bool isAssignmentStatement = false;
+
+        while (true) {
+            pt = scanner.Peek();
+            if (pt.kind == 0) {
+                break;
+            }
+            else if (pt.val == "=") {
+                isAssignmentStatement = true;
+                break;
+            }
+            else if (pt.kind == _endline) {
+                isAssignmentStatement = gotAssignmentToken;
+                break;
+            }
+            else if (pt.val == "{")
+                break;
+        }
+
+        scanner.ResetPeek();
+        return isAssignmentStatement;
+    }
+
+    private string GetImportedModuleFullPath(string moduleLocation)
+    {
+        string fileName = moduleLocation.Replace("\"", String.Empty);
+        string filePath = FileUtils.GetDSFullPathName(fileName, core.Options);
+
+        if (File.Exists(filePath))
+            return filePath;
+
+        SemErr(@"Cannot import file: '" + fileName + @"': No such file or directory");
+        return null;
+    }
+
+    private bool NotDefaultArg()
+    {
+        Token pt = la;          
+        if (pt.val == ",")
+            pt = scanner.Peek();
+        //pt should be ident now
+        if (pt.kind == _ident)
+        {         
+            pt = scanner.Peek();    //':'
+            if (pt.val == ":")
+            {
+                pt = scanner.Peek();    //type
+                if (pt.kind == _ident)
+                {
+                    pt = scanner.Peek();
+                    scanner.ResetPeek();
+                    if (pt.val == "=")
+                         return false;
+                }
+            }
+			if (pt.val == "=")
+			{
+				scanner.ResetPeek();
+				return false;
+			}
+        }
+        scanner.ResetPeek();        
+        return true;    
+    }
+
+    private ProtoCore.AST.AssociativeAST.AssociativeNode GenerateBinaryOperatorMethodCallNode(Operator op, ProtoCore.AST.AssociativeAST.AssociativeNode op1, ProtoCore.AST.AssociativeAST.AssociativeNode op2)
+    {
+        ProtoCore.AST.AssociativeAST.FunctionCallNode funCallNode = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
+        ProtoCore.AST.AssociativeAST.IdentifierNode funcName = new ProtoCore.AST.AssociativeAST.IdentifierNode { Value = ProtoCore.DSASM.Op.GetOpFunction(op), Name = ProtoCore.DSASM.Op.GetOpFunction(op) };
+        funCallNode.Function = funcName;
+        funCallNode.Name = ProtoCore.DSASM.Op.GetOpFunction(op);
+        funCallNode.FormalArguments.Add(op1); funCallNode.FormalArguments.Add(op2);
+
+        NodeUtils.SetNodeLocation(funCallNode, op1, op2);
+        return funCallNode;
+    }
+
+ 	private ProtoCore.AST.AssociativeAST.AssociativeNode GenerateUnaryOperatorMethodCallNode(UnaryOperator op, ProtoCore.AST.AssociativeAST.AssociativeNode operand)
+    {
+        ProtoCore.AST.AssociativeAST.FunctionCallNode funCallNode = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
+        ProtoCore.AST.AssociativeAST.IdentifierNode funcName = new ProtoCore.AST.AssociativeAST.IdentifierNode { Value = ProtoCore.DSASM.Op.GetUnaryOpFunction(op), Name = ProtoCore.DSASM.Op.GetUnaryOpFunction(op) };
+        funCallNode.Function = funcName;
+        funCallNode.Name = ProtoCore.DSASM.Op.GetUnaryOpFunction(op);
+        funCallNode.FormalArguments.Add(operand);
+
+        NodeUtils.CopyNodeLocation(funCallNode, operand);
+        return funCallNode;
+    }
+
+
+
+    ProtoCore.AST.ImperativeAST.IdentifierNode BuildImperativeIdentifier(string name, ProtoCore.PrimitiveType type = ProtoCore.PrimitiveType.kTypeVar)
+    {
+        var ident = new ProtoCore.AST.ImperativeAST.IdentifierNode();
+        ident.Name = ident.Value = name;
+        ident.datatype = TypeSystem.BuildPrimitiveTypeObject(type, false);
+        return ident;
+    }
+
+    private bool IsKeyWord(string identName, bool checkReturn = false, bool checkThis = true)
+    {
+        if (identName == ProtoCore.DSDefinitions.Keyword.Return && !checkReturn)
+        {
+            return false;
+        }
+
+        if (checkThis && identName == ProtoCore.DSDefinitions.Keyword.This)
+        {
+            return true;
+        }
+
+        foreach (string kw in ProtoCore.DSDefinitions.Keyword.KeywordList)
+        {
+            if (kw == identName)
+                return true;
+        }
+        return false;
+    }
+
+	 private bool IsLanguageBlockProperty()
+	 {
+		Token t = scanner.Peek();
+		scanner.ResetPeek();
+		if (t.val == "=")
+			return true;
+		else
+			return false;
+	 }
+
+	 // use by associative
+	 private bool IsNotAttributeFunctionClass()
+	 {
+		if (la.val == "[")
+		{
+		    Token t = scanner.Peek();
+            while (t.val != "]" && t.kind != _EOF)
+            {
+                t = scanner.Peek();
+            }
+          
+            if (t.val == "]")
+            {
+                Token next = scanner.Peek(); 
+                scanner.ResetPeek();
+                return (next.val == "{");
+            }
+            else
+            {
+                scanner.ResetPeek();
+                return false;
+            }
+		}
+
+		if (la.kind != _kw_class && la.kind != _kw_def && la.kind != _kw_external)
+			return true;
+		return false;
+	 }
+
+	 // used by imperative
+	 private bool IsNotAttributeFunction()
+	 {
+	    if (la.val == "[")
+		{
+		    Token t = scanner.Peek();
+            while (t.val != "]" && t.kind != _EOF)
+            {
+                t = scanner.Peek();
+            }
+          
+            if (t.val == "]")
+            {
+                Token next = scanner.Peek(); 
+                scanner.ResetPeek();
+                return (next.val == "{");
+            }
+            else
+            {
+                scanner.ResetPeek();
+                return false;
+            }
+		}
+
+		if (la.kind != _kw_external && la.kind != _kw_def)
+			return true;
+		return false;
+	 }
+
+	 
+	 //Experiment for user-defined synErr message
+	 private void SynErr (string s) {
+		if (errDist >= minErrDist) 
+		core.BuildStatus.LogSyntaxError(s, core.CurrentDSFileName, la.line, la.col);
+		errors.count++;
+		errDist = 0;
+	 }
+
+
+CHARACTERS
+
+    uppercaseletter = 'A'..'Z'.
+    lowercaseletter = 'a'..'z'.
+    letter = uppercaseletter + lowercaseletter.
+    digit = '0'..'9'.
+    cr  = '\r'. 
+    lf  = '\n'.
+    tab = '\t'.
+    anyButDoubleQuote = ANY - '\"'.
+    anyButQuote = ANY - '\''.
+    anychar = ANY.
+    other = ANY - '/' - '*'.
+    anyExcludingEndOfLine = ANY - lf.
+
+TOKENS
+    ident = (letter | '_' | '@'){letter | digit | '_' | '@'}.
+    number = digit {digit} .
+    float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
+    textstring = '"' {anyButDoubleQuote | "\\\""} '"'.
+    char = '\'' (anyButQuote | "\\\'" | "\\\"" | "\\\\" | "\\0" | "\\a" | "\\b" | "\\f" | "\\n" | "\\r" | "\\t" | "\\v" | "\\u") '\''.
+    period = '.'.
+    postfixed_replicationguide = digit {digit} 'L'.
+
+    openbracket = '['.
+    closebracket = ']'.
+    openparen = '('.
+    closeparen = ')'.
+
+    not = '!'.
+    neg = '-'.
+    pipe = '|'.
+    lessthan = '<'.
+    greaterthan = '>'.
+    lessequal = "<=".
+    greaterequal = ">=".
+    equal = "==".
+    notequal = "!=".
+    endline = ';'.
+    rangeop = "..".
+
+    kw_native = "native".
+    kw_class = "class".
+    kw_constructor = "constructor".
+    kw_def = "def".
+    kw_external = "external".
+    kw_extend = "extends".
+    kw_heap = "__heap".
+    kw_if = "if".
+    kw_elseif = "elseif".
+    kw_else = "else".
+    kw_while = "while".
+    kw_for = "for".
+    kw_import = "import".
+    kw_prefix = "prefix".
+    kw_from = "from".
+    kw_break = "break".
+    kw_continue = "continue".
+    kw_static = "static".
+
+    literal_true = "true".
+    literal_false = "false".
+    literal_null = "null".
+    replicationguide_postfix = 'L'.
+
+//COMMENTS FROM "/*" TO "*/" 
+//COMMENTS FROM "//" TO lf
+
+PRAGMAS
+
+    inlinecomment =  "//" {anyExcludingEndOfLine}.			(. 
+                                                                   CommentNode cNode = new CommentNode(la.col, la.line, la.val, CommentNode.CommentType.Inline); 
+                                                                   commentNode.Body.Add(cNode); .)
+    blockcomment = "/*" {'/' | other | '*' {'*'} other} '*' {'*'} '/'. (.
+                                                             CommentNode cNode = new CommentNode(la.col, la.line, la.val, CommentNode.CommentType.Block); 
+                                                             commentNode.Body.Add(cNode); .)
+
+IGNORE cr + lf + tab
+
+PRODUCTIONS
+
+
+//-----------------------------DesignScriptParser---------------------------//
+DesignScriptParser
+=                           (. Node node = null; .)
+    Hydrogen<out node>       
+        (. 
+            if (!core.IsParsingPreloadedAssembly && !core.IsParsingCodeBlockNode)
+            {
+                ProtoCore.Utils.CoreUtils.InsertPredefinedAndBuiltinMethods(core, node, builtinMethodsLoaded);
+                root = node;
+            }
+            else
+            {
+                root = node;
+            } 
+        .)
+
+.

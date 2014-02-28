@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.Utilities;
+using RevitServices.Persistence;
 
 namespace Dynamo.Revit
 {
@@ -42,7 +43,7 @@ namespace Dynamo.Revit
             {
                 try
                 {
-                    dynRevitSettings.Doc.Document.Delete(e);
+                    DocumentManager.GetInstance().CurrentUIDocument.Document.Delete(e);
                 }
                 catch (Autodesk.Revit.Exceptions.InvalidOperationException)
                 {

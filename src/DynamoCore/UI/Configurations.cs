@@ -5,6 +5,17 @@ namespace Dynamo.UI
 {
     public class Configurations
     {
+        #region Dynamo Universal Constants
+        // Add 0.5 to place the point in the middle of a pixel to sharpen it
+        public static readonly double PixelSharpeningConstant = 0.5;
+        #endregion
+
+        #region Usage Reporting Error Message
+        public static string GitHubBugReportingLink = "https://github.com/ikeough/Dynamo/issues?state=open";
+
+        public static string UsageReportingErrorMessage = "Uh oh...\n\rWe're sorry - we tried to save your decisions, but something went wrong. The decision probably hasn't been saved. This really shouldn't have happened. Please get in touch via GitHub and send us this information.\n\rYou can also try deleting [FILEPATH] and trying again.\n\rDepending on your previous choice, instrumentation may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.\n\rSorry about that.";
+        #endregion
+
         #region Canvas Configurations
         //public static readonly double Minimum
 
@@ -15,6 +26,10 @@ namespace Dynamo.UI
 
         // Canvas Control
         public static readonly double ZoomIncrement = 0.05;
+
+        // Double Clicking
+        // Maximum distance allowed between first and second click to be accepted as a double click
+        public static readonly int DoubleClickAcceptableDistance = 10; // in pixel
         #endregion
 
         #region Tab Bar Configurations
@@ -144,6 +159,13 @@ namespace Dynamo.UI
         public static double LibraryTooltipArrowWidth = 6;
 
         #endregion
+
+        #endregion
+
+        #region CodeBlockNode
+
+        public static readonly int CBNMaxPortNameLength = 24;
+        public static readonly int CBNMaxTextBoxWidth = 500;
 
         #endregion
 

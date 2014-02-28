@@ -430,11 +430,11 @@ namespace Dynamo.Controls
             ElementState state = (ElementState)value;
             switch (state)
             {
-                case ElementState.ACTIVE:
+                case ElementState.Active:
                     return ActiveBrush;
-                case ElementState.DEAD:
+                case ElementState.Dead:
                     return DeadBrush;
-                case ElementState.ERROR:
+                case ElementState.Error:
                     return ErrorBrush;
             }
 
@@ -1109,19 +1109,19 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source->target
-            if (value == null) return "";
+            if (value == null) 
+                return "No file selected.";
 
-            var maxChars = 30;
-            //var str = value.ToString();
+            const int maxChars = 30;
             var str = HttpUtility.UrlDecode(value.ToString());
 
             if (string.IsNullOrEmpty(str))
-            {
                 return "No file selected.";
-            }
-            else if (str.Length > maxChars)
+
+            if (str.Length > maxChars)
             {
-                return str.Substring(0, 10) + "..." + str.Substring(str.Length - maxChars + 10, maxChars - 10);
+                return str.Substring(0, 10) + "..."
+                    + str.Substring(str.Length - maxChars + 10, maxChars - 10);
             }
 
             return str;

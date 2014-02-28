@@ -1,0 +1,142 @@
+import("ProtoGeometry.dll");
+import("Math.dll");
+thickness=0.01;
+origin=Point.ByCoordinates(0,0,0);
+phi=(1+Math.Sqrt(5))/2;
+radius=Math.Sqrt(1+phi*phi);
+
+def render(p :Triangle)
+	{
+		
+		l1=Cone.ByStartPointEndPointRadius(p.points[0],p.points[1],thickness, thickness);
+		l2=Cone.ByStartPointEndPointRadius(p.points[1],p.points[2],thickness, thickness);
+		l3=Cone.ByStartPointEndPointRadius(p.points[2],p.points[0],thickness, thickness);
+		//s1=Sphere.ByCenterPointRadius(p.points[0], thickness*2);
+		//s2=Sphere.ByCenterPointRadius(p.points[1], thickness*2);
+		//s3=Sphere.ByCenterPointRadius(p.points[2], thickness*2);
+
+		return={l1,l2,l3, s1};
+	}
+
+
+//triangle class
+class Triangle
+{
+        points : Point[];
+
+        constructor Triangle (p :Point[])
+        {
+                points = p;
+        }
+}
+
+def surfaceTri(triangle : Triangle)
+{
+    triL1 = Line.ByStartPointEndPoint(triangle.points[0], triangle.points[1]);
+    triL2 = Line.ByStartPointEndPoint(triangle.points[1], triangle.points[2]);
+  return= Surface.LoftFromCrossSections({ triL1, triL2 });
+    //return = tempSur.Thicken(0.01, true);
+}
+
+//mid point
+def MidPoint(pn1: Point ,pn2: Point )
+{
+        return = Point.ByCoordinates((pn1.X+pn2.X)/2,(pn1.Y+pn2.Y)/2,(pn1.Z+pn2.Z)/2); 
+}
+
+
+class icosahedron
+{
+
+phi=(1+Math.Sqrt(5))/2;
+s=2;
+
+p1=Point.ByCoordinates(1,0,-phi);       
+p2=Point.ByCoordinates(-1,0,-phi);   
+p3=Point.ByCoordinates(-1,0,phi);       
+p4=Point.ByCoordinates(1,0,phi);        
+p5=Point.ByCoordinates(phi,-1,0);
+p6=Point.ByCoordinates(-phi,-1,0);
+p7=Point.ByCoordinates(-phi,1,0);
+p8=Point.ByCoordinates(phi,1,0);
+p9 =Point.ByCoordinates(0,phi,-1);
+p10=Point.ByCoordinates(0,-phi,-1);
+p11=Point.ByCoordinates(0,-phi,1);
+p12=Point.ByCoordinates(0,phi,1);
+    
+    neg = Hide({ p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12 });
+    
+    
+t1=Triangle.Triangle({p3,p6,p7});
+t2=Triangle.Triangle({p2,p6,p7});
+t3=Triangle.Triangle({p1,p5,p8});
+t4=Triangle.Triangle({p4,p5,p8});
+t5=Triangle.Triangle({p3,p4,p12});
+t6=Triangle.Triangle({p3,p4,p11});
+t7=Triangle.Triangle({p9,p8,p12});
+t8=Triangle.Triangle({p1,p2,p9});
+t9=Triangle.Triangle({p3, p6,p11});
+t10=Triangle.Triangle({p6,p10,p11});
+t11=Triangle.Triangle({p2,p6,p10});
+t12=Triangle.Triangle({p5,p10,p11});
+t13=Triangle.Triangle({p1,p5,p10});
+t14=Triangle.Triangle({p4,p5,p11});
+t15=Triangle.Triangle({p1,p2,p10});
+t16=Triangle.Triangle({p2,p7,p9});
+t17=Triangle.Triangle({p7,p9,p12});
+t18=Triangle.Triangle({p3,p7,p12});
+t19=Triangle.Triangle({p4,p8,p12});
+t20=Triangle.Triangle({p1,p8,p9});
+        
+tri: Triangle[];
+neglect: Surface[];
+
+constructor icosahedron()
+        {
+                tri={t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20};
+        }
+}
+
+def Hide(geom : Geometry)
+{
+    return = geom.SetVisibility(false);
+}
+
+def proj(pm: Point)
+{
+        dist=pm.DistanceTo(origin);
+        vec=Vector.ByCoordinates(pm.X, pm.Y, pm.Z);
+
+        return=Hide(pm.Translate(vec, radius-dist));
+        
+}
+
+def createTriangle(t: Triangle)
+{
+        pon1=t.points[0]; pon2=t.points[1]; pon3=t.points[2];
+        
+        m1=MidPoint(pon1,pon2); m2=MidPoint(pon2,pon3); m3=MidPoint(pon3,pon1);
+        //d1=m1.DistanceTo(origin);
+        //d2=m2.DistanceTo(origin);
+        //d3=m3.DistanceTo(origin);
+
+        tri1=Triangle.Triangle({pon1,proj(m1),proj(m3)});
+        tri2=Triangle.Triangle({pon2,proj(m2),proj(m1)});
+        tri3=Triangle.Triangle({pon3,proj(m2),proj(m3)});
+        tri4=Triangle.Triangle({proj(m1),proj(m2),proj(m3)});
+        return={tri1,tri2, tri3, tri4};
+}
+        
+
+baseShape=icosahedron.icosahedron();
+//neglect=render(baseShape.tri);
+
+nextShape1=Flatten(createTriangle(baseShape.tri));
+nextShape2=Flatten(createTriangle(nextShape1));
+nextShape3=Flatten(createTriangle(nextShape2));
+//neglect=render(nextShape3);
+//neglect = render(nextShape2);
+m = surfaceTri(nextShape3);
+neg = Hide(m);
+n = m.Thicken(0.005, true);
+

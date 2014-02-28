@@ -7,6 +7,7 @@
         xmlns:models="clr-namespace:Dynamo.Models"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:commands="clr-namespace:Dynamo.UI.Commands"
+        xmlns:service="clr-namespace:Dynamo.Services"
         xmlns:dynamo="clr-namespace:Dynamo"
         xmlns:core="clr-namespace:Dynamo.Core"
         xmlns:ui="clr-namespace:Dynamo.UI"
@@ -288,6 +289,10 @@
                         </MenuItem>
                     </MenuItem>
 
+                    <MenuItem Header="_Libraries" Name="LibraryManagerMenu" Focusable="False" IsEnabled="True">
+                        <MenuItem Focusable="False" Header="_Import Library..." Command="{Binding Path=DataContext.ImportLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="importLibrary"/>  
+                    </MenuItem>
+                    
                     <MenuItem Header="_Packages" Name="PackageManagerMenu" Focusable="False" IsEnabled="True">
                         <MenuItem Focusable="False" Header="_Search for a Package..." Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMSearch" />
                         <MenuItem Focusable="False" Header="_Manage Packages..." Command="{Binding Path=DataContext.ShowInstalledPackagesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMInstalled" />
@@ -296,6 +301,11 @@
                     </MenuItem>
 
                     <MenuItem Header="_Settings" Name="SettingsMenu" Focusable="False" IsEnabled="True">
+                        <MenuItem Header="_Enable usability data reporting"
+                                  Name="ToggleIsUsageReportingApprovedCommand"
+                                  Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
+                                  IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
+                                  Focusable="False"/>
                         <MenuItem Focusable="False" Header="Length Display Units" Name="LengthUnitsMenu">
                             <MenuItem Focusable="False" Name="units_inch_1" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="DecimalInch" Header="Decimal Inch"/>
                             <MenuItem Focusable="False" Name="units_inch_2" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="FractionalInch" Header="Fractional Inch"/>
@@ -1080,7 +1090,8 @@
                     CommandParameter="{Binding Path=RunInDebug}"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
 
-                    <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
+                <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
+
                       Command="{Binding CancelRunCommand}" Margin="5"/>
 
                     <CheckBox Margin="10"

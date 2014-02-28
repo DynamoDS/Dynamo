@@ -13,6 +13,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.DSEngine;
 
 namespace Dynamo.ViewModels
 {
@@ -26,11 +27,11 @@ namespace Dynamo.ViewModels
         /// <summary>
         ///     Indicates whether the node browser is visible or not
         /// </summary>
-        private bool _browserVisibility = true;
+        private bool browserVisibility = true;
         public bool BrowserVisibility
         {
-            get { return _browserVisibility; }
-            set { _browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
+            get { return browserVisibility; }
+            set { browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
         }
 
         /// <summary>
@@ -49,13 +50,13 @@ namespace Dynamo.ViewModels
         /// <value>
         ///     Specifies whether we are including Revit API elements in search.
         /// </value>
-        public bool IncludeRevitApiElements;
+        private bool includeRevitApiElements;
         public bool IncludeRevitAPIElements
         {
-            get { return IncludeRevitApiElements; }
+            get { return includeRevitApiElements; }
             set
             {
-                IncludeRevitApiElements = value;
+                includeRevitApiElements = value;
                 RaisePropertyChanged("IncludeRevitAPIElements");
                 //ToggleIncludingRevitAPIElements();
             }
@@ -73,14 +74,13 @@ namespace Dynamo.ViewModels
         /// <value>
         ///     This is the core UI for Dynamo, primarily used for logging.
         /// </value>
-        public string _SearchText;
-
+        private string searchText;
         public string SearchText
         {
-            get { return _SearchText; }
+            get { return searchText; }
             set
             {
-                _SearchText = value;
+                searchText = value;
                 RaisePropertyChanged("SearchText");
                 //DynamoCommands.SearchCommand.Execute();
                 SearchAndUpdateResults();
@@ -93,19 +93,19 @@ namespace Dynamo.ViewModels
         /// <value>
         ///     This is the currently selected element in the UI.
         /// </value>
-        private int _selectedIndex;
+        private int selectedIndex;
         public int SelectedIndex
         {
-            get { return _selectedIndex; }
+            get { return selectedIndex; }
             set
             {
-                if (_selectedIndex != value)
+                if (selectedIndex != value)
                 {
-                    if (_visibleSearchResults.Count > _selectedIndex)
-                        _visibleSearchResults[_selectedIndex].IsSelected = false;
-                    _selectedIndex = value;
-                    if (_visibleSearchResults.Count > _selectedIndex)
-                        _visibleSearchResults[_selectedIndex].IsSelected = true;
+                    if (_visibleSearchResults.Count > selectedIndex)
+                        _visibleSearchResults[selectedIndex].IsSelected = false;
+                    selectedIndex = value;
+                    if (_visibleSearchResults.Count > selectedIndex)
+                        _visibleSearchResults[selectedIndex].IsSelected = true;
                     RaisePropertyChanged("SelectedIndex");
                 }
             }
@@ -236,7 +236,7 @@ namespace Dynamo.ViewModels
             SearchResults = new ObservableCollection<SearchElementBase>();
             MaxNumSearchResults = 20;
             Visible = false;
-            _SearchText = "";
+            searchText = "";
             IncludeRevitAPIElements = true; // revit api
 
             _topResult = this.AddRootCategory("Top Result");
@@ -447,6 +447,19 @@ namespace Dynamo.ViewModels
         public BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName)
         {
             var newCategoryName = parent.Name + CATEGORY_DELIMITER + childCategoryName;
+
+            // support long nested categories like Math.Math.StaticMembers.Abs
+            var parentItem  = parent as BrowserInternalElement;
+            while (parentItem != null)
+            {
+                var grandParent = parentItem.Parent;
+                if (null == grandParent)
+                    break;
+
+                newCategoryName = grandParent.Name + CATEGORY_DELIMITER + newCategoryName;
+                parentItem = grandParent as BrowserInternalElement;
+            }
+
             if (ContainsCategory(newCategoryName))
             {
                 return GetCategoryByName(newCategoryName);
@@ -792,6 +805,59 @@ namespace Dynamo.ViewModels
             var searchEleItem = item as SearchElementBase;
             if (searchEleItem != null)
                 _searchElements.Add(searchEleItem);
+
+        }
+
+        /// <summary>
+        ///     Adds DesignScript function groups
+        /// </summary>
+        /// <param name="func"></param>
+        public void Add(IEnumerable<FunctionGroup> functionGroups)
+        {
+            if (null == functionGroups)
+                return;
+
+            foreach (var functionGroup in functionGroups)
+            {
+                var functions = functionGroup.Functions.ToList();
+                if (!functions.Any())
+                    continue;
+
+                bool isOverloaded = functions.Count > 1;
+
+                foreach (var function in functions)
+                {
+                    // For overloaded functions, only parameters are displayed
+                    // for this item. E.g, for Count(), on UI it is:
+                    //
+                    // -> Abs
+                    //      +----------------+
+                    //      | dValue: double |
+                    //      +----------------+
+                    //      | nValue: int    |
+                    //      +----------------+
+                    var displayString = function.UserFriendlyName;
+                    var category = function.Category;
+
+                    if (isOverloaded)
+                    {
+                        displayString = string.Join(", ", function.Parameters.Select(p => p.ToString()));
+                        if (string.IsNullOrEmpty(displayString))
+                            displayString = "void";
+                        category = category + "." + function.UserFriendlyName; 
+                    }
+
+                    var searchElement = new DSFunctionNodeSearchElement(displayString, function);
+                    searchElement.SetSearchable(true);
+                    
+                    // Add this search eleemnt to the search view
+                    TryAddCategoryAndItem(category, searchElement);
+
+                    // function.QualifiedName is the search string for this
+                    // element
+                    SearchDictionary.Add(searchElement, function.QualifiedName);
+                }
+            }
 
         }
 

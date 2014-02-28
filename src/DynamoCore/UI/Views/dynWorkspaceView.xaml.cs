@@ -78,10 +78,10 @@ namespace Dynamo.Views
 
             InitializeComponent();
 
-            selectionCanvas.Loaded += new RoutedEventHandler(selectionCanvas_Loaded);
-            DataContextChanged += new DependencyPropertyChangedEventHandler(dynWorkspaceView_DataContextChanged);
+            selectionCanvas.Loaded += selectionCanvas_Loaded;
+            DataContextChanged += dynWorkspaceView_DataContextChanged;
 
-            this.Loaded += new RoutedEventHandler(dynWorkspaceView_Loaded);
+            this.Loaded += dynWorkspaceView_Loaded;
         }
 
         void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
@@ -164,6 +164,7 @@ namespace Dynamo.Views
         void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
+            ViewModel.NodeToCodeCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>
@@ -243,7 +244,7 @@ namespace Dynamo.Views
             {
                 if (workspace is CustomNodeWorkspaceModel)
                 {
-                    var def = (workspace as CustomNodeWorkspaceModel).FunctionDefinition;
+                    var def = (workspace as CustomNodeWorkspaceModel).CustomNodeDefinition;
                     dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
                 }
 

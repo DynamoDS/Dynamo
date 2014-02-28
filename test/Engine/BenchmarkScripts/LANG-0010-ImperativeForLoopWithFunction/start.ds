@@ -1,0 +1,12 @@
+[Imperative]
+{
+    def foo()
+    {
+        return = null;
+    }
+
+    for (i in 0..500000)
+    {  
+        t = foo();
+    }
+}

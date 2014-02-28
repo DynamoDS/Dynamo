@@ -1,0 +1,19 @@
+a = 2;
+b = 2+3;
+c = 2*4;
+d = 2+3*4;
+e = 10*20+30;
+a = foo();
+b = foo(1);
+c = foo(1,2);
+a = 1+foo();
+b = foo()+2;
+c = 2+3*foo(1,3);
+def foo() = 5;
+a = b.c;
+def bar(a : int)
+{
+	a = 2;
+}
+def bar2(int) = 3;
+def bar3(a : int | a > 2) = bar2(3);

@@ -1,0 +1,4 @@
+def mul : int(i : int, j : int)
+{
+	return = i * j;
+}

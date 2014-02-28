@@ -13,7 +13,9 @@ using System.Windows.Threading;
 using Dynamo.Models;
 using Dynamo.Selection;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Controls
 {

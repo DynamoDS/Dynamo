@@ -8,6 +8,8 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
+using RevitServices.Persistence;
+using System.Xml;
 
 namespace Dynamo.Nodes
 {
@@ -15,6 +17,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Creates a reference point.")]
     [NodeSearchTags("pt","ref")]
+    [Obsolete("Use ReferencePoint.ByPt")]
     public class ReferencePointByXyz : RevitTransactionNodeWithOneOutput
     {
         public ReferencePointByXyz()
@@ -52,12 +55,20 @@ namespace Dynamo.Nodes
 
             return Value.NewContainer(pt);
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+                "ReferencePoint.ByPoint", "ReferencePoint.ByPoint@Point");
+        }
     }
 
     [NodeName("Reference Point on Edge")]
     [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Creates an element which owns a reference point on a selected edge.")]
     [NodeSearchTags("ref", "pt")]
+    [Obsolete("Use ReferencePoint.ByPtOnEdge")]
     public class PointOnEdge : RevitTransactionNodeWithOneOutput
     {
         public PointOnEdge()
@@ -105,12 +116,21 @@ namespace Dynamo.Nodes
             
             return Value.NewContainer(p);
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+                "ReferencePoint.ByParameterOnCurveReference",
+                "ReferencePoint.ByParameterOnCurveReference@CurveReference,double");
+        }
     }
 
     [NodeName("Reference Point on Face")]
     [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Creates an element which owns a reference point on a selected face.")]
     [NodeSearchTags("ref", "pt")]
+    [Obsolete("Use ReferencePoint.ByPtOnFace")]
     public class PointOnFaceUv : RevitTransactionNodeWithOneOutput
     {
         public PointOnFaceUv()
@@ -131,7 +151,10 @@ namespace Dynamo.Nodes
             Face f;
             var r = arg0 as Reference;
             if (r != null)
-                f = (Face)dynRevitSettings.Doc.Document.GetElement(r.ElementId).GetGeometryObjectFromReference(r);
+            {
+                var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+                f = (Face)document.GetElement(r.ElementId).GetGeometryObjectFromReference(r);
+            }
             else
                 f = (Face)arg0;
 
@@ -165,11 +188,69 @@ namespace Dynamo.Nodes
 
             return Value.NewContainer(pt);
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            //create the node itself
+            XmlElement dsReferencePoint = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(dsReferencePoint, "DSRevitNodes.dll",
+                "ReferencePoint.ByParametersOnFaceReference",
+                "ReferencePoint.ByParametersOnFaceReference@FaceReference,double,double");
+
+            migratedData.AppendNode(dsReferencePoint);
+            string dsReferencePointId = MigrationManager.GetGuidFromXmlElement(dsReferencePoint);
+
+            XmlElement uvU = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "UV.U", "UV.U");
+            migratedData.AppendNode(uvU);
+            string uvUId = MigrationManager.GetGuidFromXmlElement(uvU);
+
+            XmlElement uvV = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "UV.V", "UV.V");
+            migratedData.AppendNode(uvV);
+            string uvVId = MigrationManager.GetGuidFromXmlElement(uvV);
+
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            XmlElement connector2 = null;
+            if (connector1!=null)
+            {
+                connector2 = MigrationManager.CreateFunctionNodeFrom(connector1);
+                data.CreateConnector(connector2);
+            }
+
+            PortId newInPort = new PortId(dsReferencePointId, 0, PortType.INPUT);
+            data.ReconnectToPort(connector0, newInPort);
+            newInPort = new PortId(uvUId, 0, PortType.INPUT);
+            data.ReconnectToPort(connector1, newInPort);
+
+            if (connector2 != null)
+            {
+                newInPort = new PortId(uvVId, 0, PortType.INPUT);
+                data.ReconnectToPort(connector2, newInPort);
+            }
+
+            data.CreateConnector(uvU, 0, dsReferencePoint, 1);
+            data.CreateConnector(uvV, 0, dsReferencePoint, 2);
+
+            return migratedData;           
+        }
     }
 
     [NodeName("Reference Point by Normal")]
     [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
-    [NodeDescription("Owns a reference point which is projected from a point by normal and length.")]
+    [NodeDescription("Owns a reference point which is projected from a point by normal and distance.")]
+    [NodeSearchTags("normal", "ref")]
+    [Obsolete("Use ReferencePoint.ByPtVectorDistance")]
     public class PointNormalDistance : RevitTransactionNodeWithOneOutput
     {
         public PointNormalDistance()
@@ -215,12 +296,21 @@ namespace Dynamo.Nodes
             return Value.NewContainer(p);
         }
 
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+                "ReferencePoint.ByPointVectorDistance",
+                "ReferencePoint.ByPointVectorDistance@Point,Vector,double");
+        }
+
     }
 
     [NodeName("Plane from Reference Point")]
     [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Extracts one of the primary Reference Planes from a Reference Point.")]
     [NodeSearchTags("ref")]
+    [Obsolete("Use properties on ReferencePlane")]
     public class PlaneFromRefPoint : RevitTransactionNodeWithOneOutput
     {
         ComboBox combo;
@@ -232,7 +322,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(object ui)
+        public void SetupCustomUIElements(object ui)
         {
             var nodeUI = ui as dynNodeView;
 
@@ -244,7 +334,7 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetColumn(combo, 0);
             System.Windows.Controls.Grid.SetRow(combo, 0);
 
-            combo.DropDownOpened += new EventHandler(combo_DropDownOpened);
+            combo.DropDownOpened += combo_DropDownOpened;
             combo.SelectionChanged += delegate
             {
                 if (combo.SelectedIndex != -1)
@@ -389,6 +479,14 @@ namespace Dynamo.Nodes
 
             return Value.NewContainer(p);
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+                "ReferencePoint.ByLengthOnCurveReference",
+                "ReferencePoint.ByLengthOnCurveReference@CurveReference,double");
+        }
     }
 
     [NodeName("Reference Point Distance")]
@@ -434,7 +532,19 @@ namespace Dynamo.Nodes
             XYZ ptB = this.getXYZ(((Value.Container)args[1]).Item);
 
             //Return the calculated distance.
-            return Value.NewContainer(Units.Length.FromFeet(ptA.DistanceTo(ptB), dynSettings.Controller.UnitsManager));
+            return Value.NewContainer(Units.Length.FromFeet(ptA.DistanceTo(ptB)));
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 2, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 }

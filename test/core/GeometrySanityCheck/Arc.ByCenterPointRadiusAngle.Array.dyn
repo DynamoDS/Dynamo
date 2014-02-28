@@ -1,0 +1,29 @@
+<Workspace Version="0.6.3.35885" X="481.957905982906" Y="181.821581196581" zoom="0.7" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="81b31d18-8dac-4d98-b7e8-c62bd0c25ba5" nickname="Arc.ByCenterPointRadiusAngle" x="214.59188034188" y="254.040598290598" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="ProtoGeometry.dll" Category="ProtoGeometry.Arc" ClassName="Arc" Name="ByCenterPointRadiusAngle" DisplayName="Arc.ByCenterPointRadiusAngle" Type="Constructor" Parameters="centerPoint;radius;startAngle;sweepAngle;normal" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="012324f3-e093-4d14-8eaf-2d2681233fc1" nickname="Code Block" x="-295" y="139" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1..100..10;&#xA;0;&#xA;90;&#xA;180;&#xA;radius=2;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="29a28448-cef1-445e-81d8-f50466fd98d9" nickname="Point.ByCoordinates" x="-10.40811965812" y="123.040598290598" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="ProtoGeometry.dll" Category="ProtoGeometry.Point" ClassName="Point" Name="ByCoordinates" DisplayName="Point.ByCoordinates" Type="Constructor" Parameters="x;y;z" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="49845186-9d2a-4a66-be8d-55ef54e3301e" nickname="Vector.ByCoordinates" x="-24.40811965812" y="343.040598290598" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="ProtoGeometry.dll" Category="ProtoGeometry.Vector" ClassName="Vector" Name="ByCoordinates" DisplayName="Vector.ByCoordinates" Type="Constructor" Parameters="x;y;z" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="2b60fb7e-72e1-4748-8ec8-262525404e05" nickname="Code Block" x="-288" y="345" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="normal = 1;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="012324f3-e093-4d14-8eaf-2d2681233fc1" start_index="0" end="29a28448-cef1-445e-81d8-f50466fd98d9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="012324f3-e093-4d14-8eaf-2d2681233fc1" start_index="1" end="29a28448-cef1-445e-81d8-f50466fd98d9" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="012324f3-e093-4d14-8eaf-2d2681233fc1" start_index="1" end="29a28448-cef1-445e-81d8-f50466fd98d9" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="012324f3-e093-4d14-8eaf-2d2681233fc1" start_index="1" end="49845186-9d2a-4a66-be8d-55ef54e3301e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="012324f3-e093-4d14-8eaf-2d2681233fc1" start_index="1" end="49845186-9d2a-4a66-be8d-55ef54e3301e" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="012324f3-e093-4d14-8eaf-2d2681233fc1" start_index="2" end="81b31d18-8dac-4d98-b7e8-c62bd0c25ba5" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="012324f3-e093-4d14-8eaf-2d2681233fc1" start_index="3" end="81b31d18-8dac-4d98-b7e8-c62bd0c25ba5" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="012324f3-e093-4d14-8eaf-2d2681233fc1" start_index="4" end="81b31d18-8dac-4d98-b7e8-c62bd0c25ba5" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="29a28448-cef1-445e-81d8-f50466fd98d9" start_index="0" end="81b31d18-8dac-4d98-b7e8-c62bd0c25ba5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="49845186-9d2a-4a66-be8d-55ef54e3301e" start_index="0" end="81b31d18-8dac-4d98-b7e8-c62bd0c25ba5" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2b60fb7e-72e1-4748-8ec8-262525404e05" start_index="0" end="49845186-9d2a-4a66-be8d-55ef54e3301e" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,81 @@
+import("ProtoGeometry.dll");
+import("Math.dll");
+GeometrySettings.PointVisibility = false;
+
+
+class diamond
+{
+    line : Line[];
+    //innerCurve : Curve;
+    //outerCurve : Curve;
+    cy : Solid[]; sp : Solid[];
+    glass : Solid;
+    constructor shape(indexX: int, indexY: int)
+    {
+        midPt1 = MidPoint(pts[indexX][indexY], pts[indexX+1][indexY]);
+        midPt2 = MidPoint(pts[indexX+1][indexY], pts[indexX+1][indexY+1]);
+        midPt3 = MidPoint(pts[indexX+1][indexY+1], pts[indexX][indexY+1]);
+        midPt4 = MidPoint(pts[indexX][indexY + 1], pts[indexX][indexY]);
+        
+        line = {
+            Line.ByStartPointEndPoint(midPt1, midPt2),
+            Line.ByStartPointEndPoint(midPt2, midPt3),
+            Line.ByStartPointEndPoint(midPt3, midPt4),
+            Line.ByStartPointEndPoint(midPt4, midPt1)
+        };
+        
+        //innerCurve = BSplineCurve.ByControlVertices({ midPt1, midPt2, midPt3, midPt4 }, 5, true);
+        //outerCurve = innerCurve.Offset(midPt1.DistanceTo(midPt3)/5);
+        distance = midPt1.DistanceTo(midPt2);
+        cy = Cone.ByCenterLineRadius(line, 1, 1);
+        sp = Sphere.ByCenterPointRadius({ midPt1, midPt2, midPt3, midPt4 }, 1);
+        glass = Surface.LoftFromCrossSections({ line[0], line[2] }).Thicken(0.3, true);
+    }
+    
+    def move(xx : int, yy : int, zz : int)
+    {
+        glass = glass.Translate(xx, yy, zz);
+        sp = sp.Translate(xx, yy, zz);
+        cy = cy.Translate(xx, yy, zz);
+    }
+}
+
+def MidPoint(stPt : Point, edPt : Point)
+{
+    return = Point.ByCoordinates((stPt.X + edPt.X) / 2, (stPt.Y + edPt.Y) / 2, (stPt.Z + edPt.Z) / 2);
+}
+
+
+p1 = Point.ByCoordinates(0, 0, 0);
+p2 = Point.ByCoordinates(100, 0, 0);
+path = Line.ByStartPointEndPoint(p1, p2).SetVisibility(false);
+
+path = Circle.ByCenterPointRadius(Point.ByCoordinates(0, -10, 0), 30);
+//p3 = Point.ByCoordinates(0, 0, 0);
+//p4 = Point.ByCoordinates(0, 0, 100);
+//curve = Line.ByStartPointEndPoint(p3, p4).SetVisibility(false);
+
+conPt[0] = Point.ByCoordinates(0, 40, 0);
+conPt[1] = Point.ByCoordinates(0, 0, 20);
+conPt[2] = Point.ByCoordinates(0, 0, 50);
+conPt[3] = Point.ByCoordinates(0, 0, 70);
+conPt[4] = Point.ByCoordinates(0, 10, 80);
+conPt[5] = Point.ByCoordinates(0, 80, 90);
+conPt[6] = Point.ByCoordinates(0, 130, 110);
+
+curve = BSplineCurve.ByControlVertices(conPt, 3);
+
+surface = Surface.Sweep(curve, path).SetVisibility(false);
+
+
+u = 0..1..#10;
+v = 0..1..#10;
+pts = Point.AtParameter(surface, u<1>, v<2>);
+
+indX = 0..Count(u) - 2;
+indY = 0..Count(v) - 2;
+diamonds1 = diamond.shape(indX<1>, indY<2>);
+//diamonds2 = diamonds1.cy.Translate(300, 300, 0);
+//diamonds3 = diamonds1.sp.Translate(300, 300, 0);
+//diamonds4 = diamonds1.glass.Translate(300, 300, 0);
+

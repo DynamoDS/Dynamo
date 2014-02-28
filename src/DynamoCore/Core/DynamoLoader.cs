@@ -9,6 +9,8 @@ using System.IO;
 using System.Windows.Controls;
 using System.Windows;
 using String = System.String;
+using ProtoCore.DSASM;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Utilities
 {
@@ -112,12 +114,14 @@ namespace Dynamo.Utilities
                 }
             }
 
+#if USE_DSENGINE
+            dynSettings.Controller.SearchViewModel.Add(dynSettings.Controller.EngineController.GetFunctionGroups());
+#endif
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 
             #endregion
 
         }
-
 
         /// <summary>
         ///     Determine if a Type is a node.  Used by LoadNodesFromAssembly to figure
@@ -127,7 +131,7 @@ namespace Dynamo.Utilities
         /// <returns>True if the type is node.</returns>
         public static bool IsNodeSubType(Type t)
         {
-            return t.Namespace == "Dynamo.Nodes" &&
+            return //t.Namespace == "Dynamo.Nodes" &&
                    !t.IsAbstract &&
                    t.IsSubclassOf(typeof(NodeModel));
         }
@@ -159,7 +163,10 @@ namespace Dynamo.Utilities
                         //only load types that are in the right namespace, are not abstract
                         //and have the elementname attribute
                         var attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
+                        var isDeprecated = t.GetCustomAttributes(typeof (NodeDeprecatedAttribute), true).Any();
+                        var isMetaNode = t.GetCustomAttributes(typeof(IsMetaNodeAttribute), false).Any();
                         var isHidden = t.GetCustomAttributes(typeof (NodeHiddenInBrowserAttribute), true).Any();
+                        var isDSCompatible = t.GetCustomAttributes(typeof(IsDesignScriptCompatibleAttribute), true).Any();
 
                         if (!IsNodeSubType(t)) /*&& attribs.Length > 0*/
                             continue;
@@ -207,7 +214,11 @@ namespace Dynamo.Utilities
 
                         string typeName;
 
-                        if (attribs.Length > 0 && !isHidden)
+#if USE_DSENGINE
+                        if (attribs.Length > 0 && !isDeprecated && !isMetaNode && isDSCompatible)
+#else
+                        if (attribs.Length > 0 && !isDeprecated && !isMetaNode)
+#endif
                         {
                             searchViewModel.Add(t);
                             typeName = (attribs[0] as NodeNameAttribute).Name;

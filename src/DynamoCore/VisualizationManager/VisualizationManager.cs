@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -7,19 +6,15 @@ using System.Diagnostics;
 using System.Text;
 using System.Windows.Media.Media3D;
 using System.Linq;
-using Autodesk.LibG;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.Utilities;
 using HelixToolkit.Wpf;
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
-using Octree.OctreeSearch;
-using Octree.Tools.Point;
-using Double = System.Double;
 using String = System.String;
+using Dynamo.DSEngine;
 
 //testing to see if github integration works.
 
@@ -178,16 +173,19 @@ namespace Dynamo
 
         protected VisualizationManager()
         {
-            dynSettings.Controller.DynamoModel.ConnectorDeleted += new ConnectorHandler(DynamoModel_ConnectorDeleted);
-            dynSettings.Controller.EvaluationCompleted += new EventHandler(Controller_EvaluationCompleted);
-            dynSettings.Controller.RequestsRedraw += new EventHandler(Controller_RequestsRedraw);
-            DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
-            dynSettings.Controller.DynamoModel.ModelCleared += new EventHandler(DynamoModel_ModelCleared);
-            dynSettings.Controller.DynamoModel.CleaningUp += new CleanupHandler(DynamoModel_CleaningUp);
-            dynSettings.Controller.DynamoModel.NodeDeleted += new NodeHandler(DynamoModel_NodeDeleted);
+            dynSettings.Controller.DynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
+            dynSettings.Controller.EvaluationCompleted += Controller_EvaluationCompleted;
+            dynSettings.Controller.RequestsRedraw += Controller_RequestsRedraw;
+            DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
+            dynSettings.Controller.DynamoModel.ModelCleared += DynamoModel_ModelCleared;
+            dynSettings.Controller.DynamoModel.CleaningUp += DynamoModel_CleaningUp;
+            
+            dynSettings.Controller.DynamoModel.NodeDeleted += DynamoModel_NodeDeleted;
 
-            Visualizers.Add(typeof(GraphicItem), VisualizationManagerASM.DrawLibGGraphicItem);
-
+            //Visualizers.Add(typeof(GraphicItem), VisualizationManagerASM.DrawLibGGraphicItem);
+#if USE_DSENGINE
+            Visualizers.Add(typeof(Autodesk.DesignScript.Interfaces.IGraphicItem), VisualizationManagerDSGeometry.DrawDesignScriptGraphicItem);
+#endif
             octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
         }
 
@@ -330,7 +328,7 @@ namespace Dynamo
             if (e.PropertyName == "State")
             {
                 var node = sender as NodeModel;
-                if (node.State == ElementState.ERROR)
+                if (node.State == ElementState.Error)
                 {
                     //dump the visualization
                     if (Visualizations.ContainsKey(node.GUID.ToString()))
@@ -376,7 +374,7 @@ namespace Dynamo
             var worker = new BackgroundWorker();
             worker.DoWork += VisualizationUpdateThread;
 
-            if(dynSettings.Controller.Testing)
+            if (DynamoController.Testing)
                 VisualizationUpdateThread(null,null);
             else
                 worker.RunWorkerAsync();
@@ -464,8 +462,10 @@ namespace Dynamo
                     continue;
 
                 NodeModel node = pair.Value.Item2;
-
-                if(node.OldValue != null)
+                //We no longer depend on OldValue, as long as the given node has
+                //registered it's render description with Visualization manager
+                //we will be able to visualize the given node. -Sharad
+                if(node != null)
                     drawables.Add(node.GUID.ToString());
 
                 if (node.IsUpstreamVisible)
@@ -474,6 +474,38 @@ namespace Dynamo
             }
 
             return drawables;
+        }
+
+        /// <summary>
+        /// Gets list of drawable Ids as registered with visualization manager 
+        /// for all the output port of the given node.
+        /// </summary>
+        /// <param name="node">Node</param>
+        /// <returns>List of Drawable Ids</returns>
+        private static List<string> GetDrawableIds(NodeModel node)
+        {
+            List<string> drawables = new List<String>();
+            for (int i = 0; i < node.OutPortData.Count; ++i)
+            {
+                string identifier = GetDrawableId(node, i);
+                if (!string.IsNullOrEmpty(identifier))
+                    drawables.Add(identifier);
+            }
+
+            return drawables;
+        }
+
+        /// <summary>
+        /// Gets the drawable Id as registered with visualization manager for
+        /// the given output port on the given node.
+        /// </summary>
+        /// <param name="node">Node</param>
+        /// <param name="outPortIndex">Output port index</param>
+        /// <returns>Drawable Id</returns>
+        private static string GetDrawableId(NodeModel node, int outPortIndex)
+        {
+            var output = node.GetAstIdentifierForOutputIndex(outPortIndex);
+            return output.ToString();
         }
 
         /// <summary>
@@ -719,6 +751,15 @@ namespace Dynamo
         /// <returns></returns>
         public static Dictionary<NodeModel,Dictionary<string,object>> GetAllDrawablesInModel()
         {
+#if USE_DSENGINE
+            var drawables = new Dictionary<NodeModel, Dictionary<string, object>>();
+            foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
+            {
+                var drawableItems = GetDrawablesFromNode(node);
+                drawables.Add(node, drawableItems);
+            }
+            return drawables;
+#else
             //get a list of tuples node,drawables
             var nodeTuples = dynSettings.Controller.DynamoModel.Nodes
                                         .Where(x => x.OldValue != null)
@@ -734,6 +775,7 @@ namespace Dynamo
             var drawables = nodeTuples.Where(x=>x.Item2.Count>0).ToDictionary(tuple => tuple.Item1, tuple => tuple.Item2);
 
             return drawables;
+#endif
         }
 
         /// <summary>
@@ -743,7 +785,24 @@ namespace Dynamo
         /// <returns></returns>
         public static Dictionary<string, object> GetDrawablesFromNode(NodeModel node)
         {
+#if USE_DSENGINE
+            var drawableItems = new Dictionary<string, object>();
+            List<string> drawableIds = GetDrawableIds(node);
+            foreach (var varName in drawableIds)
+            {
+                var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
+                if (graphItems != null)
+                {
+                    for (int i = 0; i < graphItems.Count(); ++i)
+                    {
+                        drawableItems.Add(varName+i, graphItems[i]);
+                    }
+                }
+            }
+            return drawableItems;
+#else
             return GetDrawableFromValue(new List<int>(), node.OldValue);
+#endif
         }
 
         /// <summary>
@@ -834,10 +893,15 @@ namespace Dynamo
                 sb.Remove(sb.Length - 1, 1);    //remove the last ,
             return sb.ToString();
         }
-        
+
         public static NodeModel FindNodeWithDrawable(object drawable)
         {
-            return GetDrawableNodesInModel().FirstOrDefault(x => GetDrawableFromValue(new List<int>(), x.OldValue).ContainsValue(drawable));
+            return
+                GetDrawableNodesInModel()
+                    .FirstOrDefault(
+                        x =>
+                            GetDrawableFromValue(new List<int>(), x.OldValue.Data as FScheme.Value)
+                                .ContainsValue(drawable));
         }
 
         #endregion

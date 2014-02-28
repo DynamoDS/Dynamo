@@ -1,6 +1,9 @@
-﻿using Dynamo.Models;
+﻿using System.Linq;
+using System.Xml;
+using Autodesk.DesignScript.Geometry;
+using Dynamo.Models;
 using Microsoft.FSharp.Collections;
-using Autodesk.Revit.DB;
+using RevitGeometryObjects = Revit.Geometry;
 
 namespace Dynamo.Nodes
 {
@@ -24,7 +27,7 @@ namespace Dynamo.Nodes
             u = ((FScheme.Value.Number)args[0]).Item;
             v = ((FScheme.Value.Number)args[1]).Item;
 
-            return FScheme.Value.NewContainer(new UV(u, v));
+            return FScheme.Value.NewContainer(new Autodesk.Revit.DB.UV(u, v));
         }
     }
 
@@ -44,13 +47,20 @@ namespace Dynamo.Nodes
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            var min = (UV)((FScheme.Value.Container)args[0]).Item;
-            var max = (UV)((FScheme.Value.Container)args[1]).Item;
+            var min = (Autodesk.Revit.DB.UV)((FScheme.Value.Container)args[0]).Item;
+            var max = (Autodesk.Revit.DB.UV)((FScheme.Value.Container)args[1]).Item;
 
-            var vmax = Autodesk.LibG.Vector.by_coordinates(max.U, max.V);
-            var vmin = Autodesk.LibG.Vector.by_coordinates(min.U, min.V);
+            var vmax = Vector.ByCoordinates(max.U, max.V,0);
+            var vmin = Vector.ByCoordinates(min.U, min.V,0);
 
-            return FScheme.Value.NewContainer(DSCoreNodes.Domain2D.ByMinimumAndMaximum(vmin, vmax));
+            return FScheme.Value.NewContainer(RevitGeometryObjects.Domain2D.ByMinimumAndMaximum(vmin, vmax));
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+                "Domain2D.ByMinimumAndMaximum", "Domain2D.ByMinimumAndMaximum@Vector,Vector");
         }
     }
 
@@ -72,7 +82,7 @@ namespace Dynamo.Nodes
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            var domain = (DSCoreNodes.Domain2D)((FScheme.Value.Container)args[0]).Item;
+            var domain = (RevitGeometryObjects.Domain2D)((FScheme.Value.Container)args[0]).Item;
             double ui = ((FScheme.Value.Number)args[1]).Item;
             double vi = ((FScheme.Value.Number)args[2]).Item;
             double us = domain.USpan / ui;
@@ -82,14 +92,14 @@ namespace Dynamo.Nodes
 
             for (int i = 0; i <= ui; i++)
             {
-                double u = domain.Min.x() + i * us;
+                double u = domain.Min.X + i * us;
 
                 for (int j = 0; j <= vi; j++)
                 {
-                    double v = domain.Min.y() + j * vs;
+                    double v = domain.Min.Y + j * vs;
 
                     result = FSharpList<FScheme.Value>.Cons(
-                        FScheme.Value.NewContainer(new UV(u, v)),
+                        FScheme.Value.NewContainer(new Autodesk.Revit.DB.UV(u, v)),
                         result
                     );
                 }
@@ -98,6 +108,18 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewList(
                ListModule.Reverse(result)
             );
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 3, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 
@@ -121,7 +143,7 @@ namespace Dynamo.Nodes
         {
             double ui, vi;
 
-            var domain = (DSCoreNodes.Domain2D)((FScheme.Value.Container)args[0]).Item;
+            var domain = (RevitGeometryObjects.Domain2D)((FScheme.Value.Container)args[0]).Item;
             ui = ((FScheme.Value.Number)args[1]).Item;
             vi = ((FScheme.Value.Number)args[2]).Item;
 
@@ -130,8 +152,8 @@ namespace Dynamo.Nodes
             //UV min = ((Value.Container)domain[0]).Item as UV;
             //UV max = ((Value.Container)domain[1]).Item as UV;
 
-            var min = new UV(domain.Min.x(), domain.Min.y());
-            var max = new UV(domain.Max.x(), domain.Max.y());
+            var min = new Autodesk.Revit.DB.UV(domain.Min.X, domain.Min.Y);
+            var max = new Autodesk.Revit.DB.UV(domain.Max.X, domain.Max.Y);
 
             var r = new System.Random();
             double uSpan = max.U - min.U;
@@ -142,7 +164,7 @@ namespace Dynamo.Nodes
                 for (int j = 0; j < vi; j++)
                 {
                     result = FSharpList<FScheme.Value>.Cons(
-                        FScheme.Value.NewContainer(new UV(min.U + r.NextDouble() * uSpan, min.V + r.NextDouble() * vSpan)),
+                        FScheme.Value.NewContainer(new Autodesk.Revit.DB.UV(min.U + r.NextDouble() * uSpan, min.V + r.NextDouble() * vSpan)),
                         result
                     );
                 }
@@ -151,6 +173,18 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewList(
                ListModule.Reverse(result)
             );
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 3, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 }

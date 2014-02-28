@@ -1,0 +1,84 @@
+import("ProtoGeometry.dll");
+import("Math.dll");
+WCS = CoordinateSystem.Identity();
+origin = Point.ByCoordinates(0, 0, 0);
+
+class Diamond
+{
+   
+    solid : Solid;
+    
+    def buildShape(p : Point, norm : Vector)
+    {
+        r = 0.6;
+	    normal = Vector.ByCoordinates(-1*norm.X, -1*norm.Y, -1*norm.Z);
+        midCir = Circle.ByCenterPointRadius(p, r, normal);
+        midPts = midCir.PointAtDistance(0..midCir.Length..#16);
+        midFaces = BSplineCurve.ByControlVertices(midPts, 1);
+        midSolid = Solid.LoftFromCrossSections({ midFaces, midFaces.Translate(normal, r / 10) });
+        
+        topCir = Circle.ByCenterPointRadius(p.Translate(normal, r / 2), r / 2, normal);
+        topPts = topCir.PointAtDistance(0..topCir.Length..#16);
+        topFaces = BSplineCurve.ByControlVertices(topPts, 1);
+        topSolid = Solid.LoftFromCrossSections({midFaces.Translate(normal, r / 10), topFaces });        
+        
+        diaTip = Circle.ByCenterPointRadius(p.Translate(normal, -r ), r / 100, normal);
+        bottomSolid = Solid.LoftFromCrossSections({ midFaces, diaTip });
+
+       return = Solid.UnionAll({ bottomSolid, midSolid, topSolid });
+
+    }
+}
+
+
+ringSize = 8;
+cRingPath = Circle.ByCenterPointRadius(origin, ringSize);
+
+cRingWidth = 0.8;
+cRingLength = 1.5;
+fillet = 0.5;
+
+p1 = Point.ByCoordinates(0, 0, 0);
+p2 = Point.ByCoordinates(cRingWidth-fillet, 0, 0);
+p3 = Point.ByCoordinates(cRingWidth-fillet, cRingLength-fillet, 0);
+p4 = Point.ByCoordinates(0, cRingLength-fillet, 0);
+
+arc1 = Arc.ByCenterPointStartPointSweepAngle(p1, p1.Translate(-fillet,0, 0), 90);
+arc2 = Arc.ByCenterPointStartPointSweepPoint(p2, p2.Translate(0, -fillet, 0), p2.Translate(fillet,0,0));
+arc3 = Arc.ByCenterPointStartPointSweepAngle(p3, p3.Translate(fillet, 0, 0), 90);
+arc4 = Arc.ByCenterPointStartPointSweepAngle(p4, p4.Translate(0, fillet, 0), 90);
+
+l1 = Line.ByStartPointEndPoint(arc1.EndPoint, arc2.StartPoint);
+l2 = Line.ByStartPointEndPoint(arc2.EndPoint, arc3.StartPoint);
+l3 = Line.ByStartPointEndPoint(arc3.EndPoint, arc4.StartPoint);
+l4 = Line.ByStartPointEndPoint(arc4.EndPoint, arc1.StartPoint);
+
+cRingProfile:BSplineCurve = Curve.Composite({ arc1, l1, arc2, l2, arc3, l3, arc4, l4 });
+cRing = Solid.Sweep(cRingProfile, cRingPath);
+
+aRingWidth = 0.6;
+ang = 30..720..10;
+aRingPts = Point.ByCoordinates((ringSize+1/(Math.Pow(1.0002,Math.Pow(ang-360,2)))) * Math.Cos(ang), (ringSize+1/(Math.Pow(1.0002,Math.Pow(ang-360,2)))) * Math.Sin(ang), (cRingLength + 2 * aRingWidth) / (1 + Math.Pow(1.1, -ang + 360)));
+aRingPath = BSplineCurve.ByControlVertices(aRingPts, 2).Translate(0, 0, (-cRingLength - aRingWidth * 2) / 2);
+aRingSize = 0.25;
+
+cir1 = Circle.ByCenterPointRadius(aRingPath.StartPoint, aRingWidth, aRingPath.StartTangent);
+cir2 = Circle.ByCenterPointRadius(aRingPath.EndPoint, aRingWidth, aRingPath.EndTangent);
+NCS = WCS.Scale(1, 0.1, 0.5);
+cir3 = Circle.ByCenterPointRadius(aRingPts[Count(aRingPts)/2-1].Translate(0, 0, (-cRingLength - aRingWidth * 2) / 2), aRingWidth, aRingPath.TangentAtPoint(aRingPts[Count(aRingPts)/2-1]));
+cir4 = cir3.Transform(WCS, NCS);
+
+End1 = Sphere.ByCenterPointRadius(aRingPath.StartPoint, aRingWidth);
+End2 = Sphere.ByCenterPointRadius(aRingPath.EndPoint, aRingWidth);
+aRing = Solid.LoftFromCrossSectionsPath({ cir1, cir4, cir2 }, aRingPath);
+
+b = 0..cRingPath.Length..#35;
+cRingPts = Point.AtDistance(cRingPath, b);
+cRingNorm = cRingPath.NormalAtPoint(cRingPts);
+
+diamonds = Diamond.Diamond();
+newDiamonds1 = diamonds.buildShape(cRingPts[4].Translate(cRingNorm[4], -0.65), cRingNorm[4]);
+newDiamonds2 = diamonds.buildShape(cRingPts[5].Translate(cRingNorm[5], -0.65), cRingNorm[5]);
+newDiamonds3 = diamonds.buildShape(cRingPts[3].Translate(cRingNorm[3], -0.65), cRingNorm[3]);
+newDiamonds4 = diamonds.buildShape(cRingPts[2].Translate(cRingNorm[2], -0.65), cRingNorm[2]);
+newDiamonds5 = diamonds.buildShape(cRingPts[6].Translate(cRingNorm[6], -0.65), cRingNorm[6]);

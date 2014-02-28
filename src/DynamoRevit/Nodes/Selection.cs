@@ -15,8 +15,11 @@ using Dynamo.Revit;
 using Dynamo.Revit.SyncedNodeExtensions; //Gives the RegisterEval... methods
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using TextBox = System.Windows.Controls.TextBox;
+using RevitServices.Persistence;
+using RevitServices.Threading;
 using Value = Dynamo.FScheme.Value;
+using TextBox = System.Windows.Controls.TextBox;
+using RevThread = RevitServices.Threading;
 
 namespace Dynamo.Nodes
 {
@@ -86,8 +89,7 @@ namespace Dynamo.Nodes
                         {
                             _selected = null;
                             SelectedElement = null;
-                        }
-                        );
+                        });
 
                     SelectButtonContent = "Change";
                 }
@@ -140,10 +142,8 @@ namespace Dynamo.Nodes
             SelectedElement = null;
         }
 
-        public override void SetupCustomUIElements(object ui)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var nodeUI = ui as dynNodeView;
-
             //add a button to the inputGrid on the dynElement
             var selectButton = new DynamoNodeButton
             {
@@ -204,7 +204,7 @@ namespace Dynamo.Nodes
         private void selectButton_Click(object sender, RoutedEventArgs e)
         {
             CanSelect = false;
-            IdlePromise.ExecuteOnIdle(
+            RevThread.IdlePromise.ExecuteOnIdleAsync(
                 delegate
                 {
                     OnSelectClick();
@@ -240,7 +240,7 @@ namespace Dynamo.Nodes
                     var id = subNode.Attributes[0].Value;
                     try
                     {
-                        saved = dynRevitSettings.Doc.Document.GetElement(id); // FamilyInstance;
+                        saved = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id); // FamilyInstance;
                     }
                     catch
                     {
@@ -325,7 +325,7 @@ namespace Dynamo.Nodes
             {
                 _reference = _selectionAction(_selectionMessage);
                 if (_reference != null)
-                    SelectedElement = dynRevitSettings.Doc.Document.GetElement(_reference.ElementId);
+                    SelectedElement = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(_reference.ElementId);
                 RaisePropertyChanged("SelectionText");
                 RequiresRecalc = true;
             }
@@ -464,10 +464,8 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override void SetupCustomUIElements(object ui)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var nodeUI = ui as dynNodeView;
-
             //add a button to the inputGrid on the dynElement
             _selectButton = new DynamoNodeButton
             {
@@ -528,7 +526,7 @@ namespace Dynamo.Nodes
         private void selectButton_Click(object sender, RoutedEventArgs e)
         {
             _selectButton.IsEnabled = false;
-            IdlePromise.ExecuteOnIdle(
+            RevThread.IdlePromise.ExecuteOnIdleAsync(
                 delegate
                 {
                     OnSelectClick();
@@ -577,7 +575,7 @@ namespace Dynamo.Nodes
                     var id = subNode.Attributes[0].Value;
                     try
                     {
-                        saved = dynRevitSettings.Doc.Document.GetElement(id);
+                        saved = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id);
                     }
                     catch
                     {
@@ -619,6 +617,16 @@ namespace Dynamo.Nodes
                 _selectionText = value;
                 RaisePropertyChanged("SelectionText");
             }
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSFamilyInstanceSelection"));
+
+            return migrationData;
         }
     }
 
@@ -713,6 +721,16 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectionText");
             }
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSDividedSurfaceFamiliesSelection"));
+
+            return migrationData;
+        }
     }
 
     [NodeName("Select Face")]
@@ -732,10 +750,10 @@ namespace Dynamo.Nodes
             var opts = new Options { ComputeReferences = true };
 
             var face =
-                (Autodesk.Revit.DB.Face)dynRevitSettings.Doc.Document.GetElement(_reference).GetGeometryObjectFromReference(_reference);
+                (Autodesk.Revit.DB.Face)DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(_reference).GetGeometryObjectFromReference(_reference);
 
             //TODO: Is there a better way to get a face that has a reference?
-            foreach (GeometryObject geob in dynRevitSettings.Doc.Document.GetElement(_reference).get_Geometry(opts))
+            foreach (GeometryObject geob in DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(_reference).get_Geometry(opts))
             {
                 if (FindFaceInGeometryObject(geob, ref face))
                     break;
@@ -792,7 +810,7 @@ namespace Dynamo.Nodes
         {
             if(_reference != null)
                 nodeElement.SetAttribute(
-                    "faceRef", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+                    "faceRef", _reference.ConvertToStableRepresentation(DocumentManager.GetInstance().CurrentUIDocument.Document));
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -800,11 +818,21 @@ namespace Dynamo.Nodes
             try
             {
                 _reference = Reference.ParseFromStableRepresentation(
-                    dynRevitSettings.Doc.Document, nodeElement.Attributes["faceRef"].Value);
+                    DocumentManager.GetInstance().CurrentUIDocument.Document, nodeElement.Attributes["faceRef"].Value);
                 if (_reference != null)
-                    SelectedElement = dynRevitSettings.Doc.Document.GetElement(_reference.ElementId);
+                    SelectedElement = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(_reference.ElementId);
             }
             catch { }
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSFaceSelection"));
+
+            return migrationData;
         }
     }
 
@@ -844,7 +872,7 @@ namespace Dynamo.Nodes
         {
             if(_reference != null)
                 nodeElement.SetAttribute(
-                    "edgeRef", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+                    "edgeRef", _reference.ConvertToStableRepresentation(DocumentManager.GetInstance().CurrentUIDocument.Document));
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -852,11 +880,21 @@ namespace Dynamo.Nodes
             try
             {
                 _reference = Reference.ParseFromStableRepresentation(
-                    dynRevitSettings.Doc.Document, nodeElement.Attributes["edgeRef"].Value);
+                    DocumentManager.GetInstance().CurrentUIDocument.Document, nodeElement.Attributes["edgeRef"].Value);
                 if (_reference != null)
-                    SelectedElement = dynRevitSettings.Doc.Document.GetElement(_reference.ElementId);
+                    SelectedElement = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(_reference.ElementId);
             }
             catch { }
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSEdgeSelection"));
+
+            return migrationData;
         }
     }
 
@@ -897,7 +935,7 @@ namespace Dynamo.Nodes
                     var id = subNode.Attributes[0].Value;
                     try
                     {
-                        saved = dynRevitSettings.Doc.Document.GetElement(id);
+                        saved = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id);
                             // FamilyInstance;
                     }
                     catch
@@ -912,7 +950,17 @@ namespace Dynamo.Nodes
                         SelectedElement = saved;
                 }
             }
-        }  
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSCurveElementSelection"));
+
+            return migrationData;
+        }
     }
 
     [NodeName("Select Elements")]
@@ -958,6 +1006,16 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectionText");
             }
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSModelElementsSelection"));
+
+            return migrationData;
+        }
     }
 
     [NodeName("Select Reference Point")]
@@ -987,6 +1045,16 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectionText");
             }
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSReferencePointSelection"));
+
+            return migrationData;
+        }
     }
 
     [NodeName("Select Level")]
@@ -1015,6 +1083,16 @@ namespace Dynamo.Nodes
                 _selectionText = value;
                 RaisePropertyChanged("SelectionText");
             }
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSLevelSelection"));
+
+            return migrationData;
         }
     }
 
@@ -1047,6 +1125,16 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectionText");
             }
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSModelElementSelection"));
+
+            return migrationData;
+        }
     }
 
     [NodeName("Select XYZ on Element")]
@@ -1073,7 +1161,7 @@ namespace Dynamo.Nodes
                 _reference.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_LINEAR )
             {
                 ElementId refElementId = _reference.ElementId;
-                Element refElement = dynRevitSettings.Doc.Document.GetElement(refElementId);
+                Element refElement = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(refElementId);
                 if (refElement is ReferencePoint)
                 {
                     ReferencePoint rp = refElement as ReferencePoint;
@@ -1262,7 +1350,7 @@ namespace Dynamo.Nodes
         {
             if(_reference != null)
                 nodeElement.SetAttribute(
-                    "refXYZ", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+                    "refXYZ", _reference.ConvertToStableRepresentation(DocumentManager.GetInstance().CurrentUIDocument.Document));
                 nodeElement.SetAttribute("refXYZparam0", _param0.ToString(CultureInfo.InvariantCulture));
                 nodeElement.SetAttribute("refXYZparam1", _param1.ToString(CultureInfo.InvariantCulture));
         }
@@ -1272,9 +1360,9 @@ namespace Dynamo.Nodes
             try
             {
                 _reference = Reference.ParseFromStableRepresentation(
-                    dynRevitSettings.Doc.Document, nodeElement.Attributes["refXYZ"].Value);
+                    DocumentManager.GetInstance().CurrentUIDocument.Document, nodeElement.Attributes["refXYZ"].Value);
                 if (_reference != null)
-                    SelectedElement = dynRevitSettings.Doc.Document.GetElement(
+                    SelectedElement = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(
                         _reference.ElementId);
                 _param0 = Convert.ToDouble(nodeElement.Attributes["refXYZparam0"].Value);
                 _param1 = Convert.ToDouble(nodeElement.Attributes["refXYZparam1"].Value);
@@ -1283,14 +1371,16 @@ namespace Dynamo.Nodes
             }
             catch { }
         }
-    }
 
-    [NodeName("Category")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
-    [NodeDescription("Select all elements by category.")]
-    public class Categories : EnumAsConstants
-    {
-        public Categories():base(typeof(BuiltInCategory)){}
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSPointOnElementSelection"));
+
+            return migrationData;
+        }
     }
 
     [NodeName("All Elements of Category")]
@@ -1311,7 +1401,7 @@ namespace Dynamo.Nodes
 
             //get the selected category and select all elements
             //in the document of that category
-            var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            var fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
             fec.OfCategory(cat);
 
             var results = fec.ToElements().Aggregate(FSharpList<Value>.Empty, (current, el) => FSharpList<Value>.Cons(Value.NewContainer(el), current));
@@ -1343,7 +1433,7 @@ namespace Dynamo.Nodes
         {
             var elementType = (Type) ((Value.Container) args[0]).Item;
 
-            var collector = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            var collector = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
             collector.OfClass(elementType);
 
             var results = collector.ToElements().Aggregate(FSharpList<Value>.Empty, (current, el) => FSharpList<Value>.Cons(Value.NewContainer(el), current));

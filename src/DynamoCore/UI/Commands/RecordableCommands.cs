@@ -131,6 +131,9 @@ namespace Dynamo.ViewModels
                     case "UpdateModelValueCommand":
                         command = UpdateModelValueCommand.DeserializeCore(element);
                         break;
+                    case "ConvertNodesToCodeCommand":
+                        command = ConvertNodesToCodeCommand.DeserializeCore(element);
+                        break;
                 }
 
                 if (null != command)
@@ -794,6 +797,46 @@ namespace Dynamo.ViewModels
                 helper.SetAttribute("ModelGuid", this.ModelGuid);
                 helper.SetAttribute("Name", this.Name);
                 helper.SetAttribute("Value", this.Value);
+            }
+
+            #endregion
+        }
+
+        public class ConvertNodesToCodeCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            internal ConvertNodesToCodeCommand(Guid nodeId)
+            {
+                this.NodeId = nodeId;
+            }
+
+            internal static ConvertNodesToCodeCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                System.Guid nodeId = helper.ReadGuid("NodeId");
+                return new ConvertNodesToCodeCommand(nodeId);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal Guid NodeId { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                dynamoViewModel.ConvertNodesToCodeImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("NodeId", this.NodeId);
             }
 
             #endregion

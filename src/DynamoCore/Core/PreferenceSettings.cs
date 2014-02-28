@@ -4,8 +4,6 @@ using System.Xml.Serialization;
 using Dynamo.Interfaces;
 using Dynamo.Units;
 using Dynamo.Models;
-using Dynamo.Utilities;
-using DynamoUnits;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
@@ -27,11 +25,16 @@ namespace Dynamo
         private string _numberFormat;
 
         // Variables of the settings that will be persistent
+
+        #region Collect Information Settings
+        public bool IsFirstRun { get; set; }
+        public bool IsUsageReportingApproved { get; set; }
+        #endregion
+
         public bool ShowConsole { get; set; }
         public bool ShowConnector { get; set; }
         public ConnectorType ConnectorType { get; set; }
         public bool FullscreenWatchShowing { get; set; }
-
         public string NumberFormat
         {
             get { return _numberFormat; }
@@ -75,6 +78,8 @@ namespace Dynamo
         public PreferenceSettings()
         {
             // Default Settings
+            IsFirstRun = true;
+            IsUsageReportingApproved = false;
             ShowConsole = false;
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
@@ -109,7 +114,7 @@ namespace Dynamo
             
             return false;
         }
-        
+
         /// <summary>
         /// Save PreferenceSettings in a default directory when no path is specified
         /// </summary>
@@ -139,7 +144,7 @@ namespace Dynamo
 
             if (string.IsNullOrEmpty(filePath) || (!File.Exists(filePath)))
                 return settings;
-            
+
             try
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(PreferenceSettings));

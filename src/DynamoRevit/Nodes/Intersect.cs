@@ -8,6 +8,7 @@ using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
@@ -118,7 +119,7 @@ namespace Dynamo.Nodes
                 double coord3 = (index < 2) ? sizeRect : -sizeRect;
                 double coord4 = (index == 0 || index == 3) ? -sizeRect : sizeRect;
                 XYZ pnt1 = thisPlane.Origin + coord3 * thisPlane.XVec + coord4 * thisPlane.YVec;
-                Line cLine = dynRevitSettings.Revit.Application.Create.NewLineBound(pnt0, pnt1);
+                Line cLine = DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewLineBound(pnt0, pnt1);
                 cLoop.Append(cLine);
             }
             var listCLoops = new List<Autodesk.Revit.DB.CurveLoop> { cLoop };
@@ -413,6 +414,13 @@ namespace Dynamo.Nodes
                 return p0 + v.Multiply(t);
 
             return null;
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll",
+                "Geometry.Intersect", "Geometry.Intersect@Geometry");
         }
     }
 }

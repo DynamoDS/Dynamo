@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Controls;
 using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -31,7 +32,13 @@ namespace Dynamo.Nodes
             var c = (System.Drawing.Color)((Value.Container)args[0]).Item;
 
             return Value.NewNumber(c.GetBrightness());
-        } 
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.Brightness", "DSColor.Brightness@DSColor");
+        }
     }
 
     [NodeName("Color Saturation")]
@@ -55,6 +62,12 @@ namespace Dynamo.Nodes
 
             return Value.NewNumber(c.GetSaturation());
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.Saturation", "DSColor.Saturation@DSColor");
+        }
     }
 
     [NodeName("Color")]
@@ -65,10 +78,10 @@ namespace Dynamo.Nodes
     {
         public Color()
         {
-            InPortData.Add(new PortData("A", "The alpha part of the color between 0 and 255", typeof(Value.Number), FScheme.Value.NewNumber(255)));
-            InPortData.Add(new PortData("R", "The red part of the color between 0 and 255", typeof(Value.Number), FScheme.Value.NewNumber(0)));
-            InPortData.Add(new PortData("G", "The green part of the color between 0 and 255", typeof(Value.Number), FScheme.Value.NewNumber(0)));
-            InPortData.Add(new PortData("B", "The blue part of the color between 0 and 255", typeof(Value.Number), FScheme.Value.NewNumber(0)));
+            InPortData.Add(new PortData("A", "The alpha part of the color between 0 and 255", typeof(Value.Number), Value.NewNumber(255)));
+            InPortData.Add(new PortData("R", "The red part of the color between 0 and 255", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("G", "The green part of the color between 0 and 255", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("B", "The blue part of the color between 0 and 255", typeof(Value.Number), Value.NewNumber(0)));
             OutPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -84,6 +97,13 @@ namespace Dynamo.Nodes
             var b = (int) Math.Round(((Value.Number)args[3]).Item);
 
             return Value.NewContainer(System.Drawing.Color.FromArgb(a, r, g, b));
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.ByARGB",
+                "DSColor.ByARGB@int,int,int,int");
         }
     }
 
@@ -127,6 +147,13 @@ namespace Dynamo.Nodes
             outPuts[_greenOut] = Value.NewNumber(c.G);
             outPuts[_blueOut] = Value.NewNumber(c.B);
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.Components",
+                "DSColor.Components@DSColor");
+        }
     }
 
     [NodeName("Color Hue")]
@@ -149,6 +176,12 @@ namespace Dynamo.Nodes
             var c = (System.Drawing.Color)((Value.Container)args[0]).Item;
 
             return Value.NewNumber(c.GetHue());
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.Hue", "DSColor.Hue@DSColor");
         }
     }
 
@@ -213,13 +246,15 @@ namespace Dynamo.Nodes
             return Value.NewContainer(returnColor);
         }
 
-        public override void SetupCustomUIElements(object ui)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var nodeUI = ui as dynNodeView;
+            // Do not call 'NodeModel.InitializeUI' here since it will cause 
+            // that method to dispatch the call back to 'SetupCustomUIElements'
+            // method, resulting in an eventual stack overflow.
+            // 
+            // base.InitializeUI(nodeUI);
 
-            base.SetupCustomUIElements(nodeUI);
-            
-            var drawPlane = new System.Windows.Controls.Image
+            var drawPlane = new Image
                 {
                     Stretch = Stretch.Fill,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -229,14 +264,14 @@ namespace Dynamo.Nodes
 
             nodeUI.inputGrid.Children.Add(drawPlane);
 
-            this.RequestChangeColorRange += new EventHandler(delegate
+            RequestChangeColorRange += delegate
+            {
+                DispatchOnUIThread(delegate
                 {
-                    DispatchOnUIThread(delegate
-                        {
-                            WriteableBitmap bmp = CompleteColorScale(_start, _end);
-                            drawPlane.Source = bmp; 
-                        });
+                    WriteableBitmap bmp = CompleteColorScale(_start, _end);
+                    drawPlane.Source = bmp; 
                 });
+            };
         }
 
         //http://gaggerostechnicalnotes.blogspot.com/2012/01/wpf-colors-scale.html
@@ -244,19 +279,19 @@ namespace Dynamo.Nodes
         {
             //var drawPlane = new System.Windows.Controls.Image();
 
-            int Size = 64;
+            const int size = 64;
 
-            int width = 1;
-            int height = Size;
+            const int width = 1;
+            const int height = size;
 
             var bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
             var pixels = new uint[width * height];
 
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < size; i++)
             {
-                var newRed = start.R + ((end.R - start.R)/Size)*i;
-                var newGreen = start.G + ((end.G - start.G) / Size) * i;
-                var newBlue = start.B + ((end.B - start.B) / Size) * i;
+                var newRed = start.R + ((end.R - start.R)/size)*i;
+                var newGreen = start.G + ((end.G - start.G) / size) * i;
+                var newBlue = start.B + ((end.B - start.B) / size) * i;
 
                 //pixels[i] = (uint)((newBlue << 16) + (newGreen << 8) + (newRed << 0));
                 pixels[i] = (uint)((255 << 24) + (newRed << 16) + (newGreen << 8) + newBlue);
@@ -267,7 +302,7 @@ namespace Dynamo.Nodes
             return bitmap;
         }
 
-        [NodeMigrationAttribute("0.6.2.0","0.6.3.0")]
+        [NodeMigration("0.6.2.0","0.6.3.0")]
         public void UpdateLacability(XmlNode node)
         {
             //if the laceability has been set on this node to disabled, then set it to longest
@@ -275,6 +310,13 @@ namespace Dynamo.Nodes
             {
                 node.Attributes["lacing"].Value = "Longest";
             }
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.ColorRange",
+                "DSColor.ColorRange@DSColor,DSColor,double");
         }
     }
 }

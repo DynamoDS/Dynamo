@@ -186,7 +186,7 @@ namespace Dynamo.PackageManager.UI
         public bool AlreadyDiscovered { get; set; }
         public DependencyType DependencyType { get; protected set; }
         public Assembly Assembly { get; protected set; }
-        public FunctionDefinition Definition { get; protected set; }
+        public CustomNodeDefinition Definition { get; protected set; }
 
     }
 }

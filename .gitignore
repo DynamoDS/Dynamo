@@ -50,6 +50,13 @@ Thumbs.db
 ###############
 *.pyc
 
+# RESHARPER #
+###############
+*_ReSharper*
+
 #documentation files
 doc/html/
+Dynamo.sln.DotSettings
+*.opensdf
 *.sdf
+*.backup

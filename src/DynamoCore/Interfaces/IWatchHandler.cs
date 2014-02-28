@@ -2,6 +2,7 @@
 using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using ProtoCore.Mirror;
 
 namespace Dynamo.Interfaces
 {
@@ -44,6 +45,21 @@ namespace Dynamo.Interfaces
         internal WatchItem ProcessThing(string value, string tag, bool showRawData = true)
         {
             return new WatchItem(value, tag);
+        }
+
+        internal WatchItem ProcessThing(MirrorData data, string tag, bool showRawData = true)
+        {
+            //If the input data is an instance of a class, create a watch node
+            //with the class name and let WatchHandler process the underlying CLR data
+            var classMirror = data.Class;
+            if (null != classMirror)
+            {
+                return ProcessThing(data.Data, tag);
+            }
+
+            //Finally for all else get the string representation of data as watch content.
+            string previewData = data.Data.ToString();
+            return new WatchItem(previewData, tag);
         }
 
         public WatchItem Process(dynamic value, string tag, bool showRawData = true)

@@ -7,8 +7,8 @@ namespace Dynamo.Utilities
 {
     public static class dynSettings
     {
-        public static HashSet<FunctionDefinition> FunctionWasEvaluated =
-            new HashSet<FunctionDefinition>();
+        public static HashSet<CustomNodeDefinition> FunctionWasEvaluated =
+            new HashSet<CustomNodeDefinition>();
 
         static dynSettings()
         {

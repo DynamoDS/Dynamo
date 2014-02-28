@@ -1,0 +1,24 @@
+import("ProtoGeometry.dll");
+import("Experimental.dll");
+
+cs = CoordinateSystem.WCS;
+
+dMax = 300;
+count = 45;
+
+
+xArray = (0..dMax..#count);
+yArray = (0..dMax..#count);
+
+noiseField = SimplexNoise.Generate(xArray<1>, yArray<2>);
+
+css = foo(xArray<1>, yArray<2>).SetVisibility(false);
+
+a = Cuboid.ByLengths(css, 15, 8, 8);
+
+def foo : CoordinateSystem (x, y) 
+{
+    qs = CoordinateSystem.WCS.Translate(x, 0, y);
+    qs = qs.Rotate(SimplexNoise.Generate(x/200, y/200)* 180, qs.ZAxis);
+return = qs;
+}

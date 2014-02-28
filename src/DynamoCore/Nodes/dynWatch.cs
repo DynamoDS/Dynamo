@@ -1,20 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
+using ProtoCore.AST.AssociativeAST;
+using System.ComponentModel;
+using Dynamo.Utilities;
+using ProtoCore.Mirror;
 
 namespace Dynamo.Nodes
 {
+    public interface WatchHandler
+    {
+        bool AcceptsValue(object o);
+        void ProcessNode(object value, WatchItem node, bool showRawData);
+    }
+
     [NodeName("Watch")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Visualize the output of node. ")]
     [NodeSearchTags("print", "output", "display")]
+    [IsDesignScriptCompatible]
     public partial class Watch : NodeWithOneOutput
     {
         #region private members
@@ -41,6 +54,8 @@ namespace Dynamo.Nodes
         }
 
         #endregion
+
+        private const string nullString = "null";
 
         #region events
 
@@ -71,44 +86,43 @@ namespace Dynamo.Nodes
             {
                 p.PortDisconnected += p_PortDisconnected;
             }
+#if USE_DSENGINE
+            this.PropertyChanged += new PropertyChangedEventHandler(NodeValueUpdated);
+#endif
         }
 
         /// <summary>
-        /// Called during Evaluation, this method handles the 
-        /// conversion of an FScheme.Value object into a watchnode. 
-        /// This process uses the IWatchHandler registered on
-        /// the controller to dynamically dispatch watch node 
-        /// processing based on the unboxed Value's object.
+        /// Update the watch content from the given MirrorData and returns WatchNode.
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="tag"></param>
-        /// <param name="showRawData"></param>
-        /// <returns></returns>
-        public WatchItem Process(Value value, string tag, bool showRawData = true)
+        /// <param name="data">The Mirror data for which watch content is needed.</param>
+        /// <param name="prefix">Prefix string used for formatting the content.</param>
+        /// <param name="index">Index of input data if it is a part of a collection.</param>
+        /// <param name="isListMember">Specifies if this data belongs to a collection.</param>
+        /// <returns>WatchNode</returns>
+        public WatchItem Process(MirrorData data, int index, bool showRawData = true)
         {
             WatchItem node;
 
-            if (value == null || value.IsDummy)
+            if (data == null || data.IsNull)
             {
-                node = new WatchItem("null");
+                node = new WatchItem(nullString);
             }
-            else if (value.IsFunction)
+            else if (data.IsCollection)
             {
-                node = new WatchItem("<function>");
-            }
-            else if (value.IsList)
-            {
-                var list = ((Value.List) value).Item;
-                node = new WatchItem(list.IsEmpty ? "Empty List" : string.Format("[{0}] List", tag));
+                //string newPrefix = prefix + "\t";
+                var list = data.GetElements();
 
-                foreach (var e in list.Select((x, i) => new {Element = x, Index = i}))
+                node = new WatchItem(list.Count == 0 ? "Empty List" : "List", index.ToString(CultureInfo.InvariantCulture));
+
+                foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
                 {
-                    node.Children.Add(Process(e.Element, e.Index.ToString(CultureInfo.InvariantCulture), showRawData));
+                    //node.Children.Add(ProcessMirrorData(e.Element, newPrefix, e.Index, true));
+                    node.Children.Add(Process(e.Element, e.Index, true));
                 }
             }
             else
             {
-                node = dynSettings.Controller.WatchHandler.Process(value.ToDynamic(), tag, showRawData);
+                node = dynSettings.Controller.WatchHandler.Process(data as dynamic, index.ToString(CultureInfo.InvariantCulture), showRawData);
             }
 
             return node ?? (new WatchItem("null"));
@@ -127,31 +141,33 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            string prefix = "";
+            //string prefix = "";
 
-            int count = 0;
+            //int count = 0;
 
-            DispatchOnUIThread(
-                delegate
-                {
-                    //unhook the binding
-                    OnRequestBindingUnhook(EventArgs.Empty);
+            //DispatchOnUIThread(
+            //    delegate
+            //    {
+            //        //unhook the binding
+            //        OnRequestBindingUnhook(EventArgs.Empty);
 
-                    Root.Children.Clear();
+            //        Root.Children.Clear();
 
-                    foreach (Value e in args)
-                    {
-                        Root.Children.Add(Process(e, count.ToString(CultureInfo.InvariantCulture), Root.ShowRawData));
-                        count++;
-                    }
+            //        foreach (Value e in args)
+            //        {
+            //            Root.Children.Add(Process(e, count.ToString(CultureInfo.InvariantCulture), Root.ShowRawData));
+            //            count++;
+            //        }
 
-                    //rehook the binding
-                    OnRequestBindingRehook(EventArgs.Empty);
-                }
-                );
+            //        //rehook the binding
+            //        OnRequestBindingRehook(EventArgs.Empty);
+            //    }
+            //    );
 
-            //return the content that has been gathered
-            return args[0]; //watch should be a 'pass through' node
+            ////return the content that has been gathered
+            //return args[0]; //watch should be a 'pass through' node
+
+            throw new NotImplementedException();
         }
 
         protected virtual void OnRequestBindingUnhook(EventArgs e)
@@ -165,5 +181,67 @@ namespace Dynamo.Nodes
             if (RequestBindingRehook != null)
                 RequestBindingRehook(this, e);
         }
+
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        {
+            var resultAst = new List<AssociativeNode>
+            {
+                AstFactory.BuildAssignment(AstIdentifierForPreview, inputAstNodes[0])
+            };
+
+            return resultAst;
+        }
+
+#if USE_DSENGINE
+
+        #region NodeValueUpdated event handler
+        void NodeValueUpdated(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != "IsUpdated")
+                return;
+
+            DispatchOnUIThread(
+                delegate
+                {
+                    //unhook the binding
+                    OnRequestBindingUnhook(EventArgs.Empty);
+
+                    Root.Children.Clear();
+
+                    Root.Children.Add(GetWatchNode());
+
+                    //rehook the binding
+                    OnRequestBindingRehook(EventArgs.Empty);
+                }
+            );
+        }
+
+        #endregion
+
+        #region Watch Node creation for AST node
+
+        /// <summary>
+        /// This method returns a WatchNode for it's preview AST node.
+        /// This method gets called on ui thread when "IsUpdated" property
+        /// change is notified. This method is responsible for populating the 
+        /// watch node with evaluated value of the input. Gets the MirrorData
+        /// for the input/preview AST and then processes the mirror data to
+        /// render the watch content properly.
+        /// </summary>
+        /// <returns>WatchNode</returns>
+        internal WatchItem GetWatchNode()
+        {
+            //Get RuntimeMirror for input ast identifier.
+            var mirror = dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Name);
+            if(null == mirror)
+                return new WatchItem(nullString);
+
+            //Get MirrorData from the RuntimeMirror
+            var mirrorData = mirror.GetData();
+            return Process(mirrorData, 0, false);
+        }
+
+        #endregion
+#endif
     }
 }

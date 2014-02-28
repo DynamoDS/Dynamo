@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Autodesk.LibG;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 using Line = Autodesk.Revit.DB.Line;
 using Solid = Autodesk.Revit.DB.Solid;
+using RevitGeometry = Revit.Geometry;
+using System.Xml;
 
 namespace Dynamo.Nodes
 {
@@ -71,6 +74,18 @@ namespace Dynamo.Nodes
             }
 
             return FScheme.Value.NewList(result);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 2, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 
@@ -149,6 +164,18 @@ namespace Dynamo.Nodes
 
             return FScheme.Value.NewContainer(result);
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 2, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
+        }
     }
 
     [NodeName("Surface Derivatives")]
@@ -168,13 +195,13 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             var faceRef = ((FScheme.Value.Container)args[0]).Item as Reference;
-            var uv = (UV)((FScheme.Value.Container)args[1]).Item;
+            var uv = (Autodesk.Revit.DB.UV)((FScheme.Value.Container)args[1]).Item;
 
             var t = Transform.Identity;
 
             Autodesk.Revit.DB.Face f = (faceRef == null) ?
                 ((Autodesk.Revit.DB.Face)((FScheme.Value.Container)args[0]).Item) :
-                (dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face);
+                (DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face);
 
             if (f != null)
             {
@@ -207,7 +234,7 @@ namespace Dynamo.Nodes
             Reference faceRef = (args[1] as FScheme.Value.Container).Item as Reference;
             Autodesk.Revit.DB.Face f = (faceRef == null) ?
                 ((args[1] as FScheme.Value.Container).Item as Autodesk.Revit.DB.Face) :
-                dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
+                DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
 
 
             XYZ face_point = null;
@@ -215,11 +242,60 @@ namespace Dynamo.Nodes
             if (f != null)
             {
                 //each item in the list will be a reference point
-                UV param = (UV)(args[0] as FScheme.Value.Container).Item;
+                Autodesk.Revit.DB.UV param = (Autodesk.Revit.DB.UV)(args[0] as FScheme.Value.Container).Item;
                 face_point = f.Evaluate(param);
             }
 
             return FScheme.Value.NewContainer(face_point);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Surface.PointAtParameter", "Surface.PointAtParameter@double,double");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            data.ReconnectToPort(connector1, newInPort0);
+
+            if (connector0 != null)
+            {
+                // Create new nodes only when the old node is connected to a UV node
+                XmlElement nodeU = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "UV.U", "UV.U");
+                migrationData.AppendNode(nodeU);
+                string nodeUId = MigrationManager.GetGuidFromXmlElement(nodeU);
+
+                XmlElement nodeV = MigrationManager.CreateFunctionNode(
+                    data.Document, "ProtoGeometry.dll", "UV.V", "UV.V");
+                migrationData.AppendNode(nodeV);
+                string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
+
+                // Update connectors
+                PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.INPUT);
+
+                string nodeUVId = connector0.GetAttribute("start").ToString();
+                data.ReconnectToPort(connector0, newInPortNodeU);
+                data.CreateConnector(nodeU, 0, newNode, 1);
+                data.CreateConnector(nodeV, 0, newNode, 2);
+                data.CreateConnectorFromId(nodeUVId, 0, nodeVId, 0);
+            }
+            
+            return migrationData;
         }
     }
 
@@ -242,18 +318,67 @@ namespace Dynamo.Nodes
             var faceRef = (args[1] as FScheme.Value.Container).Item as Reference;
             Autodesk.Revit.DB.Face f = (faceRef == null) ?
                 ((args[1] as FScheme.Value.Container).Item as Autodesk.Revit.DB.Face) :
-                dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
+                DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
 
             XYZ norm = null;
 
             if (f != null)
             {
                 //each item in the list will be a reference point
-                UV uv = (UV)(args[0] as FScheme.Value.Container).Item;
+                Autodesk.Revit.DB.UV uv = (Autodesk.Revit.DB.UV)(args[0] as FScheme.Value.Container).Item;
                 norm = f.ComputeNormal(uv);
             }
 
             return FScheme.Value.NewContainer(norm);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Surface.NormalAtParameter", "Surface.NormalAtParameter@double,double");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            data.ReconnectToPort(connector1, newInPort0);
+
+            if (connector0 != null)
+            {
+                // Create new nodes only when the old node is connected to a UV node
+                XmlElement nodeU = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "UV.U", "UV.U");
+                migrationData.AppendNode(nodeU);
+                string nodeUId = MigrationManager.GetGuidFromXmlElement(nodeU);
+
+                XmlElement nodeV = MigrationManager.CreateFunctionNode(
+                    data.Document, "ProtoGeometry.dll", "UV.V", "UV.V");
+                migrationData.AppendNode(nodeV);
+                string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
+
+                // Update connectors
+                PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.INPUT);
+
+                string nodeUVId = connector0.GetAttribute("start").ToString();
+                data.ReconnectToPort(connector0, newInPortNodeU);
+                data.CreateConnector(nodeU, 0, newNode, 1);
+                data.CreateConnector(nodeV, 0, newNode, 2);
+                data.CreateConnectorFromId(nodeUVId, 0, nodeVId, 0);
+            }
+
+            return migrationData;
         }
     }
 
@@ -280,7 +405,7 @@ namespace Dynamo.Nodes
 
             Reference faceRef = arg0 as Reference;
             if (faceRef != null)
-                f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
+                f = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
             else
                 f = arg0 as Autodesk.Revit.DB.Face;
 
@@ -290,7 +415,13 @@ namespace Dynamo.Nodes
             }
 
             //Fin
-            return FScheme.Value.NewContainer(Units.Area.FromSquareFeet(area, dynSettings.Controller.UnitsManager));
+            return FScheme.Value.NewContainer(Units.Area.FromSquareFeet(area));
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Surface.Area", "Surface.Area");
         }
     }
 
@@ -319,7 +450,7 @@ namespace Dynamo.Nodes
 
             var faceRef = arg0 as Reference;
             if (faceRef != null)
-                f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
+                f = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
             else
                 f = arg0 as Autodesk.Revit.DB.Face;
 
@@ -328,10 +459,10 @@ namespace Dynamo.Nodes
                 bbox = f.GetBoundingBox();
             }
 
-            var min = Vector.by_coordinates(bbox.Min.U, bbox.Min.V);
-            var max = Vector.by_coordinates(bbox.Max.U, bbox.Max.V);
+            var min = Vector.ByCoordinates(bbox.Min.U, bbox.Min.V,0);
+            var max = Vector.ByCoordinates(bbox.Max.U, bbox.Max.V,0);
 
-            return FScheme.Value.NewContainer(DSCoreNodes.Domain2D.ByMinimumAndMaximum(min, max));
+            return FScheme.Value.NewContainer(RevitGeometry.Domain2D.ByMinimumAndMaximum(min, max));
         }
     }
 }
