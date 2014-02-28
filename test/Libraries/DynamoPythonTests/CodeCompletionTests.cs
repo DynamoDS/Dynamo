@@ -9,7 +9,12 @@ namespace DynamoPythonTests
     [TestFixture]
     internal class CodeCompletionTests
     {
-       
+        [SetUp]
+        public void SetupPythonTests()
+        {
+            Dynamo.DynamoController.IsTestMode = true;
+        }
+
         [Test]
         public void CanMatchBasicNumVarSingleLine()
         {

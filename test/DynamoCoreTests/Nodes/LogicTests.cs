@@ -1,20 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Dynamo.ViewModels;
-using System.IO;
-using System.Reflection;
-using Dynamo.Nodes;
+﻿using System.IO;
 using Dynamo.Models;
-using Microsoft.FSharp.Collections;
-using System.Text;
-using Dynamo.DSEngine;
 using Dynamo.Utilities;
 using NUnit.Framework;
-using ProtoCore.DSASM;
-using ProtoCore.Mirror;
-using System.Collections;
-using String = System.String;
 
 namespace Dynamo.Tests
 {
