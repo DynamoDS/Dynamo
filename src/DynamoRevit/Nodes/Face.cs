@@ -10,6 +10,7 @@ using Microsoft.FSharp.Collections;
 using RevitServices.Persistence;
 using Line = Autodesk.Revit.DB.Line;
 using Solid = Autodesk.Revit.DB.Solid;
+using RevitGeometry = Revit.Geometry;
 using System.Xml;
 
 namespace Dynamo.Nodes
@@ -73,6 +74,18 @@ namespace Dynamo.Nodes
             }
 
             return FScheme.Value.NewList(result);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 2, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 
@@ -150,6 +163,18 @@ namespace Dynamo.Nodes
             }
 
             return FScheme.Value.NewContainer(result);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 2, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 
@@ -437,7 +462,7 @@ namespace Dynamo.Nodes
             var min = Vector.ByCoordinates(bbox.Min.U, bbox.Min.V,0);
             var max = Vector.ByCoordinates(bbox.Max.U, bbox.Max.V,0);
 
-            return FScheme.Value.NewContainer(DSCoreNodes.Domain2D.ByMinimumAndMaximum(min, max));
+            return FScheme.Value.NewContainer(RevitGeometry.Domain2D.ByMinimumAndMaximum(min, max));
         }
     }
 }

@@ -51,5 +51,17 @@ namespace ProtoTest.Associative
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((double)mirror.GetValue("x", 0).Payload == 10);
         }
+
+
+        [Test]
+        public void InheritanceTest05()
+        {
+            String code =
+@"class Base{    id : var;}class Derived extends Base{    idFoo : var;}def foo : Base (){    a = Derived.Derived();    a.idFoo = 2;    return = a;}x = foo();xo = x.idFoo;xn = x != null;";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue((bool)mirror.GetValue("xn").Payload);
+            Assert.IsTrue((Int64)mirror.GetValue("xo").Payload == 2);
+
+        }
     }
 }

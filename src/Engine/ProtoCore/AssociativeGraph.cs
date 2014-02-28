@@ -30,7 +30,44 @@ namespace ProtoCore.AssociativeEngine
                 }
             }
         }
+
+        /// <summary>
+        /// Finds all graphnodes associated with each AST and marks them dirty
+        /// </summary>
+        /// <param name="nodeList"></param>
+        /// <summary>
+        /// <returns></returns>
+        public static void MarkGraphNodesDirty(ProtoCore.Core core, List<ProtoCore.AST.AssociativeAST.AssociativeNode> nodeList)
+        {
+            bool setEntryPoint = false;
+            if (null != nodeList)
+            {
+                foreach (var node in nodeList)
+                {
+                    ProtoCore.AST.AssociativeAST.BinaryExpressionNode bNode = node as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
+                    if (bNode != null)
+                    {
+                        foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
+                        {
+                            if (gnode.isActive)
+                            {
+                                if (gnode.exprUID == bNode.exprUID)
+                                {
+                                    if (!setEntryPoint)
+                                    {
+                                        setEntryPoint = true;
+                                        core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                                    }
+                                    gnode.isDirty = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+
     public class ArrayUpdate
     {
         /// <summary>
