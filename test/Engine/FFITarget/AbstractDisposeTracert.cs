@@ -13,15 +13,28 @@ namespace FFITarget
         {
             DisposeCount++;
         }
+
+        public int I { get; set; }
     }
 
 
 
     public class AbstractDerivedDisposeTracer2 : AbstractDisposeTracert
         {
+
         public AbstractDerivedDisposeTracer2()
         {
                 
+        }
+
+        public AbstractDerivedDisposeTracer2(int i)
+        {
+            I = i;
+        }
+
+        public void StupidPlaceHolderMethod()
+        {
+            
         }
 
 
