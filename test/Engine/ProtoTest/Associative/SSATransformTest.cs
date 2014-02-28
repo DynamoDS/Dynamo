@@ -174,5 +174,15 @@ namespace ProtoTest.Associative
             thisTest.Verify("y", 55);
             thisTest.Verify("a", 20);
         }
+
+        [Test]
+        public void TestEmptyArray()
+        {
+            String code =
+@"class C{    constructor C(i : int, j :int[]..[])    {    }}a = 1;p = C.C(a, {{}});a = 10;";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Obj o = mirror.GetValue("a");
+            Assert.IsTrue((Int64)o.Payload == 10);
+        }
     }
 }
