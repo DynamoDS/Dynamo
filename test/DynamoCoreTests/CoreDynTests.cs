@@ -23,14 +23,14 @@ namespace Dynamo.Tests
 
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(28, model.CurrentWorkspace.Connectors.Count);
-            Assert.AreEqual(28, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(25, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(25, model.CurrentWorkspace.Nodes.Count);
 
             // check an input value
             var node1 = model.CurrentWorkspace.NodeFromWorkspace("51ed7fed-99fa-46c3-a03c-2c076f2d0538");
             Assert.NotNull(node1);
-            Assert.IsAssignableFrom(typeof(DoubleInput), node1);
-            Assert.AreEqual("2", ((DoubleInput)node1).Value);
+            Assert.IsAssignableFrom(typeof(CodeBlockNodeModel), node1);
+            Assert.AreEqual("2;", ((CodeBlockNodeModel)node1).Code);
             
             // run the expression
             //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
@@ -51,11 +51,12 @@ namespace Dynamo.Tests
             AssertPreviewValue("e892c469-47e6-4006-baea-ec4afea5a04e", 6.0);
 
             // filter - list of 6-10
-            AssertPreviewValue("41279a88-2f0b-4bd3-bef1-1be693df5c7e", new int[] { 5, 6, 7, 8, 9, 10 });
+            AssertPreviewValue("41279a88-2f0b-4bd3-bef1-1be693df5c7e", new int[] {  6, 7, 8, 9, 10 });
 
 
         }
 
+       
         /// <summary>
         /// Confirm that a node with multiple outputs evaluates successfully.
         /// </summary>

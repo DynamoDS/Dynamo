@@ -254,6 +254,10 @@ namespace Revit.Elements
             }
         }
 
+        public String Id { get { return InternalElementId.ToString(); } 
+        }
+
+
         #endregion
 
         #region Public static constructors
