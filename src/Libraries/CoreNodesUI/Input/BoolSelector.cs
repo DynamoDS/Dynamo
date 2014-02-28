@@ -38,9 +38,9 @@ namespace DSCoreNodesUI
             rbTrue.GroupName = groupName;
             rbFalse.GroupName = groupName;
 
-            rbTrue.Content = "1";
+            rbTrue.Content = "true";
             rbTrue.Padding = new Thickness(5, 0, 12, 0);
-            rbFalse.Content = "0";
+            rbFalse.Content = "false";
             rbFalse.Padding = new Thickness(5, 0, 0, 0);
 
             var wp = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Center };

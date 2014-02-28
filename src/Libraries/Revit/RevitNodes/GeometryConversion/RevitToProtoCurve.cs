@@ -52,7 +52,7 @@ namespace Revit.GeometryConversion
         private static Autodesk.DesignScript.Geometry.Line Convert(Autodesk.Revit.DB.Line crv)
         {
             return Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(
-                 crv.get_EndPoint(0).ToPoint(), crv.get_EndPoint(1).ToPoint());
+                 crv.GetEndPoint(0).ToPoint(), crv.GetEndPoint(1).ToPoint());
         }
 
         /// <summary>
