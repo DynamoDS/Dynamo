@@ -6,6 +6,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Text;
 using NUnit.Framework;
 using DSCore;
+using Enum = Dynamo.Nodes.Enum;
 using List = DSCore.List;
 
 namespace DSCoreNodesTests
@@ -254,18 +255,37 @@ namespace DSCoreNodesTests
         [Test]
         public static void ListDiagonalRight()
         {
-            var result = List.DiagonalRight(new ArrayList { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 2);
-            Console.WriteLine(result);
-
-            Assert.Inconclusive();
+            Assert.AreEqual(
+                new ArrayList
+                {
+                    new ArrayList { 15 }, 
+                    new ArrayList { 10, 16 }, 
+                    new ArrayList { 5, 11, 17, },
+                    new ArrayList { 0, 6, 12, 18 },
+                    new ArrayList { 1, 7, 13, 19 },
+                    new ArrayList { 2, 8, 14 },
+                    new ArrayList { 3, 9 },
+                    new ArrayList { 4 }
+                },
+                List.DiagonalRight(Enumerable.Range(0, 20).ToList(), 5));
         }
 
         [Test]
         public static void ListDiagonalLeft()
         {
             Assert.AreEqual(
-                new ArrayList { new ArrayList { 0 }, new ArrayList { 1, 2 }, new ArrayList { 3 }},
-                List.DiagonalLeft(new ArrayList { 0, 1, 2, 3}, 2));
+                new ArrayList
+                {
+                    new ArrayList { 0 }, 
+                    new ArrayList { 1, 5 }, 
+                    new ArrayList { 2, 6, 10, },
+                    new ArrayList { 3, 7, 11, 15 },
+                    new ArrayList { 4, 8, 12, 16 },
+                    new ArrayList { 9, 13, 17 },
+                    new ArrayList { 14, 18 },
+                    new ArrayList { 19 }
+                },
+                List.DiagonalLeft(Enumerable.Range(0, 20).ToList(), 5));
         }
 
         [Test]
