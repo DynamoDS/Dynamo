@@ -3,7 +3,7 @@
     /// <summary>
     /// 
     /// </summary>
-    public class Logic
+    public static class Logic
     {
         /// <summary>
         /// 
