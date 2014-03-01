@@ -460,6 +460,15 @@ namespace Dynamo.DSEngine
             }
         }
 
+        public static void DestroyInstance()
+        {
+            lock (singletonMutex)
+            {
+                if (_libraryServices != null)
+                    _libraryServices = null;
+            }
+        }
+
         /// <summary>
         /// lock object to prevent races on establishing the singleton
         /// </summary>
