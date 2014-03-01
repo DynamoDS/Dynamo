@@ -11,8 +11,14 @@ namespace FFITarget
     public class ClassFunctionality : IDisposable
     {
 
-
-        public int IntVal { get; set; }
+        private int intVal;
+        public int IntVal {
+            get { return intVal; }
+            set { 
+                this.intVal = value;
+                this.classProperty = new ValueContainer(intVal);
+            }
+        }
 
         public ClassFunctionality()
         {
@@ -39,6 +45,10 @@ namespace FFITarget
         public int AddWithValueContainer(ValueContainer valueContainer)
         {
             return IntVal + valueContainer.SomeValue;
+        }
+
+        private ValueContainer classProperty;
+        public ValueContainer ClassProperty { get { return classProperty; }
         }
 
 
