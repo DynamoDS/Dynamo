@@ -22,6 +22,12 @@ namespace FFITarget
 
             return ret;
         }
+
+        public DummyVector DirectionTo(DummyPoint p1)
+        {
+            return DummyVector.ByCoordinates(
+                p1.X - X, p1.Y - Y, p1.Z - Z);
+        }
     }
 
     public class DummyVector
