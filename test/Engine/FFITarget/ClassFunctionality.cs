@@ -48,9 +48,22 @@ namespace FFITarget
         }
 
         private ValueContainer classProperty;
-        public ValueContainer ClassProperty { get { return classProperty; }
+
+        public ValueContainer ClassProperty
+        {
+            get { return classProperty; }
         }
 
+
+        public int OverloadedAdd(ClassFunctionality cf)
+        {
+            return this.IntVal + cf.IntVal;
+        }
+
+        public int OverloadedAdd(int i)
+        {
+            return this.IntVal + i;
+        }
 
         public void Dispose()
         {
