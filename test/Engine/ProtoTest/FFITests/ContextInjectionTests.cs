@@ -1,3 +1,4 @@
+using FFITarget;
 using ProtoTest.TD;
 using NUnit.Framework;
 using System;
