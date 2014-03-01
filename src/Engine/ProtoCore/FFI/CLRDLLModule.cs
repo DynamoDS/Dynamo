@@ -310,18 +310,11 @@ namespace ProtoFFI
                 CLRModuleType.GetInstance(baseType, Module, string.Empty);
             }
 
-            // There is no static class at CLR, so we have to check if all 
-            // public methods defined in this class are static or not.
-            // 
-            // For static class, it is abstract and sealed. But here we just
-            // check all methods are static. 
-            bool isStatic = type.GetMethods(BindingFlags.DeclaredOnly |
-                                            BindingFlags.Instance |
-                                            BindingFlags.Public |
-                                            BindingFlags.Static)
-                                .All(m => m.IsStatic);
+            // There is no static class in runtime. static class is simply 
+            // marked as sealed and abstract. 
+            bool isStaticClass = type.IsSealed && type.IsAbstract;
 
-            if (!isStatic)
+            if (!isStaticClass)
             {
                 // If all methods are static, it doesn't make sense to expose
                 // constructor. 
@@ -353,7 +346,7 @@ namespace ProtoFFI
                 if (!IsBrowsable(m))
                     continue;
 
-                if (isStatic && m.GetBaseDefinition().DeclaringType == baseType && baseType == typeof(object))
+                if (isStaticClass && m.GetBaseDefinition().DeclaringType == baseType && baseType == typeof(object))
                     continue;
 
                 //Don't include overriden methods or generic methods

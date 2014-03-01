@@ -5,6 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Lang;
+using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using ProtoFFI;
 using ProtoScript.Runners;
@@ -620,5 +621,40 @@ namespace ProtoTestFx.TD
             Assert.IsFalse(string.IsNullOrEmpty(str), string.Format("\"{0}\" is null, arrayIndex = {1}", dsVariable, arrayIndex));
 
         }
+
+
+        public static void AssertValue(string varname, object value, ILiveRunner liveRunner)
+        {
+            var mirror = liveRunner.InspectNodeValue(varname);
+            MirrorData data = mirror.GetData();
+            object svValue = data.Data;
+            if (value is double)
+            {
+                Assert.AreEqual((double)svValue, Convert.ToDouble(value));
+            }
+            else if (value is int)
+            {
+                Assert.AreEqual((Int64)svValue, Convert.ToInt64(value));
+            }
+            else if (value is bool)
+            {
+                Assert.AreEqual((bool)svValue, Convert.ToBoolean(value));
+            }
+            else if (value is IEnumerable<int>)
+            {
+                Assert.IsTrue(data.IsCollection);
+                var values = (value as IEnumerable<int>).ToList().Select(v => (object)v).ToList();
+                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(Int64)));
+            }
+            else if (value is IEnumerable<double>)
+            {
+                Assert.IsTrue(data.IsCollection);
+                var values = (value as IEnumerable<double>).ToList().Select(v => (object)v).ToList();
+                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(double)));
+            }
+        }
+    
+    
+    
     }
 }
