@@ -9,7 +9,6 @@ import time
 import glob
 import smtplib
 import string
-import xml.etree.ElementTree as ET
 
 class Test:
 	def __init__(self, testName, fixtureName, testAssembly, resultsPath, modelPath, pluginGUID, pluginClass, runDynamo):

@@ -13,10 +13,8 @@ namespace DSCore
     /// <summary>
     ///     Methods for creating and manipulating Lists.
     /// </summary>
-    public class List
+    public static class List
     {
-        private List() { }
-
         /// <summary>
         ///     Creates a new list containing all unique items in the given list.
         /// </summary>
@@ -49,7 +47,8 @@ namespace DSCore
         ///     Creates a new list containing the given items.
         /// </summary>
         /// <param name="items">Items to be stored in the new list.</param>
-        public static IList Create(params object[] items)
+        public static IList Create(
+            [ArbitraryDimensionArrayImport] params object[] items)
         {
             return items.ToList();
         }
