@@ -1395,7 +1395,7 @@ namespace ProtoFFITests
 
         [Test]
         [Category("Trace")]
-        public void IntermediateValueIncrementerIDTestUpdate1DReplicated()
+        public void InheritedLiveRunnerDispose()
         {
             string setupCode =
             @"import(""FFITarget.dll""); 

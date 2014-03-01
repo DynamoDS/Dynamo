@@ -867,7 +867,7 @@ namespace ProtoFFITests
         public void TestReplicationAndDispose()
         {
             //Defect: DG-1464910 Sprint 22: Rev:2385-324564: Planes get disposed after querying properties on returned planes.
-            string code = @"                            def foo : int(a : AClass)                            {                                return = AClass.Value;                            }                            dv = DisposeVerify.CreateObject();                            m = dv.SetValue(2);                            a = {AClass.CreateObject(1), AClass.CreateObject(2), AClass.CreateObject(3)};                            b = foo(a);                            c = dv.GetValue();                            ";
+            string code = @"                            def foo : int(a : AClass)                            {                                return = a.Value;                            }                            dv = DisposeVerify.CreateObject();                            m = dv.SetValue(2);                            a = {AClass.CreateObject(1), AClass.CreateObject(2), AClass.CreateObject(3)};                            b = foo(a);                            c = dv.GetValue();                            ";
             code = string.Format("{0}\r\n{1}\r\n{2}", "import(DisposeVerify from \"FFITarget.dll\");",
                 "import(AClass from \"FFITarget.dll\");", code);
             object[] b = new object[] { 1, 2, 3 };
