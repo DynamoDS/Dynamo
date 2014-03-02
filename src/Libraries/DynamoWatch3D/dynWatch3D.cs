@@ -213,7 +213,7 @@ namespace Dynamo.Nodes
 
         public void GetBranchVisualization(object parameters)
         {
-            dynSettings.Controller.VisualizationManager.RenderUpstream(this);
+            dynSettings.Controller.VisualizationManager.AggregateUpstreamRenderPackages(this);
         }
 
         public bool CanGetBranchVisualization(object parameter)
