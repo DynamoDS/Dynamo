@@ -1013,16 +1013,26 @@ namespace ProtoFFITests
             string code =
                 @"import(""FFITarget.dll"");
                     x = 1..2;
-                    aDup = AClass.DupTargetTest(x);
-                    bDup = BClass.DupTargetTest(x);
+
+                    Xo = x[0];
+
+                    aDup = A.DupTargetTest(x);
+                    aReadback = aDup.Prop[0];
+
+                    bDup = B.DupTargetTest(x);
+                    bReadback = bDup.Prop[1];
 
                     check = Equals(aDup.Prop,bDup.Prop);";
 
-            TestFrameWork theTest = new TestFrameWork();
-            var mirror = theTest.RunScriptSource(code);
-            theTest.Verify("check", true);
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("check", true);
+            thisTest.Verify("Xo", 1);
+
+            thisTest.Verify("aReadback", 1);
+            thisTest.Verify("bReadback", 2);
+
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kMultipleSymbolFound);
-            string[] classes = theTest.GetAllMatchingClasses("DupTargetTest");
+            string[] classes = thisTest.GetAllMatchingClasses("DupTargetTest");
             Assert.True(classes.Length > 1, "More than one implementation of DupTargetTest class expected");
         }
 
@@ -1031,20 +1041,28 @@ namespace ProtoFFITests
         {
             string code =
                 @"import(""FFITarget.dll"");
-                    aDup = AClass.DupTargetTest(0);
-                    bDup = BClass.DupTargetTest(1); //This should match exactly BClass.DupTargetTest
-                    cDup = C.BClass.DupTargetTest(2);
+                    aDup = A.DupTargetTest(0);
+                    aReadback = aDup.Prop;
+
+                    bDup = B.DupTargetTest(1); //This should match exactly BClass.DupTargetTest
+                    bReadback = bDup.Prop;
+                    
+                    cDup = C.B.DupTargetTest(2);
+                    cReadback = cDup.Prop;
 
                     check = Equals(aDup.Prop,bDup.Prop);
                     check = Equals(bDup.Prop,cDup.Prop);
 
 ";
 
-            TestFrameWork theTest = new TestFrameWork();
-            var mirror = theTest.RunScriptSource(code);
-            theTest.Verify("check", true);
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("check", true);
+            thisTest.Verify("aReadback", 0);
+            thisTest.Verify("bReadback", 1);
+            thisTest.Verify("cReadback", 2);
+
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kMultipleSymbolFound);
-            string[] classes = theTest.GetAllMatchingClasses("DupTargetTest");
+            string[] classes = thisTest.GetAllMatchingClasses("DupTargetTest");
             Assert.True(classes.Length > 1, "More than one implementation of DupTargetTest class expected");
         }
 
