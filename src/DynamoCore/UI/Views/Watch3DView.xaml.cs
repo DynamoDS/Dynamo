@@ -176,18 +176,18 @@ namespace Dynamo.Controls
         {
             InitializeComponent();
             watch_view.DataContext = this;
-            Loaded += WatchViewFullscreen_Loaded;
+            Loaded += OnViewLoaded;
         }
 
         public Watch3DView(string id)
         {
             InitializeComponent();
             watch_view.DataContext = this;
-            Loaded += WatchViewFullscreen_Loaded;
+            Loaded += OnViewLoaded;
             _id = id;
         }
 
-        void WatchViewFullscreen_Loaded(object sender, RoutedEventArgs e)
+        void OnViewLoaded(object sender, RoutedEventArgs e)
         {
             MouseLeftButtonDown += new MouseButtonEventHandler(view_MouseButtonIgnore);
             MouseLeftButtonUp += new MouseButtonEventHandler(view_MouseButtonIgnore);
