@@ -47,11 +47,13 @@ namespace Dynamo.Tests.UI
             SetupDirectories();
         }
 
-        [TearDown]
-        public void Exit()
+        protected void Exit()
         {
-            this.Controller.ShutDown(true);
-            this.Controller = null;
+            if (this.Controller != null)
+            {
+                this.Controller.ShutDown(true);
+                this.Controller = null;
+            }
         }
 
         #endregion
