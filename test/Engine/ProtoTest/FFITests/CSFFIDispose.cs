@@ -1475,6 +1475,7 @@ x = AbstractDerivedDisposeTracer2.AbstractDerivedDisposeTracer2(1);
 so = x.I;
 s1 = AbstractDerivedDisposeTracer2.DisposeCount;
 x = null;
+s1 = AbstractDerivedDisposeTracer2.DisposeCount;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("s1", 1);
