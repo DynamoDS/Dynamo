@@ -7,6 +7,7 @@ using System.Text;
 using System.Linq;
 using Dynamo.Models;
 using Dynamo.Selection;
+using GraphToDSCompiler;
 using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
 using Dynamo.DSEngine;
@@ -278,6 +279,12 @@ namespace Dynamo
                 if (toUpdate.Any())
                 {
                     toUpdate.ToList().ForEach(x => x.UpdateRenderPackage());
+
+                    //Setup the octree. An optimization would defer this operation until
+                    //a short while after update operations are complete to avoid
+                    //to many rebuilds of this index while building dynamically.
+                    SetupOctree(toUpdate);
+
                     Debug.WriteLine(string.Format("Visualization updating {0} objects", toUpdate.Count()));
                     OnVisualizationUpdateComplete(this, EventArgs.Empty);
                 }
@@ -298,12 +305,33 @@ namespace Dynamo
         }
 
         /// <summary>
+        /// Setup a spatial index for triangle vertex locations to 
+        /// be used in selection operations.
+        /// </summary>
+        /// <param name="toUpdate"></param>
+        private void SetupOctree(IEnumerable<NodeModel> toUpdate)
+        {
+            octree.Clear();
+            foreach (var node in toUpdate)
+            {
+                var p = ((RenderPackage) node.RenderPackage);
+                for (int i = 0; i < p.TriangleVertices.Count - 3; i += 3)
+                {
+                    var a = p.TriangleVertices[i];
+                    var b = p.TriangleVertices[i + 1];
+                    var c = p.TriangleVertices[i + 2];
+                    octree.AddNode(a, b, c, node.GUID.ToString());
+                }
+            }
+        }
+
+        /// <summary>
         /// Aggregates all upstream geometry for the given node then sends
         /// a message that a visualization is ready
         /// </summary>
         /// <param name="node">The node whose upstream geometry you need.</param>
         /// <returns>A render description containing all upstream geometry.</returns>
-        public void RenderUpstream(NodeModel node)
+        public void AggregateUpstreamRenderPackages(NodeModel node)
         {
             List<RenderPackage> packages; 
 
@@ -319,14 +347,14 @@ namespace Dynamo
                         .Select(x=>x.RenderPackage).Cast<RenderPackage>().ToList();
 
                 if (packages.Any())
-                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages, string.Empty));
+                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x=>x.IsNotEmpty()), string.Empty));
             }
             else
             {
                 //send back renderables for the branch
                 packages = GetUpstreamPackages(node.Inputs);
                 if (packages.Any())
-                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages, node.GUID.ToString()));
+                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => x.IsNotEmpty()), node.GUID.ToString()));
             }
 
             watch.Stop();
@@ -350,6 +378,7 @@ namespace Dynamo
                     continue;
 
                 NodeModel node = pair.Value.Item2;
+
                 //We no longer depend on OldValue, as long as the given node has
                 //registered it's render description with Visualization manager
                 //we will be able to visualize the given node. -Sharad
@@ -408,6 +437,12 @@ namespace Dynamo
         //    //Debug.WriteLine(renderData);
         //}
 
+        /// <summary>
+        /// Lookup a node from a location selected on geometry in the scene.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         public void LookupSelectedElement(double x, double y, double z)
         {
             var id = octree.GetNode(x, y, z);
