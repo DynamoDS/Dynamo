@@ -2032,8 +2032,10 @@ namespace Dynamo.Models
             if (dynSettings.Controller == null)
                 return;
 
+            var package = ((RenderPackage)RenderPackage);
+
             //dispose of the current render package
-            ((RenderPackage)RenderPackage).Clear();
+            package.Clear();
 
             if (State == ElementState.Error || !IsVisible)
             {
@@ -2060,6 +2062,7 @@ namespace Dynamo.Models
             }
 
             graphItems.ForEach(x => x.Tessellate(RenderPackage));
+            package.ItemsCount = graphItems.Count;
         }
 
         /// <summary>
