@@ -136,7 +136,7 @@ def ApplyList(functionObject: _FunctionObject, params: var[]..[])
 	}
 }
 
-def Compose(funcs : _FunctionObject[])
+def __Compose(funcs : _FunctionObject[])
 {
     return = _ComposedFunctionObject(funcs);
 }
@@ -200,7 +200,7 @@ def MaximumItemByKey(list: var[], keyProjector: _FunctionObject)
     }
 }
 
-def Filter(list: var[], predicate: _FunctionObject)
+def __Filter(list: var[], predicate: _FunctionObject)
 {
     return = [Imperative]
     {
@@ -240,7 +240,7 @@ def Filter(list: var[], predicate: _FunctionObject)
     }
 }
 
-def Combine(func : _FunctionObject, lists : var[]..[])
+def __Combine(func : _FunctionObject, lists : var[]..[])
 {
     argList = Transpose(lists);
     return = [Imperative]
@@ -254,7 +254,7 @@ def Combine(func : _FunctionObject, lists : var[]..[])
     };
 }
 
-def LaceShortest(func : _FunctionObject, lists : var[]..[])
+def __LaceShortest(func : _FunctionObject, lists : var[]..[])
 {
     return = [Imperative]
     {
@@ -283,7 +283,7 @@ def LaceShortest(func : _FunctionObject, lists : var[]..[])
     };
 }
 
-def LaceLongest(func : _FunctionObject, lists : var[]..[])
+def __LaceLongest(func : _FunctionObject, lists : var[]..[])
 {
     return = [Imperative]
     {
@@ -317,7 +317,7 @@ def LaceLongest(func : _FunctionObject, lists : var[]..[])
     };
 }
 
-def CartesianProduct(func : _FunctionObject, lists : var[]..[])
+def __CartesianProduct(func : _FunctionObject, lists : var[]..[])
 {
     return = [Imperative]
     {
@@ -367,6 +367,29 @@ def CartesianProduct(func : _FunctionObject, lists : var[]..[])
         }
         return = results;
     };
+}
+
+def __Reduce(list : var[]..[], seed:var, accumulator : _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null)
+        {
+            return = seed;
+        }
+
+		argLists = Transpose(list);
+        
+        _acc = seed;
+        for (_index in 0..(Count(argLists) - 1))
+        {
+			argList = argLists[_index];
+			argList[Count(argLists)] = _acc;
+            _acc = ApplyList(accumulator, list[_index]);
+        }
+        
+        return = _acc;
+    }
 }
 
 def SortByKey(list : var[], keyProjector:_FunctionObject)
@@ -505,26 +528,6 @@ def GroupByKey(list : var[], keyProjector: _FunctionObject)
     }
 }
 
-def Reduce(list : var[], seed:var, accumulator : _FunctionObject)
-{
-    return = [Imperative]
-    {
-        if (list == null)
-        {
-            return = seed;
-        }
-        
-        _acc = seed;
-        for (_index in 0..(Count(list) - 1))
-        {
-            _accFunc = Apply(accumulator, _acc);
-            _acc = Apply(_accFunc, list[_index]);
-        }
-        
-        return = _acc;
-    }
-}
-
 def TrueForAll(list: var[], predicate: _FunctionObject)
 {
     return = [Imperative]
@@ -585,16 +588,18 @@ def TrueForAny(list: var[], predicate: _FunctionObject)
     }
 }
 
-def ForEach(list: var[], functionObject: _FunctionObject)
+def __ForEach(functionObject: _FunctionObject, lists: var[]..[])
 {
-    return = [Imperative]
+    [Imperative]
     {
-        if (list == null) 
+        if (lists == null) 
         {
             return = null;
         }
 
-        _count = Count(list);
+		argLists = Transpose(lists);
+
+        _count = Count(argLists);
         if (_count == 0)
         {
             return = null;
@@ -602,12 +607,10 @@ def ForEach(list: var[], functionObject: _FunctionObject)
 
         _index = 0;
 
-        for (_i in 0..(_count - 1))
+		for (_i in 0..(_count - 1))
         {
-            _value = list[_i];
-            list[_i] = Apply(functionObject, _value);
+            _value = argLists[_i];
+            ApplyList(functionObject, _value);
         }
-
-        return = list;
     }
 }

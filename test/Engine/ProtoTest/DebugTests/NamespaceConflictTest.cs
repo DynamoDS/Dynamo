@@ -5,9 +5,8 @@ using System.Text;
 using NUnit.Framework;
 using ProtoTestFx.TD;
 
-namespace IntegrationTests
+namespace ProtoTest.DebugTests
 {
-
     class NamespaceConflictTest
     {
         public TestFrameWork thisTest = new TestFrameWork();
@@ -42,9 +41,9 @@ aO = a.Foo();
 "
 );
             Assert.Throws<NotImplementedException>(() =>
-                {
-                    mirror.GetFirstValue("a0");
-                });
+            {
+                mirror.GetFirstValue("a0");
+            });
 
 
         }
