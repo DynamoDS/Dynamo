@@ -2206,7 +2206,8 @@ namespace ProtoCore.DSASM
                     return;
                 }
 
-                if (gnode.ssaExprID == executingNode.ssaExprID)
+                if (gnode.guid == executingNode.guid && gnode.ssaExprID == executingNode.ssaExprID)
+                //if (gnode.exprUID == executingNode.exprUID)
                 {
                     // These nodes are within the same expression, no redifinition can occur
                     return;
@@ -5448,7 +5449,8 @@ namespace ProtoCore.DSASM
                     }
                 }
 
-                if (!isSSANode && instruction.op1.optype != AddressType.Register)
+                //if (!isSSANode && instruction.op1.optype != AddressType.Register)
+                if (instruction.op1.optype != AddressType.Register)
                 {
                     GCRelease(EX);
                 }

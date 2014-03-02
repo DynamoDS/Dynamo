@@ -7993,6 +7993,7 @@ namespace ProtoAssociative
                     //graphNode.UID = bnode.ID;
                     graphNode.exprUID = bnode.exprUID;
                     graphNode.ssaExprID = bnode.ssaExprID;
+                    graphNode.guid = core.SSASubscript_GUID;
                     graphNode.modBlkUID = bnode.modBlkUID;
                     graphNode.procIndex = globalProcIndex;
                     graphNode.classIndex = globalClassIndex;
