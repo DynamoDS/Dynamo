@@ -71,12 +71,18 @@ namespace Dynamo.DSEngine
             set { lineStripVertexColors = value; }
         }
 
+        /// <summary>
+        /// Store the number of items stored in the RenderPackage
+        /// </summary>
+        public int ItemsCount { get; set; }
+
         public RenderPackage(bool selected, bool displayLabels)
         {
             nativeRenderPackage = DesignScriptStudio.Renderer.RenderPackageUtils.CreateNativeRenderPackage(this);
             Selected = selected;
             DisplayLabels = false;
             Tag = string.Empty;
+            ItemsCount = 0;
         }
 
         public void Clear()
@@ -89,6 +95,7 @@ namespace Dynamo.DSEngine
             triangleVertices.Clear();
             triangleVertexColor.Clear();
             triangleNormals.Clear();
+            ItemsCount = 0;
         }
 
         public IntPtr NativeRenderPackage

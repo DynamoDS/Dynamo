@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using Dynamo.DSEngine;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -10,8 +11,7 @@ using Dynamo.Models;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class 
-        VisualizationManagerTests : DynamoUnitTest
+    class VisualizationManagerTests : DynamoUnitTest
     {
         [Test]
         public void CanVisualizeASMPoints()
@@ -31,18 +31,18 @@ namespace Dynamo.Tests
 
             ////ensure that the number of visualizations matches the 
             ////number of pieces of geometry in the collection
-            //var drawables = VisualizationManager.GetAllDrawablesInModel();
+            //var drawables = GetTotalDrawablesInModel();
             //var renderables = viz.Visualizations.SelectMany(x => x.Value.Points);
-            //Assert.AreEqual(drawables.Values.SelectMany(x=>x).Count(), renderables.Count());
+            //Assert.AreEqual(drawables, renderables.Count());
 
             ////adjust the number node's value - currently set to 0..5 (6 elements)
             //var numNode = (DoubleInput)model.Nodes.First(x => x is DoubleInput);
             //numNode.Value = "0..10";
             //dynSettings.Controller.RunExpression(null);
 
-            //drawables = VisualizationManager.GetAllDrawablesInModel();
+            //drawables = GetTotalDrawablesInModel();
             //renderables = viz.Visualizations.SelectMany(x => x.Value.Points);
-            //Assert.AreEqual(drawables.Values.SelectMany(x=>x).Count(), renderables.Count());
+            //Assert.AreEqual(drawables, renderables.Count());
 
             Assert.Inconclusive("Ian to finish after viz manager work.");
         }
@@ -490,6 +490,11 @@ namespace Dynamo.Tests
             //Assert.AreEqual(viz.Visualizations.SelectMany(x => x.Value.Text).Count(), 5);
 
             Assert.Inconclusive("Ian to finish after viz manager work.");
+        }
+
+        private int GetTotalDrawablesInModel()
+        {
+            return dynSettings.Controller.DynamoModel.Nodes.Select(x=>((RenderPackage)x.RenderPackage).ItemsCount).Aggregate((a,b) => a+b);
         }
     }
 }
