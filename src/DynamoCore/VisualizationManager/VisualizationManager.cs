@@ -7,7 +7,6 @@ using System.Text;
 using System.Linq;
 using Dynamo.Models;
 using Dynamo.Selection;
-using GraphToDSCompiler;
 using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
 using Dynamo.DSEngine;
@@ -209,7 +208,8 @@ namespace Dynamo
                 changes.AddRange(e.NewItems.Cast<ISelectable>());
             }
 
-            Debug.WriteLine("Selection changed. Visualization updating...");
+
+            Debug.WriteLine("Selection changed. Visualization updating {0} elements...", changes.Any()?changes.Count:0);
             UpdateRenderPackages(
                 changes.Any()? 
                 changes.Where(sel => sel is NodeModel).Cast<NodeModel>():
