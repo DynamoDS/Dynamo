@@ -1161,18 +1161,6 @@ namespace Dynamo.Nodes
             newNode.SetAttribute("inputcount", "3");
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
-            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
-
-            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
-            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
-
-            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
-            PortId newInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
-
-            data.ReconnectToPort(connector0, newInPort2);
-            data.ReconnectToPort(connector2, newInPort0);
-
             migrationData.AppendNode(newNode);
             return migrationData;
         }
