@@ -581,10 +581,6 @@ The UserID is randomly generated when the application is first run. The SessionI
 http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor  
 http://opensource.org/licenses/lgpl-3.0.html  
 
-###Kinect for Windows###
-http://www.microsoft.com/en-us/kinectforwindows/  
-http://www.microsoft.com/en-us/kinectforwindows/develop/sdk-eula.aspx  
-
 ###Helix3D###
 https://helixtoolkit.codeplex.com/  
 https://helixtoolkit.codeplex.com/license  
@@ -592,6 +588,13 @@ https://helixtoolkit.codeplex.com/license
 ###Iron Python###
 http://ironpython.net/  
 http://opensource.org/licenses/apache2.0.php  
+
+###Kinect for Windows###
+http://www.microsoft.com/en-us/kinectforwindows/  
+http://www.microsoft.com/en-us/kinectforwindows/develop/sdk-eula.aspx 
+
+###Microsoft 2012 C Runtime DLLS, msvcp110.dll and msvcr110.dll###
+http://msdn.microsoft.com/en-us/vstudio/dn501987
 
 ###Moq###
 http://www.nuget.org/packages/Moq/
@@ -608,6 +611,10 @@ http://ncalc.codeplex.com/license
 ###NUnit####
 http://www.nunit.org/  
 http://www.nunit.org/index.php?p=license&r=2.6.2  
+
+###OpenSans font from Google###
+http://www.google.com/fonts/specimen/Open+Sans
+http://www.apache.org/licenses/LICENSE-2.0.html
 
 ###Prism###
 http://msdn.microsoft.com/en-us/library/gg406140.aspx  
