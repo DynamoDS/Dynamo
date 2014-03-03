@@ -2,9 +2,15 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Windows.Controls;
 using System.Windows.Media.Media3D;
 using Dynamo.Controls;
+using Dynamo.DSEngine;
+using Dynamo.Nodes;
+using Dynamo.UI.Controls;
+using Dynamo.Units;
 using Dynamo.Utilities;
+using DynamoCore.UI.Controls;
 using NUnit.Framework;
 
 namespace Dynamo.Tests.UI
@@ -12,6 +18,14 @@ namespace Dynamo.Tests.UI
     [TestFixture]
     public class VisualizationManagerUITests : DynamoTestUI
     {
+        private Watch3DView BackgroundPreview
+        {
+            get
+            {
+                return (Watch3DView)Ui.background_grid.FindName("background_preview");
+            }
+        }
+
         [SetUp]
         public void Start()
         {
@@ -91,5 +105,73 @@ namespace Dynamo.Tests.UI
 
         }
         */
+
+        [Test]
+        public void CanVisualizePoints()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            //ensure that the number of visualizations matches the 
+            //number of pieces of geometry in the collection
+            Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.HelixPoints.Count);
+
+            //adjust the number node's value - currently set to 0..5 (6 elements)
+            var numNode = (DoubleInput)model.Nodes.First(x => x is DoubleInput);
+            numNode.Value = "0..10";
+            dynSettings.Controller.RunExpression(null);
+
+            Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.HelixPoints.Count);
+        }
+
+        [Test]
+        public void CleansUpGeometryWhenNodesAreDisconnected()
+        {
+            //test to ensure that when nodes are disconnected 
+            //their associated geometry is removed
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points_line.dyn");
+            model.Open(openPath);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            //ensure the correct representations
+
+            //look at the data in the visualization manager
+            //ensure that the number of Drawable nodes
+            //and the number of entries in the Dictionary match
+            Assert.AreEqual(7, BackgroundPreview.HelixPoints.Count);
+            Assert.AreEqual(6, BackgroundPreview.HelixLines.Count / 2);
+            
+            //delete a conector coming into the lines node
+            var lineNode = model.Nodes.FirstOrDefault(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
+            var port = lineNode.InPorts.First();
+            port.Disconnect(port.Connectors.First());
+
+            //ensure that the visualization no longer contains
+            //the renderables for the line node
+            Assert.AreEqual(7, BackgroundPreview.HelixPoints.Count);
+            Assert.AreEqual(0, BackgroundPreview.HelixLines.Count);
+
+            Assert.Inconclusive("Ian to finish after viz manager work.");
+        }
+
+        private int GetTotalDrawablesInModel()
+        {
+            return dynSettings.Controller.DynamoModel.Nodes.Select(x => ((RenderPackage)x.RenderPackage).ItemsCount).Aggregate((a, b) => a + b);
+        }
     }
 }

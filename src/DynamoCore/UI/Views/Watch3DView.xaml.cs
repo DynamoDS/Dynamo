@@ -386,6 +386,8 @@ namespace Dynamo.Controls
             ThreadSafeList<BillboardTextItem> text)
         {
             int colorCount = 0;
+            //var step = p.LineStripVertices.Count/p.LineStripVertexCounts[0]/2;
+
             for (int i = 0; i < p.LineStripVertices.Count - 3; i += 3)
             {
                 var start = new Point3D(

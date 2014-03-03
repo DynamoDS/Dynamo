@@ -71,6 +71,11 @@ namespace Dynamo.DSEngine
             set { lineStripVertexColors = value; }
         }
 
+        public List<int> LineStripVertexCounts
+        {
+            get { return lineStripVertexCounts; }
+        }
+
         /// <summary>
         /// Store the number of items stored in the RenderPackage
         /// </summary>

@@ -237,9 +237,14 @@ namespace Dynamo
         /// <param name="connector"></param>
         void DynamoModel_ConnectorDeleted(ConnectorModel connector)
         {
+            //we are given the connector that was deleted
+            //if it's end node still exists, clear the package for 
+            //the node and trigger an update.
+            if(connector.End != null)
+                ((RenderPackage)connector.End.Owner.RenderPackage).Clear();
+
             //tell the watches that they require re-binding.
-            //OnVisualizationUpdateComplete(this, EventArgs.Empty);
-            UpdateRenderPackages();
+            OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }
 
         /// <summary>
