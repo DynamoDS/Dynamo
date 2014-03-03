@@ -13,40 +13,7 @@ namespace Dynamo.Tests
     [TestFixture]
     class VisualizationManagerTests : DynamoUnitTest
     {
-        [Test]
-        public void CanVisualizeASMPoints()
-        {
-            //var model = dynSettings.Controller.DynamoModel;
-            //var viz = dynSettings.Controller.VisualizationManager;
-
-            //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
-            //model.Open(openPath);
-
-            //// check all the nodes and connectors are loaded
-            //Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
-            //Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
-
-            //// run the expression
-            //dynSettings.Controller.RunExpression(null);
-
-            ////ensure that the number of visualizations matches the 
-            ////number of pieces of geometry in the collection
-            //var drawables = GetTotalDrawablesInModel();
-            //var renderables = viz.Visualizations.SelectMany(x => x.Value.Points);
-            //Assert.AreEqual(drawables, renderables.Count());
-
-            ////adjust the number node's value - currently set to 0..5 (6 elements)
-            //var numNode = (DoubleInput)model.Nodes.First(x => x is DoubleInput);
-            //numNode.Value = "0..10";
-            //dynSettings.Controller.RunExpression(null);
-
-            //drawables = GetTotalDrawablesInModel();
-            //renderables = viz.Visualizations.SelectMany(x => x.Value.Points);
-            //Assert.AreEqual(drawables, renderables.Count());
-
-            Assert.Inconclusive("Ian to finish after viz manager work.");
-        }
-
+        
         [Test]
         public void CleansUpGeometryWhenNodeFails()
         {
@@ -75,46 +42,6 @@ namespace Dynamo.Tests
             //Assert.Throws(typeof(NUnit.Framework.AssertionException), () => dynSettings.Controller.RunExpression(null));
             //var renderables = viz.Visualizations.SelectMany(x => x.Value.Points);
             //Assert.AreEqual(0, renderables.Count());
-        }
-
-        [Test]
-        public void CleansUpGeometryWhenNodesAreDisconnected()
-        {
-            ////test to ensure that when nodes are disconnected 
-            ////their associated geometry is removed
-            //var model = dynSettings.Controller.DynamoModel;
-            //var viz = dynSettings.Controller.VisualizationManager;
-
-            //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points_line.dyn");
-            //model.Open(openPath);
-
-            //// run the expression
-            //dynSettings.Controller.RunExpression(null);
-
-            ////ensure the correct representations
-
-            ////look at the data in the visualization manager
-            ////ensure that the number of Drawable nodes
-            ////and the number of entries in the Dictionary match
-            //var points = viz.Visualizations.SelectMany(x => x.Value.Points);
-            //var lines = viz.Visualizations.SelectMany(x => x.Value.Lines);
-
-            //Assert.AreEqual(7,points.Count());
-            //Assert.AreEqual(6, lines.Count()/2);
-
-            ////delete a conector coming into the lines node
-            //var lineNode = model.Nodes.First(x => x is LineNode);
-            //var port = lineNode.InPorts.First();
-            //port.Disconnect(port.Connectors.First());
-
-            ////ensure that the visualization no longer contains
-            ////the renderables for the line node
-            //points = viz.Visualizations.SelectMany(x => x.Value.Points);
-            //lines = viz.Visualizations.SelectMany(x => x.Value.Lines);
-            //Assert.AreEqual(7, points.Count());
-            //Assert.AreEqual(0, lines.Count());
-
-            Assert.Inconclusive("Ian to finish after viz manager work.");
         }
 
         [Test]
@@ -492,9 +419,5 @@ namespace Dynamo.Tests
             Assert.Inconclusive("Ian to finish after viz manager work.");
         }
 
-        private int GetTotalDrawablesInModel()
-        {
-            return dynSettings.Controller.DynamoModel.Nodes.Select(x=>((RenderPackage)x.RenderPackage).ItemsCount).Aggregate((a,b) => a+b);
-        }
     }
 }
