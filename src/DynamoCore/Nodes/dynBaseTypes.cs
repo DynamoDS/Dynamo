@@ -1615,6 +1615,20 @@ namespace Dynamo.Nodes
     public class LaceShortest : LacerBase
     {
         public LaceShortest() : base(FScheme.LaceShortest) { }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.LaceShortest");
+            newNode.RemoveAttribute("inputs");
+            int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute("inputs")) + 1;
+            newNode.SetAttribute("inputcount", Convert.ToString(numberOfInputs));
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
     }
 
     [NodeName("Lace Longest")]
@@ -1623,6 +1637,20 @@ namespace Dynamo.Nodes
     public class LaceLongest : LacerBase
     {
         public LaceLongest() : base(FScheme.LaceLongest) { }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.LaceLongest");
+            newNode.RemoveAttribute("inputs");
+            int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute("inputs")) + 1;
+            newNode.SetAttribute("inputcount", Convert.ToString(numberOfInputs));
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
     }
 
     [NodeName("Map")]
