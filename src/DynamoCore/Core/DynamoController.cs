@@ -64,7 +64,7 @@ namespace Dynamo
         private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
             new Dictionary<string, TypeLoadData>();
 
-        private bool testing = false;
+        private static bool testing = false;
 
         protected VisualizationManager visualizationManager;
 
@@ -88,10 +88,10 @@ namespace Dynamo
         /// with the assumption that the entire test will be wrapped in an
         /// idle thread call.
         /// </summary>
-        public bool Testing 
+        public static bool IsTestMode 
         {
-            get { return testing; }
-            set { testing = value; }
+            get { return DynamoController.testing; }
+            set { DynamoController.testing = value; }
         }
 
         ObservableCollection<ModelBase> clipBoard = new ObservableCollection<ModelBase>();
@@ -111,7 +111,7 @@ namespace Dynamo
             get { return builtinTypesByTypeName; }
         }
 
-        public ExecutionEnvironment FSchemeEnvironment { get; private set; }
+        //public ExecutionEnvironment FSchemeEnvironment { get; private set; }
 
         private string context;
         public string Context
@@ -201,25 +201,24 @@ namespace Dynamo
 
         public static DynamoController MakeSandbox(string commandFilePath = null)
         {
-            var env = new ExecutionEnvironment();
+            //var env = new ExecutionEnvironment();
 
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
-                return new DynamoController(env, typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
+                return new DynamoController(typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
 
-            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
+            return new DynamoController(typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
         }
 
-        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context, IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences) : 
-            this(env, viewModelType, context, null, updateManager, watchHandler, preferences)
+        public DynamoController(Type viewModelType, string context, IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences) : 
+            this(viewModelType, context, null, updateManager, watchHandler, preferences)
         {
         }
 
         /// <summary>
         ///     Class constructor
         /// </summary>
-        public DynamoController(ExecutionEnvironment env,
-            Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences)
+        public DynamoController(Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences)
         {
             DynamoLogger.Instance.StartLogging();
 
@@ -263,7 +262,7 @@ namespace Dynamo
             dynSettings.PackageLoader.DoCachedPackageUninstalls();
             dynSettings.PackageLoader.LoadPackages();
             
-            FSchemeEnvironment = env;
+            //FSchemeEnvironment = env;
 
             DynamoViewModel.Model.CurrentWorkspace.X = 0;
             DynamoViewModel.Model.CurrentWorkspace.Y = 0;
@@ -489,7 +488,7 @@ namespace Dynamo
 
                 OnRunCompleted(this, false);
 
-                if (Testing)
+                if (IsTestMode)
                     Assert.Fail(ex.Message + ":" + ex.StackTrace);
             }
             finally
@@ -568,68 +567,68 @@ namespace Dynamo
                 //If we are testing, we need to throw an exception here
                 //which will, in turn, throw an Assert.Fail in the 
                 //Evaluation thread.
-                if (Testing)
+                if (IsTestMode)
                     throw new Exception(ex.Message);
             }
 
             OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
-        protected virtual void Run(List<NodeModel> topElements, FScheme.Expression runningExpression)
-        {
-            //Print some stuff if we're in debug mode
-            if (DynamoViewModel.RunInDebug)
-            {
-                if (dynSettings.Controller.UIDispatcher != null)
-                {
-                    foreach (string exp in topElements.Select(node => node.PrintExpression()))
-                        DynamoLogger.Instance.Log("> " + exp);
-                }
-            }
+        //protected virtual void Run(List<NodeModel> topElements, FScheme.Expression runningExpression)
+        //{
+        //    //Print some stuff if we're in debug mode
+        //    if (DynamoViewModel.RunInDebug)
+        //    {
+        //        if (dynSettings.Controller.UIDispatcher != null)
+        //        {
+        //            foreach (string exp in topElements.Select(node => node.PrintExpression()))
+        //                DynamoLogger.Instance.Log("> " + exp);
+        //        }
+        //    }
 
-            try
-            {
-                //Evaluate the expression
-                FScheme.Value expr = FSchemeEnvironment.Evaluate(runningExpression);
+        //    try
+        //    {
+        //        //Evaluate the expression
+        //        FScheme.Value expr = FSchemeEnvironment.Evaluate(runningExpression);
 
-                if (dynSettings.Controller.UIDispatcher != null)
-                {
-                    //Print some more stuff if we're in debug mode
-                    if (DynamoViewModel.RunInDebug && expr != null)
-                    {
-                        DynamoLogger.Instance.Log("Evaluating the expression...");
-                        DynamoLogger.Instance.Log(FScheme.print(expr));
-                    }
-                }
-            }
-            catch (CancelEvaluationException ex)
-            {
-                /* Evaluation was cancelled */
+        //        if (dynSettings.Controller.UIDispatcher != null)
+        //        {
+        //            //Print some more stuff if we're in debug mode
+        //            if (DynamoViewModel.RunInDebug && expr != null)
+        //            {
+        //                DynamoLogger.Instance.Log("Evaluating the expression...");
+        //                DynamoLogger.Instance.Log(FScheme.print(expr));
+        //            }
+        //        }
+        //    }
+        //    catch (CancelEvaluationException ex)
+        //    {
+        //        /* Evaluation was cancelled */
 
-                OnRunCancelled(false);
-                RunCancelled = false;
-                if (ex.Force)
-                    runAgain = false;
-            }
-            catch (Exception ex)
-            {
-                /* Evaluation failed due to error */
+        //        OnRunCancelled(false);
+        //        RunCancelled = false;
+        //        if (ex.Force)
+        //            runAgain = false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        /* Evaluation failed due to error */
 
-                DynamoLogger.Instance.Log(ex);
+        //        DynamoLogger.Instance.Log(ex);
 
-                OnRunCancelled(true);
-                RunCancelled = true;
-                runAgain = false;
+        //        OnRunCancelled(true);
+        //        RunCancelled = true;
+        //        runAgain = false;
 
-                //If we are testing, we need to throw an exception here
-                //which will, in turn, throw an Assert.Fail in the 
-                //Evaluation thread.
-                if (Testing)
-                    throw new Exception(ex.Message);
-            }
+        //        //If we are testing, we need to throw an exception here
+        //        //which will, in turn, throw an Assert.Fail in the 
+        //        //Evaluation thread.
+        //        if (Testing)
+        //            throw new Exception(ex.Message);
+        //    }
 
-            OnEvaluationCompleted(this, EventArgs.Empty);
-        }
+        //    OnEvaluationCompleted(this, EventArgs.Empty);
+        //}
 
         protected virtual void OnRunCancelled(bool error)
         {

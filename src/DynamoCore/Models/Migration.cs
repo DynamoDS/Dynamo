@@ -610,6 +610,88 @@ namespace Dynamo.Models
             return dummy;
         }
 
+        /// <summary>
+        /// Call this method to convert a DSFunction element into an equivalent 
+        /// dummy node. This method retains the number of input ports based on the 
+        /// function signature that comes with the XmlElement that represent the 
+        /// function node.
+        /// </summary>
+        /// <param name="element">XmlElement representing the original DSFunction
+        /// node which has failed migration. This XmlElement must be of type 
+        /// "Dynamo.Nodes.DSFunction" otherwise an exception will be thrown.</param>
+        /// <returns>Returns a new XmlElement representing the dummy node.</returns>
+        /// 
+        public static XmlElement CreateDummyNodeForFunction(XmlElement element)
+        {
+            if (element == null)
+                throw new ArgumentNullException("element");
+            if (element.Name.Equals("Dynamo.Nodes.DSFunction") == false)
+                throw new ArgumentException("Only DSFunction should be here.");
+
+            var type = element.Attributes["type"].Value;
+            if (type.Equals("Dynamo.Nodes.DSFunction") == false)
+                throw new ArgumentException("Only DSFunction should be here.");
+
+            var nicknameAttrib = element.Attributes["nickname"];
+            if (nicknameAttrib == null)
+                throw new ArgumentException("'nickname' attribute missing.");
+
+            var nickname = nicknameAttrib.Value;
+            if (string.IsNullOrEmpty(nickname))
+                throw new ArgumentException("'nickname' attribute missing.");
+
+            // Determine the number of input and output count (always 1).
+            int inportCount = DetermineFunctionInputCount(element);
+
+            // Create an XmlElement representation of the new dummy node.
+            var dummy = CreateDummyNode(element, inportCount, 1);
+            dummy.SetAttribute("legacyNodeName", nickname);
+            return dummy;
+        }
+
+        private static int DetermineFunctionInputCount(XmlElement element)
+        {
+            int additionalPort = 0;
+
+            var signature = string.Empty;
+            var signatureAttrib = element.Attributes["function"];
+            if (signatureAttrib != null)
+                signature = signatureAttrib.Value;
+            else if (element.ChildNodes.Count > 0)
+            {
+                // We have an old file format with "FunctionItem" child element.
+                var childElement = element.ChildNodes[0] as XmlElement;
+                signature = string.Format("{0}@{1}",
+                    childElement.GetAttribute("DisplayName"),
+                    childElement.GetAttribute("Parameters").Replace(';', ','));
+
+                // We need one more port for instance methods/properties.
+                switch (childElement.GetAttribute("Type"))
+                {
+                    case "InstanceMethod":
+                    case "InstanceProperty":
+                        additionalPort = 1; // For taking the instance itself.
+                        break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(signature))
+            {
+                var message = "Function signature cannot be determined.";
+                throw new ArgumentException(message);
+            }
+
+            int atSignIndex = signature.IndexOf('@');
+            if (atSignIndex >= 0) // An '@' sign found, there's param information.
+            {
+                signature = signature.Substring(atSignIndex + 1); // Skip past '@'.
+                var parts = signature.Split(new char[] { ',' });
+                return ((parts != null) ? parts.Length : 1) + additionalPort;
+            }
+
+            return additionalPort + 1; // At least one.
+        }
+
         public static void SetFunctionSignature(XmlElement element,
             string assemblyName, string methodName, string signature)
         {

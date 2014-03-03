@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using Dynamo.Controls;
-using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -578,10 +576,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(Controller.DynamoViewModel.Model.Nodes[3] is Watch, true);
 
             var w = (Watch)Controller.DynamoViewModel.Model.Nodes[3];
-            double val = 0.0;
-            Assert.AreEqual(true, Utils.Convert(w.OldValue, ref val) );
-            Assert.AreEqual(4.0, val);
-
+            Assert.AreEqual(4.0, w.OldValue.Data);
         }
 
         [Test]

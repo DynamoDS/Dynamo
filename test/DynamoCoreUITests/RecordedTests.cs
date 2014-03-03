@@ -47,11 +47,13 @@ namespace Dynamo.Tests.UI
             SetupDirectories();
         }
 
-        [TearDown]
-        public void Exit()
+        protected void Exit()
         {
-            this.Controller.ShutDown(true);
-            this.Controller = null;
+            if (this.Controller != null)
+            {
+                this.Controller.ShutDown(true);
+                this.Controller = null;
+            }
         }
 
         #endregion
@@ -314,7 +316,7 @@ namespace Dynamo.Tests.UI
             this.Controller = DynamoController.MakeSandbox(commandFilePath);
             var controller = this.Controller;
             controller.DynamoViewModel.DynamicRunEnabled = autoRun;
-            controller.Testing = true;
+            DynamoController.IsTestMode = true;
 
             // Create the view.
             var dynamoView = new DynamoView();
@@ -1613,7 +1615,7 @@ namespace Dynamo.Tests.UI
             cbn = GetNode("c553dcff-09fa-4ff9-b1fb-04c95f1ce2d8") as CodeBlockNodeModel;
             AssertValue("d", 3);
             cbn = GetNode("ed9c9950-a1dc-4487-b126-9a07d999d8a8") as CodeBlockNodeModel;
-            AssertValue("p", 1);
+            AssertValue("p", 2);
 
         }
         [Test]

@@ -1,276 +1,235 @@
-<?xml version="1.0" encoding="utf-8"?>
-<tests pluginClass='Dynamo.Tests.DynamoTestFramework' pluginGUID='487f9ff0-5b34-4e7e-97bf-70fbff69194f'>
-	<testAssemblies>
-		<testAssembly name="DSRevitNodesTests.dll">
-		
-			<testFixture name="ReferencePointTests">
-				<test name="ByCoordinates_ValidInput" modelPath=".\empty.rfa"/>
-				<test name="ByPoint_ValidInput" modelPath=".\empty.rfa"/>
-				<test name="ByPointVectorDistance_ValidInput" modelPath=".\empty.rfa"/>
-				<test name="ByLengthOnCurveReference_ValidInput" modelPath=".\empty.rfa"/>
-				<test name="ByParameterOnCurveReference_ValidInput" modelPath=".\empty.rfa"/>
-				<test name="ByParametersOnFaceReference_ValidInput" modelPath=".\block.rfa"/>
-				<test name="ByPointVectorDistance_NullInput1" modelPath=".\empty.rfa"/>
-				<test name="ByPointVectorDistance_NullInput2" modelPath=".\empty.rfa"/>
-				<test name="ByParametersOnFaceReference_NullInput" modelPath=".\empty.rfa"/>
-				<test name="ByParameterOnCurveReference_NullInput" modelPath=".\empty.rfa"/>
-				<test name="ByLengthOnCurveReference_NullInput" modelPath=".\empty.rfa"/>
-			</testFixture>
-			
-			<testFixture name="FamilyTests">
-				<test name="ByName_ValidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
-				<test name="ByName_InvalidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
-        <test name="ByName_NonexistentName" modelPath=".\MassWithBoxAndCone.rfa"/>
-        <test name="ByName_NullInput" modelPath=".\MassWithBoxAndCone.rfa"/>
-			</testFixture>
-			
-			<testFixture name="FamilySymbolTests">
-				<test name="ByName_GoodArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
-				<test name="ByName_BadArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
-        <test name="ByFamilyAndName_GoodArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
-        <test name="ByFamilyAndName_BadArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
-			</testFixture>
-
+<?xml version="1.0" encoding="UTF-8"?>
+<tests pluginClass="Dynamo.Tests.DynamoTestFramework" pluginGUID="487f9ff0-5b34-4e7e-97bf-70fbff69194f">
+  <testAssemblies>
+    <testAssembly name="RevitNodesTests.dll">
+      <testFixture name="ReferencePointTests">
+        <test name="ByCoordinates_ValidInput" modelPath=".\empty.rfa" />
+        <test name="ByPoint_ValidInput" modelPath=".\empty.rfa" />
+        <test name="ByPointVectorDistance_ValidInput" modelPath=".\empty.rfa" />
+        <test name="ByLengthOnCurveReference_ValidInput" modelPath=".\empty.rfa" />
+        <test name="ByParameterOnCurveReference_ValidInput" modelPath=".\empty.rfa" />
+        <test name="ByParametersOnFaceReference_ValidInput" modelPath=".\block.rfa" />
+        <test name="ByPointVectorDistance_NullInput1" modelPath=".\empty.rfa" />
+        <test name="ByPointVectorDistance_NullInput2" modelPath=".\empty.rfa" />
+        <test name="ByParametersOnFaceReference_NullInput" modelPath=".\empty.rfa" />
+        <test name="ByParameterOnCurveReference_NullInput" modelPath=".\empty.rfa" />
+        <test name="ByLengthOnCurveReference_NullInput" modelPath=".\empty.rfa" />
+      </testFixture>
+      <testFixture name="FamilyTests">
+        <test name="ByName_ValidInput" modelPath=".\MassWithBoxAndCone.rfa" />
+        <test name="ByName_InvalidInput" modelPath=".\MassWithBoxAndCone.rfa" />
+        <test name="ByName_NonexistentName" modelPath=".\MassWithBoxAndCone.rfa" />
+        <test name="ByName_NullInput" modelPath=".\MassWithBoxAndCone.rfa" />
+      </testFixture>
+      <testFixture name="FamilySymbolTests">
+        <test name="ByName_GoodArgs" modelPath=".\MassWithBoxAndCone.rfa" />
+        <test name="ByName_BadArgs" modelPath=".\MassWithBoxAndCone.rfa" />
+        <test name="ByFamilyAndName_GoodArgs" modelPath=".\MassWithBoxAndCone.rfa" />
+        <test name="ByFamilyAndName_BadArgs" modelPath=".\MassWithBoxAndCone.rfa" />
+      </testFixture>
       <testFixture name="AdaptiveComponentTests">
-        <test name="ByPoints_ValidInput" modelPath=".\AdaptiveComponents.rfa"/>
-        <test name="ByPoints_NonMatchingNumberOfPoints" modelPath=".\AdaptiveComponents.rfa"/>
-        <test name="ByPoints_NullFamilySymbol" modelPath=".\AdaptiveComponents.rfa"/>
-        <test name="ByPoints_NullPts" modelPath=".\AdaptiveComponents.rfa"/>
-        <test name="ByPointsOnCurve_ValidInput" modelPath=".\AdaptiveComponents.rfa"/>
-        <test name="ByPointsOnFace_ValidInput" modelPath=".\AdaptiveComponents.rfa"/>
+        <test name="ByPoints_ValidInput" modelPath=".\AdaptiveComponents.rfa" />
+        <test name="ByPoints_NonMatchingNumberOfPoints" modelPath=".\AdaptiveComponents.rfa" />
+        <test name="ByPoints_NullFamilySymbol" modelPath=".\AdaptiveComponents.rfa" />
+        <test name="ByPoints_NullPts" modelPath=".\AdaptiveComponents.rfa" />
+        <test name="ByPointsOnCurve_ValidInput" modelPath=".\AdaptiveComponents.rfa" />
+        <test name="ByPointsOnFace_ValidInput" modelPath=".\AdaptiveComponents.rfa" />
       </testFixture>
-      
-			<testFixture name="FamilyInstanceTests">
-				<test name="ByCoordinates_ValidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
-				<test name="ByPoint_ValidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
-				<test name="ByPoint_NullFamilySymbol" modelPath=".\MassWithBoxAndCone.rfa"/>
-				<test name="ByPoint_NullPoint" modelPath=".\MassWithBoxAndCone.rfa"/>
-				<test name="ByPoint_NullFamilySymbol" modelPath=".\MassWithBoxAndCone.rfa"/>
-			</testFixture>
-      
+      <testFixture name="FamilyInstanceTests">
+        <test name="ByCoordinates_ValidInput" modelPath=".\MassWithBoxAndCone.rfa" />
+        <test name="ByPoint_ValidInput" modelPath=".\MassWithBoxAndCone.rfa" />
+        <test name="ByPoint_NullFamilySymbol" modelPath=".\MassWithBoxAndCone.rfa" />
+        <test name="ByPoint_NullPoint" modelPath=".\MassWithBoxAndCone.rfa" />
+        <test name="ByPoint_NullFamilySymbol" modelPath=".\MassWithBoxAndCone.rfa" />
+      </testFixture>
       <testFixture name="NurbSplineTests">
-        <test name="ByControlPointsAndWeights_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="ByControlPointsWeightsKnotsDegreeClosedAndRationality_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="ByControlPointsAndWeights_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="ByControlPointsWeightsKnotsDegreeClosedAndRationality_ValidArgs" modelPath=".\empty.rfa" />
       </testFixture>
-
       <testFixture name="ElementSelectorTests">
-        <test name="FamilyByElementId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
-        <test name="FormByType_ValidArgs" modelPath=".\block.rfa"/>
-        <test name="FamilyByUniqueId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
-        <test name="FamilySymbolByElementId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
-        <test name="FamilySymbolByUniqueId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
+        <test name="FamilyByElementId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa" />
+        <test name="FormByType_ValidArgs" modelPath=".\block.rfa" />
+        <test name="FamilyByUniqueId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa" />
+        <test name="FamilySymbolByElementId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa" />
+        <test name="FamilySymbolByUniqueId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa" />
       </testFixture>
-
       <testFixture name="CurveLoopTests">
-        <test name="RectangleByCurves_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="TriangleByCurves_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="OpenCurveByCurves_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="NonPlanarOpenCurveByCurves_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="RectangleByCurves_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="TriangleByCurves_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="OpenCurveByCurves_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="NonPlanarOpenCurveByCurves_ValidArgs" modelPath=".\empty.rfa" />
       </testFixture>
-
       <testFixture name="DividedPathTests">
-        <test name="ByCurveAndEqualDivisions_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="ByCurveAndEqualDivisions_NullArgument" modelPath=".\empty.rfa"/>
-        <test name="ByCurveAndEqualDivisions_InvalidDivisions" modelPath=".\empty.rfa"/>
+        <test name="ByCurveAndEqualDivisions_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="ByCurveAndEqualDivisions_NullArgument" modelPath=".\empty.rfa" />
+        <test name="ByCurveAndEqualDivisions_InvalidDivisions" modelPath=".\empty.rfa" />
       </testFixture>
-      
       <testFixture name="DividedSurfaceTests">
-        <test name="ByFaceUVDivisions_ValidArgs" modelPath=".\block.rfa"/>
-        <test name="ByFaceUVDivisionsRotation_ValidArgs" modelPath=".\block.rfa"/>
-        <test name="ByFaceUVDivisionsRotation_InvalidDivisions" modelPath=".\block.rfa"/>
-        <test name="ByFaceUVDivisions_InvalidDivisions" modelPath=".\block.rfa"/>
-        <test name="ByFaceUVDivisions_NullArgument" modelPath=".\block.rfa"/>
-        <test name="ByFaceUVDivisionsRotation_NullArgument" modelPath=".\block.rfa"/>
+        <test name="ByFaceUVDivisions_ValidArgs" modelPath=".\block.rfa" />
+        <test name="ByFaceUVDivisionsRotation_ValidArgs" modelPath=".\block.rfa" />
+        <test name="ByFaceUVDivisionsRotation_InvalidDivisions" modelPath=".\block.rfa" />
+        <test name="ByFaceUVDivisions_InvalidDivisions" modelPath=".\block.rfa" />
+        <test name="ByFaceUVDivisions_NullArgument" modelPath=".\block.rfa" />
+        <test name="ByFaceUVDivisionsRotation_NullArgument" modelPath=".\block.rfa" />
       </testFixture>
-      
       <testFixture name="SolidTests">
-        <test name="ByExtrusion_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="ByRevolve_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="ByRevolve_ValidArgs_NonVertical" modelPath=".\empty.rfa"/>
-        <test name="ByBlend_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="BySweptBlend_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="Cylinder_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="Sphere_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="Torus_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="BoxByMinimumMaximum_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="BoxByCenterAndDimensions_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="ByBooleanUnion_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="ByBooleanIntersect_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="ByBooleanDifference_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="FromElement_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="ByExtrusion_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="ByRevolve_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="ByRevolve_ValidArgs_NonVertical" modelPath=".\empty.rfa" />
+        <test name="ByBlend_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="BySweptBlend_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="Cylinder_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="Sphere_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="Torus_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="BoxByMinimumMaximum_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="BoxByCenterAndDimensions_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="ByBooleanUnion_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="ByBooleanIntersect_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="ByBooleanDifference_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="FromElement_ValidArgs" modelPath=".\empty.rfa" />
       </testFixture>
-
       <testFixture name="ModelCurveTests">
-        <test name="ByCurve_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="ByCurve_ValidArgs" modelPath=".\empty.rfa" />
       </testFixture>
-	  
-	    <testFixture name="FreeFormTests">
-		    <test name="BySolid_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="BySolid_NullArgument" modelPath=".\empty.rfa"/>
+      <testFixture name="FreeFormTests">
+        <test name="BySolid_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="BySolid_NullArgument" modelPath=".\empty.rfa" />
       </testFixture>
-      
-	  
       <testFixture name="FormTests">
-        <test name="ByLoftingCurveReferences_ValidArgs" modelPath=".\block.rfa"/>
-        <test name="FaceReferencesProperty_ValidObject" modelPath=".\block.rfa"/>
-		    <test name="SolidsProperty_ValidObject" modelPath=".\block.rfa"/>
+        <test name="ByLoftingCurveReferences_ValidArgs" modelPath=".\block.rfa" />
+        <test name="FaceReferencesProperty_ValidObject" modelPath=".\block.rfa" />
+        <test name="SolidsProperty_ValidObject" modelPath=".\block.rfa" />
       </testFixture>
-
-     <testFixture name="ProtoToRevitCurveTests">
-        <test name="BSplineCurve_Basic" modelPath=".\empty.rfa"/>
-        <test name="Circle_Basic" modelPath=".\empty.rfa"/>
-        <test name="Arc_Basic" modelPath=".\empty.rfa"/>
-		<test name="Line_Basic" modelPath=".\empty.rfa"/>
+      <testFixture name="ProtoToRevitCurveTests">
+        <test name="BSplineCurve_Basic" modelPath=".\empty.rfa" />
+        <test name="Circle_Basic" modelPath=".\empty.rfa" />
+        <test name="Arc_Basic" modelPath=".\empty.rfa" />
+        <test name="Line_Basic" modelPath=".\empty.rfa" />
       </testFixture>
-      
       <testFixture name="RevitToProtoCurveTests">
-        <test name="NurbSpline_Rational" modelPath=".\empty.rfa"/>
-		    <test name="HermiteSpline_Basic" modelPath=".\empty.rfa"/>
-		    <test name="Line_Basic" modelPath=".\empty.rfa"/>
-		    <test name="Arc_Basic" modelPath=".\empty.rfa"/>
-		    <test name="Ellipse_Basic" modelPath=".\empty.rfa"/>
-		    <test name="CylindricalHelix_Basic" modelPath=".\empty.rfa"/>
+        <test name="NurbSpline_Rational" modelPath=".\empty.rfa" />
+        <test name="HermiteSpline_Basic" modelPath=".\empty.rfa" />
+        <test name="Line_Basic" modelPath=".\empty.rfa" />
+        <test name="Arc_Basic" modelPath=".\empty.rfa" />
+        <test name="Ellipse_Basic" modelPath=".\empty.rfa" />
+        <test name="CylindricalHelix_Basic" modelPath=".\empty.rfa" />
       </testFixture>
-	 
-	   <testFixture name="ReferencePlaneTests">
-        <test name="ByLine_ValidArgs" modelPath=".\empty.rfa"/>
-		    <test name="ByLine_NullInput" modelPath=".\empty.rfa"/>
-		    <test name="ByStartPointEndPoint_NullInputBoth" modelPath=".\empty.rfa"/>
-		    <test name="ByStartPointEndPoint_NullInput2" modelPath=".\empty.rfa"/>
-		    <test name="ByStartPointEndPoint_NullInput1" modelPath=".\empty.rfa"/>
+      <testFixture name="ReferencePlaneTests">
+        <test name="ByLine_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="ByLine_NullInput" modelPath=".\empty.rfa" />
+        <test name="ByStartPointEndPoint_NullInputBoth" modelPath=".\empty.rfa" />
+        <test name="ByStartPointEndPoint_NullInput2" modelPath=".\empty.rfa" />
+        <test name="ByStartPointEndPoint_NullInput1" modelPath=".\empty.rfa" />
       </testFixture>
-		
-	    <testFixture name="LevelTests">
-        <test name="ByElevationAndName_ValidArgs" modelPath=".\empty.rfa"/>
-		    <test name="ByElevationAndName_NullArgument" modelPath=".\empty.rfa"/>
-		    <test name="ByElevation_ValidArgs" modelPath=".\empty.rfa"/>
-		    <test name="ByLevelAndOffset_ValidArgs" modelPath=".\empty.rfa"/>
-		    <test name="ByLevelOffsetAndName_ValidArgs" modelPath=".\empty.rfa"/>
-		    <test name="ByLevelOffsetAndName_NullArgument" modelPath=".\empty.rfa"/>
+      <testFixture name="LevelTests">
+        <test name="ByElevationAndName_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="ByElevationAndName_NullArgument" modelPath=".\empty.rfa" />
+        <test name="ByElevation_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="ByLevelAndOffset_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="ByLevelOffsetAndName_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="ByLevelOffsetAndName_NullArgument" modelPath=".\empty.rfa" />
       </testFixture>
-	  
-	    <testFixture name="FloorTypeTests">
-        <test name="ByName_ValidArgs" modelPath=".\Empty.rvt"/>
-        <test name="ByName_NullArgument" modelPath=".\Empty.rvt"/>
+      <testFixture name="FloorTypeTests">
+        <test name="ByName_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByName_NullArgument" modelPath=".\Empty.rvt" />
       </testFixture>
-	  
-	    <testFixture name="FloorTests">
-        <test name="ByOutlineTypeAndLevel_ValidArgs" modelPath=".\Empty.rvt"/>
-	      <test name="ByOutlineTypeAndLevel_NullArgument" modelPath=".\Empty.rvt"/>
+      <testFixture name="FloorTests">
+        <test name="ByOutlineTypeAndLevel_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByOutlineTypeAndLevel_NullArgument" modelPath=".\Empty.rvt" />
       </testFixture>
-	  
-	    <testFixture name="SketchPlaneTests">
-        <test name="ByPlane_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByPlane_NullArgument" modelPath=".\Empty.rvt"/>
+      <testFixture name="SketchPlaneTests">
+        <test name="ByPlane_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByPlane_NullArgument" modelPath=".\Empty.rvt" />
       </testFixture>
-	  
-	    <testFixture name="WallTests">
-        <test name="ByCurveAndHeight_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByCurveAndHeight_NullArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByCurveAndLevels_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByCurveAndLevels_NullArgs" modelPath=".\Empty.rvt"/>
+      <testFixture name="WallTests">
+        <test name="ByCurveAndHeight_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByCurveAndHeight_NullArgs" modelPath=".\Empty.rvt" />
+        <test name="ByCurveAndLevels_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByCurveAndLevels_NullArgs" modelPath=".\Empty.rvt" />
       </testFixture>
-	  
-	    <testFixture name="MaterialTests">
-        <test name="ByName_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByName_NullArgument" modelPath=".\Empty.rvt"/>
-		    <test name="ByName_NonexistentName" modelPath=".\Empty.rvt"/>
+      <testFixture name="MaterialTests">
+        <test name="ByName_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByName_NullArgument" modelPath=".\Empty.rvt" />
+        <test name="ByName_NonexistentName" modelPath=".\Empty.rvt" />
       </testFixture>
-	  
-	    <testFixture name="GridTests">
-        <test name="ByLine_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByLine_NullArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByStartPointEndPoint_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByStartPointEndPoint_NullArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByArc_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByArc_NullArgs" modelPath=".\Empty.rvt"/>
+      <testFixture name="GridTests">
+        <test name="ByLine_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByLine_NullArgs" modelPath=".\Empty.rvt" />
+        <test name="ByStartPointEndPoint_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByStartPointEndPoint_NullArgs" modelPath=".\Empty.rvt" />
+        <test name="ByArc_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByArc_NullArgs" modelPath=".\Empty.rvt" />
       </testFixture>
-	   
-	    <testFixture name="BoundingBoxTests">
-        <test name="BoundingBoxPropertyOnAbstractElement" modelPath=".\MassWithBoxAndCone.rfa"/>
+      <testFixture name="BoundingBoxTests">
+        <test name="BoundingBoxPropertyOnAbstractElement" modelPath=".\MassWithBoxAndCone.rfa" />
       </testFixture>
-	  
-	    <testFixture name="SectionViewTests">
-        <test name="ByBoundingBox_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByBoundingBox_NullArgs" modelPath=".\Empty.rvt"/>
+      <testFixture name="SectionViewTests">
+        <test name="ByBoundingBox_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByBoundingBox_NullArgs" modelPath=".\Empty.rvt" />
       </testFixture>
-	  
-	    <testFixture name="DraftingViewTests">
-        <test name="ByName_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByName_NullArgs" modelPath=".\Empty.rvt"/>
+      <testFixture name="DraftingViewTests">
+        <test name="ByName_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByName_NullArgs" modelPath=".\Empty.rvt" />
       </testFixture>
-	  
-	    <testFixture name="AxonometricViewTests">
-        <test name="ByEyePointTargetAndBoundingBox_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByEyePointTargetAndBoundingBox_BadArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByEyePointTargetAndElement_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByEyePointTargetAndElement_BadArgs" modelPath=".\Empty.rvt"/>
+      <testFixture name="AxonometricViewTests">
+        <test name="ByEyePointTargetAndBoundingBox_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByEyePointTargetAndBoundingBox_BadArgs" modelPath=".\Empty.rvt" />
+        <test name="ByEyePointTargetAndElement_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByEyePointTargetAndElement_BadArgs" modelPath=".\Empty.rvt" />
       </testFixture>
-	  
-	  <testFixture name="PerspectiveViewTests">
-        <test name="ByEyePointTargetAndBoundingBox_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByEyePointTargetAndBoundingBox_BadArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByEyePointTargetAndElement_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByEyePointTargetAndElement_BadArgs" modelPath=".\Empty.rvt"/>
+      <testFixture name="PerspectiveViewTests">
+        <test name="ByEyePointTargetAndBoundingBox_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByEyePointTargetAndBoundingBox_BadArgs" modelPath=".\Empty.rvt" />
+        <test name="ByEyePointTargetAndElement_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByEyePointTargetAndElement_BadArgs" modelPath=".\Empty.rvt" />
       </testFixture>
-	  
-	    <testFixture name="FloorPlanViewTests">
-        <test name="ByLevel_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByLevel_BadArgs" modelPath=".\Empty.rvt"/>
+      <testFixture name="FloorPlanViewTests">
+        <test name="ByLevel_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByLevel_BadArgs" modelPath=".\Empty.rvt" />
       </testFixture>
-	  
-	    <testFixture name="CeilingPlanViewTests">
-        <test name="ByLevel_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByLevel_BadArgs" modelPath=".\Empty.rvt"/>
+      <testFixture name="CeilingPlanViewTests">
+        <test name="ByLevel_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByLevel_BadArgs" modelPath=".\Empty.rvt" />
       </testFixture>
-	  
-	    <testFixture name="SheetTests">
-        <test name="ByNameNumberAndViews_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByNameNumberAndViews_BadArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByNameNumberAndView_ValidArgs" modelPath=".\Empty.rvt"/>
-		    <test name="ByNameNumberAndView_BadArgs" modelPath=".\Empty.rvt"/>
+      <testFixture name="SheetTests">
+        <test name="ByNameNumberAndViews_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByNameNumberAndViews_BadArgs" modelPath=".\Empty.rvt" />
+        <test name="ByNameNumberAndView_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByNameNumberAndView_BadArgs" modelPath=".\Empty.rvt" />
       </testFixture>
-	  
-	  <testFixture name="StructuralFramingTests">
-        <test name="ByCurveLevelUpVectorAndType_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByCurveLevelUpVectorAndType_BadArgs" modelPath=".\Empty.rvt"/>
+      <testFixture name="StructuralFramingTests">
+        <test name="ByCurveLevelUpVectorAndType_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByCurveLevelUpVectorAndType_BadArgs" modelPath=".\Empty.rvt" />
       </testFixture>
-	  
-	  <testFixture name="ModelTextTypeTests">
-        <test name="ByName_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByName_BadArgs" modelPath=".\Empty.rvt"/>
+      <testFixture name="ModelTextTypeTests">
+        <test name="ByName_ValidArgs" modelPath=".\Empty.rvt" />
+        <test name="ByName_BadArgs" modelPath=".\Empty.rvt" />
       </testFixture>
-	  
-	  <testFixture name="PointAnalysisDisplayTests">
-        <test name="ByViewPointsAndValues_ValidArgs" modelPath=".\empty.rfa"/>
-		<test name="ByViewPointsAndValues_BadArgs" modelPath=".\empty.rfa"/>
+      <testFixture name="PointAnalysisDisplayTests">
+        <test name="ByViewPointsAndValues_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="ByViewPointsAndValues_BadArgs" modelPath=".\empty.rfa" />
       </testFixture>
-	  
-	  <testFixture name="VectorAnalysisDisplayTests">
-        <test name="ByViewPointsAndVectorValues_ValidArgs" modelPath=".\empty.rfa"/>
-		<test name="ByViewPointsAndVectorValues_BadArgs" modelPath=".\empty.rfa"/>
-      </testFixture>	  
-	  
-	  <testFixture name="FaceAnalysisDisplayTests">
-        <test name="ByViewFacePointsAndValues_ValidArgs" modelPath=".\block.rfa"/>
-		<test name="ByViewFacePointsAndValues_BadArgs" modelPath=".\block.rfa"/>
-      </testFixture>	
-
+      <testFixture name="VectorAnalysisDisplayTests">
+        <test name="ByViewPointsAndVectorValues_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="ByViewPointsAndVectorValues_BadArgs" modelPath=".\empty.rfa" />
+      </testFixture>
+      <testFixture name="FaceAnalysisDisplayTests">
+        <test name="ByViewFacePointsAndValues_ValidArgs" modelPath=".\block.rfa" />
+        <test name="ByViewFacePointsAndValues_BadArgs" modelPath=".\block.rfa" />
+      </testFixture>
       <testFixture name="SelectionTests">
-        <test name="SelectElementASTGeneration" modelPath=".\Empty.rfa"/>
-        <test name="SelectElementsASTGeneration" modelPath=".\Empty.rfa"/>
-        <test name="SelectReferenceASTGeneration" modelPath=".\Empty.rfa"/>
+        <test name="SelectElementASTGeneration" modelPath=".\Empty.rfa" />
+        <test name="SelectElementsASTGeneration" modelPath=".\Empty.rfa" />
+        <test name="SelectReferenceASTGeneration" modelPath=".\Empty.rfa" />
       </testFixture>
-      
-	  <testFixture name="FaceIntersectTests">
-		<test name="IntersectingCurveFace_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="IntersectingCurveFace_BadArgs" modelPath=".\empty.rfa"/>
-        <test name="NonIntersectingCurveFace_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="IntersectingFaceFace_ValidArgs" modelPath=".\empty.rfa"/>
-        <test name="IntersectingFaceFace_BadArgs" modelPath=".\empty.rfa"/>
-        <test name="NonIntersectingFaceFace_ValidArgs" modelPath=".\empty.rfa"/>
+      <testFixture name="FaceIntersectTests">
+        <test name="IntersectingCurveFace_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="IntersectingCurveFace_BadArgs" modelPath=".\empty.rfa" />
+        <test name="NonIntersectingCurveFace_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="IntersectingFaceFace_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="IntersectingFaceFace_BadArgs" modelPath=".\empty.rfa" />
+        <test name="NonIntersectingFaceFace_ValidArgs" modelPath=".\empty.rfa" />
       </testFixture>
-	  
-		</testAssembly>
-	</testAssemblies>
+    </testAssembly>
+  </testAssemblies>
 </tests>

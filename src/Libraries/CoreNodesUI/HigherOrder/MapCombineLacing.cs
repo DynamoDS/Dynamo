@@ -35,7 +35,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        "Combine",
+                        "__Combine",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -88,7 +88,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        "Combine",
+                        "__Combine",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -111,7 +111,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        "ForEach",
+                        "__ForEach",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -134,7 +134,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        "LaceShortest",
+                        "__LaceShortest",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -148,7 +148,7 @@ namespace DSCore
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair resulting from a longest lacing of the input lists. All lists have their last element repeated to match the length of the longest input.")]
     [IsDesignScriptCompatible]
-    public class LaceLongest : NodeModel
+    public class LaceLongest : CombinatorNode
     {
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -157,7 +157,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        "LaceLongest",
+                        "__LaceLongest",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -172,7 +172,7 @@ namespace DSCore
     [NodeDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
     [IsDesignScriptCompatible]
     ///<search>cross</search>
-    public class CartesianProduct : NodeModel
+    public class CartesianProduct : CombinatorNode
     {
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -181,7 +181,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        "CartesianProduct",
+                        "__CartesianProduct",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -191,6 +191,7 @@ namespace DSCore
         }
     }
 
+    /*
     [NodeName("True For Any")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Tests to see if any elements in a sequence satisfy the given predicate.")]
@@ -250,6 +251,7 @@ namespace DSCore
             };
         }
     }
+    */
 
     [NodeName("Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
@@ -334,7 +336,7 @@ namespace DSCore
             {
                 AstFactory.BuildAssignment(
                     AstFactory.BuildIdentifier(packedId),
-                    AstFactory.BuildFunctionCall("Filter", inputAstNodes)),
+                    AstFactory.BuildFunctionCall("__Filter", inputAstNodes)),
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     new IdentifierNode(packedId)
@@ -349,25 +351,5 @@ namespace DSCore
                     })
             };
         }
-    }
-
-    public class MinByKey : NodeModel
-    {
-        
-    }
-
-    public class MaxByKey : NodeModel
-    {
-        
-    }
-
-    public class SortByKey : NodeModel
-    {
-        
-    }
-
-    public class SortByCompare : NodeModel
-    {
-        
     }
 }

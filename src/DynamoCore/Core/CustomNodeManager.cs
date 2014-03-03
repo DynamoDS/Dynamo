@@ -192,7 +192,7 @@ namespace Dynamo.Utilities
             dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
 
             // remove from fscheme environment
-            dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
+            //dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
         }
 
         /// <summary>
@@ -654,7 +654,7 @@ namespace Dynamo.Utilities
                 if (fileVersion < currentVersion) // Opening an older file, migrate workspace.
                 {
                     string backupPath = string.Empty;
-                    bool isTesting = dynSettings.Controller.Testing; // No backup during test.
+                    bool isTesting = DynamoController.IsTestMode; // No backup during test.
                     if (!isTesting && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
                     {
                         string message = string.Format("Original file '{0}' gets backed up at '{1}'",
@@ -699,8 +699,8 @@ namespace Dynamo.Utilities
 
                 // load a dummy version, so any nodes depending on this node
                 // will find an (empty) identifier on compilation
-                FScheme.Expression dummyExpression = FScheme.Expression.NewNumber_E(0);
-                controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
+                //FScheme.Expression dummyExpression = FScheme.Expression.NewNumber_E(0);
+                //controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
 
                 // set the node as loaded
                 LoadedCustomNodes.Add(def.FunctionId, def);
@@ -886,7 +886,7 @@ namespace Dynamo.Utilities
 #if USE_DSENGINE
                 def.Compile(controller.EngineController);
 #else
-                def.CompileAndAddToEnvironment(controller.FSchemeEnvironment); 
+                //def.CompileAndAddToEnvironment(controller.FSchemeEnvironment); 
 #endif
 
                 ws.WatchChanges = true;
@@ -899,7 +899,7 @@ namespace Dynamo.Utilities
                 dynSettings.Controller.DynamoModel.WriteToLog("There was an error opening the workbench.");
                 dynSettings.Controller.DynamoModel.WriteToLog(ex);
 
-                if (controller.Testing)
+                if (DynamoController.IsTestMode)
                     Assert.Fail(ex.Message);
 
                 def = null;

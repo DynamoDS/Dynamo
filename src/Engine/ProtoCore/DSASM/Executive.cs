@@ -375,6 +375,11 @@ namespace ProtoCore.DSASM
                         {
                             SetupGraphEntryPoint(pc);
                         }
+
+                        if (core.Options.ExecuteSSA)
+                        {
+                            ProtoCore.AssociativeEngine.Utils.SetFinalGraphNodeRuntimeDependents(Properties.executingGraphNode);
+                        }
                     }
                 }
             }
@@ -2198,6 +2203,13 @@ namespace ProtoCore.DSASM
             {
                 if (!gnode.updateNodeRefList[n].IsEqual(executingNode.updateNodeRefList[n]))
                 {
+                    return;
+                }
+
+                if (gnode.guid == executingNode.guid && gnode.ssaExprID == executingNode.ssaExprID)
+                //if (gnode.exprUID == executingNode.exprUID)
+                {
+                    // These nodes are within the same expression, no redifinition can occur
                     return;
                 }
             }
@@ -5437,7 +5449,8 @@ namespace ProtoCore.DSASM
                     }
                 }
 
-                if (!isSSANode && instruction.op1.optype != AddressType.Register)
+                //if (!isSSANode && instruction.op1.optype != AddressType.Register)
+                if (instruction.op1.optype != AddressType.Register)
                 {
                     GCRelease(EX);
                 }

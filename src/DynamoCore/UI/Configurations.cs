@@ -19,6 +19,9 @@ namespace Dynamo.UI
         #region Canvas Configurations
         //public static readonly double Minimum
 
+        // Generic Constants
+        public static readonly double PortHeight = 20;
+
         // Grid Settings
         public static readonly int GridSpacing = 100;
         public static readonly int GridThickness = 2;
@@ -166,6 +169,7 @@ namespace Dynamo.UI
 
         public static readonly int CBNMaxPortNameLength = 24;
         public static readonly int CBNMaxTextBoxWidth = 500;
+        public static readonly double CBNFontSize = 14.67;
 
         #endregion
 
@@ -174,6 +178,7 @@ namespace Dynamo.UI
 
     public class ResourceNames
     {
+        public static readonly string FontResourceUri = "./UI/Fonts/#Open Sans";
         public static readonly string ResourceBaseUri = "pack://application:,,,/DynamoCore;component/UI/Images/";
     }
 }
