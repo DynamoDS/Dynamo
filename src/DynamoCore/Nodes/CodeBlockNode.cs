@@ -382,8 +382,6 @@ namespace Dynamo.Nodes
 
         private void ProcessCode(ref string errorMessage)
         {
-            Style windowStyle = Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["DynamoWindowStyle"] as Style;
-            var textFontFamily = windowStyle.Setters;
             //Format user test
             code = FormatUserText(code);
 
@@ -828,7 +826,7 @@ namespace Dynamo.Nodes
         /// <returns> Returns the extra number of lines caused by text wrapping. For example, the above statement would return 1 </returns>
         private int GetExtraLinesDueToTextWrapping(string statement)
         {
-            double portHeight = (double)Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["port_height"] - 0.1;
+            double portHeight = Configurations.PortHeight - 0.1;
             int numberOfLines = 0;
             string[] lines = statement.Split('\n');
             foreach (string line in lines)
@@ -848,45 +846,15 @@ namespace Dynamo.Nodes
         /// <returns> The line height of the formatted string </returns>
         private double GetFormattedTextHeight(string str)
         {
-            FontFamily textFontFamily = null;
-            double textFontSize = -1.0;
-            try
-            {
-                Style windowStyle = Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["DynamoWindowStyle"] as Style;
-                var styleSetters = windowStyle.Setters;
-                foreach (System.Windows.Setter setter in styleSetters)
-                {
-                    if (setter.Property.Name == "FontFamily")
-                    {
-                        textFontFamily = setter.Value as FontFamily;
-                        break;
-                    }
-                }
-
-                Style codeBlockNodeStyle = Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["CodeBlockNodeTextBox"] as Style;
-                styleSetters = codeBlockNodeStyle.Setters;
-                foreach (System.Windows.Setter setter in styleSetters)
-                {
-                    if (setter.Property.Name == "FontSize")
-                    {
-                        textFontSize = (double)setter.Value;
-                        break;
-                    }
-                }
-
-                if (textFontSize == -1.0 || textFontFamily == null)
-                    throw new Exception("Resource Setter not found");
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            FontFamily textFontFamily = new FontFamily(
+                new Uri("/DynamoCore;component/"),
+                ResourceNames.FontResourceUri);
 
             FormattedText newText = new FormattedText(str,
                     CultureInfo.CurrentCulture,
                     System.Windows.FlowDirection.LeftToRight,
                     new Typeface(textFontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal, new FontFamily("Arial")),
-                    textFontSize,
+                    Configurations.CBNFontSize,
                     new SolidColorBrush());
 
             newText.MaxTextWidth = Configurations.CBNMaxTextBoxWidth;
