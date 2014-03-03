@@ -1190,6 +1190,11 @@ namespace Dynamo.Nodes
             else
                 throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
 
+
+            if (parameter <= 0.0 && parameter > -1.0e-9)
+                parameter = 0.0;
+            if (parameter >= 1.0 && parameter < 1.0 + 1.0e-9)
+                parameter = 1.0;
             XYZ result = (thisCurve != null) ? (!curveIsReallyUnbound(thisCurve) ? thisCurve.Evaluate(parameter, true) : thisCurve.Evaluate(parameter, false))
                 :
                 (thisEdge == null ? null : thisEdge.Evaluate(parameter));
