@@ -25,7 +25,7 @@ namespace Dynamo.Tests
             model.Open(examplePath);
 
             // get the python node
-            var pynode = model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
+            var pynode = model.CurrentWorkspace.NodeFromWorkspace("3bcad14e-d086-4278-9e08-ed2759ef92f3");
             Assert.NotNull(pynode);
 
             // make changes to python script
