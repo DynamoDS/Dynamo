@@ -91,8 +91,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir "$(OutputPath)\dll"
-copy /Y "$(SolutionDir)..\extern\DynamoAsm\*" "$(OutputPath)\dll"</PostBuildEvent>
+    <PostBuildEvent>IF NOT EXIST "$(OutputPath)\dll" (
+copy /Y "$(SolutionDir)..\scripts\install\extra\InstallASMForDynamo.exe" "$(OutputPath)\InstallASMForDynamo.exe"
+"$(OutputPath)\InstallASMForDynamo.exe"
+)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
