@@ -257,7 +257,7 @@ namespace Revit.Elements
         /// <param name="face">The face on which to place the AdaptiveComponent</param>
         /// <param name="face">The face on which to place the AdaptiveComponent</param>
         /// <returns></returns>
-        public static AdaptiveComponent ByPointsOnFace(double[][] uvs, Face face, FamilySymbol familySymbol)
+        public static AdaptiveComponent ByParametersOnFace(double[][] uvs, Face face, FamilySymbol familySymbol)
         {
             if (uvs == null)
             {
@@ -284,7 +284,7 @@ namespace Revit.Elements
         /// <param name="curveReference">The curve to reference</param>
         /// <param name="familySymbol">The family symbol to construct</param>
         /// <returns></returns>
-        public static AdaptiveComponent ByPointsOnCurve(double[] parameters, CurveReference curveReference, FamilySymbol familySymbol)
+        public static AdaptiveComponent ByParametersOnCurveReference(double[] parameters, CurveReference curveReference, FamilySymbol familySymbol)
         {
             if (parameters == null)
             {
