@@ -10,7 +10,7 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace DSCore
 {
-    [NodeName("Map")]
+    [NodeName("List Map")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription(
         "Applies a function over all elements of a list, generating a new list from the results.")]
