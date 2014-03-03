@@ -7,7 +7,6 @@ using System.Text;
 using System.Linq;
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
 using Dynamo.DSEngine;

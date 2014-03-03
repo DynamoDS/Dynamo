@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
-using Microsoft.Practices.Prism.Regions.Behaviors;
 
 namespace Dynamo.DSEngine
 {
@@ -19,27 +18,11 @@ namespace Dynamo.DSEngine
         private List<byte> triangleVertexColor = new List<byte>();
         private List<double> triangleNormals = new List<double>();
 
-        private bool selected;
-        private bool displayLabels;
-        private string tag;
+        public bool Selected { get; set; }
 
-        public bool Selected
-        {
-            get { return selected; }
-            set { selected = value; }
-        }
+        public bool DisplayLabels { get; set; }
 
-        public bool DisplayLabels
-        {
-            get { return displayLabels; }
-            set { displayLabels = value; }
-        }
-
-        public string Tag
-        {
-            get { return tag; }
-            set { tag = value; }
-        }
+        public string Tag { get; set; }
 
         public List<double> LineStripVertices
         {
@@ -74,6 +57,7 @@ namespace Dynamo.DSEngine
         public List<int> LineStripVertexCounts
         {
             get { return lineStripVertexCounts; }
+            set { lineStripVertexCounts = value; }
         }
 
         /// <summary>
@@ -81,9 +65,15 @@ namespace Dynamo.DSEngine
         /// </summary>
         public int ItemsCount { get; set; }
 
+        public RenderPackage()
+        {
+            Tag = string.Empty;
+            ItemsCount = 0;
+        }
+
         public RenderPackage(bool selected, bool displayLabels)
         {
-            nativeRenderPackage = DesignScriptStudio.Renderer.RenderPackageUtils.CreateNativeRenderPackage(this);
+            //nativeRenderPackage = DesignScriptStudio.Renderer.RenderPackageUtils.CreateNativeRenderPackage(this);
             Selected = selected;
             DisplayLabels = false;
             Tag = string.Empty;
@@ -100,6 +90,7 @@ namespace Dynamo.DSEngine
             triangleVertices.Clear();
             triangleVertexColor.Clear();
             triangleNormals.Clear();
+            Tag = string.Empty;
             ItemsCount = 0;
         }
 

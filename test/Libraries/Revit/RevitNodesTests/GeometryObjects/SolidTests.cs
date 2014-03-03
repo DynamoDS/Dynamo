@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -7,10 +6,9 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Revit.Elements;
 using Revit.GeometryConversion;
-using Revit.GeometryObjects;
 using NUnit.Framework;
+using Dynamo.DSEngine;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
-using FreeFormElement = Autodesk.Revit.DB.FreeFormElement;
 using Solid = Revit.Elements.Solid;
 
 namespace DSRevitNodesTests.GeometryObjects
@@ -317,7 +315,7 @@ namespace DSRevitNodesTests.GeometryObjects
             var modelPath = Path.Combine(TestGeometryDirectory, @"ByBooleanIntersect_ValidArgs.obj");
             if (File.Exists(modelPath))
                 File.Delete(modelPath);
-            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+            WriteToOBJ(modelPath, new List<IRenderPackage>() { package });
         }
 
         [Test]
@@ -334,7 +332,7 @@ namespace DSRevitNodesTests.GeometryObjects
             var modelPath = Path.Combine(TestGeometryDirectory, @"ByBooleanDifference_ValidArgs.obj");
             if (File.Exists(modelPath))
                 File.Delete(modelPath);
-            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+            WriteToOBJ(modelPath, new List<IRenderPackage>() { package });
         }
 
         [Test]
@@ -355,12 +353,12 @@ namespace DSRevitNodesTests.GeometryObjects
             ExportModel("FromElement_ValidArgs.obj", package);
         }
 
-        private void ExportModel(string fileName, RenderPackage package)
+        private void ExportModel(string fileName, IRenderPackage package)
         {
             var modelPath = Path.Combine(TestGeometryDirectory, fileName);
             if (File.Exists(modelPath))
                 File.Delete(modelPath);
-            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+            WriteToOBJ(modelPath, new List<IRenderPackage>() { package });
         }
 
         private static List<Curve> UnitRectangle()
@@ -390,7 +388,7 @@ namespace DSRevitNodesTests.GeometryObjects
             return crvs;
         }
 
-        private static void WriteToOBJ(string path, IEnumerable<RenderPackage> packages)
+        private static void WriteToOBJ(string path, IEnumerable<IRenderPackage> packages)
         {
             using (TextWriter tw = new StreamWriter(path))
             {
@@ -444,7 +442,7 @@ namespace DSRevitNodesTests.GeometryObjects
             }
         }
 
-        private static void DrawCurve(Autodesk.Revit.DB.Curve curve, RenderPackage package)
+        private static void DrawCurve(Autodesk.Revit.DB.Curve curve, IRenderPackage package)
         {
             var pts = curve.Tessellate().ToList();
 
@@ -457,7 +455,7 @@ namespace DSRevitNodesTests.GeometryObjects
             }
         }
 
-        private static void DrawCS(CoordinateSystem cs, RenderPackage package)
+        private static void DrawCS(CoordinateSystem cs, IRenderPackage package)
         {
             //ccw unit rect points
             var a = Point.ByCoordinates(-.25, -.25, 0);
@@ -489,88 +487,5 @@ namespace DSRevitNodesTests.GeometryObjects
                 package.PushTriangleVertex(pA.X, pA.Y, pA.Z);
             }
         }
-    }
-
-    public class RenderPackage : IRenderPackage
-    {
-        public List<double> TriangleVertices { get; set; }
-        public List<double> PointVertices { get; set; }
-        public List<double> PointVertexNormals { get; set; }
-        public List<double> TriangleVertexNormals { get; set; }
-        public List<byte> PointVertexColors { get; set; }
-        public List<byte> TriangleVertexColors { get; set; }
-        public List<double> LineStripVertices { get; set; }
-        public int LineStripVertexCount { get; set; }
-        public List<byte> LineStripVertexColors { get; set; }
-
-        public RenderPackage()
-        {
-            TriangleVertices = new List<double>();
-            PointVertices = new List<double>();
-            PointVertexNormals = new List<double>();
-            TriangleVertexNormals = new List<double>();
-            PointVertexColors = new List<byte>();
-            TriangleVertexColors = new List<byte>();
-            LineStripVertices = new List<double>();
-        }
-
-        public void PushPointVertex(double x, double y, double z)
-        {
-            PointVertices.Add(x);
-            PointVertices.Add(y);
-            PointVertices.Add(z);
-        }
-
-        public void PushPointVertexColor(byte red, byte green, byte blue, byte alpha)
-        {
-            PointVertexColors.Add(red);
-            PointVertexColors.Add(green);
-            PointVertexColors.Add(blue);
-            PointVertexColors.Add(alpha);
-        }
-
-        public void PushTriangleVertex(double x, double y, double z)
-        {
-            TriangleVertices.Add(x);
-            TriangleVertices.Add(y);
-            TriangleVertices.Add(z);
-        }
-
-        public void PushTriangleVertexNormal(double x, double y, double z)
-        {
-            TriangleVertexNormals.Add(x);
-            TriangleVertexNormals.Add(y);
-            TriangleVertexNormals.Add(z);
-        }
-
-        public void PushTriangleVertexColor(byte red, byte green, byte blue, byte alpha)
-        {
-            TriangleVertexColors.Add(red);
-            TriangleVertexColors.Add(green);
-            TriangleVertexColors.Add(blue);
-            TriangleVertexColors.Add(alpha);
-        }
-
-        public void PushLineStripVertex(double x, double y, double z)
-        {
-            LineStripVertices.Add(x);
-            LineStripVertices.Add(y);
-            LineStripVertices.Add(z);
-        }
-
-        public void PushLineStripVertexCount(int n)
-        {
-            LineStripVertexCount = n;
-        }
-
-        public void PushLineStripVertexColor(byte red, byte green, byte blue, byte alpha)
-        {
-            LineStripVertexColors.Add(red);
-            LineStripVertexColors.Add(green);
-            LineStripVertexColors.Add(blue);
-            LineStripVertexColors.Add(alpha);
-        }
-
-        public IntPtr NativeRenderPackage { get; private set; }
     }
 }
