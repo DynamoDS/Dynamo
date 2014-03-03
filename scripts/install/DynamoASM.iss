@@ -8,7 +8,7 @@ AppPublisher=Autodesk, Inc.
 AppVersion=1.0
 AppVerName=ASM for Dynamo 1.0
 AppPublisherURL=http://www.autodesk.com/
-DefaultDirName=.\
+DefaultDirName={src}
 OutputDir=Extra
 OutputBaseFilename=InstallASMForDynamo
 Compression=lzma
@@ -16,8 +16,9 @@ SolidCompression=yes
 ShowLanguageDialog=auto
 LicenseFile=.\extra\DynamoASMLicense.txt
 DirExistsWarning=no
+UsePreviousAppDir=no
 
 [Files]
-Source: "..\..\extern\DynamoASM\*"; DestDir: {app}\dll; Flags: ignoreversion
+Source: "..\..\extern\DynamoASM\*"; DestDir: {src}\dll; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
