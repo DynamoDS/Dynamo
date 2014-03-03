@@ -1,6 +1,6 @@
 using Autodesk.DesignScript.Geometry;
 
-namespace DSCoreNodes
+namespace Revit.Geometry
 {
     /// <summary>
     /// A two dimensional UV domain specified by minimum and maximum UVs.

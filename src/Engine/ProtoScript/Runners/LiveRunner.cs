@@ -1024,7 +1024,6 @@ namespace ProtoScript.Runners
             return astNodeList;
         }
 
-
         private void DeactivateGraphnodes(List<AssociativeNode> nodeList)
         {
             if (null != nodeList)
@@ -1260,7 +1259,7 @@ namespace ProtoScript.Runners
             {
                 foreach (var st in syncData.DeletedSubtrees)
                 {
-                    if (st.AstNodes != null)
+                    if (st.AstNodes != null && st.AstNodes.Count > 0)
                     {
                         var nullNodes = MarkGraphNodesInactive(st.AstNodes);
                         if (nullNodes != null)
@@ -1367,7 +1366,12 @@ namespace ProtoScript.Runners
                     // and append them to the list of AST's to be compiled and executed
                     foreach (FunctionDefinitionNode fnode in modifiedFunctions)
                     {
-                        deltaAstList.AddRange(GetASTNodesDependentOnFunctionList(fnode));
+                        // These ASTs are to be re-executed as they depend on the modified function
+                        // They must be marked dirty
+                        List<AssociativeNode> astDependentOnFunctionList = GetASTNodesDependentOnFunctionList(fnode);
+                        ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(runnerCore, astDependentOnFunctionList);
+
+                        //deltaAstList.AddRange(astDependentOnFunctionList);
                     }
                 }
             }

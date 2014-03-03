@@ -35,50 +35,15 @@ namespace Dynamo.Python
 
             if (IronPythonCompletionData.TypeToIcon == null)
             {
-                TypeToIcon = new Dictionary<CompletionType, BitmapImage>();
                 var assembly = Assembly.GetExecutingAssembly();
 
-                var bi = new BitmapImage();
-
-                bi.BeginInit();
-                bi.StreamSource = assembly.GetManifestResourceStream(@"DynamoPython.Resources.method.png");
-                bi.EndInit();
-                TypeToIcon.Add(CompletionType.METHOD, bi);
-
-                var b2 = new BitmapImage();
-
-                b2.BeginInit();
-                b2.StreamSource = assembly.GetManifestResourceStream(@"DynamoPython.Resources.namespace.png");
-                b2.EndInit();
-                TypeToIcon.Add(CompletionType.NAMESPACE, b2);
-
-                var b3 = new BitmapImage();
-
-                b3.BeginInit();
-                b3.StreamSource = assembly.GetManifestResourceStream(@"DynamoPython.Resources.field.png");
-                b3.EndInit();
-                TypeToIcon.Add(CompletionType.FIELD, b3);
-
-                var b4 = new BitmapImage();
-
-                b4.BeginInit();
-                b4.StreamSource = assembly.GetManifestResourceStream(@"DynamoPython.Resources.class.png");
-                b4.EndInit();
-                TypeToIcon.Add(CompletionType.CLASS, b4);
-
-                var b5 = new BitmapImage();
-
-                b5.BeginInit();
-                b5.StreamSource = assembly.GetManifestResourceStream(@"DynamoPython.Resources.property.png");
-                b5.EndInit();
-                TypeToIcon.Add(CompletionType.PROPERTY, b5);
-
-                var b6 = new BitmapImage();
-
-                b6.BeginInit();
-                b6.StreamSource = assembly.GetManifestResourceStream(@"DynamoPython.Resources.property.png");
-                b6.EndInit();
-                TypeToIcon.Add(CompletionType.ENUM, b6);
+                TypeToIcon = new Dictionary<CompletionType, BitmapImage>();
+                TypeToIcon.Add(CompletionType.METHOD, GetBitmapImage(assembly, "method.png"));
+                TypeToIcon.Add(CompletionType.NAMESPACE, GetBitmapImage(assembly, @"namespace.png"));
+                TypeToIcon.Add(CompletionType.FIELD, GetBitmapImage(assembly, @"field.png"));
+                TypeToIcon.Add(CompletionType.CLASS, GetBitmapImage(assembly, @"class.png"));
+                TypeToIcon.Add(CompletionType.PROPERTY, GetBitmapImage(assembly, @"property.png"));
+                TypeToIcon.Add(CompletionType.ENUM, GetBitmapImage(assembly, @"property.png"));
             }
 
             this._image = TypeToIcon[type];
@@ -129,6 +94,17 @@ namespace Dynamo.Python
             textArea.Document.Replace(completionSegment, this.Text);
         }
 
+        private BitmapImage GetBitmapImage(Assembly assembly, string resourceFileName)
+        {
+            var name = string.Format(@"DSIronPythonNode.Resources.{0}", resourceFileName);
+
+            var bitmapImage = new BitmapImage();
+
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = assembly.GetManifestResourceStream(name);
+            bitmapImage.EndInit();
+            return bitmapImage;
+        }
     }
 
 }

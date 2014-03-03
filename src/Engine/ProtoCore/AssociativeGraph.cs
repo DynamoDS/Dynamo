@@ -30,7 +30,44 @@ namespace ProtoCore.AssociativeEngine
                 }
             }
         }
+
+        /// <summary>
+        /// Finds all graphnodes associated with each AST and marks them dirty
+        /// </summary>
+        /// <param name="nodeList"></param>
+        /// <summary>
+        /// <returns></returns>
+        public static void MarkGraphNodesDirty(ProtoCore.Core core, List<ProtoCore.AST.AssociativeAST.AssociativeNode> nodeList)
+        {
+            bool setEntryPoint = false;
+            if (null != nodeList)
+            {
+                foreach (var node in nodeList)
+                {
+                    ProtoCore.AST.AssociativeAST.BinaryExpressionNode bNode = node as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
+                    if (bNode != null)
+                    {
+                        foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
+                        {
+                            if (gnode.isActive)
+                            {
+                                if (gnode.exprUID == bNode.exprUID)
+                                {
+                                    if (!setEntryPoint)
+                                    {
+                                        setEntryPoint = true;
+                                        core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                                    }
+                                    gnode.isDirty = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+
     public class ArrayUpdate
     {
         /// <summary>
@@ -134,8 +171,10 @@ namespace ProtoCore.AssociativeGraph
     public class GraphNode
     {
         public int UID { get; set; }
+        public Guid guid {get; set;}
         public int dependencyGraphListID { get; set; }
         public int exprUID { get; set; }
+        public int ssaExprID { get; set; }
         public int modBlkUID { get; set; }
         public List<ProtoCore.AssociativeGraph.UpdateNode> dimensionNodeList { get; set; }
         public List<ProtoCore.AssociativeGraph.UpdateNodeRef> updateNodeRefList { get; set; }
@@ -205,6 +244,7 @@ namespace ProtoCore.AssociativeGraph
         public GraphNode()
         {
             UID = ProtoCore.DSASM.Constants.kInvalidIndex;
+
             dependencyGraphListID = ProtoCore.DSASM.Constants.kInvalidIndex;
             dimensionNodeList = new List<UpdateNode>();
             updateNodeRefList = new List<ProtoCore.AssociativeGraph.UpdateNodeRef>();

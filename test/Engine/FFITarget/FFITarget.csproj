@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ProtoInterface">
+      <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,8 +48,11 @@
     <Compile Include="AbstractDisposeTracert.cs" />
     <Compile Include="ClassFunctionality.cs" />
     <Compile Include="DisposeTracer.cs" />
+    <Compile Include="DummyGeometry.cs" />
+    <Compile Include="InheritenceTests.cs" />
     <Compile Include="Minimal.cs" />
     <Compile Include="MinimalTraceTargets.cs" />
+    <Compile Include="ProtoFFITests.cs" />
     <Compile Include="TestNamespaceConflict.cs" />
   </ItemGroup>
   <ItemGroup>

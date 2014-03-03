@@ -30,7 +30,8 @@ namespace DSRevitNodesTests
                 Point.ByCoordinates(0,0,0),
                 Point.ByCoordinates(1,0,0),
                 Point.ByCoordinates(3,0,0),
-                Point.ByCoordinates(10,0,0)
+                Point.ByCoordinates(10,0,0),
+                Point.ByCoordinates(12,0,0),
             };
 
             var spline = NurbsCurve.ByControlVertices( pts, 3 );
@@ -50,7 +51,7 @@ namespace DSRevitNodesTests
         public void ByCurveAndEqualDivisions_NullArgument()
         {
             // build dividedPath
-            Assert.Throws(typeof (ArgumentNullException), () => DividedPath.ByCurveAndDivisions(null, 5));
+            Assert.Throws(typeof (System.ArgumentNullException), () => DividedPath.ByCurveAndDivisions(null, 5));
         }
 
         [Test]
@@ -62,7 +63,8 @@ namespace DSRevitNodesTests
                 Point.ByCoordinates(0,0,0),
                 Point.ByCoordinates(1,0,0),
                 Point.ByCoordinates(3,0,0),
-                Point.ByCoordinates(10,0,0)
+                Point.ByCoordinates(10,0,0),
+                Point.ByCoordinates(12,0,0),
             };
 
             var spline = NurbsCurve.ByControlVertices(pts, 3);

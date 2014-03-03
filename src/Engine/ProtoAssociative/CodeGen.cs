@@ -275,7 +275,15 @@ namespace ProtoAssociative
             if (ProtoCore.DSASM.Constants.kGlobalScope == globalProcIndex && globalClassIndex == ProtoCore.DSASM.Constants.kGlobalScope && !isEntrySet)
             {
                 isEntrySet = true;
-                codeBlock.instrStream.entrypoint = pc;
+                if (ProtoCore.DSASM.Constants.kInvalidIndex != core.newEntryPoint && core.newEntryPoint < pc)
+                {
+                    codeBlock.instrStream.entrypoint = core.newEntryPoint;
+                    core.SetNewEntryPoint(ProtoCore.DSASM.Constants.kInvalidIndex);
+                }
+                else
+                {
+                    codeBlock.instrStream.entrypoint = pc;
+                }
             }
         }
 
@@ -3416,6 +3424,7 @@ namespace ProtoAssociative
 
                 List<AssociativeNode> newAstList = new List<AssociativeNode>();
 
+                int ssaExprID = 0;
                 foreach (AssociativeNode node in astList)
                 {
                     List<AssociativeNode> newASTList = new List<AssociativeNode>();
@@ -3463,12 +3472,14 @@ namespace ProtoAssociative
                                 // Set the exprID of the SSA's node
                                 BinaryExpressionNode ssaNode = aNode as BinaryExpressionNode;
                                 ssaNode.exprUID = ssaID;
+                                ssaNode.ssaExprID = ssaExprID;
                                 NodeUtils.SetNodeLocation(ssaNode, node, node);
                             }
 
                             // Assigne the exprID of the original node 
                             // (This is the node prior to ssa transformation)
                             bnode.exprUID = ssaID;
+                            bnode.ssaExprID = ssaExprID;
                             newAstList.AddRange(newASTList);
                         }
                         else
@@ -3618,6 +3629,7 @@ namespace ProtoAssociative
                     {
                         newAstList.Add(node);
                     }
+                    ssaExprID++;
                 }
                 return newAstList;
             }
@@ -7980,6 +7992,8 @@ namespace ProtoAssociative
                     graphNode.isParent = true;
                     //graphNode.UID = bnode.ID;
                     graphNode.exprUID = bnode.exprUID;
+                    graphNode.ssaExprID = bnode.ssaExprID;
+                    graphNode.guid = core.SSASubscript_GUID;
                     graphNode.modBlkUID = bnode.modBlkUID;
                     graphNode.procIndex = globalProcIndex;
                     graphNode.classIndex = globalClassIndex;

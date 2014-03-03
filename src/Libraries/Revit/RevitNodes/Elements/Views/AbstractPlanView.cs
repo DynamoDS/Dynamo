@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
@@ -10,6 +11,7 @@ namespace Revit.Elements
     /// <summary>
     /// Base class for Revit Plan views
     /// </summary>
+    [Browsable(false)]
     public class AbstractPlanView : AbstractView
     {
 

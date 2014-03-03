@@ -20,7 +20,7 @@ namespace Dynamo.Tests
         [TearDown]
         public override void Cleanup()
         {
-            LibraryServices.GetInstance().Reset();
+            LibraryServices.DestroyInstance();
             base.Cleanup();
         }
 

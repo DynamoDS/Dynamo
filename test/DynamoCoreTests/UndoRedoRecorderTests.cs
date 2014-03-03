@@ -8,6 +8,7 @@ using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using DSCoreNodesUI;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -721,7 +722,7 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(0, 0, "Boolean");
 
-            var boolNode = Controller.DynamoViewModel.Model.Nodes[0] as BoolSelector;
+            var boolNode = Controller.DynamoViewModel.Model.Nodes[0] as DSCoreNodesUI.BoolSelector;
             boolNode.Value = false;
             boolNode.X = 400; //To check if base Serialization method is being called
 
@@ -811,7 +812,7 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(0, 0, "List");
 
-            var listNode = Controller.DynamoViewModel.Model.Nodes[0] as NewList;
+            var listNode = Controller.DynamoViewModel.Model.Nodes[0] as Dynamo.Nodes.List;
             listNode.X = 400; //To check if base Serialization method is being called
             listNode.InPortData.Add(new PortData("index 1", "Item Index #1", typeof(object)));
             listNode.InPortData.Add(new PortData("index 2", "Item Index #2", typeof(object)));
