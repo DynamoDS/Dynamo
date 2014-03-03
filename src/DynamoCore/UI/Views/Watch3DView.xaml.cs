@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using System.Linq;
 using System.Windows.Threading;
 using Dynamo.DSEngine;
-using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using HelixToolkit.Wpf;
@@ -36,124 +33,124 @@ namespace Dynamo.Controls
         private readonly string _id="";
         Point _rightMousePoint;
 
-        private ThreadSafeList<Point3D> _pointsCache = new ThreadSafeList<Point3D>();
-        private ThreadSafeList<Point3D> _linesCache = new ThreadSafeList<Point3D>();
-        private ThreadSafeList<Point3D> _xAxisCache = new ThreadSafeList<Point3D>();
-        private ThreadSafeList<Point3D> _yAxisCache = new ThreadSafeList<Point3D>();
-        private ThreadSafeList<Point3D> _zAxisCache = new ThreadSafeList<Point3D>();
-        private MeshGeometry3D _meshCache = new MeshGeometry3D();
-        private ThreadSafeList<Point3D> _pointsCacheSelected = new ThreadSafeList<Point3D>();
-        private ThreadSafeList<Point3D> _linesCacheSelected = new ThreadSafeList<Point3D>();
-        private MeshGeometry3D _meshCacheSelected = new MeshGeometry3D();
-        private ThreadSafeList<Point3D> _gridCache = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _points = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _lines = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _xAxis = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _yAxis = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _zAxis = new ThreadSafeList<Point3D>();
+        private MeshGeometry3D _mesh = new MeshGeometry3D();
+        private ThreadSafeList<Point3D> _pointsSelected = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _linesSelected = new ThreadSafeList<Point3D>();
+        private MeshGeometry3D _meshSelected = new MeshGeometry3D();
+        private ThreadSafeList<Point3D> _grid = new ThreadSafeList<Point3D>();
         private ThreadSafeList<BillboardTextItem> _text = new ThreadSafeList<BillboardTextItem>();
 
-        public Material HelixMeshMaterial
+        public Material MeshMaterial
         {
             get { return Materials.White; }
         }
 
-        public ThreadSafeList<Point3D> HelixGrid
+        public ThreadSafeList<Point3D> Grid
         {
-            get { return _gridCache; }
+            get { return _grid; }
             set
             {
-                _gridCache = value;
-                NotifyPropertyChanged("HelixGrid");
+                _grid = value;
+                NotifyPropertyChanged("Grid");
             }
         }
 
-        public ThreadSafeList<Point3D> HelixPoints
+        public ThreadSafeList<Point3D> Points
         {
-            get { return _pointsCache; }
+            get { return _points; }
             set
             {
-                _pointsCache = value;
-                NotifyPropertyChanged("HelixPoints");
+                _points = value;
+                NotifyPropertyChanged("Points");
             }
         }
 
-        public ThreadSafeList<Point3D> HelixLines
+        public ThreadSafeList<Point3D> Lines
         {
-            get { return _linesCache; }
+            get { return _lines; }
             set
             {
-                _linesCache = value;
-                NotifyPropertyChanged("HelixLines");
+                _lines = value;
+                NotifyPropertyChanged("Lines");
             }
         }
 
-        public ThreadSafeList<Point3D> HelixXAxes
+        public ThreadSafeList<Point3D> XAxes
         {
-            get { return _xAxisCache; }
+            get { return _xAxis; }
             set
             {
-                _xAxisCache = value;
-                NotifyPropertyChanged("HelixXAxes");
+                _xAxis = value;
+                NotifyPropertyChanged("XAxes");
             }
         }
 
-        public ThreadSafeList<Point3D> HelixYAxes
+        public ThreadSafeList<Point3D> YAxes
         {
-            get { return _yAxisCache; }
+            get { return _yAxis; }
             set
             {
-                _yAxisCache = value;
-                NotifyPropertyChanged("HelixYAxes");
+                _yAxis = value;
+                NotifyPropertyChanged("YAxes");
             }
         }
 
-        public ThreadSafeList<Point3D> HelixZAxes
+        public ThreadSafeList<Point3D> ZAxes
         {
-            get { return _zAxisCache; }
+            get { return _zAxis; }
             set
             {
-                _zAxisCache = value;
-                NotifyPropertyChanged("HelixZAxes");
+                _zAxis = value;
+                NotifyPropertyChanged("ZAxes");
             }
         }
 
-        public MeshGeometry3D HelixMesh
+        public MeshGeometry3D Mesh
         {
-            get { return _meshCache; }
+            get { return _mesh; }
             set
             {
-                _meshCache = value;
-                NotifyPropertyChanged("HelixMesh");
+                _mesh = value;
+                NotifyPropertyChanged("Mesh");
             }
         }
 
-        public ThreadSafeList<Point3D> HelixPointsSelected
+        public ThreadSafeList<Point3D> PointsSelected
         {
-            get { return _pointsCacheSelected; }
+            get { return _pointsSelected; }
             set
             {
-                _pointsCacheSelected = value;
-                NotifyPropertyChanged("HelixPointsSelected");
+                _pointsSelected = value;
+                NotifyPropertyChanged("PointsSelected");
             }
         }
 
-        public ThreadSafeList<Point3D> HelixLinesSelected
+        public ThreadSafeList<Point3D> LinesSelected
         {
-            get { return _linesCacheSelected; }
+            get { return _linesSelected; }
             set
             {
-                _linesCacheSelected = value;
-                NotifyPropertyChanged("HelixLinesSelected");
+                _linesSelected = value;
+                NotifyPropertyChanged("LinesSelected");
             }
         }
 
-        public MeshGeometry3D HelixMeshSelected
+        public MeshGeometry3D MeshSelected
         {
-            get { return _meshCacheSelected; }
+            get { return _meshSelected; }
             set
             {
-                _meshCacheSelected = value;
-                NotifyPropertyChanged("HelixMeshSelected");
+                _meshSelected = value;
+                NotifyPropertyChanged("MeshSelected");
             }
         }
 
-        public ThreadSafeList<BillboardTextItem> HelixText
+        public ThreadSafeList<BillboardTextItem> Text
         {
             get
             {
@@ -162,7 +159,7 @@ namespace Dynamo.Controls
             set
             {
                 _text = value;
-                NotifyPropertyChanged("HelixText");
+                NotifyPropertyChanged("Text");
             }
         }
 
@@ -170,6 +167,12 @@ namespace Dynamo.Controls
         {
             get { return watch_view; }
         }
+
+        /// <summary>
+        /// Used for testing to track the number of meshes that are merged
+        /// during render.
+        /// </summary>
+        public int MeshCount { get; set; }
 
         public Watch3DView()
         {
@@ -240,7 +243,6 @@ namespace Dynamo.Controls
                     vm.GetBranchVisualizationCommand.Execute(null);
                 }
             }));
-
         }
 
         /// <summary>
@@ -248,7 +250,7 @@ namespace Dynamo.Controls
         /// </summary>
         private void DrawGrid()
         {
-            HelixGrid = null;
+            Grid = null;
 
             var newLines = new ThreadSafeList<Point3D>();
 
@@ -264,12 +266,12 @@ namespace Dynamo.Controls
                 newLines.Add(new Point3D(10, y, -.001));
             }
 
-            HelixGrid = newLines;
+            Grid = newLines;
         }
 
         /// <summary>
-        /// Use the render description returned from the visualization manager to update the visuals.
-        /// The visualization event arguments will contain a render description and an id representing 
+        /// Use the render packages returned from the visualization manager to update the visuals.
+        /// The visualization event arguments will contain a set of render packages and an id representing 
         /// the associated node. Visualizations for the background preview will return an empty id.
         /// </summary>
         /// <param name="e"></param>
@@ -287,16 +289,17 @@ namespace Dynamo.Controls
             var sw = new Stopwatch();
             sw.Start();
 
-            HelixPoints = null;
-            HelixLines = null;
-            HelixMesh = null;
-            HelixXAxes = null;
-            HelixYAxes = null;
-            HelixZAxes = null;
-            HelixPointsSelected = null;
-            HelixLinesSelected = null;
-            HelixMeshSelected = null;
-            HelixText = null;
+            Points = null;
+            Lines = null;
+            Mesh = null;
+            XAxes = null;
+            YAxes = null;
+            ZAxes = null;
+            PointsSelected = null;
+            LinesSelected = null;
+            MeshSelected = null;
+            Text = null;
+            MeshCount = 0;
 
             var points = new ThreadSafeList<Point3D>();
             var pointsSelected = new ThreadSafeList<Point3D>();
@@ -316,16 +319,19 @@ namespace Dynamo.Controls
                 ConvertMeshes(package, meshes, meshesSelected);
             }
 
-            HelixPoints = points;
-            HelixPointsSelected = pointsSelected;
-            HelixLines = lines;
-            HelixLinesSelected = linesSelected;
-            HelixXAxes = redLines;
-            HelixYAxes = greenLines;
-            HelixZAxes = blueLines;
-            HelixMesh = MergeMeshes(meshes);
-            HelixMeshSelected = MergeMeshes(meshesSelected);
-            HelixText = text;
+            Points = points;
+            PointsSelected = pointsSelected;
+            Lines = lines;
+            LinesSelected = linesSelected;
+            XAxes = redLines;
+            YAxes = greenLines;
+            ZAxes = blueLines;
+
+            MeshCount += meshes.Count + meshesSelected.Count;
+
+            Mesh = MergeMeshes(meshes);
+            MeshSelected = MergeMeshes(meshesSelected);
+            Text = text;
 
             //var sb = new StringBuilder();
             //sb.AppendLine();
