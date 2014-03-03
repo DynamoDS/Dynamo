@@ -8,7 +8,9 @@ using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using DSCoreNodesUI;
 using NUnit.Framework;
+using System.Reflection;
 
 namespace Dynamo.Tests
 {
@@ -721,7 +723,7 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(0, 0, "Boolean");
 
-            var boolNode = Controller.DynamoViewModel.Model.Nodes[0] as BoolSelector;
+            var boolNode = Controller.DynamoViewModel.Model.Nodes[0] as DSCoreNodesUI.BoolSelector;
             boolNode.Value = false;
             boolNode.X = 400; //To check if base Serialization method is being called
 
@@ -748,10 +750,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringInput()
         {
-            var model = dynSettings.Controller.DynamoModel;
-            model.CreateNode(0, 0, "String");
-
-            var strNode = Controller.DynamoViewModel.Model.Nodes[0] as StringInput;
+            var strNode = new StringInput();
             strNode.Value = "Enter";
             strNode.X = 400; //To check if base Serialization method is being called
 
@@ -778,40 +777,39 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringFileName()
         {
-            var model = dynSettings.Controller.DynamoModel;
-            model.CreateNode(0, 0, "Directory");
+            // "StringDirectory" class validates the directory name, so here we use one that we 
+            // know for sure exists so the validation process won't turn it into empty string.
+            var validFilePath = Assembly.GetExecutingAssembly().Location;
+            var validDirectoryName = Path.GetDirectoryName(validFilePath);
 
-            var strNode = Controller.DynamoViewModel.Model.Nodes[0] as StringDirectory;
-            strNode.Value = "Enter";
+            var strNode = new StringDirectory();
+            strNode.Value = validDirectoryName;
             strNode.X = 400; //To check if base Serialization method is being called
 
             //Assert initial values
             Assert.AreEqual(400, strNode.X);
-            Assert.AreEqual("Enter", strNode.Value);
+            Assert.AreEqual(validDirectoryName, strNode.Value);
 
             //Serialize node and then change values
             XmlDocument xmlDoc = new XmlDocument();
             XmlElement serializedEl = strNode.Serialize(xmlDoc, SaveContext.Undo);
             strNode.X = 250;
-            strNode.Value = "Exit";
+            strNode.Value = "Invalid file path";
 
             //Assert new changes
             Assert.AreEqual(250, strNode.X);
-            Assert.AreEqual("Exit", strNode.Value);
+            Assert.AreEqual("Invalid file path", strNode.Value);
 
             //Deserialize and aasert old values
             strNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(400, strNode.X);
-            Assert.AreEqual("Enter", strNode.Value);
+            Assert.AreEqual(validDirectoryName, strNode.Value);
         }
 
         [Test]
         public void TestVariableInput()
         {
-            var model = dynSettings.Controller.DynamoModel;
-            model.CreateNode(0, 0, "List");
-
-            var listNode = Controller.DynamoViewModel.Model.Nodes[0] as NewList;
+            var listNode = new Dynamo.Nodes.NewList();
             listNode.X = 400; //To check if base Serialization method is being called
             listNode.InPortData.Add(new PortData("index 1", "Item Index #1", typeof(object)));
             listNode.InPortData.Add(new PortData("index 2", "Item Index #2", typeof(object)));
@@ -840,10 +838,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestSublists()
         {
-            var model = dynSettings.Controller.DynamoModel;
-            model.CreateNode(0, 0, "Build Sublists");
-
-            var strNode = Controller.DynamoViewModel.Model.Nodes[0] as Sublists;
+            var strNode = new Sublists();
             strNode.Value = "Enter";
             strNode.X = 400; //To check if base Serialization method is being called
 
