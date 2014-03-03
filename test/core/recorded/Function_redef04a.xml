@@ -1,4 +1,4 @@
-<Commands ExitAfterPlayback="false" PauseAfterPlaybackInMs="10" CommandIntervalInMs="250">
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
   <CreateNodeCommand NodeId="48af4731-99bb-42c7-848b-a6b812206ffb" NodeName="Code Block" X="257" Y="240" DefaultPosition="false" TransformCoordinates="true" />
   <UpdateModelValueCommand ModelGuid="48af4731-99bb-42c7-848b-a6b812206ffb" Name="Code" Value="def test(i:int) &#xA;{&#xA;a=a+1;&#xA;return = i;&#xA;};" />
   <CreateNodeCommand NodeId="0953f2fd-9f50-42f5-9de4-80d4dd93e866" NodeName="Code Block" X="424" Y="254" DefaultPosition="false" TransformCoordinates="true" />
