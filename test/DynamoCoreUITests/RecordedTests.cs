@@ -19,6 +19,7 @@ using Dynamo.Tests;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using DSIronPythonNode;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Tests.UI
 {
@@ -45,6 +46,12 @@ namespace Dynamo.Tests.UI
             // Fixed seed randomizer for predictability.
             randomizer = new System.Random(123456);
             SetupDirectories();
+        }
+
+        public override void Cleanup()
+        {
+            LibraryServices.DestroyInstance();
+            base.Cleanup();
         }
 
         protected void Exit()

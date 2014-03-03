@@ -384,8 +384,8 @@ def __Reduce(accumulator: _FunctionObject, seed: var, list: var[]..[])
         for (_index in 0..(Count(argLists) - 1))
         {
 			argList = argLists[_index];
-			argList[Count(argLists)] = _acc;
-            _acc = ApplyList(accumulator, list[_index]);
+			argList[Count(argList)] = _acc;
+            _acc = ApplyList(accumulator, argList);
         }
         
         return = _acc;
