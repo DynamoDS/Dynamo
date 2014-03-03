@@ -430,10 +430,6 @@ limitations under the License.
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Render\DesignScriptStudio.Renderer\DesignScriptStudio.Renderer.vcxproj">
-      <Project>{a69e7467-7a33-4242-aea2-984b41130f54}</Project>
-      <Name>DesignScriptStudio.Renderer</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\add.png" />
