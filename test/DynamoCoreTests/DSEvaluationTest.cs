@@ -145,7 +145,6 @@ namespace Dynamo.Tests
             }
         }
 
-        [TearDown]
         public override void Cleanup()
         {
             GraphToDSCompiler.GraphUtilities.Reset();
@@ -171,7 +170,7 @@ namespace Dynamo.Tests
             // 2; ----> y Point.ByCoordinates(x, y, z);
             // 3; ----> z
             RunModel(@"core\dsevaluation\regress561.dyn");
-            AssertClassName("8774296c-5269-450b-959d-ce4020ddbf80", "Point");
+            AssertClassName("8774296c-5269-450b-959d-ce4020ddbf80", "Autodesk.DesignScript.Geometry.Point");
         }
 
         [Test]

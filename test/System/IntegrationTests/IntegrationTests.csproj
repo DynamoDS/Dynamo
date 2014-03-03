@@ -109,7 +109,6 @@
     <Compile Include="CallsiteRegen.cs" />
     <Compile Include="IncrementingTraceTests.cs" />
     <Compile Include="MinimalTraceTests.cs" />
-    <Compile Include="NamespaceConflictTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

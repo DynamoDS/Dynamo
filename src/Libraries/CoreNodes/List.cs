@@ -13,10 +13,8 @@ namespace DSCore
     /// <summary>
     ///     Methods for creating and manipulating Lists.
     /// </summary>
-    public class List
+    public static class List
     {
-        private List() { }
-
         /// <summary>
         ///     Creates a new list containing all unique items in the given list.
         /// </summary>
