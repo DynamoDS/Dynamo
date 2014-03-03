@@ -354,6 +354,7 @@ namespace Dynamo.Controls
             ThreadSafeList<Point3D> pointsSelected, 
             ThreadSafeList<BillboardTextItem> text)
         {
+            var pointColl = p.Selected ? points : pointsSelected;
             for (int i = 0; i < p.PointVertices.Count; i += 3)
             {
                 var pos = new Point3D(
@@ -361,14 +362,7 @@ namespace Dynamo.Controls
                     p.PointVertices[i + 1],
                     p.PointVertices[i + 2]);
 
-                if (p.Selected)
-                {
-                    pointsSelected.Add(pos);
-                }
-                else
-                {
-                    points.Add(pos);
-                }
+                pointColl.Add(pos);
 
                 if (p.DisplayLabels)
                 {
@@ -385,74 +379,53 @@ namespace Dynamo.Controls
             ThreadSafeList<Point3D> blueLines,
             ThreadSafeList<BillboardTextItem> text)
         {
-            int colorCount = 0;
-            //var step = p.LineStripVertices.Count/p.LineStripVertexCounts[0]/2;
+            //int colorCount = 0;
+            int idx = 0;
+            int color_idx = 0;
 
-            for (int i = 0; i < p.LineStripVertices.Count - 3; i += 3)
+            var lineColl = p.Selected ? linesSelected : lines;
+            foreach (var count in p.LineStripVertexCounts)
             {
-                var start = new Point3D(
-                    p.LineStripVertices[i],
-                    p.LineStripVertices[i + 1],
-                    p.LineStripVertices[i + 2]);
-
-                var end = new Point3D(
-                    p.LineStripVertices[i + 3],
-                    p.LineStripVertices[i + 4],
-                    p.LineStripVertices[i + 5]);
-
-                //HACK: test for line color using only 
-                //the start value
-                var startColor = Color.FromRgb(
-                    p.LineStripVertexColors[colorCount],
-                    p.LineStripVertexColors[colorCount + 1],
-                    p.LineStripVertexColors[colorCount + 2]);
-
-                //var endColor = new Point3D(
-                //    p.LineStripVertexColors[i + 3],
-                //    p.LineStripVertexColors[i + 4],
-                //    p.LineStripVertexColors[i + 5]);
-
-                //draw a label at the start of the curve
-                if (p.DisplayLabels && i == 0)
+                for (int i = 0; i < count; ++i)
                 {
-                    text.Add(new BillboardTextItem {Text = p.Tag, Position = start});
-                }
+                    var point = new Point3D(p.LineStripVertices[idx], p.LineStripVertices[idx + 1],
+                        p.LineStripVertices[idx + 2]);
 
-                bool isAxis = false;
-                if (startColor == Color.FromRgb(255,0,0))
-                {
-                    redLines.Add(start);
-                    redLines.Add(end);
-                    isAxis = true;
-                }
-                else if (startColor == Color.FromRgb(0,255,0))
-                {
-                    greenLines.Add(start);
-                    greenLines.Add(end);
-                    isAxis = true;
-                }
-                else if (startColor == Color.FromRgb(0,255,255))
-                {
-                    blueLines.Add(start);
-                    blueLines.Add(end);
-                    isAxis = true;
-                }
-
-                if (!isAxis)
-                {
-                    if (p.Selected)
+                    if (i != 0 && i != count - 1)
                     {
-                        linesSelected.Add(start);
-                        linesSelected.Add(end);
+                        lineColl.Add(point);
                     }
-                    else
-                    {
-                        lines.Add(start);
-                        lines.Add(end);
-                    }
-                }
+                    
+                    bool isAxis = false;
+                    var startColor = Color.FromRgb(
+                                            p.LineStripVertexColors[color_idx],
+                                            p.LineStripVertexColors[color_idx + 1],
+                                            p.LineStripVertexColors[color_idx + 2]);
 
-                colorCount += 4;
+                    if (startColor == Color.FromRgb(255, 0, 0))
+                    {
+                        redLines.Add(point);
+                        isAxis = true;
+                    }
+                    else if (startColor == Color.FromRgb(0, 255, 0))
+                    {
+                        greenLines.Add(point);
+                        isAxis = true;
+                    }
+                    else if (startColor == Color.FromRgb(0, 0, 255))
+                    {
+                        blueLines.Add(point);
+                        isAxis = true;
+                    }
+
+                    if (!isAxis)
+                    {
+                        lineColl.Add(point);
+                    } 
+
+                    idx += 3;
+                    color_idx += 4;
+                }
             }
         }
 

@@ -2042,8 +2042,8 @@ namespace Dynamo.Models
                 return;
             }
 
-            ((RenderPackage) RenderPackage).Selected = IsSelected;
-            ((RenderPackage) RenderPackage).DisplayLabels = DisplayLabels;
+            package.Selected = IsSelected;
+            package.DisplayLabels = DisplayLabels;
 
             IEnumerable<string> drawableIds = GetDrawableIds();
 
