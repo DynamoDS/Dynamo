@@ -2246,7 +2246,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
-            AssertPreviewValue("3960776a-4c6c-40d8-8b7e-dbe5db38d75b", 5);
+            AssertPreviewValue("3960776a-4c6c-40d8-8b7e-dbe5db38d75b", true);
         }
 
         #endregion
