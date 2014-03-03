@@ -145,7 +145,6 @@ namespace Dynamo.Tests
             }
         }
 
-        [TearDown]
         public override void Cleanup()
         {
             GraphToDSCompiler.GraphUtilities.Reset();

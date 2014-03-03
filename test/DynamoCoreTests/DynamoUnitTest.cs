@@ -20,7 +20,6 @@ namespace Dynamo.Tests
             StartDynamo();
         }
 
-        [TearDown]
         public override void Cleanup()
         {
             try
