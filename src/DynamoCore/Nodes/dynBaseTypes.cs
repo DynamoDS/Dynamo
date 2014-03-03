@@ -3060,6 +3060,11 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewList(finalList.ToFSharpList());
         }
 
+        protected override string SerializeValue(string val)
+        {
+            return val;
+        }
+
         protected override string DeserializeValue(string val)
         {
             return val;
@@ -4690,6 +4695,7 @@ namespace Dynamo.Nodes
         }
 
         protected abstract T DeserializeValue(string val);
+        protected abstract string SerializeValue(T val);
 
         protected BasicInteractive()
         {
@@ -4720,6 +4726,38 @@ namespace Dynamo.Nodes
         {
             return Value.ToString();
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                var document = element.OwnerDocument;
+                XmlElement childElement = document.CreateElement(typeof(T).FullName);
+                childElement.SetAttribute("value", SerializeValue(this.Value));
+                element.AppendChild(childElement);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                foreach (XmlNode childNode in element.ChildNodes)
+                {
+                    if (childNode.Name.Equals(typeof(T).FullName) == false)
+                        continue;
+
+                    this.Value = DeserializeValue(childNode.Attributes["value"].Value);
+                    break;
+                }
+            }
+        }
+
+        #endregion
     }
 
     public abstract class Double : BasicInteractive<double>
@@ -4740,30 +4778,6 @@ namespace Dynamo.Nodes
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             nodeElement.AppendChild(outEl);
         }
-
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context); //Base implementation must be called
-            if (context == SaveContext.Undo)
-            {
-                XmlElementHelper helper = new XmlElementHelper(element);
-                helper.SetAttribute("doubleValue", Value);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context); //Base implementation must be called
-            if (context == SaveContext.Undo)
-            {
-                XmlElementHelper helper = new XmlElementHelper(element);
-                Value = helper.ReadDouble("doubleValue");
-            }
-        }
-
-        #endregion
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -4787,30 +4801,6 @@ namespace Dynamo.Nodes
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             nodeElement.AppendChild(outEl);
         }
-
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context); //Base implementation must be called
-            if (context == SaveContext.Undo)
-            {
-                XmlElementHelper helper = new XmlElementHelper(element);
-                helper.SetAttribute("integerValue", Value);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context); //Base implementation must be called
-            if (context == SaveContext.Undo)
-            {
-                XmlElementHelper helper = new XmlElementHelper(element);
-                Value = helper.ReadInteger("integerValue");
-            }
-        }
-
-        #endregion
     }
 
     public abstract class Bool : BasicInteractive<bool>
@@ -4819,30 +4809,6 @@ namespace Dynamo.Nodes
         {
             return FScheme.Value.NewNumber(Value ? 1 : 0);
         }
-
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context); //Base implementation must be called
-            if (context == SaveContext.Undo)
-            {
-                XmlElementHelper helper = new XmlElementHelper(element);
-                helper.SetAttribute("boolValue", Value);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context); //Base implementation must be called
-            if (context == SaveContext.Undo)
-            {
-                XmlElementHelper helper = new XmlElementHelper(element);
-                Value = helper.ReadBoolean("boolValue");
-            }
-        }
-
-        #endregion
     }
 
     public abstract partial class String : BasicInteractive<string>
@@ -5553,6 +5519,11 @@ namespace Dynamo.Nodes
             } 
         }
 
+        protected override string SerializeValue(double val)
+        {
+            return val.ToString(CultureInfo.InvariantCulture);
+        }
+
         protected override double DeserializeValue(string val)
         {
             try
@@ -5720,6 +5691,11 @@ namespace Dynamo.Nodes
             }
         }
 
+        protected override string SerializeValue(int val)
+        {
+            return val.ToString(CultureInfo.InvariantCulture);
+        }
+
         protected override int DeserializeValue(string val)
         {
             try
@@ -5839,6 +5815,11 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
+        protected override string SerializeValue(bool val)
+        {
+            return val.ToString();
+        }
+
         protected override bool DeserializeValue(string val)
         {
             try
@@ -5900,6 +5881,11 @@ namespace Dynamo.Nodes
         {
             RegisterAllPorts();
             Value = "";
+        }
+
+        protected override string SerializeValue(string val)
+        {
+            return val;
         }
 
         protected override string DeserializeValue(string val)
@@ -5968,25 +5954,29 @@ namespace Dynamo.Nodes
     {
         protected override string DeserializeValue(string val)
         {
-            if (Directory.Exists(val))
-            {
-                return val;
-            }
-            else
-            {
-                return "";
-            }
+            return (Directory.Exists(val) ? val : string.Empty);
         }
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "DSCore.File.Directory"));
+            XmlElement original = data.MigratedNodes.ElementAt(0);
+            var cloned = MigrationManager.CloneAndChangeType(original, "DSCore.File.Directory");
 
+            var document = original.OwnerDocument;
+            foreach (XmlNode childNode in original.ChildNodes)
+            {
+                if (childNode.Name.Equals(typeof(string).FullName))
+                {
+                    var childElement = document.CreateElement(typeof(string).FullName);
+                    childElement.InnerText = childNode.Attributes[0].Value;
+                    cloned.AppendChild(childElement);
+                }
+            }
+
+            migrationData.AppendNode(cloned);
             return migrationData;            
-
         }
     }
 
@@ -6004,16 +5994,14 @@ namespace Dynamo.Nodes
             Value = "";
         }
 
+        protected override string SerializeValue(string val)
+        {
+            return val;
+        }
+
         protected override string DeserializeValue(string val)
         {
-            if (File.Exists(val))
-            {
-                return val;
-            }
-            else
-            {
-                return "";
-            }
+            return (File.Exists(val) ? val : string.Empty);
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -6033,9 +6021,21 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "DSCore.File.Filename"));
+            XmlElement original = data.MigratedNodes.ElementAt(0);
+            var cloned = MigrationManager.CloneAndChangeType(original, "DSCore.File.Filename");
 
+            var document = original.OwnerDocument;
+            foreach (XmlNode childNode in original.ChildNodes)
+            {
+                if (childNode.Name.Equals(typeof(string).FullName))
+                {
+                    var childElement = document.CreateElement(typeof(string).FullName);
+                    childElement.InnerText = childNode.Attributes[0].Value;
+                    cloned.AppendChild(childElement);
+                }
+            }
+
+            migrationData.AppendNode(cloned);
             return migrationData;            
         }
     }
