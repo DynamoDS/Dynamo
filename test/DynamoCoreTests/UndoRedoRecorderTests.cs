@@ -810,9 +810,9 @@ namespace Dynamo.Tests
         public void TestVariableInput()
         {
             var model = dynSettings.Controller.DynamoModel;
-            model.CreateNode(0, 0, "List");
+            model.CreateNode(0, 0, "DSCore.List.Create@var[]..[]");
 
-            var listNode = Controller.DynamoViewModel.Model.Nodes[0] as Dynamo.Nodes.List;
+            var listNode = Controller.DynamoViewModel.Model.Nodes[0] as Dynamo.Nodes.DSVarArgFunction;
             listNode.X = 400; //To check if base Serialization method is being called
             listNode.InPortData.Add(new PortData("index 1", "Item Index #1", typeof(object)));
             listNode.InPortData.Add(new PortData("index 2", "Item Index #2", typeof(object)));
