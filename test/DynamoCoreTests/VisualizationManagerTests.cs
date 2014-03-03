@@ -43,46 +43,6 @@ namespace Dynamo.Tests
             //var renderables = viz.Visualizations.SelectMany(x => x.Value.Points);
             //Assert.AreEqual(0, renderables.Count());
         }
-
-        [Test]
-        public void NothingIsVisualizedWhenThereIsNothingToVisualize()
-        {
-            //var viz = dynSettings.Controller.VisualizationManager;
-
-            //// run the expression
-            //dynSettings.Controller.RunExpression(null);
-
-            //int pointCount, lineCount, meshCount, xCount, yCount, zCount;
-            //viz.GetRenderableCounts(
-            //    out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
-
-            //Assert.AreEqual(0, pointCount);
-            //Assert.AreEqual(0, lineCount);
-            //Assert.AreEqual(0, meshCount);
-            //Assert.AreEqual(0, xCount);
-            //Assert.AreEqual(0, yCount);
-            //Assert.AreEqual(0, zCount);
-
-            Assert.Inconclusive("Ian to finish after viz manager work.");
-        }
-
-        [Test]
-        public void BackgroundPreviewDrawsOnOpen()
-        {
-            //var model = dynSettings.Controller.DynamoModel;
-            //var viz = dynSettings.Controller.VisualizationManager;
-
-            //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
-            //model.Open(openPath);
-
-            //// run the expression
-            //dynSettings.Controller.RunExpression(null);
-
-            ////graphics will have been updated at this point
-            ////enabled the background preview and ensure that it 
-
-            Assert.Inconclusive("Ian to finish after viz manager work.");
-        }
         
         [Test]
         public void VisualizationInSyncWithPreview()
@@ -145,70 +105,7 @@ namespace Dynamo.Tests
             Assert.Inconclusive("Ian to finish after viz manager work.");
         }
 
-        [Test]
-        public void CanVisualizeASMSolids()
-        {
-            ////test to ensure that when nodes are disconnected 
-            ////their associated geometry is removed
-            //var model = dynSettings.Controller.DynamoModel;
-            //var viz = dynSettings.Controller.VisualizationManager;
-
-            //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_thicken.dyn");
-            //model.Open(openPath);
-
-            //// run the expression
-            //dynSettings.Controller.RunExpression(null);
-
-            //var meshes = viz.Visualizations.SelectMany(x => x.Value.Meshes);
-            //Assert.AreEqual(1, meshes.Count());
-
-            Assert.Inconclusive("Ian to finish after viz manager work.");
-        }
-
-        [Test]
-        public void CanVisualizeASMSurfaces()
-        {
-            ////test to ensure that when nodes are disconnected 
-            ////their associated geometry is removed
-            //var model = dynSettings.Controller.DynamoModel;
-            //var viz = dynSettings.Controller.VisualizationManager;
-
-            //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_cuboid.dyn");
-            //model.Open(openPath);
-
-            //// run the expression
-            //dynSettings.Controller.RunExpression(null);
-
-            //var meshes = viz.Visualizations.SelectMany(x => x.Value.Meshes);
-            //Assert.AreEqual(1, meshes.Count());
-
-            Assert.Inconclusive("Ian to finish after viz manager work.");
-        }
-
-        [Test]
-        public void CanVisualizeASMCoordinateSystems()
-        {
-            ////test to ensure that when nodes are disconnected 
-            ////their associated geometry is removed
-            //var model = dynSettings.Controller.DynamoModel;
-            //var viz = dynSettings.Controller.VisualizationManager;
-
-            //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_coordinateSystem.dyn");
-            //model.Open(openPath);
-
-            //// run the expression
-            //dynSettings.Controller.RunExpression(null);
-
-            //var xs = viz.Visualizations.SelectMany(x => x.Value.XAxisPoints);
-            //var ys = viz.Visualizations.SelectMany(x => x.Value.YAxisPoints);
-            //var zs = viz.Visualizations.SelectMany(x => x.Value.ZAxisPoints);
-
-            //Assert.AreEqual(2, xs.Count());
-            //Assert.AreEqual(2, ys.Count());
-            //Assert.AreEqual(2, zs.Count());
-
-            Assert.Inconclusive("Ian to finish after viz manager work.");
-        }
+        
 
         [Test]
         public void CanVisualizeGeometryFromPython()

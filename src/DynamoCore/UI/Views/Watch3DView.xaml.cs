@@ -36,16 +36,15 @@ namespace Dynamo.Controls
         private readonly string _id="";
         Point _rightMousePoint;
 
-        protected ThreadSafeList<MeshVisual3D> _meshes = new ThreadSafeList<MeshVisual3D>();
-        public ThreadSafeList<Point3D> _pointsCache = new ThreadSafeList<Point3D>();
-        public ThreadSafeList<Point3D> _linesCache = new ThreadSafeList<Point3D>();
-        public ThreadSafeList<Point3D> _xAxisCache = new ThreadSafeList<Point3D>();
-        public ThreadSafeList<Point3D> _yAxisCache = new ThreadSafeList<Point3D>();
-        public ThreadSafeList<Point3D> _zAxisCache = new ThreadSafeList<Point3D>();
-        public MeshGeometry3D _meshCache = new MeshGeometry3D();
-        public ThreadSafeList<Point3D> _pointsCacheSelected = new ThreadSafeList<Point3D>();
-        public ThreadSafeList<Point3D> _linesCacheSelected = new ThreadSafeList<Point3D>();
-        public MeshGeometry3D _meshCacheSelected = new MeshGeometry3D();
+        private ThreadSafeList<Point3D> _pointsCache = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _linesCache = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _xAxisCache = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _yAxisCache = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _zAxisCache = new ThreadSafeList<Point3D>();
+        private MeshGeometry3D _meshCache = new MeshGeometry3D();
+        private ThreadSafeList<Point3D> _pointsCacheSelected = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _linesCacheSelected = new ThreadSafeList<Point3D>();
+        private MeshGeometry3D _meshCacheSelected = new MeshGeometry3D();
         private ThreadSafeList<Point3D> _gridCache = new ThreadSafeList<Point3D>();
         private ThreadSafeList<BillboardTextItem> _text = new ThreadSafeList<BillboardTextItem>();
 
@@ -354,7 +353,7 @@ namespace Dynamo.Controls
             ThreadSafeList<Point3D> pointsSelected, 
             ThreadSafeList<BillboardTextItem> text)
         {
-            var pointColl = p.Selected ? points : pointsSelected;
+            var pointColl = p.Selected ? pointsSelected : points;
             for (int i = 0; i < p.PointVertices.Count; i += 3)
             {
                 var pos = new Point3D(
