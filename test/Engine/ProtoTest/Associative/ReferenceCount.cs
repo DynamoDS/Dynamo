@@ -2070,9 +2070,10 @@ namespace ProtoTest.Associative
         {
             string code = @"class A{    static s_dispose = 0;    mi : int;    constructor A(i:int)    {        mi = i;    }        def _Dispose()    {        s_dispose = s_dispose + 1;    }    def Translate(i)    {        newi = mi + i;        return = A.A(newi);    }}as = {A.A(2), A.A(3), A.A(5)};as[1] = as[1].Translate(100);as = null;d = A.s_dispose;";
             thisTest.RunScriptSource(code);
-            // SSA'd transforms will not GC the temps until end of block
-            // However, they must be GC's after every line when in debug setp over
-            thisTest.Verify("d", 0);
+
+            // IT gc's the line where it calls translate when variable as is nullified
+            // It disposes 3 ssa temporaries and 1 element in the array 'as'
+            thisTest.Verify("d", 4);
         }
 
         [Test]
