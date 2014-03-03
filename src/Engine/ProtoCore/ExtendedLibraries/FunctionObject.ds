@@ -369,7 +369,7 @@ def __CartesianProduct(func : _FunctionObject, lists : var[]..[])
     };
 }
 
-def __Reduce(list : var[]..[], seed:var, accumulator : _FunctionObject)
+def __Reduce(accumulator: _FunctionObject, seed: var, list: var[]..[])
 {
     return = [Imperative]
     {
