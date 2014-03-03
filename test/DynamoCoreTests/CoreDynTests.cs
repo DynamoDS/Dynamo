@@ -328,13 +328,10 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core");
             string openPath = Path.Combine(examplePath, "StringInputTest.dyn");
-            model.Open(openPath);
+            RunModel(openPath);
 
-            var strNode = (StringInput)dynSettings.Controller.DynamoModel.Nodes.First(x => x is StringInput);
-            const string expected =
-                "A node\twith tabs, and\r\ncarriage returns,\r\nand !@#$%^&* characters, and also something \"in quotes\".";
-
-            Assert.AreEqual(expected, strNode.Value);
+            AssertPreviewValue("a6e316b4-7054-42cd-a901-7bc6d4045c23",
+                "A node\twith tabs, and\ncarriage returns,\nand !@#$%^&amp;* characters, and also something &quot;in quotes&quot;.");
         }
 
         [Test]
@@ -378,7 +375,7 @@ namespace Dynamo.Tests
             model.Open(openPath);
 
             //set the path to the image file
-            var pathNode = (StringFilename)model.Nodes.First(x => x is StringFilename);
+            var pathNode = (DSCore.File.Filename)model.Nodes.First(x => x is DSCore.File.Filename);
             pathNode.Value = Path.Combine(examplePath,"honey-badger.jpg");
 
             RunModel(openPath);

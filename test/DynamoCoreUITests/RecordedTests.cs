@@ -1717,12 +1717,12 @@ namespace Dynamo.Tests.UI
 
             RunCommandsFromFile("Defect_MAGN_164.xml", true);
 
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count);
             Assert.AreEqual(0, workspace.Connectors.Count);
 
-            AssertPreviewValue("2e1e5f33-52fc-4cc9-9d4a-33e46ec64a53", 30);
+            AssertPreviewValue("428fc0eb-aacf-41ca-b4d9-d4152e945ad8", 10);
 
-            AssertPreviewValue("a4ba7320-3cb8-4524-bc8c-8688d7abc599", "Dynamo");
+            AssertPreviewValue("635bd033-03f6-4b98-b03d-a5c3c2969607", 10);
         }
 
         [Test]
@@ -1808,10 +1808,10 @@ namespace Dynamo.Tests.UI
         public void Defect_MAGN_520()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
-            RunCommandsFromFile("Defect_MAGN_520.xml");
-
+            RunCommandsFromFile("Defect_MAGN_520.xml", true);
             Assert.AreEqual(2, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+            AssertPreviewValue("41f52d8e-1a88-4f09-a2f1-f14e61d81f2c", 4);
         }
 
         [Test]
@@ -1827,6 +1827,9 @@ namespace Dynamo.Tests.UI
         [Test]
         public void Defect_MAGN_57()
         {
+            Assert.Inconclusive();// This test cases using Map node which is deprecated so marking
+            // this test cases Inconclusive and will revisit once we have Map node.
+
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-57
             RunCommandsFromFile("Defect_MAGN_57.xml");
 
@@ -1924,48 +1927,41 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(1, workspace.Notes.Count);
             Assert.AreEqual(2, workspace.Nodes.Count);
 
-            var number = GetNode("0b171995-528b-480a-b203-9cee49fcec9d") as DoubleInput;
-            var strIn = GetNode("d17de86f-0665-4e22-abd4-d16360ee17d7") as StringInput;
-            var note = GetNode("6aed237b-beb6-4a24-8774-9b7e29615be1") as NoteModel;
+            var number = GetNode("a9762506-2ab6-4b50-8166-138de5b0c704") as DoubleInput;
+            var note = GetNode("21c66403-d102-42bd-97ae-9e7b9c0b6e7d") as NoteModel;
 
             Assert.IsNotNull(number);
-            Assert.IsNotNull(strIn);
             Assert.IsNotNull(note);
 
             Assert.AreEqual("Caption 1", number.NickName);
-            Assert.AreEqual("Caption 2", strIn.NickName);
             Assert.AreEqual("Caption 3", note.Text);
         }
 
         [Test]
         public void TestUpdateNodeContents()
         {
-            RunCommandsFromFile("UpdateNodeContents.xml");
-            Assert.AreEqual(0, workspace.Connectors.Count);
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            RunCommandsFromFile("UpdateNodeContents.xml", true);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count);
 
-            var number = GetNode("2ba65a2e-c3dd-4d27-9d18-9bf123835fb8") as DoubleInput;
-            var slider = GetNode("2279f845-4ba9-4300-a6c3-a566cd8b4a32") as DoubleSliderInput;
-            var strIn = GetNode("d33abcb6-50fd-4d18-ac89-87adb2d28053") as StringInput;
-            var formula = GetNode("540fffbb-4f5b-4496-9231-eba5b04e388c") as Formula;
-            var sublist = GetNode("0a60f132-25a0-4b7c-85f2-3c31f39ef9da") as Sublists;
+            var number = GetNode("31f48bb5-4bdf-4066-b343-5df0f6f4337f") as DoubleInput;
+            var slider = GetNode("ff4d4e43-8932-4588-95ed-f41c7f322ad0") as IntegerSlider;
+            var codeblock = GetNode("d7e88a85-d32f-416c-b449-b22f099c5471") as CodeBlockNodeModel;
 
             Assert.IsNotNull(number);
             Assert.IsNotNull(slider);
-            Assert.IsNotNull(strIn);
-            Assert.IsNotNull(formula);
-            Assert.IsNotNull(sublist);
+            Assert.IsNotNull(codeblock);
 
-            Assert.AreEqual("12.34", number.Value);
-            Assert.AreEqual(23.45, slider.Min, 0.000001);
-            Assert.AreEqual(34.56, slider.Value, 0.000001);
-            Assert.AreEqual(45.67, slider.Max, 0.000001);
-            Assert.AreEqual("Test String Input", strIn.Value);
-            Assert.AreEqual("d", sublist.Value);
+            Assert.AreEqual("10", number.Value);
+            Assert.AreEqual(0, slider.Min, 0.000001);
+            Assert.AreEqual(70, slider.Value, 0.000001);
+            Assert.AreEqual(100, slider.Max, 0.000001);
 
-            Assert.AreEqual("a+b+c", formula.FormulaString);
-            Assert.AreEqual(3, formula.InPorts.Count);
-            Assert.AreEqual(1, formula.OutPorts.Count);
+            Assert.AreEqual("a+b;", codeblock.Code);
+            Assert.AreEqual(2, codeblock.InPorts.Count);
+            Assert.AreEqual(1, codeblock.OutPorts.Count);
+
+            AssertPreviewValue("d7e88a85-d32f-416c-b449-b22f099c5471", 80);
         }
 
         [Test]
