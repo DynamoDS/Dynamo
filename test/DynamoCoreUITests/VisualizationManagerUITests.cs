@@ -2,15 +2,10 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Windows.Controls;
-using System.Windows.Media.Media3D;
 using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Nodes;
-using Dynamo.UI.Controls;
-using Dynamo.Units;
 using Dynamo.Utilities;
-using DynamoCore.UI.Controls;
 using NUnit.Framework;
 
 namespace Dynamo.Tests.UI
@@ -60,6 +55,40 @@ namespace Dynamo.Tests.UI
         {
             if (Ui.IsLoaded)
                 Ui.Close();
+        }
+
+        [Test]
+        public void NothingIsVisualizedWhenThereIsNothingToVisualize()
+        {
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            Assert.AreEqual(0, BackgroundPreview.HelixPoints.Count);
+            Assert.AreEqual(0, BackgroundPreview.HelixLines.Count);
+            Assert.AreEqual(0, BackgroundPreview.HelixMesh.Positions.Count);
+            Assert.AreEqual(0, BackgroundPreview.HelixXAxes.Count);
+            Assert.AreEqual(0, BackgroundPreview.HelixYAxes.Count);
+            Assert.AreEqual(0, BackgroundPreview.HelixZAxes.Count);
+        }
+
+        [Test]
+        public void BackgroundPreviewDrawsOnOpen()
+        {
+            //var model = dynSettings.Controller.DynamoModel;
+            //var viz = dynSettings.Controller.VisualizationManager;
+
+            //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
+            //model.Open(openPath);
+
+            //// run the expression
+            //dynSettings.Controller.RunExpression(null);
+
+            ////graphics will have been updated at this point
+            ////enabled the background preview and ensure that it 
+
+            Assert.Inconclusive("Finish me!");
         }
 
         /*
@@ -165,8 +194,61 @@ namespace Dynamo.Tests.UI
             //the renderables for the line node
             Assert.AreEqual(7, BackgroundPreview.HelixPoints.Count);
             Assert.AreEqual(0, BackgroundPreview.HelixLines.Count);
+        }
+
+        [Test]
+        public void CanVisualizeASMSolids()
+        {
+            ////test to ensure that when nodes are disconnected 
+            ////their associated geometry is removed
+            //var model = dynSettings.Controller.DynamoModel;
+            //var viz = dynSettings.Controller.VisualizationManager;
+
+            //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_thicken.dyn");
+            //model.Open(openPath);
+
+            //// run the expression
+            //dynSettings.Controller.RunExpression(null);
+
+            //var meshes = viz.Visualizations.SelectMany(x => x.Value.Meshes);
+            //Assert.AreEqual(1, meshes.Count());
 
             Assert.Inconclusive("Ian to finish after viz manager work.");
+        }
+
+        [Test]
+        public void CanVisualizeASMSurfaces()
+        {
+            //test to ensure that when nodes are disconnected 
+            //their associated geometry is removed
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_cuboid.dyn");
+            model.Open(openPath);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            //var meshes = viz.Visualizations.SelectMany(x => x.Value.Meshes);
+            Assert.AreEqual(36, BackgroundPreview.HelixMesh.Positions.Count);
+        }
+
+        [Test]
+        public void CanVisualizeCoordinateSystems()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_coordinateSystem.dyn");
+            model.Open(openPath);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            Assert.AreEqual(2, BackgroundPreview.HelixXAxes.Count);
+            Assert.AreEqual(2, BackgroundPreview.HelixYAxes.Count);
+            Assert.AreEqual(2, BackgroundPreview.HelixZAxes.Count);
         }
 
         private int GetTotalDrawablesInModel()
