@@ -8,7 +8,7 @@ namespace DSCore
     /// <summary>
     /// Methods for managing strings.
     /// </summary>
-    public class String
+    public static class String
     {
         /// <summary>
         ///     Converts an object to a string representation.

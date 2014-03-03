@@ -395,10 +395,14 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_normal.dyn");
 
             RunModel(testFilePath);
-            AssertPreviewValue("ca09bc3a-35c3-488f-a013-c05a5b7733c5", 12);
-            AssertPreviewValue("251210e5-2e04-4e81-b11d-39a8aff10887", 12.3);
-            AssertPreviewValue("898ee89d-a934-4b43-a051-da3459be329a", 1000);
-            AssertPreviewValue("0afc0a8f-3d8a-4d7c-a2ec-d868cbb29b5f", 123456789);
+
+            var dummy = model.CurrentWorkspace.NodeFromWorkspace<DSCoreNodesUI.DummyNode>("301a5d5f-3c61-471d-ab4c-180a775df93e");
+            Assert.IsNotNull(dummy);
+
+            //AssertPreviewValue("ca09bc3a-35c3-488f-a013-c05a5b7733c5", 12);
+            //AssertPreviewValue("251210e5-2e04-4e81-b11d-39a8aff10887", 12.3);
+            //AssertPreviewValue("898ee89d-a934-4b43-a051-da3459be329a", 1000);
+            //AssertPreviewValue("0afc0a8f-3d8a-4d7c-a2ec-d868cbb29b5f", 123456789);
 
         }
 

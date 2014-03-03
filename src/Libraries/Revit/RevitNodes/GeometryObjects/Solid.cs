@@ -117,14 +117,14 @@ namespace Revit.Elements
                     }
                     else
                         lastParam = xsects.get_Item(0).Parameter;
-                    attachParams.Add(lastParam);
+                    attachParams.Add( lastParam );
                 }
             }
             else
             {
                 foreach (double vPar in inputParameters)
                 {
-                    attachParams.Add(vPar);
+                    attachParams.Add( pathCurve.ComputeRawParameter(vPar) );
                 }
             }
             //check the parameter and set it if not right or not defined
