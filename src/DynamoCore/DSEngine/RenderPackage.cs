@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Interfaces;
@@ -10,11 +9,10 @@ using HelixToolkit.Wpf;
 
 namespace Dynamo.DSEngine
 {
-    class RenderPackage: IRenderPackage, IDisposable
+    public class RenderPackage: IRenderPackage, IDisposable
     {
         private IntPtr nativeRenderPackage;
-        private bool selected;
-        
+
         private List<double> lineStripVertices = new List<double>();
         private List<byte> lineStripVertexColors = new List<byte>();
         private List<int> lineStripVertexCounts = new List<int>();
@@ -24,11 +22,51 @@ namespace Dynamo.DSEngine
         private List<byte> triangleVertexColor = new List<byte>();
         private List<double> triangleNormals = new List<double>();
 
+        private bool selected;
+
+        public List<double> LineStripVertices
+        {
+            get { return lineStripVertices; }
+            set { lineStripVertices = value; }
+        }
+
+        public List<double> PointVertices
+        {
+            get { return pointVertices; }
+            set { pointVertices = value; }
+        }
+
+        public List<double> TriangleVertices
+        {
+            get { return triangleVertices; } 
+            set { triangleVertices = value; }
+        }
+
+        public List<byte> LineStripVertexColors
+        {
+            get { return lineStripVertexColors; } 
+            set { lineStripVertexColors = value; }
+        }
+
+        public List<int> LineStripVertexCounts
+        {
+            get { return lineStripVertexCounts; }
+            set { lineStripVertexCounts = value; }
+        }
+
+        public RenderPackage()
+        {
+            //nativeRenderPackage = DesignScriptStudio.Renderer.RenderPackageUtils.CreateNativeRenderPackage(this);
+            this.selected = false;
+        }
+
         public RenderPackage(bool selected)
         {
-            nativeRenderPackage = DesignScriptStudio.Renderer.RenderPackageUtils.CreateNativeRenderPackage(this);
+            //nativeRenderPackage = DesignScriptStudio.Renderer.RenderPackageUtils.CreateNativeRenderPackage(this);
             this.selected = selected;
         }
+
+        public string Tag { get; set; }
 
         public IntPtr NativeRenderPackage
         {
@@ -51,6 +89,19 @@ namespace Dynamo.DSEngine
             lineStripVertexColors.Add(green);
             lineStripVertexColors.Add(blue);
             lineStripVertexColors.Add(alpha);
+        }
+
+        public void Clear()
+        {
+            lineStripVertices.Clear();
+            lineStripVertexColors.Clear();
+            lineStripVertexCounts.Clear();
+            pointVertices.Clear();
+            pointVertexColors.Clear();
+            triangleVertices.Clear();
+            triangleVertexColor.Clear();
+            triangleNormals.Clear();
+            Tag = string.Empty;
         }
 
         public void PushLineStripVertexCount(int n)
@@ -149,7 +200,7 @@ namespace Dynamo.DSEngine
 
         public void Dispose()
         {
-            DesignScriptStudio.Renderer.RenderPackageUtils.DestroyNativeRenderPackage(nativeRenderPackage);
+            //DesignScriptStudio.Renderer.RenderPackageUtils.DestroyNativeRenderPackage(nativeRenderPackage);
         }
     }
 }
