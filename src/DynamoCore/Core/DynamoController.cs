@@ -67,7 +67,7 @@ namespace Dynamo
 
         private readonly Dictionary<string, object> builtInFunctions = new Dictionary<String, object>();
 
-        private bool testing = false;
+        private static bool testing = false;
 
         protected VisualizationManager visualizationManager;
 
@@ -92,10 +92,10 @@ namespace Dynamo
         /// with the assumption that the entire test will be wrapped in an
         /// idle thread call.
         /// </summary>
-        public bool Testing 
+        public static bool IsTestMode 
         {
-            get { return testing; }
-            set { testing = value; }
+            get { return DynamoController.testing; }
+            set { DynamoController.testing = value; }
         }
 
         ObservableCollection<ModelBase> clipBoard = new ObservableCollection<ModelBase>();
@@ -475,7 +475,7 @@ namespace Dynamo
 
                 OnRunCompleted(this, false);
 
-                if (Testing)
+                if (IsTestMode)
                     Assert.Fail(ex.Message + ":" + ex.StackTrace);
             }
             finally
@@ -558,7 +558,7 @@ namespace Dynamo
                 //If we are testing, we need to throw an exception here
                 //which will, in turn, throw an Assert.Fail in the 
                 //Evaluation thread.
-                if (Testing)
+                if (IsTestMode)
                     throw new Exception(ex.Message);
             }
 

@@ -744,7 +744,7 @@ namespace Dynamo
 
             //If we're in a debug run or not already in the idle thread, then run the Cleanup Delegate
             //from the idle thread. Otherwise, just run it in this thread.
-            if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread && !Testing)
+            if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread && !IsTestMode)
             {
                 IdlePromise.ExecuteOnIdle(cleanup, false);
                 IdlePromise.ExecuteOnIdle(rename, false);
@@ -811,12 +811,12 @@ namespace Dynamo
                     !topElements.Any(CheckRequiresTransaction.TraverseUntilAny);
 
                 //If we don't need to be in the idle thread...
-                if (noIdleThread || Testing)
+                if (noIdleThread || IsTestMode)
                 {
                     //DynamoLogger.Instance.Log("Running expression in evaluation thread...");
                     TransMode = TransactionMode.Manual; //Manual transaction control
 
-                    if (Testing)
+                    if (IsTestMode)
                         TransMode = TransactionMode.Automatic;
 
                     InIdleThread = false; //Not in idle thread at the moment
