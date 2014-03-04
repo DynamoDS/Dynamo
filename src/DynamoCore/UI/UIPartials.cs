@@ -343,7 +343,7 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            ((PreferenceSettings)Controller.PreferenceSettings).PropertyChanged += Preferences_PropertyChanged;
+            ((PreferenceSettings)dynSettings.Controller.PreferenceSettings).PropertyChanged += Preferences_PropertyChanged;
         }
 
         void Preferences_PropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -96,7 +96,7 @@ namespace Dynamo.Nodes
                         FSharpFunc<FSharpList<Value>, Value>.FromConverter(
                             _ =>
                             {
-                                if (_node.Controller.RunCancelled)
+                                if (dynSettings.Controller.RunCancelled)
                                     throw new CancelEvaluationException(false);
 
                                 if (!dynSettings.Controller.DynamoViewModel.RunInDebug)

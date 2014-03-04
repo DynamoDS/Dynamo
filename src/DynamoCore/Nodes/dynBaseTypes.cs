@@ -4570,11 +4570,11 @@ namespace Dynamo.Nodes
 
             DynamoLogger.Instance.Log(FScheme.print(result));
 
-            if (Controller.DynamoViewModel.RunInDebug)
+            if (dynSettings.Controller.DynamoViewModel.RunInDebug)
             {
                 Enabled = true;
                 Select();
-                Controller.DynamoViewModel.ShowElement(this);
+                dynSettings.Controller.DynamoViewModel.ShowElement(this);
 
                 while (Enabled)
                 {
