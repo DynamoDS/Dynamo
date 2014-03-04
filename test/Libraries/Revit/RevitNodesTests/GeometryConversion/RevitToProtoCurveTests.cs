@@ -56,17 +56,17 @@ namespace DSRevitNodesTests.GeometryConversion
             Assert.AreEqual(revitSpline.CtrlPoints.Count, protoSpline.ControlPoints().Count());
 
             // need more tests here for rational curves
-            // Assert.AreEqual(revitSpline.Weights.Cast<double>().Count(), protoSpline.Weights.Count);
+            Assert.AreEqual(revitSpline.Weights.Cast<double>().Count(), protoSpline.Weights().Length);
 
-            //var tessPts = revitSpline.Tessellate();
+            var tessPts = revitSpline.Tessellate();
 
-            //// assert the tesselation is very close to original curve
-            //// what's the best tolerance to use here?
-            //foreach (var pt in tessPts)
-            //{
-            //    var closestPt = protoSpline.ClosestPointTo(pt.ToPoint());
-            //    Assert.Less(closestPt.DistanceTo(pt.ToPoint()), 1e-6);
-            //}
+            // assert the tesselation is very close to original curve
+            // what's the best tolerance to use here?
+            foreach (var pt in tessPts)
+            {
+                var closestPt = protoSpline.GetClosestPoint(pt.ToPoint());
+                Assert.Less(closestPt.DistanceTo(pt.ToPoint()), 1e-6);
+            }
         }
 
         [Test]
@@ -76,13 +76,15 @@ namespace DSRevitNodesTests.GeometryConversion
             {
                 new Autodesk.Revit.DB.XYZ(1,0,0),
                 new Autodesk.Revit.DB.XYZ(1,1,0),
+                new Autodesk.Revit.DB.XYZ(0.5,1,0),
                 new Autodesk.Revit.DB.XYZ(0,1,0)
             };
 
             var ts = new Autodesk.Revit.DB.HermiteSplineTangents
             {
-                StartTangent = new Autodesk.Revit.DB.XYZ(1, 0, 0),
-                EndTangent = new Autodesk.Revit.DB.XYZ(0, 1, 0)
+
+                StartTangent = new Autodesk.Revit.DB.XYZ(0, 1, 0),
+                EndTangent = new Autodesk.Revit.DB.XYZ(-1, 0, 0)
             };
 
             var revitSpline = Autodesk.Revit.DB.HermiteSpline.Create(pts, false, ts);
@@ -94,37 +96,21 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var protoSpline = (Autodesk.DesignScript.Geometry.NurbsCurve)protoCurve;
 
-            Assert.AreEqual( 2, protoSpline.Degree );
-            var start = protoSpline.StartPoint;
-            var end = protoSpline.EndPoint;
-            var startT = protoSpline.TangentAtParameter(0.0);
-            var endT = protoSpline.TangentAtParameter(1.0);
+            protoSpline.StartPoint.ShouldBeApproximately(pts[0]);
+            protoSpline.EndPoint.ShouldBeApproximately(pts.Last());
 
-            Assert.AreEqual(pts[0].X, start.X, 1e-6);
-            Assert.AreEqual(pts[0].Y, start.Y, 1e-6);
-            Assert.AreEqual(pts[0].Z, start.Z, 1e-6);
+            protoSpline.TangentAtParameter(0.0).ShouldBeApproximately(revitSpline.Tangents[0]);
+            protoSpline.TangentAtParameter(1.0).ShouldBeApproximately(revitSpline.Tangents.Last());
 
-            Assert.AreEqual(pts[2].X, end.X, 1e-6);
-            Assert.AreEqual(pts[2].Y, end.Y, 1e-6);
-            Assert.AreEqual(pts[2].Z, end.Z, 1e-6);
+            var tessPts = revitSpline.Tessellate();
 
-            Assert.AreEqual(ts.EndTangent.X, endT.X, 1e-6);
-            Assert.AreEqual(ts.EndTangent.Y, endT.Y, 1e-6);
-            Assert.AreEqual(ts.EndTangent.Z, endT.Z, 1e-6);
-
-            Assert.AreEqual(ts.StartTangent.X, startT.X, 1e-6);
-            Assert.AreEqual(ts.StartTangent.Y, startT.Y, 1e-6);
-            Assert.AreEqual(ts.StartTangent.Z, startT.Z, 1e-6);
-
-            //var tessPts = revitSpline.Tessellate();
-
-            //// assert the tesselation is very close to original curve
-            //// what's the best tolerance to use here?
-            //foreach (var pt in tessPts)
-            //{
-            //    var closestPt = protoSpline.ClosestPointTo(pt.ToPoint());
-            //    Assert.Less(closestPt.DistanceTo(pt.ToPoint()), 1e-6);
-            //}
+            // assert the tesselation is very close to original curve
+            // what's the best tolerance to use here?
+            foreach (var pt in tessPts)
+            {
+                var closestPt = protoSpline.GetClosestPoint(pt.ToPoint());
+                Assert.Less(closestPt.DistanceTo(pt.ToPoint()), 1e-6);
+            }
 
         }
 
