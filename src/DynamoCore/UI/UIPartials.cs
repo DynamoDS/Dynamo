@@ -1437,8 +1437,9 @@ namespace Dynamo.Nodes
 
         private void WorkbookOnBeforeClose(ref bool cancel)
         {
-            this.isDirty = true;
-            this.MarkDirty();
+
+            //this.isDirty = true;
+            //this.MarkDirty();
         }
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
