@@ -202,14 +202,13 @@ namespace Revit.Elements
                 throw new ArgumentNullException("line");
             }
 
-            if ( Math.Abs( (line.StartPoint.ToXyz() - line.EndPoint.ToXyz()).DotProduct( XYZ.BasisZ ) ) > 1e-6)
-            {
-                throw new ArgumentException("The line must be perpendicular to the Z axis");
-            }
+            var start = line.StartPoint.ToXyz();
+            var end = line.EndPoint.ToXyz();
+            var norm = (end - start).GetParallel();
 
-            return new ReferencePlane(  line.StartPoint.ToXyz(), 
-                                        line.EndPoint.ToXyz(), 
-                                        XYZ.BasisZ, 
+            return new ReferencePlane(  start, 
+                                        end,
+                                        norm, 
                                         Document.ActiveView );
         }
 
@@ -231,50 +230,10 @@ namespace Revit.Elements
                 throw new ArgumentNullException("end");
             }
 
-            if ( Math.Abs( (start.ToXyz() - end.ToXyz()).DotProduct( XYZ.BasisZ ) ) > 1e-6)
-            {
-                throw new ArgumentException("The line must be perpendicular to the Z axis");
-            }
-
             return new ReferencePlane(  start.ToXyz(), 
                                         end.ToXyz(),
-                                        XYZ.BasisZ,
+                                        (end.ToXyz() - start.ToXyz()).GetParallel(),
                                         Document.ActiveView);
-        }
-
-        /// <summary>
-        /// Form a ReferencePlane along the given line, 
-        /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        /// <returns></returns>
-        public static ReferencePlane ByLineCutVectorView( Line line, Vector cutVector, AbstractView view )
-        {
-            if (line == null)
-            {
-                throw new ArgumentNullException("line");
-            }
-
-            if (cutVector == null)
-            {
-                throw new ArgumentNullException("cutVector");
-            }
-
-            if (view == null)
-            {
-                throw new ArgumentNullException("view");
-            }
-
-            var start = line.StartPoint.ToXyz();
-            var end = line.EndPoint.ToXyz();
-            var norm = cutVector.ToXyz();
-
-            if ( Math.Abs( ( start - end ).DotProduct( norm ) ) > 1e-6)
-            {
-                throw new ArgumentException("The line must be perpendicular to the Z axis");
-            }
-
-            return new ReferencePlane(start, end, norm, view.InternalView);
         }
 
         #endregion
