@@ -106,16 +106,13 @@
     <Compile Include="Geometry\Domain.cs" />
     <Compile Include="References\AbstractReference.cs" />
     <Compile Include="References\FaceReference.cs" />
-    <Compile Include="GeometryObjects\CurveLoop.cs" />
     <Compile Include="Elements\InternalUtilities\ElementSelector.cs" />
     <Compile Include="Elements\Family.cs" />
     <Compile Include="GeometryConversion\Extensions.cs" />
     <Compile Include="GeometryObjects\Edge.cs" />
-    <Compile Include="GeometryObjects\NurbSpline.cs" />
     <Compile Include="GeometryObjects\AbstractGeometryObject.cs" />
     <Compile Include="Graphics\GraphicsManager.cs" />
     <Compile Include="Elements\Parameter.cs" />
-    <Compile Include="GeometryObjects\Curve.cs" />
     <Compile Include="GeometryObjects\Solid.cs" />
     <Compile Include="GeometryObjects\Face.cs" />
     <Compile Include="Elements\AdaptiveComponent.cs" />
