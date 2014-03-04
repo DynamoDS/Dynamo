@@ -403,7 +403,6 @@ namespace Dynamo.Tests
                 x =>
                 {
                     x.RequiresRecalc = true;
-                    x.ResetOldValue();
                 });
 
             // Make sure results are still consistent
