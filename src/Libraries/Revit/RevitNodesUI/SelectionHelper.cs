@@ -165,22 +165,36 @@ namespace Revit.Interactivity
 
             DynamoLogger.Instance.Log(message);
 
-            //create some geometry options so that we computer references
-            /*
-            var opts = new Options
+            Reference formRef = doc.Selection.PickObject(ObjectType.Element);
+
+            if (formRef != null)
             {
-                ComputeReferences = true,
-                DetailLevel = ViewDetailLevel.Medium,
-                IncludeNonVisibleObjects = false
-            };
-            */
+                //get the element
+                var el = DocumentManager.GetInstance().CurrentDBDocument.GetElement(formRef);
+                f = el as Form;
+            }
+            return f;
+        }
+
+        public static DividedSurface RequestDividedSurfaceSelection(string message)
+        {
+            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+
+            DividedSurface f = null;
+
+            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+
+            choices.Elements.Clear();
+
+            DynamoLogger.Instance.Log(message);
 
             Reference formRef = doc.Selection.PickObject(ObjectType.Element);
 
             if (formRef != null)
             {
-                //the suggested new method didn't exist in API?
-                f = DocumentManager.GetInstance().CurrentDBDocument.GetElement(formRef) as Form;
+                //get the element
+                var el = DocumentManager.GetInstance().CurrentDBDocument.GetElement(formRef);
+                f = el as DividedSurface;
             }
             return f;
         }
@@ -356,44 +370,37 @@ namespace Revit.Interactivity
 
         public static List<Element> RequestDividedSurfaceFamilyInstancesSelection(string message)
         {
-            var form = RequestFormSelection(message);
-
+            var ds = RequestDividedSurfaceSelection(message);
+            
             var result = new List<Element>();
 
-            var dsd = form.GetDividedSurfaceData();
+            var gn = new GridNode();
 
-            if (dsd == null)
-                throw new Exception("The selected form has no divided surface data.");
-
-            foreach (Reference r in dsd.GetReferencesWithDividedSurfaces())
+            int u = 0;
+            while (u < ds.NumberOfUGridlines)
             {
-                var ds = dsd.GetDividedSurfaceForReference(r);
+                gn.UIndex = u;
 
-                var gn = new GridNode();
-
-                int u = 0;
-                while (u < ds.NumberOfUGridlines)
+                int v = 0;
+                while (v < ds.NumberOfVGridlines)
                 {
-                    gn.UIndex = u;
+                    gn.VIndex = v;
 
-                    int v = 0;
-                    while (v < ds.NumberOfVGridlines)
+                    //"Reports whether a grid node is a "seed node," a node that is associated with one or more tiles."
+                    if (ds.IsSeedNode(gn))
                     {
-                        gn.VIndex = v;
+                        var fi = ds.GetTileFamilyInstance(gn, 0);
 
-                        //"Reports whether a grid node is a "seed node," a node that is associated with one or more tiles."
-                        if (ds.IsSeedNode(gn))
+                        if (fi != null)
                         {
-                            var fi = ds.GetTileFamilyInstance(gn, 0);
-
                             //put the family instance into the tree
                             result.Add(fi);
                         }
-                        v = v + 1;
                     }
-
-                    u = u + 1;
+                    v = v + 1;
                 }
+
+                u = u + 1;
             }
 
             return result;
