@@ -1,4 +1,5 @@
 ﻿using Dynamo.Models;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
 using Value = Dynamo.FScheme.Value;
@@ -19,12 +20,6 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("", "Success", typeof(Value.Number)));
 
             RegisterAllPorts();
-        }
-
-        public override bool RequiresRecalc 
-        {
-            get { return true; }
-            set { }
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -63,13 +58,13 @@ namespace Dynamo.Nodes
                     {
                         Thread.Sleep(delay);
 
-                        if (Controller == null || Controller.RunCancelled)
+                        if (dynSettings.Controller == null || dynSettings.Controller.RunCancelled)
                             return;
 
-                        while (Controller.Running)
+                        while (dynSettings.Controller.Running)
                         {
                             Thread.Sleep(1);
-                            if (Controller.RunCancelled)
+                            if (dynSettings.Controller.RunCancelled)
                                 return;
                         }
 

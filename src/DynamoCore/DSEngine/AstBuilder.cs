@@ -357,7 +357,7 @@ namespace Dynamo.DSEngine
             var sortedNodes = TopologicalSort(nodes);
 
             if (isDeltaExecution)
-                sortedNodes = sortedNodes.Where(n => n.isDirty);
+                sortedNodes = sortedNodes.Where(n => n.RequiresRecalc);
 
             var result = new List<AssociativeNode>();
 
@@ -366,7 +366,7 @@ namespace Dynamo.DSEngine
                 _CompileToAstNodes(node, result, isDeltaExecution);
 
                 if (isDeltaExecution)
-                    node.isDirty = false;
+                    node.RequiresRecalc = false;
             }
 
             return result;

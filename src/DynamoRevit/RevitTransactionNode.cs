@@ -347,8 +347,8 @@ namespace Dynamo.Revit
         {
             int count = elements.Sum(els => els.RemoveAll(deleted.Contains));
 
-            if (!isDirty)
-                isDirty = count > 0;
+            if (!RequiresRecalc)
+                RequiresRecalc = count > 0;
         }
 
         void onSuccessfulDelete(HashSet<ElementId> deleted)
