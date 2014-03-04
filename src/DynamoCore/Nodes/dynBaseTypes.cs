@@ -5974,11 +5974,22 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "DSCore.File.Directory"));
+            XmlElement original = data.MigratedNodes.ElementAt(0);
+            var cloned = MigrationManager.CloneAndChangeType(original, "DSCore.File.Directory");
 
+            var document = original.OwnerDocument;
+            foreach (XmlNode childNode in original.ChildNodes)
+            {
+                if (childNode.Name.Equals(typeof(string).FullName))
+                {
+                    var childElement = document.CreateElement(typeof(string).FullName);
+                    childElement.InnerText = childNode.Attributes[0].Value;
+                    cloned.AppendChild(childElement);
+                }
+            }
+
+            migrationData.AppendNode(cloned);
             return migrationData;            
-
         }
     }
 
@@ -6023,24 +6034,21 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.File.Filename");
+            XmlElement original = data.MigratedNodes.ElementAt(0);
+            var cloned = MigrationManager.CloneAndChangeType(original, "DSCore.File.Filename");
 
-            // Get attributes from old child node
-            XmlElement newChild = data.Document.CreateElement("System.String");
-
-            foreach (XmlNode subNode in oldNode.ChildNodes)
+            var document = original.OwnerDocument;
+            foreach (XmlNode childNode in original.ChildNodes)
             {
-                foreach (XmlNode attr in subNode.Attributes)
+                if (childNode.Name.Equals(typeof(string).FullName))
                 {
-                    if (attr.Name.Equals("value"))
-                        newChild.InnerText = attr.Value;
+                    var childElement = document.CreateElement(typeof(string).FullName);
+                    childElement.InnerText = childNode.Attributes[0].Value;
+                    cloned.AppendChild(childElement);
                 }
             }
 
-            newNode.AppendChild(newChild);
-
-            migrationData.AppendNode(newNode);
+            migrationData.AppendNode(cloned);
             return migrationData;
         }
     }

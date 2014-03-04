@@ -122,29 +122,21 @@ namespace Dynamo.Python
                 }
             }
 
-            if (!assemblies.Any(x => x.FullName.Contains("LibG.Managed")))
-            {
-                AssemblyHelper.LoadLibG();
-
-                //refresh the assemblies collection
-                assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            }
-
-            if (assemblies.Any(x => x.FullName.Contains("LibG.Managed")))
+            if (assemblies.Any(x => x.FullName.Contains("ProtoGeometry")))
             {
                 try
                 {
                     _scope.Engine.CreateScriptSourceFromString("import clr\n", SourceCodeKind.Statements).Execute(_scope);
 
                     var libGImports =
-                        "import clr\nclr.AddReference('LibG.Managed')\nfrom Autodesk.LibG import *\n";
+                        "import clr\nclr.AddReference('ProtoGeometry')\nfrom Autodesk.DesignScript.Geometry import *\n";
 
                     _scope.Engine.CreateScriptSourceFromString(libGImports, SourceCodeKind.Statements).Execute(_scope);
                 }
                 catch (Exception e)
                 {
                     DynamoLogger.Instance.Log(e.ToString());
-                    DynamoLogger.Instance.Log("Failed to load LibG types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
+                    DynamoLogger.Instance.Log("Failed to load ProtoGeometry types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
                 }
             }
 

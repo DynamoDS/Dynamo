@@ -44,8 +44,7 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => mirror = Controller.EngineController.GetMirror(var));
             Assert.IsNotNull(mirror);
 
-            var value = (double)mirror.GetData().Data;
-            Assert.AreEqual(value, 5.0);
+            Assert.AreEqual(mirror.GetData().Data, 5.0);
         }
 
         [Test]
@@ -65,8 +64,7 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => mirror = Controller.EngineController.GetMirror(var));
             Assert.IsNotNull(mirror);
 
-            var value = (double)mirror.GetData().Data;
-            Assert.AreEqual(value, 10.0);
+            Assert.AreEqual(mirror.GetData().Data, 10.0);
 
             var mulNode = model.CurrentWorkspace.NodeFromWorkspace("0c85072f-f9c5-45f3-8099-832161dfcacb");
             var = mulNode.GetAstIdentifierForOutputIndex(0).Name;
@@ -74,8 +72,7 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => mirror = Controller.EngineController.GetMirror(var));
             Assert.IsNotNull(mirror);
 
-            value = (double)mirror.GetData().Data;
-            Assert.AreEqual(value, 100.0);
+            Assert.AreEqual(mirror.GetData().Data, 100.0);
         }
 
         [Test]
