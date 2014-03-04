@@ -170,23 +170,24 @@ namespace Dynamo
             inputNames = variables.Select(x => x.InputSymbol);
 
             //Update existing function nodes which point to this function to match its changes
-            dynSettings.Controller.DynamoModel.AllNodes
+            var customNodeInstances = dynSettings.Controller.DynamoModel.AllNodes
                 .OfType<Function>()
-                .Where(el => el.Definition != null && el.Definition.FunctionId == FunctionId)
-                .ToList()
-                .ForEach(node =>
-                {
-                    node.DisableReporting();
+                .Where(el => el.Definition != null && el.Definition.FunctionId == FunctionId);
 
-                    node.SetInputs(inputNames);
-                    node.SetOutputs(outputNames);
-                    node.RegisterAllPorts();
+            foreach (var node in customNodeInstances)    
+            {
+                node.DisableReporting();
 
-                    node.EnableReporting();
-                });
+                node.SetInputs(inputNames);
+                node.SetOutputs(outputNames);
+                node.RegisterAllPorts();
+
+                node.EnableReporting();
+            }
 
             //Call OnSave for all saved elements
-            functionWorkspace.Nodes.ToList().ForEach(x => x.onSave());
+            foreach (NodeModel node in functionWorkspace.Nodes)
+                node.OnSave();
 
             INode top;
             var buildDict = new Dictionary<NodeModel, Dictionary<int, INode>>();
@@ -320,45 +321,28 @@ namespace Dynamo
 
             #endregion
 
-            // color the node to define its connectivity
-            //foreach (var ele in topMost)
-            //{
-            //    ele.Item2.ValidateConnections();
-            //}
-
             //Find function entry point, and then compile
             var inputNodes = WorkspaceModel.Nodes.OfType<Symbol>().ToList();
             var parameters = inputNodes.Select(x => string.IsNullOrEmpty(x.InputSymbol) ? x.AstIdentifierForPreview.Value: x.InputSymbol);
             Parameters = inputNodes.Select(x => x.InputSymbol);
 
             //Update existing function nodes which point to this function to match its changes
-            dynSettings.Controller.DynamoModel.AllNodes
-                        .OfType<Function>()
-                        .Where(el => el.Definition != null && el.Definition == this)
-                        .ToList()
-                        .ForEach(node =>
-                        {
-                            node.DisableReporting();
-                            node.SetInputs(Parameters);
-                            node.SetOutputs(ReturnKeys);
-                            node.RegisterAllPorts();
-                            node.EnableReporting();
-                        });
-
-            /*
-            foreach (var node in instances)
+            var customNodeInstances = dynSettings.Controller.DynamoModel.AllNodes
+                        .OfType<CustomNodeInstance>()
+                        .Where(el => el.Definition != null && el.Definition == this);
+            
+            foreach (var node in customNodeInstances)
                 node.ResyncWithDefinition();
-            */
 
             //Call OnSave for all saved elements
             foreach (var node in WorkspaceModel.Nodes)
-                node.onSave();
+                node.OnSave();
 
             #endregion
 
             var success = controller.GenerateGraphSyncDataForCustomNode(
                 FunctionId,
-                WorkspaceModel.Nodes.Where(x => !(x is Symbol)) ,
+                WorkspaceModel.Nodes.Where(x => !(x is Symbol)),
                 topMost.Select(x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1) as AssociativeNode).ToList(),
                 parameters);
 

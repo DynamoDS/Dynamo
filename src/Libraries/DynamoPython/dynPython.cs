@@ -122,15 +122,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override bool RequiresRecalc
-        {
-            get
-            {
-                return true;
-            }
-            set { }
-        }
-
         // Property added for test case verification purposes
         public string Script { get { return this._script; } }
 
@@ -222,6 +213,18 @@ namespace Dynamo.Nodes
         }
 
         #endregion
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 1, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
+        }
     }
 
     [NodeName("LEGACY Python Script With Variable Number of Inputs")]
@@ -370,23 +373,14 @@ namespace Dynamo.Nodes
             
         }
 
-        public override bool RequiresRecalc
-        {
-            get
-            {
-                return true;
-            }
-            set { }
-        }
-
         // Property added for test case verification purposes
-        public string Script { get { return this._script; } }
+        public string Script { get { return _script; } }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             XmlElement script = xmlDoc.CreateElement("Script");
             //script.InnerText = this.tb.Text;
-            script.InnerText = _script;
+            script.InnerText = this._script;
             nodeElement.AppendChild(script);
 
             // save the number of inputs
