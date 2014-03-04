@@ -42,22 +42,12 @@
 				<test name="ByPoint_NullPoint" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="ByPoint_NullFamilySymbol" modelPath=".\MassWithBoxAndCone.rfa" />
 			</testFixture>
-			<testFixture name="NurbSplineTests">
-				<test name="ByControlPointsAndWeights_ValidArgs" modelPath=".\empty.rfa" />
-				<test name="ByControlPointsWeightsKnotsDegreeClosedAndRationality_ValidArgs" modelPath=".\empty.rfa" />
-			</testFixture>
 			<testFixture name="ElementSelectorTests">
 				<test name="FamilyByElementId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="FormByType_ValidArgs" modelPath=".\block.rfa" />
 				<test name="FamilyByUniqueId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="FamilySymbolByElementId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="FamilySymbolByUniqueId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa" />
-			</testFixture>
-			<testFixture name="CurveLoopTests">
-				<test name="RectangleByCurves_ValidArgs" modelPath=".\empty.rfa" />
-				<test name="TriangleByCurves_ValidArgs" modelPath=".\empty.rfa" />
-				<test name="OpenCurveByCurves_ValidArgs" modelPath=".\empty.rfa" />
-				<test name="NonPlanarOpenCurveByCurves_ValidArgs" modelPath=".\empty.rfa" />
 			</testFixture>
 			<testFixture name="DividedPathTests">
 				<test name="ByCurveAndEqualDivisions_ValidArgs" modelPath=".\empty.rfa" />
