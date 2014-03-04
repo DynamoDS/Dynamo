@@ -104,14 +104,12 @@ namespace Revit.GeometryConversion
         {
             var sp = crv.StartPoint.ToXyz();
             var ap = crv.AxisPoint.ToXyz();
-            var ad = crv.AxisDirection.ToXyz();
-            ad.Normalize();
-            var x = sp - ap;
-            x.Normalize();
+            var ad = crv.AxisDirection.ToXyz().Normalize();
+            var x = (sp - ap).Normalize();
             var p = crv.Pitch;
             var a = crv.Angle.ToRadians();
 
-            return Autodesk.Revit.DB.CylindricalHelix.Create(sp, crv.Radius, x, ad, p, 0, a);
+            return Autodesk.Revit.DB.CylindricalHelix.Create(ap, crv.Radius, x, ad, p, 0, a);
         }
 
         /// <summary>
