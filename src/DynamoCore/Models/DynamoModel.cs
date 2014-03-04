@@ -793,9 +793,6 @@ namespace Dynamo.Models
                     el.X = x;
                     el.Y = y;
 
-                    el.isVisible = isVisible;
-                    el.isUpstreamVisible = isUpstreamVisible;
-
                     if (lacingAttrib != null)
                     {
                         if (el.ArgumentLacing != LacingStrategy.Disabled)
@@ -807,6 +804,9 @@ namespace Dynamo.Models
                     }
 
                     el.DisableReporting();
+                    
+                    el.IsVisible = isVisible;
+                    el.IsUpstreamVisible = isUpstreamVisible;
 
                     if (CurrentWorkspace == HomeSpace)
                         el.SaveResult = true;

@@ -305,20 +305,23 @@ namespace Dynamo.DSEngine
             {
                 Tuple<int, NodeModel> inputTuple;
 
-                AssociativeNode inputNode;
                 if (!node.TryGetInput(index, out inputTuple))
                 {
-                    if (!node.InPortData[index].HasDefaultValue)
+                    var port = node.InPortData[index];
+                    if (!port.HasDefaultValue)
                     {
-                        inputNode = new NullNode();
-                        inputAstNodes.Add(inputNode);
+                        inputAstNodes.Add(new NullNode());
+                    }
+                    else
+                    {
+                        inputAstNodes.Add(port.DefaultValue as AssociativeNode ?? new NullNode());
                     }
                 }
                 else
                 {
                     int outputIndexOfInput = inputTuple.Item1;
                     NodeModel inputModel = inputTuple.Item2;
-                    inputNode = inputModel.GetAstIdentifierForOutputIndex(outputIndexOfInput);
+                    AssociativeNode inputNode = inputModel.GetAstIdentifierForOutputIndex(outputIndexOfInput);
                     inputAstNodes.Add(inputNode);
                 }
             }
@@ -357,7 +360,7 @@ namespace Dynamo.DSEngine
             var sortedNodes = TopologicalSort(nodes);
 
             if (isDeltaExecution)
-                sortedNodes = sortedNodes.Where(n => n.isDirty);
+                sortedNodes = sortedNodes.Where(n => n.RequiresRecalc);
 
             var result = new List<AssociativeNode>();
 
@@ -366,7 +369,7 @@ namespace Dynamo.DSEngine
                 _CompileToAstNodes(node, result, isDeltaExecution);
 
                 if (isDeltaExecution)
-                    node.isDirty = false;
+                    node.RequiresRecalc = false;
             }
 
             return result;

@@ -83,20 +83,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override bool RequiresRecalc
-        {
-            get
-            {
-                return
-                    Inputs.Values.Where(x => x != null)
-                          .Any(x => x.Item2.isDirty || x.Item2.RequiresRecalc);
-            }
-            set
-            {
-                base.RequiresRecalc = value;
-            }
-        }
-
         /// <summary>
         /// Initialize a DS function node.
         /// </summary>
@@ -485,20 +471,6 @@ namespace Dynamo.Nodes
             get
             {
                 return true;
-            }
-        }
-
-        public override bool RequiresRecalc
-        {
-            get
-            {
-                return
-                    Inputs.Values.Where(x => x != null)
-                          .Any(x => x.Item2.isDirty || x.Item2.RequiresRecalc);
-            }
-            set
-            {
-                base.RequiresRecalc = value;
             }
         }
 
