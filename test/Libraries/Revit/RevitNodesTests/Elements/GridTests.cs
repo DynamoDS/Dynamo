@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class GridTests
+    class GridTests : ProtoGeometryTest
     {
         [Test]
         public void ByLine_ValidArgs()
@@ -51,7 +51,7 @@ namespace DSRevitNodesTests.Elements
         [Test]
         public void ByArc_ValidArgs()
         {
-            var arc = Arc.ByCenterPointRadiusAngle(Point.ByCoordinates(0, 0, 0), 1000, 0, Math.PI/2,
+            var arc = Arc.ByCenterPointRadiusAngle(Point.ByCoordinates(0, 0, 0), 1000, 0, 90,
                 Vector.ByCoordinates(0, 0, 1));
             var grid = Grid.ByArc(arc);
 
