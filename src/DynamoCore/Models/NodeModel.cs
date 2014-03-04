@@ -49,18 +49,13 @@ namespace Dynamo.Models
 
         #region private members
 
-        /// <summary>
-        ///     Should changes be reported to the containing workspace?
-        /// </summary>
-        private bool report = true;
-
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;
         private bool displayLabels;
         private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
         private bool interactionEnabled = true;
-        internal bool isUpstreamVisible;
-        internal bool isVisible;
+        private bool isUpstreamVisible;
+        private bool isVisible;
         private string nickName;
         private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
         private ElementState state;
@@ -71,6 +66,7 @@ namespace Dynamo.Models
         private string description;
         private const string FailureString = "Node evaluation failed";
         private readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
+        private int errorCount;
 
         #endregion
 
@@ -95,9 +91,19 @@ namespace Dynamo.Models
 
         #region public properties
 
+        /// <summary>
+        ///     Definitions for the Input Ports of this NodeModel.
+        /// </summary>
         public ObservableCollection<PortData> InPortData { get; private set; }
+        
+        /// <summary>
+        ///     Definitions for the Output Ports of this NodeModel.
+        /// </summary>
         public ObservableCollection<PortData> OutPortData { get; private set; }
 
+        /// <summary>
+        ///     All of the connectors entering and exiting the NodeModel.
+        /// </summary>
         public IEnumerable<ConnectorModel> AllConnectors
         {
             get
@@ -111,7 +117,7 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsCustomFunction
         {
-            get { return this is Function; }
+            get { return this is CustomNodeInstance; }
         }
 
         /// <summary>
@@ -141,6 +147,9 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        ///     The Node's state, which determines the coloring of the Node in the canvas.
+        /// </summary>
         public ElementState State
         {
             get { return state; }
@@ -159,6 +168,9 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        ///     Text that is displayed as this Node's tooltip.
+        /// </summary>
         public string ToolTipText
         {
             get { return toolTipText; }
@@ -169,6 +181,9 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        ///     Should we override the displayed name with this Node's NickName property?
+        /// </summary>
         public bool OverrideNameWithNickName
         {
             get { return overrideNameWithNickName; }
@@ -179,9 +194,11 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        ///     The name that is displayed in the UI for this NodeModel.
+        /// </summary>
         public string NickName
         {
-            //get { return OverrideNameWithNickName ? _nickName : this.Name; }
             get { return nickName; }
             set
             {
@@ -190,6 +207,9 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        ///     Collection of PortModels representing all Input ports.
+        /// </summary>
         public ObservableCollection<PortModel> InPorts
         {
             get { return inPorts; }
@@ -200,6 +220,9 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        ///     Collection of PortModels representing all Output ports.
+        /// </summary>
         public ObservableCollection<PortModel> OutPorts
         {
             get { return outPorts; }
@@ -271,6 +294,9 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        ///     The value which was produced for this node during the previous evaluation.
+        /// </summary>
         public virtual MirrorData OldValue
         {
             get
@@ -309,13 +335,6 @@ namespace Dynamo.Models
             }
         }
 
-        protected DynamoController Controller
-        {
-            get { return dynSettings.Controller; }
-        }
-
-        private int errorCount;
-
         /// <summary>
         ///     Determines whether or not the output of this Element will be saved. If true, Evaluate() will not be called
         ///     unless IsDirty is true. Otherwise, Evaluate will be called regardless of the IsDirty value.
@@ -334,19 +353,25 @@ namespace Dynamo.Models
             get { return OutPorts == null || OutPorts.All(x => !x.Connectors.Any()); }
         }
 
+        /// <summary>
+        ///     Search tags for this Node.
+        /// </summary>
         public List<string> Tags
         {
             get
             {
-                Type t = GetType();
-                object[] rtAttribs = t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), true);
-
-                if (rtAttribs.Length > 0)
-                    return ((NodeSearchTagsAttribute)rtAttribs[0]).Tags;
-                return new List<string>();
+                return
+                    GetType()
+                        .GetCustomAttributes(typeof(NodeSearchTagsAttribute), true)
+                        .Cast<NodeSearchTagsAttribute>()
+                        .SelectMany(x => x.Tags)
+                        .ToList();
             }
         }
 
+        /// <summary>
+        ///     Description of this Node.
+        /// </summary>
         public virtual string Description
         {
             get
@@ -361,6 +386,9 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        ///     Is UI interaction enabled for this Node?
+        /// </summary>
         public bool InteractionEnabled
         {
             get { return interactionEnabled; }
@@ -423,6 +451,10 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        ///     Flags this node as dirty.
+        /// </summary>
+        [Obsolete("Use RequiresRecalc = true")]
         public void ResetOldValue()
         {
             RequiresRecalc = true;
@@ -506,22 +538,32 @@ namespace Dynamo.Models
 
         #region Modification Reporting
 
-        protected internal bool IsReportingModifications
-        {
-            get { return report; }
-        }
+        /// <summary>
+        ///     Is this Node reporting state modifications?
+        /// </summary>
+        protected internal bool IsReportingModifications { get; set; }
 
+        /// <summary>
+        ///     Disable reporting of state modifications.
+        /// </summary>
+        [Obsolete("Use IsReportingModifications = false")]
         protected internal void DisableReporting()
         {
-            report = false;
+            IsReportingModifications = false;
         }
 
+        /// <summary>
+        ///     Enable reporting of state modifications.
+        /// </summary>
+        [Obsolete("Use IsReportingModifications = true")]
         protected internal void EnableReporting()
         {
-            report = true;
-            ValidateConnections();
+            IsReportingModifications = true;
         }
 
+        /// <summary>
+        ///     Report to Dynamo that this node's state has been modified.
+        /// </summary>
         protected internal void ReportModification()
         {
             if (IsReportingModifications && WorkSpace != null)
@@ -541,13 +583,22 @@ namespace Dynamo.Models
         /// <param name="context">Why is this being called?</param>
         protected virtual void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context) { }
 
+        /// <summary>
+        ///     Saves this node into an XML Document.
+        /// </summary>
+        /// <param name="xmlDoc">Overall XmlDocument representing the entire workspace being saved.</param>
+        /// <param name="dynEl">The XmlElement representing this node in the workspace.</param>
+        /// <param name="context">The context of this save operation.</param>
         public void Save(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             SaveNode(xmlDoc, dynEl, context);
+            
+            var portsWithDefaultValues = 
+                inPorts.Select((port, index) => new { port, index })
+                   .Where(x => x.port.UsingDefaultValue);
 
             //write port information
-            foreach (
-                var port in inPorts.Select((port, index) => new { port, index }).Where(x => x.port.UsingDefaultValue))
+            foreach (var port in portsWithDefaultValues)
             {
                 XmlElement portInfo = xmlDoc.CreateElement("PortInfo");
                 portInfo.SetAttribute("index", port.index.ToString(CultureInfo.InvariantCulture));
@@ -633,29 +684,36 @@ namespace Dynamo.Models
             {
                 return
                     result.Concat(
-                        new[] { AstFactory.BuildAssignment(AstIdentifierForPreview, GetAstIdentifierForOutputIndex(0)) });
+                        new[]
+                        {
+                            AstFactory.BuildAssignment(
+                                AstIdentifierForPreview,
+                                GetAstIdentifierForOutputIndex(0))
+                        });
             }
 
             var emptyList = AstFactory.BuildExprList(new List<AssociativeNode>());
             var previewIdInit = AstFactory.BuildAssignment(AstIdentifierForPreview, emptyList);
 
-            return result.Concat(new[] { previewIdInit }).Concat(
-                OutPortData.Enumerate()
-                           .Select(
-                               output => AstFactory.BuildAssignment(
-                                   new IdentifierNode(AstIdentifierForPreview)
-                                   {
-                                       ArrayDimensions =
-                                           new ArrayNode
-                                           {
-                                               Expr = new StringNode { value = output.Element.NickName }
-                                           }
-                                   },
-                                   GetAstIdentifierForOutputIndex(output.Index))));
+            return
+                result.Concat(new[] { previewIdInit })
+                      .Concat(
+                          OutPortData.Select(
+                              (outNode, index) =>
+                                  AstFactory.BuildAssignment(
+                                      new IdentifierNode(AstIdentifierForPreview)
+                                      {
+                                          ArrayDimensions =
+                                              new ArrayNode
+                                              {
+                                                  Expr = new StringNode { value = outNode.NickName }
+                                              }
+                                      },
+                                      GetAstIdentifierForOutputIndex(index))));
         }
 
         /// <summary>
-        /// Callback for when this NodeModel has been compiled.
+        ///     Callback for when this NodeModel has been compiled.
         /// </summary>
         protected virtual void OnBuilt()
         {
@@ -1620,7 +1678,7 @@ namespace Dynamo.Models
 
                 try
                 {
-                    if (Controller.RunCancelled)
+                    if (dynSettings.Controller.RunCancelled)
                         throw new CancelEvaluationException(false);
 
 
