@@ -62,14 +62,16 @@ namespace Revit.GeometryConversion
         /// <returns></returns>
         private static Autodesk.DesignScript.Geometry.Curve Convert(Autodesk.Revit.DB.Arc crv)
         {
-            var isCircle = Math.Abs(Math.Abs(crv.GetEndParameter(1) - crv.GetEndParameter(0))) - 2*Math.PI < 1e-6;
+            var isCircle = Math.Abs(Math.Abs(crv.GetEndParameter(1) - crv.GetEndParameter(0)) - 2*Math.PI) < 1e-6 ||
+                           !crv.IsBound;
 
             if ( isCircle )
             {
                 return Circle.ByCenterPointRadiusNormal(crv.Center.ToPoint(), crv.Radius, crv.Normal.ToVector());
             }
 
-            return Arc.ByThreePoints(crv.GetEndPoint(0).ToPoint(), crv.GetEndPoint(1).ToPoint(), crv.Evaluate(0.5, true).ToPoint());
+            return Arc.ByCenterPointStartPointSweepAngle(crv.Center.ToPoint(), crv.GetEndPoint(0).ToPoint(),
+                (crv.GetEndParameter(1) - crv.GetEndParameter(0))*180/Math.PI, crv.Normal.ToVector());
         }
 
         /// <summary>
