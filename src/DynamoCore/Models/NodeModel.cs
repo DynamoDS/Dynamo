@@ -726,6 +726,7 @@ namespace Dynamo.Models
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
             Inputs[inputData] = Tuple.Create(outputData, node);
+            RequiresRecalc = true;
         }
 
         internal void ConnectOutput(int portData, int inputData, NodeModel nodeLogic)
@@ -733,11 +734,13 @@ namespace Dynamo.Models
             if (!Outputs.ContainsKey(portData))
                 Outputs[portData] = new HashSet<Tuple<int, NodeModel>>();
             Outputs[portData].Add(Tuple.Create(inputData, nodeLogic));
+            RequiresRecalc = true;
         }
 
         internal void DisconnectInput(int data)
         {
             Inputs[data] = null;
+            RequiresRecalc = true;
         }
 
         /// <summary>
