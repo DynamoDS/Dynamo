@@ -343,7 +343,7 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            ((PreferenceSettings)Controller.PreferenceSettings).PropertyChanged += Preferences_PropertyChanged;
+            ((PreferenceSettings)dynSettings.Controller.PreferenceSettings).PropertyChanged += Preferences_PropertyChanged;
         }
 
         void Preferences_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1433,6 +1433,20 @@ namespace Dynamo.Nodes
             _image1.SetValue(Grid.RowProperty, 2);
             _image1.SetValue(Grid.ColumnProperty, 0);
             _image1.SetValue(Grid.ColumnSpanProperty, 3);
+        }
+
+        private void WorkbookOnBeforeClose(ref bool cancel)
+        {
+
+            //this.isDirty = true;
+            //this.MarkDirty();
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSCoreNodes.dll",
+                "FileReader.ReadImage", "FileReader.ReadImage@string,int,int");
         }
     }
 }

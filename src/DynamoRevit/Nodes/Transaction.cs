@@ -27,12 +27,6 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override bool RequiresRecalc
-        {
-            get { return Inputs[0].Item2.RequiresRecalc; }
-            set { }
-        }
-
         protected override INode Build(
             Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
@@ -102,7 +96,7 @@ namespace Dynamo.Nodes
                         FSharpFunc<FSharpList<Value>, Value>.FromConverter(
                             _ =>
                             {
-                                if (_node.Controller.RunCancelled)
+                                if (dynSettings.Controller.RunCancelled)
                                     throw new CancelEvaluationException(false);
 
                                 if (!dynSettings.Controller.DynamoViewModel.RunInDebug)

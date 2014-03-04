@@ -403,7 +403,6 @@ namespace Dynamo.Tests
                 x =>
                 {
                     x.RequiresRecalc = true;
-                    x.ResetOldValue();
                 });
 
             // Make sure results are still consistent
@@ -476,23 +475,28 @@ namespace Dynamo.Tests
         [Test]
         public void PerformAllNode()
         {
+            
             var model = dynSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
 
             model.Open(Path.Combine(exPath, @"begin-test.dyn"));
 
-            const string textAndFileName = @"test.txt";
+            var dummy = model.CurrentWorkspace.FirstNodeFromWorkspace<DSCoreNodesUI.DummyNode>();
+            Assert.IsNotNull(dummy);
 
-            model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>().Value = textAndFileName;
+            Assert.Inconclusive("Test inconclusive due to Deprecated node");
 
-            dynSettings.Controller.RunExpression();
+            //const string textAndFileName = @"test.txt";
+            //model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>().Value = textAndFileName;
 
-            File.Delete(textAndFileName);
+            //dynSettings.Controller.RunExpression();
 
-            var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
+            //File.Delete(textAndFileName);
 
-            Assert.IsAssignableFrom<string>(watchValue.Data);
-            Assert.AreEqual(textAndFileName, watchValue.Data);
+            //var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
+
+            //Assert.IsAssignableFrom<string>(watchValue.Data);
+            //Assert.AreEqual(textAndFileName, watchValue.Data);
         }
 
         [Test]

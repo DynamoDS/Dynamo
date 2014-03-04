@@ -79,8 +79,8 @@ namespace DSCoreNodesUI
             set { base.Description = value; }
         }
 
-        internal int InputCount { get; private set; }
-        internal int OutputCount { get; private set; }
-        internal string LegacyNodeName { get; private set; }
+        public int InputCount { get; private set; }
+        public int OutputCount { get; private set; }
+        public string LegacyNodeName { get; private set; }
     }
 }

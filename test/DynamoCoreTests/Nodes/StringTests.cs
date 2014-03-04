@@ -360,22 +360,40 @@ namespace Dynamo.Tests
         public void TestStringToNumberFileInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_fromFile.dyn");
+            var testDynFile = "TestStringToNumber_fromFile.dyn";
+            OpenModel(Path.Combine(localDynamoStringTestFloder, testDynFile));
 
-            RunModel(testFilePath);
-            AssertPreviewValue("f8767579-f7c1-475f-980e-7cd6a42684c8", 123521);
+            // "Dynamo.Nodes.dynString2Num" has been deprecated.
+            var workspace = model.CurrentWorkspace;
+            var nodeGuid = "0f912454-b278-499f-b15f-c42c039a5453";
+            var nodeModel = workspace.NodeFromWorkspace(nodeGuid);
+            Assert.IsNotNull(nodeModel);
+            Assert.IsTrue(nodeModel is DSCoreNodesUI.DummyNode);
 
+            var dummyNode = nodeModel as DSCoreNodesUI.DummyNode;
+            Assert.AreEqual(1, dummyNode.InputCount);
+            Assert.AreEqual(1, dummyNode.OutputCount);
+            Assert.AreEqual("Dynamo.Nodes.dynString2Num", dummyNode.LegacyNodeName);
         }
 
         [Test]
         public void TestStringToNumberFunctionInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_fromFunction.dyn");
+            var testDynFile = "TestStringToNumber_fromFunction.dyn";
+            OpenModel(Path.Combine(localDynamoStringTestFloder, testDynFile));
 
-            RunModel(testFilePath);
-            AssertPreviewValue("f8767579-f7c1-475f-980e-7cd6a42684c8", 12);
+            // "Dynamo.Nodes.dynString2Num" has been deprecated.
+            var workspace = model.CurrentWorkspace;
+            var nodeGuid = "0f912454-b278-499f-b15f-c42c039a5453";
+            var nodeModel = workspace.NodeFromWorkspace(nodeGuid);
+            Assert.IsNotNull(nodeModel);
+            Assert.IsTrue(nodeModel is DSCoreNodesUI.DummyNode);
 
+            var dummyNode = nodeModel as DSCoreNodesUI.DummyNode;
+            Assert.AreEqual(1, dummyNode.InputCount);
+            Assert.AreEqual(1, dummyNode.OutputCount);
+            Assert.AreEqual("Dynamo.Nodes.dynString2Num", dummyNode.LegacyNodeName);
         }
 
         [Test]
