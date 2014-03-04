@@ -995,6 +995,7 @@ namespace ProtoFFITests
             ExecuteAndVerify(code, data);
         }
 
+ 
         [Test]
         public void TestNamespaceImport()
         {
@@ -1005,6 +1006,61 @@ namespace ProtoFFITests
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kMultipleSymbolFound);
             string[] classes = theTest.GetAllMatchingClasses("MicroFeatureTests");
             Assert.True(classes.Length > 1, "More than one implementation of MicroFeatureTests class expected");
+        }
+
+        [Test]
+        public void TestNamespaceFullResolution01()
+        {
+            var mirror = thisTest.RunScriptSource(
+            @"                import(""FFITarget.dll"");
+                p = A.NamespaceResolutionTargetTest.NamespaceResolutionTargetTest();                x = p.Prop;            "
+            );
+
+            Assert.IsTrue((Int64)mirror.GetFirstValue("x").Payload == 0);
+        }
+
+        [Test]
+        public void TestNamespaceFullResolution02()
+        {
+            var mirror = thisTest.RunScriptSource(
+            @"                import(""FFITarget.dll"");
+                p = A.NamespaceResolutionTargetTest.NamespaceResolutionTargetTest(1);                x = p.Prop;            "
+            );
+
+            Assert.IsTrue((Int64)mirror.GetFirstValue("x").Payload == 1);
+        }
+
+        [Test]
+        public void TestNamespaceFullResolution03()
+        {
+            var mirror = thisTest.RunScriptSource(
+            @"                import(""FFITarget.dll"");
+                p = A.NamespaceResolutionTargetTest.Foo(1);                x = p.Prop;            "
+            );
+
+            Assert.IsTrue((Int64)mirror.GetFirstValue("x").Payload == 1);
+        }
+
+        [Test]
+        public void TestNamespacePartialResolution01()
+        {
+            var mirror = thisTest.RunScriptSource(
+            @"                import(""FFITarget.dll"");
+                p = NamespaceResolutionTargetTest.Foo(1);                x = p.Prop;            "
+            );
+
+            Assert.IsTrue((Int64)mirror.GetFirstValue("x").Payload == 1);
+        }
+
+        [Test]
+        public void TestNamespacePartialResolution02()
+        {
+            var mirror = thisTest.RunScriptSource(
+            @"                import(""FFITarget.dll"");
+                p = A.NamespaceResolutionTargetTest(1);                x = p.Prop;            "
+            );
+
+            Assert.IsTrue((Int64)mirror.GetFirstValue("x").Payload == 1);
         }
 
         [Test]
@@ -1065,6 +1121,7 @@ namespace ProtoFFITests
             string[] classes = thisTest.GetAllMatchingClasses("DupTargetTest");
             Assert.True(classes.Length > 1, "More than one implementation of DupTargetTest class expected");
         }
+
 
 
         [Test]
