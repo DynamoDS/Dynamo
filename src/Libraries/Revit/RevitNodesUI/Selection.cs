@@ -636,19 +636,28 @@ namespace Dynamo.Nodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var els = SelectedElement;
+            AssociativeNode node;
 
-            var newInputs = els.Select(el => 
-                AstFactory.BuildFunctionCall(
-                "ElementSelector",
-                "ByElementId",
-                new List<AssociativeNode>
+            if (SelectedElement == null)
+            {
+                node = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                var els = SelectedElement;
+
+                var newInputs = els.Select(el =>
+                    AstFactory.BuildFunctionCall(
+                    "ElementSelector",
+                    "ByElementId",
+                    new List<AssociativeNode>
                 {
                     AstFactory.BuildIntNode(el.Id.IntegerValue),
                 }
-                )).ToList();
+                    )).ToList();
 
-            var node = AstFactory.BuildExprList(newInputs);
+                node = AstFactory.BuildExprList(newInputs);
+            }
 
             return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
         }
