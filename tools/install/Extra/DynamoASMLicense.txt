@@ -1,0 +1,33 @@
+ASM v. 220
+© 2013 Autodesk, Inc.  All rights reserved.   
+All use of this Software is subject to the terms and conditions of the Autodesk license agreement accepted upon installation of this Software and/or packaged with the Software. 
+
+Trademarks:
+Autodesk and T-Splines are registered trademarks or trademarks of Autodesk, Inc., and/or its subsidiaries and/or affiliates.  
+Intel, Xeon and Pentium are registered trademarks or trademarks of Intel Corporation or its subsidiaries in the United States and other countries.  
+Spatial, ACIS, and SAT are either registered trademarks or trademarks of Spatial Corp. in the United States and/or other countries. 
+D-Cubed is a trademark of Siemens Industry Software Limited. 
+Rhino is a trademark of Robert McNeel & Associates. 
+All other brand names, product names or trademarks belong to their respective holders. 
+
+Patents: 
+Protected by each of the following Patents: 7,274,364 
+Third-Party Software Credits and Attributions 
+This software is based in part on the works of the following: 
+ACIS® © 1989–2001 Spatial Corp. 
+Portions related to Intel® Threading Building Blocks v.4.1 are Copyright (C) 2005-2012 Intel Corporation.  All Rights Reserved. 
+Portions related to Intel® Math Kernel Library v.10.0.3 (www.intel.com/software/products/mkl) are Copyright (C) 2000–2008, Intel Corporation. All rights reserved. 
+This work contains the following software owned by Siemens Industry Software Limited: 
+D-CubedTM HLM © 2013. Siemens Industry Software Limited. All Rights Reserved. 
+D-CubedTM CDM © 2013. Siemens Industry Software Limited. All Rights Reserved.  
+This Autodesk software contains CLAPACK v.3.2.1. 
+Copyright (c) 1992-2011 The University of Tennessee and The University of Tennessee Research Foundation.  All rights reserved. 
+Copyright (c) 2000-2011 The University of California Berkeley. All rights reserved. 
+Copyright (c) 2006-2011 The University of Colorado Denver.  All rights reserved. 
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met: 
+- Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer. 
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer listed in this license in the documentation and/or other materials provided with the distribution. 
+- Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission. 
+The copyright holders provide no reassurances that the source code provided does not infringe any patent, copyright, or any other intellectual property rights of third parties.  The copyright holders disclaim any liability to any recipient for claims brought against recipient by any third party for infringement of that parties intellectual property rights. 
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+This Autodesk software contains Eigen 3.2.0.  Eigen is licensed under the Mozilla Public License v.2.0, which can be found at http://www.mozilla.org/MPL/2.0/.  A text copy of this license and the source code for Eigen v.3.2.0 (and modifications made by Autodesk, if any) are included on the media provided by Autodesk or with the download of this Autodesk software.   
