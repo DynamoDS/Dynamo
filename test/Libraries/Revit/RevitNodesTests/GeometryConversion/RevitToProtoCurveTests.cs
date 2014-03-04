@@ -191,20 +191,26 @@ namespace DSRevitNodesTests.GeometryConversion
             var ry = 2.5;
             var x = new Autodesk.Revit.DB.XYZ(1,0,0);
             var y = new Autodesk.Revit.DB.XYZ(0,1,0);
-            var sp = 0.1;
-            var ep = 2.5;
+            var sp = 0;
+            var ep = Math.PI * 2;
 
-            var re = Autodesk.Revit.DB.Ellipse.Create(c, rx, ry, x, y, 0.1, 2.5);
+            var re = Autodesk.Revit.DB.Ellipse.Create(c, rx, ry, x, y, sp, ep);
+            re.MakeBound(sp, ep);
 
             var pc = re.ToProtoType();
             Assert.NotNull(pc);
-            Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.Arc>(pc);
-            var pa = (Autodesk.DesignScript.Geometry.Arc) pc;
+            Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.Ellipse>(pc);
+            var pa = (Autodesk.DesignScript.Geometry.Ellipse) pc;
 
-            Assert.AreEqual(sp, pa.StartAngle);
-            Assert.AreEqual(ep, pa.SweepAngle);
-            Assert.AreEqual(rx, pa.ContextCoordinateSystem.XAxis.Length);
-            Assert.AreEqual(ry, pa.ContextCoordinateSystem.YAxis.Length);
+            // no elliptical arcs yet
+            //(pa.SweepAngle * Math.PI / 180).ShouldBeApproximately(ep - sp);
+
+            pa.StartPoint.ShouldBeApproximately(re.GetEndPoint(0));
+            pa.EndPoint.ShouldBeApproximately(re.GetEndPoint(1));
+
+            pa.MajorAxis.Length.ShouldBeApproximately(rx);
+            pa.MinorAxis.Length.ShouldBeApproximately(ry);
+            pa.CenterPoint.ShouldBeApproximately(re.Center);
 
             //var tessPts = re.Tessellate();
 
