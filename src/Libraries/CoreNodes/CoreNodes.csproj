@@ -55,6 +55,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Image.cs" />
     <Compile Include="Color.cs" />
     <Compile Include="Logic.cs" />
     <Compile Include="Function.cs" />
