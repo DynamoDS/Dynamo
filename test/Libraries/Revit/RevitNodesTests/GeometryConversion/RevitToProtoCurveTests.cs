@@ -168,11 +168,10 @@ namespace DSRevitNodesTests.GeometryConversion
             Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.Arc>(pc);
             var pa = (Autodesk.DesignScript.Geometry.Arc)pc;
 
-            Assert.AreEqual(sp, pa.StartAngle * 180 / Math.PI);
-            Assert.AreEqual(ep, pa.SweepAngle * 180 / Math.PI);
+            (pa.SweepAngle * Math.PI / 180).ShouldBeApproximately(ep - sp);
 
-            Assert.AreEqual(x.ToVector(), pa.ContextCoordinateSystem.XAxis);
-            Assert.AreEqual(y.ToVector(), pa.ContextCoordinateSystem.YAxis);
+            pa.StartPoint.ShouldBeApproximately(re.GetEndPoint(0));
+            pa.EndPoint.ShouldBeApproximately(re.GetEndPoint(1));
 
             //var tessPts = re.Tessellate();
 
