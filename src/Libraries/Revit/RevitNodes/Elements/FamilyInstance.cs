@@ -376,5 +376,9 @@ namespace Revit.Elements
 
         #endregion
 
+        public override string ToString()
+        {
+            return InternalFamilyInstance.Name;
+        }
     }
 }
