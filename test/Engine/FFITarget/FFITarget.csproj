@@ -54,6 +54,7 @@
     <Compile Include="MinimalTraceTargets.cs" />
     <Compile Include="ProtoFFITests.cs" />
     <Compile Include="TestNamespaceConflict.cs" />
+    <Compile Include="TestNamespaceResolution.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\NodeServices\NodeServices.csproj">

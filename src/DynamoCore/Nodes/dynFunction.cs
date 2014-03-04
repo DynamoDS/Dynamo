@@ -91,48 +91,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override internal bool isDirty
-        {
-            get 
-            { 
-                return base.isDirty ? true : RequiresRecalc;
-            }
-        }
-
-        public override bool RequiresRecalc
-        {
-            get
-            {
-                //Do we already know we're dirty?
-                bool baseDirty = base.RequiresRecalc;
-                if (baseDirty)
-                    return true;
-
-                return Definition.RequiresRecalc
-                       || Definition.Dependencies.Any(x => x.RequiresRecalc);
-            }
-            set
-            {
-                //Set the base value.
-                base.RequiresRecalc = value;
-                //If we're clean, then notify all internals.
-                if (!value)
-                {
-                    if (dynSettings.Controller.Running)
-                        dynSettings.FunctionWasEvaluated.Add(Definition);
-                    else
-                    {
-                        //Recursion detection start.
-                        Definition.RequiresRecalc = false;
-
-                        //TODO: move this to RequiresRecalc property of CustomNodeDefinition?
-                        foreach (var dep in Definition.Dependencies)
-                            dep.RequiresRecalc = false;
-                    }
-                }
-            }
-        }
-
         protected override InputNode Compile(IEnumerable<string> portNames)
         {
             return SaveResult ? base.Compile(portNames) : new FunctionNode(Symbol, portNames);
@@ -548,12 +506,6 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public override bool RequiresRecalc
-        {
-            get { return false; }
-            set { }
-        }
-
         private string _inputSymbol = "";
 
         public string InputSymbol
@@ -639,12 +591,6 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
-        }
-
-        public override bool RequiresRecalc
-        {
-            get { return false; }
-            set { }
         }
 
         private string _symbol = "";

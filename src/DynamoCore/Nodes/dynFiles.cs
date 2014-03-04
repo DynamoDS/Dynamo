@@ -4,6 +4,7 @@ using System.Threading;
 using System.Linq;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 
@@ -45,7 +46,7 @@ namespace Dynamo.Nodes
 
         void watcher_FileChanged(object sender, FileSystemEventArgs e)
         {
-            if (!Controller.Running)
+            if (!dynSettings.Controller.Running)
                 RequiresRecalc = true;
             else
             {
@@ -96,7 +97,7 @@ namespace Dynamo.Nodes
 
         void watcher_FileChanged(object sender, FileSystemEventArgs e)
         {
-            if (!Controller.Running)
+            if (!dynSettings.Controller.Running)
                 RequiresRecalc = true;
             else
             {
@@ -121,6 +122,13 @@ namespace Dynamo.Nodes
             }
             else
                 return Value.NewString("");
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSCoreNodes.dll",
+                "FileReader.ReadText", "FileReader.ReadText@string");
         }
     }
 
@@ -308,7 +316,7 @@ namespace Dynamo.Nodes
             int tick = 0;
             while (!watcher.Changed)
             {
-                if (Controller.RunCancelled)
+                if (dynSettings.Controller.RunCancelled)
                     throw new CancelEvaluationException(false);
 
                 Thread.Sleep(10);

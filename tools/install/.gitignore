@@ -2,6 +2,7 @@
 ###################
 !Extra/fsharp_redist.exe
 !Extra/IronPython*.msi
+!Extra/InstallASMForDynamo.exe
 /bin
 /definitions
 /sample

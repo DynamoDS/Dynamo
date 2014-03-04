@@ -480,7 +480,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(listTestFolder, "testTransposeList_emptyInput.dyn");
             RunModel(testFilePath);
             dynSettings.Controller.RunExpression(null);
-            var watch = model.CurrentWorkspace.NodeFromWorkspace<Transpose>("df181bd7-3f1f-4195-93af-c0b846f6c8ce");
+            var watch = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>("df181bd7-3f1f-4195-93af-c0b846f6c8ce");
 
             var actual = watch.GetValue(0).GetElements();
             Assert.AreEqual(0, actual.Count);
@@ -1851,7 +1851,7 @@ namespace Dynamo.Tests
             // run expression
             dynSettings.Controller.RunExpression(null);
 
-            var getFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.GetFromList>("d2f1c900-99ce-40a5-ae4d-bbac1fe96cfd");
+            var getFromList = model.CurrentWorkspace.NodeFromWorkspace("d2f1c900-99ce-40a5-ae4d-bbac1fe96cfd");
             var output = getFromList.GetValue(0).GetElements();
             var child = output[0].GetElements();
             var child1 = output[1].GetElements();
