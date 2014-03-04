@@ -337,19 +337,6 @@ namespace Dynamo.Nodes
             return InPortData.Count;
         }
 
-        private int _lastEvaledAmt;
-        public override bool RequiresRecalc
-        {
-            get
-            {
-                return _lastEvaledAmt != InPortData.Count || base.RequiresRecalc;
-            }
-            set
-            {
-                base.RequiresRecalc = value;
-            }
-        }
-
         protected internal virtual void RemoveInput()
         {
             var count = InPortData.Count;
@@ -440,13 +427,6 @@ namespace Dynamo.Nodes
         }
 
         #endregion
-
-        protected override void OnEvaluate()
-        {
-            base.OnEvaluate();
-
-            _lastEvaledAmt = InPortData.Count;
-        }
     }
 
     public abstract partial class VariableInputAndOutput : NodeModel
@@ -462,19 +442,6 @@ namespace Dynamo.Nodes
         protected virtual int GetInputNameIndex()
         {
             return InPortData.Count;
-        }
-
-        private int _lastEvaledAmt;
-        public override bool RequiresRecalc
-        {
-            get
-            {
-                return _lastEvaledAmt != InPortData.Count || base.RequiresRecalc;
-            }
-            set
-            {
-                base.RequiresRecalc = value;
-            }
         }
 
         protected virtual void RemoveInput()
@@ -606,13 +573,6 @@ namespace Dynamo.Nodes
         }
 
         #endregion
-
-        protected override void OnEvaluate()
-        {
-            base.OnEvaluate();
-
-            _lastEvaledAmt = InPortData.Count;
-        }
     }
 
     [NodeName("Identity")]
@@ -662,7 +622,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            var migrationData = new NodeMigrationData(data.Document);
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 1, 1);
@@ -2398,15 +2358,6 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override bool RequiresRecalc
-        {
-            get
-            {
-                return false;
-            }
-            set { }
-        }
-
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
@@ -3892,15 +3843,6 @@ namespace Dynamo.Nodes
 
         private readonly System.Random _random = new System.Random();
 
-        public override bool RequiresRecalc
-        {
-            get
-            {
-                return true;
-            }
-            set { }
-        }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
             return Value.NewNumber(_random.NextDouble());
@@ -3926,15 +3868,6 @@ namespace Dynamo.Nodes
         }
 
         private readonly System.Random _random = new System.Random();
-
-        public override bool RequiresRecalc
-        {
-            get
-            {
-                return true;
-            }
-            set { }
-        }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -3968,15 +3901,6 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             //OldValue = Value.NewNumber(Math.E);
-        }
-
-        public override bool RequiresRecalc
-        {
-            get
-            {
-                return false;
-            }
-            set { }
         }
 
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
@@ -4013,15 +3937,6 @@ namespace Dynamo.Nodes
             //OldValue = Value.NewNumber(Math.PI);
         }
 
-        public override bool RequiresRecalc
-        {
-            get
-            {
-                return false;
-            }
-            set { }
-        }
-
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
@@ -4055,15 +3970,6 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             //OldValue = Value.NewNumber(Math.PI*2);
-        }
-
-        public override bool RequiresRecalc
-        {
-            get
-            {
-                return false;
-            }
-            set { }
         }
 
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)

@@ -32,20 +32,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override bool RequiresRecalc
-        {
-            get
-            {
-                return
-                    Inputs.Values.Where(x => x != null)
-                          .Any(x => x.Item2.isDirty || x.Item2.RequiresRecalc);
-            }
-            set
-            {
-                base.RequiresRecalc = value;
-            }
-        }
-
         public CustomNodeInstance() { }
 
         public CustomNodeInstance(CustomNodeDefinition definition)
