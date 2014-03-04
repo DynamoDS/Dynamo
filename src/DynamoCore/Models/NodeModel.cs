@@ -734,7 +734,6 @@ namespace Dynamo.Models
             if (!Outputs.ContainsKey(portData))
                 Outputs[portData] = new HashSet<Tuple<int, NodeModel>>();
             Outputs[portData].Add(Tuple.Create(inputData, nodeLogic));
-            RequiresRecalc = true;
         }
 
         internal void DisconnectInput(int data)
