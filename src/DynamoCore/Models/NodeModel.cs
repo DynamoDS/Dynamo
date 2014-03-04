@@ -74,16 +74,8 @@ namespace Dynamo.Models
         private bool _saveResult;
         private bool _isUpdated;
         private string _description;
-        private Dictionary<PortData, FScheme.Value> _evaluationDict;
-        private bool _isDirty = true;
         private const string FailureString = "Node evaluation failed";
         private readonly Dictionary<PortModel, PortData> _portDataDict = new Dictionary<PortModel, PortData>();
-
-        private readonly Dictionary<int, Tuple<int, NodeModel>> _previousInputPortMappings =
-            new Dictionary<int, Tuple<int, NodeModel>>();
-
-        private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> _previousOutputPortMappings =
-            new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
         #endregion
 
@@ -128,15 +120,6 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Returns if this node requires a recalculation without checking input nodes.
-        /// </summary>
-        protected internal virtual bool isDirty
-        {
-            get { return _isDirty; }
-            set { RequiresRecalc = value; }
-        }
-
-        /// <summary>
         ///     Returns whether the node is to be included in visualizations.
         /// </summary>
         public bool IsVisible
@@ -145,7 +128,6 @@ namespace Dynamo.Models
             set
             {
                 isVisible = value;
-                isDirty = true;
                 RaisePropertyChanged("IsVisible");
             }
         }
@@ -160,7 +142,6 @@ namespace Dynamo.Models
             set
             {
                 isUpstreamVisible = value;
-                isDirty = true;
                 RaisePropertyChanged("IsUpstreamVisible");
             }
         }
@@ -245,7 +226,7 @@ namespace Dynamo.Models
                 if (_argumentLacing != value)
                 {
                     _argumentLacing = value;
-                    isDirty = true;
+                    RequiresRecalc = true;
                     RaisePropertyChanged("ArgumentLacing");
                 }
             }
@@ -515,6 +496,7 @@ namespace Dynamo.Models
             IsSelected = false;
             State = ElementState.Dead;
             ArgumentLacing = LacingStrategy.Disabled;
+            RequiresRecalc = true;
         }
 
         /// <summary>
@@ -613,12 +595,6 @@ namespace Dynamo.Models
         ///     Called when the node's workspace has been saved.
         /// </summary>
         protected internal virtual void OnSave() { }
-
-        internal void onSave()
-        {
-            savePortMappings();
-            OnSave();
-        }
         
         #endregion
 
@@ -645,7 +621,18 @@ namespace Dynamo.Models
         /// <param name="inputAstNodes"></param>
         internal virtual IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
+            OnBuilt();
+
             var result = BuildOutputAst(inputAstNodes);
+
+            /*
+            var functionDef = new FunctionDefinitionNode
+            {
+                Name = AstBuilder.StringConstants.FunctionPrefix + GUID.ToString().Replace("-", string.Empty),
+                Signature = new ArgumentSignatureNode { Arguments = InPortData.Select(x => AstFactory.BuildParamNode(x.NickName)).ToList() },
+                FunctionBody = 
+            };
+            */
 
             if (OutPortData.Count == 1)
             {
@@ -672,6 +659,14 @@ namespace Dynamo.Models
                                    GetAstIdentifierForOutputIndex(output.Index))));
         }
 
+        /// <summary>
+        /// Callback for when this NodeModel has been compiled.
+        /// </summary>
+        protected virtual void OnBuilt()
+        {
+            
+        }
+
         #endregion
 
         #region Input and Output Connections
@@ -679,7 +674,6 @@ namespace Dynamo.Models
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
             Inputs[inputData] = Tuple.Create(outputData, node);
-            CheckPortsForRecalc();
         }
 
         internal void ConnectOutput(int portData, int inputData, NodeModel nodeLogic)
@@ -692,7 +686,6 @@ namespace Dynamo.Models
         internal void DisconnectInput(int data)
         {
             Inputs[data] = null;
-            CheckPortsForRecalc();
         }
 
         /// <summary>
@@ -753,7 +746,6 @@ namespace Dynamo.Models
             HashSet<Tuple<int, NodeModel>> output;
             if (Outputs.TryGetValue(portData, out output))
                 output.RemoveWhere(x => x.Item2 == nodeModel && x.Item1 == inPortData);
-            CheckPortsForRecalc();
         }
 
         #endregion
@@ -1622,11 +1614,7 @@ namespace Dynamo.Models
         {
             //Debug.WriteLine("Evaluating node...");
 
-            if (SaveResult)
-                savePortMappings();
-
             var evalDict = new Dictionary<PortData, FScheme.Value>();
-            _evaluationDict = evalDict;
 
             object[] iaAttribs = GetType().GetCustomAttributes(typeof(IsInteractiveAttribute), false);
             bool isInteractive = iaAttribs.Length > 0 && ((IsInteractiveAttribute)iaAttribs[0]).IsInteractive;
@@ -1914,88 +1902,7 @@ namespace Dynamo.Models
         ///     for the dynWorkspace containing it. If Automatic Running is enabled, setting this to true will
         ///     trigger an evaluation.
         /// </summary>
-        public virtual bool RequiresRecalc
-        {
-            get
-            {
-                //TODO: When marked as clean, remember so we don't have to re-traverse
-                if (_isDirty)
-                    return true;
-
-                bool dirty = Inputs.Values.Where(x => x != null).Any(x => x.Item2.RequiresRecalc);
-                _isDirty = dirty;
-
-                return dirty;
-            }
-            set
-            {
-                _isDirty = value;
-                if (value)
-                    ReportModification();
-            }
-        }
-
-        /// <summary>
-        ///     Forces the node to refresh it's dirty state by checking all inputs.
-        /// </summary>
-        public void MarkDirty()
-        {
-            bool dirty = false;
-            foreach (var input in Inputs.Values.Where(x => x != null))
-            {
-                input.Item2.MarkDirty();
-                if (input.Item2.RequiresRecalc)
-                    dirty = true;
-            }
-            if (!_isDirty)
-                _isDirty = dirty;
-        }
-
-        private void savePortMappings()
-        {
-            //Save all of the connection states, so we can check if this is dirty
-            foreach (int data in Enumerable.Range(0, InPortData.Count))
-            {
-                Tuple<int, NodeModel> input;
-
-                _previousInputPortMappings[data] = TryGetInput(data, out input) ? input : null;
-            }
-
-            foreach (int data in Enumerable.Range(0, OutPortData.Count))
-            {
-                HashSet<Tuple<int, NodeModel>> outputs;
-
-                _previousOutputPortMappings[data] = TryGetOutput(data, out outputs)
-                                                       ? outputs
-                                                       : new HashSet<Tuple<int, NodeModel>>();
-            }
-        }
-
-        /// <summary>
-        ///     Check current ports against ports used for previous mappings.
-        /// </summary>
-        private void CheckPortsForRecalc()
-        {
-            RequiresRecalc = Enumerable.Range(0, InPortData.Count).Any(
-                delegate(int input)
-                {
-                    Tuple<int, NodeModel> oldInput;
-                    Tuple<int, NodeModel> currentInput;
-
-                    //this is dirty if there wasn't anything set last time (implying it was never run)...
-                    return !_previousInputPortMappings.TryGetValue(input, out oldInput) || oldInput == null
-                           || !TryGetInput(input, out currentInput) //or If what's set doesn't match
-                           || (oldInput.Item2 != currentInput.Item2 && oldInput.Item1 != currentInput.Item1);
-                }) || Enumerable.Range(0, OutPortData.Count).Any(
-                    delegate(int output)
-                    {
-                        HashSet<Tuple<int, NodeModel>> oldOutputs;
-                        HashSet<Tuple<int, NodeModel>> newOutputs;
-
-                        return !_previousOutputPortMappings.TryGetValue(output, out oldOutputs)
-                               || !TryGetOutput(output, out newOutputs) || oldOutputs.SetEquals(newOutputs);
-                    });
-        }
+        public bool RequiresRecalc { get; set; }
 
         #endregion
 

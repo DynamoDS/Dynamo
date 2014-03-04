@@ -13,6 +13,8 @@ namespace Dynamo.Nodes
 {
     public abstract class VariableInputNode : NodeModel, IWpfNode
     {
+        private int inputAmtLastBuild;
+
         public virtual void SetupCustomUIElements(dynNodeView view)
         {
             var addButton = new DynamoNodeButton(this, "AddInPort") { Content = "+", Width = 20 };
@@ -43,8 +45,6 @@ namespace Dynamo.Nodes
             return InPortData.Count;
         }
 
-        //TODO: Mark node as dirty if amount of inputs changes between runs
-
         /// <summary>
         /// Removes an input from this node. Called when the '-' button is clicked.
         /// </summary>
@@ -52,9 +52,8 @@ namespace Dynamo.Nodes
         {
             var count = InPortData.Count;
             if (count > 0)
-            {
                 InPortData.RemoveAt(count - 1);
-            }
+            UpdateRecalcState();
         }
 
         /// <summary>
@@ -63,8 +62,13 @@ namespace Dynamo.Nodes
         protected virtual void AddInput()
         {
             var idx = GetInputIndex();
-            InPortData.Add(
-                new PortData(GetInputName(idx), GetInputTooltip(idx), typeof(object)));
+            InPortData.Add(new PortData(GetInputName(idx), GetInputTooltip(idx), typeof(object)));
+            UpdateRecalcState();
+        }
+
+        private void UpdateRecalcState()
+        {
+            RequiresRecalc = InPortData.Count != inputAmtLastBuild;
         }
 
         /// <summary>
@@ -74,18 +78,19 @@ namespace Dynamo.Nodes
         public void SetNumInputs(int numInputs)
         {
             if (numInputs <= 0 || numInputs == InPorts.Count)
-            {
                 return;
-            }
 
             InPortData.Clear();
 
             for (var i = 0; i < numInputs; i++)
-            {
                 AddInput();
-            }
 
             RegisterAllPorts();
+        }
+
+        protected override void OnBuilt()
+        {
+            inputAmtLastBuild = InPortData.Count;
         }
 
         #region Load/Save
