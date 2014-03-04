@@ -726,6 +726,7 @@ namespace Dynamo.Models
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
             Inputs[inputData] = Tuple.Create(outputData, node);
+            RequiresRecalc = true;
         }
 
         internal void ConnectOutput(int portData, int inputData, NodeModel nodeLogic)
@@ -738,6 +739,7 @@ namespace Dynamo.Models
         internal void DisconnectInput(int data)
         {
             Inputs[data] = null;
+            RequiresRecalc = true;
         }
 
         /// <summary>
