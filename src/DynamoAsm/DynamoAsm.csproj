@@ -93,7 +93,7 @@
   <PropertyGroup>
     <PostBuildEvent>IF NOT EXIST "$(OutputPath)\dll" (
 copy /Y "$(SolutionDir)..\scripts\install\extra\InstallASMForDynamo.exe" "$(OutputPath)\InstallASMForDynamo.exe"
-"$(OutputPath)\InstallASMForDynamo.exe"
+"$(OutputPath)\InstallASMForDynamo.exe" /SILENT /SUPPRESSMSGBOXES
 )</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
