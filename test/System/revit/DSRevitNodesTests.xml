@@ -101,6 +101,11 @@
 				<test name="SolidsProperty_ValidObject" modelPath=".\block.rfa" />
 			</testFixture>
 			<testFixture name="ProtoToRevitCurveTests">
+				<test name="NurbsCurve_Basic" modelPath=".\empty.rfa" />
+				<test name="Circle_Basic" modelPath=".\empty.rfa" />
+				<test name="Arc_Basic" modelPath=".\empty.rfa" />
+				<test name="Line_Basic" modelPath=".\empty.rfa" />
+				<test name="Helix_Basic" modelPath=".\empty.rfa" />
 				<test name="Ellipse_Basic" modelPath=".\empty.rfa" />
 			</testFixture>
 			<testFixture name="RevitToProtoCurveTests">
