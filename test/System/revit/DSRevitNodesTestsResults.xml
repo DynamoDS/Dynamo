@@ -1,39 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="6" failures="1" not-run="0" date="2014-03-03" time="13:38:58" errors="1" inconclusive="0" ignored="0" skipped="0" invalid="0">
-  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="2.7452745" asserts="129" type="TestFixture" result="Failure" executed="True">
+<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="2" failures="0" not-run="0" date="2014-03-04" time="13:38:31" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
+  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="1.110111" asserts="39" type="TestFixture" result="Success" executed="True">
     <results>
-      <test-suite name="ProtoToRevitCurveTests" description="Unit tests in Revit." time="2.7452745" asserts="129" type="TestFixture" result="Failure" executed="True">
+      <test-suite name="RevitToProtoCurveTests" description="Unit tests in Revit." time="1.110111" asserts="39" type="TestFixture" result="Success" executed="True">
         <results>
-          <test-case name="NurbsCurve_Basic" success="True" time="0.7230723" executed="True" asserts="100" result="Success" />
-          <test-case name="Circle_Basic" success="True" time="0.4720472" executed="True" asserts="9" result="Success" />
-          <test-case name="Arc_Basic" success="True" time="0.370037" executed="True" asserts="9" result="Success" />
-          <test-case name="Line_Basic" success="True" time="0.3550355" executed="True" asserts="8" result="Success" />
-          <test-case name="Helix_Basic" success="False" time="0.4270427" executed="True" asserts="3" result="Failure">
-            <failure>
-              <message>  X property does not match
-  Expected: 2.0d +/- 9.9999999999999995E-07d
-  But was:  1.0d
-</message>
-              <stack-trace>   at NUnit.Framework.Assert.That(Object actual, IResolveConstraint expression, String message, Object[] args)
-   at NUnit.Framework.Assert.AssertDoublesAreEqual(Double expected, Double actual, Double delta, String message, Object[] args)
-   at NUnit.Framework.Assert.AreEqual(Double expected, Double actual, Double delta, String message)
-   at DSRevitNodesTests.ApproximateAssertExtensions.ShouldBeApproximately(Point p0, Double x, Double y, Double z, Double epsilon) in c:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\test\Libraries\Revit\RevitNodesTests\ApproximateAssertExtensions.cs:line 67
-   at DSRevitNodesTests.ApproximateAssertExtensions.ShouldBeApproximately(Point p0, Point p1, Double epsilon) in c:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\test\Libraries\Revit\RevitNodesTests\ApproximateAssertExtensions.cs:line 16
-   at DSRevitNodesTests.GeometryConversion.ProtoToRevitCurveTests.Helix_Basic() in c:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\test\Libraries\Revit\RevitNodesTests\GeometryConversion\ProtoToRevitCurveTests.cs:line 147</stack-trace>
-            </failure>
-          </test-case>
-          <test-case name="Ellipse_Basic" success="False" time="0.3980398" executed="True" asserts="0" result="Error">
-            <failure>
-              <message>Autodesk.Revit.Exceptions.ArgumentOutOfRangeException : xAxis is not length 1.0.
-Parameter name: xAxis</message>
-              <stack-trace>   at Autodesk.Revit.CurveAPIUtils.CreateEllipse(XYZ center, Double xRadius, Double yRadius, XYZ xAxis, XYZ yAxis, Double startParameter, Double endParameter)
-   at Revit.GeometryConversion.ProtoToRevitCurve.Convert(Ellipse crv) in c:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\src\Libraries\Revit\RevitNodes\GeometryConversion\ProtoToRevitCurve.cs:line 132
-   at System.Dynamic.UpdateDelegates.UpdateAndExecute2[T0,T1,TRet](CallSite site, T0 arg0, T1 arg1)
-   at Revit.GeometryConversion.ProtoToRevitCurve.ToRevitType(Curve crv) in c:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\src\Libraries\Revit\RevitNodes\GeometryConversion\ProtoToRevitCurve.cs:line 25
-   at DSRevitNodesTests.GeometryConversion.ProtoToRevitCurveTests.Ellipse_Basic() in c:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\test\Libraries\Revit\RevitNodesTests\GeometryConversion\ProtoToRevitCurveTests.cs:line 165</stack-trace>
-            </failure>
-          </test-case>
+          <test-case name="NurbSpline_Rational" success="True" time="0.7040704" executed="True" asserts="5" result="Success" />
+          <test-case name="HermiteSpline_Basic" success="True" time="0.4060406" executed="True" asserts="34" result="Success" />
         </results>
       </test-suite>
     </results>

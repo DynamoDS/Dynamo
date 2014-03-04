@@ -104,14 +104,12 @@ namespace Revit.GeometryConversion
         {
             var sp = crv.StartPoint.ToXyz();
             var ap = crv.AxisPoint.ToXyz();
-            var ad = crv.AxisDirection.ToXyz();
-            ad.Normalize();
-            var x = sp - ap;
-            x.Normalize();
+            var ad = crv.AxisDirection.ToXyz().Normalize();
+            var x = (sp - ap).Normalize();
             var p = crv.Pitch;
             var a = crv.Angle.ToRadians();
 
-            return Autodesk.Revit.DB.CylindricalHelix.Create(sp, crv.Radius, x, ad, p, 0, a);
+            return Autodesk.Revit.DB.CylindricalHelix.Create(ap, crv.Radius, x, ad, p, 0, a);
         }
 
         /// <summary>
@@ -122,14 +120,14 @@ namespace Revit.GeometryConversion
         private static Autodesk.Revit.DB.Ellipse Convert(Autodesk.DesignScript.Geometry.Ellipse crv)
         {
             var center = crv.CenterPoint.ToXyz();
-            var x = crv.MajorAxis.ToXyz();
-            x.Normalize();
-            var y = crv.MinorAxis.ToXyz();
-            y.Normalize();
+            var x = crv.MajorAxis.ToXyz().Normalize();
+            var y = crv.MinorAxis.ToXyz().Normalize();
             var xw = crv.MajorAxis.Length;
             var yw = crv.MinorAxis.Length;
 
-            return Autodesk.Revit.DB.Ellipse.Create(center, xw, yw, x, y, 0, 2*Math.PI);
+            var e = Autodesk.Revit.DB.Ellipse.Create(center, xw, yw, x, y, 0, 2*Math.PI);
+            e.MakeBound(0, 2* Math.PI );
+            return e;
         }
 
     }

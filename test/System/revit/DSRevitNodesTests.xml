@@ -111,10 +111,6 @@
 			<testFixture name="RevitToProtoCurveTests">
 				<test name="NurbSpline_Rational" modelPath=".\empty.rfa" />
 				<test name="HermiteSpline_Basic" modelPath=".\empty.rfa" />
-				<test name="Line_Basic" modelPath=".\empty.rfa" />
-				<test name="Arc_Basic" modelPath=".\empty.rfa" />
-				<test name="Ellipse_Basic" modelPath=".\empty.rfa" />
-				<test name="CylindricalHelix_Basic" modelPath=".\empty.rfa" />
 			</testFixture>
 			<testFixture name="ReferencePlaneTests">
 				<test name="ByLine_ValidArgs" modelPath=".\empty.rfa" />
