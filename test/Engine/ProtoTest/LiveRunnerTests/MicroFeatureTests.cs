@@ -2953,7 +2953,7 @@ z=Point.ByCoordinates(y,a,a);
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""D:\jun\AutodeskResearch\git\Dynamo\bin\AnyCPU\Debug\DSIronPython.dll"");",
+                @"import(""DSIronPython.dll"");",
                 @"x = IronPythonEvaluator.EvaluateIronPythonScript(""# Default imports
 
 #The inputs to this node will be stored as a list in the IN variable.
