@@ -1851,7 +1851,7 @@ namespace Dynamo.Tests
             // run expression
             dynSettings.Controller.RunExpression(null);
 
-            var getFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.GetFromList>("d2f1c900-99ce-40a5-ae4d-bbac1fe96cfd");
+            var getFromList = model.CurrentWorkspace.NodeFromWorkspace("d2f1c900-99ce-40a5-ae4d-bbac1fe96cfd");
             var output = getFromList.GetValue(0).GetElements();
             var child = output[0].GetElements();
             var child1 = output[1].GetElements();
