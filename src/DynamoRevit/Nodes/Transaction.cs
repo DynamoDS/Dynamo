@@ -27,12 +27,6 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override bool RequiresRecalc
-        {
-            get { return Inputs[0].Item2.RequiresRecalc; }
-            set { }
-        }
-
         protected override INode Build(
             Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
