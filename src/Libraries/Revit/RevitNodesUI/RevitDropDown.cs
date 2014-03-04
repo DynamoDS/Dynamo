@@ -58,7 +58,7 @@ namespace DSRevitNodesUI
                 AstFactory.BuildStringNode(((FamilySymbol) Items[SelectedIndex].Item).Family.Name),
                 AstFactory.BuildStringNode(((FamilySymbol) Items[SelectedIndex].Item).Name)
             };
-            var functionCall = AstFactory.BuildFunctionCall("Revit.Elements.FamilySymbol",
+            var functionCall = AstFactory.BuildFunctionCall("FamilySymbol",
                                                             "ByFamilyNameAndTypeName",
                                                             args);
 
@@ -111,7 +111,7 @@ namespace DSRevitNodesUI
             {
                 AstFactory.BuildStringNode(((Autodesk.Revit.DB.FloorType) Items[SelectedIndex].Item).Name)
             };
-            var functionCall = AstFactory.BuildFunctionCall("Revit.Elements.FloorType",
+            var functionCall = AstFactory.BuildFunctionCall("FloorType",
                                                             "ByName",
                                                             args);
 
@@ -163,7 +163,7 @@ namespace DSRevitNodesUI
             {
                 AstFactory.BuildStringNode(((Autodesk.Revit.DB.WallType) Items[SelectedIndex].Item).Name)
             };
-            var functionCall = AstFactory.BuildFunctionCall("Revit.Elements.WallType",
+            var functionCall = AstFactory.BuildFunctionCall("WallType",
                                                             "ByName",
                                                             args);
 
