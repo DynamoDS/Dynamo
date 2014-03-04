@@ -46,7 +46,7 @@ namespace DSRevitNodesTests.Elements
             Assert.NotNull(ele);
 
             var form = ele as Form;
-            var faces = form.FaceReferences;
+            var faces = form.FaceReferences; 
             Assert.IsTrue(faces.All(x => x != null));
             Assert.AreEqual(6, faces.Length);
         }
