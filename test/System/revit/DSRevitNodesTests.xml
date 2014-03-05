@@ -215,7 +215,12 @@
 				<test name="SelectReferenceASTGeneration" modelPath=".\Empty.rfa" />
 			</testFixture>
 			<testFixture name="FaceIntersectTests">
+				<test name="IntersectingCurveFace_ValidArgs" modelPath=".\empty.rfa" />
+				<test name="IntersectingCurveFace_BadArgs" modelPath=".\empty.rfa" />
+				<test name="NonIntersectingCurveFace_ValidArgs" modelPath=".\empty.rfa" />
 				<test name="IntersectingFaceFace_ValidArgs" modelPath=".\empty.rfa" />
+				<test name="IntersectingFaceFace_BadArgs" modelPath=".\empty.rfa" />
+				<test name="NonIntersectingFaceFace_ValidArgs" modelPath=".\empty.rfa" />
 			</testFixture>
 		</testAssembly>
 	</testAssemblies>
