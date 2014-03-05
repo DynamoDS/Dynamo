@@ -17,7 +17,8 @@ ShowLanguageDialog=auto
 LicenseFile=.\extra\DynamoASMLicense.txt
 DirExistsWarning=no
 UsePreviousAppDir=no
+Uninstallable=no
 
 [Files]
-Source: "..\..\extern\ASM\*"; DestDir: {src}\dll; Flags: ignoreversion
+Source: "..\..\extern\ASM\*"; DestDir: {src}\dll; Flags: ignoreversion 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
