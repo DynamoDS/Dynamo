@@ -32,24 +32,6 @@ namespace Dynamo.Models
         }
     }
 
-    public class NodeMigrationException : Exception
-    {
-        internal NodeMigrationException(string nodeType)
-        {
-            this.NodeType = nodeType;
-        }
-
-        public override string Message
-        {
-            get
-            {
-                return string.Format("NodeMigrationException: {0}", NodeType);
-            }
-        }
-
-        public string NodeType { get; private set; }
-    }
-
     public class MigrationManager
     {
         private static MigrationManager _instance;
@@ -154,16 +136,6 @@ namespace Dynamo.Models
                               let result = new { method, attribute.From, attribute.To }
                               orderby result.From
                               select result).ToList();
-
-            if (migrations == null || (migrations.Count <= 0))
-            {
-                // For the duration of migration work, we display exception
-                // so that it shows up in the NUnit result. This may need to
-                // be disabled (and simply 'continue') if there are still 
-                // nodes left to be migrated.
-                // 
-                // throw new NodeMigrationException(type.FullName);
-            }
 
             var homespace = dynSettings.Controller.DynamoModel.HomeSpace;
             var currentVersion = MigrationManager.VersionFromWorkspace(homespace);
