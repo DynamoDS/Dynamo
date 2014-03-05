@@ -234,8 +234,7 @@ namespace Dynamo.PackageManager
         public void PublishSelectedNode()
         {
             var nodeList = DynamoSelection.Instance.Selection
-                                .Where(x => x is Function)
-                                .Cast<Function>()
+                                .OfType<CustomNodeInstance>()
                                 .Select(x => x.Definition.FunctionId)
                                 .ToList();
 
@@ -256,7 +255,7 @@ namespace Dynamo.PackageManager
         public bool CanPublishSelectedNode(object m)
         {
             return DynamoSelection.Instance.Selection.Count > 0 &&
-                   DynamoSelection.Instance.Selection.All(x => x is Function);
+                   DynamoSelection.Instance.Selection.All(x => x is CustomNodeInstance);
         }
 
         private void ShowNodePublishInfo(object funcDef)

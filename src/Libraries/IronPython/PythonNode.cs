@@ -6,12 +6,11 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
-using DSCoreNodesUI;
+using DSIronPython;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using IronPython.Hosting;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSIronPythonNode
@@ -47,7 +46,7 @@ namespace DSIronPythonNode
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
             Func<string, IList, IList, object> backendMethod =
-                DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript;
+                IronPythonEvaluator.EvaluateIronPythonScript;
 
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
@@ -72,26 +71,25 @@ namespace DSIronPythonNode
     {
         public PythonNode()
         {
-            _script = "import clr\nclr.AddReference('ProtoGeometry')\nfrom Autodesk.DesignScript.Geometry import *\n"
+            script = "import clr\nclr.AddReference('ProtoGeometry')\nfrom Autodesk.DesignScript.Geometry import *\n"
                 + "#The inputs to this node will be stored as a list in the IN variable.\n"
                 + "dataEnteringNode = IN\n\n"
                 + "#Assign your output to the OUT variable\n"
                 + "OUT = 0";
 
-
             RegisterAllPorts();
         }
 
-        private string _script;
+        private string script;
 
         public string Script
         {
-            get { return _script; }
+            get { return script; }
             set
             {
-                if (_script != value)
+                if (script != value)
                 {
-                    _script = value;
+                    script = value;
                     RaisePropertyChanged("Script");
                 }
             }
@@ -125,7 +123,7 @@ namespace DSIronPythonNode
             bool? acceptChanged = editWindow.ShowDialog();
             if (acceptChanged.HasValue && acceptChanged.Value)
             {
-                this.RequiresRecalc = true;
+                RequiresRecalc = true;
             }
         }
 
@@ -135,7 +133,7 @@ namespace DSIronPythonNode
             return new[]
             {
                 CreateOutputAST(
-                    AstFactory.BuildStringNode(_script),
+                    AstFactory.BuildStringNode(script),
                     inputAstNodes,
                     new List<Tuple<string, AssociativeNode>>())
             };
@@ -145,7 +143,7 @@ namespace DSIronPythonNode
         {
             if (name == "ScriptContent")
             {
-                _script = value;
+                script = value;
                 return true;
             }
 
@@ -159,10 +157,10 @@ namespace DSIronPythonNode
         {
             base.SaveNode(xmlDoc, nodeElement, context);
 
-            XmlElement script = xmlDoc.CreateElement("Script");
+            XmlElement savedScript = xmlDoc.CreateElement("Script");
             //script.InnerText = this.tb.Text;
-            script.InnerText = _script;
-            nodeElement.AppendChild(script);
+            savedScript.InnerText = script;
+            nodeElement.AppendChild(savedScript);
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -174,7 +172,7 @@ namespace DSIronPythonNode
             
             if (scriptNode != null)
             {
-                _script = scriptNode.InnerText;
+                script = scriptNode.InnerText;
             }
         }
 
@@ -192,9 +190,7 @@ namespace DSIronPythonNode
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context);
-            var helper = new XmlElementHelper(element);
-            var script = helper.ReadString("Script", string.Empty);
-            _script = script;
+            script = new XmlElementHelper(element).ReadString("Script", string.Empty);
         }
 
         #endregion
