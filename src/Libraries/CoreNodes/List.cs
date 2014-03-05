@@ -47,6 +47,7 @@ namespace DSCore
             return list.Cast<object>().Reverse().ToList();
         }
 
+        /*
         /// <summary>
         ///     Creates a new list containing the given items.
         /// </summary>
@@ -56,6 +57,7 @@ namespace DSCore
         {
             return items.ToList();
         }
+        */
 
         /// <summary>
         ///     Sorts a list using the built-in natural ordering.
