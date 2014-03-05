@@ -857,10 +857,8 @@ namespace Dynamo.Tests
             // after Filter
             Dictionary<int, object> validationData1 = new Dictionary<int, object>()
             {
-                {0,6},
-                {1,7},
-                {4,10},
-
+                {0,new int[]{6,7,8,9,10}},
+                {1,new int[]{0,1,2,3,4,5}},
             };
             SelectivelyAssertPreviewValues("b03dcac5-14f1-46b8-bcb8-398561d28b83", validationData1);
 
@@ -905,19 +903,16 @@ namespace Dynamo.Tests
             //  before Filter
             Dictionary<int, object> validationData = new Dictionary<int, object>()
             {
-                {0,6},
-                {1,7},
-                {4,10},
+                {0,new int[]{6,7,8,9,10}},
+                {1,new int[]{0,1,2,3,4,5}},
             };
             SelectivelyAssertPreviewValues("d957655d-57d0-4445-a5a8-c730a3cb8d28", validationData);
 
             // after Filter
             Dictionary<int, object> validationData1 = new Dictionary<int, object>()
             {
-                {0,0},
-                {1,1},
-                {4,4},
-
+                {0,new int[]{0,1,2,3,4}},
+                {1,new int[]{5,6,7,8,9,10}},
             };
             SelectivelyAssertPreviewValues("32e204af-cc73-486c-9add-9215f2688b98", validationData1);
 
@@ -1084,7 +1079,7 @@ namespace Dynamo.Tests
 
             Dictionary<int, object> validationData2 = new Dictionary<int, object>()
             {
-                {1000,2001},
+                {1000,2000},
             };
             SelectivelyAssertPreviewValues("25daa241-d8a4-4e74-aec1-6068358babf7", validationData2);
 
@@ -1118,18 +1113,16 @@ namespace Dynamo.Tests
             // Elements from first FilterOut list
             Dictionary<int, object> validationData2 = new Dictionary<int, object>()
             {
-                {0,3},
-                {1,4},
-                {7,10},
+                {0,new int[]{1,2}},
+                {1,new int[]{3,4,5,6,7,8,9,10}},
             };
             SelectivelyAssertPreviewValues("53ec97e2-d860-4fdc-8ea5-2288bf39bcfc", validationData2);
 
             // Elements from second FilterOut list
             Dictionary<int, object> validationData3 = new Dictionary<int, object>()
             {
-                {0,1},
-                {1,2},
-                {2,3},
+                {0,new int[]{4,5,6,7,8,9,10}},
+                {1,new int[]{1,2,3}},
             };
             SelectivelyAssertPreviewValues("0af3f566-1b05-4578-9fb0-297ca98d6d8c", validationData3);
 
@@ -1159,9 +1152,8 @@ namespace Dynamo.Tests
             // Elements from FilterOut list
             Dictionary<int, object> validationData2 = new Dictionary<int, object>()
             {
-                {0,3},
-                {1,4},
-                {7,10},
+                {0,new int[]{1,2}},
+                {1,new int[]{3,4,5,6,7,8,9,10}},
             };
             SelectivelyAssertPreviewValues("53ec97e2-d860-4fdc-8ea5-2288bf39bcfc", validationData2);
 
@@ -2254,7 +2246,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
-            AssertPreviewValue("3960776a-4c6c-40d8-8b7e-dbe5db38d75b", 5);
+            AssertPreviewValue("3960776a-4c6c-40d8-8b7e-dbe5db38d75b", true);
         }
 
         #endregion
