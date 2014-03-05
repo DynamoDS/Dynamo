@@ -94,10 +94,22 @@ namespace Revit.Elements
             get;
         }
 
+
+        private ElementId internalId;
         /// <summary>
         /// The element id for this element
         /// </summary>
-        protected ElementId InternalElementId;
+        protected ElementId InternalElementId
+        {
+            get { return internalId; }
+            set { 
+                internalId = value;
+
+                var elementManager = ElementIDLifecycleManager<int>.GetInstance();
+                elementManager.RegisterAsssociation(this.Id, this);
+
+            }
+        }
 
         /// <summary>
         /// The unique id for this element
@@ -110,11 +122,25 @@ namespace Revit.Elements
         /// </summary>
         public virtual void Dispose()
         {
+            
+            var elementManager = ElementIDLifecycleManager<int>.GetInstance();
+            int remainingBindings = elementManager.UnRegisterAssociation(this.Id, this);
+
             // Do not delete Revit owned elements
-            if (!IsRevitOwned)
+            if (!IsRevitOwned && remainingBindings == 0)
             {
                 DocumentManager.GetInstance().DeleteElement(this.InternalElementId);
             }
+            else
+            {
+                //This element has gone
+                //but there was something else holding onto the Revit object so don't purge it
+
+                internalId = null;
+            }
+
+
+
         }
 
         /// <summary>
