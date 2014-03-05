@@ -1393,7 +1393,8 @@ namespace Dynamo.Nodes
             int start = MigrationManager.GetNextIdentifierIndex();
             int amount = MigrationManager.GetNextIdentifierIndex();
             int step = MigrationManager.GetNextIdentifierIndex();
-            string content = string.Format("start{0}.. amount{1}*step{2}-step{2}+start{0}..step{2};", start, amount, step);
+            string content = string.Format("start{0}.. amount{1}*step{2}-" + 
+                "step{2}+start{0}..step{2};", start, amount, step);
 
             XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
             newNode.SetAttribute("CodeText", content);
