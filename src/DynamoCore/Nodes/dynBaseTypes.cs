@@ -5406,7 +5406,7 @@ namespace Dynamo.Nodes
                 base.Value = value;
                 //RaisePropertyChanged("Value"); //already called in base --SJE
 
-                Debug.WriteLine(string.Format("Min:{0},Max:{1},Value:{2}", Min.ToString(CultureInfo.InvariantCulture), Max.ToString(CultureInfo.InvariantCulture), Value.ToString(CultureInfo.InvariantCulture)));
+                Debug.WriteLine("Min:{0},Max:{1},Value:{2}", Min.ToString(CultureInfo.InvariantCulture), Max.ToString(CultureInfo.InvariantCulture), Value.ToString(CultureInfo.InvariantCulture));
             }
         }
         
@@ -5578,7 +5578,7 @@ namespace Dynamo.Nodes
             {
                 base.Value = value;
 
-                Debug.WriteLine(string.Format("Min:{0},Max:{1},Value:{2}", Min.ToString(CultureInfo.InvariantCulture), Max.ToString(CultureInfo.InvariantCulture), Value.ToString(CultureInfo.InvariantCulture)));
+                Debug.WriteLine("Min:{0},Max:{1},Value:{2}", Min.ToString(CultureInfo.InvariantCulture), Max.ToString(CultureInfo.InvariantCulture), Value.ToString(CultureInfo.InvariantCulture));
             }
         }
 

@@ -68,10 +68,10 @@ namespace Dynamo.Models
             CustomNodeDefinition.SyncWithWorkspace(false, true);
         }
 
-        public List<Function> GetExistingNodes()
+        public List<CustomNodeInstance> GetExistingNodes()
         {
             return dynSettings.Controller.DynamoModel.AllNodes
-                .OfType<Function>()
+                .OfType<CustomNodeInstance>()
                 .Where(el => el.Definition == CustomNodeDefinition)
                 .ToList();
         }
@@ -127,19 +127,15 @@ namespace Dynamo.Models
                 dynSettings.CustomNodeManager.AddFileToPath(originalPath);
                 var origDef = dynSettings.CustomNodeManager.GetFunctionDefinition(originalGuid);
                 if (origDef == null)
-                {
                     return false;
-                }
 
                 // reassign existing nodes to point to newly deserialized function def
-                dynSettings.Controller.DynamoModel.AllNodes
-                        .OfType<Function>()
-                        .Where(el => el.Definition.FunctionId == originalGuid)
-                        .ToList()
-                        .ForEach(node =>
-                            {
-                                node.Definition = origDef;
-                            });
+                var instances = dynSettings.Controller.DynamoModel.AllNodes
+                        .OfType<CustomNodeInstance>()
+                        .Where(el => el.Definition.FunctionId == originalGuid);
+
+                foreach (var node in instances)
+                    node.Definition = origDef;
 
                 // update this workspace with its new id
                 newDef.FunctionId = newGuid;
@@ -158,18 +154,8 @@ namespace Dynamo.Models
         {
             var doc = base.GetXml();
 
-            Guid guid;
-            if (CustomNodeDefinition != null)
-            {
-                guid = CustomNodeDefinition.FunctionId;
-            }
-            else
-            {
-                guid = Guid.NewGuid();
-            }
-
-            var root = doc.DocumentElement;
-            root.SetAttribute("ID", guid.ToString());
+            Guid guid = CustomNodeDefinition != null ? CustomNodeDefinition.FunctionId : Guid.NewGuid();
+            doc.DocumentElement.SetAttribute("ID", guid.ToString());
 
             return doc;
         }

@@ -2238,9 +2238,9 @@ namespace Dynamo.Models
             if (result)
                 return true;
 
-            if (entry is Function)
+            if (entry is CustomNodeInstance)
             {
-                Guid symbol = Guid.Parse((entry as Function).Symbol);
+                Guid symbol = (entry as CustomNodeInstance).Definition.FunctionId;
                 if (!dynSettings.Controller.CustomNodeManager.Contains(symbol))
                 {
                     DynamoLogger.Instance.Log("WARNING -- No implementation found for node: " + symbol);

@@ -37,11 +37,8 @@ namespace Dynamo.Tests
                 "a54c7cfa-450a-4edc-b7a5-b3e15145a9e1"
             };
 
-            foreach (var guid in nodesToCollapse)
-            {
-                var node = model.Nodes.First(x => x.GUID == Guid.Parse(guid));
+            foreach (var node in nodesToCollapse.Select(guid => model.Nodes.First(x => x.GUID == Guid.Parse(guid))))
                 model.AddToSelection(node);
-            }
 
             NodeCollapser.Collapse(
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
@@ -101,7 +98,7 @@ namespace Dynamo.Tests
 
             Controller.RunExpression();
 
-            var collapsedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
+            var collapsedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<CustomNodeInstance>();
 
             Assert.AreEqual(10, collapsedNode.OldValue.Data);
         }
@@ -142,7 +139,7 @@ namespace Dynamo.Tests
 
             Controller.RunExpression();
 
-            var collapsedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
+            var collapsedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<CustomNodeInstance>();
 
             Assert.AreEqual(0, collapsedNode.OldValue.Data);
         }
@@ -189,7 +186,7 @@ namespace Dynamo.Tests
             }
 
             // Making sure we do not have any Function node at this point.
-            Assert.IsNull(model.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
+            Assert.IsNull(model.CurrentWorkspace.FirstNodeFromWorkspace<CustomNodeInstance>());
             Assert.AreEqual(false, model.CurrentWorkspace.CanUndo);
             Assert.AreEqual(false, model.CurrentWorkspace.CanRedo);
 
@@ -205,7 +202,7 @@ namespace Dynamo.Tests
                 });
 
             // Making sure we have a Function node after the conversion.
-            Assert.IsNotNull(model.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
+            Assert.IsNotNull(model.CurrentWorkspace.FirstNodeFromWorkspace<CustomNodeInstance>());
 
             // Make sure we have 8 nodes left (11 - 4 + 1).
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
@@ -447,7 +444,7 @@ namespace Dynamo.Tests
 
             dynSettings.Controller.RunExpression();
 
-            var splitListVal = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>().OldValue;
+            var splitListVal = model.CurrentWorkspace.FirstNodeFromWorkspace<CustomNodeInstance>().OldValue;
 
             Assert.IsTrue(splitListVal.IsCollection);
 
