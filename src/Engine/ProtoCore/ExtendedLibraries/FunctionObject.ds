@@ -141,66 +141,35 @@ def __Compose(funcs : _FunctionObject[])
     return = _ComposedFunctionObject(funcs);
 }
 
-def MinimumItemByKey(list: var[], keyProjector: _FunctionObject)
+def MinimumItemByKey(list: var[]..[], keyProjector: _FunctionObject)
 {
     return = [Imperative]
     {
         _count = Count(list);
-        if (_count == 0)
+        _keys = { };
+        for (_index in 0..(_count - 1))
         {
-            return = null;
+            _keys[_index] = Apply(keyProjector, list[_index]);
         }
-
-        _min = list[0];
-        _minProjection = Apply(keyProjector, list[0]);
-
-        for (_index in 1..(_count - 1))
-        {
-            _currentProjection = Apply(keyProjector, list[_index]);
-            if (_currentProjection < _minProjection)
-            {
-                _min = list[_index];
-                _minProjection = _currentProjection;
-            }
-        }
-
-        return = _min;
+        return = Sorting.minByKey(list, _keys);
     }
 }
 
-def MaximumItemByKey(list: var[], keyProjector: _FunctionObject)
+def MaximumItemByKey(list: var[]..[], keyProjector: _FunctionObject)
 {
     return = [Imperative]
     {
-        if (list == null)
-        {
-            return = null;
-        }
-
         _count = Count(list);
-        if (_count == 0)
+        _keys = { };
+        for (_index in 0..(_count - 1))
         {
-            return = null;
+            _keys[_index] = Apply(keyProjector, list[_index]);
         }
-
-        _max = list[0];
-        _maxProjection = Apply(keyProjector, list[0]);
-
-        for (_index in 1..(_count - 1))
-        {
-            _currentProjection = Apply(keyProjector, list[_index]);
-            if (_currentProjection > _maxProjection)
-            {
-                _max = list[_index];
-                _maxProjection = _currentProjection;
-            }
-        }
-
-        return = _max;
+        return = Sorting.maxByKey(list, _keys);
     }
 }
 
-def __Filter(list: var[], predicate: _FunctionObject)
+def __Filter(list: var[]..[], predicate: _FunctionObject)
 {
     return = [Imperative]
     {
@@ -392,54 +361,21 @@ def Reduce(accumulator : _FunctionObject, seed: var, lists : var[]..[])
     }
 }
 
-def SortByKey(list : var[], keyProjector:_FunctionObject)
+def SortByKey(list : var[]..[], keyProjector:_FunctionObject)
 {
     return = [Imperative]
     {
         _count = Count(list);
-        if (_count < 2)
+        _keys = { };
+        for (_index in 0..(_count - 1))
         {
-            return = list;
+            _keys[_index] = Apply(keyProjector, list[_index]);
         }
-        
-        _pivotKey = Apply(keyProjector, list[0]);
-        // The position of last element that < privot
-        _last = 0;
-        
-        for (_current in 1..(_count - 1))
-        {
-            _currentKey = Apply(keyProjector, list[_current]);
-            if (_currentKey < _pivotKey)
-            {
-                _last = _last + 1;
-                
-                _temp = list[_current];
-                list[_current] = list[_last];
-                list[_last] = _temp;
-            }
-        }        
-        
-        _temp = list[_last];
-        list[_last] = list[0];
-        list[0] = _temp;
-        
-        _leftList = { };
-        if (_last >= 1)
-        {
-            _leftList = list[0.._last - 1];
-        }
-        
-        _rightList = { };
-        if (_last < _count - 1)
-        {
-            _rightList = list[(_last + 1)..(_count - 1)];
-        }
-        
-        return = Concat(Concat(SortByKey(_leftList, keyProjector), { list[_last] }), SortByKey(_rightList, keyProjector));
+        return = Sorting.sortByKey(list, _keys);
     }
 }
 
-def SortByComparsion(list : var[], comparer:_FunctionObject)
+def SortByComparsion(list : var[]..[], comparer:_FunctionObject)
 {
     return = [Imperative]
     {
@@ -486,7 +422,7 @@ def SortByComparsion(list : var[], comparer:_FunctionObject)
     }
 }
 
-def GroupByKey(list : var[], keyProjector: _FunctionObject)
+def GroupByKey(list : var[]..[], keyProjector: _FunctionObject)
 {
     return = [Imperative]
     {
@@ -528,7 +464,7 @@ def GroupByKey(list : var[], keyProjector: _FunctionObject)
     }
 }
 
-def TrueForAll(list: var[], predicate: _FunctionObject)
+def TrueForAll(list: var[]..[], predicate: _FunctionObject)
 {
     return = [Imperative]
     {
@@ -558,7 +494,7 @@ def TrueForAll(list: var[], predicate: _FunctionObject)
     }
 }
 
-def TrueForAny(list: var[], predicate: _FunctionObject)
+def TrueForAny(list: var[]..[], predicate: _FunctionObject)
 {
     return = [Imperative]
     {
