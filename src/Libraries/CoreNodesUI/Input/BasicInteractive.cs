@@ -85,6 +85,38 @@ namespace DSCoreNodesUI
         {
             //override in child classes
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); // Base implementation must be called
+
+            if (context == SaveContext.Undo)
+            {
+                var xmlDocument = element.OwnerDocument;
+                var subNode = xmlDocument.CreateElement(typeof(T).FullName);
+                subNode.InnerText = SerializeValue();
+                element.AppendChild(subNode);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); // Base implementation must be called
+
+            if (context == SaveContext.Undo)
+            {
+                foreach (XmlNode subNode in element.ChildNodes.Cast<XmlNode>()
+                    .Where(subNode => subNode.Name.Equals(typeof(T).FullName)))
+                {
+                    // ReSharper disable once PossibleNullReferenceException
+                    Value = DeserializeValue(subNode.InnerText);
+                }
+            }
+        }
+
+        #endregion
     }
 
     public abstract class Double : BasicInteractive<double>
