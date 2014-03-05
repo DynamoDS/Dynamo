@@ -70,7 +70,7 @@ namespace Dynamo.Models
         private readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
         private int errorCount;
 
-        private IRenderPackage _renderPackage = new RenderPackage(false, false);
+        private List<IRenderPackage> _renderPackages = new List<IRenderPackage>();
 
         #endregion
 
@@ -85,15 +85,15 @@ namespace Dynamo.Models
             new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
         private Object mutex = new object();
-        public IRenderPackage RenderPackage
+        public List<IRenderPackage> RenderPackages
         {
-            get { return _renderPackage; }
+            get { return _renderPackages; }
             set
             {
                 lock (mutex)
                 {
-                    _renderPackage = value;
-                    RaisePropertyChanged("RenderPackage");
+                    _renderPackages = value;
+                    RaisePropertyChanged("RenderPackages");
                 } 
             }
         }
@@ -2025,14 +2025,22 @@ namespace Dynamo.Models
 
             IEnumerable<string> drawableIds = GetDrawableIds();
 
+            var labelCount = -1;
             foreach (var varName in drawableIds)
             {
+                labelCount++;
                 var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
                 if (graphItems == null)
                     continue;
+
                 graphItems.ForEach(x => x.Tessellate(RenderPackage));
                 package.ItemsCount += graphItems.Count;
             }
+        }
+
+        private void ProcessGraphicItem(IGraphicItem graphicItem, IRenderPackage pacakge, string tag)
+        {
+            
         }
 
         /// <summary>
