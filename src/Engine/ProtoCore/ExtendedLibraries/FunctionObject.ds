@@ -369,16 +369,16 @@ def __CartesianProduct(func : _FunctionObject, lists : var[]..[])
     };
 }
 
-def __Reduce(accumulator: _FunctionObject, seed: var, list: var[]..[])
+def Reduce(accumulator : _FunctionObject, seed: var, lists : var[]..[])
 {
     return = [Imperative]
     {
-        if (list == null)
+        if (lisst == null)
         {
             return = seed;
         }
 
-		argLists = Transpose(list);
+		argLists = Transpose(lists);
         
         _acc = seed;
         for (_index in 0..(Count(argLists) - 1))
