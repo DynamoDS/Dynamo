@@ -164,7 +164,9 @@
 				<test name="ByName_NullArgs" modelPath=".\Empty.rvt" />
 			</testFixture>
 			<testFixture name="AxonometricViewTests">
+				<test name="ByEyePointTargetAndBoundingBox_ValidArgs" modelPath=".\Empty.rvt" />
 				<test name="ByEyePointTargetAndBoundingBox_BadArgs" modelPath=".\Empty.rvt" />
+				<test name="ByEyePointTargetAndElement_ValidArgs" modelPath=".\Empty.rvt" />
 				<test name="ByEyePointTargetAndElement_BadArgs" modelPath=".\Empty.rvt" />
 			</testFixture>
 			<testFixture name="PerspectiveViewTests">
