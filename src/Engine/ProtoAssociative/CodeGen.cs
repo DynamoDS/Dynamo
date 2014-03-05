@@ -7990,7 +7990,7 @@ namespace ProtoAssociative
                     EmitCompileLog("==============Start Node==============\n");
                     graphNode = new ProtoCore.AssociativeGraph.GraphNode();
                     graphNode.isParent = true;
-                    //graphNode.UID = bnode.ID;
+                    graphNode.AstID = bnode.ID;
                     graphNode.exprUID = bnode.exprUID;
                     graphNode.ssaExprID = bnode.ssaExprID;
                     graphNode.guid = core.SSASubscript_GUID;

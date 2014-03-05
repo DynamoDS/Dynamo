@@ -2736,6 +2736,58 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        public void TestDeleteNode02()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 1;",
+                "b = 2;",
+                "c = a;",
+                "c = b;",
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+
+            // Create a and b
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+
+            // Connect a to c 
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("c", 1);
+
+            // Connect b to c 
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid3, codes[3]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("c", 2);
+
+            // Delete first node
+            List<Subtree> deleted = new List<Subtree>();
+
+            // Mark the CBN that uses f as modified
+            deleted.Add(CreateSubTreeFromCode(guid1, codes[0]));
+
+            syncData = new GraphSyncData(deleted, null, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // c should not have changed
+            AssertValue("c", 2);
+
+        }
+
+        [Test]
         public void TestCachingSSA01()
         {
             List<string> codes = new List<string>() 
