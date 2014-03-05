@@ -27,7 +27,7 @@ namespace Dynamo.DSEngine
         private int shortVarCounter = 0;
         private DynamoController controller;
 
-        internal EngineController(DynamoController controller, bool isReset)
+        public EngineController(DynamoController controller, bool isReset)
         {
             libraryServices = LibraryServices.GetInstance();
             libraryServices.LibraryLoading += this.LibraryLoading;

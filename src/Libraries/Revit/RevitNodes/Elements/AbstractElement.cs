@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
+using DSNodeServices;
 using Revit.GeometryObjects;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
@@ -123,7 +124,11 @@ namespace Revit.Elements
         /// </summary>
         public virtual void Dispose()
         {
-            
+
+            // Do not cleanup Revit elements if we are shutting down Dynamo.
+            if (DisposeLogic.IsShuttingDown)
+                return;
+
             var elementManager = ElementIDLifecycleManager<int>.GetInstance();
             int remainingBindings = elementManager.UnRegisterAssociation(this.Id, this);
 
@@ -139,8 +144,6 @@ namespace Revit.Elements
 
                 internalId = null;
             }
-
-
 
         }
 

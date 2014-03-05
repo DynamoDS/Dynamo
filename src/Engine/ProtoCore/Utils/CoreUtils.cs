@@ -1,5 +1,6 @@
 ﻿using ProtoCore.DSASM;
 using System.Collections.Generic;
+using ProtoCore.AST.AssociativeAST;
 
 namespace ProtoCore.Utils
 {
@@ -650,13 +651,11 @@ namespace ProtoCore.Utils
             }
 
             // The first param to the dot arg (the pointer or the class name)
-            ProtoCore.AST.AssociativeAST.IntNode rhs = new ProtoCore.AST.AssociativeAST.IntNode() { value = rhsIdx.ToString() };
             funCallNode.FormalArguments.Add(lhs);
 
-
             // The second param which is the dynamic table index of the function to call
+            var rhs = new IntNode(rhsIdx);
             funCallNode.FormalArguments.Add(rhs);
-
 
             // The array dimensions
             ProtoCore.AST.AssociativeAST.ExprListNode arrayDimExperList = new ProtoCore.AST.AssociativeAST.ExprListNode();
@@ -684,17 +683,16 @@ namespace ProtoCore.Utils
             funCallNode.FormalArguments.Add(arrayDimExperList);
 
             // Number of dimensions
-            ProtoCore.AST.AssociativeAST.IntNode dimNode = new ProtoCore.AST.AssociativeAST.IntNode() { value = dimCount.ToString() };
+            var dimNode = new IntNode(dimCount);
             funCallNode.FormalArguments.Add(dimNode);
 
             if (argNum >= 0)
             {
                 funCallNode.FormalArguments.Add(argList);
-                funCallNode.FormalArguments.Add(new ProtoCore.AST.AssociativeAST.IntNode() { value = argNum.ToString() });
+                funCallNode.FormalArguments.Add(new IntNode(argNum));
             }
 
-
-            ProtoCore.AST.AssociativeAST.FunctionDotCallNode funDotCallNode = new ProtoCore.AST.AssociativeAST.FunctionDotCallNode(rhsCall);
+            var funDotCallNode = new FunctionDotCallNode(rhsCall);
             funDotCallNode.DotCall = funCallNode;
             funDotCallNode.FunctionCall.Function = rhsCall.Function;
 
