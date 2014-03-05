@@ -44,7 +44,7 @@ namespace ProtoTest.LiveRunner
             // Build the AST trees
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
             astList.Add(assign);
@@ -68,7 +68,7 @@ namespace ProtoTest.LiveRunner
             // Build the AST trees
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
             astList.Add(assign);
@@ -95,7 +95,7 @@ namespace ProtoTest.LiveRunner
             // Build the AST trees
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
             astList.Add(assign);
@@ -138,8 +138,8 @@ namespace ProtoTest.LiveRunner
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
                 new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                    new ProtoCore.AST.AssociativeAST.IntNode("10"),
-                    new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                    new ProtoCore.AST.AssociativeAST.IntNode(10),
+                    new ProtoCore.AST.AssociativeAST.IntNode(20),
                     ProtoCore.DSASM.Operator.add),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
@@ -170,8 +170,8 @@ namespace ProtoTest.LiveRunner
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
                 new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                    new ProtoCore.AST.AssociativeAST.IntNode("10"),
-                    new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                    new ProtoCore.AST.AssociativeAST.IntNode(10),
+                    new ProtoCore.AST.AssociativeAST.IntNode(20),
                     ProtoCore.DSASM.Operator.add),
                 ProtoCore.DSASM.Operator.assign);
 
@@ -196,14 +196,14 @@ namespace ProtoTest.LiveRunner
             // Build the AST trees
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
 
             astList.Add(assign1);
 
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("c"),
-                new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                new ProtoCore.AST.AssociativeAST.IntNode(20),
                 ProtoCore.DSASM.Operator.assign);
 
             astList.Add(assign2);
@@ -245,7 +245,7 @@ namespace ProtoTest.LiveRunner
             // Build the AST trees
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
 
             // update graph
@@ -256,7 +256,7 @@ namespace ProtoTest.LiveRunner
 
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("c"),
-                new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                new ProtoCore.AST.AssociativeAST.IntNode(20),
                 ProtoCore.DSASM.Operator.assign);
 
             // update graph
@@ -306,7 +306,7 @@ namespace ProtoTest.LiveRunner
             // Build the AST trees
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
 
             astList.Add(assign1);
@@ -326,7 +326,7 @@ namespace ProtoTest.LiveRunner
             astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("c"),
-                new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                new ProtoCore.AST.AssociativeAST.IntNode(20),
                 ProtoCore.DSASM.Operator.assign);
 
             astList.Add(assign2);
@@ -408,7 +408,7 @@ namespace ProtoTest.LiveRunner
 
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign0 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("c"),
-                new ProtoCore.AST.AssociativeAST.IntNode("78"),
+                new ProtoCore.AST.AssociativeAST.IntNode(78),
                 ProtoCore.DSASM.Operator.assign);
 
             astList.Add(assign0);
@@ -438,7 +438,7 @@ namespace ProtoTest.LiveRunner
             astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
 
             astList.Add(assign1);
@@ -515,9 +515,9 @@ namespace ProtoTest.LiveRunner
             ProtoCore.AST.AssociativeAST.FunctionCallNode constructorCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
             constructorCall.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("ByCoordinates");
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
             constructorCall.FormalArguments = listArgs;
 
             string className = "Point";
@@ -578,9 +578,9 @@ namespace ProtoTest.LiveRunner
             constructorCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
             constructorCall.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("ByCoordinates");
             listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
             constructorCall.FormalArguments = listArgs;
 
             className = "Point";
@@ -652,9 +652,9 @@ namespace ProtoTest.LiveRunner
             ProtoCore.AST.AssociativeAST.FunctionCallNode constructorCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
             constructorCall.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("ByCoordinates");
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
             constructorCall.FormalArguments = listArgs;
 
             string className = "Point";
@@ -711,9 +711,9 @@ namespace ProtoTest.LiveRunner
             constructorCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
             constructorCall.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("ByCoordinates");
             listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
             constructorCall.FormalArguments = listArgs;
 
             className = "Point";
@@ -779,9 +779,9 @@ namespace ProtoTest.LiveRunner
             ProtoCore.AST.AssociativeAST.FunctionCallNode constructorCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
             constructorCall.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("ByCoordinates");
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
             constructorCall.FormalArguments = listArgs;
 
             string className = "Point";
@@ -805,9 +805,9 @@ namespace ProtoTest.LiveRunner
             ProtoCore.AST.AssociativeAST.FunctionCallNode functionCallTranslate = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
             functionCallTranslate.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("Translate");
             listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("1.0"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("2.0"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("3.0"));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(1.0));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(2.0));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(3.0));
             functionCallTranslate.FormalArguments = listArgs;
 
             //ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCallTranslate = new ProtoCore.AST.AssociativeAST.FunctionDotCallNode("p", functionCallTranslate);
@@ -880,9 +880,9 @@ namespace ProtoTest.LiveRunner
             ProtoCore.AST.AssociativeAST.FunctionCallNode constructorCall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
             constructorCall.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("ByCoordinates");
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("10.0"));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(10.0));
             constructorCall.FormalArguments = listArgs;
 
             string className = "Point";
@@ -906,9 +906,9 @@ namespace ProtoTest.LiveRunner
             ProtoCore.AST.AssociativeAST.FunctionCallNode functionCallTranslate = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
             functionCallTranslate.Function = new ProtoCore.AST.AssociativeAST.IdentifierNode("Translate");
             listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("1.0"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("2.0"));
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode("3.0"));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(1.0));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(2.0));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.DoubleNode(3.0));
             functionCallTranslate.FormalArguments = listArgs;
 
             //ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCallTranslate = new ProtoCore.AST.AssociativeAST.FunctionDotCallNode("p", functionCallTranslate);
@@ -1001,16 +1001,16 @@ namespace ProtoTest.LiveRunner
             // a = 2
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                new ProtoCore.AST.AssociativeAST.IntNode("2"),
+                new ProtoCore.AST.AssociativeAST.IntNode(2),
                 ProtoCore.DSASM.Operator.assign);
             astList.Add(assign1);
 
 
             // x = 1..10;
             ProtoCore.AST.AssociativeAST.RangeExprNode rangeExpr = new ProtoCore.AST.AssociativeAST.RangeExprNode();
-            rangeExpr.FromNode = new ProtoCore.AST.AssociativeAST.IntNode("1");
-            rangeExpr.ToNode = new ProtoCore.AST.AssociativeAST.IntNode("10");
-            rangeExpr.StepNode = new ProtoCore.AST.AssociativeAST.IntNode("1");
+            rangeExpr.FromNode = new ProtoCore.AST.AssociativeAST.IntNode(1);
+            rangeExpr.ToNode = new ProtoCore.AST.AssociativeAST.IntNode(10);
+            rangeExpr.StepNode = new ProtoCore.AST.AssociativeAST.IntNode(1);
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("x"),
                 rangeExpr,
@@ -1111,16 +1111,16 @@ namespace ProtoTest.LiveRunner
             // a = 2
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                new ProtoCore.AST.AssociativeAST.IntNode("2"),
+                new ProtoCore.AST.AssociativeAST.IntNode(2),
                 ProtoCore.DSASM.Operator.assign);
             astList.Add(assign1);
 
 
             // x = 1..10;
             ProtoCore.AST.AssociativeAST.RangeExprNode rangeExpr = new ProtoCore.AST.AssociativeAST.RangeExprNode();
-            rangeExpr.FromNode = new ProtoCore.AST.AssociativeAST.IntNode("1");
-            rangeExpr.ToNode = new ProtoCore.AST.AssociativeAST.IntNode("10");
-            rangeExpr.StepNode = new ProtoCore.AST.AssociativeAST.IntNode("1");
+            rangeExpr.FromNode = new ProtoCore.AST.AssociativeAST.IntNode(1);
+            rangeExpr.ToNode = new ProtoCore.AST.AssociativeAST.IntNode(10);
+            rangeExpr.StepNode = new ProtoCore.AST.AssociativeAST.IntNode(1);
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("x"),
                 rangeExpr,
@@ -1456,9 +1456,9 @@ z=Point.ByCoordinates(y,a,a);
             // Build the AST trees
             // x = 1..10;
             ProtoCore.AST.AssociativeAST.RangeExprNode rangeExpr = new ProtoCore.AST.AssociativeAST.RangeExprNode();
-            rangeExpr.FromNode = new ProtoCore.AST.AssociativeAST.IntNode("0");
-            rangeExpr.ToNode = new ProtoCore.AST.AssociativeAST.IntNode("5");
-            rangeExpr.StepNode = new ProtoCore.AST.AssociativeAST.IntNode("1");
+            rangeExpr.FromNode = new ProtoCore.AST.AssociativeAST.IntNode(0);
+            rangeExpr.ToNode = new ProtoCore.AST.AssociativeAST.IntNode(5);
+            rangeExpr.StepNode = new ProtoCore.AST.AssociativeAST.IntNode(1);
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
                 rangeExpr,
@@ -1486,9 +1486,9 @@ z=Point.ByCoordinates(y,a,a);
             // Build the AST trees
             // x = 1..10;
             ProtoCore.AST.AssociativeAST.RangeExprNode rangeExpr = new ProtoCore.AST.AssociativeAST.RangeExprNode();
-            rangeExpr.FromNode = new ProtoCore.AST.AssociativeAST.IntNode("10");
-            rangeExpr.ToNode = new ProtoCore.AST.AssociativeAST.IntNode("100");
-            rangeExpr.StepNode = new ProtoCore.AST.AssociativeAST.IntNode("10");
+            rangeExpr.FromNode = new ProtoCore.AST.AssociativeAST.IntNode(10);
+            rangeExpr.ToNode = new ProtoCore.AST.AssociativeAST.IntNode(100);
+            rangeExpr.StepNode = new ProtoCore.AST.AssociativeAST.IntNode(10);
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
                 rangeExpr,
@@ -1524,7 +1524,7 @@ z=Point.ByCoordinates(y,a,a);
             // Execute and verify a = 10
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
             astList.Add(assign);
@@ -2040,7 +2040,7 @@ z=Point.ByCoordinates(y,a,a);
 
                 AssertValue("r", true);
             }
-
+            
             IEnumerable<int> indexes = Enumerable.Range(0, codes.Count);
             int shuffleCount = codes.Count;
 
