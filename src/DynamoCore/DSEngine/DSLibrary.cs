@@ -164,13 +164,13 @@ namespace Dynamo.DSEngine
                         break;
 
                     case FunctionType.StaticMethod:
-                    case FunctionType.StaticProperty:
-                        categoryBuf.Append("." + ClassName + "." + LibraryServices.Categories.StaticMembers);
+                    case FunctionType.InstanceMethod:
+                        categoryBuf.Append("." + ClassName + "." + LibraryServices.Categories.MemberFunctions);
                         break;
 
-                    case FunctionType.InstanceMethod:
+                    case FunctionType.StaticProperty:
                     case FunctionType.InstanceProperty:
-                        categoryBuf.Append("." + ClassName + "." + LibraryServices.Categories.Members);
+                        categoryBuf.Append("." + ClassName + "." + LibraryServices.Categories.Properties);
                         break;
                 }
                 return categoryBuf.ToString();
@@ -408,9 +408,9 @@ namespace Dynamo.DSEngine
         {
             public const string BuiltIns = "Builtin Functions";
             public const string Operators = "Operators";
-            public const string Constructors = "Constructor";
-            public const string StaticMembers = "Static Members";
-            public const string Members = "Members";
+            public const string Constructors = "Create";
+            public const string MemberFunctions = "Actions";
+            public const string Properties = "Query";
         }
 
         public class LibraryLoadedEventArgs : EventArgs
