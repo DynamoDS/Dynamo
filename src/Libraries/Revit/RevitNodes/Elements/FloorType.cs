@@ -124,7 +124,7 @@ namespace Revit.Elements
 
         public override string ToString()
         {
-            return InternalFloorType.ToString();
+            return InternalFloorType.Name;
         }
     }
 }

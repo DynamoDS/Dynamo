@@ -9,7 +9,6 @@ using Revit.GeometryObjects;
 using Revit.References;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
-using Curve = Revit.GeometryObjects.Curve;
 using Face = Revit.GeometryObjects.Face;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
