@@ -534,9 +534,18 @@ namespace Dynamo.Nodes
             get
             {
                 var sb = new StringBuilder();
-                _selected.ForEach(x => sb.Append(x.Id.IntegerValue + ","));
+                int count = 0;
+                while (count < Math.Min(_selected.Count, 10))
+                {
+                    sb.Append(_selected[count].Id.IntegerValue + ",");
+                    count++;
+                }
+                if (sb.Length > 0)
+                {
+                    sb.Remove(sb.Length - 1, 1).Append("...");
+                }
 
-                return "Elements:" + sb.ToString();
+                return "Elements:" + sb;
             }
             set
             {
@@ -578,7 +587,9 @@ namespace Dynamo.Nodes
                 Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
                 BorderThickness = new Thickness(0),
                 IsReadOnly = true,
-                IsReadOnlyCaretVisible = false
+                IsReadOnlyCaretVisible = false,
+                MaxWidth = 200,
+                TextWrapping = TextWrapping.Wrap
             };
 
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
