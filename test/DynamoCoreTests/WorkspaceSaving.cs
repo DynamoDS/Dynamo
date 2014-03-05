@@ -603,7 +603,7 @@ namespace Dynamo.Tests
             // run expression is correct
             Controller.RunExpression(null);
 
-            var evaluatedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<CustomNodeInstance>();
+            var evaluatedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
 
             Assert.IsAssignableFrom<double>(evaluatedNode.OldValue.Data);
             Assert.AreEqual(2.0, evaluatedNode.OldValue.Data);
@@ -687,7 +687,7 @@ namespace Dynamo.Tests
 
             // can get instances of original custom node
             Assert.AreEqual(10, homeWorkspace.Nodes.Count);
-            var funcs = homeWorkspace.Nodes.OfType<CustomNodeInstance>().Where(x => x.Definition.FunctionId == oldId).ToList();
+            var funcs = homeWorkspace.Nodes.OfType<Function>().Where(x => x.Definition.FunctionId == oldId).ToList();
             Assert.AreEqual(10, funcs.Count);
             funcs.ForEach(x => Assert.AreEqual( "Constant2", x.Name ));
             

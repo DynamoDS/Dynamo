@@ -332,7 +332,7 @@ namespace Dynamo.Controls
                     sw.Stop();
                     //DynamoLogger.Instance.Log(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
 
-                    Debug.WriteLine("{0} ellapsed for updating background preview.", sw.Elapsed);
+                    Debug.WriteLine(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
                 //}));
 
         }
