@@ -126,9 +126,9 @@ namespace DSRevitNodesTests.GeometryIntersection
             var intersectionLine = intersectionCurve as Autodesk.DesignScript.Geometry.Line;
 
             // intersection is a length 5 line 
-            Assert.AreEqual(0, Math.Abs( Math.Abs( intersectionLine.Direction.Dot(Vector.ByCoordinates(0, 0, 1)) ) - 1), 1e-6);
-            Assert.AreEqual(5, intersectionLine.Length, 1e-6);
-
+            intersectionLine.Length.ShouldBeApproximately(5);
+            intersectionLine.Direction.Dot(Vector.ByCoordinates(1, 0, 0)).ShouldBeApproximately(0);
+            intersectionLine.Direction.Dot(Vector.ByCoordinates(0, 1, 0)).ShouldBeApproximately(0);
         }
 
         [Test]
