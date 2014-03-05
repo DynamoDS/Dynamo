@@ -107,11 +107,18 @@ namespace Dynamo.Models
                 typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
                 System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
 
-                if (type == null) // Errors are displayed in the console in the 
-                    continue;     // method calls above, simply continue here.
+                if (type == null)
+                {
+                    // If we are not able to resolve the type given its name, 
+                    // turn it into a deprecated node so that user is aware.
+                    migratedNodes.Add(MigrationManager.CreateDummyNode(
+                        elNode as XmlElement, 1, 1));
+
+                    continue; // Error displayed in console, continue on.
+                }
 
                 // Migrate the given node into one or more new nodes.
-                NodeMigrationData migrationData = this.MigrateXmlNode(elNode, type, workspaceVersion);
+                var migrationData = this.MigrateXmlNode(elNode, type, workspaceVersion);
                 migratedNodes.AddRange(migrationData.MigratedNodes);
             }
 
