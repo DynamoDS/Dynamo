@@ -39,7 +39,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, funCall.FormalArguments.Count);
             Assert.IsInstanceOf<IntNode>(funCall.FormalArguments[0]);
 
-            Assert.AreEqual(refPoint.Id.IntegerValue.ToString(), ((IntNode)funCall.FormalArguments[0]).value);
+            Assert.AreEqual(refPoint.Id.IntegerValue, ((IntNode)funCall.FormalArguments[0]).Value);
         }
 
         [Test]

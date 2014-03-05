@@ -186,7 +186,7 @@ namespace DSRevitNodesUI
                 AstFactory.BuildStringNode(((BuiltInCategory) Items[SelectedIndex].Item).ToString())
             };
 
-            var functionCall = AstFactory.BuildFunctionCall("DSCategory",
+            var functionCall = AstFactory.BuildFunctionCall("Revit.Elements.Category",
                                                             "ByName",
                                                             args);
 

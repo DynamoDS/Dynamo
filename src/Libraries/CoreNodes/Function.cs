@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace DSCore
+﻿namespace DSCore
 {
     /// <summary>
     /// TODO: Move contents somewhere else.

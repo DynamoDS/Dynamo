@@ -1,5 +1,7 @@
 ﻿using System;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.Exceptions;
 using Autodesk.Revit.UI;
 using DSNodeServices;
 using Revit.Elements;
@@ -7,6 +9,8 @@ using Revit.GeometryConversion;
 using Revit.References;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
+using ArgumentException = System.ArgumentException;
+using ArgumentNullException = System.ArgumentNullException;
 using Line = Autodesk.DesignScript.Geometry.Line;
 using Plane = Autodesk.DesignScript.Geometry.Plane;
 using Point = Autodesk.DesignScript.Geometry.Point;
@@ -55,7 +59,7 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="bubbleEnd"></param>
         /// <param name="freeEnd"></param>
-        private ReferencePlane(XYZ bubbleEnd, XYZ freeEnd)
+        private ReferencePlane(XYZ bubbleEnd, XYZ freeEnd, XYZ normal, Autodesk.Revit.DB.View view )
         {
             //Phase 1 - Check to see if the object exists and should be rebound
             var oldEle =
@@ -84,16 +88,16 @@ namespace Revit.Elements
                 refPlane = Document.FamilyCreate.NewReferencePlane(
                     bubbleEnd,
                     freeEnd,
-                    XYZ.BasisZ,
-                    Document.ActiveView);
+                    normal, 
+                    view );
             }
             else
             {
                 refPlane = Document.Create.NewReferencePlane(
                     bubbleEnd,
                     freeEnd,
-                    XYZ.BasisZ,
-                    Document.ActiveView );
+                    normal,
+                    view );
             }
 
             InternalSetReferencePlane(refPlane);
@@ -187,27 +191,34 @@ namespace Revit.Elements
         #region Public static constructors
 
         /// <summary>
-        /// Form a ReferencePlane from a line
+        /// Form a ReferencePlane from a line in the Active view.  The cut vector is the Z Axis.
         /// </summary>
-        /// <param name="line"></param>
+        /// <param name="line">The line where the bubble wil be located at the start</param>
         /// <returns></returns>
-        public static ReferencePlane ByLine(Autodesk.DesignScript.Geometry.Line line)
+        public static ReferencePlane ByLine( Autodesk.DesignScript.Geometry.Line line )
         {
             if (line == null)
             {
                 throw new ArgumentNullException("line");
             }
 
-            return new ReferencePlane(line.StartPoint.ToXyz(), line.EndPoint.ToXyz());
+            var start = line.StartPoint.ToXyz();
+            var end = line.EndPoint.ToXyz();
+            var norm = (end - start).GetParallel();
+
+            return new ReferencePlane(  start, 
+                                        end,
+                                        norm, 
+                                        Document.ActiveView );
         }
 
         /// <summary>
-        /// Form a Refernece plane from two end points
+        /// Form a Refernece plane from two end points in the Active view.  The cut vector is the Z Axis.
         /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
+        /// <param name="start">The location where the bubble will be located</param>
+        /// <param name="end">The other end</param>
         /// <returns></returns>
-        public static ReferencePlane ByStartPointEndPoint(Point start, Point end)
+        public static ReferencePlane ByStartPointEndPoint( Point start, Point end )
         {
             if (start == null)
             {
@@ -219,7 +230,10 @@ namespace Revit.Elements
                 throw new ArgumentNullException("end");
             }
 
-            return new ReferencePlane(start.ToXyz(), end.ToXyz());
+            return new ReferencePlane(  start.ToXyz(), 
+                                        end.ToXyz(),
+                                        (end.ToXyz() - start.ToXyz()).GetParallel(),
+                                        Document.ActiveView);
         }
 
         #endregion

@@ -133,7 +133,7 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsCustomFunction
         {
-            get { return this is CustomNodeInstance; }
+            get { return this is Function; }
         }
 
         /// <summary>
@@ -543,7 +543,7 @@ namespace Dynamo.Models
             IsSelected = false;
             State = ElementState.Dead;
             ArgumentLacing = LacingStrategy.Disabled;
-            RequiresRecalc = true;
+            IsReportingModifications = true;
         }
 
         /// <summary>
@@ -566,7 +566,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Disable reporting of state modifications.
         /// </summary>
-        [Obsolete("Use IsReportingModifications = false")]
+        //[Obsolete("Use IsReportingModifications = false")]
         protected internal void DisableReporting()
         {
             IsReportingModifications = false;
@@ -575,10 +575,11 @@ namespace Dynamo.Models
         /// <summary>
         ///     Enable reporting of state modifications.
         /// </summary>
-        [Obsolete("Use IsReportingModifications = true")]
+        //[Obsolete("Use IsReportingModifications = true")]
         protected internal void EnableReporting()
         {
             IsReportingModifications = true;
+            ValidateConnections();
         }
 
         /// <summary>
@@ -747,6 +748,7 @@ namespace Dynamo.Models
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
             Inputs[inputData] = Tuple.Create(outputData, node);
+            RequiresRecalc = true;
         }
 
         internal void ConnectOutput(int portData, int inputData, NodeModel nodeLogic)
@@ -759,6 +761,7 @@ namespace Dynamo.Models
         internal void DisconnectInput(int data)
         {
             Inputs[data] = null;
+            RequiresRecalc = true;
         }
 
         /// <summary>
@@ -1970,12 +1973,26 @@ namespace Dynamo.Models
 
         #region Dirty Management
 
+        //TODO: Refactor Property into Automatic with private(?) setter
+        //TODO: Add RequestRecalc() method to replace setter --steve
+
+        private bool dirty = true;
+
         /// <summary>
         ///     Does this Element need to be regenerated? Setting this to true will trigger a modification event
         ///     for the dynWorkspace containing it. If Automatic Running is enabled, setting this to true will
         ///     trigger an evaluation.
         /// </summary>
-        public bool RequiresRecalc { get; set; }
+        public bool RequiresRecalc 
+        {
+            get { return dirty; }
+            set
+            {
+                dirty = value;
+                if (dirty)
+                    ReportModification();
+            } 
+        }
 
         #endregion
 

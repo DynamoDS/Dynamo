@@ -2530,7 +2530,7 @@ namespace ProtoImperative
                         BinaryExpressionNode binRight = new BinaryExpressionNode();
                         BinaryExpressionNode bin = new BinaryExpressionNode();
                         binRight.LeftNode = u.Expression;
-                        binRight.RightNode = new IntNode { value = "1" };
+                        binRight.RightNode = new IntNode(1);
                         binRight.Optr = (ProtoCore.DSASM.UnaryOperator.Increment == u.Operator) ? ProtoCore.DSASM.Operator.add : ProtoCore.DSASM.Operator.sub;
                         bin.LeftNode = u.Expression; bin.RightNode = binRight; bin.Optr = ProtoCore.DSASM.Operator.assign;
                         EmitBinaryExpressionNode(bin, ref inferedType);
@@ -2733,7 +2733,7 @@ namespace ProtoImperative
                     nextKey.LeftNode = key;
                     nextKey.Optr = Operator.assign;
                     nextKey.RightNode = nodeBuilder.BuildBinaryExpression(key,
-                                                    new IntNode { value = "1" },
+                                                    new IntNode(1),
                                                     Operator.add);
                 }
 
@@ -2790,14 +2790,14 @@ namespace ProtoImperative
                 (range.ToNode is IntNode || range.ToNode is DoubleNode) &&
                 (range.StepNode == null || (range.StepNode != null && (range.StepNode is IntNode || range.StepNode is DoubleNode))))
             {
-                decimal current = (range.FromNode is IntNode) ? Int64.Parse((range.FromNode as IntNode).value) : Decimal.Parse((range.FromNode as DoubleNode).value);
-                decimal end = (range.ToNode is IntNode) ? Int64.Parse((range.ToNode as IntNode).value) : Decimal.Parse((range.ToNode as DoubleNode).value);
+                double current = (range.FromNode is IntNode) ? (range.FromNode as IntNode).Value :(range.FromNode as DoubleNode).Value;
+                double end = (range.ToNode is IntNode) ? (range.ToNode as IntNode).Value : (range.ToNode as DoubleNode).Value;
                 ProtoCore.DSASM.RangeStepOperator stepoperator = range.stepoperator;
 
-                decimal step = 1;
+                double step = 1;
                 if (range.StepNode != null)
                 {
-                    step = (range.StepNode is IntNode) ? Int64.Parse((range.StepNode as IntNode).value) : Decimal.Parse((range.StepNode as DoubleNode).value);
+                    step = (range.StepNode is IntNode) ? (range.StepNode as IntNode).Value :(range.StepNode as DoubleNode).Value;
                 }
 
                 if (stepoperator == ProtoCore.DSASM.RangeStepOperator.stepsize)
@@ -2860,25 +2860,25 @@ namespace ProtoImperative
             var assignStep = nodeBuilder.BuildBinaryExpression(tmpStep, range.StepNode == null ? new NullNode() : range.StepNode);
             EmitBinaryExpressionNode(assignStep, ref inferedType);
 
-            BooleanNode hasStep = new BooleanNode { value = range.StepNode == null ? "false" : "true" };
+            BooleanNode hasStep = new BooleanNode(range.StepNode != null);
             var tmpStepSkip = nodeBuilder.BuildTempVariable();
             var assignStepSkip = nodeBuilder.BuildBinaryExpression(tmpStepSkip, hasStep);
             EmitBinaryExpressionNode(assignStepSkip, ref inferedType);
 
-            IntNode op = new IntNode();
+            IntNode op = null;
             switch (range.stepoperator)
             {
                 case ProtoCore.DSASM.RangeStepOperator.stepsize:
-                    op.value = "0";
+                    op = new IntNode(0);
                     break;
                 case ProtoCore.DSASM.RangeStepOperator.num:
-                    op.value = "1";
+                    op = new IntNode(1);
                     break;
                 case ProtoCore.DSASM.RangeStepOperator.approxsize:
-                    op.value = "2";
+                    op = new IntNode(2);
                     break;
                 default:
-                    op.value = "-1";
+                    op = new IntNode(-1);
                     break;
             }
 

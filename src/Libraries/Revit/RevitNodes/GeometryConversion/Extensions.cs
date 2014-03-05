@@ -208,5 +208,22 @@ namespace Revit.GeometryConversion
 
         #endregion
 
+        #region X&UZ
+
+        public static XYZ GetParallel(this XYZ xyz)
+        {
+            var ixn = xyz.Normalize();
+            var xn = new XYZ(1, 0, 0);
+
+            if (ixn.IsAlmostEqualTo(xn))
+            {
+                xn = new XYZ(0,1,0);
+            }
+
+            return ixn.CrossProduct(xn);
+        }
+
+        #endregion
+
     }
 }

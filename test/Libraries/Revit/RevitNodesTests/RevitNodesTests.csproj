@@ -104,8 +104,6 @@
     <Compile Include="GeometryConversion\RevitToProtoCurveTests.cs" />
     <Compile Include="GeometryIntersection\FaceIntersectTests.cs" />
     <Compile Include="GeometryObjects\BoundingBoxTests.cs" />
-    <Compile Include="GeometryObjects\CurveLoopTests.cs" />
-    <Compile Include="GeometryObjects\NurbSplineTests.cs" />
     <Compile Include="GeometryObjects\SolidTests.cs" />
     <Compile Include="GeometryTests.cs" />
     <Compile Include="Interactivity\SelectionTests.cs" />

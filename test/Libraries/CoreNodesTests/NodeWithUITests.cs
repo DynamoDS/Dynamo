@@ -29,8 +29,8 @@ namespace DSCoreNodesTests
             var buildOutput = sliderNode.BuildOutputAst(new List<AssociativeNode>());
 
             Assert.AreEqual(
-                new DoubleNode("10").value,
-                ((DoubleNode)((BinaryExpressionNode)buildOutput.First()).RightNode).value);
+                10,
+                ((DoubleNode)((BinaryExpressionNode)buildOutput.First()).RightNode).Value);
         }
     }
 }

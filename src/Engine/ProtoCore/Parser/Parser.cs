@@ -2265,12 +2265,12 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Associative_Number(out node);
 		} else if (la.kind == 41) {
 			Get();
-			node = new ProtoCore.AST.AssociativeAST.BooleanNode() { value = ProtoCore.DSASM.Literal.True };
+			node = new ProtoCore.AST.AssociativeAST.BooleanNode(true);
 			NodeUtils.SetNodeLocation(node, t);
 			
 		} else if (la.kind == 42) {
 			Get();
-			node = new ProtoCore.AST.AssociativeAST.BooleanNode() { value = ProtoCore.DSASM.Literal.False };
+			node = new ProtoCore.AST.AssociativeAST.BooleanNode(false);
 			NodeUtils.SetNodeLocation(node, t);
 			
 		} else if (la.kind == 43) {
@@ -2510,16 +2510,31 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	}
 
 	void Associative_Number(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
-		node = null; String localvalue = String.Empty; 
-		int line = ProtoCore.DSASM.Constants.kInvalidIndex; int col = ProtoCore.DSASM.Constants.kInvalidIndex; 
+		node = null; 
+		int sign = 1;
+		int line = ProtoCore.DSASM.Constants.kInvalidIndex; 
+		int col = ProtoCore.DSASM.Constants.kInvalidIndex; 
+		
 		if (la.kind == 13) {
 			Get();
-			localvalue = "-"; line = t.line; col = t.col; 
+			sign = -1; 
+			line = t.line; 
+			col = t.col; 
+			
 		}
 		if (la.kind == 2) {
 			Get();
-			node = new ProtoCore.AST.AssociativeAST.IntNode() { value = localvalue + t.val }; 
-			if (    ProtoCore.DSASM.Constants.kInvalidIndex == line
+			Int64 value;
+			if (Int64.TryParse(t.val, out value))
+			{
+			   node = new ProtoCore.AST.AssociativeAST.IntNode(value * sign);
+			}
+			else
+			{
+			   node = new ProtoCore.AST.AssociativeAST.NullNode();
+			}
+			
+			if (ProtoCore.DSASM.Constants.kInvalidIndex == line
 			   &&  ProtoCore.DSASM.Constants.kInvalidIndex == col)
 			{
 			   NodeUtils.SetNodeLocation(node, t);
@@ -2531,8 +2546,17 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			
 		} else if (la.kind == 3) {
 			Get();
-			node = new ProtoCore.AST.AssociativeAST.DoubleNode() { value = localvalue + t.val }; 
-			if (    ProtoCore.DSASM.Constants.kInvalidIndex == line
+			double value;
+			if (Double.TryParse(t.val, out value))
+			{
+			   node = new ProtoCore.AST.AssociativeAST.DoubleNode(value * sign);
+			}
+			else
+			{
+			   node = new ProtoCore.AST.AssociativeAST.NullNode();
+			}
+			
+			if (ProtoCore.DSASM.Constants.kInvalidIndex == line
 			   &&  ProtoCore.DSASM.Constants.kInvalidIndex == col)
 			{
 			   NodeUtils.SetNodeLocation(node, t);
@@ -2716,8 +2740,8 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			       var arrayExpr = (dotCall.FormalArguments[2] as ProtoCore.AST.AssociativeAST.ExprListNode);
 			       var dimCount = (dotCall.FormalArguments[3] as ProtoCore.AST.AssociativeAST.IntNode);
 			
-			       int dims = Int32.Parse(dimCount.value);
-			       int newdims = dims;
+			       var dims = dimCount.Value;
+			       var newdims = dims;
 			
 			       if (arrayExpr != null)
 			       {
@@ -2729,7 +2753,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			               newarray = (newarray.Type as ProtoCore.AST.AssociativeAST.ArrayNode);
 			           }
 			           
-			           (dotCall.FormalArguments[3] as ProtoCore.AST.AssociativeAST.IntNode).value = newdims.ToString();
+			           (dotCall.FormalArguments[3] as ProtoCore.AST.AssociativeAST.IntNode).Value = newdims;
 			       }
 			       groupExprNode.ArrayDimensions = null;
 			   }
@@ -3185,7 +3209,8 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Imperative_stmt(out singleStmt);
 			loopNode.body.Add(singleStmt); 
 		} else SynErr(116);
-		dummyIfNode.IfExprNode = new ProtoCore.AST.ImperativeAST.BooleanNode() { value = ProtoCore.DSASM.Literal.True };
+		dummyIfNode.IfExprNode
+		= new ProtoCore.AST.ImperativeAST.BooleanNode(true);
 		dummyIfNode.IfBody.Add(loopNode);
 		dummyIfNode.line = loopNode.line;
 		dummyIfNode.col = loopNode.col;
@@ -3595,13 +3620,19 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Imperative_String(out node);
 		} else if (la.kind == 41) {
 			Get();
-			node = new ProtoCore.AST.ImperativeAST.BooleanNode() { value = ProtoCore.DSASM.Literal.True }; NodeUtils.SetNodeLocation(node, t); 
+			node = new ProtoCore.AST.ImperativeAST.BooleanNode(true);
+			NodeUtils.SetNodeLocation(node, t); 
+			
 		} else if (la.kind == 42) {
 			Get();
-			node = new ProtoCore.AST.ImperativeAST.BooleanNode() { value = ProtoCore.DSASM.Literal.False }; NodeUtils.SetNodeLocation(node, t); 
+			node = new ProtoCore.AST.ImperativeAST.BooleanNode(false); 
+			NodeUtils.SetNodeLocation(node, t); 
+			
 		} else if (la.kind == 43) {
 			Get();
-			node = new ProtoCore.AST.ImperativeAST.NullNode(); NodeUtils.SetNodeLocation(node, t); 
+			node = new ProtoCore.AST.ImperativeAST.NullNode(); 
+			NodeUtils.SetNodeLocation(node, t); 
+			
 		} else if (la.kind == 1 || la.kind == 10 || la.kind == 46) {
 			Imperative_IdentifierList(out node);
 		} else if (StartOf(23)) {
@@ -3849,24 +3880,50 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	}
 
 	void Imperative_num(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
-		node = null; String localvalue = String.Empty; 
+		node = null; 
+		int sign = 1;
 		int line = ProtoCore.DSASM.Constants.kInvalidIndex; int col = ProtoCore.DSASM.Constants.kInvalidIndex;
 		
 		if (la.kind == 13) {
 			Get();
-			localvalue = "-"; line = t.line; col = t.col; 
+			sign = -1;
+			line = t.line; 
+			col = t.col; 
+			
 		}
 		if (la.kind == 2) {
 			Get();
-			node = new ProtoCore.AST.ImperativeAST.IntNode() { value = localvalue + t.val }; 
-			if (ProtoCore.DSASM.Constants.kInvalidIndex != line){
-			   node.line = line; node.col = col; }
-			else{
-			   NodeUtils.SetNodeLocation(node, t); }
+			Int64 value;
+			if (Int64.TryParse(t.val, out value))
+			{
+			   node = new ProtoCore.AST.ImperativeAST.IntNode(value * sign);
+			}
+			else
+			{
+			   node = new ProtoCore.AST.ImperativeAST.NullNode();
+			}
+			
+			if (ProtoCore.DSASM.Constants.kInvalidIndex != line)
+			{
+			   node.line = line; node.col = col; 
+			}
+			else
+			{
+			   NodeUtils.SetNodeLocation(node, t); 
+			}
 			
 		} else if (la.kind == 3) {
 			Get();
-			node = new ProtoCore.AST.ImperativeAST.DoubleNode() { value = localvalue + t.val }; 
+			double value;
+			if (Double.TryParse(t.val, out value))
+			{
+			   node = new ProtoCore.AST.ImperativeAST.DoubleNode(value * sign);
+			}
+			else
+			{
+			   node = new ProtoCore.AST.ImperativeAST.NullNode();
+			}
+			
 			if (ProtoCore.DSASM.Constants.kInvalidIndex != line){
 			   node.line = line; node.col = col; }
 			else{

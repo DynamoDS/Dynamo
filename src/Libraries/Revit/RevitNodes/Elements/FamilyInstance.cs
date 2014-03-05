@@ -9,7 +9,6 @@ using Revit.GeometryObjects;
 using Revit.References;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
-using Curve = Revit.GeometryObjects.Curve;
 using Face = Revit.GeometryObjects.Face;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
@@ -271,7 +270,7 @@ namespace Revit.Elements
 
         #region Incomplete Static constructors
 
-        static FamilyInstance ByCurve(FamilySymbol fs, Curve c)
+        static FamilyInstance ByCurve(FamilySymbol fs, Autodesk.DesignScript.Geometry.Curve c)
         {
             throw new NotImplementedException();
         }
@@ -376,5 +375,9 @@ namespace Revit.Elements
 
         #endregion
 
+        public override string ToString()
+        {
+            return InternalFamilyInstance.Name;
+        }
     }
 }
