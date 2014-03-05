@@ -221,7 +221,11 @@ namespace Dynamo.Search
         /// <returns></returns>
         private bool MatchWithQuerystring(string key, string query)
         {
-            string[] subPatterns = query.Trim().Split(null);
+            string sanitizedQuery = query.Trim()
+                                         .Replace("\\", "\\\\")
+                                         .Replace(".", "\\.")
+                                         .Replace("*", "\\*");
+            string[] subPatterns = sanitizedQuery.Split(null);
             string pattern = "(.*)" + String.Join("(.*)", subPatterns) + "(.*)";
             return Regex.IsMatch(key, pattern, RegexOptions.IgnoreCase);
         }
