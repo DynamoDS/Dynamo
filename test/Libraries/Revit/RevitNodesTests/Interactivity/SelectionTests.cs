@@ -33,13 +33,19 @@ namespace Dynamo.Tests
 
             var buildOutput = sel.BuildOutputAst(new List<AssociativeNode>());
 
-            var funCall = (FunctionCallNode)((BinaryExpressionNode)buildOutput.First()).RightNode;
+            //function call node builds this
+            /*return new IdentifierListNode
+            {
+                LeftNode = new IdentifierNode(className),
+                RightNode = AstFactory.BuildFunctionCall(functionName, arguments)
+            };*/
 
+            var funCall = (FunctionCallNode)(((IdentifierListNode)((BinaryExpressionNode)buildOutput.First()).RightNode)).RightNode;
             Assert.IsInstanceOf<IdentifierNode>(funCall.Function);
             Assert.AreEqual(1, funCall.FormalArguments.Count);
             Assert.IsInstanceOf<IntNode>(funCall.FormalArguments[0]);
 
-            Assert.AreEqual(refPoint.Id.IntegerValue.ToString(), ((IntNode)funCall.FormalArguments[0]).value);
+            Assert.AreEqual(refPoint.Id.IntegerValue, ((IntNode)funCall.FormalArguments[0]).Value);
         }
 
         [Test]
@@ -110,7 +116,7 @@ namespace Dynamo.Tests
 
             var buildOutput = sel.BuildOutputAst(new List<AssociativeNode>());
 
-            var funCall = (FunctionCallNode)((BinaryExpressionNode)buildOutput.First()).RightNode;
+            var funCall = (FunctionCallNode)((IdentifierListNode)((BinaryExpressionNode)buildOutput.First()).RightNode).RightNode;
 
             Assert.IsInstanceOf<IdentifierNode>(funCall.Function);
             Assert.AreEqual(1, funCall.FormalArguments.Count);

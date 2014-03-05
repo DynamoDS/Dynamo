@@ -9,8 +9,10 @@ using System.Windows.Threading;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
+using DSNodeServices;
 using Dynamo.Applications;
 using Dynamo.Controls;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
@@ -720,6 +722,8 @@ namespace Dynamo
 
         public override void ShutDown(bool shutDownHost)
         {
+            DisposeLogic.IsShuttingDown = true;
+
             RevThread.IdlePromise.ExecuteOnShutdown(
                 delegate
                 {
@@ -855,6 +859,17 @@ namespace Dynamo
         /// Revit UI thread SynchronizationContext
         /// </summary>
         public Dispatcher RevitSyncContext { get; set; }
+
+        public override void ResetEngine()
+        {
+            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(() =>
+            {
+                if (EngineController != null)
+                    EngineController.Dispose();
+
+                EngineController = new EngineController(this, true);
+            });
+        }
     }
 
     public enum TransactionMode
