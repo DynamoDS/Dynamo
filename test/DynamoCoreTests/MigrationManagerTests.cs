@@ -197,6 +197,18 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestVersionFromString()
+        {
+            var versionString = "1.20.300.4000";
+            Version version = MigrationManager.VersionFromString(versionString);
+            Assert.IsNotNull(version);
+            Assert.AreEqual(1, version.Major);
+            Assert.AreEqual(20, version.Minor);
+            Assert.AreEqual(300, version.Build);
+            Assert.AreEqual(0, version.Revision);
+        }
+
+        [Test]
         public void TestCreateCodeBlockNodeFrom00()
         {
             Assert.Throws<ArgumentNullException>(() =>
