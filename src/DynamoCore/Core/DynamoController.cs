@@ -150,7 +150,7 @@ namespace Dynamo
         public EngineController EngineController
         {
             get { return _engineController; }
-            private set { _engineController = value; }
+            protected set { _engineController = value; }
         }
 
         #endregion
@@ -650,7 +650,7 @@ namespace Dynamo
 
     #endregion
 
-        public void ResetEngine()
+        public virtual void ResetEngine()
         {
             if (EngineController != null)
                 EngineController.Dispose();
