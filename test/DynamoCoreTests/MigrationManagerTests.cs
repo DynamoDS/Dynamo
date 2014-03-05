@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 using Dynamo.Models;
@@ -502,6 +504,44 @@ namespace Dynamo.Tests
             Assert.IsNotNull(data.MigratedNodes);
             Assert.AreEqual(first, data.MigratedNodes.ElementAt(0));
             Assert.AreEqual(second, data.MigratedNodes.ElementAt(1));
+        }
+
+        [Test]
+        public void TestGetBackupFolder00()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                MigrationManager.GetBackupFolder(null, false);
+            });
+        }
+
+        [Test]
+        public void TestGetBackupFolder01()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                MigrationManager.GetBackupFolder(string.Empty, false);
+            });
+        }
+
+        [Test]
+        public void TestGetBackupFolder02()
+        {
+            Assert.Throws<ArgumentException>(() =>
+            {
+                // Test invalid folder exception.
+                var folder = @"k:\i-dont-think-this-folder-exists\";
+                MigrationManager.GetBackupFolder(folder, false);
+            });
+        }
+
+        [Test]
+        public void TestGetBackupFolder03()
+        {
+            var location = Assembly.GetCallingAssembly().Location;
+            var folder = Path.GetDirectoryName(location);
+            var expected = Path.Combine(folder, "backup");
+            Assert.AreEqual(expected, MigrationManager.GetBackupFolder(folder, false));
         }
 
         [Test]
