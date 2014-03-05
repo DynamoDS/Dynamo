@@ -650,7 +650,7 @@ namespace Dynamo.Utilities
                 Version fileVersion = MigrationManager.VersionFromString(version);
 
                 var dynamoModel = dynSettings.Controller.DynamoModel;
-                Version currentVersion = dynamoModel.HomeSpace.WorkspaceVersion;
+                var currentVersion = MigrationManager.VersionFromWorkspace(dynamoModel.HomeSpace);
                 if (fileVersion < currentVersion) // Opening an older file, migrate workspace.
                 {
                     string backupPath = string.Empty;

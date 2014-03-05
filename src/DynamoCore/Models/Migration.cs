@@ -125,16 +125,8 @@ namespace Dynamo.Models
                 typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
                 System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
 
-                if (type == null)
-                {
-                    // For the duration of migration work, we display exception
-                    // so that it shows up in the NUnit result. This may need to
-                    // be disabled (and simply 'continue') if there are still 
-                    // nodes left to be migrated.
-                    // 
-                    // throw new NodeMigrationException(typeName);
-                    continue;
-                }
+                if (type == null) // Errors are displayed in the console in the 
+                    continue;     // method calls above, simply continue here.
 
                 // Migrate the given node into one or more new nodes.
                 NodeMigrationData migrationData = this.MigrateXmlNode(elNode, type, workspaceVersion);
@@ -173,7 +165,8 @@ namespace Dynamo.Models
                 // throw new NodeMigrationException(type.FullName);
             }
 
-            Version currentVersion = dynSettings.Controller.DynamoModel.HomeSpace.WorkspaceVersion;
+            var homespace = dynSettings.Controller.DynamoModel.HomeSpace;
+            var currentVersion = MigrationManager.VersionFromWorkspace(homespace);
 
             XmlElement nodeToMigrate = elNode as XmlElement;
             NodeMigrationData migrationData = new NodeMigrationData(elNode.OwnerDocument);
