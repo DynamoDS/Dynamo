@@ -414,6 +414,12 @@ namespace Revit.Elements
 
         #endregion
 
+        public override string ToString()
+        {
+            return string.Format("Reference Point: Location=(X={0}, Y={1}, Z={2})", InternalReferencePoint.Position.X,
+                InternalReferencePoint.Position.Y, InternalReferencePoint.Position.Z);
+        }
+
         #region Tesselation
 
         /// <summary>

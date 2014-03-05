@@ -76,5 +76,9 @@ namespace Revit.Elements
 
         #endregion
 
+        public override string ToString()
+        {
+            return string.Format("Family={0}, Type={1}", InternalFamilyInstance.Symbol.Name, InternalFamilyInstance.Name);
+        }
     }
 }

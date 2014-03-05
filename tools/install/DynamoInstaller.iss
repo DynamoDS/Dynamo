@@ -71,12 +71,11 @@ Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\DynamoDS.addin"
 Filename: "{app}\fsharp_redist.exe"; Parameters: "/q"; Flags: runascurrentuser
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qb"; WorkingDir: {tmp};
 ;Filename: "del"; Parameters: "/q {app}\fsharp_redist.exe"; Flags: postinstall runascurrentuser runhidden
-
-;run the ASM uninstaller
-Filename: "{app}\unins000.exe";
+Filename: "{app}\InstallASMForDynamo.exe";
 
 [UninstallRun]
-Filename: "{app}\UninstallASMForDynamo.exe";
+;ASM uninstall - need to figure out how to rename this.
+Filename: "{app}\unins000.exe";
 
 [Code]
 { HANDLE INSTALL PROCESS STEPS }

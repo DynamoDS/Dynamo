@@ -158,9 +158,18 @@ namespace DSCoreNodesTests
         [Test]
         public static void SplitList()
         {
-            Assert.AreEqual(
-                new Dictionary<string, object> { { "first", 0 }, { "rest", new List<int> { 1, 2, 3, 4, 5 } } },
-                List.Deconstruct(new List<int> { 0, 1, 2, 3, 4, 5 }));
+            var results = List.Deconstruct(new List<int> { 0, 1, 2, 3, 4, 5 });
+
+            // Explicitly test each aspect of the returned value.
+            Assert.IsNotNull(results);
+            Assert.AreEqual(2, results.Count);
+            Assert.AreEqual("first", results.Keys.ElementAt(0));
+            Assert.AreEqual("rest", results.Keys.ElementAt(1));
+            Assert.AreEqual(0, results["first"]);
+
+            var rest = results["rest"] as List<object>;
+            Assert.IsNotNull(rest);
+            Assert.AreEqual(new List<object> { 1, 2, 3, 4, 5 }, rest);
         }
 
         [Test]

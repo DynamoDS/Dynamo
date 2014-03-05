@@ -14,7 +14,7 @@ namespace DSRevitNodesTests.Elements
         [Test]
         public void ByLine_ValidArgs()
         {
-            var line = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(1, 1, 1));
+            var line = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(1, 0, 0));
             Assert.NotNull(line);
 
             var refPlane = ReferencePlane.ByLine(line);
@@ -27,7 +27,7 @@ namespace DSRevitNodesTests.Elements
         [Test]
         public void ByStartPointEndPoint_ValidArgs()
         {
-            var refPlane = ReferencePlane.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0),
+            var refPlane = ReferencePlane.ByStartPointEndPoint(Point.ByCoordinates(1, 0, 0),
                 Point.ByCoordinates(1, 1, 1));
 
             Assert.NotNull(refPlane);
