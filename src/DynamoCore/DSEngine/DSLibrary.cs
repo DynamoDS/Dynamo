@@ -969,27 +969,15 @@ namespace Dynamo.DSEngine
                             var vnode = binaryExpr.RightNode;
                             if (vnode is IntNode)
                             {
-                                long v;
-                                if (Int64.TryParse((vnode as IntNode).value, out v))
-                                {
-                                    defaultValue = v;
-                                }
+                                defaultValue = (vnode as IntNode).Value;
                             }
                             else if (vnode is DoubleNode)
                             {
-                                double v;
-                                if (Double.TryParse((vnode as DoubleNode).value, out v))
-                                {
-                                    defaultValue = v;
-                                }
+                                defaultValue = (vnode as DoubleNode).Value;
                             }
                             else if (vnode is BooleanNode)
                             {
-                                bool v;
-                                if (Boolean.TryParse((vnode as BooleanNode).value, out v))
-                                {
-                                    defaultValue = v;
-                                }
+                                defaultValue = (vnode as BooleanNode).Value;
                             }
                             else if (vnode is StringNode)
                             {

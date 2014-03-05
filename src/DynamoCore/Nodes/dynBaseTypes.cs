@@ -5093,7 +5093,9 @@ namespace Dynamo.Nodes
                 }
                 else
                 {
-                    return new DoubleNode { value = _result.GetValueOrDefault().ToString() };
+                    return _result.HasValue 
+                        ? new DoubleNode(_result.Value) as AssociativeNode
+                        : new NullNode() as AssociativeNode;
                 }
             }
         }
