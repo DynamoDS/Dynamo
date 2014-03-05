@@ -35,12 +35,10 @@ namespace DSCoreNodesUI
             }
         }
 
+        // Making these abstract so that derived classes are forced to come up 
+        // with their implementations rather than default silently taking over.
         protected abstract T DeserializeValue(string val);
-
-        protected virtual string SerializeValue()
-        {
-            return Value.ToString();
-        }
+        protected abstract string SerializeValue();
 
         protected BasicInteractive()
         {
@@ -236,6 +234,11 @@ namespace DSCoreNodesUI
             }
         }
 
+        protected override string SerializeValue()
+        {
+            return this.Value.ToString();
+        }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildBooleanNode(Value);
@@ -316,6 +319,11 @@ namespace DSCoreNodesUI
         protected override string DeserializeValue(string val)
         {
             return val;
+        }
+
+        protected override string SerializeValue()
+        {
+            return this.Value;
         }
     }
 }
