@@ -19,15 +19,27 @@ namespace ProtoCore
                 // TODO: Add a switch-case to create primitive nodes depending on the format string
                 if (formatString[i] == 'd')
                 {
-                    args.Add(new DoubleNode(primitiveArgs[i]));
+                    double value;
+                    if (Double.TryParse(primitiveArgs[i], out value))
+                    {
+                        args.Add(new DoubleNode(value));
+                    }
                 }
                 else if (formatString[i].Equals('i'))
-                    args.Add(new IntNode(primitiveArgs[i]));
+                {
+                    Int64 value;
+                    if (Int64.TryParse(primitiveArgs[i], out value))
+                    {
+                        args.Add(new IntNode(value));
+                    }
+                }
                 else if (formatString[i].Equals('b'))
                 {
-                    BooleanNode bNode = new BooleanNode();
-                    bNode.value = primitiveArgs[i];
-                    args.Add(bNode);
+                    Boolean value;
+                    if (Boolean.TryParse(primitiveArgs[i], out value))
+                    {
+                        args.Add(new BooleanNode(value));
+                    }
                 }
                 else if (formatString[i].Equals('s'))
                 {
@@ -45,7 +57,7 @@ namespace ProtoCore
             FunctionCallNode fNode = new FunctionCallNode();
             fNode.Function = new IdentifierNode("FromObject");
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            listArgs.Add(new ProtoCore.AST.AssociativeAST.IntNode(hostInstancePtr.ToString()));
+            listArgs.Add(new ProtoCore.AST.AssociativeAST.IntNode(hostInstancePtr));
             fNode.FormalArguments = listArgs;
 
             string className = "Geometry";

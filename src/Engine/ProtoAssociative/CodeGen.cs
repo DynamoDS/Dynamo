@@ -995,7 +995,7 @@ namespace ProtoAssociative
                 if (ci != ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
                     // It is a class name
-                    dotCall.DotCall.FormalArguments[0] = new IntNode { value = ci.ToString() };
+                    dotCall.DotCall.FormalArguments[0] = new IntNode(ci);
                     dotCallFirstArgument = dotCall.DotCall.FormalArguments[0];
 
                     inferedType.UID = dotCallType.UID = ci;
@@ -1113,7 +1113,7 @@ namespace ProtoAssociative
 
                                     if (null != procCallNode)
                                     {
-                                        int dynamicRhsIndex = int.Parse((dotCall.DotCall.FormalArguments[1] as IntNode).value);
+                                        var dynamicRhsIndex = (int)(dotCall.DotCall.FormalArguments[1] as IntNode).Value;
                                         core.DynamicFunctionTable.functionTable[dynamicRhsIndex].classIndex = procCallNode.classScope;
                                         core.DynamicFunctionTable.functionTable[dynamicRhsIndex].procedureIndex = procCallNode.procId;
                                         core.DynamicFunctionTable.functionTable[dynamicRhsIndex].pc = procCallNode.pc;
@@ -1133,7 +1133,7 @@ namespace ProtoAssociative
                             procCallNode = GetProcedureFromInstance(globalClassIndex, dotCall.FunctionCall);
                             if (null != procCallNode && procCallNode.isConstructor)
                             {
-                                dotCall.DotCall.FormalArguments[0] = new IntNode { value = globalClassIndex.ToString() };
+                                dotCall.DotCall.FormalArguments[0] = new IntNode(globalClassIndex);
                                 dotCallFirstArgument = dotCall.DotCall.FormalArguments[0];
                                 inferedType.UID = dotCallType.UID = ci;
                             }
@@ -1143,7 +1143,7 @@ namespace ProtoAssociative
             }
             else if (funcCall.FormalArguments[0] is IntNode)
             {
-                inferedType.UID = dotCallType.UID = int.Parse((funcCall.FormalArguments[0] as IntNode).value);
+                inferedType.UID = dotCallType.UID = (int)(funcCall.FormalArguments[0] as IntNode).Value;
                 classIndex = inferedType.UID;
                 procCallNode = GetProcedureFromInstance(dotCallType.UID, dotCall.FunctionCall, graphNode);
 
@@ -1502,7 +1502,7 @@ namespace ProtoAssociative
                     }
                     else if (ProtoCore.DSASM.Constants.kDotArgIndexArgCount == n)
                     {
-                        ProtoCore.AST.AssociativeAST.IntNode argNumNode = new ProtoCore.AST.AssociativeAST.IntNode() { value = funtionArgCount.ToString() };
+                        IntNode argNumNode = new IntNode(funtionArgCount);
                         DfsTraverse(argNumNode, ref paramType, false, graphNode, subPass); 
                     }
                     else
@@ -4595,117 +4595,154 @@ namespace ProtoAssociative
             }
         }
 #endif
-        private void EmitRangeExprNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.DSASM.AssociativeSubCompilePass subPass = ProtoCore.DSASM.AssociativeSubCompilePass.kNone)
+        private void EmitRangeExprNode(AssociativeNode node, 
+                                       ref ProtoCore.Type inferedType, 
+                                       GraphNode graphNode = null, 
+                                       AssociativeSubCompilePass subPass = AssociativeSubCompilePass.kNone)
         {
             RangeExprNode range = node as RangeExprNode;
 
             // Do some static checking...
-            if ((range.FromNode is IntNode || range.FromNode is DoubleNode) &&
-                (range.ToNode is IntNode || range.ToNode is DoubleNode) &&
-                (range.StepNode == null || (range.StepNode != null && (range.StepNode is IntNode || range.StepNode is DoubleNode))))
+            var fromNode = range.FromNode;
+            var toNode = range.ToNode;
+            var stepNode = range.StepNode;
+            var stepOp = range.stepoperator;
+
+            bool isStepValid = true;
+            string warningMsg = string.Empty;
+
+            if ((fromNode is IntNode || fromNode is DoubleNode) &&
+                (toNode is IntNode || toNode is DoubleNode) &&
+                (stepNode == null || stepNode is IntNode || stepNode is DoubleNode))
             {
-                decimal current = (range.FromNode is IntNode) ? Int64.Parse((range.FromNode as IntNode).value) : Decimal.Parse((range.FromNode as DoubleNode).value);
-                decimal end = (range.ToNode is IntNode) ? Int64.Parse((range.ToNode as IntNode).value) : Decimal.Parse((range.ToNode as DoubleNode).value);
-                ProtoCore.DSASM.RangeStepOperator stepoperator = range.stepoperator;
+                double current = (fromNode is IntNode) ?
+                    (fromNode as IntNode).Value : (fromNode as DoubleNode).Value;
+                double end = (toNode is IntNode) ?
+                    (toNode as IntNode).Value : (toNode as DoubleNode).Value;
 
-                decimal step = 1;
-                if (range.StepNode != null)
+                double step = 1;
+                if (stepNode != null)
                 {
-                    step = (range.StepNode is IntNode) ? Int64.Parse((range.StepNode as IntNode).value) : Decimal.Parse((range.StepNode as DoubleNode).value);
+                    step = (stepNode is IntNode) ?
+                        (stepNode as IntNode).Value : (stepNode as DoubleNode).Value;
                 }
 
-                if (stepoperator == ProtoCore.DSASM.RangeStepOperator.stepsize)
+                switch (stepOp)
                 {
-                    if (range.StepNode == null && end < current)
-                    {
-                        step = -1;
-                    }
+                    case ProtoCore.DSASM.RangeStepOperator.stepsize:
 
-                    if (step == 0)
-                    {
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidRangeExpression, ProtoCore.BuildData.WarningMessage.kRangeExpressionWithStepSizeZero, core.CurrentDSFileName, range.StepNode.line, range.StepNode.col);
-                        EmitNullNode(new NullNode(), ref inferedType);
-                        return;
-                    }
-                    if ((end > current && step < 0) || (end < current && step > 0))
-                    {
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidRangeExpression, ProtoCore.BuildData.WarningMessage.kRangeExpressionWithInvalidStepSize, core.CurrentDSFileName, range.StepNode.line, range.StepNode.col);
-                        EmitNullNode(new NullNode(), ref inferedType);
-                        return;
-                    }
-                }
-                else if (stepoperator == ProtoCore.DSASM.RangeStepOperator.num)
-                {
-                    if (range.StepNode != null && !(range.StepNode is IntNode))
-                    {
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidRangeExpression, ProtoCore.BuildData.WarningMessage.kRangeExpressionWithNonIntegerStepNumber, core.CurrentDSFileName, range.StepNode.line, range.StepNode.col);
-                        EmitNullNode(new NullNode(), ref inferedType);
-                        return;
-                    }
+                        if (stepNode == null && end < current)
+                        {
+                            step = -1;
+                        }
 
-                    if (step <= 0)
-                    {
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidRangeExpression, ProtoCore.BuildData.WarningMessage.kRangeExpressionWithNegativeStepNumber, core.CurrentDSFileName, range.StepNode.line, range.StepNode.col);
-                        EmitNullNode(new NullNode(), ref inferedType);
-                        return;
-                    }
+                        if (step == 0)
+                        {
+                            isStepValid = false;
+                            warningMsg = WarningMessage.kRangeExpressionWithStepSizeZero;
+                        }
+                        else if ((end > current && step < 0) || (end < current && step > 0))
+                        {
+                            isStepValid = false;
+                            warningMsg = WarningMessage.kRangeExpressionWithInvalidStepSize;
+                       }
+
+                       break;
+
+                    case ProtoCore.DSASM.RangeStepOperator.num:
+
+                        if (stepNode != null && stepNode is DoubleNode &&
+                            subPass == AssociativeSubCompilePass.kNone)
+                        {
+                            buildStatus.LogWarning(WarningID.kInvalidRangeExpression,
+                                                   WarningMessage.kRangeExpressionWithNonIntegerStepNumber,
+                                                   core.CurrentDSFileName,
+                                                   stepNode.line,
+                                                   stepNode.col);
+                        }
+                        else if (step <= 0)
+                        {
+                            isStepValid = false;
+                            warningMsg = WarningMessage.kRangeExpressionWithNegativeStepNumber;
+                        }
+
+                        break;
+
+                    case ProtoCore.DSASM.RangeStepOperator.approxsize:
+                        if (step == 0)
+                        {
+                            isStepValid = false;
+                            warningMsg = WarningMessage.kRangeExpressionWithStepSizeZero;
+                        }
+
+                        break;
+
+                    default:
+                        break;
                 }
-                else if (stepoperator == ProtoCore.DSASM.RangeStepOperator.approxsize)
-                {
-                    if (step == 0)
-                    {
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidRangeExpression, ProtoCore.BuildData.WarningMessage.kRangeExpressionWithStepSizeZero, core.CurrentDSFileName, range.StepNode.line, range.StepNode.col);
-                        EmitNullNode(new NullNode(), ref inferedType);
-                        return;
-                    }
-                }
+            }
+
+            if (!isStepValid && subPass == AssociativeSubCompilePass.kNone)
+            {
+                buildStatus.LogWarning(WarningID.kInvalidRangeExpression,
+                                       warningMsg,
+                                       core.CurrentDSFileName,
+                                       stepNode.line,
+                                       stepNode.col);
+
+                EmitNullNode(new NullNode(), ref inferedType);
+                return;
             }
 
             // Replace with build-in RangeExpression() function. - Yu Ke
             bool emitReplicationgGuideState = emitReplicationGuide;
             emitReplicationGuide = false;
 
-
-            BooleanNode hasStep = new BooleanNode { value = range.StepNode == null ? "false" : "true" };
-
-            IntNode op = new IntNode();
-            switch (range.stepoperator)
+            IntNode op = null;
+            switch (stepOp)
             {
-                case ProtoCore.DSASM.RangeStepOperator.stepsize:
-                    op.value = "0";
+                case RangeStepOperator.stepsize:
+                    op = new IntNode(0);
                     break;
-                case ProtoCore.DSASM.RangeStepOperator.num: 
-                    op.value = "1";
+                case RangeStepOperator.num:
+                    op = new IntNode(1);
                     break;
-                case ProtoCore.DSASM.RangeStepOperator.approxsize:
-                    op.value = "2";
+                case RangeStepOperator.approxsize:
+                    op = new IntNode(2);
                     break;
                 default:
-                    op.value = "-1";
+                    op = new IntNode(-1);
                     break;
             }
-
-            var rangeExprFunc = nodeBuilder.BuildFunctionCall(Constants.kFunctionRangeExpression,
-                new List<AssociativeNode> { range.FromNode, range.ToNode, range.StepNode == null ? new NullNode() : range.StepNode, op, hasStep });
+            var arguments = new List<AssociativeNode> 
+            {
+                fromNode, 
+                toNode, 
+                stepNode ?? new NullNode(), 
+                op, 
+                AstFactory.BuildBooleanNode(stepNode != null)
+            };
+            var rangeExprFunc = AstFactory.BuildFunctionCall(Constants.kFunctionRangeExpression, 
+                                                             arguments);
 
             EmitFunctionCallNode(rangeExprFunc, ref inferedType, false, graphNode, subPass);
 
             emitReplicationGuide = emitReplicationgGuideState;
 
-            if (subPass != ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
+            if (subPass != AssociativeSubCompilePass.kUnboundIdentifier)
             {
                 if (range.ArrayDimensions != null)
                 {
-                    int dimensions = DfsEmitArrayIndexHeap(range.ArrayDimensions, graphNode);
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, dimensions.ToString() + "[dim]");
-                    EmitPushArrayIndex(dimensions);
+                    int dim = DfsEmitArrayIndexHeap(range.ArrayDimensions, graphNode);
+                    EmitInstrConsole(kw.pushindex, dim + "[dim]");
+                    EmitPushArrayIndex(dim);
                 }
 
                 if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
                 {
-                    int replicationGuideNumber = EmitReplicationGuides(range.ReplicationGuides);
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, replicationGuideNumber + "[guide]");
-                    EmitPushReplicationGuide(replicationGuideNumber);
+                    int guide = EmitReplicationGuides(range.ReplicationGuides);
+                    EmitInstrConsole(kw.pushindex, guide + "[guide]");
+                    EmitPushReplicationGuide(guide);
                 }
             }
         }
@@ -4993,9 +5030,9 @@ namespace ProtoAssociative
                     {
                         switch (vardecl.ArgumentType.Name)
                         {
-                            case "double": bNode.RightNode = new DoubleNode { value = "0" }; break;
-                            case "int": bNode.RightNode = new IntNode { value = "0" }; break;
-                            case "bool": bNode.RightNode = new BooleanNode { value = "false" }; break;
+                            case "double": bNode.RightNode = new DoubleNode(0); break;
+                            case "int": bNode.RightNode = new IntNode(0); break;
+                            case "bool": bNode.RightNode = new BooleanNode(false); break;
                             default: skipInitialization = true; break;
                         }
                     }
@@ -6797,7 +6834,7 @@ namespace ProtoAssociative
                     BinaryExpressionNode binRight = new BinaryExpressionNode();
                     BinaryExpressionNode bin = new BinaryExpressionNode();
                     binRight.LeftNode = u.Expression;
-                    binRight.RightNode = new IntNode { value = "1" };
+                    binRight.RightNode = new IntNode(1);
                     binRight.Optr = (ProtoCore.DSASM.UnaryOperator.Increment == u.Operator) ? ProtoCore.DSASM.Operator.add : ProtoCore.DSASM.Operator.sub;
                     bin.LeftNode = u.Expression; bin.RightNode = binRight; bin.Optr = ProtoCore.DSASM.Operator.assign;
                     EmitBinaryExpressionNode(bin, ref inferedType, false, graphNode, subPass);
