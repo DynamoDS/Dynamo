@@ -150,8 +150,7 @@ namespace Dynamo.Nodes
 
         private void WorkbookOnBeforeClose(ref bool cancel)
         {
-            this.isDirty = true;
-            this.MarkDirty();
+            RequiresRecalc = true;
         }
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
@@ -199,8 +198,7 @@ namespace Dynamo.Nodes
 
         private void WorkbookOnBeforeClose(ref bool cancel)
         {
-            this.isDirty = true;
-            this.MarkDirty();
+            RequiresRecalc = true;
         }
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
@@ -510,7 +508,6 @@ namespace Dynamo.Nodes
     [NodeDescription("Write an Excel Workbook to a file with the given filename.  \n\nThis node requires Microsoft Excel to be installed.")]
     public class SaveAsExcelWorkbook : NodeWithOneOutput
     {
-
         public SaveAsExcelWorkbook()
         {
             InPortData.Add(new PortData("workbook", "The Excel Workbook to save", typeof(FScheme.Value.Container)));
@@ -519,15 +516,6 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("workbook", "The Excel Workbook", typeof(FScheme.Value.Container)));
 
             RegisterAllPorts();
-        }
-
-        public override bool RequiresRecalc
-        {
-            get { return true; }
-            set
-            {
-
-            }
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)

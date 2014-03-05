@@ -1706,35 +1706,67 @@ Associative_interimfactor<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 .
 
 Associative_Number<out ProtoCore.AST.AssociativeAST.AssociativeNode node>               
-=           (. node = null; String localvalue = String.Empty; .)
-            (. int line = ProtoCore.DSASM.Constants.kInvalidIndex; int col = ProtoCore.DSASM.Constants.kInvalidIndex; .) 
+=           
+    (. 
+        node = null; 
+        int sign = 1;
+        int line = ProtoCore.DSASM.Constants.kInvalidIndex; 
+        int col = ProtoCore.DSASM.Constants.kInvalidIndex; 
+    .) 
     [
-        '-' (. localvalue = "-"; line = t.line; col = t.col; .)
+        '-' 
+        (. 
+            sign = -1; 
+            line = t.line; 
+            col = t.col; 
+        .)
     ]
     (
-        number  (.  node = new ProtoCore.AST.AssociativeAST.IntNode() { value = localvalue + t.val }; 
-                    if (    ProtoCore.DSASM.Constants.kInvalidIndex == line
-                        &&  ProtoCore.DSASM.Constants.kInvalidIndex == col)
-                    {
-                        NodeUtils.SetNodeLocation(node, t);
-                    }
-                    else
-                    {
-                        node.line = line; node.col = col;
-                    }
-                .)
+        number  
+        (.  
+            Int64 value;
+            if (Int64.TryParse(t.val, out value))
+            {
+                node = new ProtoCore.AST.AssociativeAST.IntNode(value * sign);
+            }
+            else
+            {
+                node = new ProtoCore.AST.AssociativeAST.NullNode();
+            }
+
+            if (ProtoCore.DSASM.Constants.kInvalidIndex == line
+                &&  ProtoCore.DSASM.Constants.kInvalidIndex == col)
+            {
+                NodeUtils.SetNodeLocation(node, t);
+            }
+            else
+            {
+                node.line = line; node.col = col;
+            }
+        .)
         | 
-        float   (.  node = new ProtoCore.AST.AssociativeAST.DoubleNode() { value = localvalue + t.val }; 
-                    if (    ProtoCore.DSASM.Constants.kInvalidIndex == line
-                        &&  ProtoCore.DSASM.Constants.kInvalidIndex == col)
-                    {
-                        NodeUtils.SetNodeLocation(node, t);
-                    }
-                    else
-                    {
-                        node.line = line; node.col = col;
-                    }
-                .)
+        float   
+        (.  
+            double value;
+            if (Double.TryParse(t.val, out value))
+            {
+                node = new ProtoCore.AST.AssociativeAST.DoubleNode(value * sign);
+            }
+            else
+            {
+                node = new ProtoCore.AST.AssociativeAST.NullNode();
+            }
+
+            if (ProtoCore.DSASM.Constants.kInvalidIndex == line
+                &&  ProtoCore.DSASM.Constants.kInvalidIndex == col)
+            {
+                NodeUtils.SetNodeLocation(node, t);
+            }
+            else
+            {
+                node.line = line; node.col = col;
+            }
+        .)
     )
 .
 
@@ -1779,17 +1811,19 @@ Associative_Factor<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
         )
         |
         (
-            literal_true                    (.
-                                                node = new ProtoCore.AST.AssociativeAST.BooleanNode() { value = ProtoCore.DSASM.Literal.True };
-                                                NodeUtils.SetNodeLocation(node, t);
-                                            .)
+            literal_true                    
+            (.
+                node = new ProtoCore.AST.AssociativeAST.BooleanNode(true);
+                NodeUtils.SetNodeLocation(node, t);
+            .)
         )
         |
         (
-            literal_false                   (.
-                                                node = new ProtoCore.AST.AssociativeAST.BooleanNode() { value = ProtoCore.DSASM.Literal.False };
-                                                NodeUtils.SetNodeLocation(node, t);
-                                            .)
+            literal_false                   
+            (.
+                node = new ProtoCore.AST.AssociativeAST.BooleanNode(false);
+                NodeUtils.SetNodeLocation(node, t);
+            .)
         )   
         |
         (
@@ -2011,8 +2045,8 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                                     var arrayExpr = (dotCall.FormalArguments[2] as ProtoCore.AST.AssociativeAST.ExprListNode);
                                                     var dimCount = (dotCall.FormalArguments[3] as ProtoCore.AST.AssociativeAST.IntNode);
 
-                                                    int dims = Int32.Parse(dimCount.value);
-                                                    int newdims = dims;
+                                                    var dims = dimCount.Value;
+                                                    var newdims = dims;
 
                                                     if (arrayExpr != null)
                                                     {
@@ -2024,7 +2058,7 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                                             newarray = (newarray.Type as ProtoCore.AST.AssociativeAST.ArrayNode);
                                                         }
                                                         
-                                                        (dotCall.FormalArguments[3] as ProtoCore.AST.AssociativeAST.IntNode).value = newdims.ToString();
+                                                        (dotCall.FormalArguments[3] as ProtoCore.AST.AssociativeAST.IntNode).Value = newdims;
                                                     }
                                                     groupExprNode.ArrayDimensions = null;
                                                 }

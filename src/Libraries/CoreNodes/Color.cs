@@ -1,12 +1,4 @@
-﻿using System;
-using System.Windows.Controls;
-using System.Xml;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-
-namespace DSCore
+﻿namespace DSCore
 {
     public class DSColor // TODO(Ben): Rename after namespace support is done :)
     {
