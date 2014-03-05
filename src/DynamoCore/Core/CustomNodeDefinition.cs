@@ -77,7 +77,7 @@ namespace Dynamo
         private IEnumerable<CustomNodeDefinition> FindDirectDependencies()
         {
             return WorkspaceModel.Nodes
-                            .OfType<CustomNodeInstance>()
+                            .OfType<Function>()
                             .Select(node => node.Definition)
                             .Where(def => def != this)
                             .Distinct();
@@ -299,7 +299,7 @@ namespace Dynamo
 
                 foreach (NodeModel topNode in topMostNodes)
                 {
-                    if (topNode is CustomNodeInstance && (topNode as CustomNodeInstance).Definition == this)
+                    if (topNode is Function && (topNode as Function).Definition == this)
                     {
                         topMost.Add(Tuple.Create(0, topNode));
                         outNames.Add("∞");

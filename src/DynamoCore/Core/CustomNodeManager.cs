@@ -401,10 +401,8 @@ namespace Dynamo.Utilities
         /// <summary>
         ///     Get a guid from the name of a node.  If it doesn't exist, returns Guid.Empty.
         /// </summary>
-        /// <param name="controller"></param>
-        /// <param name="name"></param>
-        /// <param name="result"></param>
-        public bool GetNodeInstance(DynamoController controller, string name, out CustomNodeInstance result)
+        /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
+        public bool GetNodeInstance(DynamoController controller, string name, out Function result)
         {
             if (!Contains(name))
             {
@@ -421,10 +419,9 @@ namespace Dynamo.Utilities
         ///     And add the compiled node to the enviro
         ///     As a side effect, any of its dependent nodes are also initialized.
         /// </summary>
-        /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
-        /// <param name="result"></param>
         /// <param name="environment">The environment from which to get the </param>
-        public bool GetNodeInstance(Guid guid, out CustomNodeInstance result)
+        /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
+        public bool GetNodeInstance(Guid guid, out Function result)
         {
             var controller = dynSettings.Controller;
 
@@ -970,12 +967,16 @@ namespace Dynamo.Utilities
             if (nodeInfo == null) return false;
 
             // rename the existing nodes - should be replaced with a proper binding
-            var instances = dynSettings.Controller.DynamoModel.AllNodes
-                       .OfType<CustomNodeInstance>()
-                       .Where(x => x.Definition.FunctionId == guid);
-
-            foreach (var node in instances)
-                node.NickName = newName;
+            dynSettings.Controller.DynamoModel.AllNodes
+                       .Where(x => x is Function)
+                       .Cast<Function>()
+                       .Where(x => x.Definition.FunctionId == guid)
+                       .ToList()
+                       .ForEach(x =>
+                           {
+                               x.Name = newName;
+                               x.NickName = newName;
+                           });
 
             dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
 

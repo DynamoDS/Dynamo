@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Dynamo;
+using Dynamo.Utilities;
 using ICSharpCode.AvalonEdit.CodeCompletion;
+using IronPython.Hosting;
 using IronPython.Runtime;
 using IronPython.Runtime.Types;
 using Microsoft.Scripting.Actions;

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
 {
@@ -12,7 +11,9 @@ namespace DSCore
     /// </summary>
     public static class Sorting
     {
-        public static object minByKey(IList list, IList keys)
+        public static object minByKey(
+            [ArbitraryDimensionArrayImport] IList list,
+            [ArbitraryDimensionArrayImport] IList keys)
         {
             object min = null;
             IComparable minKey = null;
@@ -29,7 +30,9 @@ namespace DSCore
             return min;
         }
 
-        public static object maxByKey(IList list, IList keys)
+        public static object maxByKey(
+            [ArbitraryDimensionArrayImport] IList list,
+            [ArbitraryDimensionArrayImport] IList keys)
         {
             object max = null;
             IComparable maxKey = null;
@@ -46,7 +49,9 @@ namespace DSCore
             return max;
         }
 
-        public static IList sortByKey(IList list, IList keys)
+        public static IList sortByKey(
+            [ArbitraryDimensionArrayImport] IList list,
+            [ArbitraryDimensionArrayImport] IList keys)
         {
             return
                 list.Cast<object>()
@@ -55,5 +60,14 @@ namespace DSCore
                     .Select(x => x.item)
                     .ToList();
         }
+
+        //public static IList groupByKey(IList list, IList keys)
+        //{
+        //    return
+        //        list.Cast<object>().Zip(keys.Cast<object>(), (item, key) => new { item, key })
+        //            .GroupBy(x => x.key)
+        //            .Select(x => x.Select(y => y.item).ToList())
+        //            .ToList();
+        //}
     }
 }

@@ -169,7 +169,7 @@ namespace Dynamo.Tests.UI
         [Category("DynamoUI")]
         public void CanZoom()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
+            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
             WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
             double zoom;
             
@@ -262,7 +262,7 @@ namespace Dynamo.Tests.UI
         [Category("DynamoUI")]
         public void CanPanLeft()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
+            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
             WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
 
             int numOfPanTested = 100;
@@ -284,7 +284,7 @@ namespace Dynamo.Tests.UI
         [Category("DynamoUI")]
         public void CanPanRight()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
+            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
             WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
 
             int numOfPanTested = 100;
@@ -306,7 +306,7 @@ namespace Dynamo.Tests.UI
         [Category("DynamoUI")]
         public void CanPanUp()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
+            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
             WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
 
             int numOfPanTested = 100;
@@ -328,7 +328,7 @@ namespace Dynamo.Tests.UI
         [Category("DynamoUI")]
         public void CanPanDown()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
+            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
             WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
 
             int numOfPanTested = 100;
@@ -354,7 +354,7 @@ namespace Dynamo.Tests.UI
         [Category("DynamoUI")]
         public void FitViewWithNoNodes()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
+            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
             WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
 
             double initZoom = workspaceModel.Zoom;
@@ -375,7 +375,7 @@ namespace Dynamo.Tests.UI
         [Category("DynamoUI")]
         public void CanFitView()
         {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
+            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
             WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
 
             double initZoom = workspaceModel.Zoom;
