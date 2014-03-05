@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using RevitServices.Persistence;
 
 namespace FFITarget
 {
@@ -10,7 +11,16 @@ namespace FFITarget
 
     public class WrapperObject : IDisposable
     {
-        public int  ID { get; set; }
+        private int id;
+
+        public int ID { 
+            get { return id; } 
+            set { 
+                id = value;
+                var manager = RevitServices.Persistence.ElementIDLifecycleManager<int>.GetInstance();
+                manager.RegisterAsssociation(id, this);
+            } 
+        }
         public Guid WrapperGuid { get; private set; }
 
         private static int nextID = 0;
@@ -44,10 +54,31 @@ namespace FFITarget
         public void Dispose()
         {
             Debug.WriteLine("Wrapper: " + WrapperGuid.ToString());
-            Debug.WriteLine("     Disposing of: " + ID);
+            Debug.WriteLine("     Pre-dispose of: " + ID);
 
-            WrappersTest.CleanedObjects.Add(
-                new Tuple<Guid, int>(WrapperGuid, ID));
+
+
+            var elementManager = ElementIDLifecycleManager<int>.GetInstance();
+            int remainingBindings = elementManager.UnRegisterAssociation(id, this);
+
+            // Do not delete Revit owned elements
+            if (remainingBindings == 0)
+            {
+                //Do the real dispose here
+
+                WrappersTest.CleanedObjects.Add(
+                    new Tuple<Guid, int>(WrapperGuid, ID));
+
+                Debug.WriteLine("     Dispose of wrapper target: " + ID);
+            }
+            else
+            {
+                //This element has gone
+                //but there was something else holding onto the Revit object so don't purge it
+
+                id = -1;
+            }
+
 
         }
     
