@@ -1113,33 +1113,17 @@ namespace Dynamo.Nodes
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
-        {           
-            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            //create the node itself
-            XmlElement dsListNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsListNode, "",
-                "Reduce", "Reduce@var[],var,_FunctionObject");
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.Reduce");
+            newNode.SetAttribute("inputcount", "3");
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            migratedData.AppendNode(dsListNode);
-            string dsListNodeId = MigrationManager.GetGuidFromXmlElement(dsListNode);
-
-            //create and reconnect the connecters
-            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
-            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
-
-            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
-            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
-
-            PortId newInPort0 = new PortId(dsListNodeId, 0, PortType.INPUT);
-            PortId newInPort2 = new PortId(dsListNodeId, 2, PortType.INPUT);
-
-            data.ReconnectToPort(connector0, newInPort2);
-            data.ReconnectToPort(connector2, newInPort0);
-
-            return migratedData;
+            migrationData.AppendNode(newNode);
+            return migrationData;
         }
     }
 
@@ -1244,32 +1228,28 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            //create the node itself
-            XmlElement dsListNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsListNode, "",
-                "Filter", "Filter@var[],_FunctionObject");
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.Filter");
+            newNode.SetAttribute("nickname", "Filter");
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            migratedData.AppendNode(dsListNode);
-            string dsListNodeId = MigrationManager.GetGuidFromXmlElement(dsListNode);
-
-            //create and reconnect the connecters
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
 
             PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
-            PortId newInPort0 = new PortId(dsListNodeId, 0, PortType.INPUT);
-            PortId newInPort1 = new PortId(dsListNodeId, 1, PortType.INPUT);
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
 
             data.ReconnectToPort(connector0, newInPort1);
             data.ReconnectToPort(connector1, newInPort0);
 
-            return migratedData;
+            migrationData.AppendNode(newNode);
+            return migrationData;
         }
     }
 
@@ -1298,32 +1278,35 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            //create the node itself
-            XmlElement dsListNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsListNode, "",
-                "FilterOut", "FilterOut@var[],_FunctionObject");
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.Filter");
+            newNode.SetAttribute("nickname", "Filter");
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            migratedData.AppendNode(dsListNode);
-            string dsListNodeId = MigrationManager.GetGuidFromXmlElement(dsListNode);
+            PortId oldOutputPort = new PortId(oldNodeId, 0, PortType.OUTPUT);
+            PortId newOutputPort = new PortId(newNodeId, 1, PortType.OUTPUT);
 
-            //create and reconnect the connecters
+            if (data.FindConnectors(oldOutputPort) != null)
+                foreach (XmlElement connector in data.FindConnectors(oldOutputPort))
+                    data.ReconnectToPort(connector, newOutputPort);
+
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
 
             PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
-            PortId newInPort0 = new PortId(dsListNodeId, 0, PortType.INPUT);
-            PortId newInPort1 = new PortId(dsListNodeId, 1, PortType.INPUT);
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
 
             data.ReconnectToPort(connector0, newInPort1);
             data.ReconnectToPort(connector1, newInPort0);
 
-            return migratedData;
+            migrationData.AppendNode(newNode);
+            return migrationData;
         }
     }
 
@@ -1345,6 +1328,23 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            int start = MigrationManager.GetNextIdentifierIndex();
+            int end = MigrationManager.GetNextIdentifierIndex();
+            int step = MigrationManager.GetNextIdentifierIndex();
+            string content = "start" + start + ".." + "end" + end + ".." + "step" + step + ";";
+
+            XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
+            newNode.SetAttribute("CodeText", content);
+            migrationData.AppendNode(newNode);
+            return migrationData;
         }
     }
 
@@ -1383,6 +1383,25 @@ namespace Dynamo.Nodes
                 start += step;
             }
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            int start = MigrationManager.GetNextIdentifierIndex();
+            int amount = MigrationManager.GetNextIdentifierIndex();
+            int step = MigrationManager.GetNextIdentifierIndex();
+            string content = string.Format("start{0}.. amount{1}*step{2}-" + 
+                "step{2}+start{0}..step{2};", start, amount, step);
+
+            XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
+            newNode.SetAttribute("CodeText", content);
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
+
     }
 
     [NodeName("Combine")]
@@ -1457,6 +1476,20 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             return FScheme.Map(args);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.Combine");
+            newNode.RemoveAttribute("inputs");
+            int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute("inputs")) + 1;
+            newNode.SetAttribute("inputcount", Convert.ToString(numberOfInputs));
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
         }
     }
 
@@ -1544,6 +1577,20 @@ namespace Dynamo.Nodes
     public class LaceShortest : LacerBase
     {
         public LaceShortest() : base(FScheme.LaceShortest) { }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.LaceShortest");
+            newNode.RemoveAttribute("inputs");
+            int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute("inputs")) + 1;
+            newNode.SetAttribute("inputcount", Convert.ToString(numberOfInputs));
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
     }
 
     [NodeName("Lace Longest")]
@@ -1552,6 +1599,20 @@ namespace Dynamo.Nodes
     public class LaceLongest : LacerBase
     {
         public LaceLongest() : base(FScheme.LaceLongest) { }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.LaceLongest");
+            newNode.RemoveAttribute("inputs");
+            int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute("inputs")) + 1;
+            newNode.SetAttribute("inputcount", Convert.ToString(numberOfInputs));
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
     }
 
     [NodeName("Map")]
@@ -1567,6 +1628,33 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("mapped", "Mapped sequence", typeof(Value.List)));
 
             RegisterAllPorts();
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.Map");
+            newNode.SetAttribute("nickname", "List Map");
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, newInPort1);
+            data.ReconnectToPort(connector1, newInPort0);
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
         }
     }
 
@@ -5424,7 +5512,7 @@ namespace Dynamo.Nodes
                 base.Value = value;
                 //RaisePropertyChanged("Value"); //already called in base --SJE
 
-                Debug.WriteLine(string.Format("Min:{0},Max:{1},Value:{2}", Min.ToString(CultureInfo.InvariantCulture), Max.ToString(CultureInfo.InvariantCulture), Value.ToString(CultureInfo.InvariantCulture)));
+                Debug.WriteLine("Min:{0},Max:{1},Value:{2}", Min.ToString(CultureInfo.InvariantCulture), Max.ToString(CultureInfo.InvariantCulture), Value.ToString(CultureInfo.InvariantCulture));
             }
         }
         
@@ -5596,7 +5684,7 @@ namespace Dynamo.Nodes
             {
                 base.Value = value;
 
-                Debug.WriteLine(string.Format("Min:{0},Max:{1},Value:{2}", Min.ToString(CultureInfo.InvariantCulture), Max.ToString(CultureInfo.InvariantCulture), Value.ToString(CultureInfo.InvariantCulture)));
+                Debug.WriteLine("Min:{0},Max:{1},Value:{2}", Min.ToString(CultureInfo.InvariantCulture), Max.ToString(CultureInfo.InvariantCulture), Value.ToString(CultureInfo.InvariantCulture));
             }
         }
 

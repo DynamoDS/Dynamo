@@ -523,6 +523,7 @@ namespace Dynamo.Models
             IsSelected = false;
             State = ElementState.Dead;
             ArgumentLacing = LacingStrategy.Disabled;
+            IsReportingModifications = true;
         }
 
         /// <summary>
@@ -545,7 +546,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Disable reporting of state modifications.
         /// </summary>
-        [Obsolete("Use IsReportingModifications = false")]
+        //[Obsolete("Use IsReportingModifications = false")]
         protected internal void DisableReporting()
         {
             IsReportingModifications = false;
@@ -554,10 +555,11 @@ namespace Dynamo.Models
         /// <summary>
         ///     Enable reporting of state modifications.
         /// </summary>
-        [Obsolete("Use IsReportingModifications = true")]
+        //[Obsolete("Use IsReportingModifications = true")]
         protected internal void EnableReporting()
         {
             IsReportingModifications = true;
+            ValidateConnections();
         }
 
         /// <summary>
@@ -2236,9 +2238,9 @@ namespace Dynamo.Models
             if (result)
                 return true;
 
-            if (entry is Function)
+            if (entry is CustomNodeInstance)
             {
-                Guid symbol = Guid.Parse((entry as Function).Symbol);
+                Guid symbol = (entry as CustomNodeInstance).Definition.FunctionId;
                 if (!dynSettings.Controller.CustomNodeManager.Contains(symbol))
                 {
                     DynamoLogger.Instance.Log("WARNING -- No implementation found for node: " + symbol);
