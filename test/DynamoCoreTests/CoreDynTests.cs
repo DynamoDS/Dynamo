@@ -23,8 +23,8 @@ namespace Dynamo.Tests
 
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(25, model.CurrentWorkspace.Connectors.Count);
-            Assert.AreEqual(25, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(28, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(28, model.CurrentWorkspace.Nodes.Count);
 
             // check an input value
             var node1 = model.CurrentWorkspace.NodeFromWorkspace("51ed7fed-99fa-46c3-a03c-2c076f2d0538");
@@ -378,7 +378,7 @@ namespace Dynamo.Tests
             var pathNode = (DSCore.File.Filename)model.Nodes.First(x => x is DSCore.File.Filename);
             pathNode.Value = Path.Combine(examplePath,"honey-badger.jpg");
 
-            RunModel(openPath);
+            RunCurrentModel();
 
             AssertPreviewValue("4744f516-c6b5-421c-b7f1-1731610667bb", 25);
         }
