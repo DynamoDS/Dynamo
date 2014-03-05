@@ -10,7 +10,7 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace DSCore
 {
-    [NodeName("Map")]
+    [NodeName("List Map")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription(
         "Applies a function over all elements of a list, generating a new list from the results.")]
@@ -38,8 +38,8 @@ namespace DSCore
                         "__Combine",
                         new List<AssociativeNode>
                         {
-                            inputAstNodes[0],
-                            AstFactory.BuildExprList(new List<AssociativeNode> { inputAstNodes[1] })
+                            inputAstNodes[1],
+                            AstFactory.BuildExprList(new List<AssociativeNode> { inputAstNodes[0] })
                         }))
             };
         }
@@ -264,7 +264,7 @@ namespace DSCore
             InPortData.Add(new PortData("f(x, a)", "Reductor Function: first argument is an arbitrary item in the list being reduced, second is the current accumulated value, result is the new accumulated value."));
             InPortData.Add(new PortData("a", "Starting accumulated value, to be passed into the first call to the Reductor function."));
             InPortData.Add(new PortData("list1", "List #1"));
-            
+
             OutPortData.Add(new PortData("", "Result"));
 
             RegisterAllPorts();

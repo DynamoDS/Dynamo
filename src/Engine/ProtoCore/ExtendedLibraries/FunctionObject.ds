@@ -279,7 +279,7 @@ def __LaceShortest(func : _FunctionObject, lists : var[]..[])
                 shortenedLists[Count(shortenedLists)] = item[0..shortestLen - 1];
             }
         }
-        return = Combine(func, shortenedLists);
+        return = __Combine(func, shortenedLists);
     };
 }
 
@@ -313,7 +313,7 @@ def __LaceLongest(func : _FunctionObject, lists : var[]..[])
                 stretchedLists[Count(stretchedLists)] = Concat(item, repeated);
             }
         }
-        return = Combine(func, stretchedLists);
+        return = __Combine(func, stretchedLists);
     };
 }
 
