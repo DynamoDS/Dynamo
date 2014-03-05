@@ -36,11 +36,13 @@ namespace DSCoreNodesTests
             Assert.AreEqual(new ArrayList { 5, 4, 3, 2, 1 }, List.Reverse(new List<int> { 1, 2, 3, 4, 5 }));
         }
 
+        /*
         [Test]
         public static void CreateList()
         {
             Assert.AreEqual(new ArrayList { 1, 2, 3, 4, 5 }, List.Create(1, 2, 3, 4, 5));
         }
+         * */
 
         [Test]
         public static void SortList()
