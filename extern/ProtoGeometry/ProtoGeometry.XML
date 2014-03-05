@@ -1731,6 +1731,11 @@
             Make Polysurface by joining surfaces.
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.BySolid(Autodesk.DesignScript.Geometry.Solid)">
+            <summary>
+            Make Polysurface by surfaces of solid. 
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.PolyCurve)">
             <summary>
             Make Polysurface by sweeping Polycurve along rail.
@@ -1780,6 +1785,17 @@
              <summary>
             Extract Solids from Polysurface defined by subset of surfaces
              </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.LocateSurfacesByPoint(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Locate Surfaces by point. Takes first intersection in forward direction. 
+            Returns one surface if hit  surface interior, two if hit edge interior, and many if hit vertex 
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.LocateSurfacesByLine(Autodesk.DesignScript.Geometry.Line)">
+            <summary>
+            Locate Surfaces by Line. Takes all surfaces hit by line.  
+            </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.SurfaceCount">
             <summary>

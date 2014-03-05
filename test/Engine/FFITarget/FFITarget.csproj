@@ -50,6 +50,7 @@
     <Compile Include="DisposeTracer.cs" />
     <Compile Include="DummyGeometry.cs" />
     <Compile Include="InheritenceTests.cs" />
+    <Compile Include="ManagedElementExample.cs" />
     <Compile Include="Minimal.cs" />
     <Compile Include="MinimalTraceTargets.cs" />
     <Compile Include="ProtoFFITests.cs" />
