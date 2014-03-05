@@ -117,7 +117,7 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsCustomFunction
         {
-            get { return this is CustomNodeInstance; }
+            get { return this is Function; }
         }
 
         /// <summary>

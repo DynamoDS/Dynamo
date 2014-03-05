@@ -2,10 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Windows.Forms.Layout;
-using System.Windows.Input;
-using System.Xml.XPath;
 using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
@@ -47,6 +43,7 @@ namespace DSCore
             return list.Cast<object>().Reverse().ToList();
         }
 
+        /*
         /// <summary>
         ///     Creates a new list containing the given items.
         /// </summary>
@@ -56,6 +53,7 @@ namespace DSCore
         {
             return items.ToList();
         }
+        */
 
         /// <summary>
         ///     Sorts a list using the built-in natural ordering.
