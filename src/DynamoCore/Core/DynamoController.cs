@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Threading;
+using DSNodeServices;
 using Dynamo.DSEngine;
 using Dynamo.FSchemeInterop;
 using Dynamo.Interfaces;
@@ -110,8 +111,6 @@ namespace Dynamo
         {
             get { return builtinTypesByTypeName; }
         }
-
-        //public ExecutionEnvironment FSchemeEnvironment { get; private set; }
 
         private string context;
         public string Context
@@ -262,11 +261,10 @@ namespace Dynamo
             dynSettings.PackageLoader.DoCachedPackageUninstalls();
             dynSettings.PackageLoader.LoadPackages();
             
-            //FSchemeEnvironment = env;
-
             DynamoViewModel.Model.CurrentWorkspace.X = 0;
             DynamoViewModel.Model.CurrentWorkspace.Y = 0;
 
+            DisposeLogic.IsShuttingDown = false;
             EngineController = new EngineController(this, false);
             //This is necessary to avoid a race condition by causing a thread join
             //inside the vm exec

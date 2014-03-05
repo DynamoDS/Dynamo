@@ -282,6 +282,10 @@
       <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>
       <Name>RevitServices</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NodeServices\NodeServices.csproj">
+      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+      <Name>NodeServices</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="addins\DynamoForRevit.addin">

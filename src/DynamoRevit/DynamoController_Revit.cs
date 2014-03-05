@@ -9,6 +9,7 @@ using System.Windows.Threading;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
+using DSNodeServices;
 using Dynamo.Applications;
 using Dynamo.Controls;
 using Dynamo.DSEngine;
@@ -721,6 +722,8 @@ namespace Dynamo
 
         public override void ShutDown(bool shutDownHost)
         {
+            DisposeLogic.IsShuttingDown = true;
+
             RevThread.IdlePromise.ExecuteOnShutdown(
                 delegate
                 {
