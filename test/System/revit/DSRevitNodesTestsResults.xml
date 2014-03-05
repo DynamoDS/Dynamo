@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="2" failures="0" not-run="0" date="2014-03-04" time="15:37:41" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
-  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="1.4371437" asserts="4" type="TestFixture" result="Success" executed="True">
+<test-results name="C:\Users\Ian\Documents\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="3" failures="0" not-run="0" date="2014-03-05" time="11:22:55" errors="0" inconclusive="1" ignored="0" skipped="0" invalid="0">
+  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="0.7717315" asserts="10" type="TestFixture" result="Success" executed="True">
     <results>
-      <test-suite name="GridTests" description="Unit tests in Revit." time="1.4371437" asserts="4" type="TestFixture" result="Success" executed="True">
+      <test-suite name="SelectionTests" description="Unit tests in Revit." time="0.7717315" asserts="10" type="TestFixture" result="Success" executed="True">
         <results>
-          <test-case name="ByArc_ValidArgs" success="True" time="1.1581158" executed="True" asserts="3" result="Success" />
-          <test-case name="ByArc_NullArgs" success="True" time="0.2790279" executed="True" asserts="1" result="Success" />
+          <test-case name="SelectElementASTGeneration" success="True" time="0.1731641" executed="True" asserts="4" result="Success" />
+          <test-case name="SelectElementsASTGeneration" success="False" time="0.1781687" executed="True" asserts="1" result="Inconclusive" />
+          <test-case name="SelectReferenceASTGeneration" success="True" time="0.4203987" executed="True" asserts="5" result="Success" />
         </results>
       </test-suite>
     </results>
