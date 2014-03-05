@@ -220,14 +220,14 @@ namespace Dynamo.Nodes
         {
             return Enumerable.Range(0, InPortData.Count)
                              .Where(x => this.HasConnectedInput(x))
-                             .Select(x => new IntNode(x.ToString()) as AssociativeNode)
+                             .Select(x => new IntNode(x) as AssociativeNode)
                              .ToList();
         }
 
         private AssociativeNode CreateFunctionObject(AssociativeNode functionNode, 
                                                      List<AssociativeNode> inputs)
         {
-            var paramNumNode = new IntNode(Definition.Parameters.Count().ToString());
+            var paramNumNode = new IntNode(Definition.Parameters.Count());
             var positionNode = AstFactory.BuildExprList(GetConnectedInputs());
             var arguments = AstFactory.BuildExprList(inputs);
             var inputParams = new List<AssociativeNode>() { functionNode, 
@@ -624,14 +624,14 @@ namespace Dynamo.Nodes
         {
             return Enumerable.Range(0, InPortData.Count)
                              .Where(HasConnectedInput)
-                             .Select(x => new IntNode(x.ToString()) as AssociativeNode)
+                             .Select(x => new IntNode(x) as AssociativeNode)
                              .ToList();
         }
 
         private AssociativeNode CreateFunctionObject(
             AssociativeNode functionNode, List<AssociativeNode> inputs)
         {
-            var paramNumNode = new IntNode(Definition.Parameters.Count().ToString());
+            var paramNumNode = new IntNode(Definition.Parameters.Count());
             var positionNode = AstFactory.BuildExprList(GetConnectedInputs());
             var arguments = AstFactory.BuildExprList(inputs);
             var inputParams = new List<AssociativeNode>

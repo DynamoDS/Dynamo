@@ -347,25 +347,25 @@ namespace GraphToDSCompiler
             //BinaryExpressionNode expressionNode = new BinaryExpressionNode();
             AssociativeNode rightNode = null;
             
-            int number;
+            Int64 number;
             double real;
             bool flag;
             string val = node.ToScript();
             // If LiternalNode is double
             if(Double.TryParse(val, out real))
             {
-                rightNode = new DoubleNode() { value = node.ToScript() };
+                rightNode = new DoubleNode(real); 
             }
             // If LiteralNode type is Int
-            else if (Int32.TryParse(val, out number))
+            else if (Int64.TryParse(val, out number))
             {
             
-                rightNode = new IntNode() { value = val };            
+                rightNode = new IntNode(number);
             }            
             // If LiteralNode is bool
             else if (Boolean.TryParse(val, out flag))
             {
-                rightNode = new BooleanNode() { value = node.ToScript() };
+                rightNode = new BooleanNode(flag); 
             }
 
             /*IdentifierNode ident = CreateTempIdentifierNode(node);
