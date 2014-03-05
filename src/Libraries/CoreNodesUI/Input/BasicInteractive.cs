@@ -126,30 +126,6 @@ namespace DSCoreNodesUI
             get { return true; }
         }
 
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context); //Base implementation must be called
-            if (context == SaveContext.Undo)
-            {
-                var helper = new XmlElementHelper(element);
-                helper.SetAttribute("doubleValue", Value);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context); //Base implementation must be called
-            if (context == SaveContext.Undo)
-            {
-                var helper = new XmlElementHelper(element);
-                Value = helper.ReadDouble("doubleValue");
-            }
-        }
-
-        #endregion
-
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildDoubleNode(Value);
@@ -178,30 +154,6 @@ namespace DSCoreNodesUI
 
     public abstract class Integer : BasicInteractive<int>
     {
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context); //Base implementation must be called
-            if (context == SaveContext.Undo)
-            {
-                var helper = new XmlElementHelper(element);
-                helper.SetAttribute("integerValue", Value);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context); //Base implementation must be called
-            if (context == SaveContext.Undo)
-            {
-                var helper = new XmlElementHelper(element);
-                Value = helper.ReadInteger("integerValue");
-            }
-        }
-
-        #endregion
-
         protected override int DeserializeValue(string val)
         {
             try
@@ -230,30 +182,6 @@ namespace DSCoreNodesUI
 
     public abstract class Bool : BasicInteractive<bool>
     {
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context); //Base implementation must be called
-            if (context == SaveContext.Undo)
-            {
-                var helper = new XmlElementHelper(element);
-                helper.SetAttribute("boolValue", Value);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context); //Base implementation must be called
-            if (context == SaveContext.Undo)
-            {
-                var helper = new XmlElementHelper(element);
-                Value = helper.ReadBoolean("boolValue");
-            }
-        }
-
-        #endregion
-
         protected override bool DeserializeValue(string val)
         {
             try
@@ -286,30 +214,6 @@ namespace DSCoreNodesUI
         {
             return "\"" + base.PrintExpression() + "\"";
         }
-
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context); //Base implementation must be called
-            if (context == SaveContext.Undo)
-            {
-                var helper = new XmlElementHelper(element);
-                helper.SetAttribute("stringValue", Value);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context); //Base implementation must be called
-            if (context == SaveContext.Undo)
-            {
-                var helper = new XmlElementHelper(element);
-                Value = helper.ReadString("stringValue");
-            }
-        }
-
-        #endregion
 
         public override void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
