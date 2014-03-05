@@ -1080,8 +1080,8 @@ namespace Dynamo.Models
                 nodeLookup.Add(node.GUID, newGuid);
 
                 string nodeName = node.GetType().ToString();
-                if (node is CustomNodeInstance)
-                    nodeName = ((node as CustomNodeInstance).Definition.FunctionId).ToString();
+                if (node is Function)
+                    nodeName = ((node as Function).Definition.FunctionId).ToString();
 #if USE_DSENGINE
                 else if (node is DSFunction)
                     nodeName = ((node as DSFunction).Definition.MangledName);
@@ -1376,7 +1376,7 @@ namespace Dynamo.Models
             }
             else
             {
-                CustomNodeInstance func;
+                Function func;
 
                 if (dynSettings.Controller.CustomNodeManager.GetNodeInstance(Guid.Parse(name), out func))
                 {
