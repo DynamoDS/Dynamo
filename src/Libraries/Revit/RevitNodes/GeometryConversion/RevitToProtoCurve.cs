@@ -23,6 +23,18 @@ namespace Revit.GeometryConversion
             return RevitToProtoCurve.Convert(dyCrv);
         }
 
+        public static PolyCurve ToProtoTypes(this Autodesk.Revit.DB.CurveArray crvs)
+        {
+            var protoCurves = new List<Curve>();
+            foreach (var crv in crvs)
+            {
+                dynamic dyCrv = crv;
+                protoCurves.AddRange(RevitToProtoCurve.Convert(dyCrv));
+            }
+
+            return PolyCurve.ByJoinedCurves(protoCurves.ToArray());
+        }
+
         /// <summary>
         /// Convert a Revit NurbSpline to a ProtoGeometry curve
         /// </summary>
