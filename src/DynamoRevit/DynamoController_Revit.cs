@@ -11,6 +11,7 @@ using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
 using Dynamo.Applications;
 using Dynamo.Controls;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
@@ -855,6 +856,17 @@ namespace Dynamo
         /// Revit UI thread SynchronizationContext
         /// </summary>
         public Dispatcher RevitSyncContext { get; set; }
+
+        public override void ResetEngine()
+        {
+            RevitServices.Threading.IdlePromise.ExecuteOnIdleAsync(() =>
+            {
+                if (EngineController != null)
+                    EngineController.Dispose();
+
+                EngineController = new EngineController(this, true);
+            });
+        }
     }
 
     public enum TransactionMode

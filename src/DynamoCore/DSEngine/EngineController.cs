@@ -26,8 +26,9 @@ namespace Dynamo.DSEngine
         private Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private int shortVarCounter = 0;
         private DynamoController controller;
+        private bool isShuttingDown;
 
-        internal EngineController(DynamoController controller, bool isReset)
+        public EngineController(DynamoController controller, bool isReset)
         {
             libraryServices = LibraryServices.GetInstance();
             libraryServices.LibraryLoading += this.LibraryLoading;
