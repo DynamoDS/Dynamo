@@ -1,4 +1,8 @@
-﻿using System.Globalization;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Dynamo.Nodes;
 using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -25,7 +29,27 @@ namespace Dynamo.Interfaces
     {
         internal WatchItem ProcessThing(object value, string tag, bool showRawData = true)
         {
-            var node = new WatchItem(value.ToString(), tag);
+            WatchItem node;
+
+            if (value is IEnumerable<object>)
+            {
+                node = new WatchItem("List", tag);
+
+                var enumerable = value as IEnumerable<object>;
+                var objects = enumerable as object[] ?? enumerable.ToArray();
+                if (objects.Any())
+                {
+                    foreach (var obj in objects)
+                    {
+                        node.Children.Add(ProcessThing(obj, tag));
+                    }
+                }
+            }
+            else
+            {
+                node = new WatchItem(value.ToString(), tag);
+            }
+
             return node;
         }
 

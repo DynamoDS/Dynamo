@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Collections.ObjectModel;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.FSchemeInterop;
 using Dynamo.Nodes;
 using System.Xml;
@@ -2024,22 +2025,14 @@ namespace Dynamo.Models
 
             IEnumerable<string> drawableIds = GetDrawableIds();
 
-            var graphItems = new List<IGraphicItem>();
-
-            int count = 0;
             foreach (var varName in drawableIds)
             {
-                var mirror = dynSettings.Controller.EngineController.GetMirror(varName);
-                if (mirror == null)
+                var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
+                if (graphItems == null)
                     continue;
-
-                var mirrorData = mirror.GetData();
-                ProcessGraphicItems(mirrorData, graphItems, (RenderPackage)RenderPackage, string.Format("[{0}]", count));
-                count++;
+                graphItems.ForEach(x => x.Tessellate(RenderPackage));
+                package.ItemsCount += graphItems.Count;
             }
-
-            graphItems.ForEach(x => x.Tessellate(RenderPackage));
-            package.ItemsCount = graphItems.Count;
         }
 
         /// <summary>

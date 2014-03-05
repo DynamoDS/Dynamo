@@ -101,7 +101,7 @@ namespace Dynamo.Nodes
         /// <returns>WatchNode</returns>
         public WatchItem Process(MirrorData data, int index, bool showRawData = true)
         {
-            WatchItem node;
+            WatchItem node = null;
 
             if (data == null || data.IsNull)
             {
