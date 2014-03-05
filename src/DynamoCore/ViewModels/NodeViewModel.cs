@@ -638,8 +638,8 @@ namespace Dynamo.ViewModels
 
         private void ViewCustomNodeWorkspace(object parameter)
         {
-            var f = (nodeLogic as Function);
-            if(f!= null)
+            var f = (nodeLogic as CustomNodeInstance);
+            if (f!= null)
                 dynSettings.Controller.DynamoViewModel.FocusCustomNodeWorkspace(f.Definition);
         }
 
@@ -899,17 +899,12 @@ namespace Dynamo.ViewModels
 
         private void GotoWorkspace(object parameters)
         {
-            dynSettings.Controller.DynamoViewModel.GoToWorkspace((NodeLogic as Function).Definition.FunctionId);
+            dynSettings.Controller.DynamoViewModel.GoToWorkspace((NodeLogic as CustomNodeInstance).Definition.FunctionId);
         }
 
         private bool CanGotoWorkspace(object parameters)
         {
-            if (NodeLogic is Function)
-            {
-                return true;
-            }
-
-            return false;
+            return NodeLogic is CustomNodeInstance;
         }
 
         #region Private Helper Methods

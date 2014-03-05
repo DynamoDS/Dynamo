@@ -7,16 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Utilities;
-using Dynamo.Controls;
 using System.Windows.Threading;
 using System.Windows.Input;
-using Dynamo.Core;
+using Microsoft.Practices.Prism;
 
 namespace Dynamo.ViewModels
 {
@@ -33,8 +31,7 @@ namespace Dynamo.ViewModels
     {
         #region Properties and Fields
 
-        public WorkspaceModel _model;
-        private bool _canFindNodesFromElements = false;
+        private bool canFindNodesFromElements;
         public Dispatcher Dispatcher;
 
         public event PointEventHandler CurrentOffsetChanged;
@@ -52,7 +49,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Cursor Property Binding for WorkspaceView
         /// </summary>
-        private Cursor currentCursor = null;
+        private Cursor currentCursor;
         public Cursor CurrentCursor
         {
             get { return currentCursor; }
@@ -62,7 +59,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Force Cursor Property Binding for WorkspaceView
         /// </summary>
-        private bool isCursorForced = false;
+        private bool isCursorForced;
         public bool IsCursorForced
         {
             get { return isCursorForced; }
@@ -83,7 +80,7 @@ namespace Dynamo.ViewModels
         {
             if (CurrentOffsetChanged != null)
             {
-                Debug.WriteLine(string.Format("Setting current offset to {0}", e.Point));
+                Debug.WriteLine("Setting current offset to {0}", e.Point);
                 CurrentOffsetChanged(this, e);
             }
         }
@@ -173,56 +170,56 @@ namespace Dynamo.ViewModels
                 WorkspacePropertyEditRequested(Model);
         }
 
-        private CompositeCollection _workspaceElements = new CompositeCollection();
+        private CompositeCollection workspaceElements = new CompositeCollection();
         public CompositeCollection WorkspaceElements
         {
-            get { return _workspaceElements; }
+            get { return workspaceElements; }
             set
             {
-                _workspaceElements = value;
+                workspaceElements = value;
                 RaisePropertyChanged("Nodes");
                 RaisePropertyChanged("WorkspaceElements");
             }
         }
 
-        ObservableCollection<ConnectorViewModel> _connectors = new ObservableCollection<ConnectorViewModel>();
-        private ObservableCollection<Watch3DFullscreenViewModel> _watches = new ObservableCollection<Watch3DFullscreenViewModel>();
-        ObservableCollection<NodeViewModel> _nodes = new ObservableCollection<NodeViewModel>();
-        ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
-        ObservableCollection<InfoBubbleViewModel> _errors = new ObservableCollection<InfoBubbleViewModel>();
+        ObservableCollection<ConnectorViewModel> connectors = new ObservableCollection<ConnectorViewModel>();
+        private ObservableCollection<Watch3DFullscreenViewModel> watches = new ObservableCollection<Watch3DFullscreenViewModel>();
+        ObservableCollection<NodeViewModel> nodes = new ObservableCollection<NodeViewModel>();
+        ObservableCollection<NoteViewModel> notes = new ObservableCollection<NoteViewModel>();
+        ObservableCollection<InfoBubbleViewModel> errors = new ObservableCollection<InfoBubbleViewModel>();
         ObservableCollection<InfoBubbleViewModel> preview = new ObservableCollection<InfoBubbleViewModel>();
 
         public ObservableCollection<ConnectorViewModel> Connectors
         {
-            get { return _connectors; }
+            get { return connectors; }
             set
             {
-                _connectors = value;
+                connectors = value;
                 RaisePropertyChanged("Connectors");
             }
         }
         public ObservableCollection<NodeViewModel> Nodes
         {
-            get { return _nodes; }
+            get { return nodes; }
             set
             {
-                _nodes = value;
+                nodes = value;
                 RaisePropertyChanged("Nodes");
             }
         }
         public ObservableCollection<NoteViewModel> Notes
         {
-            get { return _notes; }
+            get { return notes; }
             set
             {
-                _notes = value;
+                notes = value;
                 RaisePropertyChanged("Notes");
             }
         }
         public ObservableCollection<InfoBubbleViewModel> Errors
         {
-            get { return _errors; }
-            set { _errors = value; RaisePropertyChanged("Errors"); }
+            get { return errors; }
+            set { errors = value; RaisePropertyChanged("Errors"); }
         }
         public ObservableCollection<InfoBubbleViewModel> Previews
         {
@@ -234,55 +231,52 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_model == dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
+                if (Model == dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
                     return "Home";
-                return _model.Name;
+                return Model.Name;
             }
         }
 
         public string FileName
         {
-            get { return _model.FileName; }
+            get { return Model.FileName; }
         }
 
         public bool CanEditName
         {
-            get { return _model != dynSettings.Controller.DynamoViewModel.Model.HomeSpace; }
+            get { return Model != dynSettings.Controller.DynamoViewModel.Model.HomeSpace; }
         }
 
         public bool IsCurrentSpace
         {
-            get { return _model.IsCurrentSpace; }
+            get { return Model.IsCurrentSpace; }
         }
 
         public bool IsHomeSpace
         {
-            get { return _model == dynSettings.Controller.DynamoModel.HomeSpace; }
+            get { return Model == dynSettings.Controller.DynamoModel.HomeSpace; }
         }
 
         public bool HasUnsavedChanges
         {
-            get { return _model.HasUnsavedChanges; }
+            get { return Model.HasUnsavedChanges; }
         }
 
-        public WorkspaceModel Model
-        {
-            get { return _model; }
-        }
+        public WorkspaceModel Model { get; set; }
 
         public ObservableCollection<Watch3DFullscreenViewModel> Watch3DViewModels
         {
-            get { return _watches; }
+            get { return watches; }
             set
             {
-                _watches = value;
+                watches = value;
                 RaisePropertyChanged("Watch3DViewModels");
             }
         }
 
         public double Zoom
         {
-            get { return _model.Zoom; }
+            get { return Model.Zoom; }
         }
 
         public bool ZoomEnabled
@@ -292,10 +286,10 @@ namespace Dynamo.ViewModels
 
         public bool CanFindNodesFromElements
         {
-            get { return _canFindNodesFromElements; }
+            get { return canFindNodesFromElements; }
             set
             {
-                _canFindNodesFromElements = value;
+                canFindNodesFromElements = value;
                 RaisePropertyChanged("CanFindNodesFromElements");
             }
         }
@@ -309,45 +303,45 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel vm)
+        public WorkspaceViewModel(WorkspaceModel model)
         {
-            _model = model;
+            Model = model;
             stateMachine = new StateMachine(this);
 
             //setup the composite collection
             var previewsColl = new CollectionContainer { Collection = Previews };
-            _workspaceElements.Add(previewsColl);
+            workspaceElements.Add(previewsColl);
 
             var nodesColl = new CollectionContainer { Collection = Nodes };
-            _workspaceElements.Add(nodesColl);
+            workspaceElements.Add(nodesColl);
 
             var connColl = new CollectionContainer { Collection = Connectors };
-            _workspaceElements.Add(connColl);
+            workspaceElements.Add(connColl);
 
             var notesColl = new CollectionContainer { Collection = Notes };
-            _workspaceElements.Add(notesColl);
+            workspaceElements.Add(notesColl);
 
             var errorsColl = new CollectionContainer { Collection = Errors };
-            _workspaceElements.Add(errorsColl);
+            workspaceElements.Add(errorsColl);
 
             // Add EndlessGrid
             var endlessGrid = new EndlessGridViewModel(this);
-            _workspaceElements.Add(endlessGrid);
+            workspaceElements.Add(endlessGrid);
 
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
             //connector view models are added during connection
-            _model.Nodes.CollectionChanged += Nodes_CollectionChanged;
-            _model.Notes.CollectionChanged += Notes_CollectionChanged;
-            _model.Connectors.CollectionChanged += Connectors_CollectionChanged;
+            Model.Nodes.CollectionChanged += Nodes_CollectionChanged;
+            Model.Notes.CollectionChanged += Notes_CollectionChanged;
+            Model.Connectors.CollectionChanged += Connectors_CollectionChanged;
 
 
-            DynamoSelection.Instance.Selection.CollectionChanged += this.AlignSelectionCanExecuteChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged += AlignSelectionCanExecuteChanged;
 
             // sync collections
-            Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes));
-            Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Connectors));
-            Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Notes));
+            Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Nodes));
+            Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Connectors));
+            Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
             Dispatcher = Dispatcher.CurrentDispatcher;
         }
 
@@ -364,19 +358,15 @@ namespace Dynamo.ViewModels
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (var item in e.NewItems)
-                    {
-                        var viewModel = new ConnectorViewModel(item as ConnectorModel);
-                        _connectors.Add(viewModel);
-                    }
+                    connectors.AddRange(from object item in e.NewItems select new ConnectorViewModel(item as ConnectorModel));
                     break;
                 case NotifyCollectionChangedAction.Reset:
-                    _connectors.Clear();
+                    connectors.Clear();
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
                     {
-                        _connectors.Remove(_connectors.First(x => x.ConnectorModel == item));
+                        connectors.Remove(connectors.First(x => x.ConnectorModel == item));
                     }
                     break;
             }
@@ -387,20 +377,16 @@ namespace Dynamo.ViewModels
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (var item in e.NewItems)
-                    {
-                        //add a corresponding note
-                        var viewModel = new NoteViewModel(item as NoteModel);
-                        _notes.Add(viewModel);
-                    }
+                    notes.AddRange(
+                        e.NewItems.Cast<NoteModel>().Select(item => new NoteViewModel(item)));
                     break;
                 case NotifyCollectionChangedAction.Reset:
-                    _notes.Clear();
+                    notes.Clear();
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
                     {
-                        _notes.Remove(_notes.First(x => x.Model == item));
+                        notes.Remove(notes.First(x => x.Model == item));
                     }
                     break;
             }
@@ -408,36 +394,34 @@ namespace Dynamo.ViewModels
 
         void Nodes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            IEnumerable<NodeViewModel> viewModels;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (var item in e.NewItems)
-                    {
-                        if (item != null && item is NodeModel)
-                        {
-                            var node = item as NodeModel;
+                    viewModels = e.NewItems.OfType<NodeModel>()
+                                  .Select(n => new NodeViewModel(n));
 
-                            var nodeViewModel = new NodeViewModel(node);
-                            _nodes.Add(nodeViewModel);
-                            Errors.Add(nodeViewModel.ErrorBubble);
-                            Previews.Add(nodeViewModel.PreviewBubble);
-                        }
+                    foreach (var vm in viewModels)
+                    {
+                        nodes.Add(vm);
+                        Errors.Add(vm.ErrorBubble);
+                        Previews.Add(vm.PreviewBubble);
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:
-                    _nodes.Clear();
+                    nodes.Clear();
                     Errors.Clear();
                     Previews.Clear();
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.OldItems)
+                    viewModels = e.OldItems.Cast<NodeModel>()
+                                  .Select(node => nodes.First(x => x.NodeLogic == node));
+
+                    foreach (NodeViewModel nodeViewModel in viewModels)
                     {
-                        var node = item as NodeModel;
-                        NodeViewModel nodeViewModel = _nodes.First(x => x.NodeLogic == item);
                         Previews.Remove(nodeViewModel.PreviewBubble);
                         Errors.Remove(nodeViewModel.ErrorBubble);
-                        _nodes.Remove(nodeViewModel);
-
+                        nodes.Remove(nodeViewModel);
                     }
                     break;
             }
@@ -455,7 +439,7 @@ namespace Dynamo.ViewModels
                 case "Y":
                     break;
                 case "Zoom":
-                    OnZoomChanged(this, new ZoomEventArgs(_model.Zoom));
+                    OnZoomChanged(this, new ZoomEventArgs(Model.Zoom));
                     RaisePropertyChanged("Zoom");
                     ZoomInCommand.RaiseCanExecuteChanged();
                     ZoomOutCommand.RaiseCanExecuteChanged();
@@ -476,7 +460,7 @@ namespace Dynamo.ViewModels
         public void SelectAll(object parameter)
         {
             DynamoSelection.Instance.ClearSelection();
-            Nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
+            Nodes.ToList().ForEach(ele => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
         }
 
         internal bool CanSelectAll(object parameter)
@@ -488,28 +472,8 @@ namespace Dynamo.ViewModels
         {
             bool fullyEnclosed = !isCrossSelect;
 
-            foreach (NodeModel n in Model.Nodes)
+            foreach (var n in Model.Nodes.Cast<ModelBase>().Concat(Model.Notes))
             {
-                double x0 = n.X;
-                double y0 = n.Y;
-
-                if (IsInRegion(region, n, fullyEnclosed))
-                {
-                    if (!DynamoSelection.Instance.Selection.Contains(n))
-                        DynamoSelection.Instance.Selection.Add(n);
-                }
-                else
-                {
-                    if (n.IsSelected)
-                        DynamoSelection.Instance.Selection.Remove(n);
-                }
-            }
-
-            foreach (var n in Model.Notes)
-            {
-                double x0 = n.X;
-                double y0 = n.Y;
-
                 if (IsInRegion(region, n, fullyEnclosed))
                 {
                     if (!DynamoSelection.Instance.Selection.Contains(n))
@@ -541,65 +505,65 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionAverageX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where(x => x is ILocatable)
                            .Cast<ILocatable>()
-                           .Select((x) => x.CenterX)
+                           .Select(x => x.CenterX)
                            .Average();
         }
 
         public double GetSelectionAverageY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where(x => x is ILocatable)
                            .Cast<ILocatable>()
-                           .Select((x) => x.CenterY)
+                           .Select(x => x.CenterY)
                            .Average();
         }
 
         public double GetSelectionMinX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where(x => x is ILocatable)
                            .Cast<ILocatable>()
-                           .Select((x) => x.X)
+                           .Select(x => x.X)
                            .Min();
         }
 
         public double GetSelectionMinY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where(x => x is ILocatable)
                            .Cast<ILocatable>()
-                           .Select((x) => x.Y)
+                           .Select(x => x.Y)
                            .Min();
         }
 
         public double GetSelectionMaxX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where(x => x is ILocatable)
                            .Cast<ILocatable>()
-                           .Select((x) => x.X + x.Width)
+                           .Select(x => x.X + x.Width)
                            .Max();
         }
 
         public double GetSelectionMaxLeftX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where(x => x is ILocatable)
                            .Cast<ILocatable>()
-                           .Select((x) => x.X)
+                           .Select(x => x.X)
                            .Max();
         }
 
         public double GetSelectionMaxY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where(x => x is ILocatable)
                            .Cast<ILocatable>()
-                           .Select((x) => x.Y + x.Height)
+                           .Select(x => x.Y + x.Height)
                            .Max();
         }
 
         public double GetSelectionMaxTopY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where(x => x is ILocatable)
                            .Cast<ILocatable>()
-                           .Select((x) => x.Y)
+                           .Select(x => x.Y)
                            .Max();
         }
 
@@ -613,42 +577,42 @@ namespace Dynamo.ViewModels
             // record their current states before anything gets changed.
             SmartCollection<ISelectable> selection = DynamoSelection.Instance.Selection;
             IEnumerable<ModelBase> models = selection.OfType<ModelBase>();
-            _model.RecordModelsForModification(models.ToList());
+            Model.RecordModelsForModification(models.ToList());
 
-            var toAlign = DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            var toAlign = DynamoSelection.Instance.Selection.Where(x => x is ILocatable)
                            .Cast<ILocatable>()
                            .ToList();
 
             if (alignType == "HorizontalCenter")  // make vertial line of elements
             {
                 var xAll = GetSelectionAverageX();
-                toAlign.ForEach((x) => { x.CenterX = xAll; });
+                toAlign.ForEach(x => { x.CenterX = xAll; });
             }
             else if (alignType == "HorizontalLeft")
             {
                 var xAll = GetSelectionMinX();
-                toAlign.ForEach((x) => { x.X = xAll; });
+                toAlign.ForEach(x => { x.X = xAll; });
             }
             else if (alignType == "HorizontalRight")
             {
                 var xAll = GetSelectionMaxX();
-                toAlign.ForEach((x) => { x.X = xAll - x.Width; });
+                toAlign.ForEach(x => { x.X = xAll - x.Width; });
             }
             else if (alignType == "VerticalCenter")
             {
                 var yAll = GetSelectionAverageY();
-                toAlign.ForEach((x) => { x.CenterY = yAll; });
+                toAlign.ForEach(x => { x.CenterY = yAll; });
 
             }
             else if (alignType == "VerticalTop")
             {
                 var yAll = GetSelectionMinY();
-                toAlign.ForEach((x) => { x.Y = yAll; });
+                toAlign.ForEach(x => { x.Y = yAll; });
             }
             else if (alignType == "VerticalBottom")
             {
                 var yAll = GetSelectionMaxY();
-                toAlign.ForEach((x) => { x.Y = yAll - x.Height; });
+                toAlign.ForEach(x => { x.Y = yAll - x.Height; });
             }
             else if (alignType == "VerticalDistribute")
             {
@@ -659,9 +623,9 @@ namespace Dynamo.ViewModels
                 var spacing = (yMax - yMin) / (DynamoSelection.Instance.Selection.Count - 1);
                 int count = 0;
 
-                toAlign.OrderBy((x) => x.Y)
+                toAlign.OrderBy(x => x.Y)
                            .ToList()
-                           .ForEach((x) => x.Y = yMin + spacing * count++);
+                           .ForEach(x => x.Y = yMin + spacing * count++);
             }
             else if (alignType == "HorizontalDistribute")
             {
@@ -672,9 +636,9 @@ namespace Dynamo.ViewModels
                 var spacing = (xMax - xMin) / (DynamoSelection.Instance.Selection.Count - 1);
                 int count = 0;
 
-                toAlign.OrderBy((x) => x.X)
+                toAlign.OrderBy(x => x.X)
                            .ToList()
-                           .ForEach((x) => x.X = xMin + spacing * count++);
+                           .ForEach(x => x.X = xMin + spacing * count++);
             }
 
             toAlign.ForEach(x => x.ReportPosition());
@@ -685,7 +649,7 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.Count > 1;
         }
 
-        private bool CanAlignSelected(object parameter)
+        private static bool CanAlignSelected(object parameter)
         {
             return DynamoSelection.Instance.Selection.Count > 1;
         }
@@ -694,14 +658,14 @@ namespace Dynamo.ViewModels
         {
             if (!Model.HasUnsavedChanges || dynSettings.Controller.DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
             {
-                dynSettings.Controller.DynamoViewModel.Model.HideWorkspace(_model);
+                dynSettings.Controller.DynamoViewModel.Model.HideWorkspace(Model);
             }
         }
 
         private bool CanHide(object parameters)
         {
             // can hide anything but the home workspace
-            return dynSettings.Controller.DynamoViewModel.Model.HomeSpace != _model;
+            return dynSettings.Controller.DynamoViewModel.Model.HomeSpace != Model;
         }
 
         private void SetCurrentOffset(object parameter)
@@ -710,14 +674,14 @@ namespace Dynamo.ViewModels
 
             //set the current offset without triggering
             //any property change notices.
-            if (_model.X != p.X && _model.Y != p.Y)
+            if (Model.X != p.X && Model.Y != p.Y)
             {
-                _model.X = p.X;
-                _model.Y = p.Y;
+                Model.X = p.X;
+                Model.Y = p.Y;
             }
         }
 
-        private bool CanSetCurrentOffset(object parameter)
+        private static bool CanSetCurrentOffset(object parameter)
         {
             return true;
         }
@@ -739,13 +703,9 @@ namespace Dynamo.ViewModels
             AlignSelectedCommand.RaiseCanExecuteChanged();
         }
 
-        private bool CanCreateNodeFromSelection(object parameter)
+        private static bool CanCreateNodeFromSelection(object parameter)
         {
-            if (DynamoSelection.Instance.Selection.Count(x => x is NodeModel) > 1)
-            {
-                return true;
-            }
-            return false;
+            return DynamoSelection.Instance.Selection.Count(x => x is NodeModel) > 1;
         }
 
         private void ZoomIn(object o)
@@ -772,27 +732,22 @@ namespace Dynamo.ViewModels
 
         private bool CanZoom(double zoom)
         {
-            if ((zoom < 0 && _model.Zoom <= WorkspaceModel.ZOOM_MINIMUM)
-                || (zoom > 0 && _model.Zoom >= WorkspaceModel.ZOOM_MAXIMUM))
-                return false;
-            return true;
+            return (!(zoom < 0) || !(Model.Zoom <= WorkspaceModel.ZOOM_MINIMUM))
+                && (!(zoom > 0) || !(Model.Zoom >= WorkspaceModel.ZOOM_MAXIMUM));
         }
 
         private void SetZoom(object zoom)
         {
-            _model.Zoom = Convert.ToDouble(zoom);
+            Model.Zoom = Convert.ToDouble(zoom);
         }
 
-        private bool CanSetZoom(object zoom)
+        private static bool CanSetZoom(object zoom)
         {
             double setZoom = Convert.ToDouble(zoom);
-            if (setZoom >= WorkspaceModel.ZOOM_MINIMUM && setZoom <= WorkspaceModel.ZOOM_MAXIMUM)
-                return true;
-            else
-                return false;
+            return setZoom >= WorkspaceModel.ZOOM_MINIMUM && setZoom <= WorkspaceModel.ZOOM_MAXIMUM;
         }
 
-        private bool _fitViewActualZoomToggle = false;
+        private bool fitViewActualZoomToggle;
         private void FitView(object o)
         {
             // Get the offset and focus width & height (zoom if 100%)
@@ -808,38 +763,61 @@ namespace Dynamo.ViewModels
             }
             else
             {   // no selection, fitview all nodes
-                if (!_nodes.Any()) return;
+                if (!nodes.Any())
+                    return;
 
-                List<NodeModel> nodes = _nodes.Select(x => x.NodeModel).Where(x => x != null).ToList();
-                minX = nodes.Select(x => x.X).Min();
-                maxX = nodes.Select(x => x.X + x.Width).Max();
-                minY = nodes.Select(y => y.Y).Min();
-                maxY = nodes.Select(y => y.Y + y.Height).Max();
+                var nodeModels = nodes.Select(x => x.NodeModel).Where(x => x != null).ToList();
+
+                var minMax =
+                    nodeModels.Aggregate(
+                        //Initialize to extremes
+                        new
+                        {
+                            MinX = double.PositiveInfinity,
+                            MaxX = double.NegativeInfinity,
+                            MinY = double.PositiveInfinity,
+                            MaxY = double.NegativeInfinity
+                        },
+                        //Compare each node dims with calculated mins and maxes
+                        (a, x) =>
+                            new
+                            {
+                                MinX = Math.Min(a.MinX, x.X),
+                                MaxX = Math.Max(a.MaxX, x.X + x.Width),
+                                MinY = Math.Min(a.MinY, x.Y),
+                                MaxY = Math.Max(a.MaxY, x.Y + x.Height)
+                            });
+
+                //Update based on results
+                minX = minMax.MinX;
+                maxX = minMax.MaxX;
+                minY = minMax.MinY;
+                maxY = minMax.MaxY;
             }
 
             var offset = new Point(minX, minY);
             double focusWidth = maxX - minX;
             double focusHeight = maxY - minY;
 
-            _fitViewActualZoomToggle = !_fitViewActualZoomToggle;
-            ZoomEventArgs zoomArgs = _fitViewActualZoomToggle
+            fitViewActualZoomToggle = !fitViewActualZoomToggle;
+            ZoomEventArgs zoomArgs = fitViewActualZoomToggle
                 ? new ZoomEventArgs(offset, focusWidth, focusHeight)
                 : new ZoomEventArgs(offset, focusWidth, focusHeight, 1.0);
 
             OnRequestZoomToFitView(this, zoomArgs);
         }
 
-        private bool CanFitView(object o)
+        private static bool CanFitView(object o)
         {
             return true;
         }
 
         private void ResetFitViewToggle(object o)
         {
-            _fitViewActualZoomToggle = false;
+            fitViewActualZoomToggle = false;
         }
 
-        private bool CanResetFitViewToggle(object o)
+        private static bool CanResetFitViewToggle(object o)
         {
             return true;
         }
@@ -849,61 +827,40 @@ namespace Dynamo.ViewModels
             RequestTogglePanMode();
         }
 
-        private bool CanTogglePan(object o)
+        private static bool CanTogglePan(object o)
         {
             return true;
         }
 
-        private void FindById(object id)
+        private static void FindById(object id)
         {
-            try
+            var idstring = id.ToString();
+
+            var allNodes = dynSettings.Controller.DynamoModel.Nodes;
+
+            var node =
+                // get the first node whose GUID matches the given id
+                allNodes.FirstOrDefault(x => x.GUID.ToString() == idstring)
+                    // if none was found, look for custom node instances whose definition matches the given id
+                    ?? allNodes.OfType<CustomNodeInstance>()
+                               .FirstOrDefault(x => x.Definition.FunctionId.ToString() == idstring);
+
+            if (node != null)
             {
-                var node = dynSettings.Controller.DynamoModel.Nodes.First(x => x.GUID.ToString() == id.ToString());
+                //select the element
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(node);
 
-                if (node != null)
-                {
-                    //select the element
-                    DynamoSelection.Instance.ClearSelection();
-                    DynamoSelection.Instance.Selection.Add(node);
-
-                    //focus on the element
-                    dynSettings.Controller.DynamoViewModel.ShowElement(node);
-
-                    return;
-                }
+                //focus on the element
+                dynSettings.Controller.DynamoViewModel.ShowElement(node);
             }
-            catch
-            {
+            else
                 DynamoLogger.Instance.Log("No node could be found with that Id.");
-            }
-
-            try
-            {
-                var function =
-                    (Function)dynSettings.Controller.DynamoModel.Nodes.First(x => x is Function && ((Function)x).Definition.FunctionId.ToString() == id.ToString());
-
-                if (function != null)
-                {
-                    //select the element
-                    DynamoSelection.Instance.ClearSelection();
-                    DynamoSelection.Instance.Selection.Add(function);
-
-                    //focus on the element
-                    dynSettings.Controller.DynamoViewModel.ShowElement(function);
-                }
-            }
-            catch
-            {
-                DynamoLogger.Instance.Log("No node could be found with that Id.");
-                return;
-            }
         }
 
-        private bool CanFindById(object id)
+        private static bool CanFindById(object id)
         {
-            if (!string.IsNullOrEmpty(id.ToString()))
-                return true;
-            return false;
+            return !string.IsNullOrEmpty(id.ToString());
         }
 
         private void FindNodesFromSelection(object parameter)

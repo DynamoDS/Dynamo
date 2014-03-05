@@ -912,12 +912,12 @@ namespace Dynamo.Tests
             // check if the node is loaded
             //Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
 
-            var graphNode = model.CurrentWorkspace.NodeFromWorkspace<Function>("9c8c2279-6f59-417c-8218-3b337230bd99");
+            var graphNode = model.CurrentWorkspace.NodeFromWorkspace<CustomNodeInstance>("9c8c2279-6f59-417c-8218-3b337230bd99");
             //var graphNode = (Function)model.Nodes.First(x => x is Function);
 
             //Assert initial values
             Assert.AreEqual(534.75, graphNode.X);
-            Assert.AreEqual("07e6b150-d902-4abb-8103-79193552eee7", graphNode.Symbol);
+            Assert.AreEqual("07e6b150-d902-4abb-8103-79193552eee7", graphNode.Definition.FunctionId);
             Assert.AreEqual("GraphFunction", graphNode.NickName);
             Assert.AreEqual(4, graphNode.InPortData.Count);
             Assert.AreEqual("y = f(x)", graphNode.InPortData[3].NickName);

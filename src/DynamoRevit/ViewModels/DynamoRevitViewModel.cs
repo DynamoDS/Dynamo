@@ -56,16 +56,16 @@ namespace Dynamo.Controls
             }
         }
 
-        public override Function CreateFunction(
+        public override CustomNodeInstance CreateFunction(
             IEnumerable<string> inputs, 
             IEnumerable<string> outputs, 
             CustomNodeDefinition customNodeDefinition)
         {
-            if (customNodeDefinition.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)
-                || customNodeDefinition.Dependencies.Any(d => d.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)))
-            {
-                return new FunctionWithRevit(inputs, outputs, customNodeDefinition);
-            }
+            //if (customNodeDefinition.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)
+            //    || customNodeDefinition.Dependencies.Any(d => d.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)))
+            //{
+            //    return new FunctionWithRevit(inputs, outputs, customNodeDefinition);
+            //}
             return base.CreateFunction(inputs, outputs, customNodeDefinition);
         }
 

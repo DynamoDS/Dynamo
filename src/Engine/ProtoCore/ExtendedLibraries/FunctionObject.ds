@@ -279,7 +279,7 @@ def __LaceShortest(func : _FunctionObject, lists : var[]..[])
                 shortenedLists[Count(shortenedLists)] = item[0..shortestLen - 1];
             }
         }
-        return = Combine(func, shortenedLists);
+        return = __Combine(func, shortenedLists);
     };
 }
 
@@ -313,7 +313,7 @@ def __LaceLongest(func : _FunctionObject, lists : var[]..[])
                 stretchedLists[Count(stretchedLists)] = Concat(item, repeated);
             }
         }
-        return = Combine(func, stretchedLists);
+        return = __Combine(func, stretchedLists);
     };
 }
 
@@ -369,16 +369,16 @@ def __CartesianProduct(func : _FunctionObject, lists : var[]..[])
     };
 }
 
-def __Reduce(list : var[]..[], seed:var, accumulator : _FunctionObject)
+def Reduce(accumulator : _FunctionObject, seed: var, lists : var[]..[])
 {
     return = [Imperative]
     {
-        if (list == null)
+        if (lisst == null)
         {
             return = seed;
         }
 
-		argLists = Transpose(list);
+		argLists = Transpose(lists);
         
         _acc = seed;
         for (_index in 0..(Count(argLists) - 1))

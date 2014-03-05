@@ -15,23 +15,23 @@ using RevThread = RevitServices.Threading;
 
 namespace Dynamo.Nodes
 {
-    public class FunctionWithRevit : Function
+    public class FunctionWithRevit : CustomNodeInstance
     {
         internal ElementsContainer ElementsContainer = new ElementsContainer();
 
-        protected internal FunctionWithRevit(IEnumerable<string> inputs, IEnumerable<string> outputs, CustomNodeDefinition customNodeDefinition)
-            : base(inputs, outputs, customNodeDefinition)
+        protected internal FunctionWithRevit(CustomNodeDefinition customNodeDefinition)
+            : base(customNodeDefinition)
         { }
 
         public FunctionWithRevit() { }
 
-        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
-        {
-            dynRevitSettings.ElementsContainers.Push(ElementsContainer);
-            var result = base.Evaluate(args);
-            dynRevitSettings.ElementsContainers.Pop();
-            return result;
-        }
+        //public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        //{
+        //    dynRevitSettings.ElementsContainers.Push(ElementsContainer);
+        //    var result = base.Evaluate(args);
+        //    dynRevitSettings.ElementsContainers.Pop();
+        //    return result;
+        //}
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {

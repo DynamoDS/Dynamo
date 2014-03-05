@@ -120,7 +120,7 @@ namespace Dynamo.ViewModels
             int index = portIndex;
             bool isInPort = portType == PortType.INPUT;
 
-            NodeModel node = _model.GetModelInternal(nodeId) as NodeModel;
+            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
             PortModel portModel = isInPort ? node.InPorts[index] : node.OutPorts[index];
 
             // Test if port already has a connection, if so grab it and begin connecting 
@@ -135,11 +135,11 @@ namespace Dynamo.ViewModels
                 // and remove it from the connectors collection. This will also
                 // remove the view model.
                 ConnectorModel connector = portModel.Connectors[0];
-                if (_model.Connectors.Contains(connector))
+                if (Model.Connectors.Contains(connector))
                 {
                     List<ModelBase> models = new List<ModelBase>();
                     models.Add(connector);
-                    _model.RecordAndDeleteModels(models);
+                    Model.RecordAndDeleteModels(models);
                     connector.NotifyConnectedPortsOfDeletion();
                 }
             }
@@ -163,7 +163,7 @@ namespace Dynamo.ViewModels
             int index = portIndex;
             bool isInPort = portType == PortType.INPUT;
 
-            NodeModel node = _model.GetModelInternal(nodeId) as NodeModel;
+            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
             PortModel portModel = isInPort ? node.InPorts[index] : node.OutPorts[index];
             ConnectorModel connectorToRemove = null;
 
@@ -171,7 +171,7 @@ namespace Dynamo.ViewModels
             if (portModel.Connectors.Count > 0 && portModel.PortType == PortType.INPUT)
             {
                 connectorToRemove = portModel.Connectors[0];
-                _model.Connectors.Remove(connectorToRemove);
+                Model.Connectors.Remove(connectorToRemove);
                 portModel.Disconnect(connectorToRemove);
                 var startPort = connectorToRemove.Start;
                 startPort.Disconnect(connectorToRemove);
@@ -194,14 +194,14 @@ namespace Dynamo.ViewModels
                 second.Owner, firstPort.Index, second.Index, PortType.INPUT);
 
             if (newConnectorModel != null) // Add to the current workspace
-                _model.Connectors.Add(newConnectorModel);
+                Model.Connectors.Add(newConnectorModel);
 
             // Record the creation of connector in the undo recorder.
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
             if (connectorToRemove != null)
                 models.Add(connectorToRemove, UndoRedoRecorder.UserAction.Deletion);
             models.Add(newConnectorModel, UndoRedoRecorder.UserAction.Creation);
-            _model.RecordModelsForUndo(models);
+            Model.RecordModelsForUndo(models);
             this.SetActiveConnector(null);
         }
 
@@ -272,7 +272,7 @@ namespace Dynamo.ViewModels
             List<ModelBase> models = DynamoSelection.Instance.Selection.
                 Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
 
-            this._model.RecordModelsForModification(models);
+            this.Model.RecordModelsForModification(models);
             DynamoController controller = Dynamo.Utilities.dynSettings.Controller;
             controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
