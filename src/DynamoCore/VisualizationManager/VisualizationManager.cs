@@ -442,7 +442,7 @@ namespace Dynamo
             }
 
             watch.Stop();
-            Debug.WriteLine("{0} ellapsed for aggregating geometry for watch.", watch.Elapsed);
+            Debug.WriteLine(String.Format("{0} ellapsed for aggregating geometry for watch.", watch.Elapsed));
 
             //LogVisualizationUpdateData(rd, watch.Elapsed.ToString());
         }
@@ -675,12 +675,12 @@ namespace Dynamo
                 var toCleanup = Visualizations.Where(x => !drawableKeys.Contains(x.Key)).ToList();
                 toCleanup.ForEach(x=>Visualizations.Remove(x.Key));
 
-                Debug.WriteLine("{0} drawables have been removed.", toCleanup.Count);
+                Debug.WriteLine(string.Format("{0} drawables have been removed.", toCleanup.Count));
 
                 //add visualizations for nodes that have none
                 var toAdd = drawable_dict.Where(x => !Visualizations.ContainsKey(x.Key.GUID.ToString())).ToList();
                 toAdd.ForEach(x=>RegisterNodeForVisualization(x.Key));
-                Debug.WriteLine("{0} drawables have been added.", toAdd.Count);
+                Debug.WriteLine(string.Format("{0} drawables have been added.", toAdd.Count));
 
                 foreach (var drawable in drawable_dict)
                 {
@@ -696,7 +696,7 @@ namespace Dynamo
                 }
 
                 sw.Stop();
-                Debug.WriteLine("{0} elapsed for generating visualizations.", sw.Elapsed);
+                Debug.WriteLine(String.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
 
                 //notify the UI of visualization completion
                 OnVisualizationUpdateComplete(this, EventArgs.Empty);
