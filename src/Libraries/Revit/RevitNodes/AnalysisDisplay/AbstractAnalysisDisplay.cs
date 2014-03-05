@@ -130,9 +130,15 @@ namespace Revit.AnalysisDisplay
                 throw new ArgumentNullException("view");
             }
 
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
             Autodesk.Revit.DB.Analysis.SpatialFieldManager manager;
-            return Autodesk.Revit.DB.Analysis.SpatialFieldManager.GetSpatialFieldManager(view) ??
+            var sfm = Autodesk.Revit.DB.Analysis.SpatialFieldManager.GetSpatialFieldManager(view) ??
                       Autodesk.Revit.DB.Analysis.SpatialFieldManager.CreateSpatialFieldManager(view, (int)numValuesPerAnalysisPoint);
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+
+            return sfm;
         }
 
         #endregion

@@ -16,16 +16,17 @@ namespace DSRevitNodesTests.AnalysisDisplay
         [Test]
         public void ByViewFacePointsAndValues_ValidArgs()
         {
-            // get the face from the document
-            var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
-            var form = ele as Form;
-            var faceRef = form.FaceReferences.First();
+
+            var fams = ElementSelector.ByType<Autodesk.Revit.DB.FamilyInstance>(true);
+            var famInst = fams.First() as Revit.Elements.FamilyInstance;
+
+            var faceRef = famInst.FaceReferences.First();
 
             var samplePoints = new[]
             {
                 new double[]{0,0},
-                new[]{0.5,0},
-                new[]{0,0.5}
+                new[]{0.1,0.2},
+                new[]{0,0.1}
             };
 
             var sampleValues = new[]

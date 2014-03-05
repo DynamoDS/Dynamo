@@ -147,7 +147,7 @@ namespace Revit.Elements
         public Autodesk.DesignScript.Geometry.Curve[] Curves {
             get
             {
-                var curves = this.GetCurvesFromFamily(InternalFamilyInstance, new Options()
+                var curves = this.GetCurves(new Options()
                 {
                     ComputeReferences = true
                 });
@@ -160,12 +160,38 @@ namespace Revit.Elements
         {
             get
             {
-                var curves = this.GetCurvesFromFamily(InternalFamilyInstance, new Options()
+                var curves = this.GetCurves(new Options()
                 {
                     ComputeReferences = true
                 });
 
-                return curves.Select(x => new CurveReference(x)).ToArray();
+                return curves.Select(CurveReference.FromExisting).ToArray();
+            }
+        }
+
+        public Face[] Faces
+        {
+            get
+            {
+                var faces = this.GetFaces(new Options()
+                {
+                    ComputeReferences = true
+                });
+
+                return faces.Select(Face.FromExisting).ToArray();
+            }
+        }
+
+        public Revit.References.FaceReference[] FaceReferences
+        {
+            get
+            {
+                var faces = this.GetFaces(new Options()
+                {
+                    ComputeReferences = true
+                });
+
+                return faces.Select(FaceReference.FromExisting).ToArray();
             }
         }
 
@@ -282,98 +308,7 @@ namespace Revit.Elements
 
         #endregion
 
-        #region Private helper methods
-
-        private IEnumerable<Autodesk.Revit.DB.Curve> GetCurvesFromFamily(Autodesk.Revit.DB.FamilyInstance fi, Autodesk.Revit.DB.Options options)
-        {
-            var geomElem = fi.get_Geometry(options);
-
-            var curves = new CurveArray();
-
-            //Find all curves and insert them into curve array
-            AddCurves(fi, geomElem, ref curves);
-
-            return curves.Cast<Autodesk.Revit.DB.Curve>();
-
-        }
-
-        /// <summary>
-        /// Retrieve the first curve found for 
-        /// the given element. In case the element is a 
-        /// family instance, it may have its own non-empty
-        /// solid, in which case we use that. Otherwise we 
-        /// search the symbol geometry. If we use the 
-        /// symbol geometry, we have to keep track of the 
-        /// instance transform to map it to the actual
-        /// instance project location.
-        /// </summary>
-        private Autodesk.Revit.DB.Curve GetCurve(Autodesk.Revit.DB.Element e, Options opt)
-        {
-            GeometryElement geo = e.get_Geometry(opt);
-
-            Autodesk.Revit.DB.Curve curve = null;
-            GeometryInstance inst = null;
-            Transform t = Transform.Identity;
-
-            // Some columns have no solids, and we have to 
-            // retrieve the geometry from the symbol; 
-            // others do have solids on the instance itself 
-            // and no contents in the instance geometry 
-            // (e.g. in rst_basic_sample_project.rvt).
-
-            foreach (GeometryObject obj in geo)
-            {
-                curve = obj as Autodesk.Revit.DB.Curve;
-
-                if (null != curve)
-                {
-                    break;
-                }
-
-                inst = obj as GeometryInstance;
-            }
-
-            if (null == curve && null != inst)
-            {
-                geo = inst.GetSymbolGeometry();
-                t = inst.Transform;
-
-                foreach (GeometryObject obj in geo)
-                {
-                    curve = obj as Autodesk.Revit.DB.Curve;
-
-                    if (null != curve)
-                    {
-                        break;
-                    }
-                }
-            }
-            return curve;
-        }
-
-        private void AddCurves(Autodesk.Revit.DB.FamilyInstance fi, GeometryElement geomElem, ref CurveArray curves)
-        {
-            foreach (GeometryObject geomObj in geomElem)
-            {
-                Autodesk.Revit.DB.Curve curve = geomObj as Autodesk.Revit.DB.Curve;
-                if (null != curve)
-                {
-                    curves.Append(curve);
-                    continue;
-                }
-
-                //If this GeometryObject is Instance, call AddCurve
-                GeometryInstance geomInst = geomObj as GeometryInstance;
-                if (null != geomInst)
-                {
-                    GeometryElement transformedGeomElem // curves transformed into project coords
-                        = geomInst.GetInstanceGeometry(geomInst.Transform.Inverse);
-                    AddCurves(fi, transformedGeomElem, ref curves);
-                }
-            }
-        }
-
-        #endregion
+        
 
         public override string ToString()
         {

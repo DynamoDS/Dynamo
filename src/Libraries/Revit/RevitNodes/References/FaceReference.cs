@@ -21,6 +21,11 @@ namespace Revit.References
             }
             this.InternalReference = face.Reference;
         }
+
+        internal static FaceReference FromExisting(Autodesk.Revit.DB.Face arg)
+        {
+            return new FaceReference(arg);
+        }
     }
 
 }
