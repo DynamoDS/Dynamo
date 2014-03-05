@@ -173,6 +173,7 @@ namespace ProtoCore.AssociativeGraph
         public int UID { get; set; }
         public Guid guid {get; set;}
         public int dependencyGraphListID { get; set; }
+        public int AstID { get; set; }
         public int exprUID { get; set; }
         public int ssaExprID { get; set; }
         public int modBlkUID { get; set; }
@@ -244,7 +245,7 @@ namespace ProtoCore.AssociativeGraph
         public GraphNode()
         {
             UID = ProtoCore.DSASM.Constants.kInvalidIndex;
-
+            AstID = ProtoCore.DSASM.Constants.kInvalidIndex;
             dependencyGraphListID = ProtoCore.DSASM.Constants.kInvalidIndex;
             dimensionNodeList = new List<UpdateNode>();
             updateNodeRefList = new List<ProtoCore.AssociativeGraph.UpdateNodeRef>();
