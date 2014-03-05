@@ -261,9 +261,9 @@ namespace DSCore
     {
         public Reduce()
         {
-            InPortData.Add(new PortData("list1", "List #1"));
-            InPortData.Add(new PortData("a", "Starting accumulated value, to be passed into the first call to the Reductor function."));
             InPortData.Add(new PortData("f(x, a)", "Reductor Function: first argument is an arbitrary item in the list being reduced, second is the current accumulated value, result is the new accumulated value."));
+            InPortData.Add(new PortData("a", "Starting accumulated value, to be passed into the first call to the Reductor function."));
+            InPortData.Add(new PortData("list1", "List #1"));
             
             OutPortData.Add(new PortData("", "Result"));
 
@@ -298,7 +298,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        "TrueForAny",
+                        "__Reduce",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
