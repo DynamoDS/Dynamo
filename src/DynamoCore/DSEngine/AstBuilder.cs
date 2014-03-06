@@ -279,12 +279,14 @@ namespace Dynamo.DSEngine
         public IEnumerable<NodeModel> TopologicalSort(IEnumerable<NodeModel> nodes)
         {
             var sortedNodes = new Stack<NodeModel>();
-            var nodeFlags = nodes.ToDictionary(node => node, _ => MarkFlag.NoMark);
+            var nodeModels = nodes as IList<NodeModel> ?? nodes.ToList();
+
+            var nodeFlags = nodeModels.ToDictionary(node => node, _ => MarkFlag.NoMark);
             
             foreach (var candidate in TSortCandidates(nodeFlags))
                 MarkNode(candidate, nodeFlags, sortedNodes);
 
-            return sortedNodes.Where(n => nodes.Contains(n));
+            return sortedNodes.Where(nodeModels.Contains);
         }
 
         private IEnumerable<NodeModel> TSortCandidates(Dictionary<NodeModel, MarkFlag> nodeFlags)
