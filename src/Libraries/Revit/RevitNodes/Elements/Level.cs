@@ -49,6 +49,7 @@ namespace Revit.Elements
                 InternalSetLevel(oldEle);
                 InternalSetElevation(elevation);
                 InternalSetName(name);
+                return;
             }
 
             //Phase 2- There was no existing element, create new
