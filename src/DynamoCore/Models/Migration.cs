@@ -36,6 +36,18 @@ namespace Dynamo.Models
     {
         private static MigrationManager _instance;
 
+        private static int IdentifierIndex = 0;
+
+        public static int GetNextIdentifierIndex()
+        {
+            return IdentifierIndex++;
+        }
+
+        public static void ResetIdentifierIndex()
+        {
+            IdentifierIndex = 0;
+        }
+
         /// <summary>
         /// The singleton instance property.
         /// </summary>

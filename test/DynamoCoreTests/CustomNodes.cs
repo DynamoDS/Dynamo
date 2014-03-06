@@ -456,7 +456,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, outs.Count);
 
             var out1 = outs[0];
-            Assert.IsAssignableFrom<double>(out1.Data);
             Assert.AreEqual(0, out1.Data);
 
             var out2 = outs[1];

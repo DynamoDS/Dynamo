@@ -1,0 +1,7 @@
+<Workspace Version="0.7.0.20567" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <DSCoreNodesUI.DummyNode type="DSCoreNodesUI.DummyNode" guid="37bffbb9-3438-4c6c-81d6-7b41b5fb5b87" nickname="Point.ByLuck" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputCount="3" outputCount="2" legacyNodeName="Point.ByLuck" />
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>

@@ -54,7 +54,7 @@ namespace Revit.AnalysisDisplay
 
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            InternalSetSpatialFieldManager(SpatialFieldManager);
+            InternalSetSpatialFieldManager(sfm);
 
             var primitiveId = SpatialFieldManager.AddSpatialFieldPrimitive();
 

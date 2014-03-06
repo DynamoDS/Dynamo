@@ -27,7 +27,7 @@ namespace Dynamo.DSEngine
         private int shortVarCounter = 0;
         private DynamoController controller;
 
-        internal EngineController(DynamoController controller, bool isReset)
+        public EngineController(DynamoController controller, bool isReset)
         {
             libraryServices = LibraryServices.GetInstance();
             libraryServices.LibraryLoading += this.LibraryLoading;
@@ -222,18 +222,18 @@ namespace Dynamo.DSEngine
         /// Generate graph sync data based on the input Dynamo custom node information.
         /// Return false if all nodes are clean.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="def"></param>
         /// <param name="nodes"></param>
         /// <param name="outputs"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
         public bool GenerateGraphSyncDataForCustomNode(
-            Guid id,
+            CustomNodeDefinition def,
             IEnumerable<NodeModel> nodes,
             List<AssociativeNode> outputs,
             IEnumerable<string> parameters)
         {
-            astBuilder.CompileCustomNodeDefinition(id, nodes, outputs, parameters);
+            astBuilder.CompileCustomNodeDefinition(def, nodes, outputs, parameters);
             return VerifyGraphSyncData();
         }
 

@@ -436,105 +436,90 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class IntNode : AssociativeNode
     {
-        public string value { get; set; }
+        public Int64 Value { get; set; }
 
-        public IntNode(string val = null)
+        public IntNode(Int64 value)
         {
-            value = val;
+            Value = value;
         }
+
         public IntNode(IntNode rhs) : base(rhs)
         {
-            value = rhs.value;
+            Value = rhs.Value;
         }
 
         public override bool Equals(object other)
         {
             var otherNode = other as IntNode;
-            if (null == otherNode || string.IsNullOrEmpty(value))
+            if (null == otherNode)
                 return false;
 
-            long thisValue;
-            if (Int64.TryParse(value, out thisValue))
-            {
-                long otherValue;
-                if (Int64.TryParse(otherNode.value, out otherValue))
-                {
-                    return thisValue == otherValue;
-                }
-            }
-
-            return false;
+            return this.Value.Equals(otherNode.Value);
         }
 
         public override string ToString()
         {
-            return value;
+            return Value.ToString();
         }
     }
 
     public class DoubleNode : AssociativeNode
     {
-        public string value { get; set; }
-        public DoubleNode(string val = null)
+        public double Value { get; set; }
+
+        public DoubleNode(double value)
         {
-            value = val;
+            Value = value;
         }
+
         public DoubleNode(DoubleNode rhs)
             : base(rhs)
         {
-            value = rhs.value;
+            Value = rhs.Value;
         }
 
         public override bool Equals(object other)
         {
             var otherNode = other as DoubleNode;
-            if (null == otherNode || string.IsNullOrEmpty(value))
+            if (null == otherNode)
                 return false;
 
-            double thisValue;
-            if (double.TryParse(value, out thisValue))
-            {
-                double otherValue;
-                if (double.TryParse(otherNode.value, out otherValue))
-                {
-                    return thisValue == otherValue;
-                }
-            }
-
-            return false;
+            return this.Value.Equals(otherNode.Value);
         }
 
         public override string ToString()
         {
-            return value;
+            return Value.ToString();
         }
     }
 
     public class BooleanNode : AssociativeNode
     {
-        public string value { get; set; }
-        public BooleanNode()
+        public bool Value { get; set; }
+
+        public BooleanNode(bool value)
         {
-            value = string.Empty;
+            Value = value;
         }
+
         public BooleanNode(BooleanNode rhs)
             : base(rhs)
         {
-            value = rhs.value;
+            Value = rhs.Value;
         }
 
         public override bool Equals(object other)
         {
             var otherNode = other as BooleanNode;
-            if (null == otherNode || string.IsNullOrEmpty(value))
+            if (null == otherNode)
                 return false;
 
-            return EqualityComparer<string>.Default.Equals(value, otherNode.value);
+            return Value == otherNode.Value;
         }
 
         public override string ToString()
         {
-            return value;
+            return Value.ToString();
         }
     }
 
@@ -2078,12 +2063,12 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static IntNode BuildIntNode(int value)
         {
-            return new IntNode(value.ToString());
+            return new IntNode(value);
         }
 
         public static DoubleNode BuildDoubleNode(double value)
         {
-            return new DoubleNode(value.ToString());
+            return new DoubleNode(value);
         }
 
         public static StringNode BuildStringNode(string str)
@@ -2093,8 +2078,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static BooleanNode BuildBooleanNode(bool value)
         {
-            string strValue = value ? Literal.True : Literal.False;
-            return new BooleanNode { value = strValue };
+            return new BooleanNode(value);
         }
 
         public static InlineConditionalNode BuildConditionalNode(AssociativeNode condition,
@@ -2167,10 +2151,18 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static VarDeclNode BuildParamNode(string paramName)
         {
-            VarDeclNode param = new VarDeclNode();
-            param.NameNode = BuildIdentifier(paramName);
-            param.ArgumentType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, false, 0);
-            return param;
+            return BuildParamNode(
+                paramName,
+                TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, false, 0));
+        }
+
+        public static VarDeclNode BuildParamNode(string paramName, Type type)
+        {
+            return new VarDeclNode
+            {
+                NameNode = BuildIdentifier(paramName),
+                ArgumentType = type
+            };
         }
 
         public static BinaryExpressionNode BuildReturnStatement(AssociativeNode rhs)

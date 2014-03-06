@@ -379,51 +379,79 @@ namespace Dynamo.DSEngine
         /// <summary>
         /// Compiles a collection of Dynamo nodes into a function definition for a custom node.
         /// </summary>
-        /// <param name="functionGuid"></param>
+        /// <param name="def"></param>
         /// <param name="funcBody"></param>
         /// <param name="outputs"></param>
         /// <param name="parameters"></param>
-        public void CompileCustomNodeDefinition( 
-                        Guid functionGuid, 
-                        IEnumerable<NodeModel> funcBody, 
-                        List<AssociativeNode> outputs,
-                        IEnumerable<string> parameters)
+        public void CompileCustomNodeDefinition(
+            CustomNodeDefinition def, IEnumerable<NodeModel> funcBody, List<AssociativeNode> outputs,
+            IEnumerable<string> parameters)
         {
-            OnAstNodeBuilding(functionGuid);
+            OnAstNodeBuilding(def.FunctionId);
 
             var functionBody = new CodeBlockNode();
             functionBody.Body.AddRange(CompileToAstNodes(funcBody, false));
 
-            AssociativeNode returnValue;
             if (outputs.Count > 1)
             {
+                var rtnName = "__temp_rtn_" + def.ToString().Replace("-", "");
                 // Return an array for multiple outputs.
-                returnValue = AstFactory.BuildExprList(outputs);
+                functionBody.Body.Add(
+                    AstFactory.BuildAssignment(
+                        AstFactory.BuildIdentifier(rtnName),
+                        AstFactory.BuildExprList(new List<string>())));
+
+                var indexers = def.ReturnKeys != null
+                    ? def.ReturnKeys.Select(x => AstFactory.BuildStringNode(x) as AssociativeNode)
+                    : Enumerable.Range(0, outputs.Count).Select(AstFactory.BuildIntNode);
+
+                functionBody.Body.AddRange(
+                    outputs.Zip(
+                        indexers,
+                        (output, indexer) =>
+                            AstFactory.BuildAssignment(
+                                new IdentifierNode(rtnName)
+                                {
+                                    ArrayDimensions =
+                                        new ProtoCore.AST.AssociativeAST.ArrayNode
+                                        {
+                                            Expr = indexer
+                                        }
+                                },
+                                output)));
+
+                functionBody.Body.Add(
+                    AstFactory.BuildReturnStatement(AstFactory.BuildIdentifier(rtnName)));
             }
             else
             {
                 // For single output, directly return that identifier or null.
-                returnValue = outputs.Count == 1 ? outputs[0] : new NullNode(); 
+                var returnValue = outputs.Count == 1 ? outputs[0] : new NullNode();
+                functionBody.Body.Add(AstFactory.BuildReturnStatement(returnValue));
             }
-            functionBody.Body.Add(AstFactory.BuildReturnStatement(returnValue));
 
             //Create a new function definition
             var functionDef = new FunctionDefinitionNode
             {
-                Name = StringConstants.FunctionPrefix 
-                    + functionGuid.ToString().Replace("-", string.Empty),
-
-                Signature = new ArgumentSignatureNode 
-                { 
-                    Arguments = parameters.Select(AstFactory.BuildParamNode).ToList()
-                },
-
+                Name = def.FunctionName.Replace("-", string.Empty),
+                Signature =
+                    new ArgumentSignatureNode
+                    {
+                        Arguments =
+                            parameters.Select(
+                                param =>
+                                    AstFactory.BuildParamNode(
+                                        param,
+                                        TypeSystem.BuildPrimitiveTypeObject(
+                                            PrimitiveType.kTypeVar,
+                                            true,
+                                            ProtoCore.DSASM.Constants.kArbitraryRank))).ToList()
+                    },
                 FunctionBody = functionBody,
-
                 ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, false)
             };
 
-            OnAstNodeBuilt(functionGuid, new[] { functionDef });
+            OnAstNodeBuilt(def.FunctionId, new[] { functionDef });
         }
 
         /// <summary>
