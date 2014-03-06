@@ -24,8 +24,15 @@ namespace Revit.References
             this.InternalReference = curve.Reference;
         }
 
-        // do NOT expose constructors for these types that are not using 
-        // Revit elements
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="curve"></param>
+        /// <returns></returns>
+        internal static CurveReference FromExisting(Autodesk.Revit.DB.Curve curve)
+        {
+            return new CurveReference(curve);
+        }
 
     }
 }

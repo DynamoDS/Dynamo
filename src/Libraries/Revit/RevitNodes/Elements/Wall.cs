@@ -112,6 +112,11 @@ namespace Revit.Elements
                 throw new ArgumentNullException("wallType");
             }
 
+            if (height < 1e-6 || height > 30000)
+            {
+                throw new ArgumentException("The height must be greater than 0 and less that 30000 ft.  You provided a height of " + height + " ft.");
+            }
+
             return new Wall(curve.ToRevitType(), wallType.InternalWallType, level.InternalLevel, height, 0.0, false, false);
         }
 

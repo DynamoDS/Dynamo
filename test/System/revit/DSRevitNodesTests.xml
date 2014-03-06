@@ -198,16 +198,16 @@
 				<test name="ByName_BadArgs" modelPath=".\Empty.rvt" />
 			</testFixture>
 			<testFixture name="PointAnalysisDisplayTests">
-				<test name="ByViewPointsAndValues_ValidArgs" modelPath=".\empty.rfa" />
-				<test name="ByViewPointsAndValues_BadArgs" modelPath=".\empty.rfa" />
+				<test name="ByViewPointsAndValues_ValidArgs" modelPath=".\empty.rvt" />
+				<test name="ByViewPointsAndValues_BadArgs" modelPath=".\empty.rvt" />
 			</testFixture>
 			<testFixture name="VectorAnalysisDisplayTests">
-				<test name="ByViewPointsAndVectorValues_ValidArgs" modelPath=".\empty.rfa" />
-				<test name="ByViewPointsAndVectorValues_BadArgs" modelPath=".\empty.rfa" />
+				<test name="ByViewPointsAndVectorValues_ValidArgs" modelPath=".\empty.rvt" />
+				<test name="ByViewPointsAndVectorValues_BadArgs" modelPath=".\empty.rvt" />
 			</testFixture>
 			<testFixture name="FaceAnalysisDisplayTests">
-				<test name="ByViewFacePointsAndValues_ValidArgs" modelPath=".\block.rfa" />
-				<test name="ByViewFacePointsAndValues_BadArgs" modelPath=".\block.rfa" />
+				<test name="ByViewFacePointsAndValues_ValidArgs" modelPath=".\ColumnFamilyInstance.rvt" />
+				<test name="ByViewFacePointsAndValues_BadArgs" modelPath=".\ColumnFamilyInstance.rvt" />
 			</testFixture>
 			<testFixture name="SelectionTests">
 				<test name="SelectElementASTGeneration" modelPath=".\Empty.rfa" />
