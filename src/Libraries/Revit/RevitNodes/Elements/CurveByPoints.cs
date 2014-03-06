@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
+using DSNodeServices;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
 namespace Revit.Elements
 {
+    /// <summary>
+    /// A Revit Curve By Points
+    /// </summary>
+    [RegisterForTrace]
     public class CurveByPoints : CurveElement
     {
         #region private constructors
@@ -36,9 +41,13 @@ namespace Revit.Elements
             if (cbp != null)
             {
                 InternalSetCurveElement(cbp);
+                TransactionManager.GetInstance().EnsureInTransaction(Document);
                 cbp.SetPoints(refPtArr);
+                TransactionManager.GetInstance().TransactionTaskDone();
                 return;
             }
+
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
 
             cbp = DocumentManager.GetInstance().CurrentDBDocument.FamilyCreate.NewCurveByPoints(refPtArr);
 
