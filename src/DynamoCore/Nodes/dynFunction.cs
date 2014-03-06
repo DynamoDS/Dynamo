@@ -36,13 +36,14 @@ namespace Dynamo.Nodes
 
             if (Definition.Parameters != null)
             {
+                InPortData.Clear();
                 foreach (var arg in Definition.Parameters)
                 {
                     InPortData.Add(new PortData(arg, "parameter", typeof(object)));
                 }
             }
 
-            // Returns a dictionary
+            OutPortData.Clear();
             if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
             {
                 foreach (var key in Definition.ReturnKeys)
@@ -235,12 +236,18 @@ namespace Dynamo.Nodes
             {
                 if (subNode.Name.Equals("ID"))
                 {
-                    Guid funcId = Guid.Parse(subNode.Attributes[0].Value);
+                    Guid funcId;
+                    if (!Guid.TryParse(subNode.Attributes[0].Value, out funcId))
+                    {
+                        funcId = GuidUtility.Create(
+                            GuidUtility.UrlNamespace, nodeElement.Attributes["nickname"].Value);
+                    }
                     if (!VerifySymbol(ref funcId))
                     {
                         LoadProxyCustomNode(funcId);
                         return;
                     }
+                    Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
                 }
             }
 
@@ -309,21 +316,8 @@ namespace Dynamo.Nodes
             //before this was the case, we need to ensure it here.
             ArgumentLacing = LacingStrategy.Disabled;
 
-            // we've found a custom node, we need to attempt to load its guid.  
-            // if it doesn't exist (i.e. its a legacy node), we need to assign it one
-            // deterministically
-            Guid funId;
-            try
-            {
-                funId = Guid.Parse(Symbol);
-            }
-            catch (FormatException)
-            {
-                funId = GuidUtility.Create(
-                    GuidUtility.UrlNamespace, nodeElement.Attributes["nickname"].Value);
-            }
-
-            Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
+            //if (Definition != null)
+            //    ResyncWithDefinition();
         }
 
         #region Serialization/Deserialization methods
@@ -506,9 +500,12 @@ namespace Dynamo.Nodes
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            var functionCall = AstFactory.BuildFunctionCall(Definition.Name, inputAstNodes);
+            var functionCall = AstFactory.BuildFunctionCall(Definition.FunctionName, inputAstNodes);
 
-            var resultAst = new List<AssociativeNode> { AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall) };
+            var resultAst = new List<AssociativeNode>
+            {
+                AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall)
+            };
 
             if (OutPortData.Count == 1)
             {
@@ -522,13 +519,31 @@ namespace Dynamo.Nodes
                 resultAst.AddRange(
                     Definition.ReturnKeys != null
                         ? Definition.ReturnKeys.Select(
-                            rtnKey =>
-                                new IdentifierNode(AstIdentifierForPreview)
-                                {
-                                    ArrayDimensions =
-                                        new ArrayNode { Expr = new ProtoCore.AST.AssociativeAST.StringNode { value = rtnKey } }
-                                })
-                        : Enumerable.Repeat(AstIdentifierForPreview, OutPortData.Count));
+                            (rtnKey, index) =>
+                                AstFactory.BuildAssignment(
+                                    GetAstIdentifierForOutputIndex(index),
+                                    new IdentifierNode(AstIdentifierForPreview)
+                                    {
+                                        ArrayDimensions =
+                                            new ArrayNode
+                                            {
+                                                Expr = AstFactory.BuildStringNode(rtnKey)
+                                            }
+                                    }) as
+                                AssociativeNode)
+                        : Enumerable.Range(0, OutPortData.Count).Select(
+                            index =>
+                                AstFactory.BuildAssignment(
+                                    GetAstIdentifierForOutputIndex(index),
+                                    new IdentifierNode(AstIdentifierForPreview)
+                                    {
+                                        ArrayDimensions =
+                                            new ArrayNode
+                                            {
+                                                Expr = AstFactory.BuildIntNode(index)
+                                            }
+                                    })
+                                as AssociativeNode));
             }
 
             return resultAst;
