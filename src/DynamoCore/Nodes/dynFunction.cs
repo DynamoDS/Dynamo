@@ -10,25 +10,55 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Nodes
 {
-    [NodeDescription("A node with customized internal functionality.")]
+    /// <summary>
+    /// DesignScript Custom Node instance.
+    /// </summary>
+    [NodeName("Custom Node")]
+    [NodeDescription("Instance of a Custom Node")]
     [IsInteractive(false)]
+    [NodeSearchable(false)]
+    [IsMetaNode]
     public partial class Function : NodeWithOneOutput
     {
-        protected internal Function(
-            IEnumerable<string> inputs, IEnumerable<string> outputs, CustomNodeDefinition def)
+        protected internal Function(CustomNodeDefinition def)
         {
-            _def = def;
+            Definition = def;
+            ResyncWithDefinition();
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
 
-            Symbol = def.FunctionId.ToString();
+        /// <summary>
+        /// Updates this Custom Node's data to match its Definition.
+        /// </summary>
+        public void ResyncWithDefinition()
+        {
+            DisableReporting();
 
-            //Set inputs and output
-            SetInputs(inputs);
-            foreach (var output in outputs)
-                OutPortData.Add(new PortData(output, "function output", typeof(object)));
+            if (Definition.Parameters != null)
+            {
+                foreach (var arg in Definition.Parameters)
+                {
+                    InPortData.Add(new PortData(arg, "parameter", typeof(object)));
+                }
+            }
+
+            // Returns a dictionary
+            if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
+            {
+                foreach (var key in Definition.ReturnKeys)
+                {
+                    OutPortData.Add(new PortData(key, "return value", typeof(object)));
+                }
+            }
+            else
+            {
+                OutPortData.Add(new PortData("", "return value", typeof(object)));
+            }
 
             RegisterAllPorts();
+            NickName = Definition.DisplayName;
 
-            ArgumentLacing = LacingStrategy.Disabled;
+            EnableReporting();
         }
 
         public Function() { }
@@ -58,7 +88,14 @@ namespace Dynamo.Nodes
             }
         }
 
-        public string Symbol { get; protected internal set; }
+        [Obsolete("Use Definition.FunctionId.ToString()")]
+        public string Symbol
+        {
+            get
+            {
+                return Definition.FunctionId.ToString();
+            }
+        }
 
         public new string Category
         {
@@ -78,18 +115,11 @@ namespace Dynamo.Nodes
             }
         }
 
-        private CustomNodeDefinition _def;
 
-        public CustomNodeDefinition Definition
-        {
-            get { return _def; }
-            internal set
-            {
-                _def = value;
-                if (value != null)
-                    Symbol = value.FunctionId.ToString();
-            }
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public CustomNodeDefinition Definition { get; set; }
 
         protected override InputNode Compile(IEnumerable<string> portNames)
         {
@@ -100,6 +130,7 @@ namespace Dynamo.Nodes
         /// Sets the inputs of this function.
         /// </summary>
         /// <param name="inputs"></param>
+        [Obsolete]
         public void SetInputs(IEnumerable<string> inputs)
         {
             int i = 0;
@@ -127,6 +158,7 @@ namespace Dynamo.Nodes
             }
         }
 
+        [Obsolete]
         public void SetOutputs(IEnumerable<string> outputs)
         {
             int i = 0;
@@ -203,11 +235,9 @@ namespace Dynamo.Nodes
             {
                 if (subNode.Name.Equals("ID"))
                 {
-                    Symbol = subNode.Attributes[0].Value;
-                    Guid funcId;
-                    if (!VerifySymbol(out funcId))
+                    Guid funcId = Guid.Parse(subNode.Attributes[0].Value);
+                    if (!VerifySymbol(ref funcId))
                     {
-
                         LoadProxyCustomNode(funcId);
                         return;
                     }
@@ -291,7 +321,6 @@ namespace Dynamo.Nodes
             {
                 funId = GuidUtility.Create(
                     GuidUtility.UrlNamespace, nodeElement.Attributes["nickname"].Value);
-                Symbol = funId.ToString();
             }
 
             Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
@@ -335,9 +364,8 @@ namespace Dynamo.Nodes
                 XmlElementHelper helper = new XmlElementHelper(element);
                 NickName = helper.ReadString("functionName");
 
-                Symbol = helper.ReadString("functionId");
-                Guid funcId;
-                if (!VerifySymbol(out funcId))
+                Guid funcId = Guid.Parse(helper.ReadString("functionId"));
+                if (!VerifySymbol(ref funcId))
                 {
                     LoadProxyCustomNode(funcId);
                     return;
@@ -399,7 +427,6 @@ namespace Dynamo.Nodes
                 catch
                 {
                     funId = GuidUtility.Create(GuidUtility.UrlNamespace, NickName);
-                    Symbol = funId.ToString();
                 }
 
                 Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
@@ -409,10 +436,8 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        private bool VerifySymbol(out Guid funcId)
+        private bool VerifySymbol(ref Guid funcId)
         {
-            Guid.TryParse(Symbol, out funcId);
-
             // if the dyf does not exist on the search path...
             if (dynSettings.Controller.CustomNodeManager.Contains(funcId))
                 return true;
@@ -422,8 +447,7 @@ namespace Dynamo.Nodes
             // if there is a node with this name, use it instead
             if (manager.Contains(NickName))
             {
-                var guid = manager.GetGuidFromName(NickName);
-                Symbol = guid.ToString();
+                funcId = manager.GetGuidFromName(NickName);
                 return true;
             }
 
@@ -442,11 +466,6 @@ namespace Dynamo.Nodes
                     }
             };
 
-            SetInputs(new List<string>());
-            SetOutputs(new List<string>());
-            RegisterAllPorts();
-            State = ElementState.Error;
-
             var userMsg = "Failed to load custom node: " + NickName +
                           ".  Replacing with proxy custom node.";
 
@@ -455,7 +474,11 @@ namespace Dynamo.Nodes
             // tell custom node loader, but don't provide path, forcing user to resave explicitly
             dynSettings.Controller.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
             Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
+            
             ArgumentLacing = LacingStrategy.Disabled;
+            ResyncWithDefinition();
+            RegisterAllPorts();
+            State = ElementState.Error;
         }
 
         public override void Evaluate(
@@ -483,9 +506,32 @@ namespace Dynamo.Nodes
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            var rhs = AstFactory.BuildFunctionCall(Definition.FunctionName, inputAstNodes);
-            var funcCall = AstFactory.BuildAssignment(this.AstIdentifierForPreview, rhs);
-            return new AssociativeNode[] { funcCall };
+            var functionCall = AstFactory.BuildFunctionCall(Definition.Name, inputAstNodes);
+
+            var resultAst = new List<AssociativeNode> { AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall) };
+
+            if (OutPortData.Count == 1)
+            {
+                resultAst.Add(
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),
+                        AstIdentifierForPreview));
+            }
+            else
+            {
+                resultAst.AddRange(
+                    Definition.ReturnKeys != null
+                        ? Definition.ReturnKeys.Select(
+                            rtnKey =>
+                                new IdentifierNode(AstIdentifierForPreview)
+                                {
+                                    ArrayDimensions =
+                                        new ArrayNode { Expr = new ProtoCore.AST.AssociativeAST.StringNode { value = rtnKey } }
+                                })
+                        : Enumerable.Repeat(AstIdentifierForPreview, OutPortData.Count));
+            }
+
+            return resultAst;
         }
     }
 

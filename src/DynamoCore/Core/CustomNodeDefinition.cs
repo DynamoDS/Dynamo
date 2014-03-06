@@ -328,7 +328,7 @@ namespace Dynamo
 
             //Update existing function nodes which point to this function to match its changes
             var customNodeInstances = dynSettings.Controller.DynamoModel.AllNodes
-                        .OfType<CustomNodeInstance>()
+                        .OfType<Function>()
                         .Where(el => el.Definition != null && el.Definition == this);
             
             foreach (var node in customNodeInstances)
