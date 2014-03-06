@@ -4131,7 +4131,32 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Sin", "Math.Sin@double");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                "Math.Sin", "Math.Sin@double");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Code block node to convert from Radians to Degrees
+            XmlElement converterNode = MigrationManager.CreateCodeBlockNodeModelNode(
+                data.Document, "x*180/Math.PI;");
+            migrationData.AppendNode(converterNode);
+            string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId newInPortCBN = new PortId(converterNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            data.ReconnectToPort(connector0, newInPortCBN);
+            data.CreateConnector(converterNode, 0, newNode, 0);
+
+            return migrationData;
         }
     }
 
@@ -4171,7 +4196,32 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Cos", "Math.Cos@double");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                "Math.Cos", "Math.Cos@double");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Code block node to convert from Radians to Degrees
+            XmlElement converterNode = MigrationManager.CreateCodeBlockNodeModelNode(
+                data.Document, "x*180/Math.PI;");
+            migrationData.AppendNode(converterNode);
+            string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId newInPortCBN = new PortId(converterNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            data.ReconnectToPort(connector0, newInPortCBN);
+            data.CreateConnector(converterNode, 0, newNode, 0);
+
+            return migrationData;
         }
     }
 
@@ -4211,7 +4261,32 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Tan", "Math.Tan@double");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                "Math.Tan", "Math.Tan@double");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Code block node to convert from Radians to Degrees
+            XmlElement converterNode = MigrationManager.CreateCodeBlockNodeModelNode(
+                data.Document, "x*180/Math.PI;");
+            migrationData.AppendNode(converterNode);
+            string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId newInPortCBN = new PortId(converterNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            data.ReconnectToPort(connector0, newInPortCBN);
+            data.CreateConnector(converterNode, 0, newNode, 0);
+
+            return migrationData;
         }
     }
 
@@ -4240,7 +4315,32 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Asin", "Math.Asin@double");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                "Math.Asin", "Math.Asin@double");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Code block node to convert from Radians to Degrees
+            XmlElement converterNode = MigrationManager.CreateCodeBlockNodeModelNode(
+                data.Document, "x*180/Math.PI;");
+            migrationData.AppendNode(converterNode);
+            string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId newInPortCBN = new PortId(converterNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            data.ReconnectToPort(connector0, newInPortCBN);
+            data.CreateConnector(converterNode, 0, newNode, 0);
+
+            return migrationData;
         }
     }
 
@@ -4269,7 +4369,32 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Acos", "Math.Acos@double");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                "Math.Acos", "Math.Acos@double");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Code block node to convert from Radians to Degrees
+            XmlElement converterNode = MigrationManager.CreateCodeBlockNodeModelNode(
+                data.Document, "x*180/Math.PI;");
+            migrationData.AppendNode(converterNode);
+            string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId newInPortCBN = new PortId(converterNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            data.ReconnectToPort(connector0, newInPortCBN);
+            data.CreateConnector(converterNode, 0, newNode, 0);
+
+            return migrationData;
         }
     }
 
@@ -4298,7 +4423,32 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Atan", "Math.Atan@double");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                "Math.Atan", "Math.Atan@double");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Code block node to convert from Radians to Degrees
+            XmlElement converterNode = MigrationManager.CreateCodeBlockNodeModelNode(
+                data.Document, "x*180/Math.PI;");
+            migrationData.AppendNode(converterNode);
+            string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId newInPortCBN = new PortId(converterNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            data.ReconnectToPort(connector0, newInPortCBN);
+            data.CreateConnector(converterNode, 0, newNode, 0);
+
+            return migrationData;
         }
     }
 
