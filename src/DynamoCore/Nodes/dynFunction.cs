@@ -242,7 +242,7 @@ namespace Dynamo.Nodes
                         funcId = GuidUtility.Create(
                             GuidUtility.UrlNamespace, nodeElement.Attributes["nickname"].Value);
                     }
-                    if (!VerifySymbol(ref funcId))
+                    if (!VerifyFuncId(ref funcId))
                     {
                         LoadProxyCustomNode(funcId);
                         return;
@@ -358,12 +358,20 @@ namespace Dynamo.Nodes
                 XmlElementHelper helper = new XmlElementHelper(element);
                 NickName = helper.ReadString("functionName");
 
-                Guid funcId = Guid.Parse(helper.ReadString("functionId"));
-                if (!VerifySymbol(ref funcId))
+                Guid funcId;
+                if(!Guid.TryParse(helper.ReadString("functionId"), out funcId))
+                {
+                    funcId = GuidUtility.Create(GuidUtility.UrlNamespace, NickName);
+                }
+
+                if (!VerifyFuncId(ref funcId))
                 {
                     LoadProxyCustomNode(funcId);
                     return;
                 }
+
+                Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
+                
                 XmlNodeList inNodes = element.SelectNodes("functionInput");
                 XmlNodeList outNodes = element.SelectNodes("functionOutput");
                 int i = 0;
@@ -413,24 +421,13 @@ namespace Dynamo.Nodes
 
                 RegisterAllPorts();
 
-                Guid funId;
-                try
-                {
-                    funId = Guid.Parse(Symbol);
-                }
-                catch
-                {
-                    funId = GuidUtility.Create(GuidUtility.UrlNamespace, NickName);
-                }
-
-                Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
                 Description = helper.ReadString("functionDesc");
             }
         }
 
         #endregion
 
-        private bool VerifySymbol(ref Guid funcId)
+        private bool VerifyFuncId(ref Guid funcId)
         {
             // if the dyf does not exist on the search path...
             if (dynSettings.Controller.CustomNodeManager.Contains(funcId))

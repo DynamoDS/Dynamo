@@ -437,7 +437,15 @@ namespace Dynamo.DSEngine
                 Signature =
                     new ArgumentSignatureNode
                     {
-                        Arguments = parameters.Select(AstFactory.BuildParamNode).ToList()
+                        Arguments =
+                            parameters.Select(
+                                param =>
+                                    AstFactory.BuildParamNode(
+                                        param,
+                                        TypeSystem.BuildPrimitiveTypeObject(
+                                            PrimitiveType.kTypeVar,
+                                            true,
+                                            ProtoCore.DSASM.Constants.kArbitraryRank))).ToList()
                     },
                 FunctionBody = functionBody,
                 ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, false)
