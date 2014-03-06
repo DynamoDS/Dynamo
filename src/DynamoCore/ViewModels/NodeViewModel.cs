@@ -252,7 +252,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return nodeLogic.RenderPackages.Any(y => !string.IsNullOrEmpty(y.Tag));
+                return nodeLogic.RenderPackages.Any(y => ((RenderPackage)y).IsNotEmpty());
             }
         }
 
