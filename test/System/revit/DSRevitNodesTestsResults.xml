@@ -1,12 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="2" failures="0" not-run="0" date="2014-03-06" time="11:42:10" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
-  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="0.315" asserts="3" type="TestFixture" result="Success" executed="True">
+<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="1" failures="0" not-run="0" date="2014-03-06" time="12:52:17" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
+  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="3.83" asserts="3" type="TestFixture" result="Success" executed="True">
     <results>
-      <test-suite name="CeilingPlanViewTests" description="Unit tests in Revit." time="0.315" asserts="3" type="TestFixture" result="Success" executed="True">
+      <test-suite name="FormTests" description="Unit tests in Revit." time="3.83" asserts="3" type="TestFixture" result="Success" executed="True">
         <results>
-          <test-case name="ByLevel_ValidArgs" success="True" time="0.281" executed="True" asserts="2" result="Success" />
-          <test-case name="ByLevel_BadArgs" success="True" time="0.034" executed="True" asserts="1" result="Success" />
+          <test-case name="FaceReferencesProperty_ValidObject" success="True" time="3.83" executed="True" asserts="3" result="Success" />
         </results>
       </test-suite>
     </results>
