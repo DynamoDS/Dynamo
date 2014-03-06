@@ -431,7 +431,7 @@ namespace Dynamo.Utilities
                 return false;
             }
 
-            CustomNodeDefinition def = null;
+            CustomNodeDefinition def;
             if (!IsInitialized(guid))
             {
                 if (!GetDefinitionFromPath(guid, out def))
@@ -447,27 +447,27 @@ namespace Dynamo.Utilities
 
             WorkspaceModel ws = def.WorkspaceModel;
 
-            IEnumerable<string> inputs =
-                ws.Nodes.Where(e => e is Symbol)
-                    .Select(s => (s as Symbol).InputSymbol);
+            //IEnumerable<string> inputs =
+            //    ws.Nodes.Where(e => e is Symbol)
+            //        .Select(s => (s as Symbol).InputSymbol);
 
-            IEnumerable<string> outputs =
-                ws.Nodes.Where(e => e is Output)
-                    .Select(o => (o as Output).Symbol);
+            //IEnumerable<string> outputs =
+            //    ws.Nodes.Where(e => e is Output)
+            //        .Select(o => (o as Output).Symbol);
 
-            if (!outputs.Any())
-            {
-                IEnumerable<NodeModel> topMostNodes = ws.GetTopMostNodes();
+            ////if (!outputs.Any())
+            ////{
+            ////    //IEnumerable<NodeModel> topMostNodes = ws.GetTopMostNodes();
 
-                var topMost = (from topNode in topMostNodes
-                               from output in Enumerable.Range(0, topNode.OutPortData.Count)
-                               where !topNode.HasOutput(output)
-                               select Tuple.Create(output, topNode)).ToList();
+            ////    //var topMost = (from topNode in topMostNodes
+            ////    //               from output in Enumerable.Range(0, topNode.OutPortData.Count)
+            ////    //               where !topNode.HasOutput(output)
+            ////    //               select Tuple.Create(output, topNode)).ToList();
 
-                outputs = topMost.Select(x => x.Item2.OutPortData[x.Item1].NickName);
-            }
+            ////    //outputs = topMost.Select(x => x.Item2.OutPortData[x.Item1].NickName);
+            ////}
 
-            result = controller.DynamoViewModel.CreateFunction(inputs, outputs, def);
+            result = controller.DynamoViewModel.CreateFunction(def);
             result.NickName = ws.Name;
 
             return true;
