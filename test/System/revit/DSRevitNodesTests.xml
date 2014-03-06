@@ -59,8 +59,8 @@
 				<test name="ByFaceUVDivisionsRotation_ValidArgs" modelPath=".\block.rfa" />
 				<test name="ByFaceUVDivisionsRotation_InvalidDivisions" modelPath=".\block.rfa" />
 				<test name="ByFaceUVDivisions_InvalidDivisions" modelPath=".\block.rfa" />
-				<test name="ByFaceUVDivisions_NullArgument" modelPath=".\block.rfa" />
 				<test name="ByFaceUVDivisionsRotation_NullArgument" modelPath=".\block.rfa" />
+				<test name="ByFaceUVDivisions_NullArgument" modelPath=".\block.rfa" />
 			</testFixture>
 			<testFixture name="SolidTests">
 				<test name="ByExtrusion_ValidArgs" modelPath=".\empty.rfa" />
@@ -142,15 +142,10 @@
 			<testFixture name="MaterialTests">
 				<test name="ByName_ValidArgs" modelPath=".\Empty.rvt" />
 				<test name="ByName_NullArgument" modelPath=".\Empty.rvt" />
-				<test name="ByName_NonexistentName" modelPath=".\Empty.rvt" />
 			</testFixture>
+				<test name="ByName_NonexistentName" modelPath=".\Empty.rvt" />
 			<testFixture name="GridTests">
-				<test name="ByLine_ValidArgs" modelPath=".\Empty.rvt" />
-				<test name="ByLine_NullArgs" modelPath=".\Empty.rvt" />
-				<test name="ByStartPointEndPoint_ValidArgs" modelPath=".\Empty.rvt" />
-				<test name="ByStartPointEndPoint_NullArgs" modelPath=".\Empty.rvt" />
 				<test name="ByArc_ValidArgs" modelPath=".\Empty.rvt" />
-				<test name="ByArc_NullArgs" modelPath=".\Empty.rvt" />
 			</testFixture>
 			<testFixture name="BoundingBoxTests">
 				<test name="BoundingBoxPropertyOnAbstractElement" modelPath=".\MassWithBoxAndCone.rfa" />
@@ -184,10 +179,10 @@
 				<test name="ByLevel_BadArgs" modelPath=".\Empty.rvt" />
 			</testFixture>
 			<testFixture name="SheetTests">
-				<test name="ByNameNumberAndViews_ValidArgs" modelPath=".\Empty.rvt" />
-				<test name="ByNameNumberAndViews_BadArgs" modelPath=".\Empty.rvt" />
-				<test name="ByNameNumberAndView_ValidArgs" modelPath=".\Empty.rvt" />
-				<test name="ByNameNumberAndView_BadArgs" modelPath=".\Empty.rvt" />
+				<test name="ByNameNumberTitleBlockAndViews_ValidArgs" modelPath=".\Empty.rvt" />
+				<test name="ByNameNumberTitleBlockAndViews_BadArgs" modelPath=".\Empty.rvt" />
+				<test name="ByNameNumberTitleBlockAndView_ValidArgs" modelPath=".\Empty.rvt" />
+				<test name="ByNameNumberTitleBlockAndView_BadArgs" modelPath=".\Empty.rvt" />
 			</testFixture>
 			<testFixture name="StructuralFramingTests">
 				<test name="ByCurveLevelUpVectorAndType_ValidArgs" modelPath=".\Empty.rvt" />
