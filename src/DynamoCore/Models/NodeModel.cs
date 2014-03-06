@@ -2010,37 +2010,40 @@ namespace Dynamo.Models
             if (dynSettings.Controller == null)
                 return;
 
-            var package = ((RenderPackage)RenderPackage);
-
             //dispose of the current render package
-            package.Clear();
+            RenderPackages.Clear();
 
             if (State == ElementState.Error || !IsVisible)
             {
                 return;
             }
 
-            package.Selected = IsSelected;
-            package.DisplayLabels = DisplayLabels;
-
             IEnumerable<string> drawableIds = GetDrawableIds();
 
-            var labelCount = -1;
+            var label = -1;
             foreach (var varName in drawableIds)
             {
-                labelCount++;
+                label++;
+                var package = new RenderPackage(IsSelected, DisplayLabels);
+                
                 var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
                 if (graphItems == null)
                     continue;
 
-                graphItems.ForEach(x => x.Tessellate(RenderPackage));
-                package.ItemsCount += graphItems.Count;
+                foreach (var gItem in graphItems)
+                {
+                    PushGraphicItemIntoPackage(gItem, package, label.ToString(CultureInfo.InvariantCulture));
+                    package.ItemsCount++;
+                }
+
+                RenderPackages.Add(package);
             }
         }
 
-        private void ProcessGraphicItem(IGraphicItem graphicItem, IRenderPackage pacakge, string tag)
+        private void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag)
         {
-            
+            graphicItem.Tessellate(package);
+            package.Tag = tag;
         }
 
         /// <summary>

@@ -250,7 +250,10 @@ namespace Dynamo.ViewModels
 
         public bool CanDisplayLabels
         {
-            get { return !string.IsNullOrEmpty(((RenderPackage)nodeLogic.RenderPackage).Tag);}
+            get
+            {
+                return nodeLogic.RenderPackages.Any(y => !string.IsNullOrEmpty(y.Tag));
+            }
         }
 
         #endregion

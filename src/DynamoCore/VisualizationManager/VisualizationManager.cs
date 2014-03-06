@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
 using System.Linq;
+using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Microsoft.Practices.Prism.ViewModel;
@@ -240,7 +241,7 @@ namespace Dynamo
             //if it's end node still exists, clear the package for 
             //the node and trigger an update.
             if(connector.End != null)
-                ((RenderPackage)connector.End.Owner.RenderPackage).Clear();
+                connector.End.Owner.RenderPackages.ForEach(x=>x.Clear());
 
             //tell the watches that they require re-binding.
             OnVisualizationUpdateComplete(this, EventArgs.Empty);
@@ -318,13 +319,16 @@ namespace Dynamo
             octree.Clear();
             foreach (var node in toUpdate)
             {
-                var p = ((RenderPackage) node.RenderPackage);
-                for (int i = 0; i < p.TriangleVertices.Count - 3; i += 3)
+                var packages = node.RenderPackages;
+                foreach (var p in packages)
                 {
-                    var a = p.TriangleVertices[i];
-                    var b = p.TriangleVertices[i + 1];
-                    var c = p.TriangleVertices[i + 2];
-                    octree.AddNode(a, b, c, node.GUID.ToString());
+                    for (int i = 0; i < p.TriangleVertices.Count - 3; i += 3)
+                    {
+                        var a = p.TriangleVertices[i];
+                        var b = p.TriangleVertices[i + 1];
+                        var c = p.TriangleVertices[i + 2];
+                        octree.AddNode(a, b, c, node.GUID.ToString());
+                    }
                 }
             }
         }
@@ -337,7 +341,7 @@ namespace Dynamo
         /// <returns>A render description containing all upstream geometry.</returns>
         public void AggregateUpstreamRenderPackages(NodeModel node)
         {
-            List<RenderPackage> packages; 
+            IEnumerable<IRenderPackage> packages; 
 
             //send back just what the node needs
             var watch = new Stopwatch();
@@ -347,18 +351,17 @@ namespace Dynamo
             {
                 //send back everything
                 packages =
-                    _controller.DynamoModel.Nodes.Where(x => ((RenderPackage)x.RenderPackage) != null && ((RenderPackage)x.RenderPackage).IsNotEmpty())
-                        .Select(x=>x.RenderPackage).Cast<RenderPackage>().ToList();
+                    _controller.DynamoModel.Nodes.SelectMany(x=>x.RenderPackages);
 
                 if (packages.Any())
-                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x=>x.IsNotEmpty()), string.Empty));
+                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), string.Empty));
             }
             else
             {
                 //send back renderables for the branch
                 packages = GetUpstreamPackages(node.Inputs);
                 if (packages.Any())
-                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => x.IsNotEmpty()), node.GUID.ToString()));
+                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), node.GUID.ToString()));
             }
 
             watch.Stop();
@@ -372,9 +375,9 @@ namespace Dynamo
         /// </summary>
         /// <param name="inputs">A dictionary describing the inputs on the node.</param>
         /// <returns>A collection of strings.</returns>
-        private List<RenderPackage> GetUpstreamPackages(Dictionary<int, Tuple<int, NodeModel>> inputs)
+        private IEnumerable<IRenderPackage> GetUpstreamPackages(Dictionary<int, Tuple<int, NodeModel>> inputs)
         {
-            var packages = new List<RenderPackage>();
+            var packages = new List<IRenderPackage>();
 
             foreach (KeyValuePair<int, Tuple<int, NodeModel>> pair in inputs)
             {
@@ -387,7 +390,7 @@ namespace Dynamo
                 //registered it's render description with Visualization manager
                 //we will be able to visualize the given node. -Sharad
                 if(node != null)
-                    packages.Add((RenderPackage)node.RenderPackage);
+                    packages.AddRange(node.RenderPackages);
 
                 if (node.IsUpstreamVisible)
                     packages.AddRange(GetUpstreamPackages(node.Inputs));

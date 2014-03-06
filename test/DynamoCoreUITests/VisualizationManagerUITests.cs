@@ -452,7 +452,11 @@ namespace Dynamo.Tests.UI
 
         private int GetTotalDrawablesInModel()
         {
-            return dynSettings.Controller.DynamoModel.Nodes.Select(x => ((RenderPackage)x.RenderPackage).ItemsCount).Aggregate((a, b) => a + b);
+            return dynSettings.Controller.DynamoModel.Nodes
+                .SelectMany(x=>x.RenderPackages)
+                .Cast<RenderPackage>()
+                .Where(x=>x.IsNotEmpty())
+                .Aggregate(0,(a, b) => a + b.ItemsCount);
         }
     }
 }

@@ -75,7 +75,7 @@ namespace Dynamo.DSEngine
         {
             //nativeRenderPackage = DesignScriptStudio.Renderer.RenderPackageUtils.CreateNativeRenderPackage(this);
             Selected = selected;
-            DisplayLabels = false;
+            DisplayLabels = displayLabels;
             Tag = string.Empty;
             ItemsCount = 0;
         }
