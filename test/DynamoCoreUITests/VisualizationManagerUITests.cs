@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Windows.Media.Media3D;
 using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Models;
@@ -93,7 +94,82 @@ namespace Dynamo.Tests.UI
             Assert.Inconclusive("Finish me!");
         }
 
-        /*
+        [Test]
+        public void CleansUpGeometryWhenNodeFails()
+        {
+            Assert.Inconclusive("Can not test post-failure visualization state as we need to " +
+                                "throwing testing exception which avoid OnEvaluationComplete being called.");
+
+            //var model = dynSettings.Controller.DynamoModel;
+            //var viz = dynSettings.Controller.VisualizationManager;
+
+            //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
+            //model.Open(openPath);
+
+            //// check all the nodes and connectors are loaded
+            //Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
+            //Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+
+            //// run the expression
+            //dynSettings.Controller.RunExpression(null);
+
+            ////adjust the number node's value - currently set to 0..5 to something that makes the XYZ error
+            //var numNode = (DoubleInput)model.Nodes.First(x => x is DoubleInput);
+            //numNode.Value = "blah";
+
+            //// run the expression
+            //// it will fail
+            //Assert.Throws(typeof(NUnit.Framework.AssertionException), () => dynSettings.Controller.RunExpression(null));
+            //var renderables = viz.Visualizations.SelectMany(x => x.Value.Points);
+            //Assert.AreEqual(0, renderables.Count());
+        }
+
+        [Test]
+        public void VisualizationInSyncWithPreview()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points_line.dyn");
+            model.Open(openPath);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            //we start with all previews disabled
+            //the graph is two points feeding into a line
+
+            //ensure that visulations match our expectations
+            Assert.AreEqual(7, BackgroundPreview.Points.Count);
+            Assert.AreEqual(12, BackgroundPreview.Lines.Count);
+            Assert.AreEqual(0, BackgroundPreview.MeshCount);
+
+            //now flip off the preview on one of the points
+            //and ensure that the visualization updates without re-running
+            var p1 = model.Nodes.First(x => x.GUID.ToString() == "a7c70c13-cc62-41a6-85ed-dc42e788181d");
+            p1.IsVisible = false;
+
+            Assert.AreEqual(1, BackgroundPreview.Points.Count);
+            Assert.AreEqual(12, BackgroundPreview.Lines.Count);
+            Assert.AreEqual(0, BackgroundPreview.MeshCount);
+
+            //flip off the lines node
+            var l1 = model.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
+            l1.IsVisible = false;
+
+            Assert.AreEqual(1, BackgroundPreview.Points.Count);
+            Assert.AreEqual(0, BackgroundPreview.Lines.Count);
+            Assert.AreEqual(0, BackgroundPreview.MeshCount);
+
+            //flip those back on and ensure the visualization returns
+            p1.IsVisible = true;
+            l1.IsVisible = true;
+
+            Assert.AreEqual(7, BackgroundPreview.Points.Count);
+            Assert.AreEqual(12, BackgroundPreview.Lines.Count);
+            Assert.AreEqual(0, BackgroundPreview.MeshCount);
+        }
+
         [Test]
         public void VisualizationInSyncWithPreviewUpstream()
         {
@@ -113,16 +189,12 @@ namespace Dynamo.Tests.UI
             //the graph is two points feeding into a line
 
             //ensure that visulations match our expectations
-            int pointCount, lineCount, meshCount, xCount, yCount, zCount;
-            viz.GetRenderableCounts(
-                out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
-            
-            Assert.AreEqual(7, pointCount);
-            Assert.AreEqual(12, lineCount);
-            Assert.AreEqual(0, meshCount);
+            Assert.AreEqual(7, BackgroundPreview.Points.Count);
+            Assert.AreEqual(12, BackgroundPreview.Lines.Count);
+            Assert.AreEqual(0, BackgroundPreview.MeshCount);
 
             //flip off the line node's preview upstream
-            var l1 = model.Nodes.First(x => x is LineNode);
+            var l1 = model.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.IsUpstreamVisible = false;
 
             //ensure that the watch 3d is not showing the upstream
@@ -133,9 +205,7 @@ namespace Dynamo.Tests.UI
             var watchView = watch.GetType().GetProperty("View").GetValue(watch, null);
             var points = watchView.GetType().GetProperty("Points").GetValue(watchView, null) as ThreadSafeList<Point3D>;
             Assert.AreEqual(0, points.Count);
-
         }
-        */
 
         [Test]
         public void CanVisualizePoints()
