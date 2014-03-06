@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Odbc;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.FSchemeInterop;
-using Dynamo.Units;
 using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.DSEngine;
@@ -68,6 +72,8 @@ namespace Dynamo.Models
         private readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
         private int errorCount;
 
+        private List<IRenderPackage> _renderPackages = new List<IRenderPackage>();
+
         #endregion
 
         #region public members
@@ -80,6 +86,19 @@ namespace Dynamo.Models
         public Dictionary<int, HashSet<Tuple<int, NodeModel>>> Outputs =
             new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
+        private Object mutex = new object();
+        public List<IRenderPackage> RenderPackages
+        {
+            get { return _renderPackages; }
+            set
+            {
+                lock (mutex)
+                {
+                    _renderPackages = value;
+                    RaisePropertyChanged("RenderPackages");
+                } 
+            }
+        }
 
         #endregion
 
@@ -504,8 +523,12 @@ namespace Dynamo.Models
 
             PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
             {
-                if (args.PropertyName == "OverrideName")
-                    RaisePropertyChanged("NickName");
+                switch (args.PropertyName)
+                {
+                    case ("OverrideName"):
+                        RaisePropertyChanged("NickName");
+                        break;
+                }
             };
 
             //Fetch the element name from the custom attribute.
@@ -1976,6 +1999,157 @@ namespace Dynamo.Models
 
         #endregion
 
+        /// <summary>
+        /// Updates the render package for this node by
+        /// getting the MirrorData objects corresponding to
+        /// each of the node's ports and processing the underlying
+        /// CLR data as IGraphicItems.
+        /// </summary>
+        public virtual void UpdateRenderPackage()
+        {
+            //Avoid attempting an update after the controller 
+            //has shut down.
+            if (dynSettings.Controller == null)
+                return;
+
+            //dispose of the current render package
+            RenderPackages.Clear();
+
+            if (State == ElementState.Error || !IsVisible)
+            {
+                return;
+            }
+
+            IEnumerable<string> drawableIds = GetDrawableIds();
+
+            int count = 0;
+            var labelMap = new List<string>();
+
+            // A small optimization. Don't create the label map if
+            // labels are not being displayed
+            if (DisplayLabels)
+            {
+                foreach (var varName in drawableIds)
+                {
+                    var mirrorData = dynSettings.Controller.EngineController.GetMirror(varName).GetData();
+                    AddToLabelMap(mirrorData, labelMap, string.Empty);
+                    count++;
+                } 
+            }
+
+            count = 0;
+            foreach (var varName in drawableIds)
+            {
+                var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
+                if (graphItems == null)
+                    continue;
+
+                foreach (var gItem in graphItems)
+                {
+                    var package = new RenderPackage(IsSelected, DisplayLabels);
+
+                    PushGraphicItemIntoPackage(gItem, package, DisplayLabels ? labelMap[count] : string.Empty);
+
+                    package.ItemsCount++;
+                    RenderPackages.Add(package);
+                    count++;
+                }
+            }
+        }
+
+        private void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag)
+        {
+            graphicItem.Tessellate(package);
+            package.Tag = tag;
+        }
+
+        /// <summary>
+        /// Add labels for each of a mirror data object's inner
+        /// data object to a label map.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="map"></param>
+        /// <param name="tag"></param>
+        private void AddToLabelMap(MirrorData data, List<string> map, string tag)
+        {
+            if (data.IsCollection)
+            {
+                var list = data.GetElements();
+                for (int i = 0; i < list.Count; i++)
+                {
+                    AddToLabelMap(list[i], map, string.Format("{0}[{1}]", tag, i));
+                }
+            }
+            else if (data.Data is IEnumerable)
+            {
+                var list = data.Data as IEnumerable;
+                AddToLabelMap(list, map, tag);
+            }
+            else
+            {
+                map.Add(tag);
+            }
+        }
+
+        /// <summary>
+        /// Add labels for each object in an enumerable 
+        /// too a label map
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="map"></param>
+        /// <param name="tag"></param>
+        private void AddToLabelMap(IEnumerable list, List<string> map, string tag)
+        {
+            int count = 0;
+            foreach(var obj in list)
+            {
+                var newTag = string.Format("{0}[{1}]", tag, count);
+
+                if (obj is IEnumerable)
+                {
+                    AddToLabelMap(obj as IEnumerable, map, newTag);
+                }
+                else
+                {
+                    map.Add(newTag);
+                }
+                count++;
+            }
+        }
+
+        /// <summary>
+        /// Gets list of drawable Ids as registered with visualization manager 
+        /// for all the output port of the given node.
+        /// </summary>
+        /// <param name="node">Node</param>
+        /// <returns>List of Drawable Ids</returns>
+        private IEnumerable<string> GetDrawableIds()
+        {
+            var drawables = new List<String>();
+            for (int i = 0; i < OutPortData.Count; ++i)
+            {
+                string identifier = GetDrawableId(i);
+                if (!string.IsNullOrEmpty(identifier))
+                    drawables.Add(identifier);
+            }
+
+            return drawables;
+        }
+
+        /// <summary>
+        /// Gets the drawable Id as registered with visualization manager for
+        /// the given output port on the given node.
+        /// </summary>
+        /// <param name="node">Node</param>
+        /// <param name="outPortIndex">Output port index</param>
+        /// <returns>Drawable Id</returns>
+        private string
+            GetDrawableId(int outPortIndex)
+        {
+            var output = GetAstIdentifierForOutputIndex(outPortIndex);
+            return output.ToString();
+        }
+
         #region Node Migration Helper Methods
 
         protected static NodeMigrationData MigrateToDsFunction(
@@ -2013,9 +2187,9 @@ namespace Dynamo.Models
         }
 
         #endregion
+
     }
-    
-    
+
     public enum ElementState
     {
         Dead,

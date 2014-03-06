@@ -203,11 +203,17 @@ namespace Dynamo.Nodes
             
         }
 
+        public override void UpdateRenderPackage()
+        {
+            //do nothing
+            //a watch should not draw its outputs
+        }
+
         #region IWatchViewModel interface
 
         public void GetBranchVisualization(object parameters)
         {
-            dynSettings.Controller.VisualizationManager.RenderUpstream(this);
+            dynSettings.Controller.VisualizationManager.AggregateUpstreamRenderPackages(this);
         }
 
         public bool CanGetBranchVisualization(object parameter)

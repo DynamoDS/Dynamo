@@ -81,7 +81,7 @@ namespace Dynamo
 
         public virtual VisualizationManager VisualizationManager
         {
-            get { return visualizationManager ?? (visualizationManager = new VisualizationManagerASM()); }
+            get { return visualizationManager ?? (visualizationManager = new VisualizationManager(this)); }
         }
 
         /// <summary>
@@ -339,7 +339,7 @@ namespace Dynamo
 
             PreferenceSettings.Save();
 
-            VisualizationManager.ClearVisualizations();
+            //VisualizationManager.ClearVisualizations();
 
             dynSettings.Controller.DynamoModel.OnCleanup(null);
             dynSettings.Controller = null;
@@ -663,7 +663,7 @@ namespace Dynamo
 
         public void RequestClearDrawables()
         {
-            VisualizationManager.ClearRenderables();
+            //VisualizationManager.ClearRenderables();
         }
 
         public void CancelRunCmd(object parameter)
