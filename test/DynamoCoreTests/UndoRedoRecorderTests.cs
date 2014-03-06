@@ -917,7 +917,7 @@ namespace Dynamo.Tests
 
             //Assert initial values
             Assert.AreEqual(534.75, graphNode.X);
-            Assert.AreEqual("07e6b150-d902-4abb-8103-79193552eee7", graphNode.Symbol);
+            Assert.AreEqual("07e6b150-d902-4abb-8103-79193552eee7", graphNode.Definition.FunctionId.ToString());
             Assert.AreEqual("GraphFunction", graphNode.NickName);
             Assert.AreEqual(4, graphNode.InPortData.Count);
             Assert.AreEqual("y = f(x)", graphNode.InPortData[3].NickName);
@@ -940,6 +940,57 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, graphNode.InPortData.Count);
             Assert.AreEqual("GraphFunction", graphNode.NickName);
             Assert.AreEqual("y = f(x)", graphNode.InPortData[3].NickName);
+        }
+
+        [Test]
+        public void TestDummyNodeInternals00()
+        {
+            var model = Controller.DynamoModel;
+            var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
+            model.Open(Path.Combine(folder, "DummyNodeSample.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var dummyNode = workspace.NodeFromWorkspace<DSCoreNodesUI.DummyNode>(
+                Guid.Parse("37bffbb9-3438-4c6c-81d6-7b41b5fb5b87"));
+
+            Assert.IsNotNull(dummyNode);
+
+            // Ensure all properties are loaded from file.
+            Assert.AreEqual("Point.ByLuck", dummyNode.LegacyNodeName);
+            Assert.AreEqual(3, dummyNode.InputCount);
+            Assert.AreEqual(2, dummyNode.OutputCount);
+
+            // Ensure all properties updated data members accordingly.
+            Assert.AreEqual("Point.ByLuck", dummyNode.NickName);
+            Assert.AreEqual(3, dummyNode.InPorts.Count);
+            Assert.AreEqual(2, dummyNode.OutPorts.Count);
+        }
+
+        [Test]
+        public void TestDummyNodeInternals01()
+        {
+            var model = Controller.DynamoModel;
+            var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
+            model.Open(Path.Combine(folder, "DummyNodeSample.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var dummyNode = workspace.NodeFromWorkspace<DSCoreNodesUI.DummyNode>(
+                Guid.Parse("37bffbb9-3438-4c6c-81d6-7b41b5fb5b87"));
+
+            Assert.IsNotNull(dummyNode);
+            Assert.AreEqual(3, dummyNode.InPorts.Count);
+            Assert.AreEqual(2, dummyNode.OutPorts.Count);
+
+            var xmlDocument = new XmlDocument();
+            var element = dummyNode.Serialize(xmlDocument, SaveContext.Undo);
+
+            // Deserialize more than once should not cause ports to accumulate.
+            dummyNode.Deserialize(element, SaveContext.Undo);
+            dummyNode.Deserialize(element, SaveContext.Undo);
+            dummyNode.Deserialize(element, SaveContext.Undo);
+
+            Assert.AreEqual(3, dummyNode.InPorts.Count);
+            Assert.AreEqual(2, dummyNode.OutPorts.Count);
         }
     }
 }

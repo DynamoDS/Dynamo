@@ -19,8 +19,8 @@ namespace Dynamo.Nodes
     {
         internal ElementsContainer ElementsContainer = new ElementsContainer();
 
-        protected internal FunctionWithRevit(IEnumerable<string> inputs, IEnumerable<string> outputs, CustomNodeDefinition customNodeDefinition)
-            : base(inputs, outputs, customNodeDefinition)
+        protected internal FunctionWithRevit(CustomNodeDefinition customNodeDefinition)
+            : base(customNodeDefinition)
         { }
 
         public FunctionWithRevit() { }
