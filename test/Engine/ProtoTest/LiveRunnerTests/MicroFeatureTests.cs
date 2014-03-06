@@ -2799,6 +2799,52 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        public void TestCodeblockModification04()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 1;",   // g1
+
+                "y = a; x = y;",   // g2
+
+                "c = a; b = c;",   // g3
+                
+                "y = b; x = y;",   // g2
+                
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+
+            // Create 2 CBNs 
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("x", 1);
+
+
+            // Create new CBN
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+
+            // Reconnect g2 
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid2, codes[3]));
+
+            syncData = new GraphSyncData(null, added, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("b", 1);
+
+
+        }
+
+        [Test]
         public void TestDeleteNode01()
         {
             List<string> codes = new List<string>() 

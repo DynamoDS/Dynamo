@@ -334,14 +334,9 @@ namespace ProtoAssociative
                 bool isSSAStatement = ProtoCore.Utils.CoreUtils.IsSSATemp(subNode.updateNodeRefList[0].nodeList[0].symbol.name);
                 if (isSSAStatement)
                 {
-                    while (ProtoCore.DSASM.Constants.kInvalidIndex != subNode.exprUID)
+                    if (null != subNode.lastGraphNode)
                     {
-                        subNode = codeBlock.instrStream.dependencyGraph.GraphList[++index];
-                        if (subNode.updateNodeRefList.Count > 0 &&
-                            !ProtoCore.Utils.CoreUtils.IsSSATemp(subNode.updateNodeRefList[0].nodeList[0].symbol.name))
-                        {
-                            break;
-                        }
+                        return subNode.lastGraphNode;
                     }
                 }
             }
