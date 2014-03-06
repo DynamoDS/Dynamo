@@ -272,7 +272,6 @@ namespace Dynamo.Tests.UI
         public void CanVisualizeASMSolids()
         {
             var model = dynSettings.Controller.DynamoModel;
-            var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_thicken.dyn");
             model.Open(openPath);
@@ -281,6 +280,8 @@ namespace Dynamo.Tests.UI
             dynSettings.Controller.RunExpression(null);
 
             Assert.IsTrue(BackgroundPreview.Mesh.TriangleIndices.Count > 0);
+
+            model.HomeSpace.HasUnsavedChanges = false;
         }
 
         [Test]

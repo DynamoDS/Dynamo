@@ -102,7 +102,6 @@
     <Compile Include="UndoRedoRecorderTests.cs" />
     <Compile Include="UnitsOfMeasureTests.cs" />
     <Compile Include="UtilityTests.cs" />
-    <Compile Include="VisualizationManagerTests.cs" />
     <Compile Include="XmlHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
