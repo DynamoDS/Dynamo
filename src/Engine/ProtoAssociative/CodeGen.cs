@@ -334,14 +334,9 @@ namespace ProtoAssociative
                 bool isSSAStatement = ProtoCore.Utils.CoreUtils.IsSSATemp(subNode.updateNodeRefList[0].nodeList[0].symbol.name);
                 if (isSSAStatement)
                 {
-                    while (ProtoCore.DSASM.Constants.kInvalidIndex != subNode.exprUID)
+                    if (null != subNode.lastGraphNode)
                     {
-                        subNode = codeBlock.instrStream.dependencyGraph.GraphList[++index];
-                        if (subNode.updateNodeRefList.Count > 0 &&
-                            !ProtoCore.Utils.CoreUtils.IsSSATemp(subNode.updateNodeRefList[0].nodeList[0].symbol.name))
-                        {
-                            break;
-                        }
+                        return subNode.lastGraphNode;
                     }
                 }
             }
@@ -8027,7 +8022,7 @@ namespace ProtoAssociative
                     EmitCompileLog("==============Start Node==============\n");
                     graphNode = new ProtoCore.AssociativeGraph.GraphNode();
                     graphNode.isParent = true;
-                    //graphNode.UID = bnode.ID;
+                    graphNode.AstID = bnode.ID;
                     graphNode.exprUID = bnode.exprUID;
                     graphNode.ssaExprID = bnode.ssaExprID;
                     graphNode.guid = core.SSASubscript_GUID;
