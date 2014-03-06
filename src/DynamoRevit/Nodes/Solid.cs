@@ -649,10 +649,11 @@ namespace Dynamo.Nodes
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
 
-            XmlElement listCreatNode = MigrationManager.CreateVarArgFunctionNode(
-                data.Document, "DSCoreNodes.dll", "List.Create", "List.Create@var[]", "2");
-            migratedData.AppendNode(listCreatNode);
-            string listCreatNodeId = MigrationManager.GetGuidFromXmlElement(listCreatNode);
+            XmlElement createListNode = MigrationManager.CreateNode(data.Document,
+                "DSCoreNodesUI.CreateList", "Create List");
+            migratedData.AppendNode(createListNode);
+            createListNode.SetAttribute("inputcount", "2");
+            string createListNodeId = MigrationManager.GetGuidFromXmlElement(createListNode);
 
             //create and reconnect the connecters
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
@@ -661,12 +662,12 @@ namespace Dynamo.Nodes
             PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
-            PortId newInPort0 = new PortId(listCreatNodeId, 0, PortType.INPUT);
-            PortId newInPort1 = new PortId(listCreatNodeId, 1, PortType.INPUT);
+            PortId newInPort0 = new PortId(createListNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(createListNodeId, 1, PortType.INPUT);
 
             data.ReconnectToPort(connector0, newInPort0);
             data.ReconnectToPort(connector1, newInPort1);
-            data.CreateConnector(listCreatNode, 0, dsRevitNode, 0);
+            data.CreateConnector(createListNode, 0, dsRevitNode, 0);
 
             return migratedData;
         }
