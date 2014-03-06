@@ -217,12 +217,14 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
+            System.Xml.XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
+            var element = MigrationManager.CloneAndChangeType(xmlNode, "DSIronPythonNode.PythonNode");
+            element.SetAttribute("nickname", "Python Script");
+            element.SetAttribute("inputcount", "1");
+            element.RemoveAttribute("inputs");
+
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-
-            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 1, 1);
-            migrationData.AppendNode(dummyNode);
-
+            migrationData.AppendNode(element);
             return migrationData;
         }
     }
