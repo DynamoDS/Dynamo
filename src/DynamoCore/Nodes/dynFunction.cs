@@ -506,6 +506,7 @@ namespace Dynamo.Nodes
 
             if (OutPortData.Count == 1)
             {
+                // assign the entire result to the only output port
                 resultAst.Add(
                     AstFactory.BuildAssignment(
                         GetAstIdentifierForOutputIndex(0),
@@ -513,34 +514,21 @@ namespace Dynamo.Nodes
             }
             else
             {
+                // indexers for each output
+                var indexers = Definition.ReturnKeys != null
+                    ? Definition.ReturnKeys.Select(AstFactory.BuildStringNode) as
+                        IEnumerable<AssociativeNode>
+                    : Enumerable.Range(0, OutPortData.Count).Select(AstFactory.BuildIntNode);
+
+                // for each output, pull the output from the result
+                // based on the associated return key and assign to
+                // corresponding output identifier
                 resultAst.AddRange(
-                    Definition.ReturnKeys != null
-                        ? Definition.ReturnKeys.Select(
-                            (rtnKey, index) =>
-                                AstFactory.BuildAssignment(
-                                    GetAstIdentifierForOutputIndex(index),
-                                    new IdentifierNode(AstIdentifierForPreview)
-                                    {
-                                        ArrayDimensions =
-                                            new ArrayNode
-                                            {
-                                                Expr = AstFactory.BuildStringNode(rtnKey)
-                                            }
-                                    }) as
-                                AssociativeNode)
-                        : Enumerable.Range(0, OutPortData.Count).Select(
-                            index =>
-                                AstFactory.BuildAssignment(
-                                    GetAstIdentifierForOutputIndex(index),
-                                    new IdentifierNode(AstIdentifierForPreview)
-                                    {
-                                        ArrayDimensions =
-                                            new ArrayNode
-                                            {
-                                                Expr = AstFactory.BuildIntNode(index)
-                                            }
-                                    })
-                                as AssociativeNode));
+                    indexers.Select(
+                        (rtnKey, index) =>
+                            AstFactory.BuildAssignment(
+                                GetAstIdentifierForOutputIndex(index),
+                                AstFactory.BuildIdentifier(AstIdentifierForPreview.Name, rtnKey))));
             }
 
             return resultAst;
