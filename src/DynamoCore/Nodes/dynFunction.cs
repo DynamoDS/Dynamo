@@ -514,6 +514,12 @@ namespace Dynamo.Nodes
             }
             else
             {
+                /* previewId = customNodeFunc(arg0, arg1 ...);
+                 * outId0 = previewId[key0];
+                 * outId1 = previewId[key1];
+                 * ...
+                 */
+
                 // indexers for each output
                 var indexers = Definition.ReturnKeys != null
                     ? Definition.ReturnKeys.Select(AstFactory.BuildStringNode) as

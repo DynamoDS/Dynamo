@@ -397,6 +397,13 @@ namespace Dynamo.DSEngine
 
             if (outputs.Count > 1)
             {
+                /* rtn_array = {};
+                 * rtn_array[key0] = out0;
+                 * rtn_array[key1] = out1;
+                 * ...
+                 * return = rtn_array;
+                 */
+
                 // return array, holds all outputs
                 var rtnName = "__temp_rtn_" + def.Name.Replace("-", "");
                 functionBody.Body.Add(
