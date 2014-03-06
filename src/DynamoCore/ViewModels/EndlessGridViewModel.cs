@@ -113,7 +113,7 @@ namespace Dynamo.ViewModels
 
         public double WorkspaceZoom
         {
-            get { return workspaceVM.Model.Zoom; }
+            get { return workspaceVM._model.Zoom; }
         }
 
         public Color gridLineColor

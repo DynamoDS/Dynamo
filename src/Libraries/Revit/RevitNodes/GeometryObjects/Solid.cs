@@ -194,6 +194,7 @@ namespace Revit.Elements
                 if (!gF.Combinations.IsEmpty)
                     bNotVisibleOption = true;
             }
+
             int nTry = (bNotVisibleOption) ? 2 : 1;
             for (int iTry = 0; iTry < nTry && (mySolid == null); iTry++)
             {

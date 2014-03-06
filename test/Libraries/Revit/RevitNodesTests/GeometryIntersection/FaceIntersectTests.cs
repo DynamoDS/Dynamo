@@ -47,7 +47,7 @@ namespace DSRevitNodesTests.GeometryIntersection
 
             var results = Intersect.CurveFace(line, faceFirst);
 
-            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual(1, results.Length);
 
             var result = results.First();
 
@@ -97,7 +97,7 @@ namespace DSRevitNodesTests.GeometryIntersection
 
             var rez = Intersect.CurveFace(line, faceFirst);
 
-            Assert.AreEqual(0,rez.Count);
+            Assert.AreEqual(0,rez.Length);
 
         }
 
@@ -118,7 +118,7 @@ namespace DSRevitNodesTests.GeometryIntersection
             // intersect the faces
             var result = Intersect.FaceFace(face1, face2);
 
-            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(1, result.Length);
             var intersectionCurve = result.First();
 
             Assert.IsAssignableFrom(typeof(Autodesk.DesignScript.Geometry.Line), intersectionCurve);
@@ -126,9 +126,9 @@ namespace DSRevitNodesTests.GeometryIntersection
             var intersectionLine = intersectionCurve as Autodesk.DesignScript.Geometry.Line;
 
             // intersection is a length 5 line 
-            Assert.AreEqual(0, Math.Abs( Math.Abs( intersectionLine.Direction.Dot(Vector.ByCoordinates(0, 0, 1)) ) - 1), 1e-6);
-            Assert.AreEqual(5, intersectionLine.Length, 1e-6);
-
+            intersectionLine.Length.ShouldBeApproximately(5);
+            intersectionLine.Direction.Dot(Vector.ByCoordinates(1, 0, 0)).ShouldBeApproximately(0);
+            intersectionLine.Direction.Dot(Vector.ByCoordinates(0, 1, 0)).ShouldBeApproximately(0);
         }
 
         [Test]
@@ -159,15 +159,15 @@ namespace DSRevitNodesTests.GeometryIntersection
             var cube2 = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(100,100,100), 10, 10, 10);
 
             // get face on cube 1 facing in + x direction
-            var face1 = cube1.Faces.First(x => Math.Abs(x.NormalAtParameter(0.5, 0.5).Dot(Vector.ByCoordinates(1, 0, 0)) - 1) < 1e-6);
+            var face1 = cube1.Faces.First();
 
             // get face on cube 2 facing in - y direction
-            var face2 = cube2.Faces.First(x => Math.Abs(x.NormalAtParameter(0.5, 0.5).Dot(Vector.ByCoordinates(0, -1, 0)) - 1) < 1e-6);
+            var face2 = cube2.Faces.First();
 
             // intersect the faces
             var result = Intersect.FaceFace(face1, face2);
 
-            Assert.AreEqual(0, result.Count);
+            Assert.AreEqual(0, result.Length);
 
         }
     }

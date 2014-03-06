@@ -829,10 +829,10 @@ namespace Dynamo.Tests.UI
             var cbn = GetNode("37fade4a-e7ad-43ae-8b6f-27dacb17c1c5") as CodeBlockNodeModel;
             Assert.AreEqual(null, cbn);
 
-            var addNode = workspaceViewModel.Model.Nodes.Where(x => x is DSFunction).First() as DSFunction;
+            var addNode = workspaceViewModel._model.Nodes.Where(x => x is DSFunction).First() as DSFunction;
             Assert.NotNull(addNode);
 
-            var numberList = workspaceViewModel.Model.Nodes.Where(x => x is DoubleInput).ToList<NodeModel>();
+            var numberList = workspaceViewModel._model.Nodes.Where(x => x is DoubleInput).ToList<NodeModel>();
             Assert.AreEqual(3, numberList.Count);
         }
 
