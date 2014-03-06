@@ -100,6 +100,7 @@ namespace Revit.GeometryObjects
         private static Autodesk.DesignScript.Geometry.Solid Convert(Autodesk.Revit.DB.Solid geom)
         {
             throw new NotImplementedException();
+            // return Solid.FromExisting(geom);
         }
 
         private static PolyCurve Convert(Profile geom)
@@ -113,6 +114,8 @@ namespace Revit.GeometryObjects
             //the revit geometry, so we do not have need to 
             //convert it to its prototype.
             throw new NotImplementedException();
+
+            // return Autodesk.DesignScript.Geometry.Mesh.ByPointsFaceIndices()
         }
     }
 }
