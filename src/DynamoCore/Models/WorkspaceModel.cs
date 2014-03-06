@@ -645,20 +645,16 @@ namespace Dynamo.Models
                 }
             }
 
-            if (typeName.StartsWith("Dynamo.Nodes"))
-            {
 #if USE_DSENGINE
-                if (typeName.Equals("Dynamo.Nodes.DSFunction"))
-                {
-                    typeName = modelData.Attributes["name"].Value;
-                }
-#endif
-                NodeModel nodeModel = DynamoModel.CreateNodeInstance(typeName);
-                nodeModel.WorkSpace = this;
-                nodeModel.Deserialize(modelData, SaveContext.Undo);
-                Nodes.Add(nodeModel);
+            if (typeName.Equals("Dynamo.Nodes.DSFunction"))
+            {
+                // For DSFunction node type, the type name is actually embedded 
+                // within "name" attribute (e.g. UV.ByCoordinates@double,double).
+                typeName = modelData.Attributes["name"].Value;
             }
-            else if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
+#endif
+
+            if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
             {
                 ConnectorModel connector = ConnectorModel.Make();
                 connector.Deserialize(modelData, SaveContext.Undo);
@@ -669,6 +665,13 @@ namespace Dynamo.Models
                 NoteModel noteModel = new NoteModel(0.0, 0.0);
                 noteModel.Deserialize(modelData, SaveContext.Undo);
                 Notes.Add(noteModel);
+            }
+            else // Other node types.
+            {
+                NodeModel nodeModel = DynamoModel.CreateNodeInstance(typeName);
+                nodeModel.WorkSpace = this;
+                nodeModel.Deserialize(modelData, SaveContext.Undo);
+                Nodes.Add(nodeModel);
             }
         }
 
