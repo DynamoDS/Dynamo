@@ -128,7 +128,6 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\UndoRedoRecorder.cs" />
-    <Compile Include="Nodes\CustomNodeInstance.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IPreferences.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
@@ -432,6 +431,10 @@ limitations under the License.
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NodeServices\NodeServices.csproj">
+      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+      <Name>NodeServices</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\add.png" />
@@ -721,6 +724,7 @@ copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"
 </PostBuildEvent>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\ProtoGeometry\*" "$(OutputPath)"
 copy "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath).\License.rtf"
+copy "$(SolutionDir)..\extern\LibG\*" "$(OutputPath)\dll\"
 
 copy "$(SolutionDir)..\tools\install\extra\InstallASMForDynamo.exe" "$(OutputPath)\InstallASMForDynamo.exe"
 IF NOT EXIST "$(OutputPath)\dll" "$(OutputPath)\InstallASMForDynamo.exe" /SILENT /SUPPRESSMSGBOXES

@@ -39,8 +39,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes.cs" />
+    <Compile Include="DisposeLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TraceSupport.cs" />
+    <Compile Include="Validity.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

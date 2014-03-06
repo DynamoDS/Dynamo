@@ -1,1 +1,1 @@
-start python ..\..\src\DynamoTestFramework\RunRevitTests.py -i DSRevitNodesTests.xml -r DSRevitNodesTestsResults.xml -f AxonometricViewTests
+start python ..\..\DynamoTestFramework\RunRevitTests.py -i DSRevitNodesTests.xml -r DSRevitNodesTestsResults.xml -f AxonometricViewTests

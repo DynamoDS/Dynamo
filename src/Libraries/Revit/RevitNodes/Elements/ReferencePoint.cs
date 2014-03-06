@@ -186,7 +186,6 @@ namespace Revit.Elements
 
         private void InternalSetReferencePoint(Autodesk.Revit.DB.ReferencePoint p)
         {
-
             InternalReferencePoint = p;
             this.InternalElementId = InternalReferencePoint.Id;
             this.InternalUniqueId = InternalReferencePoint.UniqueId;

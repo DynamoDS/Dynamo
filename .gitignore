@@ -56,13 +56,12 @@ Thumbs.db
 
 #documentation files
 doc/html/
-<<<<<<< HEAD
 Dynamo.sln.DotSettings
 *.opensdf
 *.sdf
 *.backup
 
 #ASM
-extern/LibG/
 extern/DynamoASM/
+extern/ASM/
 

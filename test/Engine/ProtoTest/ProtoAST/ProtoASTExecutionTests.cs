@@ -25,7 +25,7 @@ namespace ProtoTest.ProtoAST
             // Build the AST trees
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
             astList.Add(assign);
@@ -43,8 +43,8 @@ namespace ProtoTest.ProtoAST
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
                 new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                    new ProtoCore.AST.AssociativeAST.IntNode("10"),
-                    new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                    new ProtoCore.AST.AssociativeAST.IntNode(10),
+                    new ProtoCore.AST.AssociativeAST.IntNode(20),
                     ProtoCore.DSASM.Operator.add),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
@@ -63,7 +63,7 @@ namespace ProtoTest.ProtoAST
             /*b = 20;*/
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                new ProtoCore.AST.AssociativeAST.IntNode(20),
                 ProtoCore.DSASM.Operator.assign);
             /*a = (b + 50)*(b + 20)*/
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
@@ -71,11 +71,11 @@ namespace ProtoTest.ProtoAST
                 new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                     new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                         new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                        new ProtoCore.AST.AssociativeAST.IntNode("50"),
+                        new ProtoCore.AST.AssociativeAST.IntNode(50),
                         ProtoCore.DSASM.Operator.add),
                     new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                         new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                        new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                        new ProtoCore.AST.AssociativeAST.IntNode(20),
                         ProtoCore.DSASM.Operator.add),
                     ProtoCore.DSASM.Operator.mul),
                 ProtoCore.DSASM.Operator.assign);
@@ -84,7 +84,7 @@ namespace ProtoTest.ProtoAST
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("c"),
                 new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                     new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                    new ProtoCore.AST.AssociativeAST.IntNode("200"),
+                    new ProtoCore.AST.AssociativeAST.IntNode(200),
                     ProtoCore.DSASM.Operator.sub),
                 ProtoCore.DSASM.Operator.assign);
             /*d = b*/
@@ -116,7 +116,7 @@ namespace ProtoTest.ProtoAST
             /*b = 30*/
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode nodeB = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("30"),
+                new ProtoCore.AST.AssociativeAST.IntNode(30),
                 ProtoCore.DSASM.Operator.assign);
             /*a = (b - 10) * 20 + (b + 10) * (b - 20) */
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assignment =
@@ -126,18 +126,18 @@ namespace ProtoTest.ProtoAST
                         new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                             new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                                new ProtoCore.AST.AssociativeAST.IntNode(10),
                                 ProtoCore.DSASM.Operator.sub),
-                            new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                            new ProtoCore.AST.AssociativeAST.IntNode(20),
                             ProtoCore.DSASM.Operator.mul),
                         new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                             new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                                new ProtoCore.AST.AssociativeAST.IntNode(10),
                                 ProtoCore.DSASM.Operator.add),
                             new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                                new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                                new ProtoCore.AST.AssociativeAST.IntNode(20),
                                 ProtoCore.DSASM.Operator.sub),
                             ProtoCore.DSASM.Operator.mul),
                         ProtoCore.DSASM.Operator.add),
@@ -152,7 +152,7 @@ namespace ProtoTest.ProtoAST
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
                 new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                     new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                    new ProtoCore.AST.AssociativeAST.IntNode("1000"),
+                    new ProtoCore.AST.AssociativeAST.IntNode(1000),
                     ProtoCore.DSASM.Operator.add),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
@@ -175,14 +175,14 @@ namespace ProtoTest.ProtoAST
             /*b = 30*/
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode nodeB = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("30"),
+                new ProtoCore.AST.AssociativeAST.IntNode(30),
                 ProtoCore.DSASM.Operator.assign);
             /*c = b + 30*/
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode nodeC = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("c"),
                 new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                     new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                    new ProtoCore.AST.AssociativeAST.IntNode("30"),
+                    new ProtoCore.AST.AssociativeAST.IntNode(30),
                     ProtoCore.DSASM.Operator.add),
                 ProtoCore.DSASM.Operator.assign);
             /*a = (b + 20) - (c - 10) + c*5 */
@@ -192,16 +192,16 @@ namespace ProtoTest.ProtoAST
                     new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                         new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                             new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                            new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                            new ProtoCore.AST.AssociativeAST.IntNode(20),
                             ProtoCore.DSASM.Operator.add),
                         new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                             new ProtoCore.AST.AssociativeAST.IdentifierNode("c"),
-                            new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                            new ProtoCore.AST.AssociativeAST.IntNode(10),
                             ProtoCore.DSASM.Operator.sub),
                         ProtoCore.DSASM.Operator.sub),
                     new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                         new ProtoCore.AST.AssociativeAST.IdentifierNode("c"),
-                        new ProtoCore.AST.AssociativeAST.IntNode("5"),
+                        new ProtoCore.AST.AssociativeAST.IntNode(5),
                         ProtoCore.DSASM.Operator.mul),
                     ProtoCore.DSASM.Operator.add),
                 ProtoCore.DSASM.Operator.assign);
@@ -229,11 +229,11 @@ namespace ProtoTest.ProtoAST
             // a[3] = 0;
             ProtoCore.AST.AssociativeAST.IdentifierNode nodeALHS = new ProtoCore.AST.AssociativeAST.IdentifierNode("a");
             nodeALHS.ArrayDimensions = new ProtoCore.AST.AssociativeAST.ArrayNode {
-                Expr = new ProtoCore.AST.AssociativeAST.IntNode("3")};
+                Expr = new ProtoCore.AST.AssociativeAST.IntNode(3)};
 
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode nodeALHSAssignment = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 nodeALHS,
-                new ProtoCore.AST.AssociativeAST.IntNode("0"),
+                new ProtoCore.AST.AssociativeAST.IntNode(0),
                 ProtoCore.DSASM.Operator.assign);
 
             astList.Add(nodeALHSAssignment);
@@ -263,7 +263,7 @@ namespace ProtoTest.ProtoAST
             // b = 2;
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode declareNodeB = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("2"),
+                new ProtoCore.AST.AssociativeAST.IntNode(2),
                 ProtoCore.DSASM.Operator.assign);
             astList.Add(declareNodeB);
 
@@ -305,14 +305,14 @@ namespace ProtoTest.ProtoAST
             // b = 3;
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode declareNodeB = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("3"),
+                new ProtoCore.AST.AssociativeAST.IntNode(3),
                 ProtoCore.DSASM.Operator.assign);
             astList.Add(declareNodeB);
 
             // a[b - 3] = 0;
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode operation1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("3"),
+                new ProtoCore.AST.AssociativeAST.IntNode(3),
                 ProtoCore.DSASM.Operator.sub);
 
             ProtoCore.AST.AssociativeAST.IdentifierNode nodeALHS = new ProtoCore.AST.AssociativeAST.IdentifierNode("a");
@@ -351,7 +351,7 @@ namespace ProtoTest.ProtoAST
             // b = 4;
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode declareNodeB = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("4"),
+                new ProtoCore.AST.AssociativeAST.IntNode(4),
                 ProtoCore.DSASM.Operator.assign);
             astList.Add(declareNodeB);
 
@@ -361,7 +361,7 @@ namespace ProtoTest.ProtoAST
             ProtoCore.AST.AssociativeAST.CodeBlockNode cbn = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode returnNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode(ProtoCore.DSDefinitions.Keyword.Return),
-                new ProtoCore.AST.AssociativeAST.IntNode("-2"),
+                new ProtoCore.AST.AssociativeAST.IntNode(-2),
                 ProtoCore.DSASM.Operator.assign);
             cbn.Body.Add(returnNode);
 
@@ -395,7 +395,7 @@ namespace ProtoTest.ProtoAST
 
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode nodeALHSAssignment = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 nodeALHS,
-                new ProtoCore.AST.AssociativeAST.IntNode("-1"),
+                new ProtoCore.AST.AssociativeAST.IntNode(-1),
                 ProtoCore.DSASM.Operator.assign);
 
             astList.Add(nodeALHSAssignment);
@@ -436,7 +436,7 @@ namespace ProtoTest.ProtoAST
             // b = 2;
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode declareNodeB = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("2"),
+                new ProtoCore.AST.AssociativeAST.IntNode(2),
                 ProtoCore.DSASM.Operator.assign);
             astList.Add(declareNodeB);
 
@@ -444,7 +444,7 @@ namespace ProtoTest.ProtoAST
             ProtoCore.AST.AssociativeAST.IdentifierNode nodeALHS = new ProtoCore.AST.AssociativeAST.IdentifierNode("a");
             nodeALHS.ArrayDimensions = new ProtoCore.AST.AssociativeAST.ArrayNode
             {
-                Expr = new ProtoCore.AST.AssociativeAST.IntNode("0"),
+                Expr = new ProtoCore.AST.AssociativeAST.IntNode(0),
                 Type = new ProtoCore.AST.AssociativeAST.ArrayNode
                 {
                     Expr = new ProtoCore.AST.AssociativeAST.IdentifierNode("b")
@@ -496,7 +496,7 @@ namespace ProtoTest.ProtoAST
             // b = a[2];
             ProtoCore.AST.AssociativeAST.IdentifierNode nodeALHS = new ProtoCore.AST.AssociativeAST.IdentifierNode("a");
             nodeALHS.ArrayDimensions = new ProtoCore.AST.AssociativeAST.ArrayNode {
-                Expr = new ProtoCore.AST.AssociativeAST.IntNode("2") };
+                Expr = new ProtoCore.AST.AssociativeAST.IntNode(2) };
 
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode nodeALHSAssignment = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
@@ -526,7 +526,7 @@ namespace ProtoTest.ProtoAST
             // b = 3;
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode declareNodeB = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("3"),
+                new ProtoCore.AST.AssociativeAST.IntNode(3),
                 ProtoCore.DSASM.Operator.assign);
             astList.Add(declareNodeB);
 
@@ -562,14 +562,14 @@ namespace ProtoTest.ProtoAST
             // b = -1;
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode declareNodeB = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("-1"),
+                new ProtoCore.AST.AssociativeAST.IntNode(-1),
                 ProtoCore.DSASM.Operator.assign);
             astList.Add(declareNodeB);
 
             // c = a[b + 3];
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode operation1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("3"),
+                new ProtoCore.AST.AssociativeAST.IntNode(3),
                 ProtoCore.DSASM.Operator.add);
 
             ProtoCore.AST.AssociativeAST.IdentifierNode nodeALHS = new ProtoCore.AST.AssociativeAST.IdentifierNode("a");
@@ -603,7 +603,7 @@ namespace ProtoTest.ProtoAST
             // b = 4;
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode declareNodeB = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("5"),
+                new ProtoCore.AST.AssociativeAST.IntNode(5),
                 ProtoCore.DSASM.Operator.assign);
             astList.Add(declareNodeB);
 
@@ -613,7 +613,7 @@ namespace ProtoTest.ProtoAST
             ProtoCore.AST.AssociativeAST.CodeBlockNode cbn = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode returnNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode(ProtoCore.DSDefinitions.Keyword.Return),
-                new ProtoCore.AST.AssociativeAST.IntNode("-4"),
+                new ProtoCore.AST.AssociativeAST.IntNode(-4),
                 ProtoCore.DSASM.Operator.assign);
             cbn.Body.Add(returnNode);
 
@@ -685,7 +685,7 @@ namespace ProtoTest.ProtoAST
             // b = 2;
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode declareNodeB = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("2"),
+                new ProtoCore.AST.AssociativeAST.IntNode(2),
                 ProtoCore.DSASM.Operator.assign);
             astList.Add(declareNodeB);
 
@@ -693,7 +693,7 @@ namespace ProtoTest.ProtoAST
             ProtoCore.AST.AssociativeAST.IdentifierNode nodeARHS = new ProtoCore.AST.AssociativeAST.IdentifierNode("a");
             nodeARHS.ArrayDimensions = new ProtoCore.AST.AssociativeAST.ArrayNode
             {
-                Expr = new ProtoCore.AST.AssociativeAST.IntNode("1"),
+                Expr = new ProtoCore.AST.AssociativeAST.IntNode(1),
                 Type = new ProtoCore.AST.AssociativeAST.ArrayNode
                 {
                     Expr = new ProtoCore.AST.AssociativeAST.IdentifierNode("b")
@@ -731,7 +731,7 @@ namespace ProtoTest.ProtoAST
         {
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> listIntNode = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
             for (int i = 0; i < intList.Length; i++)
-                listIntNode.Add(new ProtoCore.AST.AssociativeAST.IntNode(intList[i].ToString()));
+                listIntNode.Add(new ProtoCore.AST.AssociativeAST.IntNode(intList[i]));
 
             ProtoCore.AST.AssociativeAST.ExprListNode expr = new ProtoCore.AST.AssociativeAST.ExprListNode { list = listIntNode };
 
@@ -757,11 +757,11 @@ namespace ProtoTest.ProtoAST
             // Build the function body
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assignment1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode returnExpr = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.add);
 
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode returnNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
@@ -822,7 +822,7 @@ namespace ProtoTest.ProtoAST
             // Build the function body
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assignment1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode returnExpr = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
@@ -877,7 +877,7 @@ namespace ProtoTest.ProtoAST
             // Function call
             // Function args
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> args = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            args.Add(new ProtoCore.AST.AssociativeAST.IntNode("1"));
+            args.Add(new ProtoCore.AST.AssociativeAST.IntNode(1));
             functionCall.FormalArguments = args;
 
             // Call the function
@@ -973,8 +973,8 @@ namespace ProtoTest.ProtoAST
             // Function call
             // Function args
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> args = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            args.Add(new ProtoCore.AST.AssociativeAST.IntNode("2"));
-            args.Add(new ProtoCore.AST.AssociativeAST.IntNode("3"));
+            args.Add(new ProtoCore.AST.AssociativeAST.IntNode(2));
+            args.Add(new ProtoCore.AST.AssociativeAST.IntNode(3));
             functionCall.FormalArguments = args;
 
             // Call the function
@@ -1050,7 +1050,7 @@ namespace ProtoTest.ProtoAST
 
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode stmtPropertySet = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 identListPropertySet,
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
 
             astList.Add(stmtPropertySet);
@@ -1097,11 +1097,11 @@ namespace ProtoTest.ProtoAST
             // Build the function body
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assignment1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode returnExpr = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.add);
 
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode returnNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
@@ -1195,7 +1195,7 @@ namespace ProtoTest.ProtoAST
             // Build the AST trees
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
             astList.Add(assign);
@@ -1216,8 +1216,8 @@ namespace ProtoTest.ProtoAST
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
                 new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
-                    new ProtoCore.AST.AssociativeAST.IntNode("10"),
-                    new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                    new ProtoCore.AST.AssociativeAST.IntNode(10),
+                    new ProtoCore.AST.AssociativeAST.IntNode(20),
                     ProtoCore.DSASM.Operator.add),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
@@ -1239,7 +1239,7 @@ namespace ProtoTest.ProtoAST
             /*b = 20;*/
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign2 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                new ProtoCore.AST.AssociativeAST.IntNode(20),
                 ProtoCore.DSASM.Operator.assign);
             /*a = (b + 50)*(b + 20)*/
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
@@ -1247,11 +1247,11 @@ namespace ProtoTest.ProtoAST
                 new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                     new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                         new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                        new ProtoCore.AST.AssociativeAST.IntNode("50"),
+                        new ProtoCore.AST.AssociativeAST.IntNode(50),
                         ProtoCore.DSASM.Operator.add),
                     new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                         new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                        new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                        new ProtoCore.AST.AssociativeAST.IntNode(20),
                         ProtoCore.DSASM.Operator.add),
                     ProtoCore.DSASM.Operator.mul),
                 ProtoCore.DSASM.Operator.assign);
@@ -1260,7 +1260,7 @@ namespace ProtoTest.ProtoAST
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("c"),
                 new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                     new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                    new ProtoCore.AST.AssociativeAST.IntNode("200"),
+                    new ProtoCore.AST.AssociativeAST.IntNode(200),
                     ProtoCore.DSASM.Operator.sub),
                 ProtoCore.DSASM.Operator.assign);
             /*d = b*/
@@ -1295,7 +1295,7 @@ namespace ProtoTest.ProtoAST
             /*b = 30*/
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode nodeB = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("30"),
+                new ProtoCore.AST.AssociativeAST.IntNode(30),
                 ProtoCore.DSASM.Operator.assign);
 
             /*a = (b - 10) * 20 + (b + 10) * (b - 20) */
@@ -1306,18 +1306,18 @@ namespace ProtoTest.ProtoAST
                         new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                             new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                                new ProtoCore.AST.AssociativeAST.IntNode(10),
                                 ProtoCore.DSASM.Operator.sub),
-                            new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                            new ProtoCore.AST.AssociativeAST.IntNode(20),
                             ProtoCore.DSASM.Operator.mul),
                         new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                             new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                                new ProtoCore.AST.AssociativeAST.IntNode(10),
                                 ProtoCore.DSASM.Operator.add),
                             new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                                new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                                new ProtoCore.AST.AssociativeAST.IntNode(20),
                                 ProtoCore.DSASM.Operator.sub),
                             ProtoCore.DSASM.Operator.mul),
                         ProtoCore.DSASM.Operator.add),
@@ -1332,7 +1332,7 @@ namespace ProtoTest.ProtoAST
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
                 new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                     new ProtoCore.AST.AssociativeAST.IdentifierNode("a"),
-                    new ProtoCore.AST.AssociativeAST.IntNode("1000"),
+                    new ProtoCore.AST.AssociativeAST.IntNode(1000),
                     ProtoCore.DSASM.Operator.add),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
@@ -1358,14 +1358,14 @@ namespace ProtoTest.ProtoAST
             /*b = 30*/
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode nodeB = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("30"),
+                new ProtoCore.AST.AssociativeAST.IntNode(30),
                 ProtoCore.DSASM.Operator.assign);
             /*c = b + 30*/
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode nodeC = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("c"),
                 new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                     new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                    new ProtoCore.AST.AssociativeAST.IntNode("30"),
+                    new ProtoCore.AST.AssociativeAST.IntNode(30),
                     ProtoCore.DSASM.Operator.add),
                 ProtoCore.DSASM.Operator.assign);
             /*a = (b + 20) - (c - 10) + c*5 */
@@ -1375,16 +1375,16 @@ namespace ProtoTest.ProtoAST
                     new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                         new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                             new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                            new ProtoCore.AST.AssociativeAST.IntNode("20"),
+                            new ProtoCore.AST.AssociativeAST.IntNode(20),
                             ProtoCore.DSASM.Operator.add),
                         new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                             new ProtoCore.AST.AssociativeAST.IdentifierNode("c"),
-                            new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                            new ProtoCore.AST.AssociativeAST.IntNode(10),
                             ProtoCore.DSASM.Operator.sub),
                         ProtoCore.DSASM.Operator.sub),
                     new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                         new ProtoCore.AST.AssociativeAST.IdentifierNode("c"),
-                        new ProtoCore.AST.AssociativeAST.IntNode("5"),
+                        new ProtoCore.AST.AssociativeAST.IntNode(5),
                         ProtoCore.DSASM.Operator.mul),
                     ProtoCore.DSASM.Operator.add),
                 ProtoCore.DSASM.Operator.assign);
@@ -1407,11 +1407,11 @@ namespace ProtoTest.ProtoAST
             ProtoCore.AST.AssociativeAST.CodeBlockNode cbn = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assignment1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode returnExpr = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.add);
             ProtoCore.AST.AssociativeAST.ReturnNode returnNode = new ProtoCore.AST.AssociativeAST.ReturnNode();
             returnNode.ReturnExpr = returnExpr;
@@ -1482,7 +1482,7 @@ namespace ProtoTest.ProtoAST
 
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode stmtPropertySet = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 identListPropertySet,
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
 
             astList.Add(stmtPropertySet);
@@ -1533,11 +1533,11 @@ namespace ProtoTest.ProtoAST
             // Build the function body
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assignment1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode returnExpr = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.AssociativeAST.IntNode("10"),
+                new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.add);
 
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode returnNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
@@ -1644,7 +1644,7 @@ namespace ProtoTest.ProtoAST
             // return = 10
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode imperativeAssign = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.ImperativeAST.IdentifierNode("return"),
-                new ProtoCore.AST.ImperativeAST.IntNode("10"),
+                new ProtoCore.AST.ImperativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             imperativeList.Add(imperativeAssign);
 
@@ -1697,14 +1697,14 @@ namespace ProtoTest.ProtoAST
             // b = 10
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode imperativeAssign = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.ImperativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.ImperativeAST.IntNode("10"),
+                new ProtoCore.AST.ImperativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             imperativeList.Add(imperativeAssign);
 
             // if (b == 10)
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode equality = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.ImperativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.ImperativeAST.IntNode("10"),
+                new ProtoCore.AST.ImperativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.eq);
 
             ProtoCore.AST.ImperativeAST.IfStmtNode ifNode = new ProtoCore.AST.ImperativeAST.IfStmtNode();
@@ -1713,7 +1713,7 @@ namespace ProtoTest.ProtoAST
             // b = 11
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode ifCodeBlockStmt = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.ImperativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.ImperativeAST.IntNode("11"),
+                new ProtoCore.AST.ImperativeAST.IntNode(11),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.ImperativeAST.ImperativeNode> ifCodeBlock = new List<ProtoCore.AST.ImperativeAST.ImperativeNode>();
             ifCodeBlock.Add(ifCodeBlockStmt);
@@ -1781,14 +1781,14 @@ namespace ProtoTest.ProtoAST
             // b = 10
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode imperativeAssign = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.ImperativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.ImperativeAST.IntNode("10"),
+                new ProtoCore.AST.ImperativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             imperativeList.Add(imperativeAssign);
 
             // if (b > 10)
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode equality = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.ImperativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.ImperativeAST.IntNode("10"),
+                new ProtoCore.AST.ImperativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.gt);
 
             ProtoCore.AST.ImperativeAST.IfStmtNode ifNode = new ProtoCore.AST.ImperativeAST.IfStmtNode();
@@ -1798,7 +1798,7 @@ namespace ProtoTest.ProtoAST
             // b = 11
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode ifCodeBlockStmt = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.ImperativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.ImperativeAST.IntNode("11"),
+                new ProtoCore.AST.ImperativeAST.IntNode(11),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.ImperativeAST.ImperativeNode> ifCodeBlock = new List<ProtoCore.AST.ImperativeAST.ImperativeNode>();
             ifCodeBlock.Add(ifCodeBlockStmt);
@@ -1808,7 +1808,7 @@ namespace ProtoTest.ProtoAST
             // b = 12
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode elseCodeBlockStmt = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.ImperativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.ImperativeAST.IntNode("12"),
+                new ProtoCore.AST.ImperativeAST.IntNode(12),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.ImperativeAST.ImperativeNode> elseCodeBlock = new List<ProtoCore.AST.ImperativeAST.ImperativeNode>();
             elseCodeBlock.Add(elseCodeBlockStmt);
@@ -1867,7 +1867,7 @@ namespace ProtoTest.ProtoAST
             // return = 10
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode imperativeAssign = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.ImperativeAST.IdentifierNode("return"),
-                new ProtoCore.AST.ImperativeAST.IntNode("10"),
+                new ProtoCore.AST.ImperativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             imperativeList.Add(imperativeAssign);
 
@@ -1917,14 +1917,14 @@ namespace ProtoTest.ProtoAST
             // b = 10
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode imperativeAssign = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.ImperativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.ImperativeAST.IntNode("10"),
+                new ProtoCore.AST.ImperativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             imperativeList.Add(imperativeAssign);
 
             // if (b == 10)
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode equality = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.ImperativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.ImperativeAST.IntNode("10"),
+                new ProtoCore.AST.ImperativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.eq);
 
             ProtoCore.AST.ImperativeAST.IfStmtNode ifNode = new ProtoCore.AST.ImperativeAST.IfStmtNode();
@@ -1933,7 +1933,7 @@ namespace ProtoTest.ProtoAST
             // b = 11
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode ifCodeBlockStmt = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.ImperativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.ImperativeAST.IntNode("11"),
+                new ProtoCore.AST.ImperativeAST.IntNode(11),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.ImperativeAST.ImperativeNode> ifCodeBlock = new List<ProtoCore.AST.ImperativeAST.ImperativeNode>();
             ifCodeBlock.Add(ifCodeBlockStmt);
@@ -1998,14 +1998,14 @@ namespace ProtoTest.ProtoAST
             // b = 10
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode imperativeAssign = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.ImperativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.ImperativeAST.IntNode("10"),
+                new ProtoCore.AST.ImperativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.assign);
             imperativeList.Add(imperativeAssign);
 
             // if (b > 10)
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode equality = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.ImperativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.ImperativeAST.IntNode("10"),
+                new ProtoCore.AST.ImperativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.gt);
 
             ProtoCore.AST.ImperativeAST.IfStmtNode ifNode = new ProtoCore.AST.ImperativeAST.IfStmtNode();
@@ -2015,7 +2015,7 @@ namespace ProtoTest.ProtoAST
             // b = 11
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode ifCodeBlockStmt = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.ImperativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.ImperativeAST.IntNode("11"),
+                new ProtoCore.AST.ImperativeAST.IntNode(11),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.ImperativeAST.ImperativeNode> ifCodeBlock = new List<ProtoCore.AST.ImperativeAST.ImperativeNode>();
             ifCodeBlock.Add(ifCodeBlockStmt);
@@ -2025,7 +2025,7 @@ namespace ProtoTest.ProtoAST
             // b = 12
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode elseCodeBlockStmt = new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                 new ProtoCore.AST.ImperativeAST.IdentifierNode("b"),
-                new ProtoCore.AST.ImperativeAST.IntNode("12"),
+                new ProtoCore.AST.ImperativeAST.IntNode(12),
                 ProtoCore.DSASM.Operator.assign);
             List<ProtoCore.AST.ImperativeAST.ImperativeNode> elseCodeBlock = new List<ProtoCore.AST.ImperativeAST.ImperativeNode>();
             elseCodeBlock.Add(elseCodeBlockStmt);

@@ -37,7 +37,7 @@ namespace Revit.AnalysisDisplay
             // we can rebind as we're dealing with the same view
             if (sfmAndId != null && sfmAndId.Item1.Id == sfm.Id)
             {
-                InternalSetSpatialFieldManager(sfmAndId.Item1);
+                InternalSetSpatialFieldManager(sfm);
                 InternalSetPrimitiveId(sfmAndId.Item2);
                 InternalSetSpatialFieldValues(sampleLocations, samples);
                 return;
@@ -52,9 +52,7 @@ namespace Revit.AnalysisDisplay
                 oldSfm.RemoveSpatialFieldPrimitive(oldId);
             }
 
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
-
-            InternalSetSpatialFieldManager(SpatialFieldManager);
+            InternalSetSpatialFieldManager(sfm);
 
             var primitiveId = SpatialFieldManager.AddSpatialFieldPrimitive();
 

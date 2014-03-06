@@ -70,7 +70,7 @@ namespace Revit.GeometryObjects
         /// <param name="curve"></param>
         /// <param name="face"></param>
         /// <returns>A list of DSCurveFaceIntersectionResult</returns>
-        public static List<CurveFaceIntersectionResult> CurveFace(Autodesk.DesignScript.Geometry.Curve curve, Revit.GeometryObjects.Face face)
+        public static CurveFaceIntersectionResult[] CurveFace(Autodesk.DesignScript.Geometry.Curve curve, Revit.GeometryObjects.Face face)
         {
             if (curve == null)
             {
@@ -117,7 +117,7 @@ namespace Revit.GeometryObjects
                 }
             }
 
-            return intersections;
+            return intersections.ToArray();
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace Revit.GeometryObjects
         /// <param name="face1"></param>
         /// <param name="face2"></param>
         /// <returns>A list of curves or an empty list if there is no intersection</returns>
-        public static List<Autodesk.DesignScript.Geometry.Curve> FaceFace( Revit.GeometryObjects.Face face1, Revit.GeometryObjects.Face face2 )
+        public static Autodesk.DesignScript.Geometry.Curve[] FaceFace(Revit.GeometryObjects.Face face1, Revit.GeometryObjects.Face face2)
         {
             if (face1 == null)
             {
@@ -146,10 +146,10 @@ namespace Revit.GeometryObjects
 
             if (rez == FaceIntersectionFaceResult.Intersecting)
             {
-                return new List<Autodesk.DesignScript.Geometry.Curve>(){curve.ToProtoType()};
+                return new []{curve.ToProtoType()};
             }
 
-            return new List<Autodesk.DesignScript.Geometry.Curve>();
+            return new Autodesk.DesignScript.Geometry.Curve[]{};
         }
     }
 }
