@@ -340,7 +340,7 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll", 
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll", 
                 "Form.ByLoftingCurveReferences", 
                 "Form.ByLoftingCurveReferences@CurveReference[],bool");
 
@@ -400,7 +400,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByRevolve", "Solid.ByRevolve@Curve[],CoordinateSystem,double,double");
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByRevolve", "Solid.ByRevolve@Curve[],CoordinateSystem,double,double");
         }
     }
 
@@ -593,7 +593,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByExtrusion", "Solid.ByExtrusion@Curve[],Vector,double");
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByExtrusion", "Solid.ByExtrusion@Curve[],Vector,double");
         }
     }
 
@@ -644,7 +644,7 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll",
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll",
                 "Solid.ByBlend", "Solid.ByBlend@Curve[][]");
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
@@ -901,7 +901,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByBooleanDifference",
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByBooleanDifference",
                 "Solid.ByBooleanDifference@Solid,Solid");
         }
     }
@@ -936,7 +936,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByBooleanUnion",
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByBooleanUnion",
                 "Solid.ByBooleanUnion@Solid,Solid");
         }
     }
@@ -971,7 +971,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByBooleanIntersection",
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByBooleanIntersection",
                 "Solid.ByBooleanIntersection@Solid,Solid");
         }
     }
@@ -1097,7 +1097,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "Solid.FromElement", "Solid.FromElement@AbstractElement");
         }
     }
@@ -1163,7 +1163,7 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll",
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll",
                 "Solid.Cylinder", "Solid.Cylinder@Point,double,Vector,double");
 
             migratedData.AppendNode(dsRevitNode);
@@ -1245,7 +1245,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.Sphere", "Solid.Sphere@Point,double");
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.Sphere", "Solid.Sphere@Point,double");
         }
     }
 
@@ -1314,7 +1314,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.Torus", "Solid.Torus@Vector,Point,double,double");
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.Torus", "Solid.Torus@Vector,Point,double,double");
         }
     }
 
@@ -1390,7 +1390,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.BoxByTwoCorners",
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.BoxByTwoCorners",
                 "Solid.BoxByTwoCorners@Point,Point");
         }
     }
@@ -1437,7 +1437,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.BoxByCenterAndDimensions",
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.BoxByCenterAndDimensions",
                 "Solid.BoxByCenterAndDimensions@Point,double,double,double");
         }
     }
