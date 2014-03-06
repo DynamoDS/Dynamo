@@ -209,6 +209,28 @@ namespace Dynamo.Search
         }
 
         /// <summary>
+        /// Check if key matches with query string. The query string could
+        /// contains multiple sub query strings which are seperated with 
+        /// space character. The function returns true if the key sequentially
+        /// matches with each sub query strings. E.g., 
+        /// "Autodesk.Geometry.Point.ByCoordinate" matches with query string
+        /// "geometry point by".
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        private bool MatchWithQuerystring(string key, string query)
+        {
+            string sanitizedQuery = query.Trim()
+                                         .Replace("\\", "\\\\")
+                                         .Replace(".", "\\.")
+                                         .Replace("*", "\\*");
+            string[] subPatterns = sanitizedQuery.Split(null);
+            string pattern = "(.*)" + String.Join("(.*)", subPatterns) + "(.*)";
+            return Regex.IsMatch(key, pattern, RegexOptions.IgnoreCase);
+        }
+
+        /// <summary>
         ///     Search for elements in the dictionary based on the query
         /// </summary>
         /// <param name="query"> The query </param>
@@ -219,7 +241,8 @@ namespace Dynamo.Search
 
             foreach (var pair in _tagDictionary)
             {
-                if (pair.Key.ToLower().Contains(query.ToLower()))
+                // if (pair.Key.ToLower().Contains(query.ToLower()))
+                if (MatchWithQuerystring(pair.Key, query))
                 {
                     // it has a match, how close is it to matching the entire string?
                     double matchCloseness = ((double) query.Length) / pair.Key.Length;

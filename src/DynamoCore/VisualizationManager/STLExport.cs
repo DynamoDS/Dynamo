@@ -17,7 +17,7 @@ namespace Dynamo
 
             using (TextWriter tw = new StreamWriter(path))
             {
-                tw.WriteLine("solid {0}", modelName);
+                tw.WriteLine(string.Format("solid {0}", modelName));
 
                 foreach (var mesh in meshes)
                 {
@@ -29,17 +29,17 @@ namespace Dynamo
 
                         var n1 = mesh.Normals[mesh.TriangleIndices[i]];
 
-                        tw.WriteLine("\tfacet normal {0} {1} {2}", n1.X, n1.Y, n1.Z);
+                        tw.WriteLine(string.Format("\tfacet normal {0} {1} {2}", n1.X, n1.Y, n1.Z));
                         tw.WriteLine("\t\touter loop");
-                        tw.WriteLine("\t\t\tvertex {0} {1} {2}", a.X, a.Y, a.Z);
-                        tw.WriteLine("\t\t\tvertex {0} {1} {2}", b.X, b.Y, b.Z);
-                        tw.WriteLine("\t\t\tvertex {0} {1} {2}", c.X, c.Y, c.Z);
+                        tw.WriteLine(string.Format("\t\t\tvertex {0} {1} {2}", a.X, a.Y, a.Z));
+                        tw.WriteLine(string.Format("\t\t\tvertex {0} {1} {2}", b.X, b.Y, b.Z));
+                        tw.WriteLine(string.Format("\t\t\tvertex {0} {1} {2}", c.X, c.Y, c.Z));
                         tw.WriteLine("\t\tendloop");
                         tw.WriteLine("\tendfacet");
                     }
                 }
 
-                tw.WriteLine("endsolid {0}", modelName);
+                tw.WriteLine(string.Format("endsolid {0}", modelName));
             }
         }
     }

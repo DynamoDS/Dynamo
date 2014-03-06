@@ -716,7 +716,7 @@ namespace Dynamo.ViewModels
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
-                        _workspaces.Add(new WorkspaceViewModel(item as WorkspaceModel));
+                        _workspaces.Add(new WorkspaceViewModel(item as WorkspaceModel, this));
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
@@ -884,10 +884,10 @@ namespace Dynamo.ViewModels
             vm.OnZoomChanged(this, new ZoomEventArgs(newWs.Zoom));
         }
 
-        public virtual CustomNodeInstance CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs,
+        public virtual Function CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs,
                                                      CustomNodeDefinition customNodeDefinition)
         {
-            return new CustomNodeInstance(customNodeDefinition);
+            return new Function(inputs, outputs, customNodeDefinition);
         }
 
         /// <summary>
@@ -1298,7 +1298,7 @@ namespace Dynamo.ViewModels
 
         public void Pan(object parameter)
         {
-            Debug.WriteLine("Offset: {0},{1}, Zoom: {2}", _model.CurrentWorkspace.X, _model.CurrentWorkspace.Y, _model.CurrentWorkspace.Zoom);
+            Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", _model.CurrentWorkspace.X, _model.CurrentWorkspace.Y, _model.CurrentWorkspace.Zoom));
             var panType = parameter.ToString();
             double pan = 10;
             var pt = new Point(_model.CurrentWorkspace.X, _model.CurrentWorkspace.Y);

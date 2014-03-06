@@ -40,6 +40,7 @@ wrapper = WrapperObject.WrapperObject(x);
 
 x = 2;
 x = 3;
+wrapper = null;
 ");
 
 Assert.IsTrue(WrappersTest.CleanedObjects.Count == 1);

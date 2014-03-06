@@ -146,6 +146,18 @@ namespace Revit.Elements.Views
             if (element == null)
                 throw new ArgumentNullException("element");
 
+            if (eyePoint == null)
+                throw new ArgumentNullException("eyePoint");
+
+            if (target == null)
+                throw new ArgumentNullException("target");
+
+            if (element == null)
+                throw new ArgumentNullException("element");
+
+            if (name == null)
+                throw new ArgumentNullException("name");
+
             AbstractElement abstractElement = element as AbstractElement;
             if (abstractElement != null)
             {
@@ -176,12 +188,27 @@ namespace Revit.Elements.Views
         /// <param name="name"></param>
         /// <param name="isolateElement"></param>
         /// <returns></returns>
-        public static AxonometricView ByEyePointTargetAndElement(Autodesk.DesignScript.Geometry.Point eyePoint, Autodesk.DesignScript.Geometry.Point target, AbstractElement element, string name, bool isolateElement)
+        public static AxonometricView ByEyePointTargetAndElement(
+            Autodesk.DesignScript.Geometry.Point eyePoint, 
+            Autodesk.DesignScript.Geometry.Point target, 
+            AbstractElement element, 
+            string name, bool isolateElement)
         {
             if (element == null)
-            {
                 throw new ArgumentNullException("element");
-            }
+
+            if (eyePoint == null)
+                throw new ArgumentNullException("eyePoint");
+
+            if (target == null)
+                throw new ArgumentNullException("target");
+
+            if (element == null)
+                throw new ArgumentNullException("element");
+
+            if (name == null)
+                throw new ArgumentNullException("name");
+
 
             return new AxonometricView(eyePoint.ToXyz(), target.ToXyz(), element.InternalElement, name, isolateElement);
         }
@@ -201,6 +228,15 @@ namespace Revit.Elements.Views
             {
                 throw new ArgumentNullException("boundingBox");
             }
+
+            if (eyePoint == null)
+                throw new ArgumentNullException("eyePoint");
+
+            if (target == null)
+                throw new ArgumentNullException("target");
+
+            if (name == null)
+                throw new ArgumentNullException("name");
 
             return new AxonometricView(eyePoint.ToXyz(), target.ToXyz(), boundingBox.InternalBoundingBoxXyz, name, isolateElement);
         }

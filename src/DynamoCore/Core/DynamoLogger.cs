@@ -97,7 +97,7 @@ namespace Dynamo
                         try
                         {
                             ConsoleWriter.AppendLine(string.Format("{0}", message));
-                            FileWriter.WriteLine("{0} : {1}", DateTime.Now, message);
+                            FileWriter.WriteLine(string.Format("{0} : {1}", DateTime.Now, message));
                             FileWriter.Flush();
                             RaisePropertyChanged("ConsoleWriter");
                         }
@@ -114,7 +114,7 @@ namespace Dynamo
                     {
                         try
                         {
-                            FileWriter.WriteLine("{0} : {1}", DateTime.Now, message);
+                            FileWriter.WriteLine(string.Format("{0} : {1}", DateTime.Now, message));
                             FileWriter.Flush();
                         }
                         catch

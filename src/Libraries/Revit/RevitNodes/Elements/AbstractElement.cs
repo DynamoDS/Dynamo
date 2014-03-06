@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
+using DSNodeServices;
 using Revit.GeometryObjects;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
@@ -94,10 +96,22 @@ namespace Revit.Elements
             get;
         }
 
+
+        private ElementId internalId;
         /// <summary>
         /// The element id for this element
         /// </summary>
-        protected ElementId InternalElementId;
+        protected ElementId InternalElementId
+        {
+            get { return internalId; }
+            set { 
+                internalId = value;
+
+                var elementManager = ElementIDLifecycleManager<int>.GetInstance();
+                elementManager.RegisterAsssociation(this.Id, this);
+
+            }
+        }
 
         /// <summary>
         /// The unique id for this element
@@ -110,11 +124,27 @@ namespace Revit.Elements
         /// </summary>
         public virtual void Dispose()
         {
+
+            // Do not cleanup Revit elements if we are shutting down Dynamo.
+            if (DisposeLogic.IsShuttingDown)
+                return;
+
+            var elementManager = ElementIDLifecycleManager<int>.GetInstance();
+            int remainingBindings = elementManager.UnRegisterAssociation(this.Id, this);
+
             // Do not delete Revit owned elements
-            if (!IsRevitOwned)
+            if (!IsRevitOwned && remainingBindings == 0)
             {
                 DocumentManager.GetInstance().DeleteElement(this.InternalElementId);
             }
+            else
+            {
+                //This element has gone
+                //but there was something else holding onto the Revit object so don't purge it
+
+                internalId = null;
+            }
+
         }
 
         /// <summary>
@@ -125,6 +155,92 @@ namespace Revit.Elements
         {
             return InternalElement.ToString();
         }
+
+        #region Internal Geometry Helpers
+
+        protected IEnumerable<Autodesk.Revit.DB.Curve> GetCurves(Autodesk.Revit.DB.Options options)
+        {
+            var geomElem = this.InternalElement.get_Geometry(options);
+            var curves = new CurveArray();
+            GetCurves(geomElem, ref curves);
+
+            return curves.Cast<Autodesk.Revit.DB.Curve>();
+
+        }
+
+        protected IEnumerable<Autodesk.Revit.DB.Face> GetFaces(Autodesk.Revit.DB.Options options)
+        {
+            var geomElem = this.InternalElement.get_Geometry(options);
+            var faces = new FaceArray();
+            GetFaces(geomElem, ref faces);
+
+            return faces.Cast<Autodesk.Revit.DB.Face>();
+
+        }
+
+        /// <summary>
+        /// Recursively traverse the GeometryElement obtained from this Element, collecting the Curves
+        /// </summary>
+        /// <param name="geomElem"></param>
+        /// <param name="curves"></param>
+        private void GetCurves(IEnumerable<GeometryObject> geomElem, ref CurveArray curves)
+        {
+            foreach (GeometryObject geomObj in geomElem)
+            {
+                var curve = geomObj as Autodesk.Revit.DB.Curve;
+                if (null != curve)
+                {
+                    curves.Append(curve);
+                    continue;
+                }
+
+                //If this GeometryObject is Instance, call AddCurve
+                var geomInst = geomObj as GeometryInstance;
+                if (null != geomInst)
+                {
+                    var transformedGeomElem // curves transformed into project coords
+                        = geomInst.GetInstanceGeometry(geomInst.Transform.Inverse);
+                    GetCurves(transformedGeomElem, ref curves);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Recursively traverse the GeometryElement obtained from this Element, collecting the Curves
+        /// </summary>
+        /// <param name="geomElem"></param>
+        /// <param name="faces"></param>
+        private void GetFaces(IEnumerable<GeometryObject> geomElement, ref FaceArray faces)
+        {
+
+                foreach (GeometryObject geob in geomElement)
+                {
+                    if (geob is GeometryInstance)
+                    {
+                        GetFaces((geob as GeometryInstance).GetInstanceGeometry(), ref faces);
+                    }
+                    else if (geob is Autodesk.Revit.DB.Solid)
+                    {
+                        var mySolid = geob as Autodesk.Revit.DB.Solid;
+                        if (mySolid != null)
+                        {
+                            foreach (var f in mySolid.Faces.Cast<Autodesk.Revit.DB.Face>().ToList())
+                            {
+                                faces.Append(f);
+                            }
+                        }
+
+                    } else if (geob is Autodesk.Revit.DB.GeometryElement)
+                    {
+                        GetFaces(geob as GeometryElement, ref faces);
+                    }
+                }
+
+        }
+
+        #endregion
+
+
 
 
     }
