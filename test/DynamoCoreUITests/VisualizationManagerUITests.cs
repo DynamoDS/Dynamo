@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using Dynamo.Controls;
 using Dynamo.DSEngine;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -266,105 +268,84 @@ namespace Dynamo.Tests.UI
         [Test]
         public void VisualizationIsDeletedWhenNodeIsRemoved()
         {
-            //var model = dynSettings.Controller.DynamoModel;
-            //var viz = dynSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
 
-            //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
-            //model.Open(openPath);
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
+            model.Open(openPath);
 
-            //// check all the nodes and connectors are loaded
-            //Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
-            //Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
-            //// run the expression
-            //dynSettings.Controller.RunExpression(null);
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
 
-            //int pointCount, lineCount, meshCount, xCount, yCount, zCount;
-            //viz.GetRenderableCounts(
-            //    out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
+            Assert.AreEqual(6, BackgroundPreview.Points.Count);
 
-            //Assert.AreEqual(6, pointCount);
+            //delete a node and ensure that the renderables are cleaned up
+            var pointNode = model.Nodes.FirstOrDefault(x => x.GUID.ToString() == "0b472626-e18f-404a-bec4-d84ad7f33011");
+            var modelsToDelete = new List<ModelBase> {pointNode};
+            model.DeleteModelInternal(modelsToDelete);
 
-            ////delete a node and ensure that the renderables are cleaned up
-            //var pointNode = model.Nodes.FirstOrDefault(x => x is Point3DNode);
-            //List<ModelBase> modelsToDelete = new List<ModelBase>();
-            //modelsToDelete.Add(pointNode);
-            //model.DeleteModelInternal(modelsToDelete);
+            model.HomeSpace.HasUnsavedChanges = false;
 
-            //viz.GetRenderableCounts(
-            //    out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
-
-            //Assert.AreEqual(0, pointCount);
-
-            Assert.Inconclusive("Ian to finish after viz manager work.");
+            Assert.AreEqual(0, BackgroundPreview.Points.Count);
         }
 
         [Test]
         public void VisualizationsAreClearedWhenWorkspaceIsCleared()
         {
-            //var model = dynSettings.Controller.DynamoModel;
-            //var viz = dynSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
 
-            //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
-            //model.Open(openPath);
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
+            model.Open(openPath);
 
-            //// run the expression
-            //dynSettings.Controller.RunExpression(null);
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
 
-            ////ensure that we have some visualizations
-            //Assert.Greater(viz.Visualizations.Count, 0);
+            //ensure that we have some visualizations
+            Assert.Greater(BackgroundPreview.Points.Count, 0);
 
-            ////now clear the workspace
-            //model.Clear(null);
+            //now clear the workspace
+            model.Clear(null);
 
-            ////ensure that we have no visualizations
-            //Assert.AreEqual(0, viz.Visualizations.Count);
-
-            Assert.Inconclusive("Ian to finish after viz manager work.");
+            //ensure that we have no visualizations
+            Assert.AreEqual(0, BackgroundPreview.Points.Count);
         }
 
         [Test]
         public void VisualizationsAreCreatedForCustomNodes()
         {
-            //var model = dynSettings.Controller.DynamoModel;
-            //var viz = dynSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
 
-            //Assert.IsTrue(
-            //    Controller.CustomNodeManager.AddFileToPath(Path.Combine(GetTestDirectory(), @"core\visualization\Points.dyf"))
-            //    != null);
-            //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_customNode.dyn");
-            //model.Open(openPath);
+            Assert.IsTrue(
+                Controller.CustomNodeManager.AddFileToPath(Path.Combine(GetTestDirectory(), @"core\visualization\Points.dyf"))
+                != null);
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_customNode.dyn");
+            model.Open(openPath);
 
-            //// run the expression
-            //dynSettings.Controller.RunExpression(null);
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
 
-            ////ensure that we have some visualizations
-            //Assert.Greater(viz.Visualizations.Count, 0);
-
-            Assert.Inconclusive("Ian to finish after viz manager work.");
+            //ensure that we have some visualizations
+            Assert.Greater(BackgroundPreview.Points.Count, 0);
         }
 
         [Test]
         public void HonorsPreviewSaveState()
         {
-            //var model = dynSettings.Controller.DynamoModel;
-            //var viz = dynSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
-            //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points_line_noPreview.dyn");
-            //model.Open(openPath);
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points_line_noPreview.dyn");
+            model.Open(openPath);
 
-            //// run the expression
-            //dynSettings.Controller.RunExpression(null);
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
 
-            ////all nodes are set to not preview in the file
-            ////ensure that we have no visualizations
-            //int pointCount, lineCount, meshCount, xCount, yCount, zCount;
-            //viz.GetRenderableCounts(
-            //    out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
-
-            //Assert.AreEqual(0, lineCount);
-
-            Assert.Inconclusive("Ian to finish after viz manager work.");
+            //all nodes are set to not preview in the file
+            //ensure that we have no visualizations
+            Assert.AreEqual(0, BackgroundPreview.Lines.Count);
         }
 
         [Test]
