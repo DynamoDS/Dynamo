@@ -67,6 +67,25 @@ namespace DSCoreNodesUI
             nodeElement.SetAttribute("legacyNodeName", this.LegacyNodeName);
         }
 
+        #region SerializeCore/DeserializeCore
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+            this.SaveNode(element.OwnerDocument, element, context);
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            InPortData.Clear();  // In/out ports are going to be recreated in 
+            OutPortData.Clear(); // LoadNode, clear them so they don't accumulate.
+
+            base.DeserializeCore(element, context);
+            this.LoadNode(element);
+        }
+
+        #endregion
+
         private string GetDescription()
         {
             return string.Format(

@@ -884,10 +884,9 @@ namespace Dynamo.ViewModels
             vm.OnZoomChanged(this, new ZoomEventArgs(newWs.Zoom));
         }
 
-        public virtual Function CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs,
-                                                     CustomNodeDefinition customNodeDefinition)
+        public virtual Function CreateFunction(CustomNodeDefinition customNodeDefinition)
         {
-            return new Function(inputs, outputs, customNodeDefinition);
+            return new Function(customNodeDefinition);
         }
 
         /// <summary>

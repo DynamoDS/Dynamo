@@ -24,7 +24,7 @@
 
         public Node(Node rhs)
         {
-            ID = ++sID;
+            ID = rhs.ID;
             line = rhs.line;
             col = rhs.col;
             endLine = rhs.endLine;
