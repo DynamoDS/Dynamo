@@ -77,6 +77,9 @@ namespace DSCoreNodesUI
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
+            InPortData.Clear();  // In/out ports are going to be recreated in 
+            OutPortData.Clear(); // LoadNode, clear them so they don't accumulate.
+
             base.DeserializeCore(element, context);
             this.LoadNode(element);
         }
