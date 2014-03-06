@@ -86,7 +86,9 @@
 				<test name="BySolid_NullArgument" modelPath=".\empty.rfa" />
 			</testFixture>
 			<testFixture name="FormTests">
+				<test name="ByLoftingCurveReferences_ValidArgs" modelPath=".\modelLines.rfa" />
 				<test name="FaceReferencesProperty_ValidObject" modelPath=".\blockAlone.rfa" />
+				<test name="SolidsProperty_ValidObject" modelPath=".\blockAlone.rfa" />
 			</testFixture>
 			<testFixture name="ProtoToRevitCurveTests">
 				<test name="NurbsCurve_Basic" modelPath=".\empty.rfa" />
