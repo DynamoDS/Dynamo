@@ -2151,10 +2151,18 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static VarDeclNode BuildParamNode(string paramName)
         {
-            VarDeclNode param = new VarDeclNode();
-            param.NameNode = BuildIdentifier(paramName);
-            param.ArgumentType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, false, 0);
-            return param;
+            return BuildParamNode(
+                paramName,
+                TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, false, 0));
+        }
+
+        public static VarDeclNode BuildParamNode(string paramName, Type type)
+        {
+            return new VarDeclNode
+            {
+                NameNode = BuildIdentifier(paramName),
+                ArgumentType = type
+            };
         }
 
         public static BinaryExpressionNode BuildReturnStatement(AssociativeNode rhs)
