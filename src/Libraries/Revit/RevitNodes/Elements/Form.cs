@@ -91,7 +91,10 @@ namespace Revit.Elements
         {
             get
             {
-                return EnumerateFaces().Select(x => new FaceReference(x)).ToArray();
+                return this.GetFaces(new Options()
+                {
+                    ComputeReferences = true
+                }).Select(x => new FaceReference(x)).ToArray();
             }
         }
 
@@ -102,7 +105,10 @@ namespace Revit.Elements
         {
             get
             {
-                return EnumerateFaces().Select(Face.FromExisting).ToArray();
+                return this.GetFaces(new Options()
+                {
+                    ComputeReferences = true
+                }).Select(Face.FromExisting).ToArray();
             }
         }
 
