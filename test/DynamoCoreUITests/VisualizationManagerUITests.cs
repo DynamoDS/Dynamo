@@ -396,34 +396,31 @@ namespace Dynamo.Tests.UI
         [Test]
         public void CanDrawNodeLabelsOnCurves()
         {
-            //var model = dynSettings.Controller.DynamoModel;
-            //var viz = dynSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
 
-            //string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\BSplineCurveTest.dyn");
-            //model.Open(openPath);
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\BSplineCurveTest.dyn");
+            model.Open(openPath);
 
-            //// check all the nodes and connectors are loaded
-            //Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
 
-            ////before we run the expression, confirm that all nodes
-            ////have label display set to false - the default
-            //Assert.IsTrue(model.AllNodes.All(x => x.DisplayLabels != true));
+            //before we run the expression, confirm that all nodes
+            //have label display set to false - the default
+            Assert.IsTrue(model.AllNodes.All(x => x.DisplayLabels != true));
 
-            //// run the expression
-            //Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
+            // run the expression
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
 
-            ////10 lines segments in this file
-            //Assert.AreEqual(20, viz.Visualizations.SelectMany(x => x.Value.Lines).Count());
+            //10 lines segments in this file
+            Assert.AreEqual(60, BackgroundPreview.Lines.Count());
 
-            ////label displayed should be possible now because
-            ////some nodes have values. toggle on label display
-            //var crvNode = model.Nodes.FirstOrDefault(x => x is BSplineCurveNode);
-            //Assert.IsNotNull(crvNode);
-            //crvNode.DisplayLabels = true;
+            //label displayed should be possible now because
+            //some nodes have values. toggle on label display
+            var crvNode = model.Nodes.FirstOrDefault(x => x.GUID.ToString() == "e9e53fe0-a0b0-4cf7-93d5-5eea8f0428f2");
+            Assert.IsNotNull(crvNode);
+            crvNode.DisplayLabels = true;
 
-            //Assert.AreEqual(viz.Visualizations.SelectMany(x => x.Value.Text).Count(), 5);
-
-            Assert.Inconclusive("Ian to finish after viz manager work.");
+            Assert.AreEqual(6,BackgroundPreview.Text.Count());
         }
 
         private int GetTotalDrawablesInModel()
