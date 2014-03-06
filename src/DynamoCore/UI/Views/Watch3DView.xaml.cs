@@ -389,12 +389,18 @@ namespace Dynamo.Controls
             int color_idx = 0;
 
             var lineColl = p.Selected ? linesSelected : lines;
+            int outerCount = 0;
             foreach (var count in p.LineStripVertexCounts)
             {
                 for (int i = 0; i < count; ++i)
                 {
                     var point = new Point3D(p.LineStripVertices[idx], p.LineStripVertices[idx + 1],
                         p.LineStripVertices[idx + 2]);
+
+                    if (i == 0 && outerCount == 0 && p.DisplayLabels)
+                    {
+                        text.Add(new BillboardTextItem { Text = p.Tag, Position = point });
+                    }
 
                     if (i != 0 && i != count - 1)
                     {
@@ -431,6 +437,7 @@ namespace Dynamo.Controls
                     idx += 3;
                     color_idx += 4;
                 }
+                outerCount++;
             }
         }
 
