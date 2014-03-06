@@ -391,7 +391,6 @@ namespace Revit.Elements
         }
 
         #endregion
-
     }
 }
 
