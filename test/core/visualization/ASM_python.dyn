@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.24496" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="0.7.0.15987" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
   <Elements>
     <DSIronPythonNode.PythonNode type="DSIronPythonNode.PythonNode" guid="61b69c85-3777-479d-bf51-fb66680023de" nickname="Python Script" x="201" y="167" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="0">
       <Script>import clr
@@ -6,11 +6,12 @@ clr.AddReference('ProtoGeometry')
 from Autodesk.DesignScript.Geometry import *
 
 pts = []
-
-for i in range (0,10):
-	for j in range (0,10):
-		for k in range (0,10):
-			pts.append(Point.ByCoordinates(i,j,k))
+for x in range (0,10):
+	for y in range (0,10):
+		row = []
+		for z in range (0,10):
+			row.append(Point.ByCoordinates(x,y,z))
+		pts.append(row)
 OUT = pts</Script>
     </DSIronPythonNode.PythonNode>
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="3c3ed4e5-434e-41ab-97ec-9032a96c60e7" nickname="Watch" x="431" y="122" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />

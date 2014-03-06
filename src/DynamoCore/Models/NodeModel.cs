@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Odbc;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -2020,23 +2022,38 @@ namespace Dynamo.Models
 
             IEnumerable<string> drawableIds = GetDrawableIds();
 
-            var label = -1;
+            int count = 0;
+            var labelMap = new List<string>();
+
+            // A small optimization. Don't create the label map if
+            // labels are not being displayed
+            if (DisplayLabels)
+            {
+                foreach (var varName in drawableIds)
+                {
+                    var mirrorData = dynSettings.Controller.EngineController.GetMirror(varName).GetData();
+                    AddToLabelMap(mirrorData, labelMap, string.Empty);
+                    count++;
+                } 
+            }
+
+            count = 0;
             foreach (var varName in drawableIds)
             {
-                label++;
-                var package = new RenderPackage(IsSelected, DisplayLabels);
-                
                 var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
                 if (graphItems == null)
                     continue;
 
                 foreach (var gItem in graphItems)
                 {
-                    PushGraphicItemIntoPackage(gItem, package, label.ToString(CultureInfo.InvariantCulture));
-                    package.ItemsCount++;
-                }
+                    var package = new RenderPackage(IsSelected, DisplayLabels);
 
-                RenderPackages.Add(package);
+                    PushGraphicItemIntoPackage(gItem, package, DisplayLabels ? labelMap[count] : string.Empty);
+
+                    package.ItemsCount++;
+                    RenderPackages.Add(package);
+                    count++;
+                }
             }
         }
 
@@ -2047,27 +2064,56 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Recursively process MirrorData to find graphic items.
+        /// Add labels for each of a mirror data object's inner
+        /// data object to a label map.
         /// </summary>
         /// <param name="data"></param>
-        /// <param name="graphicItems"></param>
-        private void ProcessGraphicItems(MirrorData data, List<IGraphicItem> graphicItems, RenderPackage package, string tag)
+        /// <param name="map"></param>
+        /// <param name="tag"></param>
+        private void AddToLabelMap(MirrorData data, List<string> map, string tag)
         {
             if (data.IsCollection)
             {
                 var list = data.GetElements();
                 for (int i = 0; i < list.Count; i++)
                 {
-                    ProcessGraphicItems(list[i], graphicItems, package, string.Format("{0}[{1}]", tag, i));
+                    AddToLabelMap(list[i], map, string.Format("{0}[{1}]", tag, i));
                 }
+            }
+            else if (data.Data is IEnumerable)
+            {
+                var list = data.Data as IEnumerable;
+                AddToLabelMap(list, map, tag);
             }
             else
             {
-                if (data.Data is IGraphicItem)
+                map.Add(tag);
+            }
+        }
+
+        /// <summary>
+        /// Add labels for each object in an enumerable 
+        /// too a label map
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="map"></param>
+        /// <param name="tag"></param>
+        private void AddToLabelMap(IEnumerable list, List<string> map, string tag)
+        {
+            int count = 0;
+            foreach(var obj in list)
+            {
+                var newTag = string.Format("{0}[{1}]", tag, count);
+
+                if (obj is IEnumerable)
                 {
-                    graphicItems.Add(data.Data as IGraphicItem);
-                    package.Tag = tag;
+                    AddToLabelMap(obj as IEnumerable, map, newTag);
                 }
+                else
+                {
+                    map.Add(newTag);
+                }
+                count++;
             }
         }
 
