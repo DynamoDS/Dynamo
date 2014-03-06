@@ -256,19 +256,11 @@ namespace Dynamo.Tests.UI
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            ////var drawables = VisualizationManager.GetDrawableNodesInModel();
-            ////Assert.AreEqual(drawables.Count(), viz.Visualizations.Count);
-
-            //int pointCount, lineCount, meshCount, xCount, yCount, zCount;
-            //viz.GetRenderableCounts(
-            //    out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
-
             //total points are the two strips of points at the top and
             //bottom of the mesh, duplicated 11x2x2 plus the one mesh
-            Assert.AreEqual(45, BackgroundPreview.Points.Count);
-            Assert.AreEqual(1, BackgroundPreview.MeshCount);
+            Assert.AreEqual(1000, BackgroundPreview.Points.Count);
+            Assert.AreEqual(1000, BackgroundPreview.MeshCount);
 
-            Assert.Inconclusive("Ian to finish after viz manager work.");
         }
 
         [Test]
