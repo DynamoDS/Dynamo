@@ -3,18 +3,18 @@
 
 [Setup]
 AppName=DynamoDS
-AppVerName=DynamoDS 0.6.3
+AppVerName=DynamoDS 0.7.0
 AppPublisher=Autodesk, Inc.
 AppID={{6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B}
 AppCopyright=
 AppPublisherURL=http://www.dynamobim.com
 AppSupportURL=
 AppUpdatesURL=
-AppVersion=0.6.3
-VersionInfoVersion=0.6.3
+AppVersion=0.7.0
+VersionInfoVersion=0.7.0
 VersionInfoCompany=Autodesk 
-VersionInfoDescription=DynamoDS 0.6.3
-VersionInfoTextVersion=DynamoDS 0.6.3
+VersionInfoDescription=DynamoDS 0.7.0
+VersionInfoTextVersion=DynamoDS 0.7.0
 VersionInfoCopyright=
 DefaultDirName=C:\Autodesk\DynamoDS\Core
 DefaultGroupName=Dynamo
@@ -29,7 +29,7 @@ ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\logo_square_32x32.ico
-UninstallDisplayName=DynamoDS 0.6.3
+UninstallDisplayName=DynamoDS 0.7.0
 UsePreviousAppDir=no
 
 [Types]
