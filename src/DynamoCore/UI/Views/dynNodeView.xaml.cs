@@ -81,7 +81,7 @@ namespace Dynamo.Controls
                 var size = new double[] { ActualWidth, ActualHeight };
                 if (ViewModel.SetModelSizeCommand.CanExecute(size))
                 {
-                    Debug.WriteLine(string.Format("Updating {2} node size {0}:{1}", size[0], size[1], ViewModel.NodeLogic.GetType().ToString()));
+                    //Debug.WriteLine(string.Format("Updating {2} node size {0}:{1}", size[0], size[1], ViewModel.NodeLogic.GetType().ToString()));
                     ViewModel.SetModelSizeCommand.Execute(size);
                 }
             }
