@@ -9,7 +9,7 @@ using Revit.GeometryConversion;
 using NUnit.Framework;
 using Dynamo.DSEngine;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
-using Solid = Revit.Elements.Solid;
+using Solid = Revit.GeometryObjects.Solid;
 
 namespace DSRevitNodesTests.GeometryObjects
 {

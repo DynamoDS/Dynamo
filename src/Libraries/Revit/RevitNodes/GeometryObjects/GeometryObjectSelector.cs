@@ -97,11 +97,20 @@ namespace Revit.GeometryObjects
             return PolyCurve.ByPoints(geom.GetCoordinates().Select(x=>Point.ByCoordinates(x.X,x.Y,x.Z)).ToArray(), true);
         }
 
+        private static Revit.GeometryObjects.Solid Convert(Autodesk.Revit.DB.Solid geom)
+        {
+            return Solid.FromExisting(geom);
+        }
+
+        /*
+         * 
+         * Cannot introduce without extending Revit
+         * 
         private static Autodesk.DesignScript.Geometry.Solid Convert(Autodesk.Revit.DB.Solid geom)
         {
-            throw new NotImplementedException();
-            // return Solid.FromExisting(geom);
+            return Solid.FromExisting(geom);
         }
+         */
 
         private static PolyCurve Convert(Profile geom)
         {
@@ -110,12 +119,7 @@ namespace Revit.GeometryObjects
 
         private static Autodesk.DesignScript.Geometry.Mesh Convert(Autodesk.Revit.DB.Mesh geom)
         {
-            //we do not yet have methods to get the mesh from 
-            //the revit geometry, so we do not have need to 
-            //convert it to its prototype.
-            throw new NotImplementedException();
-
-            // return Autodesk.DesignScript.Geometry.Mesh.ByPointsFaceIndices()
+            return geom.ToProtoType();
         }
     }
 }

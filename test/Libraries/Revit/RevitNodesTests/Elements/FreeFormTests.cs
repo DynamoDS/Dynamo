@@ -2,7 +2,6 @@
 using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using NUnit.Framework;
-using Solid = Revit.Elements.Solid;
 
 namespace DSRevitNodesTests.Elements
 {
@@ -55,7 +54,7 @@ namespace DSRevitNodesTests.Elements
             var dist = 5;
 
             // construct the extrusion
-            var extrusion = Solid.ByExtrusion(crvs, dir, dist);
+            var extrusion = Revit.GeometryObjects.Solid.ByExtrusion(crvs, dir, dist);
             Assert.NotNull(extrusion);
 
             // construct the freeform element

@@ -10,7 +10,7 @@ using Revit.GeometryConversion;
 using Revit.GeometryObjects;
 using NUnit.Framework;
 using Point = Autodesk.DesignScript.Geometry.Point;
-using Solid = Revit.Elements.Solid;
+using Solid = Revit.GeometryObjects.Solid;
 
 namespace DSRevitNodesTests.GeometryIntersection
 {
