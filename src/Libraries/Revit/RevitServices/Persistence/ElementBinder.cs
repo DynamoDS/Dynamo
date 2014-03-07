@@ -44,6 +44,8 @@ namespace RevitServices.Persistence
     {
         private const string REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
 
+        public static bool IsEnabled = true;
+
         /// <summary>
         /// Get an ElementId from trace
         /// </summary>
@@ -70,16 +72,19 @@ namespace RevitServices.Persistence
         /// <returns></returns>
         public static void SetElementForTrace(ElementId elementId)
         {
-            SerializableId id = new SerializableId();
-            id.IntID = elementId.IntegerValue;
+            if (IsEnabled)
+            {
+                SerializableId id = new SerializableId();
+                id.IntID = elementId.IntegerValue;
 
-            // if we're mutating the current Element id, that means we need to 
-            // clean up the old object
+                // if we're mutating the current Element id, that means we need to 
+                // clean up the old object
 
-            // TODO(Push the GUID into the object)
+                // TODO(Push the GUID into the object)
 
-            // Set the element ID cached in the callsite
-            TraceUtils.SetTraceData(REVIT_TRACE_ID, id);
+                // Set the element ID cached in the callsite
+                TraceUtils.SetTraceData(REVIT_TRACE_ID, id);
+            }
         }
 
         /// <summary>

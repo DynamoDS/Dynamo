@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
+using Autodesk.DesignScript.Interfaces;
 
 namespace Revit.Graphics
 {
     [Browsable(false)]
-    public static class GraphicsManager
+    public class GraphicsManager
     {
         /// <summary>
         /// Defines the global level of detail setting for 
         /// object tesselation
         /// </summary>
-        private static double tesselationLevelOfDetail = 0.5;
+        private static double tesselationLevelOfDetail = 1.0;
         public static double TesselationLevelOfDetail
         {
             get
@@ -35,6 +32,26 @@ namespace Revit.Graphics
                 }
 
                 tesselationLevelOfDetail = value;
+            }
+        }
+
+        public static void PushMesh(Autodesk.Revit.DB.Mesh mesh, IRenderPackage package)
+        {
+            for (var i = 0; i < mesh.NumTriangles; i++)
+            {
+                var triangle = mesh.get_Triangle(i);
+                for (var j = 0; j < 3; j++)
+                {
+                    var xyz = triangle.get_Vertex(j);
+                    package.PushTriangleVertex(xyz.X, xyz.Y, xyz.Z);
+                }
+
+                var a = mesh.get_Triangle(i).get_Vertex(1).Subtract(mesh.get_Triangle(i).get_Vertex(0)).Normalize();
+                var b = mesh.get_Triangle(i).get_Vertex(2).Subtract(mesh.get_Triangle(i).get_Vertex(0)).Normalize();
+                var norm = a.CrossProduct(b);
+                package.PushTriangleVertexNormal(norm.X, norm.Y, norm.Z);
+                package.PushTriangleVertexNormal(norm.X, norm.Y, norm.Z);
+                package.PushTriangleVertexNormal(norm.X, norm.Y, norm.Z);
             }
         }
     }

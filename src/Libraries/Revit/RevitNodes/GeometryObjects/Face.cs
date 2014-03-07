@@ -114,16 +114,7 @@ namespace Revit.GeometryObjects
         public override void Tessellate(IRenderPackage package)
         {
             var mesh = this.InternalFace.Triangulate(GraphicsManager.TesselationLevelOfDetail);
-
-            for (var i = 0; i < mesh.NumTriangles; i++)
-            {
-                for (var j = 0; j < 3; j++)
-                {
-                    var xyz = mesh.get_Triangle(i).get_Vertex(i);
-                    package.PushTriangleVertex(xyz.X, xyz.Y, xyz.Z);
-                }
-            }
-
+            GraphicsManager.PushMesh(mesh, package);
         }
 
         #endregion

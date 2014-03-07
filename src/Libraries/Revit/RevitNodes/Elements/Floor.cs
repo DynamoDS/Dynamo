@@ -95,6 +95,11 @@ namespace Revit.Elements
                 throw new ArgumentNullException("outline");
             }
 
+            if (floorType == null)
+            {
+                throw new ArgumentNullException("floorType");
+            }
+
             if ( level == null )
             {
                 throw new ArgumentNullException("level");

@@ -224,34 +224,32 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            var childNodes = nodeElement.ChildNodes.Cast<XmlNode>().ToList();
+
+            var nameNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Name"));
+            if (nameNode != null && nameNode.Attributes != null) 
+                NickName = nameNode.Attributes[0].Value;
+
+            var idNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("ID"));
+            if (idNode != null && idNode.Attributes != null)
             {
-                if (subNode.Name.Equals("Name"))
+                var id = idNode.Attributes[0].Value;
+                Guid funcId;
+                if (!Guid.TryParse(id, out funcId) && nodeElement.Attributes != null)
                 {
-                    NickName = subNode.Attributes[0].Value;
+                    funcId = GuidUtility.Create(
+                        GuidUtility.UrlNamespace,
+                        nodeElement.Attributes["nickname"].Value);
                 }
+                if (!VerifyFuncId(ref funcId))
+                {
+                    LoadProxyCustomNode(funcId);
+                    return;
+                }
+                Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
             }
 
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                if (subNode.Name.Equals("ID"))
-                {
-                    Guid funcId;
-                    if (!Guid.TryParse(subNode.Attributes[0].Value, out funcId))
-                    {
-                        funcId = GuidUtility.Create(
-                            GuidUtility.UrlNamespace, nodeElement.Attributes["nickname"].Value);
-                    }
-                    if (!VerifyFuncId(ref funcId))
-                    {
-                        LoadProxyCustomNode(funcId);
-                        return;
-                    }
-                    Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
-                }
-            }
-
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            foreach (var subNode in childNodes)
             {
                 if (subNode.Name.Equals("Outputs"))
                 {
@@ -293,7 +291,7 @@ namespace Dynamo.Nodes
                         i++;
                     }
                 }
-                    #region Legacy output support
+                #region Legacy output support
 
                 else if (subNode.Name.Equals("Output"))
                 {
@@ -429,6 +427,9 @@ namespace Dynamo.Nodes
 
         private bool VerifyFuncId(ref Guid funcId)
         {
+            if (funcId == null)
+                return false;
+
             // if the dyf does not exist on the search path...
             if (dynSettings.Controller.CustomNodeManager.Contains(funcId))
                 return true;
@@ -506,6 +507,7 @@ namespace Dynamo.Nodes
 
             if (OutPortData.Count == 1)
             {
+                // assign the entire result to the only output port
                 resultAst.Add(
                     AstFactory.BuildAssignment(
                         GetAstIdentifierForOutputIndex(0),
@@ -513,34 +515,27 @@ namespace Dynamo.Nodes
             }
             else
             {
+                /* previewId = customNodeFunc(arg0, arg1 ...);
+                 * outId0 = previewId[key0];
+                 * outId1 = previewId[key1];
+                 * ...
+                 */
+
+                // indexers for each output
+                var indexers = Definition.ReturnKeys != null
+                    ? Definition.ReturnKeys.Select(AstFactory.BuildStringNode) as
+                        IEnumerable<AssociativeNode>
+                    : Enumerable.Range(0, OutPortData.Count).Select(AstFactory.BuildIntNode);
+
+                // for each output, pull the output from the result
+                // based on the associated return key and assign to
+                // corresponding output identifier
                 resultAst.AddRange(
-                    Definition.ReturnKeys != null
-                        ? Definition.ReturnKeys.Select(
-                            (rtnKey, index) =>
-                                AstFactory.BuildAssignment(
-                                    GetAstIdentifierForOutputIndex(index),
-                                    new IdentifierNode(AstIdentifierForPreview)
-                                    {
-                                        ArrayDimensions =
-                                            new ArrayNode
-                                            {
-                                                Expr = AstFactory.BuildStringNode(rtnKey)
-                                            }
-                                    }) as
-                                AssociativeNode)
-                        : Enumerable.Range(0, OutPortData.Count).Select(
-                            index =>
-                                AstFactory.BuildAssignment(
-                                    GetAstIdentifierForOutputIndex(index),
-                                    new IdentifierNode(AstIdentifierForPreview)
-                                    {
-                                        ArrayDimensions =
-                                            new ArrayNode
-                                            {
-                                                Expr = AstFactory.BuildIntNode(index)
-                                            }
-                                    })
-                                as AssociativeNode));
+                    indexers.Select(
+                        (rtnKey, index) =>
+                            AstFactory.BuildAssignment(
+                                GetAstIdentifierForOutputIndex(index),
+                                AstFactory.BuildIdentifier(AstIdentifierForPreview.Name, rtnKey))));
             }
 
             return resultAst;

@@ -52,7 +52,7 @@ namespace Dynamo
             {
                 if (visualizationManager == null)
                 {
-                    visualizationManager = new VisualizationManagerRevit();
+                    visualizationManager = new VisualizationManagerRevit(this);
 
                     visualizationManager.VisualizationUpdateComplete +=
                         visualizationManager_VisualizationUpdateComplete;
@@ -374,7 +374,8 @@ namespace Dynamo
             if(dynSettings.Controller != null)
                 dynSettings.Controller.DynamoModel.Nodes.ToList().ForEach(x=>x.ResetOldValue());
 
-            VisualizationManager.ClearVisualizations();
+            //VisualizationManager.ClearVisualizations();
+            dynSettings.Controller.DynamoModel.Nodes.ForEach(x => x.RenderPackages.Clear());
 
             OnRevitDocumentChanged();
         }

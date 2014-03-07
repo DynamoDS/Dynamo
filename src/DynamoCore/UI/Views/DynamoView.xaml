@@ -376,7 +376,7 @@
               Grid.Row="2"
               Grid.Column="2"
               Grid.RowSpan="3"
-              Background="#232323">
+              Background="#232323" Name="background_grid">
             <Canvas Name="backgroundCanvas"
                     Margin="0,20,0,0"
                     ClipToBounds="True"
@@ -385,7 +385,7 @@
                     <SolidColorBrush Color="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
                 </Canvas.Background>
             </Canvas>
-            <controls:Watch3DView Margin="0,20,0,0"
+            <controls:Watch3DView Margin="0,20,0,0" x:Name="background_preview"
                                           Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                                             IsHitTestVisible="{Binding WatchPreviewHitTest}">
 

@@ -280,14 +280,14 @@ namespace Dynamo.ViewModels
 
         private void OnDragSelectionStarted(object sender, EventArgs e)
         {
-            Debug.WriteLine("Drag started : Visualization paused.");
+            //Debug.WriteLine("Drag started : Visualization paused.");
             if (DragSelectionStarted != null)
                 DragSelectionStarted(sender, e);
         }
 
         private void OnDragSelectionEnded(object sender, EventArgs e)
         {
-            Debug.WriteLine("Drag ended : Visualization unpaused.");
+            //Debug.WriteLine("Drag ended : Visualization unpaused.");
             if (DragSelectionEnded != null)
                 DragSelectionEnded(sender, e);
         }

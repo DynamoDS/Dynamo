@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Collections.ObjectModel;
 using Dynamo.Controls;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
@@ -249,7 +250,10 @@ namespace Dynamo.ViewModels
 
         public bool CanDisplayLabels
         {
-            get { return nodeLogic.OldValue != null; }
+            get
+            {
+                return nodeLogic.RenderPackages.Any(y => ((RenderPackage)y).IsNotEmpty());
+            }
         }
 
         #endregion
