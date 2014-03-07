@@ -80,6 +80,16 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
+        public void TestPausePlaybackCommand()
+        {
+            int pauseDurationInMs = randomizer.Next(2000);
+
+            var cmdOne = new DynCmd.PausePlaybackCommand(pauseDurationInMs);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+            Assert.AreEqual(cmdOne.PauseDurationInMs, cmdTwo.PauseDurationInMs);
+        }
+
+        [Test, RequiresSTA]
         public void TestRunCancelCommand()
         {
             bool showErrors = randomizer.Next(2) == 0;
