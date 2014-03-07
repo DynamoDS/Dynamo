@@ -17,7 +17,7 @@ VersionInfoDescription=DynamoDS 0.6.3
 VersionInfoTextVersion=DynamoDS 0.6.3
 VersionInfoCopyright=
 DefaultDirName=C:\Autodesk\DynamoDS\Core
-DefaultGroupName=
+DefaultGroupName=Dynamo
 OutputDir=Installers
 OutputBaseFilename=InstallDynamoDS
 SetupIconFile=Extra\logo_square_32x32.ico
@@ -66,10 +66,14 @@ Source: Extra\InstallASMForDynamo.exe; DestDir:{app}; Flags: ignoreversion overw
 Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 Source: temp\dynamo_packages\*; DestDir: {app}\dynamo_packages; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
+[Icons]
+Name: "{group}\Dynamo"; Filename: "{app}\DynamoSandbox.exe"
+
 [UninstallDelete]
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2013\DynamoDS.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\DynamoDS.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\DynamoDS.addin"
+Type: filesandordirs; Name: {app}\dll
 
 [Run]
 Filename: "{app}\fsharp_redist.exe"; Parameters: "/q"; Flags: runascurrentuser
