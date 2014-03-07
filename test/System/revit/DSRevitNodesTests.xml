@@ -222,6 +222,9 @@
 				<test name="IntersectingFaceFace_BadArgs" modelPath=".\empty.rfa" />
 				<test name="NonIntersectingFaceFace_ValidArgs" modelPath=".\empty.rfa" />
 			</testFixture>
+      <testFixture name="CurveByPointsTests">
+        <test name="ByReferencePoints_ValidArgs" modelPath=".\empty.rfa" />
+      </testFixture>
 		</testAssembly>
 	</testAssemblies>
 </tests>
