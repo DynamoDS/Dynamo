@@ -76,6 +76,8 @@
     <Compile Include="Elements\Category.cs" />
     <Compile Include="Elements\AbstractElement.cs" />
     <Compile Include="Elements\AbstractFamilyInstance.cs" />
+    <Compile Include="Elements\CurveByPoints.cs" />
+    <Compile Include="Elements\CurveElement.cs" />
     <Compile Include="Elements\Element.cs" />
     <Compile Include="Elements\FloorType.cs" />
     <Compile Include="Elements\ModelText.cs" />

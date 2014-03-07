@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 using Dynamo.Models;
@@ -194,6 +196,18 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, dstElement.Attributes.Count);
             Assert.AreEqual("Dynamo.Nodes.DSVarArgFunction", dstElement.Attributes["type"].Value);
             Assert.AreEqual("2", dstElement.Attributes["inputcount"].Value);
+        }
+
+        [Test]
+        public void TestVersionFromString()
+        {
+            var versionString = "1.20.300.4000";
+            Version version = MigrationManager.VersionFromString(versionString);
+            Assert.IsNotNull(version);
+            Assert.AreEqual(1, version.Major);
+            Assert.AreEqual(20, version.Minor);
+            Assert.AreEqual(300, version.Build);
+            Assert.AreEqual(0, version.Revision);
         }
 
         [Test]
@@ -490,6 +504,44 @@ namespace Dynamo.Tests
             Assert.IsNotNull(data.MigratedNodes);
             Assert.AreEqual(first, data.MigratedNodes.ElementAt(0));
             Assert.AreEqual(second, data.MigratedNodes.ElementAt(1));
+        }
+
+        [Test]
+        public void TestGetBackupFolder00()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                MigrationManager.GetBackupFolder(null, false);
+            });
+        }
+
+        [Test]
+        public void TestGetBackupFolder01()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                MigrationManager.GetBackupFolder(string.Empty, false);
+            });
+        }
+
+        [Test]
+        public void TestGetBackupFolder02()
+        {
+            Assert.Throws<ArgumentException>(() =>
+            {
+                // Test invalid folder exception.
+                var folder = @"k:\i-dont-think-this-folder-exists\";
+                MigrationManager.GetBackupFolder(folder, false);
+            });
+        }
+
+        [Test]
+        public void TestGetBackupFolder03()
+        {
+            var location = Assembly.GetCallingAssembly().Location;
+            var folder = Path.GetDirectoryName(location);
+            var expected = Path.Combine(folder, "backup");
+            Assert.AreEqual(expected, MigrationManager.GetBackupFolder(folder, false));
         }
 
         [Test]

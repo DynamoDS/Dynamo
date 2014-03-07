@@ -720,17 +720,8 @@ namespace Revit.GeometryObjects
 
             foreach (var mesh in meshes)
             {
-                for (var i = 0; i < mesh.NumTriangles; i++)
-                {
-                    var triangle = mesh.get_Triangle(i);
-                    for (var j = 0; j < 3; j++)
-                    {
-                        var xyz = triangle.get_Vertex(j);
-                        package.PushTriangleVertex(xyz.X, xyz.Y, xyz.Z);
-                    }
-                }
+                GraphicsManager.PushMesh(mesh, package);
             }
-
         }
 
         #endregion
