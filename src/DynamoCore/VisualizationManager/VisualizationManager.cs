@@ -195,15 +195,16 @@ namespace Dynamo
         
         void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (updatingPaused)
+            if (updatingPaused || dynSettings.Controller == null)
                 return;
 
             var changes = new List<ISelectable>();
 
-            if (e.OldItems != null && e.OldItems.Cast<ISelectable>().Any())
-            {
-                changes.AddRange(e.OldItems.Cast<ISelectable>());
-            }
+            // Any node that has a visualizations but is
+            // no longer in the selection 
+            changes.AddRange(dynSettings.Controller.DynamoModel.Nodes
+                .Where(x => x.RenderPackages.Count > 0)
+                .Where(x => !DynamoSelection.Instance.Selection.Contains(x)));
 
             if (e.NewItems != null && e.NewItems.Cast<ISelectable>().Any())
             {
