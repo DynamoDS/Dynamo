@@ -1,6 +1,6 @@
 class _FunctionObject
 {
-    def DoEvaluation(v:var[]..[])
+    def DoEvaluation(param:var[]..[])
     {
         return = null;
     }
@@ -107,7 +107,7 @@ class _ComposedFunctionObject extends _FunctionObject
             _count = Count(__funcs);
             _v = param;
             
-            for(_i in _count - 1.. 0)
+            for(_i in (_count - 1).. 0)
             {
                 _f = __funcs[_i];
                 _v = _f.DoEvaluation(_v);
@@ -342,7 +342,7 @@ def Reduce(accumulator : _FunctionObject, seed: var, lists : var[]..[])
 {
     return = [Imperative]
     {
-        if (list == null)
+        if (lists == null)
         {
             return = seed;
         }
