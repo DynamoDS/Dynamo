@@ -2694,6 +2694,157 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        public void TestCodeblockModification02()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 1;",        // guid1
+                "b = 2;",        // guid2
+                "c = 3;",        // guid3
+                "d = a + b;",    // guid4
+                "d = a + c;",    // guid4
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+            Guid guid4 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+
+            // Create a, b, c CBNs
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+
+            // Connect a and b to  d = a + b
+            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("d", 3);
+
+            // Delete b
+            List<Subtree> deleted = new List<Subtree>();
+            deleted.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            syncData = new GraphSyncData(deleted, null, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Connect a and c to d = a + c
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid4, codes[4]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("d", 4);
+        }
+
+
+        [Test]
+        public void TestCodeblockModification03()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 1;",
+                "b = 2;",
+                "c = a;",
+                "c = b;",
+                "d = c + 10;",
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+            Guid guid4 = System.Guid.NewGuid();
+
+            // Create a and b
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+
+            // Connect a to c 
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("c", 1);
+
+
+            // Connect b to c 
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid3, codes[3]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("c", 2);
+
+            // Delete first node
+            List<Subtree> deleted = new List<Subtree>();
+            deleted.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            syncData = new GraphSyncData(deleted, null, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            // Add new node d = c + 10;
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid4, codes[4]));
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("d", 12);
+
+        }
+
+        [Test]
+        public void TestCodeblockModification04()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 1;",   // g1
+
+                "y = a; x = y;",   // g2
+
+                "c = a; b = c;",   // g3
+                
+                "y = b; x = y;",   // g2
+                
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+
+            // Create 2 CBNs 
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("x", 1);
+
+
+            // Create new CBN
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+
+            // Reconnect g2 
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid2, codes[3]));
+
+            syncData = new GraphSyncData(null, added, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("b", 1);
+
+
+        }
+
+        [Test]
         public void TestDeleteNode01()
         {
             List<string> codes = new List<string>() 
@@ -2732,6 +2883,58 @@ z=Point.ByCoordinates(y,a,a);
             // Verify that b is null
             ProtoCore.Mirror.RuntimeMirror mirror = astLiveRunner.InspectNodeValue("a");
             Assert.IsTrue(mirror.GetData().IsNull);
+
+        }
+
+        [Test]
+        public void TestDeleteNode02()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 1;",
+                "b = 2;",
+                "c = a;",
+                "c = b;",
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+
+            // Create a and b
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+
+            // Connect a to c 
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("c", 1);
+
+            // Connect b to c 
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid3, codes[3]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("c", 2);
+
+            // Delete first node
+            List<Subtree> deleted = new List<Subtree>();
+
+            // Mark the CBN that uses f as modified
+            deleted.Add(CreateSubTreeFromCode(guid1, codes[0]));
+
+            syncData = new GraphSyncData(deleted, null, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // c should not have changed
+            AssertValue("c", 2);
 
         }
 

@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using System.Linq;
 using System.Windows.Threading;
-using Dynamo.UI.Commands;
+using Dynamo.DSEngine;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using HelixToolkit.Wpf;
@@ -35,125 +33,124 @@ namespace Dynamo.Controls
         private readonly string _id="";
         Point _rightMousePoint;
 
-        protected ThreadSafeList<MeshVisual3D> _meshes = new ThreadSafeList<MeshVisual3D>();
-        public ThreadSafeList<Point3D> _pointsCache = new ThreadSafeList<Point3D>();
-        public ThreadSafeList<Point3D> _linesCache = new ThreadSafeList<Point3D>();
-        public ThreadSafeList<Point3D> _xAxisCache = new ThreadSafeList<Point3D>();
-        public ThreadSafeList<Point3D> _yAxisCache = new ThreadSafeList<Point3D>();
-        public ThreadSafeList<Point3D> _zAxisCache = new ThreadSafeList<Point3D>();
-        public MeshGeometry3D _meshCache = new MeshGeometry3D();
-        public ThreadSafeList<Point3D> _pointsCacheSelected = new ThreadSafeList<Point3D>();
-        public ThreadSafeList<Point3D> _linesCacheSelected = new ThreadSafeList<Point3D>();
-        public MeshGeometry3D _meshCacheSelected = new MeshGeometry3D();
-        private ThreadSafeList<Point3D> _gridCache = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _points = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _lines = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _xAxis = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _yAxis = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _zAxis = new ThreadSafeList<Point3D>();
+        private MeshGeometry3D _mesh = new MeshGeometry3D();
+        private ThreadSafeList<Point3D> _pointsSelected = new ThreadSafeList<Point3D>();
+        private ThreadSafeList<Point3D> _linesSelected = new ThreadSafeList<Point3D>();
+        private MeshGeometry3D _meshSelected = new MeshGeometry3D();
+        private ThreadSafeList<Point3D> _grid = new ThreadSafeList<Point3D>();
         private ThreadSafeList<BillboardTextItem> _text = new ThreadSafeList<BillboardTextItem>();
 
-        public Material HelixMeshMaterial
+        public Material MeshMaterial
         {
             get { return Materials.White; }
         }
 
-        public ThreadSafeList<Point3D> HelixGrid
+        public ThreadSafeList<Point3D> Grid
         {
-            get { return _gridCache; }
+            get { return _grid; }
             set
             {
-                _gridCache = value;
-                NotifyPropertyChanged("HelixGrid");
+                _grid = value;
+                NotifyPropertyChanged("Grid");
             }
         }
 
-        public ThreadSafeList<Point3D> HelixPoints
+        public ThreadSafeList<Point3D> Points
         {
-            get { return _pointsCache; }
+            get { return _points; }
             set
             {
-                _pointsCache = value;
-                NotifyPropertyChanged("HelixPoints");
+                _points = value;
+                NotifyPropertyChanged("Points");
             }
         }
 
-        public ThreadSafeList<Point3D> HelixLines
+        public ThreadSafeList<Point3D> Lines
         {
-            get { return _linesCache; }
+            get { return _lines; }
             set
             {
-                _linesCache = value;
-                NotifyPropertyChanged("HelixLines");
+                _lines = value;
+                NotifyPropertyChanged("Lines");
             }
         }
 
-        public ThreadSafeList<Point3D> HelixXAxes
+        public ThreadSafeList<Point3D> XAxes
         {
-            get { return _xAxisCache; }
+            get { return _xAxis; }
             set
             {
-                _xAxisCache = value;
-                NotifyPropertyChanged("HelixXAxes");
+                _xAxis = value;
+                NotifyPropertyChanged("XAxes");
             }
         }
 
-        public ThreadSafeList<Point3D> HelixYAxes
+        public ThreadSafeList<Point3D> YAxes
         {
-            get { return _yAxisCache; }
+            get { return _yAxis; }
             set
             {
-                _yAxisCache = value;
-                NotifyPropertyChanged("HelixYAxes");
+                _yAxis = value;
+                NotifyPropertyChanged("YAxes");
             }
         }
 
-        public ThreadSafeList<Point3D> HelixZAxes
+        public ThreadSafeList<Point3D> ZAxes
         {
-            get { return _zAxisCache; }
+            get { return _zAxis; }
             set
             {
-                _zAxisCache = value;
-                NotifyPropertyChanged("HelixZAxes");
+                _zAxis = value;
+                NotifyPropertyChanged("ZAxes");
             }
         }
 
-        public MeshGeometry3D HelixMesh
+        public MeshGeometry3D Mesh
         {
-            get { return _meshCache; }
+            get { return _mesh; }
             set
             {
-                _meshCache = value;
-                NotifyPropertyChanged("HelixMesh");
+                _mesh = value;
+                NotifyPropertyChanged("Mesh");
             }
         }
 
-        public ThreadSafeList<Point3D> HelixPointsSelected
+        public ThreadSafeList<Point3D> PointsSelected
         {
-            get { return _pointsCacheSelected; }
+            get { return _pointsSelected; }
             set
             {
-                _pointsCacheSelected = value;
-                NotifyPropertyChanged("HelixPointsSelected");
+                _pointsSelected = value;
+                NotifyPropertyChanged("PointsSelected");
             }
         }
 
-        public ThreadSafeList<Point3D> HelixLinesSelected
+        public ThreadSafeList<Point3D> LinesSelected
         {
-            get { return _linesCacheSelected; }
+            get { return _linesSelected; }
             set
             {
-                _linesCacheSelected = value;
-                NotifyPropertyChanged("HelixLinesSelected");
+                _linesSelected = value;
+                NotifyPropertyChanged("LinesSelected");
             }
         }
 
-        public MeshGeometry3D HelixMeshSelected
+        public MeshGeometry3D MeshSelected
         {
-            get { return _meshCacheSelected; }
+            get { return _meshSelected; }
             set
             {
-                _meshCacheSelected = value;
-                NotifyPropertyChanged("HelixMeshSelected");
+                _meshSelected = value;
+                NotifyPropertyChanged("MeshSelected");
             }
         }
 
-        public ThreadSafeList<BillboardTextItem> HelixText
+        public ThreadSafeList<BillboardTextItem> Text
         {
             get
             {
@@ -162,7 +159,7 @@ namespace Dynamo.Controls
             set
             {
                 _text = value;
-                NotifyPropertyChanged("HelixText");
+                NotifyPropertyChanged("Text");
             }
         }
 
@@ -171,22 +168,28 @@ namespace Dynamo.Controls
             get { return watch_view; }
         }
 
+        /// <summary>
+        /// Used for testing to track the number of meshes that are merged
+        /// during render.
+        /// </summary>
+        public int MeshCount { get; set; }
+
         public Watch3DView()
         {
             InitializeComponent();
             watch_view.DataContext = this;
-            Loaded += WatchViewFullscreen_Loaded;
+            Loaded += OnViewLoaded;
         }
 
         public Watch3DView(string id)
         {
             InitializeComponent();
             watch_view.DataContext = this;
-            Loaded += WatchViewFullscreen_Loaded;
+            Loaded += OnViewLoaded;
             _id = id;
         }
 
-        void WatchViewFullscreen_Loaded(object sender, RoutedEventArgs e)
+        void OnViewLoaded(object sender, RoutedEventArgs e)
         {
             MouseLeftButtonDown += new MouseButtonEventHandler(view_MouseButtonIgnore);
             MouseLeftButtonUp += new MouseButtonEventHandler(view_MouseButtonIgnore);
@@ -240,7 +243,6 @@ namespace Dynamo.Controls
                     vm.GetBranchVisualizationCommand.Execute(null);
                 }
             }));
-
         }
 
         /// <summary>
@@ -248,7 +250,7 @@ namespace Dynamo.Controls
         /// </summary>
         private void DrawGrid()
         {
-            HelixGrid = null;
+            Grid = null;
 
             var newLines = new ThreadSafeList<Point3D>();
 
@@ -264,12 +266,12 @@ namespace Dynamo.Controls
                 newLines.Add(new Point3D(10, y, -.001));
             }
 
-            HelixGrid = newLines;
+            Grid = newLines;
         }
 
         /// <summary>
-        /// Use the render description returned from the visualization manager to update the visuals.
-        /// The visualization event arguments will contain a render description and an id representing 
+        /// Use the render packages returned from the visualization manager to update the visuals.
+        /// The visualization event arguments will contain a set of render packages and an id representing 
         /// the associated node. Visualizations for the background preview will return an empty id.
         /// </summary>
         /// <param name="e"></param>
@@ -287,54 +289,269 @@ namespace Dynamo.Controls
             var sw = new Stopwatch();
             sw.Start();
 
-            var rd = e.Description;
+            Points = null;
+            Lines = null;
+            Mesh = null;
+            XAxes = null;
+            YAxes = null;
+            ZAxes = null;
+            PointsSelected = null;
+            LinesSelected = null;
+            MeshSelected = null;
+            Text = null;
+            MeshCount = 0;
 
-            HelixPoints = null;
-            HelixLines = null;
-            HelixMesh = null;
-            HelixXAxes = null;
-            HelixYAxes = null;
-            HelixZAxes = null;
-            HelixPointsSelected = null;
-            HelixLinesSelected = null;
-            HelixMeshSelected = null;
-            HelixText = null;
+            var points = new ThreadSafeList<Point3D>();
+            var pointsSelected = new ThreadSafeList<Point3D>();
+            var lines = new ThreadSafeList<Point3D>();
+            var linesSelected = new ThreadSafeList<Point3D>();
+            var redLines = new ThreadSafeList<Point3D>();
+            var greenLines = new ThreadSafeList<Point3D>();
+            var blueLines = new ThreadSafeList<Point3D>();
+            var text = new ThreadSafeList<BillboardTextItem>();
+            var meshes = new ThreadSafeList<MeshGeometry3D>();
+            var meshesSelected = new ThreadSafeList<MeshGeometry3D>();
 
-            HelixPoints = rd.Points;
-            HelixLines = rd.Lines;
-            HelixPointsSelected = rd.SelectedPoints;
-            HelixLinesSelected = rd.SelectedLines;
-            HelixXAxes = rd.XAxisPoints;
-            HelixYAxes = rd.YAxisPoints;
-            HelixZAxes = rd.ZAxisPoints;
-            HelixMesh = VisualizationManager.MergeMeshes(rd.Meshes);
-            HelixMeshSelected = VisualizationManager.MergeMeshes(rd.SelectedMeshes);
-            HelixText = rd.Text;
+            foreach (var package in e.Packages)
+            {
+                ConvertPoints(package, points, pointsSelected, text );
+                ConvertLines(package, lines, linesSelected, redLines, greenLines, blueLines, text);
+                ConvertMeshes(package, meshes, meshesSelected);
+            }
 
-            // http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
-            //Dispatcher.CurrentDispatcher.BeginInvoke(
-            //    DispatcherPriority.Background,
-            //    new Action(() =>
-            //    {
-                    var sb = new StringBuilder();
-                    sb.AppendLine();
-                    sb.AppendLine(string.Format("Rendering complete:"));
-                    sb.AppendLine(string.Format("Points: {0}", rd.Points.Count + rd.SelectedPoints.Count));
-                    sb.AppendLine(string.Format("Line segments: {0}", rd.Lines.Count / 2 + rd.SelectedLines.Count / 2));
-                    sb.AppendLine(string.Format("Mesh vertices: {0}",
-                        rd.Meshes.SelectMany(x => x.Positions).Count() +
-                        rd.SelectedMeshes.SelectMany(x => x.Positions).Count()));
-                    sb.Append(string.Format("Mesh faces: {0}",
-                        rd.Meshes.SelectMany(x => x.TriangleIndices).Count() / 3 +
-                        rd.SelectedMeshes.SelectMany(x => x.TriangleIndices).Count() / 3));
-                    //DynamoLogger.Instance.Log(sb.ToString());
-                    Debug.WriteLine(sb.ToString());
-                    sw.Stop();
-                    //DynamoLogger.Instance.Log(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
+            Points = points;
+            PointsSelected = pointsSelected;
+            Lines = lines;
+            LinesSelected = linesSelected;
+            XAxes = redLines;
+            YAxes = greenLines;
+            ZAxes = blueLines;
 
-                    Debug.WriteLine(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
-                //}));
+            MeshCount += meshes.Count + meshesSelected.Count;
 
+            Mesh = MergeMeshes(meshes);
+            MeshSelected = MergeMeshes(meshesSelected);
+            Text = text;
+
+            //var sb = new StringBuilder();
+            //sb.AppendLine();
+            //sb.AppendLine(string.Format("Rendering complete:"));
+            //sb.AppendLine(string.Format("Points: {0}", rd.Points.Count + rd.SelectedPoints.Count));
+            //sb.AppendLine(string.Format("Line segments: {0}", rd.Lines.Count / 2 + rd.SelectedLines.Count / 2));
+            //sb.AppendLine(string.Format("Mesh vertices: {0}",
+            //    rd.Meshes.SelectMany(x => x.Positions).Count() +
+            //    rd.SelectedMeshes.SelectMany(x => x.Positions).Count()));
+            //sb.Append(string.Format("Mesh faces: {0}",
+            //    rd.Meshes.SelectMany(x => x.TriangleIndices).Count() / 3 +
+            //    rd.SelectedMeshes.SelectMany(x => x.TriangleIndices).Count() / 3));
+            ////DynamoLogger.Instance.Log(sb.ToString());
+            //Debug.WriteLine(sb.ToString());
+             
+            sw.Stop();
+            //DynamoLogger.Instance.Log(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
+
+            Debug.WriteLine(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
+
+        }
+
+        private void ConvertPoints(RenderPackage p, 
+            ThreadSafeList<Point3D> points,
+            ThreadSafeList<Point3D> pointsSelected, 
+            ThreadSafeList<BillboardTextItem> text)
+        {
+            var pointColl = p.Selected ? pointsSelected : points;
+            for (int i = 0; i < p.PointVertices.Count; i += 3)
+            {
+                var pos = new Point3D(
+                    p.PointVertices[i],
+                    p.PointVertices[i + 1],
+                    p.PointVertices[i + 2]);
+
+                pointColl.Add(pos);
+
+                if (p.DisplayLabels)
+                {
+                    text.Add(new BillboardTextItem {Text = p.Tag, Position = pos});
+                }
+            }
+        }
+
+        private void ConvertLines(RenderPackage p, 
+            ThreadSafeList<Point3D> lines,
+            ThreadSafeList<Point3D> linesSelected, 
+            ThreadSafeList<Point3D> redLines,
+            ThreadSafeList<Point3D> greenLines,
+            ThreadSafeList<Point3D> blueLines,
+            ThreadSafeList<BillboardTextItem> text)
+        {
+            //int colorCount = 0;
+            int idx = 0;
+            int color_idx = 0;
+
+            var lineColl = p.Selected ? linesSelected : lines;
+            int outerCount = 0;
+            foreach (var count in p.LineStripVertexCounts)
+            {
+                for (int i = 0; i < count; ++i)
+                {
+                    var point = new Point3D(p.LineStripVertices[idx], p.LineStripVertices[idx + 1],
+                        p.LineStripVertices[idx + 2]);
+
+                    if (i == 0 && outerCount == 0 && p.DisplayLabels)
+                    {
+                        text.Add(new BillboardTextItem { Text = p.Tag, Position = point });
+                    }
+
+                    if (i != 0 && i != count - 1)
+                    {
+                        lineColl.Add(point);
+                    }
+                    
+                    bool isAxis = false;
+                    var startColor = Color.FromRgb(
+                                            p.LineStripVertexColors[color_idx],
+                                            p.LineStripVertexColors[color_idx + 1],
+                                            p.LineStripVertexColors[color_idx + 2]);
+
+                    if (startColor == Color.FromRgb(255, 0, 0))
+                    {
+                        redLines.Add(point);
+                        isAxis = true;
+                    }
+                    else if (startColor == Color.FromRgb(0, 255, 0))
+                    {
+                        greenLines.Add(point);
+                        isAxis = true;
+                    }
+                    else if (startColor == Color.FromRgb(0, 0, 255))
+                    {
+                        blueLines.Add(point);
+                        isAxis = true;
+                    }
+
+                    if (!isAxis)
+                    {
+                        lineColl.Add(point);
+                    } 
+
+                    idx += 3;
+                    color_idx += 4;
+                }
+                outerCount++;
+            }
+        }
+
+        private void ConvertMeshes(RenderPackage p,
+            ThreadSafeList<MeshGeometry3D> meshes,
+            ThreadSafeList<MeshGeometry3D> meshesSelected)
+        {
+            //var sw = new Stopwatch();
+            //sw.Start();
+
+            var builder = new MeshBuilder();
+            var points = new Point3DCollection();
+            var tex = new PointCollection();
+            var norms = new Vector3DCollection();
+            var tris = new List<int>();
+
+            for (int i = 0; i < p.TriangleVertices.Count; i+=3)
+            {
+                var new_point = new Point3D(p.TriangleVertices[i],
+                                            p.TriangleVertices[i + 1],
+                                            p.TriangleVertices[i + 2]);
+
+                var normal = new Vector3D(p.TriangleNormals[i],
+                                            p.TriangleNormals[i + 1],
+                                            p.TriangleNormals[i + 2]);
+
+                //find a matching point
+                //compare the angle between the normals
+                //to discern a 'break' angle for adjacent faces
+                //int foundIndex = -1;
+                //for (int j = 0; j < points.Count; j++)
+                //{
+                //    var testPt = points[j];
+                //    var testNorm = norms[j];
+                //    var ang = Vector3D.AngleBetween(normal, testNorm);
+
+                //    if (new_point.X == testPt.X &&
+                //        new_point.Y == testPt.Y &&
+                //        new_point.Z == testPt.Z &&
+                //        ang > 90.0000)
+                //    {
+                //        foundIndex = j;
+                //        break;
+                //    }
+                //}
+
+                //if (foundIndex != -1)
+                //{
+                //    tris.Add(foundIndex);
+                //    continue;
+                //}
+                    
+                tris.Add(points.Count);
+                points.Add(new_point);
+                norms.Add(normal);
+                tex.Add(new System.Windows.Point(0,0));
+
+                //octree.AddNode(new_point.X, new_point.Y, new_point.Z, node.GUID.ToString());
+            }
+
+            builder.Append(points, tris, norms, tex);
+
+            //don't add empty meshes
+            if (builder.Positions.Count > 0)
+            {
+                if (p.Selected)
+                {
+                    meshesSelected.Add(builder.ToMesh(true));
+                }
+                else
+                {
+                    meshes.Add(builder.ToMesh(true));
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// A utility method for merging multiple meshes into one.
+        /// </summary>
+        /// <param name="meshes"></param>
+        /// <returns></returns>
+        private MeshGeometry3D MergeMeshes(ThreadSafeList<MeshGeometry3D> meshes)
+        {
+            if (meshes.Count == 0)
+                return null;
+
+            int offset = 0;
+
+            var builder = new MeshBuilder();
+
+            foreach (MeshGeometry3D m in meshes)
+            {
+                foreach (var pos in m.Positions)
+                {
+                    builder.Positions.Add(pos);
+                }
+                foreach (var index in m.TriangleIndices)
+                {
+                    builder.TriangleIndices.Add(index + offset);
+                }
+                foreach (var norm in m.Normals)
+                {
+                    builder.Normals.Add(norm);
+                }
+                foreach (var tc in m.TextureCoordinates)
+                {
+                    builder.TextureCoordinates.Add(tc);
+                }
+
+                offset += m.Positions.Count;
+            }
+
+            return builder.ToMesh(false);
         }
 
         protected void mi_Click(object sender, RoutedEventArgs e)

@@ -1024,6 +1024,10 @@ namespace ProtoScript.Runners
             return astNodeList;
         }
 
+        /// <summary>
+        /// Deactivate a single graphnode regardless of its associated dependencies
+        /// </summary>
+        /// <param name="nodeList"></param>
         private void DeactivateGraphnodes(List<AssociativeNode> nodeList)
         {
             if (null != nodeList)
@@ -1035,8 +1039,7 @@ namespace ProtoScript.Runners
                     {
                         foreach (var gnode in runnerCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
                         {
-                            //if (gnode.exprUID == bNode.exprUID)
-                            if (gnode.UID == bNode.ID)
+                            if (gnode.AstID == bNode.ID)
                             {
                                 gnode.isActive = false;
                             }

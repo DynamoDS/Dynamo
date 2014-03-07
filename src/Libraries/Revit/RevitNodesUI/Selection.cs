@@ -241,7 +241,7 @@ namespace Dynamo.Nodes
                 selectedElementId = SelectedElement.Id;
 
             var node = AstFactory.BuildFunctionCall(
-                "ElementSelector",
+                "Revit.Elements.ElementSelector",
                 "ByElementId",
                 new List<AssociativeNode>
                 {
