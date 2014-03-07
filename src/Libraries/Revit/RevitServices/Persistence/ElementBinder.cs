@@ -44,7 +44,7 @@ namespace RevitServices.Persistence
     {
         private const string REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
 
-        public static bool IsEnabled = true;
+        public static bool IsEnabled = false;
 
         /// <summary>
         /// Get an ElementId from trace

@@ -74,6 +74,8 @@ namespace Dynamo.Applications
 
                 env = new ExecutionEnvironment();
 
+                ElementBinder.IsEnabled = true;
+
                 return Result.Succeeded;
             }
             catch (Exception ex)
