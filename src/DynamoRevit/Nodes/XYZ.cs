@@ -659,6 +659,12 @@ namespace Dynamo.Nodes
             XYZ pt = XYZ.BasisX;
             return FScheme.Value.NewContainer(pt);
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.XAxis", "Vector.XAxis");
+        }
     }
 
     [NodeName("Y Axis")]
@@ -678,6 +684,12 @@ namespace Dynamo.Nodes
         {
             XYZ pt = XYZ.BasisY;
             return FScheme.Value.NewContainer(pt);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.YAxis", "Vector.YAxis");
         }
     }
 
@@ -699,6 +711,12 @@ namespace Dynamo.Nodes
 
             XYZ pt = XYZ.BasisZ;
             return FScheme.Value.NewContainer(pt);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.ZAxis", "Vector.ZAxis");
         }
     }
 
@@ -726,6 +744,12 @@ namespace Dynamo.Nodes
             XYZ pt = xyz.Multiply(n);
 
             return FScheme.Value.NewContainer(pt);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.Scale", "Vector.Scale@double");
         }
     }
 
