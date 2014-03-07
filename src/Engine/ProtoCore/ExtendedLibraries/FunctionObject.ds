@@ -342,7 +342,7 @@ def Reduce(accumulator : _FunctionObject, seed: var, lists : var[]..[])
 {
     return = [Imperative]
     {
-        if (lisst == null)
+        if (list == null)
         {
             return = seed;
         }
@@ -483,7 +483,7 @@ def TrueForAll(list: var[]..[], predicate: _FunctionObject)
 
         for (_index in 0..(_count - 1))
         {
-            _value = list[_i];
+            _value = list[_index];
             if (!Apply(predicate, _value))
             {
                 return = false;
