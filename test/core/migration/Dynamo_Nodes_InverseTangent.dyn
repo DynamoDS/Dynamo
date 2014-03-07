@@ -1,0 +1,32 @@
+<Workspace Version="0.6.2.29585" X="158" Y="41" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="13ef1ac4-c179-4656-bca7-773765487459" nickname="Number" x="-2" y="95.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="abf6bf3e-d871-4ce2-868b-47de903f7a06" nickname="Number" x="2" y="199.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0.5" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="c82a5ad7-6a2c-437c-86ee-969e268dbcef" nickname="Number" x="0" y="290.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="674d8244-acbc-4ccb-82a4-4556b650e714" nickname="Number" x="4" y="376.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-0.4" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="0dfe38ec-e69e-4ee1-94d5-b76f861adb53" nickname="Number" x="1" y="450.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Atan type="Dynamo.Nodes.Atan" guid="bdaeb25f-654b-4db9-9c2a-9377d9ebe3f3" nickname="Inverse Tangent" x="236" y="47.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Atan type="Dynamo.Nodes.Atan" guid="15b42154-c3ed-4216-93fe-a3a0b7146074" nickname="Inverse Tangent" x="236" y="150.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Atan type="Dynamo.Nodes.Atan" guid="2a8fbba7-e455-406a-88e2-6caa4f3983eb" nickname="Inverse Tangent" x="234" y="260.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Atan type="Dynamo.Nodes.Atan" guid="22787711-c6a0-4fd6-beb6-4e2eefa7f1d7" nickname="Inverse Tangent" x="237" y="349.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Atan type="Dynamo.Nodes.Atan" guid="969df084-1636-4654-8d13-a52502861123" nickname="Inverse Tangent" x="239" y="450.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="13ef1ac4-c179-4656-bca7-773765487459" start_index="0" end="bdaeb25f-654b-4db9-9c2a-9377d9ebe3f3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="abf6bf3e-d871-4ce2-868b-47de903f7a06" start_index="0" end="15b42154-c3ed-4216-93fe-a3a0b7146074" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c82a5ad7-6a2c-437c-86ee-969e268dbcef" start_index="0" end="2a8fbba7-e455-406a-88e2-6caa4f3983eb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="674d8244-acbc-4ccb-82a4-4556b650e714" start_index="0" end="22787711-c6a0-4fd6-beb6-4e2eefa7f1d7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0dfe38ec-e69e-4ee1-94d5-b76f861adb53" start_index="0" end="969df084-1636-4654-8d13-a52502861123" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

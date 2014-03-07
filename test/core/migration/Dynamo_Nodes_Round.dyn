@@ -1,0 +1,32 @@
+<Workspace Version="0.6.2.29585" X="156" Y="44" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" nickname="Number" x="4" y="102.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="3.000" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="22dd6b7f-8b45-4351-8018-3a1ed4663179" nickname="Number" x="9" y="356.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2.3" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="c2a6381a-a01c-42a9-99b7-d59317ec226a" nickname="Number" x="7" y="194.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-2.000" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="afc588e6-e866-480f-bd12-97b286b449dc" nickname="Number" x="10" y="272.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2.500" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Round type="Dynamo.Nodes.Round" guid="dafc3f8e-3a6a-413a-996a-6014c40c0df0" nickname="Round" x="245" y="81.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Round type="Dynamo.Nodes.Round" guid="02d52330-4bb3-4127-abd2-3a16d6bbb701" nickname="Round" x="242" y="184.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Round type="Dynamo.Nodes.Round" guid="05ff29d6-48d8-4923-90ab-6bc8acaaa9fb" nickname="Round" x="244" y="282.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Round type="Dynamo.Nodes.Round" guid="8ce8a844-70d2-4861-962b-3caccb9398d9" nickname="Round" x="244" y="379.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="cc187b0d-7399-47b9-bdbf-23eebd22551e" nickname="Number" x="6" y="433.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2.8" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Round type="Dynamo.Nodes.Round" guid="dbd083ba-91ec-4e70-a1b9-10efd09daf33" nickname="Round" x="245" y="477.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" start_index="0" end="dafc3f8e-3a6a-413a-996a-6014c40c0df0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="22dd6b7f-8b45-4351-8018-3a1ed4663179" start_index="0" end="8ce8a844-70d2-4861-962b-3caccb9398d9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c2a6381a-a01c-42a9-99b7-d59317ec226a" start_index="0" end="02d52330-4bb3-4127-abd2-3a16d6bbb701" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="afc588e6-e866-480f-bd12-97b286b449dc" start_index="0" end="05ff29d6-48d8-4923-90ab-6bc8acaaa9fb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cc187b0d-7399-47b9-bdbf-23eebd22551e" start_index="0" end="dbd083ba-91ec-4e70-a1b9-10efd09daf33" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

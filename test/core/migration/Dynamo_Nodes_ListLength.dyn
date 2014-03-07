@@ -1,0 +1,20 @@
+<Workspace Version="0.6.3.5265" X="-1062.25814103994" Y="-1514.55393902712" zoom="1.5" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="b3c61406-d429-43d4-8db0-7da92fce1eb5" nickname="List Length" x="1152.17209402662" y="1195.36929268475" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="8178811b-22e8-47a2-b6c1-06c71d1ee7b8" nickname="Number" x="968.83876069329" y="1208.03595935141" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="badd9669-7cb7-4ea4-a271-1fe81fe437b4" nickname="List Length" x="1162.17209402662" y="1284.70262601808" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="65623bcc-d5c7-4a18-bff2-4c83a8f7f97f" nickname="Number" x="970.172094026623" y="1283.36929268475" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1..10" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="4477b43e-0f51-486d-98a5-27ee0b312819" nickname="List Length" x="1159.50542735996" y="1365.36929268475" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="31fe339b-35f6-4c72-aecb-18b8aa6b1d2e" nickname="Empty List" x="964.83876069329" y="1368.03595935141" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="8178811b-22e8-47a2-b6c1-06c71d1ee7b8" start_index="0" end="b3c61406-d429-43d4-8db0-7da92fce1eb5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="65623bcc-d5c7-4a18-bff2-4c83a8f7f97f" start_index="0" end="badd9669-7cb7-4ea4-a271-1fe81fe437b4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="31fe339b-35f6-4c72-aecb-18b8aa6b1d2e" start_index="0" end="4477b43e-0f51-486d-98a5-27ee0b312819" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
