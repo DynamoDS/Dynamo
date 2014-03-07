@@ -1,0 +1,37 @@
+<Workspace Version="0.6.2.29585" X="148" Y="-53" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" nickname="Number" x="4" y="102.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="3.000" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="22dd6b7f-8b45-4351-8018-3a1ed4663179" nickname="Number" x="9" y="356.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2.3" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="c2a6381a-a01c-42a9-99b7-d59317ec226a" nickname="Number" x="7" y="194.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-2.000" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="afc588e6-e866-480f-bd12-97b286b449dc" nickname="Number" x="10" y="272.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2.500" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="cc187b0d-7399-47b9-bdbf-23eebd22551e" nickname="Number" x="6" y="433.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2.8" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Floor type="Dynamo.Nodes.Floor" guid="802f2203-5164-4940-a5e7-6e2760c3c8c9" nickname="Floor" x="201" y="77.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Floor type="Dynamo.Nodes.Floor" guid="89a095a4-28c8-4178-9936-3c47a05f412b" nickname="Floor" x="196" y="166.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Floor type="Dynamo.Nodes.Floor" guid="7aeb508e-fc46-47bd-bdb9-7873a83f3bcb" nickname="Floor" x="195" y="258.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Floor type="Dynamo.Nodes.Floor" guid="a40332b1-ebf2-4d6a-8f82-60cdb990678f" nickname="Floor" x="197" y="350.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Floor type="Dynamo.Nodes.Floor" guid="16ecedce-1dff-4e71-aa7c-a09e1c7e2041" nickname="Floor" x="200" y="442.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Floor type="Dynamo.Nodes.Floor" guid="3120bce8-45de-49b1-9a7e-743b94608ff4" nickname="Floor" x="203" y="537.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="a4e2ad0e-372f-4bd6-b80b-2df5a5852034" nickname="Number" x="7" y="540.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-2.1" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" start_index="0" end="802f2203-5164-4940-a5e7-6e2760c3c8c9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="22dd6b7f-8b45-4351-8018-3a1ed4663179" start_index="0" end="a40332b1-ebf2-4d6a-8f82-60cdb990678f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c2a6381a-a01c-42a9-99b7-d59317ec226a" start_index="0" end="89a095a4-28c8-4178-9936-3c47a05f412b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="afc588e6-e866-480f-bd12-97b286b449dc" start_index="0" end="7aeb508e-fc46-47bd-bdb9-7873a83f3bcb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cc187b0d-7399-47b9-bdbf-23eebd22551e" start_index="0" end="16ecedce-1dff-4e71-aa7c-a09e1c7e2041" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a4e2ad0e-372f-4bd6-b80b-2df5a5852034" start_index="0" end="3120bce8-45de-49b1-9a7e-743b94608ff4" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
