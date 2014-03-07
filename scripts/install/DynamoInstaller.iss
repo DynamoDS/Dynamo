@@ -17,7 +17,7 @@ VersionInfoDescription=Dynamo 0.6.3
 VersionInfoTextVersion=Dynamo 0.6.3
 VersionInfoCopyright=
 DefaultDirName=C:\Autodesk\Dynamo\Core
-DefaultGroupName=
+DefaultGroupName=Dynamo
 OutputDir=Installers
 OutputBaseFilename=InstallDynamo
 SetupIconFile=Extra\logo_square_32x32.ico
@@ -76,6 +76,9 @@ Filename: "{app}\fsharp_redist.exe"; Parameters: "/q"; Flags: runascurrentuser
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qb"; WorkingDir: {tmp};
 ;Filename: "del"; Parameters: "/q {app}\fsharp_redist.exe"; Flags: postinstall runascurrentuser runhidden
 Filename: "{app}\InstallASMForDynamo.exe";
+
+[Icons]
+Name: "{group}\Dynamo"; Filename: "{app}\DynamoSandbox.exe"
 
 [Code]
 { HANDLE INSTALL PROCESS STEPS }
