@@ -8,6 +8,7 @@ using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
 using Dynamo.DSEngine;
@@ -209,11 +210,14 @@ namespace Dynamo
                 changes.AddRange(e.NewItems.Cast<ISelectable>());
             }
 
-            Debug.WriteLine("Selection changed. Visualization updating {0} elements...", changes.Any()?changes.Count:0);
-            UpdateRenderPackages(
-                changes.Any()? 
-                changes.Where(sel => sel is NodeModel).Cast<NodeModel>():
+            //Debug.WriteLine("Selection changed. Visualization updating {0} elements...", changes.Any()?changes.Count:0);
+            if (changes.Any())
+            {
+                UpdateRenderPackages(
+                changes.Any() ?
+                changes.Where(sel => sel is NodeModel).Cast<NodeModel>() :
                 null);
+            }
         }
 
         /// <summary>
@@ -288,15 +292,16 @@ namespace Dynamo
                     //Setup the octree. An optimization would defer this operation until
                     //a short while after update operations are complete to avoid
                     //to many rebuilds of this index while building dynamically.
-                    SetupOctree(toUpdate);
+                    if(!DynamoController.IsTestMode)
+                        SetupOctree(toUpdate);
 
-                    Debug.WriteLine(string.Format("Visualization updating {0} objects", toUpdate.Count()));
+                    //Debug.WriteLine(string.Format("Visualization updating {0} objects", toUpdate.Count()));
                     OnVisualizationUpdateComplete(this, EventArgs.Empty);
                 }
-                else
-                {
-                    Debug.WriteLine("Visualization update deffered: all nodes up to date.");
-                }
+                //else
+                //{
+                //    Debug.WriteLine("Visualization update deffered: all nodes up to date.");
+                //}
 
             }
             catch (Exception ex)
@@ -365,7 +370,7 @@ namespace Dynamo
             }
 
             watch.Stop();
-            Debug.WriteLine(String.Format("{0} ellapsed for aggregating geometry for watch.", watch.Elapsed));
+            //Debug.WriteLine(String.Format("{0} ellapsed for aggregating geometry for watch.", watch.Elapsed));
 
             //LogVisualizationUpdateData(rd, watch.Elapsed.ToString());
         }
