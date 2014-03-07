@@ -17,6 +17,7 @@ ShowLanguageDialog=auto
 LicenseFile=.\extra\DynamoASMLicense.txt
 DirExistsWarning=no
 UsePreviousAppDir=no
+Uninstallable=no
 
 [Files]
 Source: "..\..\extern\DynamoASM\*"; DestDir: {src}\dll; Flags: ignoreversion
