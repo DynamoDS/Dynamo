@@ -247,18 +247,18 @@ namespace Dynamo.Models
 
         /// <summary>
         /// Call this method with a root directory path information, and then 
-        /// a sub-directory named "backup" will be created below it (if one 
-        /// does not already exist).
+        /// a backup sub-directory will be created below it (if one does not 
+        /// already exist).
         /// </summary>
         /// <param name="baseFolder">This is a directory inside which a new 
-        /// "backup" sub-directory will be created. If this paramter does not 
+        /// backup sub-directory will be created. If this paramter does not 
         /// represent a valid directory name, an exception will be thrown.
         /// </param>
         /// <param name="create">Set this parameter to false if the creation of 
-        /// the sub-directory "backup" is not desired. Typically this means the
+        /// the backup sub-directory is not desired. Typically this means the
         /// method is called from within a test case and it is only interested 
         /// in getting the resulting path back without actually creating a new 
-        /// "backup" sub-directory.</param>
+        /// backup sub-directory.</param>
         /// <returns>Returns full path to the backup folder created.</returns>
         /// 
         internal static string GetBackupFolder(string baseFolder, bool create)
@@ -272,7 +272,8 @@ namespace Dynamo.Models
                 throw new ArgumentException(message, "rootFolder");
             }
 
-            var subFolder = Path.Combine(baseFolder, "backup");
+            var backupFolderName = Dynamo.UI.Configurations.BackupFolderName;
+            var subFolder = Path.Combine(baseFolder, backupFolderName);
             if (create && (Directory.Exists(subFolder) == false))
                 Directory.CreateDirectory(subFolder);
 
