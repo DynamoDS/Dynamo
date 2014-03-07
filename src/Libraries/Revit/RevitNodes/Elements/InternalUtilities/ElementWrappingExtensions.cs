@@ -104,6 +104,11 @@ namespace Revit.Elements
             return ModelCurve.FromExisting(ele, isRevitOwned);
         }
 
+        public static CurveByPoints Wrap(Autodesk.Revit.DB.CurveByPoints ele, bool isRevitOwned)
+        {
+            return CurveByPoints.FromExisting(ele, isRevitOwned);
+        }
+
         public static ModelText Wrap(Autodesk.Revit.DB.ModelText ele, bool isRevitOwned)
         {
             return ModelText.FromExisting(ele, isRevitOwned);

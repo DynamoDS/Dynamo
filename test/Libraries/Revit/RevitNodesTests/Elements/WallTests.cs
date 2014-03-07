@@ -7,6 +7,7 @@ using Revit;
 using Revit.Elements;
 using Revit.GeometryObjects;
 using NUnit.Framework;
+using RevitServices.Persistence;
 
 namespace DSRevitNodesTests.Elements
 {
@@ -42,8 +43,11 @@ namespace DSRevitNodesTests.Elements
         [Test]
         public void ByCurveAndLevels_ValidArgs()
         {
+            // prevent rebinding when creating levels
+            ElementBinder.IsEnabled = false;
+
             var elevation = 100;
-            var line = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(10, 10, 0));
+            var line = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 100), Point.ByCoordinates(10, 10, 100));
             var level0 = Level.ByElevation(elevation);
             var level1 = Level.ByElevation(elevation + 100);
             var wallType = WallType.ByName("Curtain Wall 1");

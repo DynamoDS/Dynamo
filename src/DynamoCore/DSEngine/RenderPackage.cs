@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media;
-using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Models;
-using HelixToolkit.Wpf;
 
 namespace Dynamo.DSEngine
 {
@@ -22,11 +18,15 @@ namespace Dynamo.DSEngine
         private List<byte> triangleVertexColor = new List<byte>();
         private List<double> triangleNormals = new List<double>();
 
-        private bool selected;
+        public bool Selected { get; set; }
+
+        public bool DisplayLabels { get; set; }
+
+        public string Tag { get; set; }
 
         public List<double> LineStripVertices
         {
-            get { return lineStripVertices; }
+            get { return lineStripVertices;}
             set { lineStripVertices = value; }
         }
 
@@ -38,13 +38,19 @@ namespace Dynamo.DSEngine
 
         public List<double> TriangleVertices
         {
-            get { return triangleVertices; } 
+            get { return triangleVertices; }
             set { triangleVertices = value; }
+        }
+
+        public List<double> TriangleNormals
+        {
+            get { return triangleNormals; }
+            set { triangleNormals = value; }
         }
 
         public List<byte> LineStripVertexColors
         {
-            get { return lineStripVertexColors; } 
+            get { return lineStripVertexColors; }
             set { lineStripVertexColors = value; }
         }
 
@@ -54,19 +60,39 @@ namespace Dynamo.DSEngine
             set { lineStripVertexCounts = value; }
         }
 
+        /// <summary>
+        /// Store the number of items stored in the RenderPackage
+        /// </summary>
+        public int ItemsCount { get; set; }
+
         public RenderPackage()
         {
-            //nativeRenderPackage = DesignScriptStudio.Renderer.RenderPackageUtils.CreateNativeRenderPackage(this);
-            this.selected = false;
+            Tag = string.Empty;
+            ItemsCount = 0;
         }
 
-        public RenderPackage(bool selected)
+        public RenderPackage(bool selected, bool displayLabels)
         {
             //nativeRenderPackage = DesignScriptStudio.Renderer.RenderPackageUtils.CreateNativeRenderPackage(this);
-            this.selected = selected;
+            Selected = selected;
+            DisplayLabels = displayLabels;
+            Tag = string.Empty;
+            ItemsCount = 0;
         }
 
-        public string Tag { get; set; }
+        public void Clear()
+        {
+            lineStripVertices.Clear();
+            lineStripVertexColors.Clear();
+            lineStripVertexCounts.Clear();
+            pointVertices.Clear();
+            pointVertexColors.Clear();
+            triangleVertices.Clear();
+            triangleVertexColor.Clear();
+            triangleNormals.Clear();
+            Tag = string.Empty;
+            ItemsCount = 0;
+        }
 
         public IntPtr NativeRenderPackage
         {
@@ -89,19 +115,6 @@ namespace Dynamo.DSEngine
             lineStripVertexColors.Add(green);
             lineStripVertexColors.Add(blue);
             lineStripVertexColors.Add(alpha);
-        }
-
-        public void Clear()
-        {
-            lineStripVertices.Clear();
-            lineStripVertexColors.Clear();
-            lineStripVertexCounts.Clear();
-            pointVertices.Clear();
-            pointVertexColors.Clear();
-            triangleVertices.Clear();
-            triangleVertexColor.Clear();
-            triangleNormals.Clear();
-            Tag = string.Empty;
         }
 
         public void PushLineStripVertexCount(int n)
@@ -146,61 +159,66 @@ namespace Dynamo.DSEngine
             triangleNormals.Add(z);
         }
 
-        public void AddToRenderDescription(NodeModel node, RenderDescription rd, Octree.OctreeSearch.Octree octree)
-        {
-            var points = selected ? rd.SelectedPoints : rd.Points;
-            for (int i = 0; i < pointVertices.Count(); i += 3)
-            {
-                var point = new Point3D(pointVertices[i], pointVertices[i + 1], pointVertices[i + 2]);
-                points.Add(point);
-            }
+        //public void AddToRenderDescription(NodeModel node, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        //{
+        //    var points = selected ? rd.SelectedPoints : rd.Points;
+        //    for (int i = 0; i < pointVertices.Count(); i += 3)
+        //    {
+        //        var point = new Point3D(pointVertices[i], pointVertices[i + 1], pointVertices[i + 2]);
+        //        points.Add(point);
+        //    }
 
-            int idx = 0;
-            var lines = selected ? rd.SelectedLines : rd.Lines;
-            foreach (var count in lineStripVertexCounts)
-            {
-                for (int i = 0; i < count; ++i)
-                {
-                    var point = new Point3D(lineStripVertices[idx], lineStripVertices[idx + 1], lineStripVertices[idx + 2]);
-                    lines.Add(point);
-                    if (i != 0 && i != count - 1)
-                    {
-                        lines.Add(point);
-                    }
-                    idx += 3;
-                }
-            }
+        //    int idx = 0;
+        //    var lines = selected ? rd.SelectedLines : rd.Lines;
+        //    foreach (var count in lineStripVertexCounts)
+        //    {
+        //        for (int i = 0; i < count; ++i)
+        //        {
+        //            var point = new Point3D(lineStripVertices[idx], lineStripVertices[idx + 1], lineStripVertices[idx + 2]);
+        //            lines.Add(point);
+        //            if (i != 0 && i != count - 1)
+        //            {
+        //                lines.Add(point);
+        //            }
+        //            idx += 3;
+        //        }
+        //    }
 
-            var builder = new MeshBuilder();
-            var tex = new PointCollection();
-            var norms = new Vector3DCollection();
-            var triangles = new Point3DCollection();
-            var tris = new List<int>();
+        //    var builder = new MeshBuilder();
+        //    var tex = new PointCollection();
+        //    var norms = new Vector3DCollection();
+        //    var triangles = new Point3DCollection();
+        //    var tris = new List<int>();
 
-            for (int i = 0; i < triangleVertices.Count(); i += 3)
-            {
-                var point = new Point3D(triangleVertices[i], triangleVertices[i + 1], triangleVertices[i + 2]); 
-                var normal = new Vector3D(triangleNormals[i], triangleNormals[i + 1], triangleNormals[i + 2]);
+        //    for (int i = 0; i < triangleVertices.Count(); i += 3)
+        //    {
+        //        var point = new Point3D(triangleVertices[i], triangleVertices[i + 1], triangleVertices[i + 2]); 
+        //        var normal = new Vector3D(triangleNormals[i], triangleNormals[i + 1], triangleNormals[i + 2]);
 
-                tris.Add((i + 1) / 3);
-                triangles.Add(point);
-                norms.Add(normal);
-                tex.Add(new System.Windows.Point(0, 0));
+        //        tris.Add((i + 1) / 3);
+        //        triangles.Add(point);
+        //        norms.Add(normal);
+        //        tex.Add(new System.Windows.Point(0, 0));
 
-                octree.AddNode(point.X, point.Y, point.Z, node.GUID.ToString());
-            }
+        //        octree.AddNode(point.X, point.Y, point.Z, node.GUID.ToString());
+        //    }
 
-            builder.Append(triangles, tris, norms, tex);
-            if (builder.Positions.Count > 0)
-            {
-                var meshes = selected ? rd.SelectedMeshes : rd.Meshes;
-                meshes.Add(builder.ToMesh(true));
-            }
-        }
+        //    builder.Append(triangles, tris, norms, tex);
+        //    if (builder.Positions.Count > 0)
+        //    {
+        //        var meshes = selected ? rd.SelectedMeshes : rd.Meshes;
+        //        meshes.Add(builder.ToMesh(true));
+        //    }
+        //}
 
         public void Dispose()
         {
             //DesignScriptStudio.Renderer.RenderPackageUtils.DestroyNativeRenderPackage(nativeRenderPackage);
+        }
+
+        public bool IsNotEmpty()
+        {
+            return lineStripVertices.Any() || pointVertices.Any() || triangleVertices.Any();
         }
     }
 }
