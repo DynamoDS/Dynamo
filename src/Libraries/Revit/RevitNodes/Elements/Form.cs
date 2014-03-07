@@ -10,6 +10,7 @@ using Revit.References;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Face = Revit.GeometryObjects.Face;
+using Solid = Revit.GeometryObjects.Solid;
 
 namespace Revit.Elements
 {
