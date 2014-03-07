@@ -4323,26 +4323,26 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
-            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
-                "Math.Asin", "Math.Asin@double");
-            migrationData.AppendNode(newNode);
-            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
-
-            // Create new node
-            XmlElement converterNode = MigrationManager.CreateFunctionNode(
-                data.Document, "DSCoreNodes.dll",
-                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
+            var converterNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(converterNode, "DSCoreNodes.dll",
+                "Math.DegreesToRadians", "Math.DegreesToRadians@double");
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
 
+            // Create new node
+            XmlElement asinNode = MigrationManager.CreateFunctionNode(
+                data.Document, "DSCoreNodes.dll",
+                "Math.Asin", "Math.Asin@double");
+            migrationData.AppendNode(asinNode);
+            string asinNodeId = MigrationManager.GetGuidFromXmlElement(asinNode);
+
             // Update connectors
-            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
-            PortId newInPortCBN = new PortId(converterNodeId, 0, PortType.INPUT);
+            PortId oldInPort0 = new PortId(converterNodeId, 0, PortType.INPUT);
+            PortId newInPortAsin = new PortId(asinNodeId, 0, PortType.INPUT);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
 
-            data.ReconnectToPort(connector0, newInPortCBN);
-            data.CreateConnector(converterNode, 0, newNode, 0);
+            data.ReconnectToPort(connector0, newInPortAsin);
+            data.CreateConnector(asinNode, 0, converterNode, 0);
 
             return migrationData;
         }
@@ -4378,26 +4378,26 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
-            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
-                "Math.Acos", "Math.Acos@double");
-            migrationData.AppendNode(newNode);
-            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
-
-            // Create new node
-            XmlElement converterNode = MigrationManager.CreateFunctionNode(
-                data.Document, "DSCoreNodes.dll",
-                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
+            var converterNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(converterNode, "DSCoreNodes.dll",
+                "Math.DegreesToRadians", "Math.DegreesToRadians@double");
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
 
+            // Create new node
+            XmlElement acosNode = MigrationManager.CreateFunctionNode(
+                data.Document, "DSCoreNodes.dll",
+                "Math.Acos", "Math.Acos@double");
+            migrationData.AppendNode(acosNode);
+            string acosNodeId = MigrationManager.GetGuidFromXmlElement(acosNode);
+
             // Update connectors
-            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
-            PortId newInPortCBN = new PortId(converterNodeId, 0, PortType.INPUT);
+            PortId oldInPort0 = new PortId(converterNodeId, 0, PortType.INPUT);
+            PortId newInPortAcos = new PortId(acosNodeId, 0, PortType.INPUT);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
 
-            data.ReconnectToPort(connector0, newInPortCBN);
-            data.CreateConnector(converterNode, 0, newNode, 0);
+            data.ReconnectToPort(connector0, newInPortAcos);
+            data.CreateConnector(acosNode, 0, converterNode, 0);
 
             return migrationData;
         }
@@ -4433,26 +4433,26 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
-            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
-                "Math.Atan", "Math.Atan@double");
-            migrationData.AppendNode(newNode);
-            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
-
-            // Create new node
-            XmlElement converterNode = MigrationManager.CreateFunctionNode(
-                data.Document, "DSCoreNodes.dll",
-                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
+            var converterNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(converterNode, "DSCoreNodes.dll",
+                "Math.DegreesToRadians", "Math.DegreesToRadians@double");
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
 
+            // Create new node
+            XmlElement atanNode = MigrationManager.CreateFunctionNode(
+                data.Document, "DSCoreNodes.dll",
+                "Math.Atan", "Math.Atan@double");
+            migrationData.AppendNode(atanNode);
+            string atanNodeId = MigrationManager.GetGuidFromXmlElement(atanNode);
+
             // Update connectors
-            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
-            PortId newInPortCBN = new PortId(converterNodeId, 0, PortType.INPUT);
+            PortId oldInPort0 = new PortId(converterNodeId, 0, PortType.INPUT);
+            PortId newInPortAtan = new PortId(atanNodeId, 0, PortType.INPUT);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
 
-            data.ReconnectToPort(connector0, newInPortCBN);
-            data.CreateConnector(converterNode, 0, newNode, 0);
+            data.ReconnectToPort(connector0, newInPortAtan);
+            data.CreateConnector(atanNode, 0, converterNode, 0);
 
             return migrationData;
         }
