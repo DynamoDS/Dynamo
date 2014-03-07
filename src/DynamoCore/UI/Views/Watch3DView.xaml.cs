@@ -277,8 +277,6 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void RenderDrawables(VisualizationEventArgs e)
         {
-            //Debug.WriteLine(string.Format("Rendering full screen Watch3D on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
-            
             //check the id, if the id is meant for another watch,
             //then ignore it
             if (e.Id != _id)

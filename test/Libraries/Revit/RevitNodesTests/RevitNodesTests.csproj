@@ -70,6 +70,7 @@
     <Compile Include="AnalysisDisplay\VectorAnalysisDisplayTests.cs" />
     <Compile Include="ApproximateAssertExtensions.cs" />
     <Compile Include="Elements\AdaptiveComponentTests.cs" />
+    <Compile Include="Elements\CurveByPointsTests.cs" />
     <Compile Include="Elements\DividedPathTests.cs" />
     <Compile Include="Elements\DividedSurfaceTests.cs" />
     <Compile Include="Elements\DocumentTests.cs" />
