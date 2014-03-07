@@ -98,6 +98,9 @@ namespace Dynamo.ViewModels
                     case "OpenFileCommand":
                         command = OpenFileCommand.DeserializeCore(element);
                         break;
+                    case "PausePlaybackCommand":
+                        command = PausePlaybackCommand.DeserializeCore(element);
+                        break;
                     case "RunCancelCommand":
                         command = RunCancelCommand.DeserializeCore(element);
                         break;
@@ -197,6 +200,47 @@ namespace Dynamo.ViewModels
             /// here must be exactly what DeserializeCore method expects.</param>
             /// 
             protected abstract void SerializeCore(XmlElement element);
+
+            #endregion
+        }
+
+        public class PausePlaybackCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            public PausePlaybackCommand(int pauseDurationInMs)
+            {
+                this.PauseDurationInMs = pauseDurationInMs;
+            }
+
+            internal static PausePlaybackCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                var pauseDurationInMs = helper.ReadInteger("PauseDurationInMs");
+                return new PausePlaybackCommand(pauseDurationInMs);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal int PauseDurationInMs { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                // A PausePlaybackCommand should never be executed.
+                throw new NotImplementedException();
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("PauseDurationInMs", this.PauseDurationInMs);
+            }
 
             #endregion
         }
