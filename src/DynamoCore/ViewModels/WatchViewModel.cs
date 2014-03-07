@@ -92,6 +92,12 @@ namespace Dynamo.ViewModels
         {
             _label = string.Format("[{0}] {1}", tag, label);
         }
+
+        public WatchItem(string label, string tag, bool expanded)
+        {
+            _label = string.Format("[{0}] {1}", tag, label);
+            IsNodeExpanded = expanded;
+        }
     }
 
     //public class WatchTreeBranch : ObservableCollection<WatchItem>
