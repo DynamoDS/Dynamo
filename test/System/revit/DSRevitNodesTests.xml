@@ -224,6 +224,8 @@
 			</testFixture>
       <testFixture name="CurveByPointsTests">
         <test name="ByReferencePoints_ValidArgs" modelPath=".\empty.rfa" />
+        <test name="ByReferencePoints_DuplicatePoints" modelPath=".\empty.rfa" />
+        <test name="ByReferencePoints_Mutation" modelPath=".\empty.rfa" />
       </testFixture>
 		</testAssembly>
 	</testAssemblies>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Revit.Elements;
 using RevitServices.Persistence;
@@ -26,6 +27,49 @@ namespace DSRevitNodesTests.Elements
 
             var curveRef = curveByPoints.CurveReference;
             Assert.NotNull(curveRef);
+        }
+
+        [Test]
+        public void ByReferencePoints_DuplicatePoints()
+        {
+            ElementBinder.IsEnabled = false;
+
+            var p1 = ReferencePoint.ByCoordinates(0, 0, 0);
+            var p2 = ReferencePoint.ByCoordinates(1, 1, 1);
+
+            Assert.NotNull(p1);
+            Assert.NotNull(p2);
+
+            //ensure that the call to create a curve by points with 
+            //duplicate points is handled and a system exception is thrown
+            Assert.Throws<Exception>(
+                () => CurveByPoints.ByReferencePoints(new List<ReferencePoint> {p1, p2, p2}));
+        }
+
+        [Test]
+        public void ByReferencePoints_Mutation()
+        {
+            ElementBinder.IsEnabled = false;
+
+            var p1 = ReferencePoint.ByCoordinates(0, 0, 0);
+            var p2 = ReferencePoint.ByCoordinates(1, 1, 1);
+            var p3 = ReferencePoint.ByCoordinates(2, 2, 2);
+
+            Assert.NotNull(p1);
+            Assert.NotNull(p2);
+            Assert.NotNull(p3);
+
+            ElementBinder.IsEnabled = true;
+
+            var curveByPoints = CurveByPoints.ByReferencePoints(new List<ReferencePoint> { p1, p2, p3 });
+            Assert.NotNull(curveByPoints);
+
+            var curveRef = curveByPoints.CurveReference;
+            Assert.NotNull(curveRef);
+
+            var p4 = ReferencePoint.ByCoordinates(3, 3, 3);
+            curveByPoints = CurveByPoints.ByReferencePoints(new List<ReferencePoint> { p1, p2, p4 });
+            Assert.NotNull(curveByPoints);
         }
     }
 }
