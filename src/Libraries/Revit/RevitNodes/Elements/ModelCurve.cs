@@ -2,17 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 using DSNodeServices;
-using Revit.Elements;
 using Revit.GeometryConversion;
-using Revit.GeometryObjects;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
-using Revit.References;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Curve = Autodesk.Revit.DB.Curve;
@@ -25,29 +19,8 @@ namespace Revit.Elements
     /// A Revit ModelCurve
     /// </summary>
     [RegisterForTrace]
-    public class ModelCurve : AbstractElement
+    public class ModelCurve : CurveElement
     {
-
-        #region Internal properties
-
-        /// <summary>
-        /// Reference to the Element
-        /// </summary>
-        internal Autodesk.Revit.DB.ModelCurve InternalModelCurve
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Reference to the Element
-        /// </summary>
-        public override Autodesk.Revit.DB.Element InternalElement
-        {
-            get { return InternalModelCurve; }
-        }
-
-        #endregion
-
         #region Private constructors
 
         /// <summary>
@@ -56,7 +29,7 @@ namespace Revit.Elements
         /// <param name="curve"></param>
         private ModelCurve(Autodesk.Revit.DB.ModelCurve curve)
         {
-            InternalSetModelCurve(curve);
+            InternalSetCurveElement(curve);
         }
 
         // PB: This implementation borrows the somewhat risky notions from the original Dynamo
@@ -69,7 +42,6 @@ namespace Revit.Elements
         /// <param name="c"></param>
         private ModelCurve(Autodesk.Revit.DB.Curve c)
         {
-
             //Phase 1 - Check to see if the object exists and should be rebound
             var mc =
                 ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.ModelCurve>(Document);
@@ -78,7 +50,7 @@ namespace Revit.Elements
             // if you can't, rebuild 
             if (mc != null)
             {
-                InternalSetModelCurve(mc);
+                InternalSetCurveElement(mc);
                 if (!InternalSetSketchPlaneFromCurve(c))
                 {
                     InternalSetCurve(c);
@@ -114,7 +86,7 @@ namespace Revit.Elements
                 DocumentManager.GetInstance().DeleteElement(sp.Id);
             }
 
-            InternalSetModelCurve(mc);
+            InternalSetCurveElement(mc);
 
             TransactionManager.GetInstance().TransactionTaskDone();
 
@@ -138,7 +110,7 @@ namespace Revit.Elements
 
             // attempt to change the sketch plane
             bool needsRemake = false;
-            ElementId idSpUnused = resetSketchPlaneMethod(this.InternalModelCurve, c, plane, out needsRemake);
+            ElementId idSpUnused = resetSketchPlaneMethod(this.InternalCurveElement, c, plane, out needsRemake);
 
             // if we got a valid id, delete the old sketch plane
             if (idSpUnused != ElementId.InvalidElementId)
@@ -147,57 +119,6 @@ namespace Revit.Elements
             }
 
             return !needsRemake;
-        }
-
-        /// <summary>
-        /// Set the geometry curve used by the ModelCurve
-        /// </summary>
-        /// <param name="c"></param>
-        private void InternalSetCurve(Autodesk.Revit.DB.Curve c)
-        {
-            if (!this.InternalModelCurve.GeometryCurve.IsBound && c.IsBound)
-            {
-                c = c.Clone();
-                c.MakeUnbound();
-            }
-            setCurveMethod(this.InternalModelCurve, c); 
-        }
-
-        /// <summary>
-        /// Set the internal model curve along with its id's
-        /// </summary>
-        /// <param name="modelCurve"></param>
-        private void InternalSetModelCurve(Autodesk.Revit.DB.ModelCurve modelCurve)
-        {
-            this.InternalModelCurve = modelCurve;
-            this.InternalElementId = modelCurve.Id;
-            this.InternalUniqueId = modelCurve.UniqueId;
-        }
-
-        #endregion
-
-        #region Public Properties
-
-        /// <summary>
-        /// Obtain the reference curve for this ModelCurve
-        /// </summary>
-        public CurveReference CurveReference
-        {
-            get
-            {
-                return new CurveReference(InternalModelCurve.GeometryCurve);
-            }
-        }
-
-        /// <summary>
-        /// Obtain the geometry curve for this geometry curve
-        /// </summary>
-        public Autodesk.DesignScript.Geometry.Curve Curve
-        {
-            get
-            {
-                return InternalModelCurve.GeometryCurve.ToProtoType();
-            }
         }
 
         #endregion
@@ -241,41 +162,9 @@ namespace Revit.Elements
 
         #region Helper methods
 
-        private static bool hasMethodSetCurve = true;
-
-        private static void setCurveMethod(Autodesk.Revit.DB.ModelCurve mc, Curve c)
-        {
-            bool foundMethod = false;
-
-            if (hasMethodSetCurve)
-            {
-                Type CurveElementType = typeof(Autodesk.Revit.DB.CurveElement);
-                MethodInfo[] curveElementMethods = CurveElementType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-                System.String nameOfMethodSetCurve = "SetGeometryCurveOverridingJoins";
-
-                foreach (MethodInfo m in curveElementMethods)
-                {
-                    if (m.Name == nameOfMethodSetCurve)
-                    {
-                        object[] argsM = new object[1];
-                        argsM[0] = c;
-
-                        foundMethod = true;
-                        m.Invoke(mc, argsM);
-                        break;
-                    }
-                }
-            }
-            if (!foundMethod)
-            {
-                hasMethodSetCurve = false;
-                mc.GeometryCurve = c;
-            }
-        }
-
         private static bool hasMethodResetSketchPlane = true;
 
-        private static ElementId resetSketchPlaneMethod(Autodesk.Revit.DB.ModelCurve mc, Curve c, Autodesk.Revit.DB.Plane flattenedOnPlane, out bool needsSketchPlaneReset)
+        private static ElementId resetSketchPlaneMethod(Autodesk.Revit.DB.CurveElement mc, Curve c, Autodesk.Revit.DB.Plane flattenedOnPlane, out bool needsSketchPlaneReset)
         {
             //do we need to reset?
             needsSketchPlaneReset = false;
@@ -502,7 +391,6 @@ namespace Revit.Elements
         }
 
         #endregion
-
     }
 }
 

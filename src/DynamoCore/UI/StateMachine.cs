@@ -280,14 +280,14 @@ namespace Dynamo.ViewModels
 
         private void OnDragSelectionStarted(object sender, EventArgs e)
         {
-            Debug.WriteLine("Drag started : Visualization paused.");
+            //Debug.WriteLine("Drag started : Visualization paused.");
             if (DragSelectionStarted != null)
                 DragSelectionStarted(sender, e);
         }
 
         private void OnDragSelectionEnded(object sender, EventArgs e)
         {
-            Debug.WriteLine("Drag ended : Visualization unpaused.");
+            //Debug.WriteLine("Drag ended : Visualization unpaused.");
             if (DragSelectionEnded != null)
                 DragSelectionEnded(sender, e);
         }
@@ -772,6 +772,9 @@ namespace Dynamo.ViewModels
 
             private void InitiateWindowSelectionSequence()
             {
+                // visualization pause
+                owningWorkspace.OnDragSelectionStarted(this, EventArgs.Empty);
+
                 // The state machine must be in idle state.
                 if (this.currentState != State.None)
                     throw new InvalidOperationException();
@@ -790,9 +793,6 @@ namespace Dynamo.ViewModels
                 this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
 
                 SetCurrentState(State.WindowSelection);
-
-                // visualization pause
-                owningWorkspace.OnDragSelectionStarted(this, EventArgs.Empty);
             }
             #endregion
         }

@@ -39,24 +39,13 @@
                     <HelixToolkit:DefaultLights>
                     </HelixToolkit:DefaultLights>
                 </HelixToolkit:LightVisual3D>
-                <!--<HelixToolkit:GridLinesVisual3D  Width="8" Length="8" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>-->
-                <HelixToolkit:PointsVisual3D Size="6" Color="{StaticResource pointColor}" Points="{Binding Path=HelixPoints, Mode=TwoWay}"/>
-                <HelixToolkit:LinesVisual3D Thickness="1" Color="{StaticResource lineColor}" Points="{Binding Path=HelixLines, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
-                <HelixToolkit:PointsVisual3D Size="8" Color="Cyan" Points="{Binding Path=HelixPointsSelected, Mode=TwoWay}"></HelixToolkit:PointsVisual3D>
-                <HelixToolkit:LinesVisual3D Thickness="3" Color="Cyan" Points="{Binding Path=HelixLinesSelected, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
-                
+                <HelixToolkit:PointsVisual3D Size="6" Color="{StaticResource pointColor}" Points="{Binding Path=Points, Mode=TwoWay}"/>
+                <HelixToolkit:LinesVisual3D Thickness="1" Color="{StaticResource lineColor}" Points="{Binding Path=Lines, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
+                <HelixToolkit:PointsVisual3D Size="8" Color="Cyan" Points="{Binding Path=PointsSelected, Mode=TwoWay}"></HelixToolkit:PointsVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="3" Color="Cyan" Points="{Binding Path=LinesSelected, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
                 <ModelVisual3D>
                     <ModelVisual3D.Content>
-                        <!--<GeometryModel3D Geometry="{Binding HelixMesh}" Material="{Binding Path=HelixMeshMaterial}"/>-->
-                        <GeometryModel3D Geometry="{Binding HelixMesh}">
-                            <!--A box for testing-->
-                            <!--<GeometryModel3D.Geometry>
-                                <MeshGeometry3D 
-                                      Positions="-1 -1 0  1 -1 0  -1 1 0  1 1 0"
-                                      Normals="0 0 1  0 0 1  0 0 1  0 0 1"
-                                      TextureCoordinates="0 1  1 1  0 0  1 0   "
-                                      TriangleIndices="0 1 2  1 3 2" />
-                            </GeometryModel3D.Geometry>-->
+                        <GeometryModel3D Geometry="{Binding Mesh}">
                             <GeometryModel3D.Material>
                                 <DiffuseMaterial>
                                     <DiffuseMaterial.Brush>
@@ -76,7 +65,7 @@
                 </ModelVisual3D>
                 <ModelVisual3D>
                     <ModelVisual3D.Content>
-                        <GeometryModel3D Geometry="{Binding HelixMeshSelected}">
+                        <GeometryModel3D Geometry="{Binding MeshSelected}">
                             <GeometryModel3D.Material>
                                 <DiffuseMaterial>
                                     <DiffuseMaterial.Brush>
@@ -94,17 +83,12 @@
                         </GeometryModel3D>
                     </ModelVisual3D.Content>
                 </ModelVisual3D>
-                <HelixToolkit:LinesVisual3D Thickness="4" Color="Red" Points="{Binding Path=HelixXAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
-                <HelixToolkit:LinesVisual3D Thickness="4" Color="Green" Points="{Binding Path=HelixYAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
-                <HelixToolkit:LinesVisual3D Thickness="4" Color="Blue" Points="{Binding Path=HelixZAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
-                <HelixToolkit:LinesVisual3D Thickness="1" Color="DarkGray" Points="{Binding Path=HelixGrid, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="4" Color="Red" Points="{Binding Path=XAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="4" Color="Green" Points="{Binding Path=YAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="4" Color="Blue" Points="{Binding Path=ZAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="1" Color="DarkGray" Points="{Binding Path=Grid, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
             </ModelVisual3D>
-            <!--<HelixToolkit:BillboardTextVisual3D 
-                Foreground="Black" 
-                Background="LightBlue" BorderBrush="DarkBlue" BorderThickness="1" Height="2" Padding="2" FontFamily="Arial" FontWeight="Normal"
-                Position="-1,1,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Text="TextBillboardVisual3D">
-            </HelixToolkit:BillboardTextVisual3D>-->
-            <HelixToolkit:BillboardTextGroupVisual3D Foreground="DarkGray" Items="{Binding HelixText}" BorderThickness="1" FontSize="12" Padding="2" FontFamily="Arial" HeightFactor="1"/>
+            <HelixToolkit:BillboardTextGroupVisual3D Foreground="DarkGray" Items="{Binding Text}" BorderThickness="1" FontSize="12" Padding="2" FontFamily="Arial" HeightFactor="1"/>
         </HelixToolkit:HelixViewport3D>
 
         <Thumb Name ="resizeThumb" Width="10" Height="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5"

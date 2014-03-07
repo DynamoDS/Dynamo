@@ -24,8 +24,6 @@ namespace DynamoCoreUITests
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
 
-            //var env = new ExecutionEnvironment();
-
             Controller = new DynamoController(typeof(DynamoViewModel), "None", null, updateManager, new DefaultWatchHandler(), new PreferenceSettings());
             DynamoController.IsTestMode = true;
 
@@ -48,6 +46,12 @@ namespace DynamoCoreUITests
             {
                 EmptyTempFolder();
             }
+        }
+
+        [SetUp]
+        public void Setup()
+        {
+            //Do nothing.
         }
 
         [TearDown]

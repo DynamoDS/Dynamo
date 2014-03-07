@@ -101,7 +101,7 @@ namespace Dynamo.Nodes
         /// <returns>WatchNode</returns>
         public WatchItem Process(MirrorData data, int index, bool showRawData = true)
         {
-            WatchItem node;
+            WatchItem node = null;
 
             if (data == null || data.IsNull)
             {
@@ -239,6 +239,12 @@ namespace Dynamo.Nodes
             //Get MirrorData from the RuntimeMirror
             var mirrorData = mirror.GetData();
             return Process(mirrorData, 0, false);
+        }
+
+        public override void UpdateRenderPackage()
+        {
+            //do nothing
+            //a watch should not draw its outputs
         }
 
         #endregion

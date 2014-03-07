@@ -1645,7 +1645,7 @@ namespace Dynamo.ViewModels
 
         public void GetBranchVisualization(object parameters)
         {
-            dynSettings.Controller.VisualizationManager.RenderUpstream(null);
+            dynSettings.Controller.VisualizationManager.AggregateUpstreamRenderPackages(null);
         }
 
         public bool CanGetBranchVisualization(object parameter)
