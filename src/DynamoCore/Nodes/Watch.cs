@@ -109,14 +109,12 @@ namespace Dynamo.Nodes
             }
             else if (data.IsCollection)
             {
-                //string newPrefix = prefix + "\t";
                 var list = data.GetElements();
 
-                node = new WatchItem(list.Count == 0 ? "Empty List" : "List", index.ToString(CultureInfo.InvariantCulture));
+                node = new WatchItem(list.Count == 0 ? "Empty List" : "List", index.ToString(CultureInfo.InvariantCulture), true);
 
                 foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
                 {
-                    //node.Children.Add(ProcessMirrorData(e.Element, newPrefix, e.Index, true));
                     node.Children.Add(Process(e.Element, e.Index, true));
                 }
             }
@@ -195,6 +193,7 @@ namespace Dynamo.Nodes
 #if USE_DSENGINE
 
         #region NodeValueUpdated event handler
+
         void NodeValueUpdated(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != "IsUpdated")
