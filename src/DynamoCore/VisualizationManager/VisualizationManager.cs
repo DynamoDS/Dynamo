@@ -163,7 +163,7 @@ namespace Dynamo
         void NodeDeleted(NodeModel node)
         {
             node.PropertyChanged -= NodePropertyChanged;
-            OnVisualizationUpdateComplete(this, EventArgs.Empty);
+            UpdateRenderPackages();
         }
 
         /// <summary>
@@ -360,7 +360,20 @@ namespace Dynamo
                     _controller.DynamoModel.Nodes.SelectMany(x=>x.RenderPackages);
 
                 if (packages.Any())
-                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), string.Empty));
+                {
+                    // if there are packages, send any that aren't empty
+                    OnResultsReadyToVisualize(this,
+                        new VisualizationEventArgs(
+                            packages.Where(x => ((RenderPackage) x).IsNotEmpty()).Cast<RenderPackage>(), string.Empty));
+                }
+                else
+                {
+                    // if there are no packages, still trigger an update
+                    // so the view gets redrawn
+                    OnResultsReadyToVisualize(this,
+                        new VisualizationEventArgs(packages.Cast<RenderPackage>(), string.Empty));
+                }
+                    
             }
             else
             {
