@@ -4142,9 +4142,10 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            // Code block node to convert from Radians to Degrees
-            XmlElement converterNode = MigrationManager.CreateCodeBlockNodeModelNode(
-                data.Document, "x*180/Math.PI;");
+            // Create new node
+            XmlElement converterNode = MigrationManager.CreateFunctionNode(
+                data.Document, "DSCoreNodes.dll",
+                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
 
@@ -4207,9 +4208,10 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            // Code block node to convert from Radians to Degrees
-            XmlElement converterNode = MigrationManager.CreateCodeBlockNodeModelNode(
-                data.Document, "x*180/Math.PI;");
+            // Create new node
+            XmlElement converterNode = MigrationManager.CreateFunctionNode(
+                data.Document, "DSCoreNodes.dll",
+                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
 
@@ -4272,9 +4274,10 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            // Code block node to convert from Radians to Degrees
-            XmlElement converterNode = MigrationManager.CreateCodeBlockNodeModelNode(
-                data.Document, "x*180/Math.PI;");
+            // Create new node
+            XmlElement converterNode = MigrationManager.CreateFunctionNode(
+                data.Document, "DSCoreNodes.dll",
+                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
 
@@ -4326,9 +4329,10 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            // Code block node to convert from Radians to Degrees
-            XmlElement converterNode = MigrationManager.CreateCodeBlockNodeModelNode(
-                data.Document, "x*180/Math.PI;");
+            // Create new node
+            XmlElement converterNode = MigrationManager.CreateFunctionNode(
+                data.Document, "DSCoreNodes.dll",
+                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
 
@@ -4380,9 +4384,10 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            // Code block node to convert from Radians to Degrees
-            XmlElement converterNode = MigrationManager.CreateCodeBlockNodeModelNode(
-                data.Document, "x*180/Math.PI;");
+            // Create new node
+            XmlElement converterNode = MigrationManager.CreateFunctionNode(
+                data.Document, "DSCoreNodes.dll",
+                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
 
@@ -4434,9 +4439,10 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            // Code block node to convert from Radians to Degrees
-            XmlElement converterNode = MigrationManager.CreateCodeBlockNodeModelNode(
-                data.Document, "x*180/Math.PI;");
+            // Create new node
+            XmlElement converterNode = MigrationManager.CreateFunctionNode(
+                data.Document, "DSCoreNodes.dll",
+                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
 
