@@ -251,6 +251,7 @@ namespace Dynamo.ViewModels
             protected override void SerializeCore(XmlElement element)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("Tag", this.Tag);
                 helper.SetAttribute("PauseDurationInMs", this.PauseDurationInMs);
             }
 

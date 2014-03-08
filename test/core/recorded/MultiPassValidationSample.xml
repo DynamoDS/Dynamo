@@ -1,0 +1,17 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand NodeId="c8d1655c-f4f4-41d1-bd5b-7ad39fc04118" NodeName="Code Block" X="126" Y="126" DefaultPosition="false" TransformCoordinates="true" />
+  <UpdateModelValueCommand ModelGuid="c8d1655c-f4f4-41d1-bd5b-7ad39fc04118" Name="Code" Value="10" />
+  <CreateNodeCommand NodeId="0f2ef49a-eff4-445a-987b-9417b1a52cc5" NodeName="Code Block" X="107" Y="297" DefaultPosition="false" TransformCoordinates="true" />
+  <UpdateModelValueCommand ModelGuid="0f2ef49a-eff4-445a-987b-9417b1a52cc5" Name="Code" Value="20" />
+  <CreateNodeCommand NodeId="e0556feb-95d9-4043-945b-f83aed25ef02" NodeName="+@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <MakeConnectionCommand NodeId="c8d1655c-f4f4-41d1-bd5b-7ad39fc04118" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="e0556feb-95d9-4043-945b-f83aed25ef02" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="0f2ef49a-eff4-445a-987b-9417b1a52cc5" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="e0556feb-95d9-4043-945b-f83aed25ef02" PortIndex="0" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand PauseDurationInMs="50" Tag="InitialRun" />
+  <UpdateModelValueCommand ModelGuid="c8d1655c-f4f4-41d1-bd5b-7ad39fc04118" Name="Code" Value="2;" />
+  <UpdateModelValueCommand ModelGuid="0f2ef49a-eff4-445a-987b-9417b1a52cc5" Name="Code" Value="3;" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand PauseDurationInMs="50" Tag="SecondRun" />
+</Commands>

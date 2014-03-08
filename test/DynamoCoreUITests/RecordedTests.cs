@@ -269,6 +269,26 @@ namespace Dynamo.Tests.UI
         #region General Node Operations Test Cases
 
         [Test, RequiresSTA]
+        public void MultiPassValidationSample()
+        {
+            RunCommandsFromFile("MultiPassValidationSample.xml", false, (commandTag) =>
+            {
+                if (commandTag == "InitialRun")
+                {
+                    AssertPreviewValue("c8d1655c-f4f4-41d1-bd5b-7ad39fc04118", 10);
+                    AssertPreviewValue("0f2ef49a-eff4-445a-987b-9417b1a52cc5", 20);
+                    AssertPreviewValue("e0556feb-95d9-4043-945b-f83aed25ef02", 30);
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("c8d1655c-f4f4-41d1-bd5b-7ad39fc04118", 2);
+                    AssertPreviewValue("0f2ef49a-eff4-445a-987b-9417b1a52cc5", 3);
+                    AssertPreviewValue("e0556feb-95d9-4043-945b-f83aed25ef02", 5);
+                }
+            });
+        }
+
+        [Test, RequiresSTA]
         public void TestModifyPythonNodes()
         {
             RunCommandsFromFile("ModifyPythonNodes.xml");
@@ -379,7 +399,7 @@ namespace Dynamo.Tests.UI
                     // because "OnAutomationPlaybackStateChanged" would not have 
                     // been called if the "commandCallback" was not registered.
                     // 
-                    this.commandCallback(e.OldTag);
+                    this.commandCallback(e.NewTag);
                 }
             }
         }
