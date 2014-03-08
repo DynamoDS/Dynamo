@@ -13,14 +13,17 @@ namespace Dynamo.ViewModels
 {
     class PlaybackStateChangedEventArgs : EventArgs
     {
-        internal PlaybackStateChangedEventArgs(
-            AutomationSettings.State oldState,
-            AutomationSettings.State newState)
+        internal PlaybackStateChangedEventArgs(string oldCommandTag, string newCommandTag,
+            AutomationSettings.State oldState, AutomationSettings.State newState)
         {
             this.OldState = oldState;
             this.NewState = newState;
+            this.OldTag = oldCommandTag;
+            this.NewTag = newCommandTag;
         }
 
+        internal string OldTag { get; private set; }
+        internal string NewTag { get; private set; }
         internal AutomationSettings.State OldState { get; private set; }
         internal AutomationSettings.State NewState { get; private set; }
     }
@@ -369,7 +372,10 @@ namespace Dynamo.ViewModels
             this.CurrentState = playbackState;
             if (os != ns && (this.PlaybackStateChanged != null))
             {
-                var args = new PlaybackStateChangedEventArgs(os, ns);
+                var ot = ((PreviousCommand == null) ? "" : PreviousCommand.Tag);
+                var nt = ((CurrentCommand == null) ? "" : CurrentCommand.Tag);
+
+                var args = new PlaybackStateChangedEventArgs(ot, nt, os, ns);
                 this.PlaybackStateChanged(this, args);
             }
         }
