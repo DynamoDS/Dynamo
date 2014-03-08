@@ -41,6 +41,7 @@ namespace Dynamo.ViewModels
             protected RecordableCommand()
             {
                 this.IsInPlaybackMode = false;
+                this.Tag = string.Empty;
             }
 
             /// <summary>
@@ -142,6 +143,7 @@ namespace Dynamo.ViewModels
                 if (null != command)
                 {
                     command.IsInPlaybackMode = true;
+                    command.Tag = element.GetAttribute("Tag");
                     return command;
                 }
 
@@ -174,6 +176,16 @@ namespace Dynamo.ViewModels
             /// serialized in anyway.
             /// </summary>
             internal bool IsInPlaybackMode { get; private set; }
+
+            /// <summary>
+            /// This is an optional tag for each of the recorded commands in a 
+            /// command Xml file. A command can only be tagged from within a 
+            /// command Xml file manually, and a tag is useful for unit test 
+            /// verification passes. See PlaybackStateChangedEventArgs class for 
+            /// possible usage of command tags. If a command is not tagged, its 
+            /// default tag value is an empty string.
+            /// </summary>
+            internal string Tag { get; private set; }
 
             #endregion
 
