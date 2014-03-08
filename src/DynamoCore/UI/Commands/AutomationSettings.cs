@@ -11,6 +11,23 @@ using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
 {
+    class PlaybackStateChangedEventArgs : EventArgs
+    {
+        internal PlaybackStateChangedEventArgs(
+            AutomationSettings.State oldState,
+            AutomationSettings.State newState)
+        {
+            this.OldState = oldState;
+            this.NewState = newState;
+        }
+
+        internal AutomationSettings.State OldState { get; private set; }
+        internal AutomationSettings.State NewState { get; private set; }
+    }
+
+    delegate void PlaybackStateChangedEventHandler(
+        object sender, PlaybackStateChangedEventArgs e);
+
     class AutomationSettings
     {
         #region Class Data Members
@@ -59,12 +76,21 @@ namespace Dynamo.ViewModels
 
         #endregion
 
+        #region Class Events
+
+        internal event PlaybackStateChangedEventHandler PlaybackStateChanged;
+
+        #endregion
+
         #region Class Properties
 
         internal int CommandInterval { get; private set; }
         internal int PauseAfterPlayback { get; private set; }
         internal bool ExitAfterPlayback { get; private set; }
         internal State CurrentState { get; private set; }
+
+        internal DynCmd.RecordableCommand PreviousCommand { get; private set; }
+        internal DynCmd.RecordableCommand CurrentCommand { get; private set; }
 
         internal bool IsInPlaybackMode
         {
@@ -92,12 +118,15 @@ namespace Dynamo.ViewModels
             this.PauseAfterPlayback = 10; // 10ms after playback is done.
             this.ExitAfterPlayback = true; // Exit Dynamo after playback.
 
+            this.PreviousCommand = null;
+            this.CurrentCommand = null;
+
             this.CurrentState = State.None;
             if (LoadCommandFromFile(commandFilePath))
-                this.CurrentState = State.Loaded;
+                ChangeStateInternal(State.Loaded);
             else
             {
-                this.CurrentState = State.Recording;
+                ChangeStateInternal(State.Recording);
                 recordedCommands = new List<DynCmd.RecordableCommand>();
             }
 
@@ -126,7 +155,7 @@ namespace Dynamo.ViewModels
             playbackTimer.Interval = TimeSpan.FromMilliseconds(CommandInterval);
             playbackTimer.Tick += OnPlaybackTimerTick;
             playbackTimer.Start();
-            this.CurrentState = State.Playing;
+            ChangeStateInternal(State.Playing);
         }
 
         internal void RecordCommand(DynCmd.RecordableCommand command)
@@ -240,7 +269,7 @@ namespace Dynamo.ViewModels
 
         private void PauseCommandPlayback(int pauseDurationInMs)
         {
-            if (pauseDurationInMs == 0)
+            if (pauseDurationInMs <= 0)
                 pauseDurationInMs = 20; // Minimum pause of 20 milliseconds.
 
             this.playbackTimer.Tick -= OnPlaybackTimerTick;
@@ -249,7 +278,7 @@ namespace Dynamo.ViewModels
             var interval = TimeSpan.FromMilliseconds(pauseDurationInMs);
             this.playbackTimer.Interval = interval;
             this.playbackTimer.Start(); // Start pausing timer.
-            this.CurrentState = State.Paused;
+            ChangeStateInternal(State.Paused);
         }
 
         private void OnPlaybackTimerTick(object sender, EventArgs e)
@@ -266,7 +295,7 @@ namespace Dynamo.ViewModels
                     // we simply invalidate the timer.
                     // 
                     this.playbackTimer = null;
-                    this.CurrentState = State.Stopped;
+                    ChangeStateInternal(State.Stopped);
                 }
                 else
                 {
@@ -281,7 +310,7 @@ namespace Dynamo.ViewModels
                     var interval = TimeSpan.FromMilliseconds(PauseAfterPlayback);
                     this.playbackTimer.Interval = interval;
                     this.playbackTimer.Start(); // Start shutdown timer.
-                    this.CurrentState = State.ShuttingDown;
+                    ChangeStateInternal(State.ShuttingDown);
                 }
 
                 return;
@@ -290,6 +319,10 @@ namespace Dynamo.ViewModels
             // Remove the first command from the loaded commands.
             DynCmd.RecordableCommand nextCommand = loadedCommands[0];
             loadedCommands.RemoveAt(0);
+
+            // Update the cached command references.
+            this.PreviousCommand = this.CurrentCommand;
+            this.CurrentCommand = nextCommand;
 
             if (nextCommand is DynCmd.PausePlaybackCommand)
             {
@@ -315,17 +348,30 @@ namespace Dynamo.ViewModels
             var interval = TimeSpan.FromMilliseconds(CommandInterval);
             this.playbackTimer.Interval = interval;
             this.playbackTimer.Start(); // Start regular playback timer.
-            this.CurrentState = State.Playing;
+            ChangeStateInternal(State.Playing);
         }
 
         private void OnShutdownTimerTick(object sender, EventArgs e)
         {
             this.playbackTimer.Stop();
             this.playbackTimer = null;
-            this.CurrentState = State.Stopped;
+            ChangeStateInternal(State.Stopped);
 
             // This causes the main window to close (and exit application).
             mainWindow.Close();
+        }
+
+        private void ChangeStateInternal(State playbackState)
+        {
+            var os = this.CurrentState;
+            var ns = playbackState;
+
+            this.CurrentState = playbackState;
+            if (os != ns && (this.PlaybackStateChanged != null))
+            {
+                var args = new PlaybackStateChangedEventArgs(os, ns);
+                this.PlaybackStateChanged(this, args);
+            }
         }
 
         #endregion
