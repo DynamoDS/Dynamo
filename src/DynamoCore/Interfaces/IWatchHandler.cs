@@ -89,7 +89,7 @@ namespace Dynamo.Interfaces
         public WatchItem Process(dynamic value, string tag, bool showRawData = true)
         {
             if(value == null)
-                return new WatchItem("null");
+                return new WatchItem("null", tag);
 
             return ProcessThing(value, tag, showRawData);
         }

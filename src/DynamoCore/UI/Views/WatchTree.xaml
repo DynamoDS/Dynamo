@@ -70,6 +70,10 @@
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}" DataType="{x:Type viewModels:WatchItem}">
                     <VirtualizingStackPanel Orientation="Horizontal"
                                     Width="Auto">
+                        <TextBlock Text="{Binding Path=Path}" 
+                                       VerticalAlignment="Center" 
+                                       Margin="4,0,0,0"
+                                       Width="Auto" FontFamily="Consolas"/>
                         <TextBlock Text="{Binding Path=NodeLabel}" 
                                        VerticalAlignment="Center" 
                                        Margin="4,0,0,0"

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
@@ -18,6 +19,7 @@ namespace Dynamo.ViewModels
         string _label;
         string _link;
         private bool _showRawData;
+        private string _path = "";
 
         /// <summary>
         /// A collection of child WatchItems.
@@ -58,6 +60,22 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public string Path
+        {
+            get
+            {
+                var splits = _path.Split(':');
+                if (splits.Count() == 1)
+                    return string.Empty;
+                return splits.Any()?string.Format("[{0}]",splits.Last()):string.Empty;
+                //return _path;
+            }
+            set
+            {
+                _path = value;
+                RaisePropertyChanged("Path");
+            }
+        }
         /// <summary>
         /// A flag used to determine whether the item
         /// should be process to draw 'raw' data or data
@@ -82,26 +100,18 @@ namespace Dynamo.ViewModels
             _showRawData = true;
         }
 
-        public WatchItem(string label)
+        public WatchItem(string label, string path)
         {
+            _path = path;
             _label = label;
             IsNodeExpanded = true;
         }
 
-        public WatchItem(string label, string tag)
+        public WatchItem(string label, string path, bool expanded)
         {
-            _label = string.Format("[{0}] {1}", tag, label);
-        }
-
-        public WatchItem(string label, string tag, bool expanded)
-        {
-            _label = string.Format("[{0}] {1}", tag, label);
+            _path = path;
+            _label = label;
             IsNodeExpanded = expanded;
         }
     }
-
-    //public class WatchTreeBranch : ObservableCollection<WatchItem>
-    //{
-
-    //}
 }
