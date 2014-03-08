@@ -11,7 +11,7 @@ using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
 {
-    class PlaybackStateChangedEventArgs : EventArgs
+    internal class PlaybackStateChangedEventArgs : EventArgs
     {
         internal PlaybackStateChangedEventArgs(string oldCommandTag, string newCommandTag,
             AutomationSettings.State oldState, AutomationSettings.State newState)
@@ -28,10 +28,10 @@ namespace Dynamo.ViewModels
         internal AutomationSettings.State NewState { get; private set; }
     }
 
-    delegate void PlaybackStateChangedEventHandler(
+    internal delegate void PlaybackStateChangedEventHandler(
         object sender, PlaybackStateChangedEventArgs e);
 
-    class AutomationSettings
+    internal class AutomationSettings
     {
         #region Class Data Members
 

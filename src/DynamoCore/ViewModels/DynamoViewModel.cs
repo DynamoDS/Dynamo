@@ -327,6 +327,8 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal AutomationSettings Automation { get { return this.automationSettings; } }
+
         public string EditName
         {
             get { return _model.editName; }
@@ -513,6 +515,7 @@ namespace Dynamo.ViewModels
                 return licensePath;
             }
         }
+
         #endregion
 
         public DynamoViewModel(DynamoController controller, string commandFilePath)
