@@ -141,7 +141,7 @@ namespace Dynamo.ViewModels
 
         private void FindNodeForPath(object obj)
         {
-            dynSettings.Controller.VisualizationManager.HighlighNodeForPath(obj.ToString());
+            dynSettings.Controller.VisualizationManager.TagRenderPackageForPath(obj.ToString());
         }
     }
 }

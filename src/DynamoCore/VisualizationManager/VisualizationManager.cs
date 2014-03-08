@@ -485,11 +485,16 @@ namespace Dynamo
             }
         }
 
-        public void HighlighNodeForPath(string path)
+        /// <summary>
+        /// Display a label for one or several render packages 
+        /// based on the paths of those render packages.
+        /// </summary>
+        /// <param name="path"></param>
+        public void TagRenderPackageForPath(string path)
         {
             var packages =
                 dynSettings.Controller.DynamoModel.Nodes.SelectMany(x => x.RenderPackages)
-                    .Where(x => x.Tag.Contains(path))
+                    .Where(x => x.Tag == path || x.Tag.Contains(path + ":"))
                     .Cast<RenderPackage>();
 
             if (packages.Any())
