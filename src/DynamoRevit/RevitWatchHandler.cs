@@ -24,18 +24,18 @@ namespace Dynamo.Applications
     /// </summary>
     public class RevitWatchHandler : IWatchHandler
     {
-        internal WatchItem ProcessThing(Element element, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(Element element, string tag, bool showRawData = true)
         {
             var id = element.Id;
 
-            var node = new WatchItem(element.Name, tag);
+            var node = new WatchViewModel(element.Name, tag);
             node.Clicked += () => DocumentManager.GetInstance().CurrentUIDocument.ShowElements(element);
             node.Link = id.IntegerValue.ToString(CultureInfo.InvariantCulture);
 
             return node;
         }
 
-        internal WatchItem ProcessThing(XYZ pt, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(XYZ pt, string tag, bool showRawData = true)
         {
             if (!showRawData)
             {
@@ -48,37 +48,37 @@ namespace Dynamo.Applications
                     new Units.Length(pt.Y / SIUnit.ToFoot),
                     new Units.Length(pt.Z / SIUnit.ToFoot));
 
-                return new WatchItem("{" + xyzStr + "}", tag);
+                return new WatchViewModel("{" + xyzStr + "}", tag);
             }
             
-            return new WatchItem(pt.ToString(), tag);
+            return new WatchViewModel(pt.ToString(), tag);
         }
 
-        internal WatchItem ProcessThing(object value, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(object value, string tag, bool showRawData = true)
         {
-            var node = new WatchItem(value.ToString(), tag);
+            var node = new WatchViewModel(value.ToString(), tag);
             return node;
         }
 
-        internal WatchItem ProcessThing(SIUnit unit, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(SIUnit unit, string tag, bool showRawData = true)
         {
             if (showRawData)
-                return new WatchItem(unit.Value.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
+                return new WatchViewModel(unit.Value.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
 
-            return new WatchItem(unit.ToString(), tag);
+            return new WatchViewModel(unit.ToString(), tag);
         }
 
-        internal WatchItem ProcessThing(double value, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(double value, string tag, bool showRawData = true)
         {
-            return new WatchItem(value.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
+            return new WatchViewModel(value.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
         }
 
-        internal WatchItem ProcessThing(string value, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(string value, string tag, bool showRawData = true)
         {
-            return new WatchItem(value, tag);
+            return new WatchViewModel(value, tag);
         }
 
-        internal WatchItem ProcessThing(MirrorData data, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(MirrorData data, string tag, bool showRawData = true)
         {
             //If the input data is an instance of a class, create a watch node
             //with the class name and let WatchHandler process the underlying CLR data
@@ -90,13 +90,13 @@ namespace Dynamo.Applications
 
             //Finally for all else get the string representation of data as watch content.
             string previewData = data.Data.ToString();
-            return new WatchItem(previewData, tag);
+            return new WatchViewModel(previewData, tag);
         }
 
-        public WatchItem Process(dynamic value, string tag, bool showRawData = true)
+        public WatchViewModel Process(dynamic value, string tag, bool showRawData = true)
         {
             if(value == null)
-                return new WatchItem("null", tag);
+                return new WatchViewModel("null", tag);
 
             return ProcessThing(value, tag, showRawData);
         }

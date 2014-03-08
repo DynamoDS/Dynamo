@@ -20,7 +20,7 @@ namespace Dynamo.Nodes
     public interface WatchHandler
     {
         bool AcceptsValue(object o);
-        void ProcessNode(object value, WatchItem node, bool showRawData);
+        void ProcessNode(object value, WatchViewModel node, bool showRawData);
     }
 
     [NodeName("Watch")]
@@ -34,7 +34,7 @@ namespace Dynamo.Nodes
 
         private WatchTree _watchTree;
 
-        private WatchItem _root;
+        private WatchViewModel _root;
 
         #endregion
 
@@ -43,7 +43,7 @@ namespace Dynamo.Nodes
         /// <summary>
         /// The root node of the watch's tree.
         /// </summary>
-        public WatchItem Root
+        public WatchViewModel Root
         {
             get { return _root; }
             set
@@ -99,19 +99,19 @@ namespace Dynamo.Nodes
         /// <param name="index">Index of input data if it is a part of a collection.</param>
         /// <param name="isListMember">Specifies if this data belongs to a collection.</param>
         /// <returns>WatchNode</returns>
-        public WatchItem Process(MirrorData data, string path, bool showRawData = true)
+        public WatchViewModel Process(MirrorData data, string path, bool showRawData = true)
         {
-            WatchItem node = null;
+            WatchViewModel node = null;
 
             if (data == null || data.IsNull)
             {
-                node = new WatchItem(nullString, path);
+                node = new WatchViewModel(nullString, path);
             }
             else if (data.IsCollection)
             {
                 var list = data.GetElements();
 
-                node = new WatchItem(list.Count == 0 ? "Empty List" : "List", path, true);
+                node = new WatchViewModel(list.Count == 0 ? "Empty List" : "List", path, true);
 
                 foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
                 {
@@ -123,7 +123,7 @@ namespace Dynamo.Nodes
                 node = dynSettings.Controller.WatchHandler.Process(data as dynamic, path, showRawData);
             }
 
-            return node ?? (new WatchItem("null", path));
+            return node ?? (new WatchViewModel("null", path));
         }
 
         /// <summary>
@@ -228,18 +228,18 @@ namespace Dynamo.Nodes
         /// render the watch content properly.
         /// </summary>
         /// <returns>WatchNode</returns>
-        internal WatchItem GetWatchNode()
+        internal WatchViewModel GetWatchNode()
         {
-            string varName = AstIdentifierForPreview.Name;
+            var inputVar = this.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
 
             //Get RuntimeMirror for input ast identifier.
             var mirror = dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Name);
             if(null == mirror)
-                return new WatchItem(nullString, varName);
+                return new WatchViewModel(nullString, inputVar);
 
             //Get MirrorData from the RuntimeMirror
             var mirrorData = mirror.GetData();
-            return Process(mirrorData, varName, false);
+            return Process(mirrorData, inputVar, false);
         }
 
         public override void UpdateRenderPackage()
