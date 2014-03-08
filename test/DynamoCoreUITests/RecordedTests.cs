@@ -23,12 +23,15 @@ using Dynamo.DSEngine;
 
 namespace Dynamo.Tests.UI
 {
+    public delegate void CommandCallback(string commandTag);
+
     [TestFixture]
     public class RecordedTests : DSEvaluationUnitTest
     {
         #region Generic Set-up Routines and Data Members
 
         private System.Random randomizer = null;
+        private CommandCallback commandCallback = null;
 
         // For access within test cases.
         protected WorkspaceModel workspace = null;
@@ -317,7 +320,8 @@ namespace Dynamo.Tests.UI
             return workspace.GetModelInternal(id);
         }
 
-        protected void RunCommandsFromFile(string commandFileName, bool autoRun = false)
+        protected void RunCommandsFromFile(string commandFileName,
+            bool autoRun = false, CommandCallback commandCallback = null)
         {
             string commandFilePath = DynamoTestUI.GetTestDirectory();
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
@@ -335,6 +339,8 @@ namespace Dynamo.Tests.UI
             controller.DynamoViewModel.DynamicRunEnabled = autoRun;
             DynamoController.IsTestMode = true;
 
+            RegisterCommandCallback(commandCallback);
+
             // Create the view.
             var dynamoView = new DynamoView();
             dynamoView.DataContext = controller.DynamoViewModel;
@@ -346,6 +352,36 @@ namespace Dynamo.Tests.UI
             Assert.IsNotNull(controller.DynamoModel.CurrentWorkspace);
             workspace = controller.DynamoModel.CurrentWorkspace;
             workspaceViewModel = controller.DynamoViewModel.CurrentSpaceViewModel;
+        }
+
+        private void RegisterCommandCallback(CommandCallback commandCallback)
+        {
+            if (commandCallback == null)
+                return;
+
+            if (this.commandCallback != null)
+                throw new InvalidOperationException("RunCommandsFromFile called twice");
+
+            this.commandCallback = commandCallback;
+            var automation = this.Controller.DynamoViewModel.Automation;
+            automation.PlaybackStateChanged += OnAutomationPlaybackStateChanged;
+        }
+
+        private void OnAutomationPlaybackStateChanged(object sender, PlaybackStateChangedEventArgs e)
+        {
+            if (e.OldState == AutomationSettings.State.Paused)
+            {
+                if (e.NewState == AutomationSettings.State.Playing)
+                {
+                    // Call back to the delegate registered by the test case. We
+                    // only handle command transition from Paused to Playing. Note 
+                    // that "commandCallback" is not checked against "null" value 
+                    // because "OnAutomationPlaybackStateChanged" would not have 
+                    // been called if the "commandCallback" was not registered.
+                    // 
+                    this.commandCallback(e.OldTag);
+                }
+            }
         }
 
         private CmdType DuplicateAndCompare<CmdType>(CmdType command)
