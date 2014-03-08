@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -47,6 +48,23 @@ namespace Dynamo.Controls
 
             if (node != null)
                 node.Click();
+        }
+
+        private void TreeView1_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            //var node = e.NewValue as WatchItem;
+
+            //if (node == null)
+            //    return;
+
+            //var package =
+            //    dynSettings.Controller.DynamoModel.Nodes.SelectMany(x => x.RenderPackages)
+            //        .FirstOrDefault(x => x.Tag == node.Path);
+
+            //if (package != null)
+            //{
+            //    Debug.WriteLine("Found render package for selection: " + node.Path);
+            //}
         }
     }
 }

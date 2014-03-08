@@ -60,16 +60,21 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public string Path
+        public string ViewPath
         {
             get
             {
                 var splits = _path.Split(':');
                 if (splits.Count() == 1)
                     return string.Empty;
-                return splits.Any()?string.Format("[{0}]",splits.Last()):string.Empty;
+                return splits.Any() ? string.Format("[{0}]", splits.Last()) : string.Empty;
                 //return _path;
             }
+        }
+        
+        public string Path
+        {
+            get { return _path; }
             set
             {
                 _path = value;
