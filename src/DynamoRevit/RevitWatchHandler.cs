@@ -28,7 +28,7 @@ namespace Dynamo.Applications
         {
             var id = element.Id;
 
-            var node = new WatchItem(element.Name);
+            var node = new WatchItem(element.Name, tag);
             node.Clicked += () => DocumentManager.GetInstance().CurrentUIDocument.ShowElements(element);
             node.Link = id.IntegerValue.ToString(CultureInfo.InvariantCulture);
 
@@ -96,7 +96,7 @@ namespace Dynamo.Applications
         public WatchItem Process(dynamic value, string tag, bool showRawData = true)
         {
             if(value == null)
-                return new WatchItem("null");
+                return new WatchItem("null", tag);
 
             return ProcessThing(value, tag, showRawData);
         }
