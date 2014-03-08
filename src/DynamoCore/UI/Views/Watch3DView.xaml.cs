@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -10,9 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using Dynamo.DSEngine;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using HelixToolkit.Wpf;
+using Color = System.Windows.Media.Color;
 
 namespace Dynamo.Controls
 {
@@ -369,7 +373,7 @@ namespace Dynamo.Controls
 
                 if (p.DisplayLabels)
                 {
-                    text.Add(new BillboardTextItem {Text = p.Tag, Position = pos});
+                    text.Add(new BillboardTextItem {Text = CleanTag(p.Tag), Position = pos});
                 }
             }
         }
@@ -397,7 +401,7 @@ namespace Dynamo.Controls
 
                     if (i == 0 && outerCount == 0 && p.DisplayLabels)
                     {
-                        text.Add(new BillboardTextItem { Text = p.Tag, Position = point });
+                        text.Add(new BillboardTextItem { Text = CleanTag(p.Tag), Position = point });
                     }
 
                     if (i != 0 && i != count - 1)
@@ -512,6 +516,18 @@ namespace Dynamo.Controls
             }
         }
 
+        private string CleanTag(string tag)
+        {
+            var splits = tag.Split(':');
+            if (splits.Count() <= 1) return tag;
+
+            var sb = new StringBuilder();
+            for (int i = 1; i < splits.Count(); i++)
+            {
+                sb.AppendFormat("[{0}]", splits[i]);
+            }
+            return sb.ToString();
+        }
 
         /// <summary>
         /// A utility method for merging multiple meshes into one.

@@ -35,6 +35,7 @@ namespace Dynamo
         private Octree.OctreeSearch.Octree octree;
         private bool updatingPaused = false;
         private DynamoController _controller;
+        private List<RenderPackage> _currentTaggedPackages = new List<RenderPackage>();
 
         #endregion
 
@@ -481,6 +482,38 @@ namespace Dynamo
             {
                 DynamoSelection.Instance.ClearSelection();
                 DynamoSelection.Instance.Selection.Add(node);
+            }
+        }
+
+        public void HighlighNodeForPath(string path)
+        {
+            var packages =
+                dynSettings.Controller.DynamoModel.Nodes.SelectMany(x => x.RenderPackages)
+                    .Where(x => x.Tag.Contains(path))
+                    .Cast<RenderPackage>();
+
+            if (packages.Any())
+            {
+                //clear any labels that might have been drawn on this
+                //package already and add the one we want
+                if (_currentTaggedPackages.Any())
+                {
+                    _currentTaggedPackages.ForEach(x=>x.DisplayLabels = false);
+                    _currentTaggedPackages.Clear();
+                }
+
+                packages.ToList().ForEach(x => x.DisplayLabels = true);
+                _currentTaggedPackages.AddRange(packages);
+
+                //send back everything
+                var allPackages =
+                    _controller.DynamoModel.Nodes.SelectMany(x => x.RenderPackages)
+                        .Where(x => ((RenderPackage) x).IsNotEmpty())
+                        .Cast<RenderPackage>();
+
+                OnResultsReadyToVisualize(this,
+                        new VisualizationEventArgs(
+                            allPackages, string.Empty));
             }
         }
 
