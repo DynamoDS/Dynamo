@@ -1122,7 +1122,7 @@ namespace Dynamo.ViewModels
                 // behind unsaved changes (if saving is desired, then the save command 
                 // should have been recorded for the test case to it can be replayed).
                 // 
-                if (automationSettings.CurrentMode == AutomationSettings.Mode.Playback)
+                if (automationSettings.IsInPlaybackMode)
                     return true; // In playback mode, just exit without saving.
             }
 
