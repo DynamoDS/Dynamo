@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.ComponentModel;
+using System.Threading;
 using System.Windows;
 using Dynamo.Interfaces;
 using Dynamo.UI;
@@ -118,9 +119,14 @@ namespace Dynamo.UpdateManager
             Data = string.Empty;
             Path = path;
 
-            var client = new WebClient();
-            client.OpenReadAsync(path);
-            client.OpenReadCompleted += ReadResult;
+            new Thread(() =>
+                {
+                    var client = new WebClient();
+
+                    client.OpenReadCompleted += ReadResult;
+                    client.OpenReadAsync(path);
+                }).Start();
+
         }
 
         /// <summary>
