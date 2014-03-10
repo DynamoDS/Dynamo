@@ -1177,6 +1177,56 @@ namespace Dynamo.Tests
                 new object[] {1, 2, 3, 4, 5});
         }
 
+        [Test]
+        public void Dynamo_Nodes_RandomSeed()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_RandomSeed.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "e069c343-46be-4e01-a3b3-9321e89d0775");
+            var logicn2 = workspace.NodeFromWorkspace<DSFunction>(
+                "71149321-db95-4064-a311-aadfe0cec404");
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+            Assert.NotNull(logicn2);
+        }
+
+        [Test]
+        public void Dynamo_Nodes_Random()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_Random.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "8a4329e2-d0d5-4fe2-9bba-f4291502eb1c");
+
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+        }
+
+        [Test]
+        public void Dynamo_Nodes_RandomList()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_RandomList.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "399e524f-15b6-4100-b7bd-9331c329a717");
+            var logicn2 = workspace.NodeFromWorkspace<DSFunction>(
+                "010adb65-ae28-408f-a91e-c5b0fae2c387");
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+            Assert.NotNull(logicn2);
+        }
 
 
 
