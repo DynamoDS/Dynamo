@@ -182,7 +182,7 @@ namespace ProtoCore
 
 
         private void ComputeFeps(StringBuilder log, ProtoCore.Runtime.Context context, List<StackValue> arguments, FunctionGroup funcGroup, ReplicationControl replicationControl,
-                                      List<List<int>> partialReplicationGuides, StackFrame stackFrame, Core core,
+                                      List<List<ProtoCore.ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, Core core,
             out List<FunctionEndPoint> resolvesFeps, out List<ReplicationInstruction> replicationInstructions)
         {
 
@@ -804,7 +804,7 @@ namespace ProtoCore
         
         //Inbound methods
 
-        public StackValue JILDispatchViaNewInterpreter(ProtoCore.Runtime.Context context, List<StackValue> arguments, List<List<int>> replicationGuides,
+        public StackValue JILDispatchViaNewInterpreter(ProtoCore.Runtime.Context context, List<StackValue> arguments, List<List<ProtoCore.ReplicationGuide>> replicationGuides,
                                                        StackFrame stackFrame, Core core)
         {
 #if DEBUG
@@ -817,7 +817,7 @@ namespace ProtoCore
             return DispatchNew(context, arguments, replicationGuides, stackFrame, core);
         }
 
-        public StackValue JILDispatch(List<StackValue> arguments, List<List<int>> replicationGuides,
+        public StackValue JILDispatch(List<StackValue> arguments, List<List<ProtoCore.ReplicationGuide>> replicationGuides,
                                       StackFrame stackFrame, Core core, Runtime.Context context)
         {
 #if DEBUG
@@ -834,7 +834,7 @@ namespace ProtoCore
 
         //Dispatch
         private StackValue DispatchNew(ProtoCore.Runtime.Context context, List<StackValue> arguments,
-                                      List<List<int>> partialReplicationGuides, StackFrame stackFrame, Core core)
+                                      List<List<ProtoCore.ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, Core core)
         {
 
             // Update the CallsiteExecutionState with 
@@ -1475,7 +1475,7 @@ namespace ProtoCore
         /// <param name="core"></param>
         /// <returns></returns>
         public bool WillCallReplicate(ProtoCore.Runtime.Context context, List<StackValue> arguments,
-                                      List<List<int>> partialReplicationGuides, StackFrame stackFrame, Core core,
+                                      List<List<ProtoCore.ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, Core core,
                                       out List<List<ReplicationInstruction>> replicationTrials)
         {
             replicationTrials = new List<List<ReplicationInstruction>>();
