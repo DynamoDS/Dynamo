@@ -136,7 +136,7 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="solid"></param>
         /// <returns></returns>
-        public static FreeForm BySolid(Solid solid)
+        public static FreeForm BySolid(Revit.GeometryObjects.Solid solid)
         {
             if (solid == null)
             {

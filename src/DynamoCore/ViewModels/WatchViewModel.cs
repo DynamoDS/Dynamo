@@ -1,10 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using Autodesk.DesignScript.Interfaces;
+using Dynamo.Controls;
+using Dynamo.DSEngine;
+using Dynamo.UI.Commands;
+using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
 {
-    public class WatchItem : NotificationObject
+    public class WatchViewModel : NotificationObject
     {
         public event Action Clicked;
 
@@ -14,15 +21,18 @@ namespace Dynamo.ViewModels
                 Clicked();
         }
 
-        ObservableCollection<WatchItem> _children = new ObservableCollection<WatchItem>();
-        string _label;
-        string _link;
+        private ObservableCollection<WatchViewModel> _children = new ObservableCollection<WatchViewModel>();
+        private string _label;
+        private string _link;
         private bool _showRawData;
+        private string _path = "";
+
+        public DelegateCommand FindNodeForPathCommand { get; set; }
 
         /// <summary>
         /// A collection of child WatchItems.
         /// </summary>
-        public ObservableCollection<WatchItem> Children
+        public ObservableCollection<WatchViewModel> Children
         {
             get { return _children; }
             set
@@ -59,6 +69,39 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Returns the last index of the Path, 
+        /// surrounded with square brackets.
+        /// </summary>
+        public string ViewPath
+        {
+            get
+            {
+                var splits = _path.Split(':');
+                if (splits.Count() == 1)
+                    return string.Empty;
+                return splits.Any() ? string.Format("[{0}]", splits.Last()) : string.Empty;
+                //return _path;
+            }
+        }
+        
+        /// <summary>
+        /// A path describing the location of the data.
+        /// Path takes the form var_xxxx...:0:1:2, where
+        /// var_xxx is the AST identifier for the node, followed
+        /// by : delimited indices represnting the array index
+        /// of the data.
+        /// </summary>
+        public string Path
+        {
+            get { return _path; }
+            set
+            {
+                _path = value;
+                RaisePropertyChanged("Path");
+            }
+        }
+        
+        /// <summary>
         /// A flag used to determine whether the item
         /// should be process to draw 'raw' data or data
         /// treated in some context. An example is the drawing
@@ -76,26 +119,29 @@ namespace Dynamo.ViewModels
 
         public bool IsNodeExpanded { get; set; }
 
-        public WatchItem()
+        public WatchViewModel()
         {
+            FindNodeForPathCommand = new DelegateCommand(FindNodeForPath, CanFindNodeForPath);
             IsNodeExpanded = true;
             _showRawData = true;
         }
 
-        public WatchItem(string label)
+        public WatchViewModel(string label, string path, bool expanded = false)
         {
+            FindNodeForPathCommand = new DelegateCommand(FindNodeForPath, CanFindNodeForPath);
+            _path = path;
             _label = label;
-            IsNodeExpanded = true;
+            IsNodeExpanded = expanded;
         }
 
-        public WatchItem(string label, string tag)
+        private bool CanFindNodeForPath(object obj)
         {
-            _label = string.Format("[{0}] {1}", tag, label);
+            return !string.IsNullOrEmpty(obj.ToString());
+        }
+
+        private void FindNodeForPath(object obj)
+        {
+            dynSettings.Controller.VisualizationManager.TagRenderPackageForPath(obj.ToString());
         }
     }
-
-    //public class WatchTreeBranch : ObservableCollection<WatchItem>
-    //{
-
-    //}
 }

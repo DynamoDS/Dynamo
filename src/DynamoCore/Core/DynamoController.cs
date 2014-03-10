@@ -46,7 +46,17 @@ namespace Dynamo
 
     public class DynamoController:NotificationObject
     {
+        private static bool testing = false;
+        
+
         #region properties
+
+        private bool _isCrashing = false;
+        public bool IsCrashing
+        {
+            get { return _isCrashing; }
+            set { _isCrashing = value; }
+        }
 
         private bool uiLocked = true;
         public bool IsUILocked
@@ -65,8 +75,7 @@ namespace Dynamo
         private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
             new Dictionary<string, TypeLoadData>();
 
-        private static bool testing = false;
-
+        
         protected VisualizationManager visualizationManager;
 
         public CustomNodeManager CustomNodeManager { get; internal set; }
