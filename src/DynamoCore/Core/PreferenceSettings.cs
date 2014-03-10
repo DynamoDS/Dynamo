@@ -100,10 +100,12 @@ namespace Dynamo
         {
             try
             {
-                XmlSerializer serializer = new XmlSerializer(typeof (PreferenceSettings));
-                FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
-                serializer.Serialize(fs, this);
-                fs.Close(); // Release file lock
+                var serializer = new XmlSerializer(typeof (PreferenceSettings));
+                using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                {
+                    serializer.Serialize(fs, this);
+                    fs.Close(); // Release file lock
+                }
                 return true;
             }
             catch (Exception ex)
@@ -147,10 +149,12 @@ namespace Dynamo
 
             try
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(PreferenceSettings));
-                FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-                settings = serializer.Deserialize(fs) as PreferenceSettings;
-                fs.Close(); // Release file lock
+                var serializer = new XmlSerializer(typeof(PreferenceSettings));
+                using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    settings = serializer.Deserialize(fs) as PreferenceSettings;
+                    fs.Close(); // Release file lock
+                }
             }
             catch (Exception) { }
             
