@@ -227,7 +227,7 @@ namespace Dynamo.Nodes
             foreach (XmlElement subNode in xmlNode.ChildNodes)
             {
                 element.AppendChild(subNode);
-                subNode.InnerText = new Regex("IN").Replace(element.InnerText, "IN[0]");
+                subNode.InnerText = Regex.Replace(element.InnerText, @"\bIN\b", "IN[0]");
             }
 
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -492,7 +492,10 @@ namespace Dynamo.Nodes
             foreach (XmlElement subNode in xmlNode.ChildNodes)
             {
                 element.AppendChild(subNode);
-                subNode.InnerText = new Regex("IN0").Replace(element.InnerText, "IN[0]");
+                subNode.InnerText = Regex.Replace(element.InnerText, @"\bIN[0-9]+\b", delegate(Match m)
+                {
+                    return "IN[" + m.ToString().Substring(2) + "]";
+                });
             }
 
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
