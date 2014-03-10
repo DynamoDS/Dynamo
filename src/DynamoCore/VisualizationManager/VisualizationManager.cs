@@ -196,6 +196,9 @@ namespace Dynamo
         
         void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+                return;
+
             if (updatingPaused || dynSettings.Controller == null)
                 return;
 
@@ -212,14 +215,10 @@ namespace Dynamo
                 changes.AddRange(e.NewItems.Cast<ISelectable>());
             }
 
-            //Debug.WriteLine("Selection changed. Visualization updating {0} elements...", changes.Any()?changes.Count:0);
-            if (changes.Any())
-            {
-                UpdateRenderPackages(
-                changes.Any() ?
-                changes.Where(sel => sel is NodeModel).Cast<NodeModel>() :
-                null);
-            }
+            UpdateRenderPackages(
+            changes.Any() ?
+            changes.Where(sel => sel is NodeModel).Cast<NodeModel>() :
+            null);
         }
 
         /// <summary>
@@ -295,7 +294,7 @@ namespace Dynamo
                     //a short while after update operations are complete to avoid
                     //to many rebuilds of this index while building dynamically.
                     if(!DynamoController.IsTestMode)
-                        //SetupOctree(toUpdate);
+                        SetupOctree(toUpdate);
 
                     //Debug.WriteLine(string.Format("Visualization updating {0} objects", toUpdate.Count()));
                     OnVisualizationUpdateComplete(this, EventArgs.Empty);

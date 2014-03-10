@@ -2027,21 +2027,16 @@ namespace Dynamo.Models
 
             var ident = AstIdentifierForPreview.Name;
 
-            // A small optimization. Don't create the label map if
-            // labels are not being displayed
-            //if (DisplayLabels)
-            //{
-                foreach (var varName in drawableIds)
+            foreach (var varName in drawableIds)
+            {
+                var mirror = dynSettings.Controller.EngineController.GetMirror(varName);
+                if (mirror != null)
                 {
-                    var mirror = dynSettings.Controller.EngineController.GetMirror(varName);
-                    if (mirror != null)
-                    {
-                        var mirrorData = mirror.GetData();
-                        AddToLabelMap(mirrorData, labelMap, ident);
-                        count++;
-                    }
-                } 
-            //}
+                    var mirrorData = mirror.GetData();
+                    AddToLabelMap(mirrorData, labelMap, ident);
+                    count++;
+                }
+            } 
 
             count = 0;
             foreach (var varName in drawableIds)
