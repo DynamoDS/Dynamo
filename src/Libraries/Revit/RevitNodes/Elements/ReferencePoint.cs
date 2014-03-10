@@ -75,12 +75,12 @@ namespace Revit.Elements
             }
 
             //Phase 2- There was no existing point, create one
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var edgePoint = Document.Application.Create.NewPointOnFace(faceReference, uv);
             InternalSetReferencePoint(Document.FamilyCreate.NewReferencePoint(edgePoint));
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(this.InternalElementId);
         }
@@ -108,13 +108,13 @@ namespace Revit.Elements
             }
 
             //Phase 2- There was no existing point, create one
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var plc = new PointLocationOnCurve(measurementType, parameter, measureFrom);
             var edgePoint = Document.Application.Create.NewPointOnEdge(curveReference, plc);
             InternalSetReferencePoint(Document.FamilyCreate.NewReferencePoint(edgePoint));
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(this.InternalElementId);
         }
@@ -140,11 +140,11 @@ namespace Revit.Elements
             }
 
             //Phase 2- There was no existing point, create one
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             InternalSetReferencePoint(Document.FamilyCreate.NewReferencePoint(new XYZ(x, y, z)));
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(this.InternalElementId);
         }
@@ -155,33 +155,33 @@ namespace Revit.Elements
 
         private void InternalSetPosition(XYZ xyz)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             InternalReferencePoint.Position = xyz;
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         private void InternalSetPointOnFace(Reference faceReference, Autodesk.Revit.DB.UV uv)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var edgePoint = Document.Application.Create.NewPointOnFace(faceReference, uv);
             InternalReferencePoint.SetPointElementReference(edgePoint);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         private void InternalSetPointOnCurve(Reference curveReference, double parameter,
             PointOnCurveMeasurementType measurementType, PointOnCurveMeasureFrom measureFrom)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var plc = new PointLocationOnCurve(measurementType, parameter, measureFrom);
             var edgePoint = Document.Application.Create.NewPointOnEdge(curveReference, plc);
             InternalReferencePoint.SetPointElementReference(edgePoint);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         private void InternalSetReferencePoint(Autodesk.Revit.DB.ReferencePoint p)

@@ -118,7 +118,7 @@ namespace Dynamo.Nodes
         {
             //data = Value.NewList(FSharpList<Value>.Empty);
 
-            View activeView = DocumentManager.GetInstance().CurrentUIDocument.ActiveView;
+            View activeView = DocumentManager.Instance.CurrentUIDocument.ActiveView;
             PickedSunAndShadowSettings = activeView.SunAndShadowSettings;
 
 
@@ -179,7 +179,7 @@ namespace Dynamo.Nodes
                 try
                 {
                     PickedSunAndShadowSettings =
-                        DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(
+                        DocumentManager.Instance.CurrentUIDocument.Document.GetElement(
                             new ElementId(Convert.ToInt32(subNode.Attributes[0].Value))) as
                             SunAndShadowSettings;
                     if (PickedSunAndShadowSettings != null)

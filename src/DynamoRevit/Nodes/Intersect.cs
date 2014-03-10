@@ -119,7 +119,7 @@ namespace Dynamo.Nodes
                 double coord3 = (index < 2) ? sizeRect : -sizeRect;
                 double coord4 = (index == 0 || index == 3) ? -sizeRect : sizeRect;
                 XYZ pnt1 = thisPlane.Origin + coord3 * thisPlane.XVec + coord4 * thisPlane.YVec;
-                Line cLine = DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewLineBound(pnt0, pnt1);
+                Line cLine = DocumentManager.Instance.CurrentUIApplication.Application.Create.NewLineBound(pnt0, pnt1);
                 cLoop.Append(cLine);
             }
             var listCLoops = new List<Autodesk.Revit.DB.CurveLoop> { cLoop };

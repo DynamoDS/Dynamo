@@ -53,13 +53,13 @@ namespace Revit.Elements.Views
         /// </summary>
         private SectionView( BoundingBoxXYZ bbox )
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             ViewSection vd = CreateSectionView(bbox);
 
             InternalSetSectionView(vd);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElementId);
         }
@@ -85,10 +85,10 @@ namespace Revit.Elements.Views
 
         private static ViewSection CreateSectionView(BoundingBoxXYZ bbox)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             // (sic) From the Dynamo legacy implementation
-            var viewFam = DocumentManager.GetInstance().ElementsOfType<ViewFamilyType>()
+            var viewFam = DocumentManager.Instance.ElementsOfType<ViewFamilyType>()
                 .FirstOrDefault(x => x.ViewFamily == ViewFamily.Section);
 
             if (viewFam == null)
@@ -98,7 +98,7 @@ namespace Revit.Elements.Views
 
             var viewSection = ViewSection.CreateSection( Document, viewFam.Id, bbox);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             return viewSection;
 

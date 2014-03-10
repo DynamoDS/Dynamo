@@ -24,11 +24,11 @@ namespace Dynamo.Tests
 
             model.Open(testPath);
             ReferencePoint rp;
-            using (_trans = new Transaction(DocumentManager.GetInstance().CurrentUIDocument.Document))
+            using (_trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document))
             {
                 _trans.Start("Create a reference point.");
 
-                rp = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ());
+                rp = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ());
 
                 _trans.Commit();
 

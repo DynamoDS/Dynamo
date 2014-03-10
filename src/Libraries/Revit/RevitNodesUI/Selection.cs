@@ -271,7 +271,7 @@ namespace Dynamo.Nodes
                     var id = subNode.Attributes[0].Value;
                     try
                     {
-                        saved = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id); // FamilyInstance;
+                        saved = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(id); // FamilyInstance;
                     }
                     catch
                     {
@@ -436,7 +436,7 @@ namespace Dynamo.Nodes
 
             if (SelectedElement != null)
             {
-                var dbDocument = DocumentManager.GetInstance().CurrentDBDocument;
+                var dbDocument = DocumentManager.Instance.CurrentDBDocument;
                 if (dbDocument != null)
                 {
                     var element = dbDocument.GetElement(SelectedElement);
@@ -476,7 +476,7 @@ namespace Dynamo.Nodes
             if (SelectedElement != null)
             {
                 XmlElement outEl = xmlDoc.CreateElement("instance");
-                outEl.SetAttribute("id", SelectedElement.ConvertToStableRepresentation(DocumentManager.GetInstance().CurrentDBDocument));
+                outEl.SetAttribute("id", SelectedElement.ConvertToStableRepresentation(DocumentManager.Instance.CurrentDBDocument));
                 nodeElement.AppendChild(outEl);
             }
         }
@@ -492,7 +492,7 @@ namespace Dynamo.Nodes
                     try
                     {
                         saved = Reference.ParseFromStableRepresentation(
-                            DocumentManager.GetInstance().CurrentDBDocument, id);
+                            DocumentManager.Instance.CurrentDBDocument, id);
                     }
                     catch
                     {
@@ -701,7 +701,7 @@ namespace Dynamo.Nodes
                     var id = subNode.Attributes[0].Value;
                     try
                     {
-                        saved = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id);
+                        saved = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(id);
                     }
                     catch
                     {
@@ -938,7 +938,7 @@ namespace Dynamo.Nodes
         {
             GeometryObject geob = null;
             string stableRep = string.Empty;
-            var dbDocument = DocumentManager.GetInstance().CurrentDBDocument;
+            var dbDocument = DocumentManager.Instance.CurrentDBDocument;
 
             if (SelectedElement == null || dbDocument == null)
             {
@@ -998,7 +998,7 @@ namespace Dynamo.Nodes
         {
             GeometryObject geob = null;
             string stableRep = string.Empty;
-            var dbDocument = DocumentManager.GetInstance().CurrentDBDocument;
+            var dbDocument = DocumentManager.Instance.CurrentDBDocument;
 
             if (SelectedElement == null || dbDocument == null)
             {

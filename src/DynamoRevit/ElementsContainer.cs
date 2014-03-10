@@ -43,7 +43,7 @@ namespace Dynamo.Revit
             {
                 try
                 {
-                    DocumentManager.GetInstance().CurrentUIDocument.Document.Delete(e);
+                    DocumentManager.Instance.CurrentUIDocument.Document.Delete(e);
                 }
                 catch (Autodesk.Revit.Exceptions.InvalidOperationException)
                 {
