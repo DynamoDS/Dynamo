@@ -560,7 +560,7 @@ namespace ProtoCore.Lang
 
                         // Comment Jun: 
                         // Any replication guides pushed in a dotarg->dot call must be retrieved here from the core
-                        var replicationGuides = new List<List<int>>();
+                        var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
                         bool doesDotCallFunctionHaveArgs = functionArgs > ProtoCore.DSASM.Constants.kThisFunctionAdditionalArgs;
                         if (doesDotCallFunctionHaveArgs)// || !core.Options.EnableThisPointerFunctionOverload)
                         {
