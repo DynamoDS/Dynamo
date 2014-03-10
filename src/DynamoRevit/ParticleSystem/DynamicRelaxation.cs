@@ -379,7 +379,7 @@ namespace Dynamo.Nodes
             if (arg0 is Reference)
             {
                 Reference faceRef = arg0 as Reference;
-                f = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
+                f = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
             }
 
             double d = ((Value.Number)args[1]).Item;//dampening
@@ -502,7 +502,7 @@ namespace Dynamo.Nodes
 
                 XYZ springXYZ1 = springEnd1.getPosition();
                 XYZ springXYZ2 = springEnd2.getPosition();
-                Line springLine = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewLineBound(springXYZ1, springXYZ2);
+                Line springLine = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewLineBound(springXYZ1, springXYZ2);
 
                 result = FSharpList<Value>.Cons(Value.NewContainer(springLine), result);
             }

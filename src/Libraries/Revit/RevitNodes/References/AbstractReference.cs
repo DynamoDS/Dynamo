@@ -16,7 +16,7 @@ namespace Revit.References
     {
         public static Document Document
         {
-            get { return DocumentManager.GetInstance().CurrentDBDocument; }
+            get { return DocumentManager.Instance.CurrentDBDocument; }
         }
 
         /// <summary>

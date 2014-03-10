@@ -25,7 +25,7 @@ namespace DSRevitNodesTests
             var view = SectionView.ByBoundingBox(famInst.BoundingBox);
             Assert.NotNull(view);
 
-            Assert.IsTrue(DocumentManager.GetInstance().ElementExistsInDocument(view.InternalElement.Id));
+            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(view.InternalElement.Id));
         }
 
         [Test]

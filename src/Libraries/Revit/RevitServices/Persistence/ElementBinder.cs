@@ -122,7 +122,7 @@ namespace RevitServices.Persistence
             var oldId = GetElementIdFromTrace(document);
             if (oldId != null && oldId.IntegerValue != newTraceId.IntegerValue)
             {
-                DocumentManager.GetInstance().DeleteElement(oldId);
+                DocumentManager.Instance.DeleteElement(oldId);
             }
 
             SetElementForTrace(newTraceId);

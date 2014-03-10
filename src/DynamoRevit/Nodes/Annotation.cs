@@ -37,7 +37,7 @@ namespace Dynamo.Nodes
             var depth = ((FScheme.Value.Number) args[4]).Item;
             var textTypeName = ((FScheme.Value.String) args[5]).Item;
 
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var document = DocumentManager.Instance.CurrentUIDocument.Document;
 
             //find a text type in the document to use
             var fec = new FilteredElementCollector(document);
@@ -94,7 +94,7 @@ namespace Dynamo.Nodes
             var yAxis = normal.CrossProduct(xAxis).Normalize();
             var plane = new Autodesk.Revit.DB.Plane(xAxis, yAxis, position);
 
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var document = DocumentManager.Instance.CurrentUIDocument.Document;
             var sp = Autodesk.Revit.DB.SketchPlane.Create(document, plane);
             mt = document.FamilyCreate.NewModelText(text, mtt, sp, position, HorizontalAlign.Left, depth);
             return mt;

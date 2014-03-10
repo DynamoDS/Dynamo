@@ -152,7 +152,7 @@ namespace Dynamo.Nodes
             var r = arg0 as Reference;
             if (r != null)
             {
-                var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+                var document = DocumentManager.Instance.CurrentUIDocument.Document;
                 f = (Face)document.GetElement(r.ElementId).GetGeometryObjectFromReference(r);
             }
             else

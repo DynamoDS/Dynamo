@@ -14,25 +14,21 @@ namespace RevitServices.Persistence
     /// </summary>
     public class DocumentManager
     {
+        private static DocumentManager instance;
+        private static readonly Object mutex = new Object();
 
-        private static DocumentManager instance = null;
-        private static Object mutex = new Object();
-
-        public static DocumentManager GetInstance()
+        public static DocumentManager Instance
         {
-            lock (mutex)
+            get
             {
-                if (instance == null)
-                    instance = new DocumentManager();
-
-                return instance;
+                lock (mutex)
+                {
+                    return instance ?? (instance = new DocumentManager());
+                }
             }
         }
 
-        private DocumentManager()
-        {
-                
-        }
+        private DocumentManager() { }
 
         /// <summary>
         /// Determine if Element exists in the current document
@@ -41,8 +37,8 @@ namespace RevitServices.Persistence
         /// <returns></returns>
         public bool ElementExistsInDocument(ElementId id)
         {
-            Element e = null;
-            return this.CurrentDBDocument.TryGetElement<Element>(id, out e);
+            Element e;
+            return CurrentDBDocument.TryGetElement(id, out e);
         }
 
         /// <summary>
@@ -51,11 +47,11 @@ namespace RevitServices.Persistence
         /// <param name="element">The id of the element to delete</param>
         public void DeleteElement(ElementId element)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(this.CurrentDBDocument);
+            TransactionManager.Instance.EnsureInTransaction(CurrentDBDocument);
 
-            this.CurrentDBDocument.Delete(element);
+            CurrentDBDocument.Delete(element);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         /// <summary>
@@ -63,9 +59,9 @@ namespace RevitServices.Persistence
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public IEnumerable<T> ElementsOfType<T>() where T : Autodesk.Revit.DB.Element
+        public IEnumerable<T> ElementsOfType<T>() where T : Element
         {
-            var fec = new Autodesk.Revit.DB.FilteredElementCollector(CurrentDBDocument);
+            var fec = new FilteredElementCollector(CurrentDBDocument);
             return fec.OfClass(typeof(T)).Cast<T>();
         }
 
@@ -97,11 +93,11 @@ namespace RevitServices.Persistence
         /// </summary>
         public void ClearCurrentDocument()
         {
-            TransactionManager.GetInstance().EnsureInTransaction(this.CurrentDBDocument);
+            TransactionManager.Instance.EnsureInTransaction(CurrentDBDocument);
 
             var collector = new FilteredElementCollector(CurrentDBDocument);
 
-            var filter = new LogicalOrFilter(new List<ElementFilter>()
+            var filter = new LogicalOrFilter(new List<ElementFilter>
             {
                 new ElementCategoryFilter(BuiltInCategory.OST_ReferencePoints),
                 new ElementCategoryFilter(BuiltInCategory.OST_AdaptivePoints),
@@ -114,7 +110,7 @@ namespace RevitServices.Persistence
 
             collector.WherePasses(filter).ToList().ForEach(x=> CurrentDBDocument.Delete(x.Id));
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
     }
 }

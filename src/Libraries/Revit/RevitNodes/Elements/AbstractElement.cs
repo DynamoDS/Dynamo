@@ -22,7 +22,7 @@ namespace Revit.Elements
         /// </summary>
         public static Document Document
         {
-            get { return DocumentManager.GetInstance().CurrentDBDocument; }
+            get { return DocumentManager.Instance.CurrentDBDocument; }
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace Revit.Elements
             // Do not delete Revit owned elements
             if (!IsRevitOwned && remainingBindings == 0)
             {
-                DocumentManager.GetInstance().DeleteElement(this.InternalElementId);
+                DocumentManager.Instance.DeleteElement(this.InternalElementId);
             }
             else
             {

@@ -30,7 +30,7 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Value> args)
         {
             //if we're in a family document, don't even try to add a floor
-            if (DocumentManager.GetInstance().CurrentUIDocument.Document.IsFamilyDocument)
+            if (DocumentManager.Instance.CurrentUIDocument.Document.IsFamilyDocument)
             {
                 throw new Exception("Walls can not be created in family documents.");
             }
@@ -41,7 +41,7 @@ namespace Dynamo.Nodes
             var height = ((FScheme.Value.Number)args[3]).Item;
 
             Wall wall = null;
-            var document = DocumentManager.GetInstance().CurrentDBDocument;
+            var document = DocumentManager.Instance.CurrentDBDocument;
             if (this.Elements.Any())
             {
                 bool bSuccess = false;
@@ -71,7 +71,7 @@ namespace Dynamo.Nodes
                     }
                     if (!bSuccess)
                     {
-                        DocumentManager.GetInstance().CurrentDBDocument.Delete(wall.Id);
+                        DocumentManager.Instance.CurrentDBDocument.Delete(wall.Id);
                     }
                     //Delete the existing floor. Revit API does not allow update of floor sketch.
                 }
@@ -150,7 +150,7 @@ namespace Dynamo.Nodes
 
         public override void PopulateItems()
         {
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var document = DocumentManager.Instance.CurrentUIDocument.Document;
             var wallTypesColl = new FilteredElementCollector(document);
             wallTypesColl.OfClass(typeof(WallType));
 

@@ -101,7 +101,7 @@ namespace Dynamo.Nodes
             var enumerable = pts as XYZ[] ?? pts.ToArray();
             for (var i = 1; i < enumerable.Count(); i++)
             {
-                var l = DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewLineBound(enumerable.ElementAt(i), enumerable.ElementAt(i - 1));
+                var l = DocumentManager.Instance.CurrentUIApplication.Application.Create.NewLineBound(enumerable.ElementAt(i), enumerable.ElementAt(i - 1));
 
                 results = FSharpList<Value>.Cons(Value.NewContainer(l), results);
             }
@@ -387,7 +387,7 @@ namespace Dynamo.Nodes
                     refPtArr.Append(refPoint);
                 }
             }
-            c = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
+            c = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
             return c;
         }
     }
@@ -572,7 +572,7 @@ namespace Dynamo.Nodes
                     if (thisDist > tolMax &&  thisEnd.DistanceTo(prevEnd) < tolMin && (c is Line))
                     {
                         prevEnd = thisStart;
-                        Curve flippedCurve = /* Line.CreateBound */ DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewLineBound(thisEnd, thisStart);
+                        Curve flippedCurve = /* Line.CreateBound */ DocumentManager.Instance.CurrentUIApplication.Application.Create.NewLineBound(thisEnd, thisStart);
                         curvesWithFlip.Add(flippedCurve);
                         continue;
                     }
@@ -595,7 +595,7 @@ namespace Dynamo.Nodes
                                 {
                                     if (c is Line)
                                     {
-                                        Curve flippedCurve = /* Line.CreateBound */ DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewLineBound(prevEnd, thisStart);
+                                        Curve flippedCurve = /* Line.CreateBound */ DocumentManager.Instance.CurrentUIApplication.Application.Create.NewLineBound(prevEnd, thisStart);
                                         prevEnd = thisStart;
                                         curvesWithFlip.Add(flippedCurve);
                                         continue;
@@ -868,7 +868,7 @@ namespace Dynamo.Nodes
                 var r = (Reference)((Value.Container)args[1]).Item;
                 if (r != null)
                 {
-                    var refElem = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(r.ElementId);
+                    var refElem = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(r.ElementId);
                     if (refElem != null)
                     {
                         GeometryObject geob = refElem.GetGeometryObjectFromReference(r);
@@ -996,7 +996,7 @@ namespace Dynamo.Nodes
                 curve = curveRef == null
                               ? (Curve)((Value.Container)args[0]).Item
                               : (Curve)
-                                DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(curveRef.ElementId)
+                                DocumentManager.Instance.CurrentUIDocument.Document.GetElement(curveRef.ElementId)
                                                 .GetGeometryObjectFromReference(curveRef);
             }
 
@@ -1032,7 +1032,7 @@ namespace Dynamo.Nodes
             {
                 var curveRef = arg0 as Reference;
 
-                var document = DocumentManager.GetInstance().CurrentDBDocument;
+                var document = DocumentManager.Instance.CurrentDBDocument;
                 curveOrEdge = document.GetElement(curveRef.ElementId)
                             .GetGeometryObjectFromReference(curveRef) as Autodesk.Revit.DB.GeometryObject;
                 if (!(curveOrEdge is Autodesk.Revit.DB.Curve || curveOrEdge is Autodesk.Revit.DB.Edge))

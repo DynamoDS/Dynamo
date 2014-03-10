@@ -84,7 +84,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("name");
             }
 
-            var floorType = DocumentManager.GetInstance()
+            var floorType = DocumentManager.Instance
                 .ElementsOfType<Autodesk.Revit.DB.FloorType>()
                 .FirstOrDefault(x => x.Name == name);
 
