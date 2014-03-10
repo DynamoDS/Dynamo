@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
@@ -31,17 +32,36 @@ namespace Dynamo.DSEngine
     /// </summary>
     public class TypedParameter
     {
-        public string Parameter { get; private set; }
+        public FunctionDescriptor Function { get; set; }
+        public string Name { get; private set; }
         public string Type { get; private set; }
         public object DefaultValue { get; private set; }
-
-        public TypedParameter(string parameter, string type, object defaultValue = null)
+        private string _summary = null;
+        public string Summary
         {
-            if (string.IsNullOrEmpty(parameter))
+            get { return _summary ?? (_summary = this.GetXmlDocumentation()); }
+        }
+
+        public string Description
+        {
+            get { return !String.IsNullOrEmpty(Summary) ? 
+                Summary + " (" + (string.IsNullOrEmpty(Type) ? "var" : Type) + ")"
+                : (string.IsNullOrEmpty(Type) ? "var" : Type); }
+        }
+
+        public TypedParameter(string parameter, string type, object defaultValue = null) 
+            : this(null, parameter, type, defaultValue)
+        {
+            
+        }
+
+        public TypedParameter(FunctionDescriptor function, string name, string type, object defaultValue = null)
+        {
+            if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentException();
             }
-            Parameter = parameter;
+            Name = name;
 
             if (null == type)
             {
@@ -49,15 +69,16 @@ namespace Dynamo.DSEngine
             }
             Type = type;
             DefaultValue = defaultValue;
+            Function = function;
         }
 
         public override string ToString()
         {
-            string str = Parameter;
+            string str = Name;
             
             if (!String.IsNullOrEmpty(Type))
             {
-                str = Parameter + ": " + Type.Split('.').Last();
+                str = Name + ": " + Type.Split('.').Last();
             }
 
             if (DefaultValue != null)
@@ -67,6 +88,8 @@ namespace Dynamo.DSEngine
 
             return str;
         }
+
+        
     }
 
     /// <summary>
@@ -146,6 +169,22 @@ namespace Dynamo.DSEngine
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// A comment describing the Function
+        /// </summary>
+        public string _summary;
+        public string Summary
+        {
+            get { return _summary ?? (_summary = this.GetXmlDocumentation()); }
+        }
+
+        /// <summary>
+        /// A comment describing the function along with the signature
+        /// </summary>
+        public string Description {
+            get { return !String.IsNullOrEmpty(Summary) ? Summary + "\n\n" + Signature : Signature; } 
         }
 
         /// <summary>
@@ -312,17 +351,35 @@ namespace Dynamo.DSEngine
                             string returnType,
                             FunctionType type,
                             IEnumerable<string> returnKeys = null,
-                            bool isVarArg = false)
+                            bool isVarArg = false) : this(assembly, className, name, null, parameters, returnType, type, returnKeys, isVarArg)
         {
+        }
+
+        public FunctionDescriptor(string assembly,
+                    string className,
+                    string name,
+                    string summary,
+                    IEnumerable<TypedParameter> parameters,
+                    string returnType,
+                    FunctionType type,
+                    IEnumerable<string> returnKeys = null,
+                    bool isVarArg = false)
+        {
+            _summary = summary;
             Assembly = assembly;
             ClassName = className;
             Name = name;
-            Parameters = parameters;
+            Parameters = parameters.Select(x =>
+            {
+                x.Function = this;
+                return x;
+            });
             ReturnType = returnType;
             Type = type;
             ReturnKeys = returnKeys;
             IsVarArg = isVarArg;
         }
+        
     }
 
     /// <summary>
@@ -526,6 +583,11 @@ namespace Dynamo.DSEngine
             };
 
             GraphUtilities.PreloadAssembly(_libraries);
+
+            // for each dll, load documentation
+            _libraries.Where(x => x.Contains(".dll"))
+                .ToList()
+                .ForEach(LoadXmlDocumentation);
         }
 
         private List<string> _libraries;
@@ -721,6 +783,7 @@ namespace Dynamo.DSEngine
 
                 DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
                 var importedClasses = GraphUtilities.GetClassesForAssembly(library);
+
                 if (GraphUtilities.BuildStatus.ErrorCount > 0)
                 {
                     string errorMessage = string.Format("Build error for library: {0}", library);
@@ -734,6 +797,8 @@ namespace Dynamo.DSEngine
                     OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
                     return;
                 }
+
+                LoadXmlDocumentation(library);
 
                 foreach (ClassNode classNode in importedClasses)
                 {
@@ -756,6 +821,12 @@ namespace Dynamo.DSEngine
             }
 
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
+        }
+
+        private void LoadXmlDocumentation(string library)
+        {
+            if (ResolveLibraryPath(ref library))
+                XmlDocumentationExtensions.LoadXmlDocumentation(library);
         }
 
         private class LibraryPathComparer : IEqualityComparer<string>
@@ -828,9 +899,26 @@ namespace Dynamo.DSEngine
         {
             var functions = from method in GraphUtilities.BuiltInMethods
                             let arguments = method.argInfoList.Zip(method.argTypeList, (arg, argType) => new TypedParameter(arg.Name, argType.ToString()))
-                            select new FunctionDescriptor(null, null, method.name, arguments, method.returntype.ToString(), FunctionType.GenericFunction);
+                            select new FunctionDescriptor(null, null, method.name, arguments,  method.returntype.ToString(), FunctionType.GenericFunction);
 
             AddBuiltinFunctions(functions);
+        }
+
+        private List<TypedParameter> GetBinaryFuncArgs()
+        {
+            return new List<TypedParameter>
+            {
+                new TypedParameter(null, "x", string.Empty),
+                new TypedParameter(null, "y", string.Empty),
+            };
+        }
+
+        private List<TypedParameter> GetUnaryFuncArgs()
+        {
+            return new List<TypedParameter> 
+            {
+                new TypedParameter(null, "x", string.Empty),
+            };
         }
 
         /// <summary>
@@ -838,43 +926,31 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulateOperators()
         {
-            var args = new List<TypedParameter> 
-            {
-                new TypedParameter("x", string.Empty),
-                new TypedParameter("y", string.Empty),
-            };
-
-            var arg = new List<TypedParameter> 
-            {
-                new TypedParameter("x", string.Empty),
-            };
-
             var functions = new List<FunctionDescriptor>()
             {
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.add), args, null, FunctionType.GenericFunction),
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.sub), args, null, FunctionType.GenericFunction),
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.mul), args, null, FunctionType.GenericFunction),
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.div), args, null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.add), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.sub), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.mul), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.div), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
 
                 //add new operators
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.eq), args, null, FunctionType.GenericFunction),               
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.ge), args, null, FunctionType.GenericFunction),
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.gt), args, null, FunctionType.GenericFunction),
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.mod), args, null, FunctionType.GenericFunction),
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.le), args, null, FunctionType.GenericFunction),
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.lt), args, null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.eq), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),               
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.ge), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.gt), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.mod), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.le), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.lt), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
 
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.and), args, null, FunctionType.GenericFunction),
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.or), args, null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.and), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.or), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
                
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.nq), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.assign), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwiseand), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwiseor), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwisexor), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
 
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.nq), args, null, FunctionType.GenericFunction),
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.assign), args, null, FunctionType.GenericFunction),
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwiseand), args, null, FunctionType.GenericFunction),
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwiseor), args, null, FunctionType.GenericFunction),
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwisexor), args, null, FunctionType.GenericFunction),
-
-                new FunctionDescriptor(null, null, Op.GetUnaryOpFunction(UnaryOperator.Not), arg, null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetUnaryOpFunction(UnaryOperator.Not), GetUnaryFuncArgs(), null, FunctionType.GenericFunction),
             };
 
             AddBuiltinFunctions(functions);
@@ -922,7 +998,7 @@ namespace Dynamo.DSEngine
             string procName = proc.name;
             if (CoreUtils.IsSetter(procName) || 
                 procName.Equals(ProtoCore.DSDefinitions.Keyword.Dispose))
-            {
+            { 
                 return;
             }
 
@@ -996,6 +1072,7 @@ namespace Dynamo.DSEngine
             }
 
             var function = new FunctionDescriptor(library, className, procName, arguments, proc.returntype.ToString(), type, returnKeys, proc.isVarArg);
+
             AddImportedFunctions(library, new FunctionDescriptor[] { function });
         }
 

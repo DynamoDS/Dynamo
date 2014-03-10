@@ -200,7 +200,7 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNode(
-                data.Document, "DSRevitNodes.dll",
+                data.Document, "RevitNodes.dll",
                 "StructuralFraming.ByCurveLevelUpVectorAndType",
                 "StructuralFraming.ByCurveLevelUpVectorAndType@Curve,Level,Vector,StructuralType,FamilySymbol");
 
