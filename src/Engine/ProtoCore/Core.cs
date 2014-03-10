@@ -85,6 +85,17 @@ namespace ProtoCore
 
     }
 
+    public class ReplicationGuide
+    {
+        public ReplicationGuide(int guide, bool longest)
+        {
+            this.guideNumber = guide;
+            this.isLongest = longest;
+        }
+
+        public int guideNumber { get; private set; }
+        public bool isLongest {get; private set;}
+    }
 
     public class InterpreterProperties
     {
@@ -595,8 +606,8 @@ namespace ProtoCore
             }
         }
 
-        public void SetUpCallrForDebug(ProtoCore.Core core, ProtoCore.DSASM.Executive exec, ProcedureNode fNode, int pc, bool isBaseCall = false, 
-            ProtoCore.CallSite callsite = null, List<StackValue> arguments = null, List<List<int>> replicationGuides = null, ProtoCore.DSASM.StackFrame stackFrame = null,
+        public void SetUpCallrForDebug(ProtoCore.Core core, ProtoCore.DSASM.Executive exec, ProcedureNode fNode, int pc, bool isBaseCall = false,
+            ProtoCore.CallSite callsite = null, List<StackValue> arguments = null, List<List<ProtoCore.ReplicationGuide>> replicationGuides = null, ProtoCore.DSASM.StackFrame stackFrame = null,
             List<StackValue> dotCallDimensions = null, bool hasDebugInfo = false, bool isMember = false, StackValue? thisPtr = null)
         {
             //ProtoCore.DSASM.Executive exec = core.CurrentExecutive.CurrentDSASMExec;
@@ -1073,7 +1084,7 @@ namespace ProtoCore
 
         // Cached replication guides for the current call. 
         // TODO Jun: Store this in the dynamic table node
-        public List<List<int>> replicationGuides;
+        public List<List<ProtoCore.ReplicationGuide>> replicationGuides;
 
         // if CompileToLib is true, this is used to output the asm instruction to the dsASM file
         // if CompilerToLib is false, this will be set to Console.Out
@@ -1447,7 +1458,7 @@ namespace ProtoCore
             //Initialize the dynamic string table and dynamic function table
             DynamicVariableTable = new DSASM.DynamicVariableTable();
             DynamicFunctionTable = new DSASM.DynamicFunctionTable();
-            replicationGuides = new List<List<int>>();
+            replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
 
             ExceptionHandlingManager = new ExceptionHandlingManager();
             startPC = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -1595,7 +1606,7 @@ namespace ProtoCore
             //Initialize the dynamic string table and dynamic function table
             DynamicVariableTable = new DSASM.DynamicVariableTable();
             DynamicFunctionTable = new DSASM.DynamicFunctionTable();
-            replicationGuides = new List<List<int>>();
+            replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
 
             ExceptionHandlingManager = new ExceptionHandlingManager();
             startPC = ProtoCore.DSASM.Constants.kInvalidIndex;
