@@ -969,7 +969,7 @@ namespace ProtoCore
                 }
                 
             }
-            else
+            else //replicated call
             {
                 //Extract the correct run data from the trace cache here
 
@@ -978,7 +978,6 @@ namespace ProtoCore
                 SingleRunTraceData singleRunTraceData;
                 SingleRunTraceData newTraceData = new SingleRunTraceData();
 
-                //READ TRACE FOR NON-REPLICATED CALL
                 //Lookup the trace data in the cache
                 if (invokeCount < traceData.Count)
                 {
@@ -1272,6 +1271,14 @@ namespace ProtoCore
                         //There was previous data that needs loading into the cache
                         lastExecTrace = previousTraceData.NestedData[i];
                     }
+                    else if (previousTraceData.HasData && i == 0)
+                    {
+                        //We've moved up one dimension, and there was a previous run
+                        lastExecTrace = new SingleRunTraceData();
+                        lastExecTrace.Data = previousTraceData.GetLeftMostData();
+
+                    }
+
                     else
                     {
                         //We're off the edge of the previous trace window

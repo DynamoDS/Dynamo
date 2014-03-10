@@ -784,7 +784,8 @@ namespace Dynamo.ViewModels
         /// <param name="workspace">The workspace for which to show the dialog</param>
         internal void ShowSaveDialogIfNeededAndSave(WorkspaceModel workspace)
         {
-            if (workspace.FileName != null)
+            // crash sould always allow save as
+            if (workspace.FileName != null && !dynSettings.Controller.IsCrashing)
             {
                 workspace.Save();
             }

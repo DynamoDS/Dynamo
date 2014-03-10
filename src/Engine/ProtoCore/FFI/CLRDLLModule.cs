@@ -613,7 +613,7 @@ namespace ProtoFFI
             FFIMethodAttributes mattrs = new FFIMethodAttributes(method);
 
             string prefix = (isOperator || propaccessor) ? "%" : "";
-            ProtoCore.AST.AssociativeAST.FunctionDefinitionNode func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
+            var func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
 
             if (isOperator)
             {
@@ -626,8 +626,11 @@ namespace ProtoFFI
             func.Pattern = null;
             func.Signature = ParseArgumentSignature(method);
 
-            if (retype.IsIndexable && mattrs.AllowRankReduction)
-                retype.rank = -1;
+            if ((retype.IsIndexable && mattrs.AllowRankReduction) 
+                || (typeof(object).Equals(method.ReturnType)))
+            {
+                retype.rank = Constants.kArbitraryRank;
+            }
             func.ReturnType = retype;
             func.FunctionBody = null;
             func.access = ProtoCore.DSASM.AccessSpecifier.kPublic;
