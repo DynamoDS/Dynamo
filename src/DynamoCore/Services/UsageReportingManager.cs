@@ -57,6 +57,7 @@ namespace Dynamo.Services
                 }
                 catch (Exception args)
                 {
+                    dynSettings.Controller.IsCrashing = true;
                     string filePath = PreferenceSettings.GetSettingsFilePath();
                     dynSettings.Controller.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
                 }

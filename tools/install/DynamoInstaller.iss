@@ -3,21 +3,21 @@
 
 [Setup]
 AppName=DynamoDS
-AppVerName=DynamoDS 0.6.3
+AppVerName=DynamoDS 0.7.0
 AppPublisher=Autodesk, Inc.
 AppID={{6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B}
 AppCopyright=
 AppPublisherURL=http://www.dynamobim.com
 AppSupportURL=
 AppUpdatesURL=
-AppVersion=0.6.3
-VersionInfoVersion=0.6.3
+AppVersion=0.7.0
+VersionInfoVersion=0.7.0
 VersionInfoCompany=Autodesk 
-VersionInfoDescription=DynamoDS 0.6.3
-VersionInfoTextVersion=DynamoDS 0.6.3
+VersionInfoDescription=DynamoDS 0.7.0
+VersionInfoTextVersion=DynamoDS 0.7.0
 VersionInfoCopyright=
 DefaultDirName=C:\Autodesk\DynamoDS\Core
-DefaultGroupName=
+DefaultGroupName=Dynamo
 OutputDir=Installers
 OutputBaseFilename=InstallDynamoDS
 SetupIconFile=Extra\logo_square_32x32.ico
@@ -29,7 +29,7 @@ ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\logo_square_32x32.ico
-UninstallDisplayName=DynamoDS 0.6.3
+UninstallDisplayName=DynamoDS 0.7.0
 UsePreviousAppDir=no
 
 [Types]
@@ -70,12 +70,16 @@ Source: temp\dynamo_packages\*; DestDir: {app}\dynamo_packages; Flags: ignorever
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2013\DynamoDS.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\DynamoDS.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\DynamoDS.addin"
+Type: filesandordirs; Name: {app}\dll
 
 [Run]
 Filename: "{app}\fsharp_redist.exe"; Parameters: "/q"; Flags: runascurrentuser
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qb"; WorkingDir: {tmp};
 ;Filename: "del"; Parameters: "/q {app}\fsharp_redist.exe"; Flags: postinstall runascurrentuser runhidden
 Filename: "{app}\InstallASMForDynamo.exe";
+
+[Icons]
+Name: "{group}\Dynamo"; Filename: "{app}\DynamoSandbox.exe"
 
 [Code]
 { HANDLE INSTALL PROCESS STEPS }
