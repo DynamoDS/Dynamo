@@ -295,7 +295,7 @@ namespace Dynamo
                     //a short while after update operations are complete to avoid
                     //to many rebuilds of this index while building dynamically.
                     if(!DynamoController.IsTestMode)
-                        SetupOctree(toUpdate);
+                        //SetupOctree(toUpdate);
 
                     //Debug.WriteLine(string.Format("Visualization updating {0} objects", toUpdate.Count()));
                     OnVisualizationUpdateComplete(this, EventArgs.Empty);
