@@ -384,6 +384,12 @@ namespace Dynamo.Nodes
                 "CoordinateSystem.Identity");
             migrationData.AppendNode(identityCoordinateSystem);
 
+            XmlElement converterNode = MigrationManager.CreateFunctionNode(
+                data.Document, "DSCoreNodes.dll",
+                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
+            migrationData.AppendNode(converterNode);
+            string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
+
             // Update connectors
             PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
             PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
@@ -391,7 +397,8 @@ namespace Dynamo.Nodes
 
             PortId newInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
             PortId newInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
-            PortId newInPort3 = new PortId(newNodeId, 3, PortType.INPUT);
+
+            PortId converterInPort = new PortId(converterNodeId, 0, PortType.INPUT);
 
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
@@ -399,8 +406,9 @@ namespace Dynamo.Nodes
 
             data.ReconnectToPort(connector0, newInPort1);
             data.ReconnectToPort(connector1, newInPort2);
-            data.ReconnectToPort(connector2, newInPort3);
+            data.ReconnectToPort(connector2, converterInPort);
 
+            data.CreateConnector(converterNode, 0, newNode, 3);
             data.CreateConnector(identityCoordinateSystem, 0, newNode, 0);
 
             return migrationData;

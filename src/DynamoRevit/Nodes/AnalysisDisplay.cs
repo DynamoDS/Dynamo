@@ -269,7 +269,7 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll",
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll",
                 "FaceAnalysisDisplay.ByViewFacePointsAndValues",
                 "FaceAnalysisDisplay.ByViewFacePointsAndValues@var,FaceReference,double[][],double[]");
 
@@ -394,7 +394,7 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll",
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll",
                 "PointAnalysisDisplay.ByViewPointsAndValues",
                 "PointAnalysisDisplay.ByViewPointsAndValues@var,Point[],double[]");
 
@@ -516,7 +516,7 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll",
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll",
                 "VectorAnalysisDisplay.ByViewPointsAndVectorValues", 
                 "VectorAnalysisDisplay.ByViewPointsAndVectorValues@var,Point[],Vector[]");
 

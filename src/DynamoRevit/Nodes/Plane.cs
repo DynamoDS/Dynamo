@@ -282,7 +282,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "SketchPlane.ByPlane", "SketchPlane.ByPlane@Plane");
         }
     }
@@ -372,7 +372,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "ReferencePlane.Plane", "ReferencePlane.Plane");
         }
     }
