@@ -41,6 +41,7 @@ namespace Dynamo.ViewModels
             protected RecordableCommand()
             {
                 this.IsInPlaybackMode = false;
+                this.Tag = string.Empty;
             }
 
             /// <summary>
@@ -98,6 +99,9 @@ namespace Dynamo.ViewModels
                     case "OpenFileCommand":
                         command = OpenFileCommand.DeserializeCore(element);
                         break;
+                    case "PausePlaybackCommand":
+                        command = PausePlaybackCommand.DeserializeCore(element);
+                        break;
                     case "RunCancelCommand":
                         command = RunCancelCommand.DeserializeCore(element);
                         break;
@@ -139,6 +143,7 @@ namespace Dynamo.ViewModels
                 if (null != command)
                 {
                     command.IsInPlaybackMode = true;
+                    command.Tag = element.GetAttribute("Tag");
                     return command;
                 }
 
@@ -172,6 +177,16 @@ namespace Dynamo.ViewModels
             /// </summary>
             internal bool IsInPlaybackMode { get; private set; }
 
+            /// <summary>
+            /// This is an optional tag for each of the recorded commands in a 
+            /// command Xml file. A command can only be tagged from within a 
+            /// command Xml file manually, and a tag is useful for unit test 
+            /// verification passes. See PlaybackStateChangedEventArgs class for 
+            /// possible usage of command tags. If a command is not tagged, its 
+            /// default tag value is an empty string.
+            /// </summary>
+            internal string Tag { get; private set; }
+
             #endregion
 
             #region Protected Overridable Methods
@@ -197,6 +212,48 @@ namespace Dynamo.ViewModels
             /// here must be exactly what DeserializeCore method expects.</param>
             /// 
             protected abstract void SerializeCore(XmlElement element);
+
+            #endregion
+        }
+
+        public class PausePlaybackCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            public PausePlaybackCommand(int pauseDurationInMs)
+            {
+                this.PauseDurationInMs = pauseDurationInMs;
+            }
+
+            internal static PausePlaybackCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                var pauseDurationInMs = helper.ReadInteger("PauseDurationInMs");
+                return new PausePlaybackCommand(pauseDurationInMs);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal int PauseDurationInMs { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                // A PausePlaybackCommand should never be executed.
+                throw new NotImplementedException();
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("Tag", this.Tag);
+                helper.SetAttribute("PauseDurationInMs", this.PauseDurationInMs);
+            }
 
             #endregion
         }

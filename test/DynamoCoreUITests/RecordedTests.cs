@@ -23,12 +23,15 @@ using Dynamo.DSEngine;
 
 namespace Dynamo.Tests.UI
 {
+    public delegate void CommandCallback(string commandTag);
+
     [TestFixture]
     public class RecordedTests : DSEvaluationUnitTest
     {
         #region Generic Set-up Routines and Data Members
 
         private System.Random randomizer = null;
+        private CommandCallback commandCallback = null;
 
         // For access within test cases.
         protected WorkspaceModel workspace = null;
@@ -77,6 +80,16 @@ namespace Dynamo.Tests.UI
 
             var number = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
             Assert.AreEqual("12.34", number.Value);
+        }
+
+        [Test, RequiresSTA]
+        public void TestPausePlaybackCommand()
+        {
+            int pauseDurationInMs = randomizer.Next(2000);
+
+            var cmdOne = new DynCmd.PausePlaybackCommand(pauseDurationInMs);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+            Assert.AreEqual(cmdOne.PauseDurationInMs, cmdTwo.PauseDurationInMs);
         }
 
         [Test, RequiresSTA]
@@ -256,6 +269,26 @@ namespace Dynamo.Tests.UI
         #region General Node Operations Test Cases
 
         [Test, RequiresSTA]
+        public void MultiPassValidationSample()
+        {
+            RunCommandsFromFile("MultiPassValidationSample.xml", false, (commandTag) =>
+            {
+                if (commandTag == "InitialRun")
+                {
+                    AssertPreviewValue("c8d1655c-f4f4-41d1-bd5b-7ad39fc04118", 10);
+                    AssertPreviewValue("0f2ef49a-eff4-445a-987b-9417b1a52cc5", 20);
+                    AssertPreviewValue("e0556feb-95d9-4043-945b-f83aed25ef02", 30);
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("c8d1655c-f4f4-41d1-bd5b-7ad39fc04118", 2);
+                    AssertPreviewValue("0f2ef49a-eff4-445a-987b-9417b1a52cc5", 3);
+                    AssertPreviewValue("e0556feb-95d9-4043-945b-f83aed25ef02", 5);
+                }
+            });
+        }
+
+        [Test, RequiresSTA]
         public void TestModifyPythonNodes()
         {
             RunCommandsFromFile("ModifyPythonNodes.xml");
@@ -307,7 +340,8 @@ namespace Dynamo.Tests.UI
             return workspace.GetModelInternal(id);
         }
 
-        protected void RunCommandsFromFile(string commandFileName, bool autoRun = false)
+        protected void RunCommandsFromFile(string commandFileName,
+            bool autoRun = false, CommandCallback commandCallback = null)
         {
             string commandFilePath = DynamoTestUI.GetTestDirectory();
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
@@ -325,6 +359,8 @@ namespace Dynamo.Tests.UI
             controller.DynamoViewModel.DynamicRunEnabled = autoRun;
             DynamoController.IsTestMode = true;
 
+            RegisterCommandCallback(commandCallback);
+
             // Create the view.
             var dynamoView = new DynamoView();
             dynamoView.DataContext = controller.DynamoViewModel;
@@ -336,6 +372,36 @@ namespace Dynamo.Tests.UI
             Assert.IsNotNull(controller.DynamoModel.CurrentWorkspace);
             workspace = controller.DynamoModel.CurrentWorkspace;
             workspaceViewModel = controller.DynamoViewModel.CurrentSpaceViewModel;
+        }
+
+        private void RegisterCommandCallback(CommandCallback commandCallback)
+        {
+            if (commandCallback == null)
+                return;
+
+            if (this.commandCallback != null)
+                throw new InvalidOperationException("RunCommandsFromFile called twice");
+
+            this.commandCallback = commandCallback;
+            var automation = this.Controller.DynamoViewModel.Automation;
+            automation.PlaybackStateChanged += OnAutomationPlaybackStateChanged;
+        }
+
+        private void OnAutomationPlaybackStateChanged(object sender, PlaybackStateChangedEventArgs e)
+        {
+            if (e.OldState == AutomationSettings.State.Paused)
+            {
+                if (e.NewState == AutomationSettings.State.Playing)
+                {
+                    // Call back to the delegate registered by the test case. We
+                    // only handle command transition from Paused to Playing. Note 
+                    // that "commandCallback" is not checked against "null" value 
+                    // because "OnAutomationPlaybackStateChanged" would not have 
+                    // been called if the "commandCallback" was not registered.
+                    // 
+                    this.commandCallback(e.NewTag);
+                }
+            }
         }
 
         private CmdType DuplicateAndCompare<CmdType>(CmdType command)
