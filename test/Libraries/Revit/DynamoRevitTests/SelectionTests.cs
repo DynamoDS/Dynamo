@@ -28,7 +28,7 @@ namespace Dynamo.Tests
 
             //assert that we have the right number of family symbols
             //in the node's items source
-            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             fec.OfClass(typeof(Family));
             int count = 0;
             foreach (Family f in fec.ToElements())

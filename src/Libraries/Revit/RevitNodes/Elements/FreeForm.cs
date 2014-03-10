@@ -71,12 +71,12 @@ namespace Revit.Elements
             }
 
             // recreate freeform
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var freeForm = FreeFormElement.Create(Document, mySolid);
             InternalSetFreeFormElement(freeForm);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(this.InternalElementId);
         }
@@ -104,11 +104,11 @@ namespace Revit.Elements
 
             if (method != null)
             {
-                TransactionManager.GetInstance().EnsureInTransaction(Document);
+                TransactionManager.Instance.EnsureInTransaction(Document);
 
                 method.Invoke(InternalFreeFormElement, new object[] {solid});
 
-                TransactionManager.GetInstance().TransactionTaskDone();
+                TransactionManager.Instance.TransactionTaskDone();
 
                 return true;
             }

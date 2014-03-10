@@ -53,7 +53,7 @@ namespace Revit.Elements
             }
 
             //Phase 2- There was no existing point, create one
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             Autodesk.Revit.DB.FamilyInstance fi;
 
@@ -70,7 +70,7 @@ namespace Revit.Elements
 
             InternalSetFamilyInstance(fi);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(this.InternalElementId);
         }
@@ -94,7 +94,7 @@ namespace Revit.Elements
             }
 
             //Phase 2- There was no existing point, create one
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             Autodesk.Revit.DB.FamilyInstance fi;
 
@@ -111,7 +111,7 @@ namespace Revit.Elements
 
             InternalSetFamilyInstance(fi);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(this.InternalElementId);
         }
@@ -122,22 +122,22 @@ namespace Revit.Elements
 
         private void InternalSetLevel(Autodesk.Revit.DB.Level level)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             // http://thebuildingcoder.typepad.com/blog/2011/01/family-instance-missing-level-property.html
             InternalFamilyInstance.get_Parameter(BuiltInParameter.FAMILY_LEVEL_PARAM).Set(level.Id);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         private void InternalSetPosition(XYZ fi)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var lp = this.InternalFamilyInstance.Location as LocationPoint;
             lp.Point = fi;
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         #endregion
@@ -267,7 +267,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("familySymbol");
             }
 
-            return DocumentManager.GetInstance()
+            return DocumentManager.Instance
                 .ElementsOfType<Autodesk.Revit.DB.FamilyInstance>()
                 .Where(x => x.Symbol.Id == familySymbol.InternalFamilySymbol.Id)
                 .Select(x => FamilyInstance.FromExisting(x, true))

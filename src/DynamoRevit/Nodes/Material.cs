@@ -24,7 +24,7 @@ namespace Dynamo.Nodes
         {
             var matName = ((FScheme.Value.String) args[0]).Item;
 
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var document = DocumentManager.Instance.CurrentUIDocument.Document;
             var fec = new FilteredElementCollector(document);
 
             Autodesk.Revit.DB.Material foundMat;

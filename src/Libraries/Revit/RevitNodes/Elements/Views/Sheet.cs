@@ -71,7 +71,7 @@ namespace Revit.Elements.Views
             }
 
             //Phase 2 - There was no existing Element, create new one
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             // create sheet without title block
             var sheet = Autodesk.Revit.DB.ViewSheet.Create(Document, ElementId.InvalidElementId);
@@ -81,7 +81,7 @@ namespace Revit.Elements.Views
             InternalSetSheetNumber(numberOfSheet);
             InternalAddViewsToSheetView(views);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(this.InternalElementId);
         }
@@ -113,7 +113,7 @@ namespace Revit.Elements.Views
             }
 
             //Phase 2 - There was no existing Element, create new one
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             // create sheet with title block ID
             var sheet = Autodesk.Revit.DB.ViewSheet.Create(Document, titleBlockFamilySymbol.Id);
@@ -123,7 +123,7 @@ namespace Revit.Elements.Views
             InternalSetSheetNumber(sheetNumber);
             InternalAddViewsToSheetView(views);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(this.InternalElementId);
 
@@ -141,7 +141,7 @@ namespace Revit.Elements.Views
         {
             var sheet = InternalViewSheet;
 
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             // (sic) from Dynamo Legacy
             var width = sheet.Outline.Max.U - sheet.Outline.Min.U;
@@ -162,7 +162,7 @@ namespace Revit.Elements.Views
                         //move the view
                         //find the corresponding viewport
                         var enumerable =
-                            DocumentManager.GetInstance().ElementsOfType<Autodesk.Revit.DB.Viewport>()
+                            DocumentManager.Instance.ElementsOfType<Autodesk.Revit.DB.Viewport>()
                                 .Where(x => x.SheetId == sheet.Id && x.ViewId == view.Id).ToArray();
 
                         if (!enumerable.Any())
@@ -190,7 +190,7 @@ namespace Revit.Elements.Views
                 count++;
             }
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         /// <summary>
@@ -210,11 +210,11 @@ namespace Revit.Elements.Views
         /// <param name="name"></param>
         private void InternalSetSheetName(string name)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             InternalViewSheet.Name = name;
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         /// <summary>
@@ -223,11 +223,11 @@ namespace Revit.Elements.Views
         /// <param name="number"></param>
         private void InternalSetSheetNumber(string number)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             InternalViewSheet.SheetNumber = number;
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         /// <summary>
@@ -236,13 +236,13 @@ namespace Revit.Elements.Views
         /// <param name="newTitleBlockId"></param>
         private void InternalSetTitleBlock(ElementId newTitleBlockId)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             // element collector result
             new FilteredElementCollector(Document, InternalViewSheet.Id).OfCategory(BuiltInCategory.OST_TitleBlocks)
                 .ToElements().ToArray().ForEach(x => x.ChangeTypeId(newTitleBlockId));
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         #endregion

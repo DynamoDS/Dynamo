@@ -58,7 +58,7 @@ namespace Revit.Elements
                 }
             }
 
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             // (sic erat scriptum)
             var sp = GetSketchPlaneFromCurve(c);
@@ -83,12 +83,12 @@ namespace Revit.Elements
             if (mc.SketchPlane.Id != sp.Id)
             {
                 //THIS BIZARRE as Revit could use different existing SP, so if Revit had found better plane  this sketch plane has no use
-                DocumentManager.GetInstance().DeleteElement(sp.Id);
+                DocumentManager.Instance.DeleteElement(sp.Id);
             }
 
             InternalSetCurveElement(mc);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(this.InternalElementId);
 
@@ -115,7 +115,7 @@ namespace Revit.Elements
             // if we got a valid id, delete the old sketch plane
             if (idSpUnused != ElementId.InvalidElementId)
             {
-                DocumentManager.GetInstance().DeleteElement(idSpUnused);
+                DocumentManager.Instance.DeleteElement(idSpUnused);
             }
 
             return !needsRemake;
