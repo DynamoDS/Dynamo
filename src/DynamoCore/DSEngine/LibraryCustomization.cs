@@ -30,10 +30,10 @@ namespace Dynamo.DSEngine
         public static bool ResolveCustomizationFile(string assemblyLocation, ref string customizationPath)
         {
             var qualifiedPath = Path.GetFullPath(assemblyLocation);
-            var fn = Path.GetFileName(qualifiedPath);
+            var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
             var dir = Path.GetDirectoryName(qualifiedPath);
 
-            fn = "DynamoCustomization_" + fn.Replace(".dll", ".xml").Replace(".ds", ".xml");
+            fn = fn + "_DynamoCustomization.xml";
 
             customizationPath = Path.Combine(dir, fn);
 
@@ -45,6 +45,17 @@ namespace Dynamo.DSEngine
             return XmlDocument.XPathEvaluate(
                 String.Format("string(/doc/namespaces/namespace[@name='{0}']/category)", namespaceName)
                 ).ToString().Trim();
+
+            //var nodes = (IEnumerable<Object>)XmlDocument.XPathEvaluate(
+            //    String.Format("/doc/namespaces/namespace", namespaceName)
+            //    );
+
+            //foreach (var node in nodes)
+            //{
+            //}
+
+            //return nodes.ToString().Trim();
+
         }
     }
 }
