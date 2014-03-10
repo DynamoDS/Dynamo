@@ -45,6 +45,7 @@ namespace DynamoSandbox
 
                 try
                 {
+                    dynSettings.Controller.IsCrashing = true;
                     // Show the unhandled exception dialog so user can copy the 
                     // crash details and report the crash if she chooses to.
                     dynSettings.Controller.OnRequestsCrashPrompt(null,

@@ -1105,7 +1105,7 @@ namespace Dynamo.Nodes
             _watchTree.Margin = new Thickness(5, 0, 5, 5);
 
             if (Root == null)
-                Root = new WatchItem();
+                Root = new WatchViewModel();
             _watchTree.DataContext = Root;
 
             RequestBindingUnhook += delegate

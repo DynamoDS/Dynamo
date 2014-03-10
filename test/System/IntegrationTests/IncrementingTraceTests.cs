@@ -222,7 +222,7 @@ x = 1;
 
         [Test]
         [Category("Trace")]
-        public void IntermediateValueIncrementerIDTestUpdate()
+        public void SingleToSingle()
         {
 
             //Test to ensure that the first time the code is executed the wasTraced attribute is marked as false
@@ -269,9 +269,10 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             TestFrameWork.AssertValue("mtcAWasTraced", true, astLiveRunner);
         }
 
+        
         [Test]
         [Category("Trace")]
-        public void IntermediateValueIncrementerIDTestUpdate1DReplicated()
+        public void ReplicatedToReplicated()
         {
             string setupCode =
             @"import(""FFITarget.dll""); 
@@ -332,9 +333,59 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
                     true
                 }, astLiveRunner);
         }
-        
-        
+
+        [Test]
+        [Category("Trace")]
+        public void SingleToReplicated()
+        {
+            string setupCode =
+            @"import(""FFITarget.dll""); 
+x = 0; 
+mtcA = IncrementerTracedClass.IncrementerTracedClass(x); 
+mtcAID = mtcA.ID;
+mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
+
+            ExecuteMoreCode(setupCode);
+
+            TestFrameWork.AssertValue("mtcAID", 
+                    0, astLiveRunner);
+
+            TestFrameWork.AssertValue("mtcAWasTraced", 
+                    false, astLiveRunner);
+
+
+
+            ExecuteMoreCode("x = 1..3;");
+
+            // Verify that a is re-executed
+            TestFrameWork.AssertValue("mtcAID", new List<int>()
+            {
+                0,
+                1,
+                2
+            }, astLiveRunner);
+            TestFrameWork.AssertValue("mtcAWasTraced", new List<bool>()
+                {
+                    true,
+                    false,
+                    false
+                }, astLiveRunner);
+        }
+
+
+
         //Migrate this code into the test framework
+        private void ExecuteMoreCode(string newCode)
+        {
+            Guid guid2 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid2, newCode));
+
+
+            GraphSyncData syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+        }
+
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
             CodeBlockNode commentCode;
