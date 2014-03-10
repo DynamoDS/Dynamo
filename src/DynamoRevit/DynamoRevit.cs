@@ -70,7 +70,7 @@ namespace Dynamo.Applications
 
                 Updater = new RevitServicesUpdater(application.ControlledApplication);
 
-                TransactionManager.SetupManager(new DebugTransactionStrategy());
+                TransactionManager.SetupManager(new AutomaticTransactionStrategy());
 
                 env = new ExecutionEnvironment();
 
@@ -147,11 +147,11 @@ namespace Dynamo.Applications
 
                 #endregion
 
-                DocumentManager.GetInstance().CurrentDBDocument = revit.Application.ActiveUIDocument.Document;
-                DocumentManager.GetInstance().CurrentUIDocument = revit.Application.ActiveUIDocument;
-                DocumentManager.GetInstance().CurrentUIApplication = revit.Application;
+                DocumentManager.Instance.CurrentDBDocument = revit.Application.ActiveUIDocument.Document;
+                DocumentManager.Instance.CurrentUIDocument = revit.Application.ActiveUIDocument;
+                DocumentManager.Instance.CurrentUIApplication = revit.Application;
                 
-                DocumentManager.GetInstance().CurrentUIDocument = revit.Application.ActiveUIDocument;
+                DocumentManager.Instance.CurrentUIDocument = revit.Application.ActiveUIDocument;
 
                 dynRevitSettings.DefaultLevel = defaultLevel;
 

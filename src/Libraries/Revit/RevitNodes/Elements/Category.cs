@@ -24,7 +24,7 @@ namespace Revit.Elements
 
         public static Category ByName(string name)
         {
-            Settings documentSettings = DocumentManager.GetInstance().CurrentDBDocument.Settings;
+            Settings documentSettings = DocumentManager.Instance.CurrentDBDocument.Settings;
             var groups = documentSettings.Categories;
             var builtInCat = (BuiltInCategory)System.Enum.Parse(typeof(BuiltInCategory), name);
             var category = groups.get_Item(builtInCat);

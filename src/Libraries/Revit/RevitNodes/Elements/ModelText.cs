@@ -83,18 +83,18 @@ namespace Revit.Elements
                 return;
             }
 
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             // We have to clean up the old ModelText b/c we can't mutate it's position
             if (oldEle != null)
             {
-                DocumentManager.GetInstance().DeleteElement( oldEle.Id );
+                DocumentManager.Instance.DeleteElement( oldEle.Id );
             }
 
             var mt = CreateModelText(text, sketchPlane, xCoordinateInPlane, yCoordinateInPlane, textDepth, modelTextType);
             InternalSetModelText(mt);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(this.InternalElementId);
         }
@@ -109,11 +109,11 @@ namespace Revit.Elements
         /// <param name="depth"></param>
         private void InternalSetDepth(double depth)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             InternalModelText.Depth = depth;
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         /// <summary>
@@ -122,11 +122,11 @@ namespace Revit.Elements
         /// <param name="text"></param>
         private void InternalSetText(string text)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             InternalModelText.Text = text;
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         /// <summary>
@@ -135,11 +135,11 @@ namespace Revit.Elements
         /// <param name="modelTextType"></param>
         private void InternalSetModelTextType(Autodesk.Revit.DB.ModelTextType modelTextType)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             InternalModelText.ModelTextType = modelTextType;
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace Revit.Elements
         /// <returns></returns>
         private static Autodesk.Revit.DB.ModelText CreateModelText(string text, Autodesk.Revit.DB.SketchPlane sketchPlane, double xCoordinateInPlane, double yCoordinateInPlane, double textDepth, Autodesk.Revit.DB.ModelTextType modelTextType)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             // obtain the position of the ModelText element in the plane of the sketchPlane
             var plane = sketchPlane.GetPlane();
@@ -200,7 +200,7 @@ namespace Revit.Elements
             // create the modeltext
             var mt = Document.FamilyCreate.NewModelText(text, modelTextType, sketchPlane, pos, HorizontalAlign.Left, textDepth);         
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             return mt;
         }

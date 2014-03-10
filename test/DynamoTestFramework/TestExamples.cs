@@ -11,12 +11,12 @@ namespace Dynamo.Tests
         [Test]
         public void TestOne()
         {
-            using (var t = new Transaction(DocumentManager.GetInstance().CurrentDBDocument))
+            using (var t = new Transaction(DocumentManager.Instance.CurrentDBDocument))
             {
                 if (t.Start("Test one.") == TransactionStatus.Started)
                 {
                     //create a reference point
-                    var pt = DocumentManager.GetInstance().CurrentDBDocument.FamilyCreate.NewReferencePoint(new XYZ(5, 5, 5));
+                    var pt = DocumentManager.Instance.CurrentDBDocument.FamilyCreate.NewReferencePoint(new XYZ(5, 5, 5));
 
                     if (t.Commit() != TransactionStatus.Committed)
                     {
@@ -30,7 +30,7 @@ namespace Dynamo.Tests
             }
 
             //verify that the point was created
-            var collector = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+            var collector = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             collector.OfClass(typeof (ReferencePoint));
 
             Assert.AreEqual(1, collector.ToElements().Count);

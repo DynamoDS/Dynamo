@@ -30,7 +30,7 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Value> args)
         {
             //if we're in a family document, don't even try to add a floor
-            if (DocumentManager.GetInstance().CurrentUIDocument.Document.IsFamilyDocument)
+            if (DocumentManager.Instance.CurrentUIDocument.Document.IsFamilyDocument)
             {
                 throw new Exception("Floors can not be created in family documents.");
             }
@@ -52,7 +52,7 @@ namespace Dynamo.Nodes
                 if (dynUtils.TryGetElement(this.Elements[0], out floor))
                 {
                     //Delete the existing floor. Revit API does not allow update of floor sketch.
-                    DocumentManager.GetInstance().CurrentUIDocument.Document.Delete(floor.Id);
+                    DocumentManager.Instance.CurrentUIDocument.Document.Delete(floor.Id);
                 }
 
                 floor = CreateFloor(edges, floorType, level);
@@ -71,7 +71,7 @@ namespace Dynamo.Nodes
         {
             var ca = new CurveArray();
             edges.ToList().ForEach(x => ca.Append((Curve) ((Value.Container) x).Item));
-            var floor = DocumentManager.GetInstance().CurrentUIDocument.Document.Create.NewFloor(ca, floorType, level, false);
+            var floor = DocumentManager.Instance.CurrentUIDocument.Document.Create.NewFloor(ca, floorType, level, false);
             return floor;
         }
 
@@ -99,7 +99,7 @@ namespace Dynamo.Nodes
 
         public override void PopulateItems()
         {
-            var floorTypesColl = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            var floorTypesColl = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             floorTypesColl.OfClass(typeof (FloorType));
 
             Items.Clear();

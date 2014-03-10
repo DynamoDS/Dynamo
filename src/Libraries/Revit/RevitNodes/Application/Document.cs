@@ -19,7 +19,7 @@ namespace Revit.Application
         {
             get
             {
-                return DocumentManager.GetInstance().CurrentDBDocument;
+                return DocumentManager.Instance.CurrentDBDocument;
             }
         }
 

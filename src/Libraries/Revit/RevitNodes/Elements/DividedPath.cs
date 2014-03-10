@@ -63,7 +63,7 @@ namespace Revit.Elements
             // make sure all of the curves are element references
             var curveRefs = c.Select(x => x.InternalReference).ToList();
 
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             // build the divided path
             var divPath = Autodesk.Revit.DB.DividedPath.Create( Document, curveRefs );
@@ -72,7 +72,7 @@ namespace Revit.Elements
             // set internally
             InternalSetDividedPath(divPath);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             // delete any cached ele and set this new one
             ElementBinder.CleanupAndSetElementForTrace(Document, InternalDividedPath.Id);

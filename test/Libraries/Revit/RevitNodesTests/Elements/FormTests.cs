@@ -36,7 +36,7 @@ namespace DSRevitNodesTests.Elements
             var loft = Form.ByLoftingCurveReferences(eles.ToArray(), false);
 
             Assert.NotNull(loft);
-            Assert.IsTrue(DocumentManager.GetInstance().ElementExistsInDocument(loft.InternalElement.Id));
+            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(loft.InternalElement.Id));
         }
 
         [Test]

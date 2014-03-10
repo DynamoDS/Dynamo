@@ -70,12 +70,12 @@ namespace Revit.Elements
 
                 // if setting the plane fails, we delete the old Element
                 // in order to create a new one
-                DocumentManager.GetInstance().DeleteElement(oldEle.Id);
+                DocumentManager.Instance.DeleteElement(oldEle.Id);
 
             }
 
             //Phase 2- There was no existing element, create new
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             Autodesk.Revit.DB.SketchPlane sp;
 
@@ -90,7 +90,7 @@ namespace Revit.Elements
 
             InternalSetSketchPlane(sp);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(this.InternalElementId);
 

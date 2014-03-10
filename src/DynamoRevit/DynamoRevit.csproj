@@ -191,7 +191,6 @@
     <Compile Include="Nodes\SunPath.cs" />
     <Compile Include="Nodes\Transform.cs" />
     <Compile Include="Nodes\UV.cs" />
-    <Compile Include="IdlePromise.cs" />
     <Compile Include="Nodes\XYZ.cs" />
     <Compile Include="OutOfSpaceException.cs" />
     <Compile Include="ParticleSystem\DynamicRelaxation.cs" />

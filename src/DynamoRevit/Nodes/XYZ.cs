@@ -1402,7 +1402,7 @@ namespace Dynamo.Nodes
                 Reference r = (Reference)((FScheme.Value.Container)args[1]).Item;
                 if (r != null)
                 {
-                    Element refElem = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(r.ElementId);
+                    Element refElem = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(r.ElementId);
                     if (refElem != null)
                     {
                         GeometryObject geob = refElem.GetGeometryObjectFromReference(r);

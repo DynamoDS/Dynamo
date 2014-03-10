@@ -75,11 +75,11 @@ namespace Revit.Elements
                 }
 
                 // delete the old element, we couldn't update it for some reason
-                DocumentManager.GetInstance().DeleteElement(oldEle.Id);
+                DocumentManager.Instance.DeleteElement(oldEle.Id);
             }
 
             //Phase 2- There was no existing element, create new
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             Autodesk.Revit.DB.ReferencePlane refPlane;
 
@@ -102,7 +102,7 @@ namespace Revit.Elements
 
             InternalSetReferencePlane(refPlane);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(this.InternalElementId);
 
@@ -131,7 +131,7 @@ namespace Revit.Elements
         /// <returns>False if the operation failed</returns>
         private bool InternalSetEndpoints(XYZ bubbleEnd, XYZ freeEnd)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var refPlane = this.InternalReferencePlane;
 
@@ -155,7 +155,7 @@ namespace Revit.Elements
                 success = false;
             }
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             return success;
         }

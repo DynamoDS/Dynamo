@@ -21,7 +21,7 @@ namespace DSRevitNodesTests.Elements
             var modelTextType = ModelTextType.ByName(name);
             Assert.NotNull(modelTextType);
             Assert.AreEqual(name, modelTextType.Name);
-            Assert.IsTrue(DocumentManager.GetInstance().ElementExistsInDocument(modelTextType.InternalElement.Id));
+            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(modelTextType.InternalElement.Id));
         }
 
         [Test]

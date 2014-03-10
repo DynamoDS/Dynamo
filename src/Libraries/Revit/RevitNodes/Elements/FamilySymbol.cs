@@ -142,7 +142,7 @@ namespace Revit.Elements
             }
 
             //find the family
-            var collector = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+            var collector = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             collector.OfClass(typeof (Autodesk.Revit.DB.Family));
             var family = (Autodesk.Revit.DB.Family)collector.ToElements().FirstOrDefault(x => x.Name == familyName);
 
@@ -180,7 +180,7 @@ namespace Revit.Elements
             }
 
             // look up the loaded family
-            var symbol = DocumentManager.GetInstance()
+            var symbol = DocumentManager.Instance
                 .ElementsOfType<Autodesk.Revit.DB.FamilySymbol>()
                 .FirstOrDefault(x => x.Name == name);
 
