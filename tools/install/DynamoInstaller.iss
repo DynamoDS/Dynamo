@@ -66,9 +66,6 @@ Source: Extra\InstallASMForDynamo.exe; DestDir:{app}; Flags: ignoreversion overw
 Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 Source: temp\dynamo_packages\*; DestDir: {app}\dynamo_packages; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
-[Icons]
-Name: "{group}\Dynamo"; Filename: "{app}\DynamoSandbox.exe"
-
 [UninstallDelete]
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2013\DynamoDS.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\DynamoDS.addin"
@@ -80,6 +77,9 @@ Filename: "{app}\fsharp_redist.exe"; Parameters: "/q"; Flags: runascurrentuser
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qb"; WorkingDir: {tmp};
 ;Filename: "del"; Parameters: "/q {app}\fsharp_redist.exe"; Flags: postinstall runascurrentuser runhidden
 Filename: "{app}\InstallASMForDynamo.exe";
+
+[Icons]
+Name: "{group}\Dynamo"; Filename: "{app}\DynamoSandbox.exe"
 
 [Code]
 { HANDLE INSTALL PROCESS STEPS }

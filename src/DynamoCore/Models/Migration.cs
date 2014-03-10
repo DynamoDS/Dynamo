@@ -448,6 +448,22 @@ namespace Dynamo.Models
             return element;
         }
 
+        public static XmlElement CreateNode(XmlDocument document, string name, string nickname)
+        {
+            XmlElement element = document.CreateElement(name);
+            element.SetAttribute("type", name);
+            element.SetAttribute("nickname", nickname);
+
+            // Attributes with default values (as in DynamoModel.OpenWorkspace).
+            element.SetAttribute("isVisible", "true");
+            element.SetAttribute("isUpstreamVisible", "true");
+            element.SetAttribute("lacing", "Disabled");
+            element.SetAttribute("x", "0.0");
+            element.SetAttribute("y", "0.0");
+            element.SetAttribute("guid", Guid.NewGuid().ToString());
+            return element;
+        }
+
         /// <summary>
         /// Call this method to create a XmlElement with a set of attributes 
         /// carried over from the source XmlElement. The new XmlElement will 
