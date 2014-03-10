@@ -13,6 +13,7 @@ using Dynamo.Utilities;
 using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Threading;
+using RevitServices.Transactions;
 using ChangeType = RevitServices.Elements.ChangeType;
 using Value = Dynamo.FScheme.Value;
 using RevThread = RevitServices.Threading;
@@ -29,7 +30,7 @@ namespace Dynamo.Revit
         //TODO: Move from dynElementSettings to another static area in DynamoRevit
         protected Autodesk.Revit.UI.UIDocument UIDocument
         {
-            get { return DocumentManager.GetInstance().CurrentUIDocument; }
+            get { return DocumentManager.Instance.CurrentUIDocument; }
         }
 
         // this contains a list of all the elements created over all previous
@@ -219,12 +220,12 @@ namespace Dynamo.Revit
             {
                 #region no debug
 
-                if (controller.TransMode == TransactionMode.Manual && !controller.TransactionManager.TransactionActive)
+                if (controller.TransMode == TransactionMode.Manual && !controller.TransactionWrapper.TransactionActive)
                 {
                     throw new Exception("A Revit transaction is required in order evaluate this element.");
                 }
 
-                controller.InitTransaction();
+                TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
 
                 base.__eval_internal(args, outPuts);
 
@@ -247,7 +248,7 @@ namespace Dynamo.Revit
                 RevThread.IdlePromise.ExecuteOnIdleSync(
                    delegate
                    {
-                       controller.InitTransaction();
+                       TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
 
                        try
                        {
@@ -261,13 +262,14 @@ namespace Dynamo.Revit
                            }
                            _deletedIds.Clear();
 
-                           controller.EndTransaction();
+                           TransactionManager.Instance.ForceCloseTransaction();
 
                            ValidateConnections();
                        }
                        catch (Exception)
                        {
-                           controller.CancelTransaction();
+                           TransactionManager.Instance.ForceCloseTransaction();
+
                            throw;
                        }
                    });
@@ -302,7 +304,7 @@ namespace Dynamo.Revit
             RevThread.IdlePromise.ExecuteOnIdleAsync(
                delegate
                {
-                   controller.InitTransaction();
+                   TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
                    try
                    {
                        _runCount = 0;
@@ -320,7 +322,7 @@ namespace Dynamo.Revit
                            {
                                try
                                {
-                                   DocumentManager.GetInstance().CurrentUIDocument.Document.Delete(e);
+                                   DocumentManager.Instance.CurrentUIDocument.Document.Delete(e);
                                }
                                catch (Autodesk.Revit.Exceptions.InvalidOperationException)
                                {
@@ -338,7 +340,7 @@ namespace Dynamo.Revit
                           + " -- " + ex.Message
                        );
                    }
-                   controller.EndTransaction();
+                   TransactionManager.Instance.ForceCloseTransaction();
                    WorkSpace.Modified();
                });
         }

@@ -618,7 +618,7 @@ namespace Dynamo.Nodes
 
             List<VertexPair> vertPairs = null;
 
-            if (DocumentManager.GetInstance().CurrentUIDocument.Application.Application.VersionName.Contains("2013"))
+            if (DocumentManager.Instance.CurrentUIDocument.Application.Application.VersionName.Contains("2013"))
             {
                 vertPairs = new List<VertexPair>();
 
@@ -1132,7 +1132,7 @@ namespace Dynamo.Nodes
             var xaxis = yaxis.CrossProduct(zaxis);
 
             // create circle (this is ridiculous, but curve loop doesn't work with a circle - you need two arcs)
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Application;
+            var document = DocumentManager.Instance.CurrentUIDocument.Application;
             var arc1 = document.Application.Create.NewEllipse(origin, radius, radius, xaxis, yaxis, 0, Circle.RevitPI);
             var arc2 = document.Application.Create.NewEllipse(origin, radius, radius, xaxis, yaxis, Circle.RevitPI, 2 * Circle.RevitPI);
 
@@ -1217,7 +1217,7 @@ namespace Dynamo.Nodes
         {
 
             // create semicircular arc
-            var application = DocumentManager.GetInstance().CurrentUIDocument.Application;
+            var application = DocumentManager.Instance.CurrentUIDocument.Application;
             var semicircle = application.Application.Create.NewArc(center, radius, 0, Circle.RevitPI, XYZ.BasisZ, XYZ.BasisX);
 
             // create axis curve of cylinder
@@ -1285,7 +1285,7 @@ namespace Dynamo.Nodes
             var origin = center + xaxis * radius;
 
             // create circle (this is ridiculous but curve loop doesn't work with a circle
-            var application = DocumentManager.GetInstance().CurrentUIDocument.Application;
+            var application = DocumentManager.Instance.CurrentUIDocument.Application;
             var arc1 = application.Application.Create.NewEllipse(origin, sectionRadius, sectionRadius, xaxis, zaxis, 0, Circle.RevitPI);
             var arc2 = application.Application.Create.NewEllipse(origin, sectionRadius, sectionRadius, xaxis, zaxis, Circle.RevitPI, 2 * Circle.RevitPI);
 
@@ -1355,7 +1355,7 @@ namespace Dynamo.Nodes
             var p3 = p2 - new XYZ(top.X - bottom.X, 0, 0);
 
             // form edges of base rect
-            var application = DocumentManager.GetInstance().CurrentUIDocument.Application;
+            var application = DocumentManager.Instance.CurrentUIDocument.Application;
             var l1 = application.Application.Create.NewLineBound(p0, p1);
             var l2 = application.Application.Create.NewLineBound(p1, p2);
             var l3 = application.Application.Create.NewLineBound(p2, p3);
@@ -1696,7 +1696,7 @@ namespace Dynamo.Nodes
             FSharpList<FScheme.Value> vals = ((FScheme.Value.List)args[1]).Item;
             List<GeometryObject> edgesToBeReplaced = new List<GeometryObject>();
 
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             for (int ii = 0; ii < vals.Count(); ii++)
             {
@@ -1776,7 +1776,7 @@ namespace Dynamo.Nodes
 
             var vals = ((FScheme.Value.List)args[1]).Item;
             var edgesToBeReplaced = new List<GeometryObject>();
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             for (int ii = 0; ii < vals.Count(); ii++)
             {

@@ -358,7 +358,7 @@ namespace Revit.GeometryObjects
         /// <param name="startAngle">The start angle in radians.</param>
         /// <param name="endAngle">The end angle in radians.</param>
         /// <returns></returns>
-        public static Solid ByRevolve(List<Autodesk.DesignScript.Geometry.Curve> profile,  CoordinateSystem coordinateSystem, double startAngle, double endAngle )
+        public static Solid ByRevolve(Autodesk.DesignScript.Geometry.PolyCurve profile,  CoordinateSystem coordinateSystem, double startAngle, double endAngle )
         {
             if (profile == null)
             {
@@ -370,7 +370,7 @@ namespace Revit.GeometryObjects
                 throw new ArgumentException("coordinate system");
             }
 
-            var crvs = CurveLoop.Create(profile.Select(x => x.ToRevitType()).ToList());
+            var crvs = profile.ToRevitType();
 
             return new Solid( crvs, coordinateSystem.ToTransform(), startAngle, endAngle);
         }
@@ -380,7 +380,7 @@ namespace Revit.GeometryObjects
         /// </summary>
         /// <param name="profiles">A list of lists of curves representing the profiles to blend.</param>
         /// <returns></returns>
-        public static Solid ByBlend(List<List<Autodesk.DesignScript.Geometry.Curve>> profiles)
+        public static Solid ByBlend(List<PolyCurve> profiles)
         {
             if (profiles == null)
             {
@@ -392,7 +392,7 @@ namespace Revit.GeometryObjects
                 throw new Exception("You must have two profiles to create a blend.");
             }
 
-            var loops = profiles.Select(x => CurveLoop.Create(x.Select(y => y.ToRevitType()).ToList()));
+            var loops = profiles.Select(x => x.ToRevitType()).ToList();
 
             return new Solid(loops);
         }
@@ -403,7 +403,7 @@ namespace Revit.GeometryObjects
         /// <param name="profiles"></param>
         /// <param name="spine"></param>
         /// <returns></returns>
-        public static Solid BySweptBlend(List<List<Autodesk.DesignScript.Geometry.Curve>> profiles, Autodesk.DesignScript.Geometry.Curve spine, List<double> attachmentParameters)
+        public static Solid BySweptBlend(List<PolyCurve> profiles, Autodesk.DesignScript.Geometry.Curve spine, List<double> attachmentParameters)
         {
             if (profiles == null)
             {
@@ -420,7 +420,7 @@ namespace Revit.GeometryObjects
                 throw new Exception("You must have the same number of profiles as attachment parameters.");
             }
 
-            var loops = profiles.Select(x => CurveLoop.Create(x.Select(y => y.ToRevitType()).ToList()));
+            var loops = profiles.Select(x => x.ToRevitType() ).ToList();
 
             return new Solid(loops, spine.ToRevitType(), attachmentParameters);
         }

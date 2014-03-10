@@ -40,7 +40,7 @@ namespace Dynamo.Nodes
             if (ptA is XYZ)
             {
 
-                a = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewArc(
+                a = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewArc(
                    (XYZ)ptA, (XYZ)ptC, (XYZ)ptB //start, end, middle 
                 );
 
@@ -48,7 +48,7 @@ namespace Dynamo.Nodes
             }
             else if (ptA is ReferencePoint)
             {
-                a = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewArc(
+                a = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewArc(
                    (XYZ)((ReferencePoint)ptA).Position, (XYZ)((ReferencePoint)ptB).Position, (XYZ)((ReferencePoint)ptC).Position //start, end, middle 
                 );
 
@@ -94,13 +94,13 @@ namespace Dynamo.Nodes
 
             if (ptA is XYZ)
             {
-                a = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewArc(
+                a = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewArc(
                    (XYZ)ptA, radius, start, end, XYZ.BasisX, XYZ.BasisY
                 );
             }
             else if (ptA is ReferencePoint)
             {
-                a = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewArc(
+                a = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewArc(
                    (XYZ)((ReferencePoint)ptA).Position, radius, start, end, XYZ.BasisX, XYZ.BasisY
                 );
             }
@@ -108,7 +108,7 @@ namespace Dynamo.Nodes
             {
                 Transform trf = ptA as Transform;
                 XYZ center = trf.Origin;
-                a = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewArc(
+                a = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewArc(
                              center, radius, start, end, trf.BasisX, trf.BasisY
                 );
             }
@@ -201,7 +201,7 @@ namespace Dynamo.Nodes
             List<XYZ> xyzList = new List<XYZ>();
 
             FSharpList<FScheme.Value> vals = ((FScheme.Value.List)args[0]).Item;
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             for (int ii = 0; ii < vals.Count(); ii++)
             {

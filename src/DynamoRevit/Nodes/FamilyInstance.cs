@@ -52,7 +52,7 @@ namespace Dynamo.Nodes
 
         public override void PopulateItems() //(IEnumerable set, bool readOnly)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var doc = DocumentManager.Instance.CurrentUIDocument.Document;
 
             this.Items.Clear();
 
@@ -157,7 +157,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var doc = DocumentManager.Instance.CurrentUIDocument.Document;
 
             int index = -1;
 
@@ -864,7 +864,7 @@ namespace Dynamo.Nodes
                 FSharpList<Value> refPts = FSharpList<Value>.Empty;
                 foreach (var id in refPtIds)
                 {
-                    var pt = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id) as ReferencePoint;
+                    var pt = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(id) as ReferencePoint;
                     refPts = FSharpList<Value>.Cons(Value.NewContainer(pt.Position), refPts);
                 }
                 return Value.NewList(Utils.SequenceToFSharpList(refPts.Reverse()));

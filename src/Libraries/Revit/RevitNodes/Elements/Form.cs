@@ -54,12 +54,12 @@ namespace Revit.Elements
         private Form(bool isSolid, ReferenceArrayArray curves)
         {
             // clean it up
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var f = Document.FamilyCreate.NewLoftForm(isSolid, curves);
             InternalSetForm(f);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElementId);
         }

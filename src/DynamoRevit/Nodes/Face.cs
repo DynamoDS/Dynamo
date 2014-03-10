@@ -201,7 +201,7 @@ namespace Dynamo.Nodes
 
             Autodesk.Revit.DB.Face f = (faceRef == null) ?
                 ((Autodesk.Revit.DB.Face)((FScheme.Value.Container)args[0]).Item) :
-                (DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face);
+                (DocumentManager.Instance.CurrentUIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face);
 
             if (f != null)
             {
@@ -234,7 +234,7 @@ namespace Dynamo.Nodes
             Reference faceRef = (args[1] as FScheme.Value.Container).Item as Reference;
             Autodesk.Revit.DB.Face f = (faceRef == null) ?
                 ((args[1] as FScheme.Value.Container).Item as Autodesk.Revit.DB.Face) :
-                DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
+                DocumentManager.Instance.CurrentUIDocument.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
 
 
             XYZ face_point = null;
@@ -318,7 +318,7 @@ namespace Dynamo.Nodes
             var faceRef = (args[1] as FScheme.Value.Container).Item as Reference;
             Autodesk.Revit.DB.Face f = (faceRef == null) ?
                 ((args[1] as FScheme.Value.Container).Item as Autodesk.Revit.DB.Face) :
-                DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
+                DocumentManager.Instance.CurrentUIDocument.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
 
             XYZ norm = null;
 
@@ -405,7 +405,7 @@ namespace Dynamo.Nodes
 
             Reference faceRef = arg0 as Reference;
             if (faceRef != null)
-                f = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
+                f = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
             else
                 f = arg0 as Autodesk.Revit.DB.Face;
 
@@ -450,7 +450,7 @@ namespace Dynamo.Nodes
 
             var faceRef = arg0 as Reference;
             if (faceRef != null)
-                f = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
+                f = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
             else
                 f = arg0 as Autodesk.Revit.DB.Face;
 

@@ -17,9 +17,6 @@ namespace Dynamo.DSEngine
 
         private static Dictionary<string, XDocument> cachedXml;
 
-        /// <summary>
-        /// Static constructor.
-        /// </summary>
         static XmlDocumentationExtensions()
         {
             cachedXml = new Dictionary<string, XDocument>(StringComparer.OrdinalIgnoreCase);
@@ -131,13 +128,8 @@ namespace Dynamo.DSEngine
             return String.Format("{0}:{1}", prefixCode, memberName);
         }
 
-        /// <summary>
-        /// Load Xml documentation for a given assembly and add to cache
-        /// </summary>
-        /// <param name="pathToAssembly"></param>
         internal static bool LoadXmlDocumentation(string pathToAssembly)
         {
-
             if (cachedXml.ContainsKey(pathToAssembly))
                 return true;
 

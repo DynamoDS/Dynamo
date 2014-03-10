@@ -98,7 +98,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException();
             }
 
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             // look up the loaded family
             var fec = new Autodesk.Revit.DB.FilteredElementCollector(Document);
@@ -114,7 +114,7 @@ namespace Revit.Elements
                 throw new Exception("A FamilySymbol with the specified name does not exist in the document");
             }
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             return new Family(family);
         }

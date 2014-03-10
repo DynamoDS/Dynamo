@@ -89,7 +89,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewContainer(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            return Value.NewContainer(DocumentManager.Instance.CurrentUIDocument.Document);
         }
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]

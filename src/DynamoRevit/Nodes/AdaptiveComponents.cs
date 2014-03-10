@@ -115,7 +115,7 @@ namespace Dynamo.Nodes
 
             if (instData.Any())
             {
-                var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+                var document = DocumentManager.Instance.CurrentUIDocument.Document;
                 if (document.IsFamilyDocument)
                 {
                     ids = document.FamilyCreate.NewFamilyInstances2(instData);
@@ -184,7 +184,7 @@ namespace Dynamo.Nodes
             //add all of the instances
             results = Elements.Aggregate(results,
                 (current, id) =>
-                    FSharpList<Value>.Cons(Value.NewContainer(DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id)), current));
+                    FSharpList<Value>.Cons(Value.NewContainer(DocumentManager.Instance.CurrentUIDocument.Document.GetElement(id)), current));
             results.Reverse();
 
             return Value.NewList(results);
@@ -206,7 +206,7 @@ namespace Dynamo.Nodes
             int i = 0;
             foreach (ElementId id in placePointIds)
             {
-                var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+                var document = DocumentManager.Instance.CurrentUIDocument.Document;
                 var point = document.GetElement(id) as ReferencePoint;
                 var pt = (XYZ) ((Value.Container) pts.ElementAt(i)).Item;
                 point.Position = pt;

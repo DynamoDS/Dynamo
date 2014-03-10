@@ -69,7 +69,7 @@ namespace Revit.Elements
             }
 
             // otherwise create a new family instance...
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var divSurf = Document.FamilyCreate.NewDividedSurface(face.InternalReference);
 
@@ -77,7 +77,7 @@ namespace Revit.Elements
             InternalSetDivisions(uDivs, vDivs);
             InternalSetRotation(rotation);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             // remember this new value
             ElementBinder.SetElementForTrace(this.InternalElementId);
@@ -144,14 +144,14 @@ namespace Revit.Elements
         /// <param name="vDivs"></param>
         private void InternalSetDivisions(int uDivs, int vDivs)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             if (InternalDividedSurface.USpacingRule.Number != uDivs)
                 InternalDividedSurface.USpacingRule.Number = uDivs;
             if (InternalDividedSurface.VSpacingRule.Number != vDivs)
                 InternalDividedSurface.VSpacingRule.Number = vDivs;
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         /// <summary>
@@ -161,11 +161,11 @@ namespace Revit.Elements
         /// <param name="vDivs"></param>
         private void InternalSetRotation(double rotation)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             InternalDividedSurface.AllGridRotation = rotation;
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         #endregion
