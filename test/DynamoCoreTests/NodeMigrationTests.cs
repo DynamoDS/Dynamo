@@ -1228,9 +1228,392 @@ namespace Dynamo.Tests
             Assert.NotNull(logicn2);
         }
 
+        [Test]
+        public void Dynamo_Nodes_TakeFromList()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_TakeFromList.dyn"));
 
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "f08875de-8aa4-4bae-aedd-8bb26ae73a35");
 
+            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count);
 
+            Assert.NotNull(logicn1);
+
+            RunCurrentModel();
+            AssertPreviewValue("f08875de-8aa4-4bae-aedd-8bb26ae73a35",
+                new object[] {1, 2});
+        }
+
+        [Test]
+        public void Dynamo_Nodes_TakeFromList_ListOfListAsInput()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_TakeFromList_ListOfListAsInput.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "f08875de-8aa4-4bae-aedd-8bb26ae73a35");
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(6, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+
+            RunCurrentModel();
+            AssertPreviewValue("f08875de-8aa4-4bae-aedd-8bb26ae73a35",
+                new object[] {new object[] {1, 2, 3, 4, 5}, new object[] {1, 2, 3, 4, 5}});
+        }
+
+        [Test]
+        public void Dynamo_Nodes_TakeEveryNth()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_TakeEveryNth.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "adffbefb-4f91-4b6e-bcef-59f8f7adf9f4");
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+
+            RunCurrentModel();
+            AssertPreviewValue("adffbefb-4f91-4b6e-bcef-59f8f7adf9f4",
+                new object[] {4, 7, 10});
+        }
+
+        [Test]
+        public void Dynamo_Nodes_TakeEveryNth_ListOfListAsInput()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_TakeEveryNth_ListOfListAsInput.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "adffbefb-4f91-4b6e-bcef-59f8f7adf9f4");
+
+            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(9, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+
+            RunCurrentModel();
+            AssertPreviewValue("adffbefb-4f91-4b6e-bcef-59f8f7adf9f4",
+                new object[] { new object[] { 1, 2}, new object[] { 1, 2} });
+        }
+
+        [Test]
+        public void Dynamo_Nodes_RemoveFromList()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_RemoveFromList.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "5295f03d-531c-4f0e-b852-47eef1f8c38c");
+            var logicn2 = workspace.NodeFromWorkspace<DSFunction>(
+                "b6769722-96ae-437d-9c64-cc82f2f6fb01");
+
+            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+            Assert.NotNull(logicn2);
+
+            RunCurrentModel();
+            AssertPreviewValue("5295f03d-531c-4f0e-b852-47eef1f8c38c",
+                new object[] {1, 2, 3, 4, 5, 7, 8, 9, 10});
+            AssertPreviewValue("b6769722-96ae-437d-9c64-cc82f2f6fb01",
+                new object[] {1, 2, 7, 8, 9, 10});
+        }
+
+        [Test]
+        public void Dynamo_Nodes_RemoveFromList_ListOfListAsInput()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_RemoveFromList_ListOfListAsInput.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "5295f03d-531c-4f0e-b852-47eef1f8c38c");
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(6, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+
+            RunCurrentModel();
+            AssertPreviewValue("5295f03d-531c-4f0e-b852-47eef1f8c38c",
+                new object[] {new object[] {1, 2}, new object[] {1, 2}, new object[] {1, 2}});
+        }
+
+        [Test]
+        public void Dynamo_Nodes_DropFromList()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_DropFromList.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "c250a8d2-4e16-4e87-a8a8-f738329e61b1");
+
+            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+
+            RunCurrentModel();
+            AssertPreviewValue("c250a8d2-4e16-4e87-a8a8-f738329e61b1",
+                new object[] {9, 10});
+        }
+
+        [Test]
+        public void Dynamo_Nodes_DropFromList_ListOfListAsInput()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_DropFromList_ListOfListAsInput.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "c250a8d2-4e16-4e87-a8a8-f738329e61b1");
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(6, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+
+            RunCurrentModel();
+            AssertPreviewValue("c250a8d2-4e16-4e87-a8a8-f738329e61b1",
+                new object[] { new object[] { 1, 2, 3, 4, 5 }, new object[] { 1, 2, 3, 4, 5 } });
+        }
+
+        [Test]
+        public void Dynamo_Nodes_DropEveryNth()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_DropEveryNth.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "9e3e4a46-9874-4322-a126-2ada785f3f80");
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+
+            RunCurrentModel();
+            AssertPreviewValue("9e3e4a46-9874-4322-a126-2ada785f3f80",
+                new object[] {2, 3, 5, 6, 8, 9});
+        }
+
+        [Test]
+        public void Dynamo_Nodes_DropEveryNth_ListOfListAsInput()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_DropEveryNth_ListOfListAsInput.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "9e3e4a46-9874-4322-a126-2ada785f3f80");
+
+            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(9, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+
+            RunCurrentModel();
+            AssertPreviewValue("9e3e4a46-9874-4322-a126-2ada785f3f80",
+                new object[] {new object[] {1, 2}, new object[] {1, 2}, 
+                    new object[] {1, 2}, new object[] {1, 2}});
+        }
+
+        [Test]
+        public void Dynamo_Nodes_Sort()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_Sort.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "77a79c75-15a4-4b0a-b326-00df04c689b6");
+
+            Assert.AreEqual(8, workspace.Nodes.Count);
+            Assert.AreEqual(7, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+
+            RunCurrentModel();
+            AssertPreviewValue("77a79c75-15a4-4b0a-b326-00df04c689b6",
+                new object[] {-7, 0, 2, 2, 2.5, 9});
+        }
+
+        [Test]
+        public void Dynamo_Nodes_SortByKey()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_SortByKey.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "3c619222-858f-4f7c-b001-3a4a248f8f77");
+
+            Assert.AreEqual(10, workspace.Nodes.Count);
+            Assert.AreEqual(9, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+
+            RunCurrentModel();
+            AssertPreviewValue("3c619222-858f-4f7c-b001-3a4a248f8f77",
+                new object[] {2, 2.5, 2, 9, 0, -7});
+        }
+
+        [Test]
+        public void Dynamo_Nodes_NewList()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_NewList.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+                "ff8f5f64-c9f3-4814-896a-6ef679a35275");
+            var logicn2 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+                "2d58dbc4-62ad-4a12-974b-52d5986053b5");
+            var logicn3 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+                "0c98e395-e2f4-49c1-abda-d1bcb3c24cbd");
+
+            Assert.AreEqual(10, workspace.Nodes.Count);
+            Assert.AreEqual(12, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+            Assert.NotNull(logicn2);
+            Assert.NotNull(logicn3);
+
+            RunCurrentModel();
+            AssertPreviewValue("ff8f5f64-c9f3-4814-896a-6ef679a35275", 
+                new object[] { 1,1,-1,2.5 });
+            AssertPreviewValue("2d58dbc4-62ad-4a12-974b-52d5986053b5",
+                new object[] {"hi,", "I am", 1, "test"});
+            AssertPreviewValue("0c98e395-e2f4-49c1-abda-d1bcb3c24cbd",
+                new object[] {new object[] {1, 2, 3}, 1, 1, 1});
+        }
+
+        [Test]
+        public void Dynamo_Nodes_ShiftListIndices()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_ShiftListIndices.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "1dd7ff84-90db-4e1c-a0ca-9fe9119dbea6");
+
+            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+
+            RunCurrentModel();
+            AssertPreviewValue("1dd7ff84-90db-4e1c-a0ca-9fe9119dbea6",
+                new object[] {6, 7, 8, 9, 10, 1, 2, 3, 4, 5});
+        }
+
+        [Test]
+        public void Dynamo_Nodes_ShiftListIndices_ListOfListAsInput()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_ShiftListIndices_ListOfListAsInput.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "1dd7ff84-90db-4e1c-a0ca-9fe9119dbea6");
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(6, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+
+            RunCurrentModel();
+            AssertPreviewValue("1dd7ff84-90db-4e1c-a0ca-9fe9119dbea6",
+                new object[] {new object[] {1, 2}, new object[] {1, 2}, 
+                    new object[] {1, 2}, new object[] {1, 2}});
+        }
+
+        [Test]
+        public void Dynamo_Nodes_GetFromList()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_GetFromList.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "ce22d1d1-c5e4-4684-8414-9a115848a06f");
+
+            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+
+            RunCurrentModel();
+            AssertPreviewValue("ce22d1d1-c5e4-4684-8414-9a115848a06f", 5);
+        }
+
+        [Test]
+        public void Dynamo_Nodes_GetFromList_ListOfListAsInput()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_GetFromList_ListOfListAsInput.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "ce22d1d1-c5e4-4684-8414-9a115848a06f");
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(6, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+
+            RunCurrentModel();
+            AssertPreviewValue("ce22d1d1-c5e4-4684-8414-9a115848a06f",
+                new object[] {1, 2});
+
+        }
+
+        [Test]
+        public void Dynamo_Nodes_SliceList()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_SliceList.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "fbe895a7-e97a-47f3-b5bf-536d652aa603");
+            var logicn2 = workspace.NodeFromWorkspace<DSFunction>(
+                "797b1b02-c815-4808-9889-296bc6d176fd");
+
+            //During migraton, the manager will add a toRadius node. 
+            //So the number of node and connector will be increased.
+            Assert.AreEqual(6 + 2, workspace.Nodes.Count);
+            Assert.AreEqual(6 + 2, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+            Assert.NotNull(logicn2);
+
+            RunCurrentModel();
+            AssertPreviewValue("fbe895a7-e97a-47f3-b5bf-536d652aa603", 
+                new object[] {6});
+            AssertPreviewValue("797b1b02-c815-4808-9889-296bc6d176fd", 
+                new object[] {6, 7, 8});
+        }
+
+        [Test]
+        public void Dynamo_Nodes_SliceList_ListOfListAsInput()
+        {
+            OpenModel(GetDynPath("Dynamo_Nodes_SliceList_ListOfListAsInput.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+                "fbe895a7-e97a-47f3-b5bf-536d652aa603");
+
+            //During migraton, the manager will add a toRadius node. 
+            //So the number of node and connector will be increased.
+            Assert.AreEqual(5 + 1, workspace.Nodes.Count);
+            Assert.AreEqual(7 + 1, workspace.Connectors.Count);
+
+            Assert.NotNull(logicn1);
+
+            RunCurrentModel();
+            AssertPreviewValue("fbe895a7-e97a-47f3-b5bf-536d652aa603",
+                new object[] {new object[] {1, 2}, new object[] {1, 2}});
+        }
 
 
 
