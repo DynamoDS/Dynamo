@@ -129,7 +129,7 @@ namespace Dynamo.Tests
             else if (value is int)
                 Assert.AreEqual((int)value, Convert.ToInt32(data.Data));
             else if (value is double)
-                Assert.IsTrue(Math.Abs((double)value - Convert.ToDouble(data.Data)) < 0.00001);
+                Assert.AreEqual((double)value, Convert.ToDouble(data.Data), 0.00001);
             else
                 Assert.AreEqual(value, data.Data);
         }
