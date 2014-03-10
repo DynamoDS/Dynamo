@@ -57,12 +57,12 @@ namespace Revit.Elements
         private Wall(Autodesk.Revit.DB.Curve curve, Autodesk.Revit.DB.WallType wallType, Autodesk.Revit.DB.Level baseLevel, double height, double offset, bool flip, bool isStructural)
         {
             // This creates a new wall and deletes the old one
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var wall = Autodesk.Revit.DB.Wall.Create(Document, curve, wallType.Id, baseLevel.Id, height, offset, flip, isStructural);
             InternalSetWall(wall);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             // delete the element stored in trace and add this new one
             ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElementId);

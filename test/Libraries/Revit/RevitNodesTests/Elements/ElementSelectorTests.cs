@@ -20,7 +20,7 @@ namespace DSRevitNodesTests.Elements
         {
             // obtain the element id for the box family
             var name = "Box";
-            var family = DocumentManager.GetInstance().ElementsOfType<Autodesk.Revit.DB.Family>()
+            var family = DocumentManager.Instance.ElementsOfType<Autodesk.Revit.DB.Family>()
                                                       .FirstOrDefault(x => x.Name == name);
             Assert.NotNull(family);
 
@@ -39,7 +39,7 @@ namespace DSRevitNodesTests.Elements
             var name = "Box";
 
             // look up the loaded family
-            var family = DocumentManager.GetInstance().ElementsOfType<Autodesk.Revit.DB.Family>()
+            var family = DocumentManager.Instance.ElementsOfType<Autodesk.Revit.DB.Family>()
                                                       .FirstOrDefault(x => x.Name == name);
             Assert.NotNull(family);
 
@@ -59,7 +59,7 @@ namespace DSRevitNodesTests.Elements
             var name = "Box";
 
             // look up the loaded family
-            var family = DocumentManager.GetInstance().ElementsOfType<Autodesk.Revit.DB.Family>()
+            var family = DocumentManager.Instance.ElementsOfType<Autodesk.Revit.DB.Family>()
                                           .FirstOrDefault(x => x.Name == name);
             Assert.NotNull(family);
 
@@ -82,7 +82,7 @@ namespace DSRevitNodesTests.Elements
             var name = "Box";
 
             // look up the loaded family
-            var family = DocumentManager.GetInstance().ElementsOfType<Autodesk.Revit.DB.Family>()
+            var family = DocumentManager.Instance.ElementsOfType<Autodesk.Revit.DB.Family>()
                                         .FirstOrDefault(x => x.Name == name);
             Assert.NotNull(family);
 

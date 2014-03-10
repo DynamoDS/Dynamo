@@ -53,7 +53,7 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             Autodesk.Revit.DB.Analysis.SpatialFieldManager SpatialFieldManager;
-            var activeView = DocumentManager.GetInstance().CurrentUIDocument.ActiveView;
+            var activeView = DocumentManager.Instance.CurrentUIDocument.ActiveView;
             SpatialFieldManager = Autodesk.Revit.DB.Analysis.SpatialFieldManager.GetSpatialFieldManager(activeView);
             
             if (SpatialFieldManager != null)
@@ -107,7 +107,7 @@ namespace Dynamo.Nodes
         {
             AnalysisDisplayStyle analysisDisplayStyle = null;
 
-            Document doc = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            Document doc = DocumentManager.Instance.CurrentUIDocument.Document;
 
             // Look for an existing analysis display style with a specific name
             FilteredElementCollector collector1 = new FilteredElementCollector(doc);
@@ -200,7 +200,7 @@ namespace Dynamo.Nodes
 
             var reference = (args[3] as Value.Container).Item as Reference;
 
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var document = DocumentManager.Instance.CurrentUIDocument.Document;
             var face = (reference == null) ?
                 ((args[3] as Value.Container).Item as Face) :
                 document.GetElement(reference).GetGeometryObjectFromReference(reference) as Face;
@@ -598,7 +598,7 @@ namespace Dynamo.Nodes
             Transform trf = Transform.Identity;
 
             //http://thebuildingcoder.typepad.com/blog/2012/09/sphere-creation-for-avf-and-filtering.html#3
-            var create = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create;
+            var create = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create;
 
             Transform t = curve.ComputeDerivatives(0, true);
 
@@ -607,7 +607,7 @@ namespace Dynamo.Nodes
                 t.BasisX.CrossProduct(XYZ.BasisY).Normalize() : 
                 t.BasisX.CrossProduct(XYZ.BasisZ).Normalize();
             XYZ z = x.CrossProduct(y);
-            var application = DocumentManager.GetInstance().CurrentUIApplication.Application;
+            var application = DocumentManager.Instance.CurrentUIApplication.Application;
             Autodesk.Revit.DB.Ellipse arc1 = application.Create.NewEllipse(t.Origin, .1, .1, y, z, -Math.PI, 0);
             Autodesk.Revit.DB.Ellipse arc2 = application.Create.NewEllipse(t.Origin, .1, .1, y, z, 0, Math.PI);
 

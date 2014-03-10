@@ -46,11 +46,11 @@ namespace Revit.Elements
 
         protected void InternalSetFamilySymbol(Autodesk.Revit.DB.FamilySymbol fs)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             InternalFamilyInstance.Symbol = fs;
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         #endregion

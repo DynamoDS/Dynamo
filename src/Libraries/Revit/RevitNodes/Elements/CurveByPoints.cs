@@ -20,13 +20,13 @@ namespace Revit.Elements
         {
             try
             {
-                TransactionManager.GetInstance().EnsureInTransaction(Document);
+                TransactionManager.Instance.EnsureInTransaction(Document);
                 ((Autodesk.Revit.DB.CurveByPoints) InternalCurveElement).SetPoints(pts);
-                TransactionManager.GetInstance().TransactionTaskDone();
+                TransactionManager.Instance.TransactionTaskDone();
             }
             catch (Exception ex)
             {
-                TransactionManager.GetInstance().ForceCloseTransaction();
+                TransactionManager.Instance.ForceCloseTransaction();
                 throw new Exception("Unable to update curve by points. \n" + ex.Message);
             }
         }
@@ -66,21 +66,21 @@ namespace Revit.Elements
 
             try
             {
-                TransactionManager.GetInstance().EnsureInTransaction(Document);
+                TransactionManager.Instance.EnsureInTransaction(Document);
 
-                cbp = DocumentManager.GetInstance().CurrentDBDocument.FamilyCreate.NewCurveByPoints(refPtArr);
+                cbp = DocumentManager.Instance.CurrentDBDocument.FamilyCreate.NewCurveByPoints(refPtArr);
 
                 cbp.IsReferenceLine = false;
 
                 InternalSetCurveElement(cbp);
 
-                TransactionManager.GetInstance().TransactionTaskDone();
+                TransactionManager.Instance.TransactionTaskDone();
 
                 ElementBinder.SetElementForTrace(this.InternalElementId);
             }
             catch (Exception ex)
             {
-                TransactionManager.GetInstance().ForceCloseTransaction();
+                TransactionManager.Instance.ForceCloseTransaction();
                 throw new Exception("Unable to create curve by points. \n" + ex.Message);
             }
         }

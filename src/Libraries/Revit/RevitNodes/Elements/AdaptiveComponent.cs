@@ -44,7 +44,7 @@ namespace Revit.Elements
             }
 
             // otherwise create a new family instance...
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractElement.Document, fs.InternalFamilySymbol);
 
@@ -54,7 +54,7 @@ namespace Revit.Elements
             InternalSetFamilyInstance(fam);
             InternalSetPositions(pts.ToXyzs());
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             // remember this value
             ElementBinder.SetElementForTrace(this.InternalElementId);
@@ -81,7 +81,7 @@ namespace Revit.Elements
             }
 
             // otherwise create a new family instance...
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractElement.Document, fs.InternalFamilySymbol);
 
@@ -91,7 +91,7 @@ namespace Revit.Elements
             InternalSetFamilyInstance(fam);
             InternalSetUvsAndFace(pts.ToUvs(), f.InternalFace);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
         }
 
@@ -116,7 +116,7 @@ namespace Revit.Elements
             }
 
             // otherwise create a new family instance...
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractElement.Document, fs.InternalFamilySymbol);
 
@@ -126,7 +126,7 @@ namespace Revit.Elements
             InternalSetFamilyInstance(fam);
             InternalSetParamsAndCurve(parms, c);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
         }
 
@@ -149,7 +149,7 @@ namespace Revit.Elements
         /// <param name="points"></param>
         private void InternalSetPositions( XYZ[] points )
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             IList<ElementId> placePointIds = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(InternalFamilyInstance);
 
@@ -165,7 +165,7 @@ namespace Revit.Elements
                 i++;
             }
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace Revit.Elements
         /// <param name="points"></param>
         private void InternalSetUvsAndFace(Autodesk.Revit.DB.UV[] uvs, Autodesk.Revit.DB.Face f)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var placePointIds = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(InternalFamilyInstance);
 
@@ -192,7 +192,7 @@ namespace Revit.Elements
                 i++;
             }
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace Revit.Elements
         /// <param name="points"></param>
         private void InternalSetParamsAndCurve(double[] parms, Autodesk.Revit.DB.Reference c)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var placePointIds = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(InternalFamilyInstance);
 
@@ -221,7 +221,7 @@ namespace Revit.Elements
                 i++;
             }
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         #endregion
