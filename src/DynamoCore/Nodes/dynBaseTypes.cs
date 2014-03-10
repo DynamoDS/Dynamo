@@ -875,8 +875,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsListNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsListNode, "DSCoreNodes.dll",
-                "Sorting.sortByKey", "DSCore.Sorting.sortByKey@var[]..[],var[]..[]");
+            MigrationManager.SetFunctionSignature(dsListNode, "",
+                "SortByKey", "SortByKey@var[]..[],_FunctionObject");
 
             migratedData.AppendNode(dsListNode);
             string dsListNodeId = MigrationManager.GetGuidFromXmlElement(dsListNode);
@@ -972,8 +972,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsListNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsListNode, "DSCoreNodes.dll",
-                "Sorting.minByKey", "DSCore.Sorting.minByKey@var[]..[],var[]..[]");
+            MigrationManager.SetFunctionSignature(dsListNode, "",
+                "MinimumItemByKey", "MinimumItemByKey@var[]..[],_FunctionObject");
 
             migratedData.AppendNode(dsListNode);
             string dsListNodeId = MigrationManager.GetGuidFromXmlElement(dsListNode);
@@ -1051,8 +1051,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsListNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsListNode, "DSCoreNodes.dll",
-                "Sorting.maxByKey", "DSCore.Sorting.maxByKey@var[]..[],var[]..[]");
+            MigrationManager.SetFunctionSignature(dsListNode, "",
+                "MaximumItemByKey", "MaximumItemByKey@var[]..[],_FunctionObject");
 
             migratedData.AppendNode(dsListNode);
             string dsListNodeId = MigrationManager.GetGuidFromXmlElement(dsListNode);
