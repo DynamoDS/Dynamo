@@ -69,10 +69,12 @@ namespace Dynamo.Nodes
 
         public override string Description
         {
-            get
-            {
-                return Definition.Signature;
-            }
+            get { return Definition.Description; }
+        }
+
+        public override string Category
+        {
+            get { return Definition.Category; }
         }
 
         public override bool IsConvertible
