@@ -72,7 +72,7 @@ namespace Dynamo.Nodes
 
         private TopographySurface CreateTopographySurface(List<XYZ> points)
         {
-            var document = DocumentManager.GetInstance().CurrentDBDocument;
+            var document = DocumentManager.Instance.CurrentDBDocument;
             return TopographySurface.Create(document, points);
         }
 

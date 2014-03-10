@@ -47,7 +47,7 @@ namespace Dynamo.Tests
             xyzNode.ArgumentLacing = LacingStrategy.First;
             dynSettings.Controller.RunExpression(true);
 
-            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(1, fec.ToElements().Count());
 
@@ -55,7 +55,7 @@ namespace Dynamo.Tests
             xyzNode.ArgumentLacing = LacingStrategy.First;
             dynSettings.Controller.RunExpression(true);
             fec = null;
-            fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(1, fec.ToElements().Count());
 
@@ -63,7 +63,7 @@ namespace Dynamo.Tests
             xyzNode.ArgumentLacing = LacingStrategy.Longest;
             dynSettings.Controller.RunExpression(true);
             fec = null;
-            fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(5, fec.ToElements().Count());
 
@@ -71,7 +71,7 @@ namespace Dynamo.Tests
             xyzNode.ArgumentLacing = LacingStrategy.CrossProduct;
             dynSettings.Controller.RunExpression(true);
             fec = null;
-            fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(20, fec.ToElements().Count());
         }
@@ -140,18 +140,18 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(()=>dynSettings.Controller.RunExpression(true));
 
             //verify we have a reference point
-            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(1, fec.ToElements().Count());
 
             //open a new document and activate it
-            UIDocument initialDoc = DocumentManager.GetInstance().CurrentUIApplication.ActiveUIDocument;
+            UIDocument initialDoc = DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
             string shellPath = Path.Combine(_testPath, @".\empty1.rfa");
-            DocumentManager.GetInstance().CurrentUIApplication.OpenAndActivateDocument(shellPath);
+            DocumentManager.Instance.CurrentUIApplication.OpenAndActivateDocument(shellPath);
             initialDoc.Document.Close(false);
 
             ////assert that the doc is set on the controller
-            Assert.IsNotNull(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            Assert.IsNotNull(DocumentManager.Instance.CurrentUIDocument.Document);
 
             ////update the double node so the graph reevaluates
             var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is BasicInteractive<double>);

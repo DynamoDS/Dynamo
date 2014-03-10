@@ -348,7 +348,7 @@ namespace Dynamo
 
             #endregion
 
-            var success = controller.GenerateGraphSyncDataForCustomNode(
+            controller.GenerateGraphSyncDataForCustomNode(
                 this,
                 WorkspaceModel.Nodes.Where(x => !(x is Symbol)),
                 topMost.Select(x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1) as AssociativeNode).ToList(),

@@ -33,7 +33,7 @@ namespace Dynamo.Nodes
 
             if (ptA is XYZ)
             {
-                ell = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewEllipse(
+                ell = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewEllipse(
                     //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
                   (XYZ)ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * RevitPI
                );
@@ -41,7 +41,7 @@ namespace Dynamo.Nodes
             }
             else if (ptA is ReferencePoint)
             {
-                ell = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewEllipse(
+                ell = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewEllipse(
                     //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
                (XYZ)((ReferencePoint)ptA).Position, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * RevitPI
                 );
@@ -50,7 +50,7 @@ namespace Dynamo.Nodes
             {
                 Transform trf = ptA as Transform;
                 XYZ center = trf.Origin;
-                ell = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewEllipse(
+                ell = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewEllipse(
                     //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
                      center, radX, radY, trf.BasisX, trf.BasisY, 0, 2 * RevitPI
                   );
@@ -89,7 +89,7 @@ namespace Dynamo.Nodes
 
             if (ptA is XYZ)
             {
-                ell = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewEllipse(
+                ell = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewEllipse(
                     //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
                   (XYZ)ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, start, end
                );
@@ -97,7 +97,7 @@ namespace Dynamo.Nodes
             }
             else if (ptA is ReferencePoint)
             {
-                ell = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewEllipse(
+                ell = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewEllipse(
                     //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
                (XYZ)((ReferencePoint)ptA).Position, radX, radY, XYZ.BasisX, XYZ.BasisY, start, end
                 );
@@ -106,7 +106,7 @@ namespace Dynamo.Nodes
             {
                 Transform trf = ptA as Transform;
                 XYZ center = trf.Origin;
-                ell = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewEllipse(
+                ell = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewEllipse(
                     //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
                      center, radX, radY, trf.BasisX, trf.BasisY, start, end
                   );

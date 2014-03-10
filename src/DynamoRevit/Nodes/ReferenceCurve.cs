@@ -25,7 +25,7 @@ namespace Dynamo.Nodes
         }
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
             var refCurveList = ((FScheme.Value.List)args[0]).Item.Select(
                x => (((FScheme.Value.Container)x).Item is Autodesk.Revit.DB.ModelCurve ?
                    ((Autodesk.Revit.DB.ModelCurve)((FScheme.Value.Container)x).Item)

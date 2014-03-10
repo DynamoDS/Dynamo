@@ -1,13 +1,8 @@
-﻿using Dynamo.Core;
-using Dynamo.Services;
-using Dynamo.UI.Commands;
+﻿using Dynamo.UI.Commands;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using Dynamo.UI;
 
@@ -18,32 +13,30 @@ namespace Dynamo.Services
         public DelegateCommand ToggleIsUsageReportingApprovedCommand { get; set; }
 
         #region Private
+
         private static UsageReportingManager instance;
+
         #endregion
 
         #region Static Properties
+
         public static UsageReportingAgreementPrompt UsageReportingPrompt { get; set; }
 
         public static UsageReportingManager Instance
         {
-            get
-            {
-                if (instance == null)
-                    instance = new UsageReportingManager();
-                return instance;
-            }
+            get { return instance ?? (instance = new UsageReportingManager()); }
         }
+
         #endregion
 
         #region Properties binded to PreferenceSettings
+
         public bool IsUsageReportingApproved
         {
             get
             {
-                if (DynamoController.IsTestMode) // Do not want logging in unit tests.
-                    return false;
-
-                return dynSettings.Controller.PreferenceSettings.IsUsageReportingApproved;
+                return !DynamoController.IsTestMode
+                    && dynSettings.Controller.PreferenceSettings.IsUsageReportingApproved;
             }
             private set
             {
@@ -76,6 +69,7 @@ namespace Dynamo.Services
                 RaisePropertyChanged("FirstRun");
             }
         }
+
         #endregion
 
         public UsageReportingManager()
@@ -88,7 +82,7 @@ namespace Dynamo.Services
             // First run of Dynamo
             if (dynSettings.Controller.PreferenceSettings.IsFirstRun)
             {
-                this.FirstRun = false;
+                FirstRun = false;
 
                 if (!DynamoController.IsTestMode)
                     ShowUsageReportingPrompt();
@@ -116,7 +110,7 @@ namespace Dynamo.Services
             IsUsageReportingApproved = approved;
         }
 
-        private void ShowUsageReportingPrompt()
+        private static void ShowUsageReportingPrompt()
         {
             UsageReportingPrompt = new UsageReportingAgreementPrompt();
             if (null != Application.Current)

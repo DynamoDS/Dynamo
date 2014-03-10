@@ -52,9 +52,9 @@ namespace Revit.GeometryObjects
         /// <returns></returns>
         private static GeometryObject InternalGetGeometryByStableRepresentation(string representation)
         {
-            var geometryReference = Reference.ParseFromStableRepresentation(DocumentManager.GetInstance().CurrentDBDocument, representation);
+            var geometryReference = Reference.ParseFromStableRepresentation(DocumentManager.Instance.CurrentDBDocument, representation);
             var geob =
-                    DocumentManager.GetInstance()
+                    DocumentManager.Instance
                         .CurrentDBDocument.GetElement(geometryReference)
                         .GetGeometryObjectFromReference(geometryReference);
 
