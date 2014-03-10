@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using GraphToDSCompiler;
+using NUnit.Framework.Constraints;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
@@ -199,17 +200,17 @@ namespace Dynamo.DSEngine
                 switch (Type)
                 {
                     case FunctionType.Constructor:
-                        categoryBuf.Append("." + ClassName + "." + LibraryServices.Categories.Constructors);
+                        categoryBuf.Append("." + UnqualifedClassName + "." + LibraryServices.Categories.Constructors);
                         break;
 
                     case FunctionType.StaticMethod:
                     case FunctionType.InstanceMethod:
-                        categoryBuf.Append("." + ClassName + "." + LibraryServices.Categories.MemberFunctions);
+                        categoryBuf.Append("." + UnqualifedClassName + "." + LibraryServices.Categories.MemberFunctions);
                         break;
 
                     case FunctionType.StaticProperty:
                     case FunctionType.InstanceProperty:
-                        categoryBuf.Append("." + ClassName + "." + LibraryServices.Categories.Properties);
+                        categoryBuf.Append("." + UnqualifedClassName + "." + LibraryServices.Categories.Properties);
                         break;
                 }
                 return categoryBuf.ToString();
@@ -315,6 +316,28 @@ namespace Dynamo.DSEngine
             }
         }
 
+        public string UnqualifedClassName
+        {
+            get
+            {
+                var idx = ClassName.LastIndexOf('.');
+                return idx < 0
+                        ? String.Empty
+                        : ClassName.Substring(idx + 1);
+            }
+        }
+
+        public string Namespace
+        {
+            get
+            {
+                var idx = ClassName.LastIndexOf('.');
+                return idx < 0
+                        ? String.Empty
+                        : ClassName.Substring(0,idx);
+            }
+        }
+
         public override bool Equals(object obj)
         {
             if (null == obj || GetType() != obj.GetType())
@@ -337,9 +360,16 @@ namespace Dynamo.DSEngine
                     return LibraryServices.Categories.Operators;
                 }
                 return LibraryServices.Categories.BuiltIns;
-            }
+            } 
             else
             {
+                var cust = LibraryServices.GetInstance().GetCustomization(Assembly);
+                if (cust != null)
+                {
+                    var f = cust.GetNamespaceCategory(this.Namespace);
+                    if (f != null) return f;
+                }
+
                 return Path.GetFileNameWithoutExtension(Assembly);
             }
         }
@@ -535,6 +565,8 @@ namespace Dynamo.DSEngine
         private static LibraryServices _libraryServices = null; // new LibraryServices();
         private LibraryServices()
         {
+            _libraryCustomizations = new Dictionary<string, LibraryCustomization>();
+
             PreloadLibraries();
 
             PopulateBuiltIns();
@@ -550,6 +582,7 @@ namespace Dynamo.DSEngine
         {
             _importedFunctionGroups.Clear();
             _builtinFunctionGroups.Clear();
+            _libraryCustomizations.Clear();
 
             PreloadLibraries();
 
@@ -569,6 +602,20 @@ namespace Dynamo.DSEngine
             }
         }
 
+        /// <summary>
+        /// Get the customization for the particular library
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <returns>Returns null if customization is not present</returns>
+        public LibraryCustomization GetCustomization(string assembly)
+        {
+            if (_libraryCustomizations.ContainsKey(assembly))
+            {
+                return _libraryCustomizations[assembly];
+            }
+            return null;
+        }
+
         private void PreloadLibraries()
         {
             GraphUtilities.Reset();
@@ -581,16 +628,20 @@ namespace Dynamo.DSEngine
                 "FunctionObject.ds",
                 "DSIronPython.dll"
             };
-
+            
             GraphUtilities.PreloadAssembly(_libraries);
 
-            // for each dll, load documentation
+            // for each dll, load customization and documentation
             _libraries.Where(x => x.Contains(".dll"))
                 .ToList()
-                .ForEach(LoadXmlDocumentation);
+                .ForEach(x => {
+                                  LoadLibraryXmlDocumentation(x);
+                                  LoadLibraryCustomization(x); 
+                              });
         }
 
         private List<string> _libraries;
+        private Dictionary<string, LibraryCustomization> _libraryCustomizations;
         private readonly Dictionary<string, Dictionary<string, FunctionGroup>> _importedFunctionGroups = new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
         private Dictionary<string, FunctionGroup> _builtinFunctionGroups = new Dictionary<string, FunctionGroup>();
 
@@ -798,7 +849,8 @@ namespace Dynamo.DSEngine
                     return;
                 }
 
-                LoadXmlDocumentation(library);
+                LoadLibraryXmlDocumentation(library);
+                LoadLibraryCustomization(library);
 
                 foreach (ClassNode classNode in importedClasses)
                 {
@@ -823,7 +875,21 @@ namespace Dynamo.DSEngine
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
         }
 
-        private void LoadXmlDocumentation(string library)
+        private void LoadLibraryCustomization(string library)
+        {
+            string customizationPath = "";
+            if (LibraryCustomization.ResolveCustomizationFile(library, ref customizationPath))
+            {
+                var cust = LibraryCustomization.LoadFromXml(customizationPath);
+                if (!_libraryCustomizations.ContainsKey(library))
+                    this._libraryCustomizations.Add(library, cust);
+                else
+                    this._libraryCustomizations[library] = cust;
+            }
+                
+        }
+
+        private void LoadLibraryXmlDocumentation(string library)
         {
             if (ResolveLibraryPath(ref library))
                 XmlDocumentationExtensions.LoadXmlDocumentation(library);
