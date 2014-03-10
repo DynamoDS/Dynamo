@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
@@ -222,6 +223,12 @@ namespace Dynamo.Nodes
             element.SetAttribute("nickname", "Python Script");
             element.SetAttribute("inputcount", "1");
             element.RemoveAttribute("inputs");
+
+            foreach (XmlElement subNode in xmlNode.ChildNodes)
+            {
+                element.AppendChild(subNode);
+                subNode.InnerText = new Regex("IN").Replace(element.InnerText, "IN[0]");
+            }
 
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             migrationData.AppendNode(element);
@@ -481,6 +488,12 @@ namespace Dynamo.Nodes
             element.SetAttribute("nickname", "Python Script");
             element.SetAttribute("inputcount", xmlNode.GetAttribute("inputs"));
             element.RemoveAttribute("inputs");
+
+            foreach (XmlElement subNode in xmlNode.ChildNodes)
+            {
+                element.AppendChild(subNode);
+                subNode.InnerText = new Regex("IN0").Replace(element.InnerText, "IN[0]");
+            }
 
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             migrationData.AppendNode(element);
