@@ -19,7 +19,7 @@ namespace Dynamo.Interfaces
     /// </summary>
     public interface IWatchHandler
     {
-        WatchItem Process(dynamic value, string tag, bool showRawData = true);
+        WatchViewModel Process(dynamic value, string tag, bool showRawData = true);
     }
 
     /// <summary>
@@ -27,13 +27,13 @@ namespace Dynamo.Interfaces
     /// </summary>
     public class DefaultWatchHandler : IWatchHandler
     {
-        internal WatchItem ProcessThing(object value, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(object value, string tag, bool showRawData = true)
         {
-            WatchItem node;
+            WatchViewModel node;
 
             if (value is IEnumerable<object>)
             {
-                node = new WatchItem("List", tag);
+                node = new WatchViewModel("List", tag);
 
                 var enumerable = value as IEnumerable<object>;
                 var objects = enumerable as object[] ?? enumerable.ToArray();
@@ -47,31 +47,31 @@ namespace Dynamo.Interfaces
             }
             else
             {
-                node = new WatchItem(value.ToString(), tag);
+                node = new WatchViewModel(value.ToString(), tag);
             }
 
             return node;
         }
 
-        internal WatchItem ProcessThing(SIUnit unit, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(SIUnit unit, string tag, bool showRawData = true)
         {
             if (showRawData)
-                return new WatchItem(unit.Value.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
+                return new WatchViewModel(unit.Value.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
 
-            return new WatchItem(unit.ToString(), tag);
+            return new WatchViewModel(unit.ToString(), tag);
         }
 
-        internal WatchItem ProcessThing(double value, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(double value, string tag, bool showRawData = true)
         {
-            return new WatchItem(value.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
+            return new WatchViewModel(value.ToString(dynSettings.Controller.PreferenceSettings.NumberFormat, CultureInfo.InvariantCulture), tag);
         }
 
-        internal WatchItem ProcessThing(string value, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(string value, string tag, bool showRawData = true)
         {
-            return new WatchItem(value, tag);
+            return new WatchViewModel(value, tag);
         }
 
-        internal WatchItem ProcessThing(MirrorData data, string tag, bool showRawData = true)
+        internal WatchViewModel ProcessThing(MirrorData data, string tag, bool showRawData = true)
         {
             //If the input data is an instance of a class, create a watch node
             //with the class name and let WatchHandler process the underlying CLR data
@@ -83,13 +83,13 @@ namespace Dynamo.Interfaces
 
             //Finally for all else get the string representation of data as watch content.
             string previewData = data.Data.ToString();
-            return new WatchItem(previewData, tag);
+            return new WatchViewModel(previewData, tag);
         }
 
-        public WatchItem Process(dynamic value, string tag, bool showRawData = true)
+        public WatchViewModel Process(dynamic value, string tag, bool showRawData = true)
         {
             if(value == null)
-                return new WatchItem("null");
+                return new WatchViewModel("null", tag);
 
             return ProcessThing(value, tag, showRawData);
         }

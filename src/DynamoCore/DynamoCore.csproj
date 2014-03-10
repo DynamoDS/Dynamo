@@ -325,7 +325,7 @@ limitations under the License.
     <Compile Include="Models\NodeModel.cs" />
     <Compile Include="Core\dynSettings.cs" />
     <Compile Include="Models\WorkspaceModel.cs" />
-    <Compile Include="Nodes\dynWatch.cs" />
+    <Compile Include="Nodes\Watch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

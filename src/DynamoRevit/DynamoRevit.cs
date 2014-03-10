@@ -281,6 +281,7 @@ namespace Dynamo.Applications
 
             try
             {
+                dynSettings.Controller.IsCrashing = true;
                 dynSettings.Controller.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Exception.Message + "\n\n" + args.Exception.StackTrace));
                 dynSettings.Controller.DynamoViewModel.Exit(false); // don't allow cancellation
             }

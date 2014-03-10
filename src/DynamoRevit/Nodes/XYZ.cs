@@ -113,12 +113,25 @@ namespace Dynamo.Nodes
                 "CoordinateSystem.Identity");
             migrationData.AppendNode(identityCoordinateSystem);
 
+            XmlElement converterNode = MigrationManager.CreateFunctionNode(
+                data.Document, "DSCoreNodes.dll",
+                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
+            migrationData.AppendNode(converterNode);
+            string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
+
             // Update connectors
             PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+
             PortId newInPort3 = new PortId(newNodeId, 3, PortType.INPUT);
+            PortId converterInPort = new PortId(converterNodeId, 0, PortType.INPUT);
+
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
             data.ReconnectToPort(connector0, newInPort3);
+            data.ReconnectToPort(connector1, converterInPort);
+            data.CreateConnector(converterNode, 0, newNode, 1);
             data.CreateConnector(identityCoordinateSystem, 0, newNode, 0);
 
             return migrationData;
@@ -243,24 +256,38 @@ namespace Dynamo.Nodes
                 "CoordinateSystem.Identity");
             migrationData.AppendNode(identityCoordinateSystem);
 
+            XmlElement converterPhiNode = MigrationManager.CreateFunctionNode(
+                data.Document, "DSCoreNodes.dll",
+                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
+            migrationData.AppendNode(converterPhiNode);
+            string converterPhiNodeId = MigrationManager.GetGuidFromXmlElement(converterPhiNode);
+
+            XmlElement converterThetaNode = MigrationManager.CreateFunctionNode(
+                data.Document, "DSCoreNodes.dll",
+                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
+            migrationData.AppendNode(converterThetaNode);
+            string converterThetaNodeId = MigrationManager.GetGuidFromXmlElement(converterThetaNode);
+
             // Update connectors
             PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
             PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
             PortId oldInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
-
-            PortId newInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
-            PortId newInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
             PortId newInPort3 = new PortId(newNodeId, 3, PortType.INPUT);
 
+            PortId converterThetaInPort = new PortId(converterThetaNodeId, 0, PortType.INPUT);
+            PortId converterPhiInPort = new PortId(converterPhiNodeId, 0, PortType.INPUT);
+            
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
             XmlElement connector2 = data.FindFirstConnector(oldInPort2);
 
             data.ReconnectToPort(connector0, newInPort3);
-            data.ReconnectToPort(connector1, newInPort2);
-            data.ReconnectToPort(connector2, newInPort1);
+            data.ReconnectToPort(connector1, converterThetaInPort);
+            data.ReconnectToPort(connector2, converterPhiInPort);
             
             data.CreateConnector(identityCoordinateSystem, 0, newNode, 0);
+            data.CreateConnector(converterPhiNode, 0, newNode, 1);
+            data.CreateConnector(converterThetaNode, 0, newNode, 2);
 
             return migrationData;
         }
@@ -418,7 +445,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.ReferencePoint", "Point.ReferencePoint");
+            return MigrateToDsFunction(data, "RevitNodes.dll", "ReferencePoint.Point", "ReferencePoint.Point");
         }
     }
 
@@ -659,6 +686,12 @@ namespace Dynamo.Nodes
             XYZ pt = XYZ.BasisX;
             return FScheme.Value.NewContainer(pt);
         }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.XAxis", "Vector.XAxis");
+        }
     }
 
     [NodeName("Y Axis")]
@@ -678,6 +711,12 @@ namespace Dynamo.Nodes
         {
             XYZ pt = XYZ.BasisY;
             return FScheme.Value.NewContainer(pt);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.YAxis", "Vector.YAxis");
         }
     }
 
@@ -699,6 +738,12 @@ namespace Dynamo.Nodes
 
             XYZ pt = XYZ.BasisZ;
             return FScheme.Value.NewContainer(pt);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.ZAxis", "Vector.ZAxis");
         }
     }
 
@@ -726,6 +771,12 @@ namespace Dynamo.Nodes
             XYZ pt = xyz.Multiply(n);
 
             return FScheme.Value.NewContainer(pt);
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.Scale", "Vector.Scale@double");
         }
     }
 
