@@ -2009,7 +2009,7 @@ namespace Dynamo.Models
         {
             //Avoid attempting an update after the controller 
             //has shut down.
-            if (dynSettings.Controller == null)
+            if (dynSettings.Controller == null || (DynamoController.IsTestMode))
                 return;
 
             //dispose of the current render package
