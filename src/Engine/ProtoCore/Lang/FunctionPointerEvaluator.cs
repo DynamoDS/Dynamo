@@ -65,7 +65,7 @@ namespace ProtoCore.Lang
             mRunTime.runtime.SaveRegisters(registers);
             ProtoCore.DSASM.StackFrame newStackFrame = new StackFrame(thisPtr, classScopeCaller, 1, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
 
-            List<List<int>> replicationGuides = new List<List<int>>();
+            List<List<ProtoCore.ReplicationGuide>> replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
             if (mRunTime.runtime.Core.Options.IDEDebugMode && mRunTime.runtime.Core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
             {
                 mRunTime.runtime.Core.DebugProps.SetUpCallrForDebug(mRunTime.runtime.Core, mRunTime.runtime, mProcNode, returnAddr - 1,

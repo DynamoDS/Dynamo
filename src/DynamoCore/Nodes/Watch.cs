@@ -230,16 +230,23 @@ namespace Dynamo.Nodes
         /// <returns>WatchNode</returns>
         internal WatchViewModel GetWatchNode()
         {
-            var inputVar = this.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
+            if (this.InPorts[0].Connectors.Count == 0)
+            {
+                return new WatchViewModel(nullString, AstIdentifierForPreview.Name);
+            }
+            else
+            {
+                var inputVar = this.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
 
-            //Get RuntimeMirror for input ast identifier.
-            var mirror = dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Name);
-            if(null == mirror)
-                return new WatchViewModel(nullString, inputVar);
+                //Get RuntimeMirror for input ast identifier.
+                var mirror = dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Name);
+                if (null == mirror)
+                    return new WatchViewModel(nullString, inputVar);
 
-            //Get MirrorData from the RuntimeMirror
-            var mirrorData = mirror.GetData();
-            return Process(mirrorData, inputVar, false);
+                //Get MirrorData from the RuntimeMirror
+                var mirrorData = mirror.GetData();
+                return Process(mirrorData, inputVar, false);
+            }
         }
 
         public override void UpdateRenderPackage()
