@@ -74,6 +74,8 @@ namespace Dynamo.Applications
 
                 env = new ExecutionEnvironment();
 
+                ElementBinder.IsEnabled = true;
+
                 return Result.Succeeded;
             }
             catch (Exception ex)
@@ -279,6 +281,7 @@ namespace Dynamo.Applications
 
             try
             {
+                dynSettings.Controller.IsCrashing = true;
                 dynSettings.Controller.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Exception.Message + "\n\n" + args.Exception.StackTrace));
                 dynSettings.Controller.DynamoViewModel.Exit(false); // don't allow cancellation
             }

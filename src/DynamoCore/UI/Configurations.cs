@@ -8,6 +8,7 @@ namespace Dynamo.UI
         #region Dynamo Universal Constants
         // Add 0.5 to place the point in the middle of a pixel to sharpen it
         public static readonly double PixelSharpeningConstant = 0.5;
+        public static readonly string BackupFolderName = "backup";
         #endregion
 
         #region Usage Reporting Error Message

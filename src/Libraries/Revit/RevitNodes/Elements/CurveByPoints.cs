@@ -14,6 +14,25 @@ namespace Revit.Elements
     [RegisterForTrace]
     public class CurveByPoints : CurveElement
     {
+        #region private mutators
+
+        private void InternalSetReferencePoints(ReferencePointArray pts)
+        {
+            try
+            {
+                TransactionManager.GetInstance().EnsureInTransaction(Document);
+                ((Autodesk.Revit.DB.CurveByPoints) InternalCurveElement).SetPoints(pts);
+                TransactionManager.GetInstance().TransactionTaskDone();
+            }
+            catch (Exception ex)
+            {
+                TransactionManager.GetInstance().ForceCloseTransaction();
+                throw new Exception("Unable to update curve by points. \n" + ex.Message);
+            }
+        }
+
+        #endregion
+
         #region private constructors
 
         /// <summary>
@@ -41,23 +60,29 @@ namespace Revit.Elements
             if (cbp != null)
             {
                 InternalSetCurveElement(cbp);
-                TransactionManager.GetInstance().EnsureInTransaction(Document);
-                cbp.SetPoints(refPtArr);
-                TransactionManager.GetInstance().TransactionTaskDone();
+                InternalSetReferencePoints(refPtArr);
                 return;
             }
 
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            try
+            {
+                TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            cbp = DocumentManager.GetInstance().CurrentDBDocument.FamilyCreate.NewCurveByPoints(refPtArr);
+                cbp = DocumentManager.GetInstance().CurrentDBDocument.FamilyCreate.NewCurveByPoints(refPtArr);
 
-            cbp.IsReferenceLine = false;
+                cbp.IsReferenceLine = false;
 
-            InternalSetCurveElement(cbp);
+                InternalSetCurveElement(cbp);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+                TransactionManager.GetInstance().TransactionTaskDone();
 
-            ElementBinder.SetElementForTrace(this.InternalElementId);
+                ElementBinder.SetElementForTrace(this.InternalElementId);
+            }
+            catch (Exception ex)
+            {
+                TransactionManager.GetInstance().ForceCloseTransaction();
+                throw new Exception("Unable to create curve by points. \n" + ex.Message);
+            }
         }
 
         #endregion
@@ -93,5 +118,10 @@ namespace Revit.Elements
         }
 
         #endregion
+    
+        public override string ToString()
+        {
+            return "CurveByPoints";
+        }
     }
 }

@@ -16,8 +16,14 @@ namespace DSRevitNodesTests
     class SheetTests
     {
         [Test]
-        public void ByNameNumberAndViews_ValidArgs()
+        public void ByNameNumberTitleBlockAndViews_ValidArgs()
         {
+            ElementBinder.IsEnabled = false;
+
+            var famSymName = "E1 30x42 Horizontal";
+            var famName = "E1 30 x 42 Horizontal";
+            var titleBlock = FamilySymbol.ByFamilyAndName(Family.ByName(famName), famSymName);
+
             var famSym = FamilySymbol.ByName("Kousa Dogwood - 10'");
             var pt = Point.ByCoordinates(0, 1, 2);
             var famInst = FamilyInstance.ByPoint(famSym, pt);
@@ -31,15 +37,21 @@ namespace DSRevitNodesTests
             var sheetName = "Poodle";
             var sheetNumber = "A1";
 
-            var ele = Sheet.ByNameNumberAndViews( sheetName, sheetNumber, new[] {view, view2});
+            var ele = Sheet.ByNameNumberTitleBlockAndViews( sheetName, sheetNumber, titleBlock, new[] {view, view2});
 
             Assert.NotNull(ele);
-            Assert.IsTrue(DocumentManager.GetInstance().ElementExistsInDocument(ele.InternalElement.Id));
         }
 
         [Test]
-        public void ByNameNumberAndViews_BadArgs()
+        public void ByNameNumberTitleBlockAndViews_BadArgs()
         {
+
+            ElementBinder.IsEnabled = false;
+
+            var famSymName = "E1 30x42 Horizontal";
+            var famName = "E1 30 x 42 Horizontal";
+            var titleBlock = FamilySymbol.ByFamilyAndName(Family.ByName(famName), famSymName);
+
             var famSym = FamilySymbol.ByName("Kousa Dogwood - 10'");
             var pt = Point.ByCoordinates(0, 1, 2);
             var famInst = FamilyInstance.ByPoint(famSym, pt);
@@ -53,14 +65,21 @@ namespace DSRevitNodesTests
             var sheetName = "Poodle";
             var sheetNumber = "A1";
 
-            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberAndViews(null, sheetNumber, new[] { view, view2 }));
-            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberAndViews(sheetName, null, new[] { view, view2 }));
-            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberAndViews(sheetName, sheetNumber, null));
+            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberTitleBlockAndViews(null, sheetNumber, titleBlock, new[] { view, view2 }));
+            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberTitleBlockAndViews(sheetName, null, titleBlock, new[] { view, view2 }));
+            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberTitleBlockAndViews(sheetName, sheetNumber, null, new[] { view, view2 }));
+            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberTitleBlockAndViews(sheetName, sheetNumber, titleBlock, null));
         }
         
         [Test]
-        public void ByNameNumberAndView_ValidArgs()
+        public void ByNameNumberTitleBlockAndView_ValidArgs()
         {
+            ElementBinder.IsEnabled = false;
+
+            var famSymName = "E1 30x42 Horizontal";
+            var famName = "E1 30 x 42 Horizontal";
+            var titleBlock = FamilySymbol.ByFamilyAndName(Family.ByName(famName), famSymName);
+
             var famSym = FamilySymbol.ByName("Kousa Dogwood - 10'");
             var pt = Point.ByCoordinates(0, 1, 2);
             var famInst = FamilyInstance.ByPoint(famSym, pt);
@@ -70,15 +89,20 @@ namespace DSRevitNodesTests
             var sheetName = "Poodle";
             var sheetNumber = "A1";
 
-            var ele = Sheet.ByNameNumberAndView(sheetName, sheetNumber, view);
+            var ele = Sheet.ByNameNumberTitleBlockAndView(sheetName, sheetNumber, titleBlock, view);
 
             Assert.NotNull(ele);
-            Assert.IsTrue(DocumentManager.GetInstance().ElementExistsInDocument(ele.InternalElement.Id));
         }
 
         [Test]
-        public void ByNameNumberAndView_BadArgs()
+        public void ByNameNumberTitleBlockAndView_BadArgs()
         {
+            ElementBinder.IsEnabled = false;
+
+            var famSymName = "E1 30x42 Horizontal";
+            var famName = "E1 30 x 42 Horizontal";
+            var titleBlock = FamilySymbol.ByFamilyAndName(Family.ByName(famName), famSymName);
+
             var famSym = FamilySymbol.ByName("Kousa Dogwood - 10'");
             var pt = Point.ByCoordinates(0, 1, 2);
             var famInst = FamilyInstance.ByPoint(famSym, pt);
@@ -88,56 +112,11 @@ namespace DSRevitNodesTests
             var sheetName = "Poodle";
             var sheetNumber = "A1";
 
-            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberAndView(null, sheetNumber, view));
-            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberAndView(sheetName, null, view));
-            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberAndView(sheetName, sheetNumber, null));
+            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberTitleBlockAndView(null, sheetNumber, titleBlock, view));
+            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberTitleBlockAndView(sheetName, null, titleBlock, view));
+            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberTitleBlockAndView(sheetName, sheetNumber, null, view));
+            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberTitleBlockAndView(sheetName, sheetNumber, titleBlock, null));
         }
 
     }
 }
-
-/*     
-        public static DSSheet ByNameNumberAndViews(string sheetName, string sheetNumber, AbstractView[] views)
-        {
-            if (sheetName == null)
-            {
-                throw new ArgumentNullException("sheetName");
-            }
-
-            if (sheetNumber == null)
-            {
-                throw new ArgumentNullException("sheetNumber");
-            }
-
-            return new DSSheet(sheetName, sheetNumber, views.Select(x => x.InternalView));
-        }
-
-        public static DSSheet ByNameNumberAndView(string sheetName, string sheetNumber, AbstractView view)
-        {
-            return DSSheet.ByNameNumberAndViews(sheetName, sheetNumber, new[] { view });
-        }
-
-        public static DSSheet ByNameNumberTitleBlockAndViews(string sheetName, string sheetNumber, DSFamilySymbol titleBlockFamilySymbol, AbstractView[] views)
-        {
-            if (sheetName == null)
-            {
-                throw new ArgumentNullException("sheetName");
-            }
-
-            if (sheetNumber == null)
-            {
-                throw new ArgumentNullException("sheetNumber");
-            }
-
-            if (titleBlockFamilySymbol == null)
-            {
-                throw new ArgumentNullException("titleBlockFamilySymbol");
-            }
-
-            return new DSSheet(sheetName, sheetNumber, titleBlockFamilySymbol.InternalFamilySymbol, views.Select(x => x.InternalView));
-        }
-
-        public static DSSheet ByNameNumberTitleBlockAndView(string sheetName, string sheetNumber, DSFamilySymbol titleBlockFamilySymbol, AbstractView view)
-        {
-            return DSSheet.ByNameNumberTitleBlockAndViews(sheetName, sheetNumber, titleBlockFamilySymbol, new[] { view });
-        } */

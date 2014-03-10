@@ -9,7 +9,7 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class WatchNodeTests : DynamoUnitTest
     {
-        private void AssertWatchTreeBranchContent(ObservableCollection<WatchItem> branch, object[] content)
+        private void AssertWatchTreeBranchContent(ObservableCollection<WatchViewModel> branch, object[] content)
         {
             Assert.AreEqual(content.Length, branch.Count);
             int count = 0;
@@ -36,7 +36,7 @@ namespace Dynamo.Tests
             Watch watchBoolean = model.CurrentWorkspace.NodeFromWorkspace("8c5a87db-2d6a-4d3c-8c01-5ff326aef321") as Watch;
             Watch watchPoint = model.CurrentWorkspace.NodeFromWorkspace("f1581148-9318-40fa-9402-61557255162a") as Watch;
 
-            WatchItem node = watchNumber.GetWatchNode();
+            WatchViewModel node = watchNumber.GetWatchNode();
             Assert.AreEqual("5", node.NodeLabel);
 
             node = watchBoolean.GetWatchNode();
@@ -61,7 +61,7 @@ namespace Dynamo.Tests
             Watch watchBooleans = model.CurrentWorkspace.NodeFromWorkspace("4ea56d78-68a9-400f-88b8-c6875365fa54") as Watch;
             Watch watchVectors = model.CurrentWorkspace.NodeFromWorkspace("73b35c1f-2dfb-4ce0-8609-c0bac9f3033c") as Watch;
 
-            WatchItem node = watchNumbers.GetWatchNode();
+            WatchViewModel node = watchNumbers.GetWatchNode();
             Assert.AreEqual("List", node.NodeLabel);
             Assert.AreEqual(10, node.Children.Count);
             AssertWatchTreeBranchContent(node.Children, new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });

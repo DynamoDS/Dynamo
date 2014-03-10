@@ -747,5 +747,13 @@ namespace Dynamo.Tests.UI
 
 
         #endregion
+
+        //[Test]
+        //public void CrashPresentsSaveAs()
+        //{
+        //    dynSettings.Controller.IsCrashing = true;
+        //    dynSettings.Controller.DynamoModel.HomeSpace.HasUnsavedChanges = true;
+        //    dynSettings.Controller.DynamoViewModel.Exit(false);
+        //}
     }
 }
