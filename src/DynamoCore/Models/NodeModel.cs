@@ -297,7 +297,7 @@ namespace Dynamo.Models
         /// <value>
         ///     If the node has a category, return it.  Other wise return empty string.
         /// </value>
-        public string Category
+        public virtual string Category
         {
             get
             {

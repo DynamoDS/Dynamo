@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
@@ -146,6 +147,21 @@ namespace Dynamo.DSEngine
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// A comment describing the Function
+        /// </summary>
+        public string Summary
+        {
+            get; set; 
+        }
+
+        /// <summary>
+        /// A comment describing the function along with the signature
+        /// </summary>
+        public string Description {
+            get { return !String.IsNullOrEmpty(Summary) ? Summary + "\n\n" + Signature : Signature; } 
         }
 
         /// <summary>
@@ -323,6 +339,28 @@ namespace Dynamo.DSEngine
             ReturnKeys = returnKeys;
             IsVarArg = isVarArg;
         }
+
+        public FunctionDescriptor(string assembly,
+                    string className,
+                    string name,
+                    string summary,
+                    IEnumerable<TypedParameter> parameters,
+                    string returnType,
+                    FunctionType type,
+                    IEnumerable<string> returnKeys = null,
+                    bool isVarArg = false)
+        {
+            Summary = Summary;
+            Assembly = assembly;
+            ClassName = className;
+            Name = name;
+            Parameters = parameters;
+            ReturnType = returnType;
+            Type = type;
+            ReturnKeys = returnKeys;
+            IsVarArg = isVarArg;
+        }
+        
     }
 
     /// <summary>
@@ -526,6 +564,11 @@ namespace Dynamo.DSEngine
             };
 
             GraphUtilities.PreloadAssembly(_libraries);
+
+            // for each dll, load documentation
+            _libraries.Where(x => x.Contains(".dll"))
+                .ToList()
+                .ForEach(LoadXmlDocumentation);
         }
 
         private List<string> _libraries;
@@ -721,6 +764,7 @@ namespace Dynamo.DSEngine
 
                 DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
                 var importedClasses = GraphUtilities.GetClassesForAssembly(library);
+
                 if (GraphUtilities.BuildStatus.ErrorCount > 0)
                 {
                     string errorMessage = string.Format("Build error for library: {0}", library);
@@ -734,6 +778,8 @@ namespace Dynamo.DSEngine
                     OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
                     return;
                 }
+
+                LoadXmlDocumentation(library);
 
                 foreach (ClassNode classNode in importedClasses)
                 {
@@ -756,6 +802,12 @@ namespace Dynamo.DSEngine
             }
 
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
+        }
+
+        private void LoadXmlDocumentation(string library)
+        {
+            if (ResolveLibraryPath(ref library))
+                XmlDocumentationExtensions.LoadXmlDocumentation(library);
         }
 
         private class LibraryPathComparer : IEqualityComparer<string>
@@ -828,7 +880,7 @@ namespace Dynamo.DSEngine
         {
             var functions = from method in GraphUtilities.BuiltInMethods
                             let arguments = method.argInfoList.Zip(method.argTypeList, (arg, argType) => new TypedParameter(arg.Name, argType.ToString()))
-                            select new FunctionDescriptor(null, null, method.name, arguments, method.returntype.ToString(), FunctionType.GenericFunction);
+                            select new FunctionDescriptor(null, null, method.name, arguments,  method.returntype.ToString(), FunctionType.GenericFunction);
 
             AddBuiltinFunctions(functions);
         }
@@ -922,7 +974,7 @@ namespace Dynamo.DSEngine
             string procName = proc.name;
             if (CoreUtils.IsSetter(procName) || 
                 procName.Equals(ProtoCore.DSDefinitions.Keyword.Dispose))
-            {
+            { 
                 return;
             }
 
@@ -996,6 +1048,9 @@ namespace Dynamo.DSEngine
             }
 
             var function = new FunctionDescriptor(library, className, procName, arguments, proc.returntype.ToString(), type, returnKeys, proc.isVarArg);
+
+            function.Summary = function.GetXmlDocumentation();
+
             AddImportedFunctions(library, new FunctionDescriptor[] { function });
         }
 
