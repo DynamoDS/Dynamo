@@ -75,7 +75,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("name");
             }
 
-            var mat = DocumentManager.GetInstance().ElementsOfType<Autodesk.Revit.DB.Material>()
+            var mat = DocumentManager.Instance.ElementsOfType<Autodesk.Revit.DB.Material>()
                 .FirstOrDefault(x => x.Name == name);
 
             if (mat == null)

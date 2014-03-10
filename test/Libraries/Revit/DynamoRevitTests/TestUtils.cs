@@ -15,7 +15,7 @@ namespace Dynamo.Tests
         /// <returns></returns>
         public static IEnumerable<FamilyInstance> GetAllFamilyInstancesWithTypeName(string typeName)
         {
-            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             fec.OfClass(typeof(FamilyInstance));
             return fec.ToElements().Where(x => ((FamilyInstance)x).Symbol.Name == typeName).Cast<FamilyInstance>();
         }

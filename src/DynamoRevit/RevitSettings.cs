@@ -24,7 +24,7 @@ namespace Dynamo.Utilities
         {
             try
             {
-                e = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id) as T;
+                e = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(id) as T;
                 return e != null && e.Id != null;
             }
             catch
@@ -172,7 +172,7 @@ namespace Dynamo.Utilities
         {
             public static Autodesk.Revit.DB.ReferencePoint RequestReferencePointSelection(string message)
             {
-                var doc = DocumentManager.GetInstance().CurrentUIDocument;
+                var doc = DocumentManager.Instance.CurrentUIDocument;
 
                 ReferencePoint rp = null;
 
@@ -194,14 +194,14 @@ namespace Dynamo.Utilities
 
                 if (pointRef != null)
                 {
-                    rp = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(pointRef) as ReferencePoint;
+                    rp = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(pointRef) as ReferencePoint;
                 }
                 return rp;
             }
 
             public static CurveElement RequestCurveElementSelection(string message)
             {
-                var doc = DocumentManager.GetInstance().CurrentUIDocument;
+                var doc = DocumentManager.Instance.CurrentUIDocument;
 
                 CurveElement c = null;
 
@@ -214,14 +214,14 @@ namespace Dynamo.Utilities
 
                 Reference curveRef = doc.Selection.PickObject(ObjectType.Element);
 
-                c = DocumentManager.GetInstance().CurrentUIApplication.ActiveUIDocument.Document.GetElement(curveRef) as CurveElement;
+                c = DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument.Document.GetElement(curveRef) as CurveElement;
 
                 return c;
             }
 
             public static IList<Element> RequestMultipleCurveElementsSelection(string message)
             {
-                var doc = DocumentManager.GetInstance().CurrentUIDocument;
+                var doc = DocumentManager.Instance.CurrentUIDocument;
 
                 Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
                 choices.Elements.Clear();
@@ -254,7 +254,7 @@ namespace Dynamo.Utilities
 
             public static Face RequestFaceSelection(string message)
             {
-                var doc = DocumentManager.GetInstance().CurrentUIDocument;
+                var doc = DocumentManager.Instance.CurrentUIDocument;
 
                 Face f = null;
 
@@ -276,7 +276,7 @@ namespace Dynamo.Utilities
 
                 if (faceRef != null)
                 {
-                    GeometryObject geob = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
+                    GeometryObject geob = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
                     f = geob as Face;
                 }
                 return f;
@@ -286,7 +286,7 @@ namespace Dynamo.Utilities
             // MDJ TODO - this is really hacky. I want to just use the face but evaluating the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
             public static Reference RequestFaceReferenceSelection(string message)
             {
-                var doc = DocumentManager.GetInstance().CurrentUIDocument;
+                var doc = DocumentManager.Instance.CurrentUIDocument;
 
                 Reference faceRef = null;
 
@@ -301,7 +301,7 @@ namespace Dynamo.Utilities
 
             public static Reference RequestEdgeReferenceSelection(string message)
             {
-                var doc = DocumentManager.GetInstance().CurrentUIDocument;
+                var doc = DocumentManager.Instance.CurrentUIDocument;
 
                 Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
                 choices.Elements.Clear();
@@ -315,7 +315,7 @@ namespace Dynamo.Utilities
 
             public static Form RequestFormSelection(string message)
             {
-                var doc = DocumentManager.GetInstance().CurrentUIDocument;
+                var doc = DocumentManager.Instance.CurrentUIDocument;
 
                 Form f = null;
 
@@ -338,14 +338,14 @@ namespace Dynamo.Utilities
                 if (formRef != null)
                 {
                     //the suggested new method didn't exist in API?
-                    f = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(formRef) as Form;
+                    f = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(formRef) as Form;
                 }
                 return f;
             }
 
             public static FamilySymbol RequestFamilySymbolByInstanceSelection(string message, ref FamilyInstance fi)
             {
-                var doc = DocumentManager.GetInstance().CurrentUIDocument;
+                var doc = DocumentManager.Instance.CurrentUIDocument;
 
                 try
                 {
@@ -381,7 +381,7 @@ namespace Dynamo.Utilities
 
             public static FamilyInstance RequestFamilyInstanceSelection(string message)
             {
-                var doc = DocumentManager.GetInstance().CurrentUIDocument;
+                var doc = DocumentManager.Instance.CurrentUIDocument;
 
                 try
                 {
@@ -410,7 +410,7 @@ namespace Dynamo.Utilities
 
             public static Element RequestLevelSelection(string message)
             {
-                var doc = DocumentManager.GetInstance().CurrentUIDocument;
+                var doc = DocumentManager.Instance.CurrentUIDocument;
 
                 Level l = null;
 
@@ -433,7 +433,7 @@ namespace Dynamo.Utilities
 
             public static Element RequestAnalysisResultInstanceSelection(string message)
             {
-                var doc = DocumentManager.GetInstance().CurrentUIDocument;
+                var doc = DocumentManager.Instance.CurrentUIDocument;
 
                 try
                 {
@@ -479,7 +479,7 @@ namespace Dynamo.Utilities
 
             public static Element RequestModelElementSelection(string message)
             {
-                var doc = DocumentManager.GetInstance().CurrentUIDocument;
+                var doc = DocumentManager.Instance.CurrentUIDocument;
 
                 Element selectedElement = null;
 
@@ -505,7 +505,7 @@ namespace Dynamo.Utilities
        
             public static Reference RequestReferenceXYZSelection(string message)
             {
-                var doc = DocumentManager.GetInstance().CurrentUIDocument;
+                var doc = DocumentManager.Instance.CurrentUIDocument;
 
                 Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
                 choices.Elements.Clear();

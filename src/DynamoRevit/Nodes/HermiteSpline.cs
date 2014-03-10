@@ -44,7 +44,7 @@ namespace Dynamo.Nodes
             }
             if (pts.Count() > 0)
             {
-                var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+                var document = DocumentManager.Instance.CurrentUIDocument.Document;
                 hs = document.Application.Create.NewHermiteSpline(ctrlPts, false);
             }
 

@@ -50,14 +50,14 @@ namespace Revit.Elements
         /// </summary>
         private Floor(Autodesk.Revit.DB.CurveArray curveArray, Autodesk.Revit.DB.FloorType floorType, Autodesk.Revit.DB.Level level)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             // we assume the floor is not structural here, this may be a bad assumption
             var floor = Document.Create.NewFloor(curveArray, floorType, level, false);
 
             InternalSetFloor( floor );
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
             ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElementId);
         }

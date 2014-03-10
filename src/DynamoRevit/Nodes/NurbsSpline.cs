@@ -31,7 +31,7 @@ namespace Dynamo.Nodes
                 throw new Exception("Not enough reference points to make a curve.");
             }
 
-            var ns = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewNurbSpline(
+            var ns = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewNurbSpline(
                     pts, Enumerable.Repeat(1.0, pts.Count).ToList());
 
             return FScheme.Value.NewContainer(ns);
