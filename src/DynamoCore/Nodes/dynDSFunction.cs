@@ -103,8 +103,8 @@ namespace Dynamo.Nodes
                 {
                     InPortData.Add(
                          new PortData(
-                             arg.Parameter,
-                             string.IsNullOrEmpty(arg.Type) ? "var" : arg.Type,
+                             arg.Name,
+                             arg.Description,
                              typeof(object),
                              arg.DefaultValue));
                 }
@@ -492,7 +492,7 @@ namespace Dynamo.Nodes
                 {
                     InPortData.Add(
                          new PortData(
-                             arg.Parameter,
+                             arg.Name,
                              string.IsNullOrEmpty(arg.Type) ? "var" : arg.Type,
                              typeof(object),
                              arg.DefaultValue));
@@ -521,7 +521,7 @@ namespace Dynamo.Nodes
 
         protected override string GetInputName(int index)
         {
-            return Definition.Parameters.Last().Parameter.TrimEnd('s') + index;
+            return Definition.Parameters.Last().Name.TrimEnd('s') + index;
         }
 
         protected override string GetInputTooltip(int index)

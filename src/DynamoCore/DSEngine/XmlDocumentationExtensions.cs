@@ -25,6 +25,28 @@ namespace Dynamo.DSEngine
             cachedXml = new Dictionary<string, XDocument>(StringComparer.OrdinalIgnoreCase);
         }
 
+        public static string GetXmlDocumentation(this TypedParameter member)
+        {
+            XDocument xml = null;
+
+            if (member.Function != null && member.Function.Assembly != null && cachedXml.ContainsKey(member.Function.Assembly))
+                xml = cachedXml[member.Function.Assembly];
+            else
+                return "";
+
+            return GetXmlDocumentation(member, xml);
+        }
+
+        public static string GetXmlDocumentation(this TypedParameter parameter, XDocument xml)
+        {
+            return xml.XPathEvaluate(
+                String.Format(
+                    "string(/doc/members/member[@name='{0}']/param[@name='{1}'])",
+                    GetMemberElementName(parameter.Function),
+                    parameter.Name )
+                ).ToString().Trim();
+        }
+
         public static string GetXmlDocumentation(this FunctionDescriptor member)
         {
             XDocument xml = null;
