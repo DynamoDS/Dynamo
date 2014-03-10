@@ -25,7 +25,6 @@ namespace DSRevitNodesTests
             var view = FloorPlanView.ByLevel(level);
 
             Assert.NotNull(view);
-            Assert.IsTrue(DocumentManager.GetInstance().ElementExistsInDocument(view.InternalElement.Id));
         }
 
         [Test]

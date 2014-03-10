@@ -2025,17 +2025,19 @@ namespace Dynamo.Models
             int count = 0;
             var labelMap = new List<string>();
 
+            var ident = AstIdentifierForPreview.Name;
+
             // A small optimization. Don't create the label map if
             // labels are not being displayed
-            if (DisplayLabels)
-            {
+            //if (DisplayLabels)
+            //{
                 foreach (var varName in drawableIds)
                 {
                     var mirrorData = dynSettings.Controller.EngineController.GetMirror(varName).GetData();
-                    AddToLabelMap(mirrorData, labelMap, string.Empty);
+                    AddToLabelMap(mirrorData, labelMap, ident);
                     count++;
                 } 
-            }
+            //}
 
             count = 0;
             foreach (var varName in drawableIds)
@@ -2048,7 +2050,8 @@ namespace Dynamo.Models
                 {
                     var package = new RenderPackage(IsSelected, DisplayLabels);
 
-                    PushGraphicItemIntoPackage(gItem, package, DisplayLabels ? labelMap[count] : string.Empty);
+                    //PushGraphicItemIntoPackage(gItem, package, DisplayLabels ? labelMap[count] : string.Empty);
+                    PushGraphicItemIntoPackage(gItem, package, labelMap[count]);
 
                     package.ItemsCount++;
                     RenderPackages.Add(package);
@@ -2077,7 +2080,7 @@ namespace Dynamo.Models
                 var list = data.GetElements();
                 for (int i = 0; i < list.Count; i++)
                 {
-                    AddToLabelMap(list[i], map, string.Format("{0}[{1}]", tag, i));
+                    AddToLabelMap(list[i], map, string.Format("{0}:{1}", tag, i));
                 }
             }
             else if (data.Data is IEnumerable)
@@ -2103,7 +2106,7 @@ namespace Dynamo.Models
             int count = 0;
             foreach(var obj in list)
             {
-                var newTag = string.Format("{0}[{1}]", tag, count);
+                var newTag = string.Format("{0}:{1}", tag, count);
 
                 if (obj is IEnumerable)
                 {

@@ -4,6 +4,7 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
+using Revit.Elements;
 using Revit.GeometryConversion;
 using Revit.GeometryObjects;
 using Revit.Graphics;
@@ -15,7 +16,7 @@ using PlanarFace = Autodesk.Revit.DB.PlanarFace;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using Solid = Autodesk.Revit.DB.Solid;
 
-namespace Revit.Elements
+namespace Revit.GeometryObjects
 {
     public class Solid : AbstractGeometryObject
     {
@@ -700,6 +701,16 @@ namespace Revit.Elements
 
         #endregion
 
+        #region Internal Static Constructors
+
+        internal static Revit.GeometryObjects.Solid FromExisting(Autodesk.Revit.DB.Solid solid)
+        {
+            return new Solid(solid);
+        }
+
+        #endregion
+
+
         #region Tesselation
 
         public override void Tessellate(IRenderPackage package)
@@ -780,7 +791,7 @@ namespace Revit.Elements
                 var faceAtIndex = facesOfExtrusion.get_Item(indexFace);
                 if (faceAtIndex is PlanarFace)
                 {
-                    var pFace = faceAtIndex as PlanarFace;
+                    var pFace = faceAtIndex as Autodesk.Revit.DB.PlanarFace;
                     if (System.Math.Abs(thisPlane.Normal.DotProduct(pFace.Normal)) < 0.99)
                         continue;
                     if (System.Math.Abs(thisPlane.Normal.DotProduct(thisPlane.Origin - pFace.Origin)) > 0.1)
