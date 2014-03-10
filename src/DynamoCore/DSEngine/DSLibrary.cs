@@ -367,7 +367,7 @@ namespace Dynamo.DSEngine
                 if (cust != null)
                 {
                     var f = cust.GetNamespaceCategory(this.Namespace);
-                    if (f != null) return f;
+                    if (!String.IsNullOrEmpty(f)) return f;
                 }
 
                 return Path.GetFileNameWithoutExtension(Assembly);
@@ -623,7 +623,7 @@ namespace Dynamo.DSEngine
             _libraries = new List<string>
             {
                 "ProtoGeometry.dll",
-                "DSCoreNodes.dll",
+                "CoreNodes.dll",
                 "DSOffice.dll",
                 "FunctionObject.ds",
                 "DSIronPython.dll"

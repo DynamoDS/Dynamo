@@ -24,5 +24,19 @@ namespace Dynamo
             Assert.AreEqual("Geometry", cat);
 
         }
+
+        [Test]
+        public void CanGetBestMatchOfNamespace()
+        {
+
+            var fn = Path.Combine(GetTestDirectory(), @"core/library/DynamoCustomization_ProtoGeometry.xml");
+
+            var c = LibraryCustomization.LoadFromXml(fn);
+            Assert.NotNull(c);
+
+            var cat = c.GetNamespaceCategory("Autodesk.DesignScript");
+            Assert.AreEqual("DesignScript", cat);
+
+        }
     }
 }
