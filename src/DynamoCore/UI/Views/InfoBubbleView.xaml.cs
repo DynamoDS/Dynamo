@@ -528,6 +528,9 @@ namespace Dynamo.Controls
             textBox.FontWeight  = ContentFontWeight;
             textBox.FontSize    = ContentFontSize;
 
+            var font = SharedDictionaryManager.DynamoModernDictionary["OpenSansRegular"];
+            textBox.FontFamily = font as FontFamily;
+
             textBox.Background      = Brushes.Transparent;
             textBox.IsReadOnly      = true;
             textBox.BorderThickness = new Thickness(0);

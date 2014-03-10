@@ -43,7 +43,7 @@ namespace Dynamo.UI
 
         public static double PreviewTextFontSize = 10;
         public static FontWeight PreviewTextFontWeight = FontWeights.Light;
-        public static SolidColorBrush PreviewTextForeground = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+        public static SolidColorBrush PreviewTextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
         public static TextWrapping PreviewContentWrapping = TextWrapping.Wrap;
         public static Thickness PreviewContentMargin = new Thickness(5, 12, 5, 5);
 
@@ -109,7 +109,7 @@ namespace Dynamo.UI
 
         public static double NodeTooltipTextFontSize = 11;
         public static FontWeight NodeTooltipTextFontWeight = FontWeights.Light;
-        public static SolidColorBrush NodeTooltipTextForeground = new SolidColorBrush(Color.FromRgb(98, 140, 153));
+        public static SolidColorBrush NodeTooltipTextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
         public static TextWrapping NodeTooltipContentWrapping = TextWrapping.Wrap;
 
         public static Thickness NodeTooltipContentMarginLeft = new Thickness(11, 5, 5, 5);
