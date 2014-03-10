@@ -65,7 +65,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "DraftingView.ByName", "DraftingView.ByName@string");
+            return MigrateToDsFunction(data, "RevitNodes.dll", "DraftingView.ByName", "DraftingView.ByName@string");
         }
     }
 
@@ -360,7 +360,7 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll", 
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll", 
                 "AxonometricView.ByEyePointAndTarget", 
                 "AxonometricView.ByEyePointAndTarget@Point,Point,var,string,bool");
 
@@ -419,7 +419,7 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll",
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll",
                 "PerspectiveView.ByEyePointAndTarget", 
                 "PerspectiveView.ByEyePointAndTarget@Point,Point,var,string,bool");
 
@@ -545,7 +545,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "SectionView.ByBoundingBox", "SectionView.ByBoundingBox@BoundingBox");
         }
     }
@@ -571,7 +571,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "Document.ActiveView", "Document.ActiveView");
         }
     }
@@ -656,7 +656,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "AbstractPlanView.ExportAsImage", "AbstractPlanView.ExportAsImage@string");
         }
     }
@@ -939,7 +939,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "Sheet.ByNameNumberTitleBlockAndViews", 
                 "Sheet.ByNameNumberTitleBlockAndViews@string,string,FamilySymbol,var[]");
         }

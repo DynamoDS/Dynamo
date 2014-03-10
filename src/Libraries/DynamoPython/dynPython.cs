@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
@@ -217,12 +218,20 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
+            System.Xml.XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
+            var element = MigrationManager.CloneAndChangeType(xmlNode, "DSIronPythonNode.PythonNode");
+            element.SetAttribute("nickname", "Python Script");
+            element.SetAttribute("inputcount", "1");
+            element.RemoveAttribute("inputs");
+
+            foreach (XmlElement subNode in xmlNode.ChildNodes)
+            {
+                element.AppendChild(subNode);
+                subNode.InnerText = Regex.Replace(element.InnerText, @"\bIN\b", "IN[0]");
+            }
+
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-
-            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 1, 1);
-            migrationData.AppendNode(dummyNode);
-
+            migrationData.AppendNode(element);
             return migrationData;
         }
     }
@@ -479,6 +488,15 @@ namespace Dynamo.Nodes
             element.SetAttribute("nickname", "Python Script");
             element.SetAttribute("inputcount", xmlNode.GetAttribute("inputs"));
             element.RemoveAttribute("inputs");
+
+            foreach (XmlElement subNode in xmlNode.ChildNodes)
+            {
+                element.AppendChild(subNode);
+                subNode.InnerText = Regex.Replace(element.InnerText, @"\bIN[0-9]+\b", delegate(Match m)
+                {
+                    return "IN[" + m.ToString().Substring(2) + "]";
+                });
+            }
 
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             migrationData.AppendNode(element);
