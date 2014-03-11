@@ -1724,6 +1724,7 @@ namespace Dynamo.Tests
         [Test, Category("Not Migrated")]
         public void ShiftListIndices_Complex()
         {
+            Assert.Inconclusive("String To Number node had been deprecated, cannot run this TestCase");
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\ShiftListIndeces_Complex.dyn");
@@ -1986,6 +1987,8 @@ namespace Dynamo.Tests
         [Test, Category("Not Migrated")]
         public void DropEveryNth_ComplexTest()
         {
+            Assert.Inconclusive("String To Number node had been deprecated, cannot run this TestCase");
+
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropEveryNth_ComplexTest.dyn");
@@ -2417,6 +2420,8 @@ namespace Dynamo.Tests
         [Test]
         public void Combine_ComplexTest()
         {
+            Assert.Inconclusive("String To Number node had been deprecated, cannot run this TestCase");
+
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Combine_ComplexTest.dyn");
