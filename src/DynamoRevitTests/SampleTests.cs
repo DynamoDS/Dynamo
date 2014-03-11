@@ -585,6 +585,83 @@ namespace Dynamo.Tests
   
 
         }
+
+        [Test]
+        public void Rendering_Brute_Forcing_Parameters_loadsCustomNodes()
+        {
+            // referencing the samples directly from the samples folder
+            // and the custom nodes from the distrib folder
+
+            var model = dynSettings.Controller.DynamoModel;
+            // look at the sample folder and one directory up to get the distrib folder and combine with defs folder
+            string customNodePath = Path.Combine(Path.Combine(_samplesPath, @"..\\"), @".\dynamo_packages\Dynamo Sample Custom Nodes\dyf\");
+            // get the full path to the distrib folder and def folder
+            string fullCustomNodePath = Path.GetFullPath(customNodePath);
+
+            string samplePath = Path.Combine(_samplesPath, @".\25 Rendering\Brute Forcing Parameters and Rendering.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            // make sure that the custom nodes we need exist, check if order is important...
+            string customDefPath1 = Path.Combine(fullCustomNodePath, "Create Cloud Daylight Job and Send.dyf");
+            string customDefPath2 = Path.Combine(fullCustomNodePath, "Create Skymodel and Environment.dyf");
+            string customDefPath3 = Path.Combine(fullCustomNodePath, "GetDataFromRender_WriteImage.dyf");
+            string customDefPath4 = Path.Combine(fullCustomNodePath, "Parse Weather Data.dyf");
+            string customDefPath5 = Path.Combine(fullCustomNodePath, "RenderWithWeatherData_Return List of data.dyf");
+            string customDefPath6 = Path.Combine(fullCustomNodePath, "UpdateParameter(s).dyf");
+            string customDefPath7 = Path.Combine(fullCustomNodePath, "displayDataCall.dyf");
+            string customDefPath8 = Path.Combine(fullCustomNodePath, "Display Daylighting Data On Surface.dyf");
+
+            Assert.IsTrue(File.Exists(customDefPath1), "Cannot find specified custom definition to load for testing at." + customDefPath1);
+            Assert.IsTrue(File.Exists(customDefPath2), "Cannot find specified custom definition to load for testing." + customDefPath2);
+            Assert.IsTrue(File.Exists(customDefPath3), "Cannot find specified custom definition to load for testing." + customDefPath3);
+            Assert.IsTrue(File.Exists(customDefPath4), "Cannot find specified custom definition to load for testing." + customDefPath4);
+            Assert.IsTrue(File.Exists(customDefPath5), "Cannot find specified custom definition to load for testing." + customDefPath5);
+            Assert.IsTrue(File.Exists(customDefPath6), "Cannot find specified custom definition to load for testing." + customDefPath6);
+            Assert.IsTrue(File.Exists(customDefPath7), "Cannot find specified custom definition to load for testing." + customDefPath7);
+            Assert.IsTrue(File.Exists(customDefPath8), "Cannot find specified custom definition to load for testing." + customDefPath8);
+
+            Assert.DoesNotThrow(() =>
+                         dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath2));
+            Assert.DoesNotThrow(() =>
+                          dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath1));
+            Assert.DoesNotThrow(() =>
+                           dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath3));
+            Assert.DoesNotThrow(() =>
+                           dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath4));
+            Assert.DoesNotThrow(() =>
+                           dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath5));
+            Assert.DoesNotThrow(() =>
+                           dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath6));
+            Assert.DoesNotThrow(() =>
+                           dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath7));
+            Assert.DoesNotThrow(() =>
+                          dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath8));
+
+            model.Open(testPath);
+            Assert.AreEqual(8, dynSettings.Controller.CustomNodeManager.LoadedCustomNodes.Count);
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(33, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(31, model.CurrentWorkspace.Connectors.Count);
+
+            //cannot run this graph in test yet as it uses python nodes and a360 raas lighting api
+            // Assert.DoesNotThrow(() =>dynSettings.Controller.RunExpression(true));
+
+            // assert that references to revit elements are correct, faces, families, etc.
+
+            var workspace = model.CurrentWorkspace;
+
+            var familyTypeSelectNode =
+                (FamilyTypeSelector)workspace.Nodes.First(x => x is FamilyTypeSelector);
+            // ensure that we have the right window type selected
+
+            var result_item =familyTypeSelectNode.Items[familyTypeSelectNode.SelectedIndex].Name;
+
+            Assert.AreEqual("Fixed_instance_params:36\" x 72\" -instance parms", result_item);
+
+        }
+
+
+
         #region 14 Curves
 
         [Test]
