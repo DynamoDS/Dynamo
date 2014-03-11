@@ -77,6 +77,9 @@ namespace Dynamo.Tests
 
             try
             {
+
+                Debugger.Launch();
+
                 var docManager = DocumentManager.Instance;
                 docManager.CurrentUIApplication = revit.Application;
                 docManager.CurrentDBDocument = revit.Application.ActiveUIDocument.Document;
@@ -212,7 +215,7 @@ namespace Dynamo.Tests
 
                 SaveResults();
 
-                if(DynamoController.IsTestMode)
+                if(DynamoController.IsTestMode && dynSettings.Controller != null)
                     TransactionManager.Instance.ForceCloseTransaction();
             }
             catch (Exception ex)
