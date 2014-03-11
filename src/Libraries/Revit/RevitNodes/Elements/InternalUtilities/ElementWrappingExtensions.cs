@@ -9,7 +9,7 @@ using Revit.Elements.Views;
 
 namespace Revit.Elements
 {
-    //[Browsable(false)]
+    //[IsVisibleInDynamoLibrary(false)]
     public static class ElementWrappingExtensions
     {
         /// <summary>

@@ -317,7 +317,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(numNodes - 1, model.CurrentWorkspace.Nodes.Count);
         }
 
-        [Test, Ignore]
+        [Test]
         public void ReduceAndRecursion()
         {
             var model = Controller.DynamoModel;
