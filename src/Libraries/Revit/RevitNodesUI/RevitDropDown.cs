@@ -120,9 +120,6 @@ namespace DSRevitNodesUI
                 <System.String, Revit.Elements.FloorType>
                 (Revit.Elements.FloorType.ByName, args);
 
-            var functionCall = AstFactory.BuildFunctionCall("Revit.Elements.FloorType",
-                                                            "ByName",
-                                                            args);
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
