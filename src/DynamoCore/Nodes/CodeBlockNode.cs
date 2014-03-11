@@ -413,8 +413,8 @@ namespace Dynamo.Nodes
             codeToParse = code;
             List<string> unboundIdentifiers = new List<string>();
             List<ProtoCore.AST.Node> parsedNodes;
-            List<ProtoCore.BuildData.ErrorEntry> errors;
-            List<ProtoCore.BuildData.WarningEntry> warnings;
+            IEnumerable<ProtoCore.BuildData.ErrorEntry> errors;
+            IEnumerable<ProtoCore.BuildData.WarningEntry> warnings;
 
             try
             {
@@ -449,10 +449,7 @@ namespace Dynamo.Nodes
                     if (errors != null)
                     {
                         errorMessage = "";
-                        int i = 0;
-                        for (; i < errors.Count - 1; i++)
-                            errorMessage += (errors[i].Message + "\n");
-                        errorMessage += errors[i].Message;
+                        errorMessage = string.Join("\n", errors.Select(m => m.Message));
                         ProcessError();
                     }
                     return;
