@@ -222,6 +222,10 @@
         <test name="ByReferencePoints_DuplicatePoints" modelPath=".\empty.rfa" />
         <test name="ByReferencePoints_Mutation" modelPath=".\empty.rfa" />
       </testFixture>
+      <testFixture name="TopographyTests">
+        <test name="ByPoints_ValidArgs" modelPath=".\empty.rvt" />
+        <test name="ByPoints_InvalidArgs" modelPath=".\empty.rvt" />
+      </testFixture>
 		</testAssembly>
 	</testAssemblies>
 </tests>
