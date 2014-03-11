@@ -15,27 +15,20 @@ namespace Dynamo.DSEngine
     public static class XmlDocumentationExtensions
     {
 
-        private static Dictionary<string, XDocument> cachedXml;
-
-        static XmlDocumentationExtensions()
-        {
-            cachedXml = new Dictionary<string, XDocument>(StringComparer.OrdinalIgnoreCase);
-        }
-
         public static string GetXmlDocumentation(this TypedParameter member)
         {
             XDocument xml = null;
 
-            if (member.Function != null && member.Function.Assembly != null && cachedXml.ContainsKey(member.Function.Assembly))
-                xml = cachedXml[member.Function.Assembly];
-            else
-                return "";
+            if (member.Function != null && member.Function.Assembly != null)
+                xml = DocumentationServices.GetForAssembly(member.Function.Assembly);
 
             return GetXmlDocumentation(member, xml);
         }
 
         public static string GetXmlDocumentation(this TypedParameter parameter, XDocument xml)
         {
+            if (xml == null) return String.Empty;
+
             return xml.XPathEvaluate(
                 String.Format(
                     "string(/doc/members/member[@name='{0}']/param[@name='{1}'])",
@@ -48,16 +41,16 @@ namespace Dynamo.DSEngine
         {
             XDocument xml = null;
 
-            if (member.Assembly != null && cachedXml.ContainsKey(member.Assembly))
-                xml = cachedXml[member.Assembly];
-            else
-                return "";
+            if (member.Assembly != null)
+                xml = DocumentationServices.GetForAssembly(member.Assembly);
 
             return GetXmlDocumentation(member, xml);
         }
 
         private static string GetXmlDocumentation(this FunctionDescriptor member, XDocument xml)
         {
+            if (xml == null) return String.Empty;
+
             return xml.XPathEvaluate(
                 String.Format(
                     "string(/doc/members/member[@name='{0}']/summary)",
@@ -128,20 +121,6 @@ namespace Dynamo.DSEngine
             return String.Format("{0}:{1}", prefixCode, memberName);
         }
 
-        internal static bool LoadXmlDocumentation(string pathToAssembly)
-        {
-            if (cachedXml.ContainsKey(pathToAssembly))
-                return true;
-
-            var pathToXmlFile = pathToAssembly.Replace(".dll", ".xml");
-            pathToXmlFile = Path.GetFullPath(pathToXmlFile);
-
-            if (!File.Exists(pathToXmlFile)) return false;
-
-            cachedXml[pathToAssembly] = XDocument.Load(pathToXmlFile);
-            return true;
-
-        }
     }
 
 }
