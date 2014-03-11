@@ -623,7 +623,7 @@ namespace Dynamo.DSEngine
             _libraries = new List<string>
             {
                 "ProtoGeometry.dll",
-                "CoreNodes.dll",
+                "DSCoreNodes.dll",
                 "DSOffice.dll",
                 "FunctionObject.ds",
                 "DSIronPython.dll"
