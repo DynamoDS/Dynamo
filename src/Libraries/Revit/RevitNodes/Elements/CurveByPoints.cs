@@ -18,17 +18,9 @@ namespace Revit.Elements
 
         private void InternalSetReferencePoints(ReferencePointArray pts)
         {
-            try
-            {
-                TransactionManager.Instance.EnsureInTransaction(Document);
-                ((Autodesk.Revit.DB.CurveByPoints) InternalCurveElement).SetPoints(pts);
-                TransactionManager.Instance.TransactionTaskDone();
-            }
-            catch (Exception ex)
-            {
-                TransactionManager.Instance.ForceCloseTransaction();
-                throw new Exception("Unable to update curve by points. \n" + ex.Message);
-            }
+            TransactionManager.Instance.EnsureInTransaction(Document);
+            ((Autodesk.Revit.DB.CurveByPoints) InternalCurveElement).SetPoints(pts);
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         #endregion
@@ -64,25 +56,17 @@ namespace Revit.Elements
                 return;
             }
 
-            try
-            {
-                TransactionManager.Instance.EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
-                cbp = DocumentManager.Instance.CurrentDBDocument.FamilyCreate.NewCurveByPoints(refPtArr);
+            cbp = DocumentManager.Instance.CurrentDBDocument.FamilyCreate.NewCurveByPoints(refPtArr);
 
-                cbp.IsReferenceLine = false;
+            cbp.IsReferenceLine = false;
 
-                InternalSetCurveElement(cbp);
+            InternalSetCurveElement(cbp);
 
-                TransactionManager.Instance.TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
-                ElementBinder.SetElementForTrace(this.InternalElementId);
-            }
-            catch (Exception ex)
-            {
-                TransactionManager.Instance.ForceCloseTransaction();
-                throw new Exception("Unable to create curve by points. \n" + ex.Message);
-            }
+            ElementBinder.SetElementForTrace(this.InternalElementId);
         }
 
         #endregion
