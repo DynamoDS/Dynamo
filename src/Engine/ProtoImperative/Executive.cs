@@ -52,9 +52,7 @@ namespace ProtoImperative
 #endif
                 }
 
-                int errors = 0;
-                int warnings = 0;
-                buildSucceeded = core.BuildStatus.GetBuildResult(out errors, out warnings);
+                buildSucceeded = core.BuildStatus.BuildSucceeded;
             }
             return buildSucceeded;
         }

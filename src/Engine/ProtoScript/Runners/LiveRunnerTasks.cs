@@ -448,8 +448,8 @@ namespace ProtoScript.Runners
 
                         foreach (var warning in runner.runnerCore.BuildStatus.Warnings)
                         {
-                            string msg = warning.msg;
-                            int lineNo = warning.line;
+                            string msg = warning.Message;
+                            int lineNo = warning.Line;
 
                             // TODO: How can the lineNo be invalid ?
                             if (lineNo == ProtoCore.DSASM.Constants.kInvalidIndex)
@@ -527,14 +527,14 @@ namespace ProtoScript.Runners
                 {
                     //GraphUpdateReadyEventArgs retArgs = null;
 
-                    if (runner.runnerCore.RuntimeStatus.Warnings.Count > 0)
+                    if (runner.runnerCore.RuntimeStatus.WarningCount > 0)
                     {
                         if (retArgs == null)
                             retArgs = new GraphUpdateReadyEventArgs(syncDataReturn);
 
                         foreach (var err in runner.runnerCore.RuntimeStatus.Warnings)
                         {
-                            string msg = err.message;
+                            string msg = err.Message;
                             int lineNo = err.Line;
 
                             // TODO: How can the lineNo be invalid ?
