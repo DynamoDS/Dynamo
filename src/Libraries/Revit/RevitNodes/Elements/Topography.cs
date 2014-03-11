@@ -57,22 +57,24 @@ namespace Revit.Elements
             var oldSurf =
                 ElementBinder.GetElementFromTrace<TopographySurface>(Document);
 
-            //There was a topo surface, rebind to that
-            if (oldSurf != null)
-            {
-                InternalSetTopographySurface(oldSurf);
-                return;
-            }
+            var document = DocumentManager.Instance.CurrentDBDocument;
 
             //Phase 2- There was no existing point, create one
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            var document = DocumentManager.Instance.CurrentDBDocument;
-            InternalSetTopographySurface(TopographySurface.Create(document, points));
+            var topo = TopographySurface.Create(document, points);
+            InternalSetTopographySurface(topo);
 
             TransactionManager.Instance.TransactionTaskDone();
 
-            ElementBinder.SetElementForTrace(this.InternalElementId);
+            if (oldSurf != null)
+            {
+                ElementBinder.CleanupAndSetElementForTrace(document, this.InternalElementId);
+            }
+            else
+            {
+                ElementBinder.SetElementForTrace(this.InternalElementId);  
+            }
         }
 
         private Topography(TopographySurface topoSurface)
