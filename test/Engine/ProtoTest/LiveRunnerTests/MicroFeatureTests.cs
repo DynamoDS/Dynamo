@@ -2939,6 +2939,35 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        public void TestDeleteNode03()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "p = Point.ByCoordinates(0,0,0);"
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            // Create a node
+            Guid guid = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            // Delete the node
+            List<Subtree> deleted = new List<Subtree>();
+            deleted.Add(CreateSubTreeFromCode(guid, codes[0]));
+            syncData = new GraphSyncData(deleted, null, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            var mirror = astLiveRunner.InspectNodeValue("p");
+            Assert.IsTrue(mirror.GetData().IsNull);
+
+        }
+
+        [Test]
         public void TestCachingSSA01()
         {
             List<string> codes = new List<string>() 
