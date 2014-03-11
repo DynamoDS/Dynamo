@@ -223,8 +223,8 @@
         <test name="ByReferencePoints_Mutation" modelPath=".\empty.rfa" />
       </testFixture>
       <testFixture name="TopographyTests">
-        <test name="ByPoints_ValidArgs" modelPath=".\empty.rvt" />
-        <test name="ByPoints_InvalidArgs" modelPath=".\empty.rvt" />
+        <test name="ByPoints_ValidArgs" runDynamo="true" modelPath=".\empty.rvt" />
+        <test name="ByPoints_InvalidArgs" runDynamo="true" modelPath=".\empty.rvt" />
       </testFixture>
 		</testAssembly>
 	</testAssemblies>

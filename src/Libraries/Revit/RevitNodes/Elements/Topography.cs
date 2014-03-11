@@ -39,7 +39,12 @@ namespace Revit.Elements
         /// </summary>
         public List<Point> Points
         {
-            get { return InternalTopographySurface.GetPoints().Select(x => x.ToPoint()).ToList(); }
+            get
+            {
+                DocumentManager.Instance.CurrentDBDocument.Regenerate();
+                var pts = InternalTopographySurface.GetPoints();
+                return pts.Select(x => x.ToPoint()).ToList();
+            }
         }
 
         #endregion
