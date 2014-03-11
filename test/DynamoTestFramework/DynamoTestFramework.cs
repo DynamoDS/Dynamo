@@ -231,13 +231,12 @@ namespace Dynamo.Tests
 
         private void StartDynamo()
         {
-            Level defaultLevel = null;
             var fecLevel = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             fecLevel.OfClass(typeof(Level));
 
             DocumentManager.Instance.CurrentUIApplication = DocumentManager.Instance.CurrentUIApplication;
             DocumentManager.Instance.CurrentUIDocument = DocumentManager.Instance.CurrentUIDocument;
-            dynRevitSettings.DefaultLevel = defaultLevel;
+            dynRevitSettings.DefaultLevel = null;
 
             SIUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
             SIUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
