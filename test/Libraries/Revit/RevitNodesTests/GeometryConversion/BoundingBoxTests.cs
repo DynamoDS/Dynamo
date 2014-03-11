@@ -8,13 +8,15 @@ using Revit.Elements;
 using Revit.GeometryConversion;
 using Revit.GeometryObjects;
 using NUnit.Framework;
+using RevitServices.Persistence;
 using RevitServices.Transactions;
 
 namespace DSRevitNodesTests.Conversion
 {
     [TestFixture]
-    public class BoundingBoxTests
+    class BoundingBoxTests : ProtoGeometryTest
     {
+
         [Test]
         public void CanConvertRevitToProtoType()
         {
@@ -24,8 +26,6 @@ namespace DSRevitNodesTests.Conversion
 
             var bbox = famInst.BoundingBox;
             Assert.NotNull(bbox);
-
-            TransactionManager.Instance.ForceCloseTransaction();
 
             var max = bbox.MaxPoint;
             var min = bbox.MinPoint;
