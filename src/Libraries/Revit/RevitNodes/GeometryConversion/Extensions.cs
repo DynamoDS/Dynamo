@@ -16,6 +16,24 @@ namespace Revit.GeometryConversion
         #region Proto -> Revit types
 
         /// <summary>
+        /// Convert a Revit BoundingBox to a ProtoGeometry BoundingBox
+        /// </summary>
+        /// <returns></returns>
+        public static Autodesk.Revit.DB.BoundingBoxXYZ ToRevitType(this Autodesk.DesignScript.Geometry.BoundingBox bb)
+        {
+            var rbb = new BoundingBoxXYZ();
+            rbb.Enabled = true;
+
+            // placeholder until we can get coordinate system from bounding box
+            rbb.Transform = Transform.Identity;
+
+            rbb.Max = bb.MaxPoint.ToXyz();
+            rbb.Min = bb.MinPoint.ToXyz();
+
+            return rbb;
+        }
+
+        /// <summary>
         /// Convert a Point to an XYZ
         /// </summary>
         /// <param name="pt"></param>
@@ -139,6 +157,17 @@ namespace Revit.GeometryConversion
         #endregion
 
         #region Revit -> Proto types
+
+        /// <summary>
+        /// Convert a Revit BoundingBox to a ProtoGeometry BoundingBox
+        /// </summary>
+        /// <returns></returns>
+        public static Autodesk.DesignScript.Geometry.BoundingBox ToProtoType(this Autodesk.Revit.DB.BoundingBoxXYZ xyz)
+        {
+            xyz.Enabled = true;
+            var corners = new[] {xyz.Min.ToPoint(), xyz.Max.ToPoint()};
+            return Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(corners);
+        }
 
         /// <summary>
         /// Convert an XYZ to a Point
