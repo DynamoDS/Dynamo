@@ -23,16 +23,12 @@ namespace DSRevitNodesTests.GeometryObjects
             var bbox = famInst.BoundingBox;
             Assert.NotNull(bbox);
 
-            var max = bbox.Max;
-            var min = bbox.Min;
+            var max = bbox.MaxPoint;
+            var min = bbox.MinPoint;
 
-            Assert.AreEqual(-15, min.X, 1e-6);
-            Assert.AreEqual(-14, min.Y, 1e-6);
-            Assert.AreEqual(2, min.Z, 1e-6);
+            max.ShouldBeApproximately(Point.ByCoordinates(15, 16, 32));
+            min.ShouldBeApproximately(Point.ByCoordinates(-15, -14, 2));
 
-            Assert.AreEqual(15, max.X, 1e-6);
-            Assert.AreEqual(16, max.Y, 1e-6);
-            Assert.AreEqual(32, max.Z, 1e-6);
         }
     }
 }

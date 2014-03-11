@@ -108,7 +108,6 @@
     <Compile Include="GeometryConversion\RevitToProtoCurve.cs" />
     <Compile Include="GeometryConversion\RevitToProtoMesh.cs" />
     <Compile Include="GeometryObjects\Intersect.cs" />
-    <Compile Include="GeometryObjects\BoundingBox.cs" />
     <Compile Include="GeometryObjects\PlanarFace.cs" />
     <Compile Include="GeometryObjects\GeometryObjectSelector.cs" />
     <Compile Include="Geometry\Domain.cs" />
