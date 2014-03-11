@@ -14,10 +14,9 @@ namespace Dynamo
         [Test]
         public void CanLoadValidLibraryCustomization()
         {
-
             var fn = Path.Combine(GetTestDirectory(), @"core/library/DynamoCustomization_ProtoGeometry.xml");
 
-            var c = LibraryCustomization.LoadFromXml(fn);
+            var c = LibraryCustomizationServices.GetForAssembly(fn);
             Assert.NotNull(c);
 
             var cat = c.GetNamespaceCategory("Autodesk.DesignScript.Geometry");
@@ -25,18 +24,5 @@ namespace Dynamo
 
         }
 
-        [Test]
-        public void CanGetBestMatchOfNamespace()
-        {
-
-            var fn = Path.Combine(GetTestDirectory(), @"core/library/DynamoCustomization_ProtoGeometry.xml");
-
-            var c = LibraryCustomization.LoadFromXml(fn);
-            Assert.NotNull(c);
-
-            var cat = c.GetNamespaceCategory("Autodesk.DesignScript");
-            Assert.AreEqual("DesignScript", cat);
-
-        }
     }
 }
