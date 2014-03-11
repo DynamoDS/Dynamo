@@ -29,7 +29,7 @@ namespace Dynamo.Applications
             var id = element.Id;
 
             var node = new WatchViewModel(element.Name, tag);
-            node.Clicked += () => DocumentManager.GetInstance().CurrentUIDocument.ShowElements(element);
+            node.Clicked += () => DocumentManager.Instance.CurrentUIDocument.ShowElements(element);
             node.Link = id.IntegerValue.ToString(CultureInfo.InvariantCulture);
 
             return node;

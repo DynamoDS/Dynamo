@@ -23,7 +23,7 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
             //ensure that the level count is the same
-            var levelColl = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            var levelColl = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             levelColl.OfClass(typeof(Autodesk.Revit.DB.Level));
             Assert.AreEqual(levelColl.ToElements().Count(), 6);
 
@@ -33,7 +33,7 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
             //ensure that the level count is the same
-            levelColl = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            levelColl = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             levelColl.OfClass(typeof(Autodesk.Revit.DB.Level));
             Assert.AreEqual(levelColl.ToElements().Count(), 11);
         }

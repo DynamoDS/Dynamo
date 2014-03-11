@@ -40,7 +40,7 @@ namespace Dynamo.Nodes
             if (ptA is XYZ)
             {
 
-                line = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewLineBound(
+                line = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewLineBound(
                   (XYZ)ptA, (XYZ)ptB
                   );
 
@@ -48,7 +48,7 @@ namespace Dynamo.Nodes
             }
             else if (ptA is ReferencePoint)
             {
-                line = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewLineBound(
+                line = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewLineBound(
                   (XYZ)((ReferencePoint)ptA).Position, (XYZ)((ReferencePoint)ptB).Position
                );
 
@@ -101,7 +101,7 @@ namespace Dynamo.Nodes
                 throw new Exception("The start point and end point are extremely close together. The line will be too short.");
             }
 
-            var line = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewLineBound(ptA, ptB);
+            var line = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewLineBound(ptA, ptB);
 
             return FScheme.Value.NewContainer(line);
         }
@@ -134,7 +134,7 @@ namespace Dynamo.Nodes
             var ptB = (XYZ)((FScheme.Value.Container)args[1]).Item;
 
             // CurveElement c = MakeLine(this.UIDocument.Document, ptA, ptB);
-            CurveElement c = MakeLineCBP(DocumentManager.GetInstance().CurrentUIDocument.Document, ptA, ptB);
+            CurveElement c = MakeLineCBP(DocumentManager.Instance.CurrentUIDocument.Document, ptA, ptB);
 
             return FScheme.Value.NewContainer(c);
         }

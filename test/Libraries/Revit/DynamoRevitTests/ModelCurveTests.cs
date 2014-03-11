@@ -23,7 +23,7 @@ namespace Dynamo.Tests
             model.Open(testPath);
             dynSettings.Controller.RunExpression(true);
 
-            var fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             fec.OfClass(typeof(CurveElement));
 
             //verify five model curves created

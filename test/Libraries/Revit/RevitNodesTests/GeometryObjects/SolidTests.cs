@@ -74,7 +74,7 @@ namespace DSRevitNodesTests.GeometryObjects
             var planeCs = CoordinateSystem.ByOriginVectors(origin, x, z, y);
             var transCrvs = crvs.Select(crv => crv.Transform(CoordinateSystem.Identity(), planeCs)).Cast<Curve>().ToList();
 
-            var revolve = Solid.ByRevolve(transCrvs, cs, 0, 3.14);
+            var revolve = Solid.ByRevolve(PolyCurve.ByJoinedCurves(transCrvs.ToArray()), cs, 0, 3.14);
             Assert.NotNull(revolve);
 
             var package = new RenderPackage(); 
@@ -104,7 +104,7 @@ namespace DSRevitNodesTests.GeometryObjects
             var planeCs = CoordinateSystem.ByOriginVectors(origin, x, z, y);
             var transCrvs = crvs.Select(crv => crv.Transform(CoordinateSystem.Identity(), planeCs)).Cast<Curve>().ToList();
 
-            var revolve = Solid.ByRevolve(transCrvs, cs, 0, 3.14);
+            var revolve = Solid.ByRevolve(PolyCurve.ByJoinedCurves(transCrvs.ToArray()), cs, 0, 3.14);
             Assert.NotNull(revolve);
 
             var package = new RenderPackage();
@@ -137,7 +137,8 @@ namespace DSRevitNodesTests.GeometryObjects
             var bottCurves = rect1.Select(crv => crv.Transform(CoordinateSystem.Identity(), csBottom)).Cast<Curve>().ToList();
             var topCurves = rect2.Select(crv => crv.Transform(CoordinateSystem.Identity(), csTop)).Cast<Curve>().ToList();
 
-            var blend = Solid.ByBlend(new List<List<Curve>>{bottCurves,topCurves});
+            var blend = Solid.ByBlend(new List<PolyCurve> { PolyCurve.ByJoinedCurves(bottCurves.ToArray()), 
+                PolyCurve.ByJoinedCurves(topCurves.ToArray()) });
             Assert.NotNull(blend);
 
             var package = new RenderPackage();
@@ -189,7 +190,10 @@ namespace DSRevitNodesTests.GeometryObjects
                 File.Delete(modelPath);
             WriteToOBJ(modelPath, new List<RenderPackage>() { package });
 
-            var blend = Solid.BySweptBlend(new List<List<Curve>> { cs1, cs2, cs3, cs4 }, spine, new List<double> {0, 0.25, 0.75, 1});
+
+            var crvList = new[] {cs1, cs2, cs3, cs4};
+
+            var blend = Solid.BySweptBlend( crvList.Select(x => PolyCurve.ByJoinedCurves(x.ToArray()) ).ToList(), spine, new List<double> {0, 0.25, 0.75, 1});
             Assert.NotNull(blend);
 
             blend.Tessellate(package);

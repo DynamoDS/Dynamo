@@ -11,6 +11,16 @@ using ProtoCore.Runtime;
 
 namespace ProtoCore.DSASM.Mirror
 {
+    public class SymbolNotFoundException: Exception
+    {
+        public SymbolNotFoundException(string symbolName)
+            : base("Cannot find symbol: " + symbolName)
+        {
+            this.SymbolName = symbolName;
+        }
+
+        public string SymbolName { get; private set; } 
+    }
 
     //Status: Draft, experiment
     
@@ -771,7 +781,11 @@ namespace ProtoCore.DSASM.Mirror
                 index = exe.runtimeSymbols[block].IndexOf(name, classcope, Constants.kInvalidIndex);
             }
 
-            if (index != Constants.kInvalidIndex)
+            if (Constants.kInvalidIndex == index)
+            {
+                throw new SymbolNotFoundException(name);
+            }
+            else
             {
                 if (exe.runtimeSymbols[block].symbolList[index].arraySizeList != null)
                 {
@@ -784,8 +798,6 @@ namespace ProtoCore.DSASM.Mirror
                 return retVal;
 
             }
-            throw new NotImplementedException("{F5ACC95F-AEC9-486D-BC82-FF2CB26E7E6A}"); //@TODO(Luke): Replace this with a symbol lookup exception
-
         }
 
         public void UpdateValue(int line, int index, int value)

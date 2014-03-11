@@ -33,7 +33,7 @@ namespace Dynamo.Nodes
             Items.Clear();
 
             //find all the structural framing family types in the project
-            var collector = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            var collector = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
 
             var catFilter = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFraming);
             collector.OfClass(typeof(FamilySymbol)).WherePasses(catFilter);
@@ -176,7 +176,7 @@ namespace Dynamo.Nodes
 
             if (instData.Any())
             {
-                var ids = DocumentManager.GetInstance().CurrentUIDocument.Document.Create.NewFamilyInstances2(instData);
+                var ids = DocumentManager.Instance.CurrentUIDocument.Document.Create.NewFamilyInstances2(instData);
 
                 //add our batch-created instances ids'
                 //to the elements collection
@@ -184,7 +184,7 @@ namespace Dynamo.Nodes
             }
 
             //add all of the instances
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var document = DocumentManager.Instance.CurrentUIDocument.Document;
             results = Elements.Aggregate(results, (current, id) => FSharpList<Value>.Cons(Value.NewContainer(document.GetElement(id)), current));
             results.Reverse();
 
