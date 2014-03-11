@@ -957,11 +957,6 @@ namespace ProtoCore
             public RuntimeData.WarningID RuntimeId;
             public int Line;
             public int Col;
-
-            //public ErrorEntry()
-            //{
-
-            //}
         }
 
         public Dictionary<ulong, ulong> codeToLocation = new Dictionary<ulong, ulong>();
@@ -1190,6 +1185,7 @@ namespace ProtoCore
             }
         }
 
+        [Obsolete("This is only used in obsolete live runner")]
         public void LogErrorInGlobalMap(Core.ErrorType type, string msg, string fileName = null, int line = -1, int col = -1, 
             BuildData.WarningID buildId = BuildData.WarningID.kDefault, RuntimeData.WarningID runtimeId = RuntimeData.WarningID.kDefault)
         {

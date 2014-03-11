@@ -600,53 +600,6 @@ namespace ProtoTest.GraphCompiler
             Assert.IsTrue(mmx.Equals("Edge between 'C' and 'A' introduces a cycle in the graph"));
         }
 
-        [Test, Ignore]
-        public void TestInputOutputInfo()
-        {
-            Dictionary<string, int> inputVariables = new Dictionary<string, int>();
-            Dictionary<int, string> outputLines = new Dictionary<int, string>();
-            List<ProtoCore.BuildData.WarningEntry> warningslist = new List<ProtoCore.BuildData.WarningEntry>();
-            List<string> errorslist = new List<string>();
-            GraphUtilities.GetInputOutputInfo(@"a = b + 2;
-//
-                c = 4 * z; 
-                d = 5*2;
-f=d+g+e;
-//            ", out warningslist, out errorslist, inputVariables, outputLines);
-            Assert.IsTrue(outputLines[5] == "f");
-            Assert.IsTrue(outputLines[4] == "d");
-            Assert.IsTrue(outputLines[3] == "c");
-            Assert.IsTrue(outputLines[1] == "a");
-            Assert.IsTrue(inputVariables["g"] == 5);
-            Assert.IsTrue(inputVariables["e"] == 5);
-            inputVariables.Clear();
-            outputLines.Clear();
-            warningslist.Clear();
-            errorslist.Clear();
-        }
-
-        [Test, Ignore]
-        public void TestInputOutputInfoForArrays1()
-        {
-            Dictionary<string, int> inputVariables = new Dictionary<string, int>(); Dictionary<int, string> outputLines = new Dictionary<int, string>();
-            List<ProtoCore.BuildData.WarningEntry> warningslist = new List<ProtoCore.BuildData.WarningEntry>();
-            List<string> errorslist = new List<string>();
-            GraphUtilities.GetInputOutputInfo(@"a = {1,2,3};
-//
-                a[0] = 10;
-                a[1] = 20;
-a[2] = 30;
-//            ", out warningslist, out errorslist, inputVariables, outputLines);
-            Assert.IsTrue(outputLines[5] == "a[2]");
-            Assert.IsTrue(outputLines[4] == "a[1]");
-            Assert.IsTrue(outputLines[3] == "a[0]");
-            Assert.IsTrue(outputLines[1] == "a");
-            Assert.IsTrue(inputVariables.Count == 0);
-            inputVariables.Clear();
-            outputLines.Clear();
-            warningslist.Clear();
-            errorslist.Clear();
-        }
 
         [Test, Ignore]
         public void TestDeltaExecution01()
