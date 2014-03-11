@@ -77,6 +77,9 @@ namespace Dynamo.Tests
 
             try
             {
+
+                Debugger.Launch();
+
                 var docManager = DocumentManager.Instance;
                 docManager.CurrentUIApplication = revit.Application;
                 docManager.CurrentDBDocument = revit.Application.ActiveUIDocument.Document;
@@ -211,6 +214,9 @@ namespace Dynamo.Tests
                 CalculateTotalsOnResultsRoot(resultsRoot);
 
                 SaveResults();
+
+                if(DynamoController.IsTestMode && dynSettings.Controller != null)
+                    TransactionManager.Instance.ForceCloseTransaction();
             }
             catch (Exception ex)
             {
@@ -241,7 +247,7 @@ namespace Dynamo.Tests
             string context = r.Replace(DocumentManager.Instance.CurrentUIApplication.Application.VersionName, "");
 
             // create the transaction manager object
-            TransactionManager.SetupManager(new DebugTransactionStrategy());
+            TransactionManager.SetupManager(new AutomaticTransactionStrategy());
 
             var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context);
             DynamoController.IsTestMode = true;

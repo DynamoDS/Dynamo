@@ -92,6 +92,7 @@
     <Compile Include="Elements\ReferencePointTests.cs" />
     <Compile Include="Elements\SketchPlaneTests.cs" />
     <Compile Include="Elements\StructuralFramingTests.cs" />
+    <Compile Include="Elements\TopographyTests.cs" />
     <Compile Include="Elements\Views\AxonometricViewTests.cs" />
     <Compile Include="Elements\Views\CeilingPlanViewTests.cs" />
     <Compile Include="Elements\Views\DraftingViewTests.cs" />

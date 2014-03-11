@@ -348,13 +348,10 @@ namespace Dynamo
 
             PreferenceSettings.Save();
 
-            //VisualizationManager.ClearVisualizations();
-
             dynSettings.Controller.DynamoModel.OnCleanup(null);
             dynSettings.Controller = null;
             
             DynamoSelection.Instance.ClearSelection();
-
             DynamoLogger.Instance.FinishLogging();
         }
 
