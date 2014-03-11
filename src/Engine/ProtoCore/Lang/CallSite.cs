@@ -110,13 +110,13 @@ namespace ProtoCore
         /// <returns></returns>
         private StackValue ReportMethodNotFound(Core core, List<StackValue> arguments)
         {
-            core.RuntimeStatus.LogMethodResolutionWarning(core, methodName, classScope, arguments);
+            core.RuntimeStatus.LogMethodResolutionWarning(methodName, classScope, arguments);
             return StackValue.Null;
         }
 
         private StackValue ReportMethodNotAccessible(Core core)
         {
-            core.RuntimeStatus.LogMethodNotAccessibleWarning(core, methodName);
+            core.RuntimeStatus.LogMethodNotAccessibleWarning(methodName);
             return StackValue.Null;
         }
 
