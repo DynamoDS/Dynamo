@@ -111,6 +111,11 @@ namespace ProtoCore
             }
         }
 
+        public void ClearWarnings()
+        {
+            warnings.Clear();
+        }
+
         public RuntimeStatus(Core core, 
                              bool warningAsError = false, 
                              System.IO.TextWriter writer = null)

@@ -437,22 +437,29 @@ namespace Dynamo.Nodes
                     else
                         previewVariable = null;
                 }
-                else
-                {
-                    if (errors == null)
-                    {
-                        ProcessError();
-                        errorMessage = "Errors not getting sent from compiler to UI";
-                    }
 
-                    //Found errors. Get the error message strings and use it to call the DisplayError function
-                    if (errors != null)
-                    {
-                        errorMessage = "";
-                        errorMessage = string.Join("\n", errors.Select(m => m.Message));
-                        ProcessError();
-                    }
+                if (errors != null && errors.Any())
+                {
+                    errorMessage = string.Join("\n", errors.Select(m => m.Message));
+                    ProcessError();
                     return;
+                }
+
+                if (warnings != null)
+                {
+                    // Unbound identifiers in CBN will have input slots.
+                    // 
+                    // To check function redefinition, we need to check other
+                    // CBN to find out if it has been defined yet. Now just
+                    // skip thsi warning.
+                    warnings = warnings.Where(w => w.ID != WarningID.kIdUnboundIdentifier
+                                                && w.ID != WarningID.kFunctionAlreadyDefined);
+                    if (warnings.Any())
+                    {
+                        errorMessage = string.Join("\n", warnings.Select(m => m.Message));
+                        ProcessError();
+                        return;
+                    }
                 }
             }
             catch (Exception e)
