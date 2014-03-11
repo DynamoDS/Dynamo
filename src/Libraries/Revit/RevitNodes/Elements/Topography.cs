@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
+using DSNodeServices;
 using Revit.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
@@ -10,6 +11,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace Revit.Elements
 {
+    [RegisterForTrace]
     public class Topography : AbstractElement
     {
         #region internal properties
@@ -50,31 +52,22 @@ namespace Revit.Elements
             var oldSurf =
                 ElementBinder.GetElementFromTrace<TopographySurface>(Document);
 
-            //There was a point, rebind to that, and adjust its position
+            //There was a topo surface, rebind to that
             if (oldSurf != null)
             {
                 InternalSetTopographySurface(oldSurf);
                 return;
             }
 
-            try
-            {
-                //Phase 2- There was no existing point, create one
-                TransactionManager.Instance.EnsureInTransaction(Document);
+            //Phase 2- There was no existing point, create one
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
-                var document = DocumentManager.Instance.CurrentDBDocument;
-                InternalSetTopographySurface(TopographySurface.Create(document, points));
+            var document = DocumentManager.Instance.CurrentDBDocument;
+            InternalSetTopographySurface(TopographySurface.Create(document, points));
 
-                TransactionManager.Instance.TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
-                ElementBinder.SetElementForTrace(this.InternalElementId);
-            }
-            catch (Exception ex)
-            {
-                TransactionManager.Instance.ForceCloseTransaction();
-                throw new Exception("Unable to create topography surface from points. \n" + ex.Message);
-            }
-            
+            ElementBinder.SetElementForTrace(this.InternalElementId);
         }
 
         private Topography(TopographySurface topoSurface)
@@ -109,6 +102,8 @@ namespace Revit.Elements
         private void InternalSetTopographySurface(TopographySurface topoSurface)
         {
             InternalTopographySurface = topoSurface;
+            this.InternalElementId = InternalTopographySurface.Id;
+            this.InternalUniqueId = InternalTopographySurface.UniqueId;
         }
 
         #endregion
