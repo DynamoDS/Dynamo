@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
-using DSCoreNodesUI;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;

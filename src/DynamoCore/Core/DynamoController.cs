@@ -285,7 +285,7 @@ namespace Dynamo
                 Assembly.GetExecutingAssembly().GetName().Version));
 
             DynamoLoader.ClearCachedAssemblies();
-            DynamoLoader.LoadBuiltinTypes();
+            DynamoLoader.LoadNodeModels();
 
             //run tests
             if (FScheme.RunTests(DynamoLogger.Instance.Log))

@@ -62,7 +62,8 @@ namespace Revit.Elements
         {
             get
             {
-                return this.InternalElement.get_BoundingBox(null).ToProtoType();
+                var bb = this.InternalElement.get_BoundingBox(null);
+                return bb.ToProtoType();
             }
         }
 
