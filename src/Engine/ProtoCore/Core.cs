@@ -85,6 +85,15 @@ namespace ProtoCore
 
     }
 
+    /// <summary>
+    /// Represents a single replication guide entity that is associated with an argument to a function
+    /// 
+    /// Given:
+    ///     a = f(i<1>, j<2L>)
+    ///     
+    ///     <1> and <2L> are each represented by a ReplicationGuide instance
+    ///     
+    /// </summary>
     public class ReplicationGuide
     {
         public ReplicationGuide(int guide, bool longest)
