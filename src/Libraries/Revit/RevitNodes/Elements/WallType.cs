@@ -84,7 +84,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("name");
             }
 
-            var type = DocumentManager.GetInstance().ElementsOfType<Autodesk.Revit.DB.WallType>()
+            var type = DocumentManager.Instance.ElementsOfType<Autodesk.Revit.DB.WallType>()
                 .FirstOrDefault(x => x.Name == name);
 
             if (type == null)

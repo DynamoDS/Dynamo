@@ -127,7 +127,7 @@ namespace Dynamo
 
         void Application_DocumentChanged(object sender, DocumentChangedEventArgs args)
         {
-            if (args.GetDocument().Equals(DocumentManager.GetInstance().CurrentUIDocument.Document))
+            if (args.GetDocument().Equals(DocumentManager.Instance.CurrentUIDocument.Document))
             {
                 processUpdates(
                    args.GetModifiedElementIds(),

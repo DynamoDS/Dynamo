@@ -77,7 +77,7 @@ namespace Dynamo.Tests
 
             try
             {
-                var docManager = DocumentManager.GetInstance();
+                var docManager = DocumentManager.Instance;
                 docManager.CurrentUIApplication = revit.Application;
                 docManager.CurrentDBDocument = revit.Application.ActiveUIDocument.Document;
                 docManager.CurrentUIDocument = revit.Application.ActiveUIDocument;
@@ -226,11 +226,11 @@ namespace Dynamo.Tests
         private void StartDynamo()
         {
             Level defaultLevel = null;
-            var fecLevel = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+            var fecLevel = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             fecLevel.OfClass(typeof(Level));
 
-            DocumentManager.GetInstance().CurrentUIApplication = DocumentManager.GetInstance().CurrentUIApplication;
-            DocumentManager.GetInstance().CurrentUIDocument = DocumentManager.GetInstance().CurrentUIDocument;
+            DocumentManager.Instance.CurrentUIApplication = DocumentManager.Instance.CurrentUIApplication;
+            DocumentManager.Instance.CurrentUIDocument = DocumentManager.Instance.CurrentUIDocument;
             dynRevitSettings.DefaultLevel = defaultLevel;
 
             SIUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
@@ -239,7 +239,7 @@ namespace Dynamo.Tests
 
             //create dynamo
             var r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
-            string context = r.Replace(DocumentManager.GetInstance().CurrentUIApplication.Application.VersionName, "");
+            string context = r.Replace(DocumentManager.Instance.CurrentUIApplication.Application.VersionName, "");
 
             // create the transaction manager object
             TransactionManager.SetupManager(new DebugTransactionStrategy());

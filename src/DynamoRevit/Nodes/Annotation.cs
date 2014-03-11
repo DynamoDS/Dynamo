@@ -37,7 +37,7 @@ namespace Dynamo.Nodes
             var depth = ((FScheme.Value.Number) args[4]).Item;
             var textTypeName = ((FScheme.Value.String) args[5]).Item;
 
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var document = DocumentManager.Instance.CurrentUIDocument.Document;
 
             //find a text type in the document to use
             var fec = new FilteredElementCollector(document);
@@ -94,7 +94,7 @@ namespace Dynamo.Nodes
             var yAxis = normal.CrossProduct(xAxis).Normalize();
             var plane = new Autodesk.Revit.DB.Plane(xAxis, yAxis, position);
 
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var document = DocumentManager.Instance.CurrentUIDocument.Document;
             var sp = Autodesk.Revit.DB.SketchPlane.Create(document, plane);
             mt = document.FamilyCreate.NewModelText(text, mtt, sp, position, HorizontalAlign.Left, depth);
             return mt;
@@ -134,7 +134,7 @@ namespace Dynamo.Nodes
             #region Create New Nodes...
 
             XmlElement dsModelText = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsModelText, "DSRevitNodes.dll", 
+            MigrationManager.SetFunctionSignature(dsModelText, "RevitNodes.dll", 
                 "ModelText.ByTextSketchPlaneAndPosition", 
                 "ModelText.ByTextSketchPlaneAndPosition@" + 
                 "string,SketchPlane,double,double,double,ModelTextType");
@@ -155,7 +155,7 @@ namespace Dynamo.Nodes
             // Create a "SketchPlane.ByPlane" node which converts a "Plane" 
             // into a "SketchPlane".
             XmlElement dsSketchPlane = MigrationManager.CreateFunctionNode(
-                data.Document, "DSRevitNodes.dll",
+                data.Document, "RevitNodes.dll",
                 "SketchPlane.ByPlane", "SketchPlane.ByPlane@Plane");
 
             migratedData.AppendNode(dsSketchPlane);
@@ -164,7 +164,7 @@ namespace Dynamo.Nodes
             // Create a "ModelTextType.ByName" node that converts a "string"
             // into "ModelTextType" node.
             XmlElement dsModelTextType = MigrationManager.CreateFunctionNode(
-                data.Document, "DSRevitNodes.dll",
+                data.Document, "RevitNodes.dll",
                 "ModelTextType.ByName", "ModelTextType.ByName@string");
 
             migratedData.AppendNode(dsModelTextType);

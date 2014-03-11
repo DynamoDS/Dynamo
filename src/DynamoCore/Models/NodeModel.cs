@@ -297,7 +297,7 @@ namespace Dynamo.Models
         /// <value>
         ///     If the node has a category, return it.  Other wise return empty string.
         /// </value>
-        public string Category
+        public virtual string Category
         {
             get
             {
@@ -2009,7 +2009,7 @@ namespace Dynamo.Models
         {
             //Avoid attempting an update after the controller 
             //has shut down.
-            if (dynSettings.Controller == null)
+            if (dynSettings.Controller == null || (DynamoController.IsTestMode))
                 return;
 
             //dispose of the current render package
@@ -2033,9 +2033,13 @@ namespace Dynamo.Models
             //{
                 foreach (var varName in drawableIds)
                 {
-                    var mirrorData = dynSettings.Controller.EngineController.GetMirror(varName).GetData();
-                    AddToLabelMap(mirrorData, labelMap, ident);
-                    count++;
+                    var mirror = dynSettings.Controller.EngineController.GetMirror(varName);
+                    if (mirror != null)
+                    {
+                        var mirrorData = mirror.GetData();
+                        AddToLabelMap(mirrorData, labelMap, ident);
+                        count++;
+                    }
                 } 
             //}
 

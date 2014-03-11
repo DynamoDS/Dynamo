@@ -28,14 +28,14 @@ namespace Dynamo.Tests
             //to the selections
             ReferencePoint p1, p2, p3, p4;
 
-            using (_trans = new Transaction(DocumentManager.GetInstance().CurrentUIDocument.Document))
+            using (_trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document))
             {
                 _trans.Start("Create reference points for testing.");
 
-                p1 = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ(1, 5, 12));
-                p2 = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ(5, 1, 12));
-                p3 = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ(12, 1, 5));
-                p4 = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ(5, 12, 1));
+                p1 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ(1, 5, 12));
+                p2 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ(5, 1, 12));
+                p3 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ(12, 1, 5));
+                p4 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ(5, 12, 1));
 
                 _trans.Commit();
             }
@@ -51,7 +51,7 @@ namespace Dynamo.Tests
 
             dynSettings.Controller.RunExpression(true);
 
-            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             fec.OfClass(typeof(CurveElement));
 
             Assert.AreEqual(fec.ToElements().Count(), 1);
@@ -94,7 +94,7 @@ namespace Dynamo.Tests
             model.Open(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
-            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             fec.OfClass(typeof(CurveElement));
 
             Assert.AreEqual(fec.ToElements().Count(), 1);
@@ -140,7 +140,7 @@ namespace Dynamo.Tests
             model.Open(testPath);
             dynSettings.Controller.RunExpression(true);
 
-            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             fec.OfClass(typeof(ReferencePoint));
 
             Assert.AreEqual(2, fec.ToElements().Count());
@@ -154,7 +154,7 @@ namespace Dynamo.Tests
             dynSettings.Controller.RunExpression(true);
 
             fec = null;
-            fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(2, fec.ToElements().Count);
         }
@@ -195,7 +195,7 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
 
-            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
             fec.OfClass(typeof(CurveElement));
 
             Assert.AreEqual(fec.ToElements().Count(), 1);

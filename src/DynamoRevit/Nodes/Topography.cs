@@ -72,7 +72,7 @@ namespace Dynamo.Nodes
 
         private TopographySurface CreateTopographySurface(List<XYZ> points)
         {
-            var document = DocumentManager.GetInstance().CurrentDBDocument;
+            var document = DocumentManager.Instance.CurrentDBDocument;
             return TopographySurface.Create(document, points);
         }
 
@@ -87,7 +87,7 @@ namespace Dynamo.Nodes
             //for the node library. This will need work as we might be loading
             //the assemblies from a package. How do we convey this?
             var assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var assemblyPath = Path.Combine(assemblyDir, "DSRevitNodes.dll");
+            var assemblyPath = Path.Combine(assemblyDir, "RevitNodes.dll");
 
             var oldNodeElement = data.MigratedNodes.ElementAt(0);
             var newNodeElement = MigrationManager.CreateFunctionNodeFrom(oldNodeElement);

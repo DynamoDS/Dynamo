@@ -16,7 +16,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanCreateAndDeleteAReferencePoint()
         {
-            using (var trans = new Transaction(DocumentManager.GetInstance().CurrentDBDocument, "CreateAndDeleteAreReferencePoint"))
+            using (var trans = new Transaction(DocumentManager.Instance.CurrentDBDocument, "CreateAndDeleteAreReferencePoint"))
             {
                 trans.Start();
 
@@ -24,15 +24,15 @@ namespace Dynamo.Tests
                 fails.SetClearAfterRollback(true);
                 trans.SetFailureHandlingOptions(fails);
 
-                ReferencePoint rp = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ());
+                ReferencePoint rp = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ());
 
                 //make a filter for reference points.
                 ElementClassFilter ef = new ElementClassFilter(typeof(ReferencePoint));
-                FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
+                FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
                 fec.WherePasses(ef);
                 Assert.AreEqual(1, fec.ToElements().Count());
 
-                DocumentManager.GetInstance().CurrentDBDocument.Delete(rp);
+                DocumentManager.Instance.CurrentDBDocument.Delete(rp);
                 trans.Commit();
             }
         }

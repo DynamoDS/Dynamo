@@ -28,7 +28,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "AdaptiveComponent.ByPoints", "AdaptiveComponent.ByPoints@Point[],FamilySymbol");
         }
 
@@ -115,7 +115,7 @@ namespace Dynamo.Nodes
 
             if (instData.Any())
             {
-                var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+                var document = DocumentManager.Instance.CurrentUIDocument.Document;
                 if (document.IsFamilyDocument)
                 {
                     ids = document.FamilyCreate.NewFamilyInstances2(instData);
@@ -184,7 +184,7 @@ namespace Dynamo.Nodes
             //add all of the instances
             results = Elements.Aggregate(results,
                 (current, id) =>
-                    FSharpList<Value>.Cons(Value.NewContainer(DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id)), current));
+                    FSharpList<Value>.Cons(Value.NewContainer(DocumentManager.Instance.CurrentUIDocument.Document.GetElement(id)), current));
             results.Reverse();
 
             return Value.NewList(results);
@@ -206,7 +206,7 @@ namespace Dynamo.Nodes
             int i = 0;
             foreach (ElementId id in placePointIds)
             {
-                var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+                var document = DocumentManager.Instance.CurrentUIDocument.Document;
                 var point = document.GetElement(id) as ReferencePoint;
                 var pt = (XYZ) ((Value.Container) pts.ElementAt(i)).Item;
                 point.Position = pt;
@@ -217,7 +217,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "AdaptiveComponent.ByPoints", "AdaptiveComponent.ByPoints@Point[],FamilySymbol");
         }
     }
@@ -235,7 +235,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "AdaptiveComponent.ByPointsOnFace",
                 "AdaptiveComponent.ByPointsOnFace@double[][],Face,FamilySymbol");
         }
@@ -254,7 +254,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "AdaptiveComponent.ByPointsOnCurve",
                 "AdaptiveComponent.ByPointsOnCurve@double[],Curve,FamilySymbol");
         }
