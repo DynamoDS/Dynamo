@@ -1,11 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="1" failures="0" not-run="0" date="2014-03-06" time="14:02:18" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
-  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="0.618" asserts="4" type="TestFixture" result="Success" executed="True">
+<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="1" failures="0" not-run="0" date="2014-03-11" time="16:32:24" errors="1" inconclusive="0" ignored="0" skipped="0" invalid="0">
+  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="67.2627256" asserts="0" type="TestFixture" result="Success" executed="True">
     <results>
-      <test-suite name="SheetTests" description="Unit tests in Revit." time="0.618" asserts="4" type="TestFixture" result="Success" executed="True">
+      <test-suite name="BoundingBoxTests" description="Unit tests in Revit." time="67.2627256" asserts="0" type="TestFixture" result="Success" executed="True">
         <results>
-          <test-case name="ByNameNumberTitleBlockAndView_BadArgs" success="True" time="0.618" executed="True" asserts="4" result="Success" />
+          <test-case name="CanConvertRevitToProtoType" success="False" time="67.2627256" executed="True" asserts="0" result="Error">
+            <failure>
+              <message>System.NullReferenceException : Object reference not set to an instance of an object.</message>
+              <stack-trace>   at Revit.GeometryConversion.Extensions.ToProtoType(BoundingBoxXYZ xyz) in c:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\src\Libraries\Revit\RevitNodes\GeometryConversion\Extensions.cs:line 167
+   at Revit.Elements.AbstractElement.get_BoundingBox() in c:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\src\Libraries\Revit\RevitNodes\Elements\AbstractElement.cs:line 65
+   at DSRevitNodesTests.Conversion.BoundingBoxTests.CanConvertRevitToProtoType() in c:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\test\Libraries\Revit\RevitNodesTests\GeometryConversion\BoundingBoxTests.cs:line 24</stack-trace>
+            </failure>
+          </test-case>
         </results>
       </test-suite>
     </results>
