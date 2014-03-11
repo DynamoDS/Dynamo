@@ -11,7 +11,7 @@ namespace Revit.References
     /// <summary>
     /// A base class for revit Reference objects
     /// </summary>
-    //[Browsable(false)]
+    //[IsVisibleInDynamoLibrary(false)]
     public abstract class AbstractReference
     {
         public static Document Document

@@ -25,8 +25,10 @@ b = B.DupTargetTest.DupTargetTest();
 bO = b.Foo();
 "
 );
-            Assert.IsTrue((Int64)mirror.GetFirstValue("aO").Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetFirstValue("bO").Payload == 2);
+            var a0 = mirror.GetFirstValue("aO");
+            Assert.IsTrue((Int64)a0.Payload == 1);
+            var b0 = mirror.GetFirstValue("b0");
+            Assert.IsTrue((Int64)b0.Payload == 2);
 
         }
 

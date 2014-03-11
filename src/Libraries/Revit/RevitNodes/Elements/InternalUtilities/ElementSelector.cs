@@ -11,7 +11,7 @@ using RevitServices.Persistence;
 
 namespace Revit.Elements
 {
-    //[Browsable(false)]
+    //[IsVisibleInDynamoLibrary(false)]
     public class ElementSelector
     {
         /// <summary>
