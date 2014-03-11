@@ -155,15 +155,11 @@ namespace Dynamo
 
         /// <summary>
         /// Handler for the model's NodeDeleted event.
-        /// Render package will be disposed with the node, so simply
-        /// calling visualization complete will trigger render targets
-        /// to refresh with updated information.
         /// </summary>
         /// <param name="node"></param>
         void NodeDeleted(NodeModel node)
         {
             node.PropertyChanged -= NodePropertyChanged;
-            node.RenderPackages.Clear();
             OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }
 
