@@ -1,34 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
 namespace Dynamo.DSEngine
 {
-    public class LibraryCustomization
+    public class LibraryCustomizationServices
     {
-        private XDocument XmlDocument;
+        private static Dictionary<string, bool> _triedLookups = new Dictionary<string, bool>();
+        private static Dictionary<string, LibraryCustomization> _cachedCustomizations = new Dictionary<string, LibraryCustomization>();
 
-        private LibraryCustomization(XDocument document)
+        public static LibraryCustomization GetForAssembly(string assemblyPath)
         {
-            this.XmlDocument = document;
-        }
-
-        public static LibraryCustomization LoadFromXml(string customizationPath)
-        {
-            if (!File.Exists(customizationPath))
+            if (_triedLookups.ContainsKey(assemblyPath))
             {
-                throw new ArgumentException("A customization file does not exists at: " + customizationPath);
+                return _triedLookups[assemblyPath] ? _cachedCustomizations[assemblyPath] : null;
             }
 
-            return new LibraryCustomization(XDocument.Load(customizationPath));
+            var customizationPath = "";
+            if (ResolveCustomizationPath(assemblyPath, ref customizationPath))
+            {
+                var c = new LibraryCustomization(XDocument.Load(customizationPath));
+                _triedLookups.Add(assemblyPath, true);
+                _cachedCustomizations.Add(assemblyPath, c);
+                return c;
+            }
+            else
+            {
+                _triedLookups.Add(assemblyPath, false);
+                return null;
+            }
+            
         }
 
-        public static bool ResolveCustomizationFile(string assemblyLocation, ref string customizationPath)
+        public static bool ResolveCustomizationPath(string assemblyLocation, ref string customizationPath)
         {
+            LibraryServices.GetInstance().ResolveLibraryPath(ref assemblyLocation);
+
+            if (!File.Exists(assemblyLocation))
+            {
+                return false;
+            }
+
             var qualifiedPath = Path.GetFullPath(assemblyLocation);
             var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
             var dir = Path.GetDirectoryName(qualifiedPath);
@@ -38,6 +52,16 @@ namespace Dynamo.DSEngine
             customizationPath = Path.Combine(dir, fn);
 
             return File.Exists(customizationPath);
+        }
+    }
+
+    public class LibraryCustomization
+    {
+        private XDocument XmlDocument;
+
+        internal LibraryCustomization(XDocument document)
+        {
+            this.XmlDocument = document;
         }
 
         public string GetNamespaceCategory(string namespaceName)
