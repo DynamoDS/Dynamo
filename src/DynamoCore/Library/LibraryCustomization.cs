@@ -8,33 +8,33 @@ namespace Dynamo.DSEngine
 {
     public class LibraryCustomizationServices
     {
-        private static Dictionary<string, bool> _triedLookups = new Dictionary<string, bool>();
-        private static Dictionary<string, LibraryCustomization> _cachedCustomizations = new Dictionary<string, LibraryCustomization>();
+        private static Dictionary<string, bool> _triedPaths = new Dictionary<string, bool>();
+        private static Dictionary<string, LibraryCustomization> _cache = new Dictionary<string, LibraryCustomization>();
 
         public static LibraryCustomization GetForAssembly(string assemblyPath)
         {
-            if (_triedLookups.ContainsKey(assemblyPath))
+            if (_triedPaths.ContainsKey(assemblyPath))
             {
-                return _triedLookups[assemblyPath] ? _cachedCustomizations[assemblyPath] : null;
+                return _triedPaths[assemblyPath] ? _cache[assemblyPath] : null;
             }
 
             var customizationPath = "";
-            if (ResolveCustomizationPath(assemblyPath, ref customizationPath))
+            if (ResolveForAssembly(assemblyPath, ref customizationPath))
             {
                 var c = new LibraryCustomization(XDocument.Load(customizationPath));
-                _triedLookups.Add(assemblyPath, true);
-                _cachedCustomizations.Add(assemblyPath, c);
+                _triedPaths.Add(assemblyPath, true);
+                _cache.Add(assemblyPath, c);
                 return c;
             }
             else
             {
-                _triedLookups.Add(assemblyPath, false);
+                _triedPaths.Add(assemblyPath, false);
                 return null;
             }
             
         }
 
-        public static bool ResolveCustomizationPath(string assemblyLocation, ref string customizationPath)
+        public static bool ResolveForAssembly(string assemblyLocation, ref string customizationPath)
         {
             LibraryServices.GetInstance().ResolveLibraryPath(ref assemblyLocation);
 

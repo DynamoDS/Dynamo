@@ -617,10 +617,6 @@ namespace Dynamo.DSEngine
             
             GraphUtilities.PreloadAssembly(_libraries);
 
-            // for each dll, load customization and documentation
-            _libraries.Where(x => x.Contains(".dll"))
-                .ToList()
-                .ForEach( LoadLibraryXmlDocumentation );
         }
 
         private List<string> _libraries;
@@ -831,9 +827,6 @@ namespace Dynamo.DSEngine
                     return;
                 }
 
-                // this should be done lazily
-                LoadLibraryXmlDocumentation(library);
-
                 foreach (ClassNode classNode in importedClasses)
                 {
                     ImportClass(library, classNode);
@@ -855,12 +848,6 @@ namespace Dynamo.DSEngine
             }
 
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
-        }
-
-        private void LoadLibraryXmlDocumentation(string library)
-        {
-            if (ResolveLibraryPath(ref library))
-                XmlDocumentationExtensions.LoadXmlDocumentation(library);
         }
 
         private class LibraryPathComparer : IEqualityComparer<string>

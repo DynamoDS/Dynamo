@@ -128,9 +128,9 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\UndoRedoRecorder.cs" />
-    <Compile Include="DSEngine\DocumentationServices.cs" />
-    <Compile Include="DSEngine\LibraryCustomization.cs" />
-    <Compile Include="DSEngine\XmlDocumentationExtensions.cs" />
+    <Compile Include="Library\DocumentationServices.cs" />
+    <Compile Include="Library\LibraryCustomization.cs" />
+    <Compile Include="Library\XmlDocumentationExtensions.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IPreferences.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
@@ -144,7 +144,7 @@ limitations under the License.
     </Compile>
     <Compile Include="UI\Configurations.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
-    <Compile Include="DSEngine\DSLibrary.cs" />
+    <Compile Include="Library\Library.cs" />
     <Compile Include="DSEngine\EngineController.cs" />
     <Compile Include="DSEngine\LiveRunnerServices.cs" />
     <Compile Include="DSEngine\NodeToCode.cs" />
