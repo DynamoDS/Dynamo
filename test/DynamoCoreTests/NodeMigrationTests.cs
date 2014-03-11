@@ -28,7 +28,7 @@ namespace Dynamo.Tests
             Assert.NotNull(cbn); // Ensure the StringInput node is migrated.
             Assert.AreEqual("\"First line\\nSecond line with\\ttab\\nThird line with \\\"quotes\\\"\";", cbn.Code);
 
-            RunCurrentModel(); // run the file to see the result
+            RunCurrentModel(); // Execute the opened file.
             AssertPreviewValue("f6d7a6c3-5df4-45c0-911b-04d39b4c1959", 56);
         }
 
@@ -714,7 +714,7 @@ namespace Dynamo.Tests
             var operationn3 = workspace.NodeFromWorkspace<DSFunction>(
                 "ccd4a119-a4b0-46ad-9947-082af9671554");
             var operationn4 = workspace.NodeFromWorkspace<DSFunction>(
-                "ccd4a119-a4b0-46ad-9947-082af9671554");
+                "5742cca7-b528-478e-93ec-47dbf41a4159");
 
             //During migraton, the manager will add a toDegree node. 
             //So the number of node and connector will be increased.
@@ -730,7 +730,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("0b6eeb02-bcd1-4a35-8b7b-97e2064edc64", 0);
             AssertPreviewValue("5e5129e0-96e6-4734-92d4-93cfeabf1361", 0.14112);
             AssertPreviewValue("ccd4a119-a4b0-46ad-9947-082af9671554", 0.9589234);
-            AssertPreviewValue("ccd4a119-a4b0-46ad-9947-082af9671554", -0.6665387);
+            AssertPreviewValue("5742cca7-b528-478e-93ec-47dbf41a4159", -0.6665387);
         }
 
         [Test]
