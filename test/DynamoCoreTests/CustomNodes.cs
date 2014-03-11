@@ -63,7 +63,11 @@ namespace Dynamo.Tests
 
             var valuePostCollapse = watchNode.OldValue;
 
-            Assert.AreEqual(valuePreCollapse, valuePostCollapse);
+            // Ensure the values are equal and both 65.
+            var svPreCollapse = ((long)valuePreCollapse.Data);
+            var svPostCollapse = ((long)valuePostCollapse.Data);
+            Assert.AreEqual(65, svPreCollapse);
+            Assert.AreEqual(svPreCollapse, svPostCollapse);
         }
 
         [Test]
