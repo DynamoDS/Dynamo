@@ -11,6 +11,7 @@ using System.Xml;
 using Autodesk.Revit.DB;
 using RevitServices.Persistence;
 using RevitServices.Threading;
+using RevitServices.Transactions;
 using RevThread = RevitServices.Threading;
 
 namespace Dynamo.Nodes
@@ -96,7 +97,7 @@ namespace Dynamo.Nodes
                             {
                                 try
                                 {
-                                    runElements.Add(DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(eid).Id);
+                                    runElements.Add(DocumentManager.Instance.CurrentUIDocument.Document.GetElement(eid).Id);
                                 }
                                 catch (NullReferenceException)
                                 {
@@ -117,7 +118,7 @@ namespace Dynamo.Nodes
             RevThread.IdlePromise.ExecuteOnIdleAsync(
                delegate
                {
-                   dynRevitSettings.Controller.InitTransaction();
+                   TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
                    try
                    {
                        ElementsContainer.DestroyAll();
@@ -129,7 +130,7 @@ namespace Dynamo.Nodes
                           + ex.GetType().Name
                           + " -- " + ex.Message);
                    }
-                   dynRevitSettings.Controller.EndTransaction();
+                   TransactionManager.Instance.ForceCloseTransaction();
                    WorkSpace.Modified();
                });
         }

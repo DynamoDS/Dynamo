@@ -24,7 +24,7 @@ namespace DSRevitNodesUI
         {
             Items.Clear();
 
-            var fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
 
             fec.OfClass(typeof(Family));
             if (fec.ToElements().Count == 0)
@@ -81,7 +81,7 @@ namespace DSRevitNodesUI
         {
             Items.Clear();
 
-            var fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             fec.OfClass(typeof(Autodesk.Revit.DB.FloorType));
 
             if (fec.ToElements().Count == 0)
@@ -133,7 +133,7 @@ namespace DSRevitNodesUI
         {
             Items.Clear();
 
-            var fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
 
             fec.OfClass(typeof(Autodesk.Revit.DB.WallType));
             if (fec.ToElements().Count == 0)

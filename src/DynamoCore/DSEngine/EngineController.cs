@@ -10,6 +10,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using ProtoScript.Runners;
 using Dynamo.Nodes;
+using ProtoCore.DSASM.Mirror;
 
 namespace Dynamo.DSEngine
 {
@@ -96,6 +97,10 @@ namespace Dynamo.DSEngine
             try
             {
                 mirror = liveRunnerServices.GetMirror(variableName);
+            }
+            catch (SymbolNotFoundException)
+            {
+                // The variable hasn't been defined yet. Just skip it. 
             }
             catch (Exception ex)
             {
@@ -215,7 +220,21 @@ namespace Dynamo.DSEngine
             {
                 astBuilder.CompileToAstNodes(activeNodes, true);
             }
+
             return VerifyGraphSyncData();
+        }
+
+        /// <summary>
+        /// Return true if there are graph sync data in the queue waiting for
+        /// being executed.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasPendingGraphSyncData()
+        {
+            lock (graphSyncDataQueue)
+            {
+                return graphSyncDataQueue.Count > 0;
+            }
         }
 
         /// <summary>
@@ -246,7 +265,10 @@ namespace Dynamo.DSEngine
                 (data.ModifiedSubtrees != null && data.ModifiedSubtrees.Count > 0) ||
                 (data.DeletedSubtrees != null && data.DeletedSubtrees.Count > 0))
             {
-                graphSyncDataQueue.Enqueue(data);
+                lock (graphSyncDataQueue)
+                {
+                    graphSyncDataQueue.Enqueue(data);
+                }
                 return true;
             }
 
@@ -258,23 +280,26 @@ namespace Dynamo.DSEngine
         /// </summary>
         public bool UpdateGraph()
         {
-            if (graphSyncDataQueue.Count == 0)
-            {
-                return false;
-            }
-            GraphSyncData data = graphSyncDataQueue.Dequeue();
+            bool updated = false;
 
-            try
+            lock (graphSyncDataQueue)
             {
-                liveRunnerServices.UpdateGraph(data);
-            }
-            catch (Exception e)
-            {
-                DynamoLogger.Instance.Log("Update graph failed: " + e.Message);
-                return false;
+                while (graphSyncDataQueue.Count > 0)
+                {
+                    try
+                    {
+                        var data = graphSyncDataQueue.Dequeue();
+                        liveRunnerServices.UpdateGraph(data);
+                        updated = true;
+                    }
+                    catch (Exception e)
+                    {
+                        DynamoLogger.Instance.Log("Update graph failed: " + e.Message);
+                    }
+                }
             }
 
-            return true;
+            return updated;
         }
         
         /// <summary>

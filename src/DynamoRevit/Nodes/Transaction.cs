@@ -7,7 +7,9 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
+using RevitServices.Persistence;
 using RevitServices.Threading;
+using RevitServices.Transactions;
 using Expression = Dynamo.FScheme.Expression;
 using Value = Dynamo.FScheme.Value;
 
@@ -80,7 +82,7 @@ namespace Dynamo.Nodes
                                     return f.Invoke(FSharpList<Value>.Empty);
                                 }
 
-                                return RevitServices.Threading.IdlePromise<Value>.ExecuteOnIdle(
+                                return IdlePromise.ExecuteOnIdleSync(
                                 () =>
                                     {
                                         //_node.OldValue = f.Invoke(FSharpList<Value>.Empty);
@@ -101,8 +103,7 @@ namespace Dynamo.Nodes
 
                                 if (!dynSettings.Controller.DynamoViewModel.RunInDebug)
                                 {
-                                    dynRevitSettings.Controller.InIdleThread = true;
-                                    dynRevitSettings.Controller.InitTransaction();
+                                    TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
                                 }
 
                                 return Value.NewDummy("started transaction");
@@ -117,8 +118,7 @@ namespace Dynamo.Nodes
                             {
                                 if (!dynRevitSettings.Controller.DynamoViewModel.RunInDebug)
                                 {
-                                    dynRevitSettings.Controller.EndTransaction();
-                                    dynRevitSettings.Controller.InIdleThread = false;
+                                    TransactionManager.Instance.ForceCloseTransaction();
 
                                     dynSettings.Controller.DynamoModel.OnRequestLayoutUpdate(
                                         this,

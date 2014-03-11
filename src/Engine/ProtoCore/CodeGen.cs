@@ -2372,9 +2372,15 @@ namespace ProtoCore
                     Validity.Assert(repGuideNode.RepGuide is ProtoCore.AST.AssociativeAST.IdentifierNode);
                     ProtoCore.AST.AssociativeAST.IdentifierNode nodeGuide = repGuideNode.RepGuide as ProtoCore.AST.AssociativeAST.IdentifierNode;
 
+                    // Emit the repguide
                     EmitInstrConsole(ProtoCore.DSASM.kw.push, nodeGuide.Value);
                     StackValue opguide = StackValue.BuildInt(System.Convert.ToInt64(nodeGuide.Value));
                     EmitPush(opguide);
+
+                    // Emit the rep guide property
+                    EmitInstrConsole(ProtoCore.DSASM.kw.push, repGuideNode.IsLongest.ToString());
+                    StackValue opGuideProperty = StackValue.BuildBoolean(repGuideNode.IsLongest);
+                    EmitPush(opGuideProperty);
                 }
 
                 if (emitNumber)

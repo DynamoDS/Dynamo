@@ -52,7 +52,7 @@ namespace Dynamo.Nodes
 
         public override void PopulateItems() //(IEnumerable set, bool readOnly)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var doc = DocumentManager.Instance.CurrentUIDocument.Document;
 
             this.Items.Clear();
 
@@ -157,7 +157,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var doc = DocumentManager.Instance.CurrentUIDocument.Document;
 
             int index = -1;
 
@@ -313,7 +313,7 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll", 
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll", 
                 "FamilyInstance.ByPoint", "FamilyInstance.ByPoint@FamilySymbol,Point");
 
             migratedData.AppendNode(dsRevitNode);
@@ -453,7 +453,7 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-             MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll", 
+             MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll", 
                  "FamilyInstance.ByPointAndLevel", 
                  "FamilyInstance.ByPointAndLevel@FamilySymbol,Point,Level");
 
@@ -666,7 +666,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "FamilyInstance.Curves", "FamilyInstance.Curves");
         }
     }
@@ -864,7 +864,7 @@ namespace Dynamo.Nodes
                 FSharpList<Value> refPts = FSharpList<Value>.Empty;
                 foreach (var id in refPtIds)
                 {
-                    var pt = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id) as ReferencePoint;
+                    var pt = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(id) as ReferencePoint;
                     refPts = FSharpList<Value>.Cons(Value.NewContainer(pt.Position), refPts);
                 }
                 return Value.NewList(Utils.SequenceToFSharpList(refPts.Reverse()));
@@ -903,7 +903,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "FamilyInstance.Location", "FamilyInstance.Location");
         }
     }

@@ -340,7 +340,7 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll", 
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll", 
                 "Form.ByLoftingCurveReferences", 
                 "Form.ByLoftingCurveReferences@CurveReference[],bool");
 
@@ -400,7 +400,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByRevolve", "Solid.ByRevolve@Curve[],CoordinateSystem,double,double");
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByRevolve", "Solid.ByRevolve@Curve[],CoordinateSystem,double,double");
         }
     }
 
@@ -593,7 +593,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByExtrusion", "Solid.ByExtrusion@Curve[],Vector,double");
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByExtrusion", "Solid.ByExtrusion@Curve[],Vector,double");
         }
     }
 
@@ -618,7 +618,7 @@ namespace Dynamo.Nodes
 
             List<VertexPair> vertPairs = null;
 
-            if (DocumentManager.GetInstance().CurrentUIDocument.Application.Application.VersionName.Contains("2013"))
+            if (DocumentManager.Instance.CurrentUIDocument.Application.Application.VersionName.Contains("2013"))
             {
                 vertPairs = new List<VertexPair>();
 
@@ -644,15 +644,16 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll",
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll",
                 "Solid.ByBlend", "Solid.ByBlend@Curve[][]");
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
 
-            XmlElement listCreatNode = MigrationManager.CreateVarArgFunctionNode(
-                data.Document, "DSCoreNodes.dll", "List.Create", "List.Create@var[]", "2");
-            migratedData.AppendNode(listCreatNode);
-            string listCreatNodeId = MigrationManager.GetGuidFromXmlElement(listCreatNode);
+            XmlElement createListNode = MigrationManager.CreateNode(data.Document,
+                "DSCoreNodesUI.CreateList", "Create List");
+            migratedData.AppendNode(createListNode);
+            createListNode.SetAttribute("inputcount", "2");
+            string createListNodeId = MigrationManager.GetGuidFromXmlElement(createListNode);
 
             //create and reconnect the connecters
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
@@ -661,12 +662,12 @@ namespace Dynamo.Nodes
             PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
-            PortId newInPort0 = new PortId(listCreatNodeId, 0, PortType.INPUT);
-            PortId newInPort1 = new PortId(listCreatNodeId, 1, PortType.INPUT);
+            PortId newInPort0 = new PortId(createListNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(createListNodeId, 1, PortType.INPUT);
 
             data.ReconnectToPort(connector0, newInPort0);
             data.ReconnectToPort(connector1, newInPort1);
-            data.CreateConnector(listCreatNode, 0, dsRevitNode, 0);
+            data.CreateConnector(createListNode, 0, dsRevitNode, 0);
 
             return migratedData;
         }
@@ -901,7 +902,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByBooleanDifference",
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByBooleanDifference",
                 "Solid.ByBooleanDifference@Solid,Solid");
         }
     }
@@ -936,7 +937,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByBooleanUnion",
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByBooleanUnion",
                 "Solid.ByBooleanUnion@Solid,Solid");
         }
     }
@@ -971,7 +972,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.ByBooleanIntersection",
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByBooleanIntersection",
                 "Solid.ByBooleanIntersection@Solid,Solid");
         }
     }
@@ -1097,7 +1098,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "Solid.FromElement", "Solid.FromElement@AbstractElement");
         }
     }
@@ -1131,7 +1132,7 @@ namespace Dynamo.Nodes
             var xaxis = yaxis.CrossProduct(zaxis);
 
             // create circle (this is ridiculous, but curve loop doesn't work with a circle - you need two arcs)
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Application;
+            var document = DocumentManager.Instance.CurrentUIDocument.Application;
             var arc1 = document.Application.Create.NewEllipse(origin, radius, radius, xaxis, yaxis, 0, Circle.RevitPI);
             var arc2 = document.Application.Create.NewEllipse(origin, radius, radius, xaxis, yaxis, Circle.RevitPI, 2 * Circle.RevitPI);
 
@@ -1163,7 +1164,7 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "DSRevitNodes.dll",
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll",
                 "Solid.Cylinder", "Solid.Cylinder@Point,double,Vector,double");
 
             migratedData.AppendNode(dsRevitNode);
@@ -1216,7 +1217,7 @@ namespace Dynamo.Nodes
         {
 
             // create semicircular arc
-            var application = DocumentManager.GetInstance().CurrentUIDocument.Application;
+            var application = DocumentManager.Instance.CurrentUIDocument.Application;
             var semicircle = application.Application.Create.NewArc(center, radius, 0, Circle.RevitPI, XYZ.BasisZ, XYZ.BasisX);
 
             // create axis curve of cylinder
@@ -1245,7 +1246,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.Sphere", "Solid.Sphere@Point,double");
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.Sphere", "Solid.Sphere@Point,double");
         }
     }
 
@@ -1284,7 +1285,7 @@ namespace Dynamo.Nodes
             var origin = center + xaxis * radius;
 
             // create circle (this is ridiculous but curve loop doesn't work with a circle
-            var application = DocumentManager.GetInstance().CurrentUIDocument.Application;
+            var application = DocumentManager.Instance.CurrentUIDocument.Application;
             var arc1 = application.Application.Create.NewEllipse(origin, sectionRadius, sectionRadius, xaxis, zaxis, 0, Circle.RevitPI);
             var arc2 = application.Application.Create.NewEllipse(origin, sectionRadius, sectionRadius, xaxis, zaxis, Circle.RevitPI, 2 * Circle.RevitPI);
 
@@ -1314,7 +1315,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.Torus", "Solid.Torus@Vector,Point,double,double");
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.Torus", "Solid.Torus@Vector,Point,double,double");
         }
     }
 
@@ -1354,7 +1355,7 @@ namespace Dynamo.Nodes
             var p3 = p2 - new XYZ(top.X - bottom.X, 0, 0);
 
             // form edges of base rect
-            var application = DocumentManager.GetInstance().CurrentUIDocument.Application;
+            var application = DocumentManager.Instance.CurrentUIDocument.Application;
             var l1 = application.Application.Create.NewLineBound(p0, p1);
             var l2 = application.Application.Create.NewLineBound(p1, p2);
             var l3 = application.Application.Create.NewLineBound(p2, p3);
@@ -1390,7 +1391,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.BoxByTwoCorners",
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.BoxByTwoCorners",
                 "Solid.BoxByTwoCorners@Point,Point");
         }
     }
@@ -1437,7 +1438,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.BoxByCenterAndDimensions",
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.BoxByCenterAndDimensions",
                 "Solid.BoxByCenterAndDimensions@Point,double,double,double");
         }
     }
@@ -1695,7 +1696,7 @@ namespace Dynamo.Nodes
             FSharpList<FScheme.Value> vals = ((FScheme.Value.List)args[1]).Item;
             List<GeometryObject> edgesToBeReplaced = new List<GeometryObject>();
 
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             for (int ii = 0; ii < vals.Count(); ii++)
             {
@@ -1775,7 +1776,7 @@ namespace Dynamo.Nodes
 
             var vals = ((FScheme.Value.List)args[1]).Item;
             var edgesToBeReplaced = new List<GeometryObject>();
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             for (int ii = 0; ii < vals.Count(); ii++)
             {

@@ -74,7 +74,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("name");
             }
 
-            var type = DocumentManager.GetInstance().ElementsOfType<Autodesk.Revit.DB.ModelTextType>()
+            var type = DocumentManager.Instance.ElementsOfType<Autodesk.Revit.DB.ModelTextType>()
                 .FirstOrDefault(x => x.Name == name);
 
             if (type == null)

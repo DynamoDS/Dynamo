@@ -327,6 +327,8 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal AutomationSettings Automation { get { return this.automationSettings; } }
+
         public string EditName
         {
             get { return _model.editName; }
@@ -513,6 +515,7 @@ namespace Dynamo.ViewModels
                 return licensePath;
             }
         }
+
         #endregion
 
         public DynamoViewModel(DynamoController controller, string commandFilePath)
@@ -1123,7 +1126,7 @@ namespace Dynamo.ViewModels
                 // behind unsaved changes (if saving is desired, then the save command 
                 // should have been recorded for the test case to it can be replayed).
                 // 
-                if (automationSettings.CurrentMode == AutomationSettings.Mode.Playback)
+                if (automationSettings.IsInPlaybackMode)
                     return true; // In playback mode, just exit without saving.
             }
 

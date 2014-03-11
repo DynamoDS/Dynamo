@@ -61,7 +61,7 @@ namespace Revit.AnalysisDisplay
 
             SetElementAndPrimitiveIdForTrace(SpatialFieldManager, primitiveId);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
         }
 
@@ -77,7 +77,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="samples"></param>
         private void InternalSetSpatialFieldValues(IEnumerable<XYZ> sampleLocations, IEnumerable<XYZ> samples)
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             // Convert the analysis values to a special Revit type
             var valList = samples.Select(n => new VectorAtPoint(new List<XYZ> { n })).ToList();
@@ -92,7 +92,7 @@ namespace Revit.AnalysisDisplay
             // Update the values
             SpatialFieldManager.UpdateSpatialFieldPrimitive(SpatialFieldPrimitiveId, samplePts, sampleValues, schemaIndex);
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         #endregion

@@ -59,7 +59,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "ReferencePoint.ByPoint", "ReferencePoint.ByPoint@Point");
         }
     }
@@ -120,7 +120,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "ReferencePoint.ByParameterOnCurveReference",
                 "ReferencePoint.ByParameterOnCurveReference@CurveReference,double");
         }
@@ -152,7 +152,7 @@ namespace Dynamo.Nodes
             var r = arg0 as Reference;
             if (r != null)
             {
-                var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+                var document = DocumentManager.Instance.CurrentUIDocument.Document;
                 f = (Face)document.GetElement(r.ElementId).GetGeometryObjectFromReference(r);
             }
             else
@@ -198,7 +198,7 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsReferencePoint = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsReferencePoint, "DSRevitNodes.dll",
+            MigrationManager.SetFunctionSignature(dsReferencePoint, "RevitNodes.dll",
                 "ReferencePoint.ByParametersOnFaceReference",
                 "ReferencePoint.ByParametersOnFaceReference@FaceReference,double,double");
 
@@ -299,7 +299,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "ReferencePoint.ByPointVectorDistance",
                 "ReferencePoint.ByPointVectorDistance@Point,Vector,double");
         }
@@ -483,7 +483,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "ReferencePoint.ByLengthOnCurveReference",
                 "ReferencePoint.ByLengthOnCurveReference@CurveReference,double");
         }
