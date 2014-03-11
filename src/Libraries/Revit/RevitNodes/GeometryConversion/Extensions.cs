@@ -19,7 +19,7 @@ namespace Revit.GeometryConversion
         /// Convert a Revit BoundingBox to a ProtoGeometry BoundingBox
         /// </summary>
         /// <returns></returns>
-        public static Autodesk.Revit.DB.BoundingBoxXYZ ToProtoType(this Autodesk.DesignScript.Geometry.BoundingBox bb)
+        public static Autodesk.Revit.DB.BoundingBoxXYZ ToRevitType(this Autodesk.DesignScript.Geometry.BoundingBox bb)
         {
             var rbb = new BoundingBoxXYZ();
             rbb.Enabled = true;
