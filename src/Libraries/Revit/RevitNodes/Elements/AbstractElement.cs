@@ -63,6 +63,15 @@ namespace Revit.Elements
             get
             {
                 var bb = this.InternalElement.get_BoundingBox(null);
+
+                // if the Element was created during current transaction, we need to regenerate
+                // in order to access the bounding box
+                if (bb == null)
+                {
+                    DocumentManager.Instance.CurrentDBDocument.Regenerate();
+                    bb = this.InternalElement.get_BoundingBox(null);
+                } 
+                
                 return bb.ToProtoType();
             }
         }
