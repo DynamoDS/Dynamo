@@ -312,13 +312,17 @@ namespace Dynamo.Tests
             Controller.DynamoViewModel.GoToWorkspace(
                 Controller.CustomNodeManager.GetGuidFromName("__CollapseTest2__"));
 
-            var numNodes = model.CurrentWorkspace.Nodes.Count;
+            var workspace = model.CurrentWorkspace;
+            Assert.AreEqual(6, workspace.Nodes.Count);
 
             List<ModelBase> modelsToDelete = new List<ModelBase>();
-            modelsToDelete.Add(model.CurrentWorkspace.FirstNodeFromWorkspace<Addition>());
-            model.DeleteModelInternal(modelsToDelete);
+            var addition = workspace.FirstNodeFromWorkspace<DSFunction>();
+            Assert.IsNotNull(addition);
+            Assert.AreEqual("+", (addition as DSFunction).NickName);
 
-            Assert.AreEqual(numNodes - 1, model.CurrentWorkspace.Nodes.Count);
+            modelsToDelete.Add(addition);
+            model.DeleteModelInternal(modelsToDelete);
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
         }
 
         [Test, Ignore]
