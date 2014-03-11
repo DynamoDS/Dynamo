@@ -7,8 +7,12 @@ using Autodesk.Revit.DB;
 
 namespace Revit.GeometryObjects
 {
-    public class PlanarFace : AbstractGeometryObject
+    public class PlanarFace : Face
     {
+
+        internal PlanarFace(Autodesk.Revit.DB.PlanarFace face) : base(face)
+        {
+        }
 
         internal Autodesk.Revit.DB.PlanarFace InternalPlanarFace
         {
@@ -18,11 +22,6 @@ namespace Revit.GeometryObjects
         protected override GeometryObject InternalGeometryObject
         {
             get { return InternalPlanarFace; }
-        }
-
-        public override void Tessellate(IRenderPackage package)
-        {
-            throw new NotImplementedException();
         }
 
     }

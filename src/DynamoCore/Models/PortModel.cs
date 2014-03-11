@@ -306,10 +306,10 @@ namespace Dynamo.Models
             : this(nickName, tip, typeof(FScheme.Value.Container), null)
         { }
 
-        public PortData(string nickName, string tip, Type portType, object defaultValue=null)
+        public PortData(string nickName, string toolTipString, Type portType, object defaultValue=null)
         {
             NickName = nickName;
-            ToolTipString = tip;
+            ToolTipString = toolTipString;
             PortType = portType;
             DefaultValue = defaultValue;
             VerticalMargin = 0;

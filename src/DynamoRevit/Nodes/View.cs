@@ -45,13 +45,13 @@ namespace Dynamo.Nodes
             {
                 if (!dynUtils.TryGetElement(this.Elements[0], out vd))
                 {
-                    vd = DocumentManager.GetInstance().CurrentUIDocument.Document.Create.NewViewDrafting();
+                    vd = DocumentManager.Instance.CurrentUIDocument.Document.Create.NewViewDrafting();
                     this.Elements[0] = vd.Id;
                 }
             }
             else
             {
-                vd = DocumentManager.GetInstance().CurrentUIDocument.Document.Create.NewViewDrafting();
+                vd = DocumentManager.Instance.CurrentUIDocument.Document.Create.NewViewDrafting();
                 this.Elements.Add(vd.Id);
             }
 
@@ -128,7 +128,7 @@ namespace Dynamo.Nodes
                 view = Create3DView(orient, name, isPerspective);
                 Elements.Add(view.Id);
             }
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var document = DocumentManager.Instance.CurrentUIDocument.Document;
             var fec = dynRevitUtils.SetupFilters(document);
 
             if (isolate)
@@ -147,7 +147,7 @@ namespace Dynamo.Nodes
                     if (toHide.Count > 0)
                         view.HideElements(toHide);
 
-                    DocumentManager.GetInstance().CurrentUIDocument.Document.Regenerate();
+                    DocumentManager.Instance.CurrentUIDocument.Document.Regenerate();
 
                     Debug.WriteLine(string.Format("Eye:{0},Origin{1}, BBox_Origin{2}, Element{3}",
                         eye.ToString(), view.Origin.ToString(), view.CropBox.Transform.Origin.ToString(), (element.Location as LocationPoint).Point.ToString()));
@@ -277,7 +277,7 @@ namespace Dynamo.Nodes
         public static View3D Create3DView(ViewOrientation3D orient, string name, bool isPerspective)
         {
             //http://adndevblog.typepad.com/aec/2012/05/viewplancreate-method.html
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var document = DocumentManager.Instance.CurrentUIDocument.Document;
             IEnumerable<ViewFamilyType> viewFamilyTypes = from elem in new
               FilteredElementCollector(document).OfClass(typeof(ViewFamilyType))
                                                           let type = elem as ViewFamilyType
@@ -317,7 +317,7 @@ namespace Dynamo.Nodes
             string viewName = name;
             bool found = false;
 
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var document = DocumentManager.Instance.CurrentUIDocument.Document;
             var collector = new FilteredElementCollector(document);
             collector.OfClass(typeof(View));
 
@@ -530,7 +530,7 @@ namespace Dynamo.Nodes
         private static ViewSection CreateSectionView(BoundingBoxXYZ bbox)
         {
             //http://adndevblog.typepad.com/aec/2012/05/viewplancreate-method.html
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var document = DocumentManager.Instance.CurrentUIDocument.Document;
             IEnumerable<ViewFamilyType> viewFamilyTypes = from elem in new
               FilteredElementCollector(document).OfClass(typeof(ViewFamilyType))
                                                           let type = elem as ViewFamilyType
@@ -565,7 +565,7 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
 
-            return Value.NewContainer(DocumentManager.GetInstance().CurrentUIDocument.ActiveView);
+            return Value.NewContainer(DocumentManager.Instance.CurrentUIDocument.ActiveView);
         }
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
@@ -641,7 +641,7 @@ namespace Dynamo.Nodes
 
             options.SetViewsAndSheets(new List<ElementId> { view.Id });
 
-            DocumentManager.GetInstance().CurrentUIDocument.Document.ExportImage(options);
+            DocumentManager.Instance.CurrentUIDocument.Document.ExportImage(options);
                 //revit only has a method to save image to disk.
 
             //hack - rename saved file to match specified file name
@@ -864,7 +864,7 @@ namespace Dynamo.Nodes
                 else
                 {
                     //create a new view sheet
-                    var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+                    var document = DocumentManager.Instance.CurrentUIDocument.Document;
                     sheet = Autodesk.Revit.DB.ViewSheet.Create(document, tb.Id);
                     sheet.Name = name;
                     sheet.SheetNumber = number;
@@ -873,7 +873,7 @@ namespace Dynamo.Nodes
             }
             else
             {
-                var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+                var document = DocumentManager.Instance.CurrentUIDocument.Document;
                 sheet = Autodesk.Revit.DB.ViewSheet.Create(document, tb.Id);
                 sheet.Name = name;
                 sheet.SheetNumber = number;
@@ -901,7 +901,7 @@ namespace Dynamo.Nodes
                     {
                         //move the view
                         //find the corresponding viewport
-                        var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+                        var document = DocumentManager.Instance.CurrentUIDocument.Document;
                         var collector = new FilteredElementCollector(document);
                         collector.OfClass(typeof (Viewport));
                         var found =
@@ -919,7 +919,7 @@ namespace Dynamo.Nodes
                     else
                     {
                         //place the view on the sheet
-                        var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+                        var document = DocumentManager.Instance.CurrentUIDocument.Document;
                         if (Viewport.CanAddViewToSheet(document, sheet.Id, view.Id))
                         {
                             var viewport = Viewport.Create(document, sheet.Id, view.Id,
@@ -966,10 +966,10 @@ namespace Dynamo.Nodes
             var color = (System.Drawing.Color)((Value.Container) args[0]).Item;
             var elem = (Element) ((Value.Container) args[1]).Item;
 
-            var view = DocumentManager.GetInstance().CurrentUIDocument.ActiveView;
+            var view = DocumentManager.Instance.CurrentUIDocument.ActiveView;
             var ogs = new OverrideGraphicSettings();
 
-            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var document = DocumentManager.Instance.CurrentUIDocument.Document;
             if (solidFill == null)
             {
                 var patternCollector = new FilteredElementCollector(document);

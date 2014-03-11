@@ -110,8 +110,24 @@ namespace Dynamo.Nodes
         public List<string> GetDefinedVariableNames()
         {
             var defVarNames = new List<string>();
+            
+            // For unbound identifier, if there is an input connect to it,
+            // it is defined variable. 
+            for (int i = 0; i < inputIdentifiers.Count; i++)
+            {
+                var unboundIdentifier = inputIdentifiers[i];
+                if (this.Inputs.ContainsKey(i))
+                {
+                    defVarNames.Add(unboundIdentifier);
+                }
+            }
+
+            // Then get all variabled on the LHS of the statements
             foreach (Statement stmnt in codeStatements)
+            {
                 defVarNames.AddRange(Statement.GetDefinedVariableNames(stmnt, true));
+            }
+
             return defVarNames;
         }
 

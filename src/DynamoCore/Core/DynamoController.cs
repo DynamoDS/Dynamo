@@ -384,7 +384,8 @@ namespace Dynamo
 
 
 #if USE_DSENGINE
-            if (!EngineController.GenerateGraphSyncData(DynamoViewModel.Model.HomeSpace.Nodes))
+            EngineController.GenerateGraphSyncData(DynamoViewModel.Model.HomeSpace.Nodes);
+            if (!EngineController.HasPendingGraphSyncData())
             {
                 return;
             }

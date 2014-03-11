@@ -32,7 +32,7 @@ namespace Dynamo.Revit
                 return;
 
             //select the elements
-            DocumentManager.GetInstance().CurrentUIDocument.Selection.Elements.Clear();
+            DocumentManager.Instance.CurrentUIDocument.Selection.Elements.Clear();
 
             var existingElements = new List<Element>();
 
@@ -45,10 +45,10 @@ namespace Dynamo.Revit
                 }
             }
 
-            existingElements.ForEach(x => DocumentManager.GetInstance().CurrentUIDocument.Selection.Elements.Add(x));
+            existingElements.ForEach(x => DocumentManager.Instance.CurrentUIDocument.Selection.Elements.Add(x));
 
             //show the elements
-            DocumentManager.GetInstance().CurrentUIDocument.ShowElements(existingElements.Select(x => x.Id).ToList());
+            DocumentManager.Instance.CurrentUIDocument.ShowElements(existingElements.Select(x => x.Id).ToList());
         }
     }
 }

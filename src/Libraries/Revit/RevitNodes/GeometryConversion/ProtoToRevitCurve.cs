@@ -12,6 +12,24 @@ namespace Revit.GeometryConversion
     [Browsable(false)]
     public static class ProtoToRevitCurve
     {
+        /// <summary>
+        /// A PolyCurve is not a curve, this is a special extension method to convert to a Revit CurveLoop
+        /// </summary>
+        /// <param name="pcrv"></param>
+        /// <returns></returns>
+        public static Autodesk.Revit.DB.CurveLoop ToRevitType(this Autodesk.DesignScript.Geometry.PolyCurve pcrv)
+        {
+            if (!pcrv.IsClosed)
+            {
+                throw new Exception("The input PolyCurve must be closed");
+            }
+
+            var cl = new CurveLoop();
+            pcrv.Curves().Select(x => x.ToRevitType()).ToList().ForEach(cl.Append);
+
+            return cl;
+
+        }
 
         /// <summary>
         /// An extension method for DesignScript.Geometry.Curve to convert to the analogous revit type

@@ -16,7 +16,7 @@ namespace ProtoCore.Lang.Replication
         /// <param name="partialGuides">The guides, empty sub list if no guides for an argument</param>
         /// <returns>The replication instructions</returns>
         [Obsolete]
-        public static ReplicationControl Old_ConvertGuidesToInstructions(List<List<int>> partialGuides)
+        public static ReplicationControl Old_ConvertGuidesToInstructions(List<List<ProtoCore.ReplicationGuide>> partialGuides)
         {
             /*
             //Test to ensure that we're within the known limitations, supporting at most 1 guide per argument
@@ -48,15 +48,27 @@ namespace ProtoCore.Lang.Replication
         }
 
 
-        private static List<ReplicationInstruction> BuildPartialReplicationInstructions(List<List<int>> partialGuides)
+        private static List<ReplicationInstruction> BuildPartialReplicationInstructions(List<List<ProtoCore.ReplicationGuide>> partialRepGuides)
         {
-
-
             //DS code:          foo(a<1><2><3>, b<2>, c)
             //partialGuides     {1,2,3}, {2}, {}
             //Instructions
 
             //Check for out of order unboxing
+
+            
+            // Comment Jun: Convert from new replication guide data struct to the old format where guides are only a list of ints
+            // TODO Luke: Remove this temporary marshalling and use the replicationguide data structure directly
+            List<List<int>> partialGuides = new List<List<int>>();
+            foreach (List<ProtoCore.ReplicationGuide> guidesOnParam in partialRepGuides)
+            {
+                List<int> tempGuide = new List<int>();
+                foreach (ProtoCore.ReplicationGuide guide in guidesOnParam)
+                {
+                    tempGuide.Add(guide.guideNumber);
+                }
+                partialGuides.Add(tempGuide);
+            }
 
             //@TODO: remove this limitation
             foreach (List<int> guidesOnParam in partialGuides)

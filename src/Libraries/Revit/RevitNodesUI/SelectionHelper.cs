@@ -13,7 +13,7 @@ namespace Revit.Interactivity
     {
         public static ReferencePoint RequestReferencePointSelection(string message)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             ReferencePoint rp = null;
 
@@ -35,14 +35,14 @@ namespace Revit.Interactivity
 
             if (pointRef != null)
             {
-                rp = DocumentManager.GetInstance().CurrentDBDocument.GetElement(pointRef) as ReferencePoint;
+                rp = DocumentManager.Instance.CurrentDBDocument.GetElement(pointRef) as ReferencePoint;
             }
             return rp;
         }
 
         public static CurveElement RequestCurveElementSelection(string message)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             CurveElement c = null;
 
@@ -55,14 +55,14 @@ namespace Revit.Interactivity
 
             Reference curveRef = doc.Selection.PickObject(ObjectType.Element);
 
-            c = DocumentManager.GetInstance().CurrentDBDocument.GetElement(curveRef) as CurveElement;
+            c = DocumentManager.Instance.CurrentDBDocument.GetElement(curveRef) as CurveElement;
 
             return c;
         }
 
         public static List<Element> RequestMultipleCurveElementsSelection(string message)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
             choices.Elements.Clear();
@@ -95,7 +95,7 @@ namespace Revit.Interactivity
 
         public static Face RequestFaceSelection(string message)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             Face f = null;
 
@@ -117,7 +117,7 @@ namespace Revit.Interactivity
 
             if (faceRef != null)
             {
-                GeometryObject geob = DocumentManager.GetInstance().CurrentDBDocument.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
+                GeometryObject geob = DocumentManager.Instance.CurrentDBDocument.GetElement(faceRef).GetGeometryObjectFromReference(faceRef);
                 f = geob as Face;
             }
             return f;
@@ -126,7 +126,7 @@ namespace Revit.Interactivity
 
         public static Reference RequestFaceReferenceSelection(string message)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             Reference faceRef = null;
 
@@ -141,7 +141,7 @@ namespace Revit.Interactivity
 
         public static Reference RequestEdgeReferenceSelection(string message)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
             choices.Elements.Clear();
@@ -155,7 +155,7 @@ namespace Revit.Interactivity
 
         public static Form RequestFormSelection(string message)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             Form f = null;
 
@@ -170,7 +170,7 @@ namespace Revit.Interactivity
             if (formRef != null)
             {
                 //get the element
-                var el = DocumentManager.GetInstance().CurrentDBDocument.GetElement(formRef);
+                var el = DocumentManager.Instance.CurrentDBDocument.GetElement(formRef);
                 f = el as Form;
             }
             return f;
@@ -178,7 +178,7 @@ namespace Revit.Interactivity
 
         public static DividedSurface RequestDividedSurfaceSelection(string message)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             DividedSurface f = null;
 
@@ -193,7 +193,7 @@ namespace Revit.Interactivity
             if (formRef != null)
             {
                 //get the element
-                var el = DocumentManager.GetInstance().CurrentDBDocument.GetElement(formRef);
+                var el = DocumentManager.Instance.CurrentDBDocument.GetElement(formRef);
                 f = el as DividedSurface;
             }
             return f;
@@ -201,7 +201,7 @@ namespace Revit.Interactivity
 
         public static FamilySymbol RequestFamilySymbolByInstanceSelection(string message, ref FamilyInstance fi)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             try
             {
@@ -237,7 +237,7 @@ namespace Revit.Interactivity
 
         public static FamilyInstance RequestFamilyInstanceSelection(string message)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             try
             {
@@ -266,7 +266,7 @@ namespace Revit.Interactivity
 
         public static Level RequestLevelSelection(string message)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             Level l = null;
 
@@ -289,7 +289,7 @@ namespace Revit.Interactivity
 
         public static Element RequestAnalysisResultInstanceSelection(string message)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             try
             {
@@ -330,7 +330,7 @@ namespace Revit.Interactivity
 
         public static Element RequestModelElementSelection(string message)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             Element selectedElement = null;
 
@@ -356,7 +356,7 @@ namespace Revit.Interactivity
 
         public static Reference RequestReferenceXYZSelection(string message)
         {
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
+            var doc = DocumentManager.Instance.CurrentUIDocument;
 
             Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
             choices.Elements.Clear();

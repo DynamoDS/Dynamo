@@ -140,18 +140,18 @@ namespace Dynamo.Utilities
                 api_base_type == typeof(FamilyItemFactory) ||
                 api_base_type == typeof(ItemFactoryBase))
             {
-                if (DocumentManager.GetInstance().CurrentUIDocument.Document.IsFamilyDocument)
+                if (DocumentManager.Instance.CurrentUIDocument.Document.IsFamilyDocument)
                 {
-                    invocationTargetList.Add(DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate);
+                    invocationTargetList.Add(DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate);
                 }
                 else
                 {
-                    invocationTargetList.Add(DocumentManager.GetInstance().CurrentUIDocument.Document.Create);
+                    invocationTargetList.Add(DocumentManager.Instance.CurrentUIDocument.Document.Create);
                 }
             }
             else if (api_base_type == typeof(Application))
             {
-                invocationTargetList.Add(DocumentManager.GetInstance().CurrentUIApplication.Application.Create);
+                invocationTargetList.Add(DocumentManager.Instance.CurrentUIApplication.Application.Create);
             }
             else
             {
@@ -474,7 +474,7 @@ namespace Dynamo.Utilities
             List<XYZ> orderedEigenvectors;
             BestFitLine.PrincipalComponentsAnalysis(xyzs, out meanPt, out orderedEigenvectors);
             var normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]);
-            var plane = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewPlane(normal, meanPt);
+            var plane = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewPlane(normal, meanPt);
             return plane;
         }
         
@@ -482,9 +482,9 @@ namespace Dynamo.Utilities
         {
             Plane plane = GetPlaneFromCurve(c, false);
             SketchPlane sp = null;
-            sp = DocumentManager.GetInstance().CurrentUIDocument.Document.IsFamilyDocument ? 
-                DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewSketchPlane(plane) : 
-                DocumentManager.GetInstance().CurrentUIDocument.Document.Create.NewSketchPlane(plane);
+            sp = DocumentManager.Instance.CurrentUIDocument.Document.IsFamilyDocument ? 
+                DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewSketchPlane(plane) : 
+                DocumentManager.Instance.CurrentUIDocument.Document.Create.NewSketchPlane(plane);
 
             return sp;
         }
@@ -507,7 +507,7 @@ namespace Dynamo.Utilities
                     projPoints.Add(proj);
                 }
 
-                return DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewHermiteSpline(projPoints, false);
+                return DocumentManager.Instance.CurrentUIApplication.Application.Create.NewHermiteSpline(projPoints, false);
             }
 
             if (c is NurbSpline)
@@ -516,7 +516,7 @@ namespace Dynamo.Utilities
                 BestFitLine.PrincipalComponentsAnalysis(ns.CtrlPoints.ToList(), out meanPt, out orderedEigenvectors);
                 normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]).Normalize();
                 if (plane == null)
-                   plane = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewPlane(normal, meanPt);
+                   plane = DocumentManager.Instance.CurrentUIDocument.Application.Application.Create.NewPlane(normal, meanPt);
 
                 var projPoints = new List<XYZ>();
                 foreach (var pt in ns.CtrlPoints)
@@ -525,7 +525,7 @@ namespace Dynamo.Utilities
                     projPoints.Add(proj);
                 }
 
-                return DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewNurbSpline(projPoints, ns.Weights, ns.Knots, ns.Degree, ns.isClosed, ns.isRational);
+                return DocumentManager.Instance.CurrentUIApplication.Application.Create.NewNurbSpline(projPoints, ns.Weights, ns.Knots, ns.Degree, ns.isClosed, ns.isRational);
             }
 
             return c;
@@ -773,7 +773,7 @@ namespace Dynamo.Utilities
 
         private static void AddReferencesToArray(ReferenceArray refArr, FSharpList<Value> lst)
         {
-            DocumentManager.GetInstance().CurrentUIDocument.RefreshActiveView();
+            DocumentManager.Instance.CurrentUIDocument.RefreshActiveView();
 
             foreach (Value vInner in lst)
             {
@@ -835,7 +835,7 @@ namespace Dynamo.Utilities
 
         private static void AddCurvesToArray(CurveArray crvArr, FSharpList<Value> lst)
         {
-            DocumentManager.GetInstance().CurrentUIDocument.RefreshActiveView();
+            DocumentManager.Instance.CurrentUIDocument.RefreshActiveView();
 
             foreach (Value vInner in lst)
             {
@@ -942,7 +942,7 @@ namespace Dynamo.Utilities
                     if (output == typeof(ReferencePoint))
                     {
                         ElementId a = (ElementId)item;
-                        Element el = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(a);
+                        Element el = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(a);
                         ReferencePoint rp = (ReferencePoint)el;
                         return rp;
                     }
@@ -955,11 +955,11 @@ namespace Dynamo.Utilities
                     Reference a = (Reference)item;
                     if(output.IsAssignableFrom(typeof(Element)))
                     {
-                        Element e = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(a);
+                        Element e = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(a);
                     }
                     else if (output == typeof(Face))
                     {
-                        Face f = (Face)DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(a.ElementId).GetGeometryObjectFromReference(a);
+                        Face f = (Face)DocumentManager.Instance.CurrentUIDocument.Document.GetElement(a.ElementId).GetGeometryObjectFromReference(a);
                         return f;
                     }
                 }

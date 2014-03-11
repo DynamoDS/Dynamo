@@ -1230,6 +1230,25 @@ r = a[null];
             thisTest.Verify("b", new object[] { 5, 6 });
         }
 
+
+
+        [Test]
+        public void TestReplicationGuideWithLongestProperty01()
+        {
+            String code =
+@"
+def f(i:int, j:int)
+{
+    return = i + j;
+}
+
+a = 1..3;
+b = 2..3;
+c = f(a<1L>,b<2>);";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("c", new Object[] { new object[] { 3, 4 }, new object[] { 4, 5 }, new object[] { 5, 6 } });
+        }
+
         [Test]
         public void TestReplicationGuidesOnDotOps01()
         {
