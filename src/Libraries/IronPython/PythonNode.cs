@@ -10,7 +10,6 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using IronPython.Hosting;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSIronPythonNode
