@@ -31,17 +31,18 @@ namespace RevitServices.Threading
         internal static Queue<Action> Promises = new Queue<Action>();
         internal static Queue<Action> ShutdownPromises = new Queue<Action>();
 
-        public static bool InIdleThread { get; internal set; }
+        [ThreadStatic] private static bool idle;
+        public static bool InIdleThread { get { return idle; } }
 
         private static void Application_Idling(object sender, IdlingEventArgs e)
         {
-            InIdleThread = true;
+            idle = true;
             Thread.Sleep(1);
             while (HasPendingPromises())
             {
                 Promises.Dequeue()();
             }
-            InIdleThread = false;
+            idle = false;
         }
 
         internal static void Register(UIControlledApplication uIApplication)
@@ -111,7 +112,7 @@ namespace RevitServices.Threading
         /// <param name="p">Delefate to be invoked on the Idle thread.</param>
         public static void ExecuteOnIdleSync(Action p)
         {
-            bool redeemed = false;
+            var redeemed = false;
 
             Promises.Enqueue(
                 delegate
