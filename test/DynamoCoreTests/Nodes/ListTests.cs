@@ -1572,13 +1572,13 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.TakeList>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
+            var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
 
             var firstOutput = takeFromList.GetValue(0).GetElements();
             var child = firstOutput[0].GetElements();
@@ -1587,10 +1587,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, firstOutput.Count);
 
             Assert.AreEqual(1, child.Count);
-            Assert.AreEqual(3, child[0].GetElements());
+            Assert.AreEqual(3, child[0].Data);
 
             Assert.AreEqual(1, child1.Count);
-            Assert.AreEqual(15, child1[0].GetElements());
+            Assert.AreEqual(15, child1[0].Data);
         }
 
         [Test]
@@ -1650,8 +1650,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
 
         }
 
@@ -1807,8 +1807,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
 
             AssertPreviewValue("332093dc-4551-4c82-9f6b-061c7945211b", new int[] { 9 });
         }
@@ -1837,8 +1837,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
             dynSettings.Controller.RunExpression(null);
@@ -1880,8 +1880,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
         }
 
         [Test]
@@ -2374,7 +2374,7 @@ namespace Dynamo.Tests
             // run expression
             dynSettings.Controller.RunExpression(null);
 
-            var joinList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Append>("1304807f-6d18-4aef-b4cb-9cb8f469993e");
+            var joinList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSVarArgFunction>("1304807f-6d18-4aef-b4cb-9cb8f469993e");
             var actual = joinList.GetValue(0).GetElements();
             var actualChild1 = actual[5].GetElements();
             var actualChild2 = actual[6].GetElements();
