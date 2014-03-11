@@ -545,7 +545,7 @@ namespace ProtoTestFx.TD
 
         public static void VerifyBuildWarning(ProtoCore.BuildData.WarningID id)
         {
-            Assert.IsTrue(testCore.BuildStatus.ContainsWarning(id), mErrorMessage);
+            Assert.IsTrue(testCore.BuildStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
         }
 
         public void VerifyBuildWarningCount(int count)
@@ -560,12 +560,12 @@ namespace ProtoTestFx.TD
 
         public static void VerifyRuntimeWarning(ProtoCore.Core core, ProtoCore.RuntimeData.WarningID id)
         {
-            Assert.IsTrue(core.RuntimeStatus.ContainsWarning(id), mErrorMessage);
+            Assert.IsTrue(core.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
         }
 
         public void VerifyRuntimeWarningCount(int count)
         {
-            Assert.IsTrue(testCore.RuntimeStatus.Warnings.Count == count, mErrorMessage);
+            Assert.IsTrue(testCore.RuntimeStatus.WarningCount == count, mErrorMessage);
         }
 
         public void VerifyProperty(string dsVariable, string propertyName, object expectedValue, int startBlock = 0)

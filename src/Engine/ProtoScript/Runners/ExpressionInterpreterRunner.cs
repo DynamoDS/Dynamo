@@ -51,9 +51,7 @@ namespace ProtoScript.Runners
 
                 Core.BuildStatus.ReportBuildResult();
 
-                int errors = 0;
-                int warnings = 0;
-                buildSucceeded = Core.BuildStatus.GetBuildResult(out errors, out warnings);
+                buildSucceeded = Core.BuildStatus.BuildSucceeded;
             }
             catch (Exception ex)
             {
@@ -86,9 +84,8 @@ namespace ProtoScript.Runners
             bool succeeded = Compile(code, out blockId);
 
             //Clear the warnings and errors so they will not continue impact the next compilation.
-            //Fix IDE-662
-            Core.BuildStatus.Errors.Clear();
-            Core.BuildStatus.Warnings.Clear();
+            Core.BuildStatus.ClearErrors();
+            Core.BuildStatus.ClearWarnings();
 
             for (int i = 0; i < Core.watchBaseOffset; ++i )
                 Core.watchStack.Add(StackValue.Null);
