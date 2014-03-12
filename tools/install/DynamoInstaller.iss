@@ -41,6 +41,7 @@ Name: "custom"; Description: "Custom installation"; Flags: iscustom
 Name: "{app}\definitions"
 Name: "{app}\samples"
 Name: "{app}\dll"
+Name: "{app}\nodes"
 
 [Components]
 Name: "DynamoCore"; Description: "Dynamo Core Functionality"; Types: full compact custom; Flags: fixed
@@ -52,7 +53,7 @@ Name: "DynamoTrainingFiles"; Description: "Dynamo Training Files"; Types: full
 [Files]
 ;Core Files
 Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
-;Source: temp\bin\dll\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+Source: temp\bin\nodes\*; DestDir: {app}\nodes; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\Nodes_32_32.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\README.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\fsharp_redist.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
