@@ -134,7 +134,7 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="curve"></param>
         /// <returns></returns>
-        public static ModelCurve ByPlanarCurve(Autodesk.DesignScript.Geometry.Curve curve)
+        public static ModelCurve ByCurve(Autodesk.DesignScript.Geometry.Curve curve)
         {
             if (curve == null)
             {
