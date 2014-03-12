@@ -63,7 +63,7 @@ namespace DSRevitNodesUI
                 <System.String, System.String, Revit.Elements.FamilySymbol>
                 (Revit.Elements.FamilySymbol.ByFamilyNameAndTypeName, args);
 
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+            return new[] {inputAstNodes[0], AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
 
     }
