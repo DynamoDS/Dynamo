@@ -9,7 +9,7 @@ using Revit.Elements.Views;
 
 namespace Revit.Elements
 {
-    //[Browsable(false)]
+    //[SupressImportIntoVM]
     public static class ElementWrappingExtensions
     {
         /// <summary>
