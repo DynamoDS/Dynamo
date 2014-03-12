@@ -798,13 +798,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Tangent_PiOver2_Pi()
-        {
-            //to do: implement it as the name suggest
-            Assert.NotNull(null);
-        }
-
-        [Test]
         public void Dynamo_Nodes_InverseSine()
         {
             OpenModel(GetDynPath("Dynamo_Nodes_InverseSine.dyn"));
@@ -939,7 +932,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("d4f242c5-9c20-4633-b661-157ab45a416c", 5.5);
             AssertPreviewValue("3d59ccad-57ed-44bc-9d55-27574fc725de", 5.5);
             AssertPreviewValue("d65de7e9-f7f7-4f2b-9be7-daad3b3c837a", -5.5);
-            AssertPreviewValue("af486a6c-a558-4a0b-860f-8c3800f5b8b5", 5);
+            AssertPreviewValue("af486a6c-a558-4a0b-860f-8c3800f5b8b5", null);
         }
 
         [Test]
