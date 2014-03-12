@@ -95,24 +95,21 @@ namespace ProtoFFI
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="csArray"></param>
+        /// <param name="collection"></param>
         /// <param name="context"></param>
         /// <param name="dsi"></param>
         /// <returns></returns>
-        public static StackValue ConvertCSArrayToDSArray(FFIObjectMarshler marshaler, Array csArray, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type)
+        public static StackValue ConvertCSArrayToDSArray(FFIObjectMarshler marshaler, ICollection collection, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type)
         {
             var core = dsi.runtime.Core;
-            StackValue[] sv = new StackValue[csArray.Length];
-            int size = sv.Length;
+            StackValue[] sv = new StackValue[collection.Count];
+            int index = 0;
 
-            //Create new dsType for marshaling the elements, by reducing the rank
-            ProtoCore.Type dsType = new ProtoCore.Type { Name = type.Name, rank = type.rank - 1, UID = type.UID };
-            dsType.IsIndexable = dsType.rank > 0;
-
-            for (int i = 0; i < size; ++i)
-            {
-                StackValue value = marshaler.Marshal(csArray.GetValue(i), context, dsi, dsType);
-                sv[i] = value;
+            foreach (var item in collection)
+	        {
+                ProtoCore.Type dsType = CLRObjectMarshler.GetProtoCoreType(item.GetType());
+                StackValue value = marshaler.Marshal(item, context, dsi, dsType);
+                sv[index++] = value;
             }
 
             var retVal = dsi.runtime.rmem.BuildArray(sv);
@@ -124,12 +121,9 @@ namespace ProtoFFI
             var core = dsi.runtime.Core;
             List<StackValue> svs = new List<StackValue>();
 
-            //Create new dsType for marshaling the elements, by reducing the rank
-            ProtoCore.Type dsType = new ProtoCore.Type { Name = type.Name, rank = type.rank - 1, UID = type.UID };
-            dsType.IsIndexable = dsType.rank > 0;
-
             foreach (var item in enumerable)
             {
+                ProtoCore.Type dsType = CLRObjectMarshler.GetProtoCoreType(item.GetType());
                 StackValue value = marshaler.Marshal(item, context, dsi, dsType);
                 svs.Add(value);
             }
@@ -430,9 +424,7 @@ namespace ProtoFFI
                 else if (obj is System.Collections.ICollection)
                 {
                     System.Collections.ICollection collection = obj as System.Collections.ICollection;
-                    object[] array = new object[collection.Count];
-                    collection.CopyTo(array, 0);
-                    return PrimitiveMarshler.ConvertCSArrayToDSArray(this, array, context, dsi, type);
+                    return PrimitiveMarshler.ConvertCSArrayToDSArray(this, collection, context, dsi, type);
                 }
                 else if (obj is System.Collections.IEnumerable)
                 {
@@ -618,15 +610,15 @@ namespace ProtoFFI
             }
             else if (typeof(System.Collections.IDictionary).IsAssignableFrom(type))
             {
-                protoCoreType.rank = Constants.kUndefinedRank;
+                protoCoreType.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
                 protoCoreType.IsIndexable = true;
             }
-            else if (type.IsInterface && (typeof(ICollection).IsAssignableFrom(type) || typeof(IEnumerable).IsAssignableFrom(type)))
+            else if (type.IsInterface && typeof(IEnumerable).IsAssignableFrom(type))
             {
-                protoCoreType.rank += 1;
+                protoCoreType.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
                 protoCoreType.IsIndexable = true;
             }
-            else if (type.IsGenericType && (typeof(ICollection).IsAssignableFrom(type) || typeof(IEnumerable).IsAssignableFrom(type)))
+            else if (type.IsGenericType && typeof(IEnumerable).IsAssignableFrom(type))
             {
                 Type[] args = type.GetGenericArguments();
                 int nArgs = args.Length;
@@ -648,7 +640,10 @@ namespace ProtoFFI
                 protoCoreType = CLRModuleType.GetProtoCoreType(Nullable.GetUnderlyingType(type), null);
             }
             else if (type == typeof(object))
+            {
                 protoCoreType = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.kTypeVar);
+                protoCoreType.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
+            }
             else if (type == typeof(void))
                 protoCoreType = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.kTypeVoid);
             else if (protoCoreType.UID == (int)ProtoCore.PrimitiveType.kTypePointer)
@@ -673,9 +668,9 @@ namespace ProtoFFI
                 return true;
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
                 return true;
-            if (type.IsInterface && (typeof(ICollection).IsAssignableFrom(type) || typeof(IEnumerable).IsAssignableFrom(type)))
+            if (type.IsInterface && typeof(IEnumerable).IsAssignableFrom(type))
                 return true;
-            if (type.IsGenericType && (typeof(ICollection).IsAssignableFrom(type) || typeof(IEnumerable).IsAssignableFrom(type)))
+            if (type.IsGenericType && typeof(IEnumerable).IsAssignableFrom(type))
             {
                 Type[] args = type.GetGenericArguments();
                 return args != null && args.Length == 1;
