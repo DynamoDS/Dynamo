@@ -875,8 +875,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsListNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsListNode, "DSCoreNodes.dll",
-                "Sorting.sortByKey", "DSCore.Sorting.sortByKey@var[]..[],var[]..[]");
+            MigrationManager.SetFunctionSignature(dsListNode, "",
+                "SortByKey", "SortByKey@var[]..[],_FunctionObject");
 
             migratedData.AppendNode(dsListNode);
             string dsListNodeId = MigrationManager.GetGuidFromXmlElement(dsListNode);
@@ -972,8 +972,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsListNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsListNode, "DSCoreNodes.dll",
-                "Sorting.minByKey", "DSCore.Sorting.minByKey@var[]..[],var[]..[]");
+            MigrationManager.SetFunctionSignature(dsListNode, "",
+                "MinimumItemByKey", "MinimumItemByKey@var[]..[],_FunctionObject");
 
             migratedData.AppendNode(dsListNode);
             string dsListNodeId = MigrationManager.GetGuidFromXmlElement(dsListNode);
@@ -1051,8 +1051,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsListNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsListNode, "DSCoreNodes.dll",
-                "Sorting.maxByKey", "DSCore.Sorting.maxByKey@var[]..[],var[]..[]");
+            MigrationManager.SetFunctionSignature(dsListNode, "",
+                "MaximumItemByKey", "MaximumItemByKey@var[]..[],_FunctionObject");
 
             migratedData.AppendNode(dsListNode);
             string dsListNodeId = MigrationManager.GetGuidFromXmlElement(dsListNode);
@@ -3105,6 +3105,56 @@ namespace Dynamo.Nodes
         protected override string DeserializeValue(string val)
         {
             return val;
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                "List.Sublists", "List.Sublists@var[]..[],var[]..[],int");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Create code block node
+            string rangesString = "{0}";
+            foreach (XmlNode childNode in oldNode.ChildNodes)
+            {
+                if (childNode.Name.Equals(typeof(string).FullName))
+                    rangesString = "{" + childNode.Attributes[0].Value + "};";
+            }
+
+            XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeModelNode(
+                data.Document, rangesString);
+            migrationData.AppendNode(codeBlockNode);
+            string codeBlockNodeId = MigrationManager.GetGuidFromXmlElement(codeBlockNode);
+
+            // Update connectors
+            for (int idx = 0; true; idx++)
+            {
+                PortId oldInPort = new PortId(newNodeId, idx + 2, PortType.INPUT);
+                PortId newInPort = new PortId(codeBlockNodeId, idx, PortType.INPUT);
+                XmlElement connector = data.FindFirstConnector(oldInPort);
+                
+                if (connector == null)
+                    break;
+
+                data.ReconnectToPort(connector, newInPort);
+            }
+
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            PortId newInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+            
+            data.ReconnectToPort(connector1, newInPort2);
+            data.CreateConnector(codeBlockNode, 0, newNode, 1);
+
+            return migrationData;
         }
     }
 

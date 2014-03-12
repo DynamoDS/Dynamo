@@ -83,6 +83,7 @@
     <ProjectReference Include="..\..\..\src\Libraries\CoreNodesUI\CoreNodesUI.csproj">
       <Project>{D8262D40-4880-41E4-91E4-AF8F480C8637}</Project>
       <Name>CoreNodesUI</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\src\Libraries\DSIronPython\IronPythonEval.csproj">
       <Project>{9eef4f42-6b3b-4358-9a8a-c2701539a822}</Project>
@@ -91,6 +92,7 @@
     <ProjectReference Include="..\..\..\src\Libraries\IronPython\IronPythonUI.csproj">
       <Project>{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}</Project>
       <Name>IronPythonUI</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
