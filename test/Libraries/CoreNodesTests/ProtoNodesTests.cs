@@ -30,8 +30,8 @@ namespace DSCoreNodesTests
                 points1[i] = Point.ByCoordinates(i, 10, 10);
             }
 
-            var crv0 = NurbsCurve.ByControlVertices(points0);
-            var crv1 = NurbsCurve.ByControlVertices(points1);
+            var crv0 = NurbsCurve.ByControlPoints(points0);
+            var crv1 = NurbsCurve.ByControlPoints(points1);
 
             var srf = Surface.ByLoft(new[] { crv0, crv1 });
             Assert.NotNull(srf);
