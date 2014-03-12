@@ -314,11 +314,9 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to remove items from.</param>
         /// <param name="indices">Indices of the items to be removed.</param>
-        public static IList RemoveItemsAtIndices(
-            [ArbitraryDimensionArrayImport] IList list,
-            IList indices)
+        public static IList RemoveItemsAtIndices(IList list, int[] indices)
         {
-            var idxs = new HashSet<int>(indices.Cast<int>());
+            var idxs = new HashSet<int>(indices);
             return list.Cast<object>().Where((_, i) => !idxs.Contains(i)).ToList();
         }
 

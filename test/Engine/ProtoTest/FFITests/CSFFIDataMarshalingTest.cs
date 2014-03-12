@@ -246,6 +246,39 @@ namespace ProtoFFITests
         }
 
         [Test]
+        public void TestIEnumerableWithArbitraryRankArray()
+        {
+            String code =
+            @"               data = TestData.GetNestedCollection();               list = TestData.RemoveItemsAtIndices(data, {3,1});               size = Count(Flatten(list));            ";
+            Type t = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", t.AssemblyQualifiedName, code);
+            ValidationData[] data = { new ValidationData { ValueName = "list", ExpectedValue = new List<object> { 2, "DesignScript", new List<object> { true, new List<object> { 5.5, 10 } } }, BlockIndex = 0 },                                      new ValidationData { ValueName = "size", ExpectedValue = 5, BlockIndex = 0 },                                    };
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void TestArrayPromotion()
+        {
+            String code =
+            @"               data = TestData.GetNestedCollection();               list = TestData.RemoveItemsAtIndices(data, 2);               size = Count(Flatten(list));            ";
+            Type t = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", t.AssemblyQualifiedName, code);
+            ValidationData[] data = { new ValidationData { ValueName = "list", ExpectedValue = new List<object> { 2, 3, new List<string> { "Dynamo", "Revit" }, new List<object> { true, new List<object> { 5.5, 10 } } }, BlockIndex = 0 },                                      new ValidationData { ValueName = "size", ExpectedValue = 7, BlockIndex = 0 },                                    };
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void TestSingletonMarshaledAsIEnumerable()
+        {
+            String code =
+            @"               list = TestData.RemoveItemsAtIndices(3, 0);               size = Count(list);            ";
+            Type t = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", t.AssemblyQualifiedName, code);
+            ValidationData[] data = { new ValidationData { ValueName = "list", ExpectedValue = new List<object>(), BlockIndex = 0 },                                      new ValidationData { ValueName = "size", ExpectedValue = 0, BlockIndex = 0 },                                    };
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
         public void Test_DataMasrshalling_IEnumerable_Implicit_Cast()
         {
             string code =
