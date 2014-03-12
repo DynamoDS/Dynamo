@@ -14,6 +14,7 @@ using System.Diagnostics;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.DSASM;
+using System.Collections;
 
 namespace ProtoTestFx.TD
 {
@@ -321,8 +322,11 @@ namespace ProtoTestFx.TD
                 {
                     Assert.Fail(String.Format("\t{0}{1} is expected to be null, but it isn't.\n{2}", dsVariable, TestFrameWork.BuildIndicesString(indices), TestFrameWork.mErrorMessage));
                 }
+                return;
             }
-            else if (dsObject.DsasmValue.optype == ProtoCore.DSASM.AddressType.Null && expectedObject != null)
+
+            Type expectedType = expectedObject.GetType();
+            if (dsObject.DsasmValue.optype == ProtoCore.DSASM.AddressType.Null && expectedObject != null)
             {
                 Assert.Fail(String.Format("\tThe value of {0} was null, but wasn't expected to be.\n{1}", dsVariable, mErrorMessage));
                 
@@ -428,7 +432,7 @@ namespace ProtoTestFx.TD
 
                 // VerifyInternal(objs, dsObject, dsVariable, indices);
             }
-            else if (expectedObject.GetType().IsArray)
+            else if (expectedType.IsArray)
             {
                 object[] expectedArray = expectedObject as object[];
                 ProtoCore.DSASM.Mirror.DsasmArray dsArray = dsObject.Payload as ProtoCore.DSASM.Mirror.DsasmArray;
@@ -448,6 +452,19 @@ namespace ProtoTestFx.TD
                         VerifyInternal(expectedArray[i], dsArray.members[i], dsVariable, indices);
                         indices.RemoveAt(indices.Count - 1);
                     }
+                }
+            }
+            else if (typeof(IEnumerable).IsAssignableFrom(expectedType))
+            {
+                IEnumerable collection = expectedObject as IEnumerable;
+                int index = 0;
+                ProtoCore.DSASM.Mirror.DsasmArray dsArray = dsObject.Payload as ProtoCore.DSASM.Mirror.DsasmArray;
+                foreach (var item in collection)
+                {
+                    indices.Add(index);
+                    VerifyInternal(item, dsArray.members[index], dsVariable, indices);
+                    indices.RemoveAt(indices.Count - 1);
+                    ++index;
                 }
             }
             else
