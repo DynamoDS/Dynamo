@@ -3,10 +3,10 @@
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{C2FB73FE-0312-468C-AFE6-EBB92F9B3D7E}
-AppName=ASM for Dynamo
+AppName=Autodesk ASM for Dynamo
 AppPublisher=Autodesk, Inc.
 AppVersion=1.0
-AppVerName=ASM for Dynamo 1.0
+AppVerName=Autodesk ASM for Dynamo 1.0
 AppPublisherURL=http://www.autodesk.com/
 DefaultDirName={src}
 OutputDir=Extra
