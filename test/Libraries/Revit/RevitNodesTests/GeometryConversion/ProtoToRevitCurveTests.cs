@@ -39,7 +39,7 @@ namespace DSRevitNodesTests.GeometryConversion
                 , Point.ByCoordinates(5,5,5)
             };
 
-            var bspline = NurbsCurve.ByControlVertices(pts, 3);
+            var bspline = NurbsCurve.ByControlPoints(pts, 3);
 
             var revitCurve = bspline.ToRevitType();
 
