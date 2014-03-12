@@ -63,8 +63,8 @@ namespace DSRevitNodesUI
             };
 
             var functionCall = AstFactory.BuildFunctionCall
-                <Revit.Elements.Family, System.String, Revit.Elements.FamilySymbol>
-                (Revit.Elements.FamilySymbol.ByFamilyAndName, args);
+                <System.String, System.String, Revit.Elements.FamilySymbol>
+                (Revit.Elements.FamilySymbol.ByFamilyNameAndTypeName, args);
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
@@ -119,7 +119,6 @@ namespace DSRevitNodesUI
             var functionCall = AstFactory.BuildFunctionCall
                 <System.String, Revit.Elements.FloorType>
                 (Revit.Elements.FloorType.ByName, args);
-
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
