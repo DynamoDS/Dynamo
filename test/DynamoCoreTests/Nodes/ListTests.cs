@@ -2113,8 +2113,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(13 + 1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(12 + 1, model.CurrentWorkspace.Connectors.Count);
 
             Dictionary<int, object> validationData = new Dictionary<int, object>()
             {
