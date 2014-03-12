@@ -58,6 +58,8 @@ namespace Revit.Elements
                 }
             }
 
+            ElementId oldId = (mc != null) ? mc.Id : ElementId.InvalidElementId;
+
             TransactionManager.Instance.EnsureInTransaction(Document);
 
             // (sic erat scriptum)
@@ -87,6 +89,8 @@ namespace Revit.Elements
             }
 
             InternalSetCurveElement(mc);
+            if (oldId != mc.Id && oldId != ElementId.InvalidElementId)
+               DocumentManager.Instance.DeleteElement(oldId);
 
             TransactionManager.Instance.TransactionTaskDone();
 
