@@ -37,6 +37,7 @@ namespace DSCore
         ///     Creates a new list containing the items of the given list but in reverse order.
         /// </summary>
         /// <param name="list">List to be reversed.</param>
+        /// <search>reverse,list</search>
         public static IList Reverse(
             [ArbitraryDimensionArrayImport] IList list)
         {
@@ -91,6 +92,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to filter.</param>
         /// <param name="mask">List of booleans representing a mask.</param>
+        /// <search>filter,boolean,bool,mask,dispatch</search>
         [MultiReturn("in", "var[]")]
         [MultiReturn("out", "var[]")]
         public static Dictionary<string, object> FilterByBoolMask(
