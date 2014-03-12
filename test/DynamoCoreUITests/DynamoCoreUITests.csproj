@@ -91,10 +91,12 @@
     <ProjectReference Include="..\..\src\Libraries\CoreNodesUI\CoreNodesUI.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>CoreNodesUI</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\IronPython\IronPythonUI.csproj">
       <Project>{01de9b06-0bcb-4d8a-862e-e8170f5d6b4f}</Project>
       <Name>IronPythonUI</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
@@ -119,6 +121,7 @@
     <ProjectReference Include="..\..\src\Libraries\DynamoWatch3D\Watch3D.csproj">
       <Project>{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}</Project>
       <Name>Watch3D</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
