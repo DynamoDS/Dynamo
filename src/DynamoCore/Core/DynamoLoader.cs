@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Controls;
 using System.Reflection;
@@ -9,8 +8,6 @@ using System.IO;
 using System.Windows.Controls;
 using System.Windows;
 using String = System.String;
-using ProtoCore.DSASM;
-using Dynamo.DSEngine;
 
 namespace Dynamo.Utilities
 {
@@ -121,6 +118,90 @@ namespace Dynamo.Utilities
 
             #endregion
 
+        }
+
+        /// <summary>
+        /// Load all types which inherit from NodeModel whose assemblies are located in
+        /// the bin/nodes directory. Add the types to the searchviewmodel and
+        /// the controller's dictionaries.
+        /// </summary>
+        internal static void LoadNodeModels()
+        {
+            string location = Path.Combine(GetDynamoDirectory(), "nodes");
+
+            var allLoadedAssembliesByPath = new Dictionary<string, Assembly>();
+            var allLoadedAssemblies = new Dictionary<string, Assembly>();
+
+            // cache the loaded assembly information
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                try
+                {
+                    allLoadedAssembliesByPath[assembly.Location] = assembly;
+                    allLoadedAssemblies[assembly.FullName] = assembly;
+                }
+                catch { }
+            }
+
+            // find all the dlls registered in all search paths
+            // and concatenate with all dlls in the current directory
+            List<string> allDynamoAssemblyPaths =
+                SearchPaths.Select(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly))
+                           .Aggregate(
+                                Directory.GetFiles(location, "*.dll") as IEnumerable<string>,
+                                Enumerable.Concat).ToList();
+
+            // add the core assembly to get things like code block nodes and watches.
+            allDynamoAssemblyPaths.Add(Path.Combine(GetDynamoDirectory(), "DynamoCore.dll"));
+
+            var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
+            {
+                Assembly result;
+                allLoadedAssemblies.TryGetValue(args.Name, out result);
+                return result;
+            });
+
+            AppDomain.CurrentDomain.AssemblyResolve += resolver;
+
+            foreach (var assemblyPath in allDynamoAssemblyPaths)
+            {
+                var fn = Path.GetFileName(assemblyPath);
+
+                if (fn == null)
+                    continue;
+
+                // if the assembly has already been loaded, then
+                // skip it, otherwise cache it.
+                if (LoadedAssemblyNames.Contains(fn))
+                    continue;
+
+                LoadedAssemblyNames.Add(fn);
+
+                if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
+                {
+                    LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath]);
+                }
+                else
+                {
+                    try
+                    {
+                        var assembly = Assembly.LoadFrom(assemblyPath);
+                        allLoadedAssemblies[assembly.GetName().Name] = assembly;
+                        LoadNodesFromAssembly(assembly);
+                    }
+                    catch (BadImageFormatException)
+                    {
+                        //swallow these warnings.
+                    }
+                    catch (Exception e)
+                    {
+                        DynamoLogger.Instance.Log(e);
+                    }
+                }
+            }
+
+            dynSettings.Controller.SearchViewModel.Add(dynSettings.Controller.EngineController.GetFunctionGroups());
+            AppDomain.CurrentDomain.AssemblyResolve -= resolver;
         }
 
         /// <summary>

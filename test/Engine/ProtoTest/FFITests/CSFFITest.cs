@@ -45,7 +45,7 @@ namespace ProtoFFITests
             ProtoCore.Core core = Setup();
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core, context);
-            int nWarnings = core.RuntimeStatus.Warnings.Count;
+            int nWarnings = core.RuntimeStatus.WarningCount;
             nErrors = core.BuildStatus.ErrorCount;
             if (data == null)
             {

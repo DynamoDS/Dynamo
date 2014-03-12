@@ -10,7 +10,6 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
-using String = System.String;
 using Dynamo.DSEngine;
 
 namespace Dynamo
@@ -156,15 +155,12 @@ namespace Dynamo
 
         /// <summary>
         /// Handler for the model's NodeDeleted event.
-        /// Render package will be disposed with the node, so simply
-        /// calling visualization complete will trigger render targets
-        /// to refresh with updated information.
         /// </summary>
         /// <param name="node"></param>
         void NodeDeleted(NodeModel node)
         {
             node.PropertyChanged -= NodePropertyChanged;
-            UpdateRenderPackages();
+            OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -196,6 +192,9 @@ namespace Dynamo
         
         void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+                return;
+
             if (updatingPaused || dynSettings.Controller == null)
                 return;
 
@@ -212,14 +211,10 @@ namespace Dynamo
                 changes.AddRange(e.NewItems.Cast<ISelectable>());
             }
 
-            //Debug.WriteLine("Selection changed. Visualization updating {0} elements...", changes.Any()?changes.Count:0);
-            if (changes.Any())
-            {
-                UpdateRenderPackages(
-                changes.Any() ?
-                changes.Where(sel => sel is NodeModel).Cast<NodeModel>() :
-                null);
-            }
+            UpdateRenderPackages(
+            changes.Any() ?
+            changes.Where(sel => sel is NodeModel).Cast<NodeModel>() :
+            null);
         }
 
         /// <summary>
@@ -287,23 +282,20 @@ namespace Dynamo
                 var toUpdate = e.Argument as IEnumerable<NodeModel> ??
                                _controller.DynamoModel.Nodes.Where(node => node.IsUpdated || node.RequiresRecalc);
 
-                if (toUpdate.Any())
-                {
-                    toUpdate.ToList().ForEach(x => x.UpdateRenderPackage());
+                var nodeModels = toUpdate as IList<NodeModel> ?? toUpdate.ToList();
+                if (!nodeModels.Any())
+                    return;
 
-                    //Setup the octree. An optimization would defer this operation until
-                    //a short while after update operations are complete to avoid
-                    //to many rebuilds of this index while building dynamically.
-                    if(!DynamoController.IsTestMode)
-                        SetupOctree(toUpdate);
+                nodeModels.ToList().ForEach(x => x.UpdateRenderPackage());
 
-                    //Debug.WriteLine(string.Format("Visualization updating {0} objects", toUpdate.Count()));
-                    OnVisualizationUpdateComplete(this, EventArgs.Empty);
-                }
-                //else
-                //{
-                //    Debug.WriteLine("Visualization update deffered: all nodes up to date.");
-                //}
+                //Setup the octree. An optimization would defer this operation until
+                //a short while after update operations are complete to avoid
+                //to many rebuilds of this index while building dynamically.
+                if(!DynamoController.IsTestMode)
+                    SetupOctree(nodeModels);
+
+                //Debug.WriteLine(string.Format("Visualization updating {0} objects", toUpdate.Count()));
+                OnVisualizationUpdateComplete(this, EventArgs.Empty);
 
             }
             catch (Exception ex)

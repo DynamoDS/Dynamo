@@ -6,19 +6,21 @@ namespace ProtoCore
 {
     public class BuildHaltException : Exception
     {
-        public string errorMsg { get; private set; }
+        public string ErrorMessage 
+        { 
+            get; private set; 
+        }
 
         public BuildHaltException()
         {
-            errorMsg = "Stopping Build\n";
+            ErrorMessage = "Stopping Build\n";
         }
 
         public BuildHaltException(string message)
         {
-            errorMsg = message + '\n';
+            ErrorMessage = message + '\n';
         }
     }
-
 
     namespace BuildData
     {
@@ -87,60 +89,59 @@ namespace ProtoCore
             public string FileName;
             public string Message;
             public int Line;
-            public int Col;
+            public int Column;
         }
 
         public struct WarningEntry
         {
-            public WarningID id;
-            public string msg;
-            public int line;
-            public int col;
+            public WarningID ID;
+            public string Message;
+            public int Line;
+            public int Column;
             public string FileName;
         }
     }
 
     public class OutputMessage
+    {
+        public enum MessageType { Info, Warning, Error }
+        // A constructor for message only for print-out purpose
+        public OutputMessage(string message)
         {
-            public enum MessageType { Info, Warning, Error }
-            // A constructor for message only for print-out purpose
-            public OutputMessage(string message)
-            {
-                Type = MessageType.Info;
-                Message = message;
-                FilePath = string.Empty;
-                Line = -1;
-                Column = -1;
-            }
-            // A constructor for generic message.
-            public OutputMessage(MessageType type, string message)
-            {
-                Type = type;
-                Message = message;
-                FilePath = string.Empty;
-                Line = -1;
-                Column = -1;
-            }
-
-            // A constructor for source location related messages.
-            public OutputMessage(MessageType type, string message,
-                string filePath, int line, int column)
-            {
-                Type = type;
-                Message = message;
-                FilePath = filePath;
-                Line = line;
-                Column = column;
-            }
-
-            public MessageType Type { get; private set; }
-            public string FilePath { get; private set; }
-            public int Line { get; private set; }
-            public int Column { get; private set; }
-            public string Message { get; private set; }
-            public bool Continue { get; set; }
-
+            Type = MessageType.Info;
+            Message = message;
+            FilePath = string.Empty;
+            Line = -1;
+            Column = -1;
         }
+        // A constructor for generic message.
+        public OutputMessage(MessageType type, string message)
+        {
+            Type = type;
+            Message = message;
+            FilePath = string.Empty;
+            Line = -1;
+            Column = -1;
+        }
+
+        // A constructor for source location related messages.
+        public OutputMessage(MessageType type, string message,
+            string filePath, int line, int column)
+        {
+            Type = type;
+            Message = message;
+            FilePath = filePath;
+            Line = line;
+            Column = column;
+        }
+
+        public MessageType Type { get; private set; }
+        public string FilePath { get; private set; }
+        public int Line { get; private set; }
+        public int Column { get; private set; }
+        public string Message { get; private set; }
+        public bool Continue { get; set; }
+    }
 
     public interface IOutputStream
     {
@@ -303,11 +304,6 @@ namespace ProtoCore
                     core.ExecutionLog.WriteLine(string.Format(formatWithoutFile,
                         message.Type.ToString(), message.Message));
                 }
-
-                //logFile.Close();
-
-               // System.Console.WriteLine(string.Format(formatWithoutFile,
-                 //   message.Type.ToString(), message.Message));
             }
             else
             {
@@ -319,10 +315,6 @@ namespace ProtoCore
                         message.Type.ToString(), message.Message,
                         message.FilePath, message.Line, message.Column));
                 }
-
-                //System.Console.WriteLine(string.Format(formatWithFile,
-                  //  message.Type.ToString(), message.Message,
-                  //  message.FilePath, message.Line, message.Column));
             }
 
             if (message.Type == ProtoCore.OutputMessage.MessageType.Warning)
@@ -351,19 +343,33 @@ namespace ProtoCore
         private readonly bool warningAsError;
         private readonly bool errorAsWarning = false;
 
-        private readonly List<BuildData.WarningEntry> warnings;
-        public List<BuildData.WarningEntry> Warnings
+        public IOutputStream MessageHandler 
+        { 
+            get; set; 
+        }
+
+        public WebOutputStream WebMsgHandler
+        {
+            get;
+            set;
+        }
+
+        private List<BuildData.WarningEntry> warnings;
+        public IEnumerable<BuildData.WarningEntry> Warnings
         {
             get
             {
                 return warnings;
             }
         }
-        public IOutputStream MessageHandler { get; set; }
-        public WebOutputStream WebMsgHandler { get; set; }
+
+        public int WarningCount
+        {
+            get { return warnings.Count; }
+        }
 
         private readonly List<BuildData.ErrorEntry> errors;
-        public List<BuildData.ErrorEntry> Errors
+        public IEnumerable<BuildData.ErrorEntry> Errors
         {
             get
             {
@@ -371,28 +377,27 @@ namespace ProtoCore
             }
         }
         
-        
         public int ErrorCount
         {
-            get { return Errors.Count; }
+            get { return errors.Count; }
         }
 
-        public int WarningCount
+        public bool BuildSucceeded
         {
-            get { return Warnings.Count; }
+            get
+            {
+                return warningAsError 
+                    ? (ErrorCount == 0 && WarningCount == 0)
+                    : (ErrorCount == 0);
+            }
         }
-
-
 
         //  logs all errors and warnings by default
         //
         public BuildStatus(Core core,bool warningAsError, System.IO.TextWriter writer = null, bool errorAsWarning = false)
         {
             this.core = core;
-            //this.errorCount = 0;
-            //this.warningCount = 0;
             warnings = new List<BuildData.WarningEntry>();
-            
             errors = new List<BuildData.ErrorEntry>();
             this.warningAsError = warningAsError;
             this.errorAsWarning = errorAsWarning;
@@ -419,10 +424,7 @@ namespace ProtoCore
             this.logErrors = logErrors;
             this.displayBuildResult = displayBuildResult;
 
-            //this.errorCount = 0;
-            //this.warningCount = 0;
             warnings = new List<BuildData.WarningEntry>();
-            
             errors = new List<BuildData.ErrorEntry>();
 
             if (writer != null)
@@ -452,33 +454,34 @@ namespace ProtoCore
             }
         }
 
+        public void ClearWarnings()
+        {
+            warnings.Clear();
+        }
         
-        
+        public void ClearErrors()
+        {
+            errors.Clear();
+        }
+
         public void LogSyntaxError(string msg, string fileName = null, int line = -1, int col = -1)
         {
-            // Error: " + msg + "\n";
-            /*if (fileName == null)
-            {
-                fileName = "N.A.";
-            }*/
-
             if (logErrors)
             {
                 var message = string.Format("{0}({1},{2}) Error:{3}", fileName, line, col, msg);
                 System.Console.WriteLine(message);
             }
 
-            BuildData.ErrorEntry errorEntry = new BuildData.ErrorEntry
+            var errorEntry = new BuildData.ErrorEntry
             {
                 FileName = fileName,
                 Message = msg,
                 Line = line,
-                Col = col            
+                Column = col            
             };
 
             if(core.Options.IsDeltaExecution)
             {
-                core.LogErrorInGlobalMap(Core.ErrorType.Error, msg, fileName, line, col);
             }
 
             errors.Add(errorEntry);
@@ -499,11 +502,6 @@ namespace ProtoCore
 
         public void LogSemanticError(string msg, string fileName = null, int line = -1, int col = -1, AssociativeGraph.GraphNode graphNode = null)
         {
-            /*if (fileName == null)
-            {
-                fileName = "N.A.";
-            }*/
-
             if (logErrors)
             {
                 System.Console.WriteLine("{0}({1},{2}) Error:{3}", fileName, line, col, msg);
@@ -511,7 +509,6 @@ namespace ProtoCore
 
             if (core.Options.IsDeltaExecution)
             {
-                core.LogErrorInGlobalMap(Core.ErrorType.Error, msg, fileName, line, col);
             }
 
             BuildData.ErrorEntry errorEntry = new BuildData.ErrorEntry
@@ -519,19 +516,9 @@ namespace ProtoCore
                 FileName = fileName,
                 Message = msg,
                 Line = line,
-                Col = col
+                Column = col
             };
             errors.Add(errorEntry);
-
-            // Comment: This is true for example in Graph Execution mode
-            /*if (errorAsWarning)
-            {
-                if (graphNode != null)
-                {
-                    graphNode.isDirty = false;
-                    return;
-                }
-            }*/
 
             OutputMessage outputmessage = new OutputMessage(OutputMessage.MessageType.Error, msg.Trim(), fileName, line, col);
             if (MessageHandler != null)
@@ -548,54 +535,45 @@ namespace ProtoCore
             throw new BuildHaltException(msg);
         }
 
-        public void LogWarning(BuildData.WarningID warnId, string msg, string fileName = null, int line = -1, int col = -1)
+        public void LogWarning(BuildData.WarningID warningID, string message, string fileName = null, int line = -1, int col = -1)
         { 
-            //"> Warning: " + msg + "\n"
-            /*if (fileName == null)
-            {
-                fileName = "N.A.";
-            }*/
-
             if (LogWarnings)
             {
-                System.Console.WriteLine("{0}({1},{2}) Warning:{3}", fileName, line, col, msg);
+                System.Console.WriteLine("{0}({1},{2}) Warning:{3}", fileName, line, col, message);
             }
-            BuildData.WarningEntry warningEntry = new BuildData.WarningEntry { id = warnId, msg = msg, line = line, col = col, FileName = fileName };
-            warnings.Add(warningEntry);
+
+            var entry = new BuildData.WarningEntry 
+            { 
+                ID = warningID, 
+                Message = message, 
+                Line = line, 
+                Column = col, 
+                FileName = fileName 
+            };
+            warnings.Add(entry);
 
             if (core.Options.IsDeltaExecution)
             {
-                core.LogErrorInGlobalMap(Core.ErrorType.Warning, msg, fileName, line, col, warnId);
             }
 
-            OutputMessage outputmessage = new OutputMessage(OutputMessage.MessageType.Warning, msg.Trim(), fileName, line, col);
+            OutputMessage outputmessage = new OutputMessage(OutputMessage.MessageType.Warning, message.Trim(), fileName, line, col);
             if (MessageHandler != null)
             {
                 MessageHandler.Write(outputmessage);
                 if (WebMsgHandler != null)
                 {
-                    OutputMessage webOutputMsg = new OutputMessage(OutputMessage.MessageType.Warning, msg.Trim(), "", line, col);
+                    OutputMessage webOutputMsg = new OutputMessage(OutputMessage.MessageType.Warning, message.Trim(), "", line, col);
                     WebMsgHandler.Write(webOutputMsg);
                 }
                 if (!outputmessage.Continue)
-                    throw new BuildHaltException(msg);
+                    throw new BuildHaltException(message);
             }
-           
-        }
-
-        public bool ContainsWarning(BuildData.WarningID warnId)
-        {
-            foreach (BuildData.WarningEntry warn in warnings)
-            {
-                if (warnId == warn.id)
-                    return true;
-            }
-            return false;
         }
 
         public void ReportBuildResult()
         {
             string buildResult = string.Format("========== Build: {0} error(s), {1} warning(s) ==========\n", errors.Count, warnings.Count);
+
             if (displayBuildResult)
             {
                 System.Console.WriteLine(buildResult);
@@ -603,27 +581,13 @@ namespace ProtoCore
 
             if (MessageHandler != null)
             {
-                OutputMessage outputMsg = new OutputMessage(OutputMessage.MessageType.Info, buildResult.Trim());
+                var outputMsg = new OutputMessage(buildResult);
                 MessageHandler.Write(outputMsg);
                 if (WebMsgHandler != null)
                 {
                     WebMsgHandler.Write(outputMsg);
                 }
             }
-            
-        }
-
-        public bool GetBuildResult(out int errcount, out int warncount)
-        {
-            // TODO Jun: Integrate with the autogen parser
-            // The autogen parser whould pass its error and warning results to this class
-            //int errorCount = errors.Count;
-            //int warningCount = warnings.Count;
-
-            errcount = ErrorCount;
-            warncount = WarningCount;
-
-            return (warningAsError) ? (0 == errcount && 0 == warncount) : (0 == errcount);
         }
 	}
 }

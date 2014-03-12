@@ -125,5 +125,77 @@ namespace Dynamo.Tests
             var stableRef = face.Reference.ConvertToStableRepresentation(DocumentManager.Instance.CurrentDBDocument);
             Assert.AreEqual(stableRef, ((StringNode)funCall.FormalArguments[0]).value);
         }
+
+        [Test]
+        public void CanSelectAnalysisResults()
+        {
+            Assert.Inconclusive("Finish me!");
+        }
+
+        [Test]
+        public void CanSelectModelElement()
+        {
+            Assert.Inconclusive("Finish me!");
+        }
+
+        [Test]
+        public void CanSelectAFamilyInstance()
+        {
+            Assert.Inconclusive("Finish me!");
+        }
+
+        [Test]
+        public void CanSelectALevel()
+        {
+            Assert.Inconclusive("Finish me!");
+        }
+
+        [Test]
+        public void CanSelectCurveElement()
+        {
+            Assert.Inconclusive("Finish me!");
+        }
+
+        [Test]
+        public void CanSelectAReferencePoint()
+        {
+            Assert.Inconclusive("Finish me!");
+        }
+
+        [Test]
+        public void CanSelectAFace()
+        {
+            Assert.Inconclusive("Finish me!");
+        }
+
+        [Test]
+        public void CanSelectAnEdge()
+        {
+            Assert.Inconclusive("Finish me!");
+        }
+
+        [Test]
+        public void CanSelectAPointOnAFace()
+        {
+            Assert.Inconclusive("Finish me!");
+        }
+
+        [Test]
+        public void CanSelectAUVOnAFace()
+        {
+            Assert.Inconclusive("Finish me!");
+        }
+
+        [Test]
+        public void CanSelectDividedSurfaceFamilies()
+        {
+            Assert.Inconclusive("Finish me!");
+        }
+
+        [Test]
+        public void CanSelectMultipleModelElements()
+        {
+            Assert.Inconclusive("Finish me!");
+        }
     }
 }
