@@ -303,7 +303,32 @@ namespace Dynamo.DSEngine
                 }
             }
 
+            if (updated)
+            {
+                ShowRuntimeWarnings();
+            }
+
             return updated;
+        }
+
+        /// <summary>
+        /// Show runtime warnings. 
+        /// </summary>
+        private void ShowRuntimeWarnings()
+        {
+            var warnings = liveRunnerServices.GetRuntimeWarnings();
+            foreach (var item in warnings)
+            {
+                Guid guid = item.Key;
+                var node = controller.DynamoViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+                if (node != null)
+                {
+                    string warningMessage = string.Join("\n", item.Value.Select(w => w.Message));
+                    node.Warning(warningMessage);
+                }
+            }
+
+            liveRunnerServices.ClearRuntimeWarnings();
         }
         
         /// <summary>
