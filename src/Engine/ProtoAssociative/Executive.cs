@@ -103,7 +103,7 @@ namespace ProtoAssociative
                             core.assocCodegen.codeBlock = tempCodeBlock;
                         }
                         core.assocCodegen.codeBlock.EventSink = sink;
-                        if (core.BuildStatus.Errors.Count == 0) //if there is syntax error, no build needed
+                        if (core.BuildStatus.ErrorCount == 0) //if there is syntax error, no build needed
                         {
                              blockId = core.assocCodegen.Emit((codeBlockNode as ProtoCore.AST.AssociativeAST.CodeBlockNode), graphNode);
                         }
@@ -138,9 +138,7 @@ namespace ProtoAssociative
 #endif
                 }
 
-                int errors = 0;
-                int warnings = 0;
-                buildSucceeded = core.BuildStatus.GetBuildResult(out errors, out warnings);
+                buildSucceeded = core.BuildStatus.BuildSucceeded;
             }
 
             return buildSucceeded;

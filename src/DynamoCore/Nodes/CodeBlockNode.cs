@@ -58,7 +58,7 @@ namespace Dynamo.Nodes
         ///     It removes all the in ports and out ports so that the user knows there is an error.
         /// </summary>
         /// <param name="errorMessage"> Error message to be displayed </param>
-        public void ProcessError()
+        private void ProcessError()
         {
             DynamoLogger.Instance.Log("Error in Code Block Node");
 
@@ -163,7 +163,9 @@ namespace Dynamo.Nodes
                 {
                     if (value != null)
                     {
-                        string errorMessage = null;
+                        string errorMessage = string.Empty;
+                        string warningMessage = string.Empty;
+
                         DisableReporting();
                         {
                             WorkSpace.UndoRecorder.BeginActionGroup();
@@ -181,7 +183,7 @@ namespace Dynamo.Nodes
                             else
                                 WorkSpace.UndoRecorder.RecordModificationForUndo(this);
                             code = value;
-                            ProcessCode(ref errorMessage);
+                            ProcessCode(ref errorMessage, ref warningMessage);
 
                             //Recreate connectors that can be reused
                             LoadAndCreateConnectors(inportConnections, outportConnections);
@@ -190,12 +192,22 @@ namespace Dynamo.Nodes
                         RaisePropertyChanged("Code");
                         RequiresRecalc = true;
                         ReportPosition();
+
                         if (WorkSpace != null)
+                        {
                             WorkSpace.Modified();
+                        }
+
                         EnableReporting();
 
-                        if (errorMessage != null)
+                        if (!string.IsNullOrEmpty(errorMessage))
+                        {
                             Error(errorMessage);
+                        }
+                        else if (!string.IsNullOrEmpty(warningMessage))
+                        {
+                            Warning(warningMessage);
+                        }
                     }
                     else
                         code = null;
@@ -386,17 +398,29 @@ namespace Dynamo.Nodes
 
         private void ProcessCodeDirect()
         {
-            string errorMessage = null;
-            ProcessCode(ref errorMessage);
+            string errorMessage = string.Empty;
+            string warningMessage = string.Empty;
+
+            ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
             RequiresRecalc = true;
+
             if (WorkSpace != null)
+            {
                 WorkSpace.Modified();
-            if (errorMessage != null)
+            }
+
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
                 Error(errorMessage);
+            }
+            else if (!string.IsNullOrEmpty(warningMessage))
+            {
+                Warning(warningMessage);
+            }
         }
 
-        private void ProcessCode(ref string errorMessage)
+        private void ProcessCode(ref string errorMessage, ref string warningMessage)
         {
             //Format user test
             code = FormatUserText(code);
@@ -413,8 +437,8 @@ namespace Dynamo.Nodes
             codeToParse = code;
             List<string> unboundIdentifiers = new List<string>();
             List<ProtoCore.AST.Node> parsedNodes;
-            List<ProtoCore.BuildData.ErrorEntry> errors;
-            List<ProtoCore.BuildData.WarningEntry> warnings;
+            IEnumerable<ProtoCore.BuildData.ErrorEntry> errors;
+            IEnumerable<ProtoCore.BuildData.WarningEntry> warnings;
 
             try
             {
@@ -437,25 +461,27 @@ namespace Dynamo.Nodes
                     else
                         previewVariable = null;
                 }
-                else
-                {
-                    if (errors == null)
-                    {
-                        ProcessError();
-                        errorMessage = "Errors not getting sent from compiler to UI";
-                    }
 
-                    //Found errors. Get the error message strings and use it to call the DisplayError function
-                    if (errors != null)
-                    {
-                        errorMessage = "";
-                        int i = 0;
-                        for (; i < errors.Count - 1; i++)
-                            errorMessage += (errors[i].Message + "\n");
-                        errorMessage += errors[i].Message;
-                        ProcessError();
-                    }
+                if (errors != null && errors.Any())
+                {
+                    errorMessage = string.Join("\n", errors.Select(m => m.Message));
+                    ProcessError();
                     return;
+                }
+
+                if (warnings != null)
+                {
+                    // Unbound identifiers in CBN will have input slots.
+                    // 
+                    // To check function redefinition, we need to check other
+                    // CBN to find out if it has been defined yet. Now just
+                    // skip this warning.
+                    warnings = warnings.Where(w => w.ID != WarningID.kIdUnboundIdentifier
+                                                && w.ID != WarningID.kFunctionAlreadyDefined);
+                    if (warnings.Any())
+                    {
+                        warningMessage = string.Join("\n", warnings.Select(m => m.Message));
+                    }
                 }
             }
             catch (Exception e)

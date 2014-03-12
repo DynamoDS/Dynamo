@@ -669,7 +669,7 @@ namespace Dynamo.Tests
 
 
             // First element in the list before Reversing
-            AssertPreviewValue("cd36fac7-d9eb-47ea-a73d-ad1bb4bbe54a", 0);
+            AssertPreviewValue("cd36fac7-d9eb-47ea-a73d-ad1bb4bbe54a", new int[] { 0 });
         }
 
         [Test]
@@ -1245,17 +1245,27 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
 
             Dictionary<int, object> validationData = new Dictionary<int, object>()
             {
                 {0,1},
-                {1,9},
+                {8,9},
             };
 
             //this is the case of 2D array. Need to change verification
-            SelectivelyAssertPreviewValues("4e781f03-5b48-4d58-a511-8c732665e961", validationData);
+            SelectivelyAssertPreviewValues("798bc857-f36e-44df-97cc-6e878aef5b72", validationData);
+
+            Dictionary<int, object> validationData1 = new Dictionary<int, object>()
+            {
+                {0,2},
+                {3,8},
+            };
+
+            //this is the case of 2D array. Need to change verification
+            SelectivelyAssertPreviewValues("2f5277db-4656-4014-8d85-8e4f51e5c2b1", validationData1);
+
 
         }
 
@@ -1294,13 +1304,15 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+            var workspace = model.CurrentWorkspace;
+            Assert.AreEqual(6, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Connectors.Count);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            var numberRange = model.CurrentWorkspace.NodeFromWorkspace<NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
+            var guid = "4e781f03-5b48-4d58-a511-8c732665e961";
+            var numberRange = workspace.NodeFromWorkspace<CodeBlockNodeModel>(guid);
 
             var actual = numberRange.GetValue(0).GetElements();
             var innerList1 = actual[0].GetElements();
@@ -1311,6 +1323,10 @@ namespace Dynamo.Tests
             var actualChild4 = innerList2[1].GetElements();
 
             Assert.AreEqual(2, actual.Count);
+            Assert.IsNotNull(actualChild1);
+            Assert.IsNotNull(actualChild2);
+            Assert.IsNotNull(actualChild3);
+            Assert.IsNotNull(actualChild4);
 
             Assert.AreEqual(10, actualChild1.Count);
             Assert.AreEqual(10, actualChild1[9].Data);
@@ -1374,13 +1390,15 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+            var workspace = model.CurrentWorkspace;
+            Assert.AreEqual(8, workspace.Nodes.Count);
+            Assert.AreEqual(8, workspace.Connectors.Count);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            var addToList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.List>("31d0eb4e-8657-4eb1-a852-5e9b766eddd7");
+            var guid = "31d0eb4e-8657-4eb1-a852-5e9b766eddd7";
+            var addToList = workspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>(guid);
 
             var actual = addToList.GetValue(0).GetElements();
             var childList = actual[2].GetElements();
@@ -1389,6 +1407,7 @@ namespace Dynamo.Tests
             Assert.AreEqual("Design", actual[0].Data);
             Assert.AreEqual(10, actual[5].Data);
 
+            Assert.IsNotNull(childList);
             Assert.AreEqual(4, childList.Count);
             Assert.AreEqual(-10, childList[0].Data);
         }
@@ -1528,6 +1547,8 @@ namespace Dynamo.Tests
         [Test, Category("Not Migrated")]
         public void SplitList_ComplexAnotherExample()
         {
+            Assert.Inconclusive("Deprecated: StringToNumber, Formula");
+
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\SplitList_ComplexAnotherExample.dyn");
@@ -1540,7 +1561,8 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            var splitList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DeCons>("66e94123-deaf-4bc8-8c5f-b3bc0996a57e");
+            var guid = "66e94123-deaf-4bc8-8c5f-b3bc0996a57e";
+            var splitList = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>(guid);
 
             var firstOutput = splitList.GetValue(0).GetElements();
             var secondOutput = splitList.GetValue(1).GetElements();
@@ -1578,7 +1600,8 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.TakeList>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
+            var guid = "14cb6593-24d8-4ffc-8ee5-9f4247449fc2";
+            var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>(guid);
 
             var firstOutput = takeFromList.GetValue(0).GetElements();
             var child = firstOutput[0].GetElements();
@@ -1724,19 +1747,23 @@ namespace Dynamo.Tests
         [Test, Category("Not Migrated")]
         public void ShiftListIndices_Complex()
         {
+            Assert.Inconclusive("Deprecated: StringToNumber, Formula");
+
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\ShiftListIndeces_Complex.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(20, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(21, model.CurrentWorkspace.Connectors.Count);
+            var workspace = model.CurrentWorkspace;
+            Assert.AreEqual(20, workspace.Nodes.Count);
+            Assert.AreEqual(21, workspace.Connectors.Count);
 
             // run expression
             dynSettings.Controller.RunExpression(null);
 
-            var shiftListIndeces = model.CurrentWorkspace.NodeFromWorkspace<ShiftList>("492db019-4807-4810-8919-10b94e8ca083");
+            var guid = "492db019-4807-4810-8919-10b94e8ca083";
+            var shiftListIndeces = workspace.NodeFromWorkspace<DSFunction>(guid);
             var output = shiftListIndeces.GetValue(0).GetElements();
             var child = output[0].GetElements();
             var child1 = output[1].GetElements();
@@ -1845,16 +1872,12 @@ namespace Dynamo.Tests
 
             var getFromList = model.CurrentWorkspace.NodeFromWorkspace("d2f1c900-99ce-40a5-ae4d-bbac1fe96cfd");
             var output = getFromList.GetValue(0).GetElements();
-            var child = output[0].GetElements();
-            var child1 = output[1].GetElements();
 
-            Assert.AreEqual(2, output.Count);
+            Assert.AreEqual(3, output.Count);
+            Assert.AreEqual(14, output[0].Data);
+            Assert.AreEqual(2, output[1].Data);
+            Assert.AreEqual(3, output[2].Data);
 
-            Assert.AreEqual(1, child.Count);
-            Assert.AreEqual(6, child[0].Data);
-
-            Assert.AreEqual(1, child1.Count);
-            Assert.AreEqual(9, child1[0].Data);
         }
 
         [Test]
@@ -1986,19 +2009,23 @@ namespace Dynamo.Tests
         [Test, Category("Not Migrated")]
         public void DropEveryNth_ComplexTest()
         {
+            Assert.Inconclusive("Deprecated: StringToNumber");
+
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropEveryNth_ComplexTest.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(18, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(19, model.CurrentWorkspace.Connectors.Count);
+            var workspace = model.CurrentWorkspace;
+            Assert.AreEqual(18, workspace.Nodes.Count);
+            Assert.AreEqual(19, workspace.Connectors.Count);
 
             // run expression
             dynSettings.Controller.RunExpression(null);
 
-            var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.RemoveEveryNth>("4bd0ced4-29ee-4f4e-95af-d0573e04731a");
+            var guid = "4bd0ced4-29ee-4f4e-95af-d0573e04731a";
+            var takeEveryNth = workspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>(guid);
             var output = takeEveryNth.GetValue(0).GetElements();
             var child = output[0].GetElements();
             var child1 = output[1].GetElements();
@@ -2417,6 +2444,8 @@ namespace Dynamo.Tests
         [Test]
         public void Combine_ComplexTest()
         {
+            Assert.Inconclusive("Deprecated: StringToNumber");
+
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Combine_ComplexTest.dyn");
