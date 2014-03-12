@@ -9,7 +9,6 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml;
 using Autodesk.Revit.DB;
-using ProtoCore.AST.ImperativeAST;
 using Revit.Interactivity;
 using Dynamo.Controls;
 using Dynamo.Models;
