@@ -93,10 +93,12 @@ limitations under the License.
     <Reference Include="ProtoGeometry, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -128,8 +130,9 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\UndoRedoRecorder.cs" />
-    <Compile Include="DSEngine\LibraryCustomization.cs" />
-    <Compile Include="DSEngine\XmlDocumentationExtensions.cs" />
+    <Compile Include="Library\DocumentationServices.cs" />
+    <Compile Include="Library\LibraryCustomization.cs" />
+    <Compile Include="Library\XmlDocumentationExtensions.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IPreferences.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
@@ -143,7 +146,7 @@ limitations under the License.
     </Compile>
     <Compile Include="UI\Configurations.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
-    <Compile Include="DSEngine\DSLibrary.cs" />
+    <Compile Include="Library\Library.cs" />
     <Compile Include="DSEngine\EngineController.cs" />
     <Compile Include="DSEngine\LiveRunnerServices.cs" />
     <Compile Include="DSEngine\NodeToCode.cs" />
