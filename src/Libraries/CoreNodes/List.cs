@@ -502,13 +502,15 @@ namespace DSCore
         /// <summary>
         ///     Create a diagonal lists of lists from top left to lower right.
         /// </summary>
-        /// <param name="list">A list</param>
+        /// <param name="flatList">A list</param>
         /// <param name="subLength">Length of each new sub-list.</param>
         public static IList DiagonalRight(
             [ArbitraryDimensionArrayImport] IList list,
             int subLength)
         {
-            if (list.Count < subLength)
+            var flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
+
+            if (flatList.Count() < subLength)
                 return list;
 
             var finalList = new ArrayList();
@@ -517,7 +519,7 @@ namespace DSCore
             var startIndices = new List<int>();
 
             //get indices along 'side' of array
-            for (int i = subLength; i < list.Count; i += subLength)
+            for (int i = subLength; i < flatList.Count(); i += subLength)
                 startIndices.Add(i);
 
             startIndices.Reverse();
@@ -530,10 +532,10 @@ namespace DSCore
             {
                 int index = start;
 
-                while (index < list.Count)
+                while (index < flatList.Count())
                 {
                     var currentRow = (int)System.Math.Ceiling((index + 1)/(double)subLength);
-                    currList.Add(list[index]);
+                    currList.Add(flatList[index]);
                     index += subLength + 1;
 
                     //ensure we are skipping a row to get the next index
@@ -554,13 +556,15 @@ namespace DSCore
         /// <summary>
         ///     Create a diagonal lists of lists from top right to lower left.
         /// </summary>
-        /// <param name="list">A list.</param>
-        /// <param name="subLength">Length of each new sib-list.</param>
+        /// <param name="flatList">A list.</param>
+        /// <param name="rowLength">Length of each new sib-list.</param>
         public static IList DiagonalLeft(
             [ArbitraryDimensionArrayImport] IList list,
-            int subLength)
+            int rowLength)
         {
-            if (list.Count < subLength)
+            var flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
+
+            if (flatList.Count() < rowLength)
                 return list;
 
             var finalList = new ArrayList();
@@ -568,11 +572,11 @@ namespace DSCore
             var startIndices = new List<int>();
 
             //get indices along 'top' of array
-            for (int i = 0; i < subLength; i++)
+            for (int i = 0; i < rowLength; i++)
                 startIndices.Add(i);
 
             //get indices along 'side' of array
-            for (int i = subLength - 1 + subLength; i < list.Count; i += subLength)
+            for (int i = rowLength - 1 + rowLength; i < flatList.Count(); i += rowLength)
                 startIndices.Add(i);
 
             foreach (int start in startIndices)
@@ -580,14 +584,14 @@ namespace DSCore
                 int index = start;
                 var currList = new ArrayList();
 
-                while (index < list.Count)
+                while (index < flatList.Count())
                 {
-                    var currentRow = (int)System.Math.Ceiling((index + 1)/(double)subLength);
-                    currList.Add(list[index]);
-                    index += subLength - 1;
+                    var currentRow = (int)System.Math.Ceiling((index + 1)/(double)rowLength);
+                    currList.Add(flatList.ElementAt(index));
+                    index += rowLength - 1;
 
                     //ensure we are skipping a row to get the next index
-                    var nextRow = (int)System.Math.Ceiling((index + 1) / (double)subLength);
+                    var nextRow = (int)System.Math.Ceiling((index + 1) / (double)rowLength);
                     if (nextRow > currentRow + 1 || nextRow == currentRow)
                         break;
                 }
