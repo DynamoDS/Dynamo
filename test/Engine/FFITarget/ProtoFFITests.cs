@@ -86,6 +86,11 @@ namespace FFITarget
         {
             return new List<object> { 2, 3, "DesignScript", new List<string> { "Dynamo", "Revit" }, new List<object> { true, new List<object> { 5.5, 10 } } };
         }
+        public static IList RemoveItemsAtIndices(IEnumerable list, int[] indices)
+        {
+            var idxs = new HashSet<int>(indices);
+            return list.Cast<object>().Where((_, i) => !idxs.Contains(i)).ToList();
+        }
         public static IEnumerable<int> GetNumbersByDouble(int x)
         {
             for (int i = 0; i < x; ++i)
@@ -415,7 +420,7 @@ namespace FFITarget
             };
         }
 
-        public static int GetDepth([ArbitraryDimensionArrayImport] IList arr)
+        public static int GetDepth(IList arr)
         {
             int maxSubListDepth = 0;
             foreach (var item in arr)
@@ -431,7 +436,7 @@ namespace FFITarget
             return maxSubListDepth + 1;
         }
 
-        public static int SumList([ArbitraryDimensionArrayImport] IList arr)
+        public static int SumList(IList arr)
         {
             int sum = 0;
             foreach (var item in arr)
