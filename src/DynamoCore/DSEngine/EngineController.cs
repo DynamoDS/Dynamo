@@ -229,11 +229,14 @@ namespace Dynamo.DSEngine
         /// being executed.
         /// </summary>
         /// <returns></returns>
-        public bool HasPendingGraphSyncData()
+        public bool HasPendingGraphSyncData
         {
-            lock (graphSyncDataQueue)
+            get
             {
-                return graphSyncDataQueue.Count > 0;
+                lock (graphSyncDataQueue)
+                {
+                    return graphSyncDataQueue.Count > 0;
+                }
             }
         }
 
@@ -412,5 +415,6 @@ namespace Dynamo.DSEngine
         {
             syncDataManager.DeleteNodes(node.GUID);
         }
+
     }
 }

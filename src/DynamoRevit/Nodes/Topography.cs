@@ -92,7 +92,7 @@ namespace Dynamo.Nodes
             var oldNodeElement = data.MigratedNodes.ElementAt(0);
             var newNodeElement = MigrationManager.CreateFunctionNodeFrom(oldNodeElement);
             MigrationManager.SetFunctionSignature(newNodeElement, assemblyPath,
-                "DSTopography.ByPoints", "DSTopography.ByPoints@double[]..[]");
+                "Topography.ByPoints", "Topography.ByPoints@Autodesk.DesignScript.Geometry.Point[]..[]");
 
             NodeMigrationData migrated = new NodeMigrationData(data.Document);
             migrated.AppendNode(newNodeElement);
@@ -167,7 +167,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from:"0.7.0")]
         public static XmlElement Migrate(XmlElement element)
         {
-            //DSRevitNodes.DSTopography.Points
+            //DSRevitNodes.Topography.Points
             return element;
         }
 
