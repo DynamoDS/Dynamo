@@ -286,6 +286,8 @@ namespace Dynamo.DSEngine
         {
             bool updated = false;
 
+            ClearWarnings();
+
             lock (graphSyncDataQueue)
             {
                 while (graphSyncDataQueue.Count > 0)
@@ -311,11 +313,19 @@ namespace Dynamo.DSEngine
             return updated;
         }
 
-        /// <summary>
-        /// Show runtime warnings. 
-        /// </summary>
+        private void ClearWarnings()
+        {
+            var warningNodes = controller.DynamoViewModel.Model.HomeSpace.Nodes.Where(n => n.State == ElementState.Warning);
+
+            foreach (var node in warningNodes)
+            {
+                node.State = ElementState.Active;
+            }
+        }
+
         private void ShowRuntimeWarnings()
         {
+            // Clear all previous warnings
             var warnings = liveRunnerServices.GetRuntimeWarnings();
             foreach (var item in warnings)
             {
