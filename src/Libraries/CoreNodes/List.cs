@@ -80,6 +80,7 @@ namespace DSCore
         ///     Returns the maximum value from a list.
         /// </summary>
         /// <param name="list">List to take the maximum value from.</param>
+        /// <search>lizzard</search>
         public static object MaximumItem(
             [ArbitraryDimensionArrayImport] IList list)
         {
@@ -239,6 +240,7 @@ namespace DSCore
         /// <param name="step">
         ///     Amount the indices of the items are separate by in the original list.
         /// </param>
+        /// <search>list,sub,sublist,slice</search>
         public static IList Slice(
             [ArbitraryDimensionArrayImport] IList list,
             int? start = null,
