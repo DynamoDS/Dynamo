@@ -188,6 +188,11 @@ namespace Revit.Elements
             return DraftingView.FromExisting(view, isRevitOwned);
         }
 
+        public static Topography Wrap(Autodesk.Revit.DB.Architecture.TopographySurface topoSurface, bool isRevitOwned)
+        {
+            return Topography.FromExisting(topoSurface, isRevitOwned);
+        }
+
         #endregion
 
     }

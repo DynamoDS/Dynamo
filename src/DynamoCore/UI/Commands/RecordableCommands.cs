@@ -39,9 +39,25 @@ namespace Dynamo.ViewModels
             /// can only be instantiated through a derived class.
             /// </summary>
             protected RecordableCommand()
+                : this(string.Empty)
             {
+            }
+
+            /// <summary>
+            /// Constructs an instance of RecordableCommand derived class, 
+            /// assigning a new tag to it.
+            /// </summary>
+            /// <param name="tag">A string tag to be assigned to the command.
+            /// This parameter can be any string, even an empty one. However, 
+            /// it should not be null. A null "tag" parameter causes the 
+            /// ArgumentNullException to be thrown.</param>
+            protected RecordableCommand(string tag)
+            {
+                if (tag == null)
+                    throw new ArgumentNullException("tag");
+
+                this.Tag = tag;
                 this.IsInPlaybackMode = false;
-                this.Tag = string.Empty;
             }
 
             /// <summary>
@@ -221,6 +237,7 @@ namespace Dynamo.ViewModels
             #region Public Class Methods
 
             public PausePlaybackCommand(int pauseDurationInMs)
+                : base(PausePlaybackCommand.GenerateRandomTag())
             {
                 this.PauseDurationInMs = pauseDurationInMs;
             }
@@ -253,6 +270,23 @@ namespace Dynamo.ViewModels
                 XmlElementHelper helper = new XmlElementHelper(element);
                 helper.SetAttribute("Tag", this.Tag);
                 helper.SetAttribute("PauseDurationInMs", this.PauseDurationInMs);
+            }
+
+            #endregion
+
+            #region Private Class Helper Methods
+
+            private static string GenerateRandomTag()
+            {
+                // Given a GUID in the form AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE,
+                // extract out only the AAAAAAAA part (we don't want the tag name
+                // to be that long, considering the chances of collision in the 
+                // same recorded XML file is near zero, and that these tags are 
+                // usually renamed after they are recorded by a test developer).
+                // 
+                string guid = Guid.NewGuid().ToString();
+                guid = guid.Substring(0, guid.IndexOf('-'));
+                return string.Format("Tag-{0}", guid);
             }
 
             #endregion

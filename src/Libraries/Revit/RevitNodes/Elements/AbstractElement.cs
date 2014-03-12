@@ -5,6 +5,7 @@ using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSNodeServices;
+using Revit.GeometryConversion;
 using Revit.GeometryObjects;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
@@ -57,11 +58,21 @@ namespace Revit.Elements
         /// <summary>
         /// Get an Axis-aligned BoundingBox of the Element
         /// </summary>
-        public BoundingBox BoundingBox
+        public Autodesk.DesignScript.Geometry.BoundingBox BoundingBox
         {
             get
             {
-                return new BoundingBox(this.InternalElement.get_BoundingBox(null));
+                var bb = this.InternalElement.get_BoundingBox(null);
+
+                // if the Element was created during current transaction, we need to regenerate
+                // in order to access the bounding box
+                if (bb == null)
+                {
+                    DocumentManager.Instance.CurrentDBDocument.Regenerate();
+                    bb = this.InternalElement.get_BoundingBox(null);
+                } 
+                
+                return bb.ToProtoType();
             }
         }
 
