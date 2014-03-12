@@ -249,7 +249,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testListLength_emptyInput.dyn");
             RunModel(testFilePath);
-            AssertPreviewValue("8ab87f7a-2577-46b9-bee6-512b1678b028", new int[] { });
+            AssertPreviewValue("8ab87f7a-2577-46b9-bee6-512b1678b028", 0);
 
         }
 
@@ -718,7 +718,7 @@ namespace Dynamo.Tests
             Dictionary<int, object> validationData = new Dictionary<int, object>()
             {
                 {0,-1},
-                {7,8},
+                {7,6},
 
             };
             SelectivelyAssertPreviewValues("6dc62b9d-6045-4b68-a34c-2d5da999958b", validationData);
@@ -1041,8 +1041,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
 
             AssertPreviewValue("5da40769-ffc8-408b-94bb-8c5dff31132e", new int[][]
             {
@@ -1311,8 +1311,7 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            var guid = "4e781f03-5b48-4d58-a511-8c732665e961";
-            var numberRange = workspace.NodeFromWorkspace<CodeBlockNodeModel>(guid);
+            var numberRange = model.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>("4e781f03-5b48-4d58-a511-8c732665e961");
 
             var actual = numberRange.GetValue(0).GetElements();
             var innerList1 = actual[0].GetElements();
@@ -1598,13 +1597,7 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-<<<<<<< HEAD
             var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
-=======
-            var guid = "14cb6593-24d8-4ffc-8ee5-9f4247449fc2";
-            var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>(guid);
->>>>>>> 6df90c7775723de7dde9555843db2014910fa2ca
-
             var firstOutput = takeFromList.GetValue(0).GetElements();
             var child = firstOutput[0].GetElements();
             var child1 = firstOutput[4].GetElements();
