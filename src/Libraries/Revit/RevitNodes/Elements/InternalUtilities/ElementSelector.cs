@@ -11,7 +11,7 @@ using RevitServices.Persistence;
 
 namespace Revit.Elements
 {
-    //[Browsable(false)]
+    //[SupressImportIntoVM]
     public class ElementSelector
     {
         /// <summary>

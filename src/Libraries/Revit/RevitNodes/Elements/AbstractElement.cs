@@ -15,7 +15,7 @@ namespace Revit.Elements
     /// <summary>
     /// Superclass of all Revit element wrappers
     /// </summary>
-    //[Browsable(false)]
+    //[SupressImportIntoVM]
     public abstract class AbstractElement : IDisposable
     {
         /// <summary>
@@ -101,7 +101,7 @@ namespace Revit.Elements
         /// <summary>
         /// A reference to the element
         /// </summary>
-        //[Browsable(false)]
+        //[SupressImportIntoVM]
         public abstract Autodesk.Revit.DB.Element InternalElement
         {
             get;
