@@ -8,10 +8,15 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using NUnit.Framework;
+using System.Text;
+using Dynamo.DSEngine;
+using ProtoCore.DSASM;
+using ProtoCore.Mirror;
+using System.Collections;
 
 namespace Dynamo.Tests
 {
-    internal class CustomNodes : DynamoUnitTest
+    internal class CustomNodes : DSEvaluationUnitTest
     {
         [Test]
         public void CanCollapseNodesAndGetSameResult()
@@ -77,7 +82,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
 
             string openPath = Path.Combine(examplePath, "collapse-defaults.dyn");
-            model.Open(openPath);
+            RunModel(openPath);
 
             //Confirm that everything is working OK.
             Controller.RunExpression();
@@ -85,7 +90,10 @@ namespace Dynamo.Tests
             var minNode = model.CurrentWorkspace.FirstNodeFromWorkspace<ListMin>();
             var numNode = model.CurrentWorkspace.FirstNodeFromWorkspace<DoubleInput>();
 
-            Assert.AreEqual(10, minNode.OldValue.Data);
+            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, model.CurrentWorkspace.Connectors.Count);
+
+            AssertPreviewValue("13f58ca4-4e48-4757-b16a-45b971a6d7fc", 10);
 
             model.AddToSelection(minNode);
             model.AddToSelection(numNode);
@@ -107,7 +115,7 @@ namespace Dynamo.Tests
 
             var collapsedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
 
-            Assert.AreEqual(10, collapsedNode.OldValue.Data);
+            AssertPreviewValue(collapsedNode.GUID.ToString(), 10);
         }
 
         [Test]
@@ -117,16 +125,16 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
 
             string openPath = Path.Combine(examplePath, "collapse-function.dyn");
-            model.Open(openPath);
+            RunModel(openPath);
 
             //Confirm that everything is working OK.
             Controller.RunExpression();
 
             var mulNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Multiplication>();
 
-            Assert.AreEqual(0, mulNode.OldValue.Data);
+            AssertPreviewValue(mulNode.GUID.ToString(), 0);
 
-            foreach (var node in model.CurrentWorkspace.Nodes.Where(x => !(x is Addition)))
+            foreach (var node in model.CurrentWorkspace.Nodes.Where(x => !(x is DSFunction)))
             {
                 model.AddToSelection(node);
             }
@@ -148,7 +156,7 @@ namespace Dynamo.Tests
 
             var collapsedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
 
-            Assert.AreEqual(0, collapsedNode.OldValue.Data);
+            AssertPreviewValue(collapsedNode.GUID.ToString(),0);
         }
 
         [Test]

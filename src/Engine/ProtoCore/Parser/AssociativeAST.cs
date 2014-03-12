@@ -2091,6 +2091,218 @@ namespace ProtoCore.AST.AssociativeAST
             return cond;
         }
 
+
+        //Due to the lack of var arg support for generic types, we need to do
+        //the manual type expansions
+
+        #region BuildFunctionCall type safe overloads
+
+        public static AssociativeNode BuildFunctionCall(
+            Action a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1>(
+            Action<T1> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2>(
+            Action<T1, T2> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3>(
+            Action<T1, T2, T3> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4>(
+                    Action<T1, T2, T3, T4> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4, T5>(
+                    Action<T1, T2, T3, T4, T5> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4, T5, T6>(
+                    Action<T1, T2, T3, T4, T5, T6> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4, T5, T6, T7>(
+                    Action<T1, T2, T3, T4, T5, T6, T7> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4, T5, T6, T7, T8>(
+                   Action<T1, T2, T3, T4, T5, T6, T7, T8> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
+                   Action<T1, T2, T3, T4, T5, T6, T7, T8, T9> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
+                   Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
+                   Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
+                   Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+
+
+
+        public static AssociativeNode BuildFunctionCall<TRetType>(
+            Func<TRetType> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, TRetType>(
+            Func<T1, TRetType> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, TRetType>(
+            Func<T1, T2, TRetType> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, TRetType>(
+                    Func<T1, T2, T3, TRetType> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4, TRetType>(
+                    Func<T1, T2, T3, T4, TRetType> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4, T5, TRetType>(
+                    Func<T1, T2, T3, T4, T5, TRetType> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4, T5, T6, TRetType>(
+                    Func<T1, T2, T3, T4, T5, T6, TRetType> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4, T5, T6, T7, TRetType>(
+                   Func<T1, T2, T3, T4, T5, T6, T7, TRetType> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4, T5, T6, T7, T8, TRetType>(
+                   Func<T1, T2, T3, T4, T5, T6, T7, T8, TRetType> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, TRetType>(
+                   Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TRetType> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TRetType>(
+                   Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TRetType> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+        public static AssociativeNode BuildFunctionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TRetType>(
+                   Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TRetType> a, List<AssociativeNode> arguments, Core core = null)
+        {
+            return BuildFunctionCall(
+                a.Method.DeclaringType.FullName,
+                a.Method.Name,
+                arguments, core);
+        }
+
+        #endregion
+
         public static AssociativeNode BuildFunctionCall(
             string className, string functionName, List<AssociativeNode> arguments, Core core = null)
         {
