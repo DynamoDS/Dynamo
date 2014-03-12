@@ -28,6 +28,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\..\..\bin\AnyCPU\Debug\RevitNodes.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,6 +38,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\..\..\bin\AnyCPU\Release\RevitNodes.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Numerics">
@@ -86,6 +88,7 @@
     <Compile Include="Elements\ModelTextType.cs" />
     <Compile Include="Elements\StructuralType.cs" />
     <Compile Include="Elements\InternalUtilities\ElementWrappingExtensions.cs" />
+    <Compile Include="Elements\Topography.cs" />
     <Compile Include="Elements\Views\AbstractPlanView.cs" />
     <Compile Include="Elements\Views\AbstractView.cs" />
     <Compile Include="Elements\Views\Packing\CygonRectanglePacker.cs" />
@@ -105,7 +108,6 @@
     <Compile Include="GeometryConversion\RevitToProtoCurve.cs" />
     <Compile Include="GeometryConversion\RevitToProtoMesh.cs" />
     <Compile Include="GeometryObjects\Intersect.cs" />
-    <Compile Include="GeometryObjects\BoundingBox.cs" />
     <Compile Include="GeometryObjects\PlanarFace.cs" />
     <Compile Include="GeometryObjects\GeometryObjectSelector.cs" />
     <Compile Include="Geometry\Domain.cs" />
@@ -151,7 +153,9 @@
       <Name>RevitServices</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="RevitNodes_DynamoCustomization.xml" />
+  </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

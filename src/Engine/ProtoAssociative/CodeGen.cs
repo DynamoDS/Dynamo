@@ -914,15 +914,20 @@ namespace ProtoAssociative
         }
 
 
-        public ProtoCore.DSASM.ProcedureNode TraverseDotFunctionCall(ProtoCore.AST.Node node, ProtoCore.AST.Node parentNode, int lefttype, int depth, ref ProtoCore.Type inferedType, 
-            ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.DSASM.AssociativeSubCompilePass subPass = ProtoCore.DSASM.AssociativeSubCompilePass.kNone,
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode bnode = null)
+        public ProcedureNode TraverseDotFunctionCall(
+                                ProtoCore.AST.Node node, 
+                                ProtoCore.AST.Node parentNode, 
+                                int lefttype, 
+                                int depth, 
+                                ref ProtoCore.Type inferedType, 
+                                GraphNode graphNode = null, 
+                                AssociativeSubCompilePass subPass = AssociativeSubCompilePass.kNone,
+                                BinaryExpressionNode bnode = null)
         {
-            FunctionCallNode funcCall = null;
-            ProtoCore.DSASM.ProcedureNode procCallNode = null;
-            ProtoCore.DSASM.ProcedureNode procDotCallNode = null;
-            string procName = null;
+            ProcedureNode procCallNode = null;
+            ProcedureNode procDotCallNode = null;
             List<ProtoCore.Type> arglist = new List<ProtoCore.Type>();
+
             ProtoCore.Type dotCallType = new ProtoCore.Type();
             dotCallType.UID = (int)PrimitiveType.kTypeVar;
             dotCallType.IsIndexable = false;
@@ -933,30 +938,30 @@ namespace ProtoAssociative
             bool isUnresolvedDot = false;
             bool isUnresolvedMethod = false;
 
-            int classIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
+            int classIndex = Constants.kInvalidIndex;
             string className = string.Empty;
 
             //ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCall = node as ProtoCore.AST.AssociativeAST.FunctionDotCallNode; 
-            ProtoCore.AST.AssociativeAST.FunctionDotCallNode dotCall = new FunctionDotCallNode(node as ProtoCore.AST.AssociativeAST.FunctionDotCallNode);
-            funcCall = dotCall.DotCall;
-            procName = dotCall.FunctionCall.Function.Name;
+            var dotCall = new FunctionDotCallNode(node as FunctionDotCallNode);
+            FunctionCallNode funcCall = dotCall.DotCall;
+            string procName = dotCall.FunctionCall.Function.Name;
 
-            List<AssociativeNode> replicationGuide = (dotCall.FunctionCall.Function as IdentifierNode).ReplicationGuides;
+            var replicationGuide = (dotCall.FunctionCall.Function as IdentifierNode).ReplicationGuides;
 
-            var dotCallFirstArgument = dotCall.DotCall.FormalArguments[0];
-            if (dotCallFirstArgument is FunctionDotCallNode)
+            var firstArgument = dotCall.DotCall.FormalArguments[0];
+            if (firstArgument is FunctionDotCallNode)
             {
                 isUnresolvedDot = true;
             }
-            else if (dotCallFirstArgument is IdentifierNode || dotCallFirstArgument is ThisPointerNode)
+            else if (firstArgument is IdentifierNode || firstArgument is ThisPointerNode)
             {
                 // Check if the lhs identifer is a class name
                 string lhsName = "";
                 int ci = Constants.kInvalidIndex;
 
-                if (dotCallFirstArgument is IdentifierNode)
+                if (firstArgument is IdentifierNode)
                 {
-                    lhsName = (dotCallFirstArgument as IdentifierNode).Name;
+                    lhsName = (firstArgument as IdentifierNode).Name;
                     ci = core.ClassTable.IndexOf(lhsName);
                     classIndex = ci;
                     className = lhsName;
@@ -991,7 +996,7 @@ namespace ProtoAssociative
                 {
                     // It is a class name
                     dotCall.DotCall.FormalArguments[0] = new IntNode(ci);
-                    dotCallFirstArgument = dotCall.DotCall.FormalArguments[0];
+                    firstArgument = dotCall.DotCall.FormalArguments[0];
 
                     inferedType.UID = dotCallType.UID = ci;
 
@@ -1025,8 +1030,8 @@ namespace ProtoAssociative
 
                         if (null != procNode)
                         {
-                            string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodHasInvalidArguments, functionName);
-                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, dotCall.line, dotCall.col);
+                            string message = String.Format(WarningMessage.kMethodHasInvalidArguments, functionName);
+                            buildStatus.LogWarning(WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, dotCall.line, dotCall.col);
                         }
                         else if (CoreUtils.TryGetPropertyName(functionName, out property))
                         {
@@ -1042,37 +1047,43 @@ namespace ProtoAssociative
                             }
                             else
                             {
-                                string message = String.Format(WarningMessage.kCallingNonStaticProperty, 
-                                                               lhsName, property);
+                                if (subPass != AssociativeSubCompilePass.kUnboundIdentifier)
+                                {
+                                    string message = String.Format(WarningMessage.kCallingNonStaticProperty,
+                                                                   lhsName, property);
 
-                                buildStatus.LogWarning(WarningID.kCallingNonStaticMethodOnClass, 
-                                                       message, 
-                                                       core.CurrentDSFileName, 
-                                                       dotCall.line, 
-                                                       dotCall.col);
+                                    buildStatus.LogWarning(WarningID.kCallingNonStaticMethodOnClass,
+                                                           message,
+                                                           core.CurrentDSFileName,
+                                                           dotCall.line,
+                                                           dotCall.col);
+                                }
                             }
                         }
                         else
                         {
-                            string message = String.Format(WarningMessage.kCallingNonStaticMethod, lhsName, functionName);
-                            buildStatus.LogWarning(WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, dotCall.line, dotCall.col);
+                            if (subPass != AssociativeSubCompilePass.kUnboundIdentifier)
+                            {
+                                string message = String.Format(WarningMessage.kCallingNonStaticMethod, lhsName, functionName);
+                                buildStatus.LogWarning(WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, dotCall.line, dotCall.col);
+                            }
                         }
                     }
                 }
 
 
-                if (dotCall.DotCall.FormalArguments.Count == ProtoCore.DSASM.Constants.kDotCallArgCount)
+                if (dotCall.DotCall.FormalArguments.Count == Constants.kDotCallArgCount)
                 {
-                    if (dotCallFirstArgument is IdentifierNode)
+                    if (firstArgument is IdentifierNode)
                     {
-                        ProtoCore.DSASM.SymbolNode symbolnode = null;
+                        SymbolNode symbolnode = null;
                         bool isAccessible = false;
-                        bool isAllocated = VerifyAllocation((dotCallFirstArgument as IdentifierNode).Name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                        bool isAllocated = VerifyAllocation((firstArgument as IdentifierNode).Name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
                         if (isAllocated && symbolnode.datatype.UID != (int)PrimitiveType.kTypeVar)
                         {
                             inferedType.UID = symbolnode.datatype.UID;
 
-                            if (ProtoCore.DSASM.Constants.kInvalidIndex != inferedType.UID)
+                            if (Constants.kInvalidIndex != inferedType.UID)
                             {
                                 procCallNode = GetProcedureFromInstance(symbolnode.datatype.UID, dotCall.FunctionCall);
                             }
@@ -1081,11 +1092,11 @@ namespace ProtoAssociative
                             {
                                 if (procCallNode.isConstructor)
                                 {
-                                    if (subPass != ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
+                                    if (subPass != AssociativeSubCompilePass.kUnboundIdentifier)
                                     {
                                         // A constructor cannot be called from an instance
-                                        string message = String.Format(ProtoCore.BuildData.WarningMessage.KCallingConstructorOnInstance, procName);
-                                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingConstructorOnInstance, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
+                                        string message = String.Format(WarningMessage.KCallingConstructorOnInstance, procName);
+                                        buildStatus.LogWarning(WarningID.kCallingConstructorOnInstance, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
                                     }
 
                                     isUnresolvedDot = true;
@@ -1093,13 +1104,12 @@ namespace ProtoAssociative
                                 }
                                 else
                                 {
-                                   isAccessible =
-                                       procCallNode.access == ProtoCore.DSASM.AccessSpecifier.kPublic
-                                        || (procCallNode.access == ProtoCore.DSASM.AccessSpecifier.kPrivate && procCallNode.classScope == globalClassIndex);
+                                   isAccessible = procCallNode.access == AccessSpecifier.kPublic
+                                        || (procCallNode.access == AccessSpecifier.kPrivate && procCallNode.classScope == globalClassIndex);
 
                                     if (!isAccessible)
                                     {
-                                        if (subPass != ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
+                                        if (subPass != AssociativeSubCompilePass.kUnboundIdentifier)
                                         {
                                             string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodIsInaccessible, procName);
                                             buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
@@ -1121,7 +1131,7 @@ namespace ProtoAssociative
                             isUnresolvedDot = true;
                         }
                     }
-                    else if (dotCallFirstArgument is ThisPointerNode)
+                    else if (firstArgument is ThisPointerNode)
                     {
                         if (globalClassIndex != Constants.kInvalidIndex) 
                         {
@@ -1129,7 +1139,7 @@ namespace ProtoAssociative
                             if (null != procCallNode && procCallNode.isConstructor)
                             {
                                 dotCall.DotCall.FormalArguments[0] = new IntNode(globalClassIndex);
-                                dotCallFirstArgument = dotCall.DotCall.FormalArguments[0];
+                                firstArgument = dotCall.DotCall.FormalArguments[0];
                                 inferedType.UID = dotCallType.UID = ci;
                             }
                         }
@@ -1549,9 +1559,9 @@ namespace ProtoAssociative
                 }
             }
 
-            if (dotCallFirstArgument is FunctionCallNode ||
-                dotCallFirstArgument is FunctionDotCallNode ||
-                dotCallFirstArgument is ExprListNode)
+            if (firstArgument is FunctionCallNode ||
+                firstArgument is FunctionDotCallNode ||
+                firstArgument is ExprListNode)
             {
                 inferedType.UID = arglist[0].UID;
             }

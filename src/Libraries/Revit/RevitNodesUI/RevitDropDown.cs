@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using Autodesk.Revit.DB;
 using DSCoreNodesUI;
 using Dynamo.Models;
@@ -58,9 +61,10 @@ namespace DSRevitNodesUI
                 AstFactory.BuildStringNode(((FamilySymbol) Items[SelectedIndex].Item).Family.Name),
                 AstFactory.BuildStringNode(((FamilySymbol) Items[SelectedIndex].Item).Name)
             };
-            var functionCall = AstFactory.BuildFunctionCall("Revit.Elements.FamilySymbol",
-                                                            "ByFamilyNameAndTypeName",
-                                                            args);
+
+            var functionCall = AstFactory.BuildFunctionCall
+                <Revit.Elements.Family, System.String, Revit.Elements.FamilySymbol>
+                (Revit.Elements.FamilySymbol.ByFamilyAndName, args);
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
@@ -111,9 +115,11 @@ namespace DSRevitNodesUI
             {
                 AstFactory.BuildStringNode(((Autodesk.Revit.DB.FloorType) Items[SelectedIndex].Item).Name)
             };
-            var functionCall = AstFactory.BuildFunctionCall("Revit.Elements.FloorType",
-                                                            "ByName",
-                                                            args);
+
+            var functionCall = AstFactory.BuildFunctionCall
+                <System.String, Revit.Elements.FloorType>
+                (Revit.Elements.FloorType.ByName, args);
+
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }

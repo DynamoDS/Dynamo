@@ -43,7 +43,7 @@ namespace Revit.GeometryConversion
         /// <returns></returns>
         private static Autodesk.DesignScript.Geometry.NurbsCurve Convert(Autodesk.Revit.DB.NurbSpline crv)
         {
-            return NurbsCurve.ByControlVerticesWeightsKnots(crv.CtrlPoints.Select(x => x.ToPoint()).ToArray(), crv.Weights.Cast<double>().ToArray(), crv.Knots.Cast<double>().ToArray(), crv.Degree );
+            return NurbsCurve.ByControlPointsWeightsKnots(crv.CtrlPoints.Select(x => x.ToPoint()).ToArray(), crv.Weights.Cast<double>().ToArray(), crv.Knots.Cast<double>().ToArray(), crv.Degree );
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Revit.GeometryConversion
         private static Autodesk.DesignScript.Geometry.NurbsCurve Convert(Autodesk.Revit.DB.PolyLine crv)
         {
             return
-                Autodesk.DesignScript.Geometry.NurbsCurve.ByControlVertices(
+                Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(
                     crv.GetCoordinates().Select(x => x.ToPoint()).ToArray(), 1);
         }
 
