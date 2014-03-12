@@ -154,7 +154,7 @@ namespace Revit.Elements.Views
                     target, abstractElement, name, isolateElement);
             }
 
-            BoundingBox boundingBox = element as BoundingBox;
+            Autodesk.DesignScript.Geometry.BoundingBox boundingBox = element as Autodesk.DesignScript.Geometry.BoundingBox;
             if (boundingBox != null)
             {
                 return ByEyePointTargetAndBoundingBox(eyePoint,
@@ -211,7 +211,7 @@ namespace Revit.Elements.Views
         /// <param name="name"></param>
         /// <param name="isolateElement"></param>
         /// <returns></returns>
-        public static PerspectiveView ByEyePointTargetAndBoundingBox(Autodesk.DesignScript.Geometry.Point eyePoint, Autodesk.DesignScript.Geometry.Point target, BoundingBox boundingBox, string name, bool isolateElement)
+        public static PerspectiveView ByEyePointTargetAndBoundingBox(Autodesk.DesignScript.Geometry.Point eyePoint, Autodesk.DesignScript.Geometry.Point target, Autodesk.DesignScript.Geometry.BoundingBox boundingBox, string name, bool isolateElement)
         {
             if (boundingBox == null)
             {
@@ -233,7 +233,7 @@ namespace Revit.Elements.Views
                 throw new ArgumentNullException("name");
             }
 
-            return new PerspectiveView(eyePoint.ToXyz(), target.ToXyz(), boundingBox.InternalBoundingBoxXyz, name, isolateElement);
+            return new PerspectiveView(eyePoint.ToXyz(), target.ToXyz(), boundingBox.ToRevitType(), name, isolateElement);
         }
 
         #endregion

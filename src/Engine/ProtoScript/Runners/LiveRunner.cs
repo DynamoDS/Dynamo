@@ -1006,7 +1006,6 @@ namespace ProtoScript.Runners
                     BinaryExpressionNode bNode = node as BinaryExpressionNode;
                     if (bNode != null)
                     {
-                        BinaryExpressionNode newBNode = new BinaryExpressionNode(bNode);
                         // TODO: Aparajit - this can be made more efficient by maintaining a map in core of 
                         // graphnode vs expression UID 
                         foreach (var gnode in runnerCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
@@ -1016,7 +1015,7 @@ namespace ProtoScript.Runners
                                 gnode.isActive = false;
                             }
                         }
-                        newBNode.RightNode = new NullNode();
+                        BinaryExpressionNode newBNode = new BinaryExpressionNode(bNode.LeftNode, new NullNode(), ProtoCore.DSASM.Operator.assign);
                         astNodeList.Add(newBNode);
                     }
                 }
