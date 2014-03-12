@@ -318,7 +318,8 @@ namespace DSCore
             [ArbitraryDimensionArrayImport] IList list,
             IList indices)
         {
-            var idxs = new HashSet<int>(indices.Cast<int>());
+            //var idxs = new HashSet<int>(indices.Cast<int>());
+            var idxs = indices.Cast<int>().ToList();
             return list.Cast<object>().Where((_, i) => !idxs.Contains(i)).ToList();
         }
 
