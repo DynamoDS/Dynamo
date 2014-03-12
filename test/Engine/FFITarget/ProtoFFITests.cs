@@ -82,6 +82,10 @@ namespace FFITarget
         {
             return new List<int> { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
         }
+        public static IEnumerable GetNestedCollection()
+        {
+            return new List<object> { 2, 3, "DesignScript", new List<string> { "Dynamo", "Revit" }, new List<object> { true, new List<object> { 5.5, 10 } } };
+        }
         public static IEnumerable<int> GetNumbersByDouble(int x)
         {
             for (int i = 0; i < x; ++i)

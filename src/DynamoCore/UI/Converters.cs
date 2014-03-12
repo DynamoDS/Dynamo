@@ -436,6 +436,8 @@ namespace Dynamo.Controls
                     return DeadBrush;
                 case ElementState.Error:
                     return ErrorBrush;
+                case ElementState.Warning:
+                    return ErrorBrush;
             }
 
             return DeadBrush;
