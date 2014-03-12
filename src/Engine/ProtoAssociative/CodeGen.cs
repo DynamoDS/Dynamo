@@ -3931,8 +3931,11 @@ namespace ProtoAssociative
                 {
                     if (compilePass > AssociativeCompilePass.kClassName && !ssaTransformed)
                     {
-                        //Audit class table for multiple symbol definition and emit warning.
-                        this.core.ClassTable.AuditMultipleDefinition(this.core.BuildStatus);
+                        if (!core.IsParsingCodeBlockNode)
+                        {
+                            //Audit class table for multiple symbol definition and emit warning.
+                            this.core.ClassTable.AuditMultipleDefinition(this.core.BuildStatus);
+                        }
                         codeblock.Body = BuildSSA(codeblock.Body, context);
                         ssaTransformed = true;
                         if (core.Options.DumpIL)
