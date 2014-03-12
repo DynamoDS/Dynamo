@@ -116,7 +116,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(watchNode);
 
             //TODO: cannot finish test until migration is completed for Sequence and Formula nodes
-            Assert.Inconclusive("TODO: What is the expected result?");
+            Assert.Inconclusive("Deprecated: Sequence, Formula");
 
             AssertPreviewValue(watchNode.GUID.ToString(), new int[]{ });
         }
