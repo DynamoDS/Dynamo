@@ -952,58 +952,6 @@ namespace GraphToDSCompiler
         }
 
         /// <summary>
-        /// TODO: DEPRECATE - Currently used in ProtoTest.GraphCompiler.MicroFeatureTests
-        /// Takes in a string and returns a list of unbound variables and the line numbers for output lines.
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="inputVariables"></param>
-        /// <param name="outputLines"></param>
-        /// <returns>Returns true if compilation succeeded, or false otherwise. Returning true may still 
-        /// result in warnings, which suggests that the compilation was successful with warning.</returns>
-        public static bool GetInputOutputInfo(string code, out List<ProtoCore.BuildData.WarningEntry> warnings, out List<string> errors,
-            Dictionary<string, int> inputVariables, Dictionary<int, string> outputLines)
-        {
-            warnings = null;
-            errors = new List<string>();
-
-            if (string.IsNullOrEmpty(code))
-                throw new ArgumentNullException("code", "8686D4A8");
-
-            if (null != inputVariables)
-                inputVariables.Clear();
-            if (null != outputLines)
-                outputLines.Clear();
-
-            try
-            {
-                BuildCore(true);
-                int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-                ProtoCore.BuildStatus status = PreCompile(code, core, out blockId);
-                foreach (var err in status.Errors)
-                {
-                    errors.Add(err.Message);
-                }
-                warnings = status.Warnings;
-
-                if (null != inputVariables)
-                    GetInputVariables(warnings, inputVariables);
-                if (null != outputLines)
-                    GetOutputLines(code, core, outputLines);
-
-                return true;
-            }
-            catch (Exception exception)
-            {
-                //ProtoCore.BuildData.WarningEntry warning = new ProtoCore.BuildData.WarningEntry();
-                //warning.msg = exception.Message;
-                //warnings = new List<ProtoCore.BuildData.WarningEntry>();
-                //warnings.Add(warning);
-                return false;
-            }
-        }
-
-
-        /// <summary>
         /// Takes in a string and returns a list of unbound variables and the line numbers for output lines.
         /// </summary>
         /// <param name="compilableText"></param>
@@ -1013,8 +961,6 @@ namespace GraphToDSCompiler
         /// result in warnings, which suggests that the compilation was successful with warning.</returns>
         public static bool GetInputOutputInfo(string compilableText, Dictionary<int, List<VariableLine>> inputLines, HashSet<VariableLine> outputLines)
         {
-            List<ProtoCore.BuildData.WarningEntry> warnings = null;
-            
             if (string.IsNullOrEmpty(compilableText))
                 throw new ArgumentNullException("code", "8686D4A8");
 
@@ -1029,10 +975,10 @@ namespace GraphToDSCompiler
                 int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
                 ProtoCore.BuildStatus status = PreCompile(compilableText, core, out blockId);
 
-                if( status.Errors.Count > 0)
+                if( status.ErrorCount > 0)
                    return false;
 
-                warnings = status.Warnings;
+                var warnings = status.Warnings;
 
                 if (null != inputLines)
                     GetInputLines(compilableText, warnings, inputLines);
@@ -1159,9 +1105,7 @@ namespace GraphToDSCompiler
 
                 core.BuildStatus.ReportBuildResult();
 
-                int errors = 0;
-                int warnings = 0;
-                buildSucceeded = core.BuildStatus.GetBuildResult(out errors, out warnings);
+                buildSucceeded = core.BuildStatus.BuildSucceeded;
             }
             catch (Exception ex)
             {
@@ -1176,19 +1120,19 @@ namespace GraphToDSCompiler
         }
 
         // TODO: Deprecate as it's used in the deprecated version of GetInputOutputInfo
-        private static void GetInputVariables(List<ProtoCore.BuildData.WarningEntry> warnings,
+        private static void GetInputVariables(IEnumerable<ProtoCore.BuildData.WarningEntry> warnings,
             Dictionary<string, int> inputLines)
         {
             IEnumerable<ProtoCore.BuildData.WarningEntry> iter1 = warnings;
             int count = 0;
             foreach (ProtoCore.BuildData.WarningEntry warning in iter1)
             {
-                if (warning.id == ProtoCore.BuildData.WarningID.kIdUnboundIdentifier)
+                if (warning.ID == ProtoCore.BuildData.WarningID.kIdUnboundIdentifier)
                 {
-                    int start = warning.msg.IndexOf("'");
-                    int end = warning.msg.IndexOf("'", start + 1);
+                    int start = warning.Message.IndexOf("'");
+                    int end = warning.Message.IndexOf("'", start + 1);
                     ++count;
-                    inputLines.Add(warning.msg.Substring(start + 1, end - start - 1), warning.line);
+                    inputLines.Add(warning.Message.Substring(start + 1, end - start - 1), warning.Line);
                 }
             }
         }
@@ -1277,7 +1221,7 @@ namespace GraphToDSCompiler
             }
         }*/
 
-        private static void GetInputLines(string compilableText, List<ProtoCore.BuildData.WarningEntry> warnings,
+        private static void GetInputLines(string compilableText, IEnumerable<ProtoCore.BuildData.WarningEntry> warnings,
             Dictionary<int, List<VariableLine>> inputLines)
         {
             List<VariableLine> warningVLList = GetVarLineListFromWarning(warnings);
@@ -1308,17 +1252,17 @@ namespace GraphToDSCompiler
             }
         }
 
-        private static List<VariableLine> GetVarLineListFromWarning(List<ProtoCore.BuildData.WarningEntry> warnings)
+        private static List<VariableLine> GetVarLineListFromWarning(IEnumerable<ProtoCore.BuildData.WarningEntry> warnings)
         {
             List<VariableLine> result = new List<VariableLine>();
             foreach (ProtoCore.BuildData.WarningEntry warningEntry in warnings)
             {
-                if (warningEntry.id == ProtoCore.BuildData.WarningID.kIdUnboundIdentifier)
+                if (warningEntry.ID == ProtoCore.BuildData.WarningID.kIdUnboundIdentifier)
                 {
                     result.Add(new VariableLine()
                     {
-                        variable = warningEntry.msg.Split(' ')[1].Replace("'", ""),
-                        line = warningEntry.line
+                        variable = warningEntry.Message.Split(' ')[1].Replace("'", ""),
+                        line = warningEntry.Line
                     });
                 }
             }
@@ -1351,103 +1295,83 @@ namespace GraphToDSCompiler
             return p.root;
         }
 
-        public static bool Parse(ref string code, out List<ProtoCore.AST.Node> parsedNodes, out List<ProtoCore.BuildData.ErrorEntry> errors,
-            out List<ProtoCore.BuildData.WarningEntry> warnings, List<String> unboundIdentifiers, out List<String> tempIdentifiers)
+        public static bool Parse(ref string code, 
+                                 out List<ProtoCore.AST.Node> parsedNodes, 
+                                 out IEnumerable<ProtoCore.BuildData.ErrorEntry> errors,
+                                 out IEnumerable<ProtoCore.BuildData.WarningEntry> warnings, 
+                                 List<String> unboundIdentifiers, 
+                                 out List<String> tempIdentifiers)
         {
             tempIdentifiers = new List<string>();
 
-            try
+            List<String> compiledCode = new List<String>();
+            parsedNodes = null;
+            //-----------------------------------------------------------------------------------
+            //--------------------------------Correct the code-----------------------------------
+            //-----------------------------------------------------------------------------------
+            // Use the compile expression to format the code by adding the required %t temp vars
+            // needed for non assignment statements
+            CompileExpression(code, out compiledCode);
+
+            string codeToParse = "";
+            for (int i = 0; i < compiledCode.Count; i++)
             {
-                
-                List<String> compiledCode = new List<String>();
+                string tempVariableName = "temp" + System.Guid.NewGuid().ToString().Replace("-", "_");
+                tempIdentifiers.Add(tempVariableName);
+
+                string singleExpression = compiledCode[i];
+                singleExpression = singleExpression.Replace("%t", tempVariableName);
+                codeToParse += singleExpression;
+            }
+
+            code = codeToParse;
+
+            //Catch the errors thrown by compile expression, namely function modiferstack and class decl found
+            if (core.BuildStatus.ErrorCount > 0)
+            {
+                errors = core.BuildStatus.Errors;
+                warnings = core.BuildStatus.Warnings;
                 parsedNodes = null;
-                //-----------------------------------------------------------------------------------
-                //--------------------------------Correct the code-----------------------------------
-                //-----------------------------------------------------------------------------------
-                // Use the compile expression to format the code by adding the required %t temp vars
-                // needed for non assignment statements
-                CompileExpression(code, out compiledCode);
+                return false;
+            }
 
-                string codeToParse = "";
-                for (int i = 0; i < compiledCode.Count; i++)
+            // Parse and compile the code to get the result AST nodes as well as 
+            // any errors or warnings that were caught by the comiler
+            ProtoCore.BuildStatus buildStatus;
+            var tempUnboundIdentifiers = new Dictionary<int, List<VariableLine>>();
+            List<ProtoCore.AST.Node> nodeList = new List<ProtoCore.AST.Node>();
+
+            ParseCodeBlockNodeStatements(codeToParse, out tempUnboundIdentifiers, out nodeList, out buildStatus);
+            errors = buildStatus.Errors;
+            warnings = buildStatus.Warnings;
+
+            //Get the unboundIdentifiers from the warnings
+            foreach (KeyValuePair<int, List<VariableLine>> kvp in tempUnboundIdentifiers)
+            {
+                foreach (VariableLine vl in kvp.Value)
                 {
-                    string tempVariableName = "temp" + System.Guid.NewGuid().ToString().Replace("-", "_");
-                    tempIdentifiers.Add(tempVariableName);
-
-                    string singleExpression = compiledCode[i];
-                    singleExpression = singleExpression.Replace("%t", tempVariableName);
-                    codeToParse += singleExpression;
-                }
-
-                code = codeToParse;
-
-                //Catch the errors thrown by compile expression, namely function modiferstack and class decl found
-                if (core.BuildStatus.Errors.Count > 0)
-                {
-                    errors = core.BuildStatus.Errors;
-                    warnings = core.BuildStatus.Warnings;
-                    parsedNodes = null;
-                    return false;
-                }
-                //-----------------------------------------------------------------------------------
-
-
-                //-----------------------------------------------------------------------------------
-                //-----------------------------Parse and compile the code----------------------------
-                //-----------------------------------------------------------------------------------
-                //Parse and compile the code to get the result AST nodes as well as any errors or warnings
-                //that were caught by the comiler
-
-                ProtoCore.BuildStatus buildStatus;
-                Dictionary<int, List<VariableLine>> tempUnboundIdentifiers = new Dictionary<int, List<VariableLine>>();
-                List<ProtoCore.AST.Node> nodeList = new List<ProtoCore.AST.Node>(); 
-
-                ParseCodeBlockNodeStatements(codeToParse, out tempUnboundIdentifiers, out nodeList, out buildStatus);
-                errors = buildStatus.Errors;
-                warnings = buildStatus.Warnings;
-
-                //Get the unboundIdentifiers from the warnings
-                foreach (KeyValuePair<int, List<VariableLine>> kvp in tempUnboundIdentifiers)
-                {
-                    foreach (VariableLine vl in kvp.Value)
+                    if (!unboundIdentifiers.Contains(vl.variable))
                     {
-                        if (!unboundIdentifiers.Contains(vl.variable))
-                        {
-                            unboundIdentifiers.Add(vl.variable);
-                        }
+                        unboundIdentifiers.Add(vl.variable);
                     }
                 }
-                //-----------------------------------------------------------------------------------
-
-
-                //-----------------------------------------------------------------------------------
-                //------------------------------Assign the 'out' variables---------------------------
-                //-----------------------------------------------------------------------------------
-                // Use the parse function to get the parsed nodes to return to the user
-                if (nodeList != null)
-                {
-                    parsedNodes = new List<ProtoCore.AST.Node>();
-                    ProtoCore.AST.AssociativeAST.CodeBlockNode cNode;
-                    parsedNodes = ParserUtils.GetAstNodes(Parse(codeToParse, out cNode));
-                }
-                else
-                {
-                    parsedNodes = null;
-                }
-                //-----------------------------------------------------------------------------------
-
-                return true;
             }
-            catch (Exception e)
+
+            // Assign the 'out' variables
+            // Use the parse function to get the parsed nodes to return to the 
+            // user
+            if (nodeList != null)
             {
-                throw e;
-                //parsedNodes = null;
-                //compiledNodes = null;
-                //errors = null;
-                //warnings = null;
-                //unboundIdentifiers = null;
-                //return false;
+                parsedNodes = new List<ProtoCore.AST.Node>();
+                ProtoCore.AST.AssociativeAST.CodeBlockNode cNode;
+                parsedNodes = ParserUtils.GetAstNodes(Parse(codeToParse, out cNode));
             }
+            else
+            {
+                parsedNodes = null;
+            }
+
+            return true;
         }
 
         public static List<ProtoCore.AST.Node> ParseCodeBlock(string code)
@@ -1491,7 +1415,7 @@ namespace GraphToDSCompiler
             out Dictionary<int, List<VariableLine>> unboundIdentifiers, out List<ProtoCore.AST.Node> astNodes, out ProtoCore.BuildStatus buildStatus)
         {
             unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
-            List<ProtoCore.BuildData.WarningEntry> warnings = null;
+            IEnumerable<ProtoCore.BuildData.WarningEntry> warnings = null;
 
             if (string.IsNullOrEmpty(compilableText))
                 throw new ArgumentNullException("code", "8686D4A8");
@@ -1505,7 +1429,7 @@ namespace GraphToDSCompiler
                 //ProtoCore.BuildStatus status = PreCompile(compilableText, core, out blockId);
                 buildStatus = PreCompile(compilableText, core, out blockId);
 
-                if (buildStatus.Errors.Count > 0)
+                if (buildStatus.ErrorCount > 0)
                 {
                     astNodes = null;
                     return false;

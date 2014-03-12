@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
+using System.Linq;
+using ProtoCore.RuntimeData;
 
 namespace ProtoCore
 {
@@ -61,14 +64,16 @@ namespace ProtoCore
             public const string kPropertyInaccessible = "Property '{0}' is inaccessible.";
             public const string kMethodResolutionFailure = "Method resolution failure on: {0}() - 0CD069F4-6C8A-42B6-86B1-B5C17072751B.";
             public const string kMethodResolutionFailureForOperator = "Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'.";
+            public const string kConsoleWarningMessage = "> Runtime warning: {0}\n - \"{1}\" <line: {2}, col: {3}>";
         }
 
         public struct WarningEntry
         {
-            public RuntimeData.WarningID id;
-            public string message;
+            public RuntimeData.WarningID ID;
+            public string Message;
             public int Line;
-            public int Col;
+            public int Column;
+            public int ExpressionID;
             public string Filename;
         }
     }
@@ -78,22 +83,52 @@ namespace ProtoCore
         private ProtoCore.Core core;
         private bool warningAsError;
         private System.IO.TextWriter output = System.Console.Out;
-        private readonly List<RuntimeData.WarningEntry> warnings;
+        private List<RuntimeData.WarningEntry> warnings;
 
-        public IOutputStream MessageHandler { get; set; }
-        public IOutputStream WebMsgHandler { get; set; }
-        public List<RuntimeData.WarningEntry> Warnings { get { return warnings; } }
-        //public CodeModel.CodePoint CodePoint { get; private set; }
+        public IOutputStream MessageHandler 
+        { 
+            get; set; 
+        }
 
-        public RuntimeStatus(Core core,bool warningAsError = false, System.IO.TextWriter writer = null)
+        public IOutputStream WebMessageHandler 
+        { 
+            get; set; 
+        }
+
+        public IEnumerable<RuntimeData.WarningEntry> Warnings 
+        { 
+            get 
+            { 
+                return warnings; 
+            }
+        }
+
+        public int WarningCount
+        {
+            get
+            {
+                return warnings.Count;
+            }
+        }
+
+        public void ClearWarnings()
+        {
+            warnings.Clear();
+        }
+
+        public RuntimeStatus(Core core, 
+                             bool warningAsError = false, 
+                             System.IO.TextWriter writer = null)
         {
             warnings = new List<RuntimeData.WarningEntry>();
             this.warningAsError = warningAsError;
             this.core = core;
+
             if (core.Options.WebRunner)
             {
-                this.WebMsgHandler = new WebOutputStream(core);
+                this.WebMessageHandler = new WebOutputStream(core);
             }
+
             if (writer != null)
             {
                 output = System.Console.Out;
@@ -101,64 +136,58 @@ namespace ProtoCore
             }
         }
 
-        public void LogWarning(RuntimeData.WarningID id, string msg, string path, int line, int col)
+        public void LogWarning(RuntimeData.WarningID ID, string message, string filename, int line, int col)
         {
-            string filename = string.IsNullOrEmpty(path) ? string.Empty : path;
-            if (string.IsNullOrEmpty(filename) || line == -1 || col == -1)
+            filename = filename ?? string.Empty;
+
+            if (string.IsNullOrEmpty(filename) || 
+                line == Constants.kInvalidIndex || 
+                col == Constants.kInvalidIndex)
             {
-                ProtoCore.CodeGen.AuditCodeLocation(core, ref filename, ref line, ref col);
+                CodeGen.AuditCodeLocation(core, ref filename, ref line, ref col);
             }
-            OutputMessage outputMsg = new OutputMessage(string.Format("> Runtime warning: {0}\n - \"{1}\" <line: {2}, col: {3}>", msg, filename, line, col));
-            System.Console.WriteLine(string.Format("> Runtime warning: {0}\n - \"{1}\" <line: {2}, col: {3}>", msg, filename, line, col));
-            if (WebMsgHandler != null)
+
+            var warningMsg = string.Format(WarningMessage.kConsoleWarningMessage, 
+                                           message, filename, line, col);
+            System.Console.WriteLine(warningMsg);
+
+            if (WebMessageHandler != null)
             {
-                WebMsgHandler.Write(outputMsg);
+                var outputMessage = new OutputMessage(warningMsg);
+                WebMessageHandler.Write(outputMessage);
             }
-            warnings.Add(new RuntimeData.WarningEntry { id = id, message = msg, Col = col, Line = line, Filename = filename });
+
+            if (MessageHandler != null)
+            {
+                var outputMessage = new OutputMessage(OutputMessage.MessageType.Warning,
+                                                      message.Trim(), filename, line, col);
+                MessageHandler.Write(outputMessage);
+            }
+
+            var entry = new RuntimeData.WarningEntry
+            {
+                ID = ID,
+                Message = message,
+                Column = col,
+                Line = line,
+                ExpressionID = core.RuntimeExpressionUID,
+                Filename = filename
+            };
+            warnings.Add(entry);
 
             if (core.Options.IsDeltaExecution)
             {
-                core.LogErrorInGlobalMap(Core.ErrorType.Warning, msg, filename, line, col, BuildData.WarningID.kDefault, id);
             }
-
-            if (null != MessageHandler)
-            {
-                OutputMessage.MessageType type = OutputMessage.MessageType.Warning;
-                MessageHandler.Write(new OutputMessage(type, msg.Trim(), filename, line, col));
-            }
-            CodeModel.CodeFile cf = new CodeModel.CodeFile { FilePath = path };
-
-            /*CodePoint = new CodeModel.CodePoint
-            {
-                SourceLocation = cf,
-                LineNo = line,
-                CharNo = col
-            };*/
         }
 
-        public void LogWarning(RuntimeData.WarningID id, string msg)
+        public void LogWarning(RuntimeData.WarningID ID, string message)
         {
-            LogWarning(id, msg, string.Empty, -1, -1);
+            LogWarning(ID, message, string.Empty, Constants.kInvalidIndex, Constants.kInvalidIndex);
         }
 
-
-        public void LogWarning(RuntimeData.WarningID id, string msg, int blockID)
-        {
-            LogWarning(id, msg, string.Empty, -1, -1);
-        }
-
-
-        public bool ContainsWarning(RuntimeData.WarningID warnId)
-        {
-            foreach (RuntimeData.WarningEntry warn in warnings)
-            {
-                if (warnId == warn.id)
-                    return true;
-            }
-            return false;
-        }
-
-        public void LogMethodResolutionWarning(Core core, string methodName, int classScope = ProtoCore.DSASM.Constants.kInvalidIndex, List<StackValue> arguments = null)
+        public void LogMethodResolutionWarning(string methodName,
+                                               int classScope = Constants.kGlobalScope, 
+                                               List<StackValue> arguments = null)
         {
             string message;
             string propertyName;
@@ -169,30 +198,30 @@ namespace ProtoCore
                 if (classScope != Constants.kGlobalScope)
                 {
                     string classname = core.ClassTable.ClassNodes[classScope].name;
-                    message = string.Format(RuntimeData.WarningMessage.kPropertyOfClassNotFound, classname, propertyName);
+                    message = string.Format(WarningMessage.kPropertyOfClassNotFound, classname, propertyName);
                 }
                 else
                 {
-                    message = string.Format(RuntimeData.WarningMessage.kPropertyNotFound, propertyName);
+                    message = string.Format(WarningMessage.kPropertyNotFound, propertyName);
                 }
             }
             else if (CoreUtils.TryGetOperator(methodName, out op))
             {
                 string strOp = Op.GetOpSymbol(op);
-                message = String.Format(RuntimeData.WarningMessage.kMethodResolutionFailureForOperator,
+                message = String.Format(WarningMessage.kMethodResolutionFailureForOperator,
                                         strOp,
                                         core.TypeSystem.GetType((int)arguments[0].metaData.type),
                                         core.TypeSystem.GetType((int)arguments[1].metaData.type));
             }
             else
             {
-                message = string.Format(ProtoCore.RuntimeData.WarningMessage.kMethodResolutionFailure, methodName);
+                message = string.Format(WarningMessage.kMethodResolutionFailure, methodName);
             }
 
-            LogWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure, message);
+            LogWarning(WarningID.kMethodResolutionFailure, message);
         }
 
-        public void LogMethodNotAccessibleWarning(Core core, string methodName)
+        public void LogMethodNotAccessibleWarning(string methodName)
         {
             string message;
             string propertyName;

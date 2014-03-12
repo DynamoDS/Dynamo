@@ -92,6 +92,7 @@
     <Compile Include="Elements\ReferencePointTests.cs" />
     <Compile Include="Elements\SketchPlaneTests.cs" />
     <Compile Include="Elements\StructuralFramingTests.cs" />
+    <Compile Include="Elements\TopographyTests.cs" />
     <Compile Include="Elements\Views\AxonometricViewTests.cs" />
     <Compile Include="Elements\Views\CeilingPlanViewTests.cs" />
     <Compile Include="Elements\Views\DraftingViewTests.cs" />
@@ -104,7 +105,7 @@
     <Compile Include="GeometryConversion\ProtoToRevitCurveTests.cs" />
     <Compile Include="GeometryConversion\RevitToProtoCurveTests.cs" />
     <Compile Include="GeometryIntersection\FaceIntersectTests.cs" />
-    <Compile Include="GeometryObjects\BoundingBoxTests.cs" />
+    <Compile Include="GeometryConversion\BoundingBoxTests.cs" />
     <Compile Include="GeometryObjects\SolidTests.cs" />
     <Compile Include="GeometryTests.cs" />
     <Compile Include="Interactivity\SelectionTests.cs" />

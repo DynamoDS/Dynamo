@@ -68,6 +68,11 @@ namespace Dynamo.Tests
         /// </summary>
         private bool runDynamo;
 
+        /// <summary>
+        /// Should we attach to the debugger?
+        /// </summary>
+        private bool isDebug;
+
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
             AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.CurrentDomain_AssemblyResolve;
@@ -114,6 +119,17 @@ namespace Dynamo.Tests
                         }
 
                     }
+                    if (dataMap.ContainsKey("debug"))
+                    {
+                        try
+                        {
+                            isDebug = Convert.ToBoolean(dataMap["debug"]);
+                        }
+                        catch
+                        {
+                            isDebug = false;
+                        }
+                    }
                 }
 
                 if (string.IsNullOrEmpty(testAssembly))
@@ -124,6 +140,11 @@ namespace Dynamo.Tests
                 if (string.IsNullOrEmpty(resultsPath))
                 {
                     throw new Exception("You must supply a path for the results file.");
+                }
+
+                if (isDebug)
+                {
+                    Debugger.Launch();
                 }
 
                 if (runDynamo)
@@ -182,18 +203,18 @@ namespace Dynamo.Tests
                         if (t is ParameterizedMethodSuite)
                         {
                             var paramSuite = t as ParameterizedMethodSuite;
-                            foreach (var tInner in paramSuite.Tests)
+                            runningResults.AddRange(
+                                paramSuite.Tests.OfType<TestMethod>()
+                                .Select(RunTest).Cast<object>());
+                        }
+                        else
+                        {
+                            var method = t as TestMethod;
+                            if (method != null)
                             {
-                                if (tInner is TestMethod)
-                                {
-                                    runningResults.Add(RunTest((TestMethod)tInner));
-                                }
+                                runningResults.Add(RunTest(method));
                             }
                         }
-                        else if (t is TestMethod)
-                        {
-                            runningResults.Add(RunTest((TestMethod)t));
-                        } 
                     }
                     else
                     {
@@ -211,6 +232,13 @@ namespace Dynamo.Tests
                 CalculateTotalsOnResultsRoot(resultsRoot);
 
                 SaveResults();
+
+                // Automatic transaction strategy requires that we 
+                // close the transaction if it hasn't been closed by 
+                // by the end of an evaluation. It is possible to 
+                // run the test framework without running Dynamo, so
+                // we ensure that the transaction is closed here.
+                TransactionManager.Instance.ForceCloseTransaction();
             }
             catch (Exception ex)
             {
@@ -225,13 +253,12 @@ namespace Dynamo.Tests
 
         private void StartDynamo()
         {
-            Level defaultLevel = null;
             var fecLevel = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             fecLevel.OfClass(typeof(Level));
 
             DocumentManager.Instance.CurrentUIApplication = DocumentManager.Instance.CurrentUIApplication;
             DocumentManager.Instance.CurrentUIDocument = DocumentManager.Instance.CurrentUIDocument;
-            dynRevitSettings.DefaultLevel = defaultLevel;
+            dynRevitSettings.DefaultLevel = null;
 
             SIUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
             SIUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
@@ -242,7 +269,7 @@ namespace Dynamo.Tests
             string context = r.Replace(DocumentManager.Instance.CurrentUIApplication.Application.VersionName, "");
 
             // create the transaction manager object
-            TransactionManager.SetupManager(new DebugTransactionStrategy());
+            TransactionManager.SetupManager(new AutomaticTransactionStrategy());
 
             var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context);
             DynamoController.IsTestMode = true;

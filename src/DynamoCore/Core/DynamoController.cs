@@ -285,7 +285,7 @@ namespace Dynamo
                 Assembly.GetExecutingAssembly().GetName().Version));
 
             DynamoLoader.ClearCachedAssemblies();
-            DynamoLoader.LoadBuiltinTypes();
+            DynamoLoader.LoadNodeModels();
 
             //run tests
             if (FScheme.RunTests(DynamoLogger.Instance.Log))
@@ -348,13 +348,10 @@ namespace Dynamo
 
             PreferenceSettings.Save();
 
-            //VisualizationManager.ClearVisualizations();
-
             dynSettings.Controller.DynamoModel.OnCleanup(null);
             dynSettings.Controller = null;
             
             DynamoSelection.Instance.ClearSelection();
-
             DynamoLogger.Instance.FinishLogging();
         }
 
@@ -385,7 +382,7 @@ namespace Dynamo
 
 #if USE_DSENGINE
             EngineController.GenerateGraphSyncData(DynamoViewModel.Model.HomeSpace.Nodes);
-            if (!EngineController.HasPendingGraphSyncData())
+            if (!EngineController.HasPendingGraphSyncData)
             {
                 return;
             }

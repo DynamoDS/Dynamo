@@ -533,7 +533,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            model.CreateNode(400.0, 100.0, "Dynamo.Nodes.Addition");
+            model.CreateNode(Guid.NewGuid(), "+@,", 0, 0, true, true);
             model.CreateNode(100.0, 100.0, "Number");
             model.CreateNode(100.0, 300.0, "Number");
             model.CreateNode(100.0, 300.0, "Dynamo.Nodes.Watch");

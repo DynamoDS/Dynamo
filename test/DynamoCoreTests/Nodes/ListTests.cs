@@ -669,7 +669,7 @@ namespace Dynamo.Tests
 
 
             // First element in the list before Reversing
-            AssertPreviewValue("cd36fac7-d9eb-47ea-a73d-ad1bb4bbe54a", 0);
+            AssertPreviewValue("cd36fac7-d9eb-47ea-a73d-ad1bb4bbe54a", new int[] { 0 });
         }
 
         [Test]
@@ -1245,17 +1245,27 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
 
             Dictionary<int, object> validationData = new Dictionary<int, object>()
             {
                 {0,1},
-                {1,9},
+                {8,9},
             };
 
             //this is the case of 2D array. Need to change verification
-            SelectivelyAssertPreviewValues("4e781f03-5b48-4d58-a511-8c732665e961", validationData);
+            SelectivelyAssertPreviewValues("798bc857-f36e-44df-97cc-6e878aef5b72", validationData);
+
+            Dictionary<int, object> validationData1 = new Dictionary<int, object>()
+            {
+                {0,2},
+                {3,8},
+            };
+
+            //this is the case of 2D array. Need to change verification
+            SelectivelyAssertPreviewValues("2f5277db-4656-4014-8d85-8e4f51e5c2b1", validationData1);
+
 
         }
 
@@ -1724,6 +1734,7 @@ namespace Dynamo.Tests
         [Test, Category("Not Migrated")]
         public void ShiftListIndices_Complex()
         {
+            Assert.Inconclusive("String To Number node had been deprecated, cannot run this TestCase");
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\ShiftListIndeces_Complex.dyn");
@@ -1845,16 +1856,12 @@ namespace Dynamo.Tests
 
             var getFromList = model.CurrentWorkspace.NodeFromWorkspace("d2f1c900-99ce-40a5-ae4d-bbac1fe96cfd");
             var output = getFromList.GetValue(0).GetElements();
-            var child = output[0].GetElements();
-            var child1 = output[1].GetElements();
 
-            Assert.AreEqual(2, output.Count);
+            Assert.AreEqual(3, output.Count);
+            Assert.AreEqual(14, output[0].Data);
+            Assert.AreEqual(2, output[1].Data);
+            Assert.AreEqual(3, output[2].Data);
 
-            Assert.AreEqual(1, child.Count);
-            Assert.AreEqual(6, child[0].Data);
-
-            Assert.AreEqual(1, child1.Count);
-            Assert.AreEqual(9, child1[0].Data);
         }
 
         [Test]
@@ -1986,6 +1993,8 @@ namespace Dynamo.Tests
         [Test, Category("Not Migrated")]
         public void DropEveryNth_ComplexTest()
         {
+            Assert.Inconclusive("String To Number node had been deprecated, cannot run this TestCase");
+
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropEveryNth_ComplexTest.dyn");
@@ -2417,6 +2426,8 @@ namespace Dynamo.Tests
         [Test]
         public void Combine_ComplexTest()
         {
+            Assert.Inconclusive("String To Number node had been deprecated, cannot run this TestCase");
+
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Combine_ComplexTest.dyn");
