@@ -12,7 +12,7 @@ using RevitServices.Transactions;
 
 namespace Revit.Elements
 {
-    //[Browsable(false)]
+    //[SupressImportIntoVM]
     public abstract class AbstractView3D : AbstractView
     {
 
