@@ -14,8 +14,8 @@
 				<test name="ByParametersOnFaceReference_NullInput" modelPath=".\empty.rfa" />
 				<test name="ByParameterOnCurveReference_NullInput" modelPath=".\empty.rfa" />
 				<test name="ByLengthOnCurveReference_NullInput" modelPath=".\empty.rfa" />
-			</testFixture>
 			<testFixture name="FamilyTests">
+			</testFixture>
 				<test name="ByName_ValidInput" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="ByName_InvalidInput" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="ByName_NonexistentName" modelPath=".\MassWithBoxAndCone.rfa" />
@@ -148,7 +148,8 @@
 				<test name="ByArc_ValidArgs" modelPath=".\Empty.rvt" />
 			</testFixture>
 			<testFixture name="BoundingBoxTests">
-				<test name="BoundingBoxPropertyOnAbstractElement" modelPath=".\MassWithBoxAndCone.rfa" />
+				<test name="CanConvertRevitToProtoType" modelPath=".\MassWithBoxAndCone.rfa" />
+				<test name="CanConvertProtoToRevitType" modelPath=".\MassWithBoxAndCone.rfa" />
 			</testFixture>
 			<testFixture name="SectionViewTests">
 				<test name="ByBoundingBox_ValidArgs" modelPath=".\Empty.rvt" />
@@ -221,6 +222,11 @@
         <test name="ByReferencePoints_ValidArgs" modelPath=".\empty.rfa" />
         <test name="ByReferencePoints_DuplicatePoints" modelPath=".\empty.rfa" />
         <test name="ByReferencePoints_Mutation" modelPath=".\empty.rfa" />
+      </testFixture>
+      <testFixture name="TopographyTests">
+        <test name="ByPoints_ValidArgs" runDynamo="true" modelPath=".\empty.rvt" />
+        <test name="ByPoints_InvalidArgs" runDynamo="true" modelPath=".\empty.rvt" />
+        <test name="ByPoints_Mutation" runDynamo="true" modelPath=".\empty.rvt" />
       </testFixture>
 		</testAssembly>
 	</testAssemblies>

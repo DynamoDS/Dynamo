@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using ProtoCore.Utils;
 
+
 namespace ProtoCore.DSASM
 {
     public class HeapElement
@@ -304,7 +305,6 @@ namespace ProtoCore.DSASM
 
         private int FindFree()
         {
-#if _USE_FREE_LIST
             int freeItemCount = freeList.Count;
             if (freeItemCount > 0)
             {
@@ -312,29 +312,8 @@ namespace ProtoCore.DSASM
                 freeList.RemoveAt(freeItemCount - 1);
                 return index;
             }
-            /*
-            else
-            {
-                for (int n = 0; n < Heaplist.Count; ++n)
-                {
-                    if (false == Heaplist[n].Active)
-                    {
-                        return n;
-                    }
-                }
-            }
-            */
             return ProtoCore.DSASM.Constants.kInvalidIndex;
-#else
-            for (int n = 0; n < Heaplist.Count; ++n)
-            {
-                if (false == Heaplist[n].Active)
-                {
-                    return n;
-                }
-            }
-            return ProtoCore.DSASM.Constants.kInvalidIndex;
-#endif
+
         }
 
         public void Free()
@@ -502,9 +481,7 @@ namespace ProtoCore.DSASM
                     hs.Active = false;
 
                     GCRelease(hs.Stack, exe);
-#if _USE_FREE_LIST
                     freeList.Add(ptr);
-#endif
                 }
             }
         }

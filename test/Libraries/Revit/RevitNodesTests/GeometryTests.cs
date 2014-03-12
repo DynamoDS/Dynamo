@@ -27,7 +27,7 @@ namespace DSCoreNodesTests
                 Autodesk.DesignScript.Geometry.Point.ByCoordinates(10,0,0)
             };
 
-            var spline = Autodesk.DesignScript.Geometry.NurbsCurve.ByControlVertices(pts, 3);
+            var spline = Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(pts, 3);
 
             Assert.NotNull(spline);
             Assert.AreEqual(3, spline.Degree);
