@@ -68,6 +68,16 @@ namespace RevitServices.Persistence
         /// Set the element associated with the current operation from trace
         /// null if there is no object, or it's of the wrong type etc.
         /// </summary>
+        /// <param name="element">The element to store in trace</param>
+        public static void SetElementForTrace(Element element)
+        {
+            SetElementForTrace(element.Id);
+        }
+
+        /// <summary>
+        /// Set the element associated with the current operation from trace
+        /// null if there is no object, or it's of the wrong type etc.
+        /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static void SetElementForTrace(ElementId elementId)
