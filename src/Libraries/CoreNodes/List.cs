@@ -57,6 +57,55 @@ namespace DSCore
         */
 
         /// <summary>
+        ///     Build sublists from a list using DesignScript range syntax.
+        /// </summary>
+        /// <param name="list">The list from which to create sublists.</param>
+        /// <param name="ranges">The index ranges of the sublist elements.
+        /// Ex. \"{0..3,5,2}\"</param>
+        /// <param name="offset">The offset to apply to the sublist.
+        /// Ex. the range \"0..3\" with an offset of 2 will yield
+        /// {0,1,2,3}{2,3,4,5}{4,5,6,7}...</param>
+        /// <returns></returns>
+        public static IList Sublists(
+            [ArbitraryDimensionArrayImport] IList list,
+            [ArbitraryDimensionArrayImport] IList ranges,
+            int offset)
+        {
+            var result = new List<object>();
+            int len = list.Count;
+
+            for (int start = 0; start < len; start += offset)
+            {
+                var row = new List<object>();
+                
+                foreach (object item in ranges)
+                {
+                    IList subrange = null;
+
+                    if (item is ICollection)
+                        subrange = (IList)item;
+                    else
+                        subrange = new List<object>{item};
+
+                    // skip subrange if exceeds the list
+                    if (start + (int)subrange.Cast<object>().Max() >= len)
+                        continue;
+                    
+                    foreach (int idx in subrange)
+                    {
+                        if (start + idx < len)
+                            row.Add(list[start + idx]);
+                    }
+                }
+
+                if (row.Count > 0)
+                    result.Add(row.ToArray());
+            }
+
+            return result;
+        }
+
+        /// <summary>
         ///     Sorts a list using the built-in natural ordering.
         /// </summary>
         /// <param name="list">List to be sorted.</param>
@@ -305,25 +354,15 @@ namespace DSCore
         ///     Removes an item from the given list at the specified index.
         /// </summary>
         /// <param name="list">List to remove an item from.</param>
-        /// <param name="index">Index of the item to be removed.</param>
+        /// <param name="indices">Index or indices of the item(s) to be removed.</param>
         public static IList RemoveItemAtIndex(
             [ArbitraryDimensionArrayImport] IList list,
-            int index)
+            [ArbitraryDimensionArrayImport] object indices)
         {
-            return list.Cast<object>().Where((_, i) => i != index).ToList();
-        }
-
-        /// <summary>
-        ///     Removes items from the given list at the specified indices.
-        /// </summary>
-        /// <param name="list">List to remove items from.</param>
-        /// <param name="indices">Indices of the items to be removed.</param>
-        public static IList RemoveItemsAtIndices(
-            [ArbitraryDimensionArrayImport] IList list,
-            IList indices)
-        {
-            var idxs = new HashSet<int>(indices.Cast<int>());
-            return list.Cast<object>().Where((_, i) => !idxs.Contains(i)).ToList();
+            if (indices is ICollection)
+                return list.Cast<object>().Where((_, i) => !((IList)indices).Contains(i)).ToList();
+            else
+                return list.Cast<object>().Where((_, i) => i != (int)indices).ToList();
         }
 
         /// <summary>
