@@ -68,6 +68,11 @@ namespace Dynamo.Tests
         /// </summary>
         private bool runDynamo;
 
+        /// <summary>
+        /// Should we attach to the debugger?
+        /// </summary>
+        private bool isDebug;
+
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
             AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.CurrentDomain_AssemblyResolve;
@@ -77,9 +82,6 @@ namespace Dynamo.Tests
 
             try
             {
-
-                Debugger.Launch();
-
                 var docManager = DocumentManager.Instance;
                 docManager.CurrentUIApplication = revit.Application;
                 docManager.CurrentDBDocument = revit.Application.ActiveUIDocument.Document;
@@ -117,6 +119,17 @@ namespace Dynamo.Tests
                         }
 
                     }
+                    if (dataMap.ContainsKey("debug"))
+                    {
+                        try
+                        {
+                            isDebug = Convert.ToBoolean(dataMap["debug"]);
+                        }
+                        catch
+                        {
+                            isDebug = false;
+                        }
+                    }
                 }
 
                 if (string.IsNullOrEmpty(testAssembly))
@@ -127,6 +140,11 @@ namespace Dynamo.Tests
                 if (string.IsNullOrEmpty(resultsPath))
                 {
                     throw new Exception("You must supply a path for the results file.");
+                }
+
+                if (isDebug)
+                {
+                    Debugger.Launch();
                 }
 
                 if (runDynamo)
@@ -185,18 +203,18 @@ namespace Dynamo.Tests
                         if (t is ParameterizedMethodSuite)
                         {
                             var paramSuite = t as ParameterizedMethodSuite;
-                            foreach (var tInner in paramSuite.Tests)
+                            runningResults.AddRange(
+                                paramSuite.Tests.OfType<TestMethod>()
+                                .Select(RunTest).Cast<object>());
+                        }
+                        else
+                        {
+                            var method = t as TestMethod;
+                            if (method != null)
                             {
-                                if (tInner is TestMethod)
-                                {
-                                    runningResults.Add(RunTest((TestMethod)tInner));
-                                }
+                                runningResults.Add(RunTest(method));
                             }
                         }
-                        else if (t is TestMethod)
-                        {
-                            runningResults.Add(RunTest((TestMethod)t));
-                        } 
                     }
                     else
                     {
@@ -215,8 +233,12 @@ namespace Dynamo.Tests
 
                 SaveResults();
 
-                if(DynamoController.IsTestMode && dynSettings.Controller != null)
-                    TransactionManager.Instance.ForceCloseTransaction();
+                // Automatic transaction strategy requires that we 
+                // close the transaction if it hasn't been closed by 
+                // by the end of an evaluation. It is possible to 
+                // run the test framework without running Dynamo, so
+                // we ensure that the transaction is closed here.
+                TransactionManager.Instance.ForceCloseTransaction();
             }
             catch (Exception ex)
             {
