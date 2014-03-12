@@ -213,6 +213,19 @@ namespace Dynamo.ViewModels
             return xmlFilePath;
         }
 
+        internal string InsertPausePlaybackCommand()
+        {
+            if (CurrentState != State.Recording)
+            {
+                var message = "Method should be called only when recording";
+                throw new InvalidOperationException(message);
+            }
+
+            var pausePlaybackCommand = new DynCmd.PausePlaybackCommand(20);
+            this.RecordCommand(pausePlaybackCommand);
+            return pausePlaybackCommand.Tag;
+        }
+
         #endregion
 
         #region Private Class Helper Methods
@@ -273,7 +286,10 @@ namespace Dynamo.ViewModels
         private void PauseCommandPlayback(int pauseDurationInMs)
         {
             if (pauseDurationInMs <= 0)
-                pauseDurationInMs = 20; // Minimum pause of 20 milliseconds.
+            {
+                var msg = "Argument should be greater than zero";
+                throw new ArgumentException(msg, "pauseDurationInMs");
+            }
 
             this.playbackTimer.Tick -= OnPlaybackTimerTick;
             this.playbackTimer.Tick += OnPauseTimerTick;
