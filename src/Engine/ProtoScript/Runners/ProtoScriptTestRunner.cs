@@ -40,10 +40,7 @@ namespace ProtoScript.Runners
                 core.Executives[id].Compile(out blockId, null, globalBlock, context, EventSink);
 
                 core.BuildStatus.ReportBuildResult();
-
-                int errors = 0;
-                int warnings = 0;
-                buildSucceeded = core.BuildStatus.GetBuildResult(out errors, out warnings);
+                buildSucceeded = core.BuildStatus.BuildSucceeded;
             }
             catch (Exception ex)
             {
@@ -79,10 +76,7 @@ namespace ProtoScript.Runners
                 core.Executives[id].Compile(out blockId, null, globalBlock, context, EventSink);
 
                 core.BuildStatus.ReportBuildResult();
-
-                int errors = 0;
-                int warnings = 0;
-                buildSucceeded = core.BuildStatus.GetBuildResult(out errors, out warnings);
+                buildSucceeded = core.BuildStatus.BuildSucceeded;
             }
             catch (Exception ex)
             {
@@ -123,9 +117,7 @@ namespace ProtoScript.Runners
 
                 core.BuildStatus.ReportBuildResult();
 
-                int errors = 0;
-                int warnings = 0;
-                buildSucceeded = core.BuildStatus.GetBuildResult(out errors, out warnings);
+                buildSucceeded = core.BuildStatus.BuildSucceeded;
             }
             catch (Exception ex)
             {
