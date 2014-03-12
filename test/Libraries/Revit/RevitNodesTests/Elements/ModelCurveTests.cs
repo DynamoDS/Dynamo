@@ -19,7 +19,7 @@ namespace DSRevitNodesTests.Elements
             var line = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(1, 1, 1));
             Assert.NotNull(line);
 
-            var modelCurve = ModelCurve.ByPlanarCurve(line);
+            var modelCurve = ModelCurve.ByCurve(line);
             Assert.NotNull(line);
 
             var curveRef = modelCurve.CurveReference;
