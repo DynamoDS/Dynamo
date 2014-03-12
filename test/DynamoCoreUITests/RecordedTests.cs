@@ -51,12 +51,6 @@ namespace Dynamo.Tests.UI
             SetupDirectories();
         }
 
-        public override void Cleanup()
-        {
-            LibraryServices.DestroyInstance();
-            base.Cleanup();
-        }
-
         protected void Exit()
         {
             if (this.Controller != null)
