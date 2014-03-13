@@ -365,8 +365,8 @@ namespace Dynamo
             //when a document is opened 
             if (DocumentManager.Instance.CurrentUIDocument == null)
             {
-                DocumentManager.Instance.CurrentUIDocument =
-                    DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+                //DocumentManager.Instance.CurrentUIDocument =
+                //    DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 DynamoViewModel.RunEnabled = true;
 
                 ResetForNewDocument();
@@ -376,9 +376,9 @@ namespace Dynamo
         private void Application_DocumentClosed(object sender, DocumentClosedEventArgs e)
         {
             //Disable running against revit without a document
-            if (DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument == null)
+            if (DocumentManager.Instance.CurrentDBDocument == null)
             {
-                DocumentManager.Instance.CurrentUIDocument = null;
+                //DocumentManager.Instance.CurrentUIDocument = null;
                 DynamoViewModel.RunEnabled = false;
                 DynamoLogger.Instance.LogWarning(
                     "Dynamo no longer has an active document.",
@@ -386,8 +386,8 @@ namespace Dynamo
             }
             else
             {
-                DocumentManager.Instance.CurrentUIDocument =
-                    DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+                //DocumentManager.Instance.CurrentUIDocument =
+                //    DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 DynamoViewModel.RunEnabled = true;
                 DynamoLogger.Instance.LogWarning(
                     string.Format(
@@ -404,8 +404,8 @@ namespace Dynamo
             //if Dynamo doesn't have a view, then latch onto this one
             if (DocumentManager.Instance.CurrentUIDocument == null)
             {
-                DocumentManager.Instance.CurrentUIDocument =
-                    DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
+                //DocumentManager.Instance.CurrentUIDocument =
+                //    DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 DynamoLogger.Instance.LogWarning(
                     string.Format(
                         "Dynamo is now pointing at document: {0}",
@@ -570,7 +570,7 @@ namespace Dynamo
 
         protected override void Run()
         {
-            DocumentManager.Instance.CurrentDBDocument = DocumentManager.Instance.CurrentUIDocument.Document;
+            //DocumentManager.Instance.CurrentDBDocument = DocumentManager.Instance.CurrentUIDocument.Document;
 
             if (DynamoViewModel.RunInDebug)
             {
