@@ -8,7 +8,7 @@
       </view>
     </Dynamo.Nodes.Watch3D>
     <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="545bf944-f746-43e0-922a-65add64488b3" nickname="Code Block" x="463.623612382122" y="361.989908233617" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Point.ByCoordinates(a&lt;1&gt;,a&lt;2&gt;,b);" ShouldFocus="false" />
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="e9e53fe0-a0b0-4cf7-93d5-5eea8f0428f2" nickname="NurbsCurve.ByControlVertices" x="833.429031445622" y="377.601123928518" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.NurbsCurve.ByControlVertices@Autodesk.DesignScript.Geometry.Point[],int" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="e9e53fe0-a0b0-4cf7-93d5-5eea8f0428f2" nickname="NurbsCurve.ByControlPoints" x="833.429031445622" y="377.601123928518" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints@Autodesk.DesignScript.Geometry.Point[],int" />
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="2f0a9e28-7d57-4474-8dd0-ea14db173d49" nickname="Number" x="678.950497373593" y="466.455502326638" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="1" />
     </Dynamo.Nodes.DoubleInput>

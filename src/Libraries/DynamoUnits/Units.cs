@@ -3,10 +3,11 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Double = System.Double;
+using Autodesk.DesignScript.Runtime;
 
 namespace Dynamo.Units
 {
-    [Browsable(false)]
+    [SupressImportIntoVM]
     public enum DynamoLengthUnit
     {
         DecimalInch,
@@ -18,7 +19,7 @@ namespace Dynamo.Units
         Meter
     }
 
-    [Browsable(false)]
+    [SupressImportIntoVM]
     public enum DynamoAreaUnit
     {
         SquareInch, 
@@ -28,7 +29,7 @@ namespace Dynamo.Units
         SquareMeter
     }
 
-    [Browsable(false)]
+    [SupressImportIntoVM]
     public enum DynamoVolumeUnit
     {
         CubicInch,
@@ -38,7 +39,7 @@ namespace Dynamo.Units
         CubicMeter
     }
 
-    // [Browsable(false)]
+    // [SupressImportIntoVM]
     public abstract class SIUnit
     {
         //length conversions
@@ -1310,7 +1311,7 @@ namespace Dynamo.Units
         }
     }
 
-    [Browsable(false)]
+    [SupressImportIntoVM]
     public static class UnitExtensions
     {
         public static bool AlmostEquals(this double double1, double double2, double precision)
@@ -1337,7 +1338,7 @@ namespace Dynamo.Units
     /// <summary>
     /// Utility class for operating on units of measure.
     /// </summary>
-    [Browsable(false)]
+    [SupressImportIntoVM]
     public class Utils
     {
         public static string ParseWholeInchesToString(double value)
@@ -1608,20 +1609,20 @@ namespace Dynamo.Units
         }
     }
 
-    [Browsable(false)]
+    [SupressImportIntoVM]
     public class MathematicalArgumentException : Exception
     {
         public MathematicalArgumentException() : base("The result could not be computed given the provided inputs.") { }
         public MathematicalArgumentException(string message) : base(message) { }
     }
 
-    [Browsable(false)]
+    [SupressImportIntoVM]
     public class UnitsException : MathematicalArgumentException
     {
         public UnitsException(Type a, Type b) : base(string.Format("{0} and {1} are incompatible for this operation.", a, b)) { }
     }
 
-    [Browsable(false)]
+    [SupressImportIntoVM]
     public interface IUnitInput
     {
         double ConvertToHostUnits();

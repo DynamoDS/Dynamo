@@ -69,11 +69,11 @@ namespace Revit.Elements
 
             if (oldSurf != null)
             {
-                ElementBinder.CleanupAndSetElementForTrace(document, this.InternalElementId);
+                ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElement);
             }
             else
             {
-                ElementBinder.SetElementForTrace(this.InternalElementId);  
+                ElementBinder.SetElementForTrace(this.InternalElement);  
             }
         }
 

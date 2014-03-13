@@ -189,38 +189,38 @@ namespace Dynamo.Tests
         public void ValidateConnectionsDoesNotClearError()
         {
             var model = dynSettings.Controller.DynamoModel;
-            model.CreateNode(100.0, 300.0, "Number");
+            model.CurrentWorkspace.Nodes.Add(new CodeBlockNodeModel("30", Guid.NewGuid(), model.CurrentWorkspace, 100.0, 100.0));
             Assert.AreEqual(1, model.Nodes.Count());
 
             // Make sure we have the number node created in active state.
-            var numberNode = model.Nodes[0] as DoubleInput;
-            Assert.IsNotNull(numberNode);
-            Assert.AreEqual(ElementState.Active, numberNode.State);
+            var codeBlockNode = model.Nodes[0] as CodeBlockNodeModel;
+            Assert.IsNotNull(codeBlockNode);
+            Assert.AreEqual(ElementState.Active, codeBlockNode.State);
 
             // Entering an invalid value will cause it to be erroneous.
-            numberNode.Value = "--"; // Invalid numeric value.
-            Assert.AreEqual(ElementState.Error, numberNode.State);
-            Assert.IsNotEmpty(numberNode.ToolTipText); // Error tooltip text.
+            codeBlockNode.Code = "--"; // Invalid numeric value.
+            Assert.AreEqual(ElementState.Error, codeBlockNode.State);
+            Assert.IsNotEmpty(codeBlockNode.ToolTipText); // Error tooltip text.
 
             // Ensure the number node is not selected now.
-            Assert.AreEqual(false, numberNode.IsSelected);
+            Assert.AreEqual(false, codeBlockNode.IsSelected);
 
             // Try to select the node and make sure it is still erroneous.
-            model.AddToSelection(numberNode);
-            Assert.AreEqual(true, numberNode.IsSelected);
-            Assert.AreEqual(ElementState.Error, numberNode.State);
-            Assert.IsNotEmpty(numberNode.ToolTipText); // Error tooltip text.
+            model.AddToSelection(codeBlockNode);
+            Assert.AreEqual(true, codeBlockNode.IsSelected);
+            Assert.AreEqual(ElementState.Error, codeBlockNode.State);
+            Assert.IsNotEmpty(codeBlockNode.ToolTipText); // Error tooltip text.
 
             // Deselect the node and ensure its error state isn't cleared.
-            DynamoSelection.Instance.Selection.Remove(numberNode);
-            Assert.AreEqual(false, numberNode.IsSelected);
-            Assert.AreEqual(ElementState.Error, numberNode.State);
-            Assert.IsNotEmpty(numberNode.ToolTipText); // Error tooltip text.
+            DynamoSelection.Instance.Selection.Remove(codeBlockNode);
+            Assert.AreEqual(false, codeBlockNode.IsSelected);
+            Assert.AreEqual(ElementState.Error, codeBlockNode.State);
+            Assert.IsNotEmpty(codeBlockNode.ToolTipText); // Error tooltip text.
 
             // Update to valid numeric value, should cause the node to be active.
-            numberNode.Value = "1234";
-            Assert.AreEqual(ElementState.Active, numberNode.State);
-            Assert.IsEmpty(numberNode.ToolTipText); // Error tooltip is gone.
+            codeBlockNode.Code = "1234;";
+            Assert.AreEqual(ElementState.Active, codeBlockNode.State);
+            Assert.IsEmpty(codeBlockNode.ToolTipText); // Error tooltip is gone.
         }
 
         [Test]
@@ -534,14 +534,9 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
 
             model.CreateNode(Guid.NewGuid(), "+@,", 0, 0, true, true);
-            model.CreateNode(100.0, 100.0, "Number");
-            model.CreateNode(100.0, 300.0, "Number");
+            model.CurrentWorkspace.Nodes.Add(new CodeBlockNodeModel("2", Guid.NewGuid(), model.CurrentWorkspace, 100.0, 100.0));
+            model.CurrentWorkspace.Nodes.Add(new CodeBlockNodeModel("2", Guid.NewGuid(), model.CurrentWorkspace, 100.0, 100.0));
             model.CreateNode(100.0, 300.0, "Dynamo.Nodes.Watch");
-
-            var num1 = Controller.DynamoViewModel.Model.Nodes[1] as DoubleInput;
-            num1.Value = "2";
-            var num2 = Controller.DynamoViewModel.Model.Nodes[2] as DoubleInput;
-            num2.Value = "2";
 
             var cd1 = new Dictionary<string, object>();
             cd1.Add("start", Controller.DynamoViewModel.Model.Nodes[1]);

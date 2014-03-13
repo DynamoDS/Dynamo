@@ -1,15 +1,37 @@
-﻿namespace DSCore
+﻿using System.Drawing;
+
+namespace DSCore
 {
     public class DSColor // TODO(Ben): Rename after namespace support is done :)
     {
-        private System.Drawing.Color color = System.Drawing.Color.FromArgb(255, 0, 0, 0);
+        private Color color = Color.FromArgb(255, 0, 0, 0);
 
         // Exposed only for unit test purposes.
-        internal System.Drawing.Color InternalColor { get { return this.color; } }
+        internal Color InternalColor { get { return this.color; } }
+
+        public byte Red
+        {
+            get { return color.R; }
+        }
+
+        public byte Green
+        {
+            get { return color.G; }
+        }
+
+        public byte Blue
+        {
+            get { return color.B; }
+        }
+
+        public byte Alpha
+        {
+            get { return color.A; }
+        }
 
         private DSColor(int a, int r, int g, int b)
         {
-            this.color = System.Drawing.Color.FromArgb(a, r, g, b);
+            this.color = Color.FromArgb(a, r, g, b);
         }
 
         public static DSColor ByARGB(int a, int r, int g, int b)
@@ -45,6 +67,20 @@
         public static byte[] Components(DSColor c)
         {
             return new byte[] { c.color.A, c.color.R, c.color.G, c.color.B };
+        }
+
+        public static DSColor BuildColorFromRange(DSColor start, DSColor end, double value)
+        {
+            var selRed = (int)(start.Red + (end.Red - start.Red) * value);
+            var selGreen = (int)(start.Green + (end.Green - start.Green) * value);
+            var selBlue = (int)(start.Blue + (end.Blue - start.Blue) * value);
+
+            return ByARGB(255, selRed, selGreen, selBlue);
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Color: Red={0}, Green={1}, Blue={2}, Alpha={3}", Red, Green, Blue, Alpha);
         }
     }
 
