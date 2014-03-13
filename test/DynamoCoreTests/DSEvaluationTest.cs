@@ -147,6 +147,7 @@ namespace Dynamo.Tests
 
         public override void Cleanup()
         {
+            Dynamo.DSEngine.LibraryServices.DestroyInstance();
             GraphToDSCompiler.GraphUtilities.Reset();
             base.Cleanup();
         }
@@ -619,7 +620,7 @@ namespace Dynamo.Tests
             // Multiline CBN ==> a={1,2,3};
             //               ==> a[0]= 3;
             RunModel(@"core\dsevaluation\Defect_MAGN_610.dyn");
-            AssertPreviewValue("aa78716b-f3f6-4676-bb72-2cb1c34181f8", 3);
+            AssertPreviewValue("aa78716b-f3f6-4676-bb72-2cb1c34181f8", new int[] { 3, 2, 3 });
             AssertValue("a", new int[] { 3, 2, 3 });
         }
 
