@@ -34,10 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FScheme">
-      <HintPath>..\..\..\bin\AnyCPU\Debug\FScheme.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="FSharp.Core" />
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
@@ -63,6 +59,11 @@
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Legacy\FScheme\FScheme.2012.fsproj">
+      <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
+      <Name>FScheme.2012</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

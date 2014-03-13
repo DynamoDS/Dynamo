@@ -38,7 +38,7 @@ namespace DSRevitNodesTests
             Assert.NotNull(spline);
 
             // build model curve from spline
-            var modCurve = ModelCurve.ByPlanarCurve(spline);
+            var modCurve = ModelCurve.ByCurve(spline);
             Assert.NotNull(modCurve);
 
             // build dividedPath
@@ -71,7 +71,7 @@ namespace DSRevitNodesTests
             Assert.NotNull(spline);
 
             // build model curve from spline
-            var modCurve = ModelCurve.ByPlanarCurve(spline);
+            var modCurve = ModelCurve.ByCurve(spline);
             Assert.NotNull(modCurve);
 
             // build dividedPath
