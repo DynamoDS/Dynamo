@@ -48,6 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamoMSOffice\Excel.cs" />
+    <Compile Include="DynamoPython\dynPython.cs" />
     <Compile Include="MigrationHelpers.cs" />
     <Compile Include="CoreNodes\dynBaseTypes.cs" />
     <Compile Include="CoreNodes\dynColors.cs" />
