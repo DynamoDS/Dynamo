@@ -4906,15 +4906,17 @@ namespace ProtoAssociative
 
         private void EmitSetterForProperty(ProtoCore.AST.AssociativeAST.ClassDeclNode cnode, ProtoCore.DSASM.SymbolNode prop)
         {
+            /*
             ProtoCore.Type varType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
             if (!prop.datatype.Equals(varType))
             {
                 var setterForVar = EmitSetterFunction(prop, varType);
                 cnode.funclist.Add(setterForVar);
             }
+            */
 
             ProtoCore.Type varArrayType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
-            if (!prop.datatype.Equals(varArrayType))
+            // if (!prop.datatype.Equals(varArrayType))
             {
                 var setterForVarArray = EmitSetterFunction(prop, varArrayType);
                 cnode.funclist.Add(setterForVarArray);
@@ -5067,7 +5069,7 @@ namespace ProtoAssociative
                     string typeName = vardecl.ArgumentType.Name;
                     if (String.IsNullOrEmpty(typeName))
                     {
-                        prop.datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
+                        prop.datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
                     }
                     else
                     {

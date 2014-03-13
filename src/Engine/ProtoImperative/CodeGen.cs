@@ -418,7 +418,7 @@ namespace ProtoImperative
                 ProtoCore.DSASM.Constants.kInvalidIndex, 
                 funcIndex, 
                 datatype,
-                TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0),
+                TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                 size, 
                 datasize,
                 false,
