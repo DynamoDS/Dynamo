@@ -126,7 +126,6 @@
     <Compile Include="FFITests\CSFFITest.cs" />
     <Compile Include="FFITests\Dummy.cs" />
     <Compile Include="FuzzTests.cs" />
-    <Compile Include="Geometry\GeometryTest.cs" />
     <Compile Include="GraphCompiler\MicroFeatureTests.cs" />
     <Compile Include="Imperative\FromOldTestSuite.cs" />
     <Compile Include="Imperative\MicroFeatureTests.cs" />
