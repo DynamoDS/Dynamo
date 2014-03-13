@@ -37,6 +37,7 @@ namespace DSCore
         ///     Creates a new list containing the items of the given list but in reverse order.
         /// </summary>
         /// <param name="list">List to be reversed.</param>
+        /// <search>reverse,list</search>
         public static IList Reverse(
             [ArbitraryDimensionArrayImport] IList list)
         {
@@ -54,6 +55,55 @@ namespace DSCore
             return items.ToList();
         }
         */
+
+        /// <summary>
+        ///     Build sublists from a list using DesignScript range syntax.
+        /// </summary>
+        /// <param name="list">The list from which to create sublists.</param>
+        /// <param name="ranges">The index ranges of the sublist elements.
+        /// Ex. \"{0..3,5,2}\"</param>
+        /// <param name="offset">The offset to apply to the sublist.
+        /// Ex. the range \"0..3\" with an offset of 2 will yield
+        /// {0,1,2,3}{2,3,4,5}{4,5,6,7}...</param>
+        /// <returns></returns>
+        public static IList Sublists(
+            [ArbitraryDimensionArrayImport] IList list,
+            [ArbitraryDimensionArrayImport] IList ranges,
+            int offset)
+        {
+            var result = new List<object>();
+            int len = list.Count;
+
+            for (int start = 0; start < len; start += offset)
+            {
+                var row = new List<object>();
+                
+                foreach (object item in ranges)
+                {
+                    IList subrange = null;
+
+                    if (item is ICollection)
+                        subrange = (IList)item;
+                    else
+                        subrange = new List<object>{item};
+
+                    // skip subrange if exceeds the list
+                    if (start + (int)subrange.Cast<object>().Max() >= len)
+                        continue;
+                    
+                    foreach (int idx in subrange)
+                    {
+                        if (start + idx < len)
+                            row.Add(list[start + idx]);
+                    }
+                }
+
+                if (row.Count > 0)
+                    result.Add(row.ToArray());
+            }
+
+            return result;
+        }
 
         /// <summary>
         ///     Sorts a list using the built-in natural ordering.
@@ -79,6 +129,7 @@ namespace DSCore
         ///     Returns the maximum value from a list.
         /// </summary>
         /// <param name="list">List to take the maximum value from.</param>
+        /// <search>lizzard</search>
         public static object MaximumItem(
             [ArbitraryDimensionArrayImport] IList list)
         {
@@ -91,6 +142,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to filter.</param>
         /// <param name="mask">List of booleans representing a mask.</param>
+        /// <search>filter,boolean,bool,mask,dispatch</search>
         [MultiReturn("in", "var[]")]
         [MultiReturn("out", "var[]")]
         public static Dictionary<string, object> FilterByBoolMask(
@@ -237,6 +289,7 @@ namespace DSCore
         /// <param name="step">
         ///     Amount the indices of the items are separate by in the original list.
         /// </param>
+        /// <search>list,sub,sublist,slice</search>
         public static IList Slice(
             [ArbitraryDimensionArrayImport] IList list,
             int? start = null,
@@ -301,25 +354,15 @@ namespace DSCore
         ///     Removes an item from the given list at the specified index.
         /// </summary>
         /// <param name="list">List to remove an item from.</param>
-        /// <param name="index">Index of the item to be removed.</param>
+        /// <param name="indices">Index or indices of the item(s) to be removed.</param>
         public static IList RemoveItemAtIndex(
             [ArbitraryDimensionArrayImport] IList list,
-            int index)
+            [ArbitraryDimensionArrayImport] object indices)
         {
-            return list.Cast<object>().Where((_, i) => i != index).ToList();
-        }
-
-        /// <summary>
-        ///     Removes items from the given list at the specified indices.
-        /// </summary>
-        /// <param name="list">List to remove items from.</param>
-        /// <param name="indices">Indices of the items to be removed.</param>
-        public static IList RemoveItemsAtIndices(
-            [ArbitraryDimensionArrayImport] IList list,
-            IList indices)
-        {
-            var idxs = new HashSet<int>(indices.Cast<int>());
-            return list.Cast<object>().Where((_, i) => !idxs.Contains(i)).ToList();
+            if (indices is ICollection)
+                return list.Cast<object>().Where((_, i) => !((IList)indices).Contains(i)).ToList();
+            else
+                return list.Cast<object>().Where((_, i) => i != (int)indices).ToList();
         }
 
         /// <summary>
@@ -459,13 +502,15 @@ namespace DSCore
         /// <summary>
         ///     Create a diagonal lists of lists from top left to lower right.
         /// </summary>
-        /// <param name="list">A list</param>
+        /// <param name="flatList">A list</param>
         /// <param name="subLength">Length of each new sub-list.</param>
         public static IList DiagonalRight(
             [ArbitraryDimensionArrayImport] IList list,
             int subLength)
         {
-            if (list.Count < subLength)
+            var flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
+
+            if (flatList.Count() < subLength)
                 return list;
 
             var finalList = new ArrayList();
@@ -474,7 +519,7 @@ namespace DSCore
             var startIndices = new List<int>();
 
             //get indices along 'side' of array
-            for (int i = subLength; i < list.Count; i += subLength)
+            for (int i = subLength; i < flatList.Count(); i += subLength)
                 startIndices.Add(i);
 
             startIndices.Reverse();
@@ -487,10 +532,10 @@ namespace DSCore
             {
                 int index = start;
 
-                while (index < list.Count)
+                while (index < flatList.Count())
                 {
                     var currentRow = (int)System.Math.Ceiling((index + 1)/(double)subLength);
-                    currList.Add(list[index]);
+                    currList.Add(flatList[index]);
                     index += subLength + 1;
 
                     //ensure we are skipping a row to get the next index
@@ -511,13 +556,15 @@ namespace DSCore
         /// <summary>
         ///     Create a diagonal lists of lists from top right to lower left.
         /// </summary>
-        /// <param name="list">A list.</param>
-        /// <param name="subLength">Length of each new sib-list.</param>
+        /// <param name="flatList">A list.</param>
+        /// <param name="rowLength">Length of each new sib-list.</param>
         public static IList DiagonalLeft(
             [ArbitraryDimensionArrayImport] IList list,
-            int subLength)
+            int rowLength)
         {
-            if (list.Count < subLength)
+            var flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
+
+            if (flatList.Count() < rowLength)
                 return list;
 
             var finalList = new ArrayList();
@@ -525,11 +572,11 @@ namespace DSCore
             var startIndices = new List<int>();
 
             //get indices along 'top' of array
-            for (int i = 0; i < subLength; i++)
+            for (int i = 0; i < rowLength; i++)
                 startIndices.Add(i);
 
             //get indices along 'side' of array
-            for (int i = subLength - 1 + subLength; i < list.Count; i += subLength)
+            for (int i = rowLength - 1 + rowLength; i < flatList.Count(); i += rowLength)
                 startIndices.Add(i);
 
             foreach (int start in startIndices)
@@ -537,14 +584,14 @@ namespace DSCore
                 int index = start;
                 var currList = new ArrayList();
 
-                while (index < list.Count)
+                while (index < flatList.Count())
                 {
-                    var currentRow = (int)System.Math.Ceiling((index + 1)/(double)subLength);
-                    currList.Add(list[index]);
-                    index += subLength - 1;
+                    var currentRow = (int)System.Math.Ceiling((index + 1)/(double)rowLength);
+                    currList.Add(flatList.ElementAt(index));
+                    index += rowLength - 1;
 
                     //ensure we are skipping a row to get the next index
-                    var nextRow = (int)System.Math.Ceiling((index + 1) / (double)subLength);
+                    var nextRow = (int)System.Math.Ceiling((index + 1) / (double)rowLength);
                     if (nextRow > currentRow + 1 || nextRow == currentRow)
                         break;
                 }
