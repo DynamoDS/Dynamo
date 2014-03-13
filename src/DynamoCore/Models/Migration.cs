@@ -668,11 +668,17 @@ namespace Dynamo.Models
             if (element == null)
                 throw new ArgumentNullException("element");
             if (element.Name.Equals("Dynamo.Nodes.DSFunction") == false)
-                throw new ArgumentException("Only DSFunction should be here.");
+            {
+                if (element.Name.Equals("Dynamo.Nodes.DSVarArgFunction") == false)
+                    throw new ArgumentException("Only DSFunction should be here.");
+            }
 
             var type = element.Attributes["type"].Value;
             if (type.Equals("Dynamo.Nodes.DSFunction") == false)
-                throw new ArgumentException("Only DSFunction should be here.");
+            {
+                if (type.Equals("Dynamo.Nodes.DSVarArgFunction") == false)
+                    throw new ArgumentException("Only DSFunction should be here.");
+            }
 
             var nicknameAttrib = element.Attributes["nickname"];
             if (nicknameAttrib == null)
@@ -694,6 +700,23 @@ namespace Dynamo.Models
         private static int DetermineFunctionInputCount(XmlElement element)
         {
             int additionalPort = 0;
+
+            // "DSVarArgFunction" is a "VariableInputNode", therefore it will 
+            // have "inputcount" as one of the attributes. If such attribute 
+            // does not exist, throw an ArgumentException.
+            if (element.Name.Equals("Dynamo.Nodes.DSVarArgFunction"))
+            {
+                var inputCountAttrib = element.Attributes["inputcount"];
+
+                if (inputCountAttrib == null)
+                {
+                    throw new ArgumentException(string.Format(
+                        "Function inputs cannot be determined ({0}).",
+                        element.GetAttribute("nickname")));
+                }
+
+                return Convert.ToInt32(inputCountAttrib.Value);
+            }
 
             var signature = string.Empty;
             var signatureAttrib = element.Attributes["function"];

@@ -6,10 +6,11 @@ using Autodesk.DesignScript.Geometry;
 using RevitServices.Persistence;
 using Line = Autodesk.Revit.DB.Line;
 using System.ComponentModel;
+using Autodesk.DesignScript.Runtime;
 
 namespace Revit.GeometryConversion
 {
-    [Browsable(false)]
+    [SupressImportIntoVM]
     public static class Extensions
     {
 

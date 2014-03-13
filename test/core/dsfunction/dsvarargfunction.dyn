@@ -1,6 +1,6 @@
 <Workspace Version="0.6.3.25590" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
   <Elements>
-    <Dynamo.Nodes.DSVarArgFunction type="Dynamo.Nodes.DSVarArgFunction" guid="a182d3f8-bb7d-4480-8aa5-eaacd6161415" nickname="List.Create" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="3" assembly="DSCoreNodes.dll" function="DSCore.List.Create@var[]" />
+    <Dynamo.Nodes.DSVarArgFunction type="Dynamo.Nodes.DSVarArgFunction" guid="a182d3f8-bb7d-4480-8aa5-eaacd6161415" nickname="List.Join" x="235" y="201" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="3" assembly="DSCoreNodes.dll" function="DSCore.List.Join@var[]..[]" />
   </Elements>
   <Connectors />
   <Notes />
