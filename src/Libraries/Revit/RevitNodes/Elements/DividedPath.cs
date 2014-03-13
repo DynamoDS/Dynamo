@@ -75,7 +75,7 @@ namespace Revit.Elements
             TransactionManager.Instance.TransactionTaskDone();
 
             // delete any cached ele and set this new one
-            ElementBinder.CleanupAndSetElementForTrace(Document, InternalDividedPath.Id);
+            ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElement);
         }
 
         #endregion
