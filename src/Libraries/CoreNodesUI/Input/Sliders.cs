@@ -10,6 +10,7 @@ using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Dynamo.UI;
 
 namespace Dynamo.Nodes
 {
@@ -76,23 +77,24 @@ namespace Dynamo.Nodes
 
             var mintb = new DynamoTextBox
             {
-                Width = double.NaN,
-                Background =
-                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                Width = Configurations.DoubleSliderTextBoxWidth,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
             // input value textbox
             var valtb = new DynamoTextBox(SerializeValue())
             {
-                Width = double.NaN,
+                Width = Configurations.DoubleSliderTextBoxWidth,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
                 Margin = new Thickness(0, 0, 10, 0)
             };
 
             var maxtb = new DynamoTextBox
             {
-                Width = double.NaN,
-                Background =
-                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                Width = Configurations.DoubleSliderTextBoxWidth,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
             var sliderGrid = new Grid();
@@ -356,23 +358,24 @@ namespace Dynamo.Nodes
 
             var mintb = new DynamoTextBox
             {
-                Width = double.NaN,
-                Background =
-                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                Width = Configurations.IntegerSliderTextBoxWidth,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
             // input value textbox
             var valtb = new DynamoTextBox
             {
-                Width = double.NaN,
+                Width = Configurations.IntegerSliderTextBoxWidth,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
                 Margin = new Thickness(0, 0, 10, 0)
             };
 
             var maxtb = new DynamoTextBox
             {
-                Width = double.NaN,
-                Background =
-                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                Width = Configurations.IntegerSliderTextBoxWidth,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
             var sliderGrid = new Grid();
