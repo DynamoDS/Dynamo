@@ -2,15 +2,15 @@
 
 namespace Dynamo.Nodes
 {
-    public partial class Function : MigrationNode
+    public class Function : MigrationNode
     {
     }
 
-    public partial class Symbol : MigrationNode
+    public class Symbol : MigrationNode
     {
     }
 
-    public partial class Output : MigrationNode
+    public class Output : MigrationNode
     {
     }
 }
