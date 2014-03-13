@@ -365,7 +365,6 @@ namespace DSCore
                 return list.Cast<object>().Where((_, i) => i != (int)indices).ToList();
         }
 
-
         /// <summary>
         ///     Removes items from the given list at indices that are multiples
         ///     of the given value, after the given offset.
