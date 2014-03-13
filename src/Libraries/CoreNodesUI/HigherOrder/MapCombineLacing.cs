@@ -352,4 +352,39 @@ namespace DSCore
             };
         }
     }
+
+    [NodeName("Flatten By Amount")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
+    [NodeDescription("Flatten nested lists into one list.")]
+    [IsDesignScriptCompatible]
+    public class Flatten : NodeModel
+    {
+        public Flatten()
+        {
+            InPortData.Add(new PortData("list", "The list of lists to flatten."));
+            InPortData.Add(new PortData("amt", "Amount of nesting to remove."));
+
+            OutPortData.Add(new PortData("list", "The flattened list."));
+
+            RegisterAllPorts();
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(
+            List<AssociativeNode> inputAstNodes)
+        {
+            return new[]
+            {
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(0),
+                    AstFactory.BuildFunctionCall(
+                        "__FlattenByAmount",
+                        new List<AssociativeNode>
+                        {
+                            inputAstNodes[0],
+                            inputAstNodes[1],                        
+                        }))
+            };
+        }
+    }
 }
+

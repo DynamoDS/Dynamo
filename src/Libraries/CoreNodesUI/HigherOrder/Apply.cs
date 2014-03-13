@@ -57,7 +57,7 @@ namespace DSCoreNodesUI.HigherOrder
         }
     }
 
-    [NodeName("Apply Function")]
+    [NodeName("Compose Functions")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
     [NodeDescription("Applies a function to arguments.")]
     [IsDesignScriptCompatible]
