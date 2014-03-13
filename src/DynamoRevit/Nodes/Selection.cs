@@ -1409,14 +1409,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Element Types")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
-    [NodeDescription("All element subtypes.")]
-    public class ElementTypes : AllChildrenOfType
-    {
-        public ElementTypes() : base(typeof (Element)){}
-    }
-
     [NodeName("All Elements of Type")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All elements in the active document of a given type.")]

@@ -11,14 +11,6 @@ using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Spacing Rule Layout")]
-    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_DIVIDE)]
-    [NodeDescription("The spacing rule layout to be applied to a divided path.")]
-    public class DividedPathSpacingRuleLayout : EnumAsConstants
-    {
-        public DividedPathSpacingRuleLayout():base(typeof(SpacingRuleLayout)){}
-    }
-
     [NodeName("Divided Path")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_DIVIDE)]
     [NodeDescription("Divides curves or edges and makes a DividedPath.")]
