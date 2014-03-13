@@ -227,7 +227,7 @@ namespace DSCoreNodesTests
         {
             Assert.AreEqual(
                 new List<int> { 0, 4 },
-                List.RemoveItemsAtIndices(new List<int> { 0, 1, 2, 3, 4 }, new List<int> { 1, 2, 3 }));
+                List.RemoveItemAtIndex(new List<int> { 0, 1, 2, 3, 4 }, new List<int> { 1, 2, 3 }));
         }
 
         [Test]

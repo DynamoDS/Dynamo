@@ -92,6 +92,7 @@
     <Compile Include="Elements\ReferencePointTests.cs" />
     <Compile Include="Elements\SketchPlaneTests.cs" />
     <Compile Include="Elements\StructuralFramingTests.cs" />
+    <Compile Include="Elements\TopographyTests.cs" />
     <Compile Include="Elements\Views\AxonometricViewTests.cs" />
     <Compile Include="Elements\Views\CeilingPlanViewTests.cs" />
     <Compile Include="Elements\Views\DraftingViewTests.cs" />
@@ -104,7 +105,7 @@
     <Compile Include="GeometryConversion\ProtoToRevitCurveTests.cs" />
     <Compile Include="GeometryConversion\RevitToProtoCurveTests.cs" />
     <Compile Include="GeometryIntersection\FaceIntersectTests.cs" />
-    <Compile Include="GeometryObjects\BoundingBoxTests.cs" />
+    <Compile Include="GeometryConversion\BoundingBoxTests.cs" />
     <Compile Include="GeometryObjects\SolidTests.cs" />
     <Compile Include="GeometryTests.cs" />
     <Compile Include="Interactivity\SelectionTests.cs" />
@@ -119,10 +120,12 @@
     <ProjectReference Include="..\..\..\..\src\Libraries\CoreNodesUI\CoreNodesUI.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>CoreNodesUI</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\Libraries\Revit\RevitNodesUI\RevitNodesUI.csproj">
       <Project>{75940acc-3708-4526-8d91-7e3365baf682}</Project>
       <Name>RevitNodesUI</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\Libraries\Revit\RevitNodes\RevitNodes.csproj">
       <Project>{0bc2a611-bd0e-4fcc-a1de-81f14ed369b2}</Project>
