@@ -121,7 +121,7 @@ namespace Dynamo.Nodes
             else
             {
                 string returnType = IsConstructor() ? Definition.ClassName : Definition.ReturnType;
-                OutPortData.Add(new PortData(">", returnType, typeof(object)));
+                OutPortData.Add(new PortData("", returnType, typeof(object)));
             }
 
             RegisterAllPorts();
@@ -511,7 +511,7 @@ namespace Dynamo.Nodes
             else
             {
                 string returnType = IsConstructor() ? Definition.ClassName : Definition.ReturnType;
-                OutPortData.Add(new PortData(">", returnType, typeof(object)));
+                OutPortData.Add(new PortData("", returnType, typeof(object)));
             }
 
             RegisterAllPorts();
