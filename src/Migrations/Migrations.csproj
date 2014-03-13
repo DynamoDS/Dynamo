@@ -37,10 +37,6 @@
       <HintPath>..\..\bin\AnyCPU\Debug\FScheme.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -55,7 +51,6 @@
     <Compile Include="CoreNodes\dynCommunication.cs" />
     <Compile Include="CoreNodes\dynFiles.cs" />
     <Compile Include="CoreNodes\dynFormula.cs" />
-    <Compile Include="CoreNodes\dynFunction.cs" />
     <Compile Include="CoreNodes\dynMultithreading.cs" />
     <Compile Include="CoreNodes\dynOptimize.cs" />
     <Compile Include="CoreNodes\dynTimer.cs" />
