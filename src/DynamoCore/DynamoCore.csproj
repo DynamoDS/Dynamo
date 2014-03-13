@@ -158,7 +158,6 @@ limitations under the License.
     <Compile Include="Models\Migration.cs" />
     <Compile Include="Core\CustomNodeDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
-    <Compile Include="Nodes\Measurement.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\DSFunctionNodeSearchElement.cs" />
