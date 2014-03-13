@@ -363,14 +363,15 @@ namespace Dynamo.DSEngine
             } 
             else
             {
-                var cust = LibraryServices.GetInstance().GetCustomization(Assembly);
+                var cust = LibraryCustomizationServices.GetForAssembly(Assembly);
+
                 if (cust != null)
                 {
                     var f = cust.GetNamespaceCategory(this.Namespace);
                     if (!String.IsNullOrEmpty(f)) return f;
                 }
 
-                return Path.GetFileNameWithoutExtension(Assembly);
+                return Path.GetFileNameWithoutExtension(Assembly) + "." + Namespace;
             }
         }
 
@@ -500,6 +501,15 @@ namespace Dynamo.DSEngine
             public const string Properties = "Query";
         }
 
+        private List<string> _preloadLibraries = new List<string>()
+        {
+            "ProtoGeometry.dll",
+            "DSCoreNodes.dll",
+            "DSOffice.dll",
+            "FunctionObject.ds",
+            "DSIronPython.dll"
+        };
+
         public class LibraryLoadedEventArgs : EventArgs
         {
             public LibraryLoadedEventArgs(string libraryPath)
@@ -565,8 +575,6 @@ namespace Dynamo.DSEngine
         private static LibraryServices _libraryServices = null; // new LibraryServices();
         private LibraryServices()
         {
-            _libraryCustomizations = new Dictionary<string, LibraryCustomization>();
-
             PreloadLibraries();
 
             PopulateBuiltIns();
@@ -582,7 +590,6 @@ namespace Dynamo.DSEngine
         {
             _importedFunctionGroups.Clear();
             _builtinFunctionGroups.Clear();
-            _libraryCustomizations.Clear();
 
             PreloadLibraries();
 
@@ -602,46 +609,17 @@ namespace Dynamo.DSEngine
             }
         }
 
-        /// <summary>
-        /// Get the customization for the particular library
-        /// </summary>
-        /// <param name="assembly"></param>
-        /// <returns>Returns null if customization is not present</returns>
-        public LibraryCustomization GetCustomization(string assembly)
-        {
-            if (_libraryCustomizations.ContainsKey(assembly))
-            {
-                return _libraryCustomizations[assembly];
-            }
-            return null;
-        }
-
         private void PreloadLibraries()
         {
             GraphUtilities.Reset();
 
-            _libraries = new List<string>
-            {
-                "ProtoGeometry.dll",
-                "CoreNodes.dll",
-                "DSOffice.dll",
-                "FunctionObject.ds",
-                "DSIronPython.dll"
-            };
+            _libraries = _preloadLibraries.ToList();
             
             GraphUtilities.PreloadAssembly(_libraries);
 
-            // for each dll, load customization and documentation
-            _libraries.Where(x => x.Contains(".dll"))
-                .ToList()
-                .ForEach(x => {
-                                  LoadLibraryXmlDocumentation(x);
-                                  LoadLibraryCustomization(x); 
-                              });
         }
 
         private List<string> _libraries;
-        private Dictionary<string, LibraryCustomization> _libraryCustomizations;
         private readonly Dictionary<string, Dictionary<string, FunctionGroup>> _importedFunctionGroups = new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
         private Dictionary<string, FunctionGroup> _builtinFunctionGroups = new Dictionary<string, FunctionGroup>();
 
@@ -849,9 +827,6 @@ namespace Dynamo.DSEngine
                     return;
                 }
 
-                LoadLibraryXmlDocumentation(library);
-                LoadLibraryCustomization(library);
-
                 foreach (ClassNode classNode in importedClasses)
                 {
                     ImportClass(library, classNode);
@@ -873,26 +848,6 @@ namespace Dynamo.DSEngine
             }
 
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
-        }
-
-        private void LoadLibraryCustomization(string library)
-        {
-            string customizationPath = "";
-            if (LibraryCustomization.ResolveCustomizationFile(library, ref customizationPath))
-            {
-                var cust = LibraryCustomization.LoadFromXml(customizationPath);
-                if (!_libraryCustomizations.ContainsKey(library))
-                    this._libraryCustomizations.Add(library, cust);
-                else
-                    this._libraryCustomizations[library] = cust;
-            }
-                
-        }
-
-        private void LoadLibraryXmlDocumentation(string library)
-        {
-            if (ResolveLibraryPath(ref library))
-                XmlDocumentationExtensions.LoadXmlDocumentation(library);
         }
 
         private class LibraryPathComparer : IEqualityComparer<string>
@@ -1037,7 +992,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private bool ResolveLibraryPath(ref string library)
+        internal bool ResolveLibraryPath(ref string library)
         {
             if (File.Exists(library)) // Absolute path, we're done here.
                 return true;

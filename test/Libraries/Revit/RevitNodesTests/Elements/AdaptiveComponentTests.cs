@@ -76,11 +76,11 @@ namespace DSRevitNodesTests
                 Point.ByCoordinates(12,0,0),
             };
 
-            var spline = NurbsCurve.ByControlVertices(pts, 3);
+            var spline = NurbsCurve.ByControlPoints(pts, 3);
             Assert.NotNull(spline);
 
             // build model curve from spline
-            var modCurve = ModelCurve.ByPlanarCurve(spline);
+            var modCurve = ModelCurve.ByCurve(spline);
             Assert.NotNull(modCurve);
 
             // obtain the family from the document

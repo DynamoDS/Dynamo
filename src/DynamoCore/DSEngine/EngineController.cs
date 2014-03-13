@@ -214,6 +214,7 @@ namespace Dynamo.DSEngine
         {
             var activeNodes = nodes.Where(n =>
                             ElementState.Active == n.State ||
+                            ElementState.Warning == n.State ||
                             (ElementState.Error != n.State && n is DSFunction));
 
             if (activeNodes.Any())
@@ -229,11 +230,14 @@ namespace Dynamo.DSEngine
         /// being executed.
         /// </summary>
         /// <returns></returns>
-        public bool HasPendingGraphSyncData()
+        public bool HasPendingGraphSyncData
         {
-            lock (graphSyncDataQueue)
+            get
             {
-                return graphSyncDataQueue.Count > 0;
+                lock (graphSyncDataQueue)
+                {
+                    return graphSyncDataQueue.Count > 0;
+                }
             }
         }
 
@@ -412,5 +416,6 @@ namespace Dynamo.DSEngine
         {
             syncDataManager.DeleteNodes(node.GUID);
         }
+
     }
 }

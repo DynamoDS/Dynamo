@@ -1,8 +1,6 @@
 <Workspace Version="0.6.3.24633" X="-28.4666666666667" Y="3.76444444444445" zoom="0.8" Description="" Category="" Name="Home">
   <Elements>
-    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="63b0659c-fef2-448f-aae8-1682e37718f6" nickname="Formula" x="216.833333333333" y="283.794444444444" isVisible="true" isUpstreamVisible="true" lacing="Longest">
-      <FormulaText>1/0</FormulaText>
-    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="63b0659c-fef2-448f-aae8-1682e37718f6" nickname="Code Block" x="216.833333333333" y="283.794444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1/0;" ShouldFocus="false" />
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="0704a672-0619-4518-867e-a2605acfdc8c" nickname="Number" x="220.583333333333" y="176.294444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="1" />
     </Dynamo.Nodes.DoubleInput>

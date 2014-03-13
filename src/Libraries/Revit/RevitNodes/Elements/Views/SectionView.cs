@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
 using DSNodeServices;
+using Revit.GeometryConversion;
 using Revit.GeometryObjects;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
@@ -61,7 +62,7 @@ namespace Revit.Elements.Views
 
             TransactionManager.Instance.TransactionTaskDone();
 
-            ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElementId);
+            ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElement);
         }
 
         #endregion
@@ -113,14 +114,14 @@ namespace Revit.Elements.Views
         /// </summary>
         /// <param name="box"></param>
         /// <returns></returns>
-        public static SectionView ByBoundingBox(BoundingBox box)
+        public static SectionView ByBoundingBox(Autodesk.DesignScript.Geometry.BoundingBox box)
         {
             if (box == null)
             {
                 throw new ArgumentNullException("box");
             }
 
-            return new SectionView(box.InternalBoundingBoxXyz);
+            return new SectionView(box.ToRevitType());
         }
 
         #endregion

@@ -956,6 +956,12 @@ namespace Dynamo.Models
             ToolTipText = p;
         }
 
+        public void Warning(string p)
+        {
+            State = ElementState.Warning;
+            ToolTipText = p;
+        }
+
         #endregion
 
         #region Port Management
@@ -2009,7 +2015,7 @@ namespace Dynamo.Models
         {
             //Avoid attempting an update after the controller 
             //has shut down.
-            if (dynSettings.Controller == null || (DynamoController.IsTestMode))
+            if (dynSettings.Controller == null)
                 return;
 
             //dispose of the current render package
@@ -2027,21 +2033,16 @@ namespace Dynamo.Models
 
             var ident = AstIdentifierForPreview.Name;
 
-            // A small optimization. Don't create the label map if
-            // labels are not being displayed
-            //if (DisplayLabels)
-            //{
-                foreach (var varName in drawableIds)
+            foreach (var varName in drawableIds)
+            {
+                var mirror = dynSettings.Controller.EngineController.GetMirror(varName);
+                if (mirror != null)
                 {
-                    var mirror = dynSettings.Controller.EngineController.GetMirror(varName);
-                    if (mirror != null)
-                    {
-                        var mirrorData = mirror.GetData();
-                        AddToLabelMap(mirrorData, labelMap, ident);
-                        count++;
-                    }
-                } 
-            //}
+                    var mirrorData = mirror.GetData();
+                    AddToLabelMap(mirrorData, labelMap, ident);
+                    count++;
+                }
+            } 
 
             count = 0;
             foreach (var varName in drawableIds)
@@ -2054,7 +2055,6 @@ namespace Dynamo.Models
                 {
                     var package = new RenderPackage(IsSelected, DisplayLabels);
 
-                    //PushGraphicItemIntoPackage(gItem, package, DisplayLabels ? labelMap[count] : string.Empty);
                     PushGraphicItemIntoPackage(gItem, package, labelMap[count]);
 
                     package.ItemsCount++;
@@ -2201,6 +2201,7 @@ namespace Dynamo.Models
     {
         Dead,
         Active,
+        Warning,
         Error
     };
 
