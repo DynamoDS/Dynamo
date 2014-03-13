@@ -313,7 +313,6 @@ limitations under the License.
     <Compile Include="Search\SearchElements\SearchElementBase.cs" />
     <Compile Include="Search\SearchElements\WorkspaceSearchElement.cs" />
     <Compile Include="ViewModels\SearchViewModel.cs" />
-    <Compile Include="Nodes\dynColors.cs" />
     <Compile Include="Nodes\dynBaseTypes.cs" />
     <Compile Include="Models\ConnectorModel.cs" />
     <Compile Include="Nodes\dynFiles.cs" />
