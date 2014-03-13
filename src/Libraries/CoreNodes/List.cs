@@ -351,18 +351,24 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Removes an item from the given list at the specified index.
+        /// Removes an item from the given list at the specified index.
         /// </summary>
         /// <param name="list">List to remove an item from.</param>
-        /// <param name="indices">Index or indices of the item(s) to be removed.</param>
-        public static IList RemoveItemAtIndex(
-            [ArbitraryDimensionArrayImport] IList list,
-            [ArbitraryDimensionArrayImport] object indices)
+        /// <param name="index">Index the item to be removed.</param>
+        public static IList RemoveItemAtIndex(IList list, int index)
         {
-            if (indices is ICollection)
-                return list.Cast<object>().Where((_, i) => !((IList)indices).Contains(i)).ToList();
-            else
-                return list.Cast<object>().Where((_, i) => i != (int)indices).ToList();
+            return list.Cast<object>().Where((_, i) => i != index).ToList();
+        }
+
+        /// <summary>
+        ///     Removes items from the given list at the specified indices.
+        /// </summary>
+        /// <param name="list">List to remove items from.</param>
+        /// <param name="indices">Indices of the items to be removed.</param>
+        public static IList RemoveItemsAtIndices(IList list, int[] indices)
+        {
+            var idxs = new HashSet<int>(indices);
+            return list.Cast<object>().Where((_, i) => !idxs.Contains(i)).ToList();
         }
 
         /// <summary>
