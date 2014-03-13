@@ -16,14 +16,13 @@ namespace DSNodeServices
         /// <returns></returns>
         public static ISerializable GetTraceData(string key)
         {
-
             Object data = Thread.GetData(Thread.GetNamedDataSlot(key));
 
             //Null is ok
             if (data == null)
                 return null;
 
-            ISerializable ret= data as ISerializable;
+            var ret = data as ISerializable;
             if (ret != null)
                 return ret;
        

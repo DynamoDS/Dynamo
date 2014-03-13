@@ -8,6 +8,15 @@ namespace RevitServices.Transactions
     /// </summary>
     public class TransactionManager
     {
+        public static event Action<string> OnLog;
+
+        internal static void Log(string obj)
+        {
+            var handler = OnLog;
+            if (handler != null) 
+                handler(obj);
+        }
+
         private static TransactionManager manager;
         
         /// <summary>
@@ -15,6 +24,7 @@ namespace RevitServices.Transactions
         /// </summary>
         public static void SetupManager()
         {
+            Log("Setting up Transaction Manager with Default Strategy (Debug)");
             manager = new TransactionManager();
         }
         
@@ -23,6 +33,7 @@ namespace RevitServices.Transactions
         /// </summary>
         public static void SetupManager(ITransactionStrategy strategy)
         {
+            Log("Setting up Transaction Manager with Strategy: " + strategy.GetType());
             manager = new TransactionManager(strategy);
         }
 
@@ -44,10 +55,19 @@ namespace RevitServices.Transactions
             }
         }
 
+        private ITransactionStrategy strat;
         /// <summary>
         ///     Transaction strategy utilized by this manager.
         /// </summary>
-        public ITransactionStrategy Strategy { get; set; }
+        public ITransactionStrategy Strategy
+        {
+            get { return strat; }
+            set
+            {
+                strat = value;
+                Log("Transaction Manager Strategy set to: " + strat.GetType());
+            }
+        }
 
         /// <summary>
         ///     TransactionWrapper managed by this manager.
@@ -107,6 +127,9 @@ namespace RevitServices.Transactions
     }
 
 
+    /// <summary>
+    ///     Contains logic for managing transactions in a dynamo graph evaluation.
+    /// </summary>
     public interface ITransactionStrategy
     {
         /// <summary>
@@ -137,15 +160,23 @@ namespace RevitServices.Transactions
     {
         public TransactionHandle EnsureInTransaction(TransactionWrapper wrapper, Document document)
         {
+            TransactionManager.Log("EnsureInTransaction - DEBUG STRAT: Starting new Transaction");
             return !wrapper.TransactionActive ? wrapper.StartTransaction(document) : wrapper.Handle;
         }
 
         public void TransactionTaskDone(TransactionHandle handle)
         {
-            ForceCloseTransaction(handle);
+            TransactionManager.Log("TransactionTaskDone - DEBUG STRAT: Ending Transaction");
+            EndTransaction(handle);
         }
         
         public void ForceCloseTransaction(TransactionHandle handle)
+        {
+            TransactionManager.Log("ForceCloseTransaction - DEBUG STRAT: Ending Transaction");
+            EndTransaction(handle);
+        }
+
+        private static void EndTransaction(TransactionHandle handle)
         {
             if (handle != null && handle.Status == TransactionStatus.Started)
                 handle.CommitTransaction();
@@ -161,16 +192,19 @@ namespace RevitServices.Transactions
     {
         public TransactionHandle EnsureInTransaction(TransactionWrapper wrapper, Document document)
         {
+            TransactionManager.Log("EnsureInTransaction - AUTO STRAT: Starting new Transaction");
             return !wrapper.TransactionActive ? wrapper.StartTransaction(document) : wrapper.Handle;
         }
 
         public void TransactionTaskDone(TransactionHandle handle)
         {
+            TransactionManager.Log("TransactionTaskDone - AUTO STRAT: Preserving Transaction");
             //Do nothing in automatic, continue using the same transaction.
         }
 
         public void ForceCloseTransaction(TransactionHandle handle)
         {
+            TransactionManager.Log("ForceCloseTransaction - AUTO STRAT: Ending Transaction");
             if (handle != null && handle.Status == TransactionStatus.Started)
                 handle.CommitTransaction();
         }
@@ -251,6 +285,7 @@ namespace RevitServices.Transactions
         {
             if (Transaction == null || Transaction.GetStatus() != TransactionStatus.Started)
             {
+                TransactionManager.Log("Starting Transaction.");
                 Transaction = new Transaction(document, "Dynamo Script");
                 Transaction.Start();
 
@@ -318,6 +353,7 @@ namespace RevitServices.Transactions
             {
                 if (manager.Transaction.GetStatus() == TransactionStatus.Started)
                 {
+                    TransactionManager.Log("Committing Transaction.");
                     var result = manager.Transaction.Commit();
                     manager.RaiseTransactionCommitted();
 
@@ -336,6 +372,7 @@ namespace RevitServices.Transactions
             {
                 if (manager.Transaction.GetStatus() == TransactionStatus.Started)
                 {
+                    TransactionManager.Log("Cancelling Transaction.");
                     var result = manager.Transaction.RollBack();
                     manager.RaiseTransactionCancelled();
 
