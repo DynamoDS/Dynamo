@@ -482,23 +482,24 @@ namespace Dynamo.Nodes
 
             var mintb = new DynamoTextBox
             {
-                Width = double.NaN,
-                Background =
-                    new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                Width = Configurations.DoubleSliderTextBoxWidth,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
             // input value textbox
             var valtb = new DynamoTextBox
             {
-                Width = double.NaN,
+                Width = Configurations.DoubleSliderTextBoxWidth,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
                 Margin = new Thickness(0, 0, 10, 0)
             };
 
             var maxtb = new DynamoTextBox
             {
-                Width = double.NaN,
-                Background =
-                    new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                Width = Configurations.DoubleSliderTextBoxWidth,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
             var sliderGrid = new Grid();
