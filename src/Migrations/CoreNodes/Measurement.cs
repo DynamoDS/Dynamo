@@ -2,8 +2,9 @@
 using System.Xml;
 using Dynamo.Models;
 using Dynamo.Units;
+using Migrations;
 
-namespace Migrations.CoreNodes
+namespace Dynamo.Nodes
 {
     public class LengthInput : MigrationNode
     {

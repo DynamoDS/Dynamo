@@ -1,7 +1,8 @@
 ﻿using System.Xml;
 using Dynamo.Models;
+using Migrations;
 
-namespace Migrations.CoreNodes
+namespace Dynamo.Nodes
 {
     class ColorBrightness : MigrationNode
     {

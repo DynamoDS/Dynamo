@@ -1,4 +1,6 @@
-﻿namespace Migrations.CoreNodes
+﻿using Migrations;
+
+namespace Dynamo.Nodes
 {
     public class WebRequest : MigrationNode
     {

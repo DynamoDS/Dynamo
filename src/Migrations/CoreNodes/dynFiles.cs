@@ -1,6 +1,7 @@
 ﻿using Dynamo.Models;
+using Migrations;
 
-namespace Migrations.CoreNodes
+namespace Dynamo.Nodes
 {
     public class FileReader : MigrationNode
     {

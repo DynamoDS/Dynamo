@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 using System.Xml;
 using Dynamo.Models;
+using Migrations;
 
-namespace Migrations.RevitNodes
+namespace Dynamo.Nodes
 {
     class SpatialFieldManager : MigrationNode
     {

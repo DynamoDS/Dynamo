@@ -1,6 +1,7 @@
 ﻿using Dynamo.Models;
+using Migrations;
 
-namespace Migrations.RevitNodes
+namespace Dynamo.Nodes
 {
 
     public class DividedPathSpacingRuleLayout : MigrationNode
