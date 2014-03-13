@@ -15,6 +15,8 @@ namespace DSCore
         ///     Creates a new list containing all unique items in the given list.
         /// </summary>
         /// <param name="list">List to filter duplicates out of.</param>
+        /// <returns name="list">Filtered list.</returns>
+        /// <search>unique, remove, duplicates</search>
         public static IList UniqueItems(
             [ArbitraryDimensionArrayImport] IList list)
         {
@@ -26,6 +28,8 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to search in.</param>
         /// <param name="item">Item to look for.</param>
+        /// <returns name="bool">Whether list contains the given item.</returns>
+        /// <search>contains,item,search</search>
         public static bool ContainsItem(
             [ArbitraryDimensionArrayImport] IList list, 
             object item)
@@ -37,7 +41,8 @@ namespace DSCore
         ///     Creates a new list containing the items of the given list but in reverse order.
         /// </summary>
         /// <param name="list">List to be reversed.</param>
-        /// <search>reverse,list</search>
+        /// <returns name="list">New list.</returns>
+        /// <search>reverse,flip</search>
         public static IList Reverse(
             [ArbitraryDimensionArrayImport] IList list)
         {
@@ -65,7 +70,8 @@ namespace DSCore
         /// <param name="offset">The offset to apply to the sublist.
         /// Ex. the range \"0..3\" with an offset of 2 will yield
         /// {0,1,2,3}{2,3,4,5}{4,5,6,7}...</param>
-        /// <returns></returns>
+        /// <returns name="lists">Sublists of the given list.</returns>
+        /// <search>sub,sublist,build</search>
         public static IList Sublists(
             [ArbitraryDimensionArrayImport] IList list,
             [ArbitraryDimensionArrayImport] IList ranges,
@@ -109,6 +115,8 @@ namespace DSCore
         ///     Sorts a list using the built-in natural ordering.
         /// </summary>
         /// <param name="list">List to be sorted.</param>
+        /// <returns name="list">Sorted list.</returns>
+        /// <search>sort,order</search>
         public static IList Sort(
             [ArbitraryDimensionArrayImport] IList list)
         {
@@ -119,6 +127,8 @@ namespace DSCore
         ///     Returns the minimum value from a list.
         /// </summary>
         /// <param name="list">List to take the minimum value from.</param>
+        /// <returns name="min">Minimum value from the list.</returns>
+        /// <search>min,minimum,least,smallest</search>
         public static object MinimumItem(
             [ArbitraryDimensionArrayImport] IList list)
         {
@@ -129,7 +139,8 @@ namespace DSCore
         ///     Returns the maximum value from a list.
         /// </summary>
         /// <param name="list">List to take the maximum value from.</param>
-        /// <search>lizzard</search>
+        /// <returns name="max">Maximum value from the list.</returns>
+        /// <search>max,maximum,greatest,largest,biggest</search>
         public static object MaximumItem(
             [ArbitraryDimensionArrayImport] IList list)
         {
@@ -142,7 +153,9 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to filter.</param>
         /// <param name="mask">List of booleans representing a mask.</param>
-        /// <search>filter,boolean,bool,mask,dispatch</search>
+        /// <returns name="in">Items whose mask index is true.</returns>
+        /// <returns name="out">Items whose mask index is false.</returns>
+        /// <search>filter,in,out,mask,dispatch</search>
         [MultiReturn("in", "var[]..[]")]
         [MultiReturn("out", "var[]..[]")]
         public static Dictionary<string, object> FilterByBoolMask(
@@ -190,6 +203,9 @@ namespace DSCore
         ///     except the first.
         /// </summary>
         /// <param name="list">List to be split.</param>
+        /// <returns name="first">First item in the list.</returns>
+        /// <returns name="rest">Rest of the list.</returns>
+        /// <search>first,rest</search>
         [MultiReturn("first", "var[]..[]")]
         [MultiReturn("rest", "var[]..[]")]
         public static IDictionary Deconstruct(
@@ -207,6 +223,8 @@ namespace DSCore
         /// </summary>
         /// <param name="item">Item to be added.</param>
         /// <param name="list">List to add on to.</param>
+        /// <returns name="list">New list.</returns>
+        /// <search>insert,add,item,front</search>
         public static IList AddItemToFront(
             object item,
             [ArbitraryDimensionArrayImport] IList list)
@@ -223,6 +241,8 @@ namespace DSCore
         /// <param name="amount">
         ///     Amount of items to take. If negative, items are taken from the end of the list.
         /// </param>
+        /// <returns name="list">List of extracted items.</returns>
+        /// <search>take,get,sub,sublist</search>
         public static IList TakeItems(
             [ArbitraryDimensionArrayImport] IList list,
             int amount)
@@ -238,6 +258,8 @@ namespace DSCore
         /// <param name="amount">
         ///     Amount of items to remove. If negative, items are removed from the end of the list.
         /// </param>
+        /// <returns name="list">List of remaining items.</returns>
+        /// <search>drop,remove</search>
         public static IList DropItems(
             [ArbitraryDimensionArrayImport] IList list,
             int amount)
@@ -253,6 +275,8 @@ namespace DSCore
         /// <param name="amount">
         ///     Amount to shift indices by. If negative, indices will be shifted to the left.
         /// </param>
+        /// <returns name="list">Shifted list.</returns>
+        /// <search>shift</search>
         public static IList ShiftIndices(
             [ArbitraryDimensionArrayImport] IList list,
             int amount)
@@ -272,6 +296,8 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to fetch an item from.</param>
         /// <param name="index">Index of the item to be fetched.</param>
+        /// <returns name="item">Item in the list at the given index.</returns>
+        /// <search>get,item,index,fetch</search>
         public static object GetItemAtIndex(
             [ArbitraryDimensionArrayImport] IList list,
             int index)
@@ -289,6 +315,7 @@ namespace DSCore
         /// <param name="step">
         ///     Amount the indices of the items are separate by in the original list.
         /// </param>
+        /// <returns name="items">Items in the slice of the given list.</returns>
         /// <search>list,sub,sublist,slice</search>
         public static IList Slice(
             [ArbitraryDimensionArrayImport] IList list,
@@ -353,8 +380,10 @@ namespace DSCore
         /// <summary>
         ///     Removes an item from the given list at the specified index.
         /// </summary>
-        /// <param name="list">List to remove an item from.</param>
+        /// <param name="list">List to remove an item or items from.</param>
         /// <param name="indices">Index or indices of the item(s) to be removed.</param>
+        /// <returns name="list">List with items removed.</returns>
+        /// <search>remove,index,indices,cull</search>
         public static IList RemoveItemAtIndex(
             [ArbitraryDimensionArrayImport] IList list,
             [ArbitraryDimensionArrayImport] object indices)
@@ -373,6 +402,8 @@ namespace DSCore
         /// <param name="offset">
         ///     Amount of items to be ignored from the start of the list.
         /// </param>
+        /// <returns name="list">List with items removed.</returns>
+        /// <search>drop,nth,remove,cull,every</search>
         public static IList DropEveryNthItem(
             [ArbitraryDimensionArrayImport] IList list,
             int n,
@@ -393,6 +424,8 @@ namespace DSCore
         /// <param name="offset">
         ///     Amount of items to be ignored from the start of the list.
         /// </param>
+        /// <returns name="items">Items from the list.</returns>
+        /// <search>fetch,take,every,nth</search>
         public static IList TakeEveryNthItem(
             [ArbitraryDimensionArrayImport] IList list,
             int n,
@@ -404,6 +437,8 @@ namespace DSCore
         /// <summary>
         ///     An Empty List.
         /// </summary>
+        /// <returns name="list">Empty list.</returns>
+        /// <search>empty,list</search>
         public static IList Empty
         {
             get { return new ArrayList(); }
@@ -413,6 +448,8 @@ namespace DSCore
         ///     Determines if the given list is empty.
         /// </summary>
         /// <param name="list">List to check for items.</param>
+        /// <returns name="bool">Whether the list is empty.</returns>
+        /// <search>test,is,empty</search>
         public static bool IsEmpty(
             [ArbitraryDimensionArrayImport] IList list)
         {
@@ -423,6 +460,8 @@ namespace DSCore
         ///     Gets the number of items stored in the given list.
         /// </summary>
         /// <param name="list">List to get the item count of.</param>
+        /// <returns name="count">List length.</returns>
+        /// <search>list,length,count</search>
         public static int Count(
             [ArbitraryDimensionArrayImport] IList list)
         {
@@ -433,6 +472,8 @@ namespace DSCore
         ///     Concatenates all given lists into a single list.
         /// </summary>
         /// <param name="lists">Lists to join into one.</param>
+        /// <returns name="list">Joined list.</returns>
+        /// <search>join,lists</search>
         public static IList Join(
             [ArbitraryDimensionArrayImport] params IList[] lists)
         {
@@ -446,6 +487,8 @@ namespace DSCore
         ///     Gets the first item in a list.
         /// </summary>
         /// <param name="list">List to get the first item from.</param>
+        /// <returns name="item">First item in the list.</returns>
+        /// <search>get,fetch,first,item</search>
         public static object FirstItem(
             [ArbitraryDimensionArrayImport] IList list)
         {
@@ -456,6 +499,8 @@ namespace DSCore
         ///     Removes the first item from the given list.
         /// </summary>
         /// <param name="list">List to get the rest of.</param>
+        /// <returns name="rest">Rest of the list.</returns>
+        /// <search>get,fetch,rest</search>
         public static IList RestOfItems(
             [ArbitraryDimensionArrayImport] IList list)
         {
@@ -468,6 +513,8 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to chop up.</param>
         /// <param name="subLength">Length of each new sub-list.</param>
+        /// <returns name="lists">List of lists.</returns>
+        /// <search>chop</search>
         public static IList Chop(
             [ArbitraryDimensionArrayImport] IList list, 
             int subLength)
@@ -606,6 +653,8 @@ namespace DSCore
         ///     Swaps rows and columns in a list of lists.
         /// </summary>
         /// <param name="lists">A list of lists to be transposed.</param>
+        /// <returns name="lists">A list of transposed lists.</returns>
+        /// <search>transpose,flip,matrix,swap,rows,columns</search>
         public static IList Transpose(IList lists)
         {
             if (lists.Count == 0)
@@ -636,6 +685,8 @@ namespace DSCore
         /// </summary>
         /// <param name="item">The item to repeat.</param>
         /// <param name="amount">The number of times to repeat.</param>
+        /// <returns name="list">List of repeated items.</returns>
+        /// <search>repeat,repeated,duplicate</search>
         public static IList OfRepeatedItem(
             [ArbitraryDimensionArrayImport] object item,
             int amount)
@@ -648,6 +699,8 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to repeat.</param>
         /// <param name="amount">Number of times to repeat.</param>
+        /// <returns name="list">List of repeated lists.</returns>
+        /// <search>repeat,repeated,duplicate</search>
         public static IList Repeat(
             [ArbitraryDimensionArrayImport] IList list,
             int amount)
@@ -665,6 +718,8 @@ namespace DSCore
         ///     Retrieves the last item in a list.
         /// </summary>
         /// <param name="list">List to get the last item of.</param>
+        /// <returns name="last">Last item in the list.</returns>
+        /// <search>get,fetch,last,item</search>
         public static object LastItem(
             [ArbitraryDimensionArrayImport] IList list)
         {
@@ -678,6 +733,8 @@ namespace DSCore
         ///     Shuffles a list, randomizing the order of its items.
         /// </summary>
         /// <param name="list">List to shuffle.</param>
+        /// <returns name="list">Randomized list.</returns>
+        /// <search>random,randomize,shuffle,jitter</search>
         public static IList Shuffle(
             [ArbitraryDimensionArrayImport] IList list)
         {
@@ -690,6 +747,8 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to permute.</param>
         /// <param name="length">Length of each permutation.</param>
+        /// <returns name="perm">Permutations of the list of the given length.</returns>
+        /// <search>permutation,permutations</search>
         public static IList Permutations(
             [ArbitraryDimensionArrayImport] IList list,
             int? length = null)
@@ -701,7 +760,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Produces all combination of the given length of a given list.
+        ///     Produces all combinations of the given length of a given list.
         /// </summary>
         /// <param name="list">List to generate combinations of.</param>
         /// <param name="length">Length of each combination.</param>
@@ -709,6 +768,8 @@ namespace DSCore
         ///     Whether or not items are removed once selected for combination, defaults
         ///     to false.
         /// </param>
+        /// <returns name="comb">Combinations of the list of the given length.</returns>
+        /// <search>combination,combinations</search>
         public static IList Combinations(
             [ArbitraryDimensionArrayImport] IList list,
             int length,
