@@ -68,6 +68,16 @@ namespace RevitServices.Persistence
         /// Set the element associated with the current operation from trace
         /// null if there is no object, or it's of the wrong type etc.
         /// </summary>
+        /// <param name="element">The element to store in trace</param>
+        public static void SetElementForTrace(Element element)
+        {
+            SetElementForTrace(element.Id);
+        }
+
+        /// <summary>
+        /// Set the element associated with the current operation from trace
+        /// null if there is no object, or it's of the wrong type etc.
+        /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static void SetElementForTrace(ElementId elementId)
@@ -108,24 +118,24 @@ namespace RevitServices.Persistence
         }
 
         /// <summary>
-        /// Cleanup a possibly outdated Revit element and set new element for trace.  
+        /// Delete a possibly outdated Revit Element and set new element for trace.  
         /// This method should be called if the element could not be mutated on a 
         /// second run and the old value must be destroyed.  
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static void CleanupAndSetElementForTrace(Document document, ElementId newTraceId)
+        public static void CleanupAndSetElementForTrace(Document document, Element newElement)
         {
             // if the element id has changed on a subsequent run, that means we
             // couldn't mutate the element - hence we need to delete the old
             // element
             var oldId = GetElementIdFromTrace(document);
-            if (oldId != null && oldId.IntegerValue != newTraceId.IntegerValue)
+            if (oldId != null && oldId.IntegerValue != newElement.Id.IntegerValue)
             {
                 DocumentManager.Instance.DeleteElement(oldId);
             }
 
-            SetElementForTrace(newTraceId);
+            SetElementForTrace(newElement);
         }
 
 

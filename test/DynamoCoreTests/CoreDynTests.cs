@@ -457,7 +457,7 @@ namespace Dynamo.Tests
 
             RunModel(Path.Combine(exPath, @"or-test.dyn"));
 
-            AssertPreviewValue("a3d8097e-1eb9-4ed0-8d48-9c14cdfb0340", 1.0);
+            AssertPreviewValue("a3d8097e-1eb9-4ed0-8d48-9c14cdfb0340", true);
         }
 
         [Test]

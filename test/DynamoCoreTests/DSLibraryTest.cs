@@ -17,13 +17,6 @@ namespace Dynamo.Tests
             base.Init();
         }
 
-        [TearDown]
-        public override void Cleanup()
-        {
-            LibraryServices.DestroyInstance();
-            base.Cleanup();
-        }
-
         [Test]
         public void TestPreLoadedLibrary()
         {

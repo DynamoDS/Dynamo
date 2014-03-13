@@ -57,7 +57,7 @@ namespace Revit.Elements
             TransactionManager.Instance.TransactionTaskDone();
 
             // remember this value
-            ElementBinder.SetElementForTrace(this.InternalElementId);
+            ElementBinder.SetElementForTrace(this.InternalElement);
         }
 
         /// <summary>
