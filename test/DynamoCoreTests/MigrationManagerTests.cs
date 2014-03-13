@@ -484,6 +484,34 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestCreateDummyNodeForFunction13()
+        {
+            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSVarArgFunction");
+            element.SetAttribute("type", "Dynamo.Nodes.DSVarArgFunction");
+            element.SetAttribute("nickname", "Foo.Bar");
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                // Test an DSVarArgFunction without "inputcount" attribute.
+                MigrationManager.CreateDummyNodeForFunction(element);
+            });
+        }
+
+        [Test]
+        public void TestCreateDummyNodeForFunction14()
+        {
+            XmlElement element = xmlDocument.CreateElement("Dynamo.Nodes.DSVarArgFunction");
+            element.SetAttribute("type", "Dynamo.Nodes.DSVarArgFunction");
+            element.SetAttribute("nickname", "Foo.Bar");
+            element.SetAttribute("inputcount", "5");
+
+            XmlElement dummy = MigrationManager.CreateDummyNodeForFunction(element);
+            Assert.AreEqual("5", dummy.Attributes["inputCount"].Value);
+            Assert.AreEqual("1", dummy.Attributes["outputCount"].Value);
+            Assert.AreEqual("Foo.Bar", dummy.Attributes["legacyNodeName"].Value);
+        }
+
+        [Test]
         public void NodeMigrationData00()
         {
             // Should have a default list that is empty.
