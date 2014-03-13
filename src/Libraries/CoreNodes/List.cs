@@ -80,7 +80,7 @@ namespace DSCore
                 
                 foreach (object item in ranges)
                 {
-                    IList subrange = null;
+                    IList subrange;
 
                     if (item is ICollection)
                         subrange = (IList)item;
@@ -90,12 +90,8 @@ namespace DSCore
                     // skip subrange if exceeds the list
                     if (start + (int)subrange.Cast<object>().Max() >= len)
                         continue;
-                    
-                    foreach (int idx in subrange)
-                    {
-                        if (start + idx < len)
-                            row.Add(list[start + idx]);
-                    }
+
+                    row.AddRange(subrange.Cast<int>().Where(idx => start + idx < len).Select(idx => list[start + idx]));
                 }
 
                 if (row.Count > 0)
@@ -731,13 +727,14 @@ namespace DSCore
             IEnumerable<T> items, int count, bool replace)
         {
             int i = 0;
-            foreach (var item in items)
+            var enumerable = items as IList<T> ?? items.ToList();
+            foreach (var item in enumerable)
             {
                 if (count == 1)
                     yield return Singleton(item);
                 else
                 {
-                    foreach (var result in GetCombinations(items.Skip(replace ? i : i + 1), count - 1, replace))
+                    foreach (var result in GetCombinations(enumerable.Skip(replace ? i : i + 1), count - 1, replace))
                         yield return Singleton(item).Concat(result);
                 }
 
@@ -749,13 +746,14 @@ namespace DSCore
             IEnumerable<T> items, int count)
         {
             int i = 0;
-            foreach (var item in items)
+            var enumerable = items as IList<T> ?? items.ToList();
+            foreach (var item in enumerable)
             {
                 if (count == 1)
                     yield return Singleton(item);
                 else
                 {
-                    var perms = GetPermutations(items.Take(i).Concat(items.Skip(i + 1)), count - 1);
+                    var perms = GetPermutations(enumerable.Take(i).Concat(enumerable.Skip(i + 1)), count - 1);
                     foreach (var result in perms)
                         yield return Singleton(item).Concat(result);
                 }
@@ -1104,13 +1102,4 @@ namespace DSCore
         }
         */
     }
-
-
-    //TODO
-    /*
-    public class BuildSublists : NodeModel
-    {
-        
-    }
-    */
 }
