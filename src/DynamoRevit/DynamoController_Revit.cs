@@ -363,7 +363,7 @@ namespace Dynamo
         private void Application_DocumentOpened(object sender, DocumentOpenedEventArgs e)
         {
             //when a document is opened 
-            if (DocumentManager.Instance.CurrentUIDocument == null)
+            if (DocumentManager.Instance.CurrentUIDocument != null)
             {
                 //DocumentManager.Instance.CurrentUIDocument =
                 //    DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
@@ -402,7 +402,7 @@ namespace Dynamo
         private void Revit_ViewActivated(object sender, ViewActivatedEventArgs e)
         {
             //if Dynamo doesn't have a view, then latch onto this one
-            if (DocumentManager.Instance.CurrentUIDocument == null)
+            if (DocumentManager.Instance.CurrentUIDocument != null)
             {
                 //DocumentManager.Instance.CurrentUIDocument =
                 //    DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
