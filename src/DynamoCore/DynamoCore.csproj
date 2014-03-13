@@ -294,7 +294,6 @@ limitations under the License.
     <Compile Include="UI\ZoomBorder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Nodes\dynFormula.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="Utilities\TrulyObservableCollection.cs" />
