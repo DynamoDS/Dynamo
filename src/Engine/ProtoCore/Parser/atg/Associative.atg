@@ -430,11 +430,7 @@ Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode co
     kw_constructor          (. NodeUtils.SetNodeStartLocation(constr, t); .)
     Associative_CtorSignature<out methodName, out argumentSignature>
                             (.
-                                var returnType = new ProtoCore.Type(); 
-                                returnType.Name = "var";
-                                returnType.UID = 0;	   
-                                returnType.rank = DSASM.Constants.kArbitraryRank;
-                                returnType.IsIndexable = true;
+                                var returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
                             
                                 constr.Name = methodName; 
                                 constr.Pattern = null; 
@@ -568,11 +564,7 @@ ident                           (. methodName = t.val; .)
                                         errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
                                     }
                                     ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature = null;
-                                    returnType = new ProtoCore.Type(); 
-                                    returnType.Name = "var";
-                                    returnType.UID = 0;	   
-                                    returnType.rank = DSASM.Constants.kArbitraryRank;
-                                    returnType.IsIndexable = true;
+                                    returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
 
                                     // TODO Jun: Luke made changes to array representation, handle this
                                     //returnType.IsArray = false;
@@ -667,7 +659,7 @@ Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Prot
     [
     ':'
     ident                           (. ProtoCore.Type argtype = new ProtoCore.Type(); argtype.Name = t.val; argtype.rank = 0; .)
-    [                               (. argtype.IsIndexable = true; .)
+    [                               
         openbracket closebracket    (. argtype.rank = 1; .)
         [
             ( ".." openbracket closebracket )   (. argtype.rank = ProtoCore.DSASM.Constants.nDimensionArrayRank; .)
@@ -748,7 +740,7 @@ Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, Proto
     [                                   
         ':'
         ident                           (. argtype.Name = t.val; .)
-        [                               (. argtype.IsIndexable = true; .)
+        [                               
             openbracket closebracket    (. argtype.rank = 1; .)
             [
                 ( ".." openbracket closebracket )   (. argtype.rank = ProtoCore.DSASM.Constants.nDimensionArrayRank; .)
@@ -818,7 +810,7 @@ Associative_BinaryOps<out Operator op>  (. op = Operator.none; .)
 Associative_TypeRestriction<out ProtoCore.Type type>
 =
   ':'  Associative_ClassReference<out type> (. type.rank = 0; .)
-  [                             (. type.IsIndexable = true; .)
+  [                             
         openbracket closebracket    (. type.rank = 1; .)
         [
             ( ".." openbracket closebracket )   (. type.rank = ProtoCore.DSASM.Constants.nDimensionArrayRank; .)
@@ -919,7 +911,7 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
                                }
                                else
                                {
-                                   typedVar.datatype = core.TypeSystem.BuildTypeObject(type, false, 0);
+                                   typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
                                }
                             .)
 
@@ -974,12 +966,7 @@ Associative_FunctionCallStatement<out ProtoCore.AST.AssociativeAST.AssociativeNo
 								ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
 								leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
 
-								var unknownType = new ProtoCore.Type();
-								unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
-								unknownType.Name = "var";
-								unknownType.rank = 0;
-								unknownType.IsIndexable = true;
-
+								var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 								leftNode.datatype = unknownType;
 								leftNode.line = rightNode.line;
 								leftNode.col = rightNode.col;
@@ -1489,7 +1476,6 @@ Associative_CatchFilter<out ProtoCore.AST.AssociativeAST.CatchFilterNode catchFi
                                         {
                                             Name = t.val, 
                                             rank = 0, 
-                                            IsIndexable = false,
                                         };
                                         catchFilterNode.type = exceptionType;
                                     .)
