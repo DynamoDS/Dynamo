@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel;
 using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Runtime;
 
 namespace Revit.Graphics
 {
-    [Browsable(false)]
+    [SupressImportIntoVM]
     public class GraphicsManager
     {
         /// <summary>
