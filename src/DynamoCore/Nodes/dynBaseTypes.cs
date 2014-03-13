@@ -1837,8 +1837,15 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Deconstruct",
-                "List.Deconstruct@var[]..[]");
+            //return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Deconstruct",
+            //    "List.Deconstruct@var[]..[]");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.SplitList");
+            newNode.SetAttribute("nickname", "Split List");
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
         }
     }
 
