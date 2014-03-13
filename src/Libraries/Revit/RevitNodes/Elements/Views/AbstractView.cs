@@ -12,7 +12,7 @@ namespace Revit.Elements
     /// <summary>
     /// An abstract Revit View - All view types inherit from this type
     /// </summary>
-    //[Browsable(false)]
+    //[SupressImportIntoVM]
     public abstract class AbstractView : AbstractElement
     {
         /// <summary>

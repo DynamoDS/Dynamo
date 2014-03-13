@@ -9,6 +9,8 @@ namespace Dynamo.UI
         // Add 0.5 to place the point in the middle of a pixel to sharpen it
         public static readonly double PixelSharpeningConstant = 0.5;
         public static readonly string BackupFolderName = "backup";
+        public static readonly double DoubleSliderTextBoxWidth = 55.0;
+        public static readonly double IntegerSliderTextBoxWidth = 30.0;
         #endregion
 
         #region Usage Reporting Error Message
