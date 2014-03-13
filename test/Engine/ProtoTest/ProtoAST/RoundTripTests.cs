@@ -327,7 +327,6 @@ namespace ProtoTest.ProtoAST
             varDeclNode.ArgumentType = new ProtoCore.Type()
             {
                 Name = "int",
-                IsIndexable = false,
                 rank = 0,
                 UID = (int)ProtoCore.PrimitiveType.kTypeInt
             };
@@ -473,7 +472,6 @@ namespace ProtoTest.ProtoAST
             varDeclNode.ArgumentType = new ProtoCore.Type()
             {
                 Name = "int",
-                IsIndexable = false,
                 rank = 0,
                 UID = (int)ProtoCore.PrimitiveType.kTypeInt
             };

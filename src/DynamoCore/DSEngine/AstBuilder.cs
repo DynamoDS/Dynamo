@@ -374,7 +374,7 @@ namespace Dynamo.DSEngine
                 functionBody.Body.Add(AstFactory.BuildReturnStatement(returnValue));
             }
 
-            Type allTypes = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, true, Constants.kArbitraryRank);
+            Type allTypes = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
 
             //Create a new function definition
             var functionDef = new FunctionDefinitionNode

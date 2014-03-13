@@ -27,7 +27,7 @@ namespace ProtoCore.Utils
     {
         var ident = new ProtoCore.AST.AssociativeAST.IdentifierNode();
         ident.Name = ident.Value = name;
-        ident.datatype = TypeSystem.BuildPrimitiveTypeObject(type, false);
+        ident.datatype = TypeSystem.BuildPrimitiveTypeObject(type, 0);
         return ident;
     }
 
@@ -95,14 +95,14 @@ namespace ProtoCore.Utils
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
             access = ProtoCore.DSASM.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, "%rhsDimExprList"),
-            ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)PrimitiveType.kTypeInt), UID = (int)PrimitiveType.kTypeInt, IsIndexable = true, rank = 1 }
+            ArgumentType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1) 
         });
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
             access = ProtoCore.DSASM.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, "%rhsDim"),
-            ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)PrimitiveType.kTypeInt), UID = (int)PrimitiveType.kTypeInt }
+            ArgumentType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0) 
         });
         funcDefNode.Signature = args;
 
@@ -121,9 +121,8 @@ namespace ProtoCore.Utils
         funcDefNode.access = ProtoCore.DSASM.AccessSpecifier.kPublic;
         funcDefNode.Name = ProtoCore.DSASM.Constants.kDotArgMethodName;
         funcDefNode.IsBuiltIn = true;
-        funcDefNode.ReturnType = new ProtoCore.Type() { Name = core.TypeSystem.GetType((int)PrimitiveType.kTypeVar), UID = (int)PrimitiveType.kTypeVar,
-        rank = DSASM.Constants.kArbitraryRank, IsIndexable = true};
-
+        funcDefNode.ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
+        
         ProtoCore.AST.AssociativeAST.ArgumentSignatureNode args = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
@@ -144,7 +143,7 @@ namespace ProtoCore.Utils
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
             access = ProtoCore.DSASM.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, "%rhsDimExprList"),
-            ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)PrimitiveType.kTypeVar), UID = (int)PrimitiveType.kTypeVar, IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }
+            ArgumentType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)
         });
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
@@ -158,7 +157,7 @@ namespace ProtoCore.Utils
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
             access = ProtoCore.DSASM.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, "%rhsArgList"),
-            ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)PrimitiveType.kTypeVar), UID = (int)PrimitiveType.kTypeVar, IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }
+            ArgumentType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)
         });
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
@@ -186,21 +185,21 @@ namespace ProtoCore.Utils
         funcDefNode.IsAssocOperator = true;
         funcDefNode.IsBuiltIn = true;
         funcDefNode.Name = Op.GetOpFunction(op);
-        funcDefNode.ReturnType = new ProtoCore.Type() { Name = core.TypeSystem.GetType((int)r), UID = (int)r, rank = retRank, IsIndexable = (retRank > 0)};
+        funcDefNode.ReturnType = new ProtoCore.Type() { Name = core.TypeSystem.GetType((int)r), UID = (int)r, rank = retRank};
         ProtoCore.AST.AssociativeAST.ArgumentSignatureNode args = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
             access = ProtoCore.DSASM.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, ProtoCore.DSASM.Constants.kLHS),
-            ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)op1), UID = (int)op1, rank = op1rank, IsIndexable = (op1rank > 0)}
+            ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)op1), UID = (int)op1, rank = op1rank}
         });
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
             access = ProtoCore.DSASM.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, ProtoCore.DSASM.Constants.kRHS),
-            ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)op2), UID = (int)op2, rank = op2rank, IsIndexable = (op2rank > 0)}
+            ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)op2), UID = (int)op2, rank = op2rank}
         });
         funcDefNode.Signature = args;
 

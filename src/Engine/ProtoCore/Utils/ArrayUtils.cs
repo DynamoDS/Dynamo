@@ -752,10 +752,6 @@ namespace ProtoCore.Utils
             if (t.rank > 0)
             {
                 t.rank = t.rank - 1;
-                if (t.rank == 0)
-                {
-                    t.IsIndexable = false;
-                }
             }
 
             if (value.optype == AddressType.ArrayPointer)
@@ -974,7 +970,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue CopyArray(StackValue array, Core core)
         {
-            Type anyType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, false, Constants.kArbitraryRank);
+            Type anyType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
             return CopyArray(array, anyType, core);
         }
 

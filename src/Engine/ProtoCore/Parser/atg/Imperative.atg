@@ -235,7 +235,7 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                                        }
                                        else
                                        {
-                                           typedVar.datatype = core.TypeSystem.BuildTypeObject(type, false);
+                                           typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
                                        }
                                     .)
 
@@ -1005,7 +1005,7 @@ Imperative_ArgDecl<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
     [
         ':'
         ident                           (. argtype.Name = t.val; .)
-        [                               (. argtype.IsIndexable = true; .)
+        [                               
             openbracket closebracket    (. argtype.rank = 1; .)
             [
                 ( ".." openbracket closebracket )   (. argtype.rank = ProtoCore.DSASM.Constants.nDimensionArrayRank; .)
@@ -1066,7 +1066,7 @@ Imperative_DefaultArgDecl<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
 Imperative_functiondecl<.out ProtoCore.AST.ImperativeAST.ImperativeNode node, List<ProtoCore.AST.ImperativeAST.ImperativeNode> attrs = null.>    
 =                           
                                             (. ProtoCore.AST.ImperativeAST.FunctionDefinitionNode funcDecl = new ProtoCore.AST.ImperativeAST.FunctionDefinitionNode(); .)
-                                            (. ProtoCore.Type rtype = new ProtoCore.Type(); rtype.Name = "var"; rtype.UID = 0; rtype.rank = DSASM.Constants.kArbitraryRank; rtype.IsIndexable = true; .)
+                                            (. ProtoCore.Type rtype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank); .)
     kw_def                                  (. NodeUtils.SetNodeStartLocation(funcDecl, t); funcDecl.Attributes = attrs; .)
     
     ident                                   (. funcDecl.Name = t.val; NodeUtils.SetNodeEndLocation(funcDecl, t); .)
@@ -1172,7 +1172,7 @@ Imperative_functionalMethodBodySingleStatement<.out List<ProtoCore.AST.Imperativ
 Imperative_ReturnType<out ProtoCore.Type type>
 =                                               (. ProtoCore.Type rtype = new ProtoCore.Type(); .)
   ident                                         (. rtype.Name = t.val; rtype.rank = 0; .)
-  [                                             (. rtype.IsIndexable = true; .)
+  [                                             
         openbracket closebracket                (. rtype.rank = 1; .)
         [
             ( ".." openbracket closebracket )   (. rtype.rank = ProtoCore.DSASM.Constants.nDimensionArrayRank; .)
@@ -1275,7 +1275,6 @@ Imperative_CatchFilter<out ProtoCore.AST.ImperativeAST.CatchFilterNode catchFilt
                                         {
                                             Name = t.val, 
                                             rank = 0, 
-                                            IsIndexable = false,
                                         };
                                         catchFilterNode.type = exceptionType;
                                     .)

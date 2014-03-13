@@ -462,7 +462,6 @@ namespace ProtoCore.DSASM
     {
         public const int kInvalidIndex = -1;
         public const int kInvalidPC = -1;
-        public const int kUndefinedRank = -2;
         public const int kArbitraryRank = -1;
         public const int kPrimitiveSize = 1;
         public const int kGlobalScope = -1;
