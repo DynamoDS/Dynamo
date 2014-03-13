@@ -877,6 +877,60 @@ namespace ProtoScript.Runners
             return modifiedNodes;
         }
 
+
+        /// <summary>
+        ///             
+        /// Handle instances of redefining the lhs of an expression
+        /// Given:
+        ///      a = p.x -> b = p.x
+        /// In such a scenario, the new expression 'b = p.x' must inherit the previous expression id of a = p.x
+        /// </summary>
+        /// <param name="newNode"></param>
+        /// <param name="cachedASTList"></param>
+        private void HandleRedefinedLHS(BinaryExpressionNode newNode, List<AssociativeNode> cachedASTList)
+        {
+            //
+            // Note that after SSA is applied, the expression:
+            //      a = p.x 
+            // transforms to: 
+            //      t0 = p
+            //      t1 = t0.x
+            //      a = t1
+            //      
+            // And the expression:
+            //      b = p.x 
+            // transforms to: 
+            //      t0 = p
+            //      t1 = t0.x
+            //      b = t1
+            //
+            // As such we only need to update the expression id of 'b = t1' to inherit the expression id of 'a = t1'
+            //
+            if (null != newNode)
+            {
+                IdentifierNode rnode = newNode.RightNode as IdentifierNode;
+                if (null != rnode)
+                {
+                    foreach (AssociativeNode prevNode in cachedASTList)
+                    {
+                        BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
+                        if (null != prevBinaryNode)
+                        {
+                            IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
+                            if (null != prevIdent)
+                            {
+                                if (prevIdent.Equals(rnode))
+                                {
+                                    newNode.InheritID(prevBinaryNode.ID);
+                                    newNode.exprUID = prevBinaryNode.exprUID;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Gets the only the modified nodes from the subtree by checking of the previous cached instance
         /// </summary>
@@ -936,6 +990,7 @@ namespace ProtoScript.Runners
                             }
                         }
                     }
+                    HandleRedefinedLHS(bnode, st.AstNodes);
                 }
             }
             return modifiedASTList;
