@@ -95,6 +95,7 @@ namespace ProtoScript.Runners
         void ResetVMAndResyncGraph(List<string> libraries);
         List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries);
 		void ReInitializeLiveRunner();
+        Dictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
 
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
@@ -163,6 +164,8 @@ namespace ProtoScript.Runners
         private ProtoCore.CompileTime.Context staticContext = null;
 
         private Dictionary<System.Guid, Subtree> currentSubTreeList = null;
+
+        private Dictionary<int, Guid> exprGuidMap = null;
 
         private readonly Object operationsMutex = new object();
 
@@ -234,6 +237,8 @@ namespace ProtoScript.Runners
             staticContext = new ProtoCore.CompileTime.Context();
 
             currentSubTreeList = new Dictionary<Guid, Subtree>();
+
+            exprGuidMap = new Dictionary<int, Guid>();
 
             terminating = false;
         }
@@ -1117,6 +1122,8 @@ namespace ProtoScript.Runners
 
             currentSubTreeList = new Dictionary<Guid, Subtree>();
 
+            exprGuidMap = new Dictionary<int, Guid>();
+
             CLRModuleType.ClearTypes();
         }
 
@@ -1314,6 +1321,14 @@ namespace ProtoScript.Runners
                         if (null != modifiedASTList && modifiedASTList.Count > 0)
                         {
                             deltaAstList.AddRange(modifiedASTList);
+                            foreach (var node in modifiedASTList)
+	                    {
+                                var bnode = node as BinaryExpressionNode;
+                                if (bnode != null)
+                                {
+                                    exprGuidMap[bnode.exprUID] = st.GUID;
+                                }
+	                    }
                         }
 
                         // Disable removed nodes from the cache
@@ -1385,6 +1400,14 @@ namespace ProtoScript.Runners
                     if (st.AstNodes != null)
                     {
                         deltaAstList.AddRange(st.AstNodes);
+                        foreach (var node in st.AstNodes)
+	                {
+                            var bnode = node as BinaryExpressionNode;
+                            if (bnode != null)
+                            {
+                                exprGuidMap[bnode.exprUID] = st.GUID;
+                            }
+	                }
                     }
 
                     currentSubTreeList.Add(st.GUID, st);
@@ -1392,6 +1415,35 @@ namespace ProtoScript.Runners
             }
 
             CompileAndExecuteForDeltaExecution(deltaAstList);
+        }
+
+        /// <summary>
+        /// Returns runtime warnings.
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings()
+        {
+            // Group all warnings by their expression ids, and only keep the last
+            // warning for each expression, and then group by GUID.  
+            var warnings = Core.RuntimeStatus
+                               .Warnings
+                               .GroupBy(w => w.ExpressionID)
+                               .Select(ws => ws.Last())
+                               .Where(w => exprGuidMap.ContainsKey(w.ExpressionID));
+
+            var ret = new Dictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>>();
+            foreach (var w in warnings)
+            {
+                Guid guid = exprGuidMap[w.ExpressionID];
+                if (!ret.ContainsKey(guid))
+                {
+                    ret[guid] = new List<ProtoCore.RuntimeData.WarningEntry>();
+                }
+
+                ret[guid].Add(w);
+            }
+
+            return ret;
         }
 
         private void SynchronizeInternal(string code)
