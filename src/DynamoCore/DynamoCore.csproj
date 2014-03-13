@@ -315,7 +315,6 @@ limitations under the License.
     <Compile Include="ViewModels\SearchViewModel.cs" />
     <Compile Include="Nodes\dynColors.cs" />
     <Compile Include="Nodes\dynBaseTypes.cs" />
-    <Compile Include="Nodes\dynCommunication.cs" />
     <Compile Include="Models\ConnectorModel.cs" />
     <Compile Include="Nodes\dynFiles.cs" />
     <Compile Include="Nodes\dynFunction.cs" />
