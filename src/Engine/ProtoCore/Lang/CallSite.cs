@@ -181,11 +181,14 @@ namespace ProtoCore
         #region Target resolution
 
 
+
+
         private void ComputeFeps(StringBuilder log, ProtoCore.Runtime.Context context, List<StackValue> arguments, FunctionGroup funcGroup, ReplicationControl replicationControl,
                                       List<List<ProtoCore.ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, Core core,
             out List<FunctionEndPoint> resolvesFeps, out List<ReplicationInstruction> replicationInstructions)
         {
 
+            
 
             //With replication guides only
 
@@ -901,6 +904,10 @@ namespace ProtoCore
             List<FunctionEndPoint> resolvesFeps;
             List<ReplicationInstruction> replicationInstructions;
 
+
+            arguments = PerformRepGuideForcedPromotion(arguments, partialReplicationGuides, core);
+
+
             ComputeFeps(log, context, arguments, funcGroup, replicationControl, partialReplicationGuides, stackFrame, core, out resolvesFeps, out replicationInstructions);
 
 
@@ -1386,6 +1393,69 @@ namespace ProtoCore
 
 
 
+        /// <summary>
+        /// Method to ensure that dimensionality of the arguments is at least
+        /// as large as the number of replication guides provided
+        /// </summary>
+        /// <param name="arguments"></param>
+        /// <param name="providedRepGuides"></param>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public static List<StackValue> PerformRepGuideForcedPromotion(List<StackValue> arguments,
+                                                                      List<List<ProtoCore.ReplicationGuide>>
+                                                                          providedRepGuides, Core core)
+        {
+            //return arguments; // no nothing for test validation
+
+
+            if (providedRepGuides.Count == 0)
+                return arguments;
+
+            //copy the arguments
+
+            List<StackValue> newArgs = new List<StackValue>();
+            newArgs.AddRange(arguments);
+
+
+            //Compute depth of rep guides
+            List<int> listOfGuidesCounts =  providedRepGuides.Select((x) => x.Count).ToList();
+            List<int> maxDepths = new List<int>();
+
+
+            for (int i = 0; i < newArgs.Count; i++)
+            {
+                maxDepths.Add(Replicator.GetMaxReductionDepth(newArgs[i], core));
+            }
+
+            for (int i = 0; i < newArgs.Count; i++)
+            {
+                int promotionsRequired = listOfGuidesCounts[i] - maxDepths[i];
+                StackValue oldSv = newArgs[i];
+
+                
+                for (int p = 0; p < promotionsRequired; p++)
+                {
+
+                    StackValue newSV = HeapUtils.StoreArray(
+                        new StackValue[1]
+                            {
+                                oldSv
+                            }
+                        , null, core);
+
+                    GCUtils.GCRetain(newSV, core);
+                    GCUtils.GCRelease(oldSv, core);
+
+                    oldSv = newSV;
+                }
+
+                newArgs[i] = oldSv;
+
+            }
+
+            return newArgs;
+
+        }
 
         public static StackValue PerformReturnTypeCoerce(ProcedureNode procNode, Core core, StackValue ret)
         {
