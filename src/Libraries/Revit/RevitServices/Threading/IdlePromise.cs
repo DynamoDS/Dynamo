@@ -44,12 +44,7 @@ namespace RevitServices.Threading
             }
             idle = false;
         }
-
-        internal static void Register(UIControlledApplication uIApplication)
-        {
-            uIApplication.Idling += Application_Idling;
-        }
-
+        
         /// <summary>
         /// Are there currently promises queued for Idle thread invocation?
         /// </summary>
@@ -82,7 +77,7 @@ namespace RevitServices.Threading
         /// <param name="uIApplication">UIControlledApplication to use the Idle event of.</param>
         public static void RegisterIdle(UIControlledApplication uIApplication)
         {
-            Register(uIApplication);
+            uIApplication.Idling += Application_Idling;
         }
 
         /// <summary>
