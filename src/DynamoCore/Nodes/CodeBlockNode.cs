@@ -58,7 +58,7 @@ namespace Dynamo.Nodes
         ///     It removes all the in ports and out ports so that the user knows there is an error.
         /// </summary>
         /// <param name="errorMessage"> Error message to be displayed </param>
-        public void ProcessError()
+        private void ProcessError()
         {
             DynamoLogger.Instance.Log("Error in Code Block Node");
 
@@ -163,7 +163,9 @@ namespace Dynamo.Nodes
                 {
                     if (value != null)
                     {
-                        string errorMessage = null;
+                        string errorMessage = string.Empty;
+                        string warningMessage = string.Empty;
+
                         DisableReporting();
                         {
                             WorkSpace.UndoRecorder.BeginActionGroup();
@@ -181,7 +183,7 @@ namespace Dynamo.Nodes
                             else
                                 WorkSpace.UndoRecorder.RecordModificationForUndo(this);
                             code = value;
-                            ProcessCode(ref errorMessage);
+                            ProcessCode(ref errorMessage, ref warningMessage);
 
                             //Recreate connectors that can be reused
                             LoadAndCreateConnectors(inportConnections, outportConnections);
@@ -190,12 +192,22 @@ namespace Dynamo.Nodes
                         RaisePropertyChanged("Code");
                         RequiresRecalc = true;
                         ReportPosition();
+
                         if (WorkSpace != null)
+                        {
                             WorkSpace.Modified();
+                        }
+
                         EnableReporting();
 
-                        if (errorMessage != null)
+                        if (!string.IsNullOrEmpty(errorMessage))
+                        {
                             Error(errorMessage);
+                        }
+                        else if (!string.IsNullOrEmpty(warningMessage))
+                        {
+                            Warning(warningMessage);
+                        }
                     }
                     else
                         code = null;
@@ -386,17 +398,29 @@ namespace Dynamo.Nodes
 
         private void ProcessCodeDirect()
         {
-            string errorMessage = null;
-            ProcessCode(ref errorMessage);
+            string errorMessage = string.Empty;
+            string warningMessage = string.Empty;
+
+            ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
             RequiresRecalc = true;
+
             if (WorkSpace != null)
+            {
                 WorkSpace.Modified();
-            if (errorMessage != null)
+            }
+
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
                 Error(errorMessage);
+            }
+            else if (!string.IsNullOrEmpty(warningMessage))
+            {
+                Warning(warningMessage);
+            }
         }
 
-        private void ProcessCode(ref string errorMessage)
+        private void ProcessCode(ref string errorMessage, ref string warningMessage)
         {
             //Format user test
             code = FormatUserText(code);
@@ -451,14 +475,12 @@ namespace Dynamo.Nodes
                     // 
                     // To check function redefinition, we need to check other
                     // CBN to find out if it has been defined yet. Now just
-                    // skip thsi warning.
+                    // skip this warning.
                     warnings = warnings.Where(w => w.ID != WarningID.kIdUnboundIdentifier
                                                 && w.ID != WarningID.kFunctionAlreadyDefined);
                     if (warnings.Any())
                     {
-                        errorMessage = string.Join("\n", warnings.Select(m => m.Message));
-                        ProcessError();
-                        return;
+                        warningMessage = string.Join("\n", warnings.Select(m => m.Message));
                     }
                 }
             }

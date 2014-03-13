@@ -147,6 +147,7 @@ namespace Dynamo.Tests
 
         public override void Cleanup()
         {
+            Dynamo.DSEngine.LibraryServices.DestroyInstance();
             GraphToDSCompiler.GraphUtilities.Reset();
             base.Cleanup();
         }
