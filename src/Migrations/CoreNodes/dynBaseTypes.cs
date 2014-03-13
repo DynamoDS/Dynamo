@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Xml;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Migrations;
 
-namespace Migrations.CoreNodes
+namespace Dynamo.Nodes
 {
     public class Identity : MigrationNode
     {

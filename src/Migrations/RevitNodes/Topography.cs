@@ -3,8 +3,9 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Dynamo.Models;
+using Migrations;
 
-namespace Migrations.RevitNodes
+namespace Dynamo.Nodes
 {
     class TopographyFromPoints:MigrationNode
     {

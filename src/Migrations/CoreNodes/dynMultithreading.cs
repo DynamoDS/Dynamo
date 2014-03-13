@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 using System.Xml;
 using Dynamo.Models;
+using Migrations;
 
-namespace Migrations.CoreNodes
+namespace Dynamo.Nodes
 {
     public class Future : MigrationNode
     {

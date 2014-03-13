@@ -1,4 +1,6 @@
-﻿namespace Migrations.RevitNodes
+﻿using Migrations;
+
+namespace Dynamo.Nodes
 {
     public class Simplex1D: MigrationNode
     {
