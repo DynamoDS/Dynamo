@@ -7,7 +7,7 @@ namespace Dynamo.Nodes
 {
     public class DraftingView: MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll", "DraftingView.ByName", "DraftingView.ByName@string");
@@ -20,7 +20,7 @@ namespace Dynamo.Nodes
 
     public class IsometricView : ViewBase
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -70,7 +70,7 @@ namespace Dynamo.Nodes
 
     public class PerspectiveView : ViewBase
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -124,7 +124,7 @@ namespace Dynamo.Nodes
 
     public class SectionView : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll",
@@ -134,7 +134,7 @@ namespace Dynamo.Nodes
 
     public class ActiveRevitView : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll",
@@ -144,7 +144,7 @@ namespace Dynamo.Nodes
 
     public class SaveImageFromRevitView : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll",
@@ -159,7 +159,7 @@ namespace Dynamo.Nodes
 
     public class ViewSheet : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll",

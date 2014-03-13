@@ -8,7 +8,7 @@ namespace Dynamo.Nodes
 {
     public class LengthInput : MigrationNode
     {
-        [NodeMigration(@from:"0.6.2")]
+        [NodeMigration(from:"0.6.2")]
         public void MigrateLengthFromFeetToMeters(XmlNode node)
         {
             //length values were previously stored as decimal feet

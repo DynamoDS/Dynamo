@@ -10,7 +10,7 @@ namespace Dynamo.Nodes
 {
     public class Identity : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "Function.Identity", "Function.Identity@var");
@@ -19,7 +19,7 @@ namespace Dynamo.Nodes
 
     public class IsNull : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);
@@ -34,7 +34,7 @@ namespace Dynamo.Nodes
 
     public class ComposeFunctions : MigrationNode
     { 
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -74,7 +74,7 @@ namespace Dynamo.Nodes
 
     public class Reverse : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Reverse",
@@ -84,7 +84,7 @@ namespace Dynamo.Nodes
 
     public class NewList : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -104,7 +104,7 @@ namespace Dynamo.Nodes
 
     public class SortWith : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -138,7 +138,7 @@ namespace Dynamo.Nodes
 
     public class SortBy : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -172,7 +172,7 @@ namespace Dynamo.Nodes
 
     public class Sort : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Sort", "List.Sort@var[]..[]");
@@ -181,7 +181,7 @@ namespace Dynamo.Nodes
 
     public class ListMin : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {            
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -215,7 +215,7 @@ namespace Dynamo.Nodes
 
     public class ListMax : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {            
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -250,7 +250,7 @@ namespace Dynamo.Nodes
   
     public class Fold : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -276,7 +276,7 @@ namespace Dynamo.Nodes
 
     public class Filter : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -306,7 +306,7 @@ namespace Dynamo.Nodes
 
     public class FilterOut : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -343,7 +343,7 @@ namespace Dynamo.Nodes
 
     public class NumberRange : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -363,7 +363,7 @@ namespace Dynamo.Nodes
 
     public class NumberSeq : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -384,7 +384,7 @@ namespace Dynamo.Nodes
 
     public class Combine : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -405,7 +405,7 @@ namespace Dynamo.Nodes
 
     public class LaceShortest : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -422,7 +422,7 @@ namespace Dynamo.Nodes
 
     public class LaceLongest : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -439,7 +439,7 @@ namespace Dynamo.Nodes
 
     public class Map : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -469,7 +469,7 @@ namespace Dynamo.Nodes
 
     public class ForEach : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -503,7 +503,7 @@ namespace Dynamo.Nodes
 
     public class AndMap : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -537,7 +537,7 @@ namespace Dynamo.Nodes
 
     public class OrMap : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -571,7 +571,7 @@ namespace Dynamo.Nodes
 
     public class DeCons : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Deconstruct",
@@ -581,7 +581,7 @@ namespace Dynamo.Nodes
 
     public class List : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.AddItemToFront",
@@ -591,7 +591,7 @@ namespace Dynamo.Nodes
 
     public class TakeList : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -625,7 +625,7 @@ namespace Dynamo.Nodes
 
     public class DropList : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -659,7 +659,7 @@ namespace Dynamo.Nodes
 
     public class ShiftList : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -693,7 +693,7 @@ namespace Dynamo.Nodes
 
     public class GetFromList : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -727,7 +727,7 @@ namespace Dynamo.Nodes
 
     public class Shuffle : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Shuffle",
@@ -737,7 +737,7 @@ namespace Dynamo.Nodes
 
     public class GroupBy : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -771,7 +771,7 @@ namespace Dynamo.Nodes
 
     public class SliceList : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -816,7 +816,7 @@ namespace Dynamo.Nodes
 
     public class RemoveFromList : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -850,7 +850,7 @@ namespace Dynamo.Nodes
 
     public class RemoveEveryNth : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -884,7 +884,7 @@ namespace Dynamo.Nodes
 
     public class TakeEveryNth : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -918,7 +918,7 @@ namespace Dynamo.Nodes
 
     public class Empty : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Empty", "List.Empty");
@@ -927,7 +927,7 @@ namespace Dynamo.Nodes
 
     public class IsEmpty : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.IsEmpty",
@@ -937,7 +937,7 @@ namespace Dynamo.Nodes
 
     public class Length : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Count",
@@ -947,7 +947,7 @@ namespace Dynamo.Nodes
 
     public class Append : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -967,7 +967,7 @@ namespace Dynamo.Nodes
 
     public class First : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.FirstItem",
@@ -986,7 +986,7 @@ namespace Dynamo.Nodes
 
     public class Rest : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.RestOfItems",
@@ -996,7 +996,7 @@ namespace Dynamo.Nodes
 
     public class Slice : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Chop",
@@ -1006,7 +1006,7 @@ namespace Dynamo.Nodes
 
     public class DiagonalRightList : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.DiagonalRight",
@@ -1016,7 +1016,7 @@ namespace Dynamo.Nodes
 
     public class DiagonalLeftList : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.DiagonalLeft",
@@ -1026,7 +1026,7 @@ namespace Dynamo.Nodes
 
     public class Transpose : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "", "Transpose", "Transpose@var[]..[]");
@@ -1035,7 +1035,7 @@ namespace Dynamo.Nodes
 
     public partial class Sublists : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1088,7 +1088,7 @@ namespace Dynamo.Nodes
 
     public class Repeat : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Repeat",
@@ -1098,7 +1098,7 @@ namespace Dynamo.Nodes
 
     public class FlattenList : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1117,7 +1117,7 @@ namespace Dynamo.Nodes
 
     public class LessThan : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "<", "<@,");
@@ -1126,7 +1126,7 @@ namespace Dynamo.Nodes
 
     public class LessThanEquals : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "<=", "<=@,");
@@ -1135,7 +1135,7 @@ namespace Dynamo.Nodes
 
     public class GreaterThan : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, ">", ">@,");
@@ -1144,7 +1144,7 @@ namespace Dynamo.Nodes
 
     public class GreaterThanEquals : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, ">=", ">=@,");
@@ -1153,7 +1153,7 @@ namespace Dynamo.Nodes
 
     public class Equal : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "==", "==@,");
@@ -1162,7 +1162,7 @@ namespace Dynamo.Nodes
 
     public class And : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1180,7 +1180,7 @@ namespace Dynamo.Nodes
 
     public class Or : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1198,7 +1198,7 @@ namespace Dynamo.Nodes
 
     public class Xor : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "Logic.Xor", "Logic.Xor@bool,bool");
@@ -1207,7 +1207,7 @@ namespace Dynamo.Nodes
 
     public class Not : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "Not", "Not@,");
@@ -1216,7 +1216,7 @@ namespace Dynamo.Nodes
 
     public class Addition : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "+", "+@,");
@@ -1225,7 +1225,7 @@ namespace Dynamo.Nodes
 
     public class Subtraction : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "-", "-@,");
@@ -1234,7 +1234,7 @@ namespace Dynamo.Nodes
 
     public class Multiplication : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "*", "*@,");
@@ -1243,7 +1243,7 @@ namespace Dynamo.Nodes
 
     public class Division : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "/", "/@,");
@@ -1252,7 +1252,7 @@ namespace Dynamo.Nodes
 
     public class Modulo : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "%", "%@,");
@@ -1261,7 +1261,7 @@ namespace Dynamo.Nodes
 
     public class Pow : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Pow", "Math.Pow@double,double");
@@ -1270,7 +1270,7 @@ namespace Dynamo.Nodes
 
     public class Round : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Round", "Math.Round@double");
@@ -1279,7 +1279,7 @@ namespace Dynamo.Nodes
 
     public class Floor : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Floor", "Math.Floor@double");
@@ -1288,7 +1288,7 @@ namespace Dynamo.Nodes
 
     public class Ceiling : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Ceiling", "Math.Ceiling@double");
@@ -1297,7 +1297,7 @@ namespace Dynamo.Nodes
 
     public class RandomSeed : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.RandomSeed", "Math.RandomSeed@int");
@@ -1306,7 +1306,7 @@ namespace Dynamo.Nodes
 
     public class Random : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Rand", "Math.Rand");
@@ -1315,7 +1315,7 @@ namespace Dynamo.Nodes
 
     public class RandomList : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.RandomList", "Math.RandomList@int");
@@ -1324,7 +1324,7 @@ namespace Dynamo.Nodes
 
     public class EConstant : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.E", "Math.E");
@@ -1333,7 +1333,7 @@ namespace Dynamo.Nodes
 
     public class Pi : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.PI", "Math.PI");
@@ -1342,7 +1342,7 @@ namespace Dynamo.Nodes
 
     public class PiTimes2 : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.PiTimes2", "Math.PiTimes2");
@@ -1351,7 +1351,7 @@ namespace Dynamo.Nodes
 
     public class Sin : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1386,7 +1386,7 @@ namespace Dynamo.Nodes
 
     public class Cos : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1421,7 +1421,7 @@ namespace Dynamo.Nodes
 
     public class Tan : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1456,7 +1456,7 @@ namespace Dynamo.Nodes
 
     public class Asin : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1491,7 +1491,7 @@ namespace Dynamo.Nodes
 
     public class Acos : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1526,7 +1526,7 @@ namespace Dynamo.Nodes
 
     public class Atan : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1561,7 +1561,7 @@ namespace Dynamo.Nodes
 
     public class Average : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Average", "Math.Average@var[]");
@@ -1570,7 +1570,7 @@ namespace Dynamo.Nodes
 
     public class Smooth : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1585,7 +1585,7 @@ namespace Dynamo.Nodes
 
     public class Begin : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1606,7 +1606,7 @@ namespace Dynamo.Nodes
 
     public class Apply1 : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -1644,7 +1644,7 @@ namespace Dynamo.Nodes
 
     public class Conditional : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1670,7 +1670,7 @@ namespace Dynamo.Nodes
 
     public partial class DoubleSliderInput : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1702,7 +1702,7 @@ namespace Dynamo.Nodes
 
     public partial class IntegerSliderInput : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1734,7 +1734,7 @@ namespace Dynamo.Nodes
 
     public partial class BoolSelector : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1762,7 +1762,7 @@ namespace Dynamo.Nodes
 
     public partial class StringInput : MigrationNode
     {
-        [NodeMigration(@from: "0.5.3.0", to: "0.6.3.0")]
+        [NodeMigration(from: "0.5.3.0", to: "0.6.3.0")]
         public static NodeMigrationData Migrate_0530_to_0600(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1783,7 +1783,7 @@ namespace Dynamo.Nodes
             return migrationData;
         }
 
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1806,7 +1806,7 @@ namespace Dynamo.Nodes
 
     public partial class StringDirectory : StringFilename
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1831,7 +1831,7 @@ namespace Dynamo.Nodes
 
     public partial class StringFilename : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1856,7 +1856,7 @@ namespace Dynamo.Nodes
 
     public class ConcatStrings : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -1879,7 +1879,7 @@ namespace Dynamo.Nodes
 
     public class String2Num : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1894,7 +1894,7 @@ namespace Dynamo.Nodes
 
     public class Num2String : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.FromObject", "String.FromObject@var");
@@ -1903,7 +1903,7 @@ namespace Dynamo.Nodes
 
     public class StringLen : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.Length", "String.Length@string");
@@ -1912,7 +1912,7 @@ namespace Dynamo.Nodes
 
     public class ToString : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.FromObject", "String.FromObject@var");
@@ -1921,7 +1921,7 @@ namespace Dynamo.Nodes
 
     public class SplitString : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.Split", "String.Split@string,string[]");
@@ -1930,7 +1930,7 @@ namespace Dynamo.Nodes
 
     public class JoinStrings : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -1964,7 +1964,7 @@ namespace Dynamo.Nodes
 
     public class StringCase : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.StringCase", "String.StringCase@string,bool");
@@ -1973,7 +1973,7 @@ namespace Dynamo.Nodes
 
     public class Substring : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.Substring", "String.Substring@string,int,int");

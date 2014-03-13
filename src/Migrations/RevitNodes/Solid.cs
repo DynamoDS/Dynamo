@@ -7,7 +7,7 @@ namespace Dynamo.Nodes
 {
     public class LoftForm : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -42,7 +42,7 @@ namespace Dynamo.Nodes
 
     public class CreateRevolvedGeometry : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByRevolve", "Solid.ByRevolve@Curve[],CoordinateSystem,double,double");
@@ -51,7 +51,7 @@ namespace Dynamo.Nodes
 
     public class CreateSweptGeometry : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -89,7 +89,7 @@ namespace Dynamo.Nodes
 
     public class CreateExtrusionGeometry : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByExtrusion", "Solid.ByExtrusion@Curve[],Vector,double");
@@ -98,7 +98,7 @@ namespace Dynamo.Nodes
 
     public class CreateBlendGeometry : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -141,7 +141,7 @@ namespace Dynamo.Nodes
 
     public class BooleanOperation : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -156,7 +156,7 @@ namespace Dynamo.Nodes
 
     public class SolidDifference : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByBooleanDifference",
@@ -166,7 +166,7 @@ namespace Dynamo.Nodes
 
     public class SolidUnion : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByBooleanUnion",
@@ -176,7 +176,7 @@ namespace Dynamo.Nodes
 
     public class SolidIntersection : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByBooleanIntersection",
@@ -186,7 +186,7 @@ namespace Dynamo.Nodes
 
     public class ElementSolid : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll",
@@ -196,7 +196,7 @@ namespace Dynamo.Nodes
 
     public class SolidCylinder : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -240,7 +240,7 @@ namespace Dynamo.Nodes
 
     public class SolidSphere : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.Sphere", "Solid.Sphere@Point,double");
@@ -249,7 +249,7 @@ namespace Dynamo.Nodes
 
     public class SolidTorus : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.Torus", "Solid.Torus@Vector,Point,double,double");
@@ -258,7 +258,7 @@ namespace Dynamo.Nodes
 
     public class SolidBoxByTwoCorners : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.BoxByTwoCorners",
@@ -268,7 +268,7 @@ namespace Dynamo.Nodes
 
     public class SolidBoxByCenterAndDimensions : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.BoxByCenterAndDimensions",
@@ -278,7 +278,7 @@ namespace Dynamo.Nodes
 
     public class GeometryObjectsFromRoot : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "Geometry.Explode", "Geometry.Explode");
@@ -287,7 +287,7 @@ namespace Dynamo.Nodes
 
     public class TransformSolid : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "Geometry.Transform",

@@ -7,7 +7,7 @@ namespace Dynamo.Nodes
 {
     public class CurveTransformed : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -53,7 +53,7 @@ namespace Dynamo.Nodes
 
     public class CurveRef : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll",
@@ -63,7 +63,7 @@ namespace Dynamo.Nodes
 
     public class CurveFromModelCurve : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll",
@@ -73,7 +73,7 @@ namespace Dynamo.Nodes
      
     public class CurveLoop : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "PolyCurve.ByJoinedCurves",
@@ -87,7 +87,7 @@ namespace Dynamo.Nodes
 
     public class ListCurveLoop : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "PolyCurve.Curves", "PolyCurve.Curves");
@@ -96,7 +96,7 @@ namespace Dynamo.Nodes
 
     public class OffsetCrv : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "Curve.Offset", "Curve.Offset@double");
@@ -105,7 +105,7 @@ namespace Dynamo.Nodes
 
     public class BoundCurve : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -120,7 +120,7 @@ namespace Dynamo.Nodes
 
     public class ComputeCurveDerivatives : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "Curve.CoordinateSystemAtParameter",
@@ -130,7 +130,7 @@ namespace Dynamo.Nodes
 
     public class TangentTransformOnCurveOrEdge : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
