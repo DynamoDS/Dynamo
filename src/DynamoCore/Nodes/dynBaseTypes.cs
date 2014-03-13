@@ -568,30 +568,6 @@ namespace Dynamo.Nodes
 
     #region Control Flow
 
-    [NodeName("Apply Function to List")]
-    [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("Applies a function to a list of arguments.")]
-    public class ApplyList : NodeWithOneOutput
-    {
-        public ApplyList()
-        {
-            InPortData.Add(new PortData("func", "Function", typeof(Value.Function)));
-            InPortData.Add(new PortData("args", "List of arguments to apply function to.", typeof(Value.List)));
-
-            OutPortData.Add(new PortData("result", "Result of function application.", typeof(object)));
-
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var f = ((Value.Function)args[0]).Item;
-            var fArgs = ((Value.List)args[1]).Item;
-
-            return f.Invoke(fArgs);
-        }
-    }
-
     //TODO: Setup proper IsDirty smart execution management
     [NodeName("Apply Function")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
