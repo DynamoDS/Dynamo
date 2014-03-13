@@ -214,6 +214,7 @@ namespace RevitServices.Transactions
         public event Action TransactionCancelled;
 
         #region Event Raising Utility Methods
+
         private void RaiseTransactionStarted()
         {
             if (TransactionStarted != null)
@@ -239,6 +240,7 @@ namespace RevitServices.Transactions
 
             FailuresRaised(failures);
         }
+
         #endregion
 
         /// <summary>
