@@ -11,6 +11,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
+using Autodesk.DesignScript.Runtime;
 
 namespace DSIronPythonNode
 {
@@ -64,7 +65,7 @@ namespace DSIronPythonNode
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [NodeDescription("Runs an embedded IronPython script")]
-    [Browsable(false)]
+    [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class PythonNode : PythonNodeBase
     {
@@ -201,7 +202,7 @@ namespace DSIronPythonNode
     [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [NodeDescription("Runs a IronPython script from a string")]
-    [Browsable(false)]
+    [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class PythonStringNode : PythonNodeBase
     {
