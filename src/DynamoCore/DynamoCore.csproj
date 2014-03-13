@@ -169,7 +169,6 @@ limitations under the License.
     <Compile Include="UI\Commands\Commands.cs" />
     <Compile Include="Core\DynamoLogger.cs" />
     <Compile Include="Core\DynamoSelection.cs" />
-    <Compile Include="Nodes\dynMultithreading.cs" />
     <Compile Include="Nodes\dynOptimize.cs" />
     <Compile Include="Services\Heartbeat.cs" />
     <Compile Include="Services\Log.cs" />
