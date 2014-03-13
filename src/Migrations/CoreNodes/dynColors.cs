@@ -6,7 +6,7 @@ namespace Dynamo.Nodes
 {
     class ColorBrightness : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.Brightness", "DSColor.Brightness@DSColor");
@@ -15,7 +15,7 @@ namespace Dynamo.Nodes
 
     class ColorSaturation : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.Saturation", "DSColor.Saturation@DSColor");
@@ -24,7 +24,7 @@ namespace Dynamo.Nodes
 
     class Color : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.ByARGB",
@@ -34,7 +34,7 @@ namespace Dynamo.Nodes
 
     class ColorComponents : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.Components",
@@ -44,7 +44,7 @@ namespace Dynamo.Nodes
 
     class ColorHue : MigrationNode
     {
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.Hue", "DSColor.Hue@DSColor");
@@ -63,7 +63,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        [NodeMigration(@from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "DSColor.ColorRange",

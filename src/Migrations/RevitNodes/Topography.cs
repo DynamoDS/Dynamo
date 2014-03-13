@@ -9,7 +9,7 @@ namespace Dynamo.Nodes
 {
     class TopographyFromPoints:MigrationNode
     {
-        [NodeMigration(@from:"0.6.3.0")]
+        [NodeMigration(from:"0.6.3.0")]
         public static NodeMigrationData Migrate(NodeMigrationData data)
         {
             //Migrate the topography node from 0.6.3 to 0.7.0
@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
 
     class PointsFromTopography : MigrationNode
     {
-        [NodeMigration(@from:"0.7.0")]
+        [NodeMigration(from:"0.7.0")]
         public static XmlElement Migrate(XmlElement element)
         {
             //DSRevitNodes.Topography.Points
