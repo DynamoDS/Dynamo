@@ -51,8 +51,7 @@ namespace DSIronPythonNode
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    backendMethod.Method.DeclaringType.FullName,
-                    backendMethod.Method.Name,
+                    backendMethod,
                     new List<AssociativeNode>
                     {
                         codeInputNode,
@@ -71,7 +70,8 @@ namespace DSIronPythonNode
     {
         public PythonNode()
         {
-            _script = "import clr\nclr.AddReference('ProtoGeometry')\nfrom Autodesk.DesignScript.Geometry import *\n"
+            _script = "import clr\nclr.AddReference('ProtoGeometry')\n"
+                + "from Autodesk.DesignScript.Geometry import *\n"
                 + "#The inputs to this node will be stored as a list in the IN variable.\n"
                 + "dataEnteringNode = IN\n\n"
                 + "#Assign your output to the OUT variable\n"
