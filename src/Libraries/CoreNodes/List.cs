@@ -359,23 +359,12 @@ namespace DSCore
             [ArbitraryDimensionArrayImport] IList list,
             [ArbitraryDimensionArrayImport] object indices)
         {
-            return list.Cast<object>().Where((_, i) => i != index).ToList();
+            if (indices is ICollection)
+                return list.Cast<object>().Where((_, i) => !((IList)indices).Contains(i)).ToList();
+            else
+                return list.Cast<object>().Where((_, i) => i != (int)indices).ToList();
         }
 
-        /// <summary>
-        ///     Removes items from the given list at the specified indices.
-        /// </summary>
-        /// <param name="list">List to remove items from.</param>
-        /// <param name="indices">Indices of the items to be removed.</param>
-        public static IList RemoveItemsAtIndices(
-            [ArbitraryDimensionArrayImport] IList list,
-            IList indices)
-        {
-            var idxs = indices.Cast<object>().ToList();
-            var idxsint = new List<int>();
-            idxsint.AddRange(idxs.Select(Convert.ToInt32));
-            return list.Cast<object>().Where((_, i) => !idxsint.Contains(i)).ToList();
-        }
 
         /// <summary>
         ///     Removes items from the given list at indices that are multiples
