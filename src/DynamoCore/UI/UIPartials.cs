@@ -1,36 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Forms;
-using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
-using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Microsoft.FSharp.Collections;
-
 using Binding = System.Windows.Data.Binding;
 using ComboBox = System.Windows.Controls.ComboBox;
-using DialogResult = System.Windows.Forms.DialogResult;
-using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using Image = System.Windows.Controls.Image;
 using MenuItem = System.Windows.Controls.MenuItem;
-using RadioButton = System.Windows.Controls.RadioButton;
-using TextBox = System.Windows.Controls.TextBox;
 using VerticalAlignment = System.Windows.VerticalAlignment;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
@@ -188,39 +173,6 @@ namespace Dynamo.Nodes
             }
 
             return base.HandleModelEventCore(eventName);
-        }
-    }
-
-    public partial class Breakpoint
-    {
-        public void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            var button = new DynamoNodeButton();
-            button.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            button.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-            //inputGrid.RowDefinitions.Add(new RowDefinition());
-            nodeUI.inputGrid.Children.Add(button);
-            Grid.SetColumn(button, 0);
-            Grid.SetRow(button, 0);
-            button.Content = "Continue";
-
-            Enabled = false;
-
-            button.Click += button_Click;
-
-            var bindingVal = new Binding("Enabled")
-            {
-                Mode = BindingMode.TwoWay,
-                NotifyOnValidationError = false,
-                Source = this
-            };
-            button.SetBinding(UIElement.IsEnabledProperty, bindingVal);
-        }
-
-        private void button_Click(object sender, RoutedEventArgs e)
-        {
-            Deselect();
-            Enabled = false;
         }
     }
 

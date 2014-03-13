@@ -694,47 +694,7 @@ namespace Dynamo.Nodes
         }
     }
     
-    [NodeName("Debug Breakpoint")]
-    [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("Halts execution until user clicks button.")]
-    public partial class Breakpoint : NodeWithOneOutput
-    {
-        public Breakpoint()
-        {
-            InPortData.Add(new PortData("", "Object to inspect", typeof(object)));
-            OutPortData.Add(new PortData("", "Object inspected", typeof(object)));
-            RegisterAllPorts();
-        }
-
-        private bool Enabled { get; set; }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var result = args[0];
-
-            DynamoLogger.Instance.Log(FScheme.print(result));
-
-            if (dynSettings.Controller.DynamoViewModel.RunInDebug)
-            {
-                Enabled = true;
-                Select();
-                dynSettings.Controller.DynamoViewModel.ShowElement(this);
-
-                while (Enabled)
-                {
-                    Thread.Sleep(1);
-                }
-            }
-
-            return result;
-        }
-    }
-
     #endregion
-
-    #region Interactive Primitive Types
-
-    #region Base Classes
 
     public abstract partial class BasicInteractive<T> : NodeWithOneOutput
     {
@@ -910,10 +870,6 @@ namespace Dynamo.Nodes
 
         #endregion
     }
-
-    #endregion
-
-    #endregion
 
     /// <summary>
     /// A class used to store a name and associated item for a drop down menu
