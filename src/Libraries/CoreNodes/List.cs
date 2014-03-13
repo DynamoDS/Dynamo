@@ -143,8 +143,8 @@ namespace DSCore
         /// <param name="list">List to filter.</param>
         /// <param name="mask">List of booleans representing a mask.</param>
         /// <search>filter,boolean,bool,mask,dispatch</search>
-        [MultiReturn("in", "var[]")]
-        [MultiReturn("out", "var[]")]
+        [MultiReturn("in", "var[]..[]")]
+        [MultiReturn("out", "var[]..[]")]
         public static Dictionary<string, object> FilterByBoolMask(
             [ArbitraryDimensionArrayImport] IList list,
             [ArbitraryDimensionArrayImport] IList mask)
@@ -190,9 +190,9 @@ namespace DSCore
         ///     except the first.
         /// </summary>
         /// <param name="list">List to be split.</param>
-        [MultiReturn("first", "var")]
-        [MultiReturn("rest", "var[]")]
-        public static Dictionary<string, object> Deconstruct(
+        [MultiReturn("first", "var[]..[]")]
+        [MultiReturn("rest", "var[]..[]")]
+        public static IDictionary Deconstruct(
             [ArbitraryDimensionArrayImport] IList list)
         {
             return new Dictionary<string, object>
@@ -359,10 +359,9 @@ namespace DSCore
             [ArbitraryDimensionArrayImport] IList list,
             [ArbitraryDimensionArrayImport] object indices)
         {
-            if (indices is ICollection)
-                return list.Cast<object>().Where((_, i) => !((IList)indices).Contains(i)).ToList();
-            else
-                return list.Cast<object>().Where((_, i) => i != (int)indices).ToList();
+            return indices is ICollection
+                ? list.Cast<object>().Where((_, i) => !((IList)indices).Contains(i)).ToList()
+                : list.Cast<object>().Where((_, i) => i != (int)indices).ToList();
         }
 
         /// <summary>
@@ -502,7 +501,7 @@ namespace DSCore
         /// <summary>
         ///     Create a diagonal lists of lists from top left to lower right.
         /// </summary>
-        /// <param name="flatList">A list</param>
+        /// <param name="list">A list</param>
         /// <param name="subLength">Length of each new sub-list.</param>
         public static IList DiagonalRight(
             [ArbitraryDimensionArrayImport] IList list,
@@ -556,7 +555,7 @@ namespace DSCore
         /// <summary>
         ///     Create a diagonal lists of lists from top right to lower left.
         /// </summary>
-        /// <param name="flatList">A list.</param>
+        /// <param name="list">A list.</param>
         /// <param name="rowLength">Length of each new sib-list.</param>
         public static IList DiagonalLeft(
             [ArbitraryDimensionArrayImport] IList list,
@@ -637,7 +636,9 @@ namespace DSCore
         /// </summary>
         /// <param name="item">The item to repeat.</param>
         /// <param name="amount">The number of times to repeat.</param>
-        public static IList OfRepeatedItem(object item, int amount)
+        public static IList OfRepeatedItem(
+            [ArbitraryDimensionArrayImport] object item,
+            int amount)
         {
             return Enumerable.Repeat(item, amount).ToList();
         }
