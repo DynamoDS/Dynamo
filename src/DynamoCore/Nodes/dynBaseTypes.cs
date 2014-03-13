@@ -33,7 +33,7 @@ namespace Dynamo.Nodes
     /// categories, then use these constants. This ensures that if the names of the categories
     /// change down the road, your node will still be placed there.
     /// </summary>
-    public static partial class BuiltinNodeCategories
+    public static class BuiltinNodeCategories
     {
         public const string CORE = "Core";
         public const string CORE_INPUT = "Core.Input";
@@ -566,8 +566,6 @@ namespace Dynamo.Nodes
 
     #endregion
 
-    #region Control Flow
-
     //TODO: Setup proper IsDirty smart execution management
     [NodeName("Apply Function")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
@@ -670,8 +668,6 @@ namespace Dynamo.Nodes
         }
     }
     
-    #endregion
-
     public abstract partial class BasicInteractive<T> : NodeWithOneOutput
     {
         private T _value;
