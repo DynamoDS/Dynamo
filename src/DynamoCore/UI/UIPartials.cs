@@ -910,45 +910,6 @@ namespace Dynamo.Nodes
 
     }
 
-    public partial class Formula
-    {
-        public void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            var tb = new DynamoTextBox(FormulaString)
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Top,
-                Background =
-                    new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
-            };
-
-            nodeUI.inputGrid.Children.Add(tb);
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, 0);
-
-            tb.DataContext = this;
-            tb.BindToProperty(
-                new Binding("FormulaString")
-                {
-                    Mode = BindingMode.TwoWay,
-                    NotifyOnValidationError = false,
-                    Source = this,
-                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-                });
-        }
-
-        protected override bool UpdateValueCore(string name, string value)
-        {
-            if (name == "FormulaString")
-            {
-                FormulaString = value;
-                return true; // UpdateValueCore handled.
-            }
-
-            return base.UpdateValueCore(name, value);
-        }
-    }
-
     public partial class CodeBlockNodeModel
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
