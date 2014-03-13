@@ -536,6 +536,10 @@ namespace Dynamo.Models
                 // Invoke the constructor that takes in a 'FunctionDescriptor'.
                 var engine = dynSettings.Controller.EngineController;
                 var functionDescriptor = engine.GetFunctionDescriptor(signature);
+
+                if (functionDescriptor == null)
+                    throw new UnresolvedFunctionException(signature);
+
                 node = (NodeModel)Activator.CreateInstance(
                     elementType, new object[] { functionDescriptor });
             }
@@ -763,11 +767,12 @@ namespace Dynamo.Models
                     // Retrieve optional 'function' attribute (only for DSFunction).
                     XmlAttribute signatureAttrib = elNode.Attributes["function"];
                     var signature = signatureAttrib == null ? null : signatureAttrib.Value;
-                    NodeModel el = CreateNodeInstance(type, nickname, signature, guid);
-                    el.WorkSpace = CurrentWorkspace;
+                    NodeModel el = null;
 
                     try
                     {
+                        el = CreateNodeInstance(type, nickname, signature, guid);
+                        el.WorkSpace = CurrentWorkspace;
                         el.Load(elNode);
                     }
                     catch (UnresolvedFunctionException)
