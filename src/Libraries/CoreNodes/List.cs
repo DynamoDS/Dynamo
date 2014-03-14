@@ -505,8 +505,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Creates a list of lists out of an existing list with each sub-list containing
-        ///     the given amount of items.
+        ///     Chop a list into a set of lists each containing the given amount of items.
         /// </summary>
         /// <param name="list">List to chop up.</param>
         /// <param name="subLength">Length of each new sub-list.</param>
@@ -543,10 +542,12 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Create a diagonal lists of lists from top left to lower right.
+        ///     List elements along each diagonal in the matrix from the top left to the lower right.
         /// </summary>
-        /// <param name="list">A list</param>
-        /// <param name="subLength">Length of each new sub-list.</param>
+        /// <param name="list">A flat list</param>
+        /// <param name="rowLength">Length of each new sub-list.</param>
+        /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
+        /// <search>diagonal,right,matrix</search>
         public static IList DiagonalRight(
             [ArbitraryDimensionArrayImport] IList list,
             int subLength)
@@ -606,10 +607,12 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Create a diagonal lists of lists from top right to lower left.
+        ///     List elements along each diagonal in the matrix from the top right to the lower left.
         /// </summary>
-        /// <param name="list">A list.</param>
+        /// <param name="list">A flat list.</param>
         /// <param name="rowLength">Length of each new sib-list.</param>
+        /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
+        /// <search>diagonal,left,matrix</search>
         public static IList DiagonalLeft(
             [ArbitraryDimensionArrayImport] IList list,
             int rowLength)
