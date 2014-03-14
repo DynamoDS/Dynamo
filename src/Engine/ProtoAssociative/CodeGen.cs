@@ -3791,6 +3791,8 @@ namespace ProtoAssociative
 
         public List<AssociativeNode> EmitSSA(List<AssociativeNode> astList)
         {
+            Validity.Assert(null != astList);
+            astList = SplitMulitpleAssignment(astList);
             return BuildSSA(astList, new ProtoCore.CompileTime.Context());
         }
 
@@ -5205,10 +5207,10 @@ namespace ProtoAssociative
                 //Always allow us to convert a class to a bool
                 thisClass.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             }
-            else if (ProtoCore.DSASM.AssociativeCompilePass.kClassHeirarchy == compilePass)
-            {
-                // Class heirarchy pass
-                // Populating each class entry with their respective base classes
+            else if (ProtoCore.DSASM.AssociativeCompilePass.kClassBaseClass == compilePass)
+            { 
+                // Base class pass
+                // Populating each class entry with their immediate baseclass
                 globalClassIndex = core.ClassTable.GetClassId(classDecl.className);
 
                 ProtoCore.DSASM.ClassNode thisClass = core.ClassTable.ClassNodes[globalClassIndex];
@@ -5239,35 +5241,52 @@ namespace ProtoAssociative
 
                             thisClass.baseList.Add(baseClass);
                             thisClass.coerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceBaseClass);
-
-                            
-                            // Iterate through all the base classes until the the root class
-                            // For every base class, add the coercion score
-
-                            // TODO Jun: -Integrate this with multiple inheritace when supported
-                            //           -Cleansify
-                            ProtoCore.DSASM.ClassNode tmpCNode = core.ClassTable.ClassNodes[baseClass];
-                            if (tmpCNode.baseList.Count > 0)
-                            {
-                                baseClass = tmpCNode.baseList[0];
-                                while (ProtoCore.DSASM.Constants.kInvalidIndex != baseClass)
-                                {
-                                    thisClass.coerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceBaseClass);
-                                    tmpCNode = core.ClassTable.ClassNodes[baseClass];
-
-                                    baseClass = ProtoCore.DSASM.Constants.kInvalidIndex;
-                                    if (tmpCNode.baseList.Count > 0)
-                                    {
-                                        baseClass = tmpCNode.baseList[0];
-                                    }
-                                }
-                            }
                         }
                         else
                         {
                             string message = string.Format("Unknown base class '{0}' (9E44FFB3).\n", classDecl.superClass[n]);
                             buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
                             throw new BuildHaltException(message);
+                        }
+                    }
+                }
+            }
+            else if (ProtoCore.DSASM.AssociativeCompilePass.kClassHierarchy == compilePass)
+            {
+                // Class hierarchy pass
+                // Populating each class entry with all sub classes in the hierarchy
+                globalClassIndex = core.ClassTable.GetClassId(classDecl.className);
+
+                ProtoCore.DSASM.ClassNode thisClass = core.ClassTable.ClassNodes[globalClassIndex];
+
+                // Verify and store the list of classes it inherits from 
+                if (null != classDecl.superClass)
+                {
+                    for (int n = 0; n < classDecl.superClass.Count; ++n)
+                    {
+                        int baseClass = core.ClassTable.GetClassId(classDecl.superClass[n]);
+
+                        // baseClass is already resovled in the previous pass
+                        Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != baseClass);
+
+                            
+                        // Iterate through all the base classes until the the root class
+                        // For every base class, add the coercion score
+                        ProtoCore.DSASM.ClassNode tmpCNode = core.ClassTable.ClassNodes[baseClass];
+                        if (tmpCNode.baseList.Count > 0)
+                        {
+                            baseClass = tmpCNode.baseList[0];
+                            while (ProtoCore.DSASM.Constants.kInvalidIndex != baseClass)
+                            {
+                                thisClass.coerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceBaseClass);
+                                tmpCNode = core.ClassTable.ClassNodes[baseClass];
+
+                                baseClass = ProtoCore.DSASM.Constants.kInvalidIndex;
+                                if (tmpCNode.baseList.Count > 0)
+                                {
+                                    baseClass = tmpCNode.baseList[0];
+                                }
+                            }
                         }
                     }
                 }
