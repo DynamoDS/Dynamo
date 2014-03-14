@@ -544,7 +544,8 @@ namespace ProtoCore.DSASM
     public enum AssociativeCompilePass
     {
         kClassName,
-        kClassHeirarchy,
+        kClassBaseClass,
+        kClassHierarchy,
         kClassMemVar,
         
         kClassMemFuncSig,
