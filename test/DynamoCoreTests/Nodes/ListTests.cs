@@ -522,9 +522,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(18, model.CurrentWorkspace.Connectors.Count);
-            Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
-
+            Assert.LessOrEqual(18, model.CurrentWorkspace.Connectors.Count);
+            Assert.LessOrEqual(15, model.CurrentWorkspace.Nodes.Count);
 
             // fourth and last element in the list before sorting
             Dictionary<int, object> validationData = new Dictionary<int,object>()
@@ -1344,6 +1343,37 @@ namespace Dynamo.Tests
         #endregion
 
         #region ListMinimum test cases  
+
+        [Test]
+        public void ListMaximumMinimum_KeyTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\ListMaximumMinimum_WithAndWithoutKey.dyn");
+            RunModel(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
+
+            // check that max & min nodes are loaded as DSFunction
+            var maxNoKey = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("3db0d46d-fea6-4fc9-8c51-a8110f919c5f");
+            var minNoKey = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("ef9a3ab0-b4c2-440d-9291-5807bc92e26f");
+            var maxWithKey = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("a8ad0bfb-25f2-4ddc-aea6-927bdc739753");
+            var minWithKey = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("2b2b1e9c-2ae1-4ba2-8b82-e01311df5429");
+
+            // check that the nodes are migrated based on whether the key is connected or not
+            Assert.AreEqual(1, maxNoKey.InPortData.Count);
+            Assert.AreEqual(1, minNoKey.InPortData.Count);
+            Assert.AreEqual(2, maxWithKey.InPortData.Count);
+            Assert.AreEqual(2, minWithKey.InPortData.Count);
+            
+            // check output values
+            Assert.AreEqual("eeee", maxNoKey.GetValue(0).Data);
+            Assert.AreEqual("aaa", minNoKey.GetValue(0).Data);
+            Assert.AreEqual("ccccc", maxWithKey.GetValue(0).Data);
+            Assert.AreEqual("b", minWithKey.GetValue(0).Data);
+        }
 
         [Test]
         public void ListMinimum_NumberRange()

@@ -771,7 +771,35 @@ namespace Dynamo.Utilities
                     // Retrieve optional 'function' attribute (only for DSFunction).
                     XmlAttribute signatureAttrib = elNode.Attributes["function"];
                     var signature = signatureAttrib == null ? null : signatureAttrib.Value;
-                    NodeModel el = dynamoModel.CreateNodeInstance(type, nickname, signature, guid);
+                    NodeModel el = null;
+
+                    try
+                    {
+                        el = dynamoModel.CreateNodeInstance(type, nickname, signature, guid);
+                        el.WorkSpace = ws;
+                        el.Load(elNode);
+                    }
+                    catch (UnresolvedFunctionException)
+                    {
+                        // If a given function is not found during file load, then convert the 
+                        // function node into a dummy node (instead of crashing the workflow).
+                        // 
+                        var e = elNode as XmlElement;
+                        var elNode2 = MigrationManager.CreateDummyNodeForFunction(e);
+
+                        // The new type representing the dummy node.
+                        typeName = elNode2.GetAttribute("type");
+                        type = Dynamo.Nodes.Utilities.ResolveType(typeName);
+
+                        el = dynamoModel.CreateNodeInstance(type, nickname, string.Empty, guid);
+                        el.WorkSpace = ws;
+                        el.Load(elNode2);
+                    }
+
+                    ws.Nodes.Add(el);
+
+                    el.X = x;
+                    el.Y = y;
 
                     if (lacingAttrib != null)
                     {
@@ -780,22 +808,10 @@ namespace Dynamo.Utilities
                         el.ArgumentLacing = lacing;
                     }
 
-                    el.IsVisible = isVisible;
-                    el.IsUpstreamVisible = isUpstreamVisible;
-
-                    ws.Nodes.Add(el);
-                    el.WorkSpace = ws;
-                    var node = el;
-
-                    node.X = x;
-                    node.Y = y;
-
-                    if (el == null)
-                        return false;
-
                     el.DisableReporting();
 
-                    el.Load(elNode);
+                    el.IsVisible = isVisible;
+                    el.IsUpstreamVisible = isUpstreamVisible;
                 }
 
                 #endregion
