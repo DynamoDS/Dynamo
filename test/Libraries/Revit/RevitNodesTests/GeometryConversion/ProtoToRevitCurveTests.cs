@@ -63,6 +63,40 @@ namespace DSRevitNodesTests.GeometryConversion
                 Assert.Less( closestPt.DistanceTo(pt.ToPoint()), 1e-6 );
             }
 
+        }
+
+        [Test]
+        public void EllipseArc_Basic()
+        {
+            var o = Point.ByCoordinates(1, 2, 3);
+            var n = Vector.ByCoordinates(2, 3, 4, true);
+            var pl = Autodesk.DesignScript.Geometry.Plane.ByOriginNormal(o, n);
+            var ellipseArc = EllipseArc.ByPlaneRadiiStartAngleSweepAngle(pl, 10, 5, 45, 90);
+
+            var revitCurve = ellipseArc.ToRevitType();
+
+            Assert.NotNull(revitCurve);
+            Assert.IsAssignableFrom<Autodesk.Revit.DB.Ellipse>(revitCurve);
+
+            var revitEllipse = (Autodesk.Revit.DB.Ellipse)revitCurve;
+
+            revitEllipse.GetEndParameter(0).ToDegrees().ShouldBeApproximately(ellipseArc.StartAngle);
+            revitEllipse.GetEndParameter(1).ToDegrees().ShouldBeApproximately(ellipseArc.StartAngle + ellipseArc.SweepAngle);
+            revitEllipse.GetEndPoint(0).ShouldBeApproximately(ellipseArc.StartPoint);
+            revitEllipse.GetEndPoint(1).ShouldBeApproximately(ellipseArc.EndPoint);
+
+            revitEllipse.Length.ShouldBeApproximately(ellipseArc.Length);
+
+            // ClosestPointTo fails in ProtoGeometry
+            var tessPts = revitEllipse.Tessellate();
+
+            //assert the tesselation is very close to original curve
+            //what's the best tolerance to use here?
+            foreach (var pt in tessPts)
+            {
+                var closestPt = ellipseArc.GetClosestPoint(pt.ToPoint());
+                Assert.Less(closestPt.DistanceTo(pt.ToPoint()), 1e-6);
+            }
         } 
 
         [Test]

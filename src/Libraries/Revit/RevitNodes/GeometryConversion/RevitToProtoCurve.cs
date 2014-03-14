@@ -101,7 +101,7 @@ namespace Revit.GeometryConversion
         }
 
         /// <summary>
-        /// Convert a Revit Ellipse to a ProtoGeometry Ellipse
+        /// Convert a Revit Ellipse to a ProtoGeometry Ellipse or EllipseArc
         /// </summary>
         /// <param name="crv"></param>
         /// <returns></returns>
