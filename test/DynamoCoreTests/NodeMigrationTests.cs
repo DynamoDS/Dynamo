@@ -654,13 +654,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestEulersNumber.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var constantn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "74416af6-c22c-4822-8b65-c5deea710a38");
 
             Assert.AreEqual(1, workspace.Nodes.Count);
             Assert.AreEqual(0, workspace.Connectors.Count);
 
-            Assert.NotNull(operationn1);
+            Assert.NotNull(constantn1);
 
             RunCurrentModel();
             AssertPreviewValue("74416af6-c22c-4822-8b65-c5deea710a38", 2.718282);
@@ -672,13 +672,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestPi.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var constantn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "3e82b16c-b928-4d20-a9cb-1dc27498255f");
 
             Assert.AreEqual(1, workspace.Nodes.Count);
             Assert.AreEqual(0, workspace.Connectors.Count);
 
-            Assert.NotNull(operationn1);
+            Assert.NotNull(constantn1);
 
             RunCurrentModel();
             AssertPreviewValue("3e82b16c-b928-4d20-a9cb-1dc27498255f", 3.141593);
@@ -690,13 +690,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("Test2Pi.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var constantn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "3017f3cb-7097-4180-b72e-9dcc19d7d690");
 
             Assert.AreEqual(1, workspace.Nodes.Count);
             Assert.AreEqual(0, workspace.Connectors.Count);
 
-            Assert.NotNull(operationn1);
+            Assert.NotNull(constantn1);
 
             RunCurrentModel();
             AssertPreviewValue("3017f3cb-7097-4180-b72e-9dcc19d7d690", 6.283185);
@@ -964,28 +964,28 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestListCreate.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn1 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
                 "db161881-4239-408c-9ab2-d507fcb4d25f");
-            var logicn2 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn2 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
                 "f336c24a-3617-4da4-ace2-d0bd5fe02ebc");
-            var logicn3 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn3 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
                 "ec723754-21fe-48bc-98ca-d8231e6879af");
-            var logicn4 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn4 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
                 "82a91a49-0c3b-4ed3-851d-ffe9d64593ea");
-            var logicn5 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn5 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
                 "9bb7f4ae-3ace-43c4-ab91-2cc6126975c1");
-            var logicn6 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn6 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
                 "e8f77740-93b5-4129-9cf2-9ae7b4a0aa06");
 
             Assert.AreEqual(12, workspace.Nodes.Count);
             Assert.AreEqual(11, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
-            Assert.NotNull(logicn2);
-            Assert.NotNull(logicn3);
-            Assert.NotNull(logicn4);
-            Assert.NotNull(logicn5);
-            Assert.NotNull(logicn6);
+            Assert.NotNull(listn1);
+            Assert.NotNull(listn2);
+            Assert.NotNull(listn3);
+            Assert.NotNull(listn4);
+            Assert.NotNull(listn5);
+            Assert.NotNull(listn6);
 
             RunCurrentModel();
             AssertPreviewValue("db161881-4239-408c-9ab2-d507fcb4d25f", null);
@@ -1006,22 +1006,22 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestAddToList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "d3e45f5d-9200-450f-84a3-1de1f26a1a72");
-            var logicn2 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn2 = workspace.NodeFromWorkspace<DSFunction>(
                 "7f4729ca-d023-4d76-a45a-5641223eaa15");
-            var logicn3 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn3 = workspace.NodeFromWorkspace<DSFunction>(
                 "0f086699-08f6-4c58-8ac6-c9d7a79c6163");
-            var logicn4 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn4 = workspace.NodeFromWorkspace<DSFunction>(
                 "a6c40764-1009-4d43-9728-17fc1e03caa8");
 
             Assert.AreEqual(8, workspace.Nodes.Count);
             Assert.AreEqual(8, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
-            Assert.NotNull(logicn2);
-            Assert.NotNull(logicn3);
-            Assert.NotNull(logicn4);
+            Assert.NotNull(listn1);
+            Assert.NotNull(listn2);
+            Assert.NotNull(listn3);
+            Assert.NotNull(listn4);
 
             RunCurrentModel();
             AssertPreviewValue("d3e45f5d-9200-450f-84a3-1de1f26a1a72", 
@@ -1040,13 +1040,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestEmptyList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "1201c055-31a3-46ff-997c-e634c7d061fa");
 
             Assert.AreEqual(1, workspace.Nodes.Count);
             Assert.AreEqual(0, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("1201c055-31a3-46ff-997c-e634c7d061fa", new object[] { });
@@ -1058,22 +1058,22 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestIsEmptyList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "f03dd785-bdc3-478f-b281-ea9db063b356");
-            var logicn2 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn2 = workspace.NodeFromWorkspace<DSFunction>(
                 "79d4216d-695d-425e-b1e7-51535e46ae98");
-            var logicn3 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn3 = workspace.NodeFromWorkspace<DSFunction>(
                 "1ec03940-2cad-431f-807e-c6ec0f7ae3bb");
-            var logicn4 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn4 = workspace.NodeFromWorkspace<DSFunction>(
                 "ecd5e943-e6b5-44ca-bb52-3b5c39971ea7");
 
             Assert.AreEqual(8, workspace.Nodes.Count);
             Assert.AreEqual(4, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
-            Assert.NotNull(logicn2);
-            Assert.NotNull(logicn3);
-            Assert.NotNull(logicn4);
+            Assert.NotNull(listn1);
+            Assert.NotNull(listn2);
+            Assert.NotNull(listn3);
+            Assert.NotNull(listn4);
 
             RunCurrentModel();
             AssertPreviewValue("f03dd785-bdc3-478f-b281-ea9db063b356", null);
@@ -1088,19 +1088,19 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestListLength.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "b3c61406-d429-43d4-8db0-7da92fce1eb5");
-            var logicn2 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn2 = workspace.NodeFromWorkspace<DSFunction>(
                 "badd9669-7cb7-4ea4-a271-1fe81fe437b4");
-            var logicn3 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn3 = workspace.NodeFromWorkspace<DSFunction>(
                 "4477b43e-0f51-486d-98a5-27ee0b312819");
 
             Assert.AreEqual(6, workspace.Nodes.Count);
             Assert.AreEqual(3, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
-            Assert.NotNull(logicn2);
-            Assert.NotNull(logicn3);
+            Assert.NotNull(listn1);
+            Assert.NotNull(listn2);
+            Assert.NotNull(listn3);
 
             RunCurrentModel();
             AssertPreviewValue("b3c61406-d429-43d4-8db0-7da92fce1eb5", null);
@@ -1114,13 +1114,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestListLength_NestedList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "23b91324-69db-46b7-aa0b-b57fcd723264");
 
             Assert.AreEqual(3, workspace.Nodes.Count);
             Assert.AreEqual(3, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("23b91324-69db-46b7-aa0b-b57fcd723264", 2);
@@ -1132,19 +1132,19 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestFirstOfList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "28383b05-d53a-47e0-ab4c-5c5d83208f25");
-            var logicn2 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn2 = workspace.NodeFromWorkspace<DSFunction>(
                 "5b093fdd-c63a-4efa-a0b7-4bd7c2330752");
-            var logicn3 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn3 = workspace.NodeFromWorkspace<DSFunction>(
                 "218c3a8e-9c4a-4a8c-8b13-6f2fb758df3f");
 
             Assert.AreEqual(6, workspace.Nodes.Count);
             Assert.AreEqual(3, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
-            Assert.NotNull(logicn2);
-            Assert.NotNull(logicn3);
+            Assert.NotNull(listn1);
+            Assert.NotNull(listn2);
+            Assert.NotNull(listn3);
 
             RunCurrentModel();
             AssertPreviewValue("28383b05-d53a-47e0-ab4c-5c5d83208f25", 1);
@@ -1158,13 +1158,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestFirstOfList_NestedList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "6a575df0-0540-46ff-8b9d-15787835f064");
 
             Assert.AreEqual(3, workspace.Nodes.Count);
             Assert.AreEqual(3, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("6a575df0-0540-46ff-8b9d-15787835f064", 
@@ -1177,16 +1177,16 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestRandomSeed.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "e069c343-46be-4e01-a3b3-9321e89d0775");
-            var logicn2 = workspace.NodeFromWorkspace<DSFunction>(
+            var operationn2 = workspace.NodeFromWorkspace<DSFunction>(
                 "71149321-db95-4064-a311-aadfe0cec404");
 
             Assert.AreEqual(4, workspace.Nodes.Count);
             Assert.AreEqual(2, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
-            Assert.NotNull(logicn2);
+            Assert.NotNull(operationn1);
+            Assert.NotNull(operationn2);
         }
 
         [Test]
@@ -1195,13 +1195,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestRandom.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "8a4329e2-d0d5-4fe2-9bba-f4291502eb1c");
 
             Assert.AreEqual(1, workspace.Nodes.Count);
             Assert.AreEqual(0, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(operationn1);
         }
 
         [Test]
@@ -1210,16 +1210,16 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestRandomList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "399e524f-15b6-4100-b7bd-9331c329a717");
-            var logicn2 = workspace.NodeFromWorkspace<DSFunction>(
+            var operationn2 = workspace.NodeFromWorkspace<DSFunction>(
                 "010adb65-ae28-408f-a91e-c5b0fae2c387");
 
             Assert.AreEqual(4, workspace.Nodes.Count);
             Assert.AreEqual(2, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
-            Assert.NotNull(logicn2);
+            Assert.NotNull(operationn1);
+            Assert.NotNull(operationn2);
         }
 
         [Test]
@@ -1228,13 +1228,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestTakeFromList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "f08875de-8aa4-4bae-aedd-8bb26ae73a35");
 
             Assert.AreEqual(3, workspace.Nodes.Count);
             Assert.AreEqual(2, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("f08875de-8aa4-4bae-aedd-8bb26ae73a35",
@@ -1247,13 +1247,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestTakeFromList_ListOfListAsInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "f08875de-8aa4-4bae-aedd-8bb26ae73a35");
 
             Assert.AreEqual(4, workspace.Nodes.Count);
             Assert.AreEqual(6, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("f08875de-8aa4-4bae-aedd-8bb26ae73a35",
@@ -1266,13 +1266,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestTakeEveryNth.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "adffbefb-4f91-4b6e-bcef-59f8f7adf9f4");
 
             Assert.AreEqual(4, workspace.Nodes.Count);
             Assert.AreEqual(3, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("adffbefb-4f91-4b6e-bcef-59f8f7adf9f4",
@@ -1285,13 +1285,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestTakeEveryNth_ListOfListAsInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "adffbefb-4f91-4b6e-bcef-59f8f7adf9f4");
 
             Assert.AreEqual(5, workspace.Nodes.Count);
             Assert.AreEqual(9, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("adffbefb-4f91-4b6e-bcef-59f8f7adf9f4",
@@ -1304,16 +1304,16 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestRemoveFromList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "5295f03d-531c-4f0e-b852-47eef1f8c38c");
-            var logicn2 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn2 = workspace.NodeFromWorkspace<DSFunction>(
                 "b6769722-96ae-437d-9c64-cc82f2f6fb01");
 
             Assert.AreEqual(5, workspace.Nodes.Count);
             Assert.AreEqual(4, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
-            Assert.NotNull(logicn2);
+            Assert.NotNull(listn1);
+            Assert.NotNull(listn2);
 
             RunCurrentModel();
             AssertPreviewValue("5295f03d-531c-4f0e-b852-47eef1f8c38c",
@@ -1328,13 +1328,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestRemoveFromList_ListOfListAsInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "5295f03d-531c-4f0e-b852-47eef1f8c38c");
 
             Assert.AreEqual(4, workspace.Nodes.Count);
             Assert.AreEqual(6, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("5295f03d-531c-4f0e-b852-47eef1f8c38c",
@@ -1347,13 +1347,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestDropFromList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "c250a8d2-4e16-4e87-a8a8-f738329e61b1");
 
             Assert.AreEqual(3, workspace.Nodes.Count);
             Assert.AreEqual(2, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("c250a8d2-4e16-4e87-a8a8-f738329e61b1",
@@ -1366,13 +1366,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestDropFromList_ListOfListAsInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "c250a8d2-4e16-4e87-a8a8-f738329e61b1");
 
             Assert.AreEqual(4, workspace.Nodes.Count);
             Assert.AreEqual(6, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("c250a8d2-4e16-4e87-a8a8-f738329e61b1",
@@ -1385,13 +1385,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestDropEveryNth.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "9e3e4a46-9874-4322-a126-2ada785f3f80");
 
             Assert.AreEqual(4, workspace.Nodes.Count);
             Assert.AreEqual(3, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("9e3e4a46-9874-4322-a126-2ada785f3f80",
@@ -1404,13 +1404,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestDropEveryNth_ListOfListAsInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "9e3e4a46-9874-4322-a126-2ada785f3f80");
 
             Assert.AreEqual(5, workspace.Nodes.Count);
             Assert.AreEqual(9, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("9e3e4a46-9874-4322-a126-2ada785f3f80",
@@ -1424,13 +1424,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestSort.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "77a79c75-15a4-4b0a-b326-00df04c689b6");
 
             Assert.AreEqual(8, workspace.Nodes.Count);
             Assert.AreEqual(7, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("77a79c75-15a4-4b0a-b326-00df04c689b6",
@@ -1443,13 +1443,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestSortByKey.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "3c619222-858f-4f7c-b001-3a4a248f8f77");
 
             Assert.AreEqual(10, workspace.Nodes.Count);
             Assert.AreEqual(9, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("3c619222-858f-4f7c-b001-3a4a248f8f77",
@@ -1462,19 +1462,19 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestNewList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn1 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
                 "ff8f5f64-c9f3-4814-896a-6ef679a35275");
-            var logicn2 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn2 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
                 "2d58dbc4-62ad-4a12-974b-52d5986053b5");
-            var logicn3 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
+            var listn3 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
                 "0c98e395-e2f4-49c1-abda-d1bcb3c24cbd");
 
             Assert.AreEqual(10, workspace.Nodes.Count);
             Assert.AreEqual(12, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
-            Assert.NotNull(logicn2);
-            Assert.NotNull(logicn3);
+            Assert.NotNull(listn1);
+            Assert.NotNull(listn2);
+            Assert.NotNull(listn3);
 
             RunCurrentModel();
             AssertPreviewValue("ff8f5f64-c9f3-4814-896a-6ef679a35275", 
@@ -1491,13 +1491,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestShiftListIndices.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "1dd7ff84-90db-4e1c-a0ca-9fe9119dbea6");
 
             Assert.AreEqual(3, workspace.Nodes.Count);
             Assert.AreEqual(2, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("1dd7ff84-90db-4e1c-a0ca-9fe9119dbea6",
@@ -1510,13 +1510,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestShiftListIndices_ListOfListAsInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "1dd7ff84-90db-4e1c-a0ca-9fe9119dbea6");
 
             Assert.AreEqual(4, workspace.Nodes.Count);
             Assert.AreEqual(6, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("1dd7ff84-90db-4e1c-a0ca-9fe9119dbea6",
@@ -1530,13 +1530,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestGetFromList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "ce22d1d1-c5e4-4684-8414-9a115848a06f");
 
             Assert.AreEqual(3, workspace.Nodes.Count);
             Assert.AreEqual(2, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("ce22d1d1-c5e4-4684-8414-9a115848a06f", 5);
@@ -1548,13 +1548,13 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestGetFromList_ListOfListAsInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "ce22d1d1-c5e4-4684-8414-9a115848a06f");
 
             Assert.AreEqual(4, workspace.Nodes.Count);
             Assert.AreEqual(6, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("ce22d1d1-c5e4-4684-8414-9a115848a06f",
@@ -1568,9 +1568,9 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestSliceList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "fbe895a7-e97a-47f3-b5bf-536d652aa603");
-            var logicn2 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn2 = workspace.NodeFromWorkspace<DSFunction>(
                 "797b1b02-c815-4808-9889-296bc6d176fd");
 
             //During migraton, the manager will add a toRadius node. 
@@ -1578,8 +1578,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(6 + 2, workspace.Nodes.Count);
             Assert.AreEqual(6 + 2, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
-            Assert.NotNull(logicn2);
+            Assert.NotNull(listn1);
+            Assert.NotNull(listn2);
 
             RunCurrentModel();
             AssertPreviewValue("fbe895a7-e97a-47f3-b5bf-536d652aa603", 
@@ -1594,7 +1594,7 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestSliceList_ListOfListAsInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
+            var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "fbe895a7-e97a-47f3-b5bf-536d652aa603");
 
             //During migraton, the manager will add a toRadius node. 
@@ -1602,7 +1602,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5 + 1, workspace.Nodes.Count);
             Assert.AreEqual(7 + 1, workspace.Connectors.Count);
 
-            Assert.NotNull(logicn1);
+            Assert.NotNull(listn1);
 
             RunCurrentModel();
             AssertPreviewValue("fbe895a7-e97a-47f3-b5bf-536d652aa603",
