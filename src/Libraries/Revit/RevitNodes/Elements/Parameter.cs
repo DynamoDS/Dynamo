@@ -5,7 +5,7 @@ namespace Revit.Elements
 {
     public class Parameter
     {
-        private Autodesk.Revit.DB.Parameter InternalParameter
+        internal Autodesk.Revit.DB.Parameter InternalParameter
         { 
             get; set;
         }
