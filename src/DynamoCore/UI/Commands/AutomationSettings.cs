@@ -92,6 +92,7 @@ namespace Dynamo.ViewModels
         internal bool ExitAfterPlayback { get; private set; }
         internal string CommandFileName { get; private set; }
         internal State CurrentState { get; private set; }
+        internal Exception PlaybackException { get; private set; }
 
         internal DynCmd.RecordableCommand PreviousCommand { get; private set; }
         internal DynCmd.RecordableCommand CurrentCommand { get; private set; }
@@ -358,12 +359,27 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            // Execute the command, this may take a while longer than the timer
-            // inverval (usually very short), that's why the timer was stopped 
-            // before the command execution starts. After the command is done,
-            // the timer is then resumed for the next command in queue.
-            // 
-            nextCommand.Execute(this.owningViewModel);
+            try
+            {
+                // Execute the command, this may take a while longer than the timer
+                // inverval (usually very short), that's why the timer was stopped 
+                // before the command execution starts. After the command is done,
+                // the timer is then resumed for the next command in queue.
+                // 
+                nextCommand.Execute(this.owningViewModel);
+            }
+            catch (Exception exception)
+            {
+                // An exception is thrown while playing back a command. Remove any 
+                // pending commands and allow the "playbackTimer" to continue with
+                // its next tick. Proper shutdown sequence will be initialized 
+                // when the "playbackTimer" tries to pick up the next command and 
+                // realized that there is no more commands waiting.
+                // 
+                loadedCommands.Clear();
+                this.PlaybackException = exception;
+            }
+
             timer.Start();
         }
 
@@ -386,6 +402,13 @@ namespace Dynamo.ViewModels
 
             // This causes the main window to close (and exit application).
             mainWindow.Close();
+
+            // If there is an exception as the result of command playback, 
+            // then rethrow it here after closing the main window so that 
+            // calls like NUnit test cases can properly display the exception.
+            // 
+            if (this.PlaybackException != null)
+                throw this.PlaybackException;
         }
 
         private void ChangeStateInternal(State playbackState)
