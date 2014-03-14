@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using Revit.GeometryConversion;
-using Revit.GeometryObjects;
 using RevitServices.Persistence;
-using RevitServices.Transactions;
 
 namespace Revit.Elements
 {
@@ -107,8 +103,8 @@ namespace Revit.Elements
             get;
         }
 
-
         private ElementId internalId;
+        
         /// <summary>
         /// The element id for this element
         /// </summary>
