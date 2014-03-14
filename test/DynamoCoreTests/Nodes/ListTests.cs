@@ -1067,7 +1067,6 @@ namespace Dynamo.Tests
         [Test]
         public void LaceLongest_ListWith10000Element()
         {
-            Assert.Inconclusive("the test case will cause the test process hanging on");
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceLongest_ListWith10000Element.dyn");
@@ -1079,7 +1078,7 @@ namespace Dynamo.Tests
 
             Dictionary<int, object> validationData2 = new Dictionary<int, object>()
             {
-                {1000,2000},
+                {1000,2001},
             };
             SelectivelyAssertPreviewValues("25daa241-d8a4-4e74-aec1-6068358babf7", validationData2);
 
