@@ -176,6 +176,48 @@ namespace Dynamo.Nodes
         }
     }
 
+    public partial class Sublists
+    {
+        public void SetupCustomUIElements(dynNodeView nodeUI)
+        {
+            //add a text box to the input grid of the control
+            var tb = new DynamoTextBox
+            {
+                Background =
+                    new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+            };
+
+            tb.OnChangeCommitted += processTextForNewInputs;
+
+            tb.HorizontalAlignment = HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = VerticalAlignment.Top;
+
+            nodeUI.inputGrid.Children.Add(tb);
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
+
+            tb.DataContext = this;
+            tb.BindToProperty(
+                new Binding("Value")
+                {
+                    Mode = BindingMode.TwoWay,
+                    Source = this,
+                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                });
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                Value = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
+    }
+
     public abstract partial class BasicInteractive<T>
     {
         public virtual void SetupCustomUIElements(dynNodeView nodeUI)
@@ -190,6 +232,59 @@ namespace Dynamo.Nodes
         public virtual void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
             //override in child classes
+        }
+    }
+
+    public partial class DoubleInput
+    {
+        public void SetupCustomUIElements(dynNodeView nodeUI)
+        {
+            //add a text box to the input grid of the control
+            var tb = new DynamoTextBox(Value ?? "0.0")
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Top,
+                Background =
+                    new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+            };
+
+            nodeUI.inputGrid.Children.Add(tb);
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
+
+            tb.DataContext = this;
+
+            tb.BindToProperty(new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new DoubleInputDisplay(),
+                NotifyOnValidationError = false,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
+
+            ((PreferenceSettings)dynSettings.Controller.PreferenceSettings).PropertyChanged += Preferences_PropertyChanged;
+        }
+
+        void Preferences_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "NumberFormat":
+                    RaisePropertyChanged("Value");
+                    break;
+            }
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                Value = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
         }
     }
 
