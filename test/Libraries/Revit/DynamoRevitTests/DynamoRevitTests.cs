@@ -2,7 +2,6 @@
 using System.IO;
 using System.Reflection;
 using Autodesk.Revit.DB;
-using Dynamo.FSchemeInterop;
 using Dynamo.Interfaces;
 using Dynamo.Units;
 using Dynamo.Utilities;
@@ -95,8 +94,8 @@ namespace Dynamo.Tests
             {
                 _trans.Start();
 
-                Plane p1 = new Plane(XYZ.BasisZ, XYZ.Zero);
-                Plane p2 = new Plane(XYZ.BasisZ, new XYZ(0, 0, 5));
+                var p1 = new Plane(XYZ.BasisZ, XYZ.Zero);
+                var p2 = new Plane(XYZ.BasisZ, new XYZ(0, 0, 5));
 
                 SketchPlane sp1 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewSketchPlane(p1);
                 SketchPlane sp2 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewSketchPlane(p2);
@@ -120,7 +119,7 @@ namespace Dynamo.Tests
             {
                 _trans.Start();
 
-                Plane p1 = new Plane(XYZ.BasisZ, XYZ.Zero);
+                var p1 = new Plane(XYZ.BasisZ, XYZ.Zero);
 
                 SketchPlane sp1 = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewSketchPlane(p1);
                 Curve c1 = DocumentManager.Instance.CurrentUIApplication.Application.Create.NewLineBound(XYZ.Zero, new XYZ(1, 0, 0));
