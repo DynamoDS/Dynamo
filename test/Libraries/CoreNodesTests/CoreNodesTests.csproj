@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorTests.cs" />
+    <Compile Include="ComparisonTests.cs" />
     <Compile Include="ListTests.cs" />
     <Compile Include="LogicTests.cs" />
     <Compile Include="NodeWithUITests.cs" />

@@ -1,0 +1,16 @@
+<Workspace Version="0.6.2.29585" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.TakeList type="Dynamo.Nodes.TakeList" guid="f08875de-8aa4-4bae-aedd-8bb26ae73a35" nickname="Take from List" x="232" y="184.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="991f39ff-da70-43ec-9bba-641e28504e36" nickname="Number" x="72" y="236.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1..10" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="980f0d9a-eee0-498c-8a35-b72cb772d38e" nickname="Number" x="70" y="165.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="991f39ff-da70-43ec-9bba-641e28504e36" start_index="0" end="f08875de-8aa4-4bae-aedd-8bb26ae73a35" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="980f0d9a-eee0-498c-8a35-b72cb772d38e" start_index="0" end="f08875de-8aa4-4bae-aedd-8bb26ae73a35" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
