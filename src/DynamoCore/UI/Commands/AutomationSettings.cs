@@ -90,7 +90,9 @@ namespace Dynamo.ViewModels
         internal int CommandInterval { get; private set; }
         internal int PauseAfterPlayback { get; private set; }
         internal bool ExitAfterPlayback { get; private set; }
+        internal string CommandFileName { get; private set; }
         internal State CurrentState { get; private set; }
+        internal Exception PlaybackException { get; private set; }
 
         internal DynCmd.RecordableCommand PreviousCommand { get; private set; }
         internal DynCmd.RecordableCommand CurrentCommand { get; private set; }
@@ -125,8 +127,12 @@ namespace Dynamo.ViewModels
             this.CurrentCommand = null;
 
             this.CurrentState = State.None;
+            this.CommandFileName = string.Empty;
             if (LoadCommandFromFile(commandFilePath))
+            {
                 ChangeStateInternal(State.Loaded);
+                CommandFileName = Path.GetFileNameWithoutExtension(commandFilePath);
+            }
             else
             {
                 ChangeStateInternal(State.Recording);
@@ -151,6 +157,9 @@ namespace Dynamo.ViewModels
             }
 
             this.mainWindow = mainWindow;
+            this.mainWindow.Title = string.Format("{0} [Playing back: {1}]",
+                this.mainWindow.Title, this.CommandFileName);
+
             System.Diagnostics.Debug.Assert(null == playbackTimer);
             playbackTimer = new DispatcherTimer();
 
@@ -350,12 +359,27 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            // Execute the command, this may take a while longer than the timer
-            // inverval (usually very short), that's why the timer was stopped 
-            // before the command execution starts. After the command is done,
-            // the timer is then resumed for the next command in queue.
-            // 
-            nextCommand.Execute(this.owningViewModel);
+            try
+            {
+                // Execute the command, this may take a while longer than the timer
+                // inverval (usually very short), that's why the timer was stopped 
+                // before the command execution starts. After the command is done,
+                // the timer is then resumed for the next command in queue.
+                // 
+                nextCommand.Execute(this.owningViewModel);
+            }
+            catch (Exception exception)
+            {
+                // An exception is thrown while playing back a command. Remove any 
+                // pending commands and allow the "playbackTimer" to continue with
+                // its next tick. Proper shutdown sequence will be initialized 
+                // when the "playbackTimer" tries to pick up the next command and 
+                // realized that there is no more commands waiting.
+                // 
+                loadedCommands.Clear();
+                this.PlaybackException = exception;
+            }
+
             timer.Start();
         }
 
@@ -378,6 +402,13 @@ namespace Dynamo.ViewModels
 
             // This causes the main window to close (and exit application).
             mainWindow.Close();
+
+            // If there is an exception as the result of command playback, 
+            // then rethrow it here after closing the main window so that 
+            // calls like NUnit test cases can properly display the exception.
+            // 
+            if (this.PlaybackException != null)
+                throw this.PlaybackException;
         }
 
         private void ChangeStateInternal(State playbackState)
