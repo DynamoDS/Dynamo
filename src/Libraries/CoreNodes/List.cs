@@ -380,13 +380,10 @@ namespace DSCore
         /// <param name="indices">Index or indices of the item(s) to be removed.</param>
         /// <returns name="list">List with items removed.</returns>
         /// <search>remove,index,indices,cull</search>
-        public static IList RemoveItemAtIndex(
-            [ArbitraryDimensionArrayImport] IList list,
-            [ArbitraryDimensionArrayImport] object indices)
+        public static IList RemoveItemAtIndex(IList list, int[] indices)
         {
-            return indices is ICollection
-                ? list.Cast<object>().Where((_, i) => !((IList)indices).Contains(i)).ToList()
-                : list.Cast<object>().Where((_, i) => i != (int)indices).ToList();
+            //Indices must be integer array. DS will automatically promote integers to array.
+            return list.Cast<object>().Where((_, i) => !(indices).Contains(i)).ToList();
         }
 
         /// <summary>
@@ -600,9 +597,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">A list.</param>
         /// <param name="rowLength">Length of each new sib-list.</param>
-        public static IList DiagonalLeft(
-            [ArbitraryDimensionArrayImport] IList list,
-            int rowLength)
+        public static IList DiagonalLeft(IList list, int rowLength)
         {
             var flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
 
