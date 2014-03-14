@@ -164,46 +164,82 @@ namespace Revit.Elements
             return InternalElement.ToString();
         }
 
+        /// <summary>
+        /// Set one of the element's parameters.
+        /// </summary>
+        /// <param name="parameterName">The name of the parameter to set.</param>
+        /// <param name="value">The value.</param>
         public void SetParameterByName(string parameterName, object value)
         {
-            var param = Parameters.FirstOrDefault(x => x.Name == parameterName);
-            
-            if(param == null)
-                throw new Exception(string.Format("The parameter {0} could not be found on {1}", parameterName, Name));
+            var param = this.InternalElement.Parameters.Cast<Autodesk.Revit.DB.Parameter>().FirstOrDefault(x => x.Definition.Name == parameterName);
 
-            try
+            TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
+            var dynval = value as dynamic;
+            SetParameterValue(param, dynval);
+            TransactionManager.Instance.TransactionTaskDone();
+        }
+
+        /// <summary>
+        /// Get the value of one of the element's parameters.
+        /// </summary>
+        /// <param name="parameterName">The name of the parameter whose value you want to obtain.</param>
+        /// <returns></returns>
+        public object GetParameterValueByName(string parameterName)
+        {
+            object result = null;
+
+            var param = this.InternalElement.Parameters.Cast<Autodesk.Revit.DB.Parameter>().FirstOrDefault(x => x.Definition.Name == parameterName);
+
+            switch (param.StorageType)
             {
-                TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
-                var dynval = value as dynamic;
-                SetParameterValue(param, dynval);
-                TransactionManager.Instance.TransactionTaskDone();
+                case StorageType.ElementId:
+                    result = param.AsElementId();
+                    break;
+                case StorageType.String:
+                    result = param.ToString();
+                    break;
+                case StorageType.Integer:
+                    result = param.AsInteger();
+                    break;
+                case StorageType.Double:
+                    switch (param.Definition.ParameterType)
+                    {
+                        case ParameterType.Length:
+                            result = Dynamo.Units.Length.FromFeet(param.AsDouble());
+                            break;
+                        case ParameterType.Area:
+                            result = Dynamo.Units.Area.FromSquareFeet(param.AsDouble());
+                            break;
+                        case ParameterType.Volume:
+                            result = Dynamo.Units.Volume.FromCubicFeet(param.AsDouble());
+                            break;
+                        default:
+                            result = param.AsDouble();
+                            break;
+                    }
+                    break;
+                default:
+                    throw new Exception(string.Format("Parameter {0} has no storage type.", param));
             }
-            catch(Exception ex)
-            {
-                throw new Exception(string.Format("The parameter {0} could not be set to {1}", parameterName, value));
-            }
+
+            return result;
         }
 
         #region dynamic parameter setting methods
 
-        private void SetParameterValue(Parameter param, ElementId value)
+        private void SetParameterValue(Autodesk.Revit.DB.Parameter param, double value)
         {
-            param.InternalParameter.Set(value);
+            param.Set(value);
         }
 
-        private void SetParameterValue(Parameter param, double value)
+        private void SetParameterValue(Autodesk.Revit.DB.Parameter param, int value)
         {
-            param.InternalParameter.Set(value);
+            param.Set(value);
         }
 
-        private void SetParameterValue(Parameter param, int value)
+        private void SetParameterValue(Autodesk.Revit.DB.Parameter param, string value)
         {
-            param.InternalParameter.Set(value);
-        }
-
-        private void SetParameterValue(Parameter param, string value)
-        {
-            param.InternalParameter.Set(value);
+            param.Set(value);
         }
 
         #endregion
