@@ -3791,6 +3791,8 @@ namespace ProtoAssociative
 
         public List<AssociativeNode> EmitSSA(List<AssociativeNode> astList)
         {
+            Validity.Assert(null != astList);
+            astList = SplitMulitpleAssignment(astList);
             return BuildSSA(astList, new ProtoCore.CompileTime.Context());
         }
 
