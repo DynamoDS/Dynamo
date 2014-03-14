@@ -2849,10 +2849,9 @@ z=Point.ByCoordinates(y,a,a);
         {
             List<string> codes = new List<string>() 
             {
-                "p = Point.ByCoordinates(0.0, 0.0, 0.0); x = p.X;",
-                "p = Point.ByCoordinates(0.0, 0.0, 0.0); a = p.X;",
-                "p = Point.ByCoordinates(1.0, 0.0, 0.0); a = p.X;"
-                
+                @"import(""FFITarget.dll""); p = DummyPoint.ByCoordinates(0.0, 0.0, 0.0); x = p.X;",
+                "p = DummyPoint.ByCoordinates(0.0, 0.0, 0.0); a = p.X;",
+                "p = DummyPoint.ByCoordinates(1.0, 0.0, 0.0); a = p.X;"
             };
 
             List<Subtree> added = new List<Subtree>();
