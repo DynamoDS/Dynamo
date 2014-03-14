@@ -248,8 +248,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    public delegate double ConversionDelegate(double value);
-
     public abstract partial class VariableInput : NodeWithOneOutput
     {
         protected VariableInput()
@@ -500,6 +498,277 @@ namespace Dynamo.Nodes
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// Description:
+    /// Builds sublists from a list. Inputs are a list and an offset to indicate the number of items to skip before
+    /// the start of each subsequent sublist. Enter a range of values using series syntax to indicate the first sublist.
+    /// </summary>
+    [NodeName("Build Sublists")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
+    [NodeDescription("Build sublists from a list using DesignScript range syntax.")]
+    public partial class Sublists : BasicInteractive<string>
+    {
+        public Sublists()
+        {
+            InPortData.Add(new PortData("list", "The list from which to create sublists.", typeof(Value.List)));
+            InPortData.Add(new PortData("offset", "The offset to apply to the sub-list. Ex. The range \"0..2\" with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}...", typeof(Value.List)));
+
+            OutPortData.RemoveAt(0); //remove the existing blank output
+            OutPortData.Add(new PortData("list", "The sublists.", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+            Value = "";
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            base.LoadNode(nodeElement);
+            processTextForNewInputs();
+        }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("value", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            processTextForNewInputs();
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadString("value");
+            }
+        }
+
+        #endregion
+
+        private void processTextForNewInputs()
+        {
+            var parameters = new List<string>();
+
+            try
+            {
+                _parsed = DoubleInput.ParseValue(Value, new[] { ',' }, parameters, TokenConvert);
+
+                if (InPortData.Count > 2)
+                    InPortData.RemoveRange(2, InPortData.Count - 2);
+
+                foreach (string parameter in parameters)
+                {
+                    InPortData.Add(new PortData(parameter, "variable", typeof(Value.Number)));
+                }
+
+                RegisterInputPorts();
+                ClearError();
+            }
+            catch (Exception e)
+            {
+                Error(e.Message);
+            }
+        }
+
+        private double TokenConvert(double value)
+        {
+            return value;
+        }
+
+        internal static readonly Regex IdentifierPattern = new Regex(@"(?<id>[a-zA-Z_][^ ]*)|\[(?<id>\w(?:[^}\\]|(?:\\}))*)\]");
+        internal static readonly string[] RangeSeparatorTokens = { "..", ":", };
+        private List<DoubleInput.IDoubleSequence> _parsed;
+
+        private static List<Tuple<int, int, int>> processText(string text, int maxVal, Func<string, int> idFoundCallback)
+        {
+            text = text.Replace(" ", "");
+
+            string[] chunks = text.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            if (!chunks.Any())
+                throw new Exception("Sub-list expression could not be parsed.");
+
+            var ranges = new List<Tuple<int, int, int>>();
+
+            foreach (string chunk in chunks)
+            {
+                string[] valueRange = chunk.Split(RangeSeparatorTokens, StringSplitOptions.RemoveEmptyEntries);
+
+                int start = 0;
+                int step = 1;
+
+                if (!int.TryParse(valueRange[0], out start))
+                {
+                    var match = IdentifierPattern.Match(valueRange[0]);
+                    if (match.Success)
+                    {
+                        start = idFoundCallback(match.Groups["id"].Value);
+                    }
+                    else
+                    {
+                        throw new Exception("Range start could not be parsed.");
+                    }
+                }
+
+                int end = start;
+
+                if (valueRange.Length > 1)
+                {
+                    if (!int.TryParse(valueRange[1], out end))
+                    {
+                        var match = IdentifierPattern.Match(valueRange[1]);
+                        if (match.Success)
+                        {
+                            end = idFoundCallback(match.Groups["id"].Value);
+                        }
+                        else
+                        {
+                            throw new Exception("Range " + (valueRange.Length > 2 ? "step" : "end") + "could not be parsed.");
+                        }
+                    }
+                }
+
+                if (valueRange.Length > 2)
+                {
+                    if (!int.TryParse(valueRange[2], out end))
+                    {
+                        var match = IdentifierPattern.Match(valueRange[2]);
+                        if (match.Success)
+                        {
+                            step = idFoundCallback(match.Groups["id"].Value);
+                        }
+                        else
+                        {
+                            throw new Exception("Range end could not be parsed.");
+                        }
+                    }
+                }
+
+                if (start < 0 || end < 0 || step <= 0)
+                    throw new Exception("Range values must be greater than zero.");
+
+                //if any values are greater than the length of the list - fail
+                if (start >= maxVal || end >= maxVal)
+                    throw new Exception("The start or end of a range is greater than the number of available elements in the list.");
+
+                ranges.Add(Tuple.Create(start, end, step));
+            }
+
+            return ranges;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var list = ((Value.List)args[0]).Item;
+            var len = list.Length;
+            var offset = Convert.ToInt32(((Value.Number)args[1]).Item);
+
+            if (offset <= 0)
+                throw new Exception("\"" + InPortData[1].NickName + "\" argument must be greater than zero.");
+
+            //sublist creation semantics are as follows:
+            //EX. 1..2,5..8
+            //This expression says give me elements 1-2 then jump 3 and give me elements 5-8
+            //For a list 1,2,3,4,5,6,7,8,9,10, this will give us
+            //1,2,5,8,2,3,6,9
+
+            var paramLookup = args.Skip(2)
+                                  .Select(
+                                      (x, i) => new { Name = InPortData[i + 2].NickName, Argument = x })
+                                  .ToDictionary(x => x.Name, x => ((Value.Number)x.Argument).Item);
+
+            var ranges = _parsed
+                .Select(x => x.GetValue(paramLookup).Select(Convert.ToInt32).ToList())
+                .ToList();
+
+            //move through the list, creating sublists
+            var finalList = new List<Value>();
+
+            for (int j = 0; j < len; j += offset)
+            {
+                var currList = new List<Value>();
+
+                var query = ranges.Where(r => r[0] + j <= len - 1 && r.Last() + j <= len - 1);
+                foreach (var range in query)
+                {
+                    currList.AddRange(range.Select(i => list.ElementAt(j + i)));
+                }
+
+                if (currList.Any())
+                    finalList.Add(FScheme.Value.NewList(currList.ToFSharpList()));
+            }
+
+            return FScheme.Value.NewList(finalList.ToFSharpList());
+        }
+
+        protected override string SerializeValue(string val)
+        {
+            return val;
+        }
+
+        protected override string DeserializeValue(string val)
+        {
+            return val;
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                "List.Sublists", "List.Sublists@var[]..[],var[]..[],int");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Create code block node
+            string rangesString = "{0}";
+            foreach (XmlNode childNode in oldNode.ChildNodes)
+            {
+                if (childNode.Name.Equals(typeof(string).FullName))
+                    rangesString = "{" + childNode.Attributes[0].Value + "};";
+            }
+
+            XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeModelNode(
+                data.Document, rangesString);
+            migrationData.AppendNode(codeBlockNode);
+            string codeBlockNodeId = MigrationManager.GetGuidFromXmlElement(codeBlockNode);
+
+            // Update connectors
+            for (int idx = 0; true; idx++)
+            {
+                PortId oldInPort = new PortId(newNodeId, idx + 2, PortType.INPUT);
+                PortId newInPort = new PortId(codeBlockNodeId, idx, PortType.INPUT);
+                XmlElement connector = data.FindFirstConnector(oldInPort);
+
+                if (connector == null)
+                    break;
+
+                data.ReconnectToPort(connector, newInPort);
+            }
+
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            PortId newInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            data.ReconnectToPort(connector1, newInPort2);
+            data.CreateConnector(codeBlockNode, 0, newNode, 1);
+
+            return migrationData;
+        }
     }
 
     #region Functions
@@ -841,6 +1110,603 @@ namespace Dynamo.Nodes
         }
 
         #endregion
+    }
+
+    public delegate double ConversionDelegate(double value);
+
+    [NodeName("Number")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("Creates a number.")]
+    [IsDesignScriptCompatible]
+    public partial class DoubleInput : NodeWithOneOutput
+    {
+        public DoubleInput()
+        {
+            OutPortData.Add(new PortData("", "", typeof(Value.Number)));
+
+            RegisterAllPorts();
+
+            _convertToken = Convert;
+        }
+
+        public virtual double Convert(double value)
+        {
+            return value;
+        }
+
+        private List<IDoubleSequence> _parsed;
+        private string _value;
+        protected ConversionDelegate _convertToken;
+
+        public string Value
+        {
+            get { return _value; }
+            set
+            {
+                if (_value != null && _value.Equals(value))
+                    return;
+
+                _value = value;
+
+                var idList = new List<string>();
+
+                try
+                {
+                    _parsed = ParseValue(value, new[] { '\n' }, idList, _convertToken);
+
+                    InPortData.Clear();
+
+                    foreach (var id in idList)
+                    {
+                        InPortData.Add(new PortData(id, "variable", typeof(Value.Number)));
+                    }
+
+                    RegisterInputPorts();
+                    ClearError();
+
+                    ArgumentLacing = InPortData.Any() ? LacingStrategy.Longest : LacingStrategy.Disabled;
+                }
+                catch (Exception e)
+                {
+                    Error(e.Message);
+                }
+
+                RequiresRecalc = value != null;
+                RaisePropertyChanged("Value");
+            }
+        }
+
+        public override bool IsConvertible
+        {
+            get { return true; }
+        }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
+            outEl.SetAttribute("value", Value);
+            nodeElement.AppendChild(outEl);
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            foreach (XmlNode subNode in nodeElement.ChildNodes.Cast<XmlNode>().Where(subNode => subNode.Name.Equals(typeof(double).FullName)))
+            {
+                Value = subNode.Attributes[0].Value;
+            }
+        }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("doubleInputValue", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                this.Value = helper.ReadString("doubleInputValue");
+            }
+        }
+
+        #endregion
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement original = data.MigratedNodes.ElementAt(0);
+
+            // Escape special characters for display in code block node.
+            string content = ExtensionMethods.GetChildNodeDoubleValue(original);
+
+            bool isValidContent = false;
+
+            try
+            {
+                var identifiers = new List<string>();
+                var doubleSequences = DoubleInput.ParseValue(content,
+                    new[] { '\n' }, identifiers, (x) => { return x; });
+
+                if (doubleSequences != null && (doubleSequences.Count == 1))
+                {
+                    IDoubleSequence sequence = doubleSequences[0];
+                    if (sequence is DoubleInput.Range) // A range expression.
+                        isValidContent = true;
+                    else if (sequence is DoubleInput.Sequence) // A sequence.
+                        isValidContent = true;
+                    else if (sequence is DoubleInput.OneNumber) // A number.
+                        isValidContent = true;
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            if (isValidContent == false)
+            {
+                // TODO(Ben): Convert into a dummy node here?
+            }
+            else
+            {
+                XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(original);
+                newNode.SetAttribute("CodeText", content);
+                migrationData.AppendNode(newNode);
+            }
+
+            return migrationData;
+        }
+
+        public static List<IDoubleSequence> ParseValue(string text, char[] seps, List<string> identifiers, ConversionDelegate convertToken)
+        {
+            var idSet = new HashSet<string>(identifiers);
+            return text.Replace(" ", "").Split(seps, StringSplitOptions.RemoveEmptyEntries).Select(
+                delegate(string x)
+                {
+                    var rangeIdentifiers = x.Split(
+                        Sublists.RangeSeparatorTokens,
+                        StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
+
+                    if (rangeIdentifiers.Length > 3)
+                        throw new Exception("Bad range syntax: not of format \"start..end[..(increment|#count)]\"");
+
+                    if (rangeIdentifiers.Length == 0)
+                        throw new Exception("No identifiers found.");
+
+                    IDoubleInputToken startToken = ParseToken(rangeIdentifiers[0], idSet, identifiers);
+
+                    if (rangeIdentifiers.Length > 1)
+                    {
+                        if (rangeIdentifiers[1].StartsWith("#"))
+                        {
+                            var countToken = rangeIdentifiers[1].Substring(1);
+                            IDoubleInputToken endToken = ParseToken(countToken, idSet, identifiers);
+
+                            if (rangeIdentifiers.Length > 2)
+                            {
+                                if (rangeIdentifiers[2].StartsWith("#") || rangeIdentifiers[2].StartsWith("~"))
+                                    throw new Exception("Cannot use range or approx. identifier on increment field when one has already been used to specify a count.");
+                                return new Sequence(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken, convertToken);
+                            }
+
+                            return new Sequence(startToken, new DoubleToken(1), endToken, convertToken) as IDoubleSequence;
+                        }
+                        else
+                        {
+                            IDoubleInputToken endToken = ParseToken(rangeIdentifiers[1], idSet, identifiers);
+
+                            if (rangeIdentifiers.Length > 2)
+                            {
+                                if (rangeIdentifiers[2].StartsWith("#"))
+                                {
+                                    var count = rangeIdentifiers[2].Substring(1);
+                                    IDoubleInputToken countToken = ParseToken(count, idSet, identifiers);
+
+                                    return new CountRange(startToken, countToken, endToken, convertToken);
+                                }
+
+                                if (rangeIdentifiers[2].StartsWith("~"))
+                                {
+                                    var approx = rangeIdentifiers[2].Substring(1);
+                                    IDoubleInputToken approxToken = ParseToken(approx, idSet, identifiers);
+
+                                    return new ApproxRange(startToken, approxToken, endToken, convertToken);
+                                }
+
+                                return new Range(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken, convertToken);
+                            }
+                            return new Range(startToken, new DoubleToken(1), endToken, convertToken) as IDoubleSequence;
+                        }
+
+                    }
+
+                    return new OneNumber(startToken, convertToken) as IDoubleSequence;
+                }).ToList();
+        }
+
+        private static IDoubleInputToken ParseToken(string id, HashSet<string> identifiers, List<string> list)
+        {
+            double dbl;
+            if (double.TryParse(id, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
+                return new DoubleToken(dbl);
+
+            var match = Sublists.IdentifierPattern.Match(id);
+            if (match.Success)
+            {
+                var tokenId = match.Groups["id"].Value;
+                if (!identifiers.Contains(tokenId))
+                {
+                    identifiers.Add(tokenId);
+                    list.Add(tokenId);
+                }
+                return new IdentifierToken(tokenId);
+            }
+
+            throw new Exception("Bad identifier syntax: \"" + id + "\"");
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var paramDict = InPortData.Select(x => x.NickName)
+                .Zip(args, Tuple.Create)
+                .ToDictionary(x => x.Item1, x => ((Value.Number)x.Item2).Item);
+
+            return _parsed.Count == 1
+                ? _parsed[0].GetFSchemeValue(paramDict)
+                : FScheme.Value.NewList(_parsed.Select(x => x.GetFSchemeValue(paramDict)).ToFSharpList());
+        }
+
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        {
+            var paramDict = InPortData.Select(x => x.NickName)
+                   .Zip(inputAstNodes, Tuple.Create)
+                   .ToDictionary(x => x.Item1, x => x.Item2);
+
+            AssociativeNode rhs;
+
+            if (null == _parsed)
+            {
+                rhs = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                List<AssociativeNode> newInputs = _parsed.Count == 1
+                    ? new List<AssociativeNode> { _parsed[0].GetAstNode(paramDict) }
+                    : _parsed.Select(x => x.GetAstNode(paramDict)).ToList();
+
+                rhs = newInputs.Count == 1
+                        ? newInputs[0]
+                        : AstFactory.BuildExprList(newInputs);
+            }
+
+            var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
+
+            return new[] { assignment };
+        }
+
+        public interface IDoubleSequence
+        {
+            Value GetFSchemeValue(Dictionary<string, double> idLookup);
+            IEnumerable<double> GetValue(Dictionary<string, double> idLookup);
+            AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup);
+        }
+
+        private class OneNumber : IDoubleSequence
+        {
+            private readonly IDoubleInputToken _token;
+            private readonly double? _result;
+            private readonly ConversionDelegate _convert;
+
+            public OneNumber(IDoubleInputToken t, ConversionDelegate convertToken)
+            {
+                _token = t;
+                _convert = convertToken;
+
+                if (_token is DoubleToken)
+                    _result = _convert(GetValue(null).First());
+            }
+
+            public Value GetFSchemeValue(Dictionary<string, double> idLookup)
+            {
+                return FScheme.Value.NewNumber(GetValue(idLookup).First());
+            }
+
+            public IEnumerable<double> GetValue(Dictionary<string, double> idLookup)
+            {
+                yield return _result ?? _token.GetValue(idLookup);
+            }
+
+            public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
+            {
+                if (_result == null)
+                {
+                    return _token.GetAstNode(idLookup);
+                }
+                else
+                {
+                    return _result.HasValue
+                        ? new DoubleNode(_result.Value) as AssociativeNode
+                        : new NullNode() as AssociativeNode;
+                }
+            }
+        }
+
+        private class Sequence : IDoubleSequence
+        {
+            private readonly IDoubleInputToken _start;
+            private readonly IDoubleInputToken _step;
+            private readonly IDoubleInputToken _count;
+            private readonly ConversionDelegate _convert;
+
+            private readonly IEnumerable<double> _result;
+
+            public Sequence(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken count, ConversionDelegate convertToken)
+            {
+                _start = start;
+                _step = step;
+                _count = count;
+                _convert = convertToken;
+
+                if (_start is DoubleToken && _step is DoubleToken && _count is DoubleToken)
+                {
+                    _result = GetValue(null);
+                }
+            }
+
+            public Value GetFSchemeValue(Dictionary<string, double> idLookup)
+            {
+                return FScheme.Value.NewList(
+                    GetValue(idLookup).Select(FScheme.Value.NewNumber).ToFSharpList());
+            }
+
+            public IEnumerable<double> GetValue(Dictionary<string, double> idLookup)
+            {
+                if (_result == null)
+                {
+                    var step = _step.GetValue(idLookup);
+
+                    if (step == 0)
+                        throw new Exception("Can't have 0 step.");
+
+                    var start = _start.GetValue(idLookup);
+                    var count = (int)_count.GetValue(idLookup);
+
+                    if (count < 0)
+                    {
+                        count *= -1;
+                        start += step * (count - 1);
+                        step *= -1;
+                    }
+
+                    return CreateSequence(start, step, count);
+                }
+                return _result;
+            }
+
+            private static IEnumerable<double> CreateSequence(double start, double step, int count)
+            {
+                for (var i = 0; i < count; i++)
+                {
+                    yield return start;
+                    start += step;
+                }
+            }
+
+            public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
+            {
+                var rangeExpr = new RangeExprNode
+                {
+                    FromNode = _start.GetAstNode(idLookup),
+                    ToNode = _step.GetAstNode(idLookup),
+                    StepNode = _step.GetAstNode(idLookup),
+                    stepoperator = ProtoCore.DSASM.RangeStepOperator.stepsize
+                };
+                return rangeExpr;
+            }
+        }
+
+        private class Range : IDoubleSequence
+        {
+            private readonly IDoubleInputToken _start;
+            private readonly IDoubleInputToken _step;
+            private readonly IDoubleInputToken _end;
+            private readonly ConversionDelegate _convert;
+
+            private readonly IEnumerable<double> _result;
+
+            public Range(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end, ConversionDelegate convertToken)
+            {
+                _start = start;
+                _step = step;
+                _end = end;
+                _convert = convertToken;
+
+                if (_start is DoubleToken && _step is DoubleToken && _end is DoubleToken)
+                {
+                    _result = GetValue(null);
+                }
+            }
+
+            public Value GetFSchemeValue(Dictionary<string, double> idLookup)
+            {
+                return FScheme.Value.NewList(
+                    GetValue(idLookup).Select(FScheme.Value.NewNumber).ToFSharpList());
+            }
+
+            public IEnumerable<double> GetValue(Dictionary<string, double> idLookup)
+            {
+                if (_result == null)
+                {
+                    var step = _convert(_step.GetValue(idLookup));
+
+                    if (step == 0)
+                        throw new Exception("Can't have 0 step.");
+
+                    var start = _convert(_start.GetValue(idLookup));
+                    var end = _convert(_end.GetValue(idLookup));
+
+                    return Process(start, step, end);
+                }
+                return _result;
+            }
+
+            protected virtual IEnumerable<double> Process(double start, double step, double end)
+            {
+                if (step < 0)
+                {
+                    step *= -1;
+                    var tmp = end;
+                    end = start;
+                    start = tmp;
+                }
+
+                var countingUp = start < end;
+
+                return countingUp
+                    ? FScheme.Range(start, step, end)
+                    : FScheme.Range(end, step, start).Reverse();
+            }
+
+            protected virtual ProtoCore.DSASM.RangeStepOperator GetRangeExpressionOperator()
+            {
+                return ProtoCore.DSASM.RangeStepOperator.stepsize;
+            }
+
+            public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
+            {
+                var rangeExpr = new RangeExprNode
+                {
+                    FromNode = _start.GetAstNode(idLookup),
+                    ToNode = _end.GetAstNode(idLookup),
+                    StepNode = _step.GetAstNode(idLookup),
+                    stepoperator = GetRangeExpressionOperator()
+                };
+                return rangeExpr;
+            }
+        }
+
+        private class CountRange : Range
+        {
+            public CountRange(IDoubleInputToken startToken, IDoubleInputToken countToken, IDoubleInputToken endToken, ConversionDelegate convertToken)
+                : base(startToken, countToken, endToken, convertToken)
+            { }
+
+            protected override IEnumerable<double> Process(double start, double count, double end)
+            {
+                var c = (int)count;
+
+                var neg = c < 0;
+
+                c = Math.Abs(c) - 1;
+
+                if (neg)
+                    c *= -1;
+
+                return base.Process(start, Math.Abs(start - end) / c, end);
+            }
+
+            protected override ProtoCore.DSASM.RangeStepOperator GetRangeExpressionOperator()
+            {
+                return ProtoCore.DSASM.RangeStepOperator.num;
+            }
+        }
+
+        private class ApproxRange : Range
+        {
+            public ApproxRange(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end, ConversionDelegate convertToken)
+                : base(start, step, end, convertToken)
+            { }
+
+            protected override IEnumerable<double> Process(double start, double approx, double end)
+            {
+                var neg = approx < 0;
+
+                var a = Math.Abs(approx);
+
+                var dist = end - start;
+                var stepnum = 1;
+                if (dist != 0)
+                {
+                    var ceil = (int)Math.Ceiling(dist / a);
+                    var floor = (int)Math.Floor(dist / a);
+
+                    if (ceil != 0 && floor != 0)
+                    {
+                        var ceilApprox = Math.Abs(dist / ceil - a);
+                        var floorApprox = Math.Abs(dist / floor - a);
+                        stepnum = ceilApprox < floorApprox ? ceil : floor;
+                    }
+                }
+
+                if (neg)
+                    stepnum *= -1;
+
+                return base.Process(start, Math.Abs(dist) / stepnum, end);
+            }
+
+            protected override ProtoCore.DSASM.RangeStepOperator GetRangeExpressionOperator()
+            {
+                return ProtoCore.DSASM.RangeStepOperator.approxsize;
+            }
+        }
+
+        interface IDoubleInputToken
+        {
+            double GetValue(Dictionary<string, double> idLookup);
+            AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup);
+        }
+
+        private struct IdentifierToken : IDoubleInputToken
+        {
+            private readonly string _id;
+
+            public IdentifierToken(string id)
+            {
+                _id = id;
+            }
+
+            public double GetValue(Dictionary<string, double> idLookup)
+            {
+                return idLookup[_id];
+            }
+
+            public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
+            {
+                return idLookup[_id];
+            }
+        }
+
+        private struct DoubleToken : IDoubleInputToken
+        {
+            private readonly double _d;
+
+            public DoubleToken(double d)
+            {
+                _d = d;
+            }
+
+            public double GetValue(Dictionary<string, double> idLookup)
+            {
+                return _d;
+            }
+
+            public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
+            {
+                return AstFactory.BuildDoubleNode(_d);
+            }
+        }
     }
 
     /// <summary>

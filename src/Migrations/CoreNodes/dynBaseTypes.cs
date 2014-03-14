@@ -1036,6 +1036,8 @@ namespace Dynamo.Nodes
         }
     }
 
+#if false
+
     public class Sublists : MigrationNode
     {
         internal static readonly Regex IdentifierPattern = new Regex(@"(?<id>[a-zA-Z_][^ ]*)|\[(?<id>\w(?:[^}\\]|(?:\\}))*)\]");
@@ -1091,6 +1093,8 @@ namespace Dynamo.Nodes
             return migrationData;
         }
     }
+
+#endif
 
     public class Repeat : MigrationNode
     {
@@ -1665,6 +1669,8 @@ namespace Dynamo.Nodes
     {
     }
 
+#if false
+
     public class DoubleInput : MigrationNode
     {
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
@@ -2113,6 +2119,8 @@ namespace Dynamo.Nodes
             //}
         }
     }
+
+#endif
 
     public class AngleInput : MigrationNode
     {
