@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
+using DSNodeServices;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
@@ -14,12 +15,13 @@ namespace Revit.Elements
     /// <summary>
     /// A Revit ImportInstance Element
     /// </summary>
+    [RegisterForTrace]
     public class ImportInstance : AbstractElement
     {
         [Browsable(false)]
         public override Autodesk.Revit.DB.Element InternalElement
         {
-            get { throw new NotImplementedException(); }
+            get { return InternalImportInstance; }
         }
 
         internal Autodesk.Revit.DB.ImportInstance InternalImportInstance { get; private set; }
@@ -46,7 +48,6 @@ namespace Revit.Elements
             InternalSetImportInstance( importInstance );
 
             TransactionManager.Instance.TransactionTaskDone();
-
         }
 
         private void InternalSetImportInstance(Autodesk.Revit.DB.ImportInstance ele)
@@ -79,7 +80,9 @@ namespace Revit.Elements
                 throw new ArgumentNullException("geometry");
             }
 
-            var fn = Path.GetTempFileName();
+            // Create a temp file name to export to
+            var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
+
             if (!geometry.ExportToSAT(fn))
             {
                 throw new Exception("Failed to import geometry.");
