@@ -34,6 +34,14 @@ namespace DSCore
             this.color = Color.FromArgb(a, r, g, b);
         }
 
+        /// <summary>
+        /// Construct a color by alpha, red, green, and blue components.
+        /// </summary>
+        /// <param name="a">The alpha value.</param>
+        /// <param name="r">The red value.</param>
+        /// <param name="g">The green value.</param>
+        /// <param name="b">The blue value.</param>
+        /// <returns></returns>
         public static DSColor ByARGB(int a, int r, int g, int b)
         {
             return new DSColor(a, r, g, b);
@@ -69,6 +77,13 @@ namespace DSCore
             return new byte[] { c.color.A, c.color.R, c.color.G, c.color.B };
         }
 
+        /// <summary>
+        /// Get a color from a color gradient between a start color and an end color.
+        /// </summary>
+        /// <param name="start">The starting color of the range.</param>
+        /// <param name="end">The end color of the range.</param>
+        /// <param name="value">The value between 0 and 1 along the range for which you would like to sample the color.</param>
+        /// <returns></returns>
         public static DSColor BuildColorFromRange(DSColor start, DSColor end, double value)
         {
             var selRed = (int)(start.Red + (end.Red - start.Red) * value);
