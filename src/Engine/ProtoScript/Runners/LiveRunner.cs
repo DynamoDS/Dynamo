@@ -95,6 +95,7 @@ namespace ProtoScript.Runners
         void ResetVMAndResyncGraph(List<string> libraries);
         List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries);
 		void ReInitializeLiveRunner();
+        Dictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
 
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
@@ -163,6 +164,8 @@ namespace ProtoScript.Runners
         private ProtoCore.CompileTime.Context staticContext = null;
 
         private Dictionary<System.Guid, Subtree> currentSubTreeList = null;
+
+        private Dictionary<int, Guid> exprGuidMap = null;
 
         private readonly Object operationsMutex = new object();
 
@@ -234,6 +237,8 @@ namespace ProtoScript.Runners
             staticContext = new ProtoCore.CompileTime.Context();
 
             currentSubTreeList = new Dictionary<Guid, Subtree>();
+
+            exprGuidMap = new Dictionary<int, Guid>();
 
             terminating = false;
         }
@@ -872,6 +877,60 @@ namespace ProtoScript.Runners
             return modifiedNodes;
         }
 
+
+        /// <summary>
+        ///             
+        /// Handle instances of redefining the lhs of an expression
+        /// Given:
+        ///      a = p.x -> b = p.x
+        /// In such a scenario, the new expression 'b = p.x' must inherit the previous expression id of a = p.x
+        /// </summary>
+        /// <param name="newNode"></param>
+        /// <param name="cachedASTList"></param>
+        private void HandleRedefinedLHS(BinaryExpressionNode newNode, List<AssociativeNode> cachedASTList)
+        {
+            //
+            // Note that after SSA is applied, the expression:
+            //      a = p.x 
+            // transforms to: 
+            //      t0 = p
+            //      t1 = t0.x
+            //      a = t1
+            //      
+            // And the expression:
+            //      b = p.x 
+            // transforms to: 
+            //      t0 = p
+            //      t1 = t0.x
+            //      b = t1
+            //
+            // As such we only need to update the expression id of 'b = t1' to inherit the expression id of 'a = t1'
+            //
+            if (null != newNode)
+            {
+                IdentifierNode rnode = newNode.RightNode as IdentifierNode;
+                if (null != rnode)
+                {
+                    foreach (AssociativeNode prevNode in cachedASTList)
+                    {
+                        BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
+                        if (null != prevBinaryNode)
+                        {
+                            IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
+                            if (null != prevIdent)
+                            {
+                                if (prevIdent.Equals(rnode))
+                                {
+                                    newNode.InheritID(prevBinaryNode.ID);
+                                    newNode.exprUID = prevBinaryNode.exprUID;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Gets the only the modified nodes from the subtree by checking of the previous cached instance
         /// </summary>
@@ -931,6 +990,7 @@ namespace ProtoScript.Runners
                             }
                         }
                     }
+                    HandleRedefinedLHS(bnode, st.AstNodes);
                 }
             }
             return modifiedASTList;
@@ -1116,6 +1176,8 @@ namespace ProtoScript.Runners
             staticContext = new ProtoCore.CompileTime.Context();
 
             currentSubTreeList = new Dictionary<Guid, Subtree>();
+
+            exprGuidMap = new Dictionary<int, Guid>();
 
             CLRModuleType.ClearTypes();
         }
@@ -1314,6 +1376,14 @@ namespace ProtoScript.Runners
                         if (null != modifiedASTList && modifiedASTList.Count > 0)
                         {
                             deltaAstList.AddRange(modifiedASTList);
+                            foreach (var node in modifiedASTList)
+	                        {
+                                var bnode = node as BinaryExpressionNode;
+                                if (bnode != null)
+                                {
+                                    exprGuidMap[bnode.exprUID] = st.GUID;
+                                }
+	                        }
                         }
 
                         // Disable removed nodes from the cache
@@ -1344,14 +1414,19 @@ namespace ProtoScript.Runners
                         // Handle cached subtree
                         if (cachedTreeExists)
                         {
-                            if (oldSubTree.AstNodes != null)
+                            if (null == oldSubTree.AstNodes)
+                            {
+                                // The ast list for this subtree is null
+                                // This is due to the liverunner being passed an empty astlist, such as a codeblock with no content
+                                // Populate this subtree with the current ast contents
+                                oldSubTree.AstNodes = modifiedASTList;
+                                currentSubTreeList[st.GUID] = oldSubTree;
+                            }
+                            else
                             {
                                 UndefineFunctions(oldSubTree.AstNodes.Where(n => n is FunctionDefinitionNode));
-                            }
 
-                            // Update the current subtree list
-                            if (null != oldSubTree.AstNodes)
-                            {
+                                // Update the current subtree list
                                 List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
                                 newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
                                 newCachedASTList.AddRange(modifiedASTList);
@@ -1361,7 +1436,6 @@ namespace ProtoScript.Runners
                                 currentSubTreeList[st.GUID] = st;
                             }
                         }
-
                     }
 
                     // Get the AST's dependent on every function in the modified function list,
@@ -1385,6 +1459,14 @@ namespace ProtoScript.Runners
                     if (st.AstNodes != null)
                     {
                         deltaAstList.AddRange(st.AstNodes);
+                        foreach (var node in st.AstNodes)
+	                    {
+                            var bnode = node as BinaryExpressionNode;
+                            if (bnode != null)
+                            {
+                                exprGuidMap[bnode.exprUID] = st.GUID;
+                            }
+	                    }
                     }
 
                     currentSubTreeList.Add(st.GUID, st);
@@ -1392,6 +1474,35 @@ namespace ProtoScript.Runners
             }
 
             CompileAndExecuteForDeltaExecution(deltaAstList);
+        }
+
+        /// <summary>
+        /// Returns runtime warnings.
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings()
+        {
+            // Group all warnings by their expression ids, and only keep the last
+            // warning for each expression, and then group by GUID.  
+            var warnings = Core.RuntimeStatus
+                               .Warnings
+                               .GroupBy(w => w.ExpressionID)
+                               .Select(ws => ws.Last())
+                               .Where(w => exprGuidMap.ContainsKey(w.ExpressionID));
+
+            var ret = new Dictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>>();
+            foreach (var w in warnings)
+            {
+                Guid guid = exprGuidMap[w.ExpressionID];
+                if (!ret.ContainsKey(guid))
+                {
+                    ret[guid] = new List<ProtoCore.RuntimeData.WarningEntry>();
+                }
+
+                ret[guid].Add(w);
+            }
+
+            return ret;
         }
 
         private void SynchronizeInternal(string code)

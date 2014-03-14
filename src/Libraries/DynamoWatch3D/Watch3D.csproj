@@ -61,9 +61,10 @@
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Legacy\FScheme\FScheme.2012.fsproj"> 
+    <ProjectReference Include="..\..\Legacy\FScheme\FScheme.2012.fsproj">
       <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
       <Name>FScheme.2012</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

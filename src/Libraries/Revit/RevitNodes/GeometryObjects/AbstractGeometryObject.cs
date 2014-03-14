@@ -7,7 +7,7 @@ using Autodesk.DesignScript.Interfaces;
 
 namespace Revit.GeometryObjects
 {
-    //[Browsable(false)]
+    //[SupressImportIntoVM]
     public abstract class AbstractGeometryObject : IGraphicItem
     {
         /// <summary>
