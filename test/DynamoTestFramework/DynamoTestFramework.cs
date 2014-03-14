@@ -84,8 +84,8 @@ namespace Dynamo.Tests
             {
                 var docManager = DocumentManager.Instance;
                 docManager.CurrentUIApplication = revit.Application;
-                docManager.CurrentDBDocument = revit.Application.ActiveUIDocument.Document;
-                docManager.CurrentUIDocument = revit.Application.ActiveUIDocument;
+                //docManager.CurrentDBDocument = revit.Application.ActiveUIDocument.Document;
+                //docManager.CurrentUIDocument = revit.Application.ActiveUIDocument;
                 
                 bool canReadData = (0 < dataMap.Count);
 
@@ -257,7 +257,7 @@ namespace Dynamo.Tests
             fecLevel.OfClass(typeof(Level));
 
             DocumentManager.Instance.CurrentUIApplication = DocumentManager.Instance.CurrentUIApplication;
-            DocumentManager.Instance.CurrentUIDocument = DocumentManager.Instance.CurrentUIDocument;
+            //DocumentManager.Instance.CurrentUIDocument = DocumentManager.Instance.CurrentUIDocument;
             dynRevitSettings.DefaultLevel = null;
 
             SIUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
