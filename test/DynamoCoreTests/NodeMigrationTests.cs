@@ -14,9 +14,9 @@ namespace Dynamo.Tests
         #region Dynamo Core Node Migration Tests
 
         [Test]
-        public void Dynamo_Nodes_StringInput_0_6_3_27649()
+        public void TestStringInput()
         {
-            OpenModel(GetDynPath("Dynamo.Nodes.StringInput-0.6.3.27649.dyn"));
+            OpenModel(GetDynPath("TestStringInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var cbn = workspace.NodeFromWorkspace<CodeBlockNodeModel>(
@@ -33,9 +33,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_LessThan()
+        public void TestLessThan()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_LessThan.dyn"));
+            OpenModel(GetDynPath("TestLessThan.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var dsfn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -59,9 +59,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_LessThanOrEqual()
+        public void TestLessThanOrEqual()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_LessThanOrEqual.dyn"));
+            OpenModel(GetDynPath("TestLessThanOrEqual.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var dsfn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -85,9 +85,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_GreaterThan()
+        public void TestGreaterThan()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_GreaterThan.dyn"));
+            OpenModel(GetDynPath("TestGreaterThan.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var dsfn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -111,9 +111,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_GreaterThanOrEqual()
+        public void TestGreaterThanOrEqual()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_GreaterThanOrEqual.dyn"));
+            OpenModel(GetDynPath("TestGreaterThanOrEqual.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var dsfn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -137,9 +137,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Equal()
+        public void TestEqual()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Equal.dyn"));
+            OpenModel(GetDynPath("TestEqual.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var dsfn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -163,9 +163,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_And()
+        public void TestAnd()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_And.dyn"));
+            OpenModel(GetDynPath("TestAnd.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSCore.Logic.And>(
@@ -189,9 +189,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_And_NumberInput()
+        public void TestAnd_NumberInput()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_And_NumberInput.dyn"));
+            OpenModel(GetDynPath("TestAnd_NumberInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSCore.Logic.And>(
@@ -215,9 +215,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Or()
+        public void TestOr()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Or.dyn"));
+            OpenModel(GetDynPath("TestOr.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSCore.Logic.Or>(
@@ -241,9 +241,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Or_NumberInput()
+        public void TestOr_NumberInput()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Or_NumberInput.dyn"));
+            OpenModel(GetDynPath("TestOr_NumberInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSCore.Logic.Or>(
@@ -267,9 +267,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Xor()
+        public void TestXor()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Xor.dyn"));
+            OpenModel(GetDynPath("TestXor.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -293,9 +293,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Xor_NumberInput()
+        public void TestXor_NumberInput()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Xor_NumberInput.dyn"));
+            OpenModel(GetDynPath("TestXor_NumberInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -319,9 +319,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Not()
+        public void TestNot()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Not.dyn"));
+            OpenModel(GetDynPath("TestNot.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -341,9 +341,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Not_NumberInput()
+        public void TestNot_NumberInput()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Not_NumberInput.dyn"));
+            OpenModel(GetDynPath("TestNot_NumberInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -363,9 +363,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Add()
+        public void TestAdd()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Add.dyn"));
+            OpenModel(GetDynPath("TestAdd.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -389,9 +389,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Subtract()
+        public void TestSubtract()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Subtract.dyn"));
+            OpenModel(GetDynPath("TestSubtract.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -415,9 +415,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Multiply()
+        public void TestMultiply()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Multiply.dyn"));
+            OpenModel(GetDynPath("TestMultiply.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -441,9 +441,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Divide()
+        public void TestDivide()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Divide.dyn"));
+            OpenModel(GetDynPath("TestDivide.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -475,9 +475,10 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Modulo()
+        public void TestModulo()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Modulo.dyn"));
+            Assert.Inconclusive("Modulo node does not accept double value");
+            OpenModel(GetDynPath("TestModulo.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -502,15 +503,15 @@ namespace Dynamo.Tests
             AssertPreviewValue("99c18e93-bb19-458b-97f3-b3467aa10364", 1);
 
             //the new one does not support double
-            AssertPreviewValue("85f6a5e8-3e3c-4944-a7cb-ba856d755f87", 0.5);  
+            AssertPreviewValue("85f6a5e8-3e3c-4944-a7cb-ba856d755f87", null);  
 
             AssertPreviewValue("2be464f1-81d0-4427-b588-a22d94e8118c", 1);
         }
 
         [Test]
-        public void Dynamo_Nodes_Power()
+        public void TestPower()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Power.dyn"));
+            OpenModel(GetDynPath("TestPower.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -538,9 +539,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Round()
+        public void TestRound()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Round.dyn"));
+            OpenModel(GetDynPath("TestRound.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -572,9 +573,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Floor()
+        public void TestFloor()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Floor.dyn"));
+            OpenModel(GetDynPath("TestFloor.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -610,9 +611,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Ceiling()
+        public void TestCeiling()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Ceiling.dyn"));
+            OpenModel(GetDynPath("TestCeiling.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -648,9 +649,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_e()
+        public void TestEulersNumber()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_e.dyn"));
+            OpenModel(GetDynPath("TestEulersNumber.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -666,9 +667,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Pi()
+        public void TestPi()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Pi.dyn"));
+            OpenModel(GetDynPath("TestPi.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -684,9 +685,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_2Pi()
+        public void Test2Pi()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_2Pi.dyn"));
+            OpenModel(GetDynPath("Test2Pi.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -702,9 +703,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Sine()
+        public void TestSine()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Sine.dyn"));
+            OpenModel(GetDynPath("TestSine.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -734,9 +735,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Cosine()
+        public void TestCosine()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Cosine.dyn"));
+            OpenModel(GetDynPath("TestCosine.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -766,9 +767,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Tangent()
+        public void TestTangent()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Tangent.dyn"));
+            OpenModel(GetDynPath("TestTangent.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -798,9 +799,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_InverseSine()
+        public void TestInverseSine()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_InverseSine.dyn"));
+            OpenModel(GetDynPath("TestInverseSine.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -834,9 +835,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_InverseCosine()
+        public void TestInverseCosine()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_InverseCosine.dyn"));
+            OpenModel(GetDynPath("TestInverseCosine.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -870,9 +871,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_InverseTangent()
+        public void TestInverseTangent()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_InverseTangent.dyn"));
+            OpenModel(GetDynPath("TestInverseTangent.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -906,9 +907,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Average()
+        public void TestAverage()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Average.dyn"));
+            OpenModel(GetDynPath("TestAverage.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -936,9 +937,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_If()
+        public void TestIf()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_If.dyn"));
+            OpenModel(GetDynPath("TestIf.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSCoreNodesUI.Logic.If>(
@@ -958,9 +959,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_ListCreate()
+        public void TestListCreate()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_ListCreate.dyn"));
+            OpenModel(GetDynPath("TestListCreate.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
@@ -1000,9 +1001,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_AddToList()
+        public void TestAddToList()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_AddToList.dyn"));
+            OpenModel(GetDynPath("TestAddToList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1034,9 +1035,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_EmptyList()
+        public void TestEmptyList()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_EmptyList.dyn"));
+            OpenModel(GetDynPath("TestEmptyList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1052,9 +1053,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_IsEmptyList()
+        public void TestIsEmptyList()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_IsEmptyList.dyn"));
+            OpenModel(GetDynPath("TestIsEmptyList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1082,9 +1083,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_ListLength()
+        public void TestListLength()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_ListLength.dyn"));
+            OpenModel(GetDynPath("TestListLength.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1108,9 +1109,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_ListLength_NestedList()
+        public void TestListLength_NestedList()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_ListLength_NestedList.dyn"));
+            OpenModel(GetDynPath("TestListLength_NestedList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1126,9 +1127,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_FirstOfList()
+        public void TestFirstOfList()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_FirstOfList.dyn"));
+            OpenModel(GetDynPath("TestFirstOfList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1152,9 +1153,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_FirstOfList_NestedList()
+        public void TestFirstOfList_NestedList()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_FirstOfList_NestedList.dyn"));
+            OpenModel(GetDynPath("TestFirstOfList_NestedList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1171,9 +1172,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_RandomSeed()
+        public void TestRandomSeed()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_RandomSeed.dyn"));
+            OpenModel(GetDynPath("TestRandomSeed.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1189,9 +1190,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Random()
+        public void TestRandom()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Random.dyn"));
+            OpenModel(GetDynPath("TestRandom.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1204,9 +1205,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_RandomList()
+        public void TestRandomList()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_RandomList.dyn"));
+            OpenModel(GetDynPath("TestRandomList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1222,9 +1223,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_TakeFromList()
+        public void TestTakeFromList()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_TakeFromList.dyn"));
+            OpenModel(GetDynPath("TestTakeFromList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1241,9 +1242,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_TakeFromList_ListOfListAsInput()
+        public void TestTakeFromList_ListOfListAsInput()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_TakeFromList_ListOfListAsInput.dyn"));
+            OpenModel(GetDynPath("TestTakeFromList_ListOfListAsInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1260,9 +1261,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_TakeEveryNth()
+        public void TestTakeEveryNth()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_TakeEveryNth.dyn"));
+            OpenModel(GetDynPath("TestTakeEveryNth.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1279,9 +1280,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_TakeEveryNth_ListOfListAsInput()
+        public void TestTakeEveryNth_ListOfListAsInput()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_TakeEveryNth_ListOfListAsInput.dyn"));
+            OpenModel(GetDynPath("TestTakeEveryNth_ListOfListAsInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1298,9 +1299,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_RemoveFromList()
+        public void TestRemoveFromList()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_RemoveFromList.dyn"));
+            OpenModel(GetDynPath("TestRemoveFromList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1322,9 +1323,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_RemoveFromList_ListOfListAsInput()
+        public void TestRemoveFromList_ListOfListAsInput()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_RemoveFromList_ListOfListAsInput.dyn"));
+            OpenModel(GetDynPath("TestRemoveFromList_ListOfListAsInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1341,9 +1342,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_DropFromList()
+        public void TestDropFromList()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_DropFromList.dyn"));
+            OpenModel(GetDynPath("TestDropFromList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1360,9 +1361,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_DropFromList_ListOfListAsInput()
+        public void TestDropFromList_ListOfListAsInput()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_DropFromList_ListOfListAsInput.dyn"));
+            OpenModel(GetDynPath("TestDropFromList_ListOfListAsInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1379,9 +1380,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_DropEveryNth()
+        public void TestDropEveryNth()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_DropEveryNth.dyn"));
+            OpenModel(GetDynPath("TestDropEveryNth.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1398,9 +1399,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_DropEveryNth_ListOfListAsInput()
+        public void TestDropEveryNth_ListOfListAsInput()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_DropEveryNth_ListOfListAsInput.dyn"));
+            OpenModel(GetDynPath("TestDropEveryNth_ListOfListAsInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1418,9 +1419,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_Sort()
+        public void TestSort()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_Sort.dyn"));
+            OpenModel(GetDynPath("TestSort.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1437,9 +1438,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_SortByKey()
+        public void TestSortByKey()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_SortByKey.dyn"));
+            OpenModel(GetDynPath("TestSortByKey.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1456,9 +1457,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_NewList()
+        public void TestNewList()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_NewList.dyn"));
+            OpenModel(GetDynPath("TestNewList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
@@ -1485,9 +1486,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_ShiftListIndices()
+        public void TestShiftListIndices()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_ShiftListIndices.dyn"));
+            OpenModel(GetDynPath("TestShiftListIndices.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1504,9 +1505,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_ShiftListIndices_ListOfListAsInput()
+        public void TestShiftListIndices_ListOfListAsInput()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_ShiftListIndices_ListOfListAsInput.dyn"));
+            OpenModel(GetDynPath("TestShiftListIndices_ListOfListAsInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1524,9 +1525,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_GetFromList()
+        public void TestGetFromList()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_GetFromList.dyn"));
+            OpenModel(GetDynPath("TestGetFromList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1542,9 +1543,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_GetFromList_ListOfListAsInput()
+        public void TestGetFromList_ListOfListAsInput()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_GetFromList_ListOfListAsInput.dyn"));
+            OpenModel(GetDynPath("TestGetFromList_ListOfListAsInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1562,9 +1563,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_SliceList()
+        public void TestSliceList()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_SliceList.dyn"));
+            OpenModel(GetDynPath("TestSliceList.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1588,9 +1589,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_SliceList_ListOfListAsInput()
+        public void TestSliceList_ListOfListAsInput()
         {
-            OpenModel(GetDynPath("Dynamo_Nodes_SliceList_ListOfListAsInput.dyn"));
+            OpenModel(GetDynPath("TestSliceList_ListOfListAsInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             var logicn1 = workspace.NodeFromWorkspace<DSFunction>(
@@ -1609,9 +1610,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Dynamo_Nodes_NumberInput_0_6_3_25334()
+        public void TestNumberInput()
         {
-            OpenModel(GetDynPath("Dynamo.Nodes.NumberInput-0.6.3.25334.dyn"));
+            OpenModel(GetDynPath("TestNumberInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             Assert.AreEqual(12, workspace.Nodes.Count);
