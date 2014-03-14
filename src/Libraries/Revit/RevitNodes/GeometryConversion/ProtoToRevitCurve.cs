@@ -149,5 +149,25 @@ namespace Revit.GeometryConversion
             return e;
         }
 
+        /// <summary>
+        /// Convert a DS EllipseArc to a Revit Ellipse
+        /// </summary>
+        /// <param name="crv"></param>
+        /// <returns></returns>
+        private static Autodesk.Revit.DB.Ellipse Convert(Autodesk.DesignScript.Geometry.EllipseArc crv)
+        {
+            var center = crv.CenterPoint.ToXyz();
+            var x = crv.MajorAxis.ToXyz().Normalize();
+            var y = crv.MinorAxis.ToXyz().Normalize();
+            var xw = crv.MajorAxis.Length;
+            var yw = crv.MinorAxis.Length;
+            var sa = crv.StartAngle.ToRadians();
+            var ea = sa + crv.SweepAngle.ToRadians();
+
+            var e = Autodesk.Revit.DB.Ellipse.Create(center, xw, yw, x, y, sa, ea);
+            e.MakeBound(sa, ea);
+            return e;
+        }
+
     }
 }
