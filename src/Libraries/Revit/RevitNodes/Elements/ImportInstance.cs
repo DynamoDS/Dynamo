@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
 using RevitServices.Persistence;
+using RevitServices.Transactions;
 
 namespace Revit.Elements
 {
@@ -25,6 +26,7 @@ namespace Revit.Elements
 
         internal ImportInstance(string satPath)
         {
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
             var options = new SATImportOptions()
             {
@@ -43,6 +45,8 @@ namespace Revit.Elements
 
             InternalSetImportInstance( importInstance );
 
+            TransactionManager.Instance.TransactionTaskDone();
+
         }
 
         private void InternalSetImportInstance(Autodesk.Revit.DB.ImportInstance ele)
@@ -54,6 +58,7 @@ namespace Revit.Elements
 
         public static ImportInstance BySATFile(string pathToFile)
         {
+
             if (pathToFile == null)
             {
                 throw new ArgumentNullException("pathToFile");
@@ -65,6 +70,22 @@ namespace Revit.Elements
             }
 
             return new ImportInstance(pathToFile);
+        }
+
+        public static ImportInstance ByGeometry(Autodesk.DesignScript.Geometry.Geometry geometry)
+        {
+            if (geometry == null)
+            {
+                throw new ArgumentNullException("geometry");
+            }
+
+            var fn = Path.GetTempFileName();
+            if (!geometry.ExportToSAT(fn))
+            {
+                throw new Exception("Failed to import geometry.");
+            }
+
+            return new ImportInstance(fn);
         }
 
     }
