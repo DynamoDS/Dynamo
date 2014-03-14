@@ -190,13 +190,16 @@ namespace Revit.Elements
 
             var param = this.InternalElement.Parameters.Cast<Autodesk.Revit.DB.Parameter>().FirstOrDefault(x => x.Definition.Name == parameterName);
 
+            if (param == null || !param.HasValue)
+                return null;
+
             switch (param.StorageType)
             {
                 case StorageType.ElementId:
                     result = param.AsElementId();
                     break;
                 case StorageType.String:
-                    result = param.ToString();
+                    result = param.AsString();
                     break;
                 case StorageType.Integer:
                     result = param.AsInteger();
