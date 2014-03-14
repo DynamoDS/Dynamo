@@ -154,7 +154,7 @@ limitations under the License.
     <Compile Include="Models\HomeWorkspaceModel.cs" />
     <Compile Include="Nodes\CodeBlockNode.cs" />
     <Compile Include="Models\WorkspaceMigrations.cs" />
-    <Compile Include="Nodes\dynDSFunction.cs" />
+    <Compile Include="Nodes\DSFunction.cs" />
     <Compile Include="Models\Migration.cs" />
     <Compile Include="Core\CustomNodeDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
@@ -313,10 +313,10 @@ limitations under the License.
     <Compile Include="Search\SearchElements\SearchElementBase.cs" />
     <Compile Include="Search\SearchElements\WorkspaceSearchElement.cs" />
     <Compile Include="ViewModels\SearchViewModel.cs" />
-    <Compile Include="Nodes\dynBaseTypes.cs" />
+    <Compile Include="Nodes\BaseTypes.cs" />
     <Compile Include="Models\ConnectorModel.cs" />
-    <Compile Include="Nodes\dynFiles.cs" />
-    <Compile Include="Nodes\dynFunction.cs" />
+    <Compile Include="Nodes\Files.cs" />
+    <Compile Include="Nodes\Function.cs" />
     <Compile Include="Models\NodeModel.cs" />
     <Compile Include="Core\dynSettings.cs" />
     <Compile Include="Models\WorkspaceModel.cs" />
