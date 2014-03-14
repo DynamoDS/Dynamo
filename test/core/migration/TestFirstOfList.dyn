@@ -1,0 +1,20 @@
+<Workspace Version="0.6.3.5265" X="-982.258141039935" Y="-1686.55393902712" zoom="1.5" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="28383b05-d53a-47e0-ab4c-5c5d83208f25" nickname="First of List" x="1170.17209402662" y="1270.70262601808" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="dcf8fee8-a354-4f07-a084-a3f1611fe4a1" nickname="Number" x="964.83876069329" y="1266.03595935141" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1..10" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="4a093a03-c5e3-4e75-9e25-60e21168e896" nickname="Empty List" x="952.83876069329" y="1372.70262601808" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="5b093fdd-c63a-4efa-a0b7-4bd7c2330752" nickname="First of List" x="1174.17209402662" y="1372.03595935141" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="218c3a8e-9c4a-4a8c-8b13-6f2fb758df3f" nickname="First of List" x="1169.50542735996" y="1468.03595935141" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="466ef73f-defa-4137-8466-ff2f2a3f75e4" nickname="Number" x="954.83876069329" y="1475.36929268475" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="dcf8fee8-a354-4f07-a084-a3f1611fe4a1" start_index="0" end="28383b05-d53a-47e0-ab4c-5c5d83208f25" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4a093a03-c5e3-4e75-9e25-60e21168e896" start_index="0" end="5b093fdd-c63a-4efa-a0b7-4bd7c2330752" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="466ef73f-defa-4137-8466-ff2f2a3f75e4" start_index="0" end="218c3a8e-9c4a-4a8c-8b13-6f2fb758df3f" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

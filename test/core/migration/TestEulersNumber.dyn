@@ -1,0 +1,7 @@
+<Workspace Version="0.6.2.29585" X="148" Y="-53" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.EConstant type="Dynamo.Nodes.EConstant" guid="74416af6-c22c-4822-8b65-c5deea710a38" nickname="e" x="127" y="279.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>
