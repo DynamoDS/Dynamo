@@ -1,0 +1,17 @@
+<Workspace Version="0.6.2.29585" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.RandomSeed type="Dynamo.Nodes.RandomSeed" guid="e069c343-46be-4e01-a3b3-9321e89d0775" nickname="Random Number By Seed" x="290" y="142.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="3883dc63-8f8c-4267-a901-4161193d9ec3" nickname="Number" x="162" y="156.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.RandomSeed type="Dynamo.Nodes.RandomSeed" guid="71149321-db95-4064-a311-aadfe0cec404" nickname="Random Number By Seed" x="287" y="240.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="df1bf349-0568-4133-8e8f-2715a7eebf5b" nickname="Number" x="163" y="265.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1.5" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="3883dc63-8f8c-4267-a901-4161193d9ec3" start_index="0" end="e069c343-46be-4e01-a3b3-9321e89d0775" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="df1bf349-0568-4133-8e8f-2715a7eebf5b" start_index="0" end="71149321-db95-4064-a311-aadfe0cec404" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

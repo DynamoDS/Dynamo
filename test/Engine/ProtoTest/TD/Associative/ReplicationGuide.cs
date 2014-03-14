@@ -1753,5 +1753,59 @@ namespace ProtoTest.TD.Associative
             thisTest.Verify("t7", new Object[] { new Object[] { 2, 4 }, new Object[] { 2, 4 } });
             thisTest.Verify("t8", new Object[] { 2, 4 });
         }
+ 
+    
+        [Test]
+        public void TO144_ReplicationGuidesForceArrayPromotionShortest()
+        {
+
+            string code =
+@" def foo (x,y,z){    return = x + y + z;}t1 = foo((0..1)<1>, (0..2)<1>, (0..2)<1>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", new Object[] { 0, 3 });
+
+        }
+
+        [Test]
+        public void TO144_ReplicationGuidesForceArrayPromotionShortestSingleton()
+        {
+
+            string code =
+@" def foo (x,y){    return = x + y;}a = 0;b = 0..1;t1 = foo(a<1>, b<2>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", new Object[]
+                {
+                    new Object[] { 0, 1}
+                });
+
+        }
+
+        [Test]
+        public void TO144_ReplicationGuidesForceArrayPromotionShortestSingletonManual()
+        {
+
+            string code =
+@" def foo (x,y){    return = x + y;}a = {0};b = 0..1;t1 = foo(a<1>, b<2>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", new Object[]
+                {
+                    new Object[] { 0, 1}
+                });
+        }
+
+        [Test]
+        public void TO144_ReplicationGuidesForceArrayPromotionShortestSingletonManual2()
+        {
+
+            string code =
+@" def foo (x,y){    return = x + y;}a = {0};b = 0..1;t1 = foo(a<1>, b<1>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", new Object[] { 0 });
+        }
+
     }
 }
