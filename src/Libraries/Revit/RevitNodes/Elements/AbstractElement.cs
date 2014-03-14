@@ -5,6 +5,7 @@ using Autodesk.Revit.DB;
 using DSNodeServices;
 using Revit.GeometryConversion;
 using RevitServices.Persistence;
+using RevitServices.Transactions;
 
 namespace Revit.Elements
 {
@@ -163,6 +164,50 @@ namespace Revit.Elements
             return InternalElement.ToString();
         }
 
+        public void SetParameterByName(string parameterName, object value)
+        {
+            var param = Parameters.FirstOrDefault(x => x.Name == parameterName);
+            
+            if(param == null)
+                throw new Exception(string.Format("The parameter {0} could not be found on {1}", parameterName, Name));
+
+            try
+            {
+                TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
+                var dynval = value as dynamic;
+                SetParameterValue(param, dynval);
+                TransactionManager.Instance.TransactionTaskDone();
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(string.Format("The parameter {0} could not be set to {1}", parameterName, value));
+            }
+        }
+
+        #region dynamic parameter setting methods
+
+        private void SetParameterValue(Parameter param, ElementId value)
+        {
+            param.InternalParameter.Set(value);
+        }
+
+        private void SetParameterValue(Parameter param, double value)
+        {
+            param.InternalParameter.Set(value);
+        }
+
+        private void SetParameterValue(Parameter param, int value)
+        {
+            param.InternalParameter.Set(value);
+        }
+
+        private void SetParameterValue(Parameter param, string value)
+        {
+            param.InternalParameter.Set(value);
+        }
+
+        #endregion
+
         #region Internal Geometry Helpers
 
         protected IEnumerable<Autodesk.Revit.DB.Curve> GetCurves(Autodesk.Revit.DB.Options options)
@@ -246,9 +291,6 @@ namespace Revit.Elements
         }
 
         #endregion
-
-
-
 
     }
 }
