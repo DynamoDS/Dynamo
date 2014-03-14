@@ -719,7 +719,7 @@ namespace ProtoAssociative
             //AppendInstruction(instr, line, col);
             updatePcDictionary(line, col);
         }
-		
+        
         protected override void EmitRetb( int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
@@ -738,7 +738,7 @@ namespace ProtoAssociative
             updatePcDictionary(line, col);
         }
 
-		protected override void EmitRetcn(int blockId = Constants.kInvalidIndex, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
+        protected override void EmitRetcn(int blockId = Constants.kInvalidIndex, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
             Instruction instr = new Instruction();
@@ -756,7 +756,7 @@ namespace ProtoAssociative
             //AppendInstruction(instr, line, col);
             updatePcDictionary(line, col);
         }
-		
+        
         protected override void EmitReturn(int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
@@ -2203,8 +2203,8 @@ namespace ProtoAssociative
             end
             if node is functioncall
                 foreach arg in functioncallArgs
-	                def ssastack[]
-	                def astlist[]
+                    def ssastack[]
+                    def astlist[]
                     DFSEmit_SSA_AST(ref arg, ssastack, astlist)
                 end
             end
@@ -3371,7 +3371,7 @@ namespace ProtoAssociative
             else
                 // Update the existing entry
                 exprIdFlagList[exprUID] = kvp.value
- 	        end
+            end
         end
 
         */
@@ -3791,6 +3791,8 @@ namespace ProtoAssociative
 
         public List<AssociativeNode> EmitSSA(List<AssociativeNode> astList)
         {
+            Validity.Assert(null != astList);
+            astList = SplitMulitpleAssignment(astList);
             return BuildSSA(astList, new ProtoCore.CompileTime.Context());
         }
 
@@ -3931,8 +3933,11 @@ namespace ProtoAssociative
                 {
                     if (compilePass > AssociativeCompilePass.kClassName && !ssaTransformed)
                     {
-                        //Audit class table for multiple symbol definition and emit warning.
-                        this.core.ClassTable.AuditMultipleDefinition(this.core.BuildStatus);
+                        if (!core.IsParsingCodeBlockNode && !core.Options.IsDeltaExecution)
+                        {
+                            //Audit class table for multiple symbol definition and emit warning.
+                            this.core.ClassTable.AuditMultipleDefinition(this.core.BuildStatus);
+                        }
                         codeblock.Body = BuildSSA(codeblock.Body, context);
                         ssaTransformed = true;
                         if (core.Options.DumpIL)
@@ -4203,17 +4208,17 @@ namespace ProtoAssociative
 
         /*
          proc EmitIdentNode(identnode, graphnode)
-	        if ssa
-		        // Check an if this identifier is array indexed
-		        // The array index is a secondary property and is not the original array property of the AST. this is required because this array index is meant only to resolve graphnode dependency with arrays
-		        if node.arrayindex.secondary is valid
-			        dimension = traverse(node.arrayindex.secondary)
+            if ssa
+                // Check an if this identifier is array indexed
+                // The array index is a secondary property and is not the original array property of the AST. this is required because this array index is meant only to resolve graphnode dependency with arrays
+                if node.arrayindex.secondary is valid
+                    dimension = traverse(node.arrayindex.secondary)
 
-			        // Create a new dependent with the array indexing
-			        dependent = new GraphNode(identnode.name, dimension)
-			        graphnode.pushdependent(dependent)
-		        end
-	        end
+                    // Create a new dependent with the array indexing
+                    dependent = new GraphNode(identnode.name, dimension)
+                    graphnode.pushdependent(dependent)
+                end
+            end
         end
 
          */
@@ -5202,10 +5207,10 @@ namespace ProtoAssociative
                 //Always allow us to convert a class to a bool
                 thisClass.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             }
-            else if (ProtoCore.DSASM.AssociativeCompilePass.kClassHeirarchy == compilePass)
-            {
-                // Class heirarchy pass
-                // Populating each class entry with their respective base classes
+            else if (ProtoCore.DSASM.AssociativeCompilePass.kClassBaseClass == compilePass)
+            { 
+                // Base class pass
+                // Populating each class entry with their immediate baseclass
                 globalClassIndex = core.ClassTable.GetClassId(classDecl.className);
 
                 ProtoCore.DSASM.ClassNode thisClass = core.ClassTable.ClassNodes[globalClassIndex];
@@ -5236,35 +5241,52 @@ namespace ProtoAssociative
 
                             thisClass.baseList.Add(baseClass);
                             thisClass.coerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceBaseClass);
-
-                            
-                            // Iterate through all the base classes until the the root class
-                            // For every base class, add the coercion score
-
-                            // TODO Jun: -Integrate this with multiple inheritace when supported
-                            //           -Cleansify
-                            ProtoCore.DSASM.ClassNode tmpCNode = core.ClassTable.ClassNodes[baseClass];
-                            if (tmpCNode.baseList.Count > 0)
-                            {
-                                baseClass = tmpCNode.baseList[0];
-                                while (ProtoCore.DSASM.Constants.kInvalidIndex != baseClass)
-                                {
-                                    thisClass.coerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceBaseClass);
-                                    tmpCNode = core.ClassTable.ClassNodes[baseClass];
-
-                                    baseClass = ProtoCore.DSASM.Constants.kInvalidIndex;
-                                    if (tmpCNode.baseList.Count > 0)
-                                    {
-                                        baseClass = tmpCNode.baseList[0];
-                                    }
-                                }
-                            }
                         }
                         else
                         {
                             string message = string.Format("Unknown base class '{0}' (9E44FFB3).\n", classDecl.superClass[n]);
                             buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
                             throw new BuildHaltException(message);
+                        }
+                    }
+                }
+            }
+            else if (ProtoCore.DSASM.AssociativeCompilePass.kClassHierarchy == compilePass)
+            {
+                // Class hierarchy pass
+                // Populating each class entry with all sub classes in the hierarchy
+                globalClassIndex = core.ClassTable.GetClassId(classDecl.className);
+
+                ProtoCore.DSASM.ClassNode thisClass = core.ClassTable.ClassNodes[globalClassIndex];
+
+                // Verify and store the list of classes it inherits from 
+                if (null != classDecl.superClass)
+                {
+                    for (int n = 0; n < classDecl.superClass.Count; ++n)
+                    {
+                        int baseClass = core.ClassTable.GetClassId(classDecl.superClass[n]);
+
+                        // baseClass is already resovled in the previous pass
+                        Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != baseClass);
+
+                            
+                        // Iterate through all the base classes until the the root class
+                        // For every base class, add the coercion score
+                        ProtoCore.DSASM.ClassNode tmpCNode = core.ClassTable.ClassNodes[baseClass];
+                        if (tmpCNode.baseList.Count > 0)
+                        {
+                            baseClass = tmpCNode.baseList[0];
+                            while (ProtoCore.DSASM.Constants.kInvalidIndex != baseClass)
+                            {
+                                thisClass.coerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceBaseClass);
+                                tmpCNode = core.ClassTable.ClassNodes[baseClass];
+
+                                baseClass = ProtoCore.DSASM.Constants.kInvalidIndex;
+                                if (tmpCNode.baseList.Count > 0)
+                                {
+                                    baseClass = tmpCNode.baseList[0];
+                                }
+                            }
                         }
                     }
                 }
@@ -7401,9 +7423,9 @@ namespace ProtoAssociative
         //          // list stored in the first procedure found in the assignment expression
         //          foreach noderef in firstProc.updatedProperties	
         //              def n = graphnode.firstProcRefIndex
-	    //              def autogenRef = updateNodeRef[n]
+        //              def autogenRef = updateNodeRef[n]
         //              autogenRef.append(noderef)
-	    //              graphnode.pushUpdateRef(autogenRef)
+        //              graphnode.pushUpdateRef(autogenRef)
         //          end
         //      end
         //  end
@@ -7960,7 +7982,7 @@ namespace ProtoAssociative
                     def lefttype = invalid
                     def updateNodeRef = null 
                     dfsgetsymbollist(node.left, lefttype, updateNodeRef)
-	
+    
                     // Get the first procedure call in the rhs
                     // This stack is populated on traversing the entire RHS
                     def firstProc = functionCallStack.first()
@@ -7994,29 +8016,29 @@ namespace ProtoAssociative
                 ssaPtrList = new List
 
                 proc EmitBinaryExpression(bnode, graphnode)
-	                if bnode is assignment
+                    if bnode is assignment
                         graphnode = new graphnode
 
                         if bnode is an SSA pointer expression
-	                        if bnode.rhs is an identifier
-		                        // Push the start pointer
-		                        ssaPtrList.push(node.rhs)
-	                        else if bnode.rhs is an identifierlist
-		                        // Push the rhs of the dot operator
-		                        ssaPtrList.push(node.rhs.rhs)
-	                        else
-		                        Assert unhandled
-	                        end
+                            if bnode.rhs is an identifier
+                                // Push the start pointer
+                                ssaPtrList.push(node.rhs)
+                            else if bnode.rhs is an identifierlist
+                                // Push the rhs of the dot operator
+                                ssaPtrList.push(node.rhs.rhs)
+                            else
+                                Assert unhandled
+                            end
                         end
 
-		                emit(bnode.rhs)
+                        emit(bnode.rhs)
                         emit(bnode.lhs)
 
                         if (bnode is an SSA pointer expression 
                             and bnode is the last expression in the SSA factor/term
-	                        ssaPtrList.Clear()
+                            ssaPtrList.Clear()
                         end
-	                end
+                    end
                 end
 
             */
@@ -8913,12 +8935,12 @@ namespace ProtoAssociative
             TryBlockNode tryNode = exceptionNode.tryBlock;
             Validity.Assert(tryNode != null);
             foreach (var subnode in tryNode.body)
-	        {
-		        ProtoCore.Type inferedType = new ProtoCore.Type();
+            {
+                ProtoCore.Type inferedType = new ProtoCore.Type();
                 inferedType.UID = (int) ProtoCore.PrimitiveType.kTypeVar;
                 inferedType.IsIndexable = false;
                 DfsTraverse(subnode, ref inferedType, false, graphNode, subPass);
-	        }
+            }
             exceptionHandler.EndPc = pc;
 
             // Jmp to code after catch block
