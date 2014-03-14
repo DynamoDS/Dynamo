@@ -170,6 +170,46 @@ namespace DSRevitNodesTests.GeometryConversion
         }
 
         [Test]
+        public void EllipseArc_Basic()
+        {
+            var c = new Autodesk.Revit.DB.XYZ(5, 2, 3);
+            var rx = 10;
+            var ry = 2.5;
+            var x = new Autodesk.Revit.DB.XYZ(1, 0, 0);
+            var y = new Autodesk.Revit.DB.XYZ(0, 1, 0);
+            var sp = Math.PI/4;
+            var ep = 3 * Math.PI / 4;
+
+            var re = Autodesk.Revit.DB.Ellipse.Create(c, rx, ry, x, y, sp, ep);
+            re.MakeBound(sp, ep);
+
+            var pc = re.ToProtoType();
+
+            Assert.NotNull(pc);
+            Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.EllipseArc>(pc);
+            var pa = (Autodesk.DesignScript.Geometry.EllipseArc)pc;
+
+            pa.StartAngle.ToRadians().ShouldBeApproximately(sp);
+            (pa.SweepAngle.ToRadians()).ShouldBeApproximately(ep - sp);
+
+            pa.StartPoint.ShouldBeApproximately(re.GetEndPoint(0));
+            pa.EndPoint.ShouldBeApproximately(re.GetEndPoint(1));
+
+            pa.MajorAxis.Length.ShouldBeApproximately(rx);
+            pa.MinorAxis.Length.ShouldBeApproximately(ry);
+            pa.CenterPoint.ShouldBeApproximately(re.Center);
+
+            var tessPts = re.Tessellate();
+
+            // assert the tesselation is very close to original curve
+            foreach (var pt in tessPts)
+            {
+                var closestPt = pa.GetClosestPoint(pt.ToPoint());
+                Assert.Less(closestPt.DistanceTo(pt.ToPoint()), 1e-6);
+            }
+        }
+
+        [Test]
         public void Ellipse_Basic()
         {
             var c = new Autodesk.Revit.DB.XYZ(5, 2, 3);
