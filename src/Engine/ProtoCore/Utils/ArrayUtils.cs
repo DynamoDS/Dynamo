@@ -313,10 +313,22 @@ namespace ProtoCore.Utils
                 }
             }
 
+            var dict = heapElement.Dict as Dictionary<StackValue, StackValue>;
+            if (dict != null)
+            {
+                foreach (var sv in dict.Values)
+                {
+                    if (sv.optype == AddressType.ArrayPointer)
+                    {
+                        int subArrayRank = GetMaxRankForArray(sv, core, tracer + 1);
+                        largestSub = Math.Max(subArrayRank, largestSub);
+                    }
+                }
+            }
+
             return largestSub + ret;
-
-
         }
+
         public static int GetMaxRankForArray(StackValue array, Core core)
         {
             return GetMaxRankForArray(array, core, 0);
