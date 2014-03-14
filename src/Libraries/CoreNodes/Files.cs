@@ -22,7 +22,8 @@ namespace DSCore.File
                     int yParam = y * (int)(bmp.Height / numY);
 
                     // Insert new color at the front of the list.
-                    result.Insert(0, bmp.GetPixel(xParam, yParam));
+                    var c = bmp.GetPixel(xParam, yParam);
+                    result.Insert(0, DSColor.ByARGB(c.A,c.R,c.G,c.B));
                 }
             }
 

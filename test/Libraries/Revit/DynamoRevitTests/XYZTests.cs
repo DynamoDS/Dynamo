@@ -17,30 +17,32 @@ namespace Dynamo.Tests
         [Test]
         public void XYZFromReferencePoint()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            //var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\XYZ\XYZFromReferencePoint.dyn");
-            string testPath = Path.GetFullPath(samplePath);
+            //string samplePath = Path.Combine(_testPath, @".\XYZ\XYZFromReferencePoint.dyn");
+            //string testPath = Path.GetFullPath(samplePath);
 
-            model.Open(testPath);
-            ReferencePoint rp;
-            using (_trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document))
-            {
-                _trans.Start("Create a reference point.");
+            //model.Open(testPath);
+            //ReferencePoint rp;
+            //using (_trans = new Transaction(DocumentManager.Instance.CurrentUIDocument.Document))
+            //{
+            //    _trans.Start("Create a reference point.");
 
-                rp = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ());
+            //    rp = DocumentManager.Instance.CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ());
 
-                _trans.Commit();
+            //    _trans.Commit();
 
-            }
-            FSharpList<FScheme.Value> args = FSharpList<FScheme.Value>.Empty;
-            args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewContainer(rp), args);
+            //}
+            //FSharpList<FScheme.Value> args = FSharpList<FScheme.Value>.Empty;
+            //args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewContainer(rp), args);
 
-            //find the XYZFromReferencePoint node
-            var node = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is XyzFromReferencePoint).First();
+            ////find the XYZFromReferencePoint node
+            //var node = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is XyzFromReferencePoint).First();
 
-            FScheme.Value v = ((NodeWithOneOutput)node).Evaluate(args);
-            Assert.IsInstanceOf(typeof(XYZ), ((FScheme.Value.Container)v).Item);
+            //FScheme.Value v = ((NodeWithOneOutput)node).Evaluate(args);
+            //Assert.IsInstanceOf(typeof(XYZ), ((FScheme.Value.Container)v).Item);
+
+            Assert.Inconclusive("Porting : XYZ");
         }
 
         [Test]
