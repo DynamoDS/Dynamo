@@ -1,4 +1,5 @@
 ﻿using System;
+using DSNodeServices;
 using Revit.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
@@ -8,6 +9,7 @@ namespace Revit.Elements
     /// <summary>
     /// A Revit Level
     /// </summary>
+    [RegisterForTrace]
     public class Level : AbstractElement
     {
         #region Internal properties

@@ -1,5 +1,6 @@
 ﻿using System;
 using Autodesk.Revit.DB;
+using RevitServices.Threading;
 
 namespace RevitServices.Transactions
 {
@@ -102,6 +103,9 @@ namespace RevitServices.Transactions
         /// </summary>
         public void EnsureInTransaction(Document document)
         {
+            if (!IdlePromise.InIdleThread)
+                throw new Exception("Cannot start a transaction outside of the Revit idle thread.");
+
             //Hand off the behaviour to the strategy
             handle = Strategy.EnsureInTransaction(TransactionWrapper, document);
         }
@@ -112,6 +116,9 @@ namespace RevitServices.Transactions
         /// </summary>
         public void TransactionTaskDone()
         {
+            if (!IdlePromise.InIdleThread)
+                throw new Exception("Cannot end transaction task outside of the Revit idle thread.");
+            
             //Hand off the behaviour to the strategy
             Strategy.TransactionTaskDone(handle);
         }
@@ -121,6 +128,9 @@ namespace RevitServices.Transactions
         /// </summary>
         public void ForceCloseTransaction()
         {
+            if (!IdlePromise.InIdleThread)
+                throw new Exception("Cannot commit transaction outside of the Revit idle thread.");
+
             //Hand off the behaviour to the strategy
             Strategy.ForceCloseTransaction(handle);
         }

@@ -84,6 +84,7 @@
     <Compile Include="Elements\CurveElement.cs" />
     <Compile Include="Elements\Element.cs" />
     <Compile Include="Elements\FloorType.cs" />
+    <Compile Include="Elements\ImportInstance.cs" />
     <Compile Include="Elements\ModelText.cs" />
     <Compile Include="Elements\ModelTextType.cs" />
     <Compile Include="Elements\StructuralType.cs" />
