@@ -1608,40 +1608,6 @@ namespace Dynamo.Tests
                 new object[] {new object[] {1, 2}, new object[] {1, 2}});
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         [Test]
         public void Dynamo_Nodes_NumberInput_0_6_3_25334()
         {
@@ -1696,10 +1662,6 @@ namespace Dynamo.Tests
             AssertPreviewValue("bede0d80-6382-4430-9403-a14c3916e041", 5);
         }
 
-        #endregion
-
-
-        #region Not for Migration Test
         #endregion
 
         #region Revit Node Migration Tests
