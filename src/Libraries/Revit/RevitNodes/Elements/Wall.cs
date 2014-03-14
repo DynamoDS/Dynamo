@@ -65,7 +65,7 @@ namespace Revit.Elements
             TransactionManager.Instance.TransactionTaskDone();
 
             // delete the element stored in trace and add this new one
-            ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElementId);
+            ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElement);
         }
 
         #endregion

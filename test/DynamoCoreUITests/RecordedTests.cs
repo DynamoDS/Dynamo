@@ -51,12 +51,6 @@ namespace Dynamo.Tests.UI
             SetupDirectories();
         }
 
-        public override void Cleanup()
-        {
-            LibraryServices.DestroyInstance();
-            base.Cleanup();
-        }
-
         protected void Exit()
         {
             if (this.Controller != null)
@@ -1893,8 +1887,7 @@ namespace Dynamo.Tests.UI
         [Test]
         public void Defect_MAGN_57()
         {
-            Assert.Inconclusive();// This test cases using Map node which is deprecated so marking
-            // this test cases Inconclusive and will revisit once we have Map node.
+            Assert.Inconclusive("Deprecated: Map");
 
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-57
             RunCommandsFromFile("Defect_MAGN_57.xml");

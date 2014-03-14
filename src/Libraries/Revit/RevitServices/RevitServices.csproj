@@ -69,7 +69,7 @@ limitations under the License.
   <ItemGroup>
     <Compile Include="Elements\ElementUtils.cs" />
     <Compile Include="Elements\ModelUpdater.cs" />
-    <Compile Include="Persistence\Documentmanager.cs" />
+    <Compile Include="Persistence\DocumentManager.cs" />
     <Compile Include="Persistence\ElementBinder.cs" />
     <Compile Include="Persistence\ElementIDLifecycleManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

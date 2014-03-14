@@ -165,8 +165,8 @@ namespace DSCoreNodesTests
             // Explicitly test each aspect of the returned value.
             Assert.IsNotNull(results);
             Assert.AreEqual(2, results.Count);
-            Assert.AreEqual("first", results.Keys.ElementAt(0));
-            Assert.AreEqual("rest", results.Keys.ElementAt(1));
+            Assert.AreEqual("first", results.Keys.Cast<string>().First());
+            Assert.AreEqual("rest", results.Keys.Cast<string>().ElementAt(1));
             Assert.AreEqual(0, results["first"]);
 
             var rest = results["rest"] as List<object>;
@@ -227,7 +227,7 @@ namespace DSCoreNodesTests
         {
             Assert.AreEqual(
                 new List<int> { 0, 4 },
-                List.RemoveItemsAtIndices(new List<int> { 0, 1, 2, 3, 4 }, new List<int> { 1, 2, 3 }));
+                List.RemoveItemAtIndex(new List<int> { 0, 1, 2, 3, 4 }, new List<int> { 1, 2, 3 }));
         }
 
         [Test]

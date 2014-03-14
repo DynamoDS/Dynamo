@@ -80,7 +80,7 @@ namespace Revit.Elements
             TransactionManager.Instance.TransactionTaskDone();
 
             // remember this new value
-            ElementBinder.SetElementForTrace(this.InternalElementId);
+            ElementBinder.SetElementForTrace(this.InternalElement);
         }
 
         #endregion

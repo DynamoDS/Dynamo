@@ -235,6 +235,17 @@ namespace ProtoFFITests
         }
 
         [Test]
+        public void TestIEnumerableNestedCollection()
+        {
+            String code =
+            @"               data = TestData.GetNestedCollection();               list = Flatten(data);               size = Count(list);            ";
+            Type t = typeof(FFITarget.TestData); 
+            code = string.Format("import(\"{0}\");\r\n{1}", t.AssemblyQualifiedName, code);
+            ValidationData[] data = { new ValidationData { ValueName = "data", ExpectedValue = new List<object> { 2, 3, "DesignScript", new List<string> { "Dynamo", "Revit" }, new List<object> { true, new List<object> { 5.5, 10 } } }, BlockIndex = 0 },                                      new ValidationData { ValueName = "size", ExpectedValue = 8, BlockIndex = 0 },                                    };
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
         public void Test_DataMasrshalling_IEnumerable_Implicit_Cast()
         {
             string code =

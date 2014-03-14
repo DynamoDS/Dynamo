@@ -956,6 +956,12 @@ namespace Dynamo.Models
             ToolTipText = p;
         }
 
+        public void Warning(string p)
+        {
+            State = ElementState.Warning;
+            ToolTipText = p;
+        }
+
         #endregion
 
         #region Port Management
@@ -2195,6 +2201,7 @@ namespace Dynamo.Models
     {
         Dead,
         Active,
+        Warning,
         Error
     };
 
