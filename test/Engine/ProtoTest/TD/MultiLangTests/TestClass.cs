@@ -700,7 +700,7 @@ x9 = a1.w4;
             thisTest.Verify("x6", a);
             thisTest.Verify("x7", a);
             thisTest.Verify("x8", a);
-            thisTest.Verify("x9", a);
+            thisTest.Verify("x9", null);
         }
 
         [Test]

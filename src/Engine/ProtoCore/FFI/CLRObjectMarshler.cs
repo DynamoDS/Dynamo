@@ -605,7 +605,11 @@ namespace ProtoFFI
             {
                 Type elemType = type.GetElementType();
                 GetProtoCoreType(elemType, ref protoCoreType);
-                protoCoreType.rank += type.GetArrayRank(); //set the rank.
+
+                if (protoCoreType.rank != Constants.kArbitraryRank)
+                {
+                    protoCoreType.rank += type.GetArrayRank(); //set the rank.
+                }
             }
             else if (typeof(System.Collections.IDictionary).IsAssignableFrom(type))
             {
@@ -629,7 +633,10 @@ namespace ProtoFFI
                 //TODO: Ideally we shouldn't be calling this method on CLRModuleType,
                 //but we want to import this elemType, hence we do this.
                 protoCoreType = CLRModuleType.GetProtoCoreType(elemType, null);
-                protoCoreType.rank += 1;
+                if (protoCoreType.rank != Constants.kArbitraryRank)
+                {
+                    protoCoreType.rank += 1;
+                }
             }
             else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
