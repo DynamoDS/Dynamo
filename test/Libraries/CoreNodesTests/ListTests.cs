@@ -219,7 +219,7 @@ namespace DSCoreNodesTests
         [Test]
         public static void RemoveValueFromList()
         {
-            Assert.AreEqual(new List<int> { 0, 1, 3, 4 }, List.RemoveItemAtIndex(new List<int> { 0, 1, 2, 3, 4 }, 2));
+            Assert.AreEqual(new List<int> { 0, 1, 3, 4 }, List.RemoveItemAtIndex(new List<int> { 0, 1, 2, 3, 4 }, new int[]{2}));
         }
 
         [Test]
@@ -227,7 +227,16 @@ namespace DSCoreNodesTests
         {
             Assert.AreEqual(
                 new List<int> { 0, 4 },
-                List.RemoveItemAtIndex(new List<int> { 0, 1, 2, 3, 4 }, new List<int> { 1, 2, 3 }));
+                List.RemoveItemAtIndex(new List<int> { 0, 1, 2, 3, 4 }, new int[] { 1, 2, 3 }));
+        }
+
+        [Test]
+        public static void RemoveMultipleValuesFromNestedList()
+        {
+            var strings = new List<string> { "one", "two" };
+            Assert.AreEqual(
+                new List<object> { 0, 4 },
+                List.RemoveItemAtIndex(new List<object> { 0, 1, strings, new List<object> { 1, strings }, 4 }, new int[] { 1, 2, 3 }));
         }
 
         [Test]
