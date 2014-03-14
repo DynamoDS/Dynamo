@@ -386,6 +386,7 @@ namespace Dynamo.Tests
         [Test]
         public void UsingDefaultValue()
         {
+            Assert.Inconclusive("Default Value");
             var model = dynSettings.Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\default_values");
 
