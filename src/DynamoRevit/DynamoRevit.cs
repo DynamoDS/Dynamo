@@ -147,11 +147,9 @@ namespace Dynamo.Applications
 
                 #endregion
 
-                DocumentManager.Instance.CurrentDBDocument = revit.Application.ActiveUIDocument.Document;
-                DocumentManager.Instance.CurrentUIDocument = revit.Application.ActiveUIDocument;
+                //DocumentManager.Instance.CurrentDBDocument = revit.Application.ActiveUIDocument.Document;
+                //DocumentManager.Instance.CurrentUIDocument = revit.Application.ActiveUIDocument;
                 DocumentManager.Instance.CurrentUIApplication = revit.Application;
-                
-                DocumentManager.Instance.CurrentUIDocument = revit.Application.ActiveUIDocument;
 
                 dynRevitSettings.DefaultLevel = defaultLevel;
 

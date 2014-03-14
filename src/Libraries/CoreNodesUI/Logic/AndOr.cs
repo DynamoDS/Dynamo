@@ -6,13 +6,14 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
+using Autodesk.DesignScript.Runtime;
 
 namespace DSCore.Logic
 {
     /// <summary>
     /// Abstract base class for short-circuiting binary logic operators.
     /// </summary>
-    [Browsable(false)]
+    [SupressImportIntoVM]
     public abstract class BinaryLogic : VariableInputNode
     {
         private readonly Operator _op;

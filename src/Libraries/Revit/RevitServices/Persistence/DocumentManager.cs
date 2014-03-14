@@ -75,12 +75,12 @@ namespace RevitServices.Persistence
         /// Provide source of the currently active document
         /// Dynamo is reponsible for updating this before use
         /// </summary>
-        public Document CurrentDBDocument { get; set; }
+        public Document CurrentDBDocument { get { return CurrentUIDocument.Document; } }
 
         /// <summary>
         /// Provides the currently active UI document.
         /// </summary>
-        public UIDocument CurrentUIDocument { get; set; }
+        public UIDocument CurrentUIDocument { get { return CurrentUIApplication.ActiveUIDocument; } }
 
         /// <summary>
         /// Provides the current UIApplication

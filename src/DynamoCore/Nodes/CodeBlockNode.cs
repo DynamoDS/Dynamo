@@ -563,7 +563,7 @@ namespace Dynamo.Nodes
                         nickName = "Statement Output"; //Set tool tip incase of random var name
 
                     OutPortData.Add(
-                        new PortData(">", nickName, typeof(object)) { VerticalMargin = verticalMargin[outportCount] });
+                        new PortData("", nickName, typeof(object)) { VerticalMargin = verticalMargin[outportCount] });
                     outportCount++;
                 }
             }

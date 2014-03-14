@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
 using RevitServices.Persistence;
+using Autodesk.DesignScript.Runtime;
 
 namespace Revit.Elements
 {
     /// <summary>
     /// Base class for Revit Plan views
     /// </summary>
-    [Browsable(false)]
+    [SupressImportIntoVM]
     public class AbstractPlanView : AbstractView
     {
 

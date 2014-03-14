@@ -10,7 +10,7 @@ namespace Revit.Elements
     /// An abstract Revit FamilyInstance - implementors include FamilyInstance, AdaptiveComponent, StructuralFraming
     /// </summary>
     [RegisterForTrace]
-    //[Browsable(false)]
+    //[SupressImportIntoVM]
     public abstract class AbstractFamilyInstance : AbstractElement
     {
 
