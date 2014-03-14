@@ -90,6 +90,7 @@ namespace Dynamo.ViewModels
         internal int CommandInterval { get; private set; }
         internal int PauseAfterPlayback { get; private set; }
         internal bool ExitAfterPlayback { get; private set; }
+        internal string CommandFileName { get; private set; }
         internal State CurrentState { get; private set; }
 
         internal DynCmd.RecordableCommand PreviousCommand { get; private set; }
@@ -125,8 +126,12 @@ namespace Dynamo.ViewModels
             this.CurrentCommand = null;
 
             this.CurrentState = State.None;
+            this.CommandFileName = string.Empty;
             if (LoadCommandFromFile(commandFilePath))
+            {
                 ChangeStateInternal(State.Loaded);
+                CommandFileName = Path.GetFileNameWithoutExtension(commandFilePath);
+            }
             else
             {
                 ChangeStateInternal(State.Recording);
@@ -151,6 +156,9 @@ namespace Dynamo.ViewModels
             }
 
             this.mainWindow = mainWindow;
+            this.mainWindow.Title = string.Format("{0} [Playing back: {1}]",
+                this.mainWindow.Title, this.CommandFileName);
+
             System.Diagnostics.Debug.Assert(null == playbackTimer);
             playbackTimer = new DispatcherTimer();
 
