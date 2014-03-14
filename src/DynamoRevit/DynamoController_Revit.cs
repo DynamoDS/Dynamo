@@ -516,18 +516,18 @@ namespace Dynamo
 
             //If we're in a debug run or not already in the idle thread, then run the Cleanup Delegate
             //from the idle thread. Otherwise, just run it in this thread.
-            if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread && !IsTestMode)
-            {
-                RevThread.IdlePromise.ExecuteOnIdleSync(cleanup);
-                RevThread.IdlePromise.ExecuteOnIdleSync(rename);
-                RevThread.IdlePromise.ExecuteOnIdleAsync(TransactionManager.Instance.ForceCloseTransaction);
-            }
-            else
-            {
-                cleanup();
-                rename();
-                TransactionManager.Instance.ForceCloseTransaction();
-            }
+            //if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread && !IsTestMode)
+            //{
+            //    RevThread.IdlePromise.ExecuteOnIdleSync(cleanup);
+            //    RevThread.IdlePromise.ExecuteOnIdleSync(rename);
+            //    RevThread.IdlePromise.ExecuteOnIdleAsync(TransactionManager.Instance.ForceCloseTransaction);
+            //}
+            //else
+            //{
+            cleanup();
+            rename();
+            TransactionManager.Instance.ForceCloseTransaction();
+            //}
         }
 
         public override void ShutDown(bool shutDownHost)
