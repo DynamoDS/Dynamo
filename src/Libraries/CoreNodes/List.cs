@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 
@@ -550,13 +551,22 @@ namespace DSCore
             [ArbitraryDimensionArrayImport] IList list,
             int subLength)
         {
-            var flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
+            object[] flatList = null;
+
+            try
+            {
+                flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
+            }
+            catch
+            {
+                flatList = list.Cast<object>().ToArray();
+            }
 
             if (flatList.Count() < subLength)
                 return list;
 
-            var finalList = new ArrayList();
-            var currList = new ArrayList();
+            var finalList = new List<List<object>>();
+            List<object> currList = null;
 
             var startIndices = new List<int>();
 
@@ -573,6 +583,7 @@ namespace DSCore
             foreach (int start in startIndices)
             {
                 int index = start;
+                currList = new List<object>();
 
                 while (index < flatList.Count())
                 {
@@ -586,7 +597,6 @@ namespace DSCore
                         break;
                 }
                 finalList.Add(currList);
-                currList = new ArrayList();
             }
 
             if (currList.Count > 0)
@@ -604,12 +614,22 @@ namespace DSCore
             [ArbitraryDimensionArrayImport] IList list,
             int rowLength)
         {
-            var flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
+            object[] flatList = null;
+
+            try
+            {
+                flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
+            }
+            catch
+            {
+                flatList = list.Cast<object>().ToArray();
+            }
 
             if (flatList.Count() < rowLength)
                 return list;
 
-            var finalList = new ArrayList();
+            var finalList = new List<List<object>>();
+            List<object> currList = null;
 
             var startIndices = new List<int>();
 
@@ -624,7 +644,7 @@ namespace DSCore
             foreach (int start in startIndices)
             {
                 int index = start;
-                var currList = new ArrayList();
+                currList = new List<object>();
 
                 while (index < flatList.Count())
                 {
@@ -639,6 +659,9 @@ namespace DSCore
                 }
                 finalList.Add(currList);
             }
+
+            if (currList.Count > 0)
+                finalList.Add(currList);
 
             return finalList;
         }

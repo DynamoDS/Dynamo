@@ -29,16 +29,16 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        protected override INode Build(
-            Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
-        {
-            if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
-            {
-                Error("Input must be connected.");
-                throw new Exception("Transaction Node requires all inputs to be connected.");
-            }
-            return new PreviewUpdate(this) { WrappedNode = base.Build(preBuilt, outPort) };
-        }
+        //protected override INode Build(
+        //    Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+        //{
+        //    if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
+        //    {
+        //        Error("Input must be connected.");
+        //        throw new Exception("Transaction Node requires all inputs to be connected.");
+        //    }
+        //    return new PreviewUpdate(this) { WrappedNode = base.Build(preBuilt, outPort) };
+        //}
 
         protected override InputNode Compile(IEnumerable<string> portNames)
         {
