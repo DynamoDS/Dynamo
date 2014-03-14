@@ -853,7 +853,7 @@ namespace ProtoTest.TD.MultiLangTests
         public void TS055_Param_AlltypeTo_BoolArray_Imperative()
         {
             string code =
-                @"class A{ a=1; }a;a1;b;c;d;e;e1;                [Imperative]{                                            def foo ( x:bool[])                        {	                        b1= x ;	                        return =b1;                        }                        a = foo({ 1.5, 2.5 });                        z:var={ 1.5,2.5 };                        a1=foo(z);                        b = foo({ 1, 0 });                        c = foo({ ""1.5"" ,""""});                        c1 = foo( {'1','0'});                        d = foo({ A.A(),A.A() });                        e = foo({ false,true });                        f = foo({ null, null });}";
+                @"class A{ a=1; }a;a1;b;c;d;e;e1;                [Imperative]{                                            def foo ( x:bool[])                        {	                        b1= x ;	                        return =b1;                        }                        a = foo({ 1.5, 2.5 });                        z:var[]={ 1.5,2.5 };                        a1=foo(z);                        b = foo({ 1, 0 });                        c = foo({ ""1.5"" ,""""});                        c1 = foo( {'1','0'});                        d = foo({ A.A(),A.A() });                        e = foo({ false,true });                        f = foo({ null, null });}";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { true, true });
