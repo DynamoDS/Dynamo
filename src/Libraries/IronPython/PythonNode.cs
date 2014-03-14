@@ -11,6 +11,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
+using Autodesk.DesignScript.Runtime;
 
 namespace DSIronPythonNode
 {
@@ -50,8 +51,7 @@ namespace DSIronPythonNode
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    backendMethod.Method.DeclaringType.FullName,
-                    backendMethod.Method.Name,
+                    backendMethod,
                     new List<AssociativeNode>
                     {
                         codeInputNode,
@@ -64,13 +64,14 @@ namespace DSIronPythonNode
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [NodeDescription("Runs an embedded IronPython script")]
-    [Browsable(false)]
+    [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class PythonNode : PythonNodeBase
     {
         public PythonNode()
         {
-            _script = "import clr\nclr.AddReference('ProtoGeometry')\nfrom Autodesk.DesignScript.Geometry import *\n"
+            _script = "import clr\nclr.AddReference('ProtoGeometry')\n"
+                + "from Autodesk.DesignScript.Geometry import *\n"
                 + "#The inputs to this node will be stored as a list in the IN variable.\n"
                 + "dataEnteringNode = IN\n\n"
                 + "#Assign your output to the OUT variable\n"
@@ -201,7 +202,7 @@ namespace DSIronPythonNode
     [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [NodeDescription("Runs a IronPython script from a string")]
-    [Browsable(false)]
+    [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class PythonStringNode : PythonNodeBase
     {
