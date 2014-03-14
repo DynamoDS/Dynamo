@@ -149,7 +149,7 @@ namespace ProtoFFI
                 GCUtils.GCRetain(dsKey, core);
 
                 ProtoCore.Type valueType = CLRObjectMarshler.GetProtoCoreType(value.GetType());
-                StackValue dsValue = marshaler.Marshal(dictionary[key], context, dsi, valueType);
+                StackValue dsValue = marshaler.Marshal(value, context, dsi, valueType);
                 GCUtils.GCRetain(dsValue, core);
 
                 ho.Dict[dsKey] = dsValue;

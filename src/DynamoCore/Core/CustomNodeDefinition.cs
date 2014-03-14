@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Windows.Input;
 using Dynamo.DSEngine;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
@@ -270,6 +271,7 @@ namespace Dynamo
         {
             // If we are loading dyf file, dont compile it until all nodes are loaded
             // otherwise some intermediate function defintions will be created.
+            // TODO: This is a hack, in reality we should be preventing this from being called at the Workspace.Modified() level --SJE
             if (IsBeingLoaded)
                 return;
 
@@ -281,24 +283,24 @@ namespace Dynamo
             List<Output> outputs = WorkspaceModel.Nodes.OfType<Output>().ToList();
  
             var topMost = new List<Tuple<int, NodeModel>>();
-            
+
+            List<string> outNames;
+
             // if we found output nodes, add select their inputs
             // these will serve as the function output
             if (outputs.Any())
             {
                 topMost.AddRange(
-                    outputs.Where(x => x.HasInput(0)).Select(x => new Tuple<int, NodeModel>(0, x)));
-                ReturnKeys =
-                    outputs.Select(
-                        (x, i) => !string.IsNullOrEmpty(x.Symbol) ? x.Symbol : i.ToString());
+                    outputs.Where(x => x.HasInput(0)).Select(x => Tuple.Create(0, x as NodeModel)));
+                outNames = outputs.Select(x => x.Symbol).ToList();
             }
             else
             {
+                outNames = new List<string>();
+
                 // if there are no explicitly defined output nodes
                 // get the top most nodes and set THEM as the output
                 IEnumerable<NodeModel> topMostNodes = WorkspaceModel.GetTopMostNodes();
-
-                var outNames = new List<string>();
 
                 var rtnPorts =
                     //Grab multiple returns from each node
@@ -318,14 +320,39 @@ namespace Dynamo
                 foreach (var rtnAndIndex in rtnPorts.Select((rtn, i) => new { rtn, idx = i }))
                 {
                     topMost.Add(Tuple.Create(rtnAndIndex.rtn.portIndex, rtnAndIndex.rtn.node));
-                    outNames.Add(
-                        rtnAndIndex.rtn.name != null
-                            ? rtnAndIndex.rtn.name + rtnAndIndex.idx
-                            : rtnAndIndex.idx.ToString());
+                    outNames.Add(rtnAndIndex.rtn.name ?? rtnAndIndex.idx.ToString());
                 }
-
-                ReturnKeys = outNames;
             }
+
+            var nameDict = new Dictionary<string, int>();
+            foreach (var name in outNames)
+            {
+                if (nameDict.ContainsKey(name))
+                    nameDict[name]++;
+                else
+                    nameDict[name] = 0;
+            }
+
+            nameDict = nameDict.Where(x => x.Value != 0).ToDictionary(x => x.Key, x => x.Value);
+
+            outNames.Reverse();
+
+            var keys = new List<string>();
+            foreach (var name in outNames)
+            {
+                int amt;
+                if (nameDict.TryGetValue(name, out amt))
+                {
+                    nameDict[name] = amt - 1;
+                    keys.Add(name == "" ? amt + ">" : name + amt);
+                }
+                else
+                    keys.Add(name);
+            }
+
+            keys.Reverse();
+
+            ReturnKeys = keys;
 
             #endregion
 

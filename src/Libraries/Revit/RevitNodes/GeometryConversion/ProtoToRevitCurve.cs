@@ -6,10 +6,11 @@ using System.Text;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
+using Autodesk.DesignScript.Runtime;
 
 namespace Revit.GeometryConversion
 {
-    [Browsable(false)]
+    [SupressImportIntoVM]
     public static class ProtoToRevitCurve
     {
         /// <summary>
