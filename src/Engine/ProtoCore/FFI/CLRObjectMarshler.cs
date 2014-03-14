@@ -520,26 +520,67 @@ namespace ProtoFFI
             }
 
             if (null != clrObject)
+            {
+                //If the dsObject is not an ArrayPointer but expected type is IEnumerable derived class,
+                //marshal the single object as collection.
+                if (dsObject.optype != AddressType.ArrayPointer && typeof(System.Collections.IEnumerable).IsAssignableFrom(type))
+                {
+                    return new List<object> { clrObject };
+                }
                 return clrObject;
+            }
 
             return CreateCLRObject(dsObject, context, dsi, type);
         }
 
+        /// <summary>
+        /// Gets Primitive marshaler for the given input type and if it fails
+        /// to get one, it tries to get primitive marshaler based on dsType.
+        /// We want to get correct marshaler specific to the input type because
+        /// more than one type gets map to same type in DS.
+        /// </summary>
+        /// <param name="type">System.Type</param>
+        /// <param name="dsType">DS AddressType</param>
+        /// <returns>FFIObjectMarshler or null</returns>
+        private FFIObjectMarshler GetPrimitiveMarshaler(Type type, AddressType dsType)
+        {
+            FFIObjectMarshler marshaler = null;
+            if (mPrimitiveMarshalers.TryGetValue(type, out marshaler))
+                return marshaler;
+
+            //Try to get primitive marshaler based on dsType.
+            mPrimitiveMarshalers.TryGetValue(GetPrimitiveType(dsType), out marshaler);
+            return marshaler;
+        }
+
+        /// <summary>
+        /// Tries to get a primitive object from the given dsObject.
+        /// </summary>
+        /// <param name="dsObject">StackValue for DS Object</param>
+        /// <param name="context">Runtime context</param>
+        /// <param name="dsi">Interpreter</param>
+        /// <param name="type">Expected System.Type</param>
+        /// <returns>Marshaled object or null</returns>
         private object TryGetPrimitiveObject(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type type)
         {
-            FFIObjectMarshler marshaler;
             Type dsObjectType = type;
             if (dsObjectType == typeof(object))
                 dsObjectType = GetPrimitiveType(dsObject.optype);
             else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
                 dsObjectType = Nullable.GetUnderlyingType(type);
 
-            if (mPrimitiveMarshalers.TryGetValue(dsObjectType, out marshaler))
+            FFIObjectMarshler marshaler = GetPrimitiveMarshaler(dsObjectType, dsObject.optype);
+            if(null != marshaler)
                 return marshaler.UnMarshal(dsObject, context, dsi, type);
-
+            
             return null;
         }
 
+        /// <summary>
+        /// Gets a primitive System.Type for the given DS type.
+        /// </summary>
+        /// <param name="addressType">DS AddressType</param>
+        /// <returns>System.Type</returns>
         private Type GetPrimitiveType(AddressType addressType)
         {
             switch (addressType)
@@ -560,20 +601,20 @@ namespace ProtoFFI
         }
 
         /// <summary>
-        /// 
+        /// Gets marshaled DS type for the given System.Type
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="type">System.Type</param>
+        /// <returns>ProtoCore.Type as equivalent DS type for input System.Type</returns>
         public override ProtoCore.Type GetMarshaledType(Type type)
         {
             return CLRObjectMarshler.GetProtoCoreType(type);
         }
 
         /// <summary>
-        /// 
+        /// Gets equivalent DS type for the input System.Type
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="type">System.Type</param>
+        /// <returns>ProtoCore.Type</returns>
         public static ProtoCore.Type GetProtoCoreType(Type type)
         {
             ProtoCore.Type retype = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.kTypeVar);
