@@ -344,6 +344,7 @@ namespace Dynamo.Nodes
         }
     }
 
+    [AlsoKnownAs("Dynamo.Nodes.dynBuildSeq", "Dynamo.Nodes.BuildSeq")]
     public class NumberRange : MigrationNode
     {
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
@@ -1350,6 +1351,7 @@ namespace Dynamo.Nodes
         }
     }
 
+    [AlsoKnownAs("Dynamo.Nodes.2Pi", "Dynamo.Nodes.dyn2Pi")]
     public class PiTimes2 : MigrationNode
     {
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
