@@ -1377,13 +1377,13 @@ namespace ProtoScript.Runners
                         {
                             deltaAstList.AddRange(modifiedASTList);
                             foreach (var node in modifiedASTList)
-	                    {
+	                        {
                                 var bnode = node as BinaryExpressionNode;
                                 if (bnode != null)
                                 {
                                     exprGuidMap[bnode.exprUID] = st.GUID;
                                 }
-	                    }
+	                        }
                         }
 
                         // Disable removed nodes from the cache
@@ -1414,14 +1414,19 @@ namespace ProtoScript.Runners
                         // Handle cached subtree
                         if (cachedTreeExists)
                         {
-                            if (oldSubTree.AstNodes != null)
+                            if (null == oldSubTree.AstNodes)
+                            {
+                                // The ast list for this subtree is null
+                                // This is due to the liverunner being passed an empty astlist, such as a codeblock with no content
+                                // Populate this subtree with the current ast contents
+                                oldSubTree.AstNodes = modifiedASTList;
+                                currentSubTreeList[st.GUID] = oldSubTree;
+                            }
+                            else
                             {
                                 UndefineFunctions(oldSubTree.AstNodes.Where(n => n is FunctionDefinitionNode));
-                            }
 
-                            // Update the current subtree list
-                            if (null != oldSubTree.AstNodes)
-                            {
+                                // Update the current subtree list
                                 List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
                                 newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
                                 newCachedASTList.AddRange(modifiedASTList);
@@ -1431,7 +1436,6 @@ namespace ProtoScript.Runners
                                 currentSubTreeList[st.GUID] = st;
                             }
                         }
-
                     }
 
                     // Get the AST's dependent on every function in the modified function list,
@@ -1456,13 +1460,13 @@ namespace ProtoScript.Runners
                     {
                         deltaAstList.AddRange(st.AstNodes);
                         foreach (var node in st.AstNodes)
-	                {
+	                    {
                             var bnode = node as BinaryExpressionNode;
                             if (bnode != null)
                             {
                                 exprGuidMap[bnode.exprUID] = st.GUID;
                             }
-	                }
+	                    }
                     }
 
                     currentSubTreeList.Add(st.GUID, st);

@@ -1,0 +1,34 @@
+<Workspace Version="0.6.2.29585" X="156" Y="44" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" nickname="Number" x="4" y="102.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="3.000" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="22dd6b7f-8b45-4351-8018-3a1ed4663179" nickname="Number" x="6" y="186.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="5" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="c2a6381a-a01c-42a9-99b7-d59317ec226a" nickname="Number" x="6" y="281.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-2.000" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Modulo type="Dynamo.Nodes.Modulo" guid="3f4c4485-5149-479a-aa11-e66e72c76b37" nickname="Modulo" x="256" y="99.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Modulo type="Dynamo.Nodes.Modulo" guid="99c18e93-bb19-458b-97f3-b3467aa10364" nickname="Modulo" x="259" y="219.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Modulo type="Dynamo.Nodes.Modulo" guid="85f6a5e8-3e3c-4944-a7cb-ba856d755f87" nickname="Modulo" x="262" y="337.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="afc588e6-e866-480f-bd12-97b286b449dc" nickname="Number" x="4" y="357.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2.5" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="444d23a3-73f0-4a9d-88a8-47df1eeb0eab" nickname="Number" x="12" y="434.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="10" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Modulo type="Dynamo.Nodes.Modulo" guid="2be464f1-81d0-4427-b588-a22d94e8118c" nickname="Modulo" x="262" y="450.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" start_index="0" end="3f4c4485-5149-479a-aa11-e66e72c76b37" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" start_index="0" end="99c18e93-bb19-458b-97f3-b3467aa10364" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" start_index="0" end="85f6a5e8-3e3c-4944-a7cb-ba856d755f87" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" start_index="0" end="2be464f1-81d0-4427-b588-a22d94e8118c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="22dd6b7f-8b45-4351-8018-3a1ed4663179" start_index="0" end="3f4c4485-5149-479a-aa11-e66e72c76b37" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c2a6381a-a01c-42a9-99b7-d59317ec226a" start_index="0" end="99c18e93-bb19-458b-97f3-b3467aa10364" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="afc588e6-e866-480f-bd12-97b286b449dc" start_index="0" end="85f6a5e8-3e3c-4944-a7cb-ba856d755f87" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="444d23a3-73f0-4a9d-88a8-47df1eeb0eab" start_index="0" end="2be464f1-81d0-4427-b588-a22d94e8118c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
