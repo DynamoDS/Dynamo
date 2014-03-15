@@ -56,6 +56,7 @@
     <Compile Include="ProtoFFITests.cs" />
     <Compile Include="TestNamespaceConflict.cs" />
     <Compile Include="TestNamespaceResolution.cs" />
+    <Compile Include="TestUpdateCount.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Libraries\Revit\RevitServices\RevitServices.csproj">
