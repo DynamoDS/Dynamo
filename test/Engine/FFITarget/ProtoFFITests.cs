@@ -86,6 +86,10 @@ namespace FFITarget
         {
             return new List<object> { 2, 3, "DesignScript", new List<string> { "Dynamo", "Revit" }, new List<object> { true, new List<object> { 5.5, 10 } } };
         }
+        public static IList RemoveItemsAtIndices(IEnumerable list, int[] indices)
+        {
+            return list.Cast<object>().Where((_, i) => !indices.Contains(i)).ToList();
+        }
         public static IEnumerable<int> GetNumbersByDouble(int x)
         {
             for (int i = 0; i < x; ++i)
