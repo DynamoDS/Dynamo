@@ -1,12 +1,9 @@
 ﻿using System;
-using Autodesk.Revit.DB;
-using Autodesk.DesignScript.Geometry;
 using DSNodeServices;
-using Revit.Elements;
 using Revit.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
-using Point = Autodesk.DesignScript.Geometry.Point;
+using Curve = Autodesk.Revit.DB.Curve;
 
 namespace Revit.Elements
 {
@@ -54,7 +51,7 @@ namespace Revit.Elements
         /// <param name="offset"></param>
         /// <param name="flip"></param>
         /// <param name="isStructural"></param>
-        private Wall(Autodesk.Revit.DB.Curve curve, Autodesk.Revit.DB.WallType wallType, Autodesk.Revit.DB.Level baseLevel, double height, double offset, bool flip, bool isStructural)
+        private Wall(Curve curve, Autodesk.Revit.DB.WallType wallType, Autodesk.Revit.DB.Level baseLevel, double height, double offset, bool flip, bool isStructural)
         {
             // This creates a new wall and deletes the old one
             TransactionManager.Instance.EnsureInTransaction(Document);
@@ -65,7 +62,7 @@ namespace Revit.Elements
             TransactionManager.Instance.TransactionTaskDone();
 
             // delete the element stored in trace and add this new one
-            ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElement);
+            ElementBinder.CleanupAndSetElementForTrace(Document, InternalWall);
         }
 
         #endregion
@@ -78,9 +75,9 @@ namespace Revit.Elements
         /// <param name="wall"></param>
         private void InternalSetWall(Autodesk.Revit.DB.Wall wall)
         {
-            this.InternalWall = wall;
-            this.InternalElementId = wall.Id;
-            this.InternalUniqueId = wall.UniqueId;
+            InternalWall = wall;
+            InternalElementId = wall.Id;
+            InternalUniqueId = wall.UniqueId;
         }
 
         #endregion
@@ -142,7 +139,7 @@ namespace Revit.Elements
 
             var height = endLevel.Elevation - startLevel.Elevation;
 
-            return Wall.ByCurveAndHeight(c, height, startLevel, wallType);
+            return ByCurveAndHeight(c, height, startLevel, wallType);
         }
 
         #endregion

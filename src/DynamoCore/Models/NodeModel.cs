@@ -2055,7 +2055,7 @@ namespace Dynamo.Models
                 {
                     var package = new RenderPackage(IsSelected, DisplayLabels);
 
-                    PushGraphicItemIntoPackage(gItem, package, labelMap[count]);
+                    PushGraphicItemIntoPackage(gItem, package, labelMap.Count > count ? labelMap[count] : "?");
 
                     package.ItemsCount++;
                     RenderPackages.Add(package);
