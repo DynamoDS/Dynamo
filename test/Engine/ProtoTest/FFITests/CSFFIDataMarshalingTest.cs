@@ -58,7 +58,7 @@ namespace ProtoFFITests
         public void TestDecimals()
         {
             String code =
-            @"               import(TestData from ""FFITarget.dll"");               import(""System.Decimal"");               x = Decimal.Decimal(1.1111e+10);               y = Decimal.Decimal(1.1111e+5);               value = TestData.MultiplyDecimals(x, y);               result = Decimal.Decimal(1.23454321e+15);               success = Decimal.Equals(value, result);            ";
+            @"               import(TestData from ""FFITarget.dll"");               import(""System.Decimal"");               x = Decimal.Decimal(1.11e+10);               y = Decimal.Decimal(1.11e+5);               value = TestData.MultiplyDecimals(x, y);               result = Decimal.Decimal(1.2321e+15);               success = Decimal.Equals(value, result);            ";
             ValidationData[] data = { new ValidationData { ValueName = "success", ExpectedValue = true, BlockIndex = 0 } };
             int nErrors = -1;
             ExecuteAndVerify(code, data, out nErrors);
@@ -242,6 +242,56 @@ namespace ProtoFFITests
             Type t = typeof(FFITarget.TestData); 
             code = string.Format("import(\"{0}\");\r\n{1}", t.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "data", ExpectedValue = new List<object> { 2, 3, "DesignScript", new List<string> { "Dynamo", "Revit" }, new List<object> { true, new List<object> { 5.5, 10 } } }, BlockIndex = 0 },                                      new ValidationData { ValueName = "size", ExpectedValue = 8, BlockIndex = 0 },                                    };
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void TestIEnumerableWithArbitraryRankArray()
+        {
+            String code =
+            @"
+               data = TestData.GetNestedCollection();
+               list = TestData.RemoveItemsAtIndices(data, {3,1});
+               size = Count(Flatten(list));
+            ";
+            Type t = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", t.AssemblyQualifiedName, code);
+            ValidationData[] data = { new ValidationData { ValueName = "list", ExpectedValue = new List<object> { 2, "DesignScript", new List<object> { true, new List<object> { 5.5, 10 } } }, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "size", ExpectedValue = 5, BlockIndex = 0 },
+                                    };
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void TestArrayPromotion()
+        {
+            String code =
+            @"
+               data = TestData.GetNestedCollection();
+               list = TestData.RemoveItemsAtIndices(data, 2);
+               size = Count(Flatten(list));
+            ";
+            Type t = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", t.AssemblyQualifiedName, code);
+            ValidationData[] data = { new ValidationData { ValueName = "list", ExpectedValue = new List<object> { 2, 3, new List<string> { "Dynamo", "Revit" }, new List<object> { true, new List<object> { 5.5, 10 } } }, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "size", ExpectedValue = 7, BlockIndex = 0 },
+                                    };
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void TestSingletonMarshaledAsIEnumerable()
+        {
+            String code =
+            @"
+               list = TestData.RemoveItemsAtIndices(3, 0);
+               size = Count(list);
+            ";
+            Type t = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", t.AssemblyQualifiedName, code);
+            ValidationData[] data = { new ValidationData { ValueName = "list", ExpectedValue = new List<object>(), BlockIndex = 0 },
+                                      new ValidationData { ValueName = "size", ExpectedValue = 0, BlockIndex = 0 },
+                                    };
             ExecuteAndVerify(code, data);
         }
 
