@@ -280,7 +280,7 @@ namespace ProtoCore.Lang
                         if (svCondition.optype != AddressType.Boolean)
                         {
                             // Comment Jun: Perhaps we can allow coercion?
-                            Type booleanType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, false, 0);
+                            Type booleanType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0);
                             svCondition = TypeSystem.Coerce(svCondition, booleanType, core);
                             GCUtils.GCRetain(svCondition, core);
                         }
@@ -914,8 +914,7 @@ namespace ProtoCore.Lang
                 obj = objects[0];
             else
             {
-                type.IsIndexable = true;
-                type.rank = -1;
+                type.rank = Constants.kArbitraryRank;
             }
 
             StackValue ret = marshaler.Marshal(obj, c, interpreter, type);

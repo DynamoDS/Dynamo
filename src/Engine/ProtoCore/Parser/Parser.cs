@@ -506,7 +506,7 @@ public Node root { get; set; }
     {
         var ident = new ProtoCore.AST.ImperativeAST.IdentifierNode();
         ident.Name = ident.Value = name;
-        ident.datatype = TypeSystem.BuildPrimitiveTypeObject(type, false);
+        ident.datatype = TypeSystem.BuildPrimitiveTypeObject(type, 0);
         return ident;
     }
 
@@ -1039,12 +1039,7 @@ public Node root { get; set; }
 		ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
 		leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
 		
-		var unknownType = new ProtoCore.Type();
-		unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
-		unknownType.Name = "var";
-		unknownType.rank = 0;
-		unknownType.IsIndexable = true;
-		
+		var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 		leftNode.datatype = unknownType;
 		leftNode.line = rightNode.line;
 		leftNode.col = rightNode.col;
@@ -1436,11 +1431,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(25);
 		NodeUtils.SetNodeStartLocation(constr, t); 
 		Associative_CtorSignature(out methodName, out argumentSignature);
-		var returnType = new ProtoCore.Type(); 
-		returnType.Name = "var";
-		returnType.UID = 0;	   
-		returnType.rank = DSASM.Constants.kArbitraryRank;
-		returnType.IsIndexable = true;
+		var returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
 		
 		constr.Name = methodName; 
 		constr.Pattern = null; 
@@ -1485,7 +1476,6 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Expect(1);
 			ProtoCore.Type argtype = new ProtoCore.Type(); argtype.Name = t.val; argtype.rank = 0; 
 			if (la.kind == 8) {
-				argtype.IsIndexable = true; 
 				Get();
 				Expect(9);
 				argtype.rank = 1; 
@@ -1702,11 +1692,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
 		}
 		ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature = null;
-		returnType = new ProtoCore.Type(); 
-		returnType.Name = "var";
-		returnType.UID = 0;	   
-		returnType.rank = DSASM.Constants.kArbitraryRank;
-		returnType.IsIndexable = true;
+		returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
 		
 		// TODO Jun: Luke made changes to array representation, handle this
 		//returnType.IsArray = false;
@@ -1752,7 +1738,6 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Associative_ClassReference(out type);
 		type.rank = 0; 
 		if (la.kind == 8) {
-			type.IsIndexable = true; 
 			Get();
 			Expect(9);
 			type.rank = 1; 
@@ -1836,7 +1821,6 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Expect(1);
 			argtype.Name = t.val; 
 			if (la.kind == 8) {
-				argtype.IsIndexable = true; 
 				Get();
 				Expect(9);
 				argtype.rank = 1; 
@@ -1992,7 +1976,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			}
 			else
 			{
-			   typedVar.datatype = core.TypeSystem.BuildTypeObject(type, false, 0);
+			   typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
 			}
 			
 			if (la.kind == 8) {
@@ -2408,7 +2392,6 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		{
 		   Name = t.val, 
 		   rank = 0, 
-		   IsIndexable = false,
 		};
 		catchFilterNode.type = exceptionType;
 		
@@ -2946,7 +2929,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 
 	void Imperative_functiondecl(out ProtoCore.AST.ImperativeAST.ImperativeNode node, List<ProtoCore.AST.ImperativeAST.ImperativeNode> attrs = null) {
 		ProtoCore.AST.ImperativeAST.FunctionDefinitionNode funcDecl = new ProtoCore.AST.ImperativeAST.FunctionDefinitionNode(); 
-		ProtoCore.Type rtype = new ProtoCore.Type(); rtype.Name = "var"; rtype.UID = 0; rtype.rank = DSASM.Constants.kArbitraryRank; rtype.IsIndexable = true; 
+		ProtoCore.Type rtype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank); 
 		Expect(26);
 		NodeUtils.SetNodeStartLocation(funcDecl, t); funcDecl.Attributes = attrs; 
 		Expect(1);
@@ -3330,7 +3313,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			}
 			else
 			{
-			   typedVar.datatype = core.TypeSystem.BuildTypeObject(type, false);
+			   typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
 			}
 			
 			if (la.kind == 8) {
@@ -4016,7 +3999,6 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Expect(1);
 			argtype.Name = t.val; 
 			if (la.kind == 8) {
-				argtype.IsIndexable = true; 
 				Get();
 				Expect(9);
 				argtype.rank = 1; 
@@ -4069,7 +4051,6 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(1);
 		rtype.Name = t.val; rtype.rank = 0; 
 		if (la.kind == 8) {
-			rtype.IsIndexable = true; 
 			Get();
 			Expect(9);
 			rtype.rank = 1; 
@@ -4168,7 +4149,6 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		{
 		   Name = t.val, 
 		   rank = 0, 
-		   IsIndexable = false,
 		};
 		catchFilterNode.type = exceptionType;
 		
