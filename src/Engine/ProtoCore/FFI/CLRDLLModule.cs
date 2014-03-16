@@ -197,6 +197,11 @@ namespace ProtoFFI
             } 
         }
 
+        public static bool TryGetImportedDSType(Type type, out ProtoCore.Type dsType)
+        {
+            return mTypeMaps.TryGetValue(type, out dsType);
+        }
+
         public static ProtoCore.Type GetProtoCoreType(Type type, CLRDLLModule module)
         {
             ProtoCore.Type protoCoreType;
