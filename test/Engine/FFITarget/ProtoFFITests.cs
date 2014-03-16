@@ -340,13 +340,13 @@ namespace FFITarget
             y2.MoveNext();
             return y2.Current;
         }
-        public int TestIEnumerable2(object x)
+        public int TestIEnumerable2([ArbitraryDimensionArrayImport] object x)
         {
-            IEnumerable<int> y = (IEnumerable<int>)x;
-            IEnumerator<int> y2 = y.GetEnumerator();
+            IEnumerable y = (IEnumerable)x;
+            IEnumerator y2 = y.GetEnumerator();
             y2.Reset();
             y2.MoveNext();
-            return y2.Current;
+            return (int)y2.Current;
         }
         public object GetIEnumerable()
         {
