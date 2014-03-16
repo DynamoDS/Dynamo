@@ -5,9 +5,7 @@ using Autodesk.DesignScript.Runtime;
 using System.Collections;
 namespace ProtoFFITests
 {
-    
-
-    class CSFFIDataMarshalingTest : FFITestSetup
+    public class CSFFIDataMarshalingTest : FFITestSetup
     {
 
         [Test]
