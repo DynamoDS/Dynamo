@@ -623,26 +623,31 @@ namespace ProtoFFI
         /// <returns>FFIObjectMarshler or null</returns>
         private FFIObjectMarshler GetMarshalerForCLRType(Type clrType, AddressType dsType)
         {
-            FFIObjectMarshler marshaler = null;
-            //1. Expected CLR type is a collection
-            //2. Expected CLR type is object and dsType is a collection
-            if (typeof(IEnumerable).IsAssignableFrom(clrType) || dsType == AddressType.ArrayPointer)
-            {
-                ProtoCore.Type type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.kTypeVar);
-                type.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
-                return new CollectionMarshaler(this, type);
-            }
+            //If the input ds object is pointer type then it can't be marshaled as primitive.
+            if (dsType == AddressType.Pointer)
+                return null;
 
-            //3. Expected CLR type is object, get marshaled clrType from dsType
+            FFIObjectMarshler marshaler = null;
+            //Expected CLR type is object, get marshaled clrType from dsType
             Type expectedType = clrType;
             if (expectedType == typeof(object))
                 expectedType = GetPrimitiveType(dsType);
             else if (clrType.IsGenericType && clrType.GetGenericTypeDefinition() == typeof(Nullable<>))
                 expectedType = Nullable.GetUnderlyingType(clrType);
 
-            //If the input ds object is pointer type then it can't be marshaled as primitive.
-            if (dsType == AddressType.Pointer)
-                return null;
+            //If Ds Type is array pointer, it needs to be marshaled as collection.
+            bool collection = (dsType == AddressType.ArrayPointer);
+
+            //Expected CLR type is not string, but is derived from IEnumerable
+            if (typeof(string) != expectedType && typeof(IEnumerable).IsAssignableFrom(expectedType))
+                collection = true;
+
+            if (collection)
+            {
+                ProtoCore.Type type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.kTypeVar);
+                type.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
+                return new CollectionMarshaler(this, type);
+            }
 
             if (!mPrimitiveMarshalers.TryGetValue(expectedType, out marshaler))
                 mPrimitiveMarshalers.TryGetValue(GetPrimitiveType(dsType), out marshaler);
@@ -658,10 +663,17 @@ namespace ProtoFFI
         /// <returns>FFIObjectMarshler or null</returns>
         private FFIObjectMarshler GetMarshalerForDsType(ProtoCore.Type dsType, Type objType)
         {
+            //Expected DS Type is pointer, so there is no primitive marshaler available.
+            if (dsType.UID == (int)ProtoCore.PrimitiveType.kTypePointer)
+                return null;
+
             FFIObjectMarshler marshaler = null;
             bool marshalAsCollection = false;
+            //0. String needs special handling becuase it's derived from IEnumerable.
+            if (typeof(string) == objType)
+                marshalAsCollection = false;
             //1. If expectedDSType is fixed rank collection, objType must be a collection of same rank
-            if (dsType.rank > 0 && typeof(IEnumerable).IsAssignableFrom(objType))
+            else if (dsType.rank > 0 && typeof(IEnumerable).IsAssignableFrom(objType))
                 marshalAsCollection = true;
             //2. If dsType is arbitrary rank collection, marshal based on objType
             //3. If dsType is var, marshal based on objType.
