@@ -322,13 +322,7 @@ namespace ProtoCore.AST.AssociativeAST
 	{
 		public IdentifierNode(string identName = null)
 		{
-			datatype = new ProtoCore.Type
-			{
-				UID = (int)PrimitiveType.kInvalidType,
-				rank = 0,
-				IsIndexable = false,
-				Name = null
-			};
+            datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
 			Value = Name = identName;
 		}
 
@@ -338,7 +332,6 @@ namespace ProtoCore.AST.AssociativeAST
 			{
 				UID = rhs.datatype.UID,
 				rank = rhs.datatype.rank,
-				IsIndexable = rhs.datatype.IsIndexable,
 				Name = rhs.datatype.Name
 			};
 
@@ -808,7 +801,6 @@ namespace ProtoCore.AST.AssociativeAST
 			{
 				UID = rhs.ArgumentType.UID,
 				rank = rhs.ArgumentType.rank,
-				IsIndexable = rhs.ArgumentType.IsIndexable,
 				Name = rhs.ArgumentType.Name
 			};
 			NameNode = NodeUtils.Clone(rhs.NameNode);
@@ -2369,7 +2361,7 @@ namespace ProtoCore.AST.AssociativeAST
 		{
 			return BuildParamNode(
 				paramName,
-				TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, false, 0));
+				TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0));
 		}
 
 		public static VarDeclNode BuildParamNode(string paramName, Type type)

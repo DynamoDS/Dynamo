@@ -737,7 +737,6 @@ namespace ProtoFFI
                 if (parameter.IsDefined(typeof(Autodesk.DesignScript.Runtime.ArbitraryDimensionArrayImportAttribute), false))
                 {
                     var argType = paramNode.ArgumentType;
-                    argType.IsIndexable = true;
                     argType.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
                     paramNode.ArgumentType = argType;
                 }
@@ -792,13 +791,7 @@ namespace ProtoFFI
                                                                              {
                 Value = parameterName,
                 Name = parameterName,
-                datatype = new ProtoCore.Type()
-                {
-                    Name = "var",
-                    IsIndexable = false,
-                    rank = 0,
-                    UID = (int)ProtoCore.PrimitiveType.kTypeVar
-                }
+                datatype = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar, 0)
             };
             //Lets emit native DS type object
             ProtoCore.Type argtype = CLRModuleType.GetProtoCoreType(parameterType, Module);

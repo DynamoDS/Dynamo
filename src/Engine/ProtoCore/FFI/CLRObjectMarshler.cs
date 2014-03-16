@@ -38,7 +38,7 @@ namespace ProtoFFI
 
         public static ProtoCore.Type CreateType(ProtoCore.PrimitiveType type)
         {
-            ProtoCore.Type protoType = new ProtoCore.Type { IsIndexable = false, rank = 0, UID = (int)type };
+            ProtoCore.Type protoType = new ProtoCore.Type { rank = 0, UID = (int)type };
             switch (type)
             {
                 case ProtoCore.PrimitiveType.kTypeDouble:
@@ -748,18 +748,19 @@ namespace ProtoFFI
             {
                 Type elemType = type.GetElementType();
                 GetProtoCoreType(elemType, ref protoCoreType);
-                protoCoreType.rank += type.GetArrayRank(); //set the rank.
-                protoCoreType.IsIndexable = true;
+
+                if (protoCoreType.rank != Constants.kArbitraryRank)
+                {
+                    protoCoreType.rank += type.GetArrayRank(); //set the rank.
+                }
             }
             else if (typeof(System.Collections.IDictionary).IsAssignableFrom(type))
             {
                 protoCoreType.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
-                protoCoreType.IsIndexable = true;
             }
             else if (type.IsInterface && typeof(IEnumerable).IsAssignableFrom(type))
             {
                 protoCoreType.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
-                protoCoreType.IsIndexable = true;
             }
             else if (type.IsGenericType && typeof(IEnumerable).IsAssignableFrom(type))
             {
@@ -775,8 +776,10 @@ namespace ProtoFFI
                 //TODO: Ideally we shouldn't be calling this method on CLRModuleType,
                 //but we want to import this elemType, hence we do this.
                 protoCoreType = CLRModuleType.GetProtoCoreType(elemType, null);
-                protoCoreType.rank += 1;
-                protoCoreType.IsIndexable = true;
+                if (protoCoreType.rank != Constants.kArbitraryRank)
+                {
+                    protoCoreType.rank += 1;
+                }
             }
             else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
