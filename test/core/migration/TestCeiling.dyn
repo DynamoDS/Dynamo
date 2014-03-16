@@ -1,0 +1,37 @@
+<Workspace Version="0.6.2.29585" X="148" Y="-53" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" nickname="Number" x="4" y="102.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="3.000" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="22dd6b7f-8b45-4351-8018-3a1ed4663179" nickname="Number" x="9" y="356.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2.3" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="c2a6381a-a01c-42a9-99b7-d59317ec226a" nickname="Number" x="7" y="194.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-2.000" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="afc588e6-e866-480f-bd12-97b286b449dc" nickname="Number" x="10" y="272.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2.500" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="cc187b0d-7399-47b9-bdbf-23eebd22551e" nickname="Number" x="6" y="433.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2.8" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="a4e2ad0e-372f-4bd6-b80b-2df5a5852034" nickname="Number" x="7" y="540.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-2.800" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Ceiling type="Dynamo.Nodes.Ceiling" guid="3e185854-ff13-403e-9667-8abe48f5125e" nickname="Ceiling" x="250" y="77.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Ceiling type="Dynamo.Nodes.Ceiling" guid="d18afe2d-cac8-4042-8edf-68554eb69814" nickname="Ceiling" x="245" y="165.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Ceiling type="Dynamo.Nodes.Ceiling" guid="ebeed92b-68cc-4850-b13b-e6d230bc9a8d" nickname="Ceiling" x="248" y="261.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Ceiling type="Dynamo.Nodes.Ceiling" guid="5bfae2bc-3c0f-4adf-931a-20709bd9e6ad" nickname="Ceiling" x="246" y="357.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Ceiling type="Dynamo.Nodes.Ceiling" guid="7f999e43-cc26-4dab-923e-e7fc1d1fb902" nickname="Ceiling" x="240" y="443.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Ceiling type="Dynamo.Nodes.Ceiling" guid="1ef510c8-5f3b-4654-8fb7-bcd7827ccb07" nickname="Ceiling" x="240" y="540.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" start_index="0" end="3e185854-ff13-403e-9667-8abe48f5125e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="22dd6b7f-8b45-4351-8018-3a1ed4663179" start_index="0" end="5bfae2bc-3c0f-4adf-931a-20709bd9e6ad" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c2a6381a-a01c-42a9-99b7-d59317ec226a" start_index="0" end="d18afe2d-cac8-4042-8edf-68554eb69814" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="afc588e6-e866-480f-bd12-97b286b449dc" start_index="0" end="ebeed92b-68cc-4850-b13b-e6d230bc9a8d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cc187b0d-7399-47b9-bdbf-23eebd22551e" start_index="0" end="7f999e43-cc26-4dab-923e-e7fc1d1fb902" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a4e2ad0e-372f-4bd6-b80b-2df5a5852034" start_index="0" end="1ef510c8-5f3b-4654-8fb7-bcd7827ccb07" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

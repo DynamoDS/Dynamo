@@ -1,0 +1,7 @@
+<Workspace Version="0.6.2.29585" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Random type="Dynamo.Nodes.Random" guid="8a4329e2-d0d5-4fe2-9bba-f4291502eb1c" nickname="Random Number" x="223" y="217.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>

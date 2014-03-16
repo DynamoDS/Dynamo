@@ -249,7 +249,7 @@ namespace Dynamo.Utilities
                         var isHidden = t.GetCustomAttributes(typeof (NodeHiddenInBrowserAttribute), true).Any();
                         var isDSCompatible = t.GetCustomAttributes(typeof(IsDesignScriptCompatibleAttribute), true).Any();
 
-                        if (!IsNodeSubType(t)) /*&& attribs.Length > 0*/
+                        if (!IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
                             continue;
 
                         //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 

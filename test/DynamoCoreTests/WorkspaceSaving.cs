@@ -77,6 +77,8 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeWorkspaceCanSaveAsExistingFile()
         {
+            Assert.Inconclusive("Porting : Formula");
+
             // open file
             // save as
             // file exists

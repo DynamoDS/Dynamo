@@ -231,6 +231,101 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        public void TestClassHeirarchy01()
+        {
+            String code =
+@"class A
+{
+	constructor A()
+	{
+	}
+	
+	def foo : int()
+	{
+		return = 1;
+	}
+}
+
+class B extends A
+{
+
+	constructor B()
+	{
+	}
+}
+
+class C extends B
+{
+	constructor C()
+	{
+	}
+}
+
+class D
+{
+	def foo:int(a:A)
+	{
+		return = a.foo();
+	}
+}
+
+c = C.C();
+d = D.D();
+x = d.foo(c);
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+        }
+
+        [Test]
+        public void TestClassHeirarchy02()
+        {
+            String code =
+@"class A
+{
+	constructor A()
+	{
+	}
+	
+	def foo : int()
+	{
+		return = 1;
+	}
+}
+
+class C extends B
+{
+	constructor C()
+	{
+	}
+}
+
+class B extends A
+{
+
+	constructor B()
+	{
+	}
+}
+
+class D
+{
+	def foo:int(a:A)
+	{
+		return = a.foo();
+	}
+}
+
+c = C.C();
+d = D.D();
+x = d.foo(c);
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+        }
+
+
+        [Test]
         public void TestClassFunction02()
         {
             String code =

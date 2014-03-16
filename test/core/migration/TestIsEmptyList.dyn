@@ -1,0 +1,25 @@
+<Workspace Version="0.6.3.5265" X="-1045.25814103994" Y="-1370.55393902712" zoom="1.5" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.IsEmpty type="Dynamo.Nodes.IsEmpty" guid="f03dd785-bdc3-478f-b281-ea9db063b356" nickname="Is Empty List?" x="1165.50542735996" y="1164.03595935141" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="841134cd-0707-44d7-8575-b45761de4124" nickname="Number" x="958.83876069329" y="1166.70262601808" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.IsEmpty type="Dynamo.Nodes.IsEmpty" guid="79d4216d-695d-425e-b1e7-51535e46ae98" nickname="Is Empty List?" x="1162.17209402662" y="1241.36929268475" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.IsEmpty type="Dynamo.Nodes.IsEmpty" guid="1ec03940-2cad-431f-807e-c6ec0f7ae3bb" nickname="Is Empty List?" x="1162.83876069329" y="1324.03595935141" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="2f106e6a-0010-495e-8a9f-ee76edd0791c" nickname="Number" x="959.505427359957" y="1237.36929268475" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1..5" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="dbaab012-d220-48f0-ad10-4e60a32915fa" nickname="String" x="956.83876069329" y="1316.03595935141" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="oh" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.IsEmpty type="Dynamo.Nodes.IsEmpty" guid="ecd5e943-e6b5-44ca-bb52-3b5c39971ea7" nickname="Is Empty List?" x="1164.17209402662" y="1402.03595935141" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="d91f90d9-18db-47ba-9711-75d07eb31b9d" nickname="Empty List" x="943.505427359957" y="1392.70262601808" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="841134cd-0707-44d7-8575-b45761de4124" start_index="0" end="f03dd785-bdc3-478f-b281-ea9db063b356" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2f106e6a-0010-495e-8a9f-ee76edd0791c" start_index="0" end="79d4216d-695d-425e-b1e7-51535e46ae98" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dbaab012-d220-48f0-ad10-4e60a32915fa" start_index="0" end="1ec03940-2cad-431f-807e-c6ec0f7ae3bb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d91f90d9-18db-47ba-9711-75d07eb31b9d" start_index="0" end="ecd5e943-e6b5-44ca-bb52-3b5c39971ea7" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
