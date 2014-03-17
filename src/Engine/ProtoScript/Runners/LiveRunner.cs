@@ -1318,11 +1318,6 @@ namespace ProtoScript.Runners
         /// <param name="syncData"></param>
         private void UpdateAstCache(GraphSyncData syncData)
         {
-            if (syncData.DeletedSubtrees != null)
-            {
-                syncData.DeletedSubtrees.ForEach(t => astCache.Remove(t.GUID));
-            }
-
             if (syncData.ModifiedSubtrees != null)
             {
                 foreach (var t in syncData.ModifiedSubtrees)
@@ -1333,6 +1328,11 @@ namespace ProtoScript.Runners
                         astCache[t.GUID].AddRange(t.AstNodes);
                     }
                 }
+            }
+
+            if (syncData.DeletedSubtrees != null)
+            {
+                syncData.DeletedSubtrees.ForEach(t => astCache.Remove(t.GUID));
             }
 
             if (syncData.AddedSubtrees != null)

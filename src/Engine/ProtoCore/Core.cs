@@ -2417,11 +2417,11 @@ namespace ProtoCore
                                           methodName,
                                           FunctionTable,
                                           Options.ExecutionMode);
-                CallsiteCache.Add(graphNode.UID, csInstance);
-            }
 
-            CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
-            ASTToCallSiteMap[graphNode.AstID] = csInstance;
+                CallsiteCache.Add(graphNode.UID, csInstance);
+                CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
+                ASTToCallSiteMap[graphNode.AstID] = csInstance;
+            }
 
             return csInstance;
         }
