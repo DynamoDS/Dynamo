@@ -96,7 +96,7 @@ namespace ProtoScript.Runners
         List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries);
 		void ReInitializeLiveRunner();
         Dictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
-        IEnumerable<ProtoCore.AST.Node> GetAstNodes(Guid nodeGuid);
+        IEnumerable<ProtoCore.AST.Node> GetSSANodes(Guid nodeGuid);
 
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
@@ -1551,7 +1551,7 @@ namespace ProtoScript.Runners
         /// </summary>
         /// <param name="nodeGuid"></param>
         /// <returns></returns>
-        public IEnumerable<ProtoCore.AST.Node> GetAstNodes(Guid nodeGuid)
+        public IEnumerable<ProtoCore.AST.Node> GetSSANodes(Guid nodeGuid)
         {
             List<ProtoCore.AST.Node> nodes = null;
             astCache.TryGetValue(nodeGuid, out nodes);
