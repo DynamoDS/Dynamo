@@ -2395,6 +2395,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.ArgumentSignatureNode ToImperativeNode(this ArgumentSignatureNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.ArgumentSignatureNode
             {
                 Arguments = aNode.Arguments.Select(ToImperativeNode).ToList()
@@ -2405,6 +2407,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.ArrayNameNode ToImperativeNode(this ArrayNameNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.ArrayNameNode
             {
                 ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode()
@@ -2415,6 +2419,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.ArrayNode ToImperativeNode(this ArrayNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.ArrayNode
             {
                 Type = aNode.Type.ToImperativeAST(),
@@ -2426,6 +2432,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.BinaryExpressionNode ToImperativeNode(this BinaryExpressionNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.BinaryExpressionNode
             {
                 LeftNode = aNode.LeftNode.ToImperativeAST(),
@@ -2438,6 +2446,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.BooleanNode ToImperativeNode(this BooleanNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.BooleanNode(aNode.Value);
             CopyProps(aNode, result);
             return result;
@@ -2445,6 +2455,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.BreakNode ToImperativeNode(this BreakNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.BreakNode();
             CopyProps(aNode, result);
             return result;
@@ -2452,6 +2464,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.CatchBlockNode ToImperativeNode(this CatchBlockNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.CatchBlockNode
             {
                 body = aNode.body.Select(ToImperativeAST).ToList(),
@@ -2463,6 +2477,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.CatchFilterNode ToImperativeNode(this CatchFilterNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.CatchFilterNode
             {
                 type = aNode.type,
@@ -2474,6 +2490,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.CharNode ToImperativeNode(this CharNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.CharNode
             {
                 value = aNode.value
@@ -2484,6 +2502,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.CodeBlockNode ToImperativeNode(this CodeBlockNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.CodeBlockNode
             {
                 Body = aNode.Body.Select(ToImperativeAST).ToList()
@@ -2494,6 +2514,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.ConstructorDefinitionNode ToImperativeNode(this ConstructorDefinitionNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.ConstructorDefinitionNode
             {
                 FunctionBody = aNode.FunctionBody.ToImperativeNode(),
@@ -2506,6 +2528,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.ContinueNode ToImperativeNode(this ContinueNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.ContinueNode();
             CopyProps(aNode, result);
             return result;
@@ -2513,6 +2537,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.DefaultArgNode ToImperativeNode(this DefaultArgNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.DefaultArgNode();
             CopyProps(aNode, result);
             return result;
@@ -2520,6 +2546,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.DoubleNode ToImperativeNode(this DoubleNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.DoubleNode(aNode.Value);
             CopyProps(aNode, result);
             return result;
@@ -2527,6 +2555,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.ExceptionHandlingNode ToImperativeNode(this ExceptionHandlingNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.ExceptionHandlingNode
             {
                 catchBlocks = aNode.catchBlocks.Select(ToImperativeNode).ToList(),
@@ -2538,6 +2568,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.ExprListNode ToImperativeNode(this ExprListNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.ExprListNode
             {
                 ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
@@ -2549,6 +2581,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.ForLoopNode ToImperativeNode(this ForLoopNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.ForLoopNode
             {
                 body = aNode.body.Select(ToImperativeAST).ToList(),
@@ -2561,6 +2595,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.FunctionCallNode ToImperativeNode(this FunctionCallNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.FunctionCallNode
             {
                 ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
@@ -2573,6 +2609,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.FunctionDefinitionNode ToImperativeNode(this FunctionDefinitionNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.FunctionDefinitionNode
             {
                 Attributes = aNode.Attributes.Select(ToImperativeAST).ToList(),
@@ -2586,6 +2624,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.GroupExpressionNode ToImperativeNode(this GroupExpressionNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.GroupExpressionNode
             {
                 ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode()
@@ -2596,6 +2636,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.IdentifierListNode ToImperativeNode(this IdentifierListNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.IdentifierListNode
             {
                 LeftNode = aNode.LeftNode.ToImperativeAST(),
@@ -2608,6 +2650,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.IdentifierNode ToImperativeNode(this IdentifierNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.IdentifierNode
             {
                 ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
@@ -2620,6 +2664,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.InlineConditionalNode ToImperativeNode(this InlineConditionalNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.InlineConditionalNode
             {
                 ConditionExpression = aNode.ConditionExpression.ToImperativeAST(),
@@ -2632,6 +2678,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.LanguageBlockNode ToImperativeNode(this LanguageBlockNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.LanguageBlockNode
             {
                 Attributes = aNode.Attributes.Select(ToImperativeAST).ToList(),
@@ -2644,6 +2692,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.IntNode ToImperativeNode(this IntNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.IntNode(aNode.Value);
             CopyProps(aNode, result);
             return result;
@@ -2651,6 +2701,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.NullNode ToImperativeNode(this NullNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.NullNode();
             CopyProps(aNode, result);
             return result;
@@ -2658,6 +2710,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.PostFixNode ToImperativeNode(this PostFixNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.PostFixNode
             {
                 Identifier = aNode.Identifier.ToImperativeAST(),
@@ -2669,6 +2723,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.RangeExprNode ToImperativeNode(this RangeExprNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.RangeExprNode
             {
                 ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
@@ -2683,6 +2739,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.ReturnNode ToImperativeNode(this ReturnNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.ReturnNode
             {
                 ReturnExpr = aNode.ReturnExpr.ToImperativeAST()
@@ -2693,6 +2751,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.StringNode ToImperativeNode(this StringNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.StringNode
             {
                 value = aNode.value
@@ -2703,6 +2763,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.ThrowNode ToImperativeNode(this ThrowNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.ThrowNode
             {
                 expression = aNode.ToImperativeAST()
@@ -2713,6 +2775,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.TryBlockNode ToImperativeNode(this TryBlockNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.TryBlockNode
             {
                 body = aNode.body.Select(ToImperativeAST).ToList()
@@ -2723,6 +2787,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.TypedIdentifierNode ToImperativeNode(this TypedIdentifierNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.TypedIdentifierNode
             {
                 ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
@@ -2735,6 +2801,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.UnaryExpressionNode ToImperativeNode(this UnaryExpressionNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.UnaryExpressionNode
             {
                 Expression = aNode.Expression.ToImperativeAST(),
@@ -2746,6 +2814,8 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeAST.VarDeclNode ToImperativeNode(this VarDeclNode aNode)
         {
+            if (aNode == null) return null;
+
             var result = new ImperativeAST.VarDeclNode
             {
                 ArgumentType = aNode.ArgumentType,
@@ -2758,7 +2828,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ImperativeNode ToImperativeAST(this AssociativeNode aNode)
         {
-            return ToImperativeNode(aNode as dynamic);
+            return aNode == null ? null : ToImperativeNode(aNode as dynamic);
         }
     }
 }
