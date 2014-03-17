@@ -26,13 +26,13 @@ namespace Dynamo.Nodes
 
         public FunctionWithRevit() { }
 
-        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
-        {
-            dynRevitSettings.ElementsContainers.Push(ElementsContainer);
-            var result = base.Evaluate(args);
-            dynRevitSettings.ElementsContainers.Pop();
-            return result;
-        }
+        //public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        //{
+        //    dynRevitSettings.ElementsContainers.Push(ElementsContainer);
+        //    var result = base.Evaluate(args);
+        //    dynRevitSettings.ElementsContainers.Pop();
+        //    return result;
+        //}
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
