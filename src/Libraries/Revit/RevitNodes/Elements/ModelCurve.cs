@@ -141,11 +141,6 @@ namespace Revit.Elements
                 throw new ArgumentNullException("curve");
             }
 
-            if (!curve.IsPlanar)
-            {
-                throw new Exception("The curve is not planar");
-            }
-            
             return new ModelCurve(curve.ToRevitType());
         }
 

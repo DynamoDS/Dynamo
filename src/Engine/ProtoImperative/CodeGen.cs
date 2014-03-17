@@ -229,9 +229,7 @@ namespace ProtoImperative
             {
                 ArrayNode array = node as ArrayNode;
 
-                ProtoCore.Type type = new ProtoCore.Type();
-                type.UID = (int)ProtoCore.PrimitiveType.kInvalidType;
-                type.IsIndexable = false;
+                ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
                 DfsTraverse(array.Expr, ref type);
 
                 if (array.Type is ArrayNode)
@@ -269,9 +267,7 @@ namespace ProtoImperative
             {
                 ArrayNode array = node as ArrayNode;
 
-                ProtoCore.Type type = new ProtoCore.Type();
-                type.UID = (int)ProtoCore.PrimitiveType.kTypeVoid;
-                type.IsIndexable = false;
+                ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 
                 DfsTraverse(array.Expr, ref type);
 
@@ -422,7 +418,7 @@ namespace ProtoImperative
                 ProtoCore.DSASM.Constants.kInvalidIndex, 
                 funcIndex, 
                 datatype,
-                TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, false),
+                TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                 size, 
                 datasize,
                 false,
@@ -625,9 +621,7 @@ namespace ProtoImperative
             List<ProtoCore.Type> arglist = new List<ProtoCore.Type>();
             foreach (ImperativeNode paramNode in funcCall.FormalArguments)
             {
-                ProtoCore.Type paramType = new ProtoCore.Type(); 
-                paramType.UID = (int)ProtoCore.PrimitiveType.kTypeVoid;
-                paramType.IsIndexable = false;
+                ProtoCore.Type paramType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 
                 // If it's a binary node then continue type check, otherwise disable type check and just take the type of paramNode itself
                 // f(1+2.0) -> type check enabled - param is typed as double
@@ -785,7 +779,6 @@ namespace ProtoImperative
                 //if call is replication call
                 if (procNode.isThisCallReplication)
                 {
-                    inferedType.IsIndexable = true;
                     inferedType.rank++;
                 }
 
@@ -970,9 +963,7 @@ namespace ProtoImperative
             ProtoCore.Type inferedType = new ProtoCore.Type();
             foreach (ImperativeNode node in codeblock.Body)
             {
-                inferedType = new ProtoCore.Type();
-                inferedType.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
-                inferedType.IsIndexable = false;
+                inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 
                 DfsTraverse(node, ref inferedType);
 
@@ -1009,9 +1000,7 @@ namespace ProtoImperative
             {
                 foreach (ImperativeNode node in codeblock.Body)
                 {
-                    type = new ProtoCore.Type();
-                    type.UID = (int)PrimitiveType.kTypeVar;
-                    type.IsIndexable = false;
+                    type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 
                     if (node is LanguageBlockNode)
                     {
@@ -1087,9 +1076,7 @@ namespace ProtoImperative
 
             int runtimeIndex = codeBlock.symbolTable.RuntimeIndex;
 
-            ProtoCore.Type type = new ProtoCore.Type();
-            type.UID = (int)ProtoCore.PrimitiveType.kTypeVoid;
-            type.IsIndexable = false;
+            ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 
             ProtoCore.DSASM.SymbolNode symbolnode = null;
             //bool isAllocated = VerifyAllocation(t.Value, out blockId, out localAllocBlock, out symindex, ref type);
@@ -1108,7 +1095,6 @@ namespace ProtoImperative
                     if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId)
                     {
                         // A global function
-                        inferedType.IsIndexable = false;
                         inferedType.UID = (int)PrimitiveType.kTypeFunctionPointer;
 
                         int fptr = core.FunctionPointerTable.functionPointerDictionary.Count;
@@ -1153,7 +1139,7 @@ namespace ProtoImperative
 
                 EmitPushVarData(runtimeIndex, dimensions);
 
-                ProtoCore.Type varType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, false, 0);
+                ProtoCore.Type varType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
                 symbolnode = Allocate(t.Value, globalProcIndex, varType);
 
                 EmitInstrConsole(ProtoCore.DSASM.kw.pop, t.Value);
@@ -1196,12 +1182,6 @@ namespace ProtoImperative
                     //throw new Exception("Exceed maximum rank!");
                     type.rank = 0;
                 }
-            }
-
-            //check whether the value is an array
-            if (type.rank == 0)
-            {
-                type.IsIndexable = false;
             }
 
             EmitPushVarData(runtimeIndex, dimensions);
@@ -1353,7 +1333,6 @@ namespace ProtoImperative
                     buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, null, funcDef.line, funcDef.col);
                     localProcedure.returntype.UID = (int)PrimitiveType.kTypeVar;
                 }
-                localProcedure.returntype.IsIndexable = funcDef.ReturnType.IsIndexable;
                 localProcedure.returntype.rank = funcDef.ReturnType.rank;
                 localProcedure.runtimeIndex = codeBlock.codeBlockId;
                 globalProcIndex = codeBlock.procedureTable.Append(localProcedure);
@@ -1984,7 +1963,7 @@ namespace ProtoImperative
             VarDeclNode varNode = node as VarDeclNode;
 
             ProtoCore.Type type = BuildArgumentTypeFromVarDeclNode(varNode);
-            type.IsIndexable = false;
+            type.rank = 0;
 
             // TODO Jun: Create a class table for holding the primitive and custom data types
             const int primitivesize = 1;
@@ -2101,7 +2080,7 @@ namespace ProtoImperative
                 }
 
                 leftType.UID = inferedType.UID;
-                leftType.IsIndexable = inferedType.IsIndexable;
+                leftType.rank = inferedType.rank;
             }
             else
             {
@@ -2157,8 +2136,7 @@ namespace ProtoImperative
 #endif
             if ((ProtoCore.DSASM.Operator.assign == b.Optr) && (b.RightNode is LanguageBlockNode))
             {
-                inferedType.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
-                inferedType.IsIndexable = false;
+                inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
             }
 
             if (b.RightNode == null && b.Optr == Operator.assign && b.LeftNode is IdentifierNode)
@@ -2191,7 +2169,7 @@ namespace ProtoImperative
 #endif
 
             rightType.UID = inferedType.UID;
-            rightType.IsIndexable = inferedType.IsIndexable;
+            rightType.rank = inferedType.rank;
 
             BinaryExpressionNode rightNode = b.RightNode as BinaryExpressionNode;
             if ((rightNode != null) && (ProtoCore.DSASM.Operator.assign == rightNode.Optr))
@@ -2316,7 +2294,7 @@ namespace ProtoImperative
                         dimensions = DfsEmitArrayIndexHeap(t.ArrayDimensions);
                     }
 
-                    ProtoCore.Type castType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, false);
+                    ProtoCore.Type castType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
                     var tident = b.LeftNode as TypedIdentifierNode;
                     if (tident != null)
                     {
@@ -2330,14 +2308,13 @@ namespace ProtoImperative
                         {
                             string message = String.Format(ProtoCore.BuildData.WarningMessage.kTypeUndefined, tident.datatype.Name);
                             buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, b.line, b.col);
-                            castType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, false);
+                            castType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
                             castType.Name = tident.datatype.Name;
                             castType.rank = tident.datatype.rank;
-                            castType.IsIndexable = (castType.rank != 0);
                         }
                         else
                         {
-                            castType = core.TypeSystem.BuildTypeObject(castUID, tident.datatype.IsIndexable, tident.datatype.rank);
+                            castType = core.TypeSystem.BuildTypeObject(castUID, tident.datatype.rank);
                         }
                     }
 
@@ -2602,7 +2579,7 @@ namespace ProtoImperative
                 ForLoopNode forNode = node as ForLoopNode;
                 ++core.ForLoopBlockIndex;   //new forloop beginning. increment loop counter 
 
-                ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, false);
+                ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0);
 
                 // val = null; 
                 IdentifierNode loopvar = nodeBuilder.BuildIdentfier(forNode.loopVar.Name) as IdentifierNode;
@@ -2622,7 +2599,7 @@ namespace ProtoImperative
 
                 // %key = null;
                 string keyIdent = GetForLoopKeyIdent();
-                Allocate(keyIdent, globalProcIndex, TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, false));
+                Allocate(keyIdent, globalProcIndex, TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0));
                 var key = nodeBuilder.BuildIdentfier(keyIdent);
 
                 // %array = complicated expr in for...in loop, so that we could
@@ -3409,10 +3386,8 @@ namespace ProtoImperative
                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, null, argNode.line, argNode.col);
             }
 
-            bool isArray = argNode.ArgumentType.IsIndexable;
             int rank = argNode.ArgumentType.rank;
-
-            return core.TypeSystem.BuildTypeObject(uid, isArray, rank);
+            return core.TypeSystem.BuildTypeObject(uid, rank);
         }
 
         private bool IsParsingGlobal()
@@ -3581,7 +3556,7 @@ namespace ProtoImperative
         {
             var ident = new IdentifierNode();
             ident.Name = ident.Value = name;
-            ident.datatype = TypeSystem.BuildPrimitiveTypeObject(type, false);
+            ident.datatype = TypeSystem.BuildPrimitiveTypeObject(type, 0);
 
             return ident;
         }

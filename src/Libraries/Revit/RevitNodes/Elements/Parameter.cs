@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Autodesk.Revit.DB;
 
 namespace Revit.Elements
 {
     public class Parameter
     {
-
-        private Autodesk.Revit.DB.Parameter InternalParameter
+        internal Autodesk.Revit.DB.Parameter InternalParameter
         { 
             get; set;
         }
@@ -18,6 +14,9 @@ namespace Revit.Elements
             this.InternalParameter = internalParameter;
         }
 
+        /// <summary>
+        /// The name of the parameter.
+        /// </summary>
         public string Name
         {
             get
@@ -26,5 +25,9 @@ namespace Revit.Elements
             }
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0} : {1}", Name, InternalParameter.AsValueString(new FormatOptions(){}));
+        }
     }
 }

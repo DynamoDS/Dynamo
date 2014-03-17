@@ -1081,9 +1081,7 @@ namespace ProtoCore
             {
                 ++indexCnt;
                 dynamic array = arrayNode;
-                ProtoCore.Type lastType = new ProtoCore.Type();
-                lastType.UID = (int)PrimitiveType.kTypeVoid;
-                lastType.IsIndexable = false;
+                ProtoCore.Type lastType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
                 DfsTraverse(array.Expr, ref lastType, false, graphNode, subPass, parentNode);
                 arrayNode = array.Type;
             }
@@ -2442,7 +2440,6 @@ namespace ProtoCore
             }
 
             inferedType.UID = commonType;
-            inferedType.IsIndexable = true;
             inferedType.rank = rank;
 
             if (subPass == DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
@@ -2660,9 +2657,7 @@ namespace ProtoCore
                     {
                         foreach (dynamic paramNode in rightNode.FormalArguments)
                         {
-                            ProtoCore.Type paramType = new ProtoCore.Type();
-                            paramType.UID = (int)ProtoCore.PrimitiveType.kTypeVoid;
-                            paramType.IsIndexable = false;
+                            ProtoCore.Type paramType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
                             DfsTraverse(paramNode, ref paramType, false, graphNode, DSASM.AssociativeSubCompilePass.kUnboundIdentifier);
                         }
                     }
@@ -2673,9 +2668,7 @@ namespace ProtoCore
 
             int depth = 0;
 
-            ProtoCore.Type leftType = new ProtoCore.Type();
-            leftType.UID = (int)PrimitiveType.kInvalidType;
-            leftType.IsIndexable = false;
+            ProtoCore.Type leftType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
             bool isFirstIdent = true;
 
 

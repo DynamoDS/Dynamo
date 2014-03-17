@@ -410,7 +410,20 @@ b2 = a1.foo2(1);
         public void T12_Class_CheckPropertyWhenCreatedInImperativeCode()
         {
             String code =
-            @"class Dummy{ x : var;  constructor Dummy () {	x = 2;	 }}obj = [Imperative]{return = Dummy.Dummy();}getX = obj.x;;";
+            @"class Dummy
+{
+ x : var;
+ 
+ constructor Dummy ()
+ {
+	x = 2;	
+ }
+}
+obj = [Imperative]{
+return = Dummy.Dummy();
+}
+getX = obj.x;;
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification
             object getX = 2;
@@ -687,7 +700,7 @@ x9 = a1.w4;
             thisTest.Verify("x6", a);
             thisTest.Verify("x7", a);
             thisTest.Verify("x8", a);
-            thisTest.Verify("x9", a);
+            thisTest.Verify("x9", null);
         }
 
         [Test]
@@ -2824,8 +2837,17 @@ x2 = derivedpoint.B;
             thisTest.Verify("x2", 9);
 
         }
-        /*         going in infinite loop due to defect 1467097        
-[Test]        [Category("SmokeTest")]        public void T53_Undefined_Class_As_Parameter_1463738_5()        {            ExecutionMirror mirror = thisTest.RunScript(testPath, "T53_Undefined_Class_As_Parameter_1463738_5.ds");            thisTest.Verify("x1", 2);            thisTest.Verify("x2", 9);        }*/
+        /*
+         going in infinite loop due to defect 1467097
+        
+[Test]
+        [Category("SmokeTest")]
+        public void T53_Undefined_Class_As_Parameter_1463738_5()
+        {
+            ExecutionMirror mirror = thisTest.RunScript(testPath, "T53_Undefined_Class_As_Parameter_1463738_5.ds");
+            thisTest.Verify("x1", 2);
+            thisTest.Verify("x2", 9);
+        }*/
 
         [Test]
         [Category("SmokeTest")]
@@ -3973,7 +3995,29 @@ c=derivedpoint.C;
         public void TV_1467097_class_inherit()
         {
             String code =
-@"class Parent{    A : var;    B: var;    constructor Create( x:int,y:int)    {        A = x;        B = y;    }}def modify(oldPoint : var){oldPoint.A = oldPoint.A +1;oldPoint.B = oldPoint.B +1;return = oldPoint;}oldPoint = Parent.Create( 1,2 );oldPoint = modify( oldPoint );ra = oldPoint.A;rb = oldPoint.B;    ";
+@"
+class Parent
+{
+    A : var;
+    B: var;
+    constructor Create( x:int,y:int)
+    {
+        A = x;
+        B = y;
+    }
+}
+def modify(oldPoint : var)
+{
+oldPoint.A = oldPoint.A +1;
+oldPoint.B = oldPoint.B +1;
+return = oldPoint;
+}
+oldPoint = Parent.Create( 1,2 );
+oldPoint = modify( oldPoint );
+ra = oldPoint.A;
+rb = oldPoint.B;
+    
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("ra", 2);
             thisTest.Verify("rb", 3);
@@ -3985,7 +4029,18 @@ c=derivedpoint.C;
         public void T73_Defect_1467210_Expected_Warning()
         {
             String code =
-@"class Test{    def DoSomething()    {        return = 5;    }}t = Test.Test();a = Test.DoSomething(t); //no warning is thrown and returned value is nulla = Test.DoSomething(); //wrong warning is thrown: ";
+@"
+class Test
+{
+    def DoSomething()
+    {
+        return = 5;
+    }
+}
+t = Test.Test();
+a = Test.DoSomething(t); //no warning is thrown and returned value is null
+a = Test.DoSomething(); //wrong warning is thrown: 
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object n1 = null;
@@ -4552,7 +4607,12 @@ t1 = l1.StartPoint.X;
         public void T83_Defect_1463232()
         {
             String code =
-@"class A{}a = A.A();t = a.x;";
+@"class A
+{
+}
+a = A.A();
+t = a.x;
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4565,7 +4625,16 @@ t1 = l1.StartPoint.X;
         public void T83_Defect_1463232_2()
         {
             String code =
-@"class A{}a;t;[Imperative]{a = A.A();t = a.x;}";
+@"class A
+{
+}
+a;t;
+[Imperative]
+{
+a = A.A();
+t = a.x;
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4578,7 +4647,15 @@ t1 = l1.StartPoint.X;
         public void T83_Defect_1463232_3()
         {
             String code =
-@"class A{}[Associative]{a = {A.A(),A.A()};t = a.x;}";
+@"class A
+{
+}
+[Associative]
+{
+a = {A.A(),A.A()};
+t = a.x;
+}
+";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             string errmsg = "DNL-1467480 Regression : Dot Operation on instances using replication returns single null where multiple nulls are expected";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -4589,7 +4666,38 @@ t1 = l1.StartPoint.X;
         [Test]
         public void T84_ClassNameAsPropertyName_01()
         {
-            string code = @"class A{    x:int;    static y:int;    constructor A(_x:int)    {        x = _x;    }}class B{    A : A;    constructor B()    {        A = A.A(100);    }    def getx()    {        return = A.x;    }    def modifyx()    {        A.x = 200;        return = null;    }}b = B.B();x1 = b.getx();r = b.modifyx();x2 = b.getx();";
+            string code = @"
+class A
+{
+    x:int;
+    static y:int;
+    constructor A(_x:int)
+    {
+        x = _x;
+    }
+}
+class B
+{
+    A : A;
+    constructor B()
+    {
+        A = A.A(100);
+    }
+    def getx()
+    {
+        return = A.x;
+    }
+    def modifyx()
+    {
+        A.x = 200;
+        return = null;
+    }
+}
+b = B.B();
+x1 = b.getx();
+r = b.modifyx();
+x2 = b.getx();
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x1", 100);
             thisTest.Verify("x2", 200);
@@ -4599,7 +4707,37 @@ t1 = l1.StartPoint.X;
         [Test]
         public void T85_Defect_1467247()
         {
-            string code = @"class A{     public x : var ;        private y : var ;    //protected z : var = 0 ;    constructor A ()    {                   }    public def foo1 (a)    {        x = a;        y = a + 1;        return = x + y;    }     private def foo2 (a)    {        x = a;        y = a + 1;        return = x + y;    }    }a = A.A();a1 = a.foo1(1);a2 = a.foo2(1);a.x = 4;a.y = 5;t1 = a.x;t2 = a.y;";
+            string code = @"
+class A
+{ 
+    public x : var ;    
+    private y : var ;
+    //protected z : var = 0 ;
+    constructor A ()
+    {
+               
+    }
+    public def foo1 (a)
+    {
+        x = a;
+        y = a + 1;
+        return = x + y;
+    } 
+    private def foo2 (a)
+    {
+        x = a;
+        y = a + 1;
+        return = x + y;
+    }    
+}
+a = A.A();
+a1 = a.foo1(1);
+a2 = a.foo2(1);
+a.x = 4;
+a.y = 5;
+t1 = a.x;
+t2 = a.y;
+";
             thisTest.RunScriptSource(code);
             Object n1 = null;
             thisTest.Verify("t1", 4);
@@ -4611,7 +4749,35 @@ t1 = l1.StartPoint.X;
         [Test]
         public void T85_Defect_1467247_2()
         {
-            string code = @"class A{     public x : var ;        private y : var ;    constructor A ()    {        x = 10;        y = 20;       }    public def foo1 ()    {       return = foo2();    }     private def foo2 ()    {        x = 1;        y = 2;        return = x + y;    }    }a = A.A();a1 = a.foo1();a2 = a.foo2();t1 = a.x;t2 = a.y;a.x = 4;a.y = 5;";
+            string code = @"
+class A
+{ 
+    public x : var ;    
+    private y : var ;
+    constructor A ()
+    {
+        x = 10;
+        y = 20;   
+    }
+    public def foo1 ()
+    {
+       return = foo2();
+    } 
+    private def foo2 ()
+    {
+        x = 1;
+        y = 2;
+        return = x + y;
+    }    
+}
+a = A.A();
+a1 = a.foo1();
+a2 = a.foo2();
+t1 = a.x;
+t2 = a.y;
+a.x = 4;
+a.y = 5;
+";
             thisTest.RunScriptSource(code);
             Object n1 = null;
             thisTest.Verify("t1", 4);
@@ -4624,7 +4790,23 @@ t1 = l1.StartPoint.X;
         [Test]
         public void T85_Defect_1467247_3()
         {
-            string code = @"class A{     public x : var ;       constructor A ()    {        x = 10;           }    public def foo ()    {       return = x + 1;    }        }a = A.A();a1 = a.foo();a.x = 4;";
+            string code = @"
+class A
+{ 
+    public x : var ;   
+    constructor A ()
+    {
+        x = 10;       
+    }
+    public def foo ()
+    {
+       return = x + 1;
+    }        
+}
+a = A.A();
+a1 = a.foo();
+a.x = 4;
+";
             string errmsg = "1467254 - Sprint25: rev 3468 : REGRESSION: class property update is not propagating";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a1", 5);
@@ -4634,7 +4816,25 @@ t1 = l1.StartPoint.X;
         [Test]
         public void T86_Defect_1467216()
         {
-            string code = @"class Plane{    x : int ;}class Polygon{    Plane : Plane;    constructor Create(plane : Plane)    {        Plane = plane;        Plane.x = 10;    }}pln = Plane.Plane();s = Polygon.Create(pln);p = s.Plane;test = p.x;";
+            string code = @"
+class Plane
+{
+    x : int ;
+}
+class Polygon
+{
+    Plane : Plane;
+    constructor Create(plane : Plane)
+    {
+        Plane = plane;
+        Plane.x = 10;
+    }
+}
+pln = Plane.Plane();
+s = Polygon.Create(pln);
+p = s.Plane;
+test = p.x;
+";
             string errmsg = "1467254 - Sprint25: rev 3468 : REGRESSION: class property update is not propagating";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", 10);
@@ -4645,7 +4845,14 @@ t1 = l1.StartPoint.X;
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
-                string code = @"class Plane{    x : int ;}Plane = Plane.Plane();test = Plane.x;";
+                string code = @"
+class Plane
+{
+    x : int ;
+}
+Plane = Plane.Plane();
+test = Plane.x;
+";
 
                 thisTest.RunScriptSource(code);
             });
@@ -4656,7 +4863,14 @@ t1 = l1.StartPoint.X;
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
-                string code = @"class Plane{    x : int ;}Plane = 10;test = Plane;";
+                string code = @"
+class Plane
+{
+    x : int ;
+}
+Plane = 10;
+test = Plane;
+";
                 thisTest.RunScriptSource(code);
             });
         }
@@ -4666,7 +4880,18 @@ t1 = l1.StartPoint.X;
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
-                string code = @"class Plane{    x : int ;}def foo ( ) {    Plane = 10;    return = Plane;}test = foo();";
+                string code = @"
+class Plane
+{
+    x : int ;
+}
+def foo ( ) 
+{
+    Plane = 10;
+    return = Plane;
+}
+test = foo();
+";
                 thisTest.RunScriptSource(code);
             });
         }
@@ -4674,7 +4899,19 @@ t1 = l1.StartPoint.X;
         [Test]
         public void T87_Defect_1467243()
         {
-            string code = @"class A{    fx :var;    constructor A(x : var)    {        fx = x;    }}fa = A.A(1..3);r1 = fa.fx[0]==fa[0].fx? true:false;r2 = fa.fx[0];";
+            string code = @"
+class A
+{
+    fx :var;
+    constructor A(x : var)
+    {
+        fx = x;
+    }
+}
+fa = A.A(1..3);
+r1 = fa.fx[0]==fa[0].fx? true:false;
+r2 = fa.fx[0];
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("r1", true);
@@ -4684,7 +4921,19 @@ t1 = l1.StartPoint.X;
         [Test]
         public void T87_Defect_1467243_2()
         {
-            string code = @"class A{    fx :var[][];    constructor A(x : var[][])    {        fx = x;    }}fa = { A.A({{1},{2}}), A.A({{3},{4}}) };r1 = fa[0].fx[0]==fa.fx[0][0]? true:false;r2 = fa.fx[0][0];";
+            string code = @"
+class A
+{
+    fx :var[][];
+    constructor A(x : var[][])
+    {
+        fx = x;
+    }
+}
+fa = { A.A({{1},{2}}), A.A({{3},{4}}) };
+r1 = fa[0].fx[0]==fa.fx[0][0]? true:false;
+r2 = fa.fx[0][0];
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("r1", new Object[] { true });
@@ -4693,7 +4942,28 @@ t1 = l1.StartPoint.X;
         [Test]
         public void T88_Runtime_MemberFunction01()
         {
-            string code = @"class C1{    def foo()    {        return = 100;    }}class C2{    private def foo()    {        return = 200;    }}def foo(i){    return = (i > 0) ? C1.C1() : C2.C2();}x = foo(-1);r = x.foo();";
+            string code = @"
+class C1
+{
+    def foo()
+    {
+        return = 100;
+    }
+}
+class C2
+{
+    private def foo()
+    {
+        return = 200;
+    }
+}
+def foo(i)
+{
+    return = (i > 0) ? C1.C1() : C2.C2();
+}
+x = foo(-1);
+r = x.foo();
+";
             string errmsg = "DNL-1467343 private member function can be called at runtime";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("r", null);
@@ -4702,7 +4972,28 @@ t1 = l1.StartPoint.X;
         [Test]
         public void T89_Runtime_MemberFunction02()
         {
-            string code = @"class Base{    private def foo()    {        return = 100;    }}class Derive extends Base{    def foo()    {        return = 200;    }}def foo:Base(){    return = Derive.Derive();}b = foo();r = b.foo();";
+            string code = @"
+class Base
+{
+    private def foo()
+    {
+        return = 100;
+    }
+}
+class Derive extends Base
+{
+    def foo()
+    {
+        return = 200;
+    }
+}
+def foo:Base()
+{
+    return = Derive.Derive();
+}
+b = foo();
+r = b.foo();
+";
             string errmsg = "DNL-1467344 Calling a derived class's member function always get null at runtime";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("r", 200);
@@ -4711,7 +5002,33 @@ t1 = l1.StartPoint.X;
         [Test]
         public void T89_1467344_02()
         {
-            string code = @"class Base{    private def foo()    {        return = 100;    }}class Derive extends Base{    def foo()    {        return = 200;    }}def foo:Base(){    return = Derive.Derive();}b;r;[Imperative]{        b = foo();    r = b.foo();}";
+            string code = @"
+class Base
+{
+    private def foo()
+    {
+        return = 100;
+    }
+}
+class Derive extends Base
+{
+    def foo()
+    {
+        return = 200;
+    }
+}
+def foo:Base()
+{
+    return = Derive.Derive();
+}
+b;
+r;
+[Imperative]
+{
+        b = foo();
+    r = b.foo();
+}
+";
             string errmsg = "DNL-1467344 Calling a derived class's member function always get null at runtime";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("r", 200);
@@ -4720,7 +5037,35 @@ t1 = l1.StartPoint.X;
         [Test]
         public void T90_Runtime_MemberFunction03()
         {
-            string code = @"class C1 {    def foo()    {        return = 100;    }}class C2 extends C1{    def foo()    {        return = 200;    }}class C3 extends C2{    def foo()    {        return = 300;    }}def foo:C2(){    return = C3.C3();}x = foo();r = x.foo();";
+            string code = @"
+class C1 
+{
+    def foo()
+    {
+        return = 100;
+    }
+}
+class C2 extends C1
+{
+    def foo()
+    {
+        return = 200;
+    }
+}
+class C3 extends C2
+{
+    def foo()
+    {
+        return = 300;
+    }
+}
+def foo:C2()
+{
+    return = C3.C3();
+}
+x = foo();
+r = x.foo();
+";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("r", 300);
@@ -4729,7 +5074,33 @@ t1 = l1.StartPoint.X;
         [Test]
         public void T91_stackoverflow()
         {
-            string code = @"                    class test                     {                     a;                     constructor test(a1 : int, b1 : int, c1 : int)                     {                     a = a1;                     }                     }                     class Row                     {                     constructor ByPoints(yy:int, xx: int)                     {                     [Imperative]                     {                     for(j in 0..36)                     {                     tread = test.test(yy, xx, 3);                     rise = test.test(tread.a,xx,3);                     }                     }                     }                     }                     a = 0..18..1;                     b = 0..18..1;                     Rows = Row.ByPoints(a, b);                    ";
+            string code = @"
+                    class test 
+                    { 
+                    a; 
+                    constructor test(a1 : int, b1 : int, c1 : int) 
+                    { 
+                    a = a1; 
+                    } 
+                    } 
+                    class Row 
+                    { 
+                    constructor ByPoints(yy:int, xx: int) 
+                    { 
+                    [Imperative] 
+                    { 
+                    for(j in 0..36) 
+                    { 
+                    tread = test.test(yy, xx, 3); 
+                    rise = test.test(tread.a,xx,3); 
+                    } 
+                    } 
+                    } 
+                    } 
+                    a = 0..18..1; 
+                    b = 0..18..1; 
+                    Rows = Row.ByPoints(a, b);
+                    ";
             string errmsg = "1467365 - Sprint 27 - Rev 3058 Stack overflow detected in the attached code ";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyBuildWarningCount(0);
@@ -4740,7 +5111,15 @@ t1 = l1.StartPoint.X;
         public void T92_default_argument_1467384()
         {
             String code =
-            @"class test                {                    def test(t : int = 4)                    {                        return = t;                    }                }                a = test.test().t;                ";
+            @"class test
+                {
+                    def test(t : int = 4)
+                    {
+                        return = t;
+                    }
+                }
+                a = test.test().t;
+                ";
             string error = " 1467384  - Sprint 27 - Rev 4210 default arguments are not working inside class ";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("a", 4, 0);
@@ -4751,7 +5130,15 @@ t1 = l1.StartPoint.X;
         public void T92_default_argument_1467402()
         {
             String code =
-            @"class B extends A{ b = 2; }                class A{                c : A;                f= 1;                }                b1 = B.B();                 c = b1.b;                d = b1.f;                ";
+            @"class B extends A{ b = 2; }
+                class A{
+                c : A;
+                f= 1;
+                }
+                b1 = B.B(); 
+                c = b1.b;
+                d = b1.f;
+                ";
             string error = " 1467402 -if the class is used before its define it throws error Index was outside the bounds of the array - negative case ";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("c", 2, 0);
@@ -4763,7 +5150,13 @@ t1 = l1.StartPoint.X;
         public void T93_Defect_1467349_update_static_properties()
         {
             String code =
-@"class Base{    static x : int[];}t = Base.x;Base.x = { 5.2, 3.9 }; ";
+@"class Base
+{
+    static x : int[];
+}
+t = Base.x;
+Base.x = { 5.2, 3.9 }; 
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("t", new Object[] { 5, 4 });
@@ -4774,7 +5167,16 @@ t1 = l1.StartPoint.X;
         public void T93_Defect_1467349_update_static_properties_2()
         {
             String code =
-@"class A{static x:int = 3; }a = A.A();a.x = 2;b1 = a.x;a.x = 3; b2 = b1;  ";
+@"class A
+{
+static x:int = 3; 
+}
+a = A.A();
+a.x = 2;
+b1 = a.x;
+a.x = 3; 
+b2 = b1;  
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("b2", 3);
@@ -4785,7 +5187,20 @@ t1 = l1.StartPoint.X;
         public void T93_Defect_1467349_update_static_properties_3()
         {
             String code =
-@"class A{    static x:int = 3;     constructor A ( y1)    {        x = y1;    }}y = 2;a = A.A(y);b1 = a.x;y = 3;b2 = b1;  ";
+@"class A
+{
+    static x:int = 3; 
+    constructor A ( y1)
+    {
+        x = y1;
+    }
+}
+y = 2;
+a = A.A(y);
+b1 = a.x;
+y = 3;
+b2 = b1;  
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("b2", 3);
@@ -4796,7 +5211,20 @@ t1 = l1.StartPoint.X;
         public void T93_Defect_1467349_update_static_properties_4()
         {
             String code =
-@"class A{    static x:int[] = {3,4};     constructor A ( y1:int[])    {        x = y1;    }}y = 2..3;a = A.A(y);b1 = a.x;y = 3..4;b2 = b1;  ";
+@"class A
+{
+    static x:int[] = {3,4}; 
+    constructor A ( y1:int[])
+    {
+        x = y1;
+    }
+}
+y = 2..3;
+a = A.A(y);
+b1 = a.x;
+y = 3..4;
+b2 = b1;  
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("b2", new Object[] { 3, 4 });
@@ -4807,7 +5235,21 @@ t1 = l1.StartPoint.X;
         public void T93_Defect_1467349_update_static_properties_5()
         {
             String code =
-@"class A{    static x:int[] = {3,4};     constructor A ( y1:int[])    {        x = y1;    }}y = 2..3;a = A.A(y);b1 = a.x;y = {4,4};a.x[0] = 3;b2 = b1;  ";
+@"class A
+{
+    static x:int[] = {3,4}; 
+    constructor A ( y1:int[])
+    {
+        x = y1;
+    }
+}
+y = 2..3;
+a = A.A(y);
+b1 = a.x;
+y = {4,4};
+a.x[0] = 3;
+b2 = b1;  
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("b2", new Object[] { 3, 4 });
@@ -4818,7 +5260,27 @@ t1 = l1.StartPoint.X;
         public void T94_1467343()
         {
             String code =
-@"class C1{    def foo()    {        return = ""C1.foo()"";    }}class C2{    private def foo()    {        return = ""C2.foo()"";    }}def foo(i){    return = (i > 0) ? C1.C1() : C2.C2();}x = foo(-1);r = x.foo();  ";
+@"class C1
+{
+    def foo()
+    {
+        return = ""C1.foo()"";
+    }
+}
+class C2
+{
+    private def foo()
+    {
+        return = ""C2.foo()"";
+    }
+}
+def foo(i)
+{
+    return = (i > 0) ? C1.C1() : C2.C2();
+}
+x = foo(-1);
+r = x.foo();  
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", null);
@@ -4831,7 +5293,31 @@ t1 = l1.StartPoint.X;
         public void T94_1467343_2()
         {
             String code =
-@"class C1{    def foo()    {        return = ""C1.foo()"";    }}class C2{    private def foo()    {        return = ""C2.foo()"";    }}def foo(i){    return = (i > 0) ? C1.C1() : C2.C2();}r;[Imperative]{    x = foo(-1);    r = x.foo();  }";
+@"class C1
+{
+    def foo()
+    {
+        return = ""C1.foo()"";
+    }
+}
+class C2
+{
+    private def foo()
+    {
+        return = ""C2.foo()"";
+    }
+}
+def foo(i)
+{
+    return = (i > 0) ? C1.C1() : C2.C2();
+}
+r;
+[Imperative]
+{
+    x = foo(-1);
+    r = x.foo();  
+}
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", null);
@@ -4843,7 +5329,28 @@ t1 = l1.StartPoint.X;
         public void T94_1467344_3()
         {
             String code =
-@"class Base{    private def foo()    {        return = 100;    }}class Derive extends Base{    def foo()    {        return = 200;    }}def foo:Base(){    return = Derive.Derive();}b = foo();r = b.foo();";
+@"
+class Base
+{
+    private def foo()
+    {
+        return = 100;
+    }
+}
+class Derive extends Base
+{
+    def foo()
+    {
+        return = 200;
+    }
+}
+def foo:Base()
+{
+    return = Derive.Derive();
+}
+b = foo();
+r = b.foo();
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", null);
@@ -4855,7 +5362,31 @@ t1 = l1.StartPoint.X;
         public void T94_1467344_4()
         {
             String code =
-@"class Base{    private def foo()    {        return = 100;    }}class Derive extends Base{    def foo()    {        return = 200;    }}def foo:Base(){    return = Derive.Derive();}[Imperative]{b = foo();r = b.foo();}";
+@"
+class Base
+{
+    private def foo()
+    {
+        return = 100;
+    }
+}
+class Derive extends Base
+{
+    def foo()
+    {
+        return = 200;
+    }
+}
+def foo:Base()
+{
+    return = Derive.Derive();
+}
+[Imperative]
+{
+b = foo();
+r = b.foo();
+}
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", null);
@@ -4866,7 +5397,15 @@ t1 = l1.StartPoint.X;
         public void T94_1467443()
         {
             String code =
-@"class test{    private foo;    }a = test.test();a.foo = 1;";
+@"
+class test
+{
+    private foo;
+    
+}
+a = test.test();
+a.foo = 1;
+";
             string error = "1467443 Error on incorrect set property is not helpful ";
             thisTest.VerifyRunScriptSource(code, error);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation);
@@ -4877,7 +5416,18 @@ t1 = l1.StartPoint.X;
         public void T94__imperative_1467443_7()
         {
             String code =
-@"class test{    private foo;    }a = test.test();[Imperative]{    a.foo = 1;}";
+@"
+class test
+{
+    private foo;
+    
+}
+a = test.test();
+[Imperative]
+{
+    a.foo = 1;
+}
+";
             string error = "1467443 Error on incorrect set property is not helpful ";
             thisTest.VerifyRunScriptSource(code, error);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation);
@@ -4888,7 +5438,11 @@ t1 = l1.StartPoint.X;
         public void T94_1467443_2()
         {
             String code =
-@"class test{    }a = test.test();a.b = 1;";
+@"
+class test{    }
+a = test.test();
+a.b = 1;
+";
             string error = "1467443 Error on incorrect set property is not helpful ";
             thisTest.VerifyRunScriptSource(code, error);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation);
@@ -4899,7 +5453,15 @@ t1 = l1.StartPoint.X;
         public void T94_imperative_1467443_8()
         {
             String code =
-@"class test{    }a;[Imperative]{a = test.test();a.b = 1;}";
+@"
+class test{    }
+a;
+[Imperative]
+{
+a = test.test();
+a.b = 1;
+}
+";
             string error = "1467443 Error on incorrect set property is not helpful ";
             thisTest.VerifyRunScriptSource(code, error);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
@@ -4910,7 +5472,19 @@ t1 = l1.StartPoint.X;
         public void T94_1467443_3()
         {
             String code =
-@"class test{    private foo;    }class test1 extends test{    }a = test.test();a.foo = 1;";
+@"
+class test
+{
+    private foo;
+    
+}
+class test1 extends test
+{
+    
+}
+a = test.test();
+a.foo = 1;
+";
             string error = "1467443 Error on incorrect set property is not helpful ";
             thisTest.VerifyRunScriptSource(code, error);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation);
@@ -4921,7 +5495,23 @@ t1 = l1.StartPoint.X;
         public void T94_iperative_1467443_9()
         {
             String code =
-@"class test{    private foo;    }class test1 extends test{    }a;[Imperative]{a = test.test();a.foo = 1;}";
+@"
+class test
+{
+    private foo;
+    
+}
+class test1 extends test
+{
+    
+}
+a;
+[Imperative]
+{
+a = test.test();
+a.foo = 1;
+}
+";
             string error = "1467443 Error on incorrect set property is not helpful ";
             thisTest.VerifyRunScriptSource(code, error);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation);
@@ -4932,7 +5522,19 @@ t1 = l1.StartPoint.X;
         public void T94_1467443_4()
         {
             String code =
-@"class test{       }class test1 extends test{     private foo;}a = test1.test1();a.foo = 1;";
+@"
+class test
+{
+   
+    
+}
+class test1 extends test
+{
+     private foo;
+}
+a = test1.test1();
+a.foo = 1;
+";
             string error = "1467443 Error on incorrect set property is not helpful ";
             thisTest.VerifyRunScriptSource(code, error);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation);
@@ -4943,7 +5545,23 @@ t1 = l1.StartPoint.X;
         public void T94_imperative_1467443_10()
         {
             String code =
-@"class test{       }class test1 extends test{     private foo;}a;[Imperative]{a = test1.test1();a.foo = 1;}";
+@"
+class test
+{
+   
+    
+}
+class test1 extends test
+{
+     private foo;
+}
+a;
+[Imperative]
+{
+a = test1.test1();
+a.foo = 1;
+}
+";
             string error = "1467443 Error on incorrect set property is not helpful ";
             thisTest.VerifyRunScriptSource(code, error);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation);
@@ -4954,7 +5572,23 @@ t1 = l1.StartPoint.X;
         public void T94_1467443_6()
         {
             String code =
-@"class test{       }class test1 extends test{     private foo;}def foo1(){    return = test.test();}a = foo1();a.foo = 1;";
+@"
+class test
+{
+   
+    
+}
+class test1 extends test
+{
+     private foo;
+}
+def foo1()
+{
+    return = test.test();
+}
+a = foo1();
+a.foo = 1;
+";
             string error = "1467443 Error on incorrect set property is not helpful ";
             thisTest.VerifyRunScriptSource(code, error);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation);
@@ -4965,7 +5599,27 @@ t1 = l1.StartPoint.X;
         public void T94_imperative_1467443_11()
         {
             String code =
-@"class test{       }class test1 extends test{     private foo;}def foo1(){    return = test.test();}a;[Imperative]{a = foo1();a.foo = 1;}";
+@"
+class test
+{
+   
+    
+}
+class test1 extends test
+{
+     private foo;
+}
+def foo1()
+{
+    return = test.test();
+}
+a;
+[Imperative]
+{
+a = foo1();
+a.foo = 1;
+}
+";
             string error = "1467443 Error on incorrect set property is not helpful ";
             thisTest.VerifyRunScriptSource(code, error);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
@@ -4976,7 +5630,18 @@ t1 = l1.StartPoint.X;
         public void T95_1467437_1()
         {
             String code =
-            @"          class A            {                a;                constructor A(i)                {                    a = i;                }            }            x = (A.A(1..3))[0];            y=x.a;            ";
+            @"
+          class A
+            {
+                a;
+                constructor A(i)
+                {
+                    a = i;
+                }
+            }
+            x = (A.A(1..3))[0];
+            y=x.a;
+            ";
             string error = "DNL-1467618 Regression : Use of the array index after replicated constructor yields complier error now";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("y", 1);
@@ -4987,7 +5652,18 @@ t1 = l1.StartPoint.X;
         public void T95_1467437_2()
         {
             String code =
-            @"          class A            {                a;                constructor A(i)                {                    a = i;                }            }            x = (A.A(1..3))[0..2];            y=x.a;            ";
+            @"
+          class A
+            {
+                a;
+                constructor A(i)
+                {
+                    a = i;
+                }
+            }
+            x = (A.A(1..3))[0..2];
+            y=x.a;
+            ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("y", new object[] { 1, 2, 3 });
@@ -4998,7 +5674,22 @@ t1 = l1.StartPoint.X;
         public void T95_1467437_3()
         {
             String code =
-            @"          class A            {                a;                constructor A(i)                {                    a = i;                }            }def foo(i:int){    return = A.A(i);}x = foo(1..3)[0];y = x.a;            ";
+            @"
+          class A
+            {
+                a;
+                constructor A(i)
+                {
+                    a = i;
+                }
+            }
+def foo(i:int)
+{
+    return = A.A(i);
+}
+x = foo(1..3)[0];
+y = x.a;
+            ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("y", 1);
@@ -5009,7 +5700,22 @@ t1 = l1.StartPoint.X;
         public void T95_1467437_4()
         {
             String code =
-            @"          class A            {                a;                constructor A(i)                {                    a = i;                }            }def foo(i:int){    return = A.A(i);}x = foo(1..3)[0..2];y = x.a;            ";
+            @"
+          class A
+            {
+                a;
+                constructor A(i)
+                {
+                    a = i;
+                }
+            }
+def foo(i:int)
+{
+    return = A.A(i);
+}
+x = foo(1..3)[0..2];
+y = x.a;
+            ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("y", new object[] { 1, 2, 3 });
@@ -5020,7 +5726,22 @@ t1 = l1.StartPoint.X;
         public void T95_1467437_5()
         {
             String code =
-            @"          class A            {                a;                constructor A(i)                {                    a = i;                }            }            y;            [Imperative]            {                x = (A.A(1..3))[0];                y=x.a;            }            ";
+            @"
+          class A
+            {
+                a;
+                constructor A(i)
+                {
+                    a = i;
+                }
+            }
+            y;
+            [Imperative]
+            {
+                x = (A.A(1..3))[0];
+                y=x.a;
+            }
+            ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("y", 1);
@@ -5031,7 +5752,22 @@ t1 = l1.StartPoint.X;
         public void T95_1467437_6()
         {
             String code =
-            @"          class A            {                a;                constructor A(i)                {                    a = i;                }            }            y;            [Imperative]            {            x = (A.A(1..3))[0..2];            y={x[0].a,x[1].a,x[2].a};            }            ";
+            @"
+          class A
+            {
+                a;
+                constructor A(i)
+                {
+                    a = i;
+                }
+            }
+            y;
+            [Imperative]
+            {
+            x = (A.A(1..3))[0..2];
+            y={x[0].a,x[1].a,x[2].a};
+            }
+            ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("y", new object[] { 1, 2, 3 });
@@ -5042,7 +5778,22 @@ t1 = l1.StartPoint.X;
         public void T95_1467437_7()
         {
             String code =
-            @"          class A            {                a;                constructor A(i)                {                    a = i;                }            }          def foo(i:int)          {            return = A.A(i);          }          x = foo(1..3)[{1,2}];          y = x.a;          ";
+            @"
+          class A
+            {
+                a;
+                constructor A(i)
+                {
+                    a = i;
+                }
+            }
+          def foo(i:int)
+          {
+            return = A.A(i);
+          }
+          x = foo(1..3)[{1,2}];
+          y = x.a;
+          ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("y", new object[] { 2, 3 });
@@ -5053,7 +5804,27 @@ t1 = l1.StartPoint.X;
         public void T96_1467464_1()
         {
             String code =
-            @"                class test                {                    f;                    constructor test()                    {                    [Associative]                        {                            [Imperative]                            {                                i = 3;                            }                    // The value of 'i' cannot be inspected here.                    // If this line is removed, then 'i' can be inspected.                                f = i;                        }                    }                }                a = test.test();                b = a.f;            ";
+            @"
+                class test
+                {
+                    f;
+                    constructor test()
+                    {
+                    [Associative]
+                        {
+                            [Imperative]
+                            {
+                                i = 3;
+                            }
+                    // The value of 'i' cannot be inspected here.
+                    // If this line is removed, then 'i' can be inspected.    
+                            f = i;
+                        }
+                    }
+                }
+                a = test.test();
+                b = a.f;
+            ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("b", null);
@@ -5064,7 +5835,13 @@ t1 = l1.StartPoint.X;
         public void T97_1467440_Class_Not_Defined_1()
         {
             String code =
-            @"def foo(x : NonExistClass[][]){    return = x;}z = foo({ 1, 2 });            ";
+            @"
+def foo(x : NonExistClass[][])
+{
+    return = x;
+}
+z = foo({ 1, 2 });
+            ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             Object n1 = null;
@@ -5076,7 +5853,17 @@ t1 = l1.StartPoint.X;
         public void T97_1467440_Class_Not_Defined_2()
         {
             String code =
-            @"z;[Imperative]{    def foo(x : NonExistClass[][])    {        return = x;    }    z = foo({ 1, 2 });}            ";
+            @"
+z;
+[Imperative]
+{
+    def foo(x : NonExistClass[][])
+    {
+        return = x;
+    }
+    z = foo({ 1, 2 });
+}
+            ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             Object n1 = null;
@@ -5089,7 +5876,17 @@ t1 = l1.StartPoint.X;
             ()
         {
             String code =
-            @"z;[Imperative]{    def foo(y: f1, x : f2)    {        return = {y,x};    }    z = foo( 1, 2);}            ";
+            @"
+z;
+[Imperative]
+{
+    def foo(y: f1, x : f2)
+    {
+        return = {y,x};
+    }
+    z = foo( 1, 2);
+}
+            ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             Object n1 = null;
@@ -5102,7 +5899,12 @@ t1 = l1.StartPoint.X;
             ()
         {
             String code =
-            @"a1 = A.A( a, b); a2 = A.A( 1, 2); a3 = A.A({1,2}, c);a4 = A.A({1,2}, c..d, 0..1, 5..f);            ";
+            @"
+a1 = A.A( a, b); 
+a2 = A.A( 1, 2); 
+a3 = A.A({1,2}, c);
+a4 = A.A({1,2}, c..d, 0..1, 5..f);
+            ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             Object n1 = null;
@@ -5118,7 +5920,16 @@ t1 = l1.StartPoint.X;
             ()
         {
             String code =
-            @"a1;a2;a3;a4;[Imperative]{    a1 = A.A( a, b);     a2 = A.A( 1, 2);     a3 = A.A({1,2}, c);    a4 = A.A({1,2}, c..d, 0..1, 5..f);}            ";
+            @"
+a1;a2;a3;a4;
+[Imperative]
+{
+    a1 = A.A( a, b); 
+    a2 = A.A( 1, 2); 
+    a3 = A.A({1,2}, c);
+    a4 = A.A({1,2}, c..d, 0..1, 5..f);
+}
+            ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             Object n1 = null;
@@ -5134,7 +5945,19 @@ t1 = l1.StartPoint.X;
             ()
         {
             String code =
-            @"def foo (){    a1 = A.A( a, b);     a2 = A.A( 1, 2);     a3 = A.A({1,2}, c);    //a4 = A.A({1,2}, c..d, 0..1, 5..f);}a1 : int;a2 : int;a3 : int;a4 : int;            ";
+            @"
+def foo ()
+{
+    a1 = A.A( a, b); 
+    a2 = A.A( 1, 2); 
+    a3 = A.A({1,2}, c);
+    //a4 = A.A({1,2}, c..d, 0..1, 5..f);
+}
+a1 : int;
+a2 : int;
+a3 : int;
+a4 : int;
+            ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             Object n1 = null;
@@ -5150,7 +5973,23 @@ t1 = l1.StartPoint.X;
             ()
         {
             String code =
-            @"class A{    static def foo ()    {        a1 = A.A( a, b);         a2 = A.A( 1, 2);         a3 = A.A({1,2}, c);        a4 = A.A({1,2}, c..d, 0..1, 5..f);    }}a1 : int;a2 : int;a3 : int;a4 : int;test = A.foo();            ";
+            @"
+class A
+{
+    static def foo ()
+    {
+        a1 = A.A( a, b); 
+        a2 = A.A( 1, 2); 
+        a3 = A.A({1,2}, c);
+        a4 = A.A({1,2}, c..d, 0..1, 5..f);
+    }
+}
+a1 : int;
+a2 : int;
+a3 : int;
+a4 : int;
+test = A.foo();
+            ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             Object n1 = null;
@@ -5165,7 +6004,15 @@ t1 = l1.StartPoint.X;
         public void T99_UnnamedConstructor01()
         {
             String code =
-            @"class A{    x;    constructor(i) { x = i; }}a = A(41);r = a.x;             ";
+            @"
+class A
+{
+    x;
+    constructor(i) { x = i; }
+}
+a = A(41);
+r = a.x; 
+            ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", 41);
@@ -5177,7 +6024,14 @@ t1 = l1.StartPoint.X;
             ()
         {
             String code =
-            @"class A{ a = 1; }class B{ a = 1; }a = A.A();b = B.B();c = 1 == 2;d = a == b;            ";
+            @"
+class A{ a = 1; }
+class B{ a = 1; }
+a = A.A();
+b = B.B();
+c = 1 == 2;
+d = a == b;
+            ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("d", false);
@@ -5189,7 +6043,19 @@ t1 = l1.StartPoint.X;
         public void T95_1467421()
         {
             String code =
-@"class A{    static  count : int = 0;    constructor A()    {        count = count + 1;    }       }a1 = A.A();// received - A(count=null), expected: A(count=1)r = a1.count;";
+@"
+class A
+{
+    static  count : int = 0;
+    constructor A()
+    {
+        count = count + 1;
+    }   
+    
+}
+a1 = A.A();// received - A(count=null), expected: A(count=1)
+r = a1.count;
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", 1);
@@ -5201,7 +6067,19 @@ t1 = l1.StartPoint.X;
         public void T95_1467421_2()
         {
             String code =
-@"class A{    private static  count : int = 0;    constructor A()    {        count = count + 1;    }       }a1 = A.A();// received - A(count=null), expected: A(count=1)r = a1.count;";
+@"
+class A
+{
+    private static  count : int = 0;
+    constructor A()
+    {
+        count = count + 1;
+    }   
+    
+}
+a1 = A.A();// received - A(count=null), expected: A(count=1)
+r = a1.count;
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", null);
@@ -5213,7 +6091,22 @@ t1 = l1.StartPoint.X;
         public void T95_1467421_3()
         {
             String code =
-@"class A{   static count : int= 0;    constructor A()    {        count = count + 1;    }       }a1 = A.A(); // received - A(count=null), expected: A(count=1)a1.count = 3;b1 = A.A();r = a1.count;r2 = b1.count;";
+@"
+class A
+{
+   static count : int= 0;
+    constructor A()
+    {
+        count = count + 1;
+    }   
+    
+}
+a1 = A.A(); // received - A(count=null), expected: A(count=1)
+a1.count = 3;
+b1 = A.A();
+r = a1.count;
+r2 = b1.count;
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", 4);
@@ -5226,7 +6119,22 @@ t1 = l1.StartPoint.X;
         public void T95_1467421_4()
         {
             String code =
-@"class A{   static count : int[]= {0,1};    constructor A()    {        count = count + 1;    }       }a1 = A.A(); // received - A(count=null), expected: A(count=1)a1.count = {3,4,5};b1 = A.A();r = a1.count;r2 = b1.count;";
+@"
+class A
+{
+   static count : int[]= {0,1};
+    constructor A()
+    {
+        count = count + 1;
+    }   
+    
+}
+a1 = A.A(); // received - A(count=null), expected: A(count=1)
+a1.count = {3,4,5};
+b1 = A.A();
+r = a1.count;
+r2 = b1.count;
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", new object[] { 4, 5, 6 });
@@ -5238,7 +6146,23 @@ t1 = l1.StartPoint.X;
         public void T95_1467421_5()
         {
             String code =
-@"class A{    static  count : int = 0;    constructor A()    {        count = count + 1;    }       }r;[Imperative]{a1 = A.A();// received - A(count=null), expected: A(count=1)r = a1.count;}";
+@"
+class A
+{
+    static  count : int = 0;
+    constructor A()
+    {
+        count = count + 1;
+    }   
+    
+}
+r;
+[Imperative]
+{
+a1 = A.A();// received - A(count=null), expected: A(count=1)
+r = a1.count;
+}
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", 1);
@@ -5249,7 +6173,21 @@ t1 = l1.StartPoint.X;
         public void T95_1467472()
         {
             String code =
-@"class A{    static count : int = 0;    pt;    constructor A()    {        count = count + 1;        pt = count;    }}a1 = A.A();r=a1.count;r2=a1.pt;";
+@"
+class A
+{
+    static count : int = 0;
+    pt;
+    constructor A()
+    {
+        count = count + 1;
+        pt = count;
+    }
+}
+a1 = A.A();
+r=a1.count;
+r2=a1.pt;
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", 1);
@@ -5261,7 +6199,28 @@ t1 = l1.StartPoint.X;
         public void T95_1467472_2()
         {
             String code =
-@"class A{static count : int = 0;constructor A(){count = count + 1;}}class B extends A{pt;constructor B(){pt = count;}}a1 = A.A(); // received - A(count=null), expected: A(count=1)r = a1.count;r1=a1.count;b1 = B.B();r2=b1.pt;";
+@"
+class A
+{
+static count : int = 0;
+constructor A()
+{
+count = count + 1;
+}
+}
+class B extends A
+{
+pt;
+constructor B()
+{
+pt = count;
+}
+}
+a1 = A.A(); // received - A(count=null), expected: A(count=1)r = a1.count;
+r1=a1.count;
+b1 = B.B();
+r2=b1.pt;
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r1", 1);
@@ -5273,7 +6232,26 @@ t1 = l1.StartPoint.X;
         public void T95_1467472_3()
         {
             String code =
-@"class A{    static count : int = 0;    pt;    constructor A()    {        count = count + 1;        pt = count;    }}r;r2;[Imperative]{a1 = A.A();r=a1.count;r2=a1.pt;}";
+@"
+class A
+{
+    static count : int = 0;
+    pt;
+    constructor A()
+    {
+        count = count + 1;
+        pt = count;
+    }
+}
+r;
+r2;
+[Imperative]
+{
+a1 = A.A();
+r=a1.count;
+r2=a1.pt;
+}
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", 1);
@@ -5285,7 +6263,32 @@ t1 = l1.StartPoint.X;
         public void T95_1467472_4()
         {
             String code =
-@"class A{static count : int = 0;constructor A(){count = count + 1;}}class B extends A{pt;constructor B(){pt = count;}}r1;r2;[Imperative]{a1 = A.A(); // received - A(count=null), expected: A(count=1)r = a1.count;r1=a1.count;b1 = B.B();r2=b1.pt;}";
+@"
+class A
+{
+static count : int = 0;
+constructor A()
+{
+count = count + 1;
+}
+}
+class B extends A
+{
+pt;
+constructor B()
+{
+pt = count;
+}
+}
+r1;r2;
+[Imperative]
+{
+a1 = A.A(); // received - A(count=null), expected: A(count=1)r = a1.count;
+r1=a1.count;
+b1 = B.B();
+r2=b1.pt;
+}
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r1", 1);
@@ -5297,7 +6300,22 @@ t1 = l1.StartPoint.X;
         public void T96_1467078_unnamed_constructor_1()
         {
             String code =
-@"class FixedNode{    i : int = 0;    constructor ( x : int)    {        i = x;    }    constructor FixedNode( x : int)    {        i = x+x;;    }}t = FixedNode.FixedNode(41);test = t.i; ";
+@"
+class FixedNode
+{
+    i : int = 0;
+    constructor ( x : int)
+    {
+        i = x;
+    }
+    constructor FixedNode( x : int)
+    {
+        i = x+x;;
+    }
+}
+t = FixedNode.FixedNode(41);
+test = t.i; 
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("test", 41);
@@ -5308,7 +6326,27 @@ t1 = l1.StartPoint.X;
         public void T96_1467078_unnamed_constructor_2()
         {
             String code =
-@"class A{    i : int = 0;    constructor ( x : int)    {        i = x;    }    }class B extends A{    j : int = 0;    constructor ( x : int) : base.A(x)    {        j = x;    }    }t = B.B(4);test1 = t.i; test2 = t.j; ";
+@"
+class A
+{
+    i : int = 0;
+    constructor ( x : int)
+    {
+        i = x;
+    }    
+}
+class B extends A
+{
+    j : int = 0;
+    constructor ( x : int) : base.A(x)
+    {
+        j = x;
+    }    
+}
+t = B.B(4);
+test1 = t.i; 
+test2 = t.j; 
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("test1", 4);
@@ -5320,7 +6358,26 @@ t1 = l1.StartPoint.X;
         public void T96_1467078_unnamed_constructor_3()
         {
             String code =
-@"class A{    i : int = 0;    constructor ( x : int)    {        i = x;    }    }class B {    j : A;    constructor ( x : int)     {        j = A.A(x);    }    }t = B.B(4);test1 = t.j.i; ";
+@"
+class A
+{
+    i : int = 0;
+    constructor ( x : int)
+    {
+        i = x;
+    }    
+}
+class B 
+{
+    j : A;
+    constructor ( x : int) 
+    {
+        j = A.A(x);
+    }    
+}
+t = B.B(4);
+test1 = t.j.i; 
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("test1", 4);
@@ -5332,7 +6389,31 @@ t1 = l1.StartPoint.X;
         public void T96_1467078_unnamed_constructor_4()
         {
             String code =
-@"class A{    i : int = 0;    constructor ( x : int)    {        i = x;    }    }class B {    j : A;    constructor ( x : int)     {        j = A.A(x);    }    }test1;[Imperative]{    t = B.B(4);    test1 = t.j.i;} ";
+@"
+class A
+{
+    i : int = 0;
+    constructor ( x : int)
+    {
+        i = x;
+    }    
+}
+class B 
+{
+    j : A;
+    constructor ( x : int) 
+    {
+        j = A.A(x);
+    }    
+}
+test1;
+[Imperative]
+{
+    t = B.B(4);
+    test1 = t.j.i;
+}
+ 
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("test1", 4);
@@ -5343,7 +6424,31 @@ t1 = l1.StartPoint.X;
         public void T96_1467078_unnamed_constructor_5()
         {
             String code =
-@"class A{    i : int = 0;    constructor ( x : int)    {        i = x;    }    }class B {    j : A;    constructor ( x : int)     {        j = A.A(x);    }    }def foo (){    t = B.B(4);    return = t.j.i;}test1 = foo(); ";
+@"
+class A
+{
+    i : int = 0;
+    constructor ( x : int)
+    {
+        i = x;
+    }    
+}
+class B 
+{
+    j : A;
+    constructor ( x : int) 
+    {
+        j = A.A(x);
+    }    
+}
+def foo ()
+{
+    t = B.B(4);
+    return = t.j.i;
+}
+test1 = foo();
+ 
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("test1", 4);
@@ -5354,7 +6459,35 @@ t1 = l1.StartPoint.X;
         public void T97_1467522_Indexing_Class_Properties_1()
         {
             String code =
-@"class B{    x : double;    constructor B(xx)    {        x = xx;    }  }class A{    Start : B;        constructor A(start : B)    {        Start = start;            }   }def foo(a : A[]){     result = a[0].Start.x;         return = result;}walls = { };walls[0] = A.A(B.B(1));walls[1] = A.A(B.B(3)); test = foo(walls); // received {1,3}; expected : 1test2 = walls[0].Start.x; // received 1";
+@"
+class B
+{
+    x : double;
+    constructor B(xx)
+    {
+        x = xx;
+    }  
+}
+class A
+{
+    Start : B;    
+    constructor A(start : B)
+    {
+        Start = start;
+        
+    }   
+}
+def foo(a : A[])
+{ 
+    result = a[0].Start.x;     
+    return = result;
+}
+walls = { };
+walls[0] = A.A(B.B(1));
+walls[1] = A.A(B.B(3)); 
+test = foo(walls); // received {1,3}; expected : 1
+test2 = walls[0].Start.x; // received 1
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("test", 1.0);
@@ -5365,7 +6498,31 @@ t1 = l1.StartPoint.X;
         public void T97_1467522_Indexing_Class_Properties_2()
         {
             String code =
-@"class A{    x : int = 0;    constructor A(xx)    {        x = xx;    }    def func(t : A)    {        return = x + t.x;    }    }def foo(wall : A[]){     result = wall[0].func(wall[1]);        return = result;}wall = { };wall[0] = A.A(1);wall[1] = A.A(2);test1 = foo(wall);//{ null, null} test2 = wall[0].func(wall[1]);  // 3; expected test1=test2";
+@"
+class A
+{
+    x : int = 0;
+    constructor A(xx)
+    {
+        x = xx;
+    }
+    def func(t : A)
+    {
+        return = x + t.x;
+    }
+    
+}
+def foo(wall : A[])
+{ 
+    result = wall[0].func(wall[1]);    
+    return = result;
+}
+wall = { };
+wall[0] = A.A(1);
+wall[1] = A.A(2);
+test1 = foo(wall);//{ null, null} 
+test2 = wall[0].func(wall[1]);  // 3; expected test1=test2
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("test1", 3);
@@ -5375,7 +6532,14 @@ t1 = l1.StartPoint.X;
         public void T98_Class_Static_Property_Using_Global_Variable()
         {
             String code =
-@"t1 = 3;class A{    static a = t1 ;}test1 = A.a;";
+@"
+t1 = 3;
+class A
+{
+    static a = t1 ;
+}
+test1 = A.a;
+";
             string error = "DNL-1467557 Update issue : when a static property is defined using a global variable, the value is  not getting updated";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("test1", 3);
@@ -5385,7 +6549,14 @@ t1 = l1.StartPoint.X;
         public void T98_Class_Static_Property_Using_Other_Properties()
         {
             String code =
-@"class A{    b = 3;    static a = b ;}test1 = A.a;";
+@"
+class A
+{
+    b = 3;
+    static a = b ;
+}
+test1 = A.a;
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("test1", null);
@@ -5396,7 +6567,18 @@ t1 = l1.StartPoint.X;
         public void T98_1467571_static_nonstatic_issue()
         {
             String code =
-@"class A{    b = 3;    static c = 4;    static def a () { return = b; }    def a2 () { return = c; }}test1 = A.a();aa = A.A();test2 = aa.a2();";
+@"
+class A
+{
+    b = 3;
+    static c = 4;
+    static def a () { return = b; }
+    def a2 () { return = c; }
+}
+test1 = A.a();
+aa = A.A();
+test2 = aa.a2();
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("test1", null);
@@ -5408,7 +6590,30 @@ t1 = l1.StartPoint.X;
         public void T99_1467578_this_imperative()
         {
             String code =
-@"class MyInt{    IntValue : int;        constructor Default(intValue : int)    {        IntValue = intValue;    }        def someOperation : MyInt()    {        returnValue;        [Imperative]        {            x = this.IntValue + 1;            returnValue = MyInt.Default(x);        }        return = returnValue;    }        }seed = MyInt.Default(1);val=seed.someOperation().IntValue;";
+@"
+class MyInt
+{
+    IntValue : int;
+    
+    constructor Default(intValue : int)
+    {
+        IntValue = intValue;
+    }
+    
+    def someOperation : MyInt()
+    {
+        returnValue;
+        [Imperative]
+        {
+            x = this.IntValue + 1;
+            returnValue = MyInt.Default(x);
+        }
+        return = returnValue;
+    }        
+}
+seed = MyInt.Default(1);
+val=seed.someOperation().IntValue;
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("val", 2);
@@ -5419,7 +6624,37 @@ t1 = l1.StartPoint.X;
         public void T100_1467578_this_imperative()
         {
             String code =
-@"class MyInt{    IntValue : int;        constructor Default(intValue : int)    {        IntValue = intValue;    }        def someOperation : MyInt(array : MyInt[])    {        returnValue;        [Imperative]        {            for(m in array)            {                if (m == this)                {                    returnValue = MyInt.Default(this.IntValue + 1);                }                else                {                    returnValue = MyInt.Default(0);                }            }        }    }        }startArray = MyInt.Default(1..5);";
+@"
+class MyInt
+{
+    IntValue : int;
+    
+    constructor Default(intValue : int)
+    {
+        IntValue = intValue;
+    }
+    
+    def someOperation : MyInt(array : MyInt[])
+    {
+        returnValue;
+        [Imperative]
+        {
+            for(m in array)
+            {
+                if (m == this)
+                {
+                    returnValue = MyInt.Default(this.IntValue + 1);
+                }
+                else
+                {
+                    returnValue = MyInt.Default(0);
+                }
+            }
+        }
+    }        
+}
+startArray = MyInt.Default(1..5);
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.VerifyBuildWarningCount(0);
@@ -5429,7 +6664,72 @@ t1 = l1.StartPoint.X;
         public void T110_IDE_884_Testing_Bang_Inside_Imperative()
         {
             String code =
-@"class test{    static def foo()    {        included = true;          return = [Imperative]        {            a = !included;            return = a;                        }        return = true;    }    def foo2()    {        included = true;          return = [Imperative]        {            a;            if(!included)                a = !included;            else                a = !(!included);                            return = a;        }        return = false;     }     def foo3()     {        included = false;          return = [Imperative]        {            a;            while(!included)            {                a = !included;                included = !included;            }                                       return = a;        }        return = false;     }     def foo4()     {        included = false;          return = [Imperative]        {            a = {0,1};            x;            for(i in a )            {                x = !included;                included = !included;                            }                                       return = x;        }        return = false;     }    }test1 = test.foo();t = test.test();test2 = t.foo2();test3 = t.foo3();test4 = t.foo4();";
+@"
+class test
+{
+    static def foo()
+    {
+        included = true;  
+        return = [Imperative]
+        {
+            a = !included;
+            return = a;                
+        }
+        return = true;
+    }
+    def foo2()
+    {
+        included = true;  
+        return = [Imperative]
+        {
+            a;
+            if(!included)
+                a = !included;
+            else
+                a = !(!included);                
+            return = a;
+        }
+        return = false;
+     }
+     def foo3()
+     {
+        included = false;  
+        return = [Imperative]
+        {
+            a;
+            while(!included)
+            {
+                a = !included;
+                included = !included;
+            }                           
+            return = a;
+        }
+        return = false;
+     }
+     def foo4()
+     {
+        included = false;  
+        return = [Imperative]
+        {
+            a = {0,1};
+            x;
+            for(i in a )
+            {
+                x = !included;
+                included = !included;                
+            }                           
+            return = x;
+        }
+        return = false;
+     }
+    
+}
+test1 = test.foo();
+t = test.test();
+test2 = t.foo2();
+test3 = t.foo3();
+test4 = t.foo4();
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.VerifyBuildWarningCount(0);
@@ -5443,7 +6743,36 @@ t1 = l1.StartPoint.X;
         public void T110_IDE_884_Testing_Bang_Inside_Imperative_2()
         {
             String code =
-@"def foo (a){    x = !a;    return = [Imperative]    {        y = !x;        if(!y == true)            return = !y;        else            return = !x;    }}a = true;test1 = [Imperative]{    return = !a;}test2 = [Imperative]{    return = [Associative]    {        return = [Imperative]        {             return = !a;        }    }} test3 = foo(a);  ";
+@"
+def foo (a)
+{
+    x = !a;
+    return = [Imperative]
+    {
+        y = !x;
+        if(!y == true)
+            return = !y;
+        else
+            return = !x;
+    }
+}
+a = true;
+test1 = [Imperative]
+{
+    return = !a;
+}
+test2 = [Imperative]
+{
+    return = [Associative]
+    {
+        return = [Imperative]
+        {
+             return = !a;
+        }
+    }
+} 
+test3 = foo(a);  
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.VerifyBuildWarningCount(0);
@@ -5458,7 +6787,15 @@ t1 = l1.StartPoint.X;
         public void T111_Class_Constructor_Negative_1467598()
         {
             String code =
-@"class test{    constructor foo()    {    }}a = test.sum();";
+@"
+class test
+{
+    constructor foo()
+    {
+    }
+}
+a = test.sum();
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
 
@@ -5473,7 +6810,42 @@ t1 = l1.StartPoint.X;
         public void T112_1467578_this_imperative()
         {
             String code =
-@"class MyInt{    IntValue : int;        constructor Default(intValue : int)    {        IntValue = intValue;    }        def someOperation : MyInt[](array : MyInt[])    {        returnValue = { };        c = 0;        [Imperative]        {            for(m in array)            {                if (Equals ( m, this))                {                    returnValue[c] = MyInt.Default(this.IntValue + 1);                }                else                {                    returnValue[c] = MyInt.Default(0);                }                c = c + 1;            }        }        return = returnValue;    }        }startArray = MyInt.Default(1..5);seed = MyInt.Default(1);test = seed.someOperation(startArray).IntValue;";
+@"
+class MyInt
+{
+    IntValue : int;
+    
+    constructor Default(intValue : int)
+    {
+        IntValue = intValue;
+    }
+    
+    def someOperation : MyInt[](array : MyInt[])
+    {
+        returnValue = { };
+        c = 0;
+        [Imperative]
+        {
+            for(m in array)
+            {
+                if (Equals ( m, this))
+                {
+                    returnValue[c] = MyInt.Default(this.IntValue + 1);
+                }
+                else
+                {
+                    returnValue[c] = MyInt.Default(0);
+                }
+                c = c + 1;
+            }
+        }
+        return = returnValue;
+    }        
+}
+startArray = MyInt.Default(1..5);
+seed = MyInt.Default(1);
+test = seed.someOperation(startArray).IntValue;
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("test", new Object[] { 2, 0, 0, 0, 0 });
@@ -5484,7 +6856,44 @@ t1 = l1.StartPoint.X;
         public void T113_1467599_Type_Conversion()
         {
             String code =
-@"class MyInt{    IntValue : int;        constructor Create()    {        [Imperative]        {              IntValue = true;        }    }     constructor MyInt()    {        [Imperative]        {              IntValue = 1;        }    }    def foo ()    {        [Imperative]        {            [Associative]            {                [Imperative]                {                    IntValue = true;                    return = IntValue;                }            }        }    }          }a = MyInt.Create().IntValue;b = MyInt.MyInt().foo();";
+@"
+class MyInt
+{
+    IntValue : int;
+    
+    constructor Create()
+    {
+        [Imperative]
+        {
+              IntValue = true;
+        }
+    } 
+    constructor MyInt()
+    {
+        [Imperative]
+        {
+              IntValue = 1;
+        }
+    }
+    def foo ()
+    {
+        [Imperative]
+        {
+            [Associative]
+            {
+                [Imperative]
+                {
+                    IntValue = true;
+                    return = IntValue;
+                }
+            }
+        }
+    }
+          
+}
+a = MyInt.Create().IntValue;
+b = MyInt.MyInt().foo();
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.VerifyRuntimeWarningCount(2);
@@ -5497,7 +6906,45 @@ t1 = l1.StartPoint.X;
         public void T114_1467599_Type_Conversion()
         {
             String code =
-@"class MyInt{    IntValue : int[];        constructor Create()    {        [Imperative]        {              IntValue = {true, true};        }    }     constructor MyInt()    {        [Imperative]        {              IntValue = {1,1};        }    }    def foo ()    {        [Imperative]        {            [Associative]            {                [Imperative]                {                    IntValue = {true,true};                    //return = IntValue;                }            }        }        return = IntValue;    }          }a = MyInt.Create().IntValue;b = MyInt.MyInt().foo();";
+@"
+class MyInt
+{
+    IntValue : int[];
+    
+    constructor Create()
+    {
+        [Imperative]
+        {
+              IntValue = {true, true};
+        }
+    } 
+    constructor MyInt()
+    {
+        [Imperative]
+        {
+              IntValue = {1,1};
+        }
+    }
+    def foo ()
+    {
+        [Imperative]
+        {
+            [Associative]
+            {
+                [Imperative]
+                {
+                    IntValue = {true,true};
+                    //return = IntValue;
+                }
+            }
+        }
+        return = IntValue;
+    }
+          
+}
+a = MyInt.Create().IntValue;
+b = MyInt.MyInt().foo();
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.VerifyRuntimeWarningCount(4);
@@ -5510,7 +6957,30 @@ t1 = l1.StartPoint.X;
         public void T115_1467599_Type_Conversion()
         {
             String code =
-@"class MyInt{    IntValue : int;        constructor Create()    {        [Imperative]        {              IntValue = true;        }    }     def foo()    {        return = [Imperative]        {              return = MyInt.Create();        }    }              }a = MyInt.Create().IntValue;b = MyInt.MyInt().foo().IntValue;";
+@"
+class MyInt
+{
+    IntValue : int;
+    
+    constructor Create()
+    {
+        [Imperative]
+        {
+              IntValue = true;
+        }
+    } 
+    def foo()
+    {
+        return = [Imperative]
+        {
+              return = MyInt.Create();
+        }
+    }    
+          
+}
+a = MyInt.Create().IntValue;
+b = MyInt.MyInt().foo().IntValue;
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.VerifyRuntimeWarningCount(2);
@@ -5523,7 +6993,15 @@ t1 = l1.StartPoint.X;
         public void T116_1467599_Type_Conversion()
         {
             String code =
-@"myValue :int = 1; x = 1;[Imperative]{               myValue = myValue + 0.5; //output = 2, but no type conversion message     x = x + 0.5;  }";
+@"
+myValue :int = 1; 
+x = 1;
+[Imperative]
+{           
+    myValue = myValue + 0.5; //output = 2, but no type conversion message 
+    x = x + 0.5;  
+}
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.VerifyRuntimeWarningCount(1);
@@ -5536,7 +7014,24 @@ t1 = l1.StartPoint.X;
         public void T117_1467599_Type_Conversion()
         {
             String code =
-@"class A{    myValue : int = 1;    x = 1;    constructor A ()    {            [Imperative]        {                       myValue = myValue + 0.5;            x = x + 0.5;        }    }}a = A.A();b = a.myValue;c = a.x;";
+@"
+class A
+{
+    myValue : int = 1;
+    x = 1;
+    constructor A ()
+    {    
+        [Imperative]
+        {           
+            myValue = myValue + 0.5;
+            x = x + 0.5;
+        }
+    }
+}
+a = A.A();
+b = a.myValue;
+c = a.x;
+";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.VerifyRuntimeWarningCount(1);
@@ -5549,7 +7044,23 @@ t1 = l1.StartPoint.X;
         public void T118_1467695_setter_inlinecondition()
         {
             String code =
-@"class curve{    Color ;    Length : double;    constructor curve(t:int)    {        length = t;    }}curve1 : curve[]..[];[Associative]{    curve1 = curve.curve(1..10);    curve1.Color = curve1.Length > 6 ? 1 : 2;}";
+@"
+class curve
+{
+    Color ;
+    Length : double;
+    constructor curve(t:int)
+    {
+        length = t;
+    }
+}
+curve1 : curve[]..[];
+[Associative]
+{
+    curve1 = curve.curve(1..10);
+    curve1.Color = curve1.Length > 6 ? 1 : 2;
+}
+";
             string error = "value assigned by a conditional on an array throws error '%set_Color()' is invoked on invalid object ";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.VerifyRuntimeWarningCount(0);

@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.16336" X="-509.855753904672" Y="88.5983263972695" zoom="0.977677353992608" Description="" Category="Ian" Name="Points" ID="29a3cd04-d452-4c02-a0a6-1796527e008f">
+<Workspace Version="0.6.0" X="-509.855753904672" Y="88.5983263972695" zoom="0.977677353992608" Description="" Category="Ian" Name="Points" ID="29a3cd04-d452-4c02-a0a6-1796527e008f">
   <Elements>
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="ad3eed1d-a29b-4dcd-9d18-549737a9f2ac" nickname="Number" x="647.623154702235" y="74.3319458488915" isVisible="true" isUpstreamVisible="true" lacing="Longest">
       <System.Double value="0..a" />
