@@ -211,6 +211,22 @@ namespace Revit.Elements
 
         }
 
+        public static Form ByLoftingCurveElements( CurveElement[] curves, bool isSolid)
+        {
+            // build references
+            var refArrArr = new ReferenceArrayArray();
+
+            foreach (var l in curves)
+            {
+                var refArr = new ReferenceArray();
+                refArr.Append(l.InternalCurveElement.GeometryCurve.Reference);
+                refArrArr.Append(refArr);
+            }
+
+            return new Form(isSolid, refArrArr);
+
+        }
+
         #endregion
 
         #region Internal static constructors
