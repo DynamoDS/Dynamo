@@ -39,19 +39,6 @@ namespace DSCoreNodesUI.Logic
             //var trueTmp = "__temp_true_" + guidStr;
             //var falseTmp = "__temp_false_" + guidStr;
 
-            //TODO: HACK - should convert to imperative ast
-            var testTmp = inputAstNodes[0] is ProtoCore.AST.AssociativeAST.IdentifierNode
-                ? new ProtoCore.AST.ImperativeAST.IdentifierNode(inputAstNodes[0].Name)
-                : new ProtoCore.AST.ImperativeAST.NullNode() as ImperativeNode;
-
-            var trueTmp = inputAstNodes[1] is ProtoCore.AST.AssociativeAST.IdentifierNode
-                ? new ProtoCore.AST.ImperativeAST.IdentifierNode(inputAstNodes[1].Name)
-                : new ProtoCore.AST.ImperativeAST.NullNode() as ImperativeNode;
-
-            var falseTmp = inputAstNodes[2] is ProtoCore.AST.AssociativeAST.IdentifierNode
-                ? new ProtoCore.AST.ImperativeAST.IdentifierNode(inputAstNodes[2].Name)
-                : new ProtoCore.AST.ImperativeAST.NullNode() as ImperativeNode;
-
             return new[]
             {
                 //First, assign out inputs to temp variables, so we can cross from Associative to Imperative.
@@ -78,18 +65,18 @@ namespace DSCoreNodesUI.Logic
                             {
                                 new IfStmtNode
                                 {
-                                    IfExprNode = testTmp,
+                                    IfExprNode = inputAstNodes[0].ToImperativeAST(),
                                     IfBody = new List<ImperativeNode>
                                     {
                                         new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                                             new ProtoCore.AST.ImperativeAST.IdentifierNode("return"),
-                                            trueTmp,
+                                            inputAstNodes[1].ToImperativeAST(),
                                             ProtoCore.DSASM.Operator.assign)
                                     }
                                 },
                                 new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                                     new ProtoCore.AST.ImperativeAST.IdentifierNode("return"),
-                                    falseTmp,
+                                    inputAstNodes[2].ToImperativeAST(),
                                     ProtoCore.DSASM.Operator.assign)
                             }
                         }
