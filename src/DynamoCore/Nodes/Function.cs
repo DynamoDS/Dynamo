@@ -7,7 +7,6 @@ using System.Xml;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
 using ProtoCore.AST.AssociativeAST;
 
 #endregion
@@ -22,7 +21,7 @@ namespace Dynamo.Nodes
     [IsInteractive(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
-    public partial class Function : NodeWithOneOutput
+    public partial class Function : NodeModel
     {
         protected internal Function(CustomNodeDefinition def)
         {
@@ -45,12 +44,7 @@ namespace Dynamo.Nodes
 
         public override string Description
         {
-            get
-            {
-                if (Definition == null)
-                    return string.Empty;
-                return Definition.WorkspaceModel.Description;
-            }
+            get { return Definition == null ? string.Empty : Definition.WorkspaceModel.Description; }
             set
             {
                 Definition.WorkspaceModel.Description = value;
@@ -68,9 +62,9 @@ namespace Dynamo.Nodes
         {
             get
             {
-                if (dynSettings.Controller.CustomNodeManager.NodeInfos.ContainsKey(Definition.FunctionId))
-                    return dynSettings.Controller.CustomNodeManager.NodeInfos[Definition.FunctionId].Category;
-                return "Custom Nodes";
+                return dynSettings.Controller.CustomNodeManager.NodeInfos.ContainsKey(Definition.FunctionId)
+                    ? dynSettings.Controller.CustomNodeManager.NodeInfos[Definition.FunctionId].Category
+                    : "Custom Nodes";
             }
         }
 
@@ -108,10 +102,10 @@ namespace Dynamo.Nodes
             EnableReporting();
         }
 
-        protected override InputNode Compile(IEnumerable<string> portNames)
-        {
-            return SaveResult ? base.Compile(portNames) : new FunctionNode(Symbol, portNames);
-        }
+        //protected override InputNode Compile(IEnumerable<string> portNames)
+        //{
+        //    return SaveResult ? base.Compile(portNames) : new FunctionNode(Symbol, portNames);
+        //}
 
         /// <summary>
         ///     Sets the inputs of this function.
@@ -333,28 +327,28 @@ namespace Dynamo.Nodes
             State = ElementState.Error;
         }
 
-        public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
-        {
-            if (OutPortData.Count > 1)
-            {
-                var query = (Evaluate(args) as FScheme.Value.List).Item.Zip(
-                    OutPortData,
-                    (value, data) => new { value, data });
+        //public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
+        //{
+        //    if (OutPortData.Count > 1)
+        //    {
+        //        var query = (Evaluate(args) as FScheme.Value.List).Item.Zip(
+        //            OutPortData,
+        //            (value, data) => new { value, data });
 
-                foreach (var result in query)
-                    outPuts[result.data] = result.value;
-            }
-            else
-                base.Evaluate(args, outPuts);
-        }
+        //        foreach (var result in query)
+        //            outPuts[result.data] = result.value;
+        //    }
+        //    else
+        //        base.Evaluate(args, outPuts);
+        //}
 
-        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
-        {
-            //return ((FScheme.Value.Function)Controller.FSchemeEnvironment.LookupSymbol(Symbol))
-            //    .Item.Invoke(args);
+        //public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        //{
+        //    //return ((FScheme.Value.Function)Controller.FSchemeEnvironment.LookupSymbol(Symbol))
+        //    //    .Item.Invoke(args);
 
-            throw new NotImplementedException("FSchemeEnvironment has been removed.");
-        }
+        //    throw new NotImplementedException("FSchemeEnvironment has been removed.");
+        //}
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
@@ -545,9 +539,9 @@ namespace Dynamo.Nodes
 
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
-            if (string.IsNullOrEmpty(InputSymbol))
-                return AstIdentifierForPreview;
-            return AstFactory.BuildIdentifier(InputSymbol);
+            return string.IsNullOrEmpty(InputSymbol)
+                ? AstIdentifierForPreview
+                : AstFactory.BuildIdentifier(InputSymbol);
         }
 
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
