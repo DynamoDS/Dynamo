@@ -32,8 +32,7 @@ namespace Revit.Elements
 
             var options = new SATImportOptions()
             {
-                AutoCorrectAlmostVHLines = false,
-                ThisViewOnly = false
+
             };
 
             var id = Document.Import(satPath, options, Document.ActiveView);
