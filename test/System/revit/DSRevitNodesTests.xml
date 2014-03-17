@@ -4,6 +4,16 @@
 		<testAssembly name="RevitNodesTests.dll">
 			<testFixture name="ReferencePointTests">
 				<test name="ByCoordinates_ValidInput" modelPath=".\empty.rfa" />
+				<test name="ByPoint_ValidInput" modelPath=".\empty.rfa" />
+				<test name="ByPointVectorDistance_ValidInput" modelPath=".\empty.rfa" />
+				<test name="ByLengthOnCurveReference_ValidInput" modelPath=".\empty.rfa" />
+				<test name="ByParameterOnCurveReference_ValidInput" modelPath=".\empty.rfa" />
+				<test name="ByParametersOnFaceReference_ValidInput" modelPath=".\block.rfa" />
+				<test name="ByPointVectorDistance_NullInput1" modelPath=".\empty.rfa" />
+				<test name="ByPointVectorDistance_NullInput2" modelPath=".\empty.rfa" />
+				<test name="ByParametersOnFaceReference_NullInput" modelPath=".\empty.rfa" />
+				<test name="ByParameterOnCurveReference_NullInput" modelPath=".\empty.rfa" />
+				<test name="ByLengthOnCurveReference_NullInput" modelPath=".\empty.rfa" />
 			</testFixture>
 			<testFixture name="FamilyTests">
 				<test name="ByName_ValidInput" modelPath=".\MassWithBoxAndCone.rfa" />
