@@ -4,7 +4,6 @@ using System.Linq;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.ViewModels;
 using Microsoft.Practices.Prism;
 
 namespace Dynamo.Utilities
@@ -19,6 +18,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         /// <param name="currentWorkspace"> The workspace where</param>
+        /// <param name="args"></param>
         public static void Collapse(IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace, FunctionNamePromptEventArgs args=null)
         {
             var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
@@ -180,7 +180,7 @@ namespace Dynamo.Utilities
             // workspace into the new workspace.
 
             var fullySelectedConns = new HashSet<ConnectorModel>(
-                currentWorkspace.Connectors.Where((conn) =>
+                currentWorkspace.Connectors.Where(conn =>
                 {
                     bool startSelected = selectedNodeSet.Contains(conn.Start.Owner);
                     bool endSelected = selectedNodeSet.Contains(conn.End.Owner);
@@ -200,13 +200,11 @@ namespace Dynamo.Utilities
             // Step 3: Partially selected connectors (either one of its start 
             // and end owners is in the selection) are to be destroyed.
 
-            var partiallySelectedConns = currentWorkspace.Connectors.Where((conn) =>
-            {
-                bool startSelected = selectedNodeSet.Contains(conn.Start.Owner);
-                bool endSelected = selectedNodeSet.Contains(conn.End.Owner);
-                return startSelected || endSelected;
-
-            }).ToList();
+            var partiallySelectedConns =
+                currentWorkspace.Connectors.Where(
+                    conn =>
+                        selectedNodeSet.Contains(conn.Start.Owner) 
+                        || selectedNodeSet.Contains(conn.End.Owner));
 
             foreach (ConnectorModel connector in partiallySelectedConns)
             {
@@ -242,37 +240,12 @@ namespace Dynamo.Utilities
 
             #endregion
 
-            #region Insert new node into the current workspace
-
-            //Step 5: insert new node into original workspace
-            //var collapsedNode = dynSettings.Controller.DynamoViewModel.CreateFunction(
-            //    inputs.Select(x => x.Item1.InPortData[x.Item2].NickName),
-            //    outputs
-            //        .Where(x => !curriedNodeArgs.Any(y => y.OuterNode == x.Item3.Item2))
-            //        .Select(x => x.Item1.OutPortData[x.Item2].NickName),
-            //    newNodeDefinition);
-
-            //collapsedNode.GUID = Guid.NewGuid();
-
-            //currentWorkspace.Nodes.Add(collapsedNode);
-            //collapsedNode.WorkSpace = currentWorkspace;
-
-            //collapsedNode.X = avgX;
-            //collapsedNode.Y = avgY;
-
-            #endregion
-
-            #region Destroy all hanging connectors
-
-            //Step 6: connect inputs and outputs
-
-            #endregion
-
-            newNodeWorkspace.Nodes.ToList().ForEach(x => x.DisableReporting());
-
-            var inConnectors = new List<Tuple<NodeModel, int>>();
+            foreach (var node in newNodeWorkspace.Nodes)
+                node.DisableReporting();
 
             #region Process inputs
+
+            var inConnectors = new List<Tuple<NodeModel, int>>();
 
             var uniqueInputSenders = new Dictionary<Tuple<NodeModel, int>, Symbol>();
             
