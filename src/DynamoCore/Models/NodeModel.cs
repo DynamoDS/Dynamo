@@ -471,6 +471,14 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        ///     Is this node being applied partially, resulting in a partial function?
+        /// </summary>
+        public bool IsPartiallyApplied
+        {
+            get { return !Enumerable.Range(0, InPortData.Count).All(HasInput); }
+        }
+
+        /// <summary>
         ///     Flags this node as dirty.
         /// </summary>
         [Obsolete("Use RequiresRecalc = true")]
