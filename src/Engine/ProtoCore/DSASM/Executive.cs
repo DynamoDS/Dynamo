@@ -857,12 +857,12 @@ namespace ProtoCore.DSASM
             {
                 if (null != Properties.executingGraphNode)
                 {
-                    core.ExecutingGraphnodeUID = Properties.executingGraphNode.UID;
+                    core.ExecutingGraphnode = Properties.executingGraphNode;
                 }
             }
 
             // Get the cached callsite, creates a new one for a first-time call
-            ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnodeUID, classIndex, fNode.name);
+            ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, classIndex, fNode.name);
             Validity.Assert(null != callsite);
 
 
