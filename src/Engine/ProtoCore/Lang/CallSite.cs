@@ -80,7 +80,13 @@ namespace ProtoCore
         private int invokeCount; //Number of times the callsite has been executed within this run
 
         private Guid callsiteID = Guid.Empty;
-
+        public Guid CallSiteID
+        {
+            get
+            {
+                return callsiteID;
+            }
+        }
 
         public CallSite(int classScope, string methodName, FunctionTable globalFunctionTable, ExecutionMode execMode)
         {

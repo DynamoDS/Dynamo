@@ -200,6 +200,7 @@ namespace Dynamo.Nodes
 
                         EnableReporting();
 
+                        ClearError();
                         if (!string.IsNullOrEmpty(errorMessage))
                         {
                             Error(errorMessage);

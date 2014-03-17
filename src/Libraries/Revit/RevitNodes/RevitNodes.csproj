@@ -84,6 +84,7 @@
     <Compile Include="Elements\CurveElement.cs" />
     <Compile Include="Elements\Element.cs" />
     <Compile Include="Elements\FloorType.cs" />
+    <Compile Include="Elements\ImportInstance.cs" />
     <Compile Include="Elements\ModelText.cs" />
     <Compile Include="Elements\ModelTextType.cs" />
     <Compile Include="Elements\StructuralType.cs" />
@@ -148,6 +149,11 @@
     <ProjectReference Include="..\..\..\NodeServices\NodeServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>NodeServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DynamoUnits\Units.csproj">
+      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
+      <Name>Units</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\RevitServices\RevitServices.csproj">
       <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>

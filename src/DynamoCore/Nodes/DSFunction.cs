@@ -157,19 +157,14 @@ namespace Dynamo.Nodes
             string assembly = null;
             string function;
 
-            if (nodeElement.Attributes["assembly"] == null
-                && nodeElement.Attributes["function"] == null)
+            if (nodeElement.Attributes["assembly"] == null && nodeElement.Attributes["function"] == null)
             {
                 // To open old file
-                foreach (
-                    XmlElement subNode in
-                        nodeElement.ChildNodes.Cast<XmlElement>()
-                                   .Where(
-                                       subNode =>
-                                           subNode.Name.Equals(typeof(FunctionDescriptor).FullName))
-                    )
+                foreach (var helper in
+                    nodeElement.ChildNodes.Cast<XmlElement>()
+                        .Where(subNode => subNode.Name.Equals(typeof(FunctionDescriptor).FullName))
+                        .Select(subNode => new XmlElementHelper(subNode)))
                 {
-                    var helper = new XmlElementHelper(subNode);
                     assembly = helper.ReadString("Assembly", "");
                     break;
                 }
@@ -213,15 +208,10 @@ namespace Dynamo.Nodes
             helper.SetAttribute("name", Definition.MangledName);
         }
 
-        private bool HasUnconnectedInput()
-        {
-            return !Enumerable.Range(0, InPortData.Count).All(HasInput);
-        }
-
         private List<AssociativeNode> GetConnectedInputs()
         {
             return Enumerable.Range(0, InPortData.Count)
-                             .Where(x => this.HasConnectedInput(x))
+                             .Where(HasConnectedInput)
                              .Select(x => new IntNode(x) as AssociativeNode)
                              .ToList();
         }
@@ -248,7 +238,7 @@ namespace Dynamo.Nodes
         /// <returns></returns>
         private void AppendReplicationGuides(List<AssociativeNode> inputs)
         {
-            if (ArgumentLacing == null || inputs == null || inputs.Count() == 0)
+            if (inputs == null || !inputs.Any())
             {
                 return;
             }
@@ -265,8 +255,10 @@ namespace Dynamo.Nodes
                             var astNode = NodeUtils.Clone(inputs[i]) as ArrayNameNode;
                             astNode.ReplicationGuides = new List<AssociativeNode>();
 
-                            var guideNode = new ReplicationGuideNode();
-                            guideNode.RepGuide = AstFactory.BuildIdentifier(guide.ToString());
+                            var guideNode = new ReplicationGuideNode
+                            {
+                                RepGuide = AstFactory.BuildIdentifier(guide.ToString())
+                            };
 
                             astNode.ReplicationGuides.Add(guideNode);
                             inputs[i] = astNode;
@@ -274,10 +266,30 @@ namespace Dynamo.Nodes
                         }
                     }
                     break;
-
-                default:
-                    break;
             }
+        }
+
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any() )
+            {
+                var indexedValue = new IdentifierNode(AstIdentifierForPreview)
+                {
+                    ArrayDimensions = new ArrayNode
+                    {
+                        Expr = new StringNode
+                        {
+                            value = Definition.ReturnKeys.ElementAt(outputIndex)
+                        }
+                    }
+                };
+
+                return indexedValue;
+            }
+            else
+            {
+                return base.GetAstIdentifierForOutputIndex(outputIndex);
+            }                                              
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
@@ -289,7 +301,7 @@ namespace Dynamo.Nodes
             {
                 case FunctionType.Constructor:
                 case FunctionType.StaticMethod:
-                    if (HasUnconnectedInput())
+                    if (IsPartiallyApplied)
                     {
                         var functionNode = new IdentifierListNode
                         {
@@ -301,9 +313,10 @@ namespace Dynamo.Nodes
                     else
                     {
                         AppendReplicationGuides(inputAstNodes);
-                        rhs = AstFactory.BuildFunctionCall(Definition.ClassName,
-                                                           Definition.Name,
-                                                           inputAstNodes);
+                        rhs = AstFactory.BuildFunctionCall(
+                            Definition.ClassName,
+                            Definition.Name,
+                            inputAstNodes);
                     }
                     break;
 
@@ -361,7 +374,7 @@ namespace Dynamo.Nodes
                     break;
 
                 default:
-                    if (HasUnconnectedInput())
+                    if (IsPartiallyApplied)
                     {
                         var functionNode = new IdentifierNode(function);
                         rhs = CreateFunctionObject(functionNode, inputAstNodes);
@@ -386,8 +399,7 @@ namespace Dynamo.Nodes
                 string thisIdentifier = AstIdentifierForPreview.ToString();
                 if (!string.Equals(outputIdentifier, thisIdentifier))
                 {
-                    resultAst.Add(
-                        AstFactory.BuildAssignment(outputIdentiferNode, AstIdentifierForPreview));
+                    resultAst.Add(AstFactory.BuildAssignment(outputIdentiferNode, AstIdentifierForPreview));
                 }
             }
             else
@@ -396,26 +408,23 @@ namespace Dynamo.Nodes
 
                 resultAst.AddRange(
                     Enumerable.Range(0, OutPortData.Count)
-                              .Select(
-                                  outputIdx =>
-                                      undefinedOutputs
-                                          ? AstIdentifierForPreview
-                                          : new IdentifierNode(AstIdentifierForPreview)
-                                          {
-                                              ArrayDimensions =
-                                                  new ArrayNode
-                                                  {
-                                                      Expr =
-                                                          new StringNode
-                                                          {
-                                                              value =
-                                                                  Definition.ReturnKeys.ElementAt(
-                                                                      outputIdx)
-                                                          }
-                                                  }
-                                          }));
+                        .Select(
+                            outputIdx =>
+                                undefinedOutputs
+                                    ? AstIdentifierForPreview
+                                    : new IdentifierNode(AstIdentifierForPreview)
+                                    {
+                                        ArrayDimensions =
+                                            new ArrayNode
+                                            {
+                                                Expr =
+                                                    new StringNode
+                                                    {
+                                                        value = Definition.ReturnKeys.ElementAt(outputIdx)
+                                                    }
+                                            }
+                                    }));
             }
-
             return resultAst;
         }
     }
