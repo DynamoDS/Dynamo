@@ -752,14 +752,6 @@ namespace Dynamo.Utilities
                     double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
                     double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
 
-                    bool isVisible = true;
-                    if (isVisAttrib != null)
-                        isVisible = isVisAttrib.Value == "true" ? true : false;
-
-                    bool isUpstreamVisible = true;
-                    if (isUpstreamVisAttrib != null)
-                        isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
-
                     typeName = Nodes.Utilities.PreprocessTypeName(typeName);
                     Type type = Nodes.Utilities.ResolveType(typeName);
                     if (null == type)
@@ -768,16 +760,39 @@ namespace Dynamo.Utilities
                         continue;
                     }
 
+                    bool isVisible = true;
+                    if (isVisAttrib != null)
+                        isVisible = isVisAttrib.Value == "true" ? true : false;
+
+                    bool isUpstreamVisible = true;
+                    if (isUpstreamVisAttrib != null)
+                        isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
+
                     // Retrieve optional 'function' attribute (only for DSFunction).
                     XmlAttribute signatureAttrib = elNode.Attributes["function"];
                     var signature = signatureAttrib == null ? null : signatureAttrib.Value;
+
                     NodeModel el = null;
+                    XmlElement dummyElement = null;
 
                     try
                     {
+                        // The attempt to create node instance may fail due to "type" being
+                        // something else other than "NodeModel" derived object type. This 
+                        // is possible since some legacy nodes have been made to derive from
+                        // "MigrationNode" object type that is not derived from "NodeModel".
+                        // 
                         el = dynamoModel.CreateNodeInstance(type, nickname, signature, guid);
-                        el.WorkSpace = ws;
-                        el.Load(elNode);
+                        if (el != null)
+                        {
+                            el.WorkSpace = ws;
+                            el.Load(elNode);
+                        }
+                        else
+                        {
+                            var e = elNode as XmlElement;
+                            dummyElement = MigrationManager.CreateDummyNode(e, 1, 1);
+                        }
                     }
                     catch (UnresolvedFunctionException)
                     {
@@ -785,15 +800,18 @@ namespace Dynamo.Utilities
                         // function node into a dummy node (instead of crashing the workflow).
                         // 
                         var e = elNode as XmlElement;
-                        var elNode2 = MigrationManager.CreateDummyNodeForFunction(e);
+                        dummyElement = MigrationManager.CreateDummyNodeForFunction(e);
+                    }
 
+                    if (dummyElement != null) // If a dummy node placement is desired.
+                    {
                         // The new type representing the dummy node.
-                        typeName = elNode2.GetAttribute("type");
+                        typeName = dummyElement.GetAttribute("type");
                         type = Dynamo.Nodes.Utilities.ResolveType(typeName);
 
                         el = dynamoModel.CreateNodeInstance(type, nickname, string.Empty, guid);
                         el.WorkSpace = ws;
-                        el.Load(elNode2);
+                        el.Load(dummyElement);
                     }
 
                     ws.Nodes.Add(el);
