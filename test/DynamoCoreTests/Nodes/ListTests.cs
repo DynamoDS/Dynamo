@@ -501,13 +501,19 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(listTestFolder, "testTransposeList_normalInput.dyn");
             RunModel(testFilePath);
 
+            string guid = "e639bc66-6dec-4a0a-bae2-9bac7dab59dc";
+            var nodeTranspose = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>(guid);
+
+            Assert.AreEqual(5, nodeTranspose.GetValue(0).GetElements().Count);
+            Assert.AreEqual(2, nodeTranspose.GetValue(0).GetElements()[3].GetElements().Count);
+            Assert.AreEqual(1, nodeTranspose.GetValue(0).GetElements()[4].GetElements().Count);
+
             var a1 = new object[] { 1, "a" };
             var a2 = new object[] { 2, "b" };
-            var a3 = new object[] { 3, "a" };
-            var a4 = new object[] { 4, "b" };
-            var a5 = new object[] { 5, null };
-            AssertPreviewValue("e639bc66-6dec-4a0a-bae2-9bac7dab59dc", new object[][] { a1, a2, a3, a4, a5 });
-
+            var a3 = new object[] { 3, "c" };
+            var a4 = new object[] { 4, "d" };
+            var a5 = new object[] { "e" };
+            AssertPreviewValue(guid, new object[][] { a1, a2, a3, a4, a5 });
         }
         #endregion
 
