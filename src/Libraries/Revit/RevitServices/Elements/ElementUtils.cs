@@ -48,6 +48,11 @@ namespace RevitServices.Elements
         public static bool TryGetElement<T>(this Document document, ElementId id, out T element)
             where T : Element
         {
+            if (id == null)
+            {
+                element = null;
+                return false;
+            }
             try
             {
                 element = document.GetElement(id) as T;
