@@ -449,5 +449,23 @@ d2 = TestData.SumList({1, 2, {3, 4}, {5, {6, {7}}}});
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ExecuteAndVerify(code, data);
         }
+
+        [Test]
+        public void Test_ObjectAsArbiteraryDimensionArray()
+        {
+            string code = @"
+                     a = 1..5;
+                     l1 = TestData.AddItemToFront(10, a);
+                     l2 = TestData.AddItemToFront(a, a);";
+            ValidationData[] data = 
+            { 
+                new ValidationData { ValueName = "l1", ExpectedValue = new int[] {10, 1, 2, 3, 4, 5}} ,
+                new ValidationData { ValueName = "l2", ExpectedValue = new Object[] {new int[]{1, 2, 3, 4, 5}, 1, 2, 3, 4, 5}} , 
+            };
+
+            Type dummy = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
     }
 }
