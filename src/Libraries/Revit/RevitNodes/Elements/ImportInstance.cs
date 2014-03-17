@@ -47,6 +47,8 @@ namespace Revit.Elements
 
             InternalSetImportInstance( importInstance );
 
+            this.Path = satPath;
+
             TransactionManager.Instance.TransactionTaskDone();
         }
 
@@ -56,6 +58,12 @@ namespace Revit.Elements
             this.InternalElementId = ele.Id;
             this.InternalImportInstance = ele;
         }
+
+        #region Public properties
+
+        public string Path { get; private set; }
+
+        #endregion
 
         public static ImportInstance BySATFile(string pathToFile)
         {
@@ -72,6 +80,7 @@ namespace Revit.Elements
 
             return new ImportInstance(pathToFile);
         }
+
 
         public static ImportInstance ByGeometry(Autodesk.DesignScript.Geometry.Geometry geometry)
         {
