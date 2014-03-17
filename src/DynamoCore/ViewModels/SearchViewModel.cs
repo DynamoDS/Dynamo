@@ -847,8 +847,6 @@ namespace Dynamo.ViewModels
                         category = category + "." + function.UserFriendlyName; 
                     }
 
-                    
-
                     var searchElement = new DSFunctionNodeSearchElement(displayString, function);
                     searchElement.SetSearchable(true);
                     
