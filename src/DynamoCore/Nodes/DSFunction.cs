@@ -280,6 +280,29 @@ namespace Dynamo.Nodes
             }
         }
 
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any() )
+            {
+                var indexedValue = new IdentifierNode(AstIdentifierForPreview)
+                {
+                    ArrayDimensions = new ArrayNode
+                    {
+                        Expr = new StringNode
+                        {
+                            value = Definition.ReturnKeys.ElementAt(outputIndex)
+                        }
+                    }
+                };
+
+                return indexedValue;
+            }
+            else
+            {
+                return base.GetAstIdentifierForOutputIndex(outputIndex);
+            }                                              
+        }
+
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             string function = Definition.Name;

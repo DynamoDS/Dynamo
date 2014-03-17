@@ -1016,7 +1016,6 @@ namespace ProtoTest.ProtoAST
             varDeclNode.ArgumentType = new ProtoCore.Type()
             {
                 Name = "int",
-                IsIndexable = false,
                 rank = 0,
                 UID = (int)ProtoCore.PrimitiveType.kTypeInt
             };
@@ -1137,13 +1136,7 @@ namespace ProtoTest.ProtoAST
             ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode();
             varDeclNode.Name = "f";
             varDeclNode.NameNode = new ProtoCore.AST.AssociativeAST.IdentifierNode("f");
-            varDeclNode.ArgumentType = new ProtoCore.Type()
-            {
-                Name = "int",
-                IsIndexable = false,
-                rank = 0,
-                UID = (int)ProtoCore.PrimitiveType.kTypeInt
-            };
+            varDeclNode.ArgumentType = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeInt, 0);
             classDefNode.varlist.Add(varDeclNode);
 
 
@@ -1448,7 +1441,6 @@ namespace ProtoTest.ProtoAST
             varDeclNode.ArgumentType = new ProtoCore.Type()
             {
                 Name = "int",
-                IsIndexable = false,
                 rank = 0,
                 UID = (int)ProtoCore.PrimitiveType.kTypeInt
             };
@@ -1576,7 +1568,6 @@ namespace ProtoTest.ProtoAST
             varDeclNode.ArgumentType = new ProtoCore.Type()
             {
                 Name = "int",
-                IsIndexable = false,
                 rank = 0,
                 UID = (int)ProtoCore.PrimitiveType.kTypeInt
             };

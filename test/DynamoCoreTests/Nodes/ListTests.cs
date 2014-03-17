@@ -1514,6 +1514,21 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        public void AddToList_ContainingNull()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_ContainingNull.dyn");
+            RunModel(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+
+            AssertPreviewValue("9a187115-ba09-411e-a836-473aeec4493c", new object[] { 2, 3, 4, null, 6 });
+        }
+
         #endregion
 
         #region SplitList test cases -PartiallyDone

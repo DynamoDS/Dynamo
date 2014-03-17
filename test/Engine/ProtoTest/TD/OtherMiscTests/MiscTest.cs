@@ -132,7 +132,7 @@ sqrt_20;
         {
             string code = @"
 import (""DemoSupportFiles.ds"");
-import(""math.dll"");
+import(""DSCoreNodes.dll"");
 // dimensions of the roof in each direction
 //
 xSize = 2;//10;

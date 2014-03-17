@@ -5,9 +5,7 @@ using Autodesk.DesignScript.Runtime;
 using System.Collections;
 namespace ProtoFFITests
 {
-    
-
-    class CSFFIDataMarshalingTest : FFITestSetup
+    public class CSFFIDataMarshalingTest : FFITestSetup
     {
 
         [Test]
@@ -58,7 +56,7 @@ namespace ProtoFFITests
         public void TestDecimals()
         {
             String code =
-            @"               import(TestData from ""FFITarget.dll"");               import(""System.Decimal"");               x = Decimal.Decimal(1.1111e+10);               y = Decimal.Decimal(1.1111e+5);               value = TestData.MultiplyDecimals(x, y);               result = Decimal.Decimal(1.23454321e+15);               success = Decimal.Equals(value, result);            ";
+            @"               import(TestData from ""FFITarget.dll"");               import(""System.Decimal"");               x = Decimal.Decimal(1.11e+10);               y = Decimal.Decimal(1.11e+5);               value = TestData.MultiplyDecimals(x, y);               result = Decimal.Decimal(1.2321e+15);               success = Decimal.Equals(value, result);            ";
             ValidationData[] data = { new ValidationData { ValueName = "success", ExpectedValue = true, BlockIndex = 0 } };
             int nErrors = -1;
             ExecuteAndVerify(code, data, out nErrors);
@@ -246,6 +244,56 @@ namespace ProtoFFITests
         }
 
         [Test]
+        public void TestIEnumerableWithArbitraryRankArray()
+        {
+            String code =
+            @"
+               data = TestData.GetNestedCollection();
+               list = TestData.RemoveItemsAtIndices(data, {3,1});
+               size = Count(Flatten(list));
+            ";
+            Type t = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", t.AssemblyQualifiedName, code);
+            ValidationData[] data = { new ValidationData { ValueName = "list", ExpectedValue = new List<object> { 2, "DesignScript", new List<object> { true, new List<object> { 5.5, 10 } } }, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "size", ExpectedValue = 5, BlockIndex = 0 },
+                                    };
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void TestArrayPromotion()
+        {
+            String code =
+            @"
+               data = TestData.GetNestedCollection();
+               list = TestData.RemoveItemsAtIndices(data, 2);
+               size = Count(Flatten(list));
+            ";
+            Type t = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", t.AssemblyQualifiedName, code);
+            ValidationData[] data = { new ValidationData { ValueName = "list", ExpectedValue = new List<object> { 2, 3, new List<string> { "Dynamo", "Revit" }, new List<object> { true, new List<object> { 5.5, 10 } } }, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "size", ExpectedValue = 7, BlockIndex = 0 },
+                                    };
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void TestSingletonMarshaledAsIEnumerable()
+        {
+            String code =
+            @"
+               list = TestData.RemoveItemsAtIndices(3, 0);
+               size = Count(list);
+            ";
+            Type t = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", t.AssemblyQualifiedName, code);
+            ValidationData[] data = { new ValidationData { ValueName = "list", ExpectedValue = new List<object>(), BlockIndex = 0 },
+                                      new ValidationData { ValueName = "size", ExpectedValue = 0, BlockIndex = 0 },
+                                    };
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
         public void Test_DataMasrshalling_IEnumerable_Implicit_Cast()
         {
             string code =
@@ -396,6 +444,42 @@ d2 = TestData.SumList({1, 2, {3, 4}, {5, {6, {7}}}});
 
 
 
+
+            Type dummy = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void Test_ObjectAsArbiteraryDimensionArray()
+        {
+            string code = @"
+                     a = 1..5;
+                     l1 = TestData.AddItemToFront(10, a);
+                     l2 = TestData.AddItemToFront(a, a);";
+            ValidationData[] data = 
+            { 
+                new ValidationData { ValueName = "l1", ExpectedValue = new int[] {10, 1, 2, 3, 4, 5}} ,
+                new ValidationData { ValueName = "l2", ExpectedValue = new Object[] {new int[]{1, 2, 3, 4, 5}, 1, 2, 3, 4, 5}} , 
+            };
+
+            Type dummy = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void Test_MarshalingNullInCollection()
+        {
+            string code = @"
+                     list = {1, null, ""test"", true, 3.5};
+                     l1 = TestData.AddItemToFront(null, list);
+                     l2 = TestData.AddItemToFront(list, list);";
+            ValidationData[] data = 
+            { 
+                new ValidationData { ValueName = "l1", ExpectedValue = new object[] {null, 1, null, "test", true, 3.5}} ,
+                new ValidationData { ValueName = "l2", ExpectedValue = new object[] {new object[]{1, null, "test", true, 3.5}, 1, null, "test", true, 3.5}} , 
+            };
 
             Type dummy = typeof(FFITarget.TestData);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);

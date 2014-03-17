@@ -110,25 +110,13 @@ namespace ProtoCore.AST.ImperativeAST
         public IdentifierNode()
         {
             ArrayDimensions = null;
-            datatype = new ProtoCore.Type
-            {
-                UID = (int)PrimitiveType.kInvalidType,
-                rank = 0,
-                IsIndexable = false,
-                Name = null
-            };
+            datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
         }
 
         public IdentifierNode(string identName = null)
         {
             ArrayDimensions = null;
-            datatype = new ProtoCore.Type
-            {
-                UID = (int)PrimitiveType.kInvalidType,
-                rank = 0,
-                IsIndexable = false,
-                Name = null
-            };
+            datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
             Value = Name = identName;
         }
 
@@ -139,7 +127,6 @@ namespace ProtoCore.AST.ImperativeAST
             {
                 UID = rhs.datatype.UID,
                 rank = rhs.datatype.rank,
-                IsIndexable = rhs.datatype.IsIndexable,
                 Name = rhs.datatype.Name
             };
 

@@ -2490,6 +2490,29 @@ o2 = cf1.OverloadedAdd(i);
 
 
         }
-    
+
+        [Test]
+        public void T024_MethodOverload_static()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+cf1 = ClassFunctionality.ClassFunctionality(1);
+dp1 = DummyPoint.ByCoordinates(0,1,2);
+
+o1 = OverloadTarget.StaticOverload(1);
+o2 = OverloadTarget.StaticOverload(cf1);
+o3 = OverloadTarget.StaticOverload(dp1);
+
+
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("o1", 0);
+            thisTest.Verify("o2", 1);
+            thisTest.Verify("o3", 2);
+
+
+        }
+
+
     }
 }
