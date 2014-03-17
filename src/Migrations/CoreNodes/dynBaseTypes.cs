@@ -830,7 +830,7 @@ namespace Dynamo.Nodes
             //create the node itself
             XmlElement dsCoreNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(dsCoreNode, "DSCoreNodes.dll",
-                "List.RemoveItemsAtIndices", "List.RemoveItemsAtIndices@var[]..[],var[]");
+                "List.RemoveItemAtIndex", "List.RemoveItemAtIndex@var[]..[],int[]");
 
             migratedData.AppendNode(dsCoreNode);
             string dsCoreNodeId = MigrationManager.GetGuidFromXmlElement(dsCoreNode);
