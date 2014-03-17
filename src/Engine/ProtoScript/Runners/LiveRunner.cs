@@ -96,6 +96,7 @@ namespace ProtoScript.Runners
         List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries);
 		void ReInitializeLiveRunner();
         Dictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
+        IEnumerable<ProtoCore.AST.Node> GetAstNodes(Guid nodeGuid);
 
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
@@ -166,6 +167,7 @@ namespace ProtoScript.Runners
         private Dictionary<System.Guid, Subtree> currentSubTreeList = null;
 
         private Dictionary<int, Guid> exprGuidMap = null;
+        private Dictionary<Guid, List<ProtoCore.AST.Node>> astCache = null;
 
         private readonly Object operationsMutex = new object();
 
@@ -239,6 +241,8 @@ namespace ProtoScript.Runners
             currentSubTreeList = new Dictionary<Guid, Subtree>();
 
             exprGuidMap = new Dictionary<int, Guid>();
+
+            astCache = new Dictionary<Guid, List<ProtoCore.AST.Node>>();
 
             terminating = false;
         }
@@ -1051,15 +1055,17 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Takes in a Subtree to delete or modify and marks the corresponding gragh nodes in DS inactive.
+        /// Takes in a Subtree to delete or modify and marks the corresponding 
+        /// gragh nodes in DS inactive.
+        // 
         /// This is equivalent to removing them from the VM
         /// </summary>
         /// <param name="subtree"></param>
         /// <returns></returns>
         private List<AssociativeNode> MarkGraphNodesInactive(List<AssociativeNode> modifiedASTList)
         {
-            List<AssociativeNode> astNodeList = new List<AssociativeNode>();
-            if (null != modifiedASTList && modifiedASTList.Count > 0)
+            var astNodeList = new List<AssociativeNode>();
+            if (null != modifiedASTList)
             {
                 foreach (var node in modifiedASTList)
                 {
@@ -1305,6 +1311,44 @@ namespace ProtoScript.Runners
             }
         }
 
+        /// <summary>
+        /// Update the map from graph UI node to a list of ast nodes. Each
+        /// ast node is in SSA form. 
+        /// </summary>
+        /// <param name="syncData"></param>
+        private void UpdateAstCache(GraphSyncData syncData)
+        {
+            if (syncData.DeletedSubtrees != null)
+            {
+                syncData.DeletedSubtrees.ForEach(t => astCache.Remove(t.GUID));
+            }
+
+            if (syncData.ModifiedSubtrees != null)
+            {
+                foreach (var t in syncData.ModifiedSubtrees)
+                {
+                    astCache[t.GUID].Clear();
+                    if (t.AstNodes != null)
+                    {
+                        astCache[t.GUID].AddRange(t.AstNodes);
+                    }
+                }
+            }
+
+            if (syncData.AddedSubtrees != null)
+            {
+                foreach (var t in syncData.AddedSubtrees)
+                {
+                    var astNodes = new List<ProtoCore.AST.Node>();
+                    if (t.AstNodes != null)
+                    {
+                        astNodes.AddRange(t.AstNodes);
+                    }
+                    astCache[t.GUID] = astNodes;
+                }
+            }
+        }
+
         private void SynchronizeInternal(GraphSyncData syncData)
         {
             runnerCore.Options.IsDeltaCompile = true;
@@ -1319,6 +1363,8 @@ namespace ProtoScript.Runners
 
             CompileToSSA(syncData);
 
+            UpdateAstCache(syncData);
+
             if (syncData.DeletedSubtrees != null)
             {
                 foreach (var st in syncData.DeletedSubtrees)
@@ -1326,10 +1372,7 @@ namespace ProtoScript.Runners
                     if (st.AstNodes != null && st.AstNodes.Count > 0)
                     {
                         var nullNodes = MarkGraphNodesInactive(st.AstNodes);
-                        if (nullNodes != null)
-                        {
-                            deltaAstList.AddRange(nullNodes);
-                        }
+                        deltaAstList.AddRange(nullNodes);
                     }
                     else
                     {
@@ -1341,10 +1384,7 @@ namespace ProtoScript.Runners
                             if (removeSubTree.AstNodes != null)
                             {
                                 var nullNodes = MarkGraphNodesInactive(removeSubTree.AstNodes);
-                                if (nullNodes != null)
-                                {
-                                    deltaAstList.AddRange(nullNodes);
-                                }
+                                deltaAstList.AddRange(nullNodes);
                             }
                         }
                     }
@@ -1503,6 +1543,19 @@ namespace ProtoScript.Runners
             }
 
             return ret;
+        }
+
+        /// <summary>
+        /// Get ast nodes for graph UI node. The returned ast nodes are in 
+        /// SSA form.
+        /// </summary>
+        /// <param name="nodeGuid"></param>
+        /// <returns></returns>
+        public IEnumerable<ProtoCore.AST.Node> GetAstNodes(Guid nodeGuid)
+        {
+            List<ProtoCore.AST.Node> nodes = null;
+            astCache.TryGetValue(nodeGuid, out nodes);
+            return nodes;
         }
 
         private void SynchronizeInternal(string code)

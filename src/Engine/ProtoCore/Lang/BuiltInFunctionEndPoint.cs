@@ -379,7 +379,7 @@ namespace ProtoCore.Lang
 
                         string mangledName = ProtoCore.Utils.CoreUtils.GetMangledFunctionName(className, functionName);
 
-                        ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnodeUID, ProtoCore.DSASM.Constants.kGlobalScope, mangledName);
+                        ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, ProtoCore.DSASM.Constants.kGlobalScope, mangledName);
                         Validity.Assert(null != callsite);
 
                         //
@@ -585,7 +585,7 @@ namespace ProtoCore.Lang
                             }
                         }
 
-                        ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnodeUID, thisPtrType, functionName);
+                        ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, thisPtrType, functionName);
                         Validity.Assert(null != callsite);
 
                         ProtoCore.DSASM.Executive exec = core.CurrentExecutive.CurrentDSASMExec;
