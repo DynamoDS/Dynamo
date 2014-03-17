@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Config\CS.props" />
+  </ImportGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{06B9E5B0-7C50-4351-9D88-E159DC25755F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Migrations</RootNamespace>
+    <AssemblyName>Migrations</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(OutputPath)\nodes</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(OutputPath)\nodes</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DynamoMSOffice\Excel.cs" />
+    <Compile Include="DynamoPython\dynPython.cs" />
+    <Compile Include="MigrationHelpers.cs" />
+    <Compile Include="CoreNodes\dynBaseTypes.cs" />
+    <Compile Include="CoreNodes\dynColors.cs" />
+    <Compile Include="CoreNodes\dynCommunication.cs" />
+    <Compile Include="CoreNodes\dynFiles.cs" />
+    <Compile Include="CoreNodes\dynFormula.cs" />
+    <Compile Include="CoreNodes\dynMultithreading.cs" />
+    <Compile Include="CoreNodes\dynOptimize.cs" />
+    <Compile Include="CoreNodes\dynTimer.cs" />
+    <Compile Include="CoreNodes\Measurement.cs" />
+    <Compile Include="RevitNodes\AdaptiveComponents.cs" />
+    <Compile Include="RevitNodes\AnalysisDisplay.cs" />
+    <Compile Include="RevitNodes\Annotation.cs" />
+    <Compile Include="RevitNodes\Arc.cs" />
+    <Compile Include="RevitNodes\Circle.cs" />
+    <Compile Include="RevitNodes\Curve.cs" />
+    <Compile Include="RevitNodes\DividedCurve.cs" />
+    <Compile Include="RevitNodes\DividedSurface.cs" />
+    <Compile Include="RevitNodes\Element.cs" />
+    <Compile Include="RevitNodes\Ellipse.cs" />
+    <Compile Include="RevitNodes\Face.cs" />
+    <Compile Include="RevitNodes\Facet.cs" />
+    <Compile Include="RevitNodes\FamilyInstance.cs" />
+    <Compile Include="RevitNodes\FamilyType.cs" />
+    <Compile Include="RevitNodes\Floor.cs" />
+    <Compile Include="RevitNodes\FreeForm.cs" />
+    <Compile Include="RevitNodes\Grid.cs" />
+    <Compile Include="RevitNodes\HermiteSpline.cs" />
+    <Compile Include="RevitNodes\Intersect.cs" />
+    <Compile Include="RevitNodes\Level.cs" />
+    <Compile Include="RevitNodes\Line.cs" />
+    <Compile Include="RevitNodes\Material.cs" />
+    <Compile Include="RevitNodes\ModelCurve.cs" />
+    <Compile Include="RevitNodes\NurbsSpline.cs" />
+    <Compile Include="RevitNodes\Plane.cs" />
+    <Compile Include="RevitNodes\RayBounce.cs" />
+    <Compile Include="RevitNodes\Rectangle.cs" />
+    <Compile Include="RevitNodes\ReferenceCurve.cs" />
+    <Compile Include="RevitNodes\ReferencePlane.cs" />
+    <Compile Include="RevitNodes\ReferencePoint.cs" />
+    <Compile Include="RevitNodes\RevitAPINode.cs" />
+    <Compile Include="RevitNodes\Selection.cs" />
+    <Compile Include="RevitNodes\SimplexNoise.cs" />
+    <Compile Include="RevitNodes\SolarRadiation.cs" />
+    <Compile Include="RevitNodes\Solid.cs" />
+    <Compile Include="RevitNodes\StructuralFraming.cs" />
+    <Compile Include="RevitNodes\SunPath.cs" />
+    <Compile Include="RevitNodes\Tesselation.cs" />
+    <Compile Include="RevitNodes\Topography.cs" />
+    <Compile Include="RevitNodes\Transform.cs" />
+    <Compile Include="RevitNodes\UV.cs" />
+    <Compile Include="RevitNodes\View.cs" />
+    <Compile Include="RevitNodes\Wall.cs" />
+    <Compile Include="RevitNodes\XYZ.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
+      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+      <Name>DynamoCore</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
+      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
+      <Name>Units</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -149,1037 +149,714 @@ namespace ProtoCore.Lang
         public BuiltInMethods(Core core)
         {
             Validity.Assert(null == Methods);
-            Methods = new List<BuiltInMethod>();
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeInt,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "int",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kCount
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeBool,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "bool",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kSomeNulls
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeInt,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "int"
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kRank
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = 1,
-                    IsIndexable = true,
-                    Name = "var"
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kFlatten
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = DSASM.Constants.kArbitraryRank,
-                    IsIndexable = true,
-                    Name = "var"
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array1", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("array2", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kConcat
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = 1,
-                    IsIndexable = true,
-                    Name = "var"
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array1", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = 1 }),
-                    new KeyValuePair<string, ProtoCore.Type>("array2", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = 1 })
-                },
-                ID = BuiltInMethods.MethodID.kIntersection
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = 1,
-                    IsIndexable = true,
-                    Name = "var"
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array1", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = 1 }),
-                    new KeyValuePair<string, ProtoCore.Type>("array2", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = 1 })
-                },
-                ID = BuiltInMethods.MethodID.kUnion
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = 1,
-                    IsIndexable = true,
-                    Name = "var"
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array1", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = 1 }),
-                    new KeyValuePair<string, ProtoCore.Type>("array2", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = 1 })
-                },
-                ID = BuiltInMethods.MethodID.kDifference
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeInt,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "int",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kCountTrue
-            });
-           
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeInt,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "int",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kCountFalse
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeBool,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "bool",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kAllFalse
-            });
-            Methods.Add(new BuiltInMethod
+            Methods = new List<BuiltInMethod>()
             {
-                ReturnType = new Type
+                new BuiltInMethod
                 {
-                    UID = (int)PrimitiveType.kTypeBool,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "bool",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kAllTrue
-            });
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeBool,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "bool",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kIsHomogeneous
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeInt,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "int",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeInt, Name = "int", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kSum
-            });
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeDouble,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "double",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeDouble, Name = "double", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kSum
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeDouble,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "double",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeInt, Name = "int", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kAverage
-            });
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeDouble,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "double",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeDouble, Name = "double", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kAverage
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeBool,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "bool",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kSomeTrue
-            });
-            Methods.Add(new BuiltInMethod()
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVoid,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "void",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("milliseconds", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeInt, Name = "int", IsIndexable = false, rank = 0 }),
-                },
-                ID = BuiltInMethods.MethodID.kSleep
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeBool,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "bool",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kSomeFalse
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = DSASM.Constants.kArbitraryRank,
-                    IsIndexable = true,
-                    Name = "var",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("index", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeInt, Name = "int", IsIndexable = false, rank = 0 })
-                },
-                ID = BuiltInMethods.MethodID.kRemove
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = DSASM.Constants.kArbitraryRank,
-                    IsIndexable = true,
-                    Name = "var",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kRemoveDuplicates
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = ProtoCore.DSASM.Constants.kArbitraryRank,
-                    IsIndexable = true,
-                    Name = "var",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kRemoveNulls
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = ProtoCore.DSASM.Constants.kArbitraryRank,
-                    IsIndexable = true,
-                    Name = "var",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("type", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeString, Name = "string", IsIndexable = false, rank = 0 })
-                },
-                ID = BuiltInMethods.MethodID.kRemoveIfNot
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = ProtoCore.DSASM.Constants.kArbitraryRank,
-                    IsIndexable = true,
-                    Name = "var",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kReverse
-            });
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeBool,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "bool",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("ObjectA", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = false, rank = 0 }),
-                    new KeyValuePair<string, ProtoCore.Type>("ObjectB", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = false, rank = 0 }),
-                },
-                ID = BuiltInMethods.MethodID.kEquals
-            });
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeBool,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "bool",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("ObjectA", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("ObjectB", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = DSASM.Constants.kArbitraryRank }),
-                },
-                ID = BuiltInMethods.MethodID.kEquals
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeBool,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "var",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("member", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kContains
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeBool,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "bool",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("member", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = false, rank = 0 })
-                },
-                ID = BuiltInMethods.MethodID.kContains
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeInt,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "int",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("member", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = false, rank = 0 })
-                },
-                ID = BuiltInMethods.MethodID.kIndexOf
-            }); 
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeInt,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "int",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("member", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kIndexOf
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = ProtoCore.DSASM.Constants.kArbitraryRank,
-                    IsIndexable = true,
-                    Name = "var",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("element", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = false , rank = 0 }),
-                    new KeyValuePair<string, ProtoCore.Type>("index", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeInt, Name = "int", IsIndexable = false, rank = 0 })
-                },
-                ID = BuiltInMethods.MethodID.kInsert
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = ProtoCore.DSASM.Constants.kArbitraryRank,
-                    IsIndexable = true,
-                    Name = "var",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("element", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true , rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("index", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeInt, Name = "int", IsIndexable = false, rank = 0 })
-                },
-                ID = BuiltInMethods.MethodID.kInsert
-            });
-            //Sort, SortWithMode, SortIndexByValue & SortIndexByValueWithMode
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeInt,
-                    rank = 1,
-                    IsIndexable = true,
-                    Name = "int",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeInt, Name = "int", IsIndexable = true, rank = 1 }),
-                },
-                ID = BuiltInMethods.MethodID.kSort
-            });
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeInt,
-                    rank = 1,
-                    IsIndexable = true,
-                    Name = "int",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeInt, Name = "int", IsIndexable = true, rank = 1 }),
-                    new KeyValuePair<string, ProtoCore.Type>("ascending", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeBool, Name = "bool", IsIndexable = false, rank = 0 }),
-                },
-                ID = BuiltInMethods.MethodID.kSortWithMode
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeDouble,
-                    rank = 1,
-                    IsIndexable = true,
-                    Name = "double",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeDouble, Name = "double", IsIndexable = true, rank = 1 }),
-                },
-                ID = BuiltInMethods.MethodID.kSort
-            });
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeDouble,
-                    rank = 1,
-                    IsIndexable = true,
-                    Name = "double",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeDouble, Name = "double", IsIndexable = true, rank = 1 }),
-                    new KeyValuePair<string, ProtoCore.Type>("ascending", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeBool, Name = "bool", IsIndexable = false, rank = 0 }),
-                },
-                ID = BuiltInMethods.MethodID.kSortWithMode
-            });
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = 1,
-                    IsIndexable = true,
-                    Name = "var",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("comparerFunction", new ProtoCore.Type{ UID = (int)PrimitiveType.kTypeFunctionPointer, Name = "function", IsIndexable = false, rank = 0 }),
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = 1 }),
-                },
-                ID = BuiltInMethods.MethodID.kSortPointer
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeInt,
-                    rank = 1,
-                    IsIndexable = true,
-                    Name = "int",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeDouble, Name = "double", IsIndexable = true, rank = 1 }),
-                },
-                ID = BuiltInMethods.MethodID.kSortIndexByValue
-            });
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeInt,
-                    rank = 1,
-                    IsIndexable = true,
-                    Name = "int",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeDouble, Name = "double", IsIndexable = true, rank = 1 }),
-                    new KeyValuePair<string, ProtoCore.Type>("ascending", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeBool, Name = "bool", IsIndexable = false, rank = 0 }),
-                },
-                ID = BuiltInMethods.MethodID.kSortIndexByValueWithMode
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = 1,
-                    IsIndexable = true,
-                    Name = "var",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = 1 }),
-                    new KeyValuePair<string, ProtoCore.Type>("indice", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = 1 }),
-                },
-                ID = BuiltInMethods.MethodID.kReorder
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeBool,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "bool",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                },
-                ID = BuiltInMethods.MethodID.kIsUniformDepth
-            });
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeBool,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "bool",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                },
-                ID = BuiltInMethods.MethodID.kIsRectangular
-            }); 
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = DSASM.Constants.kArbitraryRank,
-                    IsIndexable = true,
-                    Name = "var",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                },
-                ID = BuiltInMethods.MethodID.kNormalizeDepth
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = DSASM.Constants.kArbitraryRank,
-                    IsIndexable = true,
-                    Name = "var",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("rank", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeInt, Name = "var", IsIndexable = false, rank = 0 }),
-                },
-                ID = BuiltInMethods.MethodID.kNormalizeDepthWithRank
-            }); 
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeDouble,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "double",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("rangeMin", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeDouble, Name = "double", IsIndexable = false, rank = 0 }),
-                    new KeyValuePair<string, ProtoCore.Type>("rangeMax", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeDouble, Name = "double", IsIndexable = false, rank = 0 }),
-                    new KeyValuePair<string, ProtoCore.Type>("inputValue", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeDouble, Name = "double", IsIndexable = false, rank = 0 }),
-                    },
-                ID = BuiltInMethods.MethodID.kMap
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeDouble,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "var",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("rangeMin", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeDouble, Name = "double", IsIndexable = false, rank = 0 }),
-                    new KeyValuePair<string, ProtoCore.Type>("rangeMax", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeDouble, Name = "double", IsIndexable = false, rank = 0 }),
-                    new KeyValuePair<string, ProtoCore.Type>("inputValue", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeDouble, Name = "double", IsIndexable = false, rank = 0 }),
-                    new KeyValuePair<string, ProtoCore.Type>("targetRangeMin", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeDouble, Name = "double", IsIndexable = false, rank = 0 }),
-                    new KeyValuePair<string, ProtoCore.Type>("targetRangeMax", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeDouble, Name = "double", IsIndexable = false, rank = 0 }),
-                },
-                ID = BuiltInMethods.MethodID.kMapTo
-            });
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = DSASM.Constants.kArbitraryRank,
-                    IsIndexable = true,
-                    Name = "var",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("Array", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = DSASM.Constants.kArbitraryRank }),
-                },
-                ID = BuiltInMethods.MethodID.kTranspose
-            });
-            Methods.Add(new BuiltInMethod
-                            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeArray,
-                    rank = 0,
-                    IsIndexable = true,
-                    Name = ProtoCore.DSDefinitions.Keyword.Array,
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("start", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = false, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("end", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = false, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("step", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = false, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("op", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeInt, Name = "int", IsIndexable = false, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("nostep", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeBool, Name = "bool", IsIndexable = false, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-                },
-                ID = BuiltInMethods.MethodID.kRangeExpression
-            });
-            Methods.Add(new BuiltInMethod()
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeDouble,
-                    rank = ProtoCore.DSASM.Constants.kArbitraryRank,
-                    IsIndexable = true,
-                    Name = "double",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("filePath", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeString, Name = "string", IsIndexable = false, rank = 0 }),
-                },
-                ID = BuiltInMethods.MethodID.kLoadCSV
-            });
-            Methods.Add(new BuiltInMethod()
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeDouble,
-                    rank = ProtoCore.DSASM.Constants.kArbitraryRank,
-                    IsIndexable = true,
-                    Name = "double",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("filePath", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeString, Name = "string", IsIndexable = false, rank = 0 }),
-                    new KeyValuePair<string, ProtoCore.Type>("transpose", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeBool, Name = "bool", IsIndexable = false, rank = 0 }),
-                },
-                ID = BuiltInMethods.MethodID.kLoadCSVWithMode
-            });
-            Methods.Add(new BuiltInMethod()
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVoid,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "void",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("msg", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = false, rank = 0 }),                    
-                },
-                ID = BuiltInMethods.MethodID.kPrint
-            });
-            Methods.Add(new BuiltInMethod()
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeVoid,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "void",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("msg", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),                    
-                },
-                ID = BuiltInMethods.MethodID.kPrintIndexable
-            });
-            Methods.Add(new BuiltInMethod()
-            {
-                ReturnType = new Type
-                {
-                    UID = (int)PrimitiveType.kTypeInt,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "int",
-                },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                { },
-                ID = BuiltInMethods.MethodID.kGetElapsedTime
-            });
-
-            // the %dot function
-            {
-                Methods.Add(new BuiltInMethod
-                {
-                    ReturnType = new Type
-                    {
-                        UID = (int)PrimitiveType.kTypeVar,
-                        rank = DSASM.Constants.kArbitraryRank,
-                        IsIndexable = true,
-                        Name = "var",
-                    },
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                {
-                    new KeyValuePair<string, ProtoCore.Type>("lhsPtr", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kCount
                 },
-                        ID = BuiltInMethods.MethodID.kDot
-                    });
-            }
 
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
+                new BuiltInMethod
                 {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = DSASM.Constants.kArbitraryRank,
-                    IsIndexable = true,
-                    Name = "var",
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kSomeNulls
                 },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-            {
-                new KeyValuePair<string, ProtoCore.Type>("lhsPtr", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                new KeyValuePair<string, ProtoCore.Type>("functionIndex", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeInt, Name = "int", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
-            },
-                ID = BuiltInMethods.MethodID.kDotDynamic
-            });
 
-
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
+                new BuiltInMethod
                 {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = ProtoCore.DSASM.Constants.kArbitraryRank,
-                    IsIndexable = true,
-                    Name = "var",
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kRank
                 },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+
+                new BuiltInMethod
                 {
-                    new KeyValuePair<string, ProtoCore.Type>("condition", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeBool, Name = "bool", IsIndexable = false, rank = 0 }),
-                    new KeyValuePair<string, ProtoCore.Type>("dyn1", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank }),
-                    new KeyValuePair<string, ProtoCore.Type>("dyn2", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank })
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                    new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kFlatten
                 },
-                ID = BuiltInMethods.MethodID.kInlineConditional
-            });
-
-
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
+                
+                new BuiltInMethod
                 {
-                    UID = (int)PrimitiveType.kTypeBool,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "bool"
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("array2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kConcat
                 },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>> 
+
+                new BuiltInMethod
                 {
-                    new KeyValuePair<string, ProtoCore.Type>("object", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = false, rank = 0}),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("array2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1))
+                    },
+                    ID = BuiltInMethods.MethodID.kIntersection
                 },
-                ID = BuiltInMethods.MethodID.kGetType
-            });
 
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
+                new BuiltInMethod
                 {
-                    UID = (int)PrimitiveType.kTypeBool,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "bool"
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("array2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1))
+                    },
+                    ID = BuiltInMethods.MethodID.kUnion
                 },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>> 
+
+                new BuiltInMethod
                 {
-                    new KeyValuePair<string, ProtoCore.Type>("object", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank}),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1), 
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("array2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1))
+                    },
+                    ID = BuiltInMethods.MethodID.kDifference
                 },
-                ID = BuiltInMethods.MethodID.kGetType
-            });
 
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
+                new BuiltInMethod
                 {
-                    UID = (int)PrimitiveType.kTypeString,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "string"
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kCountTrue
                 },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>> 
+
+                new BuiltInMethod
                 {
-                    new KeyValuePair<string, ProtoCore.Type>("object", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank}),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kCountFalse
                 },
-                ID = BuiltInMethods.MethodID.kToString
-            });
 
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
+                new BuiltInMethod
                 {
-                    UID = (int)PrimitiveType.kTypeVoid,
-                    rank = 0,
-                    IsIndexable = false,
-                    Name = "void",
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kAllFalse
                 },
-                Parameters = new List<KeyValuePair<string,Type>>(),
-                ID = BuiltInMethods.MethodID.kBreak
-            });
 
-            Methods.Add(new BuiltInMethod
-            {
-                ReturnType = new Type
+                new BuiltInMethod
                 {
-                    UID = (int)PrimitiveType.kTypeVar,
-                    rank = ProtoCore.DSASM.Constants.kUndefinedRank,
-                    IsIndexable = false,
-                    Name = "var"
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kAllTrue
                 },
-                Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+
+                new BuiltInMethod
                 {
-                    new KeyValuePair<string, ProtoCore.Type>("appname", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeString, Name = "string", IsIndexable = false, rank = 0}),
-                    new KeyValuePair<string, ProtoCore.Type>("connectionParameters", new ProtoCore.Type { UID = (int)PrimitiveType.kTypeVar, Name = "var", IsIndexable = true, rank = ProtoCore.DSASM.Constants.kArbitraryRank})
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kIsHomogeneous
                 },
-                ID = BuiltInMethods.MethodID.kImportData
-            });
 
-            Methods.Add(new BuiltInMethod
-            {
-                ID = MethodID.kGetKeys,
-                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, true, Constants.kUndefinedRank),
-                Parameters = new List<KeyValuePair<string, Type>> 
+                new BuiltInMethod
                 {
-                    new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, true, Constants.kArbitraryRank))
-                }
-            });
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kSum
+                },
 
-            Methods.Add(new BuiltInMethod
-            {
-                ID = MethodID.kGetValues,
-                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, true, Constants.kUndefinedRank),
-                Parameters = new List<KeyValuePair<string, Type>> 
+                new BuiltInMethod
                 {
-                    new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, true, Constants.kArbitraryRank))
-                }
-            });
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kSum
+                },
 
-            Methods.Add(new BuiltInMethod
-            {
-                ID = MethodID.kRemoveKey,
-                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, false, 0),
-                Parameters = new List<KeyValuePair<string, Type>> 
+                new BuiltInMethod
                 {
-                    new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, true, Constants.kArbitraryRank)),
-                    new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, false, Constants.kUndefinedRank))
-                }
-            });
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kAverage
+                },
 
-            Methods.Add(new BuiltInMethod
-            {
-                ID = MethodID.kContainsKey,
-                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, false, 0),
-                Parameters = new List<KeyValuePair<string, Type>> 
+                new BuiltInMethod
                 {
-                    new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, true, Constants.kArbitraryRank)),
-                    new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, false, Constants.kUndefinedRank))
-                }
-            });
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kAverage
+                },
 
-            Methods.Add(new BuiltInMethod
+                new BuiltInMethod
                 {
-                    ID = MethodID.kEvaluate,
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, true, Constants.kUndefinedRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kSomeTrue
+                },
+
+                new BuiltInMethod()
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("milliseconds", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0)),
+                    },
+                    ID = BuiltInMethods.MethodID.kSleep
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kSomeFalse
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0))
+                    },
+                    ID = BuiltInMethods.MethodID.kRemove
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kRemoveDuplicates
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kRemoveNulls
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("type", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0))
+                    },
+                    ID = BuiltInMethods.MethodID.kRemoveIfNot
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kReverse
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("ObjectA", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("ObjectB", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                    },
+                    ID = BuiltInMethods.MethodID.kEquals
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("ObjectA", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("ObjectB", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                    },
+                    ID = BuiltInMethods.MethodID.kEquals
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("member", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kContains
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("member", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
+                    },
+                    ID = BuiltInMethods.MethodID.kContains
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("member", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
+                    },
+                    ID = BuiltInMethods.MethodID.kIndexOf
+                }, 
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("member", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kIndexOf
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0))
+                    },
+                    ID = BuiltInMethods.MethodID.kInsert
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0))
+                    },
+                    ID = BuiltInMethods.MethodID.kInsert
+                },
+
+            //Sort, SortWithMode, SortIndexByValue & SortIndexByValueWithMode
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1)),
+                    },
+                    ID = BuiltInMethods.MethodID.kSort
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
+                    },
+                    ID = BuiltInMethods.MethodID.kSortWithMode
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
+                    },
+                    ID = BuiltInMethods.MethodID.kSort
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
+                    },
+                    ID = BuiltInMethods.MethodID.kSortWithMode
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("comparerFunction", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeFunctionPointer, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
+                    },
+                    ID = BuiltInMethods.MethodID.kSortPointer
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
+                    },
+                    ID = BuiltInMethods.MethodID.kSortIndexByValue
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
+                    },
+                    ID = BuiltInMethods.MethodID.kSortIndexByValueWithMode
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("indice", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
+                    },
+                    ID = BuiltInMethods.MethodID.kReorder
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                    },
+                    ID = BuiltInMethods.MethodID.kIsUniformDepth
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                    },
+                    ID = BuiltInMethods.MethodID.kIsRectangular
+                }, 
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                    },
+                    ID = BuiltInMethods.MethodID.kNormalizeDepth
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("rank", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                    },
+                    ID = BuiltInMethods.MethodID.kNormalizeDepthWithRank
+                }, 
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("rangeMin", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("rangeMax", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("inputValue", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        },
+                    ID = BuiltInMethods.MethodID.kMap
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("rangeMin", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("rangeMax", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("inputValue", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("targetRangeMin", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("targetRangeMax", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                    },
+                    ID = BuiltInMethods.MethodID.kMapTo
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("Array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                    },
+                    ID = BuiltInMethods.MethodID.kTranspose
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeArray, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("start", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("end", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("step", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("op", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("nostep", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0))
+                    },
+                    ID = BuiltInMethods.MethodID.kRangeExpression
+                },
+
+                new BuiltInMethod()
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("filePath", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0)),
+                    },
+                    ID = BuiltInMethods.MethodID.kLoadCSV
+                },
+
+                new BuiltInMethod()
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("filePath", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("transpose", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
+                    },
+                    ID = BuiltInMethods.MethodID.kLoadCSVWithMode
+                },
+
+                new BuiltInMethod()
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("msg", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),                    
+                    },
+                    ID = BuiltInMethods.MethodID.kPrint
+                },
+
+                new BuiltInMethod()
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("msg", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),                    
+                    },
+                    ID = BuiltInMethods.MethodID.kPrintIndexable
+                },
+
+                new BuiltInMethod()
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>> { },
+                    ID = BuiltInMethods.MethodID.kGetElapsedTime
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("lhsPtr", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                    },
+                    ID = BuiltInMethods.MethodID.kDot
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("lhsPtr", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("functionIndex", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kDotDynamic
+
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("condition", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("dyn1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("dyn2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kInlineConditional
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>> 
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                    },
+                    ID = BuiltInMethods.MethodID.kGetType
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>> 
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                    },
+                    ID = BuiltInMethods.MethodID.kGetType
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>> 
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                    },
+                    ID = BuiltInMethods.MethodID.kToString
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
+                    Parameters = new List<KeyValuePair<string,Type>>(),
+                    ID = BuiltInMethods.MethodID.kBreak
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("appname", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("connectionParameters", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.kImportData
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, Type>> 
+                    {
+                        new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = MethodID.kGetKeys,
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, Type>> 
+                    {
+                        new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = MethodID.kGetValues,
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    Parameters = new List<KeyValuePair<string, Type>> 
+                    {
+                        new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
+                    },
+                    ID = MethodID.kRemoveKey,
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    Parameters = new List<KeyValuePair<string, Type>> 
+                    {
+                        new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
+                    },
+                    ID = MethodID.kContainsKey,
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, Type>>
                     {
-                        new KeyValuePair<string, Type>("functionPointer", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeFunctionPointer, false, Constants.kUndefinedRank)),
-                        new KeyValuePair<string, Type>("params", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, true, Constants.kArbitraryRank))
-                    }
-                });
+                        new KeyValuePair<string, Type>("functionPointer", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeFunctionPointer, 0)),
+                        new KeyValuePair<string, Type>("params", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    },
+                    ID = MethodID.kEvaluate,
+                }
+            };
         }
     }
 }

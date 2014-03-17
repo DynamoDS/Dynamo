@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 
@@ -504,8 +505,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Creates a list of lists out of an existing list with each sub-list containing
-        ///     the given amount of items.
+        ///     Chop a list into a set of lists each containing the given amount of items.
         /// </summary>
         /// <param name="list">List to chop up.</param>
         /// <param name="subLength">Length of each new sub-list.</param>
@@ -542,21 +542,32 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Create a diagonal lists of lists from top left to lower right.
+        ///     List elements along each diagonal in the matrix from the top left to the lower right.
         /// </summary>
-        /// <param name="list">A list</param>
-        /// <param name="subLength">Length of each new sub-list.</param>
+        /// <param name="list">A flat list</param>
+        /// <param name="rowLength">Length of each new sub-list.</param>
+        /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
+        /// <search>diagonal,right,matrix</search>
         public static IList DiagonalRight(
             [ArbitraryDimensionArrayImport] IList list,
             int subLength)
         {
-            var flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
+            object[] flatList = null;
+
+            try
+            {
+                flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
+            }
+            catch
+            {
+                flatList = list.Cast<object>().ToArray();
+            }
 
             if (flatList.Count() < subLength)
                 return list;
 
-            var finalList = new ArrayList();
-            var currList = new ArrayList();
+            var finalList = new List<List<object>>();
+            List<object> currList = null;
 
             var startIndices = new List<int>();
 
@@ -573,6 +584,7 @@ namespace DSCore
             foreach (int start in startIndices)
             {
                 int index = start;
+                currList = new List<object>();
 
                 while (index < flatList.Count())
                 {
@@ -586,7 +598,6 @@ namespace DSCore
                         break;
                 }
                 finalList.Add(currList);
-                currList = new ArrayList();
             }
 
             if (currList.Count > 0)
@@ -596,20 +607,32 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Create a diagonal lists of lists from top right to lower left.
+        ///     List elements along each diagonal in the matrix from the top right to the lower left.
         /// </summary>
-        /// <param name="list">A list.</param>
+        /// <param name="list">A flat list.</param>
         /// <param name="rowLength">Length of each new sib-list.</param>
+        /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
+        /// <search>diagonal,left,matrix</search>
         public static IList DiagonalLeft(
             [ArbitraryDimensionArrayImport] IList list,
             int rowLength)
         {
-            var flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
+            object[] flatList = null;
+
+            try
+            {
+                flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
+            }
+            catch
+            {
+                flatList = list.Cast<object>().ToArray();
+            }
 
             if (flatList.Count() < rowLength)
                 return list;
 
-            var finalList = new ArrayList();
+            var finalList = new List<List<object>>();
+            List<object> currList = null;
 
             var startIndices = new List<int>();
 
@@ -624,7 +647,7 @@ namespace DSCore
             foreach (int start in startIndices)
             {
                 int index = start;
-                var currList = new ArrayList();
+                currList = new List<object>();
 
                 while (index < flatList.Count())
                 {
@@ -639,6 +662,9 @@ namespace DSCore
                 }
                 finalList.Add(currList);
             }
+
+            if (currList.Count > 0)
+                finalList.Add(currList);
 
             return finalList;
         }
