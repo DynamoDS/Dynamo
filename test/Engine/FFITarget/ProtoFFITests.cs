@@ -86,6 +86,10 @@ namespace FFITarget
         {
             return new List<object> { 2, 3, "DesignScript", new List<string> { "Dynamo", "Revit" }, new List<object> { true, new List<object> { 5.5, 10 } } };
         }
+        public static IList RemoveItemsAtIndices(IEnumerable list, int[] indices)
+        {
+            return list.Cast<object>().Where((_, i) => !indices.Contains(i)).ToList();
+        }
         public static IEnumerable<int> GetNumbersByDouble(int x)
         {
             for (int i = 0; i < x; ++i)
@@ -336,13 +340,13 @@ namespace FFITarget
             y2.MoveNext();
             return y2.Current;
         }
-        public int TestIEnumerable2(object x)
+        public int TestIEnumerable2([ArbitraryDimensionArrayImport] object x)
         {
-            IEnumerable<int> y = (IEnumerable<int>)x;
-            IEnumerator<int> y2 = y.GetEnumerator();
+            IEnumerable y = (IEnumerable)x;
+            IEnumerator y2 = y.GetEnumerator();
             y2.Reset();
             y2.MoveNext();
-            return y2.Current;
+            return (int)y2.Current;
         }
         public object GetIEnumerable()
         {
@@ -415,7 +419,7 @@ namespace FFITarget
             };
         }
 
-        public static int GetDepth([ArbitraryDimensionArrayImport] IList arr)
+        public static int GetDepth(IList arr)
         {
             int maxSubListDepth = 0;
             foreach (var item in arr)
@@ -431,7 +435,7 @@ namespace FFITarget
             return maxSubListDepth + 1;
         }
 
-        public static int SumList([ArbitraryDimensionArrayImport] IList arr)
+        public static int SumList(IList arr)
         {
             int sum = 0;
             foreach (var item in arr)
@@ -447,6 +451,15 @@ namespace FFITarget
             }
 
             return sum;
+        }
+
+        public static IList AddItemToFront(
+            [ArbitraryDimensionArrayImport] object item,
+            IList list)
+        {
+            var newList = new ArrayList { item };
+            newList.AddRange(list);
+            return newList;
         }
     }
 

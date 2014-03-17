@@ -9,6 +9,7 @@ using GraphToDSCompiler;
 using ProtoTestFx.TD;
 using ProtoScript.Runners.Obsolete;
 using ProtoCore.DSASM;
+using ProtoCore;
 namespace ProtoTest.GraphCompiler
 {
     public class MicroFeatureTests
@@ -237,13 +238,7 @@ namespace ProtoTest.GraphCompiler
             ProtoCore.AST.AssociativeAST.FunctionDefinitionNode funcDefNode = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
             funcDefNode.FunctionBody = cbn;
             funcDefNode.Name = "f";
-            funcDefNode.ReturnType = new ProtoCore.Type()
-            {
-                Name = "int",
-                UID = (int)ProtoCore.PrimitiveType.kTypeInt,
-                IsIndexable = false,
-                rank = 0
-            };
+            funcDefNode.ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0);
             /*Class C { }*/
             ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode();
             varDeclNode.Name = "X";
@@ -251,22 +246,10 @@ namespace ProtoTest.GraphCompiler
             {
                 Value = "X",
                 Name = "X",
-                datatype = new ProtoCore.Type()
-                {
-                    Name = "int",
-                    IsIndexable = false,
-                    rank = 0,
-                    UID = (int)ProtoCore.PrimitiveType.kTypeInt
-                }
+                datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0)
             };
             varDeclNode.NameNode = varDeclId;
-            varDeclNode.ArgumentType = new ProtoCore.Type()
-            {
-                Name = "int",
-                IsIndexable = false,
-                rank = 0,
-                UID = (int)ProtoCore.PrimitiveType.kTypeVar
-            };
+            varDeclNode.ArgumentType = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeInt, 0);
             ProtoCore.AST.AssociativeAST.ClassDeclNode classDeclNode = new ProtoCore.AST.AssociativeAST.ClassDeclNode();
             classDeclNode.className = "C";
             classDeclNode.funclist.Add(funcDefNode);
@@ -372,7 +355,6 @@ namespace ProtoTest.GraphCompiler
                 datatype = new ProtoCore.Type()
                 {
                     Name = "int",
-                    IsIndexable = false,
                     rank = 0,
                     UID = (int)ProtoCore.PrimitiveType.kTypeInt
                 }
@@ -385,13 +367,7 @@ namespace ProtoTest.GraphCompiler
             {
                 Name = "Y",
                 Value = "Y",
-                datatype = new ProtoCore.Type()
-                {
-                    Name = "int",
-                    IsIndexable = false,
-                    rank = 0,
-                    UID = (int)ProtoCore.PrimitiveType.kTypeInt
-                }
+                datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0)
             };
             varDeclNode2.NameNode = nameNode2;
             argSignatureNode.AddArgument(varDeclNode2);
@@ -406,7 +382,6 @@ namespace ProtoTest.GraphCompiler
             {
                 Name = "int",
                 UID = (int)ProtoCore.PrimitiveType.kTypeInt,
-                IsIndexable = false,
                 rank = 0
             };
             // C { }
