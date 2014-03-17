@@ -86,12 +86,16 @@ namespace Dynamo.DSEngine
         {
             switch (s)
             {
+                case "[]":
+                    return "System.Collections.IList";
+                case "var[]..[]":
+                    return "System.Collections.IList";
                 case "var":
                     return "System.Object";
                 case "double":
                     return "System.Double";
                 case "int":
-                    return "System.Int";
+                    return "System.Int32";
                 case "bool":
                     return "System.Boolean";
                 default:
