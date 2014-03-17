@@ -420,6 +420,8 @@ namespace Dynamo.Tests
         [Test]
         public void Formula()
         {
+            Assert.Inconclusive();
+
             var model = dynSettings.Controller.DynamoModel;
             var exPath = Path.Combine(GetTestDirectory(), @"core\formula");
 
