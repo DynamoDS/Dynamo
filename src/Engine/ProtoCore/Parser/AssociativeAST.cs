@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ProtoCore.AST.ImperativeAST;
 using ProtoCore.DesignScriptParser;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
@@ -2379,4 +2380,385 @@ namespace ProtoCore.AST.AssociativeAST
 			return AstFactory.BuildAssignment(retNode, rhs);
 		}
 	}
+
+    public static class AstExtensions
+    {
+        private static void CopyProps(Node @from, Node to)
+        {
+            to.Name = from.Name;
+            to.col = from.col;
+            to.endCol = from.endCol;
+            to.line = from.line;
+            to.endLine = from.endLine;
+            to.skipMe = from.skipMe;
+        }
+
+        public static ImperativeAST.ArgumentSignatureNode ToImperativeNode(this ArgumentSignatureNode aNode)
+        {
+            var result = new ImperativeAST.ArgumentSignatureNode
+            {
+                Arguments = aNode.Arguments.Select(ToImperativeNode).ToList()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.ArrayNameNode ToImperativeNode(this ArrayNameNode aNode)
+        {
+            var result = new ImperativeAST.ArrayNameNode
+            {
+                ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.ArrayNode ToImperativeNode(this ArrayNode aNode)
+        {
+            var result = new ImperativeAST.ArrayNode
+            {
+                Type = aNode.Type.ToImperativeAST(),
+                Expr = aNode.Expr.ToImperativeAST()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.BinaryExpressionNode ToImperativeNode(this BinaryExpressionNode aNode)
+        {
+            var result = new ImperativeAST.BinaryExpressionNode
+            {
+                LeftNode = aNode.LeftNode.ToImperativeAST(),
+                RightNode = aNode.RightNode.ToImperativeAST(),
+                Optr = aNode.Optr
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.BooleanNode ToImperativeNode(this BooleanNode aNode)
+        {
+            var result = new ImperativeAST.BooleanNode(aNode.Value);
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.BreakNode ToImperativeNode(this BreakNode aNode)
+        {
+            var result = new ImperativeAST.BreakNode();
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.CatchBlockNode ToImperativeNode(this CatchBlockNode aNode)
+        {
+            var result = new ImperativeAST.CatchBlockNode
+            {
+                body = aNode.body.Select(ToImperativeAST).ToList(),
+                catchFilter = aNode.catchFilter.ToImperativeNode()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.CatchFilterNode ToImperativeNode(this CatchFilterNode aNode)
+        {
+            var result = new ImperativeAST.CatchFilterNode
+            {
+                type = aNode.type,
+                var = aNode.var.ToImperativeNode()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.CharNode ToImperativeNode(this CharNode aNode)
+        {
+            var result = new ImperativeAST.CharNode
+            {
+                value = aNode.value
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.CodeBlockNode ToImperativeNode(this CodeBlockNode aNode)
+        {
+            var result = new ImperativeAST.CodeBlockNode
+            {
+                Body = aNode.Body.Select(ToImperativeAST).ToList()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.ConstructorDefinitionNode ToImperativeNode(this ConstructorDefinitionNode aNode)
+        {
+            var result = new ImperativeAST.ConstructorDefinitionNode
+            {
+                FunctionBody = aNode.FunctionBody.ToImperativeNode(),
+                Signature = aNode.Signature.ToImperativeNode(),
+                localVars = aNode.localVars
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.ContinueNode ToImperativeNode(this ContinueNode aNode)
+        {
+            var result = new ImperativeAST.ContinueNode();
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.DefaultArgNode ToImperativeNode(this DefaultArgNode aNode)
+        {
+            var result = new ImperativeAST.DefaultArgNode();
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.DoubleNode ToImperativeNode(this DoubleNode aNode)
+        {
+            var result = new ImperativeAST.DoubleNode(aNode.Value);
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.ExceptionHandlingNode ToImperativeNode(this ExceptionHandlingNode aNode)
+        {
+            var result = new ImperativeAST.ExceptionHandlingNode
+            {
+                catchBlocks = aNode.catchBlocks.Select(ToImperativeNode).ToList(),
+                tryBlock = aNode.tryBlock.ToImperativeNode()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.ExprListNode ToImperativeNode(this ExprListNode aNode)
+        {
+            var result = new ImperativeAST.ExprListNode
+            {
+                ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
+                list = aNode.list.Select(ToImperativeAST).ToList()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.ForLoopNode ToImperativeNode(this ForLoopNode aNode)
+        {
+            var result = new ImperativeAST.ForLoopNode
+            {
+                body = aNode.body.Select(ToImperativeAST).ToList(),
+                expression = aNode.expression.ToImperativeAST(),
+                loopVar = aNode.loopVar.ToImperativeAST()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.FunctionCallNode ToImperativeNode(this FunctionCallNode aNode)
+        {
+            var result = new ImperativeAST.FunctionCallNode
+            {
+                ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
+                FormalArguments = aNode.FormalArguments.Select(ToImperativeAST).ToList(),
+                Function = aNode.Function.ToImperativeAST()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.FunctionDefinitionNode ToImperativeNode(this FunctionDefinitionNode aNode)
+        {
+            var result = new ImperativeAST.FunctionDefinitionNode
+            {
+                Attributes = aNode.Attributes.Select(ToImperativeAST).ToList(),
+                FunctionBody = aNode.FunctionBody.ToImperativeNode(),
+                ReturnType = aNode.ReturnType,
+                Signature = aNode.Signature.ToImperativeNode()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.GroupExpressionNode ToImperativeNode(this GroupExpressionNode aNode)
+        {
+            var result = new ImperativeAST.GroupExpressionNode
+            {
+                ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.IdentifierListNode ToImperativeNode(this IdentifierListNode aNode)
+        {
+            var result = new ImperativeAST.IdentifierListNode
+            {
+                LeftNode = aNode.LeftNode.ToImperativeAST(),
+                Optr = aNode.Optr,
+                RightNode = aNode.RightNode.ToImperativeAST()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.IdentifierNode ToImperativeNode(this IdentifierNode aNode)
+        {
+            var result = new ImperativeAST.IdentifierNode
+            {
+                ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
+                Value = aNode.Value,
+                datatype = aNode.datatype
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.InlineConditionalNode ToImperativeNode(this InlineConditionalNode aNode)
+        {
+            var result = new ImperativeAST.InlineConditionalNode
+            {
+                ConditionExpression = aNode.ConditionExpression.ToImperativeAST(),
+                TrueExpression = aNode.TrueExpression.ToImperativeAST(),
+                FalseExpression = aNode.FalseExpression.ToImperativeAST()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.LanguageBlockNode ToImperativeNode(this LanguageBlockNode aNode)
+        {
+            var result = new ImperativeAST.LanguageBlockNode
+            {
+                Attributes = aNode.Attributes.Select(ToImperativeAST).ToList(),
+                CodeBlockNode = aNode.CodeBlockNode,
+                codeblock = aNode.codeblock
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.IntNode ToImperativeNode(this IntNode aNode)
+        {
+            var result = new ImperativeAST.IntNode(aNode.Value);
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.NullNode ToImperativeNode(this NullNode aNode)
+        {
+            var result = new ImperativeAST.NullNode();
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.PostFixNode ToImperativeNode(this PostFixNode aNode)
+        {
+            var result = new ImperativeAST.PostFixNode
+            {
+                Identifier = aNode.Identifier.ToImperativeAST(),
+                Operator = aNode.Operator
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.RangeExprNode ToImperativeNode(this RangeExprNode aNode)
+        {
+            var result = new ImperativeAST.RangeExprNode
+            {
+                ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
+                FromNode = aNode.FromNode.ToImperativeAST(),
+                StepNode = aNode.StepNode.ToImperativeAST(),
+                ToNode = aNode.ToNode.ToImperativeAST(),
+                stepoperator = aNode.stepoperator
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.ReturnNode ToImperativeNode(this ReturnNode aNode)
+        {
+            var result = new ImperativeAST.ReturnNode
+            {
+                ReturnExpr = aNode.ReturnExpr.ToImperativeAST()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.StringNode ToImperativeNode(this StringNode aNode)
+        {
+            var result = new ImperativeAST.StringNode
+            {
+                value = aNode.value
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.ThrowNode ToImperativeNode(this ThrowNode aNode)
+        {
+            var result = new ImperativeAST.ThrowNode
+            {
+                expression = aNode.ToImperativeAST()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.TryBlockNode ToImperativeNode(this TryBlockNode aNode)
+        {
+            var result = new ImperativeAST.TryBlockNode
+            {
+                body = aNode.body.Select(ToImperativeAST).ToList()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.TypedIdentifierNode ToImperativeNode(this TypedIdentifierNode aNode)
+        {
+            var result = new ImperativeAST.TypedIdentifierNode
+            {
+                ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
+                Value = aNode.Value,
+                datatype = aNode.datatype
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.UnaryExpressionNode ToImperativeNode(this UnaryExpressionNode aNode)
+        {
+            var result = new ImperativeAST.UnaryExpressionNode
+            {
+                Expression = aNode.Expression.ToImperativeAST(),
+                Operator = aNode.Operator
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeAST.VarDeclNode ToImperativeNode(this VarDeclNode aNode)
+        {
+            var result = new ImperativeAST.VarDeclNode
+            {
+                ArgumentType = aNode.ArgumentType,
+                memregion = aNode.memregion,
+                NameNode = aNode.NameNode.ToImperativeAST()
+            };
+            CopyProps(aNode, result);
+            return result;
+        }
+
+        public static ImperativeNode ToImperativeAST(this AssociativeNode aNode)
+        {
+            return ToImperativeNode(aNode as dynamic);
+        }
+    }
 }
