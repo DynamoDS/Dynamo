@@ -87,18 +87,18 @@ namespace DSCore
                 
                 foreach (object item in ranges)
                 {
-                    IList subrange;
+                    List<int> subrange;
 
                     if (item is ICollection)
-                        subrange = (IList)item;
+                        subrange = ((IList)item).Cast<int>().Select(x => Convert.ToInt32(x)).ToList();
                     else
-                        subrange = new List<object>{item};
+                        subrange = new List<int> { Convert.ToInt32(item) };
 
                     // skip subrange if exceeds the list
-                    if (start + (int)subrange.Cast<object>().Max() >= len)
+                    if (start + subrange.Max() >= len)
                         continue;
 
-                    row.AddRange(subrange.Cast<int>().Where(idx => start + idx < len).Select(idx => list[start + idx]));
+                    row.AddRange(subrange.Where(idx => start + idx < len).Select(idx => list[start + idx]));
                 }
 
                 if (row.Count > 0)
