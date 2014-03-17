@@ -108,12 +108,12 @@ namespace ProtoFFITests
         public void TestImportPointClassWithoutImportingVectorClass()
         {
             String code =
-            @"               import(DummyPoint from ""FFITarget.dll"");               p1 = DummyPoint.ByCoordinates(1,2,3);               p2 = DummyPoint.ByCoordinates(3,4,5);               v = p1.DirectionTo(p2);               vx = v.X;               vy = v.Y;               vz = v.Z;            ";
+            @"               import(DummyPoint from ""FFITarget.dll"");               p1 = DummyPoint.ByCoordinates(1,2,3);               p2 = DummyPoint.ByCoordinates(3,4,5);               v = p1.DirectionTo(p2);               p3 = p1.Translate(v);               px = p3.X;               py = p3.Y;               pz = p3.Z;            ";
             ValidationData[] data =
                 {
-                    new ValidationData { ValueName = "vx", ExpectedValue = 2.0, BlockIndex = 0 },
-                    new ValidationData { ValueName = "vy", ExpectedValue = 2.0, BlockIndex = 0 },
-                    new ValidationData { ValueName = "vz", ExpectedValue = 2.0, BlockIndex = 0 }
+                    new ValidationData { ValueName = "px", ExpectedValue = 3.0, BlockIndex = 0 },
+                    new ValidationData { ValueName = "py", ExpectedValue = 4.0, BlockIndex = 0 },
+                    new ValidationData { ValueName = "pz", ExpectedValue = 5.0, BlockIndex = 0 }
                 
                 };
             ExecuteAndVerify(code, data);
@@ -519,7 +519,7 @@ namespace ProtoFFITests
         public void TestMultipleImport()
         {
             String code =
-            @"               import(""Math.dll"");               dummy = DerivedDummy.DerivedDummy();               arr = 1..Math.Factorial(5);               sum = dummy.SumAll(arr);            ";
+            @"               import(""DSCoreNodes.dll"");               dummy = DerivedDummy.DerivedDummy();               arr = 1..Math.Factorial(5);               sum = dummy.SumAll(arr);            ";
             Type dummy = typeof (FFITarget.DerivedDummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "sum", ExpectedValue = 7260.0, BlockIndex = 0 } };
@@ -534,7 +534,7 @@ namespace ProtoFFITests
         public void TestImportSameModuleMoreThanOnce()
         {
             String code =
-            @"               import(""math.dll"");               import(""Math.dll"");               dummy = DerivedDummy.DerivedDummy();               arr = 1..Math.Factorial(5);               sum = dummy.SumAll(arr);            ";
+            @"               import(""DSCoreNodes.dll"");               import(""DSCoreNodes.dll"");               dummy = DerivedDummy.DerivedDummy();               arr = 1..Math.Factorial(5);               sum = dummy.SumAll(arr);            ";
             Type dummy = typeof (FFITarget.DerivedDummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             Type dummy2 =  typeof (FFITarget.DerivedDummy);
