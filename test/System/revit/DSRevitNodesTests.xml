@@ -63,7 +63,6 @@
 				<test name="ByFaceUVDivisions_NullArgument" modelPath=".\block.rfa" />
 			</testFixture>
 			<testFixture name="SolidTests">
-				<test name="ByExtrusion_ValidArgs" modelPath=".\empty.rfa" />
 				<test name="ByRevolve_ValidArgs" modelPath=".\empty.rfa" />
 				<test name="ByRevolve_ValidArgs_NonVertical" modelPath=".\empty.rfa" />
 				<test name="ByBlend_ValidArgs" modelPath=".\empty.rfa" />
