@@ -3385,7 +3385,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             astLiveRunner.UpdateGraph(syncData);
 
             // Graph UI node -> ASTs
-            var astNodes = astLiveRunner.GetAstNodes(guid2);
+            var astNodes = astLiveRunner.GetSSANodes(guid2);
             bool foundCallsite = false;
             Guid callsiteId = Guid.Empty;
 
