@@ -135,26 +135,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Nodes\AnalysisDisplay.cs" />
-    <Compile Include="Nodes\Annotation.cs" />
-    <Compile Include="Nodes\Circle.cs" />
-    <Compile Include="Nodes\DividedCurve.cs" />
-    <Compile Include="Nodes\DividedSurface.cs" />
-    <Compile Include="Nodes\Facet.cs" />
-    <Compile Include="Nodes\Floor.cs" />
-    <Compile Include="Nodes\Grid.cs" />
-    <Compile Include="Nodes\Material.cs" />
-    <Compile Include="Nodes\ModelCurve.cs" />
-    <Compile Include="Nodes\NurbsSpline.cs" />
-    <Compile Include="Nodes\ReferencePlane.cs" />
-    <Compile Include="Nodes\ReferencePoint.cs" />
-    <Compile Include="Nodes\Solid.cs" />
-    <Compile Include="Nodes\StructuralFraming.cs" />
-    <Compile Include="Nodes\Topography.cs" />
-    <Compile Include="Nodes\View.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Nodes\Wall.cs" />
     <Compile Include="Packing\CygonRectanglePacker.cs" />
     <Compile Include="DynamoController_Revit.cs" />
     <Compile Include="FunctionWithRevit.cs" />
@@ -164,35 +144,9 @@
     <Compile Include="RevitUtils.cs" />
     <Compile Include="ElementsContainer.cs" />
     <Compile Include="DynamoRevit.cs" />
-    <Compile Include="Nodes\AdaptiveComponents.cs" />
-    <Compile Include="Nodes\Arc.cs" />
-    <Compile Include="Nodes\Element.cs" />
-    <Compile Include="Nodes\Ellipse.cs" />
-    <Compile Include="Nodes\FreeForm.cs" />
-    <Compile Include="Nodes\HermiteSpline.cs" />
-    <Compile Include="Nodes\Line.cs" />
-    <Compile Include="Nodes\Rectangle.cs" />
-    <Compile Include="Nodes\ReferenceCurve.cs" />
-    <Compile Include="Nodes\Curve.cs" />
-    <Compile Include="Nodes\Face.cs" />
-    <Compile Include="Nodes\FamilyInstance.cs" />
-    <Compile Include="Nodes\GeometryBase.cs" />
-    <Compile Include="Nodes\Intersect.cs" />
-    <Compile Include="Nodes\MeasurementBase.cs" />
     <Compile Include="ModelUpdater.cs" />
     <Compile Include="Nodes\Selection.cs" />
-    <Compile Include="Nodes\SimplexNoise.cs" />
-    <Compile Include="Nodes\Level.cs" />
-    <Compile Include="Nodes\RayBounce.cs" />
-    <Compile Include="Nodes\SolarRadiation.cs" />
-    <Compile Include="Nodes\FamilyType.cs" />
-    <Compile Include="Nodes\Plane.cs" />
-    <Compile Include="Nodes\Tesselation.cs" />
     <Compile Include="Nodes\Transaction.cs" />
-    <Compile Include="Nodes\SunPath.cs" />
-    <Compile Include="Nodes\Transform.cs" />
-    <Compile Include="Nodes\UV.cs" />
-    <Compile Include="Nodes\XYZ.cs" />
     <Compile Include="OutOfSpaceException.cs" />
     <Compile Include="ParticleSystem\DynamicRelaxation.cs" />
     <Compile Include="ParticleSystem\Particle.cs" />

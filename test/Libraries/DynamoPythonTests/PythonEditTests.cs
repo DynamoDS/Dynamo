@@ -25,16 +25,16 @@ namespace Dynamo.Tests
             model.Open(examplePath);
 
             // get the python node
-            DSCoreNodesUI.DummyNode pynode = model.CurrentWorkspace.NodeFromWorkspace("3bcad14e-d086-4278-9e08-ed2759ef92f3") as DSCoreNodesUI.DummyNode;
+            var workspace = model.CurrentWorkspace;
+            var nodeModel = workspace.NodeFromWorkspace("3bcad14e-d086-4278-9e08-ed2759ef92f3");
+            DSIronPythonNode.PythonNode pynode = nodeModel as DSIronPythonNode.PythonNode;
             Assert.NotNull(pynode);
 
-            Assert.Inconclusive("Node is deprecated.");
-
             // make changes to python script
-            //UpdatePythonNodeContent(pynode, @"print 'okay'");
+            UpdatePythonNodeContent(pynode, @"print 'okay'");
 
             // workspace has changes
-            //Assert.IsTrue(model.CurrentWorkspace.HasUnsavedChanges);
+            Assert.IsTrue(model.CurrentWorkspace.HasUnsavedChanges);
         }
 
         [Test]

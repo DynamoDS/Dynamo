@@ -26,7 +26,14 @@ namespace Revit.GeometryConversion
             }
 
             var cl = new CurveLoop();
-            pcrv.Curves().Select(x => x.ToRevitType()).ToList().ForEach(cl.Append);
+
+            var crvs = pcrv.Curves();
+
+            foreach (Autodesk.DesignScript.Geometry.Curve curve in crvs)
+            {
+                Autodesk.Revit.DB.Curve converted = curve.ToNurbsCurve().ToRevitType();
+                cl.Append(converted);
+            }
 
             return cl;
 
@@ -50,8 +57,14 @@ namespace Revit.GeometryConversion
         /// </summary>
         /// <param name="crv"></param>
         /// <returns></returns>
-        private static Autodesk.Revit.DB.NurbSpline Convert(Autodesk.DesignScript.Geometry.NurbsCurve crv)
+        private static Autodesk.Revit.DB.Curve Convert(Autodesk.DesignScript.Geometry.NurbsCurve crv)
         {
+            if (crv.Degree == 1 && crv.ControlPoints().Length == 2 && !crv.IsRational)
+            {
+                return Autodesk.Revit.DB.Line.CreateBound(crv.ControlPoints()[0].ToXyz(), 
+                    crv.ControlPoints()[1].ToXyz());
+            }
+
             if (crv.Degree <= 2)
             {
                 throw new Exception("Could not convert the curve to a Revit curve");
@@ -146,6 +159,26 @@ namespace Revit.GeometryConversion
 
             var e = Autodesk.Revit.DB.Ellipse.Create(center, xw, yw, x, y, 0, 2*Math.PI);
             e.MakeBound(0, 2* Math.PI );
+            return e;
+        }
+
+        /// <summary>
+        /// Convert a DS EllipseArc to a Revit Ellipse
+        /// </summary>
+        /// <param name="crv"></param>
+        /// <returns></returns>
+        private static Autodesk.Revit.DB.Ellipse Convert(Autodesk.DesignScript.Geometry.EllipseArc crv)
+        {
+            var center = crv.CenterPoint.ToXyz();
+            var x = crv.MajorAxis.ToXyz().Normalize();
+            var y = crv.MinorAxis.ToXyz().Normalize();
+            var xw = crv.MajorAxis.Length;
+            var yw = crv.MinorAxis.Length;
+            var sa = crv.StartAngle.ToRadians();
+            var ea = sa + crv.SweepAngle.ToRadians();
+
+            var e = Autodesk.Revit.DB.Ellipse.Create(center, xw, yw, x, y, sa, ea);
+            e.MakeBound(sa, ea);
             return e;
         }
 

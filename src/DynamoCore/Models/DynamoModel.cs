@@ -522,7 +522,8 @@ namespace Dynamo.Models
         /// <returns> The newly instantiated dynNode</returns>
         public NodeModel CreateNodeInstance(Type elementType, string nickName, string signature, Guid guid)
         {
-            NodeModel node = null;
+            object createdNode = null;
+
             if (elementType.IsAssignableFrom(typeof(DSVarArgFunction)))
             {
                 // If we are looking at a 'DSVarArgFunction', we'd better had 
@@ -540,13 +541,22 @@ namespace Dynamo.Models
                 if (functionDescriptor == null)
                     throw new UnresolvedFunctionException(signature);
 
-                node = (NodeModel)Activator.CreateInstance(
-                    elementType, new object[] { functionDescriptor });
+                createdNode = Activator.CreateInstance(elementType,
+                    new object[] { functionDescriptor });
             }
             else
             {
-                node = (NodeModel)Activator.CreateInstance(elementType);
+                createdNode = Activator.CreateInstance(elementType);
             }
+
+            // The attempt to create node instance may fail due to "elementType"
+            // being something else other than "NodeModel" derived object type. 
+            // This is possible since some legacy nodes have been made to derive
+            // from "MigrationNode" object that is not derived from "NodeModel".
+            // 
+            NodeModel node = createdNode as NodeModel;
+            if (node == null)
+                return null;
 
             if (!string.IsNullOrEmpty(nickName))
             {
@@ -767,13 +777,28 @@ namespace Dynamo.Models
                     // Retrieve optional 'function' attribute (only for DSFunction).
                     XmlAttribute signatureAttrib = elNode.Attributes["function"];
                     var signature = signatureAttrib == null ? null : signatureAttrib.Value;
+
                     NodeModel el = null;
+                    XmlElement dummyElement = null;
 
                     try
                     {
+                        // The attempt to create node instance may fail due to "type" being
+                        // something else other than "NodeModel" derived object type. This 
+                        // is possible since some legacy nodes have been made to derive from
+                        // "MigrationNode" object type that is not derived from "NodeModel".
+                        // 
                         el = CreateNodeInstance(type, nickname, signature, guid);
-                        el.WorkSpace = CurrentWorkspace;
-                        el.Load(elNode);
+                        if (el != null)
+                        {
+                            el.WorkSpace = CurrentWorkspace;
+                            el.Load(elNode);
+                        }
+                        else
+                        {
+                            var e = elNode as XmlElement;
+                            dummyElement = MigrationManager.CreateDummyNode(e, 1, 1);
+                        }
                     }
                     catch (UnresolvedFunctionException)
                     {
@@ -781,15 +806,18 @@ namespace Dynamo.Models
                         // function node into a dummy node (instead of crashing the workflow).
                         // 
                         var e = elNode as XmlElement;
-                        var elNode2 = MigrationManager.CreateDummyNodeForFunction(e);
+                        dummyElement = MigrationManager.CreateDummyNodeForFunction(e);
+                    }
 
+                    if (dummyElement != null) // If a dummy node placement is desired.
+                    {
                         // The new type representing the dummy node.
-                        typeName = elNode2.GetAttribute("type");
+                        typeName = dummyElement.GetAttribute("type");
                         type = Dynamo.Nodes.Utilities.ResolveType(typeName);
 
                         el = CreateNodeInstance(type, nickname, string.Empty, guid);
                         el.WorkSpace = CurrentWorkspace;
-                        el.Load(elNode2);
+                        el.Load(dummyElement);
                     }
 
                     CurrentWorkspace.Nodes.Add(el);

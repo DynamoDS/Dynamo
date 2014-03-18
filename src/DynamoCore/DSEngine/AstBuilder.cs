@@ -374,7 +374,7 @@ namespace Dynamo.DSEngine
                 functionBody.Body.Add(AstFactory.BuildReturnStatement(returnValue));
             }
 
-            Type allTypes = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, true, Constants.kArbitraryRank);
+            Type allTypes = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
 
             //Create a new function definition
             var functionDef = new FunctionDefinitionNode
@@ -383,12 +383,12 @@ namespace Dynamo.DSEngine
                 Signature =
                     new ArgumentSignatureNode
                     {
-                        Arguments = parameters.Select(param => AstFactory.BuildParamNode(param, allTypes)).ToList()
+                        Arguments =
+                            parameters.Select(param => AstFactory.BuildParamNode(param, allTypes)).ToList()
                     },
                 FunctionBody = functionBody,
                 ReturnType = allTypes
             };
-
 
             OnAstNodeBuilt(def.FunctionId, new[] { functionDef });
         }

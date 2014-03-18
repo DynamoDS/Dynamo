@@ -22,7 +22,7 @@ namespace ProtoTest.TD.MultiLangTests
         public void T80580_BuiltinFunc_1()
         {
             string code = @"
-import(""Math.dll"");
+import(""DSCoreNodes.dll"");
 class TestClass
 {
 	
@@ -164,7 +164,7 @@ t15 = test.testNormalizeDepth();
         public void T80581_BuiltinFunc_2()
         {
             string code = @"
-import(""Math.dll"");
+import(""DSCoreNodes.dll"");
 class TestClass
 {
 	b;
@@ -269,7 +269,7 @@ t14 = test.b14;
         {
             string code = @"
 //testing ceiling()
-import(""Math.dll"");
+import(""DSCoreNodes.dll"");
 x = 1.5 ; 
 y = 0.01 ; 
 z = -0.1 ; 
@@ -350,7 +350,7 @@ b4 = Count(a4); //0";
         {
             string code = @"
 import(""ProtoGeometry.dll"");
-import(""Math.dll"");
+import(""DSCoreNodes.dll"");
 raggedCollection = { 1, { 2, 3 } };
 isUniformDepthRagged = IsUniformDepth(raggedCollection);//false
 average = Average(raggedCollection);
@@ -451,7 +451,7 @@ newArray[2] = { 7, 8, 9 }; // and good
         {
             string code = @"
 import(""ProtoGeometry.dll"");
-import(""Math.dll"");
+import(""DSCoreNodes.dll"");
 set = { true, { false, true } };
 allFalseSet = AllFalse(set);
 someFalseSet = SomeFalse(set);

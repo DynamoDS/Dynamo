@@ -88,8 +88,7 @@ namespace FFITarget
         }
         public static IList RemoveItemsAtIndices(IEnumerable list, int[] indices)
         {
-            var idxs = new HashSet<int>(indices);
-            return list.Cast<object>().Where((_, i) => !idxs.Contains(i)).ToList();
+            return list.Cast<object>().Where((_, i) => !indices.Contains(i)).ToList();
         }
         public static IEnumerable<int> GetNumbersByDouble(int x)
         {
@@ -341,13 +340,13 @@ namespace FFITarget
             y2.MoveNext();
             return y2.Current;
         }
-        public int TestIEnumerable2(object x)
+        public int TestIEnumerable2([ArbitraryDimensionArrayImport] object x)
         {
-            IEnumerable<int> y = (IEnumerable<int>)x;
-            IEnumerator<int> y2 = y.GetEnumerator();
+            IEnumerable y = (IEnumerable)x;
+            IEnumerator y2 = y.GetEnumerator();
             y2.Reset();
             y2.MoveNext();
-            return y2.Current;
+            return (int)y2.Current;
         }
         public object GetIEnumerable()
         {
@@ -452,6 +451,15 @@ namespace FFITarget
             }
 
             return sum;
+        }
+
+        public static IList AddItemToFront(
+            [ArbitraryDimensionArrayImport] object item,
+            IList list)
+        {
+            var newList = new ArrayList { item };
+            newList.AddRange(list);
+            return newList;
         }
     }
 

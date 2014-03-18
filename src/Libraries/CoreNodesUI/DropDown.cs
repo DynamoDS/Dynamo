@@ -99,6 +99,15 @@ namespace DSCoreNodesUI
                     RequiresRecalc = true;
             };
 
+            combo.DropDownClosed += delegate
+            {
+                //disallow selection of nothing
+                if (combo.SelectedIndex == -1)
+                {
+                    SelectedIndex = 0;
+                }
+            };
+
             combo.DataContext = this;
             //bind this combo box to the selected item hash
 

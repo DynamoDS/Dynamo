@@ -11,9 +11,15 @@ namespace ProtoCore
     {
         public string Name;
         public int UID;
-
-        public bool IsIndexable;
         public int rank;
+
+        public bool IsIndexable
+        {
+            get
+            {
+                return rank > 0 || rank == Constants.kArbitraryRank;
+            }
+        }
 
         /// <summary>
         /// Comment Jun: Initialize a type to the default values
@@ -22,7 +28,6 @@ namespace ProtoCore
         {
             Name = string.Empty;
             UID = ProtoCore.DSASM.Constants.kInvalidIndex;
-            IsIndexable = false;
             rank = DSASM.Constants.kArbitraryRank;
         }
 
@@ -287,25 +292,21 @@ namespace ProtoCore
             return classTable.ClassNodes[t1].rank >= classTable.ClassNodes[t2].rank;
         }
 
-        public static Type BuildPrimitiveTypeObject(PrimitiveType pType,
-                                                    bool isArray,
-                                                    int rank = Constants.kUndefinedRank)
+        public static Type BuildPrimitiveTypeObject(PrimitiveType pType, int rank = Constants.kArbitraryRank)
         {
             Type type = new Type();
             type.Name = GetPrimitTypeName(pType);
             type.UID = (int)pType; ;
-            type.IsIndexable = isArray;
             type.rank = rank;
             return type;
         }
 
         //@TODO(Luke): Once the type system has been refactored, get rid of this
-        public Type BuildTypeObject(int UID, bool isArray, int rank = Constants.kUndefinedRank)
+        public Type BuildTypeObject(int UID, int rank = Constants.kArbitraryRank)
         {
             Type type = new Type();
             type.Name = GetType(UID);
             type.UID = UID;
-            type.IsIndexable = isArray;
             type.rank = rank;
             return type;
         }
@@ -375,12 +376,7 @@ namespace ProtoCore
         {
             Type t = new Type();
             t.UID = UID;
-            if (rank == Constants.kUndefinedRank)
-            {
-                rank = DSASM.Constants.kArbitraryRank;
-            }
             t.rank = rank;
-            t.IsIndexable = (t.rank != 0);
 
             return Coerce(sv, t, core);
         }
@@ -401,7 +397,7 @@ namespace ProtoCore
             }
 
             //if it's an array
-            if (sv.optype == AddressType.ArrayPointer && !targetType.IsIndexable && targetType.rank != DSASM.Constants.kUndefinedRank)// && targetType.UID != (int)PrimitiveType.kTypeVar)
+            if (sv.optype == AddressType.ArrayPointer && !targetType.IsIndexable)
             {
                 //This is an array rank reduction
                 //this may only be performed in recursion and is illegal here
@@ -432,7 +428,6 @@ namespace ProtoCore
                 if (targetType.rank != ProtoCore.DSASM.Constants.kArbitraryRank)
                 {
                     newTargetType.rank = targetType.rank - 1;
-                    newTargetType.IsIndexable = newTargetType.rank > 0;
                 }
                 else
                 {
@@ -440,14 +435,11 @@ namespace ProtoCore
                     {
                         //Last unpacking
                         newTargetType.rank = 0;
-                        newTargetType.IsIndexable = false;
                     }
                     else
                     {
                         newTargetType.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
-                        newTargetType.IsIndexable = true;
                     }
-
                 }
 
                 return ArrayUtils.CopyArray(sv, newTargetType, core);
@@ -463,7 +455,6 @@ namespace ProtoCore
                 {
                     Type newTargetType = new Type();
                     newTargetType.UID = targetType.UID;
-                    newTargetType.IsIndexable = false;
                     newTargetType.Name = targetType.Name;
                     newTargetType.rank = 0;
 
@@ -479,7 +470,6 @@ namespace ProtoCore
 
                     Type newTargetType = new Type();
                     newTargetType.UID = targetType.UID;
-                    newTargetType.IsIndexable = true;
                     newTargetType.Name = targetType.Name;
                     newTargetType.rank = targetType.rank - 1;
 

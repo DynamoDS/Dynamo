@@ -857,12 +857,12 @@ namespace ProtoCore.DSASM
             {
                 if (null != Properties.executingGraphNode)
                 {
-                    core.ExecutingGraphnodeUID = Properties.executingGraphNode.UID;
+                    core.ExecutingGraphnode = Properties.executingGraphNode;
                 }
             }
 
             // Get the cached callsite, creates a new one for a first-time call
-            ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnodeUID, classIndex, fNode.name);
+            ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, classIndex, fNode.name);
             Validity.Assert(null != callsite);
 
 
@@ -3572,18 +3572,13 @@ namespace ProtoCore.DSASM
             SymbolNode symbolnode = GetSymbolNode(blockId, classIndex, symbol);
 
             Type t = symbolnode.staticType;
-            if (t.rank < 0)
-            {
-                t.rank = Constants.kArbitraryRank;
-                t.IsIndexable = true;
-            }
 
             StackValue value = core.watchStack[symindex];
             if (value.optype == AddressType.ArrayPointer)
             {
                 StackValue oldValue;
 
-                if (t.UID == (int)PrimitiveType.kTypeVar && t.rank < 0)
+                if (t.UID == (int)PrimitiveType.kTypeVar && t.rank == Constants.kArbitraryRank)
                 {
                     oldValue = ArrayUtils.SetValueForIndices(value, dimlist, data, t, core);
                 }
@@ -3603,15 +3598,7 @@ namespace ProtoCore.DSASM
                         t.rank = t.rank - dimlist.Count;
                         t.rank += lhsRepCount;
 
-                        if (t.rank > 0)
-                        {
-                            t.IsIndexable = true;
-                        }
-                        else if (t.rank == 0)
-                        {
-                            t.IsIndexable = false;
-                        }
-                        else if (t.rank < 0)
+                        if (t.rank < 0)
                         {
                             string message = String.Format(RuntimeData.WarningMessage.kSymbolOverIndexed, symbolnode.name);
                             core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kOverIndexing, message);
@@ -3625,9 +3612,7 @@ namespace ProtoCore.DSASM
             }
             else if (value.optype == AddressType.String)
             {
-                t.UID = (int)ProtoCore.PrimitiveType.kTypeChar;
-                t.rank = 0;
-                t.IsIndexable = false;
+                t = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeChar, 0);
 
                 return ArrayUtils.SetValueForIndices(value, dimlist, data, t, core);
             }
@@ -3661,12 +3646,6 @@ namespace ProtoCore.DSASM
             }
 
             Type t = symbolnode.staticType;
-            if (t.rank < 0)
-            {
-                t.rank = Constants.kArbitraryRank;
-                t.IsIndexable = true;
-            }
-
             StackValue ret = StackValue.Null;
             if (value.optype == AddressType.ArrayPointer)
             {
@@ -3686,15 +3665,7 @@ namespace ProtoCore.DSASM
                         t.rank = t.rank - dimlist.Count;
                         t.rank += lhsRepCount;
 
-                        if (t.rank > 0)
-                        {
-                            t.IsIndexable = true;
-                        }
-                        else if (t.rank == 0)
-                        {
-                            t.IsIndexable = false;
-                        }
-                        else if (t.rank < 0)
+                        if (t.rank < 0)
                         {
                             string message = String.Format(RuntimeData.WarningMessage.kSymbolOverIndexed, symbolnode.name);
                             core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kOverIndexing, message);
@@ -3707,10 +3678,7 @@ namespace ProtoCore.DSASM
             }
             else if (value.optype == AddressType.String)
             {
-                t.UID = (int)ProtoCore.PrimitiveType.kTypeChar;
-                t.rank = 0;
-                t.IsIndexable = false;
-
+                t = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeChar, 0);
                 ret = ArrayUtils.SetValueForIndices(value, dimlist, data, t, core);
             }
             else
@@ -4330,8 +4298,8 @@ namespace ProtoCore.DSASM
                     argSvList.Add(sv); //actual arguments
                     ProtoCore.Type paramType = new ProtoCore.Type();
                     paramType.UID = (int)sv.metaData.type;
-                    paramType.IsIndexable = sv.optype == AddressType.ArrayPointer;
-                    if (paramType.IsIndexable)
+                    paramType.rank = 0;
+                    if (sv.optype == AddressType.ArrayPointer)
                     {
                         StackValue paramSv = sv;
                         while (paramSv.optype == AddressType.ArrayPointer)
@@ -5390,7 +5358,7 @@ namespace ProtoCore.DSASM
             dimensions = 0;
             blockId = DSASM.Constants.kInvalidIndex;
             int staticType = (int)ProtoCore.PrimitiveType.kTypeVar;
-            int rank = ProtoCore.DSASM.Constants.kUndefinedRank;
+            int rank = ProtoCore.DSASM.Constants.kArbitraryRank;
             bool objectIndexing = false;
             if (AddressType.VarIndex == instruction.op1.optype
                 || AddressType.Pointer == instruction.op1.optype
@@ -5578,7 +5546,7 @@ namespace ProtoCore.DSASM
             int dimensions = 0;
             int blockId = DSASM.Constants.kInvalidIndex;
             int staticType = (int)ProtoCore.PrimitiveType.kTypeVar;
-            int rank = ProtoCore.DSASM.Constants.kUndefinedRank;
+            int rank = ProtoCore.DSASM.Constants.kArbitraryRank;
             if (ProtoCore.DSASM.AddressType.VarIndex == instruction.op1.optype
                 || ProtoCore.DSASM.AddressType.Pointer == instruction.op1.optype
                 || ProtoCore.DSASM.AddressType.ArrayPointer == instruction.op1.optype)
@@ -5754,7 +5722,7 @@ namespace ProtoCore.DSASM
             StackValue svProperty = core.Heap.Heaplist[thisptr].Stack[stackIndex];
 
             StackValue svOldData = svData;
-            Type targetType = new Type { UID = (int)PrimitiveType.kTypeVar, rank = Constants.kArbitraryRank, IsIndexable = true };
+            Type targetType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
             if (staticType != (int)PrimitiveType.kTypeFunctionPointer)
             {
                 if (dimensions == 0)
@@ -5767,11 +5735,6 @@ namespace ProtoCore.DSASM
                 {
                     SymbolNode symbolnode = GetSymbolNode(blockId, classIndex, symbolIndex);
                     targetType = symbolnode.staticType;
-                    if (targetType.rank < 0)
-                    {
-                        targetType.rank = Constants.kArbitraryRank;
-                        targetType.IsIndexable = true;
-                    }
 
                     if (svProperty.optype == AddressType.ArrayPointer)
                     {
@@ -5791,15 +5754,7 @@ namespace ProtoCore.DSASM
                                 targetType.rank = targetType.rank - dimList.Count;
                                 targetType.rank += lhsRepCount;
 
-                                if (targetType.rank > 0)
-                                {
-                                    targetType.IsIndexable = true;
-                                }
-                                else if (targetType.rank == 0)
-                                {
-                                    targetType.IsIndexable = false;
-                                }
-                                else if (targetType.rank < 0)
+                                if (targetType.rank < 0)
                                 {
                                     string message = String.Format(RuntimeData.WarningMessage.kSymbolOverIndexed, symbolnode.name);
                                     core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kOverIndexing, message);
