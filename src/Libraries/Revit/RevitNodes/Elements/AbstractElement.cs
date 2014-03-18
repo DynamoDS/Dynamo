@@ -178,10 +178,22 @@ namespace Revit.Elements
         public void SetParameterByName(string parameterName, object value)
         {
             var param = this.InternalElement.Parameters.Cast<Autodesk.Revit.DB.Parameter>().FirstOrDefault(x => x.Definition.Name == parameterName);
+            
+            if(param == null)
+                throw new Exception("No parameter found by that name.");
 
             TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
+
             var dynval = value as dynamic;
-            SetParameterValue(param, dynval);
+            try
+            {
+                SetParameterValue(param, dynval);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
             TransactionManager.Instance.TransactionTaskDone();
         }
 
