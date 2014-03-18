@@ -171,6 +171,52 @@ namespace Dynamo.Models
             }
         }
 
+        public event EventHandler WorkspaceOpening;
+        public virtual void OnWorkspaceOpening(object sender, EventArgs e)
+        {
+            if (WorkspaceOpening != null)
+            {
+                WorkspaceOpening(this, e);
+            }
+        }
+
+        public event EventHandler WorkspaceOpened;
+        public virtual void OnWorkspaceOpened(object sender, EventArgs e)
+        {
+            if (WorkspaceOpened != null)
+            {
+                WorkspaceOpened(this, e);
+            }
+        }
+
+        public event EventHandler WorkspaceClearing;
+        public virtual void OnWorkspaceClearing(object sender, EventArgs e)
+        {
+            if (WorkspaceClearing != null)
+            {
+                WorkspaceClearing(this, e);
+            }
+        }
+
+        public event EventHandler WorkspaceCleared;
+        public virtual void OnWorkspaceCleared(object sender, EventArgs e)
+        {
+            if (WorkspaceCleared != null)
+            {
+                WorkspaceCleared(this, e);
+            }
+        }
+
+        /// <summary>
+        /// An event triggered when the workspace is being cleaned.
+        /// </summary>
+        public event CleanupHandler CleaningUp;
+        public virtual void OnCleanup(EventArgs e)
+        {
+            if (CleaningUp != null)
+                CleaningUp(this, e);
+        }
+
         private ObservableCollection<WorkspaceModel> _workSpaces = new ObservableCollection<WorkspaceModel>();
         private ObservableCollection<WorkspaceModel> _hiddenWorkspaces = new ObservableCollection<WorkspaceModel>();
         public string UnlockLoadPath { get; set; }
@@ -201,11 +247,6 @@ namespace Dynamo.Models
         /// Event triggered when a connector is deleted.
         /// </summary>
         public event ConnectorHandler ConnectorDeleted;
-
-        /// <summary>
-        /// Event triggered when the model is cleared.
-        /// </summary>
-        public event EventHandler ModelCleared;
 
         public WorkspaceModel CurrentWorkspace
         {
@@ -259,21 +300,10 @@ namespace Dynamo.Models
             }
         }
 
-        /// <summary>
-        /// An event triggered when the workspace is being cleaned.
-        /// </summary>
-        public event CleanupHandler CleaningUp;
-
         #endregion
 
         public DynamoModel()
         {
-        }
-
-        public virtual void OnCleanup(EventArgs e)
-        {
-            if (CleaningUp != null)
-                CleaningUp(this, e);
         }
 
         /// <summary>
@@ -627,6 +657,8 @@ namespace Dynamo.Models
         {
             DynamoLogger.Instance.Log("Opening home workspace " + xmlPath + "...");
 
+            OnWorkspaceOpening(this, EventArgs.Empty);
+
             CleanWorkbench();
             MigrationManager.ResetIdentifierIndex();
 
@@ -838,7 +870,7 @@ namespace Dynamo.Models
                     }
 
                     el.DisableReporting();
-                    
+
                     el.IsVisible = isVisible;
                     el.IsUpstreamVisible = isUpstreamVisible;
 
@@ -866,7 +898,7 @@ namespace Dynamo.Models
                     var guidEnd = new Guid(guidEndAttrib.Value);
                     int startIndex = Convert.ToInt16(intStartAttrib.Value);
                     int endIndex = Convert.ToInt16(intEndAttrib.Value);
-                    PortType portType = ((PortType)Convert.ToInt16(portTypeAttrib.Value));
+                    PortType portType = ((PortType) Convert.ToInt16(portTypeAttrib.Value));
 
                     //find the elements to connect
                     NodeModel start = null;
@@ -900,7 +932,8 @@ namespace Dynamo.Models
                     OnConnectorAdded(newConnector);
                 }
 
-                DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading connectors.", sw.Elapsed - previousElapsed));
+                DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading connectors.",
+                    sw.Elapsed - previousElapsed));
                 previousElapsed = sw.Elapsed;
 
                 #region instantiate notes
@@ -953,7 +986,11 @@ namespace Dynamo.Models
                 CleanWorkbench();
                 return false;
             }
+
             CurrentWorkspace.HasUnsavedChanges = false;
+
+            OnWorkspaceOpened(this, EventArgs.Empty);
+
             return true;
         }
 
@@ -1529,22 +1566,13 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Called when the model is cleared.
-        /// </summary>
-        internal void OnModelCleared()
-        {
-            if (ModelCleared != null)
-            {
-                ModelCleared(this, EventArgs.Empty);
-            }
-        }
-
-        /// <summary>
         /// Clear the workspace. Removes all nodes, notes, and connectors from the current workspace.
         /// </summary>
         /// <param name="parameter"></param>
         public void Clear(object parameter)
         {
+            OnWorkspaceClearing(this, EventArgs.Empty);
+
             dynSettings.Controller.IsUILocked = true;
 
             CleanWorkbench();
@@ -1559,9 +1587,11 @@ namespace Dynamo.Models
             dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
 
-            OnModelCleared();
+            //OnModelCleared();
 
             dynSettings.Controller.IsUILocked = false;
+
+            OnWorkspaceCleared(this, EventArgs.Empty);
         }
 
         internal bool CanClear(object parameter)
