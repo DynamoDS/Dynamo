@@ -329,6 +329,33 @@ namespace Dynamo.Nodes
 
             return attrib.Value;
         }
+
+        /// <summary>
+        /// Call this method to compute the relative path of a subject path 
+        /// relative to the given base path.
+        /// </summary>
+        /// <param name="basePath">The base path which relative path is to be 
+        /// computed from. This base path does not need to point to a valid file
+        /// on disk, but it cannot be an empty string.</param>
+        /// <param name="subjectPath">The subject path of which the relative
+        /// path is to be computed. If this path is not empty but does not 
+        /// represent a valid path string, a UriFormatException is thrown.</param>
+        /// <returns>Returns the path of the subject relative to the given base 
+        /// path.</returns>
+        internal static string MakeRelativePath(string basePath, string subjectPath)
+        {
+            if (string.IsNullOrEmpty(basePath))
+                throw new ArgumentNullException("documentPath");
+
+            if (string.IsNullOrEmpty(subjectPath))
+                return string.Empty;
+
+            Uri documentUri = new Uri(basePath, UriKind.Absolute);
+            Uri assemblyUri = new Uri(subjectPath, UriKind.Absolute);
+
+            var relativeUri = documentUri.MakeRelativeUri(assemblyUri);
+            return relativeUri.OriginalString.Replace('/', '\\');
+        }
     }
 
     public abstract partial class VariableInput : NodeWithOneOutput
