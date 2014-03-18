@@ -2931,6 +2931,34 @@ z=Point.ByCoordinates(y,a,a);
 
         }
 
+        [Test]
+        public void TestCodeblockModification08()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 1;",
+                "x = a; x = x + 1;",
+                "a = 2;"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("x", 2);
+
+
+            // Modify the CBN
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid1, codes[2]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("x", 3);
+        }
 
         [Test]
         public void TestEmptyCodeblock01()
@@ -3363,6 +3391,47 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
+        }
+
+        [Test]
+        public void TestNodeMapping()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"def foo(x) { return = x + 42; }",
+                @"x = 1; y = foo(x);",
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Graph UI node -> ASTs
+            var astNodes = astLiveRunner.GetSSANodes(guid2);
+            bool foundCallsite = false;
+            Guid callsiteId = Guid.Empty;
+
+            // AST -> CallSite
+            foreach (var ast in astNodes)
+            {
+                ProtoCore.CallSite callsite;
+                if (astLiveRunner.Core.ASTToCallSiteMap.TryGetValue(ast.ID, out callsite))
+                {
+                    callsiteId = callsite.CallSiteID;
+                    foundCallsite = true;
+                    break;
+                }
+            }
+
+            // CallSite -> Graph UI node
+            Assert.IsTrue(foundCallsite);
+            Assert.AreEqual(guid2, astLiveRunner.Core.CallSiteToNodeMap[callsiteId]);
         }
     }
 

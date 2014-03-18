@@ -419,7 +419,7 @@ namespace FFITarget
             };
         }
 
-        public static int GetDepth([ArbitraryDimensionArrayImport] IList arr)
+        public static int GetDepth(IList arr)
         {
             int maxSubListDepth = 0;
             foreach (var item in arr)
@@ -435,7 +435,7 @@ namespace FFITarget
             return maxSubListDepth + 1;
         }
 
-        public static int SumList([ArbitraryDimensionArrayImport] IList arr)
+        public static int SumList(IList arr)
         {
             int sum = 0;
             foreach (var item in arr)
@@ -451,6 +451,15 @@ namespace FFITarget
             }
 
             return sum;
+        }
+
+        public static IList AddItemToFront(
+            [ArbitraryDimensionArrayImport] object item,
+            IList list)
+        {
+            var newList = new ArrayList { item };
+            newList.AddRange(list);
+            return newList;
         }
     }
 

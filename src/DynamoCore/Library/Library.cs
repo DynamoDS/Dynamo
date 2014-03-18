@@ -797,7 +797,7 @@ namespace Dynamo.DSEngine
                 return;
             }
 
-            if (!ResolveLibraryPath(ref library))
+            if (!Dynamo.Nodes.Utilities.ResolveLibraryPath(ref library))
             {
                 string errorMessage = string.Format("Cannot find library path: {0}.", library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
@@ -990,23 +990,6 @@ namespace Dynamo.DSEngine
                     ImportClass(library, classNode);
                 }
             }
-        }
-
-        internal bool ResolveLibraryPath(ref string library)
-        {
-            if (File.Exists(library)) // Absolute path, we're done here.
-                return true;
-
-            // Give add-in folder a higher priority and look alongside "DynamoCore.dll".
-            string assemblyName = Path.GetFileName(library); // Strip out possible directory.
-            string currAsmLocation = System.Reflection.Assembly.GetCallingAssembly().Location;
-            library = Path.Combine(Path.GetDirectoryName(currAsmLocation), assemblyName);
-
-            if (File.Exists(library)) // Found under add-in folder...
-                return true;
-
-            library = Path.GetFullPath(library);
-            return File.Exists(library);
         }
 
         private void ImportProcedure(string library, string className, ProcedureNode proc)

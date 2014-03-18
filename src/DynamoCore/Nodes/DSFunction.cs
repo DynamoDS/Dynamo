@@ -135,10 +135,19 @@ namespace Dynamo.Nodes
         /// <param name="xmlDoc"></param>
         /// <param name="nodeElement"></param>
         /// <param name="context"></param>
-        protected override void SaveNode(
-            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc,
+            XmlElement nodeElement, SaveContext context)
         {
-            nodeElement.SetAttribute("assembly", Definition.Assembly ?? "");
+            var asmPath = Definition.Assembly ?? "";
+
+            if (context == SaveContext.File)
+            {
+                // We only make relative paths in a file saving operation.
+                var docPath = Nodes.Utilities.GetDocumentXmlPath(xmlDoc);
+                asmPath = Nodes.Utilities.MakeRelativePath(docPath, asmPath);
+            }
+
+            nodeElement.SetAttribute("assembly", asmPath);
             nodeElement.SetAttribute("function", Definition.MangledName ?? "");
         }
 
@@ -157,19 +166,14 @@ namespace Dynamo.Nodes
             string assembly = null;
             string function;
 
-            if (nodeElement.Attributes["assembly"] == null
-                && nodeElement.Attributes["function"] == null)
+            if (nodeElement.Attributes["assembly"] == null && nodeElement.Attributes["function"] == null)
             {
                 // To open old file
-                foreach (
-                    XmlElement subNode in
-                        nodeElement.ChildNodes.Cast<XmlElement>()
-                                   .Where(
-                                       subNode =>
-                                           subNode.Name.Equals(typeof(FunctionDescriptor).FullName))
-                    )
+                foreach (var helper in
+                    nodeElement.ChildNodes.Cast<XmlElement>()
+                        .Where(subNode => subNode.Name.Equals(typeof(FunctionDescriptor).FullName))
+                        .Select(subNode => new XmlElementHelper(subNode)))
                 {
-                    var helper = new XmlElementHelper(subNode);
                     assembly = helper.ReadString("Assembly", "");
                     break;
                 }
@@ -181,16 +185,20 @@ namespace Dynamo.Nodes
                 function = nodeElement.Attributes["function"].Value;
             }
 
+            var engine = dynSettings.Controller.EngineController;
+
             if (!string.IsNullOrEmpty(assembly))
             {
-                dynSettings.Controller.EngineController.ImportLibrary(assembly);
-                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(
-                    assembly,
-                    function);
+                var document = nodeElement.OwnerDocument;
+                var docPath = Nodes.Utilities.GetDocumentXmlPath(document);
+                assembly = Nodes.Utilities.MakeAbsolutePath(docPath, assembly);
+
+                engine.ImportLibrary(assembly);
+                Definition = engine.GetFunctionDescriptor(assembly, function);
             }
             else
             {
-                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(function);
+                Definition = engine.GetFunctionDescriptor(function);
             }
 
             if (null == Definition)
@@ -213,15 +221,10 @@ namespace Dynamo.Nodes
             helper.SetAttribute("name", Definition.MangledName);
         }
 
-        private bool HasUnconnectedInput()
-        {
-            return !Enumerable.Range(0, InPortData.Count).All(HasInput);
-        }
-
         private List<AssociativeNode> GetConnectedInputs()
         {
             return Enumerable.Range(0, InPortData.Count)
-                             .Where(x => this.HasConnectedInput(x))
+                             .Where(HasConnectedInput)
                              .Select(x => new IntNode(x) as AssociativeNode)
                              .ToList();
         }
@@ -248,7 +251,7 @@ namespace Dynamo.Nodes
         /// <returns></returns>
         private void AppendReplicationGuides(List<AssociativeNode> inputs)
         {
-            if (ArgumentLacing == null || inputs == null || inputs.Count() == 0)
+            if (inputs == null || !inputs.Any())
             {
                 return;
             }
@@ -265,17 +268,16 @@ namespace Dynamo.Nodes
                             var astNode = NodeUtils.Clone(inputs[i]) as ArrayNameNode;
                             astNode.ReplicationGuides = new List<AssociativeNode>();
 
-                            var guideNode = new ReplicationGuideNode();
-                            guideNode.RepGuide = AstFactory.BuildIdentifier(guide.ToString());
+                            var guideNode = new ReplicationGuideNode
+                            {
+                                RepGuide = AstFactory.BuildIdentifier(guide.ToString())
+                            };
 
                             astNode.ReplicationGuides.Add(guideNode);
                             inputs[i] = astNode;
                             guide++;
                         }
                     }
-                    break;
-
-                default:
                     break;
             }
         }
@@ -300,7 +302,7 @@ namespace Dynamo.Nodes
             else
             {
                 return base.GetAstIdentifierForOutputIndex(outputIndex);
-            }                                              
+            }
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
@@ -312,7 +314,7 @@ namespace Dynamo.Nodes
             {
                 case FunctionType.Constructor:
                 case FunctionType.StaticMethod:
-                    if (HasUnconnectedInput())
+                    if (IsPartiallyApplied)
                     {
                         var functionNode = new IdentifierListNode
                         {
@@ -324,9 +326,10 @@ namespace Dynamo.Nodes
                     else
                     {
                         AppendReplicationGuides(inputAstNodes);
-                        rhs = AstFactory.BuildFunctionCall(Definition.ClassName,
-                                                           Definition.Name,
-                                                           inputAstNodes);
+                        rhs = AstFactory.BuildFunctionCall(
+                            Definition.ClassName,
+                            Definition.Name,
+                            inputAstNodes);
                     }
                     break;
 
@@ -384,7 +387,7 @@ namespace Dynamo.Nodes
                     break;
 
                 default:
-                    if (HasUnconnectedInput())
+                    if (IsPartiallyApplied)
                     {
                         var functionNode = new IdentifierNode(function);
                         rhs = CreateFunctionObject(functionNode, inputAstNodes);
@@ -409,8 +412,7 @@ namespace Dynamo.Nodes
                 string thisIdentifier = AstIdentifierForPreview.ToString();
                 if (!string.Equals(outputIdentifier, thisIdentifier))
                 {
-                    resultAst.Add(
-                        AstFactory.BuildAssignment(outputIdentiferNode, AstIdentifierForPreview));
+                    resultAst.Add(AstFactory.BuildAssignment(outputIdentiferNode, AstIdentifierForPreview));
                 }
             }
             else
@@ -419,26 +421,23 @@ namespace Dynamo.Nodes
 
                 resultAst.AddRange(
                     Enumerable.Range(0, OutPortData.Count)
-                              .Select(
-                                  outputIdx =>
-                                      undefinedOutputs
-                                          ? AstIdentifierForPreview
-                                          : new IdentifierNode(AstIdentifierForPreview)
-                                          {
-                                              ArrayDimensions =
-                                                  new ArrayNode
-                                                  {
-                                                      Expr =
-                                                          new StringNode
-                                                          {
-                                                              value =
-                                                                  Definition.ReturnKeys.ElementAt(
-                                                                      outputIdx)
-                                                          }
-                                                  }
-                                          }));
+                        .Select(
+                            outputIdx =>
+                                undefinedOutputs
+                                    ? AstIdentifierForPreview
+                                    : new IdentifierNode(AstIdentifierForPreview)
+                                    {
+                                        ArrayDimensions =
+                                            new ArrayNode
+                                            {
+                                                Expr =
+                                                    new StringNode
+                                                    {
+                                                        value = Definition.ReturnKeys.ElementAt(outputIdx)
+                                                    }
+                                            }
+                                    }));
             }
-
             return resultAst;
         }
     }
@@ -562,8 +561,17 @@ namespace Dynamo.Nodes
         protected override void SaveNode(
             XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            var asmPath = Definition.Assembly ?? "";
+
+            if (context == SaveContext.File)
+            {
+                // We only make relative paths in a file saving operation.
+                var docPath = Nodes.Utilities.GetDocumentXmlPath(xmlDoc);
+                asmPath = Nodes.Utilities.MakeRelativePath(docPath, asmPath);
+            }
+
             base.SaveNode(xmlDoc, nodeElement, context);
-            nodeElement.SetAttribute("assembly", Definition.Assembly ?? "");
+            nodeElement.SetAttribute("assembly", asmPath);
             nodeElement.SetAttribute("function", Definition.MangledName ?? "");
         }
 
@@ -608,16 +616,20 @@ namespace Dynamo.Nodes
                 function = nodeElement.Attributes["function"].Value;
             }
 
+            var engine = dynSettings.Controller.EngineController;
+
             if (!string.IsNullOrEmpty(assembly))
             {
-                dynSettings.Controller.EngineController.ImportLibrary(assembly);
-                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(
-                    assembly,
-                    function);
+                var document = nodeElement.OwnerDocument;
+                var docPath = Nodes.Utilities.GetDocumentXmlPath(document);
+                assembly = Nodes.Utilities.MakeAbsolutePath(docPath, assembly);
+
+                engine.ImportLibrary(assembly);
+                Definition = engine.GetFunctionDescriptor(assembly, function);
             }
             else
             {
-                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(function);
+                Definition = engine.GetFunctionDescriptor(function);
             }
 
             if (null == Definition)

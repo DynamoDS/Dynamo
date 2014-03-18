@@ -857,12 +857,12 @@ namespace ProtoCore.DSASM
             {
                 if (null != Properties.executingGraphNode)
                 {
-                    core.ExecutingGraphnodeUID = Properties.executingGraphNode.UID;
+                    core.ExecutingGraphnode = Properties.executingGraphNode;
                 }
             }
 
             // Get the cached callsite, creates a new one for a first-time call
-            ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnodeUID, classIndex, fNode.name);
+            ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, classIndex, fNode.name);
             Validity.Assert(null != callsite);
 
 
@@ -2063,16 +2063,10 @@ namespace ProtoCore.DSASM
                     bool allowSSADownstream = false;
                     if (core.Options.ExecuteSSA)
                     {
-                        //allowSSADownstream = graphNode.UID > executingGraphNode.UID;
-
-                        // Is within the same ssa range
+                        // Check if we allow downstream update
                         if (exprUID == graphNode.exprUID)
                         {
-                            // Make sure these are valid subscripts - Assert perhaps?
-                            if (graphNode.SSASubscript != ProtoCore.DSASM.Constants.kInvalidIndex && executingGraphNode.SSASubscript != ProtoCore.DSASM.Constants.kInvalidIndex)
-                            {
-                                allowSSADownstream = graphNode.SSASubscript > executingGraphNode.SSASubscript;
-                            }
+                            allowSSADownstream = graphNode.AstID > executingGraphNode.AstID;
                         }
                     }
 

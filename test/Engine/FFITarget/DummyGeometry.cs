@@ -28,6 +28,16 @@ namespace FFITarget
             return DummyVector.ByCoordinates(
                 p1.X - X, p1.Y - Y, p1.Z - Z);
         }
+
+        public DummyPoint Translate(DummyVector direction)
+        {
+            return DummyPoint.ByCoordinates(X + direction.X, Y + direction.Y, Z + direction.Z);
+        }
+
+        public static DummyPoint Centroid(IList<DummyPoint> points)
+        {
+            return ByCoordinates(points.Average(p => p.X), points.Average(p => p.Y), points.Average(p => p.Z));
+        }
     }
 
     public class DummyVector

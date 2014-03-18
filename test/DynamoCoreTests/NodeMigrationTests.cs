@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    internal class NodeMigrationTests : Dynamo.Tests.DSEvaluationUnitTest
+    public class NodeMigrationTests : Dynamo.Tests.DSEvaluationUnitTest
     {
         #region Dynamo Core Node Migration Tests
 
@@ -933,7 +933,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("d4f242c5-9c20-4633-b661-157ab45a416c", 5.5);
             AssertPreviewValue("3d59ccad-57ed-44bc-9d55-27574fc725de", 5.5);
             AssertPreviewValue("d65de7e9-f7f7-4f2b-9be7-daad3b3c837a", -5.5);
-            AssertPreviewValue("af486a6c-a558-4a0b-860f-8c3800f5b8b5", null);
+            AssertPreviewValue("af486a6c-a558-4a0b-860f-8c3800f5b8b5", 5);
         }
 
         [Test]
@@ -1076,9 +1076,9 @@ namespace Dynamo.Tests
             Assert.NotNull(listn4);
 
             RunCurrentModel();
-            AssertPreviewValue("f03dd785-bdc3-478f-b281-ea9db063b356", null);
+            AssertPreviewValue("f03dd785-bdc3-478f-b281-ea9db063b356", false);
             AssertPreviewValue("79d4216d-695d-425e-b1e7-51535e46ae98", false);
-            AssertPreviewValue("1ec03940-2cad-431f-807e-c6ec0f7ae3bb", null);
+            AssertPreviewValue("1ec03940-2cad-431f-807e-c6ec0f7ae3bb", false);
             AssertPreviewValue("ecd5e943-e6b5-44ca-bb52-3b5c39971ea7", true);
         }
 
@@ -1103,7 +1103,7 @@ namespace Dynamo.Tests
             Assert.NotNull(listn3);
 
             RunCurrentModel();
-            AssertPreviewValue("b3c61406-d429-43d4-8db0-7da92fce1eb5", null);
+            AssertPreviewValue("b3c61406-d429-43d4-8db0-7da92fce1eb5", 1);
             AssertPreviewValue("badd9669-7cb7-4ea4-a271-1fe81fe437b4", 10);
             AssertPreviewValue("4477b43e-0f51-486d-98a5-27ee0b312819", 0);
         }
@@ -1149,7 +1149,7 @@ namespace Dynamo.Tests
             RunCurrentModel();
             AssertPreviewValue("28383b05-d53a-47e0-ab4c-5c5d83208f25", 1);
             AssertPreviewValue("5b093fdd-c63a-4efa-a0b7-4bd7c2330752", null);
-            AssertPreviewValue("218c3a8e-9c4a-4a8c-8b13-6f2fb758df3f", null);
+            AssertPreviewValue("218c3a8e-9c4a-4a8c-8b13-6f2fb758df3f", 1);
         }
 
         [Test]

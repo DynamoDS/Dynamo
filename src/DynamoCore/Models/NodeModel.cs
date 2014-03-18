@@ -471,6 +471,14 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        ///     Is this node being applied partially, resulting in a partial function?
+        /// </summary>
+        public bool IsPartiallyApplied
+        {
+            get { return !Enumerable.Range(0, InPortData.Count).All(HasInput); }
+        }
+
+        /// <summary>
         ///     Flags this node as dirty.
         /// </summary>
         [Obsolete("Use RequiresRecalc = true")]
@@ -921,10 +929,12 @@ namespace Dynamo.Models
                 {
 
                     // if there are inputs without connections
-                    // mark as dead
-                    State = inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled))
-                                ? ElementState.Dead
-                                : ElementState.Active;
+                    // mark as dead; otherwise, if the original state is dead,
+                    // update it as active.
+                    if (inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled)))
+                        State = ElementState.Dead;
+                    else if (State == ElementState.Dead)
+                        State = ElementState.Active;
                 });
 
             if (dynSettings.Controller != null &&
