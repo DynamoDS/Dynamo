@@ -501,7 +501,7 @@ namespace Dynamo.Tests
             // {                            {
             //     { "AB", "CD" }               { "AB", 21, 31 }
             //     { 21, 22, 23, 24 }           { "CD", 22, 32 }
-            //     { 31, 32, 33 }               { 22, 33 }
+            //     { 31, 32, 33 }               { 23, 33 }
             // }                                { 24 }
             //                              }
 
@@ -524,7 +524,7 @@ namespace Dynamo.Tests
                 {
                     new object[] { "AB", 21, 31 },
                     new object[] { "CD", 22, 32 },
-                    new object[] { 22, 33 },
+                    new object[] { 23, 33 },
                     new object[] { 24 }
                 });
         }
