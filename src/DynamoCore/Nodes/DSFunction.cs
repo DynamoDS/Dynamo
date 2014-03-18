@@ -138,9 +138,14 @@ namespace Dynamo.Nodes
         protected override void SaveNode(XmlDocument xmlDoc,
             XmlElement nodeElement, SaveContext context)
         {
-            var docPath = Nodes.Utilities.GetDocumentXmlPath(xmlDoc);
             var asmPath = Definition.Assembly ?? "";
-            asmPath = Nodes.Utilities.MakeRelativePath(docPath, asmPath);
+
+            if (context == SaveContext.File)
+            {
+                // We only make relative paths in a file saving operation.
+                var docPath = Nodes.Utilities.GetDocumentXmlPath(xmlDoc);
+                asmPath = Nodes.Utilities.MakeRelativePath(docPath, asmPath);
+            }
 
             nodeElement.SetAttribute("assembly", asmPath);
             nodeElement.SetAttribute("function", Definition.MangledName ?? "");
@@ -556,9 +561,14 @@ namespace Dynamo.Nodes
         protected override void SaveNode(
             XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            var docPath = Nodes.Utilities.GetDocumentXmlPath(xmlDoc);
             var asmPath = Definition.Assembly ?? "";
-            asmPath = Nodes.Utilities.MakeRelativePath(docPath, asmPath);
+
+            if (context == SaveContext.File)
+            {
+                // We only make relative paths in a file saving operation.
+                var docPath = Nodes.Utilities.GetDocumentXmlPath(xmlDoc);
+                asmPath = Nodes.Utilities.MakeRelativePath(docPath, asmPath);
+            }
 
             base.SaveNode(xmlDoc, nodeElement, context);
             nodeElement.SetAttribute("assembly", asmPath);
