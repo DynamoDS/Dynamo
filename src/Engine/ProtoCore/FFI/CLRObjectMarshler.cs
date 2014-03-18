@@ -256,8 +256,12 @@ namespace ProtoFFI
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type expectedCLRType)
         {
             Type arrayType = expectedCLRType;
-            if(expectedCLRType.IsGenericType)
-                arrayType = expectedCLRType.GetGenericArguments()[0].MakeArrayType();
+            Type elementType = GetElementType(expectedCLRType);
+            if (expectedCLRType.IsGenericType)
+            {
+                elementType = expectedCLRType.GetGenericArguments()[0];
+                arrayType = elementType.MakeArrayType();
+            }
 
             ICollection collection = null;
             //If dsObject is non array pointer but the expectedCLRType is IEnumerable, promote the dsObject to a collection.
@@ -270,23 +274,22 @@ namespace ProtoFFI
             else //Convert DS Array to CS Collection
                 collection = ToICollection(dsObject, context, dsi, arrayType);
 
-            if (typeof(ICollection).IsAssignableFrom(expectedCLRType) && expectedCLRType.IsGenericType)
-                return Activator.CreateInstance(expectedCLRType, new[] { collection });
-
-            if (expectedCLRType.IsArray)
+            if (expectedCLRType.IsArray || expectedCLRType.IsGenericType)
             {
                 ArrayList list = collection as ArrayList;
                 if (null != list)
-                {
-                    var elementType = expectedCLRType.GetElementType();
-                    if (elementType == null)
-                        elementType = typeof(object);
-
                     return list.ToArray(elementType);
-                }
             }
 
             return collection;
+        }
+
+        private static Type GetElementType(Type expectedCLRType)
+        {
+            var elementType = expectedCLRType.GetElementType();
+            if (elementType == null)
+                elementType = typeof(object);
+            return elementType;
         }
 
         #region CS_ARRAY_TO_DS_ARRAY

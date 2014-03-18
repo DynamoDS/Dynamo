@@ -135,10 +135,19 @@ namespace Dynamo.Nodes
         /// <param name="xmlDoc"></param>
         /// <param name="nodeElement"></param>
         /// <param name="context"></param>
-        protected override void SaveNode(
-            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc,
+            XmlElement nodeElement, SaveContext context)
         {
-            nodeElement.SetAttribute("assembly", Definition.Assembly ?? "");
+            var asmPath = Definition.Assembly ?? "";
+
+            if (context == SaveContext.File)
+            {
+                // We only make relative paths in a file saving operation.
+                var docPath = Nodes.Utilities.GetDocumentXmlPath(xmlDoc);
+                asmPath = Nodes.Utilities.MakeRelativePath(docPath, asmPath);
+            }
+
+            nodeElement.SetAttribute("assembly", asmPath);
             nodeElement.SetAttribute("function", Definition.MangledName ?? "");
         }
 
@@ -176,16 +185,20 @@ namespace Dynamo.Nodes
                 function = nodeElement.Attributes["function"].Value;
             }
 
+            var engine = dynSettings.Controller.EngineController;
+
             if (!string.IsNullOrEmpty(assembly))
             {
-                dynSettings.Controller.EngineController.ImportLibrary(assembly);
-                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(
-                    assembly,
-                    function);
+                var document = nodeElement.OwnerDocument;
+                var docPath = Nodes.Utilities.GetDocumentXmlPath(document);
+                assembly = Nodes.Utilities.MakeAbsolutePath(docPath, assembly);
+
+                engine.ImportLibrary(assembly);
+                Definition = engine.GetFunctionDescriptor(assembly, function);
             }
             else
             {
-                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(function);
+                Definition = engine.GetFunctionDescriptor(function);
             }
 
             if (null == Definition)
@@ -289,7 +302,7 @@ namespace Dynamo.Nodes
             else
             {
                 return base.GetAstIdentifierForOutputIndex(outputIndex);
-            }                                              
+            }
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
@@ -548,8 +561,17 @@ namespace Dynamo.Nodes
         protected override void SaveNode(
             XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            var asmPath = Definition.Assembly ?? "";
+
+            if (context == SaveContext.File)
+            {
+                // We only make relative paths in a file saving operation.
+                var docPath = Nodes.Utilities.GetDocumentXmlPath(xmlDoc);
+                asmPath = Nodes.Utilities.MakeRelativePath(docPath, asmPath);
+            }
+
             base.SaveNode(xmlDoc, nodeElement, context);
-            nodeElement.SetAttribute("assembly", Definition.Assembly ?? "");
+            nodeElement.SetAttribute("assembly", asmPath);
             nodeElement.SetAttribute("function", Definition.MangledName ?? "");
         }
 
@@ -594,16 +616,20 @@ namespace Dynamo.Nodes
                 function = nodeElement.Attributes["function"].Value;
             }
 
+            var engine = dynSettings.Controller.EngineController;
+
             if (!string.IsNullOrEmpty(assembly))
             {
-                dynSettings.Controller.EngineController.ImportLibrary(assembly);
-                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(
-                    assembly,
-                    function);
+                var document = nodeElement.OwnerDocument;
+                var docPath = Nodes.Utilities.GetDocumentXmlPath(document);
+                assembly = Nodes.Utilities.MakeAbsolutePath(docPath, assembly);
+
+                engine.ImportLibrary(assembly);
+                Definition = engine.GetFunctionDescriptor(assembly, function);
             }
             else
             {
-                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(function);
+                Definition = engine.GetFunctionDescriptor(function);
             }
 
             if (null == Definition)
