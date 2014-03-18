@@ -384,5 +384,20 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(expected, result);
         }
+
+        [Test]
+        public void MakeAbsolutePath03()
+        {
+            var basePath = @"C:\This\Is\Sub\Directory\Home.dyn";
+            var relativePath = @"..\..\Another\Sub\Directory\MyLibrary.dll";
+            var result = DynNodes.Utilities.MakeAbsolutePath(basePath, relativePath);
+
+            var expected = Path.Combine(new string[]
+            {
+                "C:\\", "This", "Is", "Another", "Sub", "Directory", "MyLibrary.dll"
+            });
+
+            Assert.AreEqual(expected, result);
+        }
     }
 }
