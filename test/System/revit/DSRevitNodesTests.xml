@@ -14,8 +14,8 @@
 				<test name="ByParametersOnFaceReference_NullInput" modelPath=".\empty.rfa" />
 				<test name="ByParameterOnCurveReference_NullInput" modelPath=".\empty.rfa" />
 				<test name="ByLengthOnCurveReference_NullInput" modelPath=".\empty.rfa" />
-			<testFixture name="FamilyTests">
 			</testFixture>
+			<testFixture name="FamilyTests">
 				<test name="ByName_ValidInput" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="ByName_InvalidInput" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="ByName_NonexistentName" modelPath=".\MassWithBoxAndCone.rfa" />
@@ -63,7 +63,6 @@
 				<test name="ByFaceUVDivisions_NullArgument" modelPath=".\block.rfa" />
 			</testFixture>
 			<testFixture name="SolidTests">
-				<test name="ByExtrusion_ValidArgs" modelPath=".\empty.rfa" />
 				<test name="ByRevolve_ValidArgs" modelPath=".\empty.rfa" />
 				<test name="ByRevolve_ValidArgs_NonVertical" modelPath=".\empty.rfa" />
 				<test name="ByBlend_ValidArgs" modelPath=".\empty.rfa" />
@@ -97,6 +96,7 @@
 				<test name="Line_Basic" modelPath=".\empty.rfa" />
 				<test name="Helix_Basic" modelPath=".\empty.rfa" />
 				<test name="Ellipse_Basic" modelPath=".\empty.rfa" />
+				<test name="EllipseArc_Basic" modelPath=".\empty.rfa" />
 			</testFixture>
 			<testFixture name="RevitToProtoCurveTests">
 				<test name="NurbSpline_Rational" modelPath=".\empty.rfa" />
@@ -105,6 +105,7 @@
 				<test name="Arc_Basic" modelPath=".\empty.rfa" />
 				<test name="Ellipse_Basic" modelPath=".\empty.rfa" />
 				<test name="CylindricalHelix_Basic" modelPath=".\empty.rfa" />
+				<test name="EllipseArc_Basic" modelPath=".\empty.rfa" />
 			</testFixture>
 			<testFixture name="ReferencePlaneTests">
 				<test name="ByLine_ValidArgs" modelPath=".\empty.rfa" />

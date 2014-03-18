@@ -313,10 +313,22 @@ namespace ProtoCore.Utils
                 }
             }
 
+            var dict = heapElement.Dict as Dictionary<StackValue, StackValue>;
+            if (dict != null)
+            {
+                foreach (var sv in dict.Values)
+                {
+                    if (sv.optype == AddressType.ArrayPointer)
+                    {
+                        int subArrayRank = GetMaxRankForArray(sv, core, tracer + 1);
+                        largestSub = Math.Max(subArrayRank, largestSub);
+                    }
+                }
+            }
+
             return largestSub + ret;
-
-
         }
+
         public static int GetMaxRankForArray(StackValue array, Core core)
         {
             return GetMaxRankForArray(array, core, 0);
@@ -752,10 +764,6 @@ namespace ProtoCore.Utils
             if (t.rank > 0)
             {
                 t.rank = t.rank - 1;
-                if (t.rank == 0)
-                {
-                    t.IsIndexable = false;
-                }
             }
 
             if (value.optype == AddressType.ArrayPointer)
@@ -974,7 +982,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue CopyArray(StackValue array, Core core)
         {
-            Type anyType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, false, Constants.kArbitraryRank);
+            Type anyType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
             return CopyArray(array, anyType, core);
         }
 

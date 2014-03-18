@@ -152,6 +152,9 @@ namespace Dynamo.Tests
                     StartDynamo();
                 }
 
+                // Tests do not necessarily run from idle thread
+                TransactionManager.Instance.DoAssertInIdleThread = false;
+
                 //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
 
                 //Tests must be executed on the main thread in order to access the Revit API.

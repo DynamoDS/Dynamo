@@ -853,7 +853,7 @@ namespace ProtoTest.TD.MultiLangTests
         public void TS055_Param_AlltypeTo_BoolArray_Imperative()
         {
             string code =
-                @"class A{ a=1; }a;a1;b;c;d;e;e1;                [Imperative]{                                            def foo ( x:bool[])                        {	                        b1= x ;	                        return =b1;                        }                        a = foo({ 1.5, 2.5 });                        z:var={ 1.5,2.5 };                        a1=foo(z);                        b = foo({ 1, 0 });                        c = foo({ ""1.5"" ,""""});                        c1 = foo( {'1','0'});                        d = foo({ A.A(),A.A() });                        e = foo({ false,true });                        f = foo({ null, null });}";
+                @"class A{ a=1; }a;a1;b;c;d;e;e1;                [Imperative]{                                            def foo ( x:bool[])                        {	                        b1= x ;	                        return =b1;                        }                        a = foo({ 1.5, 2.5 });                        z:var[]={ 1.5,2.5 };                        a1=foo(z);                        b = foo({ 1, 0 });                        c = foo({ ""1.5"" ,""""});                        c1 = foo( {'1','0'});                        d = foo({ A.A(),A.A() });                        e = foo({ false,true });                        f = foo({ null, null });}";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { true, true });
@@ -871,17 +871,17 @@ namespace ProtoTest.TD.MultiLangTests
         public void TS056_Return_AlltypeTo_BoolArray_Imperative()
         {
             string code =
-                @"class A{ a=1; }a;a1;b;c;d;e;f;g;                [Imperative]{                                           def foo :bool[]( x)                        {	                        b1= x ;	                        return =b1;                        }                        a = foo({ 1.5, 2.5 });                        z:var={ 1.5,2.5 };                        a1=foo(z);                        b = foo({ 1, 0 });                        c = foo({ ""1.5"" ,""""});                        d = foo({ '1','0'});                        e = d = foo({ A.A(),A.A() });                        f = foo({ false,true });                        g = foo({ null, null });                                                  }";
+                @"class A{ a=1; }a;a1;b;c;d;e;f;g;                [Imperative]{                                           def foo :bool( x)                        {	                        b1= x ;	                        return =b1;                        }                        a = foo({ 1.5, 2.5 });                        z:var[]={ 1.5,2.5 };                        a1=foo(z);                        b = foo({ 1, 0 });                        c = foo({ ""1.5"" ,""""});                        d = foo({ '1','0'});                        e = d = foo({ A.A(),A.A() });                        f = foo({ false,true });                        g = foo({ null, null });                                                  }";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
             thisTest.Verify("a", new object[] { true, true });
             thisTest.Verify("a1", new object[] { true, true });
             thisTest.Verify("b", new object[] { true, false });
             thisTest.Verify("c", new object[] { true, false });
-            thisTest.Verify("d", new object[] { true, false });
+            thisTest.Verify("d", new object[] { true, true });
             thisTest.Verify("e", new object[] { true, true });
             thisTest.Verify("f", new object[] { false, true });
-            thisTest.Verify("g", null);
+            thisTest.Verify("g", new object[] { null, null});
         }
 
         [Test]

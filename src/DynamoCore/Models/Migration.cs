@@ -670,14 +670,20 @@ namespace Dynamo.Models
             if (element.Name.Equals("Dynamo.Nodes.DSFunction") == false)
             {
                 if (element.Name.Equals("Dynamo.Nodes.DSVarArgFunction") == false)
-                    throw new ArgumentException("Only DSFunction should be here.");
+                {
+                    var message = "Only DSFunction/DSVarArgFunction should be here.";
+                    throw new ArgumentException(message);
+                }
             }
 
             var type = element.Attributes["type"].Value;
             if (type.Equals("Dynamo.Nodes.DSFunction") == false)
             {
                 if (type.Equals("Dynamo.Nodes.DSVarArgFunction") == false)
-                    throw new ArgumentException("Only DSFunction should be here.");
+                {
+                    var message = "Only DSFunction/DSVarArgFunction should be here.";
+                    throw new ArgumentException(message);
+                }
             }
 
             var nicknameAttrib = element.Attributes["nickname"];
