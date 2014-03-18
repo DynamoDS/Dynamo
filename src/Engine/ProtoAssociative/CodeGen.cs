@@ -2804,27 +2804,28 @@ namespace ProtoAssociative
             if (node is BinaryExpressionNode)
             {
                 BinaryExpressionNode astBNode = node as BinaryExpressionNode;
-                BinaryExpressionNode bnode = new BinaryExpressionNode();
+                AssociativeNode leftNode = null;
+                AssociativeNode rightNode = null;
+                bool isSSAAssignment = false;
                 if (ProtoCore.DSASM.Operator.assign == astBNode.Optr)
                 {
-                    bnode.Optr = ProtoCore.DSASM.Operator.assign;
-                    bnode.LeftNode = astBNode.LeftNode;
+                    leftNode = astBNode.LeftNode;
                     DFSEmitSSA_AST(astBNode.RightNode, ssaStack, ref astlist);
                     AssociativeNode assocNode = ssaStack.Pop();
 
                     if (assocNode is BinaryExpressionNode)
                     {
-                        bnode.RightNode = (assocNode as BinaryExpressionNode).LeftNode;
+                        rightNode = (assocNode as BinaryExpressionNode).LeftNode;
                     }
                     else
                     {
-                        bnode.RightNode = assocNode;
+                        rightNode = assocNode;
                     }
 
-                    bnode.isSSAAssignment = false;
+                    isSSAAssignment = false;
                 }
                 else
-                { 
+                {
                     BinaryExpressionNode tnode = new BinaryExpressionNode();
                     tnode.Optr = astBNode.Optr;
 
@@ -2836,17 +2837,20 @@ namespace ProtoAssociative
                     tnode.LeftNode = prevnode is BinaryExpressionNode ? (prevnode as BinaryExpressionNode).LeftNode : prevnode;
                     tnode.RightNode = lastnode is BinaryExpressionNode ? (lastnode as BinaryExpressionNode).LeftNode : lastnode;
 
-                    bnode.Optr = ProtoCore.DSASM.Operator.assign; 
 
                     // Left node
                     var identNode = nodeBuilder.BuildIdentfier(ProtoCore.Utils.CoreUtils.BuildSSATemp(core));
-                    bnode.LeftNode = identNode;
+                    leftNode = identNode;
 
                     // Right node
-                    bnode.RightNode = tnode;
+                    rightNode = tnode;
 
-                    bnode.isSSAAssignment = true;
+                    isSSAAssignment = true;
                 }
+
+                BinaryExpressionNode bnode = new BinaryExpressionNode(leftNode, rightNode, ProtoCore.DSASM.Operator.assign);
+                bnode.isSSAAssignment = isSSAAssignment;
+
                 astlist.Add(bnode);
                 ssaStack.Push(bnode);
             }
