@@ -191,14 +191,14 @@ namespace DSCore
         /// <returns name="first">First item in the list.</returns>
         /// <returns name="rest">Rest of the list.</returns>
         /// <search>first,rest</search>
-        [MultiReturn("first", "var[]..[]")]
         [MultiReturn("rest", "var[]..[]")]
+        [MultiReturn("first", "var[]..[]")]
         public static IDictionary Deconstruct(IList list)
         {
             return new Dictionary<string, object>
-            {
-                { "first", list[0] }, 
-                { "rest", list.Cast<object>().Skip(1).ToList() }
+            {               
+                { "rest", list.Cast<object>().Skip(1).ToList() },
+                { "first", list[0] }
             };
         }
 
