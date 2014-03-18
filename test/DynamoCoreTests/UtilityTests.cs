@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using DynNodes = Dynamo.Nodes;
+using System.Xml;
+using System.IO;
 
 namespace Dynamo.Tests
 {
@@ -153,6 +155,115 @@ namespace Dynamo.Tests
             System.Type type = DynNodes.Utilities.ResolveType(fqn);
             Assert.AreNotEqual(null, type);
             Assert.AreEqual("Dynamo.Nodes.NumberRange", type.FullName);
+        }
+
+        [Test]
+        public void SetDocumentXmlPath00()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Test method call without a valid XmlDocument.
+                DynNodes.Utilities.SetDocumentXmlPath(null, null);
+            });
+        }
+
+        [Test]
+        public void SetDocumentXmlPath01()
+        {
+            Assert.Throws<ArgumentException>(() =>
+            {
+                // Test XmlDocument without any root element.
+                XmlDocument document = new XmlDocument();
+                DynNodes.Utilities.SetDocumentXmlPath(document, null);
+            });
+        }
+
+        [Test]
+        public void SetDocumentXmlPath02()
+        {
+            XmlDocument document = new XmlDocument();
+            document.AppendChild(document.CreateElement("RootElement"));
+
+            var path = Path.Combine(Path.GetTempPath(), "SomeFile.dyn");
+            DynNodes.Utilities.SetDocumentXmlPath(document, path);
+
+            var storedPath = DynNodes.Utilities.GetDocumentXmlPath(document);
+            Assert.AreEqual(path, storedPath); // Ensure attribute has been added.
+        }
+
+        [Test]
+        public void SetDocumentXmlPath03()
+        {
+            XmlDocument document = new XmlDocument();
+            document.AppendChild(document.CreateElement("RootElement"));
+
+            var path = Path.Combine(Path.GetTempPath(), "SomeFile.dyn");
+            DynNodes.Utilities.SetDocumentXmlPath(document, path);
+
+            var storedPath = DynNodes.Utilities.GetDocumentXmlPath(document);
+            Assert.AreEqual(path, storedPath); // Ensure attribute has been added.
+
+            // Test target file path removal through an empty string.
+            DynNodes.Utilities.SetDocumentXmlPath(document, string.Empty);
+
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                DynNodes.Utilities.GetDocumentXmlPath(document);
+            });
+        }
+
+        [Test]
+        public void SetDocumentXmlPath04()
+        {
+            XmlDocument document = new XmlDocument();
+            document.AppendChild(document.CreateElement("RootElement"));
+
+            var path = Path.Combine(Path.GetTempPath(), "SomeFile.dyn");
+            DynNodes.Utilities.SetDocumentXmlPath(document, path);
+
+            var storedPath = DynNodes.Utilities.GetDocumentXmlPath(document);
+            Assert.AreEqual(path, storedPath); // Ensure attribute has been added.
+
+            // Test target file path removal through a null value.
+            DynNodes.Utilities.SetDocumentXmlPath(document, null);
+
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                DynNodes.Utilities.GetDocumentXmlPath(document);
+            });
+        }
+
+        [Test]
+        public void GetDocumentXmlPath00()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Test method call without a valid XmlDocument.
+                DynNodes.Utilities.GetDocumentXmlPath(null);
+            });
+        }
+
+        [Test]
+        public void GetDocumentXmlPath01()
+        {
+            Assert.Throws<ArgumentException>(() =>
+            {
+                // Test XmlDocument without any root element.
+                XmlDocument document = new XmlDocument();
+                DynNodes.Utilities.GetDocumentXmlPath(document);
+            });
+        }
+
+        [Test]
+        public void GetDocumentXmlPath02()
+        {
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                // Test XmlDocument root element without path.
+                XmlDocument document = new XmlDocument();
+                document.AppendChild(document.CreateElement("RootElement"));
+                DynNodes.Utilities.GetDocumentXmlPath(document);
+            });
         }
     }
 }

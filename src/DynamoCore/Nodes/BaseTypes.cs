@@ -13,6 +13,7 @@ using System.Globalization;
 using ProtoCore.AST.AssociativeAST;
 using Utils = Dynamo.FSchemeInterop.Utils;
 using System.IO;
+using Dynamo.UI;
 
 namespace Dynamo.Nodes
 {
@@ -264,6 +265,69 @@ namespace Dynamo.Nodes
 
             library = Path.GetFullPath(library); // Fallback on system search.
             return File.Exists(library);
+        }
+
+        /// <summary>
+        /// Call this method to associate/remove the target file path with/from
+        /// the given XmlDocument object.
+        /// </summary>
+        /// <param name="document">The XmlDocument with which the target file 
+        /// path is to be associated. This parameter cannot be null.</param>
+        /// <param name="targetFilePath">The target file path to be associated 
+        /// with the given XmlDocument. If this parameter is null or an empty 
+        /// string, then any target file path that was previously associated 
+        /// will be removed.</param>
+        internal static void SetDocumentXmlPath(XmlDocument document, string targetFilePath)
+        {
+            if (document == null)
+                throw new ArgumentNullException("document");
+
+            if (document.DocumentElement == null)
+            {
+                var message = "'XmlDocument.DocumentElement' cannot be null";
+                throw new ArgumentException(message);
+            }
+
+            var rootElement = document.DocumentElement;
+            if (string.IsNullOrEmpty(targetFilePath))
+            {
+                rootElement.RemoveAttribute(Configurations.FilePathAttribName);
+                return;
+            }
+
+            rootElement.SetAttribute(Configurations.FilePathAttribName, targetFilePath);
+        }
+
+        /// <summary>
+        /// Call this method to retrieve the associated target file path from 
+        /// the given XmlDocument object. An exception will be thrown if such 
+        /// target file path was never associated with the XmlDocument object.
+        /// </summary>
+        /// <param name="document">The XmlDocument object from which the 
+        /// associated target file path is to be retrieved.</param>
+        /// <returns>Returns the associated target file path.</returns>
+        internal static string GetDocumentXmlPath(XmlDocument document)
+        {
+            if (document == null)
+                throw new ArgumentNullException("document");
+
+            if (document.DocumentElement == null)
+            {
+                var message = "'XmlDocument.DocumentElement' cannot be null";
+                throw new ArgumentException(message);
+            }
+
+            var rootElement = document.DocumentElement;
+            var attrib = rootElement.Attributes[Configurations.FilePathAttribName];
+
+            if (attrib == null)
+            {
+                throw new InvalidOperationException(
+                    string.Format("'{0}' attribute not found in XmlDocument",
+                    Configurations.FilePathAttribName));
+            }
+
+            return attrib.Value;
         }
     }
 
