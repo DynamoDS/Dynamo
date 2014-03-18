@@ -1807,5 +1807,59 @@ namespace ProtoTest.TD.Associative
             thisTest.Verify("t1", new Object[] { 0 });
         }
 
+
+        [Test]
+        public void TO145_ReplicationGuidesLongest()
+        {
+
+            string code =
+@" def foo (x,y){    return = x + y;}a = 0;b = 0..1;t1 = foo(a<1L>, b<1L>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", new Object[] { 0, 1 });
+        }
+
+        [Test]
+        public void TO145_ReplicationGuidesLongest2()
+        {
+
+            string code =
+@" def foo (x,y,z){    return = x + y + z;}a = 0;b = 0..1;c = 0..2;t1 = foo(a<1L>, b<1L>, c<1L>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", new Object[] { 0, 2, 3  });
+        }
+
+        [Test]
+        public void TO146_ReplicationGuidesCartesianPromote()
+        {
+
+            string code =
+@" def foo (x,y){    return = x + y;}a = 1;b = 2;t1 = foo(a<1>, b<2>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", new Object[]
+                {  new Object[] {
+                    3
+                }
+                });
+        }
+
+        [Test]
+        public void TO147_ReplicationGuidesCartesian()
+        {
+
+            string code =
+@" def foo (x,y){    return = x + y;}a = { 1 };b = { 2 };t1 = foo(a<1>, b<2>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", new Object[]
+                {  new Object[] {
+                    3
+                }
+                });
+        }
+
+
     }
 }
