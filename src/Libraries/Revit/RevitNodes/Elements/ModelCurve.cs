@@ -144,6 +144,10 @@ namespace Revit.Elements
             return new ModelCurve(curve.ToRevitType());
         }
 
+        #endregion
+
+        #region Private static constructors
+
         /// <summary>
         /// Construct a Revit ModelCurve element from an existing element.  The result is Dynamo owned.
         /// </summary>
