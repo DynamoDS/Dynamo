@@ -184,6 +184,10 @@ namespace Dynamo.Nodes
 
             if (!string.IsNullOrEmpty(assembly))
             {
+                var document = nodeElement.OwnerDocument;
+                var docPath = Nodes.Utilities.GetDocumentXmlPath(document);
+                assembly = Nodes.Utilities.MakeAbsolutePath(docPath, assembly);
+
                 engine.ImportLibrary(assembly);
                 Definition = engine.GetFunctionDescriptor(assembly, function);
             }
@@ -552,8 +556,12 @@ namespace Dynamo.Nodes
         protected override void SaveNode(
             XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            var docPath = Nodes.Utilities.GetDocumentXmlPath(xmlDoc);
+            var asmPath = Definition.Assembly ?? "";
+            asmPath = Nodes.Utilities.MakeRelativePath(docPath, asmPath);
+
             base.SaveNode(xmlDoc, nodeElement, context);
-            nodeElement.SetAttribute("assembly", Definition.Assembly ?? "");
+            nodeElement.SetAttribute("assembly", asmPath);
             nodeElement.SetAttribute("function", Definition.MangledName ?? "");
         }
 
@@ -598,16 +606,20 @@ namespace Dynamo.Nodes
                 function = nodeElement.Attributes["function"].Value;
             }
 
+            var engine = dynSettings.Controller.EngineController;
+
             if (!string.IsNullOrEmpty(assembly))
             {
-                dynSettings.Controller.EngineController.ImportLibrary(assembly);
-                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(
-                    assembly,
-                    function);
+                var document = nodeElement.OwnerDocument;
+                var docPath = Nodes.Utilities.GetDocumentXmlPath(document);
+                assembly = Nodes.Utilities.MakeAbsolutePath(docPath, assembly);
+
+                engine.ImportLibrary(assembly);
+                Definition = engine.GetFunctionDescriptor(assembly, function);
             }
             else
             {
-                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(function);
+                Definition = engine.GetFunctionDescriptor(function);
             }
 
             if (null == Definition)
