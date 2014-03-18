@@ -7,6 +7,7 @@ using DSCore;
 using DSNodeServices;
 using Revit.GeometryConversion;
 using RevitServices.Persistence;
+using RevitServices.Threading;
 using RevitServices.Transactions;
 
 namespace Revit.Elements
@@ -61,14 +62,17 @@ namespace Revit.Elements
         {
             get
             {
-                TransactionManager.Instance.EnsureInTransaction( Document );
+                return IdlePromise.ExecuteOnIdleSync(() =>
+                {
+                    TransactionManager.Instance.EnsureInTransaction(Document);
 
-                DocumentManager.Instance.CurrentDBDocument.Regenerate();
-                var bb = this.InternalElement.get_BoundingBox(null);
+                    DocumentManager.Instance.CurrentDBDocument.Regenerate();
+                    var bb = this.InternalElement.get_BoundingBox(null);
 
-                TransactionManager.Instance.TransactionTaskDone();
+                    TransactionManager.Instance.TransactionTaskDone();
 
-                return bb.ToProtoType();
+                    return bb.ToProtoType();
+                });
             }
         }
 
