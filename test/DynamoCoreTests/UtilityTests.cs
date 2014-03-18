@@ -305,13 +305,10 @@ namespace Dynamo.Tests
         [Test]
         public void MakeRelativePath04()
         {
+            var justFileName = "JustSingleFileName.dll";
             var basePath = Path.Combine(Path.GetTempPath(), "home.dyn");
-
-            Assert.Throws<UriFormatException>(() =>
-            {
-                // "test" is not a valid file path.
-                DynNodes.Utilities.MakeRelativePath(basePath, "test");
-            });
+            var result = DynNodes.Utilities.MakeRelativePath(basePath, justFileName);
+            Assert.AreEqual(justFileName, result);
         }
 
         [Test]
@@ -387,6 +384,20 @@ namespace Dynamo.Tests
 
         [Test]
         public void MakeAbsolutePath03()
+        {
+            var basePath = Path.GetTempPath();
+            var relativePath = @"MyLibrary.dll";
+
+            // "result" should be the same as "relativePath" because it is 
+            // just a file name without directory information, therefore it 
+            // will not be modified to prefix with a directory.
+            // 
+            var result = DynNodes.Utilities.MakeAbsolutePath(basePath, relativePath);
+            Assert.AreEqual(relativePath, result);
+        }
+
+        [Test]
+        public void MakeAbsolutePath04()
         {
             var basePath = @"C:\This\Is\Sub\Directory\Home.dyn";
             var relativePath = @"..\..\Another\Sub\Directory\MyLibrary.dll";

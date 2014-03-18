@@ -358,6 +358,12 @@ namespace Dynamo.Nodes
             if (string.IsNullOrEmpty(subjectPath))
                 return string.Empty;
 
+            // Determine if we have any directory information in the 
+            // subjectPath. For example, we won't want to form a relative 
+            // path if the input of this method is just "ProtoGeometry.dll".
+            if (!HasPathInformation(subjectPath))
+                return subjectPath;
+
             Uri documentUri = new Uri(basePath, UriKind.Absolute);
             Uri assemblyUri = new Uri(subjectPath, UriKind.Absolute);
 
@@ -382,10 +388,27 @@ namespace Dynamo.Nodes
             if (string.IsNullOrEmpty(relativePath))
                 throw new ArgumentNullException("relativePath");
 
+            // Determine if we have any directory information in the 
+            // subjectPath. For example, we won't want to form an absolute 
+            // path if the input of this method is just "ProtoGeometry.dll".
+            if (!HasPathInformation(relativePath))
+                return relativePath;
+
             Uri baseUri = new Uri(basePath, UriKind.Absolute);
             Uri relativeUri = new Uri(relativePath, UriKind.Relative);
             Uri resultUri = new Uri(baseUri, relativeUri);
             return resultUri.LocalPath;
+        }
+
+        private static bool HasPathInformation(string fileNameOrPath)
+        {
+            int indexOfSeparator = fileNameOrPath.IndexOfAny(new char[]
+            {
+                Path.DirectorySeparatorChar,
+                Path.AltDirectorySeparatorChar
+            });
+
+            return indexOfSeparator >= 0;
         }
     }
 
