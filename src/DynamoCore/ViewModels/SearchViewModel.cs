@@ -839,6 +839,11 @@ namespace Dynamo.ViewModels
                     var displayString = function.UserFriendlyName;
                     var category = function.Category;
 
+                    if (displayString.Contains("AddItemToFront"))
+                    {
+                        Console.WriteLine("hi");
+                    }
+
                     if (isOverloaded)
                     {
                         displayString = string.Join(", ", function.Parameters.Select(p => p.ToString()));
@@ -856,6 +861,10 @@ namespace Dynamo.ViewModels
                     // function.QualifiedName is the search string for this
                     // element
                     SearchDictionary.Add(searchElement, function.QualifiedName);
+
+                    // add all search tags
+                    function.GetSearchTags().ToList().ForEach(x => SearchDictionary.Add(searchElement, x));
+
                 }
             }
 
