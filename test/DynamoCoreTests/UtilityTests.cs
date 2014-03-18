@@ -265,5 +265,68 @@ namespace Dynamo.Tests
                 DynNodes.Utilities.GetDocumentXmlPath(document);
             });
         }
+
+        [Test]
+        public void MakeRelativePath00()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Test method call without a valid base path.
+                DynNodes.Utilities.MakeRelativePath(null, Path.GetTempPath());
+            });
+        }
+
+        [Test]
+        public void MakeRelativePath01()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Test method call without an empty base path.
+                DynNodes.Utilities.MakeRelativePath("", Path.GetTempPath());
+            });
+        }
+
+        [Test]
+        public void MakeRelativePath02()
+        {
+            var basePath = Path.Combine(Path.GetTempPath(), "home.dyn");
+            var result = DynNodes.Utilities.MakeRelativePath(basePath, null);
+            Assert.AreEqual(string.Empty, result);
+        }
+
+        [Test]
+        public void MakeRelativePath03()
+        {
+            var basePath = Path.Combine(Path.GetTempPath(), "home.dyn");
+            var result = DynNodes.Utilities.MakeRelativePath(basePath, "");
+            Assert.AreEqual(string.Empty, result);
+        }
+
+        [Test]
+        public void MakeRelativePath04()
+        {
+            var basePath = Path.Combine(Path.GetTempPath(), "home.dyn");
+
+            Assert.Throws<UriFormatException>(() =>
+            {
+                // "test" is not a valid file path.
+                DynNodes.Utilities.MakeRelativePath(basePath, "test");
+            });
+        }
+
+        [Test]
+        public void MakeRelativePath05()
+        {
+            var tempPath = Path.GetTempPath();
+            var basePath = Path.Combine(tempPath, "home.dyn");
+
+            var filePath = Path.Combine(new string[]
+            {
+                tempPath, "This", "Is", "Sub", "Directory", "MyLibrary.dll"
+            });
+
+            var result = DynNodes.Utilities.MakeRelativePath(basePath, filePath);
+            Assert.AreEqual(@"This\Is\Sub\Directory\MyLibrary.dll", result);
+        }
     }
 }
