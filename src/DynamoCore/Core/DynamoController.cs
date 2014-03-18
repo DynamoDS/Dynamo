@@ -348,7 +348,7 @@ namespace Dynamo
 
             PreferenceSettings.Save();
 
-            dynSettings.Controller.DynamoModel.OnCleanup(null);
+            //dynSettings.Controller.DynamoModel.OnCleanup(null);
             dynSettings.Controller = null;
             
             DynamoSelection.Instance.ClearSelection();
