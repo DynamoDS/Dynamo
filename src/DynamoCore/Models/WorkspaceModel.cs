@@ -1123,13 +1123,21 @@ namespace Dynamo.Models
         /// <returns> the name of the first redefined variable (if exists). Else it returns null</returns>
         internal String GetFirstRedefinedVariable(CodeBlockNodeModel codeBlockNode)
         {
-            List<string> newDefVars = codeBlockNode.GetDefinedVariableNames();
+            var vars = codeBlockNode.GetDefinedVariableNames();
+
+            var otherVars = Nodes.OfType<CodeBlockNodeModel>()
+                                   .Where(x => x != codeBlockNode)
+                                   .SelectMany(x => x.GetDefinedVariableNames());
+            return vars.FirstOrDefault(v => otherVars.Contains(v));
+
+            /*
             return (from cbn in Nodes.OfType<CodeBlockNodeModel>().Where(x => x != codeBlockNode)
                     select cbn.GetDefinedVariableNames()
                         into oldDefVars
                         from newVar in newDefVars
                         where oldDefVars.Contains(newVar)
                         select newVar).FirstOrDefault();
+            */
         }
     }
 }
