@@ -328,5 +328,61 @@ namespace Dynamo.Tests
             var result = DynNodes.Utilities.MakeRelativePath(basePath, filePath);
             Assert.AreEqual(@"This\Is\Sub\Directory\MyLibrary.dll", result);
         }
+
+        [Test]
+        public void MakeAbsolutePath00()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                DynNodes.Utilities.MakeAbsolutePath(null, "Dummy");
+            });
+
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                DynNodes.Utilities.MakeAbsolutePath(string.Empty, "Dummy");
+            });
+
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                DynNodes.Utilities.MakeAbsolutePath("Dummy", null);
+            });
+
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                DynNodes.Utilities.MakeAbsolutePath("Dummy", string.Empty);
+            });
+        }
+
+        [Test]
+        public void MakeAbsolutePath01()
+        {
+            var validPath = Path.Combine(Path.GetTempPath(), "TempFile.dyn");
+
+            Assert.Throws<UriFormatException>(() =>
+            {
+                DynNodes.Utilities.MakeAbsolutePath("Test", validPath);
+            });
+
+            Assert.DoesNotThrow(() =>
+            {
+                // "Test" is a completely valid relative path string.
+                DynNodes.Utilities.MakeAbsolutePath(validPath, "Test");
+            });
+        }
+
+        [Test]
+        public void MakeAbsolutePath02()
+        {
+            var basePath = Path.GetTempPath();
+            var relativePath = @"This\Is\Sub\Directory\MyLibrary.dll";
+            var result = DynNodes.Utilities.MakeAbsolutePath(basePath, relativePath);
+
+            var expected = Path.Combine(new string[]
+            {
+                basePath, "This", "Is", "Sub", "Directory", "MyLibrary.dll"
+            });
+
+            Assert.AreEqual(expected, result);
+        }
     }
 }
