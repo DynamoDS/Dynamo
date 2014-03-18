@@ -154,9 +154,10 @@ namespace Dynamo.Models
 
         }
 
-        public override XmlDocument GetXml()
+        protected override bool PopulateXmlDocument(XmlDocument document)
         {
-            var doc = base.GetXml();
+            if (!base.PopulateXmlDocument(document))
+                return false;
 
             Guid guid;
             if (CustomNodeDefinition != null)
@@ -168,10 +169,10 @@ namespace Dynamo.Models
                 guid = Guid.NewGuid();
             }
 
-            var root = doc.DocumentElement;
+            var root = document.DocumentElement;
             root.SetAttribute("ID", guid.ToString());
 
-            return doc;
+            return true;
         }
     }
 }
