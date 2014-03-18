@@ -8576,7 +8576,7 @@ result3 =
         public void T63_Function_notDeclared()
         {
             String code = @"
-            import(""Math.dll"");
+            import(""DSCoreNodes.dll"");
             def foo : double(arg : double) = arg + 1;
             a = foo(""a""); ";
             string errmsg = "";
@@ -8603,7 +8603,7 @@ x = foo(); // null
         public void T64_Function_notDeclared_3()
         {
             String code = @"
-import(""Math.dll"");
+import(""DSCoreNodes.dll"");
 c = Math.Floor(3.0);
 d = Floor(3);
 ";
@@ -8618,7 +8618,7 @@ d = Floor(3);
         public void T64_Function_notDeclared_imperative_4()
         {
             String code = @"
-import(""Math.dll"");
+import(""DSCoreNodes.dll"");
 c;d;
 [Imperative]
 {

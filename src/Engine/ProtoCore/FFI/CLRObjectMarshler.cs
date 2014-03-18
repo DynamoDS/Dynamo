@@ -63,6 +63,9 @@ namespace ProtoFFI
                 case ProtoCore.PrimitiveType.kTypeVoid:
                     protoType.Name = ProtoCore.DSDefinitions.Keyword.Void;
                     break;
+                case ProtoCore.PrimitiveType.kTypeNull:
+                    protoType.Name = ProtoCore.DSDefinitions.Keyword.Null;
+                    break;
                 default:
                     throw new NotSupportedException(string.Format("Primitive type {0} is not supported for marshaling.", type));
             }
@@ -253,8 +256,12 @@ namespace ProtoFFI
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type expectedCLRType)
         {
             Type arrayType = expectedCLRType;
-            if(expectedCLRType.IsGenericType)
-                arrayType = expectedCLRType.GetGenericArguments()[0].MakeArrayType();
+            Type elementType = GetElementType(expectedCLRType);
+            if (expectedCLRType.IsGenericType)
+            {
+                elementType = expectedCLRType.GetGenericArguments()[0];
+                arrayType = elementType.MakeArrayType();
+            }
 
             ICollection collection = null;
             //If dsObject is non array pointer but the expectedCLRType is IEnumerable, promote the dsObject to a collection.
@@ -267,29 +274,32 @@ namespace ProtoFFI
             else //Convert DS Array to CS Collection
                 collection = ToICollection(dsObject, context, dsi, arrayType);
 
-            if (typeof(ICollection).IsAssignableFrom(expectedCLRType) && expectedCLRType.IsGenericType)
-                return Activator.CreateInstance(expectedCLRType, new[] { collection });
-
-            if (expectedCLRType.IsArray)
+            if (expectedCLRType.IsArray || expectedCLRType.IsGenericType)
             {
                 ArrayList list = collection as ArrayList;
                 if (null != list)
-                {
-                    var elementType = expectedCLRType.GetElementType();
-                    if (elementType == null)
-                        elementType = typeof(object);
-
                     return list.ToArray(elementType);
-                }
             }
 
             return collection;
         }
 
+        private static Type GetElementType(Type expectedCLRType)
+        {
+            var elementType = expectedCLRType.GetElementType();
+            if (elementType == null)
+                elementType = typeof(object);
+            return elementType;
+        }
+
         #region CS_ARRAY_TO_DS_ARRAY
 
-        private ProtoCore.Type GetApproxDSType(System.Type type)
+        private ProtoCore.Type GetApproxDSType(object obj)
         {
+            if (null == obj)
+                return CreateType(ProtoCore.PrimitiveType.kTypeNull);
+
+            Type type = obj.GetType();
             if(type == typeof(string))
                 return StringMarshaler.kType;
             ProtoCore.Type dsType;
@@ -321,7 +331,7 @@ namespace ProtoFFI
 
             foreach (var item in collection)
             {
-                ProtoCore.Type dsType = GetApproxDSType(item.GetType());
+                ProtoCore.Type dsType = GetApproxDSType(item);
                 StackValue value = primitiveMarshaler.Marshal(item, context, dsi, dsType);
                 sv[index] = value;
                 ++index;
@@ -337,7 +347,7 @@ namespace ProtoFFI
 
             foreach (var item in enumerable)
             {
-                ProtoCore.Type dsType = GetApproxDSType(item.GetType());
+                ProtoCore.Type dsType = GetApproxDSType(item);
                 StackValue value = primitiveMarshaler.Marshal(item, context, dsi, dsType);
                 svs.Add(value);
             }
@@ -358,11 +368,11 @@ namespace ProtoFFI
             {
                 var value = dictionary[key];
 
-                ProtoCore.Type keyType = GetApproxDSType(key.GetType());
+                ProtoCore.Type keyType = GetApproxDSType(key);
                 StackValue dsKey = primitiveMarshaler.Marshal(key, context, dsi, keyType);
                 GCUtils.GCRetain(dsKey, core);
 
-                ProtoCore.Type valueType = GetApproxDSType(value.GetType());
+                ProtoCore.Type valueType = GetApproxDSType(value);
                 StackValue dsValue = primitiveMarshaler.Marshal(value, context, dsi, valueType);
                 GCUtils.GCRetain(dsValue, core);
 

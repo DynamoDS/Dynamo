@@ -830,7 +830,7 @@ namespace Dynamo.Nodes
             //create the node itself
             XmlElement dsCoreNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(dsCoreNode, "DSCoreNodes.dll",
-                "List.RemoveItemsAtIndices", "List.RemoveItemsAtIndices@var[]..[],var[]");
+                "List.RemoveItemAtIndex", "List.RemoveItemAtIndex@var[]..[],int[]");
 
             migratedData.AppendNode(dsCoreNode);
             string dsCoreNodeId = MigrationManager.GetGuidFromXmlElement(dsCoreNode);
@@ -1131,7 +1131,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "<", "<@,");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Compare.LessThan", "Compare.LessThan@var,var");
         }
     }
 
@@ -1140,7 +1140,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "<=", "<=@,");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Compare.LessThanOrEqual", "Compare.LessThanOrEqual@var,var");
         }
     }
 
@@ -1149,7 +1149,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, ">", ">@,");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Compare.GreaterThan", "Compare.GreaterThan@var,var");
         }
     }
 
@@ -1158,7 +1158,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, ">=", ">=@,");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Compare.GreaterThanOrEqual", "Compare.GreaterThanOrEqual@var,var");
         }
     }
 
