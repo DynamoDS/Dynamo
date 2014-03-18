@@ -317,6 +317,14 @@ namespace Dynamo.Nodes
                 throw new ArgumentException(message);
             }
 
+            // If XmlDocument is opened from an existing file...
+            if (!string.IsNullOrEmpty(document.BaseURI))
+            {
+                Uri documentUri = new Uri(document.BaseURI, UriKind.Absolute);
+                if (documentUri.IsFile)
+                    return documentUri.LocalPath;
+            }
+
             var rootElement = document.DocumentElement;
             var attrib = rootElement.Attributes[Configurations.FilePathAttribName];
 
@@ -345,7 +353,7 @@ namespace Dynamo.Nodes
         internal static string MakeRelativePath(string basePath, string subjectPath)
         {
             if (string.IsNullOrEmpty(basePath))
-                throw new ArgumentNullException("documentPath");
+                throw new ArgumentNullException("basePath");
 
             if (string.IsNullOrEmpty(subjectPath))
                 return string.Empty;
@@ -355,6 +363,29 @@ namespace Dynamo.Nodes
 
             var relativeUri = documentUri.MakeRelativeUri(assemblyUri);
             return relativeUri.OriginalString.Replace('/', '\\');
+        }
+
+        /// <summary>
+        /// Call this method to form the absolute path to target pointed to by 
+        /// relativePath parameter. The absolute path is formed by computing both
+        /// base path and the relative path.
+        /// </summary>
+        /// <param name="basePath">The base path from which the absolute path is 
+        /// to be computed. This argument cannot be null or empty.</param>
+        /// <param name="relativePath">The relative path to the target. This 
+        /// argument cannot be null or empty.</param>
+        /// <returns>Returns the absolute path.</returns>
+        internal static string MakeAbsolutePath(string basePath, string relativePath)
+        {
+            if (string.IsNullOrEmpty(basePath))
+                throw new ArgumentNullException("basePath");
+            if (string.IsNullOrEmpty(relativePath))
+                throw new ArgumentNullException("relativePath");
+
+            Uri baseUri = new Uri(basePath, UriKind.Absolute);
+            Uri relativeUri = new Uri(relativePath, UriKind.Relative);
+            Uri resultUri = new Uri(baseUri, relativeUri);
+            return resultUri.LocalPath;
         }
     }
 
