@@ -2423,6 +2423,11 @@ namespace ProtoCore
                 ASTToCallSiteMap[graphNode.AstID] = csInstance;
             }
 
+            if (graphNode != null && Options.IsDeltaExecution)
+            {
+                this.RuntimeStatus.ClearWarningForExpression(graphNode.exprUID);
+            }
+
             return csInstance;
         }
 

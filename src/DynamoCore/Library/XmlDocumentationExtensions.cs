@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Autodesk.DesignScript.Geometry;
 
 namespace Dynamo.DSEngine
 {
@@ -59,16 +60,42 @@ namespace Dynamo.DSEngine
                 ).ToString().Trim();
         }
 
+        public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member)
+        {
+            XDocument xml = null;
+
+            if (member.Assembly != null)
+                xml = DocumentationServices.GetForAssembly(member.Assembly);
+
+            return GetSearchTags(member, xml);
+        }
+
+        public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member, XDocument xml)
+        {
+            if (xml == null) return new List<string>();
+
+            return xml.XPathEvaluate(
+                String.Format(
+                    "string(/doc/members/member[@name='{0}']/search)",
+                    GetMemberElementName(member)
+                    )
+                ).ToString().Split(',').Select(x => x.Trim());
+        }
+
         private static string PrimitiveMap(string s)
         {
             switch (s)
             {
+                case "[]":
+                    return "System.Collections.IList";
+                case "var[]..[]":
+                    return "System.Collections.IList";
                 case "var":
                     return "System.Object";
                 case "double":
                     return "System.Double";
                 case "int":
-                    return "System.Int";
+                    return "System.Int32";
                 case "bool":
                     return "System.Boolean";
                 default:
