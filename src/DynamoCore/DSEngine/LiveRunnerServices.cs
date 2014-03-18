@@ -71,14 +71,6 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        /// Clear runtime warnings. 
-        /// </summary>
-        public void ClearRuntimeWarnings()
-        {
-            liveRunner.Core.RuntimeStatus.ClearWarnings();
-        }
-
-        /// <summary>
         /// Each time when a new library is imported, LiveRunner need to reload
         /// all libraries and reset VM.
         /// </summary>
