@@ -1398,6 +1398,13 @@ namespace ProtoScript.Runners
                         }
                         currentSubTreeList.Remove(st.GUID);
                     }
+
+                    var exprs = exprGuidMap.Where(p => p.Value.Equals(st.GUID)).Select(p => p.Key);
+                    foreach (var expr in exprs)
+                    {
+                        exprGuidMap.Remove(expr);
+                        Core.RuntimeStatus.ClearWarningForExpression(expr); 
+                    }
                 }
             }
 
@@ -1431,8 +1438,24 @@ namespace ProtoScript.Runners
                         {
                             if (null != oldSubTree.AstNodes)
                             {
-                                List<AssociativeNode> removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+                                var removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
                                 DeactivateGraphnodes(removedNodes);
+
+                                foreach (var node in removedNodes)
+                                {
+                                    var expr = node as BinaryExpressionNode;
+                                    if (expr != null)
+                                    {
+                                        var exprId = expr.exprUID;
+                                    }
+
+                                    if (!modifiedASTList.Any(n => n is BinaryExpressionNode &&
+                                        (n as BinaryExpressionNode).exprUID == expr.exprUID))
+                                    {
+                                        exprGuidMap.Remove(expr.exprUID);
+                                        Core.RuntimeStatus.ClearWarningForExpression(expr.exprUID);
+                                    }
+                                }
                             }
                         }
 
