@@ -135,10 +135,14 @@ namespace Dynamo.Nodes
         /// <param name="xmlDoc"></param>
         /// <param name="nodeElement"></param>
         /// <param name="context"></param>
-        protected override void SaveNode(
-            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SaveNode(XmlDocument xmlDoc,
+            XmlElement nodeElement, SaveContext context)
         {
-            nodeElement.SetAttribute("assembly", Definition.Assembly ?? "");
+            var docPath = Nodes.Utilities.GetDocumentXmlPath(xmlDoc);
+            var asmPath = Definition.Assembly ?? "";
+            asmPath = Nodes.Utilities.MakeRelativePath(docPath, asmPath);
+
+            nodeElement.SetAttribute("assembly", asmPath);
             nodeElement.SetAttribute("function", Definition.MangledName ?? "");
         }
 
@@ -176,16 +180,16 @@ namespace Dynamo.Nodes
                 function = nodeElement.Attributes["function"].Value;
             }
 
+            var engine = dynSettings.Controller.EngineController;
+
             if (!string.IsNullOrEmpty(assembly))
             {
-                dynSettings.Controller.EngineController.ImportLibrary(assembly);
-                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(
-                    assembly,
-                    function);
+                engine.ImportLibrary(assembly);
+                Definition = engine.GetFunctionDescriptor(assembly, function);
             }
             else
             {
-                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(function);
+                Definition = engine.GetFunctionDescriptor(function);
             }
 
             if (null == Definition)
@@ -289,7 +293,7 @@ namespace Dynamo.Nodes
             else
             {
                 return base.GetAstIdentifierForOutputIndex(outputIndex);
-            }                                              
+            }
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)

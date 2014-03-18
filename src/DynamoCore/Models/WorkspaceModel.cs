@@ -15,7 +15,6 @@ using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using ProtoCore.AST.AssociativeAST;
-using Dynamo.UI;
 
 namespace Dynamo.Models
 {
@@ -763,16 +762,16 @@ namespace Dynamo.Models
             // Create the xml document to write to.
             var document = new XmlDocument();
             document.CreateXmlDeclaration("1.0", null, null);
-            var rootElement = document.CreateElement("Workspace");
-            rootElement.SetAttribute(Configurations.FilePathAttribName, targetFilePath);
-            document.AppendChild(rootElement);
+            document.AppendChild(document.CreateElement("Workspace"));
+
+            Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, targetFilePath);
 
             if (!this.PopulateXmlDocument(document))
                 return false;
 
             try
             {
-                rootElement.RemoveAttribute(Configurations.FilePathAttribName);
+                Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, string.Empty);
                 document.Save(targetFilePath);
             }
             catch (System.IO.IOException)
