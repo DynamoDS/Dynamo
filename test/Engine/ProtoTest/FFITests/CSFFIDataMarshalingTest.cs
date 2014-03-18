@@ -467,5 +467,23 @@ d2 = TestData.SumList({1, 2, {3, 4}, {5, {6, {7}}}});
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ExecuteAndVerify(code, data);
         }
+
+        [Test]
+        public void Test_MarshalingNullInCollection()
+        {
+            string code = @"
+                     list = {1, null, ""test"", true, 3.5};
+                     l1 = TestData.AddItemToFront(null, list);
+                     l2 = TestData.AddItemToFront(list, list);";
+            ValidationData[] data = 
+            { 
+                new ValidationData { ValueName = "l1", ExpectedValue = new object[] {null, 1, null, "test", true, 3.5}} ,
+                new ValidationData { ValueName = "l2", ExpectedValue = new object[] {new object[]{1, null, "test", true, 3.5}, 1, null, "test", true, 3.5}} , 
+            };
+
+            Type dummy = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
     }
 }
