@@ -19,6 +19,23 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Converts a string to an integer or a double.
+        /// </summary>
+        /// <param name="str">String to be converted.</param>
+        public static object ToNumber(string str)
+        {
+            int i;
+            double d;
+
+            if (Int32.TryParse(str, out i))
+                return i;
+            else if (Double.TryParse(str, out d))
+                return d;
+            else
+                throw new ArgumentException("Not a valid number.", "str");
+        }
+
+        /// <summary>
         ///     Concatenates multiple strings into a single string.
         /// </summary>
         public static string Concat(params string[] strings)
