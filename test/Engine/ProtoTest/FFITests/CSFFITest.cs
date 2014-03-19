@@ -255,9 +255,9 @@ namespace ProtoFFITests
             String code =
             @"size;             [Associative]              {                dummy = Dummy.Dummy();                stack = dummy.DummyStack();                size = dummy.StackSize(stack);             }            ";
             Type dummy = typeof (FFITarget.DerivedDummy);
-            Type derived1 = Type.GetType("ProtoFFITests.Derived1");
-            Type testdispose = Type.GetType("ProtoFFITests.TestDispose");
-            Type dummydispose = Type.GetType("ProtoFFITests.DummyDispose");
+            Type derived1 = typeof(FFITarget.Derived1);
+            Type testdispose = typeof(FFITarget.TestDispose);
+            Type dummydispose = typeof(FFITarget.DummyDispose);
             code = string.Format("import(\"{0}\");\r\nimport(\"{1}\");\r\nimport(\"{2}\");\r\nimport(\"{3}\");\r\n{4}",
                 dummy.AssemblyQualifiedName, derived1.AssemblyQualifiedName, testdispose.AssemblyQualifiedName, dummydispose.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "size", ExpectedValue = 3, BlockIndex = 0 } };
@@ -268,7 +268,7 @@ namespace ProtoFFITests
         public void TestDictionaryMarshalling_DStoCS_CStoDS()
         {
             String code =
-            @"             [Associative]              {                dummy = Dummy.Dummy();                dictionary =                 {                     dummy.CreateDictionary();                    dummy.AddData(dictionary, ""ABCD"", 22);                    dummy.AddData(dictionary, ""xyz"", 11);                    dummy.AddData(dictionary, ""teas"", 12);                }                sum = dummy.SumAges(dictionary);             }            ";
+            @"             [Associative]              {                dummy = Dummy.Dummy();                dictionary =                 {                     dummy.CreateDictionary() => dict;                    dummy.AddData(dict, ""ABCD"", 22);                    dummy.AddData(dict, ""xyz"", 11);                    dummy.AddData(dict, ""teas"", 12);                }                sum = dummy.SumAges(dictionary);             }            ";
             Type dummy = typeof (FFITarget.Dummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "sum", ExpectedValue = 45, BlockIndex = 1 } };
