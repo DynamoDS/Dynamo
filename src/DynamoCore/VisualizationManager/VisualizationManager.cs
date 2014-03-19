@@ -32,7 +32,7 @@ namespace Dynamo
         private string _alternateContextName = "Host";
         private bool _drawToAlternateContext = true;
         protected bool isUpdating = false;
-        private Octree.OctreeSearch.Octree octree;
+        //private Octree.OctreeSearch.Octree octree;
         private bool updatingPaused = false;
         private DynamoController _controller;
         private List<RenderPackage> _currentTaggedPackages = new List<RenderPackage>();
@@ -108,11 +108,11 @@ namespace Dynamo
             set { _alternateContextName = value; }
         }
 
-        public Octree.OctreeSearch.Octree Octree
-        {
-            get { return octree; }
-            set { octree = value; }
-        }
+        //public Octree.OctreeSearch.Octree Octree
+        //{
+        //    get { return octree; }
+        //    set { octree = value; }
+        //}
 
         #endregion
 
@@ -138,7 +138,7 @@ namespace Dynamo
         public VisualizationManager(DynamoController controller)
         {
             _controller = controller;
-            octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
+            //octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
 
             _controller.DynamoModel.WorkspaceClearing += Pause;
             _controller.DynamoModel.WorkspaceCleared += UnPauseAndUpdate;
@@ -347,8 +347,8 @@ namespace Dynamo
                 //Setup the octree. An optimization would defer this operation until
                 //a short while after update operations are complete to avoid
                 //to many rebuilds of this index while building dynamically.
-                if(!DynamoController.IsTestMode)
-                    SetupOctree(nodeModels);
+                //if(!DynamoController.IsTestMode)
+                //    SetupOctree(nodeModels);
 
                 //Debug.WriteLine(string.Format("Visualization updating {0} objects", toUpdate.Count()));
                 OnVisualizationUpdateComplete(this, EventArgs.Empty);
@@ -369,24 +369,24 @@ namespace Dynamo
         /// be used in selection operations.
         /// </summary>
         /// <param name="toUpdate"></param>
-        private void SetupOctree(IEnumerable<NodeModel> toUpdate)
-        {
-            octree.Clear();
-            foreach (var node in toUpdate)
-            {
-                var packages = node.RenderPackages;
-                foreach (var p in packages)
-                {
-                    for (int i = 0; i < p.TriangleVertices.Count - 3; i += 3)
-                    {
-                        var a = p.TriangleVertices[i];
-                        var b = p.TriangleVertices[i + 1];
-                        var c = p.TriangleVertices[i + 2];
-                        octree.AddNode(a, b, c, node.GUID.ToString());
-                    }
-                }
-            }
-        }
+        //private void SetupOctree(IEnumerable<NodeModel> toUpdate)
+        //{
+        //    octree.Clear();
+        //    foreach (var node in toUpdate)
+        //    {
+        //        var packages = node.RenderPackages;
+        //        foreach (var p in packages)
+        //        {
+        //            for (int i = 0; i < p.TriangleVertices.Count - 3; i += 3)
+        //            {
+        //                var a = p.TriangleVertices[i];
+        //                var b = p.TriangleVertices[i + 1];
+        //                var c = p.TriangleVertices[i + 2];
+        //                octree.AddNode(a, b, c, node.GUID.ToString());
+        //            }
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Aggregates all upstream geometry for the given node then sends
@@ -518,20 +518,20 @@ namespace Dynamo
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="z"></param>
-        public void LookupSelectedElement(double x, double y, double z)
-        {
-            var id = octree.GetNode(x, y, z);
+        //public void LookupSelectedElement(double x, double y, double z)
+        //{
+        //    var id = octree.GetNode(x, y, z);
 
-            if (id == null)
-                return;
+        //    if (id == null)
+        //        return;
 
-            var node = _controller.DynamoModel.Nodes.FirstOrDefault(n => n.GUID.ToString() == id.ToString());
-            if (node != null && !DynamoSelection.Instance.Selection.Contains(node))
-            {
-                DynamoSelection.Instance.ClearSelection();
-                DynamoSelection.Instance.Selection.Add(node);
-            }
-        }
+        //    var node = _controller.DynamoModel.Nodes.FirstOrDefault(n => n.GUID.ToString() == id.ToString());
+        //    if (node != null && !DynamoSelection.Instance.Selection.Contains(node))
+        //    {
+        //        DynamoSelection.Instance.ClearSelection();
+        //        DynamoSelection.Instance.Selection.Add(node);
+        //    }
+        //}
 
         /// <summary>
         /// Display a label for one or several render packages 
