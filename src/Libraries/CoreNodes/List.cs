@@ -143,8 +143,8 @@ namespace DSCore
         /// <returns name="in">Items whose mask index is true.</returns>
         /// <returns name="out">Items whose mask index is false.</returns>
         /// <search>filter,in,out,mask,dispatch</search>
-        [MultiReturn("in", "var[]..[]")]
-        [MultiReturn("out", "var[]..[]")]
+        [MultiReturn("in", "var[]..[]", 0)]
+        [MultiReturn("out", "var[]..[]", 1)]
         public static Dictionary<string, object> FilterByBoolMask(IList list, IList mask)
         {
             var result = FilterByMaskHelper(list.Cast<object>(), mask.Cast<object>());
@@ -191,8 +191,8 @@ namespace DSCore
         /// <returns name="first">First item in the list.</returns>
         /// <returns name="rest">Rest of the list.</returns>
         /// <search>first,rest</search>
-        [MultiReturn("rest", "var[]..[]")]
-        [MultiReturn("first", "var[]..[]")]
+        [MultiReturn("first", "var[]..[]", 0)]
+        [MultiReturn("rest", "var[]..[]", 1)]
         public static IDictionary Deconstruct(IList list)
         {
             return new Dictionary<string, object>

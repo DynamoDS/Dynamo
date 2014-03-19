@@ -94,7 +94,7 @@ namespace Dynamo.Nodes
             {
                 string varname = Definition.ClassName.Split('.').Last();
                 varname = char.ToLowerInvariant(varname[0]) + varname.Substring(1);
-                InPortData.Add(new PortData(varname, Definition.ClassName, typeof(object)));
+                InPortData.Add(new PortData(varname, Definition.ClassName));
             }
 
             if (Definition.Parameters != null)
@@ -115,13 +115,13 @@ namespace Dynamo.Nodes
             {
                 foreach (var key in Definition.ReturnKeys)
                 {
-                    OutPortData.Add(new PortData(key, "var", typeof(object)));
+                    OutPortData.Add(new PortData(key, "var"));
                 }
             }
             else
             {
                 string returnType = IsConstructor() ? Definition.ClassName : Definition.ReturnType;
-                OutPortData.Add(new PortData("", returnType, typeof(object)));
+                OutPortData.Add(new PortData("", returnType));
             }
 
             RegisterAllPorts();

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Reflection;
 using System.Linq;
@@ -1144,16 +1146,17 @@ namespace ProtoFFI
     {
         public bool AllowRankReduction { get; private set; }
         public bool RequireTracing { get; private set; }
-        public Dictionary<string, string> MutilReturnMap { get; private set; }
+        public IDictionary MultiReturnList { get; private set; }
 
         public FFIMethodAttributes(MethodInfo method)
         {
-            MutilReturnMap = new Dictionary<string, string>();
+            MultiReturnList = new OrderedDictionary();
             if (method == null)
             {
                 return;
             }
 
+            var multiReturnAttrs = new List<MultiReturnAttribute>();
             object[] attrs = method.GetCustomAttributes(false);
             foreach (var attr in attrs)
             {
@@ -1167,9 +1170,13 @@ namespace ProtoFFI
                 }
                 else if (attr is MultiReturnAttribute)
                 {
-                    var nameTypePair = (attr as MultiReturnAttribute);
-                    MutilReturnMap.Add(nameTypePair.Name, nameTypePair.Type);
+                    multiReturnAttrs.Add(attr as MultiReturnAttribute);
                 }
+            }
+
+            foreach (var multiRtn in multiReturnAttrs.OrderBy(attr => attr.Order))
+            {
+                MultiReturnList.Add(multiRtn.Name, multiRtn.Type);
             }
         }
     }
