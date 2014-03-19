@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
+using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
 {
@@ -113,9 +115,16 @@ namespace DSCore
         /// </summary>
         /// <returns name="val">Saturation value for the color.</returns>
         /// <search>components,alpha,red,green,blue</search>
-        public static byte[] Components(DSColor c)
+        [MultiReturn(new string[] {"a", "r", "g", "b"})]
+        public static Dictionary<string, byte> Components(DSColor c)
         {
-            return new byte[] { c.color.A, c.color.R, c.color.G, c.color.B };
+            return new Dictionary<string, byte>() 
+            {
+                {"a", c.color.A},
+                {"r", c.color.R},
+                {"g", c.color.G},
+                {"b", c.color.B}
+            };
         }
 
         /// <summary>
