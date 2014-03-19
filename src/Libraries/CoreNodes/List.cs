@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
@@ -796,6 +798,38 @@ namespace DSCore
 
                 ++i;
             }
+        }
+
+        /// <summary>
+        ///     Flattens a nested list of lists by a certain amount.
+        /// </summary>
+        /// <param name="list">List to flatten.</param>
+        /// <param name="amt">Layers of nesting to remove.</param>
+        public static IList Flatten(IList list, int amt)
+        {
+            return Flatten(list, amt, new List<object>());
+        }
+
+        private static IList Flatten(IList list, int amt, IList acc)
+        {
+            if (amt == 0)
+            {
+                foreach (var item in list)
+                {
+                    acc.Add(item);
+                }
+            }
+            else
+            {
+                foreach (var item in list)
+                {
+                    if(item is IList)
+                        acc = Flatten((IList)item, amt-1, acc);
+                    else
+                        acc.Add(item);                   
+                }
+            }
+            return acc;
         }
 
         #endregion
