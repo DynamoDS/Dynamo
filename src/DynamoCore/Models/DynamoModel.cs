@@ -207,6 +207,24 @@ namespace Dynamo.Models
             }
         }
 
+        public event EventHandler DeletionStarted;
+        public virtual void OnDeletionStarted(object sender, EventArgs e)
+        {
+            if (DeletionStarted != null)
+            {
+                DeletionStarted(this, e);
+            }
+        }
+
+        public event EventHandler DeletionComplete;
+        public virtual void OnDeletionComplete(object sender, EventArgs e)
+        {
+            if (DeletionComplete != null)
+            {
+                DeletionComplete(this, e);
+            }
+        }
+
         /// <summary>
         /// An event triggered when the workspace is being cleaned.
         /// </summary>
@@ -1631,6 +1649,8 @@ namespace Dynamo.Models
             if (null == this._cspace)
                 return;
 
+            OnDeletionStarted(this, EventArgs.Empty);
+
             this._cspace.RecordAndDeleteModels(modelsToDelete);
 
             var selection = DynamoSelection.Instance.Selection;
@@ -1642,6 +1662,8 @@ namespace Dynamo.Models
                 if (model is ConnectorModel)
                     OnConnectorDeleted(model as ConnectorModel);
             }
+
+            OnDeletionComplete(this, EventArgs.Empty);
         }
 
         /// <summary>
