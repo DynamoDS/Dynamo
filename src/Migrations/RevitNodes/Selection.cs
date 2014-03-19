@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Xml;
 using Dynamo.Models;
 using Migrations;
 
@@ -10,8 +11,14 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSFamilyInstanceSelection"));
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(
+                oldNode, "Dynamo.Nodes.DSFamilyInstanceSelection");
+            migrationData.AppendNode(newNode);
+
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode);
 
             return migrationData;
         }
@@ -23,8 +30,14 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSDividedSurfaceFamiliesSelection"));
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(
+                oldNode, "Dynamo.Nodes.DSDividedSurfaceFamiliesSelection");
+            migrationData.AppendNode(newNode);
+
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode);
 
             return migrationData;
         }
@@ -36,8 +49,14 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSFaceSelection"));
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(
+                oldNode, "Dynamo.Nodes.DSFaceSelection");
+            migrationData.AppendNode(newNode);
+
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode);
 
             return migrationData;
         }
@@ -49,8 +68,14 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSEdgeSelection"));
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(
+                oldNode, "Dynamo.Nodes.DSEdgeSelection");
+            migrationData.AppendNode(newNode);
+
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode);
 
             return migrationData;
         }
@@ -62,8 +87,14 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSCurveElementSelection"));
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(
+                oldNode, "Dynamo.Nodes.DSCurveElementSelection");
+            migrationData.AppendNode(newNode);
+
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode);
 
             return migrationData;
         }
@@ -75,8 +106,14 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSModelElementsSelection"));
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(
+                oldNode, "Dynamo.Nodes.DSModelElementsSelection");
+            migrationData.AppendNode(newNode);
+
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode);
 
             return migrationData;
         }
@@ -88,8 +125,14 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSReferencePointSelection"));
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(
+                oldNode, "Dynamo.Nodes.DSReferencePointSelection");
+            migrationData.AppendNode(newNode);
+
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode);
 
             return migrationData;
         }
@@ -101,8 +144,14 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSLevelSelection"));
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(
+                oldNode, "Dynamo.Nodes.DSLevelSelection");
+            migrationData.AppendNode(newNode);
+
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode);
 
             return migrationData;
         }
@@ -114,8 +163,14 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSModelElementSelection"));
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(
+                oldNode, "Dynamo.Nodes.DSModelElementSelection");
+            migrationData.AppendNode(newNode);
+
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode);
 
             return migrationData;
         }
@@ -127,12 +182,19 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSPointOnElementSelection"));
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(
+                oldNode, "Dynamo.Nodes.DSPointOnElementSelection");
+            migrationData.AppendNode(newNode);
+
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode);
 
             return migrationData;
         }
     }
+
     public class AllElementsOfCategory : MigrationNode
     {
     }
