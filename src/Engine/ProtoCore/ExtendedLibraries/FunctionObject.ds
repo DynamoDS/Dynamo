@@ -550,3 +550,32 @@ def __ForEach(functionObject: _FunctionObject, lists: var[]..[])
         }
     }
 }
+
+def __Split(list: var[]..[])
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = {};
+        }
+
+        _filteredList = list[0];
+
+        _filteredOutList = {};
+        _currentOut = 0;
+
+        for (_index in 1..(_count - 1))
+        {
+             _filteredOutList[_currentOut] = list[_index];
+             _currentOut = _currentOut + 1;
+        }
+        return = { _filteredList, _filteredOutList };
+    }
+}
