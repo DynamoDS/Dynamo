@@ -8,6 +8,7 @@ using Autodesk.Revit.DB;
 using Revit.Elements;
 using Revit.GeometryConversion;
 using RevitServices.Persistence;
+using RevitServices.Threading;
 using RevitServices.Transactions;
 
 namespace Revit.Elements
@@ -143,8 +144,8 @@ namespace Revit.Elements
             if (toHide.Count > 0)
                 view.HideElements(toHide);
 
-            // (sic)
-            Document.Regenerate();
+                                           // (sic)
+            IdlePromise.ExecuteOnIdleSync( Document.Regenerate );
 
             if (view.IsPerspective)
             {
@@ -159,7 +160,7 @@ namespace Revit.Elements
 
                 var bounding = view.CropBox;
                 var transInverse = bounding.Transform.Inverse;
-                var transPts = pts.Select(transInverse.OfPoint).ToList();
+                var transPts = pts.Select(transInverse.OfPoint);
 
                 //ingore the Z coordindates and find
                 //the max X ,Y and Min X, Y in 3d view.

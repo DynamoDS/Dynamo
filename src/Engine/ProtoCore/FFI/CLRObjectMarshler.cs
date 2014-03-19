@@ -274,6 +274,16 @@ namespace ProtoFFI
             else //Convert DS Array to CS Collection
                 collection = ToICollection(dsObject, context, dsi, arrayType);
 
+            if (expectedCLRType.IsGenericType && !expectedCLRType.IsInterface)
+            {
+                if (!collection.GetType().IsArray)
+                {
+                    Validity.Assert(collection is ArrayList);
+                    collection = (collection as ArrayList).ToArray(elementType);
+                }
+                return Activator.CreateInstance(expectedCLRType, new[] { collection });
+            }
+
             if (expectedCLRType.IsArray || expectedCLRType.IsGenericType)
             {
                 ArrayList list = collection as ArrayList;
@@ -674,7 +684,7 @@ namespace ProtoFFI
         private FFIObjectMarshler GetMarshalerForDsType(ProtoCore.Type dsType, Type objType)
         {
             //Expected DS Type is pointer, so there is no primitive marshaler available.
-            if (dsType.UID == (int)ProtoCore.PrimitiveType.kTypePointer)
+            if (!dsType.IsIndexable && dsType.UID == (int)ProtoCore.PrimitiveType.kTypePointer)
                 return null;
 
             FFIObjectMarshler marshaler = null;

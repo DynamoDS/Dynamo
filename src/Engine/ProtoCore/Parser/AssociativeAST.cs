@@ -2826,6 +2826,11 @@ namespace ProtoCore.AST.AssociativeAST
             return result;
         }
 
+        private static ImperativeNode ToImperativeNode(this AssociativeNode aNode)
+        {
+            throw new ArgumentException("No Imperative version of " + aNode.GetType().FullName);
+        }
+
         public static ImperativeNode ToImperativeAST(this AssociativeNode aNode)
         {
             return aNode == null ? null : ToImperativeNode(aNode as dynamic);
