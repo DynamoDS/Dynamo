@@ -424,6 +424,7 @@ namespace Dynamo.Controls
         public LinearGradientBrush DeadBrush { get; set; }
         public LinearGradientBrush ActiveBrush { get; set; }
         public LinearGradientBrush ErrorBrush { get; set; }
+        public LinearGradientBrush WarningBrush { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -437,7 +438,7 @@ namespace Dynamo.Controls
                 case ElementState.Error:
                     return ErrorBrush;
                 case ElementState.Warning:
-                    return ErrorBrush;
+                    return WarningBrush;
             }
 
             return DeadBrush;
