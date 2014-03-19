@@ -5940,7 +5940,7 @@ namespace ProtoAssociative
             {
                 if (core.Options.DisableDisposeFunctionDebug)
                 {
-                    if (node.Name.Equals(ProtoCore.DSDefinitions.Keyword.Dispose))
+                    if (CoreUtils.IsDisposeMethod(node.Name))
                     {
                         core.Options.EmitBreakpoints = false;
                     }
@@ -6240,7 +6240,7 @@ namespace ProtoAssociative
 
                 if (core.Options.DisableDisposeFunctionDebug)
                 {
-                    if (node.Name.Equals(ProtoCore.DSDefinitions.Keyword.Dispose))
+                    if (CoreUtils.IsDisposeMethod(node.Name))
                     {
                         core.Options.EmitBreakpoints = true;
                     }
