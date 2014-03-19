@@ -277,6 +277,12 @@ namespace Dynamo.Controls
                 case InfoBubbleViewModel.Style.NodeTooltip:
                     SetStyle_NodeTooltip(ViewModel.ConnectingDirection);
                     break;
+                case InfoBubbleViewModel.Style.Warning:
+                    SetStyle_Warning();
+                    break;
+                case InfoBubbleViewModel.Style.WarningCondensed:
+                    SetStyle_WarningCondensed();
+                    break;
                 case InfoBubbleViewModel.Style.Error:
                     SetStyle_Error();
                     break;
@@ -340,6 +346,44 @@ namespace Dynamo.Controls
                     ContentMargin = Configurations.NodeTooltipContentMarginBottom;
                     break;
             }
+        }
+
+        private void SetStyle_Warning()
+        {
+            backgroundPolygon.Fill = Configurations.WarningFrameFill;
+            backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
+            backgroundPolygon.Stroke = Configurations.WarningFrameStrokeColor;
+
+            ContentContainer.MaxWidth = Configurations.ErrorMaxWidth;
+            ContentContainer.MaxHeight = Configurations.ErrorMaxHeight;
+
+            ContentMargin = Configurations.ErrorContentMargin;
+            ContentMaxWidth = Configurations.ErrorContentMaxWidth;
+            ContentMaxHeight = Configurations.ErrorContentMaxHeight;
+
+            ContentFontSize = Configurations.ErrorTextFontSize;
+            ContentForeground = Configurations.WarningTextForeground;
+            ContentFontWeight = Configurations.ErrorTextFontWeight;
+        }
+
+        private void SetStyle_WarningCondensed()
+        {
+            backgroundPolygon.Fill = Configurations.WarningFrameFill;
+            backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
+            backgroundPolygon.Stroke = Configurations.WarningFrameStrokeColor;
+
+            ContentContainer.MaxWidth = Configurations.ErrorCondensedMaxWidth;
+            ContentContainer.MinWidth = Configurations.ErrorCondensedMinWidth;
+            ContentContainer.MaxHeight = Configurations.ErrorCondensedMaxHeight;
+            ContentContainer.MinHeight = Configurations.ErrorCondensedMinHeight;
+
+            ContentMargin = Configurations.ErrorContentMargin;
+            ContentMaxWidth = Configurations.ErrorCondensedContentMaxWidth;
+            ContentMaxHeight = Configurations.ErrorCondensedContentMaxHeight;
+
+            ContentFontSize = Configurations.ErrorTextFontSize;
+            ContentForeground = Configurations.WarningTextForeground;
+            ContentFontWeight = Configurations.ErrorTextFontWeight;
         }
 
         private void SetStyle_Error()
@@ -509,7 +553,16 @@ namespace Dynamo.Controls
             }
             else
             {
-                TextBox textBox = GetNewTextBox(ViewModel.Content);
+                string content = ViewModel.Content;
+                if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Warning)
+                {
+                    content = "Warning: " + content;
+                }
+                else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error)
+                {
+                    content = "Error: " + content;
+                }
+                TextBox textBox = GetNewTextBox(content);
                 ContentContainer.Children.Add(textBox);
             }
         }
@@ -562,6 +615,8 @@ namespace Dynamo.Controls
                 case InfoBubbleViewModel.Style.NodeTooltip:
                     framePoints = GetFramePoints_NodeTooltip(estimatedHeight, estimatedWidth);
                     break;
+                case InfoBubbleViewModel.Style.Warning:
+                case InfoBubbleViewModel.Style.WarningCondensed:
                 case InfoBubbleViewModel.Style.Error:
                 case InfoBubbleViewModel.Style.ErrorCondensed:
                     framePoints = GetFramePoints_Error(estimatedHeight, estimatedWidth);
@@ -772,6 +827,8 @@ namespace Dynamo.Controls
                     mainGrid.Margin = GetMargin_NodeTooltip(estimatedHeight, estimatedWidth);
                     MakeFitInView(estimatedHeight, estimatedWidth);
                     break;
+                case InfoBubbleViewModel.Style.Warning:
+                case InfoBubbleViewModel.Style.WarningCondensed:
                 case InfoBubbleViewModel.Style.Error:
                 case InfoBubbleViewModel.Style.ErrorCondensed:
                     mainGrid.Margin = GetMargin_Error(estimatedHeight, estimatedWidth);
@@ -956,7 +1013,14 @@ namespace Dynamo.Controls
                 return;
 
             InfoBubbleDataPacket data = new InfoBubbleDataPacket();
-            data.Style = InfoBubbleViewModel.Style.Error;
+            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed)
+            {
+                data.Style = InfoBubbleViewModel.Style.Error;
+            }
+            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.WarningCondensed)
+            {
+                data.Style = InfoBubbleViewModel.Style.Warning;
+            }
             data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
 
             this.ViewModel.ShowFullContentCommand.Execute(data);
@@ -968,7 +1032,14 @@ namespace Dynamo.Controls
                 return;
 
             InfoBubbleDataPacket data = new InfoBubbleDataPacket();
-            data.Style = InfoBubbleViewModel.Style.ErrorCondensed;
+            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error)
+            {
+                data.Style = InfoBubbleViewModel.Style.ErrorCondensed;
+            }
+            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Warning)
+            {
+                data.Style = InfoBubbleViewModel.Style.WarningCondensed;
+            }
             data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
 
             this.ViewModel.ShowCondensedContentCommand.Execute(data);
@@ -1050,7 +1121,8 @@ namespace Dynamo.Controls
                 
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
                 ShowPreviewBubbleFullContent();
-            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed)
+            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed ||
+                     ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.WarningCondensed)
                 ShowErrorBubbleFullContent();
             
             //FadeInInfoBubble();
@@ -1078,8 +1150,8 @@ namespace Dynamo.Controls
                         goto default;
                     break;
 
+                case InfoBubbleViewModel.Style.Warning:
                 case InfoBubbleViewModel.Style.Error:
-                case InfoBubbleViewModel.Style.ErrorCondensed:
                     ShowErrorBubbleCondensedContent();
                     break;
 

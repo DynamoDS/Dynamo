@@ -131,6 +131,11 @@
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\IronPython\IronPythonUI.csproj">
+      <Project>{01de9b06-0bcb-4d8a-862e-e8170f5d6b4f}</Project>
+      <Name>IronPythonUI</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
