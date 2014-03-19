@@ -331,7 +331,7 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             AssertPreviewValue("a6e316b4-7054-42cd-a901-7bc6d4045c23",
-                "A node\twith tabs, and\ncarriage returns,\nand !@#$%^&amp;* characters, and also something &quot;in quotes&quot;.");
+                "A node\twith tabs, and\ncarriage returns,\nand !@#$%^&* characters, and also something \"in quotes\".");
         }
 
         [Test]
