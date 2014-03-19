@@ -88,6 +88,12 @@ namespace Dynamo.UI
 
         #endregion
 
+        #region Warning Bubble
+        public static SolidColorBrush WarningFrameFill = new SolidColorBrush(Color.FromRgb(0xff, 0xef, 0xa0));
+        public static SolidColorBrush WarningFrameStrokeColor = new SolidColorBrush(Color.FromRgb(0xf2, 0xbd, 0x53));
+        public static SolidColorBrush WarningTextForeground = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
+        #endregion
+
         #region Error Bubble
 
         public static SolidColorBrush ErrorFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
@@ -107,7 +113,7 @@ namespace Dynamo.UI
         public static double ErrorCondensedContentMaxHeight = ErrorCondensedMaxHeight - 16;
 
         public static double ErrorTextFontSize = 13;
-        public static FontWeight ErrorTextFontWeight = FontWeights.Light;
+        public static FontWeight ErrorTextFontWeight = FontWeights.Normal;
         public static SolidColorBrush ErrorTextForeground = new SolidColorBrush(Color.FromRgb(190, 70, 70));
         public static TextWrapping ErrorContentWrapping = TextWrapping.Wrap;
         public static Thickness ErrorContentMargin = new Thickness(5, 5, 5, 12);
