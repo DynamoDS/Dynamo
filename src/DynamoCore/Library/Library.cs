@@ -507,8 +507,7 @@ namespace Dynamo.DSEngine
             "DSCoreNodes.dll",
             "DSOffice.dll",
             "FunctionObject.ds",
-            "DSIronPython.dll",
-            "Flatten.ds"
+            "DSIronPython.dll"
         };
 
         public class LibraryLoadedEventArgs : EventArgs
