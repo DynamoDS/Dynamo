@@ -1398,6 +1398,13 @@ namespace ProtoScript.Runners
                         }
                         currentSubTreeList.Remove(st.GUID);
                     }
+
+                    var exprs = exprGuidMap.Where(p => p.Value.Equals(st.GUID)).Select(p => p.Key);
+                    foreach (var expr in exprs)
+                    {
+                        exprGuidMap.Remove(expr);
+                        Core.RuntimeStatus.ClearWarningForExpression(expr); 
+                    }
                 }
             }
 
@@ -1416,26 +1423,30 @@ namespace ProtoScript.Runners
                         if (null != modifiedASTList && modifiedASTList.Count > 0)
                         {
                             deltaAstList.AddRange(modifiedASTList);
-                            foreach (var node in modifiedASTList)
-	                        {
-                                var bnode = node as BinaryExpressionNode;
-                                if (bnode != null)
-                                {
-                                    exprGuidMap[bnode.exprUID] = st.GUID;
-                                }
-	                        }
                         }
+
+                        var modifiedExprIDs = modifiedASTList.Where(n => n is BinaryExpressionNode)
+                                                             .Select(n => (n as BinaryExpressionNode).exprUID);
 
                         // Disable removed nodes from the cache
                         if (cachedTreeExists)
                         {
                             if (null != oldSubTree.AstNodes)
                             {
-                                List<AssociativeNode> removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+                                var removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
                                 DeactivateGraphnodes(removedNodes);
+
+                                foreach (var node in removedNodes)
+                                {
+                                    var expr = node as BinaryExpressionNode;
+                                    if (expr != null && !modifiedExprIDs.Contains(expr.exprUID))
+                                    {
+                                        exprGuidMap.Remove(expr.exprUID);
+                                        Core.RuntimeStatus.ClearWarningForExpression(expr.exprUID);
+                                    }
+                                }
                             }
                         }
-
 
                         // Handle modifed functions
                         UndefineFunctions(st.AstNodes.Where(n => n is FunctionDefinitionNode));
