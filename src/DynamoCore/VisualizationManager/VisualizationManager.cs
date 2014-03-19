@@ -6,10 +6,10 @@ using System.Diagnostics;
 using System.Text;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.DSEngine;
 
@@ -227,6 +227,8 @@ namespace Dynamo
         void NodeAdded(NodeModel node)
         {
             node.PropertyChanged += NodePropertyChanged;
+            node.BlockingStarted += Pause;
+            node.BlockingEnded += UnPause;
         }
 
         /// <summary>
