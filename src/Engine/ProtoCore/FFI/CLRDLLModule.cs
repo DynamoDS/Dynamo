@@ -1146,17 +1146,22 @@ namespace ProtoFFI
     {
         public bool AllowRankReduction { get; private set; }
         public bool RequireTracing { get; private set; }
-        public IDictionary MultiReturnList { get; private set; }
+        public IEnumerable<string> ReturnKeys
+        {
+            get
+            {
+                return returnKeys;
+            }
+        }
+        private List<string> returnKeys;
 
         public FFIMethodAttributes(MethodInfo method)
         {
-            MultiReturnList = new OrderedDictionary();
             if (method == null)
             {
                 return;
             }
 
-            var multiReturnAttrs = new List<MultiReturnAttribute>();
             object[] attrs = method.GetCustomAttributes(false);
             foreach (var attr in attrs)
             {
@@ -1170,13 +1175,9 @@ namespace ProtoFFI
                 }
                 else if (attr is MultiReturnAttribute)
                 {
-                    multiReturnAttrs.Add(attr as MultiReturnAttribute);
+                    var multiReturnAttr = (attr as MultiReturnAttribute);
+                    returnKeys = multiReturnAttr.ReturnKeys.ToList();
                 }
-            }
-
-            foreach (var multiRtn in multiReturnAttrs.OrderBy(attr => attr.Order))
-            {
-                MultiReturnList.Add(multiRtn.Name, multiRtn.Type);
             }
         }
     }
