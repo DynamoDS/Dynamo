@@ -1001,8 +1001,7 @@ namespace Dynamo.DSEngine
             }
 
             string procName = proc.name;
-            if (CoreUtils.IsSetter(procName) || 
-                procName.Equals(ProtoCore.DSDefinitions.Keyword.Dispose))
+            if (CoreUtils.IsSetter(procName) || CoreUtils.IsDisposeMethod(procName))
             { 
                 return;
             }

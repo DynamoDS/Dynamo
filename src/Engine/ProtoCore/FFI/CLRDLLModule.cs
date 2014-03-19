@@ -135,7 +135,7 @@ namespace ProtoFFI
         {
             foreach (var item in ClassNode.funclist)
             {
-                if (item.Name == ProtoCore.DSDefinitions.Keyword.Dispose)
+                if (CoreUtils.IsDisposeMethod(item.Name))
                     return; //Dispose method is already present.
             }
             bool resetModule = false;
@@ -713,7 +713,7 @@ namespace ProtoFFI
         {
             List<FFIFunctionPointer> pointers = GetFunctionPointers(functionName);
             FFIFunctionPointer f = null;
-            if (functionName == ProtoCore.DSDefinitions.Keyword.Dispose)
+            if (CoreUtils.IsDisposeMethod(functionName))
                 f = new DisposeFunctionPointer(Module, method, retype);
             else if (CoreUtils.IsGetter(functionName))
                 f = new GetterFunctionPointer(Module, functionName, method, retype);
@@ -905,7 +905,7 @@ namespace ProtoFFI
             if (mTypes.TryGetValue(className, out type))
                 return type.GetFunctionPointers(name);
 
-            if (name == ProtoCore.DSDefinitions.Keyword.Dispose)
+            if (CoreUtils.IsDisposeMethod(name))
             {
                 List<FFIFunctionPointer> pointers = new List<FFIFunctionPointer>();
                 pointers.Add( new DisposeFunctionPointer(this, CLRModuleType.DisposeMethod, CLRModuleType.GetProtoCoreType(CLRModuleType.DisposeMethod.ReturnType, this)));
