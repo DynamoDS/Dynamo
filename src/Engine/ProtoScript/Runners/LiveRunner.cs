@@ -971,30 +971,39 @@ namespace ProtoScript.Runners
                     // node is modifed as it does not match any existing
                     modifiedASTList.Add(node);
 
-                    // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
-                    // this means that it was a modified variable within the orevious expression.
-                    // Inherit its expression ID 
                     BinaryExpressionNode bnode = node as BinaryExpressionNode;
                     if (null != bnode && bnode.LeftNode is IdentifierNode)
                     {
-                        foreach (AssociativeNode prevNode in st.AstNodes)
+                        string lhsName = (bnode.LeftNode as IdentifierNode).Name;
+                        Validity.Assert(null != lhsName && string.Empty != lhsName);
+                        if (CoreUtils.IsSSATemp(lhsName))
                         {
-                            BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
-                            if (null != prevBinaryNode)
+                            // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
+                            // this means that it was a modified variable within the previous expression.
+                            // Inherit its expression ID 
+                            foreach (AssociativeNode prevNode in st.AstNodes)
                             {
-                                IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
-                                if (null != prevIdent)
+                                BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
+                                if (null != prevBinaryNode)
                                 {
-                                    if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
+                                    IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
+                                    if (null != prevIdent)
                                     {
-                                        bnode.InheritID(prevBinaryNode.ID);
-                                        bnode.exprUID = prevBinaryNode.exprUID;
+                                        if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
+                                        {
+                                            bnode.InheritID(prevBinaryNode.ID);
+                                            bnode.exprUID = prevBinaryNode.exprUID;
+                                        }
                                     }
                                 }
                             }
                         }
+                        else
+                        {
+                            // Handle re-defined lhs expressions
+                            HandleRedefinedLHS(bnode, st.AstNodes);
+                        }
                     }
-                    HandleRedefinedLHS(bnode, st.AstNodes);
                 }
             }
             return modifiedASTList;

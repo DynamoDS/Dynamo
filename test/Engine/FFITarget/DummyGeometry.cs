@@ -34,6 +34,11 @@ namespace FFITarget
             return DummyPoint.ByCoordinates(X + direction.X, Y + direction.Y, Z + direction.Z);
         }
 
+        public DummyPoint Translate(double dx, double dy, double dz)
+        {
+            return DummyPoint.ByCoordinates(X + dx, Y + dy, Z + dz);
+        }
+
         public static DummyPoint Centroid(IList<DummyPoint> points)
         {
             return ByCoordinates(points.Average(p => p.X), points.Average(p => p.Y), points.Average(p => p.Z));
