@@ -1070,9 +1070,9 @@ namespace Dynamo.DSEngine
                 });
 
             IEnumerable<string> returnKeys = null;
-            if (proc.MethodAttribute != null && proc.MethodAttribute.MultiReturnList != null)
+            if (proc.MethodAttribute != null && proc.MethodAttribute.ReturnKeys != null)
             {
-                returnKeys = proc.MethodAttribute.MultiReturnList.Keys.Cast<string>();
+                returnKeys = proc.MethodAttribute.ReturnKeys;
             }
 
             var function = new FunctionDescriptor(library, className, procName, arguments, proc.returntype.ToString(), type, returnKeys, proc.isVarArg);
