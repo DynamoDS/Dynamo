@@ -7613,7 +7613,7 @@ namespace ProtoCore.DSASM
 
             // Comment Jun: Dispose calls are always implicit and need to terminate
             // TODO Jun: This instruction should not know about dispose
-            bool isDispose = procNode.name.Equals(ProtoCore.DSDefinitions.Keyword.Dispose);
+            bool isDispose = CoreUtils.IsDisposeMethod(procNode.name);
             if (isDispose)
             {
                 terminate = true;

@@ -426,7 +426,7 @@ namespace ProtoCore.DSASM
                 {
                     foreach (ProcedureNode procNode in vtable.procList)
                     {
-                        if (procNode.name == ProtoCore.DSDefinitions.Keyword.Dispose && procNode.argInfoList.Count == 0)
+                        if (CoreUtils.IsDisposeMethod(procNode.name) && procNode.argInfoList.Count == 0)
                         {
                             disposeMethod = procNode;
                             break;
