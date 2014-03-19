@@ -196,9 +196,9 @@ namespace DSCore
         public static IDictionary Deconstruct(IList list)
         {
             return new Dictionary<string, object>
-            {               
-                { "rest", list.Cast<object>().Skip(1).ToList() },
-                { "first", list[0] }
+            {
+                {"first", list[0]},
+                {"rest", list.Cast<object>().Skip(1).ToList()}
             };
         }
 

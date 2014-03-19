@@ -2237,7 +2237,9 @@ namespace Dynamo.Nodes
                         select attr;
 
             foreach (XmlAttribute attr in query)
-                attr.Value = HttpUtility.HtmlEncode(HttpUtility.UrlDecode(attr.Value));
+                //    attr.Value = HttpUtility.HtmlEncode(HttpUtility.UrlDecode(attr.Value));
+                // attr.Value = attr.Value.Replace("\"", "\\\"");
+                attr.Value = HttpUtility.UrlDecode(attr.Value);
 
             migrationData.AppendNode(newNode as XmlElement);
             return migrationData;
