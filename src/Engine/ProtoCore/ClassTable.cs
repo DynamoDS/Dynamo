@@ -17,6 +17,7 @@ namespace ProtoCore.DSASM
         public int classId { get; set; }
         public List<int> baseList { get; set; }
         public bool IsImportedClass { get; set; }
+        public ProtoFFI.FFIClassAttributes ClassAttributes { get; set; }
 
         /// <summary>
         /// String description of where the classnode was loaded from 
