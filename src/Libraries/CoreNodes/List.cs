@@ -197,7 +197,7 @@ namespace DSCore
         {
             return new Dictionary<string, object>
             {
-                { "first", list[0] },
+                { "first", list[0] }, 
                 { "rest", list.Cast<object>().Skip(1).ToList() }
             };
         }
