@@ -303,6 +303,7 @@ namespace ProtoAssociative
         {
             if (subNode.UID == node.UID
                 || subNode.exprUID == node.exprUID
+                || subNode.ssaExprID == node.ssaExprID
                 || (subNode.modBlkUID == node.modBlkUID && node.modBlkUID != ProtoCore.DSASM.Constants.kInvalidIndex)
                 || subNode.procIndex != node.procIndex
                 || subNode.classIndex != node.classIndex
@@ -8670,7 +8671,6 @@ namespace ProtoAssociative
                     SymbolNode cyclicSymbol2 = null;
                     if (core.Options.staticCycleCheck)
                     {
-                        //UpdateGraphNodeDependency(graphNode);
                         if (!CyclicDependencyTest(graphNode, ref cyclicSymbol1, ref cyclicSymbol2))
                         {
                             Validity.Assert(null != cyclicSymbol1);
