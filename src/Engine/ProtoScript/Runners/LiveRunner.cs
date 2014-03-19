@@ -1423,15 +1423,10 @@ namespace ProtoScript.Runners
                         if (null != modifiedASTList && modifiedASTList.Count > 0)
                         {
                             deltaAstList.AddRange(modifiedASTList);
-                            foreach (var node in modifiedASTList)
-	                        {
-                                var bnode = node as BinaryExpressionNode;
-                                if (bnode != null)
-                                {
-                                    exprGuidMap[bnode.exprUID] = st.GUID;
-                                }
-	                        }
                         }
+
+                        var modifiedExprIDs = modifiedASTList.Where(n => n is BinaryExpressionNode)
+                                                             .Select(n => (n as BinaryExpressionNode).exprUID);
 
                         // Disable removed nodes from the cache
                         if (cachedTreeExists)
@@ -1444,13 +1439,7 @@ namespace ProtoScript.Runners
                                 foreach (var node in removedNodes)
                                 {
                                     var expr = node as BinaryExpressionNode;
-                                    if (expr != null)
-                                    {
-                                        var exprId = expr.exprUID;
-                                    }
-
-                                    if (!modifiedASTList.Any(n => n is BinaryExpressionNode &&
-                                        (n as BinaryExpressionNode).exprUID == expr.exprUID))
+                                    if (expr != null && !modifiedExprIDs.Contains(expr.exprUID))
                                     {
                                         exprGuidMap.Remove(expr.exprUID);
                                         Core.RuntimeStatus.ClearWarningForExpression(expr.exprUID);
@@ -1458,7 +1447,6 @@ namespace ProtoScript.Runners
                                 }
                             }
                         }
-
 
                         // Handle modifed functions
                         UndefineFunctions(st.AstNodes.Where(n => n is FunctionDefinitionNode));

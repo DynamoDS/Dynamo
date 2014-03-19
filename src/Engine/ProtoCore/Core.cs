@@ -632,7 +632,7 @@ namespace ProtoCore
             {
                 debugFrame.IsDotArgCall = true;
             }
-            else if (fNode.name.Equals(ProtoCore.DSDefinitions.Keyword.Dispose))
+            else if (CoreUtils.IsDisposeMethod(fNode.name))
             {
                 debugFrame.IsDisposeCall = true;
                 ReturnPCFromDispose = DebugEntryPC;
@@ -2421,13 +2421,14 @@ namespace ProtoCore
                 CallsiteCache.Add(graphNode.UID, csInstance);
                 CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
                 ASTToCallSiteMap[graphNode.AstID] = csInstance;
-            }
 
-            if (graphNode != null && Options.IsDeltaExecution)
+           }
+
+            if (graphNode != null && Options.IsDeltaExecution && !CoreUtils.IsDisposeMethod(methodName))
             {
                 this.RuntimeStatus.ClearWarningForExpression(graphNode.exprUID);
             }
-
+                
             return csInstance;
         }
 
