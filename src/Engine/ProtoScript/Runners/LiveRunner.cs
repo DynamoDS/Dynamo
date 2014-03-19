@@ -1399,7 +1399,7 @@ namespace ProtoScript.Runners
                         currentSubTreeList.Remove(st.GUID);
                     }
 
-                    var exprs = exprGuidMap.Where(p => p.Value.Equals(st.GUID)).Select(p => p.Key);
+                    var exprs = exprGuidMap.Where(p => p.Value.Equals(st.GUID)).Select(p => p.Key).ToList();
                     foreach (var expr in exprs)
                     {
                         exprGuidMap.Remove(expr);
