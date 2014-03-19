@@ -142,29 +142,48 @@ namespace Dynamo
 
             _controller.DynamoModel.WorkspaceClearing += Pause;
             _controller.DynamoModel.WorkspaceCleared += UnPauseAndUpdate;
+
             _controller.DynamoModel.WorkspaceOpening += Pause;
             _controller.DynamoModel.WorkspaceOpened += UnPause;
 
             _controller.DynamoModel.NodeAdded += NodeAdded;
             _controller.DynamoModel.NodeDeleted += NodeDeleted;
 
+            _controller.DynamoModel.DeletionStarted += Pause;
+            _controller.DynamoModel.DeletionComplete += UnPauseAndUpdate;
+
             _controller.DynamoModel.CleaningUp += Clear;
 
             UnPause(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Disable visualization updates by unregistering event listeners from the model.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Pause(object sender, EventArgs e)
         {
             UpdatingPaused = true;
             UnregisterEventListeners();
         }
 
+        /// <summary>
+        /// Enable visualization updates by registering event listeners on the model.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UnPause(object sender, EventArgs e)
         {
             UpdatingPaused = false;
             RegisterEventListeners();
         }
 
+        /// <summary>
+        /// Enable visualization updates and trigger an update of the visualizations.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UnPauseAndUpdate(object sender, EventArgs e)
         {
             UpdatingPaused = false;
