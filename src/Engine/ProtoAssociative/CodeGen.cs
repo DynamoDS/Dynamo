@@ -5155,6 +5155,7 @@ namespace ProtoAssociative
                 thisClass.size = classDecl.varlist.Count;
                 thisClass.IsImportedClass = classDecl.IsImportedClass;
                 thisClass.typeSystem = core.TypeSystem;
+                thisClass.ClassAttributes = classDecl.ClassAttributes;
                 
                 if (classDecl.ExternLibName != null)
                     thisClass.ExternLib = classDecl.ExternLibName;
@@ -5502,6 +5503,8 @@ namespace ProtoAssociative
                 Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex, "A constructor node must be associated with class");
                 localProcedure.localCount = 0;
                 localProcedure.classScope = globalClassIndex;
+
+                localProcedure.MethodAttribute = funcDef.MethodAttributes;
 
                 int peekFunctionindex = core.ClassTable.ClassNodes[globalClassIndex].vtable.procList.Count;
 
