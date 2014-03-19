@@ -190,32 +190,27 @@ namespace Dynamo.Nodes
 
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
-                if (subNode.Name.Equals("System.Double"))
-                {
-                    Value = Convert.ToDouble(subNode.InnerText, CultureInfo.InvariantCulture);
-                }
+                if (!subNode.Name.Equals("Range"))
+                    continue;
 
-                else if (subNode.Name.Equals("Range"))
-                {
-                    double min = Min;
-                    double max = Max;
+                double min = Min;
+                double max = Max;
 
-                    if (subNode.Attributes != null)
+                if (subNode.Attributes != null)
+                {
+                    foreach (XmlAttribute attr in subNode.Attributes)
                     {
-                        foreach (XmlAttribute attr in subNode.Attributes)
-                        {
-                            if (attr.Name.Equals("min"))
-                                min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                            else if (attr.Name.Equals("max"))
-                                max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                            else if (attr.Name.Equals("value"))
-                                Value = Convert.ToDouble(subNode.InnerText, CultureInfo.InvariantCulture);
-                        }
+                        if (attr.Name.Equals("min"))
+                            min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                        else if (attr.Name.Equals("max"))
+                            max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                        else if (attr.Name.Equals("value"))
+                            Value = Convert.ToDouble(subNode.InnerText, CultureInfo.InvariantCulture);
                     }
-
-                    Min = min;
-                    Max = max;
                 }
+
+                Min = min;
+                Max = max;
             }
         }
 
@@ -487,34 +482,31 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
+            base.LoadNode(nodeElement);
+
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
-                if (subNode.Name.Equals("System.Int32"))
-                {
-                    Value = Convert.ToInt32(subNode.InnerText, CultureInfo.InvariantCulture);
-                }
-                
-                else if (subNode.Name.Equals("Range"))
-                {
-                    int min = Min;
-                    int max = Max;
+                if (!subNode.Name.Equals("Range"))
+                    continue;
 
-                    if (subNode.Attributes != null)
+                int min = Min;
+                int max = Max;
+
+                if (subNode.Attributes != null)
+                {
+                    foreach (XmlAttribute attr in subNode.Attributes)
                     {
-                        foreach (XmlAttribute attr in subNode.Attributes)
-                        {
-                            if (attr.Name.Equals("min"))
-                                min = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
-                            else if (attr.Name.Equals("max"))
-                                max = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
-                            else if (attr.Name.Equals("value"))
-                                Value = Convert.ToInt32(subNode.InnerText, CultureInfo.InvariantCulture);
-                        }
+                        if (attr.Name.Equals("min"))
+                            min = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
+                        else if (attr.Name.Equals("max"))
+                            max = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
+                        else if (attr.Name.Equals("value"))
+                            Value = Convert.ToInt32(subNode.InnerText, CultureInfo.InvariantCulture);
                     }
-
-                    Min = min;
-                    Max = max;
                 }
+
+                Min = min;
+                Max = max;
             }
         }
 
