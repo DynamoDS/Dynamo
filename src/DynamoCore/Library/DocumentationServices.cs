@@ -38,7 +38,7 @@ namespace Dynamo.DSEngine
 
         public static bool ResolveForAssembly(string assemblyLocation, ref string documentationPath)
         {
-            LibraryServices.GetInstance().ResolveLibraryPath(ref assemblyLocation);
+            Dynamo.Nodes.Utilities.ResolveLibraryPath(ref assemblyLocation);
 
             if (!File.Exists(assemblyLocation))
             {

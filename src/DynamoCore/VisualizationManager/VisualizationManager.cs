@@ -9,6 +9,7 @@ using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.DSEngine;
 
@@ -137,20 +138,73 @@ namespace Dynamo
         public VisualizationManager(DynamoController controller)
         {
             _controller = controller;
+            octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
 
-            _controller.EvaluationCompleted += Update;
-            _controller.RequestsRedraw += Update;
-            _controller.DynamoModel.ModelCleared += Clear;
-            _controller.DynamoModel.CleaningUp += Clear;
+            _controller.DynamoModel.WorkspaceClearing += Pause;
+            _controller.DynamoModel.WorkspaceCleared += UnPauseAndUpdate;
 
-            _controller.DynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
-
-            DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
+            _controller.DynamoModel.WorkspaceOpening += Pause;
+            _controller.DynamoModel.WorkspaceOpened += UnPause;
 
             _controller.DynamoModel.NodeAdded += NodeAdded;
             _controller.DynamoModel.NodeDeleted += NodeDeleted;
 
-            octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
+            _controller.DynamoModel.DeletionStarted += Pause;
+            _controller.DynamoModel.DeletionComplete += UnPauseAndUpdate;
+
+            _controller.DynamoModel.CleaningUp += Clear;
+
+            UnPause(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Disable visualization updates by unregistering event listeners from the model.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Pause(object sender, EventArgs e)
+        {
+            UpdatingPaused = true;
+            UnregisterEventListeners();
+        }
+
+        /// <summary>
+        /// Enable visualization updates by registering event listeners on the model.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UnPause(object sender, EventArgs e)
+        {
+            UpdatingPaused = false;
+            RegisterEventListeners();
+        }
+
+        /// <summary>
+        /// Enable visualization updates and trigger an update of the visualizations.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UnPauseAndUpdate(object sender, EventArgs e)
+        {
+            UpdatingPaused = false;
+            RegisterEventListeners();
+            OnVisualizationUpdateComplete(this, EventArgs.Empty);
+        }
+
+        private void RegisterEventListeners()
+        {
+            _controller.EvaluationCompleted += Update;
+            _controller.RequestsRedraw += Update;
+            _controller.DynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
+        }
+
+        private void UnregisterEventListeners()
+        {
+            _controller.EvaluationCompleted -= Update;
+            _controller.RequestsRedraw -= Update;
+            _controller.DynamoModel.ConnectorDeleted -= DynamoModel_ConnectorDeleted;
+            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
         }
 
         /// <summary>
@@ -160,7 +214,9 @@ namespace Dynamo
         void NodeDeleted(NodeModel node)
         {
             node.PropertyChanged -= NodePropertyChanged;
-            OnVisualizationUpdateComplete(this, EventArgs.Empty);
+            
+            if(!UpdatingPaused)
+                OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }
 
         /// <summary>

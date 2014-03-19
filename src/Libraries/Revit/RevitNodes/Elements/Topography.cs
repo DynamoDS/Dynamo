@@ -6,6 +6,7 @@ using Autodesk.Revit.DB.Architecture;
 using DSNodeServices;
 using Revit.GeometryConversion;
 using RevitServices.Persistence;
+using RevitServices.Threading;
 using RevitServices.Transactions;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
@@ -41,7 +42,7 @@ namespace Revit.Elements
         {
             get
             {
-                DocumentManager.Instance.CurrentDBDocument.Regenerate();
+                IdlePromise.ExecuteOnIdleSync(DocumentManager.Instance.CurrentDBDocument.Regenerate);
                 var pts = InternalTopographySurface.GetPoints();
                 return pts.Select(x => x.ToPoint()).ToList();
             }
