@@ -1002,7 +1002,8 @@ namespace ProtoCore.AST.AssociativeAST
 		public List<AssociativeNode> varlist { get; set; }
 		public List<AssociativeNode> funclist { get; set; }
 		public bool IsExternLib { get; set; }
-		public string ExternLibName { get; set; }
+        public string ExternLibName { get; set; }
+        public ProtoFFI.FFIClassAttributes ClassAttributes { get; set; }
 
 		public override string ToString()
 		{
@@ -1073,7 +1074,8 @@ namespace ProtoCore.AST.AssociativeAST
 		public FunctionCallNode baseConstr { get; set; }
 		public ProtoCore.DSASM.AccessSpecifier access { get; set; }
 		public bool IsExternLib { get; set; }
-		public string ExternLibName { get; set; }
+        public string ExternLibName { get; set; }
+        public ProtoFFI.FFIMethodAttributes MethodAttributes { get; set; } 
 
 		public ConstructorDefinitionNode()
 		{

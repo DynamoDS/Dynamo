@@ -135,7 +135,7 @@ namespace ProtoFFI
         {
             foreach (var item in ClassNode.funclist)
             {
-                if (item.Name == ProtoCore.DSDefinitions.Keyword.Dispose)
+                if (CoreUtils.IsDisposeMethod(item.Name))
                     return; //Dispose method is already present.
             }
             bool resetModule = false;
@@ -204,6 +204,19 @@ namespace ProtoFFI
             return mTypeMaps.TryGetValue(type, out dsType);
         }
 
+        public static void SetTypeAttributes(Type type, FFIClassAttributes attributes)
+        {
+            lock (mTypeAttributeMaps)
+            {
+                mTypeAttributeMaps[type] = attributes;
+            }
+        }
+
+        public static bool TryGetTypeAttributes(Type type, out FFIClassAttributes attributes)
+        {
+            return mTypeAttributeMaps.TryGetValue(type, out attributes);
+        }
+
         public static ProtoCore.Type GetProtoCoreType(Type type, CLRDLLModule module)
         {
             ProtoCore.Type protoCoreType;
@@ -248,6 +261,8 @@ namespace ProtoFFI
         private static readonly Dictionary<string, Type> mTypeNames = new Dictionary<string, Type>();
 
         private static readonly Dictionary<System.Type, ProtoCore.Type> mTypeMaps = new Dictionary<Type, ProtoCore.Type>();
+
+        private static readonly Dictionary<System.Type, FFIClassAttributes> mTypeAttributeMaps = new Dictionary<System.Type, FFIClassAttributes>();
 
         private Type GetBaseType(Type type)
         {
@@ -396,6 +411,10 @@ namespace ProtoFFI
                 if(null != node)
                     classnode.varlist.Add(node);
             }
+
+            FFIClassAttributes cattrs = new FFIClassAttributes(type);
+            classnode.ClassAttributes = cattrs;
+            SetTypeAttributes(type, cattrs);
 
             return classnode;
         }
@@ -602,6 +621,7 @@ namespace ProtoFFI
             bool propaccessor = isPropertyAccessor(method);
             bool isOperator = isOverloadedOperator(method);
 
+            FFIMethodAttributes mattrs = new FFIMethodAttributes(method);
             if (method.IsStatic &&
                 method.DeclaringType == method.ReturnType && 
                 !propaccessor &&
@@ -612,13 +632,12 @@ namespace ProtoFFI
                     throw new InvalidOperationException("Unexpected type for constructor {0D28FC00-F8F4-4049-AD1F-BBC34A68073F}");
 
                 retype = ProtoCoreType;
-                return ParsedNamedConstructor(method, method.Name, retype);
+                ConstructorDefinitionNode node = ParsedNamedConstructor(method, method.Name, retype);
+                node.MethodAttributes = mattrs;
+                return node;
             }
 
             //Need to hide property accessor from design script users, prefix with %
-
-            FFIMethodAttributes mattrs = new FFIMethodAttributes(method);
-
             string prefix = (isOperator || propaccessor) ? "%" : "";
             var func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
 
@@ -694,7 +713,7 @@ namespace ProtoFFI
         {
             List<FFIFunctionPointer> pointers = GetFunctionPointers(functionName);
             FFIFunctionPointer f = null;
-            if (functionName == ProtoCore.DSDefinitions.Keyword.Dispose)
+            if (CoreUtils.IsDisposeMethod(functionName))
                 f = new DisposeFunctionPointer(Module, method, retype);
             else if (CoreUtils.IsGetter(functionName))
                 f = new GetterFunctionPointer(Module, functionName, method, retype);
@@ -838,6 +857,7 @@ namespace ProtoFFI
                 mTypes.Clear();
                 mTypeNames.Clear();
                 mTypeMaps.Clear();
+                mTypeAttributeMaps.Clear();
             }
         }
 
@@ -885,7 +905,7 @@ namespace ProtoFFI
             if (mTypes.TryGetValue(className, out type))
                 return type.GetFunctionPointers(name);
 
-            if (name == ProtoCore.DSDefinitions.Keyword.Dispose)
+            if (CoreUtils.IsDisposeMethod(name))
             {
                 List<FFIFunctionPointer> pointers = new List<FFIFunctionPointer>();
                 pointers.Add( new DisposeFunctionPointer(this, CLRModuleType.DisposeMethod, CLRModuleType.GetProtoCoreType(CLRModuleType.DisposeMethod.ReturnType, this)));
@@ -1142,21 +1162,63 @@ namespace ProtoFFI
         }
     }
 
+    public class FFIClassAttributes
+    {
+        public bool IsVisibleInLibrary { get; private set; }
+        public FFIClassAttributes(Type type)
+        {
+            IsVisibleInLibrary = true;
+
+            if (type == null)
+            {
+                return;
+            }
+
+            object[] attrs = type.GetCustomAttributes(false);
+            foreach (var attr in attrs)
+            {
+                if (attr is IsVisibleInDynamoLibraryAttribute)
+                {
+                    var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
+                    IsVisibleInLibrary = visibleInLibraryAttr.Visible;
+                }
+            }
+        }
+    }
+
     public class FFIMethodAttributes
     {
         public bool AllowRankReduction { get; private set; }
         public bool RequireTracing { get; private set; }
-        public IDictionary MultiReturnList { get; private set; }
+        public IEnumerable<string> ReturnKeys
+        {
+            get
+            {
+                return returnKeys;
+            }
+        }
+        private List<string> returnKeys;
+        public bool IsVisibleInLibrary { get; private set; }
 
         public FFIMethodAttributes(MethodInfo method)
         {
-            MultiReturnList = new OrderedDictionary();
             if (method == null)
             {
                 return;
             }
 
-            var multiReturnAttrs = new List<MultiReturnAttribute>();
+            FFIClassAttributes baseAttributes = null;
+            Type type = method.DeclaringType;
+            if (!CLRModuleType.TryGetTypeAttributes(type, out baseAttributes))
+            {
+                baseAttributes = new FFIClassAttributes(type);
+                CLRModuleType.SetTypeAttributes(type, baseAttributes);
+            }
+            if (null != baseAttributes)
+            {
+                IsVisibleInLibrary = baseAttributes.IsVisibleInLibrary;
+            }
+
             object[] attrs = method.GetCustomAttributes(false);
             foreach (var attr in attrs)
             {
@@ -1170,13 +1232,14 @@ namespace ProtoFFI
                 }
                 else if (attr is MultiReturnAttribute)
                 {
-                    multiReturnAttrs.Add(attr as MultiReturnAttribute);
+                    var multiReturnAttr = (attr as MultiReturnAttribute);
+                    returnKeys = multiReturnAttr.ReturnKeys.ToList();
                 }
-            }
-
-            foreach (var multiRtn in multiReturnAttrs.OrderBy(attr => attr.Order))
-            {
-                MultiReturnList.Add(multiRtn.Name, multiRtn.Type);
+                else if (attr is IsVisibleInDynamoLibraryAttribute)
+                {
+                    var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
+                    IsVisibleInLibrary = visibleInLibraryAttr.Visible;
+                }
             }
         }
     }

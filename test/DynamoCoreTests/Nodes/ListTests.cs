@@ -497,17 +497,36 @@ namespace Dynamo.Tests
         [Test]
         public void TestTransposeNormalInput()
         {
+            // Input array                  Expected output array
+            // {                            {
+            //     { "AB", "CD" }               { "AB", 21, 31 }
+            //     { 21, 22, 23, 24 }           { "CD", 22, 32 }
+            //     { 31, 32, 33 }               { 23, 33 }
+            // }                                { 24 }
+            //                              }
+
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testTransposeList_normalInput.dyn");
             RunModel(testFilePath);
 
-            var a1 = new object[] { 1, "a" };
-            var a2 = new object[] { 2, "b" };
-            var a3 = new object[] { 3, "a" };
-            var a4 = new object[] { 4, "b" };
-            var a5 = new object[] { 5, null };
-            AssertPreviewValue("e639bc66-6dec-4a0a-bae2-9bac7dab59dc", new object[][] { a1, a2, a3, a4, a5 });
+            string guid = "e639bc66-6dec-4a0a-bae2-9bac7dab59dc";
+            var nodeTranspose = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>(guid);
+            var elements = nodeTranspose.GetValue(0).GetElements();
 
+            Assert.AreEqual(4, elements.Count);
+            Assert.AreEqual(3, elements[0].GetElements().Count);
+            Assert.AreEqual(3, elements[1].GetElements().Count);
+            Assert.AreEqual(2, elements[2].GetElements().Count);
+            Assert.AreEqual(1, elements[3].GetElements().Count);
+
+            AssertPreviewValue(guid,
+                new object[][]
+                {
+                    new object[] { "AB", 21, 31 },
+                    new object[] { "CD", 22, 32 },
+                    new object[] { 23, 33 },
+                    new object[] { 24 }
+                });
         }
         #endregion
 
@@ -1080,7 +1099,7 @@ namespace Dynamo.Tests
 
             Dictionary<int, object> validationData2 = new Dictionary<int, object>()
             {
-                {1000,2000},
+                {1000,2001},
             };
             SelectivelyAssertPreviewValues("25daa241-d8a4-4e74-aec1-6068358babf7", validationData2);
 
@@ -2173,8 +2192,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
 
             Dictionary<int, object> validationData = new Dictionary<int, object>()
             {

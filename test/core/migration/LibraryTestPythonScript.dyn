@@ -1,0 +1,55 @@
+<Workspace Version="0.6.2.14024" X="-468.90898989899" Y="147.038983434343" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="caef9f81-c9a6-47aa-92c9-dc3b8fd6f7d7" nickname="Python Script" x="621.9327994228" y="68.9292705339114" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+dataEnteringNode = IN
+
+#Processing
+OUT = []
+x, i = 1, 0
+while i &lt; IN:
+	x += i
+	OUT += [x]
+	i += 1
+
+#Assign your output to the OUT variable
+OUT = OUT</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Circle type="Dynamo.Nodes.Circle" guid="93fdb3c2-77e2-4ca4-ab0d-9d8634e12071" nickname="Circle" x="901.908989898991" y="-36.5389834343425" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="03d5f16d-e288-4e57-8014-5a79644843bd" nickname="XYZ" x="715.908989898991" y="-96.5389834343426" isVisible="false" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="a1a33d19-9130-4b0c-a794-96000437de72" nickname="Number" x="597.908989898991" y="-75.5389834343426" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="a5313559-614b-41f5-9dce-168c83340b98" nickname="Number" x="512.908989898991" y="70.4610165656575" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="6" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="caef9f81-c9a6-47aa-92c9-dc3b8fd6f7d7" start_index="0" end="93fdb3c2-77e2-4ca4-ab0d-9d8634e12071" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="03d5f16d-e288-4e57-8014-5a79644843bd" start_index="0" end="93fdb3c2-77e2-4ca4-ab0d-9d8634e12071" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a1a33d19-9130-4b0c-a794-96000437de72" start_index="0" end="03d5f16d-e288-4e57-8014-5a79644843bd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a1a33d19-9130-4b0c-a794-96000437de72" start_index="0" end="03d5f16d-e288-4e57-8014-5a79644843bd" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a1a33d19-9130-4b0c-a794-96000437de72" start_index="0" end="03d5f16d-e288-4e57-8014-5a79644843bd" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a5313559-614b-41f5-9dce-168c83340b98" start_index="0" end="caef9f81-c9a6-47aa-92c9-dc3b8fd6f7d7" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
