@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    internal class NodeMigrationTests : Dynamo.Tests.DSEvaluationUnitTest
+    public class NodeMigrationTests : Dynamo.Tests.DSEvaluationUnitTest
     {
         #region Dynamo Core Node Migration Tests
 
@@ -933,7 +933,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("d4f242c5-9c20-4633-b661-157ab45a416c", 5.5);
             AssertPreviewValue("3d59ccad-57ed-44bc-9d55-27574fc725de", 5.5);
             AssertPreviewValue("d65de7e9-f7f7-4f2b-9be7-daad3b3c837a", -5.5);
-            AssertPreviewValue("af486a6c-a558-4a0b-860f-8c3800f5b8b5", null);
+            AssertPreviewValue("af486a6c-a558-4a0b-860f-8c3800f5b8b5", 5);
         }
 
         [Test]
@@ -1076,9 +1076,9 @@ namespace Dynamo.Tests
             Assert.NotNull(listn4);
 
             RunCurrentModel();
-            AssertPreviewValue("f03dd785-bdc3-478f-b281-ea9db063b356", null);
+            AssertPreviewValue("f03dd785-bdc3-478f-b281-ea9db063b356", false);
             AssertPreviewValue("79d4216d-695d-425e-b1e7-51535e46ae98", false);
-            AssertPreviewValue("1ec03940-2cad-431f-807e-c6ec0f7ae3bb", null);
+            AssertPreviewValue("1ec03940-2cad-431f-807e-c6ec0f7ae3bb", false);
             AssertPreviewValue("ecd5e943-e6b5-44ca-bb52-3b5c39971ea7", true);
         }
 
@@ -1103,7 +1103,7 @@ namespace Dynamo.Tests
             Assert.NotNull(listn3);
 
             RunCurrentModel();
-            AssertPreviewValue("b3c61406-d429-43d4-8db0-7da92fce1eb5", null);
+            AssertPreviewValue("b3c61406-d429-43d4-8db0-7da92fce1eb5", 1);
             AssertPreviewValue("badd9669-7cb7-4ea4-a271-1fe81fe437b4", 10);
             AssertPreviewValue("4477b43e-0f51-486d-98a5-27ee0b312819", 0);
         }
@@ -1149,7 +1149,7 @@ namespace Dynamo.Tests
             RunCurrentModel();
             AssertPreviewValue("28383b05-d53a-47e0-ab4c-5c5d83208f25", 1);
             AssertPreviewValue("5b093fdd-c63a-4efa-a0b7-4bd7c2330752", null);
-            AssertPreviewValue("218c3a8e-9c4a-4a8c-8b13-6f2fb758df3f", null);
+            AssertPreviewValue("218c3a8e-9c4a-4a8c-8b13-6f2fb758df3f", 1);
         }
 
         [Test]
@@ -1665,7 +1665,96 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Revit Node Migration Tests
+        #region Dynamo Libraries Node Migration Tests
+
+        [Test]
+        public void LibraryTestReferencePoint()
+        {
+            OpenModel(GetDynPath("LibraryTestReferencePoint.dyn"));
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            // check that all nodes and connectors are loaded
+            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Connectors.Count);
+
+            // check that no nodes are migrated to dummy nodes
+            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DSCoreNodesUI.DummyNode));
+
+            // check that the node is migrated to a DSFunction nicknamed "ReferencePoint.ByPoint"
+            StringAssert.Contains("Reference", workspace.NodeFromWorkspace<DSFunction>(
+                "d615cc73-d32d-4b1f-b519-0b8f9b903ebf").NickName);
+        }
+
+        [Test]
+        public void LibraryTestCreateFamilyInstance()
+        {
+            OpenModel(GetDynPath("LibraryTestCreateFamilyInstance.dyn"));
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            // check that all nodes and connectors are loaded
+            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Connectors.Count);
+
+            // check that no nodes are migrated to dummy nodes
+            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DSCoreNodesUI.DummyNode));
+
+            // check that the node is migrated to a DSFunction nicknamed "FamilyInstance.ByPoint"
+            StringAssert.Contains("Instance", workspace.NodeFromWorkspace<DSFunction>(
+                "fc83b9b2-42c6-4a9f-8f60-a6ee29ef8a34").NickName);
+        }
+
+        [Test]
+        public void LibraryTestModelCurve()
+        {
+            OpenModel(GetDynPath("LibraryTestModelCurve.dyn"));
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            // check that all nodes and connectors are loaded
+            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Connectors.Count);
+
+            // check that no nodes are migrated to dummy nodes
+            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DSCoreNodesUI.DummyNode));
+
+            // check that the node is migrated to a DSFunction nicknamed "ModelCurve.ByCurve"
+            StringAssert.Contains("Model", workspace.NodeFromWorkspace<DSFunction>(
+                "fdea006e-b127-4280-a407-4058b78b93a3").NickName);
+        }
+
+        [Test]
+        public void LibraryTestPythonScript()
+        {
+            OpenModel(GetDynPath("LibraryTestPythonScript.dyn"));
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            // check that all nodes and connectors are loaded
+            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(6, workspace.Connectors.Count);
+
+            // check that no nodes are migrated to dummy nodes
+            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DSCoreNodesUI.DummyNode));
+
+            // check that the node is migrated to a PythonNode which retains the old script
+            StringAssert.Contains("OUT = OUT", workspace.NodeFromWorkspace<DSIronPythonNode.PythonNode>(
+                "caef9f81-c9a6-47aa-92c9-dc3b8fd6f7d7").Script);
+        }
+
+        [Test]
+        public void LibraryTestExcelRead()
+        {
+            OpenModel(GetDynPath("LibraryTestExcelRead.dyn"));
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            // check that all nodes and connectors are loaded
+            Assert.AreEqual(7, workspace.Nodes.Count);
+            Assert.AreEqual(6, workspace.Connectors.Count);
+
+            // check that no nodes are migrated to dummy nodes
+            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DSCoreNodesUI.DummyNode));
+
+            // check that some of the nodes are Excel nodes
+            Assert.AreEqual(4, workspace.Nodes.AsQueryable().Count(x => x.NickName.Contains("Excel")));
+        }
 
         #endregion
 

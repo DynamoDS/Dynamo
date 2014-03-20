@@ -57,9 +57,9 @@ namespace DSCoreNodesUI.HigherOrder
         }
     }
 
-    [NodeName("Apply Function")]
+    [NodeName("Compose Function")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("Applies a function to arguments.")]
+    [NodeDescription("Compose multiple functions.")]
     [IsDesignScriptCompatible]
     public class ComposeFunctions : VariableInputNode
     {
@@ -68,7 +68,7 @@ namespace DSCoreNodesUI.HigherOrder
             InPortData.Add(new PortData("func0", "Function #0"));
             InPortData.Add(new PortData("func1", "Function #1"));
 
-            OutPortData.Add(new PortData("func(args)", "Result of application."));
+            OutPortData.Add(new PortData("func", "Composed function."));
             RegisterAllPorts();
         }
 

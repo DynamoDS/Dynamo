@@ -471,6 +471,14 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        ///     Is this node being applied partially, resulting in a partial function?
+        /// </summary>
+        public bool IsPartiallyApplied
+        {
+            get { return !Enumerable.Range(0, InPortData.Count).All(HasInput); }
+        }
+
+        /// <summary>
         ///     Flags this node as dirty.
         /// </summary>
         [Obsolete("Use RequiresRecalc = true")]
@@ -695,25 +703,20 @@ namespace Dynamo.Models
 
             var result = BuildOutputAst(inputAstNodes);
 
-            /*
-            var functionDef = new FunctionDefinitionNode
-            {
-                Name = AstBuilder.StringConstants.FunctionPrefix + GUID.ToString().Replace("-", string.Empty),
-                Signature = new ArgumentSignatureNode { Arguments = InPortData.Select(x => AstFactory.BuildParamNode(x.NickName)).ToList() },
-                FunctionBody = 
-            };
-            */
-
             if (OutPortData.Count == 1)
             {
-                return
-                    result.Concat(
-                        new[]
-                        {
-                            AstFactory.BuildAssignment(
-                                AstIdentifierForPreview,
-                                GetAstIdentifierForOutputIndex(0))
-                        });
+                var firstOutput = GetAstIdentifierForOutputIndex(0);
+                if (!AstIdentifierForPreview.Equals(firstOutput))
+                {
+                    return result.Concat(new[]
+                    {
+                        AstFactory.BuildAssignment(AstIdentifierForPreview, firstOutput)
+                    });
+                }
+                else
+                {
+                    return result;
+                }
             }
 
             var emptyList = AstFactory.BuildExprList(new List<AssociativeNode>());
@@ -921,10 +924,12 @@ namespace Dynamo.Models
                 {
 
                     // if there are inputs without connections
-                    // mark as dead
-                    State = inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled))
-                                ? ElementState.Dead
-                                : ElementState.Active;
+                    // mark as dead; otherwise, if the original state is dead,
+                    // update it as active.
+                    if (inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled)))
+                        State = ElementState.Dead;
+                    else if (State == ElementState.Dead)
+                        State = ElementState.Active;
                 });
 
             if (dynSettings.Controller != null &&
@@ -2341,9 +2346,6 @@ namespace Dynamo.Models
     /// </summary>
     [AttributeUsage(AttributeTargets.All, Inherited = true)]
     public class NodeDeprecatedAttribute : Attribute { }
-
-    [AttributeUsage(AttributeTargets.All, Inherited = true)]
-    public class NodeHiddenInBrowserAttribute : Attribute { }
 
     /// <summary>
     ///     The AlsoKnownAs attribute allows the node implementor to

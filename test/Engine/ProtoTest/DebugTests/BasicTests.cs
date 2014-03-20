@@ -9836,7 +9836,7 @@ b = 2;";
         public void SteppingOverinline_Imperative_723_5()
         {
             string src =
-            @"import(""Math.dll"");
+            @"import(""DSCoreNodes.dll"");
                 x = 330;
                 [Imperative]
                 {
@@ -9873,7 +9873,7 @@ b = 2;";
         public void SteppingOverinline_Imperative_723_6()
         {
             string src =
-            @"import(""Math.dll"");
+            @"import(""DSCoreNodes.dll"");
                 x = -330;
                 [Imperative]
                 {
@@ -12565,7 +12565,7 @@ r = 0;
             fsr.PreStart(
  @"
 import(""ProtoGeometry.dll"");
-import(""Math.dll"");
+import(""DSCoreNodes.dll"");
 
 WCS = CoordinateSystem.Identity( );
 
@@ -12624,7 +12624,7 @@ lines = Line.ByStartPointEndPoint( startPts<1>, endPts<2> );
             fsr.PreStart(
  @"
 import(""ProtoGeometry.dll"");
-import(""Math.dll"");
+import(""DSCoreNodes.dll"");
 
 WCS = CoordinateSystem.Identity( );
 
@@ -12683,7 +12683,7 @@ lines = Line.ByStartPointEndPoint( startPts<1>, endPts<2> );
             // Execute and verify the main script in a debug session
             fsr.PreStart(
  @"
-import(""Math.dll"");
+import(""DSCoreNodes.dll"");
 x = 330;
 a;
 [Imperative]
@@ -12717,7 +12717,7 @@ a;
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
     @"
-import(""Math.dll"");
+import(""DSCoreNodes.dll"");
 x = 330;
 a;
 [Imperative]
@@ -13953,7 +13953,7 @@ def foo(y : int)
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
     @"
-import(""Math.dll"");
+import(""DSCoreNodes.dll"");
 import(""ProtoGeometry.dll"");
 
 results = { { } };
@@ -14987,7 +14987,7 @@ a : Dummy = null;
         {
             string src = @" 
                 import(""ProtoGeometry.dll"");
-                import(""Math.dll"");
+                import(""DSCoreNodes.dll"");
 
 
 
@@ -15244,7 +15244,7 @@ z = { A.A(), A.A() };
             @"
                 
                 import(""ProtoGeometry.dll"");
-                import(""Math.dll"");
+                import(""DSCoreNodes.dll"");
 
                 a : Point = null;
                 b : Line = null;
@@ -15283,7 +15283,7 @@ z = { A.A(), A.A() };
             @"
                 
                 import(""ProtoGeometry.dll"");
-                import(""Math.dll"");
+                import(""DSCoreNodes.dll"");
 
                 a : Point = null;
                 b : Line = null;
@@ -15321,7 +15321,7 @@ z = { A.A(), A.A() };
             @"
                 
                 import(""ProtoGeometry.dll"");
-                import(""Math.dll"");
+                import(""DSCoreNodes.dll"");
 
                 a : Point = null;
                 b : Line = null;
@@ -15361,7 +15361,7 @@ z = { A.A(), A.A() };
             @"
                 
                 import(""ProtoGeometry.dll"");
-                import(""Math.dll"");
+                import(""DSCoreNodes.dll"");
 
                 a : Point = null;
                 b : Line = null;
