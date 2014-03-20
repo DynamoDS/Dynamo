@@ -68,8 +68,8 @@ namespace ProtoCore
 
 
         private int runID;
-        private readonly int classScope;
-        private readonly string methodName;
+        private int classScope;
+        private string methodName;
         private readonly FunctionTable globalFunctionTable;
         private readonly ExecutionMode executionMode;
 
@@ -105,6 +105,12 @@ namespace ProtoCore
             if (execMode == ExecutionMode.Parallel)
                 throw new CompilerInternalException(
                     "Parrallel Mode is not yet implemented {46F83CBB-9D37-444F-BA43-5E662784B1B3}");
+        }
+
+        public void UpdateCallSite(int classScope, string methodName)
+        {
+            this.classScope = classScope;
+            this.methodName = methodName;
         }
 
 
@@ -1068,6 +1074,8 @@ namespace ProtoCore
 
             if (ri.Zipped)
             {
+                ZipAlgorithm algorithm = ri.ZipAlgorithm;
+
                 //For each item in this plane, an array of the length of the minimum will be constructed
 
                 //The size of the array will be the minimum size of the passed arrays
@@ -1076,7 +1084,20 @@ namespace ProtoCore
                 //this will hold the heap elements for all the arrays that are going to be replicated over
                 List<StackValue[]> parameters = new List<StackValue[]>();
 
-                int retSize = Int32.MaxValue;
+                int retSize;
+                switch (algorithm)
+                {
+                    case ZipAlgorithm.Shortest:
+                        retSize = Int32.MaxValue; //Search to find the smallest
+                        break;
+
+                    case ZipAlgorithm.Longest:
+                        retSize = Int32.MinValue; //Search to find the largest
+                        break;
+
+                    default:
+                        throw new ReplicationCaseNotCurrentlySupported("Selected algorithm not supported");
+                }
 
                 foreach (int repIndex in repIndecies)
                 {
@@ -1091,7 +1112,17 @@ namespace ProtoCore
                         subParameters = new StackValue[] { formalParameters[repIndex] };
                     }
                     parameters.Add(subParameters);
-                    retSize = Math.Min(retSize, subParameters.Length); //We need the smallest array
+
+                    switch (algorithm)
+                    {
+                        case ZipAlgorithm.Shortest:
+                            retSize = Math.Min(retSize, subParameters.Length); //We need the smallest array
+                            break;
+                        case ZipAlgorithm.Longest:
+                            retSize = Math.Max(retSize, subParameters.Length); //We need the longest array
+                            break;
+                    }
+
                 }
 
                 StackValue[] retSVs = new StackValue[retSize];
@@ -1101,9 +1132,7 @@ namespace ProtoCore
                 //Populate out the size of the list with default values
                 //@TODO:Luke perf optimisation here
                 for (int i = 0; i < retSize; i++)
-                {
                     retTrace.NestedData.Add(new SingleRunTraceData());
-                }
 
 
                 for (int i = 0; i < retSize; i++)
@@ -1129,7 +1158,30 @@ namespace ProtoCore
 
                     for (int repIi = 0; repIi < repIndecies.Count; repIi++)
                     {
-                        newFormalParams[repIndecies[repIi]] = parameters[repIi][i];
+                        switch (algorithm)
+                        {
+                            case ZipAlgorithm.Shortest:
+                                //If the shortest algorithm is selected this would
+                                newFormalParams[repIndecies[repIi]] = parameters[repIi][i];
+                                break;
+                            
+                            case ZipAlgorithm.Longest:
+
+                                int length = parameters[repIi].Length;
+                                if (i < length)
+                                {
+                                    newFormalParams[repIndecies[repIi]] = parameters[repIi][i];
+                                }
+                                else
+                                {
+                                    newFormalParams[repIndecies[repIi]] = parameters[repIi].Last();
+                                }
+
+                                break;
+                        }
+
+
+                        
                     }
 
                     List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();

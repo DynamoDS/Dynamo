@@ -827,6 +827,10 @@ namespace Dynamo.ViewModels
 
                 foreach (var function in functions)
                 {
+                    //Don't add the functions that are not visible in library.
+                    if (!function.IsVisibleInLibrary)
+                        continue;
+
                     // For overloaded functions, only parameters are displayed
                     // for this item. E.g, for Count(), on UI it is:
                     //
