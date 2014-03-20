@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Xml;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
 
 namespace DSCoreNodesUI
@@ -12,7 +13,7 @@ namespace DSCoreNodesUI
     [NodeName("Legacy Node")]
     [NodeDescription("This is an obsolete node")]
     [IsMetaNode]
-    [NodeHiddenInBrowser]
+    [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]
     [IsDesignScriptCompatible]
     public class DummyNode : NodeModel
