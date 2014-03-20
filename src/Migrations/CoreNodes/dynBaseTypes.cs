@@ -1132,6 +1132,11 @@ namespace Dynamo.Nodes
 
     public class FlattenListAmt : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Flatten", "List.Flatten@var[]..[],int");
+        }
     }
 
     public class LessThan : MigrationNode
@@ -2245,7 +2250,7 @@ namespace Dynamo.Nodes
                         select attr;
 
             foreach (XmlAttribute attr in query)
-                attr.Value = HttpUtility.HtmlEncode(HttpUtility.UrlDecode(attr.Value));
+                attr.Value = HttpUtility.UrlDecode(attr.Value);
 
             migrationData.AppendNode(newNode as XmlElement);
             return migrationData;

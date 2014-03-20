@@ -31,23 +31,19 @@ namespace Dynamo.Interfaces
         {
             WatchViewModel node;
 
-            if (value is IEnumerable<object>)
+            if (value is IEnumerable)
             {
                 node = new WatchViewModel("List", tag);
 
-                var enumerable = value as IEnumerable<object>;
-                var objects = enumerable as object[] ?? enumerable.ToArray();
-                if (objects.Any())
+                var enumerable = value as IEnumerable;
+                foreach (var obj in enumerable)
                 {
-                    foreach (var obj in objects)
-                    {
-                        node.Children.Add(ProcessThing(obj, tag));
-                    }
+                    node.Children.Add(ProcessThing(obj, tag));
                 }
             }
             else
             {
-                node = new WatchViewModel(value.ToString(), tag);
+                node = new WatchViewModel(ToString(value), tag);
             }
 
             return node;
@@ -78,12 +74,19 @@ namespace Dynamo.Interfaces
             var classMirror = data.Class;
             if (null != classMirror)
             {
+                if (data.Data == null && !data.IsNull) //Must be a DS Class instance.
+                    return ProcessThing(classMirror.ClassName, tag); //just show the class name.
                 return ProcessThing(data.Data, tag);
             }
 
             //Finally for all else get the string representation of data as watch content.
-            string previewData = data.Data.ToString();
+            string previewData = ToString(data.Data);
             return new WatchViewModel(previewData, tag);
+        }
+
+        private string ToString(object obj)
+        {
+            return obj != null ? obj.ToString() : "null";
         }
 
         public WatchViewModel Process(dynamic value, string tag, bool showRawData = true)
