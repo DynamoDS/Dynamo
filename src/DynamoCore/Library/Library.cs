@@ -538,7 +538,6 @@ namespace Dynamo.DSEngine
         {
             "ProtoGeometry.dll",
             "DSCoreNodes.dll",
-            "DSOffice.dll",
             "DSIronPython.dll",
             "FunctionObject.ds",
             "Optimize.ds",
