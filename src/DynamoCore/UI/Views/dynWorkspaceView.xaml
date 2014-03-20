@@ -89,7 +89,7 @@
                     </MenuItem>
 
                     <MenuItem  Header="_New Node From Selection"  Name="NodeFromSelection" Command="{Binding NodeFromSelectionCommand}" />
-                    <MenuItem  Header="_Node to Code"  Name="NodeToCode" Command="{Binding NodeToCodeCommand}" />
+                    <!--<MenuItem  Header="_Node to Code"  Name="NodeToCode" Command="{Binding NodeToCodeCommand}" />-->
                     <MenuItem  Header="_Nodes From Selected Geometry" Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"  
                                Name="ShowElementsInContext" Command="{Binding FindNodesFromSelectionCommand}" />
                     <Separator Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" ></Separator>

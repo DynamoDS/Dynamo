@@ -107,6 +107,12 @@ namespace RevitServices.Threading
         /// <param name="p">Delefate to be invoked on the Idle thread.</param>
         public static void ExecuteOnIdleSync(Action p)
         {
+            if (InIdleThread)
+            {
+                p();
+                return;
+            }
+
             var redeemed = false;
 
             Promises.Enqueue(
@@ -129,7 +135,7 @@ namespace RevitServices.Threading
         /// <returns>Result of the delegate.</returns>
         public static T ExecuteOnIdleSync<T>(IdlePromiseDelegate<T> p)
         {
-            return new IdlePromise<T>(p).RedeemPromise();
+            return InIdleThread ? p() : new IdlePromise<T>(p).RedeemPromise();
         }
 
         public static void ExecuteOnShutdown(Action p)

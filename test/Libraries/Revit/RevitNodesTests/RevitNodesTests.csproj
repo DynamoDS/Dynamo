@@ -69,6 +69,7 @@
     <Compile Include="AnalysisDisplay\PointAnalysisDisplayTests.cs" />
     <Compile Include="AnalysisDisplay\VectorAnalysisDisplayTests.cs" />
     <Compile Include="ApproximateAssertExtensions.cs" />
+    <Compile Include="Elements\AbstractElementTests.cs" />
     <Compile Include="Elements\AdaptiveComponentTests.cs" />
     <Compile Include="Elements\CurveByPointsTests.cs" />
     <Compile Include="Elements\DividedPathTests.cs" />

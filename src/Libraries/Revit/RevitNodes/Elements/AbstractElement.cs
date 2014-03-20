@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
+using DSCore;
 using DSNodeServices;
 using Revit.GeometryConversion;
 using RevitServices.Persistence;
+using RevitServices.Threading;
 using RevitServices.Transactions;
 
 namespace Revit.Elements
@@ -13,7 +16,7 @@ namespace Revit.Elements
     /// Superclass of all Revit element wrappers
     /// </summary>
     //[SupressImportIntoVM]
-    public abstract class AbstractElement : IDisposable
+    public abstract class AbstractElement : IDisposable, IGraphicItem
     {
         /// <summary>
         /// A reference to the current Document.
@@ -59,17 +62,17 @@ namespace Revit.Elements
         {
             get
             {
-                var bb = this.InternalElement.get_BoundingBox(null);
-
-                // if the Element was created during current transaction, we need to regenerate
-                // in order to access the bounding box
-                if (bb == null)
+                return IdlePromise.ExecuteOnIdleSync(() =>
                 {
+                    TransactionManager.Instance.EnsureInTransaction(Document);
+
                     DocumentManager.Instance.CurrentDBDocument.Regenerate();
-                    bb = this.InternalElement.get_BoundingBox(null);
-                } 
-                
-                return bb.ToProtoType();
+                    var bb = this.InternalElement.get_BoundingBox(null);
+
+                    TransactionManager.Instance.TransactionTaskDone();
+
+                    return bb.ToProtoType();
+                });
             }
         }
 
@@ -164,6 +167,13 @@ namespace Revit.Elements
             return InternalElement.ToString();
         }
 
+        public void Tessellate(IRenderPackage package)
+        {
+            // Do nothing. We implement this method only to prevent the GraphicDataProvider from
+            // attempting to interrogate the public properties, some of which may require regeneration
+            // or transactions and which must necessarily be threaded in a specific way.
+        }
+
         /// <summary>
         /// Set one of the element's parameters.
         /// </summary>
@@ -172,10 +182,22 @@ namespace Revit.Elements
         public void SetParameterByName(string parameterName, object value)
         {
             var param = this.InternalElement.Parameters.Cast<Autodesk.Revit.DB.Parameter>().FirstOrDefault(x => x.Definition.Name == parameterName);
+            
+            if(param == null)
+                throw new Exception("No parameter found by that name.");
 
             TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
+
             var dynval = value as dynamic;
-            SetParameterValue(param, dynval);
+            try
+            {
+                SetParameterValue(param, dynval);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
             TransactionManager.Instance.TransactionTaskDone();
         }
 
@@ -226,6 +248,28 @@ namespace Revit.Elements
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Override the element's color in the active view.
+        /// </summary>
+        /// <param name="color">The color to apply to a solid fill on the element.</param>
+        public void OverrideColorInView(DSColor color)
+        {
+            TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
+
+            var view = DocumentManager.Instance.CurrentUIDocument.ActiveView;
+            var ogs = new OverrideGraphicSettings();
+
+            var patternCollector = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            patternCollector.OfClass(typeof(FillPatternElement));
+            FillPatternElement solidFill = patternCollector.ToElements().Cast<FillPatternElement>().First(x => x.GetFillPattern().Name == "Solid fill");
+
+            ogs.SetProjectionFillColor(new Autodesk.Revit.DB.Color(color.Red, color.Green, color.Blue));
+            ogs.SetProjectionFillPatternId(solidFill.Id);
+            view.SetElementOverrides(this.InternalElementId, ogs);
+
+            TransactionManager.Instance.TransactionTaskDone();
         }
 
         #region dynamic parameter setting methods

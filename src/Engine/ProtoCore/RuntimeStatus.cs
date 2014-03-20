@@ -116,6 +116,11 @@ namespace ProtoCore
             warnings.Clear();
         }
 
+        public void ClearWarningForExpression(int expressionID)
+        {
+            warnings.RemoveAll(w => w.ExpressionID == expressionID);
+        }
+
         public RuntimeStatus(Core core, 
                              bool warningAsError = false, 
                              System.IO.TextWriter writer = null)

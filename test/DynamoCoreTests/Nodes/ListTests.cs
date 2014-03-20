@@ -497,17 +497,36 @@ namespace Dynamo.Tests
         [Test]
         public void TestTransposeNormalInput()
         {
+            // Input array                  Expected output array
+            // {                            {
+            //     { "AB", "CD" }               { "AB", 21, 31 }
+            //     { 21, 22, 23, 24 }           { "CD", 22, 32 }
+            //     { 31, 32, 33 }               { 23, 33 }
+            // }                                { 24 }
+            //                              }
+
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testTransposeList_normalInput.dyn");
             RunModel(testFilePath);
 
-            var a1 = new object[] { 1, "a" };
-            var a2 = new object[] { 2, "b" };
-            var a3 = new object[] { 3, "a" };
-            var a4 = new object[] { 4, "b" };
-            var a5 = new object[] { 5, null };
-            AssertPreviewValue("e639bc66-6dec-4a0a-bae2-9bac7dab59dc", new object[][] { a1, a2, a3, a4, a5 });
+            string guid = "e639bc66-6dec-4a0a-bae2-9bac7dab59dc";
+            var nodeTranspose = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>(guid);
+            var elements = nodeTranspose.GetValue(0).GetElements();
 
+            Assert.AreEqual(4, elements.Count);
+            Assert.AreEqual(3, elements[0].GetElements().Count);
+            Assert.AreEqual(3, elements[1].GetElements().Count);
+            Assert.AreEqual(2, elements[2].GetElements().Count);
+            Assert.AreEqual(1, elements[3].GetElements().Count);
+
+            AssertPreviewValue(guid,
+                new object[][]
+                {
+                    new object[] { "AB", 21, 31 },
+                    new object[] { "CD", 22, 32 },
+                    new object[] { 23, 33 },
+                    new object[] { 24 }
+                });
         }
         #endregion
 
@@ -1080,7 +1099,7 @@ namespace Dynamo.Tests
 
             Dictionary<int, object> validationData2 = new Dictionary<int, object>()
             {
-                {1000,2000},
+                {1000,2001},
             };
             SelectivelyAssertPreviewValues("25daa241-d8a4-4e74-aec1-6068358babf7", validationData2);
 
@@ -1348,6 +1367,7 @@ namespace Dynamo.Tests
         [Test]
         public void ListMaximumMinimum_KeyTest()
         {
+            Assert.Inconclusive("The current version does not support default value");
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\ListMaximumMinimum_WithAndWithoutKey.dyn");
@@ -1466,8 +1486,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(11 + 1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11 + 1, model.CurrentWorkspace.Connectors.Count);
 
             AssertPreviewValue("cfdfc020-05d0-4442-96df-8d97aad9c38c", new int[][]
                 {
@@ -1514,6 +1534,21 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        public void AddToList_ContainingNull()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_ContainingNull.dyn");
+            RunModel(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+
+            AssertPreviewValue("9a187115-ba09-411e-a836-473aeec4493c", new object[] { 2, 3, 4, null, 6 });
+        }
+
         #endregion
 
         #region SplitList test cases -PartiallyDone
@@ -1530,9 +1565,9 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
-            AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", "Dynamo");
+            AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", "Dynamo");
 
-            AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", new int[][]{new int[]{0,1}});
+            AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", new int[][] { new int[] { 0, 1 } });
         }
 
         [Test]
@@ -1547,9 +1582,9 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
-            AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", "Dynamo");
+            AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", new object[] { "Dynamo" });
 
-            AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", new int[][] { new int[] { 0, 1 } });
+            AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", new int[] {0, 1});
 
 
         }
@@ -1563,12 +1598,12 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(9 + 1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8 + 1, model.CurrentWorkspace.Connectors.Count);
 
-            AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", new int[] { 3 });
+            AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", new int[] { 3 });
 
-            AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", new int[][] { new int[] { 6 }, new int[] { 9 } });
+            AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", new int[][] { new int[] { 6 }, new int[] { 9 } });
 
 
         }
@@ -2158,8 +2193,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
 
             Dictionary<int, object> validationData = new Dictionary<int, object>()
             {

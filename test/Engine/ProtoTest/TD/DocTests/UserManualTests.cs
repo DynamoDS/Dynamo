@@ -293,7 +293,7 @@ namespace ProtoTest.TD.DocTests
         public void UM32_NumberTypes()
         {
             string code =
-@"import(""Math.dll"");// create an indexindex = 1.0;// create a collectioncollection = 1..10;pass_value = collection[index];// floor converts a floating point value to an integer// this will correctly access a member of the collectionvalue = collection[Math.Floor(index)];";
+@"import(""DSCoreNodes.dll"");// create an indexindex = 1.0;// create a collectioncollection = 1..10;pass_value = collection[index];// floor converts a floating point value to an integer// this will correctly access a member of the collectionvalue = collection[Math.Floor(index)];";
             thisTest.RunScriptSource(code);
             thisTest.Verify("pass_value", 2);
             thisTest.Verify("value", 2);
@@ -394,7 +394,7 @@ namespace ProtoTest.TD.DocTests
         public void UM43_Math()
         {
             string code =
-@"import(""ProtoGeometry.dll"");import(""Math.dll"");num_pts = 20;// get degree values from 0 to 360theta = 0..360..#num_pts;p = Point.ByCoordinates(Math.Cos(theta),Math.Sin(theta), 0);";
+@"import(""ProtoGeometry.dll"");import(""DSCoreNodes.dll"");num_pts = 20;// get degree values from 0 to 360theta = 0..360..#num_pts;p = Point.ByCoordinates(Math.Cos(theta),Math.Sin(theta), 0);";
             thisTest.RunScriptSource(code);
         }
 
@@ -412,7 +412,7 @@ namespace ProtoTest.TD.DocTests
         public void UM45_Curves()
         {
             string code =
-@"import(""ProtoGeometry.dll"");import(""Math.dll"");num_pts = 6;s = Math.Sin(0..360..#num_pts) * 4;pts = Point.ByCoordinates(1..30..#num_pts, s, 0);int_curve = BSplineCurve.ByPoints(pts);";
+@"import(""ProtoGeometry.dll"");import(""DSCoreNodes.dll"");num_pts = 6;s = Math.Sin(0..360..#num_pts) * 4;pts = Point.ByCoordinates(1..30..#num_pts, s, 0);int_curve = BSplineCurve.ByPoints(pts);";
             thisTest.RunScriptSource(code);
         }
 
@@ -420,7 +420,7 @@ namespace ProtoTest.TD.DocTests
         public void UM46_Curves()
         {
             string code =
-@"import(""ProtoGeometry.dll"");import(""Math.dll"");pts = Point.ByCoordinates(Math.Cos(0..350..#10),Math.Sin(0..350..#10), 0);// create an closed curvecrv = BSplineCurve.ByPoints(pts, true);// the same curve, if left open:crv2 = BSplineCurve.ByPoints(pts.Translate(5, 0, 0),false);";
+@"import(""ProtoGeometry.dll"");import(""DSCoreNodes.dll"");pts = Point.ByCoordinates(Math.Cos(0..350..#10),Math.Sin(0..350..#10), 0);// create an closed curvecrv = BSplineCurve.ByPoints(pts, true);// the same curve, if left open:crv2 = BSplineCurve.ByPoints(pts.Translate(5, 0, 0),false);";
             string str = "DNL-1467479 Regression : NullReferenceException when dot operator is called using replication for some typical classes ( cuboid )";
             thisTest.VerifyRunScriptSource(code, str);
         }
@@ -429,7 +429,7 @@ namespace ProtoTest.TD.DocTests
         public void UM47_Curves()
         {
             string code =
-@"import(""ProtoGeometry.dll"");import(""Math.dll"");num_pts = 6;pts = Point.ByCoordinates(1..30..#num_pts,Math.Sin(0..360..#num_pts) * 4, 0);// a B-Spline curve with degree 1 is a polylinectrl_curve = BSplineCurve.ByControlVertices(pts, 1);";
+@"import(""ProtoGeometry.dll"");import(""DSCoreNodes.dll"");num_pts = 6;pts = Point.ByCoordinates(1..30..#num_pts,Math.Sin(0..360..#num_pts) * 4, 0);// a B-Spline curve with degree 1 is a polylinectrl_curve = BSplineCurve.ByControlVertices(pts, 1);";
             thisTest.RunScriptSource(code);
         }
 
@@ -437,7 +437,7 @@ namespace ProtoTest.TD.DocTests
         public void UM48_Curves()
         {
             string code =
-@"import(""ProtoGeometry.dll"");import(""Math.dll"");num_pts = 6;pts = Point.ByCoordinates(1..30..#num_pts,Math.Sin(0..360..#num_pts) * 4, 0);// a B-Spline curve with degree 2 is smoothctrl_curve = BSplineCurve.ByControlVertices(pts, 2);";
+@"import(""ProtoGeometry.dll"");import(""DSCoreNodes.dll"");num_pts = 6;pts = Point.ByCoordinates(1..30..#num_pts,Math.Sin(0..360..#num_pts) * 4, 0);// a B-Spline curve with degree 2 is smoothctrl_curve = BSplineCurve.ByControlVertices(pts, 2);";
             thisTest.RunScriptSource(code);
         }
 
@@ -445,7 +445,7 @@ namespace ProtoTest.TD.DocTests
         public void UM49_Curves()
         {
             string code =
-@"import(""ProtoGeometry.dll"");import(""Math.dll"");num_pts = 6;pts = Point.ByCoordinates(1..30..#num_pts,Math.Sin(0..360..#num_pts) * 4, 0);def create_curve(pts : Point[], degree : int){return = BSplineCurve.ByControlVertices(pts,degree);}ctrl_crvs = create_curve(pts, 1..11);";
+@"import(""ProtoGeometry.dll"");import(""DSCoreNodes.dll"");num_pts = 6;pts = Point.ByCoordinates(1..30..#num_pts,Math.Sin(0..360..#num_pts) * 4, 0);def create_curve(pts : Point[], degree : int){return = BSplineCurve.ByControlVertices(pts,degree);}ctrl_crvs = create_curve(pts, 1..11);";
             thisTest.RunScriptSource(code);
         }
 
@@ -470,7 +470,7 @@ namespace ProtoTest.TD.DocTests
         public void UM52_IDE()
         {
             string code =
-@"import(""ProtoGeometry.dll"");import(""Math.dll"");def complexFunction(){num = 2.34057;v1 = Math.Log(num);v2 = Math.Sqrt(num);return = { v1, v2 };}result = complexFunction();point = Point.ByCoordinates(result[0], result[1], 0);";
+@"import(""ProtoGeometry.dll"");import(""DSCoreNodes.dll"");def complexFunction(){num = 2.34057;v1 = Math.Log(num);v2 = Math.Sqrt(num);return = { v1, v2 };}result = complexFunction();point = Point.ByCoordinates(result[0], result[1], 0);";
             thisTest.RunScriptSource(code);
         }
 
@@ -518,7 +518,7 @@ namespace ProtoTest.TD.DocTests
         public void UM58_Associative()
         {
             string code =
-@"import(""ProtoGeometry.dll"");import(""Math.dll"");cuboids = [Imperative]{c = {};cs = CoordinateSystem.Identity();c[0] = Cuboid.ByLengths(cs, 10, 10, 10);cs = cs.Translate(50, 0, 0);c[1] = Cuboid.ByLengths(cs, 10, 10, 10);rot = [Associative] {arr = 0..10;sqrts = Math.Sqrt(arr);return = Average(sqrts) * 40;}cs = cs.Rotate(rot, Vector.ByCoordinates(1, 1, 1));cs = cs.Translate(0, 50, 0);c[2] = Cuboid.ByLengths(cs, 10, 10, 10);return = c;}";
+@"import(""ProtoGeometry.dll"");import(""DSCoreNodes.dll"");cuboids = [Imperative]{c = {};cs = CoordinateSystem.Identity();c[0] = Cuboid.ByLengths(cs, 10, 10, 10);cs = cs.Translate(50, 0, 0);c[1] = Cuboid.ByLengths(cs, 10, 10, 10);rot = [Associative] {arr = 0..10;sqrts = Math.Sqrt(arr);return = Average(sqrts) * 40;}cs = cs.Rotate(rot, Vector.ByCoordinates(1, 1, 1));cs = cs.Translate(0, 50, 0);c[2] = Cuboid.ByLengths(cs, 10, 10, 10);return = c;}";
             thisTest.RunScriptSource(code);
         }
 

@@ -32,7 +32,8 @@
     <controls:StateToColorConverter x:Key="StateToColorConverter"
                                         ActiveBrush="{StaticResource nodeActiveBrush}"
                                         DeadBrush="{StaticResource nodeDeadBrush}"
-                                        ErrorBrush="{StaticResource nodeErrorBrush}">
+                                        ErrorBrush="{StaticResource nodeErrorBrush}"
+                                        WarningBrush="{StaticResource nodeWarningBrush}">
     </controls:StateToColorConverter>
     <controls:PortNameConverter x:Key="PortNameConverter"/>
     <controls:FilePathDisplayConverter x:Key="FilePathDisplayConverter"/>

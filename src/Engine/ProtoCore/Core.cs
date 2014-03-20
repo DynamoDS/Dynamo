@@ -632,7 +632,7 @@ namespace ProtoCore
             {
                 debugFrame.IsDotArgCall = true;
             }
-            else if (fNode.name.Equals(ProtoCore.DSDefinitions.Keyword.Dispose))
+            else if (CoreUtils.IsDisposeMethod(fNode.name))
             {
                 debugFrame.IsDisposeCall = true;
                 ReturnPCFromDispose = DebugEntryPC;
@@ -1130,6 +1130,16 @@ namespace ProtoCore
         public CallsiteExecutionState csExecutionState { get; set; }
 
         public Dictionary<int, CallSite> CallsiteCache { get; set; }
+
+        /// <summary>
+        /// Map from a callsite's guid to a graph UI node. 
+        /// </summary>
+        public Dictionary<Guid, Guid> CallSiteToNodeMap { get; private set; }
+
+        /// <summary>
+        /// Map from a AST node's ID to a callsite.
+        /// </summary>
+        public Dictionary<int, CallSite> ASTToCallSiteMap { get; private set; }
 
         // A list of graphnodes that contain a function call
         public List<AssociativeGraph.GraphNode> GraphNodeCallList { get; set; }
@@ -1682,6 +1692,9 @@ namespace ProtoCore
                 csExecutionState = new CallsiteExecutionState();
             }
             CallsiteCache = new Dictionary<int, CallSite>();
+            CallSiteToNodeMap = new Dictionary<Guid, Guid>();
+            ASTToCallSiteMap = new Dictionary<int, CallSite>();
+
             ForLoopBlockIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
 
             GraphNodeCallList = new List<GraphNode>();
@@ -2365,7 +2378,7 @@ namespace ProtoCore
             return false;
         }
 
-        public int ExecutingGraphnodeUID { get; set; }
+        public GraphNode ExecutingGraphnode { get; set; }
 
         /// <summary>
         /// Retrieves an existing instance of a callsite associated with a UID
@@ -2374,28 +2387,49 @@ namespace ProtoCore
         /// <param name="core"></param>
         /// <param name="uid"></param>
         /// <returns></returns>
-        public CallSite GetCallSite(int uid, int classScope, string methodName)
+        public CallSite GetCallSite(GraphNode graphNode, 
+                                    int classScope, 
+                                    string methodName)
         {
             Validity.Assert(null != FunctionTable);
             CallSite csInstance = null;
 
-            // TODO Jun: Currently generates a new callsite for imperative and internally generated functions
-            // Fix the issues that cause the cache to go out of sync when attempting to cache internal functions
-            // This may require a secondary callsite cache for internal functions so they dont clash with the graphNode UID key
+            // TODO Jun: Currently generates a new callsite for imperative and 
+            // internally generated functions.
+            // Fix the issues that cause the cache to go out of sync when 
+            // attempting to cache internal functions. This may require a 
+            // secondary callsite cache for internal functions so they dont 
+            // clash with the graphNode UID key
+            var language = DSExecutable.instrStreamList[RunningBlock].language;
+            bool isImperative =  language == Language.kImperative;
             bool isInternalFunction = CoreUtils.IsInternalFunction(methodName);
-            bool isImperative = DSExecutable.instrStreamList[RunningBlock].language == Language.kImperative;
+
             if (isInternalFunction || isImperative)
             {
-                csInstance = new CallSite(classScope, methodName, FunctionTable, Options.ExecutionMode);
+                csInstance = new CallSite(classScope, 
+                                          methodName, 
+                                          FunctionTable, 
+                                          Options.ExecutionMode);
             }
-            else
+            else if (!CallsiteCache.TryGetValue(graphNode.UID, out csInstance))
             {
-                if (!CallsiteCache.TryGetValue(uid, out csInstance))
-                {
-                    csInstance = new CallSite(classScope, methodName, FunctionTable, Options.ExecutionMode);
-                    CallsiteCache.Add(uid, csInstance);
-                }
+                csInstance = new CallSite(classScope,
+                                          methodName,
+                                          FunctionTable,
+                                          Options.ExecutionMode);
+
+                CallsiteCache.Add(graphNode.UID, csInstance);
+                CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
+                ASTToCallSiteMap[graphNode.AstID] = csInstance;
+
+           }
+
+            if (graphNode != null && Options.IsDeltaExecution && !CoreUtils.IsDisposeMethod(methodName))
+            {
+                csInstance.UpdateCallSite(classScope, methodName);
+                this.RuntimeStatus.ClearWarningForExpression(graphNode.exprUID);                
             }
+                
             return csInstance;
         }
 
