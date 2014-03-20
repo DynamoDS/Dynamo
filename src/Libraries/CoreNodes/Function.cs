@@ -13,6 +13,7 @@ namespace DSCore
         /// </summary>
         /// <param name="x">Anything.</param>
         /// 
+       [IsVisibleInDynamoLibrary(false)] 
         public static object Identity(object x)
         {
             return x;
