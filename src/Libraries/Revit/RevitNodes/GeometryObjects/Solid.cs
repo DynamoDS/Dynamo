@@ -8,6 +8,8 @@ using Revit.Elements;
 using Revit.GeometryConversion;
 using Revit.GeometryObjects;
 using Revit.Graphics;
+using RevitServices.Persistence;
+using RevitServices.Transactions;
 using Curve = Autodesk.Revit.DB.Curve;
 using CurveLoop = Autodesk.Revit.DB.CurveLoop;
 using Edge = Revit.GeometryObjects.Edge;
@@ -177,6 +179,13 @@ namespace Revit.GeometryObjects
         /// <param name="element"></param>
         internal Solid(Autodesk.Revit.DB.Element element)
         {
+            // Regenerate to get the solids in the element. If the element was
+            // created during this same run, document regeneration will not have
+            // occured.
+            TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
+            DocumentManager.Instance.CurrentDBDocument.Regenerate();
+            TransactionManager.Instance.TransactionTaskDone();
+
             var instanceSolids = new Dictionary<ElementId, List<GeometryObject>>();;
             Autodesk.Revit.DB.Solid mySolid = null;
 
@@ -197,7 +206,8 @@ namespace Revit.GeometryObjects
             }
 
             int nTry = (bNotVisibleOption) ? 2 : 1;
-            for (int iTry = 0; iTry < nTry && (mySolid == null); iTry++)
+            for (int iTry = 0; iTry < nTry && (mySolid == null); 
+                iTry++)
             {
                 var geoOptions = new Autodesk.Revit.DB.Options();
                 geoOptions.ComputeReferences = true;
@@ -709,7 +719,6 @@ namespace Revit.GeometryObjects
         }
 
         #endregion
-
 
         #region Tesselation
 
