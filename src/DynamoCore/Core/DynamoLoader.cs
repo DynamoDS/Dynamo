@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define __NO_SAMPLES_MENU
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Models;
@@ -363,7 +365,7 @@ namespace Dynamo.Utilities
             return AssemblyPathToTypesLoaded[assembly.Location];
         }
 
-
+#if !__NO_SAMPLES_MENU
         /// <summary>
         ///     Setup the "Samples" sub-menu with contents of samples directory.
         /// </summary>
@@ -425,6 +427,7 @@ namespace Dynamo.Utilities
             }
             //this.fileMenu.Items.Remove(this.samplesMenu);
         }
+#endif
 
         /// <summary>
         ///     Callback for opening a sample.
