@@ -110,6 +110,8 @@ namespace Revit.Elements
             // just mutate it...
             if (oldFam != null)
             {
+                if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
+                   InternalSetFamilySymbol(fs);
                 InternalSetFamilyInstance(oldFam);
                 InternalSetParamsAndCurve(parms, c);
                 return;
@@ -142,6 +144,20 @@ namespace Revit.Elements
         #endregion
 
         #region Internal mutators
+
+       /// <summary>
+       /// Set the family symbol for the internal family instance 
+       /// </summary>
+       /// <param name="fs"></param>
+       private void InternalSetFamilySymbol(FamilySymbol fs)
+       {
+          TransactionManager.Instance.EnsureInTransaction(Document);
+
+          InternalFamilyInstance.Symbol = fs.InternalFamilySymbol;
+
+          TransactionManager.Instance.TransactionTaskDone();
+
+       }
 
         /// <summary>
         /// Set the positions of the internal family instance from a list of XYZ points
