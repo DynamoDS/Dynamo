@@ -1367,6 +1367,7 @@ namespace Dynamo.Tests
         [Test]
         public void ListMaximumMinimum_KeyTest()
         {
+            Assert.Inconclusive("The current version does not support default value");
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\ListMaximumMinimum_WithAndWithoutKey.dyn");
@@ -1485,8 +1486,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(11 + 1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11 + 1, model.CurrentWorkspace.Connectors.Count);
 
             AssertPreviewValue("cfdfc020-05d0-4442-96df-8d97aad9c38c", new int[][]
                 {
@@ -1564,9 +1565,9 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
-            AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", "Dynamo");
+            AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", "Dynamo");
 
-            AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", new int[][]{new int[]{0,1}});
+            AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", new int[][] { new int[] { 0, 1 } });
         }
 
         [Test]
@@ -1581,9 +1582,9 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
-            AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", "Dynamo");
+            AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", new object[] { "Dynamo" });
 
-            AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", new int[][] { new int[] { 0, 1 } });
+            AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", new int[] {0, 1});
 
 
         }
@@ -1597,12 +1598,12 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(9 + 1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8 + 1, model.CurrentWorkspace.Connectors.Count);
 
-            AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", new int[] { 3 });
+            AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", new int[] { 3 });
 
-            AssertPreviewValue("abb3429a-1650-4e1e-a1fc-2ae237ad4f62", new int[][] { new int[] { 6 }, new int[] { 9 } });
+            AssertPreviewValue("223d2c7f-e56d-433a-aa14-7c53db009ce3", new int[][] { new int[] { 6 }, new int[] { 9 } });
 
 
         }
