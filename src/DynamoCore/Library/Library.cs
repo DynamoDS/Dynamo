@@ -903,6 +903,8 @@ namespace Dynamo.DSEngine
             foreach (var function in functions)
             {
                 string qualifiedName = function.QualifiedName;
+                if (CoreUtils.StartsWithDoubleUnderscores(qualifiedName))
+                    continue;
                 FunctionGroup functionGroup;
                 if (!_builtinFunctionGroups.TryGetValue(qualifiedName, out functionGroup))
                 {
@@ -1001,7 +1003,8 @@ namespace Dynamo.DSEngine
             }
 
             string procName = proc.name;
-            if (CoreUtils.IsSetter(procName) || CoreUtils.IsDisposeMethod(procName))
+            if (CoreUtils.IsSetter(procName) || CoreUtils.IsDisposeMethod(procName) ||
+                CoreUtils.StartsWithDoubleUnderscores(procName))
             { 
                 return;
             }
