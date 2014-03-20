@@ -38,9 +38,9 @@ namespace Revit.Elements
             // just mutate it...
             if (oldFam != null)
             {
+               InternalSetFamilyInstance(oldFam);
                 if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
-                   InternalSetFamilySymbol(oldFam, fs);
-                InternalSetFamilyInstance(oldFam);
+                   InternalSetFamilySymbol(fs);
                 InternalSetPositions(pts.ToXyzs());
                 return;
             }
@@ -77,9 +77,9 @@ namespace Revit.Elements
             // just mutate it...
             if (oldFam != null)
             {
-                if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
-                   InternalSetFamilySymbol(oldFam, fs);
                 InternalSetFamilyInstance(oldFam);
+                if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
+                   InternalSetFamilySymbol(fs);
                 InternalSetUvsAndFace(pts.ToUvs(), f.InternalFace );
                 return;
             }
@@ -114,9 +114,9 @@ namespace Revit.Elements
             // just mutate it...
             if (oldFam != null)
             {
-                if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
-                   InternalSetFamilySymbol(oldFam, fs);
                 InternalSetFamilyInstance(oldFam);
+                if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
+                   InternalSetFamilySymbol(fs);
                 InternalSetParamsAndCurve(parms, c);
                 return;
             }
@@ -154,11 +154,11 @@ namespace Revit.Elements
        /// </summary>
        /// <param name="famInst"></param>
        /// <param name="fs"></param>
-        private void InternalSetFamilySymbol(Autodesk.Revit.DB.FamilyInstance famInst, FamilySymbol fs)
+        private void InternalSetFamilySymbol( FamilySymbol fs)
        {
           TransactionManager.Instance.EnsureInTransaction(Document);
 
-          famInst.Symbol = fs.InternalFamilySymbol;
+          InternalFamilyInstance.Symbol = fs.InternalFamilySymbol;
 
           TransactionManager.Instance.TransactionTaskDone();
 
