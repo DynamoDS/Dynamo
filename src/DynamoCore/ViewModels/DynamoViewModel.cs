@@ -1627,14 +1627,14 @@ namespace Dynamo.ViewModels
 
         internal void SelectVisualizationInView(object parameters)
         {
-            Debug.WriteLine("Selecting mesh from background watch.");
+            //Debug.WriteLine("Selecting mesh from background watch.");
 
-            var arr = (double[])parameters;
-            double x = arr[0];
-            double y = arr[1];
-            double z = arr[2];
+            //var arr = (double[])parameters;
+            //double x = arr[0];
+            //double y = arr[1];
+            //double z = arr[2];
 
-            dynSettings.Controller.VisualizationManager.LookupSelectedElement(x, y, z);
+            //dynSettings.Controller.VisualizationManager.LookupSelectedElement(x, y, z);
         }
 
         internal bool CanSelectVisualizationInView(object parameters)
