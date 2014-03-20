@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
-using DSNodeServices;
 using Revit.GeometryConversion;
 using Revit.Elements;
 using RevitServices.Transactions;
@@ -14,7 +14,8 @@ namespace Revit.AnalysisDisplay
     /// <summary>
     /// A Revit Vector Analysis Display 
     /// </summary>
-    [RegisterForTrace]
+    [IsVisibleInDynamoLibrary(false)]
+    [DSNodeServices.RegisterForTrace]
     public class VectorAnalysisDisplay : AbstractAnalysisDisplay
     {
 
