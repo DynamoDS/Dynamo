@@ -9,6 +9,7 @@ using Revit.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Threading;
 using RevitServices.Transactions;
+using Color = DSCore.Color;
 
 namespace Revit.Elements
 {
@@ -254,7 +255,7 @@ namespace Revit.Elements
         /// Override the element's color in the active view.
         /// </summary>
         /// <param name="color">The color to apply to a solid fill on the element.</param>
-        public void OverrideColorInView(DSColor color)
+        public void OverrideColorInView(Color color)
         {
             TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
 

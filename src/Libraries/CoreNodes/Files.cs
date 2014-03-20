@@ -31,7 +31,7 @@ namespace DSCore.File
 
                     // Insert new color at the front of the list.
                     var c = bmp.GetPixel(xParam, yParam);
-                    result.Insert(0, DSColor.ByARGB(c.A,c.R,c.G,c.B));
+                    result.Insert(0, Color.ByARGB(c.A,c.R,c.G,c.B));
                 }
             }
 
