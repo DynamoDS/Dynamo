@@ -191,6 +191,7 @@ namespace DSCore
         /// <returns name="rest">Rest of the list.</returns>
         /// <search>first,rest</search>
         [MultiReturn(new string[]{"first", "rest"})]
+        [IsVisibleInDynamoLibrary(false)]
         public static IDictionary Deconstruct(IList list)
         {
             return new Dictionary<string, object>
@@ -508,6 +509,7 @@ namespace DSCore
         /// <param name="rowLength">Length of each new sub-list.</param>
         /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
         /// <search>diagonal,right,matrix</search>
+        [IsVisibleInDynamoLibrary(false)]
         public static IList DiagonalRight(IList list, int subLength)
         {
             object[] flatList = null;
@@ -571,6 +573,7 @@ namespace DSCore
         /// <param name="rowLength">Length of each new sib-list.</param>
         /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
         /// <search>diagonal,left,matrix</search>
+        [IsVisibleInDynamoLibrary(false)]
         public static IList DiagonalLeft(IList list, int rowLength)
         {
             object[] flatList = null;
@@ -665,6 +668,7 @@ namespace DSCore
         /// <param name="amount">The number of times to repeat.</param>
         /// <returns name="list">List of repeated items.</returns>
         /// <search>repeat,repeated,duplicate</search>
+        [IsVisibleInDynamoLibrary(false)]
         public static IList OfRepeatedItem(
             [ArbitraryDimensionArrayImport] object item,
             int amount)
@@ -723,6 +727,7 @@ namespace DSCore
         /// <param name="length">Length of each permutation.</param>
         /// <returns name="perm">Permutations of the list of the given length.</returns>
         /// <search>permutation,permutations</search>
+        [IsVisibleInDynamoLibrary(false)]
         public static IList Permutations(IList list, int? length = null)
         {
             return
@@ -742,6 +747,7 @@ namespace DSCore
         /// </param>
         /// <returns name="comb">Combinations of the list of the given length.</returns>
         /// <search>combination,combinations</search>
+        [IsVisibleInDynamoLibrary(false)]
         public static IList Combinations(IList list, int length, bool replace = false)
         {
             return
