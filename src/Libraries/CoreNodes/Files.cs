@@ -1,6 +1,7 @@
 ﻿
 using System.Collections;
 using System.Drawing;
+using Autodesk.DesignScript.Runtime;
 
 namespace DSCore.File
 {
@@ -14,6 +15,7 @@ namespace DSCore.File
         /// <param name="numY">Number of sample grid points in the Y direction.</param>
         /// <returns name="colors">Colors at the specified grid points.</returns>
         /// <search>read,image,bitmap,png,jpg,jpeg</search>
+        [IsVisibleInDynamoLibrary(false)]
         public static IList ReadImage(string filePath, int numX, int numY)
         {
             if (System.IO.File.Exists(filePath) == false)
@@ -44,6 +46,7 @@ namespace DSCore.File
         /// <param name="filePath">Path to the text file.</param>
         /// <returns name="str">Contents of the text file.</returns>
         /// <search>read,text,file</search>
+        [IsVisibleInDynamoLibrary(false)]
         public static string ReadText(string filePath)
         {
             if (System.IO.File.Exists(filePath) == false)
