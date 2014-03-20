@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using DSCore;
 using DSNodeServices;
@@ -21,6 +22,7 @@ namespace Revit.Elements
         /// <summary>
         /// A reference to the current Document.
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public static Document Document
         {
             get { return DocumentManager.Instance.CurrentDBDocument; }
@@ -35,6 +37,7 @@ namespace Revit.Elements
         /// <summary>
         /// Obtain all of the Parameters from an Element
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public Parameter[] Parameters
         {
             get
@@ -47,6 +50,7 @@ namespace Revit.Elements
         /// <summary>
         /// Get the Name of the Element
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public string Name
         {
             get
@@ -90,6 +94,7 @@ namespace Revit.Elements
         /// <summary>
         /// Get the Element Unique Id for this element
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public string UniqueId
         {
             get
@@ -102,6 +107,7 @@ namespace Revit.Elements
         /// A reference to the element
         /// </summary>
         //[SupressImportIntoVM]
+        [IsVisibleInDynamoLibrary(false)]
         public abstract Autodesk.Revit.DB.Element InternalElement
         {
             get;
@@ -133,6 +139,7 @@ namespace Revit.Elements
         /// Default implementation of dispose that removes the element from the
         /// document
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public virtual void Dispose()
         {
 
@@ -162,11 +169,13 @@ namespace Revit.Elements
         /// A basic implementation of ToString for Elements
         /// </summary>
         /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
         public override string ToString()
         {
             return InternalElement.ToString();
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package)
         {
             // Do nothing. We implement this method only to prevent the GraphicDataProvider from
