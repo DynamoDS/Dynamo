@@ -38,6 +38,8 @@ namespace Revit.Elements
             // just mutate it...
             if (oldFam != null)
             {
+                if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
+                   InternalSetFamilySymbol(fs);
                 InternalSetFamilyInstance(oldFam);
                 InternalSetPositions(pts.ToXyzs());
                 return;
@@ -75,6 +77,8 @@ namespace Revit.Elements
             // just mutate it...
             if (oldFam != null)
             {
+                if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
+                   InternalSetFamilySymbol(fs);
                 InternalSetFamilyInstance(oldFam);
                 InternalSetUvsAndFace(pts.ToUvs(), f.InternalFace );
                 return;
