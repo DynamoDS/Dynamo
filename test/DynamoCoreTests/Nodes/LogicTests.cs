@@ -182,6 +182,71 @@ namespace Dynamo.Tests
             AssertPreviewValue("90bb3906-b6fe-4be5-b3cb-a97d92409a70", 0);
 
         }
+
+        [Test]
+        public void testCompare_DoubleInteger()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(logicTestFolder, "testCompare_DoubleInteger.dyn");
+
+            RunModel(testFilePath);
+            AssertPreviewValue("604e36a9-df28-43ac-b86e-11f932a9f6e4", false);
+            AssertPreviewValue("20a2f416-2a13-4afe-af00-c041d5997f40", true);
+            AssertPreviewValue("a4c69409-8430-42a4-9769-2817a507b1b7", true);
+            AssertPreviewValue("5801abfd-e00f-408a-8bb1-8289b795686f", false);
+        }
+
+        [Test]
+        public void testCompare_BooleanInteger()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(logicTestFolder, "testCompare_BooleanInteger.dyn");
+
+            RunModel(testFilePath);
+            AssertPreviewValue("604e36a9-df28-43ac-b86e-11f932a9f6e4", null);
+            AssertPreviewValue("20a2f416-2a13-4afe-af00-c041d5997f40", null);
+            AssertPreviewValue("a4c69409-8430-42a4-9769-2817a507b1b7", null);
+            AssertPreviewValue("5801abfd-e00f-408a-8bb1-8289b795686f", null);
+        }
+
+        [Test]
+        public void testCompare_BooleanBoolean()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(logicTestFolder, "testCompare_BooleanBoolean.dyn");
+
+            RunModel(testFilePath);
+            AssertPreviewValue("604e36a9-df28-43ac-b86e-11f932a9f6e4", false);
+            AssertPreviewValue("20a2f416-2a13-4afe-af00-c041d5997f40", true);
+            AssertPreviewValue("a4c69409-8430-42a4-9769-2817a507b1b7", true);
+            AssertPreviewValue("5801abfd-e00f-408a-8bb1-8289b795686f", false);
+        }
+
+        [Test]
+        public void testCompare_StringInteger()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(logicTestFolder, "testCompare_StringInteger.dyn");
+
+            RunModel(testFilePath);
+            AssertPreviewValue("604e36a9-df28-43ac-b86e-11f932a9f6e4", null);
+            AssertPreviewValue("20a2f416-2a13-4afe-af00-c041d5997f40", null);
+            AssertPreviewValue("a4c69409-8430-42a4-9769-2817a507b1b7", null);
+            AssertPreviewValue("5801abfd-e00f-408a-8bb1-8289b795686f", null);
+        }
+
+        [Test]
+        public void testCompare_StringDouble()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(logicTestFolder, "testCompare_StringDouble.dyn");
+
+            RunModel(testFilePath);
+            AssertPreviewValue("604e36a9-df28-43ac-b86e-11f932a9f6e4", null);
+            AssertPreviewValue("20a2f416-2a13-4afe-af00-c041d5997f40", null);
+            AssertPreviewValue("a4c69409-8430-42a4-9769-2817a507b1b7", null);
+            AssertPreviewValue("5801abfd-e00f-408a-8bb1-8289b795686f", null);
+        }
     }
 
     [TestFixture]
