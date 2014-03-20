@@ -39,7 +39,7 @@ namespace Revit.Elements
             if (oldFam != null)
             {
                 if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
-                   InternalSetFamilySymbol(fs);
+                   InternalSetFamilySymbol(oldFam, fs);
                 InternalSetFamilyInstance(oldFam);
                 InternalSetPositions(pts.ToXyzs());
                 return;
@@ -78,7 +78,7 @@ namespace Revit.Elements
             if (oldFam != null)
             {
                 if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
-                   InternalSetFamilySymbol(fs);
+                   InternalSetFamilySymbol(oldFam, fs);
                 InternalSetFamilyInstance(oldFam);
                 InternalSetUvsAndFace(pts.ToUvs(), f.InternalFace );
                 return;
@@ -115,7 +115,7 @@ namespace Revit.Elements
             if (oldFam != null)
             {
                 if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
-                   InternalSetFamilySymbol(fs);
+                   InternalSetFamilySymbol(oldFam, fs);
                 InternalSetFamilyInstance(oldFam);
                 InternalSetParamsAndCurve(parms, c);
                 return;
@@ -152,12 +152,13 @@ namespace Revit.Elements
        /// <summary>
        /// Set the family symbol for the internal family instance 
        /// </summary>
+       /// <param name="famInst"></param>
        /// <param name="fs"></param>
-       private void InternalSetFamilySymbol(FamilySymbol fs)
+        private void InternalSetFamilySymbol(Autodesk.Revit.DB.FamilyInstance famInst, FamilySymbol fs)
        {
           TransactionManager.Instance.EnsureInTransaction(Document);
 
-          InternalFamilyInstance.Symbol = fs.InternalFamilySymbol;
+          famInst.Symbol = fs.InternalFamilySymbol;
 
           TransactionManager.Instance.TransactionTaskDone();
 
