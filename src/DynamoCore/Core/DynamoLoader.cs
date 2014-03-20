@@ -7,6 +7,7 @@ using System.Reflection;
 using System.IO;
 using System.Windows.Controls;
 using System.Windows;
+using Autodesk.DesignScript.Runtime;
 using String = System.String;
 
 namespace Dynamo.Utilities
@@ -246,8 +247,17 @@ namespace Dynamo.Utilities
                         var attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
                         var isDeprecated = t.GetCustomAttributes(typeof (NodeDeprecatedAttribute), true).Any();
                         var isMetaNode = t.GetCustomAttributes(typeof(IsMetaNodeAttribute), false).Any();
-                        var isHidden = t.GetCustomAttributes(typeof (NodeHiddenInBrowserAttribute), true).Any();
                         var isDSCompatible = t.GetCustomAttributes(typeof(IsDesignScriptCompatibleAttribute), true).Any();
+
+                        var attrs = t.GetCustomAttributes(typeof(IsVisibleInDynamoLibraryAttribute), true);
+                        if (null != attrs && attrs.Count() > 0)
+                        {
+                            var isVisibleAttr = attrs[0] as IsVisibleInDynamoLibraryAttribute;
+                            if (null != isVisibleAttr && isVisibleAttr.Visible == false)
+                            {
+                                continue;
+                            }
+                        }
 
                         if (!IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
                             continue;
