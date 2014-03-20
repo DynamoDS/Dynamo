@@ -175,7 +175,7 @@ namespace Dynamo.DSEngine
         /// <summary>
         /// A comment describing the Function
         /// </summary>
-        public string _summary;
+        private string _summary;
         public string Summary
         {
             get { return _summary ?? (_summary = this.GetXmlDocumentation()); }
@@ -320,10 +320,15 @@ namespace Dynamo.DSEngine
         {
             get
             {
-                var idx = ClassName.LastIndexOf('.');
-                return idx < 0
-                        ? String.Empty
-                        : ClassName.Substring(idx + 1);
+                if (string.IsNullOrEmpty(ClassName))
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    var idx = ClassName.LastIndexOf('.');
+                    return idx < 0 ? String.Empty : ClassName.Substring(idx + 1);
+                }
             }
         }
 
@@ -331,10 +336,15 @@ namespace Dynamo.DSEngine
         {
             get
             {
-                var idx = ClassName.LastIndexOf('.');
-                return idx < 0
-                        ? String.Empty
-                        : ClassName.Substring(0,idx);
+                if (string.IsNullOrEmpty(ClassName))
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    var idx = ClassName.LastIndexOf('.');
+                    return idx < 0 ? String.Empty : ClassName.Substring(0, idx);
+                }
             }
         }
 
@@ -371,7 +381,14 @@ namespace Dynamo.DSEngine
                     if (!String.IsNullOrEmpty(f)) return f;
                 }
 
-                return Path.GetFileNameWithoutExtension(Assembly) + "." + Namespace;
+                if (string.IsNullOrEmpty(Namespace))
+                {
+                    return Path.GetFileNameWithoutExtension(Assembly);
+                }
+                else
+                {
+                    return Path.GetFileNameWithoutExtension(Assembly) + "." + Namespace;
+                }
             }
         }
 
@@ -400,14 +417,22 @@ namespace Dynamo.DSEngine
             Assembly = assembly;
             ClassName = className;
             Name = name;
-            Parameters = parameters.Select(x =>
+
+            if (parameters == null)
             {
-                x.Function = this;
-                return x;
-            });
-            ReturnType = returnType;
+                Parameters = new List<TypedParameter> { };
+            }
+            else
+            {
+                Parameters = parameters.Select(x =>
+                {
+                    x.Function = this;
+                    return x;
+                });
+            }
+            ReturnType = returnType == null ? "var[]..[]" : returnType;
             Type = type;
-            ReturnKeys = returnKeys;
+            ReturnKeys = returnKeys == null ? new List<string> {} : returnKeys;
             IsVarArg = isVarArg;
         }
         
@@ -506,8 +531,9 @@ namespace Dynamo.DSEngine
             "ProtoGeometry.dll",
             "DSCoreNodes.dll",
             "DSOffice.dll",
+            "DSIronPython.dll",
             "FunctionObject.ds",
-            "DSIronPython.dll"
+            "Optimize.ds",
         };
 
         public class LibraryLoadedEventArgs : EventArgs
