@@ -2426,7 +2426,8 @@ namespace ProtoCore
 
             if (graphNode != null && Options.IsDeltaExecution && !CoreUtils.IsDisposeMethod(methodName))
             {
-                this.RuntimeStatus.ClearWarningForExpression(graphNode.exprUID);
+                csInstance.UpdateCallSite(classScope, methodName);
+                this.RuntimeStatus.ClearWarningForExpression(graphNode.exprUID);                
             }
                 
             return csInstance;
