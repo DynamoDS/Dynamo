@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
@@ -12,6 +13,7 @@ namespace DSCoreNodesUI.HigherOrder
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
     [NodeDescription("Applies a function to arguments.")]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class ApplyFunction : VariableInputNode
     {
         public ApplyFunction()
@@ -61,6 +63,7 @@ namespace DSCoreNodesUI.HigherOrder
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
     [NodeDescription("Compose multiple functions.")]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class ComposeFunctions : VariableInputNode
     {
         public ComposeFunctions()

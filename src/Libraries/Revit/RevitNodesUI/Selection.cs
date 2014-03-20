@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Revit.Interactivity;
 using Dynamo.Controls;
@@ -742,6 +743,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Select analysis results from the document.")]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class DSAnalysisResultSelection : DSElementSelection
     {
         public DSAnalysisResultSelection()
@@ -762,6 +764,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Select a family instance from the document.")]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class DSFamilyInstanceSelection : DSElementSelection
     {
         public override string SelectionText
@@ -787,6 +790,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Select a level from the document.")]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class DSLevelSelection : DSElementSelection
     {
         public override string SelectionText
@@ -813,6 +817,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Select a curve element from the document.")]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class DSCurveElementSelection : DSElementSelection
     {
         public override string SelectionText
@@ -838,6 +843,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Select a reference point from the document.")]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class DSReferencePointSelection : DSElementSelection
     {
         public DSReferencePointSelection()
@@ -898,6 +904,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Select a point on a face.")]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class DSPointOnElementSelection : DSReferenceSelection
     {
         public override string SelectionText
@@ -973,6 +980,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Select a UV on a face.")]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class DSUVOnElementSelection : DSReferenceSelection
     {
         public override string SelectionText
