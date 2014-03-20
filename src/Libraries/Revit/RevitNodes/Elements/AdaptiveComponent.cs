@@ -38,6 +38,8 @@ namespace Revit.Elements
             // just mutate it...
             if (oldFam != null)
             {
+                if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
+                   InternalSetFamilySymbol(oldFam, fs);
                 InternalSetFamilyInstance(oldFam);
                 InternalSetPositions(pts.ToXyzs());
                 return;
@@ -75,6 +77,8 @@ namespace Revit.Elements
             // just mutate it...
             if (oldFam != null)
             {
+                if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
+                   InternalSetFamilySymbol(oldFam, fs);
                 InternalSetFamilyInstance(oldFam);
                 InternalSetUvsAndFace(pts.ToUvs(), f.InternalFace );
                 return;
@@ -110,6 +114,8 @@ namespace Revit.Elements
             // just mutate it...
             if (oldFam != null)
             {
+                if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
+                   InternalSetFamilySymbol(oldFam, fs);
                 InternalSetFamilyInstance(oldFam);
                 InternalSetParamsAndCurve(parms, c);
                 return;
@@ -142,6 +148,21 @@ namespace Revit.Elements
         #endregion
 
         #region Internal mutators
+
+       /// <summary>
+       /// Set the family symbol for the internal family instance 
+       /// </summary>
+       /// <param name="famInst"></param>
+       /// <param name="fs"></param>
+        private void InternalSetFamilySymbol(Autodesk.Revit.DB.FamilyInstance famInst, FamilySymbol fs)
+       {
+          TransactionManager.Instance.EnsureInTransaction(Document);
+
+          famInst.Symbol = fs.InternalFamilySymbol;
+
+          TransactionManager.Instance.TransactionTaskDone();
+
+       }
 
         /// <summary>
         /// Set the positions of the internal family instance from a list of XYZ points
