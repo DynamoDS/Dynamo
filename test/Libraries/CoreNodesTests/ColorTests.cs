@@ -57,12 +57,12 @@ namespace DSCoreNodesTests
         public void TestComponents()
         {
             DSColor color = DSColor.ByARGB(128, 64, 160, 255);
-            byte[] components = DSColor.Components(color);
+            var components = DSColor.Components(color);
 
-            Assert.AreEqual(128, components[0]);
-            Assert.AreEqual(64,  components[1]);
-            Assert.AreEqual(160, components[2]);
-            Assert.AreEqual(255, components[3]);
+            Assert.AreEqual(128, components["a"]);
+            Assert.AreEqual(64,  components["r"]);
+            Assert.AreEqual(160, components["g"]);
+            Assert.AreEqual(255, components["b"]);
         }
     }
 }
