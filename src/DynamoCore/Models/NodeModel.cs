@@ -701,25 +701,20 @@ namespace Dynamo.Models
 
             var result = BuildOutputAst(inputAstNodes);
 
-            /*
-            var functionDef = new FunctionDefinitionNode
-            {
-                Name = AstBuilder.StringConstants.FunctionPrefix + GUID.ToString().Replace("-", string.Empty),
-                Signature = new ArgumentSignatureNode { Arguments = InPortData.Select(x => AstFactory.BuildParamNode(x.NickName)).ToList() },
-                FunctionBody = 
-            };
-            */
-
             if (OutPortData.Count == 1)
             {
-                return
-                    result.Concat(
-                        new[]
-                        {
-                            AstFactory.BuildAssignment(
-                                AstIdentifierForPreview,
-                                GetAstIdentifierForOutputIndex(0))
-                        });
+                var firstOutput = GetAstIdentifierForOutputIndex(0);
+                if (!AstIdentifierForPreview.Equals(firstOutput))
+                {
+                    return result.Concat(new[]
+                    {
+                        AstFactory.BuildAssignment(AstIdentifierForPreview, firstOutput)
+                    });
+                }
+                else
+                {
+                    return result;
+                }
             }
 
             var emptyList = AstFactory.BuildExprList(new List<AssociativeNode>());
