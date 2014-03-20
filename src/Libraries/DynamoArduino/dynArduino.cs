@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
 using System.IO.Ports;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
@@ -18,6 +19,7 @@ namespace Dynamo.Nodes
     [NodeName("Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
     [NodeDescription("Manages connection to an Arduino microcontroller.")]
+    [IsVisibleInDynamoLibrary(false)]
     public partial class Arduino : NodeWithOneOutput
     {
         SerialPort port;

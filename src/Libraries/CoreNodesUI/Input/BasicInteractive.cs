@@ -10,7 +10,6 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
-using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
