@@ -114,10 +114,7 @@
         <KeyBinding Key="F4"
                 Modifiers="Alt"
                                 Command="{Binding Path=DataContext.ExitCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-        <KeyBinding Key="C"
-                                Modifiers="Control+Shift"
-                                Command="{Binding Path=DataContext.ClearCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-
+        
         <KeyBinding Key="Left"
                     Modifiers="Ctrl+Alt"
                     CommandParameter="Left"
@@ -211,12 +208,6 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Focusable="False" Header="_Export Model to STL..." Command="{Binding ExportToSTLCommand}" Name="saveSTL">
-                        </MenuItem>
-                        <Separator />
-                        <MenuItem Focusable="False" Header="_Clear" Command="{Binding ClearCommand}" Name="clearButton" InputGestureText="Ctrl + Shift + C" IsEnabled="{Binding IsUILocked, Converter={StaticResource InverseBooleanConverter}}">
-                            <MenuItem.Icon>
-                                <Image Source="/DynamoCore;component/UI/Images/DocumentHS.png" Width="14" Height="14" />
-                            </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
                         <MenuItem Header="_Exit" Command="{Binding ExitCommand}"  Name="exit" InputGestureText="Alt + F4" Focusable="False"/>
