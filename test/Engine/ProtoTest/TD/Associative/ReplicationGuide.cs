@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
+using ProtoCore.Exceptions;
 using ProtoCore.Lang;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Associative
@@ -1768,7 +1769,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        public void TO144_ReplicationGuidesForceArrayPromotionShortestSingleton()
+        public void TO145_ReplicationGuidesForceArrayPromotionShortestSingleton()
         {
 
             string code =
@@ -1783,7 +1784,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        public void TO144_ReplicationGuidesForceArrayPromotionShortestSingletonManual()
+        public void TO146_ReplicationGuidesForceArrayPromotionShortestSingletonManual()
         {
 
             string code =
@@ -1797,7 +1798,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        public void TO144_ReplicationGuidesForceArrayPromotionShortestSingletonManual2()
+        public void TO147_ReplicationGuidesForceArrayPromotionShortestSingletonManual2()
         {
 
             string code =
@@ -1805,6 +1806,46 @@ namespace ProtoTest.TD.Associative
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("t1", new Object[] { 0 });
+        }
+
+        [Test]
+        public void TO148_ReplicationGuidesLongest()
+        {
+
+            string code =
+@" def foo (x,y){    return = x + y;}a = {0};b = 0..1;t1 = foo(a<1L>, b<1L>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", new Object[] { 0 });
+        }
+
+        [Test]
+        public void TO149_ReplicationGuidesLongestNegative()
+        {
+
+            string code =
+@" def foo (x,y){    return = x + y;}a = {0};b = 0..1;t1 = foo(a<1L>, b<1>);";
+            string errmsg = "";
+
+            Assert.Throws<ReplicationCaseNotCurrentlySupported>(
+                () =>
+                thisTest.RunScriptSource(code));
+
+        }
+
+
+        [Test]
+        public void TO149_ReplicationGuidesLongestNegative2()
+        {
+
+            string code =
+@" def foo (x,y){    return = x + y;}a = {0};b = 0..1;t1 = foo(a<1>, b<1L>);";
+            string errmsg = "";
+
+            Assert.Throws<ReplicationCaseNotCurrentlySupported>(
+                () =>
+                thisTest.RunScriptSource(code));
+
         }
 
     }
