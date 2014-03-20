@@ -2363,9 +2363,6 @@ namespace Dynamo.Models
     [AttributeUsage(AttributeTargets.All, Inherited = true)]
     public class NodeDeprecatedAttribute : Attribute { }
 
-    [AttributeUsage(AttributeTargets.All, Inherited = true)]
-    public class NodeHiddenInBrowserAttribute : Attribute { }
-
     /// <summary>
     ///     The AlsoKnownAs attribute allows the node implementor to
     ///     define an array of names that this node might have had
