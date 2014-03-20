@@ -1049,7 +1049,7 @@ namespace Dynamo.Nodes
         private static string formatSelectionText(IEnumerable<Element> elements)
         {
             return elements.Any()
-                ? System.String.Join(" ", elements.Select(x => x.Id.ToString()))
+                ? System.String.Join(" ", elements.Take(20).Select(x => x.Id.ToString())) + "..."
                 : "Nothing Selected";
         }
 
