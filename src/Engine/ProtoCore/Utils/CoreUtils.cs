@@ -466,6 +466,12 @@ namespace ProtoCore.Utils
             return propertyName.StartsWith(ProtoCore.DSASM.Constants.kSetterPrefix);
         }
 
+        public static bool StartsWithDoubleUnderscores(string name)
+        {
+            Validity.Assert(null != name);
+            return name.StartsWith(ProtoCore.DSASM.Constants.kDoubleUnderscores);
+        }
+
         public static bool TryGetOperator(string methodName, out Operator op)
         {
             Validity.Assert(null != methodName);
