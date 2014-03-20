@@ -1,9 +1,11 @@
 ﻿
 using System.Collections;
 using System.Drawing;
+using Autodesk.DesignScript.Runtime;
 
 namespace DSCore.File
 {
+    [IsVisibleInDynamoLibrary(false)]
     public static class FileReader
     {
         /// <summary>
