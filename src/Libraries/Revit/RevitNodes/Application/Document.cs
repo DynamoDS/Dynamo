@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using Revit.Elements;
 using RevitServices.Persistence;
+using Autodesk.DesignScript.Runtime;
 
 namespace Revit.Application
 {
     /// <summary>
     /// A Revit Document
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class Document
     {
         /// <summary>

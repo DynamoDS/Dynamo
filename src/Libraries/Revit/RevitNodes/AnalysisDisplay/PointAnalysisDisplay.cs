@@ -8,13 +8,15 @@ using DSNodeServices;
 using Revit.GeometryConversion;
 using Revit.Elements;
 using RevitServices.Transactions;
+using Autodesk.DesignScript.Runtime;
 
 namespace Revit.AnalysisDisplay
 {
     /// <summary>
     /// A Revit Point Analysis Display 
     /// </summary>
-    [RegisterForTrace]
+    [IsVisibleInDynamoLibrary(false)]
+    [DSNodeServices.RegisterForTrace]
     public class PointAnalysisDisplay : AbstractAnalysisDisplay
     {
 

@@ -25,7 +25,8 @@ namespace DSIronPython
         /// <param name="code"></param>
         /// <param name="bindingNames"></param>
         /// <param name="bindingValues"></param>
-        /// <returns></returns>
+        /// <returns></returns> 
+        [IsVisibleInDynamoLibrary(false)]
         public static object EvaluateIronPythonScript(
             string code, 
             IList bindingNames, 
