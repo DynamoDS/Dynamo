@@ -72,7 +72,7 @@ namespace DSCore.File
 
 
     [NodeName("File Path")]
-    //[NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Allows you to select a file on the system to get its filename.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
@@ -97,7 +97,7 @@ namespace DSCore.File
 
 
     [NodeName("Directory Path")]
-    //[NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Allows you to select a directory on the system to get its path.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
