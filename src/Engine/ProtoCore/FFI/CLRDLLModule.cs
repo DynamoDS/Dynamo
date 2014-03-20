@@ -372,7 +372,7 @@ namespace ProtoFFI
                     continue;
 
                 //Don't include overriden methods or generic methods
-                if (m.IsPublic && !m.IsGenericMethod && (m == m.GetBaseDefinition() || (m.GetBaseDefinition().DeclaringType == baseType && baseType == typeof(Object))))
+                if (m.IsPublic && !m.IsGenericMethod && m == m.GetBaseDefinition())
                 {
                     AssociativeNode node = ParseAndRegisterFunctionPointer(isDisposable, ref hasDisposeMethod, m);
                     classnode.funclist.Add(node);
