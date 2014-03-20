@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -508,11 +509,12 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Input")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    //[NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("A function parameter, use with custom nodes")]
     [NodeSearchTags("variable", "argument", "parameter")]
     [IsInteractive(false)]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public partial class Symbol : NodeModel
     {
         private string inputSymbol = "";
@@ -592,10 +594,11 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Output")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    //[NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("A function output, use with custom nodes")]
     [IsInteractive(false)]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public partial class Output : NodeModel
     {
         private string symbol = "";

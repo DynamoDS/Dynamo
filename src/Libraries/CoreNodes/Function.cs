@@ -1,8 +1,11 @@
-﻿namespace DSCore
+﻿using Autodesk.DesignScript.Runtime;
+
+namespace DSCore
 {
     /// <summary>
     /// TODO: Move contents somewhere else.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public static class Function
     {
         /// <summary>
