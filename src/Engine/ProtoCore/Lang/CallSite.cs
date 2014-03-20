@@ -68,8 +68,8 @@ namespace ProtoCore
 
 
         private int runID;
-        private readonly int classScope;
-        private readonly string methodName;
+        private int classScope;
+        private string methodName;
         private readonly FunctionTable globalFunctionTable;
         private readonly ExecutionMode executionMode;
 
@@ -105,6 +105,12 @@ namespace ProtoCore
             if (execMode == ExecutionMode.Parallel)
                 throw new CompilerInternalException(
                     "Parrallel Mode is not yet implemented {46F83CBB-9D37-444F-BA43-5E662784B1B3}");
+        }
+
+        public void UpdateCallSite(int classScope, string methodName)
+        {
+            this.classScope = classScope;
+            this.methodName = methodName;
         }
 
 

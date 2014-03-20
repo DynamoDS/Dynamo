@@ -1088,6 +1088,7 @@ namespace ProtoScript.Runners
                             if (gnode.exprUID == bNode.exprUID)
                             {
                                 gnode.isActive = false;
+                                break;
                             }
                         }
                         BinaryExpressionNode newBNode = new BinaryExpressionNode(bNode.LeftNode, new NullNode(), ProtoCore.DSASM.Operator.assign);
@@ -1116,6 +1117,7 @@ namespace ProtoScript.Runners
                             if (gnode.AstID == bNode.ID)
                             {
                                 gnode.isActive = false;
+                                break;
                             }
                         }
                     }
