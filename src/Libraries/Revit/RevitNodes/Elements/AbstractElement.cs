@@ -38,7 +38,6 @@ namespace Revit.Elements
         /// <summary>
         /// Obtain all of the Parameters from an Element
         /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
         public Parameter[] Parameters
         {
             get
