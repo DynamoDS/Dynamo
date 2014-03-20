@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Drawing;
 using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
 {
+    [IsVisibleInDynamoLibrary(false)]
     public class DSColor // TODO(Ben): Rename after namespace support is done :)
     {
         private Color color = Color.FromArgb(255, 0, 0, 0);

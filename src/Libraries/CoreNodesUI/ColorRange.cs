@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Xml;
+using Autodesk.DesignScript.Runtime;
 using DSCore;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -20,8 +21,9 @@ namespace DSCoreNodesUI
 {
     [IsDesignScriptCompatible]
     [NodeName("Color Range")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_COLOR)]
+    //[NodeCategory(BuiltinNodeCategories.ANALYZE_COLOR)]
     [NodeDescription("Get a color given a color range.")]
+    [IsVisibleInDynamoLibrary(false)]
     public class ColorRange : NodeModel, IWpfNode
     {
         public event EventHandler RequestChangeColorRange;
