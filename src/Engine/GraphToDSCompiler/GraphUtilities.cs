@@ -1295,7 +1295,7 @@ namespace GraphToDSCompiler
             return p.root;
         }
 
-        public static bool Parse(ref string code, 
+        public static bool Parse(Guid nodeGUID, ref string code, 
                                  out List<ProtoCore.AST.Node> parsedNodes, 
                                  out IEnumerable<ProtoCore.BuildData.ErrorEntry> errors,
                                  out IEnumerable<ProtoCore.BuildData.WarningEntry> warnings, 
@@ -1316,7 +1316,7 @@ namespace GraphToDSCompiler
             string codeToParse = "";
             for (int i = 0; i < compiledCode.Count; i++)
             {
-                string tempVariableName = "temp" + System.Guid.NewGuid().ToString().Replace("-", "_");
+                string tempVariableName = string.Format("temp_{0}_", i) + nodeGUID.ToString().Replace("-", "_");
                 tempIdentifiers.Add(tempVariableName);
 
                 string singleExpression = compiledCode[i];

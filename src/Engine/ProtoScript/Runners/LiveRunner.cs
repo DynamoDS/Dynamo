@@ -1331,10 +1331,16 @@ namespace ProtoScript.Runners
             {
                 foreach (var t in syncData.ModifiedSubtrees)
                 {
-                    astCache[t.GUID].Clear();
-                    if (t.AstNodes != null)
+                    if (astCache.Count > 0)
                     {
-                        astCache[t.GUID].AddRange(t.AstNodes);
+                        if (astCache.ContainsKey(t.GUID))
+                        {
+                            astCache[t.GUID].Clear();
+                            if (t.AstNodes != null)
+                            {
+                                astCache[t.GUID].AddRange(t.AstNodes);
+                            }
+                        }
                     }
                 }
             }
