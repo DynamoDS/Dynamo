@@ -372,7 +372,7 @@ namespace ProtoFFI
                     continue;
 
                 //Don't include overriden methods or generic methods
-                if (m.IsPublic && !m.IsGenericMethod && (m == m.GetBaseDefinition() || (m.GetBaseDefinition().DeclaringType == baseType && baseType == typeof(Object))))
+                if (m.IsPublic && !m.IsGenericMethod && m == m.GetBaseDefinition())
                 {
                     AssociativeNode node = ParseAndRegisterFunctionPointer(isDisposable, ref hasDisposeMethod, m);
                     classnode.funclist.Add(node);
@@ -1165,9 +1165,11 @@ namespace ProtoFFI
     public class FFIClassAttributes
     {
         public bool IsVisibleInLibrary { get; private set; }
+        public bool IsVisibleInLibrarySet { get; private set; }
         public FFIClassAttributes(Type type)
         {
             IsVisibleInLibrary = true;
+            IsVisibleInLibrarySet = false;
 
             if (type == null)
             {
@@ -1181,6 +1183,7 @@ namespace ProtoFFI
                 {
                     var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
                     IsVisibleInLibrary = visibleInLibraryAttr.Visible;
+                    IsVisibleInLibrarySet = true;
                 }
             }
         }
@@ -1199,6 +1202,7 @@ namespace ProtoFFI
         }
         private List<string> returnKeys;
         public bool IsVisibleInLibrary { get; private set; }
+        public bool IsVisibleInLibrarySet { get; private set; }
 
         public FFIMethodAttributes(MethodInfo method)
         {
@@ -1206,6 +1210,9 @@ namespace ProtoFFI
             {
                 return;
             }
+
+            IsVisibleInLibrary = true;
+            IsVisibleInLibrarySet = false;
 
             FFIClassAttributes baseAttributes = null;
             Type type = method.DeclaringType;
@@ -1239,6 +1246,7 @@ namespace ProtoFFI
                 {
                     var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
                     IsVisibleInLibrary = visibleInLibraryAttr.Visible;
+                    IsVisibleInLibrarySet = true;
                 }
             }
         }

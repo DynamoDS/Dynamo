@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml;
 using Dynamo.Controls;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.UI;
@@ -284,7 +285,6 @@ namespace Dynamo.Nodes
             return base.UpdateValueCore(name, value);
         }
     }
-
 
     [NodeName("Integer Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]

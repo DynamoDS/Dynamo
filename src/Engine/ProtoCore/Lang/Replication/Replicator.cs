@@ -56,38 +56,31 @@ namespace ProtoCore.Lang.Replication
 
             //Check for out of order unboxing
 
-            
+
             // Comment Jun: Convert from new replication guide data struct to the old format where guides are only a list of ints
             // TODO Luke: Remove this temporary marshalling and use the replicationguide data structure directly
             List<List<int>> partialGuides = new List<List<int>>();
+            List<List<ZipAlgorithm>> partialGuidesLace = new List<List<ZipAlgorithm>>();
+
             foreach (List<ProtoCore.ReplicationGuide> guidesOnParam in partialRepGuides)
             {
                 List<int> tempGuide = new List<int>();
+                List<ZipAlgorithm> tempGuideLaceStrategy = new List<ZipAlgorithm>();
                 foreach (ProtoCore.ReplicationGuide guide in guidesOnParam)
                 {
                     tempGuide.Add(guide.guideNumber);
+                    tempGuideLaceStrategy.Add(guide.isLongest ? ZipAlgorithm.Longest : ZipAlgorithm.Shortest);
                 }
                 partialGuides.Add(tempGuide);
+                partialGuidesLace.Add(tempGuideLaceStrategy);
             }
 
             //@TODO: remove this limitation
-            foreach (List<int> guidesOnParam in partialGuides)
-            {
-                List<int> sorted = new List<int>();
-                sorted.AddRange(guidesOnParam);
-                sorted.Sort();
-
-                for (int i = 0; i < sorted.Count; i++)
-                {
-                    if (guidesOnParam[i] != sorted[i])
-                    {
-                        throw new ReplicationCaseNotCurrentlySupported("Sorry, multiple guides on a single argument that are not in increasing order are not yet supported, please use a for loop instead, err code: {3C5360D1}");
-                    }
-                }
-            }
+            VerifyIncreasingGuideOrdering(partialGuides);
 
             //Guide -> args
             Dictionary<int, List<int>> index = new Dictionary<int, List<int>>();
+            Dictionary<int, ZipAlgorithm> indexLace = new Dictionary<int, ZipAlgorithm>();
 
             int maxGuide = int.MinValue;
 
@@ -101,14 +94,45 @@ namespace ProtoCore.Lang.Replication
             if (maxGuide == int.MinValue)
                 return new List<ReplicationInstruction>();
 
-            for (int guideCounter = 1; guideCounter <= maxGuide; guideCounter++ )
+            //Iterate over all of the guides
+            for (int guideCounter = 1; guideCounter <= maxGuide; guideCounter++)
             {
                 index.Add(guideCounter, new List<int>());
-                
+                indexLace.Add(guideCounter, ZipAlgorithm.Shortest);
+
                 for (int i = 0; i < partialGuides.Count; i++)
                     if (partialGuides[i].Contains(guideCounter))
                     {
                         index[guideCounter].Add(i);
+
+                        int indexOfGuide = partialGuides[i].IndexOf(guideCounter);
+
+                        if (partialGuidesLace[i][indexOfGuide] == ZipAlgorithm.Longest)
+                        {
+
+                            //If we've previous seen a shortest node with this guide
+                            if (i > 0 && indexLace[guideCounter] == ZipAlgorithm.Shortest)
+                            {
+                                throw new ReplicationCaseNotCurrentlySupported("Cannot support Longest and shortest zipped collections");
+                            }
+
+                            //Overwrite the default behaviour
+                            indexLace[guideCounter] = ZipAlgorithm.Longest;
+                        }
+                        else
+                        {
+                            //it's shortest, if we had something previous saying it should be longest
+                            //then we've created a violation foo(a<1>, b1<1L>) is not allowed
+                            if (indexLace[guideCounter] == ZipAlgorithm.Longest)
+                            {
+                                throw new ReplicationCaseNotCurrentlySupported("Cannot support Longest and shortest zipped collections");
+                            }
+                            else
+                            {
+                                //Shortest lacing is actually the default, this call should be redundant
+                                indexLace[guideCounter] = ZipAlgorithm.Shortest;
+                            }
+                        }
                     }
 
                 // Validity.Assert(index[guideCounter].Count > 0, "Sorry, non-contiguous replication guides are not yet supported, please try again without leaving any gaps, err code {3E080694}");
@@ -141,12 +165,36 @@ namespace ProtoCore.Lang.Replication
                 {
                     ri.Zipped = true;
                     ri.ZipIndecies = index[i];
+                    ri.ZipAlgorithm = indexLace[i];
                 }
 
                 ret.Add(ri);
             }
 
             return ret;
+        }
+
+        /// <summary>
+        /// Verify that the guides are in increasing order
+        /// </summary>
+        /// <param name="partialGuides"></param>
+        private static void VerifyIncreasingGuideOrdering(List<List<int>> partialGuides)
+        {
+            foreach (List<int> guidesOnParam in partialGuides)
+            {
+                List<int> sorted = new List<int>();
+                sorted.AddRange(guidesOnParam);
+                sorted.Sort();
+
+                for (int i = 0; i < sorted.Count; i++)
+                {
+                    if (guidesOnParam[i] != sorted[i])
+                    {
+                        throw new ReplicationCaseNotCurrentlySupported(
+                            "Sorry, multiple guides on a single argument that are not in increasing order are not yet supported, please use a for loop instead, err code: {3C5360D1}");
+                    }
+                }
+            }
         }
 
 
