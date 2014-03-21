@@ -16,7 +16,7 @@ namespace Revit.Elements.Views
     /// A Revit View3D
     /// </summary>
     [RegisterForTrace]
-    public class PerspectiveView : AbstractView3D
+    public class PerspectiveView : View3D
     {
 
         #region Private constructors
@@ -24,7 +24,7 @@ namespace Revit.Elements.Views
         /// <summary>
         /// Private constructor
         /// </summary>
-        private PerspectiveView(View3D view)
+        private PerspectiveView(Autodesk.Revit.DB.View3D view)
         {
             InternalSetView3D(view);
         }
@@ -147,7 +147,7 @@ namespace Revit.Elements.Views
             if (element == null)
                 throw new ArgumentNullException("element");
 
-            AbstractElement abstractElement = element as AbstractElement;
+            Element abstractElement = element as Element;
             if (abstractElement != null)
             {
                 return ByEyePointTargetAndElement(eyePoint,
@@ -177,7 +177,7 @@ namespace Revit.Elements.Views
         /// <param name="name"></param>
         /// <param name="isolateElement"></param>
         /// <returns></returns>
-        public static PerspectiveView ByEyePointTargetAndElement(Autodesk.DesignScript.Geometry.Point eyePoint, Autodesk.DesignScript.Geometry.Point target, AbstractElement element, string name, bool isolateElement)
+        public static PerspectiveView ByEyePointTargetAndElement(Autodesk.DesignScript.Geometry.Point eyePoint, Autodesk.DesignScript.Geometry.Point target, Element element, string name, bool isolateElement)
         {
             if (eyePoint == null)
             {
@@ -246,7 +246,7 @@ namespace Revit.Elements.Views
         /// <param name="view"></param>
         /// <param name="isRevitOwned"></param>
         /// <returns></returns>
-        internal static PerspectiveView FromExisting( View3D view, bool isRevitOwned )
+        internal static PerspectiveView FromExisting( Autodesk.Revit.DB.View3D view, bool isRevitOwned )
         {
             return new PerspectiveView(view)
             {

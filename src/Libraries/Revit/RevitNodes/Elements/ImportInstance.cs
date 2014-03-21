@@ -16,7 +16,7 @@ namespace Revit.Elements
     /// A Revit ImportInstance Element
     /// </summary>
     [RegisterForTrace]
-    public class ImportInstance : AbstractElement
+    public class ImportInstance : Element
     {
         [Browsable(false)]
         public override Autodesk.Revit.DB.Element InternalElement

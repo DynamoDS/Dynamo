@@ -8,7 +8,7 @@ namespace Revit.Elements
     /// <summary>
     /// A Revit WallType
     /// </summary>
-    public class WallType : AbstractElement
+    public class WallType : Element
     {
         #region Internal properties
 

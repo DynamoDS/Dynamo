@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Revit.Elements;
+using Revit.Elements.Views;
 using RevitServices.Persistence;
 
 namespace Revit.Application
@@ -26,11 +27,11 @@ namespace Revit.Application
         /// <summary>
         /// Get the active view for the document
         /// </summary>
-        public AbstractView ActiveView 
+        public View ActiveView 
         {
             get
             {
-                return (AbstractView) ElementWrappingExtensions.ToDSType(InternalDocument.ActiveView, true);
+                return (View) ElementWrappingExtensions.ToDSType(InternalDocument.ActiveView, true);
             }
         }
 

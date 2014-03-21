@@ -21,7 +21,7 @@ namespace Revit.Elements
     /// </summary>
     [RegisterForTrace]
     [ShortName("refPt")]
-    public class ReferencePoint : AbstractElement, IGraphicItem
+    public class ReferencePoint : Element, IGraphicItem
     {
 
         #region Internal properties

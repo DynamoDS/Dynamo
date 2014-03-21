@@ -5,10 +5,12 @@ using System.Text;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
+using Revit.Elements.Views;
 using Revit.GeometryConversion;
 using Revit.Elements;
 using Revit.References;
 using RevitServices.Transactions;
+using View = Revit.Elements.Views.View;
 
 namespace Revit.AnalysisDisplay
 {
@@ -113,7 +115,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="sampleUvPoints"></param>
         /// <param name="samples"></param>
         /// <returns></returns>
-        public static FaceAnalysisDisplay ByViewFacePointsAndValues(AbstractView view, FaceReference faceReference,
+        public static FaceAnalysisDisplay ByViewFacePointsAndValues(View view, FaceReference faceReference,
                         double[][] sampleUvPoints, double[] samples)
         {
 

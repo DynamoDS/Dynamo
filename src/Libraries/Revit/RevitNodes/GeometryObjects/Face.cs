@@ -6,7 +6,7 @@ using Revit.Graphics;
 
 namespace Revit.GeometryObjects
 {
-    public class Face : AbstractGeometryObject
+    public class Face : GeometryObject
     {
 
         internal Autodesk.Revit.DB.Face InternalFace
@@ -24,7 +24,7 @@ namespace Revit.GeometryObjects
             this.InternalFace = face;
         }
 
-        protected override GeometryObject InternalGeometryObject
+        protected override Autodesk.Revit.DB.GeometryObject InternalGeometryObject
         {
             get { return InternalFace; }
         }
