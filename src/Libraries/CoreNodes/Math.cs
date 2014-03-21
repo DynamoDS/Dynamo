@@ -213,24 +213,24 @@ namespace DSCore
         {
             return CSMath.Round(value);
         }
-
+        /*
         [IsVisibleInDynamoLibrary(false)]
         public static double Round(double value, MidpointRounding mode)
         {
             return CSMath.Round(value, mode);
         }
-
+        */
         public static double Round(double value, int digits)
         {
             return CSMath.Round(value, digits);
         }
-
+        /*
         [IsVisibleInDynamoLibrary(false)]
         public static double Round(double value, int digits, MidpointRounding mode)
         {
             return CSMath.Round(value, digits, mode);
         }
-
+        */
         public static long Sign(double d_value)
         {
             return CSMath.Sign(d_value);
