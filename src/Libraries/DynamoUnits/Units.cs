@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Double = System.Double;
@@ -634,12 +633,6 @@ namespace Dynamo.Units
             return BuildString(LengthUnit);
         }
 
-        //[IsVisibleInDynamoLibrary(false)]
-        //public string ToString(DynamoLengthUnit unit)
-        //{
-        //    return BuildString(unit);
-        //}
-
         private string BuildString(DynamoLengthUnit unit)
         {
             switch (unit)
@@ -873,12 +866,6 @@ namespace Dynamo.Units
             return BuildString(AreaUnit);
         }
 
-        //[IsVisibleInDynamoLibrary(false)]
-        //public string ToString(DynamoAreaUnit unit)
-        //{
-        //    return BuildString(unit);
-        //}
-
         private string BuildString(DynamoAreaUnit unit)
         {
             switch (unit)
@@ -1096,12 +1083,6 @@ namespace Dynamo.Units
         {
             return BuildString(VolumeUnit);
         }
-
-        //[IsVisibleInDynamoLibrary(false)]
-        //public string ToString(DynamoVolumeUnit unit)
-        //{
-        //    return BuildString(unit);
-        //}
 
         private string BuildString(DynamoVolumeUnit unit)
         {
