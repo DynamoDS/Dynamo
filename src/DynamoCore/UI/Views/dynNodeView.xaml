@@ -38,7 +38,7 @@
                     <MenuItem Name="lacing_strategy_shortest" IsCheckable="True" 
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Shortest, Mode=TwoWay}" 
                               Command="{Binding Path=SetLacingTypeCommand}" CommandParameter="Shortest" Header="Shortest"/>
-                    <MenuItem Name="lacing_strategy_longest" IsCheckable="True" IsEnabled="False"
+                    <MenuItem Name="lacing_strategy_longest" IsCheckable="True" 
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Longest,Mode=TwoWay}" 
                               Command="{Binding Path=SetLacingTypeCommand}" CommandParameter="Longest" Header="Longest"/>
                     <MenuItem Name="lacing_strategy_cross" IsCheckable="True" 
