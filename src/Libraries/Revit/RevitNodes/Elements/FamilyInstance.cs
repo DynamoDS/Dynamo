@@ -144,6 +144,23 @@ namespace Revit.Elements
 
         #region Public properties
 
+        public FamilySymbol Symbol
+        {
+            get
+            {
+                return FamilySymbol.FromExisting(this.InternalFamilyInstance.Symbol, true);
+            }
+        }
+
+        public Point Location
+        {
+            get
+            {
+                var pos = this.InternalFamilyInstance.Location as LocationPoint;
+                return Point.ByCoordinates(pos.Point.X, pos.Point.Y, pos.Point.Z);
+            }
+        }
+
         public Autodesk.DesignScript.Geometry.Curve[] Curves {
             get
             {

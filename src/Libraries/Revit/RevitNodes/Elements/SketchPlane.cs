@@ -15,7 +15,7 @@ namespace Revit.Elements
     /// A Revit SketchPlane
     /// </summary>
     [RegisterForTrace]
-    public class SketchPlane : AbstractElement
+    public class SketchPlane : Element
     {
         #region Internal properties
 

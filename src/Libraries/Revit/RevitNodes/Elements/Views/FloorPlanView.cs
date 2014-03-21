@@ -14,7 +14,7 @@ namespace Revit.Elements.Views
     /// A Revit ViewPlan
     /// </summary>
     [RegisterForTrace]
-    public class FloorPlanView : AbstractPlanView
+    public class FloorPlanView : PlanView
     {
 
         #region Private constructors

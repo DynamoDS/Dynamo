@@ -9,7 +9,7 @@ namespace Revit.Elements
     /// <summary>
     /// A Revit ModelTextType
     /// </summary>
-    public class ModelTextType : AbstractElement
+    public class ModelTextType : Element
     {
         #region Internal properties
 

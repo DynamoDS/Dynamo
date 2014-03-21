@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 using RevitServices.Elements;
@@ -12,6 +13,7 @@ using RevitServices.Persistence;
 namespace Revit.Elements
 {
     //[SupressImportIntoVM]
+    [IsVisibleInDynamoLibrary(false)]
     public class ElementSelector
     {
         /// <summary>
@@ -20,7 +22,7 @@ namespace Revit.Elements
         /// <typeparam name="T">The type of the Revit element to select</typeparam>
         /// <param name="isRevitOwned">Whether the returned object should be revit owned or not</param>
         /// <returns></returns>
-        public static IEnumerable<AbstractElement> ByType<T>(bool isRevitOwned) where T : Autodesk.Revit.DB.Element
+        public static IEnumerable<Element> ByType<T>(bool isRevitOwned) where T : Autodesk.Revit.DB.Element
         {
             return DocumentManager.Instance.ElementsOfType<T>().Select(x => x.ToDSType(isRevitOwned));
         }
@@ -32,7 +34,7 @@ namespace Revit.Elements
         /// <param name="elementId">The id of the element to select</param>
         /// <param name="isRevitOwned">Whether the returned object should be revit owned or not</param>
         /// <returns></returns>
-        public static AbstractElement ByElementId(int elementId, bool isRevitOwned)
+        public static Element ByElementId(int elementId, bool isRevitOwned)
         {
             var ele = InternalGetElementById(elementId);
 
@@ -44,7 +46,7 @@ namespace Revit.Elements
             throw new Exception("Could not get the element from the document.");
         }
 
-        public static AbstractElement ByElementId(int elementId)
+        public static Element ByElementId(int elementId)
         {
             var ele = InternalGetElementById(elementId);
 
@@ -63,7 +65,7 @@ namespace Revit.Elements
         /// <param name="uniqueId">The unique id of the element to select</param>
         /// <param name="isRevitOwned">Whether the returned object should be revit owned or not</param>
         /// <returns></returns>
-        public static AbstractElement ByUniqueId(string uniqueId, bool isRevitOwned)
+        public static Element ByUniqueId(string uniqueId, bool isRevitOwned)
         {
             var ele = InternalGetElementByUniqueId(uniqueId);
 
@@ -85,7 +87,7 @@ namespace Revit.Elements
             Autodesk.Revit.DB.Element ele;
             var eleId = new ElementId(id);
 
-            if (!AbstractElement.Document.TryGetElement(eleId, out ele))
+            if (!Element.Document.TryGetElement(eleId, out ele))
             {
                 throw new Exception("Could not obtain element from the current document!  The id may not be valid.");
             }
@@ -102,7 +104,7 @@ namespace Revit.Elements
         {
             Autodesk.Revit.DB.Element ele;
 
-            if (!AbstractElement.Document.TryGetElement(uniqueId, out ele))
+            if (!Element.Document.TryGetElement(uniqueId, out ele))
             {
                 throw new Exception("Could not obtain element from the current document!  The unique id may not be valid.");
             }

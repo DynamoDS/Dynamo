@@ -9,7 +9,7 @@ using Autodesk.DesignScript.Runtime;
 namespace Revit.GeometryObjects
 {
     //[SupressImportIntoVM]
-    public abstract class AbstractGeometryObject : IGraphicItem
+    public abstract class GeometryObject : IGraphicItem
     {
         /// <summary>
         /// A reference to the internal Geometry object

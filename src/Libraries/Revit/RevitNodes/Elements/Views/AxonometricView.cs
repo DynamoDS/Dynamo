@@ -16,7 +16,7 @@ namespace Revit.Elements.Views
     /// A Revit View3D
     /// </summary>
     [RegisterForTrace]
-    public class AxonometricView : AbstractView3D
+    public class AxonometricView : View3D
     {
 
         #region Private constructors
@@ -24,7 +24,7 @@ namespace Revit.Elements.Views
         /// <summary>
         /// Private constructor
         /// </summary>
-        private AxonometricView(View3D view)
+        private AxonometricView(Autodesk.Revit.DB.View3D view)
         {
             InternalSetView3D(view);
         }
@@ -159,7 +159,7 @@ namespace Revit.Elements.Views
             if (name == null)
                 throw new ArgumentNullException("name");
 
-            AbstractElement abstractElement = element as AbstractElement;
+            Element abstractElement = element as Element;
             if (abstractElement != null)
             {
                 return ByEyePointTargetAndElement(eyePoint,
@@ -192,7 +192,7 @@ namespace Revit.Elements.Views
         public static AxonometricView ByEyePointTargetAndElement(
             Autodesk.DesignScript.Geometry.Point eyePoint, 
             Autodesk.DesignScript.Geometry.Point target, 
-            AbstractElement element, 
+            Element element, 
             string name, bool isolateElement)
         {
             if (element == null)
@@ -252,7 +252,7 @@ namespace Revit.Elements.Views
         /// <param name="view"></param>
         /// <param name="isRevitOwned"></param>
         /// <returns></returns>
-        internal static AxonometricView FromExisting(View3D view, bool isRevitOwned)
+        internal static AxonometricView FromExisting(Autodesk.Revit.DB.View3D view, bool isRevitOwned)
         {
             return new AxonometricView(view)
             {

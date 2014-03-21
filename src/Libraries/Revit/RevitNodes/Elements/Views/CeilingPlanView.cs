@@ -13,7 +13,7 @@ namespace Revit.Elements.Views
     /// A Revit ViewPlan
     /// </summary>
     [RegisterForTrace]
-    public class CeilingPlanView : AbstractPlanView
+    public class CeilingPlanView : PlanView
     {
 
         #region Private constructors

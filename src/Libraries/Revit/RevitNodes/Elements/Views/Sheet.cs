@@ -16,7 +16,7 @@ namespace Revit.Elements.Views
     /// A Revit ViewSheet
     /// </summary>
     [RegisterForTrace]
-    public class Sheet : AbstractElement
+    public class Sheet : Element
     {
 
         #region Internal properties
@@ -53,7 +53,7 @@ namespace Revit.Elements.Views
         /// <summary>
         /// Private constructor
         /// </summary>
-        private Sheet(string nameOfSheet, string numberOfSheet, IEnumerable<View> views)
+        private Sheet(string nameOfSheet, string numberOfSheet, IEnumerable<Autodesk.Revit.DB.View> views)
         {
 
             //Phase 1 - Check to see if the object exists and should be rebound
@@ -93,7 +93,7 @@ namespace Revit.Elements.Views
         /// <param name="sheetNumber"></param>
         /// <param name="titleBlockFamilySymbol"></param>
         /// <param name="views"></param>
-        public Sheet(string sheetName, string sheetNumber, Autodesk.Revit.DB.FamilySymbol titleBlockFamilySymbol, IEnumerable<View> views)
+        public Sheet(string sheetName, string sheetNumber, Autodesk.Revit.DB.FamilySymbol titleBlockFamilySymbol, IEnumerable<Autodesk.Revit.DB.View> views)
         {
 
             //Phase 1 - Check to see if the object exists
@@ -137,7 +137,7 @@ namespace Revit.Elements.Views
         /// This method adds the collection of views to the existing ViewSheet and packs them 
         /// </summary>
         /// <param name="views"></param>
-        private void InternalAddViewsToSheetView(IEnumerable<View> views)
+        private void InternalAddViewsToSheetView(IEnumerable<Autodesk.Revit.DB.View> views)
         {
             var sheet = InternalViewSheet;
 
@@ -274,14 +274,14 @@ namespace Revit.Elements.Views
         /// <summary>
         /// Get the Views on a Sheet
         /// </summary>
-        public AbstractView[] Views
+        public View[] Views
         {
             get
             {
                 return
                     InternalViewSheet.Views.Cast<Autodesk.Revit.DB.View>()
                         .ToList()
-                        .Select(x => (AbstractView) ElementWrappingExtensions.ToDSType(x, true))
+                        .Select(x => (View) ElementWrappingExtensions.ToDSType(x, true))
                         .ToArray();
             }
         }
@@ -352,7 +352,7 @@ namespace Revit.Elements.Views
         /// <param name="titleBlockFamilySymbol"></param>
         /// <param name="views"></param>
         /// <returns></returns>
-        public static Sheet ByNameNumberTitleBlockAndViews(string sheetName, string sheetNumber, FamilySymbol titleBlockFamilySymbol, AbstractView[] views)
+        public static Sheet ByNameNumberTitleBlockAndViews(string sheetName, string sheetNumber, FamilySymbol titleBlockFamilySymbol, View[] views)
         {
             if (sheetName == null)
             {
@@ -391,7 +391,7 @@ namespace Revit.Elements.Views
         /// <param name="titleBlockFamilySymbol"></param>
         /// <param name="view"></param>
         /// <returns></returns>
-        public static Sheet ByNameNumberTitleBlockAndView(string sheetName, string sheetNumber, FamilySymbol titleBlockFamilySymbol, AbstractView view)
+        public static Sheet ByNameNumberTitleBlockAndView(string sheetName, string sheetNumber, FamilySymbol titleBlockFamilySymbol, View view)
         {
             if (view == null)
             {

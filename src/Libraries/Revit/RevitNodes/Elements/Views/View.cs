@@ -6,14 +6,15 @@ using System.Linq;
 using System.Net.Mime;
 using System.Text;
 using Autodesk.Revit.DB;
+using Revit.Elements;
 
-namespace Revit.Elements
+namespace Revit.Elements.Views
 {
     /// <summary>
     /// An abstract Revit View - All view types inherit from this type
     /// </summary>
     //[SupressImportIntoVM]
-    public abstract class AbstractView : AbstractElement
+    public abstract class View : Element
     {
         /// <summary>
         /// Obtain the reference Element as a View

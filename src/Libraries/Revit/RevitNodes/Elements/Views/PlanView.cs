@@ -4,8 +4,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
+using Revit.Elements.Views;
 using RevitServices.Persistence;
 using Autodesk.DesignScript.Runtime;
+using View = Revit.Elements.Views.View;
 
 namespace Revit.Elements
 {
@@ -13,7 +15,7 @@ namespace Revit.Elements
     /// Base class for Revit Plan views
     /// </summary>
     [SupressImportIntoVM]
-    public class AbstractPlanView : AbstractView
+    public class PlanView : View
     {
 
         #region Internal properties
