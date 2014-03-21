@@ -2478,6 +2478,7 @@ namespace ProtoCore
                     continue;
 
                 sessionElement = node as XmlElement;
+                break; // Found our session element.
             }
 
             if (sessionElement == null || (sessionElement.ChildNodes.Count <= 0))
@@ -2499,13 +2500,39 @@ namespace ProtoCore
         // TODO(Ben): Documentation to come before pull request.
         public void DestroyLoadedTraceDataForNode(Guid nodeGuid)
         {
-            throw new NotImplementedException("TODO(Ben): TraceData");
+            // There is preloaded trace data from external file.
+            if (uiNodeToXmlElementMap != null && (uiNodeToXmlElementMap.Count > 0))
+                uiNodeToXmlElementMap.Remove(nodeGuid);
         }
 
         // TODO(Ben): Documentation to come before pull request.
         private XmlElement GetAndRemoveTraceDataForNode(System.Guid nodeGuid)
         {
-            throw new NotImplementedException("TODO(Ben): TraceData");
+            if (uiNodeToXmlElementMap == null || (uiNodeToXmlElementMap.Count <= 0))
+                return null; // There is no preloaded trace data from external file.
+
+            // Get the node element for the given node.
+            XmlElement traceDataElement = null;
+            if (!uiNodeToXmlElementMap.TryGetValue(nodeGuid, out traceDataElement))
+                return null;
+
+            // There exists a node element matching the UI node's GUID, get its 
+            // first child callsite element, remove it from the child node list,
+            // and return it to the caller.
+            // 
+            XmlElement callsiteElement = null;
+            if (traceDataElement.HasChildNodes)
+            {
+                callsiteElement = traceDataElement.FirstChild as XmlElement;
+                traceDataElement.RemoveChild(callsiteElement);
+            }
+
+            // On removal of the last child node, the <NodeTraceData> 
+            // itself will be removed from the uiNodeToXmlElementMap.
+            if (traceDataElement.HasChildNodes == false)
+                uiNodeToXmlElementMap.Remove(nodeGuid);
+
+            return callsiteElement;
         }
 
         #endregion // Trace Data Serialization Methods/Members
