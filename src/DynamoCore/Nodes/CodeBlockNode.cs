@@ -440,7 +440,7 @@ namespace Dynamo.Nodes
 
             try
             {
-                if (GraphToDSCompiler.GraphUtilities.Parse(ref codeToParse, out parsedNodes, out errors,
+                if (GraphToDSCompiler.GraphUtilities.Parse(this.GUID, ref codeToParse, out parsedNodes, out errors,
                     out  warnings, unboundIdentifiers, out tempVariables) && parsedNodes != null)
                 {
                     //Create an instance of statement for each code statement written by the user
