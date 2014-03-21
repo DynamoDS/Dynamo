@@ -366,7 +366,8 @@ namespace Revit.Elements
                 var ns = c as Autodesk.Revit.DB.NurbSpline;
                 PrincipalComponentsAnalysis(ns.CtrlPoints.ToList(), out meanPt, out orderedEigenvectors);
                 normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]).Normalize();
-                plane = Document.Application.Create.NewPlane(normal, meanPt);
+               if (plane == null)
+                   plane = Document.Application.Create.NewPlane(normal, meanPt);
 
                 var projPoints = new List<XYZ>();
                 foreach (var pt in ns.CtrlPoints)
