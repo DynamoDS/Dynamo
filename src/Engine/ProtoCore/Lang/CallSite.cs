@@ -27,9 +27,19 @@ namespace ProtoCore
             // TODO(Ben): Documentation to come before pull request.
             internal SingleRunTraceData(XmlElement xmlElement)
             {
-                throw new NotImplementedException("TODO(Ben): TraceData");
+                var rawData = xmlElement.GetAttribute("Data");
+                if (!string.IsNullOrEmpty(rawData))
+                    this.Data = rawData;
+
+                if (xmlElement.ChildNodes != null && (xmlElement.ChildNodes.Count > 0))
+                {
+                    // Recursively construct all the child data (if any).
+                    this.NestedData = new List<SingleRunTraceData>();
+                    foreach (XmlElement childNode in xmlElement.ChildNodes)
+                        this.NestedData.Add(new SingleRunTraceData(childNode));
+                }
             }
-         
+
             /// <summary>
             /// Does this struct contain any trace data
             /// </summary>
@@ -137,6 +147,15 @@ namespace ProtoCore
             if (execMode == ExecutionMode.Parallel)
                 throw new CompilerInternalException(
                     "Parrallel Mode is not yet implemented {46F83CBB-9D37-444F-BA43-5E662784B1B3}");
+
+            if (traceData != null && (traceData.ChildNodes != null))
+            {
+                foreach (XmlElement childNode in traceData.ChildNodes)
+                {
+                    // Reconstruct trace data from the child XmlElement
+                    this.traceData.Add(new SingleRunTraceData(childNode));
+                }
+            }
         }
 
         public void UpdateCallSite(int classScope, string methodName)

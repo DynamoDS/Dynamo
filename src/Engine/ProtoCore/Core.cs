@@ -2570,10 +2570,14 @@ namespace ProtoCore
             }
             else if (!CallsiteCache.TryGetValue(graphNode.UID, out csInstance))
             {
+                // Attempt to retrieve a preloaded callsite data (optional).
+                var traceData = GetAndRemoveTraceDataForNode(graphNode.guid);
+
                 csInstance = new CallSite(classScope,
                                           methodName,
                                           FunctionTable,
-                                          Options.ExecutionMode);
+                                          Options.ExecutionMode,
+                                          traceData);
 
                 CallsiteCache.Add(graphNode.UID, csInstance);
                 CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
