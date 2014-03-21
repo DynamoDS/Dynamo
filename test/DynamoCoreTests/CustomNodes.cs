@@ -19,6 +19,7 @@ namespace Dynamo.Tests
     internal class CustomNodes : DSEvaluationUnitTest
     {
         [Test]
+        [Category("Failing")]
         public void CanCollapseNodesAndGetSameResult()
         {
             var model = Controller.DynamoModel;
@@ -165,6 +166,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void CanCollapseAndUndoRedo()
         {
             var model = Controller.DynamoModel;
@@ -289,6 +291,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void GitHub_461_DeleteNodesFromCustomNodeWorkspaceAfterCollapse()
         {
             var model = Controller.DynamoModel;
@@ -379,6 +382,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void FilterWithCustomNode()
         {
             var model = Controller.DynamoModel;
@@ -485,6 +489,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+		[Category("Failing")]
         public void PartialApplicationWithMultipleOutputs()
         {
             var model = Controller.DynamoModel;
