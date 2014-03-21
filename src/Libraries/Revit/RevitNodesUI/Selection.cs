@@ -743,6 +743,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select analysis results from the document.")]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class DSAnalysisResultSelection : DSElementSelection
     {
         public DSAnalysisResultSelection()
