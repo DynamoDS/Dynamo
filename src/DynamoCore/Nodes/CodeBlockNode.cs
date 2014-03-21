@@ -408,6 +408,7 @@ namespace Dynamo.Nodes
                 WorkSpace.Modified();
             }
 
+            ClearError();
             if (!string.IsNullOrEmpty(errorMessage))
             {
                 Error(errorMessage);
