@@ -14,18 +14,18 @@ namespace RevitServices.Persistence
     /// </summary>
     public class DocumentManager
     {
-        public static event Action<string> OnLog;
+        public static event Action<string> OnLogError;
 
-        internal static void Log(string obj)
+        internal static void LogError(string obj)
         {
-            var handler = OnLog;
+            var handler = OnLogError;
             if (handler != null)
                 handler(obj);
         }
 
-        internal static void Log(Exception exception)
+        internal static void LogError(Exception exception)
         {
-            var handler = OnLog;
+            var handler = OnLogError;
             if (handler != null)
                 handler(exception.Message);
         }
@@ -71,7 +71,7 @@ namespace RevitServices.Persistence
             }
             catch (Exception e)
             {
-                Log(e);
+                LogError(e);
             }
 
             TransactionManager.Instance.TransactionTaskDone();
