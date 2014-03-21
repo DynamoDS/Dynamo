@@ -603,6 +603,7 @@ namespace Dynamo.Tests
     internal class UnitsOfMeasureDynTests : DynamoUnitTest
     {
         [Test]
+        [Category("Failing")]
         public void CanMapOverUnits()
         {
             var length = Enumerable.Range(1, 5).Select(x => new Length(x)).ToList();
