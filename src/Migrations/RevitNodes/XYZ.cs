@@ -388,7 +388,7 @@ namespace Dynamo.Nodes
             string translateNodeId = MigrationManager.GetGuidFromXmlElement(translateNode);
 
             XmlElement distanceToNode = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "Geometry.DistanceTo", "DistanceTo@Geometry");
+                data.Document, "ProtoGeometry.dll", "Geometry.DistanceTo", "Geometry.DistanceTo@Geometry");
             migratedData.AppendNode(distanceToNode);
             string distanceToNodeId = MigrationManager.GetGuidFromXmlElement(distanceToNode);
 
