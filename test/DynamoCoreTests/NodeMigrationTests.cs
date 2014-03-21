@@ -1419,6 +1419,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void TestSort()
         {
             OpenModel(GetDynPath("TestSort.dyn"));
@@ -1610,6 +1611,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void TestNumberInput()
         {
             OpenModel(GetDynPath("TestNumberInput.dyn"));
@@ -1665,7 +1667,99 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Revit Node Migration Tests
+        #region Dynamo Libraries Node Migration Tests
+
+        [Test]
+        [Category("Failing")]
+        public void LibraryTestReferencePoint()
+        {
+            OpenModel(GetDynPath("LibraryTestReferencePoint.dyn"));
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            // check that all nodes and connectors are loaded
+            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Connectors.Count);
+
+            // check that no nodes are migrated to dummy nodes
+            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DSCoreNodesUI.DummyNode));
+
+            // check that the node is migrated to a DSFunction nicknamed "ReferencePoint.ByPoint"
+            StringAssert.Contains("Reference", workspace.NodeFromWorkspace<DSFunction>(
+                "d615cc73-d32d-4b1f-b519-0b8f9b903ebf").NickName);
+        }
+
+        [Test]
+        [Category("Failing")]
+        public void LibraryTestCreateFamilyInstance()
+        {
+            OpenModel(GetDynPath("LibraryTestCreateFamilyInstance.dyn"));
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            // check that all nodes and connectors are loaded
+            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Connectors.Count);
+
+            // check that no nodes are migrated to dummy nodes
+            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DSCoreNodesUI.DummyNode));
+
+            // check that the node is migrated to a DSFunction nicknamed "FamilyInstance.ByPoint"
+            StringAssert.Contains("Instance", workspace.NodeFromWorkspace<DSFunction>(
+                "fc83b9b2-42c6-4a9f-8f60-a6ee29ef8a34").NickName);
+        }
+
+        [Test]
+        [Category("Failing")]
+        public void LibraryTestModelCurve()
+        {
+            OpenModel(GetDynPath("LibraryTestModelCurve.dyn"));
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            // check that all nodes and connectors are loaded
+            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Connectors.Count);
+
+            // check that no nodes are migrated to dummy nodes
+            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DSCoreNodesUI.DummyNode));
+
+            // check that the node is migrated to a DSFunction nicknamed "ModelCurve.ByCurve"
+            StringAssert.Contains("Model", workspace.NodeFromWorkspace<DSFunction>(
+                "fdea006e-b127-4280-a407-4058b78b93a3").NickName);
+        }
+
+        [Test]
+        public void LibraryTestPythonScript()
+        {
+            OpenModel(GetDynPath("LibraryTestPythonScript.dyn"));
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            // check that all nodes and connectors are loaded
+            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(6, workspace.Connectors.Count);
+
+            // check that no nodes are migrated to dummy nodes
+            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DSCoreNodesUI.DummyNode));
+
+            // check that the node is migrated to a PythonNode which retains the old script
+            StringAssert.Contains("OUT = OUT", workspace.NodeFromWorkspace<DSIronPythonNode.PythonNode>(
+                "caef9f81-c9a6-47aa-92c9-dc3b8fd6f7d7").Script);
+        }
+
+        [Test]
+        public void LibraryTestExcelRead()
+        {
+            OpenModel(GetDynPath("LibraryTestExcelRead.dyn"));
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            // check that all nodes and connectors are loaded
+            Assert.AreEqual(7, workspace.Nodes.Count);
+            Assert.AreEqual(6, workspace.Connectors.Count);
+
+            // check that no nodes are migrated to dummy nodes
+            Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DSCoreNodesUI.DummyNode));
+
+            // check that some of the nodes are Excel nodes
+            Assert.AreEqual(4, workspace.Nodes.AsQueryable().Count(x => x.NickName.Contains("Excel")));
+        }
 
         #endregion
 

@@ -1,0 +1,11 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <OpenFileCommand XmlFilePath="E:\Github\Dynamo\test files\wrong.dyn" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="Tag-204ca7e6" PauseDurationInMs="20" />
+  <MakeConnectionCommand NodeId="53cd0201-273c-43f4-8815-8531db75d68c" PortIndex="0" Type="0" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="00000000-0000-0000-0000-000000000000" PortIndex="-1" Type="0" ConnectionMode="2" />
+  <MakeConnectionCommand NodeId="53cd0201-273c-43f4-8815-8531db75d68c" PortIndex="0" Type="0" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="33fa2372-71b2-4079-97e2-1b42024656e6" PortIndex="0" Type="1" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="Tag-2f9b6919" PauseDurationInMs="20" />
+</Commands>

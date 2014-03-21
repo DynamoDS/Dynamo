@@ -20,8 +20,13 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll",
-                "Domain2D.ByMinimumAndMaximum", "Domain2D.ByMinimumAndMaximum@Vector,Vector");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 2, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 

@@ -1,26 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Xml;
-using DSCore;
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
+using Color = DSCore.Color;
 
 namespace DSCoreNodesUI
 {
     [IsDesignScriptCompatible]
     [NodeName("Color Range")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_COLOR)]
+    [NodeCategory("Core.Color.Create")]
     [NodeDescription("Get a color given a color range.")]
     public class ColorRange : NodeModel, IWpfNode
     {
@@ -56,7 +53,7 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var functionCall = AstFactory.BuildFunctionCall("DSColor", "BuildColorFromRange", inputAstNodes);
+            var functionCall = AstFactory.BuildFunctionCall("Color", "BuildColorFromRange", inputAstNodes);
 
             return new[]
             {
@@ -91,25 +88,25 @@ namespace DSCoreNodesUI
                     var startMirror = dynSettings.Controller.EngineController.GetMirror(startId);
                     var endMirror = dynSettings.Controller.EngineController.GetMirror(endId);
 
-                    DSColor start = null;
-                    DSColor end = null;
+                    Color start = null;
+                    Color end = null;
 
                     if (startMirror.GetData().IsCollection)
                     {
-                        start = (DSColor) startMirror.GetData().GetElements().Select(x => x.Data).FirstOrDefault();
+                        start = (Color) startMirror.GetData().GetElements().Select(x => x.Data).FirstOrDefault();
                     }
                     else
                     {
-                        start = (DSColor)startMirror.GetData().Data;
+                        start = (Color)startMirror.GetData().Data;
                     }
 
                     if (endMirror.GetData().IsCollection)
                     {
-                        end = (DSColor) endMirror.GetData().GetElements().Select(x => x.Data).FirstOrDefault();
+                        end = (Color) endMirror.GetData().GetElements().Select(x => x.Data).FirstOrDefault();
                     }
                     else
                     {
-                        end = (DSColor)endMirror.GetData().Data;
+                        end = (Color)endMirror.GetData().Data;
                     }
                     
                     WriteableBitmap bmp = CompleteColorScale(start, end);
@@ -119,7 +116,7 @@ namespace DSCoreNodesUI
         }
 
         //http://gaggerostechnicalnotes.blogspot.com/2012/01/wpf-colors-scale.html
-        private WriteableBitmap CompleteColorScale(DSColor start, DSColor end)
+        private WriteableBitmap CompleteColorScale(Color start, Color end)
         {
             const int size = 64;
 

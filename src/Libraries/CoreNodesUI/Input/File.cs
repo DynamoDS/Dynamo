@@ -46,7 +46,7 @@ namespace DSCore.File
 
             tb.HorizontalAlignment = HorizontalAlignment.Stretch;
             tb.VerticalAlignment = VerticalAlignment.Center;
-            var backgroundBrush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+            var backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
             tb.Background = backgroundBrush;
             tb.BorderThickness = new Thickness(0);
             tb.IsReadOnly = true;
@@ -100,6 +100,7 @@ namespace DSCore.File
     [NodeDescription("Allows you to select a directory on the system to get its path.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class Directory : FileSystemBrowser
     {
         public Directory() : base("Directory") { }

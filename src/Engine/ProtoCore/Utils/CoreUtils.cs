@@ -466,6 +466,12 @@ namespace ProtoCore.Utils
             return propertyName.StartsWith(ProtoCore.DSASM.Constants.kSetterPrefix);
         }
 
+        public static bool StartsWithDoubleUnderscores(string name)
+        {
+            Validity.Assert(null != name);
+            return name.StartsWith(ProtoCore.DSASM.Constants.kDoubleUnderscores);
+        }
+
         public static bool TryGetOperator(string methodName, out Operator op)
         {
             Validity.Assert(null != methodName);
@@ -574,21 +580,24 @@ namespace ProtoCore.Utils
 
         public static bool IsCompilerGenerated(string varname)
         {
-            // Jun Comment: Help function to determine if its a compiler generated temp
             Validity.Assert(null != varname);
             return varname.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix);
         }
 
         public static bool IsInternalFunction(string methodName)
         {
-            // Jun Comment: Help function to determine if its a compiler generated temp
             Validity.Assert(null != methodName);
             return methodName.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix) || methodName.StartsWith(ProtoCore.DSDefinitions.Keyword.Dispose);
         }
 
+        public static bool IsDisposeMethod(string methodName)
+        {
+            Validity.Assert(null != methodName);
+            return methodName.Equals(ProtoCore.DSDefinitions.Keyword.Dispose);
+        }
+
         public static bool IsPropertyTemp(string varname)
         {
-            // Jun Comment: Help function to determine if its a compiler generated temp specifically for a property
             Validity.Assert(null != varname);
             return varname.StartsWith(ProtoCore.DSASM.Constants.kTempPropertyVar);
         }

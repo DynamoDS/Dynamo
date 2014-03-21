@@ -261,6 +261,22 @@ namespace ProtoFFITests
         }
 
         [Test]
+        public void TestMarshalingIEnumerableOfDummyPoint()
+        {
+            String code =
+            @"
+               points = DummyPoint.ByCoordinates(1..5, 0, 0);
+               centroid = DummyPoint.Centroid(points);
+               x = centroid.X;
+            ";
+            Type t = typeof(FFITarget.DummyPoint);
+            code = string.Format("import(\"{0}\");\r\n{1}", t.AssemblyQualifiedName, code);
+            ValidationData[] data = { new ValidationData { ValueName = "x", ExpectedValue = 3.0, BlockIndex = 0 },
+                                    };
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
         public void TestArrayPromotion()
         {
             String code =

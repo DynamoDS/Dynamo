@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Globalization;
+using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
 {
@@ -63,6 +64,7 @@ namespace DSCore
         /// Converts the given string to all uppercase characters.
         /// </summary>
         /// <param name="str">String to be made uppercase.</param>
+        [IsVisibleInDynamoLibrary(false)]
         public static string ToUpper(string str)
         {
             return str.ToUpper();
@@ -72,6 +74,7 @@ namespace DSCore
         ///     Converts the given string to all lowercase characters.
         /// </summary>
         /// <param name="str">String to be made lowercase.</param>
+        [IsVisibleInDynamoLibrary(false)]
         public static string ToLower(string str)
         {
             return str.ToLower();
@@ -85,6 +88,7 @@ namespace DSCore
         /// <param name="upper">
         ///     True to convert to uppercase, false to convert to lowercase.
         /// </param>
+        [IsVisibleInDynamoLibrary(false)]
         public static string StringCase(string str, bool upper)
         {
             return upper ? str.ToUpper() : str.ToLower();
@@ -121,6 +125,7 @@ namespace DSCore
         /// <param name="str">String to search in.</param>
         /// <param name="searchFor">Substring to search for.</param>
         /// <param name="ignoreCase">Whether or not compaison takes case into account.</param>
+        [IsVisibleInDynamoLibrary(false)]
         public static int CountOccurrences(string str, string searchFor, bool ignoreCase = false)
         {
             int count = 0, start = 0;
@@ -183,6 +188,7 @@ namespace DSCore
         ///     Removes all whitespace from the start of the given string.
         /// </summary>
         /// <param name="str">String to trim.</param>
+        [IsVisibleInDynamoLibrary(false)]
         public static string TrimLeadingWhitespace(string str)
         {
             return str.TrimStart();
@@ -192,6 +198,7 @@ namespace DSCore
         ///     Removes all whitespace from the end of the given string.
         /// </summary>
         /// <param name="str">String to trim.</param>
+        [IsVisibleInDynamoLibrary(false)]
         public static string TrimTrailingWhitespace(string str)
         {
             return str.TrimEnd();
@@ -220,6 +227,7 @@ namespace DSCore
         /// <param name="str">A string to search in.</param>
         /// <param name="searchFor">Substring to search for.</param>
         /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        [IsVisibleInDynamoLibrary(false)]
         public static int LastIndexOf(string str, string searchFor, bool ignoreCase = false)
         {
             return str.LastIndexOf(
@@ -236,6 +244,7 @@ namespace DSCore
         /// <param name="str">String to pad.</param>
         /// <param name="totalWidth">Total length of the string after padding.</param>
         /// <param name="padChar">Character to pad with, defaults to space.</param>
+        [IsVisibleInDynamoLibrary(false)]
         public static string PadLeft(string str, int totalWidth, string padChar = " ")
         {
             if (padChar.Length != 1)
@@ -251,6 +260,7 @@ namespace DSCore
         /// <param name="str">String to pad.</param>
         /// <param name="newWidth">Total length of the string after padding.</param>
         /// <param name="padChar">Character to pad with, defaults to space.</param>
+        [IsVisibleInDynamoLibrary(false)]
         public static string PadRight(string str, int newWidth, string padChar = " ")
         {
             if (padChar.Length != 1)
@@ -266,6 +276,7 @@ namespace DSCore
         /// <param name="str">String to center.</param>
         /// <param name="newWidth">Total length of the string after centering.</param>
         /// <param name="padChar">Character to center with, defaults to space.</param>
+        [IsVisibleInDynamoLibrary(false)]
         public static string Center(string str, int newWidth, string padChar = " ")
         {
             if (padChar.Length != 1)
@@ -296,6 +307,7 @@ namespace DSCore
         ///     Amount of characters to remove, by default will remove all characters from
         ///     the given startIndex to the end of the string.
         /// </param>
+        [IsVisibleInDynamoLibrary(false)]
         public static string Remove(string str, int startIndex, int? count = null)
         {
             return str.Remove(startIndex, count ?? (str.Length - startIndex));

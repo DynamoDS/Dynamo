@@ -175,7 +175,7 @@ namespace Dynamo.DSEngine
         /// <summary>
         /// A comment describing the Function
         /// </summary>
-        public string _summary;
+        private string _summary;
         public string Summary
         {
             get { return _summary ?? (_summary = this.GetXmlDocumentation()); }
@@ -316,14 +316,24 @@ namespace Dynamo.DSEngine
             }
         }
 
+        /// <summary>
+        /// This attribute sets, if this function is shown in library or not.
+        /// </summary>
+        public bool IsVisibleInLibrary { get; private set; }
+
         public string UnqualifedClassName
         {
             get
             {
-                var idx = ClassName.LastIndexOf('.');
-                return idx < 0
-                        ? String.Empty
-                        : ClassName.Substring(idx + 1);
+                if (string.IsNullOrEmpty(ClassName))
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    var idx = ClassName.LastIndexOf('.');
+                    return idx < 0 ? String.Empty : ClassName.Substring(idx + 1);
+                }
             }
         }
 
@@ -331,10 +341,15 @@ namespace Dynamo.DSEngine
         {
             get
             {
-                var idx = ClassName.LastIndexOf('.');
-                return idx < 0
-                        ? String.Empty
-                        : ClassName.Substring(0,idx);
+                if (string.IsNullOrEmpty(ClassName))
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    var idx = ClassName.LastIndexOf('.');
+                    return idx < 0 ? String.Empty : ClassName.Substring(0, idx);
+                }
             }
         }
 
@@ -371,7 +386,14 @@ namespace Dynamo.DSEngine
                     if (!String.IsNullOrEmpty(f)) return f;
                 }
 
-                return Path.GetFileNameWithoutExtension(Assembly) + "." + Namespace;
+                if (string.IsNullOrEmpty(Namespace))
+                {
+                    return Path.GetFileNameWithoutExtension(Assembly);
+                }
+                else
+                {
+                    return Path.GetFileNameWithoutExtension(Assembly) + "." + Namespace;
+                }
             }
         }
 
@@ -381,8 +403,9 @@ namespace Dynamo.DSEngine
                             IEnumerable<TypedParameter> parameters,
                             string returnType,
                             FunctionType type,
+                            bool isVisibleInLibrary = true,
                             IEnumerable<string> returnKeys = null,
-                            bool isVarArg = false) : this(assembly, className, name, null, parameters, returnType, type, returnKeys, isVarArg)
+                            bool isVarArg = false) : this(assembly, className, name, null, parameters, returnType, type, isVisibleInLibrary, returnKeys, isVarArg)
         {
         }
 
@@ -393,6 +416,7 @@ namespace Dynamo.DSEngine
                     IEnumerable<TypedParameter> parameters,
                     string returnType,
                     FunctionType type,
+                    bool isVisibleInLibrary = true,
                     IEnumerable<string> returnKeys = null,
                     bool isVarArg = false)
         {
@@ -400,15 +424,24 @@ namespace Dynamo.DSEngine
             Assembly = assembly;
             ClassName = className;
             Name = name;
-            Parameters = parameters.Select(x =>
+
+            if (parameters == null)
             {
-                x.Function = this;
-                return x;
-            });
-            ReturnType = returnType;
+                Parameters = new List<TypedParameter> { };
+            }
+            else
+            {
+                Parameters = parameters.Select(x =>
+                {
+                    x.Function = this;
+                    return x;
+                });
+            }
+            ReturnType = returnType == null ? "var[]..[]" : returnType;
             Type = type;
-            ReturnKeys = returnKeys;
+            ReturnKeys = returnKeys == null ? new List<string> {} : returnKeys;
             IsVarArg = isVarArg;
+            this.IsVisibleInLibrary = isVisibleInLibrary;
         }
         
     }
@@ -506,8 +539,10 @@ namespace Dynamo.DSEngine
             "ProtoGeometry.dll",
             "DSCoreNodes.dll",
             "DSOffice.dll",
+            "DSIronPython.dll",
             "FunctionObject.ds",
-            "DSIronPython.dll"
+            "Optimize.ds",
+            "DynamoUnits.dll"
         };
 
         public class LibraryLoadedEventArgs : EventArgs
@@ -797,7 +832,7 @@ namespace Dynamo.DSEngine
                 return;
             }
 
-            if (!ResolveLibraryPath(ref library))
+            if (!Dynamo.Nodes.Utilities.ResolveLibraryPath(ref library))
             {
                 string errorMessage = string.Format("Cannot find library path: {0}.", library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
@@ -903,6 +938,8 @@ namespace Dynamo.DSEngine
             foreach (var function in functions)
             {
                 string qualifiedName = function.QualifiedName;
+                if (CoreUtils.StartsWithDoubleUnderscores(qualifiedName))
+                    continue;
                 FunctionGroup functionGroup;
                 if (!_builtinFunctionGroups.TryGetValue(qualifiedName, out functionGroup))
                 {
@@ -992,33 +1029,27 @@ namespace Dynamo.DSEngine
             }
         }
 
-        internal bool ResolveLibraryPath(ref string library)
-        {
-            if (File.Exists(library)) // Absolute path, we're done here.
-                return true;
-
-            // Give add-in folder a higher priority and look alongside "DynamoCore.dll".
-            string assemblyName = Path.GetFileName(library); // Strip out possible directory.
-            string currAsmLocation = System.Reflection.Assembly.GetCallingAssembly().Location;
-            library = Path.Combine(Path.GetDirectoryName(currAsmLocation), assemblyName);
-
-            if (File.Exists(library)) // Found under add-in folder...
-                return true;
-
-            library = Path.GetFullPath(library);
-            return File.Exists(library);
-        }
-
-        private void ImportProcedure(string library, string className, ProcedureNode proc)
+        private void ImportProcedure(string library, ClassNode classNode, ProcedureNode proc)
         {
             if (proc.isAutoGeneratedThisProc)
-            {
                 return;
+
+            bool isVisibleInLibrary = true;
+            if(null !=proc.MethodAttribute && !proc.MethodAttribute.IsVisibleInLibrary)
+            {
+                isVisibleInLibrary = false;
+            }
+
+            if ((null != classNode.ClassAttributes && !classNode.ClassAttributes.IsVisibleInLibrary)
+                && (null == proc.MethodAttribute || !proc.MethodAttribute.IsVisibleInLibrarySet ||
+                !proc.MethodAttribute.IsVisibleInLibrary))
+            {
+                isVisibleInLibrary = false;
             }
 
             string procName = proc.name;
-            if (CoreUtils.IsSetter(procName) || 
-                procName.Equals(ProtoCore.DSDefinitions.Keyword.Dispose))
+            if (CoreUtils.IsSetter(procName) || CoreUtils.IsDisposeMethod(procName) ||
+                CoreUtils.StartsWithDoubleUnderscores(procName))
             { 
                 return;
             }
@@ -1044,7 +1075,7 @@ namespace Dynamo.DSEngine
                 {
                     type = FunctionType.StaticMethod;
                 }
-                else if (!string.IsNullOrEmpty(className))
+                else if (null != classNode)
                 {
                     type = FunctionType.InstanceMethod;
                 }
@@ -1087,21 +1118,21 @@ namespace Dynamo.DSEngine
                 });
 
             IEnumerable<string> returnKeys = null;
-            if (proc.MethodAttribute != null && proc.MethodAttribute.MutilReturnMap != null)
+            if (proc.MethodAttribute != null && proc.MethodAttribute.ReturnKeys != null)
             {
-                returnKeys = proc.MethodAttribute.MutilReturnMap.Keys;
+                returnKeys = proc.MethodAttribute.ReturnKeys;
             }
 
-            var function = new FunctionDescriptor(library, className, procName, arguments, proc.returntype.ToString(), type, returnKeys, proc.isVarArg);
+            var function = new FunctionDescriptor(library, classNode.name, procName, arguments, proc.returntype.ToString(), type, isVisibleInLibrary, returnKeys, proc.isVarArg);
 
-            AddImportedFunctions(library, new FunctionDescriptor[] { function });
+            AddImportedFunctions(library, new[] { function });
         }
 
         private void ImportClass(string library, ClassNode classNode)
         {
             foreach (var proc in classNode.vtable.procList)
             {
-                ImportProcedure(library, classNode.name, proc); 
+                ImportProcedure(library, classNode, proc); 
             }
         }
 

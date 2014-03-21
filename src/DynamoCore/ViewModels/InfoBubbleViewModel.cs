@@ -40,6 +40,8 @@ namespace Dynamo.ViewModels
             None,
             LibraryItemPreview,
             NodeTooltip,
+            Warning,
+            WarningCondensed,
             Error,
             ErrorCondensed,
             Preview,
@@ -280,6 +282,7 @@ namespace Dynamo.ViewModels
                     else
                         Content = FullContent;
                     break;
+                case Style.WarningCondensed:
                 case Style.ErrorCondensed:
                     Content = "...";
                     break;

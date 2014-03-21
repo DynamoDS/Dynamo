@@ -971,30 +971,39 @@ namespace ProtoScript.Runners
                     // node is modifed as it does not match any existing
                     modifiedASTList.Add(node);
 
-                    // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
-                    // this means that it was a modified variable within the orevious expression.
-                    // Inherit its expression ID 
                     BinaryExpressionNode bnode = node as BinaryExpressionNode;
                     if (null != bnode && bnode.LeftNode is IdentifierNode)
                     {
-                        foreach (AssociativeNode prevNode in st.AstNodes)
+                        string lhsName = (bnode.LeftNode as IdentifierNode).Name;
+                        Validity.Assert(null != lhsName && string.Empty != lhsName);
+                        if (CoreUtils.IsSSATemp(lhsName))
                         {
-                            BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
-                            if (null != prevBinaryNode)
+                            // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
+                            // this means that it was a modified variable within the previous expression.
+                            // Inherit its expression ID 
+                            foreach (AssociativeNode prevNode in st.AstNodes)
                             {
-                                IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
-                                if (null != prevIdent)
+                                BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
+                                if (null != prevBinaryNode)
                                 {
-                                    if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
+                                    IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
+                                    if (null != prevIdent)
                                     {
-                                        bnode.InheritID(prevBinaryNode.ID);
-                                        bnode.exprUID = prevBinaryNode.exprUID;
+                                        if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
+                                        {
+                                            bnode.InheritID(prevBinaryNode.ID);
+                                            bnode.exprUID = prevBinaryNode.exprUID;
+                                        }
                                     }
                                 }
                             }
                         }
+                        else
+                        {
+                            // Handle re-defined lhs expressions
+                            HandleRedefinedLHS(bnode, st.AstNodes);
+                        }
                     }
-                    HandleRedefinedLHS(bnode, st.AstNodes);
                 }
             }
             return modifiedASTList;
@@ -1322,10 +1331,16 @@ namespace ProtoScript.Runners
             {
                 foreach (var t in syncData.ModifiedSubtrees)
                 {
-                    astCache[t.GUID].Clear();
-                    if (t.AstNodes != null)
+                    if (astCache.Count > 0)
                     {
-                        astCache[t.GUID].AddRange(t.AstNodes);
+                        if (astCache.ContainsKey(t.GUID))
+                        {
+                            astCache[t.GUID].Clear();
+                            if (t.AstNodes != null)
+                            {
+                                astCache[t.GUID].AddRange(t.AstNodes);
+                            }
+                        }
                     }
                 }
             }
@@ -1398,6 +1413,13 @@ namespace ProtoScript.Runners
                         }
                         currentSubTreeList.Remove(st.GUID);
                     }
+
+                    var exprs = exprGuidMap.Where(p => p.Value.Equals(st.GUID)).Select(p => p.Key).ToList();
+                    foreach (var expr in exprs)
+                    {
+                        exprGuidMap.Remove(expr);
+                        Core.RuntimeStatus.ClearWarningForExpression(expr); 
+                    }
                 }
             }
 
@@ -1416,26 +1438,30 @@ namespace ProtoScript.Runners
                         if (null != modifiedASTList && modifiedASTList.Count > 0)
                         {
                             deltaAstList.AddRange(modifiedASTList);
-                            foreach (var node in modifiedASTList)
-	                        {
-                                var bnode = node as BinaryExpressionNode;
-                                if (bnode != null)
-                                {
-                                    exprGuidMap[bnode.exprUID] = st.GUID;
-                                }
-	                        }
                         }
+
+                        var modifiedExprIDs = modifiedASTList.Where(n => n is BinaryExpressionNode)
+                                                             .Select(n => (n as BinaryExpressionNode).exprUID);
 
                         // Disable removed nodes from the cache
                         if (cachedTreeExists)
                         {
                             if (null != oldSubTree.AstNodes)
                             {
-                                List<AssociativeNode> removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+                                var removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
                                 DeactivateGraphnodes(removedNodes);
+
+                                foreach (var node in removedNodes)
+                                {
+                                    var expr = node as BinaryExpressionNode;
+                                    if (expr != null && !modifiedExprIDs.Contains(expr.exprUID))
+                                    {
+                                        exprGuidMap.Remove(expr.exprUID);
+                                        Core.RuntimeStatus.ClearWarningForExpression(expr.exprUID);
+                                    }
+                                }
                             }
                         }
-
 
                         // Handle modifed functions
                         UndefineFunctions(st.AstNodes.Where(n => n is FunctionDefinitionNode));

@@ -6,8 +6,8 @@ def NewtonRootFind1DNoDeriv(objFunc: _FunctionObject, start: double, maxIters: i
 	{
 		count = 0;
 		change = 10000000000;
-		maxChange = .00001;
-		h = .00001;
+		maxChange = 0.00001;
+		h = 0.00001;
 
 		while(count < maxIters && change > maxChange)
 		{
@@ -32,7 +32,7 @@ def NewtonRootFind1DWithDeriv(objFunc: _FunctionObject, derivFunc: _FunctionObje
 	{
 		count = 0;
 		change = 10000000000;
-		maxChange = .00001;
+		maxChange = 0.00001;
 
 		while(count < maxIters && change > maxChange)
 		{
