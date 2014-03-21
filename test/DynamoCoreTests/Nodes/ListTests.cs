@@ -1373,7 +1373,6 @@ namespace Dynamo.Tests
         [Test]
         public void ListMaximumMinimum_KeyTest()
         {
-            Assert.Inconclusive("The current version does not support default value");
             var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\ListMaximumMinimum_WithAndWithoutKey.dyn");
