@@ -872,6 +872,12 @@ namespace Dynamo.Models
         // TODO(Ben): Documentation to come before pull request.
         protected virtual void SerializeSessionData(XmlDocument document)
         {
+            if (document.DocumentElement == null)
+            {
+                var message = "Workspace should have been saved before this";
+                throw new InvalidOperationException(message);
+            }
+
             try
             {
                 ProtoCore.Core core = null;
@@ -885,12 +891,21 @@ namespace Dynamo.Models
                 if (core == null) // No execution yet as of this point.
                     return;
 
-                IEnumerable<Guid> nodeGuids = null; // TODO(Ben): TraceData
+                // Selecting all nodes that are either a DSFunction,
+                // a DSVarArgFunction or a CodeBlockNodeModel into a list.
+                var nodeGuids = this.Nodes.Where((n) =>
+                {
+                    return (n is DSFunction 
+                        || (n is DSVarArgFunction)
+                        || (n is CodeBlockNodeModel));
+
+                }).Select((n) => n.GUID);
+
                 core.SerializeTraceDataForNodes(nodeGuids, document);
             }
             catch (Exception exception)
             {
-                // We'd prefer file saving process does not crash Dynamo,
+                // We'd prefer file saving process to not crash Dynamo,
                 // otherwise user will lose the last hope in retaining data.
                 DynamoLogger.Instance.Log(exception.Message);
                 DynamoLogger.Instance.Log(exception.StackTrace);

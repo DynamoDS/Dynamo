@@ -72,7 +72,23 @@ namespace ProtoCore
             // TODO(Ben): Documentation to come before pull request.
             internal XmlElement Serialize(XmlDocument document)
             {
-                throw new NotImplementedException("TODO(Ben): TraceData");
+                // Create a trace data element with its mandatory data attribute.
+                var data = ((this.Data == null) ? string.Empty : this.Data.ToString());
+                var dataXmlElement = document.CreateElement(CoreStrings.TraceDataXmlTag);
+                dataXmlElement.SetAttribute(CoreStrings.TraceDataAttribName, data);
+
+                // Are there any nested data here?
+                if (this.NestedData != null && (this.NestedData.Count > 0))
+                {
+                    foreach (SingleRunTraceData childData in this.NestedData)
+                    {
+                        XmlElement childElement = childData.Serialize(document);
+                        if (childElement != null)
+                            dataXmlElement.AppendChild(childElement);
+                    }
+                }
+
+                return dataXmlElement;
             }
 
             public List<SingleRunTraceData> NestedData;
@@ -1751,7 +1767,17 @@ namespace ProtoCore
         // TODO(Ben): Documentation to come before pull request.
         internal XmlElement Serialize(XmlDocument document)
         {
-            throw new NotImplementedException("TODO(Ben): TraceData");
+            if (this.traceData == null || (this.traceData.Count <= 0))
+                return null; // Return if there's no associated trace data.
+
+            // Create a callsite element representing this callsite.
+            var callSiteXmlElement = document.CreateElement(
+                CoreStrings.CallsiteTraceDataXmlTag);
+
+            foreach (SingleRunTraceData data in this.traceData)
+                callSiteXmlElement.AppendChild(data.Serialize(document));
+
+            return callSiteXmlElement;
         }
 
         #region Unused legacy code

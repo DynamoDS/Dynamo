@@ -925,6 +925,21 @@ namespace ProtoCore
         None
     }
 
+    // This class keeps all the constant strings used across ProtoCore (and 
+    // might be beyond). It can really be anywhere, but I am not convinced that 
+    // it belongs in "ProtoCore.DSASM" like the "Constants" structure does.
+    // 
+    public class CoreStrings
+    {
+        public static readonly string SessionTraceDataXmlTag = "SessionTraceData";
+        public static readonly string NodeTraceDataXmlTag = "NodeTraceData";
+        public static readonly string CallsiteTraceDataXmlTag = "CallsiteTraceData";
+        public static readonly string TraceDataXmlTag = "TraceData";
+
+        public static readonly string NodeIdAttribName = "NodeId";
+        public static readonly string TraceDataAttribName = "Data";
+    }
+
     public class Core
     {
         public const int FIRST_CORE_ID = 0;
@@ -2385,7 +2400,67 @@ namespace ProtoCore
         public void SerializeTraceDataForNodes(
             IEnumerable<Guid> nodeGuids, XmlDocument document)
         {
-            throw new NotImplementedException("TODO(Ben): TraceData");
+            if (nodeGuids == null)
+                throw new ArgumentNullException("nodeGuids");
+            if (document == null)
+                throw new ArgumentNullException("document");
+
+            if (nodeGuids.Count() <= 0) // Nothing to persist now.
+                return;
+
+            // Attempt to get the list of graph node if one exists.
+            IEnumerable<GraphNode> graphNodes = null;
+            {
+                if (this.DSExecutable != null)
+                {
+                    var stream = this.DSExecutable.instrStreamList;
+                    if (stream != null && (stream.Length > 0))
+                    {
+                        var graph = stream[0].dependencyGraph;
+                        if (graph != null)
+                            graphNodes = graph.GraphList;
+                    }
+                }
+
+                if (graphNodes == null) // No execution has taken place.
+                    return;
+            }
+
+            // Create a session element under which all nodes go.
+            var sessionXmlElement = document.CreateElement(CoreStrings.SessionTraceDataXmlTag);
+
+            foreach (Guid nodeGuid in nodeGuids)
+            {
+                // Create a node element for this node under the session element.
+                var nodeXmlElement = document.CreateElement(CoreStrings.NodeTraceDataXmlTag);
+                nodeXmlElement.SetAttribute(CoreStrings.NodeIdAttribName, nodeGuid.ToString());
+
+                // Get a list of GraphNode objects that correspond to this node.
+                var graphNodeIds = graphNodes.
+                    Where(gn => gn.guid == nodeGuid).
+                    Select(gn => gn.UID);
+
+                if (graphNodeIds.Count() <= 0)
+                    continue;
+
+                // Get all callsites that match the graph node ids.
+                var matchingCallSites = (from cs in CallsiteCache
+                                         from gn in graphNodeIds
+                                         where cs.Key == gn
+                                         select cs.Value);
+
+                // Append each callsite element under node element.
+                foreach (CallSite callSite in matchingCallSites)
+                    nodeXmlElement.AppendChild(callSite.Serialize(document));
+
+                // No point adding this node element if it's empty.
+                if (nodeXmlElement.ChildNodes.Count > 0)
+                    sessionXmlElement.AppendChild(nodeXmlElement);
+            }
+
+            // No point saving session element if it's empty.
+            if (sessionXmlElement.ChildNodes.Count > 0)
+                document.DocumentElement.AppendChild(sessionXmlElement);
         }
 
         // TODO(Ben): Documentation to come before pull request.
