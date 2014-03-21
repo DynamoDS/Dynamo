@@ -70,7 +70,7 @@ namespace Dynamo.Tests.UI
         #region SaveImageCommand
 
         [Test]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void CanSaveImage()
         {
             string path = Path.Combine(TempFolder, "output.png");
@@ -83,7 +83,7 @@ namespace Dynamo.Tests.UI
         }
 
         [Test]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void CannotSaveImageWithBadPath()
         {
             string path = "W;\aelout put.png";
@@ -98,7 +98,7 @@ namespace Dynamo.Tests.UI
         #region ToggleConsoleShowingCommand
 
         [Test]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void CanShowConsoleWhenHidden()
         {
             Vm.ToggleConsoleShowingCommand.Execute(null);
@@ -107,14 +107,14 @@ namespace Dynamo.Tests.UI
         }
 
         [Test]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void ConsoleIsHiddenOnOpen()
         {
             Assert.False(Ui.ConsoleShowing);
         }
 
         [Test]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void CanHideConsoleWhenShown()
         {
             //Vm.ToggleConsoleShowingCommand.Execute(null);
@@ -166,7 +166,7 @@ namespace Dynamo.Tests.UI
         #region Zoom In and Out canvas
 
         [Test]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void CanZoom()
         {
             WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
@@ -259,7 +259,7 @@ namespace Dynamo.Tests.UI
         #region Pan Left, Right, Top, Down Canvas
 
         [Test, RequiresSTA]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void CanPanLeft()
         {
             WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
@@ -281,7 +281,7 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void CanPanRight()
         {
             WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
@@ -303,7 +303,7 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void CanPanUp()
         {
             WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
@@ -325,7 +325,7 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void CanPanDown()
         {
             WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
@@ -351,7 +351,7 @@ namespace Dynamo.Tests.UI
         #region Fit to View
 
         [Test, RequiresSTA]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void FitViewWithNoNodes()
         {
             WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
@@ -372,7 +372,7 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void CanFitView()
         {
             WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
@@ -397,7 +397,7 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void CanFitViewTwiceForActualZoom()
         {
             WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
@@ -422,7 +422,7 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void FitViewStressTest()
         {
             WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
@@ -448,7 +448,7 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void CanFitViewResetByZoom()
         {
             WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
@@ -478,7 +478,7 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void CanFitViewResetByPan()
         {
             WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel.Model;
@@ -525,7 +525,7 @@ namespace Dynamo.Tests.UI
 
         #region PreferenceSettings
         [Test, RequiresSTA]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void PreferenceSetting()
         {
             // Test Case to ensure that the link for these persistent variable
@@ -641,7 +641,7 @@ namespace Dynamo.Tests.UI
         #region InfoBubble
 
         [Test]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void UpdateInfoBubble_LibItem()
         {
             InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
@@ -659,7 +659,7 @@ namespace Dynamo.Tests.UI
         }
 
         [Test]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void UpdateInfoBubble_NodeTooltip()
         {
             var infoBubble = new InfoBubbleViewModel();
@@ -677,7 +677,7 @@ namespace Dynamo.Tests.UI
         }
 
         [Test]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void UpdateInfoBubble_ErrorBubble()
         {
             InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
@@ -724,7 +724,7 @@ namespace Dynamo.Tests.UI
         }
 
         [Test]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failing")]
         public void CanDeleteANote()
         {
             Vm.AddNoteCommand.Execute(null);

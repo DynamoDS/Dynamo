@@ -300,7 +300,7 @@
                                   Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
                                   IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   Focusable="False"/>
-                        <!--<MenuItem Focusable="False" Header="Length Display Units" Name="LengthUnitsMenu">
+                        <MenuItem Focusable="False" Header="Length Display Units" Name="LengthUnitsMenu">
                             <MenuItem Focusable="False" Name="units_inch_1" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="DecimalInch" Header="Decimal Inch"/>
                             <MenuItem Focusable="False" Name="units_inch_2" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="FractionalInch" Header="Fractional Inch"/>
                             <MenuItem Focusable="False" Name="units_foot_1" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalFoot, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="DecimalFoot" Header="Decimal Foot"/>
@@ -322,7 +322,7 @@
                             <MenuItem Focusable="False" Name="units_volume_millimeter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMillimeter, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicMillimeter" Header="Cubic Millimeter"/>
                             <MenuItem Focusable="False" Name="units_volume_centimeter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicCentimeter, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicCentimeter" Header="Cubic Centimeter"/>
                             <MenuItem Focusable="False" Name="units_volume_meter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMeter, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="SquareMeter" Header="Cubic Meter"/>
-                        </MenuItem>-->
+                        </MenuItem>
                         <MenuItem Focusable="False" Header="Number Format" Name="NumberFormat">
                             <MenuItem Focusable="False" Header="0" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f0, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f0"/>
                             <MenuItem Focusable="False" Header="0.0" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f1, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f1"/>
