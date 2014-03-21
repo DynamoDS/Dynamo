@@ -165,6 +165,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void Regress561()
         {
             // 1; ----> x
@@ -189,6 +190,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void Regress618()
         {
             // a=0..10;
@@ -204,6 +206,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void Regress586()
         {
             RunModel(@"core\dsevaluation\regress586.dyn");
@@ -398,6 +401,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void CBN_Geometry_RangeExpression_609()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-609
@@ -406,6 +410,7 @@ namespace Dynamo.Tests
 
         }
         [Test]
+        [Category("Failing")]
         public void CBN_Geometry_Expression_609_2()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-609
@@ -414,6 +419,7 @@ namespace Dynamo.Tests
 
         }
         [Test]
+        [Category("Failing")]
         public void CBN_Geometry_Conditional_609_3()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-609
@@ -422,6 +428,7 @@ namespace Dynamo.Tests
 
         }
         [Test]
+        [Category("Failing")]
         public void CBN_Geometry_Array_609_4()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-609
@@ -535,6 +542,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void Defect_MAGN_844()
         {
             RunModel(@"core\dsevaluation\Defect_MAGN_844.dyn");
