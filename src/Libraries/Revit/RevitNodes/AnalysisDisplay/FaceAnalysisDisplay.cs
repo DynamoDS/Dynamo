@@ -10,6 +10,7 @@ using Revit.GeometryConversion;
 using Revit.Elements;
 using Revit.References;
 using RevitServices.Transactions;
+using Reference = Autodesk.Revit.DB.Reference;
 using View = Revit.Elements.Views.View;
 
 namespace Revit.AnalysisDisplay

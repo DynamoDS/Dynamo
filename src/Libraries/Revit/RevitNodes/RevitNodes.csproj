@@ -112,7 +112,7 @@
     <Compile Include="GeometryObjects\PlanarFace.cs" />
     <Compile Include="GeometryObjects\GeometryObjectSelector.cs" />
     <Compile Include="Geometry\Domain.cs" />
-    <Compile Include="References\AbstractReference.cs" />
+    <Compile Include="References\Reference.cs" />
     <Compile Include="References\FaceReference.cs" />
     <Compile Include="Elements\InternalUtilities\ElementSelector.cs" />
     <Compile Include="Elements\Family.cs" />

@@ -12,6 +12,7 @@ using RevitServices.Transactions;
 using Edge = Autodesk.DesignScript.Geometry.Edge;
 using Plane = Autodesk.DesignScript.Geometry.Plane;
 using Point = Autodesk.DesignScript.Geometry.Point;
+using Reference = Autodesk.Revit.DB.Reference;
 
 namespace Revit.Elements
 {
