@@ -597,6 +597,8 @@ namespace Dynamo.Tests
         [Test]
         public void CanMapOverUnits()
         {
+            Assert.Inconclusive("Nodes Deprecated - Length,Area, Volume from Number");
+
             var length = Enumerable.Range(1, 5).Select(x => new Length(x)).ToList();
             var area = Enumerable.Range(1, 5).Select(x => new Area(x)).ToList();
             var volume = Enumerable.Range(1, 5).Select(x => new Volume(x)).ToList();
