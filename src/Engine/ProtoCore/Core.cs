@@ -2400,7 +2400,17 @@ namespace ProtoCore
 
         private Dictionary<Guid, XmlElement> uiNodeToXmlElementMap = null;
 
-        // TODO(Ben): Documentation to come before pull request.
+        /// <summary>
+        /// Call this method to serialize trace data into a given XmlDocument.
+        /// Note that this only serializes trace data for the nodes specified
+        /// since callsite trace data may not have been removed for nodes that 
+        /// are deleted on the UI.
+        /// </summary>
+        /// <param name="nodeGuids">A list of System.Guid of nodes whose trace 
+        /// data is to be serialized.</param>
+        /// <param name="document">The XmlDocument under which the serialized 
+        /// trace data is to be written to.</param>
+        /// 
         public void SerializeTraceDataForNodes(
             IEnumerable<Guid> nodeGuids, XmlDocument document)
         {
@@ -2467,7 +2477,14 @@ namespace ProtoCore
                 document.DocumentElement.AppendChild(sessionXmlElement);
         }
 
-        // TODO(Ben): Documentation to come before pull request.
+        /// <summary>
+        /// Call this method to deserialize all trace data stored in the supplied 
+        /// XmlDocument.
+        /// </summary>
+        /// <param name="document">The XmlDocument from which trace data is to be 
+        /// deserialized from. The document may or may not contain any trace data.
+        /// </param>
+        /// 
         public void DeserializeTraceDataFromXml(XmlDocument document)
         {
             XmlElement sessionElement = null;
@@ -2497,7 +2514,17 @@ namespace ProtoCore
             }
         }
 
-        // TODO(Ben): Documentation to come before pull request.
+        /// <summary>
+        /// Call this method to remove trace data XmlElement for a given node. 
+        /// This is required for the scenario where a code block node content is 
+        /// modified before its corresponding callsite objects are reconstructed
+        /// (i.e. before any execution takes place, and after a file-load). 
+        /// Modifications on UI nodes will always result in trace data being 
+        /// reconstructed again.
+        /// </summary>
+        /// <param name="nodeGuid">The System.Guid of the node for which trace 
+        /// data is to be destroyed.</param>
+        /// 
         public void DestroyLoadedTraceDataForNode(Guid nodeGuid)
         {
             // There is preloaded trace data from external file.
@@ -2505,7 +2532,16 @@ namespace ProtoCore
                 uiNodeToXmlElementMap.Remove(nodeGuid);
         }
 
-        // TODO(Ben): Documentation to come before pull request.
+        /// <summary>
+        /// Call this method to pop the top-most callsite XmlElement. Note that 
+        /// this call only pops off the callsite XmlElement belonging to a given
+        /// node XmlElement corresponding to the given node guid.
+        /// </summary>
+        /// <param name="nodeGuid">The Guid of a given UI node whose top-most 
+        /// callsite is to be retrieved and removed.</param>
+        /// <returns>Returns the XmlElement representing the top-most callsite 
+        /// for the given UI node.</returns>
+        /// 
         private XmlElement GetAndRemoveTraceDataForNode(System.Guid nodeGuid)
         {
             if (uiNodeToXmlElementMap == null || (uiNodeToXmlElementMap.Count <= 0))
