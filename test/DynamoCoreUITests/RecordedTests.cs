@@ -1743,6 +1743,24 @@ namespace Dynamo.Tests.UI
             AssertValue("b", 2);
 
         }
+
+        [Test, RequiresSTA]
+        public void MethodResolutionFailRedef_MAGN_2262()
+        {
+            RunCommandsFromFile("MethodResolutionFailRedef_MAGN_2262.xml", false, (commandTag) =>
+            {
+                if (commandTag == "Tag-204ca7e6")
+                {
+                    AssertPreviewValue("53cd0201-273c-43f4-8815-8531db75d68c", null);
+                    
+                }
+                else if (commandTag == "Tag-2f9b6919")
+                {
+                    AssertPreviewValue("53cd0201-273c-43f4-8815-8531db75d68c", true);
+                    
+                }
+            });
+        }
        
         #endregion
 
