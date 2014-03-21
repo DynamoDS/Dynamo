@@ -1,0 +1,9 @@
+<Workspace Version="0.6.3.35969" X="0" Y="0" zoom="1" Description="" Category="Core.Input" Name="NoInput" ID="b771e496-675b-4735-863f-83c76a3aa158">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="714d5850-734b-4f60-9615-92466acdfdd4" nickname="Number" x="450" y="403.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0..10" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>
