@@ -1,0 +1,29 @@
+<Workspace Version="0.6.3.34091" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="47a2b8b8-b6c8-42a6-90e9-26c294bffe23" nickname="CNWithInput" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="73ff66e2-780e-4fb8-a079-9985524a88ad" />
+      <Name value="CNWithInput" />
+      <Description value="" />
+      <Inputs>
+        <Input value="a" />
+        <Input value="b" />
+      </Inputs>
+      <Outputs>
+        <Output value="&gt;" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="1e999a22-6be1-4680-af43-cb4f61082353" nickname="Number" x="132" y="206.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="e4eeabf2-136d-4e83-92a2-4ed79a391cd9" nickname="Number" x="141" y="282.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="1bee0f0f-5c93-48b3-a90d-f8761fa6e221" nickname="Code Block" x="418" y="212" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="d;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="47a2b8b8-b6c8-42a6-90e9-26c294bffe23" start_index="0" end="1bee0f0f-5c93-48b3-a90d-f8761fa6e221" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1e999a22-6be1-4680-af43-cb4f61082353" start_index="0" end="47a2b8b8-b6c8-42a6-90e9-26c294bffe23" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e4eeabf2-136d-4e83-92a2-4ed79a391cd9" start_index="0" end="47a2b8b8-b6c8-42a6-90e9-26c294bffe23" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

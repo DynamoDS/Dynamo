@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Revit.Interactivity;
 using Dynamo.Controls;
@@ -742,6 +743,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select analysis results from the document.")]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class DSAnalysisResultSelection : DSElementSelection
     {
         public DSAnalysisResultSelection()
@@ -973,6 +975,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a UV on a face.")]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class DSUVOnElementSelection : DSReferenceSelection
     {
         public override string SelectionText
@@ -1047,7 +1050,7 @@ namespace Dynamo.Nodes
         private static string formatSelectionText(IEnumerable<Element> elements)
         {
             return elements.Any()
-                ? System.String.Join(" ", elements.Select(x => x.Id.ToString()))
+                ? System.String.Join(" ", elements.Take(20).Select(x => x.Id.ToString())) + "..."
                 : "Nothing Selected";
         }
 

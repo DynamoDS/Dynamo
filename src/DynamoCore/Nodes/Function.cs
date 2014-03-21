@@ -7,6 +7,7 @@ using System.Xml;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
 
 #endregion
@@ -352,20 +353,43 @@ namespace Dynamo.Nodes
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            AssociativeNode functionCall = AstFactory.BuildFunctionCall(Definition.FunctionName, inputAstNodes);
-
-            var resultAst = new List<AssociativeNode>
-            {
-                AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall)
-            };
+            var resultAst = new List<AssociativeNode>();
 
             if (OutPortData.Count == 1)
             {
-                // assign the entire result to the only output port
-                resultAst.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstIdentifierForPreview));
+                if (IsPartiallyApplied)
+                {
+                    var count = Definition.Parameters.Count();
+                    AssociativeNode functionCall = AstFactory.BuildFunctionObject(
+                        Definition.FunctionName,
+                        count,
+                        Enumerable.Range(0, count).Where(HasInput),
+                        inputAstNodes);
+                    resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall));
+                    resultAst.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstIdentifierForPreview));
+                }
+                else
+                {
+                    AssociativeNode functionCall = AstFactory.BuildFunctionCall(
+                        Definition.FunctionName,
+                        inputAstNodes);
+
+                    resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall));
+
+                    // assign the entire result to the only output port
+                    resultAst.Add(
+                        AstFactory.BuildAssignment(
+                            GetAstIdentifierForOutputIndex(0), 
+                            AstIdentifierForPreview));
+                }
             }
             else
             {
+                AssociativeNode functionCall = AstFactory.BuildFunctionCall(
+                    Definition.FunctionName,
+                    inputAstNodes);
+                resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall));
+
                 /* previewId = customNodeFunc(arg0, arg1 ...);
                  * outId0 = previewId[key0];
                  * outId1 = previewId[key1];

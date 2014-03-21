@@ -509,13 +509,13 @@ namespace DSCore
         /// <param name="rowLength">Length of each new sub-list.</param>
         /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
         /// <search>diagonal,right,matrix</search>
-        public static IList DiagonalRight(IList list, int subLength)
+        public static IList DiagonalRight([ArbitraryDimensionArrayImport] IList list, int subLength)
         {
             object[] flatList = null;
 
             try
             {
-                flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
+                flatList = list.Cast<ArrayList>().SelectMany(i => i.Cast<object>()).ToArray();
             }
             catch
             {
@@ -559,9 +559,6 @@ namespace DSCore
                 finalList.Add(currList);
             }
 
-            if (currList.Count > 0)
-                finalList.Add(currList);
-
             return finalList;
         }
 
@@ -578,15 +575,15 @@ namespace DSCore
 
             try
             {
-                flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
+                flatList = list.Cast<ArrayList>().SelectMany(i => i.Cast<object>()).ToArray();
             }
-            catch
+            catch(Exception ex)
             {
                 flatList = list.Cast<object>().ToArray();
             }
 
             if (flatList.Count() < rowLength)
-                return list;
+                return ((IList)list);
 
             var finalList = new List<List<object>>();
             List<object> currList = null;
@@ -619,9 +616,6 @@ namespace DSCore
                 }
                 finalList.Add(currList);
             }
-
-            if (currList.Count > 0)
-                finalList.Add(currList);
 
             return finalList;
         }
