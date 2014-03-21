@@ -172,7 +172,7 @@ namespace Revit.Elements
         [IsVisibleInDynamoLibrary(false)]
         public override string ToString()
         {
-            return InternalElement.GetType().Name;
+            return this.GetType().Name;
         }
 
         [IsVisibleInDynamoLibrary(false)]
