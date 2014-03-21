@@ -1316,7 +1316,6 @@ namespace GraphToDSCompiler
             string codeToParse = "";
             for (int i = 0; i < compiledCode.Count; i++)
             {
-                //string tempVariableName = "temp" + System.Guid.NewGuid().ToString().Replace("-", "_");
                 string tempVariableName = string.Format("temp_{0}_", i) + nodeGUID.ToString().Replace("-", "_");
                 tempIdentifiers.Add(tempVariableName);
 
