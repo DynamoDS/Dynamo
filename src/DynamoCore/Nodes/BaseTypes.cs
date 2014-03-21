@@ -12,6 +12,8 @@ using Value = Dynamo.FScheme.Value;
 using System.Globalization;
 using ProtoCore.AST.AssociativeAST;
 using Utils = Dynamo.FSchemeInterop.Utils;
+using System.IO;
+using Dynamo.UI;
 
 namespace Dynamo.Nodes
 {
@@ -232,6 +234,181 @@ namespace Dynamo.Nodes
                 "might be missing from your workflow.");
 
             return null;
+        }
+
+        /// <summary>
+        /// Given an initial file path with the file name, resolve the full path
+        /// to the target file. The search happens in the following order:
+        /// 
+        /// 1. Alongside DynamoCore.dll folder (i.e. the "Add-in" folder).
+        /// 2. System path resolution.
+        /// 
+        /// </summary>
+        /// <param name="library">The initial library file path.</param>
+        /// <returns>Returns true if the requested file can be located, or false
+        /// otherwise.</returns>
+        public static bool ResolveLibraryPath(ref string library)
+        {
+            if (File.Exists(library)) // Absolute path, we're done here.
+                return true;
+
+            // Give add-in folder a higher priority and look alongside "DynamoCore.dll".
+            string assemblyName = Path.GetFileName(library); // Strip out possible directory.
+            string currAsmLocation = System.Reflection.Assembly.GetCallingAssembly().Location;
+            var asmPath = Path.Combine(Path.GetDirectoryName(currAsmLocation), assemblyName);
+
+            if (File.Exists(asmPath)) // Found under add-in folder...
+            {
+                library = asmPath;
+                return true;
+            }
+
+            library = Path.GetFullPath(library); // Fallback on system search.
+            return File.Exists(library);
+        }
+
+        /// <summary>
+        /// Call this method to associate/remove the target file path with/from
+        /// the given XmlDocument object.
+        /// </summary>
+        /// <param name="document">The XmlDocument with which the target file 
+        /// path is to be associated. This parameter cannot be null.</param>
+        /// <param name="targetFilePath">The target file path to be associated 
+        /// with the given XmlDocument. If this parameter is null or an empty 
+        /// string, then any target file path that was previously associated 
+        /// will be removed.</param>
+        internal static void SetDocumentXmlPath(XmlDocument document, string targetFilePath)
+        {
+            if (document == null)
+                throw new ArgumentNullException("document");
+
+            if (document.DocumentElement == null)
+            {
+                var message = "'XmlDocument.DocumentElement' cannot be null";
+                throw new ArgumentException(message);
+            }
+
+            var rootElement = document.DocumentElement;
+            if (string.IsNullOrEmpty(targetFilePath))
+            {
+                rootElement.RemoveAttribute(Configurations.FilePathAttribName);
+                return;
+            }
+
+            rootElement.SetAttribute(Configurations.FilePathAttribName, targetFilePath);
+        }
+
+        /// <summary>
+        /// Call this method to retrieve the associated target file path from 
+        /// the given XmlDocument object. An exception will be thrown if such 
+        /// target file path was never associated with the XmlDocument object.
+        /// </summary>
+        /// <param name="document">The XmlDocument object from which the 
+        /// associated target file path is to be retrieved.</param>
+        /// <returns>Returns the associated target file path.</returns>
+        internal static string GetDocumentXmlPath(XmlDocument document)
+        {
+            if (document == null)
+                throw new ArgumentNullException("document");
+
+            if (document.DocumentElement == null)
+            {
+                var message = "'XmlDocument.DocumentElement' cannot be null";
+                throw new ArgumentException(message);
+            }
+
+            // If XmlDocument is opened from an existing file...
+            if (!string.IsNullOrEmpty(document.BaseURI))
+            {
+                Uri documentUri = new Uri(document.BaseURI, UriKind.Absolute);
+                if (documentUri.IsFile)
+                    return documentUri.LocalPath;
+            }
+
+            var rootElement = document.DocumentElement;
+            var attrib = rootElement.Attributes[Configurations.FilePathAttribName];
+
+            if (attrib == null)
+            {
+                throw new InvalidOperationException(
+                    string.Format("'{0}' attribute not found in XmlDocument",
+                    Configurations.FilePathAttribName));
+            }
+
+            return attrib.Value;
+        }
+
+        /// <summary>
+        /// Call this method to compute the relative path of a subject path 
+        /// relative to the given base path.
+        /// </summary>
+        /// <param name="basePath">The base path which relative path is to be 
+        /// computed from. This base path does not need to point to a valid file
+        /// on disk, but it cannot be an empty string.</param>
+        /// <param name="subjectPath">The subject path of which the relative
+        /// path is to be computed. If this path is not empty but does not 
+        /// represent a valid path string, a UriFormatException is thrown.</param>
+        /// <returns>Returns the path of the subject relative to the given base 
+        /// path.</returns>
+        internal static string MakeRelativePath(string basePath, string subjectPath)
+        {
+            if (string.IsNullOrEmpty(basePath))
+                throw new ArgumentNullException("basePath");
+
+            if (string.IsNullOrEmpty(subjectPath))
+                return string.Empty;
+
+            // Determine if we have any directory information in the 
+            // subjectPath. For example, we won't want to form a relative 
+            // path if the input of this method is just "ProtoGeometry.dll".
+            if (!HasPathInformation(subjectPath))
+                return subjectPath;
+
+            Uri documentUri = new Uri(basePath, UriKind.Absolute);
+            Uri assemblyUri = new Uri(subjectPath, UriKind.Absolute);
+
+            var relativeUri = documentUri.MakeRelativeUri(assemblyUri);
+            return relativeUri.OriginalString.Replace('/', '\\');
+        }
+
+        /// <summary>
+        /// Call this method to form the absolute path to target pointed to by 
+        /// relativePath parameter. The absolute path is formed by computing both
+        /// base path and the relative path.
+        /// </summary>
+        /// <param name="basePath">The base path from which the absolute path is 
+        /// to be computed. This argument cannot be null or empty.</param>
+        /// <param name="relativePath">The relative path to the target. This 
+        /// argument cannot be null or empty.</param>
+        /// <returns>Returns the absolute path.</returns>
+        internal static string MakeAbsolutePath(string basePath, string relativePath)
+        {
+            if (string.IsNullOrEmpty(basePath))
+                throw new ArgumentNullException("basePath");
+            if (string.IsNullOrEmpty(relativePath))
+                throw new ArgumentNullException("relativePath");
+
+            // Determine if we have any directory information in the 
+            // subjectPath. For example, we won't want to form an absolute 
+            // path if the input of this method is just "ProtoGeometry.dll".
+            if (!HasPathInformation(relativePath))
+                return relativePath;
+
+            Uri baseUri = new Uri(basePath, UriKind.Absolute);
+            Uri relativeUri = new Uri(relativePath, UriKind.Relative);
+            Uri resultUri = new Uri(baseUri, relativeUri);
+            return resultUri.LocalPath;
+        }
+
+        private static bool HasPathInformation(string fileNameOrPath)
+        {
+            int indexOfSeparator = fileNameOrPath.IndexOfAny(new char[]
+            {
+                Path.DirectorySeparatorChar,
+                Path.AltDirectorySeparatorChar
+            });
+
+            return indexOfSeparator >= 0;
         }
     }
 

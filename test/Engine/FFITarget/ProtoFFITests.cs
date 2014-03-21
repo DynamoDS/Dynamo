@@ -404,9 +404,7 @@ namespace FFITarget
             return x.GetValue();
         }
 
-        [MultiReturnAttribute("color", "string")]
-        [MultiReturnAttribute("weight", "int")]
-        [MultiReturnAttribute("ok", "boolean")]
+        [MultiReturnAttribute(new string[]{"color", "weight", "ok"})]
         [RuntimeRequirement(RequireTracing = true)]
         public Dictionary<string, object> GetDictionary()
         {

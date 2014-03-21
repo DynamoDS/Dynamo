@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using Dynamo.DSEngine;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using HelixToolkit.Wpf;
@@ -281,79 +280,87 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void RenderDrawables(VisualizationEventArgs e)
         {
-            //check the id, if the id is meant for another watch,
-            //then ignore it
-            if (e.Id != _id)
+            try
             {
-                return;
+
+                //check the id, if the id is meant for another watch,
+                //then ignore it
+                if (e.Id != _id)
+                {
+                    return;
+                }
+
+                var sw = new Stopwatch();
+                sw.Start();
+
+                Points = null;
+                Lines = null;
+                Mesh = null;
+                XAxes = null;
+                YAxes = null;
+                ZAxes = null;
+                PointsSelected = null;
+                LinesSelected = null;
+                MeshSelected = null;
+                Text = null;
+                MeshCount = 0;
+
+                var points = new ThreadSafeList<Point3D>();
+                var pointsSelected = new ThreadSafeList<Point3D>();
+                var lines = new ThreadSafeList<Point3D>();
+                var linesSelected = new ThreadSafeList<Point3D>();
+                var redLines = new ThreadSafeList<Point3D>();
+                var greenLines = new ThreadSafeList<Point3D>();
+                var blueLines = new ThreadSafeList<Point3D>();
+                var text = new ThreadSafeList<BillboardTextItem>();
+                var meshes = new ThreadSafeList<MeshGeometry3D>();
+                var meshesSelected = new ThreadSafeList<MeshGeometry3D>();
+
+                foreach (var package in e.Packages)
+                {
+                    ConvertPoints(package, points, pointsSelected, text);
+                    ConvertLines(package, lines, linesSelected, redLines, greenLines, blueLines, text);
+                    ConvertMeshes(package, meshes, meshesSelected);
+                }
+
+                Points = points;
+                PointsSelected = pointsSelected;
+                Lines = lines;
+                LinesSelected = linesSelected;
+                XAxes = redLines;
+                YAxes = greenLines;
+                ZAxes = blueLines;
+
+                MeshCount += meshes.Count + meshesSelected.Count;
+
+                Mesh = MergeMeshes(meshes);
+                MeshSelected = MergeMeshes(meshesSelected);
+                Text = text;
+
+                //var sb = new StringBuilder();
+                //sb.AppendLine();
+                //sb.AppendLine(string.Format("Rendering complete:"));
+                //sb.AppendLine(string.Format("Points: {0}", rd.Points.Count + rd.SelectedPoints.Count));
+                //sb.AppendLine(string.Format("Line segments: {0}", rd.Lines.Count / 2 + rd.SelectedLines.Count / 2));
+                //sb.AppendLine(string.Format("Mesh vertices: {0}",
+                //    rd.Meshes.SelectMany(x => x.Positions).Count() +
+                //    rd.SelectedMeshes.SelectMany(x => x.Positions).Count()));
+                //sb.Append(string.Format("Mesh faces: {0}",
+                //    rd.Meshes.SelectMany(x => x.TriangleIndices).Count() / 3 +
+                //    rd.SelectedMeshes.SelectMany(x => x.TriangleIndices).Count() / 3));
+                ////DynamoLogger.Instance.Log(sb.ToString());
+                //Debug.WriteLine(sb.ToString());
+
+                sw.Stop();
+                //DynamoLogger.Instance.Log(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
+
+                Debug.WriteLine(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
             }
-
-            var sw = new Stopwatch();
-            sw.Start();
-
-            Points = null;
-            Lines = null;
-            Mesh = null;
-            XAxes = null;
-            YAxes = null;
-            ZAxes = null;
-            PointsSelected = null;
-            LinesSelected = null;
-            MeshSelected = null;
-            Text = null;
-            MeshCount = 0;
-
-            var points = new ThreadSafeList<Point3D>();
-            var pointsSelected = new ThreadSafeList<Point3D>();
-            var lines = new ThreadSafeList<Point3D>();
-            var linesSelected = new ThreadSafeList<Point3D>();
-            var redLines = new ThreadSafeList<Point3D>();
-            var greenLines = new ThreadSafeList<Point3D>();
-            var blueLines = new ThreadSafeList<Point3D>();
-            var text = new ThreadSafeList<BillboardTextItem>();
-            var meshes = new ThreadSafeList<MeshGeometry3D>();
-            var meshesSelected = new ThreadSafeList<MeshGeometry3D>();
-
-            foreach (var package in e.Packages)
+            catch (InvalidOperationException exp)
             {
-                ConvertPoints(package, points, pointsSelected, text );
-                ConvertLines(package, lines, linesSelected, redLines, greenLines, blueLines, text);
-                ConvertMeshes(package, meshes, meshesSelected);
+
+                Debug.WriteLine("WARNING: Exception occured in rendering " + exp.ToString());
             }
-
-            Points = points;
-            PointsSelected = pointsSelected;
-            Lines = lines;
-            LinesSelected = linesSelected;
-            XAxes = redLines;
-            YAxes = greenLines;
-            ZAxes = blueLines;
-
-            MeshCount += meshes.Count + meshesSelected.Count;
-
-            Mesh = MergeMeshes(meshes);
-            MeshSelected = MergeMeshes(meshesSelected);
-            Text = text;
-
-            //var sb = new StringBuilder();
-            //sb.AppendLine();
-            //sb.AppendLine(string.Format("Rendering complete:"));
-            //sb.AppendLine(string.Format("Points: {0}", rd.Points.Count + rd.SelectedPoints.Count));
-            //sb.AppendLine(string.Format("Line segments: {0}", rd.Lines.Count / 2 + rd.SelectedLines.Count / 2));
-            //sb.AppendLine(string.Format("Mesh vertices: {0}",
-            //    rd.Meshes.SelectMany(x => x.Positions).Count() +
-            //    rd.SelectedMeshes.SelectMany(x => x.Positions).Count()));
-            //sb.Append(string.Format("Mesh faces: {0}",
-            //    rd.Meshes.SelectMany(x => x.TriangleIndices).Count() / 3 +
-            //    rd.SelectedMeshes.SelectMany(x => x.TriangleIndices).Count() / 3));
-            ////DynamoLogger.Instance.Log(sb.ToString());
-            //Debug.WriteLine(sb.ToString());
-             
-            sw.Stop();
-            //DynamoLogger.Instance.Log(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
-
-            Debug.WriteLine(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
-
         }
 
         private void ConvertPoints(RenderPackage p, 

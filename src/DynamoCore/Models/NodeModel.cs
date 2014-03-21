@@ -2,16 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Odbc;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
-using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-using Autodesk.DesignScript.Runtime;
 using Dynamo.FSchemeInterop;
+using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.DSEngine;
@@ -28,7 +26,7 @@ using Utils = Dynamo.FSchemeInterop.Utils;
 
 namespace Dynamo.Models
 {
-    public abstract class NodeModel : ModelBase
+    public abstract class NodeModel : ModelBase, IBlockingModel
     {
         #region abstract members
 
@@ -703,25 +701,20 @@ namespace Dynamo.Models
 
             var result = BuildOutputAst(inputAstNodes);
 
-            /*
-            var functionDef = new FunctionDefinitionNode
-            {
-                Name = AstBuilder.StringConstants.FunctionPrefix + GUID.ToString().Replace("-", string.Empty),
-                Signature = new ArgumentSignatureNode { Arguments = InPortData.Select(x => AstFactory.BuildParamNode(x.NickName)).ToList() },
-                FunctionBody = 
-            };
-            */
-
             if (OutPortData.Count == 1)
             {
-                return
-                    result.Concat(
-                        new[]
-                        {
-                            AstFactory.BuildAssignment(
-                                AstIdentifierForPreview,
-                                GetAstIdentifierForOutputIndex(0))
-                        });
+                var firstOutput = GetAstIdentifierForOutputIndex(0);
+                if (!AstIdentifierForPreview.Equals(firstOutput))
+                {
+                    return result.Concat(new[]
+                    {
+                        AstFactory.BuildAssignment(AstIdentifierForPreview, firstOutput)
+                    });
+                }
+                else
+                {
+                    return result;
+                }
             }
 
             var emptyList = AstFactory.BuildExprList(new List<AssociativeNode>());
@@ -2205,6 +2198,24 @@ namespace Dynamo.Models
 
         #endregion
 
+        public event EventHandler BlockingStarted;
+        public virtual void OnBlockingStarted(EventArgs e)
+        {
+            if (BlockingStarted != null)
+            {
+                BlockingStarted(this, e);
+            }
+        }
+
+        public event EventHandler BlockingEnded;
+        public virtual void OnBlockingEnded(EventArgs e)
+        {
+            if (BlockingEnded != null)
+            {
+                BlockingEnded(this, e);
+            }
+        }
+
     }
 
     public enum ElementState
@@ -2351,9 +2362,6 @@ namespace Dynamo.Models
     /// </summary>
     [AttributeUsage(AttributeTargets.All, Inherited = true)]
     public class NodeDeprecatedAttribute : Attribute { }
-
-    [AttributeUsage(AttributeTargets.All, Inherited = true)]
-    public class NodeHiddenInBrowserAttribute : Attribute { }
 
     /// <summary>
     ///     The AlsoKnownAs attribute allows the node implementor to

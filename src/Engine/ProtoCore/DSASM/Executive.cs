@@ -2063,16 +2063,10 @@ namespace ProtoCore.DSASM
                     bool allowSSADownstream = false;
                     if (core.Options.ExecuteSSA)
                     {
-                        //allowSSADownstream = graphNode.UID > executingGraphNode.UID;
-
-                        // Is within the same ssa range
+                        // Check if we allow downstream update
                         if (exprUID == graphNode.exprUID)
                         {
-                            // Make sure these are valid subscripts - Assert perhaps?
-                            if (graphNode.SSASubscript != ProtoCore.DSASM.Constants.kInvalidIndex && executingGraphNode.SSASubscript != ProtoCore.DSASM.Constants.kInvalidIndex)
-                            {
-                                allowSSADownstream = graphNode.SSASubscript > executingGraphNode.SSASubscript;
-                            }
+                            allowSSADownstream = graphNode.AstID > executingGraphNode.AstID;
                         }
                     }
 
@@ -7619,7 +7613,7 @@ namespace ProtoCore.DSASM
 
             // Comment Jun: Dispose calls are always implicit and need to terminate
             // TODO Jun: This instruction should not know about dispose
-            bool isDispose = procNode.name.Equals(ProtoCore.DSDefinitions.Keyword.Dispose);
+            bool isDispose = CoreUtils.IsDisposeMethod(procNode.name);
             if (isDispose)
             {
                 terminate = true;

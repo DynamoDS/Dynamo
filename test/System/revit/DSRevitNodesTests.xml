@@ -229,6 +229,12 @@
         <test name="ByPoints_InvalidArgs" runDynamo="true" modelPath=".\empty.rvt" />
         <test name="ByPoints_Mutation" runDynamo="true" modelPath=".\empty.rvt" />
       </testFixture>
+      <testFixture name="AbstractElementTests">
+        <test name="GetParameterByName_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="SetParameterByName_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="SetParametersByName_InvalidArgs" modelPath=".\empty.rfa"/>
+        <test name="OverrideColorInView_ValidArgs" modelPath=".\empty.rfa"/>
+      </testFixture>
 		</testAssembly>
 	</testAssemblies>
 </tests>
