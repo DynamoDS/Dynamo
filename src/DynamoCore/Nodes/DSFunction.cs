@@ -259,6 +259,27 @@ namespace Dynamo.Nodes
 
             switch (ArgumentLacing)
             {
+                case LacingStrategy.Longest:
+
+                    for (int i = 0; i < inputs.Count(); ++i)
+                    {
+                        if (inputs[i] is ArrayNameNode)
+                        {
+                            var astNode = NodeUtils.Clone(inputs[i]) as ArrayNameNode;
+                            astNode.ReplicationGuides = new List<AssociativeNode>();
+
+                            var guideNode = new ReplicationGuideNode
+                            {
+                                RepGuide = AstFactory.BuildIdentifier("1"),
+                                IsLongest = true
+                            };
+
+                            astNode.ReplicationGuides.Add(guideNode);
+                            inputs[i] = astNode;
+                        }
+                    }
+                    break;
+
                 case LacingStrategy.CrossProduct:
 
                     int guide = 1;
