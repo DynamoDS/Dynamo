@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 using DSCoreNodesUI;
@@ -193,6 +194,48 @@ namespace DSRevitNodesUI
                                                             args);
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+        }
+    }
+
+    [NodeName("Levels")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
+    [NodeDescription("Select a level in the active document")]
+    [IsDesignScriptCompatible]
+    public class Levels : DropDrownBase
+    {
+        public Levels()
+        {
+            OutPortData.Add(new PortData("level", "The level.", typeof(object)));
+
+            RegisterAllPorts();
+
+            PopulateItems();
+        }
+
+        public override void PopulateItems()
+        {
+            Items.Clear();
+
+            //find all levels in the project
+            var levelColl = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            levelColl.OfClass(typeof(Level));
+
+            levelColl.ToElements().ToList().ForEach(x => Items.Add(new DynamoDropDownItem(x.Name, x)));
+
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            var node = AstFactory.BuildFunctionCall(
+                "Revit.Elements.ElementSelector",
+                "ByElementId",
+                new List<AssociativeNode>
+                {
+                    AstFactory.BuildIntNode(((Level)Items[SelectedIndex].Item).Id.IntegerValue)
+                });
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
     }
 }

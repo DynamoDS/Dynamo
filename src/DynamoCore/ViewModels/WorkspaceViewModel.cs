@@ -741,11 +741,7 @@ namespace Dynamo.ViewModels
 
         private bool CanCreateNodeFromSelection(object parameter)
         {
-            if (DynamoSelection.Instance.Selection.Count(x => x is NodeModel) > 1)
-            {
-                return true;
-            }
-            return false;
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
         }
 
         private void ZoomIn(object o)
