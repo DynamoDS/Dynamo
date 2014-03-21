@@ -769,6 +769,8 @@ namespace Dynamo.Models
             if (!this.PopulateXmlDocument(document))
                 return false;
 
+            this.SerializeSessionData(document);
+
             try
             {
                 Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, string.Empty);
@@ -864,6 +866,34 @@ namespace Dynamo.Models
             {
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 return false;
+            }
+        }
+
+        // TODO(Ben): Documentation to come before pull request.
+        protected virtual void SerializeSessionData(XmlDocument document)
+        {
+            try
+            {
+                ProtoCore.Core core = null;
+                if (dynSettings.Controller != null)
+                {
+                    var engine = dynSettings.Controller.EngineController;
+                    if (engine != null && (engine.LiveRunnerCore != null))
+                        core = engine.LiveRunnerCore;
+                }
+
+                if (core == null) // No execution yet as of this point.
+                    return;
+
+                IEnumerable<Guid> nodeGuids = null; // TODO(Ben): TraceData
+                core.SerializeTraceDataForNodes(nodeGuids, document);
+            }
+            catch (Exception exception)
+            {
+                // We'd prefer file saving process does not crash Dynamo,
+                // otherwise user will lose the last hope in retaining data.
+                DynamoLogger.Instance.Log(exception.Message);
+                DynamoLogger.Instance.Log(exception.StackTrace);
             }
         }
 

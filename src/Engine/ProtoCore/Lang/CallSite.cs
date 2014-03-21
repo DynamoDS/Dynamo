@@ -11,6 +11,7 @@ using ProtoCore.Lang;
 using ProtoCore.Lang.Replication;
 using ProtoCore.Utils;
 using StackFrame = ProtoCore.DSASM.StackFrame;
+using System.Xml;
 
 namespace ProtoCore
 {
@@ -21,6 +22,13 @@ namespace ProtoCore
         /// </summary>
         class SingleRunTraceData
         {
+            internal SingleRunTraceData() { }
+
+            // TODO(Ben): Documentation to come before pull request.
+            internal SingleRunTraceData(XmlElement xmlElement)
+            {
+                throw new NotImplementedException("TODO(Ben): TraceData");
+            }
          
             /// <summary>
             /// Does this struct contain any trace data
@@ -61,6 +69,11 @@ namespace ProtoCore
                 }
             }
 
+            // TODO(Ben): Documentation to come before pull request.
+            internal XmlElement Serialize(XmlDocument document)
+            {
+                throw new NotImplementedException("TODO(Ben): TraceData");
+            }
 
             public List<SingleRunTraceData> NestedData;
             public Object Data;
@@ -88,7 +101,10 @@ namespace ProtoCore
             }
         }
 
-        public CallSite(int classScope, string methodName, FunctionTable globalFunctionTable, ExecutionMode execMode)
+        // TODO(Ben): Documentation to come before pull request.
+        public CallSite(int classScope, string methodName,
+            FunctionTable globalFunctionTable,
+            ExecutionMode execMode, XmlElement traceData = null)
         {
             //Set the ID of internal test
             callsiteID = Guid.NewGuid();
@@ -1732,12 +1748,11 @@ namespace ProtoCore
             return true; //It'll replicate if it suceeds
         }
 
-
-
-
-
-
-
+        // TODO(Ben): Documentation to come before pull request.
+        internal XmlElement Serialize(XmlDocument document)
+        {
+            throw new NotImplementedException("TODO(Ben): TraceData");
+        }
 
         #region Unused legacy code
 

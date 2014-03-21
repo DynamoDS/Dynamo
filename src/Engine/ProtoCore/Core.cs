@@ -11,6 +11,7 @@ using ProtoFFI;
 using Autodesk.DesignScript.Interfaces;
 using ProtoCore.AssociativeGraph;
 using System.Linq;
+using System.Xml;
 
 namespace ProtoCore
 {
@@ -2379,6 +2380,31 @@ namespace ProtoCore
         }
 
         public GraphNode ExecutingGraphnode { get; set; }
+
+        // TODO(Ben): Documentation to come before pull request.
+        public void SerializeTraceDataForNodes(
+            IEnumerable<Guid> nodeGuids, XmlDocument document)
+        {
+            throw new NotImplementedException("TODO(Ben): TraceData");
+        }
+
+        // TODO(Ben): Documentation to come before pull request.
+        public void DeserializeTraceDataFromXml(XmlDocument document)
+        {
+            throw new NotImplementedException("TODO(Ben): TraceData");
+        }
+
+        // TODO(Ben): Documentation to come before pull request.
+        public void DestroyLoadedTraceDataForNode(Guid nodeGuid)
+        {
+            throw new NotImplementedException("TODO(Ben): TraceData");
+        }
+
+        // TODO(Ben): Documentation to come before pull request.
+        private XmlElement GetAndRemoveTraceDataForNode(System.Guid nodeGuid)
+        {
+            throw new NotImplementedException("TODO(Ben): TraceData");
+        }
 
         /// <summary>
         /// Retrieves an existing instance of a callsite associated with a UID
