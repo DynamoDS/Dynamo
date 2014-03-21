@@ -1,3 +1,5 @@
+#define __NO_SAMPLES_MENU
+
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -191,8 +193,10 @@ namespace Dynamo.Controls
             DynamoLogger.Instance.Log(String.Format("{0} elapsed for loading Dynamo main window.",
                                                                      _timer.Elapsed));
             InitializeShortcutBar();
-            LoadSamplesMenu();
 
+#if !__NO_SAMPLES_MENU
+            LoadSamplesMenu();
+#endif
             #region Search initialization
 
             var search = new SearchView { DataContext = dynSettings.Controller.SearchViewModel };
@@ -591,6 +595,7 @@ namespace Dynamo.Controls
             LogScroller.ScrollToBottom();
         }
 
+#if !__NO_SAMPLES_MENU
         /// <summary>
         ///     Setup the "Samples" sub-menu with contents of samples directory.
         /// </summary>
@@ -652,6 +657,7 @@ namespace Dynamo.Controls
             }
             //this.fileMenu.Items.Remove(this.samplesMenu);
         }
+#endif
 
         /// <summary>
         ///     Callback for opening a sample.
