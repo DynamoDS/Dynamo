@@ -509,7 +509,6 @@ namespace DSCore
         /// <param name="rowLength">Length of each new sub-list.</param>
         /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
         /// <search>diagonal,right,matrix</search>
-        [IsVisibleInDynamoLibrary(false)]
         public static IList DiagonalRight([ArbitraryDimensionArrayImport] IList list, int subLength)
         {
             object[] flatList = null;
@@ -570,7 +569,6 @@ namespace DSCore
         /// <param name="rowLength">Length of each new sib-list.</param>
         /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
         /// <search>diagonal,left,matrix</search>
-        [IsVisibleInDynamoLibrary(false)]
         public static IList DiagonalLeft(IList list, int rowLength)
         {
             object[] flatList = null;

@@ -76,7 +76,6 @@ namespace DSCore.File
     [NodeDescription("Allows you to select a file on the system to get its filename.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
-    [IsVisibleInDynamoLibrary(false)]
     public class Filename : FileSystemBrowser
     {
         public Filename() : base("Filename") { }
