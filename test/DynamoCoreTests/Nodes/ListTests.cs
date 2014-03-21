@@ -401,34 +401,25 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void TestRepeatNumberInput()
         {
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testRepeat_numberInput.dyn");
             RunModel(testFilePath);
-            var a1 = new int[] { 0, 0 };
-            var a2 = new int[] { 1, 1 };
-            var a3 = new int[] { 2, 2 };
-            var a4 = new int[] { 3, 3 };
-            var a5 = new int[] { 4, 4 };
-            AssertPreviewValue("72dddbc8-0a6b-431d-a185-8ec62a8b79dd", new int[][] { a1, a2, a3, a4, a5 });
+            var a1 = new[] { 0, 1, 2, 3, 4 };
+            AssertPreviewValue("72dddbc8-0a6b-431d-a185-8ec62a8b79dd", new[] { a1, a1 });
 
         }
 
         [Test]
-        [Category("Failing")]
         public void TestRepeatStringInput()
         {
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testRepeat_stringInput.dyn");
             RunModel(testFilePath);
 
-            var a1 = new string[] { "a", "a" };
-            var a2 = new string[] { "b", "b" };
-            var a3 = new string[] { "c", "c" };
-            var a4 = new string[] { "d", "d" };
-            AssertPreviewValue("72dddbc8-0a6b-431d-a185-8ec62a8b79dd", new string[][] { a1, a2, a3, a4 });
+            var a1 = new[] { "a", "b", "c", "d" };
+            AssertPreviewValue("72dddbc8-0a6b-431d-a185-8ec62a8b79dd", new[] { a1, a1 });
 
         }
 

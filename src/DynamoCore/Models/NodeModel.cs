@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Security.Permissions;
 using System.Windows;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
@@ -444,7 +445,7 @@ namespace Dynamo.Models
                 if (identifier == null)
                 {
                     string id = AstIdentifierBase;
-                    identifier = new IdentifierNode { Name = id, Value = id };
+                    identifier = AstFactory.BuildIdentifier(id);
                 }
                 return identifier;
             }
@@ -527,11 +528,10 @@ namespace Dynamo.Models
                 throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
 
             if (OutPortData.Count == 1)
-                return AstIdentifierForPreview;
+                return AstFactory.BuildIdentifier((IsPartiallyApplied ? "_local_" : "") + AstIdentifierBase);
 
-            string nameAndValue = AstIdentifierBase + "[" + outputIndex + "]";
-
-            return new IdentifierNode { Name = nameAndValue, Value = nameAndValue };
+            string id = AstIdentifierBase + "_out" + outputIndex;
+            return AstFactory.BuildIdentifier(id);
         }
 
         #endregion
@@ -719,20 +719,7 @@ namespace Dynamo.Models
             var result = BuildOutputAst(inputAstNodes);
 
             if (OutPortData.Count == 1)
-            {
-                var firstOutput = GetAstIdentifierForOutputIndex(0);
-                if (!AstIdentifierForPreview.Equals(firstOutput))
-                {
-                    return result.Concat(new[]
-                    {
-                        AstFactory.BuildAssignment(AstIdentifierForPreview, firstOutput)
-                    });
-                }
-                else
-                {
-                    return result;
-                }
-            }
+                return result;
 
             var emptyList = AstFactory.BuildExprList(new List<AssociativeNode>());
             var previewIdInit = AstFactory.BuildAssignment(AstIdentifierForPreview, emptyList);

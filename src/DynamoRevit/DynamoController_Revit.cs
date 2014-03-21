@@ -880,10 +880,10 @@ namespace Dynamo
         {
             IList<FailureMessageAccessor> failList = failuresAccessor.GetFailureMessages();
 
-            IEnumerable<FailureMessageAccessor> query = from fail in failList
-                                                        let severity = fail.GetSeverity()
-                                                        where severity == FailureSeverity.Warning
-                                                        select fail;
+            IEnumerable<FailureMessageAccessor> query = 
+                from fail in failList
+                where fail.GetSeverity() == FailureSeverity.Warning
+                select fail;
 
             foreach (FailureMessageAccessor fail in query)
             {
