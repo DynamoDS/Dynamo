@@ -87,7 +87,7 @@ namespace Revit.Elements
         {
             get
             {
-                return this.InternalElementId.IntegerValue;
+                return this.InternalElement.Id.IntegerValue;
             }
         }
 
