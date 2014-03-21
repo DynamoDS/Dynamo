@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
+using Autodesk.DesignScript.Runtime;
 using CSMath = System.Math;
 
 namespace DSCore
@@ -154,6 +155,7 @@ namespace DSCore
         {
             return (long)CSMath.Floor(value);
         }
+        [IsVisibleInDynamoLibrary(false)]
         public static double IEEERemainder(double value1, double value2)
         {
             return CSMath.IEEERemainder(value1, value2);
@@ -210,20 +212,24 @@ namespace DSCore
             return CSMath.Round(value);
         }
 
+        /* DISABLE - LC - 070 Pre-release
         public static double Round(double value, MidpointRounding mode)
         {
             return CSMath.Round(value, mode);
         }
+        */
 
         public static double Round(double value, int digits)
         {
             return CSMath.Round(value, digits);
         }
 
+        /* DISABLE - LC - 070 Pre-release
         public static double Round(double value, int digits, MidpointRounding mode)
         {
             return CSMath.Round(value, digits, mode);
         }
+        */
 
         public static long Sign(double d_value)
         {
@@ -259,6 +265,7 @@ namespace DSCore
             return CSMath.Tanh(value);
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public static double Truncate(double value)
         {
             return CSMath.Truncate(value);

@@ -146,7 +146,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand ShowNewFunctionDialogCommand { get; set; }
         public DelegateCommand SaveRecordedCommand { get; set; }
         public DelegateCommand InsertPausePlaybackCommand { get; set; }
-        public DelegateCommand ClearCommand { get; set; }
         public DelegateCommand GoHomeCommand { get; set; }
         public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
         public DelegateCommand ShowInstalledPackagesCommand { get; set; }
@@ -551,7 +550,6 @@ namespace Dynamo.ViewModels
             ShowNewFunctionDialogCommand = new DelegateCommand(_model.ShowNewFunctionDialogAndMakeFunction, _model.CanShowNewFunctionDialogCommand);
             SaveRecordedCommand = new DelegateCommand(SaveRecordedCommands, CanSaveRecordedCommands);
             InsertPausePlaybackCommand = new DelegateCommand(ExecInsertPausePlaybackCommand, CanInsertPausePlaybackCommand);
-            ClearCommand = new DelegateCommand(_model.Clear, _model.CanClear);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResult);
@@ -1629,14 +1627,14 @@ namespace Dynamo.ViewModels
 
         internal void SelectVisualizationInView(object parameters)
         {
-            Debug.WriteLine("Selecting mesh from background watch.");
+            //Debug.WriteLine("Selecting mesh from background watch.");
 
-            var arr = (double[])parameters;
-            double x = arr[0];
-            double y = arr[1];
-            double z = arr[2];
+            //var arr = (double[])parameters;
+            //double x = arr[0];
+            //double y = arr[1];
+            //double z = arr[2];
 
-            dynSettings.Controller.VisualizationManager.LookupSelectedElement(x, y, z);
+            //dynSettings.Controller.VisualizationManager.LookupSelectedElement(x, y, z);
         }
 
         internal bool CanSelectVisualizationInView(object parameters)

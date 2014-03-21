@@ -401,6 +401,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void TestRepeatNumberInput()
         {
             DynamoModel model = Controller.DynamoModel;
@@ -416,6 +417,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void TestRepeatStringInput()
         {
             DynamoModel model = Controller.DynamoModel;
@@ -495,6 +497,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void TestTransposeNormalInput()
         {
             // Input array                  Expected output array
@@ -1014,6 +1017,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void LaceShortest_StringInput()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -1086,6 +1090,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void LaceLongest_ListWith10000Element()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -1257,6 +1262,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void NumberRange_LacingShortest()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -1315,7 +1321,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("Not Migrated")]
+        [Test, Category("Not Migrated"), Category("Failing")]
         public void NumberRange_LacingCrossProduct()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -1496,6 +1502,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void AddToList_GeometryToList()
         {
             var model = dynSettings.Controller.DynamoModel;

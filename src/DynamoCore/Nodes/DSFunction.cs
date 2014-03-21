@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
+using Autodesk.DesignScript.Runtime;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 
 namespace Dynamo.Nodes
@@ -31,7 +32,7 @@ namespace Dynamo.Nodes
     [NodeName("Function Node")]
     [NodeDescription("DesignScript Builtin Functions")]
     [IsInteractive(false)]
-    [NodeHiddenInBrowser]
+    [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
     public class DSFunction : NodeModel
@@ -448,7 +449,7 @@ namespace Dynamo.Nodes
     [NodeName("Function Node w/ VarArgs")]
     [NodeDescription("DesignScript Builtin Functions")]
     [IsInteractive(false)]
-    [NodeHiddenInBrowser]
+    [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
     public class DSVarArgFunction : VariableInputNode
