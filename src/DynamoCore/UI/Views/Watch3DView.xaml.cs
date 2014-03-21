@@ -337,20 +337,6 @@ namespace Dynamo.Controls
                 MeshSelected = MergeMeshes(meshesSelected);
                 Text = text;
 
-                //var sb = new StringBuilder();
-                //sb.AppendLine();
-                //sb.AppendLine(string.Format("Rendering complete:"));
-                //sb.AppendLine(string.Format("Points: {0}", rd.Points.Count + rd.SelectedPoints.Count));
-                //sb.AppendLine(string.Format("Line segments: {0}", rd.Lines.Count / 2 + rd.SelectedLines.Count / 2));
-                //sb.AppendLine(string.Format("Mesh vertices: {0}",
-                //    rd.Meshes.SelectMany(x => x.Positions).Count() +
-                //    rd.SelectedMeshes.SelectMany(x => x.Positions).Count()));
-                //sb.Append(string.Format("Mesh faces: {0}",
-                //    rd.Meshes.SelectMany(x => x.TriangleIndices).Count() / 3 +
-                //    rd.SelectedMeshes.SelectMany(x => x.TriangleIndices).Count() / 3));
-                ////DynamoLogger.Instance.Log(sb.ToString());
-                //Debug.WriteLine(sb.ToString());
-
                 sw.Stop();
                 //DynamoLogger.Instance.Log(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
 
