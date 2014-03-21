@@ -14,6 +14,22 @@ namespace RevitServices.Persistence
     /// </summary>
     public class DocumentManager
     {
+        public static event Action<string> OnLog;
+
+        internal static void Log(string obj)
+        {
+            var handler = OnLog;
+            if (handler != null)
+                handler(obj);
+        }
+
+        internal static void Log(Exception exception)
+        {
+            var handler = OnLog;
+            if (handler != null)
+                handler(exception.Message);
+        }
+
         private static DocumentManager instance;
         private static readonly Object mutex = new Object();
 
@@ -49,7 +65,14 @@ namespace RevitServices.Persistence
         {
             TransactionManager.Instance.EnsureInTransaction(CurrentDBDocument);
 
-            CurrentDBDocument.Delete(element);
+            try
+            {
+                CurrentDBDocument.Delete(element);
+            }
+            catch (Exception e)
+            {
+                Log(e);
+            }
 
             TransactionManager.Instance.TransactionTaskDone();
         }
@@ -87,30 +110,5 @@ namespace RevitServices.Persistence
         /// </summary>
         public UIApplication CurrentUIApplication { get; set; }
 
-        /// <summary>
-        /// A method to clear some elements from the CurrentDBDocument.  This is intended
-        /// only as a temporary fix until trace properly handles model cleanup
-        /// </summary>
-        public void ClearCurrentDocument()
-        {
-            TransactionManager.Instance.EnsureInTransaction(CurrentDBDocument);
-
-            var collector = new FilteredElementCollector(CurrentDBDocument);
-
-            var filter = new LogicalOrFilter(new List<ElementFilter>
-            {
-                new ElementCategoryFilter(BuiltInCategory.OST_ReferencePoints),
-                new ElementCategoryFilter(BuiltInCategory.OST_AdaptivePoints),
-                new ElementCategoryFilter(BuiltInCategory.OST_DividedPath),
-                new ElementCategoryFilter(BuiltInCategory.OST_DividedSurface),
-
-                new ElementClassFilter(typeof (FamilyInstance)),
-                new ElementClassFilter(typeof (CurveElement))
-            });
-
-            collector.WherePasses(filter).ToList().ForEach(x=> CurrentDBDocument.Delete(x.Id));
-
-            TransactionManager.Instance.TransactionTaskDone();
-        }
     }
 }
