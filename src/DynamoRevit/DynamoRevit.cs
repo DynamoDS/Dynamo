@@ -150,6 +150,7 @@ namespace Dynamo.Applications
                 //DocumentManager.Instance.CurrentDBDocument = revit.Application.ActiveUIDocument.Document;
                 //DocumentManager.Instance.CurrentUIDocument = revit.Application.ActiveUIDocument;
                 DocumentManager.Instance.CurrentUIApplication = revit.Application;
+                DocumentManager.OnLogError += DynamoLogger.Instance.LogError;
 
                 dynRevitSettings.DefaultLevel = defaultLevel;
 
@@ -208,9 +209,9 @@ namespace Dynamo.Applications
                 isRunning = false;
                 MessageBox.Show(ex.ToString());
 
-                DynamoLogger.Instance.Log(ex.Message);
-                DynamoLogger.Instance.Log(ex.StackTrace);
-                DynamoLogger.Instance.Log("Dynamo log ended " + DateTime.Now.ToString());
+                DynamoLogger.Instance.LogError(ex.Message);
+                DynamoLogger.Instance.LogError(ex.StackTrace);
+                DynamoLogger.Instance.LogError("Dynamo log ended " + DateTime.Now.ToString());
 
                 return Result.Failed;
             }
@@ -269,8 +270,8 @@ namespace Dynamo.Applications
 
             try
             {
-                DynamoLogger.Instance.Log("Dynamo Unhandled Exception");
-                DynamoLogger.Instance.Log(exceptionMessage);
+                DynamoLogger.Instance.LogError("Dynamo Unhandled Exception");
+                DynamoLogger.Instance.LogError(exceptionMessage);
             }
             catch
             {
