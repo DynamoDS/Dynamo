@@ -2396,6 +2396,10 @@ namespace ProtoCore
 
         public GraphNode ExecutingGraphnode { get; set; }
 
+        #region Trace Data Serialization Methods/Members
+
+        private Dictionary<Guid, XmlElement> uiNodeToXmlElementMap = null;
+
         // TODO(Ben): Documentation to come before pull request.
         public void SerializeTraceDataForNodes(
             IEnumerable<Guid> nodeGuids, XmlDocument document)
@@ -2466,7 +2470,30 @@ namespace ProtoCore
         // TODO(Ben): Documentation to come before pull request.
         public void DeserializeTraceDataFromXml(XmlDocument document)
         {
-            throw new NotImplementedException("TODO(Ben): TraceData");
+            XmlElement sessionElement = null;
+            foreach(var childNode in document.DocumentElement.ChildNodes)
+            {
+                XmlNode node = childNode as XmlNode;
+                if (!node.Name.Equals(CoreStrings.SessionTraceDataXmlTag))
+                    continue;
+
+                sessionElement = node as XmlElement;
+            }
+
+            if (sessionElement == null || (sessionElement.ChildNodes.Count <= 0))
+                return; // No session data stored in the xml document.
+
+            foreach (var childNode in sessionElement.ChildNodes)
+            {
+                XmlElement nodeElement = childNode as XmlElement;
+                Guid nodeGuid = Guid.Parse(nodeElement.GetAttribute(
+                    CoreStrings.NodeIdAttribName));
+
+                if (uiNodeToXmlElementMap == null)
+                    uiNodeToXmlElementMap = new Dictionary<Guid, XmlElement>();
+
+                uiNodeToXmlElementMap.Add(nodeGuid, nodeElement);
+            }
         }
 
         // TODO(Ben): Documentation to come before pull request.
@@ -2480,6 +2507,8 @@ namespace ProtoCore
         {
             throw new NotImplementedException("TODO(Ben): TraceData");
         }
+
+        #endregion // Trace Data Serialization Methods/Members
 
         /// <summary>
         /// Retrieves an existing instance of a callsite associated with a UID
