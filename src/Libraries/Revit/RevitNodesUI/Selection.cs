@@ -297,19 +297,7 @@ namespace Dynamo.Nodes
             get { return _selected; }
             set
             {
-                bool dirty;
-
-                if (_selected != null)
-                {
-                    if (value != null && value.ElementId.Equals(_selected.ElementId))
-                        return;
-
-                    dirty = true;
-                }
-                else
-                    dirty = value != null;
-
-                dirty = value != null;
+                bool dirty = value != null;
 
                 _selected = value;
 
