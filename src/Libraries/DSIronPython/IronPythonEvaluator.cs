@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Autodesk.DesignScript.Runtime;
 using IronPython.Hosting;
 
@@ -13,6 +8,7 @@ namespace DSIronPython
     /// <summary>
     /// 
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class IronPythonEvaluator
     {
         private IronPythonEvaluator() { }

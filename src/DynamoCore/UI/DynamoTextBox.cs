@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI;
@@ -236,7 +237,15 @@ namespace Dynamo.Nodes
         {
             base.OnThumbDragStarted(e);
             nodeModel.WorkSpace.RecordModelForModification(nodeModel);
+            (nodeModel as IBlockingModel).OnBlockingStarted(EventArgs.Empty);
         }
+
+        protected override void OnThumbDragCompleted(System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            base.OnThumbDragCompleted(e);
+            (nodeModel as IBlockingModel).OnBlockingEnded(EventArgs.Empty);
+        }
+
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnPreviewMouseLeftButtonDown(e);
