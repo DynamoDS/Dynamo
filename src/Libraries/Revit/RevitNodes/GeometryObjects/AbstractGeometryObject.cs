@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Runtime;
 
 namespace Revit.GeometryObjects
 {
@@ -22,11 +23,13 @@ namespace Revit.GeometryObjects
         /// Simple implementation of ToString - override for customized behavior
         /// </summary>
         /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
         public override string ToString()
         {
-            return InternalGeometryObject.ToString();
+            return InternalGeometryObject.GetType().Name;
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public abstract void Tessellate(IRenderPackage package);
     }
 }
