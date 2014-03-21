@@ -64,7 +64,6 @@ namespace DSCore
         /// <param name="numbers">List of numbers to adjust range of.</param>
         /// <param name="newMin">New minimum of the range.</param>
         /// <param name="newMax">New maximum of the range</param>
-        [IsVisibleInDynamoLibrary(false)]
         public static IList RemapRange(IList numbers, double newMin = 0, double newMax = 1)
         {
             var nums = numbers.Cast<double>().ToList();
@@ -156,7 +155,6 @@ namespace DSCore
         {
             return (long)CSMath.Floor(value);
         }
-
         [IsVisibleInDynamoLibrary(false)]
         public static double IEEERemainder(double value1, double value2)
         {
@@ -213,24 +211,26 @@ namespace DSCore
         {
             return CSMath.Round(value);
         }
-        /*
-        [IsVisibleInDynamoLibrary(false)]
+
+        /* DISABLE - LC - 070 Pre-release
         public static double Round(double value, MidpointRounding mode)
         {
             return CSMath.Round(value, mode);
         }
         */
+
         public static double Round(double value, int digits)
         {
             return CSMath.Round(value, digits);
         }
-        /*
-        [IsVisibleInDynamoLibrary(false)]
+
+        /* DISABLE - LC - 070 Pre-release
         public static double Round(double value, int digits, MidpointRounding mode)
         {
             return CSMath.Round(value, digits, mode);
         }
         */
+
         public static long Sign(double d_value)
         {
             return CSMath.Sign(d_value);
