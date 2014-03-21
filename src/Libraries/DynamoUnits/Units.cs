@@ -41,7 +41,6 @@ namespace Dynamo.Units
         CubicMeter
     }
 
-    [IsVisibleInDynamoLibrary(false)]
     public abstract class SIUnit
     {
         //length conversions
