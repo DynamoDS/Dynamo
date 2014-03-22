@@ -203,7 +203,7 @@ namespace Dynamo.Tests.UI
 
             var watch = model.Nodes.First(x => x.GetType().Name == "Watch3D");
             var watchView = watch.GetType().GetProperty("View").GetValue(watch, null);
-            var points = watchView.GetType().GetProperty("Points").GetValue(watchView, null) as ThreadSafeList<Point3D>;
+            var points = watchView.GetType().GetProperty("Points").GetValue(watchView, null) as List<Point3D>;
             Assert.AreEqual(0, points.Count);
         }
 
