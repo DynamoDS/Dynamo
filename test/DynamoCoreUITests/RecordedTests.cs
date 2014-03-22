@@ -51,6 +51,7 @@ namespace Dynamo.Tests.UI
             SetupDirectories();
         }
 
+        [TearDown]
         protected void Exit()
         {
             if (this.Controller != null)
@@ -339,7 +340,7 @@ namespace Dynamo.Tests.UI
         protected void RunCommandsFromFile(string commandFileName,
             bool autoRun = false, CommandCallback commandCallback = null)
         {
-            string commandFilePath = DynamoTestUI.GetTestDirectory();
+            string commandFilePath = DynamoTestUI.GetTestDirectory(ExecutingDirectory);
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 

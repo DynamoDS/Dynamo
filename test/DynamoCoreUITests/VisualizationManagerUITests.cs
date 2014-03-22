@@ -24,42 +24,6 @@ namespace Dynamo.Tests.UI
             }
         }
 
-        [SetUp]
-        public void Start()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
-
-            Controller = DynamoController.MakeSandbox();
-            DynamoController.IsTestMode = true;
-            //create the view
-            Ui = new DynamoView();
-            Ui.DataContext = Controller.DynamoViewModel;
-            Vm = Controller.DynamoViewModel;
-            Controller.UIDispatcher = Ui.Dispatcher;
-            Ui.Show();
-
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
-
-            string tempPath = Path.GetTempPath();
-            TempFolder = Path.Combine(tempPath, "dynamoTmp");
-
-            if (!Directory.Exists(TempFolder))
-            {
-                Directory.CreateDirectory(TempFolder);
-            }
-            else
-            {
-                EmptyTempFolder();
-            }
-        }
-
-        [TearDown]
-        public void Exit()
-        {
-            if (Ui.IsLoaded)
-                Ui.Close();
-        }
-
         [Test, Category("Failing")]
         public void NothingIsVisualizedWhenThereIsNothingToVisualize()
         {
@@ -130,7 +94,7 @@ namespace Dynamo.Tests.UI
             var model = dynSettings.Controller.DynamoModel;
             var viz = dynSettings.Controller.VisualizationManager;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points_line.dyn");
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
             model.Open(openPath);
 
             // run the expression
@@ -175,8 +139,8 @@ namespace Dynamo.Tests.UI
         {
             var model = dynSettings.Controller.DynamoModel;
             var viz = dynSettings.Controller.VisualizationManager;
-            
-            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points_line.dyn");
+
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
             model.Open(openPath);
 
             dynSettings.Controller.DynamoModel.OnRequestLayoutUpdate(this, EventArgs.Empty);
@@ -245,7 +209,7 @@ namespace Dynamo.Tests.UI
             var model = dynSettings.Controller.DynamoModel;
             var viz = dynSettings.Controller.VisualizationManager;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points_line.dyn");
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
             model.Open(openPath);
 
             // run the expression
@@ -275,7 +239,7 @@ namespace Dynamo.Tests.UI
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_thicken.dyn");
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_thicken.dyn");
             model.Open(openPath);
 
             // run the expression
@@ -292,7 +256,7 @@ namespace Dynamo.Tests.UI
             var model = dynSettings.Controller.DynamoModel;
             var viz = dynSettings.Controller.VisualizationManager;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_cuboid.dyn");
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_cuboid.dyn");
             model.Open(openPath);
 
             // run the expression
@@ -308,7 +272,7 @@ namespace Dynamo.Tests.UI
             var model = dynSettings.Controller.DynamoModel;
             var viz = dynSettings.Controller.VisualizationManager;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_coordinateSystem.dyn");
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_coordinateSystem.dyn");
             model.Open(openPath);
 
             // run the expression
@@ -325,7 +289,7 @@ namespace Dynamo.Tests.UI
             var model = dynSettings.Controller.DynamoModel;
             var viz = dynSettings.Controller.VisualizationManager;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_python.dyn");
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_python.dyn");
             model.Open(openPath);
 
             // run the expression
@@ -343,7 +307,7 @@ namespace Dynamo.Tests.UI
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points.dyn");
             model.Open(openPath);
 
             // check all the nodes and connectors are loaded
@@ -370,7 +334,7 @@ namespace Dynamo.Tests.UI
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points.dyn");
             model.Open(openPath);
 
             // run the expression
@@ -392,9 +356,9 @@ namespace Dynamo.Tests.UI
             var model = dynSettings.Controller.DynamoModel;
 
             Assert.IsTrue(
-                Controller.CustomNodeManager.AddFileToPath(Path.Combine(GetTestDirectory(), @"core\visualization\Points.dyf"))
+                Controller.CustomNodeManager.AddFileToPath(Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\Points.dyf"))
                 != null);
-            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_customNode.dyn");
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_customNode.dyn");
             model.Open(openPath);
 
             // run the expression
@@ -410,7 +374,7 @@ namespace Dynamo.Tests.UI
             var model = dynSettings.Controller.DynamoModel;
             var viz = dynSettings.Controller.VisualizationManager;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points_line_noPreview.dyn");
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line_noPreview.dyn");
             model.Open(openPath);
 
             // run the expression
@@ -426,7 +390,7 @@ namespace Dynamo.Tests.UI
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\Labels.dyn");
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\Labels.dyn");
             model.Open(openPath);
 
             // check all the nodes and connectors are loaded
@@ -471,7 +435,7 @@ namespace Dynamo.Tests.UI
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\BSplineCurveTest.dyn");
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\GeometryTestFiles\BSplineCurveTest.dyn");
             model.Open(openPath);
 
             // check all the nodes and connectors are loaded

@@ -18,55 +18,6 @@ namespace Dynamo.Tests.UI
     [TestFixture]
     public class CoreUserInterfaceTests :DynamoTestUI
     {
-        [SetUp]
-        public void Start()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
-
-            string tempPath = Path.GetTempPath();
-            TempFolder = Path.Combine(tempPath, "dynamoTmp");
-
-            if (!Directory.Exists(TempFolder))
-            {
-                Directory.CreateDirectory(TempFolder);
-            }
-            else
-            {
-                EmptyTempFolder();
-            }
-
-            // Setup Temp PreferenceSetting Location for testing
-            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
-
-            Controller = DynamoController.MakeSandbox();
-            DynamoController.IsTestMode = true;
-
-            //create the view
-            Ui = new DynamoView();
-            Ui.DataContext = Controller.DynamoViewModel;
-            Vm = Controller.DynamoViewModel;
-            Model = Controller.DynamoModel;
-            Controller.UIDispatcher = Ui.Dispatcher;
-            Ui.Show();
-
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
-        }
-
-        [TearDown]
-        public void Exit()
-        {
-            if (Ui.IsLoaded)
-                Ui.Close();
-        }
-
-        [TestFixtureTearDown]
-        public void FinalTearDown()
-        {
-            // Fix for COM exception on close
-            // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf 
-            //Dispatcher.CurrentDispatcher.InvokeShutdown();
-        }
-
         #region SaveImageCommand
 
         [Test]
