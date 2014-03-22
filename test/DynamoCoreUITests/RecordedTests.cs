@@ -51,6 +51,8 @@ namespace DynamoCoreUITests
                 this.Controller.ShutDown(true);
                 this.Controller = null;
             }
+
+            GC.Collect();
         }
 
         #endregion
