@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
+using Dynamo.Models;
 using Dynamo.Tests.UI;
 using Dynamo.UI.Controls;
 using Dynamo.UpdateManager;
@@ -31,7 +33,7 @@ namespace DynamoCoreUITests
             Ui = new DynamoView { DataContext = Controller.DynamoViewModel };
             Vm = Controller.DynamoViewModel;
             Controller.UIDispatcher = Ui.Dispatcher;
-            Ui.Show();
+            Ui.Show();                             
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
@@ -44,22 +46,29 @@ namespace DynamoCoreUITests
             }
             else
             {
-                EmptyTempFolder();
+                DynamoTestUI.EmptyTempFolder(TempFolder);
             }
         }
 
         [SetUp]
-        public void Setup()
+        public override void Start()
         {
-            //Do nothing.
+            //do nothing on start
         }
 
-        [TearDown]
-        public void Shutdown()
-        {
-            if (Ui.IsLoaded)
-                Ui.Close();
-        }
+        //[TearDown]
+        //public void Shutdown()
+        //{
+        //    if (Ui.IsLoaded)
+        //        Ui.Close();
+
+        //    Controller.ShutDown(false);
+
+        //    Controller = null;
+        //    Vm = null;
+        //    Ui = null;
+        //    Model = null;
+        //}
 
         [Test]
         [Category("Failing")]

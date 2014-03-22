@@ -42,7 +42,7 @@ namespace Dynamo.Tests.UI
             }
             else
             {
-                EmptyTempFolder();
+                EmptyTempFolder(TempFolder);
             }
         }
 
