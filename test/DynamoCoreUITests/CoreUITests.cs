@@ -570,6 +570,11 @@ namespace DynamoCoreUITests
         {
             // Shutdown Dynamo and restart it
             Ui.Close();
+            if (Controller != null)
+            {
+                Controller.ShutDown(false);
+                Controller = null;
+            }
 
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
