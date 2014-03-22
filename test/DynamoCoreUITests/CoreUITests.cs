@@ -2,21 +2,20 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Windows;
 using System.Windows.Threading;
+using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.Units;
-using Dynamo.Utilities;
+using Dynamo.Services;
 using Dynamo.ViewModels;
 using NUnit.Framework;
-using System.Windows;
-using Dynamo.Services;
 
-namespace Dynamo.Tests.UI
+namespace DynamoCoreUITests
 {
     [TestFixture]
-    public class CoreUserInterfaceTests :DynamoTestUI
+    public class CoreUserInterfaceTests : DynamoTestUI
     {
         #region SaveImageCommand
 
