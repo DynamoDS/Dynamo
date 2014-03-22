@@ -11,7 +11,7 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
-namespace Dynamo.Tests.UI
+namespace DynamoCoreUITests
 {
     [TestFixture]
     public class VisualizationManagerUITests : DynamoTestUI

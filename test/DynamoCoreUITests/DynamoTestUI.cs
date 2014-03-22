@@ -2,13 +2,14 @@
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 
-namespace Dynamo.Tests.UI
+namespace DynamoCoreUITests
 {
     public class DynamoTestUI
     {
@@ -73,6 +74,8 @@ namespace Dynamo.Tests.UI
             Vm = null;
             Ui = null;
             Model = null;
+
+            GC.Collect();
         }
 
         [TestFixtureTearDown]

@@ -1,14 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
-using Dynamo.Models;
-using Dynamo.Tests.UI;
 using Dynamo.UI.Controls;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
@@ -53,22 +50,8 @@ namespace DynamoCoreUITests
         [SetUp]
         public override void Start()
         {
-            //do nothing on start
+            //override this to avoid the typical startup behavior
         }
-
-        //[TearDown]
-        //public void Shutdown()
-        //{
-        //    if (Ui.IsLoaded)
-        //        Ui.Close();
-
-        //    Controller.ShutDown(false);
-
-        //    Controller = null;
-        //    Vm = null;
-        //    Ui = null;
-        //    Model = null;
-        //}
 
         [Test]
         [Category("Failing")]
