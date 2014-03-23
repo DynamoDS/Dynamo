@@ -42,7 +42,8 @@ namespace DSRevitNodesTests.Elements
 
             Assert.NotNull(structure);
             Assert.NotNull(structure.InternalElement);
-            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(structure.InternalElement.Id));
+            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(
+                 new ElementUUID( structure.InternalElement.UniqueId)));
         }
 
         [Test]
