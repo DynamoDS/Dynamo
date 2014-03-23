@@ -169,7 +169,9 @@ namespace Revit.AnalysisDisplay
         /// <returns></returns>
         protected Tuple<SpatialFieldManager, int> GetElementAndPrimitiveIdFromTrace()
         {
-            throw new NotImplementedException("BLARRRG");
+            throw new NotImplementedException("This Element ID scheme is not yet implemented");
+            
+            /*
 
             // This is a provisional implementation until we can store both items in trace
             var id = ElementBinder.GetElementIdFromTrace(Document);
@@ -184,7 +186,7 @@ namespace Revit.AnalysisDisplay
             // if we can't get the sfm, return null
             if (!Document.TryGetElement<SpatialFieldManager>(new ElementId(sfmId), out sfm)) return null;
 
-            return new Tuple<SpatialFieldManager, int>(sfm, primitiveId);
+            return new Tuple<SpatialFieldManager, int>(sfm, primitiveId);*/
         }
 
         /// <summary>
@@ -206,9 +208,9 @@ namespace Revit.AnalysisDisplay
 
             // This is provisional until we can store an Int and ElementId simultaneously in TLS
             var id = primitiveId * PrimitiveIdPrimeFactor + manager.Id.IntegerValue;
-           
-            
-            throw new NotImplementedException("BLLLARRRG");
+
+
+            throw new NotImplementedException("This Element ID scheme is not yet implemented");
          //   ElementBinder.SetElementForTrace(new ElementId(id));
         }
 
