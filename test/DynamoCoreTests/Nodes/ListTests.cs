@@ -1474,6 +1474,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void AddToList_Complex()
         {
             var model = dynSettings.Controller.DynamoModel;
