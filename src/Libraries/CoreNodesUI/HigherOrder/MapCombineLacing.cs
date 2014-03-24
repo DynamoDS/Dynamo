@@ -28,20 +28,19 @@ namespace DSCore
             RegisterAllPorts();
         }
 
-        public override IEnumerable<AssociativeNode> BuildOutputAst(
-            List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
             {
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
-                    AstFactory.BuildFunctionCall(
-                        "__Combine",
-                        new List<AssociativeNode>
-                        {
-                            inputAstNodes[1],
-                            AstFactory.BuildExprList(new List<AssociativeNode> { inputAstNodes[0] })
-                        }))
+                    IsPartiallyApplied
+                        ? AstFactory.BuildFunctionObject(
+                            "__Map",
+                            2,
+                            new[] { 0, 1 }.Where(HasConnectedInput),
+                            Enumerable.Reverse(inputAstNodes).ToList())
+                        : AstFactory.BuildFunctionCall("__Map", Enumerable.Reverse(inputAstNodes).ToList()))
             };
         }
     }

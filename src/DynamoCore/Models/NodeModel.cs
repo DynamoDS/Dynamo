@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Security.Permissions;
 using System.Windows;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
@@ -84,17 +85,34 @@ namespace Dynamo.Models
         public Dictionary<int, HashSet<Tuple<int, NodeModel>>> Outputs =
             new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
-        private Object mutex = new object();
+        public Object RenderPackagesMutex = new object();
         public List<IRenderPackage> RenderPackages
         {
-            get { return _renderPackages; }
+            get
+            {
+                lock (RenderPackagesMutex)
+                {
+                    return _renderPackages; 
+                }
+            }
             set
             {
-                lock (mutex)
+                lock (RenderPackagesMutex)
                 {
                     _renderPackages = value;
-                    RaisePropertyChanged("RenderPackages");
-                } 
+                }
+                RaisePropertyChanged("RenderPackages");
+            }
+        }
+
+        public bool HasRenderPackages
+        {
+            get
+            {
+                lock (RenderPackagesMutex)
+                {
+                    return RenderPackages.Any();
+                }
             }
         }
 
@@ -427,7 +445,7 @@ namespace Dynamo.Models
                 if (identifier == null)
                 {
                     string id = AstIdentifierBase;
-                    identifier = new IdentifierNode { Name = id, Value = id };
+                    identifier = AstFactory.BuildIdentifier(id);
                 }
                 return identifier;
             }
@@ -510,11 +528,10 @@ namespace Dynamo.Models
                 throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
 
             if (OutPortData.Count == 1)
-                return AstIdentifierForPreview;
+                return AstFactory.BuildIdentifier((IsPartiallyApplied ? "_local_" : "") + AstIdentifierBase);
 
-            string nameAndValue = AstIdentifierBase + "[" + outputIndex + "]";
-
-            return new IdentifierNode { Name = nameAndValue, Value = nameAndValue };
+            string id = AstIdentifierBase + "_out" + outputIndex;
+            return AstFactory.BuildIdentifier(id);
         }
 
         #endregion
@@ -702,20 +719,7 @@ namespace Dynamo.Models
             var result = BuildOutputAst(inputAstNodes);
 
             if (OutPortData.Count == 1)
-            {
-                var firstOutput = GetAstIdentifierForOutputIndex(0);
-                if (!AstIdentifierForPreview.Equals(firstOutput))
-                {
-                    return result.Concat(new[]
-                    {
-                        AstFactory.BuildAssignment(AstIdentifierForPreview, firstOutput)
-                    });
-                }
-                else
-                {
-                    return result;
-                }
-            }
+                return result;
 
             var emptyList = AstFactory.BuildExprList(new List<AssociativeNode>());
             var previewIdInit = AstFactory.BuildAssignment(AstIdentifierForPreview, emptyList);
@@ -2022,48 +2026,59 @@ namespace Dynamo.Models
                 return;
 
             //dispose of the current render package
-            RenderPackages.Clear();
-
-            if (State == ElementState.Error || !IsVisible)
+            lock (RenderPackagesMutex)
             {
-                return;
+                RenderPackages.Clear(); 
+
+                if (State == ElementState.Error || !IsVisible)
+                {
+                    return;
+                }
+
+                IEnumerable<string> drawableIds = GetDrawableIds();
+
+                int count = 0;
+                var labelMap = new List<string>();
+
+                var ident = AstIdentifierForPreview.Name;
+
+                foreach (var varName in drawableIds)
+                {
+                    var mirror = dynSettings.Controller.EngineController.GetMirror(varName);
+                    if (mirror != null)
+                    {
+                        var mirrorData = mirror.GetData();
+                        AddToLabelMap(mirrorData, labelMap, ident);
+                        count++;
+                    }
+                } 
+
+                count = 0;
+                foreach (var varName in drawableIds)
+                {
+                    var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
+                    if (graphItems == null)
+                        continue;
+
+                    foreach (var gItem in graphItems)
+                    {
+                        var package = new RenderPackage(IsSelected, DisplayLabels);
+
+                        PushGraphicItemIntoPackage(gItem, package, labelMap.Count > count ? labelMap[count] : "?");
+
+                        package.ItemsCount++;
+                        RenderPackages.Add(package);
+                        count++;
+                    }
+                }
             }
+        }
 
-            IEnumerable<string> drawableIds = GetDrawableIds();
-
-            int count = 0;
-            var labelMap = new List<string>();
-
-            var ident = AstIdentifierForPreview.Name;
-
-            foreach (var varName in drawableIds)
+        public void ClearRenderPackages()
+        {
+            lock (RenderPackagesMutex)
             {
-                var mirror = dynSettings.Controller.EngineController.GetMirror(varName);
-                if (mirror != null)
-                {
-                    var mirrorData = mirror.GetData();
-                    AddToLabelMap(mirrorData, labelMap, ident);
-                    count++;
-                }
-            } 
-
-            count = 0;
-            foreach (var varName in drawableIds)
-            {
-                var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
-                if (graphItems == null)
-                    continue;
-
-                foreach (var gItem in graphItems)
-                {
-                    var package = new RenderPackage(IsSelected, DisplayLabels);
-
-                    PushGraphicItemIntoPackage(gItem, package, labelMap.Count > count ? labelMap[count] : "?");
-
-                    package.ItemsCount++;
-                    RenderPackages.Add(package);
-                    count++;
-                }
+                RenderPackages.Clear();
             }
         }
 

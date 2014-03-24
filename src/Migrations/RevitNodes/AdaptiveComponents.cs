@@ -29,8 +29,8 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll",
-                "AdaptiveComponent.ByPointsOnFace",
-                "AdaptiveComponent.ByPointsOnFace@double[][],Face,FamilySymbol");
+                "AdaptiveComponent.ByParametersOnFace",
+                "AdaptiveComponent.ByParametersOnFace@double[][],Face,FamilySymbol");
         }
     }
 
@@ -40,8 +40,8 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll",
-                "AdaptiveComponent.ByPointsOnCurve",
-                "AdaptiveComponent.ByPointsOnCurve@double[],Curve,FamilySymbol");
+                "AdaptiveComponent.ByParametersOnCurveReference",
+                "AdaptiveComponent.ByParametersOnCurveReference@double[],CurveReference,FamilySymbol");
         }
     }
 }

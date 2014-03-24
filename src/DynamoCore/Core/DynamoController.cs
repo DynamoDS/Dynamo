@@ -24,6 +24,7 @@ using Microsoft.Practices.Prism.ViewModel;
 using NUnit.Framework;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Dynamo.UI.Prompts;
 
 namespace Dynamo
 {
@@ -195,12 +196,21 @@ namespace Dynamo
                 RequestsRedraw(sender, e);
         }
 
+        // TODO(Ben): Obsolete CrashPrompt and make use of GenericTaskDialog.
         public delegate void CrashPromptHandler(object sender, CrashPromptArgs e);
         public event CrashPromptHandler RequestsCrashPrompt;
         public void OnRequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
             if (RequestsCrashPrompt != null)
                 RequestsCrashPrompt(this, args);
+        }
+
+        internal delegate void TaskDialogHandler(object sender, TaskDialogEventArgs e);
+        internal event TaskDialogHandler RequestTaskDialog;
+        internal void OnRequestTaskDialog(object sender, TaskDialogEventArgs args)
+        {
+            if (RequestTaskDialog != null)
+                RequestTaskDialog(sender, args);
         }
 
         #endregion

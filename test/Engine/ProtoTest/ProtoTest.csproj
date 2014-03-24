@@ -125,6 +125,7 @@
     <Compile Include="FFITests\CSFFIDispose.cs" />
     <Compile Include="FFITests\CSFFITest.cs" />
     <Compile Include="FFITests\Dummy.cs" />
+    <Compile Include="FFITests\RegressionAnalysisTests.cs" />
     <Compile Include="FuzzTests.cs" />
     <Compile Include="GraphCompiler\MicroFeatureTests.cs" />
     <Compile Include="Imperative\FromOldTestSuite.cs" />

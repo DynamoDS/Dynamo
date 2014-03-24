@@ -1331,10 +1331,16 @@ namespace ProtoScript.Runners
             {
                 foreach (var t in syncData.ModifiedSubtrees)
                 {
-                    astCache[t.GUID].Clear();
-                    if (t.AstNodes != null)
+                    if (astCache.Count > 0)
                     {
-                        astCache[t.GUID].AddRange(t.AstNodes);
+                        if (astCache.ContainsKey(t.GUID))
+                        {
+                            astCache[t.GUID].Clear();
+                            if (t.AstNodes != null)
+                            {
+                                astCache[t.GUID].AddRange(t.AstNodes);
+                            }
+                        }
                     }
                 }
             }
@@ -1414,6 +1420,27 @@ namespace ProtoScript.Runners
                         exprGuidMap.Remove(expr);
                         Core.RuntimeStatus.ClearWarningForExpression(expr); 
                     }
+                }
+            }
+
+            if (syncData.AddedSubtrees != null)
+            {
+                foreach (var st in syncData.AddedSubtrees)
+                {
+                    if (st.AstNodes != null)
+                    {
+                        deltaAstList.AddRange(st.AstNodes);
+                        foreach (var node in st.AstNodes)
+                        {
+                            var bnode = node as BinaryExpressionNode;
+                            if (bnode != null)
+                            {
+                                exprGuidMap[bnode.exprUID] = st.GUID;
+                            }
+                        }
+                    }
+
+                    currentSubTreeList.Add(st.GUID, st);
                 }
             }
 
@@ -1509,27 +1536,6 @@ namespace ProtoScript.Runners
 
                         //deltaAstList.AddRange(astDependentOnFunctionList);
                     }
-                }
-            }
-
-            if (syncData.AddedSubtrees != null)
-            {
-                foreach (var st in syncData.AddedSubtrees)
-                {
-                    if (st.AstNodes != null)
-                    {
-                        deltaAstList.AddRange(st.AstNodes);
-                        foreach (var node in st.AstNodes)
-	                    {
-                            var bnode = node as BinaryExpressionNode;
-                            if (bnode != null)
-                            {
-                                exprGuidMap[bnode.exprUID] = st.GUID;
-                            }
-	                    }
-                    }
-
-                    currentSubTreeList.Add(st.GUID, st);
                 }
             }
 

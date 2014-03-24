@@ -63,9 +63,8 @@ Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
 Source: temp\bin\LibG\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\InstallASMForDynamo.exe; DestDir:{app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 
-;Training Files
-Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
-Source: temp\dynamo_packages\*; DestDir: {app}\dynamo_packages; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
+
+
 
 [UninstallDelete]
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2013\DynamoDS.addin"

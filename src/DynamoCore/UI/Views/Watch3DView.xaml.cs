@@ -36,24 +36,24 @@ namespace Dynamo.Controls
         private readonly string _id="";
         Point _rightMousePoint;
 
-        private ThreadSafeList<Point3D> _points = new ThreadSafeList<Point3D>();
-        private ThreadSafeList<Point3D> _lines = new ThreadSafeList<Point3D>();
-        private ThreadSafeList<Point3D> _xAxis = new ThreadSafeList<Point3D>();
-        private ThreadSafeList<Point3D> _yAxis = new ThreadSafeList<Point3D>();
-        private ThreadSafeList<Point3D> _zAxis = new ThreadSafeList<Point3D>();
+        private List<Point3D> _points = new List<Point3D>();
+        private List<Point3D> _lines = new List<Point3D>();
+        private List<Point3D> _xAxis = new List<Point3D>();
+        private List<Point3D> _yAxis = new List<Point3D>();
+        private List<Point3D> _zAxis = new List<Point3D>();
         private MeshGeometry3D _mesh = new MeshGeometry3D();
-        private ThreadSafeList<Point3D> _pointsSelected = new ThreadSafeList<Point3D>();
-        private ThreadSafeList<Point3D> _linesSelected = new ThreadSafeList<Point3D>();
+        private List<Point3D> _pointsSelected = new List<Point3D>();
+        private List<Point3D> _linesSelected = new List<Point3D>();
         private MeshGeometry3D _meshSelected = new MeshGeometry3D();
-        private ThreadSafeList<Point3D> _grid = new ThreadSafeList<Point3D>();
-        private ThreadSafeList<BillboardTextItem> _text = new ThreadSafeList<BillboardTextItem>();
+        private List<Point3D> _grid = new List<Point3D>();
+        private List<BillboardTextItem> _text = new List<BillboardTextItem>();
 
         public Material MeshMaterial
         {
             get { return Materials.White; }
         }
 
-        public ThreadSafeList<Point3D> Grid
+        public List<Point3D> Grid
         {
             get { return _grid; }
             set
@@ -63,7 +63,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public ThreadSafeList<Point3D> Points
+        public List<Point3D> Points
         {
             get { return _points; }
             set
@@ -73,7 +73,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public ThreadSafeList<Point3D> Lines
+        public List<Point3D> Lines
         {
             get { return _lines; }
             set
@@ -83,7 +83,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public ThreadSafeList<Point3D> XAxes
+        public List<Point3D> XAxes
         {
             get { return _xAxis; }
             set
@@ -93,7 +93,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public ThreadSafeList<Point3D> YAxes
+        public List<Point3D> YAxes
         {
             get { return _yAxis; }
             set
@@ -103,7 +103,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public ThreadSafeList<Point3D> ZAxes
+        public List<Point3D> ZAxes
         {
             get { return _zAxis; }
             set
@@ -123,7 +123,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public ThreadSafeList<Point3D> PointsSelected
+        public List<Point3D> PointsSelected
         {
             get { return _pointsSelected; }
             set
@@ -133,7 +133,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public ThreadSafeList<Point3D> LinesSelected
+        public List<Point3D> LinesSelected
         {
             get { return _linesSelected; }
             set
@@ -153,7 +153,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public ThreadSafeList<BillboardTextItem> Text
+        public List<BillboardTextItem> Text
         {
             get
             {
@@ -255,7 +255,7 @@ namespace Dynamo.Controls
         {
             Grid = null;
 
-            var newLines = new ThreadSafeList<Point3D>();
+            var newLines = new List<Point3D>();
 
             for (int x = -10; x <= 10; x++)
             {
@@ -305,16 +305,16 @@ namespace Dynamo.Controls
                 Text = null;
                 MeshCount = 0;
 
-                var points = new ThreadSafeList<Point3D>();
-                var pointsSelected = new ThreadSafeList<Point3D>();
-                var lines = new ThreadSafeList<Point3D>();
-                var linesSelected = new ThreadSafeList<Point3D>();
-                var redLines = new ThreadSafeList<Point3D>();
-                var greenLines = new ThreadSafeList<Point3D>();
-                var blueLines = new ThreadSafeList<Point3D>();
-                var text = new ThreadSafeList<BillboardTextItem>();
-                var meshes = new ThreadSafeList<MeshGeometry3D>();
-                var meshesSelected = new ThreadSafeList<MeshGeometry3D>();
+                var points = new List<Point3D>();
+                var pointsSelected = new List<Point3D>();
+                var lines = new List<Point3D>();
+                var linesSelected = new List<Point3D>();
+                var redLines = new List<Point3D>();
+                var greenLines = new List<Point3D>();
+                var blueLines = new List<Point3D>();
+                var text = new List<BillboardTextItem>();
+                var meshes = new List<MeshGeometry3D>();
+                var meshesSelected = new List<MeshGeometry3D>();
 
                 foreach (var package in e.Packages)
                 {
@@ -337,20 +337,6 @@ namespace Dynamo.Controls
                 MeshSelected = MergeMeshes(meshesSelected);
                 Text = text;
 
-                //var sb = new StringBuilder();
-                //sb.AppendLine();
-                //sb.AppendLine(string.Format("Rendering complete:"));
-                //sb.AppendLine(string.Format("Points: {0}", rd.Points.Count + rd.SelectedPoints.Count));
-                //sb.AppendLine(string.Format("Line segments: {0}", rd.Lines.Count / 2 + rd.SelectedLines.Count / 2));
-                //sb.AppendLine(string.Format("Mesh vertices: {0}",
-                //    rd.Meshes.SelectMany(x => x.Positions).Count() +
-                //    rd.SelectedMeshes.SelectMany(x => x.Positions).Count()));
-                //sb.Append(string.Format("Mesh faces: {0}",
-                //    rd.Meshes.SelectMany(x => x.TriangleIndices).Count() / 3 +
-                //    rd.SelectedMeshes.SelectMany(x => x.TriangleIndices).Count() / 3));
-                ////DynamoLogger.Instance.Log(sb.ToString());
-                //Debug.WriteLine(sb.ToString());
-
                 sw.Stop();
                 //DynamoLogger.Instance.Log(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
 
@@ -363,10 +349,10 @@ namespace Dynamo.Controls
             }
         }
 
-        private void ConvertPoints(RenderPackage p, 
-            ThreadSafeList<Point3D> points,
-            ThreadSafeList<Point3D> pointsSelected, 
-            ThreadSafeList<BillboardTextItem> text)
+        private void ConvertPoints(RenderPackage p,
+            List<Point3D> points,
+            List<Point3D> pointsSelected,
+            List<BillboardTextItem> text)
         {
             var pointColl = p.Selected ? pointsSelected : points;
             for (int i = 0; i < p.PointVertices.Count; i += 3)
@@ -385,13 +371,13 @@ namespace Dynamo.Controls
             }
         }
 
-        private void ConvertLines(RenderPackage p, 
-            ThreadSafeList<Point3D> lines,
-            ThreadSafeList<Point3D> linesSelected, 
-            ThreadSafeList<Point3D> redLines,
-            ThreadSafeList<Point3D> greenLines,
-            ThreadSafeList<Point3D> blueLines,
-            ThreadSafeList<BillboardTextItem> text)
+        private void ConvertLines(RenderPackage p,
+            List<Point3D> lines,
+            List<Point3D> linesSelected,
+            List<Point3D> redLines,
+            List<Point3D> greenLines,
+            List<Point3D> blueLines,
+            List<BillboardTextItem> text)
         {
             //int colorCount = 0;
             int idx = 0;
@@ -451,8 +437,8 @@ namespace Dynamo.Controls
         }
 
         private void ConvertMeshes(RenderPackage p,
-            ThreadSafeList<MeshGeometry3D> meshes,
-            ThreadSafeList<MeshGeometry3D> meshesSelected)
+            List<MeshGeometry3D> meshes,
+            List<MeshGeometry3D> meshesSelected)
         {
             //var sw = new Stopwatch();
             //sw.Start();
@@ -541,7 +527,7 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="meshes"></param>
         /// <returns></returns>
-        private MeshGeometry3D MergeMeshes(ThreadSafeList<MeshGeometry3D> meshes)
+        private MeshGeometry3D MergeMeshes(List<MeshGeometry3D> meshes)
         {
             if (meshes.Count == 0)
                 return null;
