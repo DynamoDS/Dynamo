@@ -13,7 +13,6 @@ namespace ProtoTest.DebugTests
 
 
         [Test]
-        [Category("Trace")]
         public void DupImportTest()
         {
             var mirror = thisTest.RunScriptSource(
