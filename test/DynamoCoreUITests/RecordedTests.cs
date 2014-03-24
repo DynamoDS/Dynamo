@@ -1,27 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
+using DSIronPythonNode;
+using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
+using Dynamo.Tests;
 using Dynamo.ViewModels;
 using NUnit.Framework;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
-using Dynamo.Tests;
-using ProtoCore.DSASM;
-using ProtoCore.Mirror;
-using DSIronPythonNode;
-using Dynamo.DSEngine;
 
-namespace Dynamo.Tests.UI
+namespace DynamoCoreUITests
 {
     public delegate void CommandCallback(string commandTag);
 
@@ -51,6 +43,7 @@ namespace Dynamo.Tests.UI
             SetupDirectories();
         }
 
+        [TearDown]
         protected void Exit()
         {
             if (this.Controller != null)
@@ -58,6 +51,8 @@ namespace Dynamo.Tests.UI
                 this.Controller.ShutDown(true);
                 this.Controller = null;
             }
+
+            GC.Collect();
         }
 
         #endregion
@@ -83,7 +78,7 @@ namespace Dynamo.Tests.UI
         {
             int pauseDurationInMs = randomizer.Next(2000);
 
-            var cmdOne = new DynCmd.PausePlaybackCommand(pauseDurationInMs);
+            var cmdOne = new DynamoViewModel.PausePlaybackCommand(pauseDurationInMs);
             var cmdTwo = DuplicateAndCompare(cmdOne);
             Assert.AreEqual(cmdOne.PauseDurationInMs, cmdTwo.PauseDurationInMs);
         }
@@ -94,7 +89,7 @@ namespace Dynamo.Tests.UI
             bool showErrors = randomizer.Next(2) == 0;
             bool cancelRun = randomizer.Next(2) == 0;
 
-            var cmdOne = new DynCmd.RunCancelCommand(showErrors, cancelRun);
+            var cmdOne = new DynamoViewModel.RunCancelCommand(showErrors, cancelRun);
             var cmdTwo = DuplicateAndCompare(cmdOne);
             Assert.AreEqual(cmdOne.ShowErrors, cmdTwo.ShowErrors);
             Assert.AreEqual(cmdOne.CancelRun, cmdTwo.CancelRun);
@@ -114,7 +109,7 @@ namespace Dynamo.Tests.UI
             bool defaultPos = randomizer.Next(2) == 0;
             bool transfPos = randomizer.Next(2) == 0;
 
-            var cmdOne = new DynCmd.CreateNodeCommand(
+            var cmdOne = new DynamoViewModel.CreateNodeCommand(
                 nodeId, name, x, y, defaultPos, transfPos);
 
             var cmdTwo = DuplicateAndCompare(cmdOne);
@@ -144,7 +139,7 @@ namespace Dynamo.Tests.UI
             double y = randomizer.NextDouble() * 1000;
             bool defaultPos = randomizer.Next(2) == 0;
 
-            var cmdOne = new DynCmd.CreateNoteCommand(nodeId, text, x, y, defaultPos);
+            var cmdOne = new DynamoViewModel.CreateNoteCommand(nodeId, text, x, y, defaultPos);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.AreEqual(cmdOne.NodeId, cmdTwo.NodeId);
@@ -161,7 +156,7 @@ namespace Dynamo.Tests.UI
             ModifierKeys modifiers = ((randomizer.Next(2) == 0) ?
                 ModifierKeys.Control : ModifierKeys.Alt);
 
-            var cmdOne = new DynCmd.SelectModelCommand(modelGuid, modifiers);
+            var cmdOne = new DynamoViewModel.SelectModelCommand(modelGuid, modifiers);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
@@ -179,7 +174,7 @@ namespace Dynamo.Tests.UI
 
             bool isCrossSelection = randomizer.Next(2) == 0;
 
-            var cmdOne = new DynCmd.SelectInRegionCommand(region, isCrossSelection);
+            var cmdOne = new DynamoViewModel.SelectInRegionCommand(region, isCrossSelection);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.AreEqual(cmdOne.Region.X, cmdTwo.Region.X, 0.000001);
@@ -197,10 +192,10 @@ namespace Dynamo.Tests.UI
                 randomizer.NextDouble() * 100);
 
             var operation = ((randomizer.Next(2) == 0) ?
-                DynCmd.DragSelectionCommand.Operation.BeginDrag :
-                DynCmd.DragSelectionCommand.Operation.EndDrag);
+                DynamoViewModel.DragSelectionCommand.Operation.BeginDrag :
+                DynamoViewModel.DragSelectionCommand.Operation.EndDrag);
 
-            var cmdOne = new DynCmd.DragSelectionCommand(point, operation);
+            var cmdOne = new DynamoViewModel.DragSelectionCommand(point, operation);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.AreEqual(cmdOne.MouseCursor.X, cmdTwo.MouseCursor.X, 0.000001);
@@ -214,9 +209,9 @@ namespace Dynamo.Tests.UI
             Guid nodeId = Guid.NewGuid();
             int portIndex = randomizer.Next();
             var portType = ((PortType)randomizer.Next(2));
-            var mode = ((DynCmd.MakeConnectionCommand.Mode)randomizer.Next(3));
+            var mode = ((DynamoViewModel.MakeConnectionCommand.Mode)randomizer.Next(3));
 
-            var cmdOne = new DynCmd.MakeConnectionCommand(
+            var cmdOne = new DynamoViewModel.MakeConnectionCommand(
                 nodeId, portIndex, portType, mode);
 
             var cmdTwo = DuplicateAndCompare(cmdOne);
@@ -231,7 +226,7 @@ namespace Dynamo.Tests.UI
         public void TestDeleteModelCommand()
         {
             Guid modelGuid = Guid.NewGuid();
-            var cmdOne = new DynCmd.DeleteModelCommand(modelGuid);
+            var cmdOne = new DynamoViewModel.DeleteModelCommand(modelGuid);
             var cmdTwo = DuplicateAndCompare(cmdOne);
             Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
         }
@@ -239,8 +234,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void TestUndoRedoCommand()
         {
-            var operation = ((DynCmd.UndoRedoCommand.Operation)randomizer.Next(2));
-            var cmdOne = new DynCmd.UndoRedoCommand(operation);
+            var operation = ((DynamoViewModel.UndoRedoCommand.Operation)randomizer.Next(2));
+            var cmdOne = new DynamoViewModel.UndoRedoCommand(operation);
             var cmdTwo = DuplicateAndCompare(cmdOne);
             Assert.AreEqual(cmdOne.CmdOperation, cmdTwo.CmdOperation);
         }
@@ -252,7 +247,7 @@ namespace Dynamo.Tests.UI
             string name = randomizer.Next().ToString();
             string value = randomizer.Next().ToString();
 
-            var cmdOne = new DynCmd.UpdateModelValueCommand(modelGuid, name, value);
+            var cmdOne = new DynamoViewModel.UpdateModelValueCommand(modelGuid, name, value);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
@@ -264,7 +259,7 @@ namespace Dynamo.Tests.UI
 
         #region General Node Operations Test Cases
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void MultiPassValidationSample()
         {
             RunCommandsFromFile("MultiPassValidationSample.xml", false, (commandTag) =>
@@ -284,7 +279,7 @@ namespace Dynamo.Tests.UI
             });
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void TestModifyPythonNodes()
         {
             RunCommandsFromFile("ModifyPythonNodes.xml");
@@ -298,7 +293,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual("# Modification 4", pvarin.Script);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void TestModifyPythonNodesUndo()
         {
             RunCommandsFromFile("ModifyPythonNodesUndo.xml");
@@ -312,7 +307,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual("# Modification 2", pvarin.Script);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void TestModifyPythonNodesUndoRedo()
         {
             RunCommandsFromFile("ModifyPythonNodesUndoRedo.xml");
@@ -339,7 +334,7 @@ namespace Dynamo.Tests.UI
         protected void RunCommandsFromFile(string commandFileName,
             bool autoRun = false, CommandCallback commandCallback = null)
         {
-            string commandFilePath = DynamoTestUI.GetTestDirectory();
+            string commandFilePath = DynamoTestUI.GetTestDirectory(ExecutingDirectory);
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 
@@ -401,7 +396,7 @@ namespace Dynamo.Tests.UI
         }
 
         private CmdType DuplicateAndCompare<CmdType>(CmdType command)
-            where CmdType : DynCmd.RecordableCommand
+            where CmdType : DynamoViewModel.RecordableCommand
         {
             Assert.IsNotNull(command); // Ensure we have an input command.
 
@@ -411,7 +406,7 @@ namespace Dynamo.Tests.UI
             Assert.IsNotNull(element);
 
             // Deserialized the XmlElement into a new instance of the command.
-            var duplicate = DynCmd.RecordableCommand.Deserialize(element);
+            var duplicate = DynamoViewModel.RecordableCommand.Deserialize(element);
             Assert.IsNotNull(duplicate);
             Assert.IsTrue(duplicate is CmdType);
             return duplicate as CmdType;
@@ -453,7 +448,7 @@ namespace Dynamo.Tests.UI
             //Assert.AreEqual(8, (number1.OldValue as FScheme.Value.Number).Item);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_164()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-164
@@ -746,7 +741,7 @@ namespace Dynamo.Tests.UI
     {
         #region Basic CodeBlockNode Test Cases
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void TestBasicCodeBlockNodePortCreation()
         {
             RunCommandsFromFile("TestBasicPortCreation.xml");
@@ -792,7 +787,7 @@ namespace Dynamo.Tests.UI
         /// Creates a Code Block Node with a single line comment and multi line comment 
         /// checks if the ports are created properly and at the correct height
         /// </summary>
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void TestCommentsInCodeBlockNode()
         {
             RunCommandsFromFile("TestCommentsInCodeBlockNode.xml");
@@ -815,7 +810,7 @@ namespace Dynamo.Tests.UI
         /// Create a code block node with some ports connected and others unconnected. Change all variable names
         /// and ensure that connectors remain to the port index.
         /// </summary>
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void TestCodeBlockNodeConnectionOnCodeChange()
         {
             RunCommandsFromFile("TestCodeBlockNodeConnectionSwitching.xml");
@@ -844,7 +839,7 @@ namespace Dynamo.Tests.UI
         /// Creates 3 number nodes and an add (+) nodes. Connects 2 of the number
         /// nodes to the + node. Then converts all the nodes to Code.
         /// </summary>
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void TestConvertAllNodesToCode()
         {
             RunCommandsFromFile("TestConvertAllNodesToCode.xml");
@@ -904,7 +899,7 @@ namespace Dynamo.Tests.UI
         /// Ensures that redo works for NodeToCode by converting a set of nodes to
         /// code and then undoing and redoing it again.
         /// </summary>
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void TestConvertAllNodesToCodeUndoRedo()
         {
             RunCommandsFromFile("TestConvertAllNodesToCodeUndoRedo.xml");
@@ -927,7 +922,7 @@ namespace Dynamo.Tests.UI
             Assert.True(cbn.Code.Contains("190"));
             Assert.True(cbn.Code.Contains("69"));
         }
-            
+
         [Ignore, RequiresSTA]
         public void TestDeleteCommands_DS()
         {
@@ -950,7 +945,7 @@ namespace Dynamo.Tests.UI
             VerifyModelExistence(nodeExistenceMap);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void TestUndoRedoNodesAndConnections_DS()
         {
             RunCommandsFromFile("TestUndoRedoNodesAndConnection_DS.xml");
@@ -968,7 +963,7 @@ namespace Dynamo.Tests.UI
             VerifyModelExistence(nodeExistenceMap);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void TestUpdateNodeCaptions_DS()
         {
             RunCommandsFromFile("TestUpdateNodeCaptions_DS.xml");
@@ -1001,7 +996,7 @@ namespace Dynamo.Tests.UI
             Assert.Inconclusive("Porting : DoubleInput");
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_164_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-904
@@ -1022,7 +1017,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_190_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-904
@@ -1043,7 +1038,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_225_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-225
@@ -1055,7 +1050,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_397_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-397
@@ -1065,7 +1060,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_411()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-411
@@ -1081,7 +1076,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual("b", cbn.InPortData[1].ToolTipString);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_429_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-429
@@ -1092,7 +1087,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_478_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-478
@@ -1103,7 +1098,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(1, workspace.Notes.Count);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_491_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-491
@@ -1129,7 +1124,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_520_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
@@ -1139,7 +1134,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_520_WithCrossSelection_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
@@ -1151,7 +1146,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_581_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-581
@@ -1161,7 +1156,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(1, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_590()
         {
             RunCommandsFromFile("Defect-MAGN-590.xml");
@@ -1177,7 +1172,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(2, connector.End.Index);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_775()
         {
             // The third undo operation should not crash.
@@ -1186,7 +1181,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_585()
         {
             // Details steps are here : http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-585
@@ -1207,7 +1202,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(1, cbn.InPorts.Count);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_605()
         {
             // Details steps are here : http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-605
@@ -1239,7 +1234,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_624()
         {
             // Details steps are here : http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-624
@@ -1265,7 +1260,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_624_1()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-624
@@ -1298,7 +1293,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_590_1()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-590
@@ -1330,7 +1325,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_589_1()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-589
@@ -1362,7 +1357,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_589_2()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-589
@@ -1391,7 +1386,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_589_3()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-589
@@ -1429,7 +1424,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_828()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-828
@@ -1454,7 +1449,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_613()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-613
@@ -1475,7 +1470,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_904()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-904
@@ -1499,7 +1494,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_830()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-830
@@ -1523,7 +1518,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_803()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-803
@@ -1550,7 +1545,7 @@ namespace Dynamo.Tests.UI
         /// Eventually the evaluation will be done at record playback side thus remove the need
         /// of having multiple files.
         /// </summary>
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void TestCBNWithNodeToCode()
         {
             RunCommandsFromFile("TestCBNOperationWithoutNodeToCode.xml");
@@ -1571,7 +1566,7 @@ namespace Dynamo.Tests.UI
             AssertValue("c", 8); // Run playback is recorded in command file
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_902()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-902
@@ -1592,7 +1587,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_422()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-422
@@ -1616,7 +1611,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_422_1()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-422
@@ -1639,7 +1634,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(40, cbn.OutPorts[1].MarginThickness.Top);
 
         }
-        [Test]
+        [Test, Category("Failing")]
         public void DS_FunctionRedef01()
         {
             // test for function redefinition - evalaute function
@@ -1665,7 +1660,7 @@ namespace Dynamo.Tests.UI
             AssertValue("p", 2);
 
         }
-        [Test]
+        [Test, Category("Failing")]
         public void DS_FunctionRedef02()
         {
             // test for function redefinition - evalaute function
@@ -1691,7 +1686,7 @@ namespace Dynamo.Tests.UI
             AssertValue("p", 2);
 
         }
-        [Test]
+        [Test, Category("Failing")]
         public void DS_FunctionRedef03()
         {
             // test for function redefinition - evalaute function
@@ -1717,7 +1712,7 @@ namespace Dynamo.Tests.UI
             AssertValue("b", 2);
 
         }
-        [Test]
+        [Test, Category("Failing")]
         public void DS_FunctionRedef04()
         {
             // test for function redefinition - evalaute function
@@ -1744,7 +1739,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void MethodResolutionFailRedef_MAGN_2262()
         {
             RunCommandsFromFile("MethodResolutionFailRedef_MAGN_2262.xml", false, (commandTag) =>
@@ -1766,7 +1761,7 @@ namespace Dynamo.Tests.UI
 
         #region Tests moved from FScheme
 
-        [Test]
+        [Test, Category("Failing")]
         public void Defect_MAGN_159_AnotherScenario()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-159
@@ -1794,7 +1789,7 @@ namespace Dynamo.Tests.UI
             //Assert.AreEqual(8, (number1.OldValue as FScheme.Value.Number).Item);
         }
 
-        [Test]
+        [Test, Category("Failing")]
         public void Defect_MAGN_164()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-164
@@ -1809,7 +1804,7 @@ namespace Dynamo.Tests.UI
             AssertPreviewValue("635bd033-03f6-4b98-b03d-a5c3c2969607", 10);
         }
 
-        [Test]
+        [Test, Category("Failing")]
         public void Defect_MAGN_190()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-190
@@ -1820,7 +1815,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test]
+        [Test, Category("Failing")]
         public void Defect_MAGN_225()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-225
@@ -1833,7 +1828,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(3, nodes.Count);
         }
 
-        [Test]
+        [Test, Category("Failing")]
         public void Defect_MAGN_397()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-397
@@ -1843,7 +1838,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(1, workspace.Connectors.Count);
         }
 
-        [Test]
+        [Test, Category("Failing")]
         public void Defect_MAGN_429()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-429
@@ -1854,7 +1849,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test]
+        [Test, Category("Failing")]
         public void Defect_MAGN_478()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-478
@@ -1863,7 +1858,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(1, workspace.Notes.Count);
         }
 
-        [Test]
+        [Test, Category("Failing")]
         public void Defect_MAGN_491()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-491
@@ -1888,7 +1883,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
         }
 
-        [Test]
+        [Test, Category("Failing")]
         public void Defect_MAGN_520()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
@@ -1898,7 +1893,7 @@ namespace Dynamo.Tests.UI
             AssertPreviewValue("41f52d8e-1a88-4f09-a2f1-f14e61d81f2c", 4);
         }
 
-        [Test]
+        [Test, Category("Failing")]
         public void Defect_MAGN_520_WithCrossSelection()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
@@ -1921,7 +1916,7 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failing")]
         public void Defect_MAGN_581()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-581
@@ -1931,7 +1926,7 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(1, workspace.Connectors.Count);
         }
 
-        [Test]
+        [Test, Category("Failing")]
         public void ShiftSelectAllNode()
         {
             RunCommandsFromFile("ShiftSelectAllNode.xml");
@@ -1940,14 +1935,14 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(4, workspace.Connectors.Count);
         }
 
-        [Test]
+        [Test, Category("Failing")]
         public void TestCreateConnectors()
         {
             RunCommandsFromFile("CreateNodesAndConnectors.xml");
             Assert.AreEqual(4, workspace.Connectors.Count);
         }
 
-        [Test]
+        [Test, Category("Failing")]
         public void TestCreateNodesAndRunExpression()
         {
             RunCommandsFromFile("CreateNodesAndRunExpression.xml");
@@ -1955,14 +1950,14 @@ namespace Dynamo.Tests.UI
 
         }
 
-        [Test]
+        [Test, Category("Failing")]
         public void TestCreateNodes()
         {
             RunCommandsFromFile("CreateNodesAndConnectors.xml");
             Assert.AreEqual(5, workspace.Nodes.Count);
         }
 
-        [Test]
+        [Test, Category("Failing")]
         public void TestDeleteCommands()
         {
             RunCommandsFromFile("CreateAndDeleteNodes.xml");
@@ -1984,7 +1979,7 @@ namespace Dynamo.Tests.UI
             VerifyModelExistence(nodeExistenceMap);
         }
 
-        [Test]
+        [Test, Category("Failing")]
         public void TestUndoRedoNodesAndConnections()
         {
             RunCommandsFromFile("UndoRedoNodesAndConnections.xml");
@@ -2051,7 +2046,7 @@ namespace Dynamo.Tests.UI
             Assert.Inconclusive("Porting : DoubleInput");
         }
 
-        [Test]
+        [Test, Category("Failing")]
         public void TestVerifyRuntimeValues()
         {
             RunCommandsFromFile("VerifyRuntimeValues.xml", true);

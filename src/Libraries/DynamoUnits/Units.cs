@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Double = System.Double;
@@ -7,7 +6,8 @@ using Autodesk.DesignScript.Runtime;
 
 namespace Dynamo.Units
 {
-    [SupressImportIntoVM]
+    //[SupressImportIntoVM]
+    [IsVisibleInDynamoLibrary(false)]
     public enum DynamoLengthUnit
     {
         DecimalInch,
@@ -19,7 +19,8 @@ namespace Dynamo.Units
         Meter
     }
 
-    [SupressImportIntoVM]
+    //[SupressImportIntoVM]
+    [IsVisibleInDynamoLibrary(false)]
     public enum DynamoAreaUnit
     {
         SquareInch, 
@@ -29,7 +30,8 @@ namespace Dynamo.Units
         SquareMeter
     }
 
-    [SupressImportIntoVM]
+    //[SupressImportIntoVM]
+    [IsVisibleInDynamoLibrary(false)]
     public enum DynamoVolumeUnit
     {
         CubicInch,
@@ -39,7 +41,6 @@ namespace Dynamo.Units
         CubicMeter
     }
 
-    // [SupressImportIntoVM]
     public abstract class SIUnit
     {
         //length conversions
@@ -613,6 +614,7 @@ namespace Dynamo.Units
             _value = total;
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public bool Equals(Length other)
         {
             if (other == null)
@@ -624,14 +626,10 @@ namespace Dynamo.Units
             return false;
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public override string ToString()
         {
             return BuildString(LengthUnit);
-        }
-
-        public string ToString(DynamoLengthUnit unit)
-        {
-            return BuildString(unit);
         }
 
         private string BuildString(DynamoLengthUnit unit)
@@ -666,6 +664,7 @@ namespace Dynamo.Units
 
         #endregion
 
+        [IsVisibleInDynamoLibrary(false)]
         public int CompareTo(object obj)
         {
             if (obj == null) return 1;
@@ -677,6 +676,7 @@ namespace Dynamo.Units
                 throw new ArgumentException("Object is not a Length");
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -847,6 +847,7 @@ namespace Dynamo.Units
             _value = total < 0 ? 0.0 : total;
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public bool Equals(Area other)
         {
             if (other == null)
@@ -858,14 +859,10 @@ namespace Dynamo.Units
             return false;
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public override string ToString()
         {
             return BuildString(AreaUnit);
-        }
-
-        public string ToString(DynamoAreaUnit unit)
-        {
-            return BuildString(unit);
         }
 
         private string BuildString(DynamoAreaUnit unit)
@@ -894,6 +891,7 @@ namespace Dynamo.Units
 
         #endregion
 
+        [IsVisibleInDynamoLibrary(false)]
         public int CompareTo(object obj)
         {
             if (obj == null) return 1;
@@ -905,6 +903,7 @@ namespace Dynamo.Units
                 throw new ArgumentException("Object is not an Area");
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -1066,6 +1065,7 @@ namespace Dynamo.Units
             _value = total < 0 ? 0.0 : total;
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public bool Equals(Volume other)
         {
             if (other == null)
@@ -1077,14 +1077,10 @@ namespace Dynamo.Units
             return false;
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public override string ToString()
         {
             return BuildString(VolumeUnit);
-        }
-
-        public string ToString(DynamoVolumeUnit unit)
-        {
-            return BuildString(unit);
         }
 
         private string BuildString(DynamoVolumeUnit unit)
@@ -1113,6 +1109,7 @@ namespace Dynamo.Units
 
         #endregion
 
+        [IsVisibleInDynamoLibrary(false)]
         public int CompareTo(object obj)
         {
             if (obj == null) return 1;
@@ -1124,6 +1121,7 @@ namespace Dynamo.Units
                 throw new ArgumentException("Object is not a Volume");
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -1143,6 +1141,7 @@ namespace Dynamo.Units
     /// <summary>
     /// A luminous intensity stored as candela
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class LuminousIntensity : SIUnit
     {
         public LuminousIntensity(double value) : base(value)
@@ -1229,6 +1228,7 @@ namespace Dynamo.Units
     /// <summary>
     /// A luminance stored as candela/m²
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class Luminance : SIUnit
     {
         public Luminance(double value) : base(value)
