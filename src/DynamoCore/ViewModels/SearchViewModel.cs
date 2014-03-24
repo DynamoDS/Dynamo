@@ -894,8 +894,12 @@ namespace Dynamo.ViewModels
                     SearchDictionary.Add(searchElement, function.QualifiedName);
 
                     // add all search tags
-                    function.GetSearchTags().ToList().ForEach(x => SearchDictionary.Add(searchElement, x));
+                    var tags = function.GetSearchTags().ToList();
 
+                    if (tags.Count > 0)
+                    {
+                        tags.ForEach(x => SearchDictionary.Add(searchElement, x));
+                    }
                 }
             }
 
