@@ -55,11 +55,11 @@ limitations under the License.
       <HintPath>..\..\extern\NUnit\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\..\..\Revit\RevitAPI.dll</HintPath>
+      <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\..\..\Revit\RevitAPIUI.dll</HintPath>
+      <HintPath>$(REVITAPI)\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
