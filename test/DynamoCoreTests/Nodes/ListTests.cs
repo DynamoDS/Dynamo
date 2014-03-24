@@ -1253,7 +1253,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void NumberRange_LacingShortest()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -1262,27 +1261,16 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
             Dictionary<int, object> validationData = new Dictionary<int, object>()
             {
-                {0,1},
-                {8,9},
+                {0, new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}}
             };
 
             //this is the case of 2D array. Need to change verification
-            SelectivelyAssertPreviewValues("798bc857-f36e-44df-97cc-6e878aef5b72", validationData);
-
-            Dictionary<int, object> validationData1 = new Dictionary<int, object>()
-            {
-                {0,2},
-                {3,8},
-            };
-
-            //this is the case of 2D array. Need to change verification
-            SelectivelyAssertPreviewValues("2f5277db-4656-4014-8d85-8e4f51e5c2b1", validationData1);
-
+            SelectivelyAssertPreviewValues("4e781f03-5b48-4d58-a511-8c732665e961", validationData);
 
         }
 
@@ -1328,7 +1316,7 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            var numberRange = model.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>("4e781f03-5b48-4d58-a511-8c732665e961");
+            var numberRange = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>("4e781f03-5b48-4d58-a511-8c732665e961");
 
             var actual = numberRange.GetValue(0).GetElements();
             var innerList1 = actual[0].GetElements();
