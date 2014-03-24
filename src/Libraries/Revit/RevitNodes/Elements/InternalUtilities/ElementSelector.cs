@@ -24,7 +24,7 @@ namespace Revit.Elements
         /// <returns></returns>
         public static IEnumerable<Element> ByType<T>(bool isRevitOwned) where T : Autodesk.Revit.DB.Element
         {
-            return DocumentManager.Instance.ElementsOfType<T>().Select(x => x.ToInternalType(isRevitOwned));
+            return DocumentManager.Instance.ElementsOfType<T>().Select(x => x.ToDSType(isRevitOwned));
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Revit.Elements
 
             if (ele != null)
             {
-                return ele.ToInternalType(isRevitOwned);
+                return ele.ToDSType(isRevitOwned);
             }
             
             throw new Exception("Could not get the element from the document.");
@@ -52,7 +52,7 @@ namespace Revit.Elements
 
             if (ele != null)
             {
-                return ele.ToInternalType(true);
+                return ele.ToDSType(true);
             }
 
             throw new Exception("Could not get the element from the document.");
@@ -71,7 +71,7 @@ namespace Revit.Elements
 
             if (ele != null)
             {
-                return ele.ToInternalType(isRevitOwned);
+                return ele.ToDSType(isRevitOwned);
             }
 
             throw new Exception("Could not get the element from the document");
