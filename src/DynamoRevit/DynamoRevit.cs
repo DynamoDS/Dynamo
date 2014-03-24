@@ -150,7 +150,7 @@ namespace Dynamo.Applications
                 //DocumentManager.Instance.CurrentDBDocument = revit.Application.ActiveUIDocument.Document;
                 //DocumentManager.Instance.CurrentUIDocument = revit.Application.ActiveUIDocument;
                 DocumentManager.Instance.CurrentUIApplication = revit.Application;
-                DocumentManager.OnLogError += DynamoLogger.Instance.LogError;
+                DocumentManager.OnLogError += DynamoLogger.Instance.Log;
 
                 dynRevitSettings.DefaultLevel = defaultLevel;
 

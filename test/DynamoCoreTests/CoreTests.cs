@@ -331,6 +331,31 @@ namespace Dynamo.Tests
             Assert.AreEqual(numNodes, Controller.ClipBoard.Count);
         }
 
+        [Test]
+        public void CanCopyAndPasteDSVarArgFunctionNode()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            Assert.AreEqual(0, model.Nodes.Count);
+
+            var dsVarArgFunctionName = "DSCore.String.Split@string,string[]";
+            var node = model.CreateNode(0, 0, dsVarArgFunctionName);
+
+            // Here we check to see if we do get a DSVarArgFunction node (which
+            // is what this test case is written for, other nodes will render the 
+            // test case meaningless).
+            // 
+            Assert.IsTrue(node is DSVarArgFunction);
+            Assert.AreEqual(1, model.Nodes.Count);
+
+            model.AddToSelection(node); // Select the only DSVarArgFunction node.
+            model.Copy(null); // Copy the only DSVarArgFunction node.
+
+            Assert.DoesNotThrow(() =>
+            {
+                model.Paste(null); // Nope, paste should not crash Dynamo.
+            });
+        }
+
         // SaveImage
 
         //[Test]

@@ -252,7 +252,10 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return nodeLogic.RenderPackages.Any(y => ((RenderPackage)y).IsNotEmpty());
+                lock (nodeLogic.RenderPackagesMutex)
+                {
+                    return nodeLogic.RenderPackages.Any(y => ((RenderPackage)y).IsNotEmpty());
+                }
             }
         }
 

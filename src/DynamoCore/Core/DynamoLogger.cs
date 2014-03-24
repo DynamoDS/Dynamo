@@ -136,6 +136,13 @@ namespace Dynamo
             Log(message, LogLevel.Console);
         }
 
+        public void LogError(string error)
+        {
+            Warning = error;
+            WarningLevel = WarningLevel.Error;
+            Log(error);
+        }
+
         public void LogError(string tag, string error)
         {
             Warning = error;

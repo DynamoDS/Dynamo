@@ -11,7 +11,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             migrationData.AppendNode(MigrationManager.CloneAndChangeName(
-                data.MigratedNodes.ElementAt(0), "DSRevitNodesUI.FamilyTypes", "Family Type"));
+                data.MigratedNodes.ElementAt(0), "DSRevitNodesUI.FamilyTypes", "Family Types"));
 
             return migrationData;
         }
