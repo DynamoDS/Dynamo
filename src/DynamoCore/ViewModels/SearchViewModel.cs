@@ -582,12 +582,17 @@ namespace Dynamo.ViewModels
                             {
                                 _topResult.Items.Clear();
 
-                                var copy = (t.Result.ElementAt(0) as NodeSearchElement).Copy();
+                                var firstRes = (t.Result.ElementAt(0) as NodeSearchElement);
 
-                                _topResult.AddChild(copy);
+                                var copy = firstRes.Copy();
+
+                                var breadCrumb = new BrowserInternalElement(firstRes.FullCategoryName, _topResult);
+                                breadCrumb.AddChild(copy);
+                                _topResult.AddChild(breadCrumb);
 
                                 _topResult.SetVisibilityToLeaves(true);
-                                _topResult.IsExpanded = true;
+                                copy.ExpandToRoot();
+
                             }
 
                             // for all of the other results, show them in their category
@@ -859,6 +864,7 @@ namespace Dynamo.ViewModels
 
                     var searchElement = new DSFunctionNodeSearchElement(displayString, function);
                     searchElement.SetSearchable(true);
+                    searchElement.FullCategoryName = category;
                     
                     // Add this search eleemnt to the search view
                     TryAddCategoryAndItem(category, searchElement);
