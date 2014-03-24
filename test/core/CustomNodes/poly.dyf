@@ -1,0 +1,16 @@
+<Workspace Version="0.6.3.33276" X="0" Y="0" zoom="1" Description="" Category="CustomNodeTesting" Name="poly" ID="9419fb1a-4e51-43b7-95c3-e77823b246a8">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f7ccbe8b-e954-4ee0-ac54-e0707e11dded" nickname="Input" x="741" y="302.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="p" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="7dcff3b0-d501-44bf-bc43-6441ba2eedda" nickname="Output" x="1069" y="525.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="t" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="f3e1ef81-0653-42cd-8ba0-a9bd3d0392c4" nickname="Polygon.ByPoints" x="1004" y="450.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Polygon.ByPoints@Autodesk.DesignScript.Geometry.Point[]" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="f7ccbe8b-e954-4ee0-ac54-e0707e11dded" start_index="0" end="f3e1ef81-0653-42cd-8ba0-a9bd3d0392c4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f3e1ef81-0653-42cd-8ba0-a9bd3d0392c4" start_index="0" end="7dcff3b0-d501-44bf-bc43-6441ba2eedda" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
