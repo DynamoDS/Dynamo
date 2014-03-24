@@ -457,6 +457,9 @@ namespace Dynamo.Models
             var manager = dynSettings.Controller.CustomNodeManager;
             var info = manager.AddFileToPath(workspaceHeader.FileName);
             var funcDef = manager.GetFunctionDefinition(info.Guid);
+            if (funcDef == null) // Fail to load custom function.
+                return;
+
             funcDef.AddToSearch();
 
             var ws = funcDef.WorkspaceModel;
@@ -735,13 +738,20 @@ namespace Dynamo.Models
 
                 var dynamoModel = dynSettings.Controller.DynamoModel;
                 var currentVersion = MigrationManager.VersionFromWorkspace(dynamoModel.HomeSpace);
-                if (fileVersion < currentVersion) // Opening an older file, migrate workspace.
+                var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
+                if (decision == MigrationManager.Decision.Abort)
+                {
+                    MigrationManager.DisplayObsoleteFileMessage(fileVersion, currentVersion);
+                    return false;
+                }
+                else if (decision == MigrationManager.Decision.Migrate)
                 {
                     string backupPath = string.Empty;
                     bool isTesting = DynamoController.IsTestMode; // No backup during test.
                     if (!isTesting && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
                     {
-                        string message = string.Format("Original file '{0}' gets backed up at '{1}'",
+                        string message = string.Format(
+                            "Original file '{0}' gets backed up at '{1}'",
                             Path.GetFileName(xmlPath), backupPath);
 
                         DynamoLogger.Instance.Log(message);
