@@ -1041,7 +1041,7 @@ namespace Dynamo.Nodes
             :base(SelectionHelper.RequestDividedSurfaceFamilyInstancesSelection, "Select a divided surface."){}
     }
 
-    [NodeName("Select Multiple Elements")]
+    [NodeName("Select Model Elements")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select multiple elements from the Revit document.")]
     [IsDesignScriptCompatible]
