@@ -1173,6 +1173,8 @@ namespace Dynamo.Models
 #if USE_DSENGINE
                 else if (node is DSFunction)
                     nodeName = ((node as DSFunction).Definition.MangledName);
+                else if (node is DSVarArgFunction)
+                    nodeName = ((node as DSVarArgFunction).Definition.MangledName);
 #endif
 
                 var xmlDoc = new XmlDocument();
