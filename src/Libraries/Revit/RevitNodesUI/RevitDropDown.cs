@@ -10,7 +10,7 @@ using RevitServices.Persistence;
 
 namespace DSRevitNodesUI
 {
-    [NodeName("Family Type")]
+    [NodeName("Family Types")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All family types available in the document.")]
     [IsDesignScriptCompatible]
@@ -68,15 +68,15 @@ namespace DSRevitNodesUI
 
     }
 
-    [NodeName("Floor Type")]
+    [NodeName("Floor Types")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All floor types available in the document.")]
     [IsDesignScriptCompatible]
-    public class FloorType : DSDropDownBase
+    public class FloorTypes : DSDropDownBase
     {
         private const string noFloorTypes = "No floor types available.";
 
-        public FloorType() : base("Floor Type") { }
+        public FloorTypes() : base("Floor Type") { }
 
         protected override void PopulateItems()
         {
@@ -121,15 +121,15 @@ namespace DSRevitNodesUI
         }
     }
 
-    [NodeName("Wall Type")]
+    [NodeName("Wall Types")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All floor types available in the document.")]
     [IsDesignScriptCompatible]
-    public class WallType : DSDropDownBase
+    public class WallTypes : DSDropDownBase
     {
         private const string noWallTypes = "No wall types available.";
 
-        public WallType() : base("Wall Type") { }
+        public WallTypes() : base("Wall Type") { }
 
         protected override void PopulateItems()
         {
@@ -173,13 +173,27 @@ namespace DSRevitNodesUI
         }
     }
 
-    [NodeName("Category")]
+    [NodeName("Categories")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All built-in categories.")]
     [IsDesignScriptCompatible]
     public class Categories : EnumBase
     {
         public Categories():base(typeof(BuiltInCategory)){}
+
+        protected override void PopulateItems()
+        {
+            if (enum_internal == null)
+                return;
+
+            Items.Clear();
+            foreach (var constant in System.Enum.GetValues(enum_internal))
+            {
+                Items.Add(new DynamoDropDownItem(constant.ToString().Substring(4), constant));
+            }
+
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
+        }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -193,6 +207,48 @@ namespace DSRevitNodesUI
                                                             args);
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+        }
+    }
+
+    [NodeName("Levels")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
+    [NodeDescription("Select a level in the active document")]
+    [IsDesignScriptCompatible]
+    public class Levels : DropDrownBase
+    {
+        public Levels()
+        {
+            OutPortData.Add(new PortData("Level", "The level.", typeof(object)));
+
+            RegisterAllPorts();
+
+            PopulateItems();
+        }
+
+        public override void PopulateItems()
+        {
+            Items.Clear();
+
+            //find all levels in the project
+            var levelColl = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            levelColl.OfClass(typeof(Level));
+
+            levelColl.ToElements().ToList().ForEach(x => Items.Add(new DynamoDropDownItem(x.Name, x)));
+
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            var node = AstFactory.BuildFunctionCall(
+                "Revit.Elements.ElementSelector",
+                "ByElementId",
+                new List<AssociativeNode>
+                {
+                    AstFactory.BuildIntNode(((Level)Items[SelectedIndex].Item).Id.IntegerValue)
+                });
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
     }
 }

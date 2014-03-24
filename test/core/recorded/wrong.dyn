@@ -1,0 +1,22 @@
+<Workspace Version="0.7.0.29218" X="-99.5188673915973" Y="49.8943321716386" zoom="1.03653537384942" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="cf4bbf2e-653a-423f-8eb2-63404aa1d52e" nickname="Sphere.ByCenterPointRadius" x="585.126056431979" y="294.313972449415" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="33fa2372-71b2-4079-97e2-1b42024656e6" nickname="BoundingBox.ByGeometry" x="837.853988314805" y="216.067246208113" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry@Autodesk.DesignScript.Geometry.Geometry" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="d94b6425-ba52-4dc3-894b-2dfb9705dde4" nickname="BoundingBox.ToPolySurface" x="1075.29233001255" y="178.292964574381" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.BoundingBox.ToPolySurface" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="53cd0201-273c-43f4-8815-8531db75d68c" nickname="BoundingBox.Contains" x="1199.4078268091" y="401.341103744989" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.BoundingBox.Contains@Autodesk.DesignScript.Geometry.Point" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="ccaa4945-490e-46de-b338-9873140794d9" nickname="Point.ByCoordinates" x="375.22403551109" y="401.697314388228" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="daca905b-c1c5-4efc-8fc2-ddd2e6060fac" nickname="Code Block" x="245.931403900443" y="311.270717367983" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="cf4bbf2e-653a-423f-8eb2-63404aa1d52e" start_index="0" end="33fa2372-71b2-4079-97e2-1b42024656e6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="33fa2372-71b2-4079-97e2-1b42024656e6" start_index="0" end="d94b6425-ba52-4dc3-894b-2dfb9705dde4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d94b6425-ba52-4dc3-894b-2dfb9705dde4" start_index="0" end="53cd0201-273c-43f4-8815-8531db75d68c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ccaa4945-490e-46de-b338-9873140794d9" start_index="0" end="53cd0201-273c-43f4-8815-8531db75d68c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ccaa4945-490e-46de-b338-9873140794d9" start_index="0" end="cf4bbf2e-653a-423f-8eb2-63404aa1d52e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="daca905b-c1c5-4efc-8fc2-ddd2e6060fac" start_index="0" end="ccaa4945-490e-46de-b338-9873140794d9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="daca905b-c1c5-4efc-8fc2-ddd2e6060fac" start_index="0" end="ccaa4945-490e-46de-b338-9873140794d9" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="daca905b-c1c5-4efc-8fc2-ddd2e6060fac" start_index="0" end="ccaa4945-490e-46de-b338-9873140794d9" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="daca905b-c1c5-4efc-8fc2-ddd2e6060fac" start_index="0" end="cf4bbf2e-653a-423f-8eb2-63404aa1d52e" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

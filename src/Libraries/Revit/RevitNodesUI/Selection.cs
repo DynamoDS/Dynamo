@@ -16,6 +16,7 @@ using Dynamo.Models;
 using Dynamo.UI;
 using ProtoCore.AST.AssociativeAST;
 using RevitServices.Persistence;
+using Dynamo.Revit.SyncedNodeExtensions;
 
 namespace Dynamo.Nodes
 {
@@ -113,11 +114,22 @@ namespace Dynamo.Nodes
                         return;
 
                     dirty = true;
+                    this.UnregisterEvalOnModified(_selected.Id);
                 }
                 else
                     dirty = value != null;
 
                 _selected = value;
+                if (value != null)
+                {
+                    this.RegisterEvalOnModified(
+                        value.Id,
+                        delAction: delegate
+                        {
+                            _selected = null;
+                            SelectedElement = null;
+                        });
+                }
 
                 if (dirty)
                     RequiresRecalc = true;
@@ -297,19 +309,7 @@ namespace Dynamo.Nodes
             get { return _selected; }
             set
             {
-                bool dirty;
-
-                if (_selected != null)
-                {
-                    if (value != null && value.ElementId.Equals(_selected.ElementId))
-                        return;
-
-                    dirty = true;
-                }
-                else
-                    dirty = value != null;
-
-                dirty = value != null;
+                bool dirty = value != null;
 
                 _selected = value;
 

@@ -433,8 +433,13 @@ namespace Dynamo
             {
                 dynSettings.Controller.DynamoModel.Nodes.ToList().ForEach(x => x.ResetOldValue());
 
-                //VisualizationManager.ClearVisualizations();
-                dynSettings.Controller.DynamoModel.Nodes.ForEach(x => x.RenderPackages.Clear());
+                foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
+                {
+                    lock (node.RenderPackagesMutex)
+                    {
+                        node.RenderPackages.Clear();
+                    }
+                }
             }
 
             OnRevitDocumentChanged();

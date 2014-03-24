@@ -1,66 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows;
-using System.Windows.Threading;
-using Dynamo.Controls;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
-namespace Dynamo.Tests.UI
+namespace DynamoCoreUITests
 {
     [TestFixture]
     public class PackageManagerUITests : DynamoTestUI
     {
-        [SetUp]
-        public void Start()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
-
-            Controller = DynamoController.MakeSandbox();
-            DynamoController.IsTestMode = true;
-
-            //create the view
-            Ui = new DynamoView();
-            Ui.DataContext = Controller.DynamoViewModel;
-            Vm = Controller.DynamoViewModel;
-            Controller.UIDispatcher = Ui.Dispatcher;
-            Ui.Show();
-
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
-
-            string tempPath = Path.GetTempPath();
-            TempFolder = Path.Combine(tempPath, "dynamoTmp");
-
-            if (!Directory.Exists(TempFolder))
-            {
-                Directory.CreateDirectory(TempFolder);
-            }
-            else
-            {
-                EmptyTempFolder();
-            }
-        }
-
-        [TearDown]
-        public void Exit()
-        {
-            if (Ui.IsLoaded)
-                Ui.Close();
-        }
-
-        [TestFixtureTearDown]
-        public void FinalTearDown()
-        {
-            // Fix for COM exception on close
-            // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf 
-            //Dispatcher.CurrentDispatcher.InvokeShutdown();
-        }
-
         #region Utility functions
 
         public IEnumerable<Window> GetWindowEnumerable(WindowCollection windows)

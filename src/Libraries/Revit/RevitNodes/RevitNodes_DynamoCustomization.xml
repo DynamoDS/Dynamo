@@ -34,5 +34,8 @@
     <namespace name="Revit.References">
       <category>Revit.Geometry</category>
     </namespace>
+    <namespace name="System">
+      <category>Revit.System</category>
+    </namespace>
   </namespaces>
 </doc>
