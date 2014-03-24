@@ -24,6 +24,11 @@ namespace Revit.Application
             }
         }
 
+        internal Document()
+        {
+            
+        }
+
         /// <summary>
         /// Get the active view for the document
         /// </summary>
