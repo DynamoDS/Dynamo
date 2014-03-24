@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Autodesk.Revit.DB;
 using RevitServices.Threading;
 
@@ -345,7 +346,6 @@ namespace RevitServices.Transactions
             public FailureProcessingResult PreprocessFailures(FailuresAccessor failuresAccessor)
             {
                 tm.ProcessFailures(failuresAccessor);
-
                 return FailureProcessingResult.Continue;
             }
         }

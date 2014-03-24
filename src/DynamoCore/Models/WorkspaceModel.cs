@@ -769,6 +769,8 @@ namespace Dynamo.Models
             if (!this.PopulateXmlDocument(document))
                 return false;
 
+            this.SerializeSessionData(document);
+
             try
             {
                 Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, string.Empty);
@@ -864,6 +866,49 @@ namespace Dynamo.Models
             {
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 return false;
+            }
+        }
+
+        // TODO(Ben): Documentation to come before pull request.
+        protected virtual void SerializeSessionData(XmlDocument document)
+        {
+            if (document.DocumentElement == null)
+            {
+                var message = "Workspace should have been saved before this";
+                throw new InvalidOperationException(message);
+            }
+
+            try
+            {
+                ProtoCore.Core core = null;
+                if (dynSettings.Controller != null)
+                {
+                    var engine = dynSettings.Controller.EngineController;
+                    if (engine != null && (engine.LiveRunnerCore != null))
+                        core = engine.LiveRunnerCore;
+                }
+
+                if (core == null) // No execution yet as of this point.
+                    return;
+
+                // Selecting all nodes that are either a DSFunction,
+                // a DSVarArgFunction or a CodeBlockNodeModel into a list.
+                var nodeGuids = this.Nodes.Where((n) =>
+                {
+                    return (n is DSFunction 
+                        || (n is DSVarArgFunction)
+                        || (n is CodeBlockNodeModel));
+
+                }).Select((n) => n.GUID);
+
+                core.SerializeTraceDataForNodes(nodeGuids, document);
+            }
+            catch (Exception exception)
+            {
+                // We'd prefer file saving process to not crash Dynamo,
+                // otherwise user will lose the last hope in retaining data.
+                DynamoLogger.Instance.Log(exception.Message);
+                DynamoLogger.Instance.Log(exception.StackTrace);
             }
         }
 

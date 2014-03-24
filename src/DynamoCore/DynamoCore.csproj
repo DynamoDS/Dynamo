@@ -141,6 +141,14 @@ limitations under the License.
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Prompts\CrashPrompt.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>CrashPrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Prompts\GenericTaskDialog.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>GenericTaskDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -240,7 +248,6 @@ limitations under the License.
     <Compile Include="UI\Views\PackageManagerSearchView.xaml.cs">
       <DependentUpon>PackageManagerSearchView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Prompts\CrashPrompt.xaml.cs" />
     <Compile Include="UI\Prompts\EditWindow.xaml.cs">
       <DependentUpon>EditWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -464,6 +471,14 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UI\Prompts\CrashPrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Prompts\GenericTaskDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Views\AboutWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -493,8 +508,6 @@ limitations under the License.
     <Page Include="UI\Themes\ToolbarStyleDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Prompts\CrashPrompt.xaml">
     </Page>
     <Page Include="UI\Views\InstalledPackagesView.xaml">
       <SubType>Designer</SubType>

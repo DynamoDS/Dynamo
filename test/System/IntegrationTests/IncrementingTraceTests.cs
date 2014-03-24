@@ -373,6 +373,57 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
         }
 
 
+        [Test]
+        [Category("Trace")]
+        public void SingleToReplicatedToSingle()
+        {
+            string setupCode =
+            @"import(""FFITarget.dll""); 
+x = 0; 
+mtcA = IncrementerTracedClass.IncrementerTracedClass(x); 
+mtcAID = mtcA.ID;
+mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
+
+            ExecuteMoreCode(setupCode);
+
+            TestFrameWork.AssertValue("mtcAID",
+                    0, astLiveRunner);
+
+            TestFrameWork.AssertValue("mtcAWasTraced",
+                    false, astLiveRunner);
+
+
+
+            ExecuteMoreCode("x = 1..3;");
+
+            // Verify that a is re-executed
+            TestFrameWork.AssertValue("mtcAID", new List<int>()
+            {
+                0,
+                1,
+                2
+            }, astLiveRunner);
+            TestFrameWork.AssertValue("mtcAWasTraced", new List<bool>()
+                {
+                    true,
+                    false,
+                    false
+                }, astLiveRunner);
+
+
+            ExecuteMoreCode("x = 2;");
+
+            // Verify that a is re-executed
+            TestFrameWork.AssertValue("mtcAID",0 , astLiveRunner);
+
+            TestFrameWork.AssertValue("mtcAWasTraced",
+                    true, astLiveRunner);
+
+
+        }
+
+
+
 
         //Migrate this code into the test framework
         private void ExecuteMoreCode(string newCode)

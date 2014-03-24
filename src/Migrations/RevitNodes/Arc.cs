@@ -36,16 +36,8 @@ namespace Dynamo.Nodes
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Create new nodes
-            XmlElement identityCoordinateSystem = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll",
-                "CoordinateSystem.Identity",
-                "CoordinateSystem.Identity");
-            migrationData.AppendNode(identityCoordinateSystem);
-            string identityCoordinateSystemId = MigrationManager.GetGuidFromXmlElement(identityCoordinateSystem);
-
             XmlElement zAxisNode = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "CoordinateSystem.ZAxis",
-                "CoordinateSystem.ZAxis");
+                data.Document, "ProtoGeometry.dll", "Vector.ZAxis", "Vector.ZAxis");
             migrationData.AppendNode(zAxisNode);
             string zAxisNodeId = MigrationManager.GetGuidFromXmlElement(zAxisNode);
 
@@ -76,7 +68,6 @@ namespace Dynamo.Nodes
             data.CreateConnector(toDegreeNodeStart, 0, newNode, 2);
             data.CreateConnector(toDegreeNodeEnd, 0, newNode, 3);
             data.CreateConnector(zAxisNode, 0, newNode, 4);
-            data.CreateConnector(identityCoordinateSystem, 0, zAxisNode, 0);
 
             return migrationData;
         }

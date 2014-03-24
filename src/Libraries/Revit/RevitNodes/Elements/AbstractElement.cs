@@ -222,7 +222,7 @@ namespace Revit.Elements
             var param = this.InternalElement.Parameters.Cast<Autodesk.Revit.DB.Parameter>().FirstOrDefault(x => x.Definition.Name == parameterName);
 
             if (param == null || !param.HasValue)
-                return null;
+                return string.Empty;
 
             switch (param.StorageType)
             {
