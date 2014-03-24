@@ -218,6 +218,7 @@ namespace Dynamo.Controls
             _vm.SidebarClosed += _vm_SidebarClosed;
 
             dynSettings.Controller.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
+            dynSettings.Controller.RequestTaskDialog += Controller_RequestTaskDialog;
 
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
 
@@ -358,6 +359,12 @@ namespace Dynamo.Controls
         {
             var prompt = new CrashPrompt(args);
             prompt.ShowDialog();
+        }
+
+        void Controller_RequestTaskDialog(object sender, UI.Prompts.TaskDialogEventArgs e)
+        {
+            var taskDialog = new Dynamo.UI.Prompts.GenericTaskDialog(e);
+            taskDialog.ShowDialog();
         }
 
         //void PackageManagerClient_RequestSetLoginState(object sender, LoginStateEventArgs e)
