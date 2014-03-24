@@ -268,7 +268,7 @@ namespace ProtoFFI
             if (dsObject.optype != AddressType.ArrayPointer)
             {
                 Validity.Assert(typeof(IEnumerable).IsAssignableFrom(expectedCLRType));
-                object obj = primitiveMarshaler.UnMarshal(dsObject, context, dsi, typeof(object));
+                object obj = primitiveMarshaler.UnMarshal(dsObject, context, dsi, elementType);
                 collection = new ArrayList(new object[] { obj });
             }
             else //Convert DS Array to CS Collection
