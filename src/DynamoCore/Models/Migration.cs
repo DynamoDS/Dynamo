@@ -34,6 +34,33 @@ namespace Dynamo.Models
 
     public class MigrationManager
     {
+        /// <summary>
+        /// Enumerator to determine if migration should proceed or abort. This 
+        /// enumerator is to be used with MigrationManager.ShouldMigrateFile().
+        /// </summary>
+        public enum Decision
+        {
+            /// <summary>
+            /// The migration should not proceed and the file open operation 
+            /// should be aborted. This can be used to indicate that a version 
+            /// of file that is no longer supported and no migration path is 
+            /// provided.
+            /// </summary>
+            Abort,
+
+            /// <summary>
+            /// File migration should proceed to migrate the older file version 
+            /// to a newer one.
+            /// </summary>
+            Migrate,
+
+            /// <summary>
+            /// The file version is up-to-date and the file can be used as-is 
+            /// without migration.
+            /// </summary>
+            Retain
+        }
+
         private static MigrationManager _instance;
 
         private static int IdentifierIndex = 0;
@@ -376,6 +403,37 @@ namespace Dynamo.Models
             // Ignore revision number.
             var ver = workspace.WorkspaceVersion;
             return new Version(ver.Major, ver.Minor, ver.Build, 0);
+        }
+
+        /// <summary>
+        /// Call this method to determine if migration should take place 
+        /// for the input DYN/DYF file based on the given version numbers.
+        /// </summary>
+        /// <param name="fileVersion">The version of input file.</param>
+        /// <param name="currVersion">The version of Dynamo software.</param>
+        /// <returns>Returns the decision if the migration should take place or 
+        /// not. See "Decision" enumeration for details of each field.</returns>
+        /// 
+        internal static Decision ShouldMigrateFile(
+            Version fileVersion, Version currVersion)
+        {
+            // We currently enable migration for testing scenario. This is to 
+            // avoid large number of test failures with this change, and also 
+            // ensure that our tests continue to exercise migration code changes.
+            // 
+            if (DynamoController.IsTestMode)
+            {
+                if (fileVersion < currVersion)
+                    return Decision.Migrate;
+
+                return Decision.Retain;
+            }
+
+            // For end-users, disable migration.
+            if (fileVersion < currVersion)
+                return Decision.Abort;
+
+            return Decision.Retain; // User has latest file, allow usage.
         }
 
         /// <summary>
