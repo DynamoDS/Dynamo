@@ -1423,6 +1423,27 @@ namespace ProtoScript.Runners
                 }
             }
 
+            if (syncData.AddedSubtrees != null)
+            {
+                foreach (var st in syncData.AddedSubtrees)
+                {
+                    if (st.AstNodes != null)
+                    {
+                        deltaAstList.AddRange(st.AstNodes);
+                        foreach (var node in st.AstNodes)
+                        {
+                            var bnode = node as BinaryExpressionNode;
+                            if (bnode != null)
+                            {
+                                exprGuidMap[bnode.exprUID] = st.GUID;
+                            }
+                        }
+                    }
+
+                    currentSubTreeList.Add(st.GUID, st);
+                }
+            }
+
             if (syncData.ModifiedSubtrees != null)
             {
                 foreach (var st in syncData.ModifiedSubtrees)
@@ -1515,27 +1536,6 @@ namespace ProtoScript.Runners
 
                         //deltaAstList.AddRange(astDependentOnFunctionList);
                     }
-                }
-            }
-
-            if (syncData.AddedSubtrees != null)
-            {
-                foreach (var st in syncData.AddedSubtrees)
-                {
-                    if (st.AstNodes != null)
-                    {
-                        deltaAstList.AddRange(st.AstNodes);
-                        foreach (var node in st.AstNodes)
-	                    {
-                            var bnode = node as BinaryExpressionNode;
-                            if (bnode != null)
-                            {
-                                exprGuidMap[bnode.exprUID] = st.GUID;
-                            }
-	                    }
-                    }
-
-                    currentSubTreeList.Add(st.GUID, st);
                 }
             }
 
