@@ -112,6 +112,7 @@ namespace Dynamo.UI.Prompts
                 buttonElement.Tag = button.Item1;
                 buttonElement.Content = button.Item2;
                 buttonElement.Style = style as Style;
+                buttonElement.Click += OnButtonElementClicked;
 
                 if (button.Item3 != false)
                 {
@@ -124,6 +125,13 @@ namespace Dynamo.UI.Prompts
                     RightButtonStackPanel.Children.Add(buttonElement);
                 }
             }
+        }
+
+        private void OnButtonElementClicked(object sender, RoutedEventArgs e)
+        {
+            int buttonId = (int)((sender as Button).Tag);
+            this.taskDialogParams.ClickedButtonId = buttonId;
+            this.Close();
         }
 
         #endregion
