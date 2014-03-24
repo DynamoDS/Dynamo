@@ -811,7 +811,7 @@ namespace Dynamo.Nodes
             :base(SelectionHelper.RequestLevelSelection,"Select a level."){}
     }*/
 
-    [NodeName("Select Curve Element")]
+    /*[NodeName("Select Curve Element")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Select a curve element from the document.")]
     [IsDesignScriptCompatible]
@@ -834,7 +834,7 @@ namespace Dynamo.Nodes
 
         public DSCurveElementSelection()
             :base(SelectionHelper.RequestCurveElementSelection, "Select a model or reference curve."){}
-    }
+    }*/
 
     /*[NodeName("Select Reference Point")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
