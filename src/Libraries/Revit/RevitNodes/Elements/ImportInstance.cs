@@ -32,7 +32,7 @@ namespace Revit.Elements
 
             var options = new SATImportOptions()
             {
-
+                Unit = ImportUnit.Foot
             };
 
             var id = Document.Import(satPath, options, Document.ActiveView);
