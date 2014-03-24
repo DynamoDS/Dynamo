@@ -261,7 +261,7 @@ namespace Dynamo
             // Any node that has a visualizations but is
             // no longer in the selection 
             changes.AddRange(dynSettings.Controller.DynamoModel.Nodes
-                .Where(x => x.RenderPackages.Count > 0)
+                .Where(x => x.HasRenderPackages)
                 .Where(x => !DynamoSelection.Instance.Selection.Contains(x)));
 
             if (e.NewItems != null && e.NewItems.Cast<ISelectable>().Any())
@@ -299,8 +299,8 @@ namespace Dynamo
             //we are given the connector that was deleted
             //if it's end node still exists, clear the package for 
             //the node and trigger an update.
-            if(connector.End != null)
-                connector.End.Owner.RenderPackages.ForEach(x=>x.Clear());
+            if (connector.End != null)
+                connector.End.Owner.ClearRenderPackages();
 
             //tell the watches that they require re-binding.
             OnVisualizationUpdateComplete(this, EventArgs.Empty);
@@ -398,7 +398,7 @@ namespace Dynamo
         /// <returns>A render description containing all upstream geometry.</returns>
         public void AggregateUpstreamRenderPackages(NodeModel node)
         {
-            IEnumerable<IRenderPackage> packages; 
+            var packages = new List<IRenderPackage>(); 
 
             //send back just what the node needs
             var watch = new Stopwatch();
@@ -407,8 +407,13 @@ namespace Dynamo
             if (node == null)
             {
                 //send back everything
-                packages =
-                    _controller.DynamoModel.Nodes.SelectMany(x=>x.RenderPackages);
+                foreach (var modelNode in _controller.DynamoModel.Nodes)
+                {
+                    lock (modelNode.RenderPackagesMutex)
+                    {
+                        packages.AddRange(modelNode.RenderPackages);
+                    }
+                }
 
                 if (packages.Any())
                 {
@@ -429,7 +434,7 @@ namespace Dynamo
             else
             {
                 //send back renderables for the branch
-                packages = GetUpstreamPackages(node.Inputs);
+                packages = GetUpstreamPackages(node.Inputs).ToList();
                 if (packages.Any())
                     OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), node.GUID.ToString()));
             }
@@ -459,8 +464,13 @@ namespace Dynamo
                 //We no longer depend on OldValue, as long as the given node has
                 //registered it's render description with Visualization manager
                 //we will be able to visualize the given node. -Sharad
-                if(node != null)
-                    packages.AddRange(node.RenderPackages);
+                if (node != null)
+                {
+                    lock (node.RenderPackagesMutex)
+                    {
+                        packages.AddRange(node.RenderPackages);
+                    }
+                }
 
                 if (node.IsUpstreamVisible)
                     packages.AddRange(GetUpstreamPackages(node.Inputs));
@@ -542,10 +552,17 @@ namespace Dynamo
         /// <param name="path"></param>
         public void TagRenderPackageForPath(string path)
         {
-            var packages =
-                dynSettings.Controller.DynamoModel.Nodes.SelectMany(x => x.RenderPackages)
-                    .Where(x => x.Tag == path || x.Tag.Contains(path + ":"))
-                    .Cast<RenderPackage>();
+            var packages = new List<RenderPackage>();
+
+            foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
+            {
+                lock (node.RenderPackagesMutex)
+                {
+                    packages
+                        .AddRange(node.RenderPackages.Where(x => x.Tag == path || x.Tag.Contains(path + ":"))
+                        .Cast<RenderPackage>());
+                }
+            }
 
             if (packages.Any())
             {
@@ -560,11 +577,15 @@ namespace Dynamo
                 packages.ToList().ForEach(x => x.DisplayLabels = true);
                 _currentTaggedPackages.AddRange(packages);
 
-                //send back everything
-                var allPackages =
-                    _controller.DynamoModel.Nodes.SelectMany(x => x.RenderPackages)
-                        .Where(x => ((RenderPackage) x).IsNotEmpty())
-                        .Cast<RenderPackage>();
+                var allPackages = new List<RenderPackage>();
+
+                foreach (var node in _controller.DynamoModel.Nodes)
+                {
+                    lock (node.RenderPackagesMutex)
+                    {
+                        allPackages.AddRange(node.RenderPackages.Where(x=>((RenderPackage) x).IsNotEmpty()).Cast<RenderPackage>());
+                    }
+                }
 
                 OnResultsReadyToVisualize(this,
                         new VisualizationEventArgs(

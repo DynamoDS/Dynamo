@@ -204,7 +204,7 @@ namespace Dynamo.Utilities
                 currentWorkspace.Connectors.Where(
                     conn =>
                         selectedNodeSet.Contains(conn.Start.Owner) 
-                        || selectedNodeSet.Contains(conn.End.Owner));
+                        || selectedNodeSet.Contains(conn.End.Owner)).ToList();
 
             foreach (ConnectorModel connector in partiallySelectedConns)
             {
