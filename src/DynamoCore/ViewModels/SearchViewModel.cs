@@ -843,9 +843,10 @@ namespace Dynamo.ViewModels
                     var displayString = function.UserFriendlyName;
                     var category = function.Category;
 
-                    if (displayString.Contains("AddItemToFront"))
+                    // do not add GetType method names to search
+                    if (displayString.Contains("GetType"))
                     {
-                        Console.WriteLine("hi");
+                        continue;
                     }
 
                     if (isOverloaded)
