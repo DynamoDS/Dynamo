@@ -7,20 +7,22 @@ using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Diagnostics;
 using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.Windows.Media.Imaging;
 
 namespace Dynamo.UI.Prompts
 {
-    internal class TaskDialogParams
+    internal class TaskDialogEventArgs : EventArgs
     {
         List<Tuple<int, string, bool>> buttons = null;
 
         #region Public Operational Methods
 
-        internal TaskDialogParams(Uri imageUri, string dialogTitle,
+        internal TaskDialogEventArgs(Uri imageUri, string dialogTitle,
             string summary, string description)
         {
-            this.ImageUri = ImageUri;
+            this.ImageUri = imageUri;
             this.DialogTitle = dialogTitle;
             this.Summary = summary;
             this.Description = description;
@@ -62,6 +64,8 @@ namespace Dynamo.UI.Prompts
 
     public partial class GenericTaskDialog : Window
     {
+        private TaskDialogEventArgs taskDialogParams = null;
+
         #region Public Operational Methods
 
         public GenericTaskDialog() // Xaml design needs this.
@@ -69,12 +73,59 @@ namespace Dynamo.UI.Prompts
             InitializeComponent();
         }
 
-        internal GenericTaskDialog(TaskDialogParams taskDialogParams)
+        internal GenericTaskDialog(TaskDialogEventArgs taskDialogParams)
         {
+            this.taskDialogParams = taskDialogParams;
             InitializeComponent();
+            ClearDefaultContents();
+
+            this.DialogIcon.Source = new BitmapImage(taskDialogParams.ImageUri);
+            this.Title = taskDialogParams.DialogTitle;
+            this.SummaryText.Text = taskDialogParams.Summary;
+            this.DescriptionText.Text = taskDialogParams.Description;
+
+            InitializeButtons();
         }
 
         #endregion
 
+        #region Private Class Helper Methods
+
+        private void ClearDefaultContents()
+        {
+            LeftButtonStackPanel.Children.Clear();
+            RightButtonStackPanel.Children.Clear();
+            DetailedContent.Visibility = System.Windows.Visibility.Collapsed;
+        }
+
+        private void InitializeButtons()
+        {
+            var buttons = this.taskDialogParams.Buttons;
+            if (buttons == null)
+                return;
+
+            var style = SharedDictionaryManager.DynamoModernDictionary["STextButton"];
+
+            foreach (var button in buttons)
+            {
+                Button buttonElement = new Button();
+                buttonElement.Tag = button.Item1;
+                buttonElement.Content = button.Item2;
+                buttonElement.Style = style as Style;
+
+                if (button.Item3 != false)
+                {
+                    buttonElement.Margin = new Thickness(0, 0, 10, 0);
+                    LeftButtonStackPanel.Children.Add(buttonElement);
+                }
+                else
+                {
+                    buttonElement.Margin = new Thickness(10, 0, 0, 0);
+                    RightButtonStackPanel.Children.Add(buttonElement);
+                }
+            }
+        }
+
+        #endregion
     }
 }
