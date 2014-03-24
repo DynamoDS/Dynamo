@@ -127,12 +127,12 @@ namespace Revit.Elements.Views
 
         /// <summary>
         /// Create a Revit Perspective View from an Eye position, a target position, and 
-        /// either an AbstractElement or BoundingBox.
+        /// either an Element or BoundingBox.
         /// </summary>
         /// <param name="eyePoint">A Point representing the eye point.</param>
         /// <param name="target">A Point representing the target of view.</param>
         /// <param name="element">This argument cannot be null, and it has to be either a 
-        /// Revit.Elements.AbstractElement or Revit.GeometryObjects.BoundingBox.</param>
+        /// Revit.Elements.Element or Revit.GeometryObjects.BoundingBox.</param>
         /// <param name="name">The name of the view.</param>
         /// <param name="isolateElement">If this argument is set to true, the element or 
         /// bounding box will be isolated in the current view by creating a minimum size
