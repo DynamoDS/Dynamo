@@ -3,7 +3,39 @@
   <assembly>
     <name>RevitNodes</name>
   </assembly>
-  <rootCategory>
-    <useAssemblyName>false</useAssemblyName>
-  </rootCategory>
+  <namespaces>
+    <namespace name="Revit.Application">
+      <category>Revit.Application</category>
+    </namespace>
+    <namespace name="Revit.Elements">
+      <category>Revit.Elements</category>
+    </namespace>
+    <namespace name="Revit.Elements.Views">
+      <category>Revit.Views</category>
+    </namespace>
+    <namespace name="Revit.Elements">
+      <category>Revit.Elements</category>
+    </namespace>
+    <namespace name="Revit.Geometry">
+      <category>Revit.Geometry</category>
+    </namespace>
+    <namespace name="Revit.GeometryConversion">
+      <category>Revit.GeometryConversion</category>
+    </namespace>
+    <namespace name="Revit.GeometryObjects">
+      <category>Revit.Geometry</category>
+    </namespace>
+    <namespace name="Revit.GeometryConversion">
+      <category>Revit.GeometryConversion</category>
+    </namespace>
+    <namespace name="Revit.Transaction">
+      <category>Revit.Transaction</category>
+    </namespace>
+    <namespace name="Revit.References">
+      <category>Revit.Geometry</category>
+    </namespace>
+    <namespace name="System">
+      <category>Revit.System</category>
+    </namespace>
+  </namespaces>
 </doc>
