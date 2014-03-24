@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
-using DSNodeServices;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
@@ -12,7 +12,7 @@ namespace Revit.Elements.Views
     /// <summary>
     /// A Revit ViewPlan
     /// </summary>
-    [RegisterForTrace]
+    [DSNodeServices.RegisterForTrace]
     public class CeilingPlanView : PlanView
     {
 
@@ -71,7 +71,7 @@ namespace Revit.Elements.Views
         /// <param name="plan"></param>
         /// <param name="isRevitOwned"></param>
         /// <returns></returns>
-        public static CeilingPlanView FromExisting(Autodesk.Revit.DB.ViewPlan plan, bool isRevitOwned)
+        internal static CeilingPlanView FromExisting(Autodesk.Revit.DB.ViewPlan plan, bool isRevitOwned)
         {
             if (plan == null)
             {
