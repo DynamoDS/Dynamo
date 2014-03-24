@@ -215,7 +215,7 @@ namespace DSOffice
             if (!vals.GetType().IsArray)
                 return new object[][] { new object[] { vals } };
 
-            return ConvertToJaggedArray(vals);
+            return ConvertToJaggedArray((object[,])vals);
         }
 
         public static object WriteDataToExcelWorksheet(
@@ -246,8 +246,8 @@ namespace DSOffice
         {
             Workbook wb = (Workbook)workbook;
 
-            var worksheet = wb.Worksheets.Add();
-            worksheet.Name = name;
+            Worksheet ws = (Worksheet)wb.Worksheets.Add();
+            ws.Name = name;
 
             return wb;
         }
