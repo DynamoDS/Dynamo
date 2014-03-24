@@ -72,7 +72,7 @@ namespace Revit.Elements.Views
         /// <param name="plan"></param>
         /// <param name="isRevitOwned"></param>
         /// <returns></returns>
-        public static FloorPlanView FromExisting( Autodesk.Revit.DB.ViewPlan plan, bool isRevitOwned )
+        internal static FloorPlanView FromExisting( Autodesk.Revit.DB.ViewPlan plan, bool isRevitOwned )
         {
             if (plan == null)
             {
