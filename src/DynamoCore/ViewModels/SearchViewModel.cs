@@ -586,7 +586,27 @@ namespace Dynamo.ViewModels
 
                                 var copy = firstRes.Copy();
 
-                                var breadCrumb = new BrowserInternalElement(firstRes.FullCategoryName, _topResult);
+                                var catName = firstRes.FullCategoryName.Replace(".", " > ");
+
+                                // if the category name is too long, we strip off the interior categories
+                                if (catName.Length > 50)
+                                {
+                                    var s = catName.Split('>').Select(x => x.Trim()).ToList();
+                                    if (s.Count() >= 4)
+                                    {
+                                        s = new List<string>()
+                                        {
+                                            s[0],
+                                            "...",
+                                            s[s.Count - 3],
+                                            s[s.Count - 2],
+                                            s[s.Count - 1]
+                                        };
+                                        catName = System.String.Join(" > ", s);
+                                    }
+                                }
+
+                                var breadCrumb = new BrowserInternalElement(catName, _topResult);
                                 breadCrumb.AddChild(copy);
                                 _topResult.AddChild(breadCrumb);
 
