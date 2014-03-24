@@ -713,30 +713,24 @@ namespace Dynamo.Tests
             AssertValue("y", 3.0);
             AssertValue("z", 0.0);
         }
-        
+
         [Test]
         public void CustomNodeMultipleInGraph()
         {
             var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
-            Assert.IsTrue(
-                Controller.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Poly.dyf"))
-                != null);
+            var dyfPath = Path.Combine(examplePath, "Poly.dyf");
+            Assert.IsNotNull(Controller.CustomNodeManager.AddFileToPath(dyfPath));
 
-            string openPath = Path.Combine(examplePath, "TestPoly.dyn");
-            //model.Open(openPath);
-
-            RunModel(openPath);
-
-            // check all the nodes and connectors are loaded
-
+            RunModel(Path.Combine(examplePath, "TestPoly.dyn"));
 
             AssertPreviewValue("6542259f-b7c2-4a09-962b-7712ca269306", 0.00);
             AssertValue("x", 5.5);
             AssertValue("y", 3.0);
             AssertValue("z", 0.0);
         }
+
         [Test]
         public void CustomNodeConditional()
         {
