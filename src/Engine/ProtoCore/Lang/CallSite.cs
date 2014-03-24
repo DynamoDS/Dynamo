@@ -981,6 +981,9 @@ namespace ProtoCore
 
             #endregion
 
+            partialReplicationGuides = PerformRepGuideDemotion(arguments, partialReplicationGuides, core);
+
+
             //Replication Control is an ordered list of the elements that we have to replicate over
             //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
             //Take the explicit replication guides and build the replication structure
@@ -993,6 +996,7 @@ namespace ProtoCore
             //Get the fep that are resolved
             List<FunctionEndPoint> resolvesFeps;
             List<ReplicationInstruction> replicationInstructions;
+
 
 
             arguments = PerformRepGuideForcedPromotion(arguments, partialReplicationGuides, core);
@@ -1018,6 +1022,7 @@ namespace ProtoCore
 
         }
 
+       
 
         private StackValue Execute(List<FunctionEndPoint> functionEndPoint, ProtoCore.Runtime.Context c,
                                    List<StackValue> formalParameters,
@@ -1526,6 +1531,45 @@ namespace ProtoCore
             }
             return ret;
         }
+
+
+        /// <summary>
+        /// If all the arguments that have rep guides are single values, then strip the rep guides
+        /// </summary>
+        /// <param name="arguments"></param>
+        /// <param name="partialReplicationGuides"></param>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        private static List<List<ReplicationGuide>> PerformRepGuideDemotion(List<StackValue> arguments, List<List<ReplicationGuide>> providedReplicationGuides, Core core)
+        {
+            if (providedReplicationGuides.Count == 0)
+                return providedReplicationGuides;
+
+            //Check if rep guide demotion needed (each time there is a rep guide, the value is a single)
+            for (int i = 0; i < arguments.Count; i++)
+            {
+                if (providedReplicationGuides[i].Count == 0)
+                {
+                    continue; //Ignore this case
+                }
+
+
+                //We have rep guides
+                if (StackUtils.IsArray(arguments[i]))
+                {
+                    //Rep guides on array, use guides as provided
+                    return providedReplicationGuides;
+                }
+
+            }
+
+            //Everwhere where we have replication guides, we have single values
+            //drop the guides
+            return new List<List<ReplicationGuide>>();
+
+        }
+
+
 
 
 

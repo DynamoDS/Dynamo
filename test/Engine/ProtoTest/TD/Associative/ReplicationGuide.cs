@@ -1831,18 +1831,36 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        public void TO146_ReplicationGuidesCartesianPromote()
+        public void TO146_ReplicationGuidesCartesianPromoteAllSingles()
         {
 
             string code =
 @" def foo (x,y){    return = x + y;}a = 1;b = 2;t1 = foo(a<1>, b<2>);";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t1", new Object[]
-                {  new Object[] {
-                    3
-                }
-                });
+            thisTest.Verify("t1", 3);
+        }
+
+        [Test]
+        public void TO146_ReplicationGuidesCartesianPromoteAllSingles_Shortest()
+        {
+
+            string code =
+@" def foo (x,y){    return = x + y;}a = 1;b = 2;t1 = foo(a<1>, b<1>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", 3);
+        }
+
+        [Test]
+        public void TO146_ReplicationGuidesCartesianPromoteAllSingles_Longest()
+        {
+
+            string code =
+@" def foo (x,y){    return = x + y;}a = 1;b = 2;t1 = foo(a<1L>, b<1L>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", 3);
         }
 
         [Test]
