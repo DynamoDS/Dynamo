@@ -295,13 +295,19 @@ namespace ProtoFFI
                         param = Type.Missing;
                     else 
                         param = marshaller.UnMarshal(opArg, c, dsi, paramType);
-
-                    //null is passed for a value type, so we must return null 
-                    //rather than interpreting any value from null. fix defect 1462014 
-                    if (!paramType.IsGenericType && paramType.IsValueType && param == null)
-                        throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
-
-                    parameters.Add(param);
+ 
+                    if (!paraminfos[i].IsOptional)
+                    {
+                        //null is passed for a value type, so we must return null 
+                        //rather than interpreting any value from null. fix defect 1462014
+                        if (!paramType.IsGenericType && paramType.IsValueType && param == null)
+                            throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
+                        parameters.Add(param);
+                    }
+                    else
+                    {
+                        parameters.Add(Type.Missing);
+                    }
                 }
                 catch (System.InvalidCastException ex)
                 {
