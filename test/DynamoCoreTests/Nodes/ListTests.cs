@@ -1043,6 +1043,28 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        public void LaceShortest_WithSingleValueInput()
+        {
+            // details are given in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2464
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceShortest_WithSingleValueInput.dyn");
+            RunModel(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+
+            // input to + nodes are 1..2 and {1}.
+            AssertPreviewValue("ad4325ac-075f-4e2a-93ee-c41c4cfa6a2b", new int[] { 2 });
+
+            // intput to + nodes are 1..2 and 1.
+            AssertPreviewValue("80fbd9cd-42b6-4669-b41b-e5c525c77c52", new int[] { 2,3 });
+
+        }
+
+
         #endregion
 
         #region LaceLongest test cases  
