@@ -457,6 +457,9 @@ namespace Dynamo.Models
             var manager = dynSettings.Controller.CustomNodeManager;
             var info = manager.AddFileToPath(workspaceHeader.FileName);
             var funcDef = manager.GetFunctionDefinition(info.Guid);
+            if (funcDef == null) // Fail to load custom function.
+                return;
+
             funcDef.AddToSearch();
 
             var ws = funcDef.WorkspaceModel;
