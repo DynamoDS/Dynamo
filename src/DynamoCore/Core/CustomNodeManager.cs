@@ -654,6 +654,10 @@ namespace Dynamo.Utilities
                 var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
                 if (decision == MigrationManager.Decision.Abort)
                 {
+                    MigrationManager.DisplayObsoleteFileMessage(fileVersion, currentVersion);
+
+                    def = null;
+                    return false;
                 }
                 else if (decision == MigrationManager.Decision.Migrate)
                 {

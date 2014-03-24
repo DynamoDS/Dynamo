@@ -738,6 +738,8 @@ namespace Dynamo.Models
                 var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
                 if (decision == MigrationManager.Decision.Abort)
                 {
+                    MigrationManager.DisplayObsoleteFileMessage(fileVersion, currentVersion);
+                    return false;
                 }
                 else if (decision == MigrationManager.Decision.Migrate)
                 {
