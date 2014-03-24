@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
-using Dynamo.Tests.UI;
 using Dynamo.UI.Controls;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
@@ -31,7 +30,7 @@ namespace DynamoCoreUITests
             Ui = new DynamoView { DataContext = Controller.DynamoViewModel };
             Vm = Controller.DynamoViewModel;
             Controller.UIDispatcher = Ui.Dispatcher;
-            Ui.Show();
+            Ui.Show();                             
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
@@ -44,21 +43,14 @@ namespace DynamoCoreUITests
             }
             else
             {
-                EmptyTempFolder();
+                DynamoTestUI.EmptyTempFolder(TempFolder);
             }
         }
 
         [SetUp]
-        public void Setup()
+        public override void Start()
         {
-            //Do nothing.
-        }
-
-        [TearDown]
-        public void Shutdown()
-        {
-            if (Ui.IsLoaded)
-                Ui.Close();
+            //override this to avoid the typical startup behavior
         }
 
         [Test]
