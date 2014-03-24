@@ -249,7 +249,7 @@ namespace DSOffice
             Worksheet ws = (Worksheet)wb.Worksheets.Add();
             ws.Name = name;
 
-            return wb;
+            return ws;
         }
 
         public static object NewExcelWorkbook()
