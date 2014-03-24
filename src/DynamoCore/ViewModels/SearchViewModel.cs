@@ -592,7 +592,7 @@ namespace Dynamo.ViewModels
                                 if (catName.Length > 50)
                                 {
                                     var s = catName.Split('>').Select(x => x.Trim()).ToList();
-                                    if (s.Count() >= 4)
+                                    if (s.Count() > 4)
                                     {
                                         s = new List<string>()
                                         {
