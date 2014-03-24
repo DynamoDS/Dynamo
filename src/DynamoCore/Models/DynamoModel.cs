@@ -995,6 +995,11 @@ namespace Dynamo.Models
                 #endregion
 
                 HomeSpace.FileName = xmlPath;
+
+                // Allow live runner a chance to preload trace data from XML.
+                var engine = dynSettings.Controller.EngineController;
+                if (engine != null && (engine.LiveRunnerCore != null))
+                    engine.LiveRunnerCore.DeserializeTraceDataFromXml(xmlDoc);
             }
             catch (Exception ex)
             {
