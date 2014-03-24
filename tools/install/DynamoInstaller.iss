@@ -39,7 +39,7 @@ Name: "custom"; Description: "Custom installation"; Flags: iscustom
 
 [Dirs]
 Name: "{app}\definitions"
-Name: "{app}\samples"
+;Name: "{app}\samples"
 Name: "{app}\dll"
 Name: "{app}\nodes"
 
