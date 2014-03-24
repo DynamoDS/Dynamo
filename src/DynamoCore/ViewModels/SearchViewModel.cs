@@ -811,7 +811,6 @@ namespace Dynamo.ViewModels
             if (packageHeader.keywords != null && packageHeader.keywords.Count > 0)
                 SearchDictionary.Add(searchEle, packageHeader.keywords);
             SearchDictionary.Add(searchEle, searchEle.Description);
-            //SearchAndUpdateResultsSync(SearchText);
         }
 
         /// <summary>
@@ -894,12 +893,8 @@ namespace Dynamo.ViewModels
                     SearchDictionary.Add(searchElement, function.QualifiedName);
 
                     // add all search tags
-                    var tags = function.GetSearchTags().ToList();
+                    function.GetSearchTags().ToList().ForEach(x => SearchDictionary.Add(searchElement, x));
 
-                    if (tags.Count > 0)
-                    {
-                        tags.ForEach(x => SearchDictionary.Add(searchElement, x));
-                    }
                 }
             }
 
