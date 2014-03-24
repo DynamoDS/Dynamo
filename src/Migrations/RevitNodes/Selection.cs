@@ -14,7 +14,7 @@ namespace Dynamo.Nodes
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             XmlElement newNode = MigrationManager.CloneAndChangeType(
-                oldNode, "Dynamo.Nodes.DSFamilyInstanceSelection");
+                oldNode, "Dynamo.Nodes.DSModelElementSelection");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)
@@ -90,7 +90,7 @@ namespace Dynamo.Nodes
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             XmlElement newNode = MigrationManager.CloneAndChangeType(
-                oldNode, "Dynamo.Nodes.DSCurveElementSelection");
+                oldNode, "Dynamo.Nodes.DSModelElementSelection");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)
@@ -128,7 +128,7 @@ namespace Dynamo.Nodes
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             XmlElement newNode = MigrationManager.CloneAndChangeType(
-                oldNode, "Dynamo.Nodes.DSReferencePointSelection");
+                oldNode, "Dynamo.Nodes.DSModelElementSelection");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)
@@ -147,7 +147,7 @@ namespace Dynamo.Nodes
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             XmlElement newNode = MigrationManager.CloneAndChangeType(
-                oldNode, "Dynamo.Nodes.DSLevelSelection");
+                oldNode, "Dynamo.Nodes.DSModelElementSelection");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)
