@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using Revit.GeometryConversion;
@@ -47,12 +48,22 @@ namespace Revit.Elements
                 throw new Exception("Could not obtain ImportInstance from imported Element");
             }
 
-
-            importInstance.Pinned = false;
-            ElementTransformUtils.MoveElement(Document, importInstance.Id, translation);
-            InternalSetImportInstance( importInstance );
+            InternalSetImportInstance(importInstance);
+            InternalUnpinAndTranslateImportInstance(translation);
 
             this.Path = satPath;
+
+            TransactionManager.Instance.TransactionTaskDone();
+        }
+
+        private void InternalUnpinAndTranslateImportInstance(Autodesk.Revit.DB.XYZ translation)
+        {
+            TransactionManager.Instance.EnsureInTransaction(Document);
+
+            // the element must be unpinned to translate
+            InternalImportInstance.Pinned = false;
+
+            if (!translation.IsZeroLength()) ElementTransformUtils.MoveElement(Document, InternalImportInstance.Id, translation);
 
             TransactionManager.Instance.TransactionTaskDone();
         }
@@ -86,7 +97,7 @@ namespace Revit.Elements
             return new ImportInstance(pathToFile);
         }
 
-        public static ImportInstance BySolid(Autodesk.DesignScript.Geometry.Solid geometry)
+        public static ImportInstance ByGeometry(Autodesk.DesignScript.Geometry.Geometry geometry)
         {
             if (geometry == null)
             {
@@ -96,35 +107,42 @@ namespace Revit.Elements
             // Create a temp file name to export to
             var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
 
-            var tran = geometry.Centroid().AsVector();
-            var tranGeo = geometry.Translate(tran.Reverse());
+            var translation = Vector.ByCoordinates(0, 0, 0);
+            Robustify(ref geometry, ref translation);
 
-            if (!tranGeo.ExportToSAT(fn))
+            if (!geometry.ExportToSAT(fn))
             {
                 throw new Exception("Failed to import geometry.");
             }
 
-            return new ImportInstance(fn, tran.ToXyz());
+            return new ImportInstance(fn, translation.ToXyz());
         }
 
 
-        //public static ImportInstance ByGeometry(Autodesk.DesignScript.Geometry.Geometry geometry)
-        //{
-        //    if (geometry == null)
-        //    {
-        //        throw new ArgumentNullException("geometry");
-        //    }
+        #region Helper methods
+        
+        /// <summary>
+        /// This method contains workarounds for increasing the robustness of input geometry
+        /// </summary>
+        /// <param name="geometry"></param>
+        /// <param name="translation"></param>
+        private static void Robustify(ref Autodesk.DesignScript.Geometry.Geometry geometry,
+            ref Autodesk.DesignScript.Geometry.Vector translation)
+        {
+            // translate centroid of the solid to the origin
+            // export, then move back 
+            if (geometry is Autodesk.DesignScript.Geometry.Solid)
+            {
+                var solid = geometry as Autodesk.DesignScript.Geometry.Solid;
 
-        //    // Create a temp file name to export to
-        //    var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
+                translation = solid.Centroid().AsVector();
+                var tranGeo = solid.Translate(translation.Reverse());
 
-        //    if (!geometry.ExportToSAT(fn))
-        //    {
-        //        throw new Exception("Failed to import geometry.");
-        //    }
+                geometry = tranGeo;
+            }
+        }
 
-        //    return new ImportInstance(fn);
-        //}
+        #endregion
 
     }
 }
