@@ -914,6 +914,10 @@ namespace Dynamo.Nodes
             MigrationManager.SetFunctionSignature(dsCoreNode, "DSCoreNodes.dll",
                 "List.TakeEveryNthItem", "List.TakeEveryNthItem@var[]..[],int,int");
 
+            foreach (XmlNode child in oldNode.ChildNodes)
+            {
+                dsCoreNode.AppendChild(child.CloneNode(true));
+            }
             migratedData.AppendNode(dsCoreNode);
             string dsCoreNodeId = MigrationManager.GetGuidFromXmlElement(dsCoreNode);
 
