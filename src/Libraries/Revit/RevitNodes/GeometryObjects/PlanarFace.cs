@@ -19,7 +19,7 @@ namespace Revit.GeometryObjects
             get; private set;
         }
 
-        protected override GeometryObject InternalGeometryObject
+        protected override Autodesk.Revit.DB.GeometryObject InternalGeometryObject
         {
             get { return InternalPlanarFace; }
         }

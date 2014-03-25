@@ -14,7 +14,7 @@ namespace Revit.Elements
     /// A Revit DividedPath
     /// </summary>
     [RegisterForTrace]
-    public class DividedPath: AbstractElement
+    public class DividedPath: Element
     {
         #region Properties
 

@@ -7,7 +7,7 @@ using Revit.References;
 
 namespace Revit.Elements
 {
-    public abstract class CurveElement : AbstractElement, IGraphicItem
+    public abstract class CurveElement : Element, IGraphicItem
     {
         public override Autodesk.Revit.DB.Element InternalElement
         {

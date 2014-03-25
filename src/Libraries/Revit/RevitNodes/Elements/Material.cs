@@ -11,7 +11,7 @@ using RevitServices.Persistence;
 namespace Revit.Elements
 {
     [RegisterForTrace]
-    public class Material : AbstractElement
+    public class Material : Element
     {
         #region Internal properties
 

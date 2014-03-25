@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
 using DSNodeServices;
+using Revit.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
@@ -16,7 +17,7 @@ namespace Revit.Elements
     /// A Revit ImportInstance Element
     /// </summary>
     [RegisterForTrace]
-    public class ImportInstance : AbstractElement
+    public class ImportInstance : Element
     {
         [Browsable(false)]
         public override Autodesk.Revit.DB.Element InternalElement
@@ -26,13 +27,15 @@ namespace Revit.Elements
 
         internal Autodesk.Revit.DB.ImportInstance InternalImportInstance { get; private set; }
 
-        internal ImportInstance(string satPath)
+        internal ImportInstance(string satPath, XYZ translation = null)
         {
+            translation = translation ?? XYZ.Zero;
+
             TransactionManager.Instance.EnsureInTransaction(Document);
 
             var options = new SATImportOptions()
             {
-
+                Unit = ImportUnit.Foot
             };
 
             var id = Document.Import(satPath, options, Document.ActiveView);
@@ -44,6 +47,9 @@ namespace Revit.Elements
                 throw new Exception("Could not obtain ImportInstance from imported Element");
             }
 
+
+            importInstance.Pinned = false;
+            ElementTransformUtils.MoveElement(Document, importInstance.Id, translation);
             InternalSetImportInstance( importInstance );
 
             this.Path = satPath;
@@ -80,8 +86,7 @@ namespace Revit.Elements
             return new ImportInstance(pathToFile);
         }
 
-
-        public static ImportInstance ByGeometry(Autodesk.DesignScript.Geometry.Geometry geometry)
+        public static ImportInstance BySolid(Autodesk.DesignScript.Geometry.Solid geometry)
         {
             if (geometry == null)
             {
@@ -91,13 +96,35 @@ namespace Revit.Elements
             // Create a temp file name to export to
             var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
 
-            if (!geometry.ExportToSAT(fn))
+            var tran = geometry.Centroid().AsVector();
+            var tranGeo = geometry.Translate(tran.Reverse());
+
+            if (!tranGeo.ExportToSAT(fn))
             {
                 throw new Exception("Failed to import geometry.");
             }
 
-            return new ImportInstance(fn);
+            return new ImportInstance(fn, tran.ToXyz());
         }
+
+
+        //public static ImportInstance ByGeometry(Autodesk.DesignScript.Geometry.Geometry geometry)
+        //{
+        //    if (geometry == null)
+        //    {
+        //        throw new ArgumentNullException("geometry");
+        //    }
+
+        //    // Create a temp file name to export to
+        //    var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
+
+        //    if (!geometry.ExportToSAT(fn))
+        //    {
+        //        throw new Exception("Failed to import geometry.");
+        //    }
+
+        //    return new ImportInstance(fn);
+        //}
 
     }
 }

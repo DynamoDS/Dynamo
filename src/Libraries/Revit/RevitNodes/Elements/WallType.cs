@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows.Markup;
+using Autodesk.DesignScript.Runtime;
 using RevitServices.Persistence;
 
 namespace Revit.Elements
@@ -8,7 +10,7 @@ namespace Revit.Elements
     /// <summary>
     /// A Revit WallType
     /// </summary>
-    public class WallType : AbstractElement
+    public class WallType : Element
     {
         #region Internal properties
 
@@ -108,7 +110,7 @@ namespace Revit.Elements
         /// <param name="wallType"></param>
         /// <param name="isRevitOwned"></param>
         /// <returns></returns>
-        public static WallType FromExisting(Autodesk.Revit.DB.WallType wallType, bool isRevitOwned)
+        internal static WallType FromExisting(Autodesk.Revit.DB.WallType wallType, bool isRevitOwned)
         {
             return new WallType(wallType)
             {

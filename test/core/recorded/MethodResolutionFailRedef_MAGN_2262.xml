@@ -1,5 +1,5 @@
 <Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
-  <OpenFileCommand XmlFilePath="E:\Github\Dynamo\test files\wrong.dyn" />
+  <OpenFileCommand XmlFilePath=".\wrong.dyn" />
   <RunCancelCommand ShowErrors="false" CancelRun="false" />
   <PausePlaybackCommand Tag="Tag-204ca7e6" PauseDurationInMs="20" />
   <MakeConnectionCommand NodeId="53cd0201-273c-43f4-8815-8531db75d68c" PortIndex="0" Type="0" ConnectionMode="0" />
