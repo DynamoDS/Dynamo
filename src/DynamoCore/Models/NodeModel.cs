@@ -440,15 +440,7 @@ namespace Dynamo.Models
         /// </summary>
         internal IdentifierNode AstIdentifierForPreview
         {
-            get
-            {
-                if (identifier == null)
-                {
-                    string id = AstIdentifierBase;
-                    identifier = AstFactory.BuildIdentifier(id);
-                }
-                return identifier;
-            }
+            get { return identifier ?? (identifier = AstFactory.BuildIdentifier(AstIdentifierBase)); }
         }
 
         /// <summary>
@@ -528,7 +520,7 @@ namespace Dynamo.Models
                 throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
 
             if (OutPortData.Count == 1)
-                return AstFactory.BuildIdentifier((IsPartiallyApplied ? "_local_" : "") + AstIdentifierBase);
+                return AstFactory.BuildIdentifier(/* (IsPartiallyApplied ? "_local_" : "") + */ AstIdentifierBase);
 
             string id = AstIdentifierBase + "_out" + outputIndex;
             return AstFactory.BuildIdentifier(id);
