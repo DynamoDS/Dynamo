@@ -603,7 +603,6 @@ namespace Dynamo.Tests
     internal class UnitsOfMeasureDynTests : DynamoUnitTest
     {
         [Test]
-        [Category("Failing")]
         public void CanMapOverUnits()
         {
             Assert.Inconclusive("Nodes Deprecated - Length,Area, Volume from Number");
