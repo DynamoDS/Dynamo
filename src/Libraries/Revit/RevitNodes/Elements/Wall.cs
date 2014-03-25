@@ -8,7 +8,7 @@ using Curve = Autodesk.Revit.DB.Curve;
 namespace Revit.Elements
 {
     [RegisterForTrace]
-    public class Wall : AbstractElement
+    public class Wall : Element
     {
         #region Internal Properties
 

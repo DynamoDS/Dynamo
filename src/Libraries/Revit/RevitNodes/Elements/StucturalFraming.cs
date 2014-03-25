@@ -142,6 +142,15 @@ namespace Revit.Elements
 
         #region Public properties
 
+        public Point Location
+        {
+            get
+            {
+                var pos = this.InternalFamilyInstance.Location as LocationPoint;
+                return Point.ByCoordinates(pos.Point.X, pos.Point.Y, pos.Point.Z);
+            }
+        }
+
         public FamilySymbol Symbol
         {
             get

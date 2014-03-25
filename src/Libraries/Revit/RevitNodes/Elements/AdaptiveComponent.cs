@@ -11,6 +11,7 @@ using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Face = Revit.GeometryObjects.Face;
 using Point = Autodesk.DesignScript.Geometry.Point;
+using Reference = Autodesk.Revit.DB.Reference;
 
 namespace Revit.Elements
 {
@@ -48,7 +49,7 @@ namespace Revit.Elements
             // otherwise create a new family instance...
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractElement.Document, fs.InternalFamilySymbol);
+            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(Element.Document, fs.InternalFamilySymbol);
 
             if (fam == null)
                 throw new Exception("An adaptive component could not be found or created.");
@@ -87,7 +88,7 @@ namespace Revit.Elements
             // otherwise create a new family instance...
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractElement.Document, fs.InternalFamilySymbol);
+            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(Element.Document, fs.InternalFamilySymbol);
 
             if (fam == null)
                 throw new Exception("An adaptive component could not be found or created.");
@@ -124,7 +125,7 @@ namespace Revit.Elements
             // otherwise create a new family instance...
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractElement.Document, fs.InternalFamilySymbol);
+            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(Element.Document, fs.InternalFamilySymbol);
 
             if (fam == null)
                 throw new Exception("An adaptive component could not be found or created.");
@@ -243,6 +244,27 @@ namespace Revit.Elements
             }
 
             TransactionManager.Instance.TransactionTaskDone();
+        }
+
+        #endregion
+
+        #region Public properties
+
+        public FamilySymbol Symbol
+        {
+            get
+            {
+                return FamilySymbol.FromExisting(this.InternalFamilyInstance.Symbol, true);
+            }
+        }
+
+        public Point Location
+        {
+            get
+            {
+                var pos = this.InternalFamilyInstance.Location as LocationPoint;
+                return Point.ByCoordinates(pos.Point.X, pos.Point.Y, pos.Point.Z);
+            }
         }
 
         #endregion

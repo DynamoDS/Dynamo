@@ -13,7 +13,7 @@ namespace Revit.Elements
     /// <summary>
     /// A Revit Floor
     /// </summary>
-    public class Floor : AbstractElement
+    public class Floor : Element
     {
         #region Internal properties
 

@@ -12,7 +12,7 @@ namespace Revit.Elements
     /// A Revit Family
     /// </summary>
     [RegisterForTrace]
-    public class Family : AbstractElement
+    public class Family : Element
     {
         #region Internal properties
 
