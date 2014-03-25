@@ -97,6 +97,39 @@ namespace Revit.Elements
             return new ImportInstance(pathToFile);
         }
 
+        /// <summary>
+        /// Import a collection of Geometry (Solid, Curve, Surface, etc) into Revit as an ImportInstance.  This variant is much faster than
+        /// ImportInstance.ByGeometry as it uses a batch method.
+        /// </summary>
+        /// <param name="geometries">A collection of Geometry</param>
+        /// <returns></returns>
+        public static ImportInstance ByGeometries(Autodesk.DesignScript.Geometry.Geometry[] geometries)
+        {
+            if (geometries == null)
+            {
+                throw new ArgumentNullException("geometries");
+            }
+
+            // Create a temp file name to export to
+            var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
+
+            var translation = Vector.ByCoordinates(0, 0, 0);
+
+            Robustify(ref geometries, ref translation);
+
+            if (!Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(geometries, fn))
+            {
+                throw new Exception("Failed to import geometry.");
+            }
+
+            return new ImportInstance(fn, translation.ToXyz());
+        }
+
+        /// <summary>
+        /// Import a collection of Geometry (Solid, Curve, Surface, etc) into Revit as an ImportInstance.
+        /// </summary>
+        /// <param name="geometry">A single piece of geometry</param>
+        /// <returns></returns>
         public static ImportInstance ByGeometry(Autodesk.DesignScript.Geometry.Geometry geometry)
         {
             if (geometry == null)
@@ -140,6 +173,27 @@ namespace Revit.Elements
 
                 geometry = tranGeo;
             }
+        }
+
+        /// <summary>
+        /// This method contains workarounds for increasing the robustness of input geometry
+        /// </summary>
+        /// <param name="geometry"></param>
+        /// <param name="translation"></param>
+        private static void Robustify(ref Autodesk.DesignScript.Geometry.Geometry[] geometry,
+            ref Autodesk.DesignScript.Geometry.Vector translation)
+        {
+            // translate all geom to centroid of bbox, then translate back
+            var bb = Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(geometry);
+
+            // get center of bbox
+            var trans = ((bb.MinPoint.ToXyz() + bb.MaxPoint.ToXyz())/2).ToVector().Reverse();
+
+            // translate all geom so that it is centered by bb
+            geometry = geometry.Select(x => x.Translate(trans)).ToArray();
+
+            // so that we can move it all back
+            translation = trans.Reverse();
         }
 
         #endregion
