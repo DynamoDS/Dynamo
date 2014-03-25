@@ -129,13 +129,12 @@ namespace Dynamo
             set { context = value; }
         }
 
-        private bool _isShowingConnectors = true;
         public bool IsShowingConnectors
         {
-            get { return _isShowingConnectors; }
+            get { return PreferenceSettings.ShowConnector; }
             set
             {
-                _isShowingConnectors = value;
+                PreferenceSettings.ShowConnector = value;
             }
         }
 
