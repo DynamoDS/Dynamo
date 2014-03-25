@@ -9,6 +9,7 @@ namespace Dynamo.UI
         // Add 0.5 to place the point in the middle of a pixel to sharpen it
         public static readonly double PixelSharpeningConstant = 0.5;
         public static readonly string BackupFolderName = "backup";
+        public static readonly string FilePathAttribName = "TargetXmlFilePath";
         public static readonly double DoubleSliderTextBoxWidth = 55.0;
         public static readonly double IntegerSliderTextBoxWidth = 30.0;
         #endregion
@@ -87,6 +88,12 @@ namespace Dynamo.UI
 
         #endregion
 
+        #region Warning Bubble
+        public static SolidColorBrush WarningFrameFill = new SolidColorBrush(Color.FromRgb(0xff, 0xef, 0xa0));
+        public static SolidColorBrush WarningFrameStrokeColor = new SolidColorBrush(Color.FromRgb(0xf2, 0xbd, 0x53));
+        public static SolidColorBrush WarningTextForeground = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
+        #endregion
+
         #region Error Bubble
 
         public static SolidColorBrush ErrorFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
@@ -106,7 +113,7 @@ namespace Dynamo.UI
         public static double ErrorCondensedContentMaxHeight = ErrorCondensedMaxHeight - 16;
 
         public static double ErrorTextFontSize = 13;
-        public static FontWeight ErrorTextFontWeight = FontWeights.Light;
+        public static FontWeight ErrorTextFontWeight = FontWeights.Normal;
         public static SolidColorBrush ErrorTextForeground = new SolidColorBrush(Color.FromRgb(190, 70, 70));
         public static TextWrapping ErrorContentWrapping = TextWrapping.Wrap;
         public static Thickness ErrorContentMargin = new Thickness(5, 5, 5, 12);

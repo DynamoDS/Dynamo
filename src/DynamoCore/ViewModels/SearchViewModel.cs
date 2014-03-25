@@ -582,12 +582,37 @@ namespace Dynamo.ViewModels
                             {
                                 _topResult.Items.Clear();
 
-                                var copy = (t.Result.ElementAt(0) as NodeSearchElement).Copy();
+                                var firstRes = (t.Result.ElementAt(0) as NodeSearchElement);
 
-                                _topResult.AddChild(copy);
+                                var copy = firstRes.Copy();
+
+                                var catName = firstRes.FullCategoryName.Replace(".", " > ");
+
+                                // if the category name is too long, we strip off the interior categories
+                                if (catName.Length > 50)
+                                {
+                                    var s = catName.Split('>').Select(x => x.Trim()).ToList();
+                                    if (s.Count() > 4)
+                                    {
+                                        s = new List<string>()
+                                        {
+                                            s[0],
+                                            "...",
+                                            s[s.Count - 3],
+                                            s[s.Count - 2],
+                                            s[s.Count - 1]
+                                        };
+                                        catName = System.String.Join(" > ", s);
+                                    }
+                                }
+
+                                var breadCrumb = new BrowserInternalElement(catName, _topResult);
+                                breadCrumb.AddChild(copy);
+                                _topResult.AddChild(breadCrumb);
 
                                 _topResult.SetVisibilityToLeaves(true);
-                                _topResult.IsExpanded = true;
+                                copy.ExpandToRoot();
+
                             }
 
                             // for all of the other results, show them in their category
@@ -786,7 +811,6 @@ namespace Dynamo.ViewModels
             if (packageHeader.keywords != null && packageHeader.keywords.Count > 0)
                 SearchDictionary.Add(searchEle, packageHeader.keywords);
             SearchDictionary.Add(searchEle, searchEle.Description);
-            //SearchAndUpdateResultsSync(SearchText);
         }
 
         /// <summary>
@@ -827,6 +851,10 @@ namespace Dynamo.ViewModels
 
                 foreach (var function in functions)
                 {
+                    //Don't add the functions that are not visible in library.
+                    if (!function.IsVisibleInLibrary)
+                        continue;
+
                     // For overloaded functions, only parameters are displayed
                     // for this item. E.g, for Count(), on UI it is:
                     //
@@ -839,6 +867,12 @@ namespace Dynamo.ViewModels
                     var displayString = function.UserFriendlyName;
                     var category = function.Category;
 
+                    // do not add GetType method names to search
+                    if (displayString.Contains("GetType"))
+                    {
+                        continue;
+                    }
+
                     if (isOverloaded)
                     {
                         displayString = string.Join(", ", function.Parameters.Select(p => p.ToString()));
@@ -849,6 +883,7 @@ namespace Dynamo.ViewModels
 
                     var searchElement = new DSFunctionNodeSearchElement(displayString, function);
                     searchElement.SetSearchable(true);
+                    searchElement.FullCategoryName = category;
                     
                     // Add this search eleemnt to the search view
                     TryAddCategoryAndItem(category, searchElement);
@@ -856,6 +891,10 @@ namespace Dynamo.ViewModels
                     // function.QualifiedName is the search string for this
                     // element
                     SearchDictionary.Add(searchElement, function.QualifiedName);
+
+                    // add all search tags
+                    function.GetSearchTags().ToList().ForEach(x => SearchDictionary.Add(searchElement, x));
+
                 }
             }
 

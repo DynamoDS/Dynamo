@@ -17,6 +17,7 @@ namespace ProtoCore.DSASM
         public int classId { get; set; }
         public List<int> baseList { get; set; }
         public bool IsImportedClass { get; set; }
+        public ProtoFFI.FFIClassAttributes ClassAttributes { get; set; }
 
         /// <summary>
         /// String description of where the classnode was loaded from 
@@ -425,7 +426,7 @@ namespace ProtoCore.DSASM
                 {
                     foreach (ProcedureNode procNode in vtable.procList)
                     {
-                        if (procNode.name == ProtoCore.DSDefinitions.Keyword.Dispose && procNode.argInfoList.Count == 0)
+                        if (CoreUtils.IsDisposeMethod(procNode.name) && procNode.argInfoList.Count == 0)
                         {
                             disposeMethod = procNode;
                             break;

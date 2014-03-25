@@ -101,7 +101,9 @@ namespace Dynamo.Search.SearchElements
 
         public virtual NodeSearchElement Copy()
         {
-            return new NodeSearchElement(this.Name, this.Description, new List<string>());
+            var f = new NodeSearchElement(this.Name, this.Description, new List<string>());
+            f.FullCategoryName = this.FullCategoryName;
+            return f;
         }
 
         private void ToggleIsVisible(object parameter)

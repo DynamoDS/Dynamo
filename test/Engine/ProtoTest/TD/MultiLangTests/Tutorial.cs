@@ -205,7 +205,7 @@ startPt = Point.ByCartesianCoordinates( 2, 1, 0 );
             //Assert.Fail("1456568 - Sprint 16 : Rev 982 : Replication does not work on operators ");
             string errmsg = "";//DNL-1467282 Replication guides not working in constructor of class";
             string code = @"import (""GeometryLibForLanguageTesting.ds"");
-import(""math.dll"");
+import(""DSCoreNodes.dll"");
 //#include ""GeometryLibForLanguageTesting.ds""
 //circlePoint = Point.ByCartesianCoordinates(10.0*cos(0..(360)..#21), 10.0*sin(0..(360)..#21), 0.0);
 circlePoint = Point.ByCartesianCoordinates( 10.0 * Math.Cos(0..(360)..#4), 10.0 * Math.Sin(0..(360)..#4), 0.0);
@@ -234,7 +234,7 @@ t4 = lines[3][0].StartPoint.X;";
             string code = @"
 import (""GeometryLibForLanguageTesting.ds"");
 //#include ""GeometryLibForLanguageTesting.ds""
-import(""math.dll"");
+import(""DSCoreNodes.dll"");
 //numPoints = 21;
 numPoints = 5;
 circlePoint = Point.ByCartesianCoordinates( 10.0*Math.Cos(0..(360)..#numPoints), 10.0*Math.Sin(0..(360)..#numPoints), 0.0 );
@@ -284,7 +284,7 @@ t2 = lines[1][2].StartPoint.X;";
             string code = @"
 import (""GeometryLibForLanguageTesting.ds"");
 //#include ""GeometryLibForLanguageTesting.ds""
-import(""math.dll"");
+import(""DSCoreNodes.dll"");
 class MyPoint 
 {
 	// define general system of dependencies

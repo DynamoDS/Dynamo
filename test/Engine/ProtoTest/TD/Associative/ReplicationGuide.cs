@@ -600,7 +600,7 @@ namespace ProtoTest.TD.Associative
         public void T034_Replication_Guides_Not_On_All_Arguments_9()
         {
             String code =
-@"import(""Math.dll"");def sum ( a, b, c ){    return = a + b + c;}temp1 = (Math.Sin(0..180..#2) * 2);temp2 = (Math.Sin(0..180..#3) * 1);zArray = temp1<1> + temp2<2>;zArray1 = zArray + 1;ceilingPoints = sum((0..10..#2)<1>, (0..15..#3)<2>, zArray1 );// expected :  ceilingPoints = { { 1.000, 9.500, 16.000 }, { 11.000, 19.500, 26.000 } }// received :  ceilingPoints = null";
+@"import(""DSCoreNodes.dll"");def sum ( a, b, c ){    return = a + b + c;}temp1 = (Math.Sin(0..180..#2) * 2);temp2 = (Math.Sin(0..180..#3) * 1);zArray = temp1<1> + temp2<2>;zArray1 = zArray + 1;ceilingPoints = sum((0..10..#2)<1>, (0..15..#3)<2>, zArray1 );// expected :  ceilingPoints = { { 1.000, 9.500, 16.000 }, { 11.000, 19.500, 26.000 } }// received :  ceilingPoints = null";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "DNL-1467580 IndexOutOfRange Exception when replication guides are not applied on all arguments";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -1508,7 +1508,7 @@ namespace ProtoTest.TD.Associative
         public void T0125_ReplicationGudes_MathFunctions()
         {
             string code =
-@" import(""math.dll"");x = {0,1,2,3};y = {0,1};test1 = Math.Min( x, y); test2 = Math.Min( x<1>, y<2>);test3 = Math.Max( x, y); test4 = Math.Max( x<1>, y<2>);    ";
+@" import(""DSCoreNodes.dll"");x = {0,1,2,3};y = {0,1};test1 = Math.Min( x, y); test2 = Math.Min( x<1>, y<2>);test3 = Math.Max( x, y); test4 = Math.Max( x<1>, y<2>);    ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new Object[] { 0, 1 });
@@ -1554,7 +1554,7 @@ namespace ProtoTest.TD.Associative
         public void T0128_ReplicationGudes_InlineCondition()
         {
             string code =
-@" import(""math.dll"");def foo1(x,y){    return = x + y;}def foo2(){    return = {1, 2};}def foo3(){    return = {3, 4};}b = Count(foo1(foo2()<1>,foo3()<2>));a = Count(foo1(foo2()<1>,foo3()<2>)) == 2 ? foo1((5..6)<1>, (7..8)<2>) : foo1(foo2()<1>,foo3()<2>);c1 = 5..6;c2 = Math.Min ({0,1},{0,1} );c3 = foo1 ( c1<1>, c2<2>); // {{5,6},{6,7}}c4 = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;class A{    a : int;	constructor A()	{	    a = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;	}	def func ()	{	    return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;	}}def func ( ) {    return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;}t1 = [Imperative]{    return = [Associative]	{	    return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;	}}t2 = [Imperative]{    return = [Associative]	{	    return = [Imperative]		{		    return = [Associative]			{			    return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;			}		}	}}	t3 = func();t = A.A();t4 = t.a;t5 = t.func();	";
+@" import(""DSCoreNodes.dll"");def foo1(x,y){    return = x + y;}def foo2(){    return = {1, 2};}def foo3(){    return = {3, 4};}b = Count(foo1(foo2()<1>,foo3()<2>));a = Count(foo1(foo2()<1>,foo3()<2>)) == 2 ? foo1((5..6)<1>, (7..8)<2>) : foo1(foo2()<1>,foo3()<2>);c1 = 5..6;c2 = Math.Min ({0,1},{0,1} );c3 = foo1 ( c1<1>, c2<2>); // {{5,6},{6,7}}c4 = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;class A{    a : int;	constructor A()	{	    a = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;	}	def func ()	{	    return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;	}}def func ( ) {    return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;}t1 = [Imperative]{    return = [Associative]	{	    return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;	}}t2 = [Imperative]{    return = [Associative]	{	    return = [Imperative]		{		    return = [Associative]			{			    return = Average ( foo1 ( (5..6)<1>, Math.Min ({0,1},{0,1} )<2>) ) > 5 ? Average (c3) :  0;			}		}	}}	t3 = func();t = A.A();t4 = t.a;t5 = t.func();	";
             string errmsg = "DNL-1467589 Replication guide: Usage of Math function as a function argument with replication guides is yielding unexpected null values";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", new Object[] { new Object[] { 12, 13 }, new Object[] { 13, 14 } });
@@ -1806,6 +1806,78 @@ namespace ProtoTest.TD.Associative
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("t1", new Object[] { 0 });
         }
+
+
+        [Test]
+        public void TO145_ReplicationGuidesLongest()
+        {
+
+            string code =
+@" def foo (x,y){    return = x + y;}a = 0;b = 0..1;t1 = foo(a<1L>, b<1L>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", new Object[] { 0, 1 });
+        }
+
+        [Test]
+        public void TO145_ReplicationGuidesLongest2()
+        {
+
+            string code =
+@" def foo (x,y,z){    return = x + y + z;}a = 0;b = 0..1;c = 0..2;t1 = foo(a<1L>, b<1L>, c<1L>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", new Object[] { 0, 2, 3  });
+        }
+
+        [Test]
+        public void TO146_ReplicationGuidesCartesianPromoteAllSingles()
+        {
+
+            string code =
+@" def foo (x,y){    return = x + y;}a = 1;b = 2;t1 = foo(a<1>, b<2>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", 3);
+        }
+
+        [Test]
+        public void TO146_ReplicationGuidesCartesianPromoteAllSingles_Shortest()
+        {
+
+            string code =
+@" def foo (x,y){    return = x + y;}a = 1;b = 2;t1 = foo(a<1>, b<1>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", 3);
+        }
+
+        [Test]
+        public void TO146_ReplicationGuidesCartesianPromoteAllSingles_Longest()
+        {
+
+            string code =
+@" def foo (x,y){    return = x + y;}a = 1;b = 2;t1 = foo(a<1L>, b<1L>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", 3);
+        }
+
+        [Test]
+        public void TO147_ReplicationGuidesCartesian()
+        {
+
+            string code =
+@" def foo (x,y){    return = x + y;}a = { 1 };b = { 2 };t1 = foo(a<1>, b<2>);";
+            string errmsg = "";
+            thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("t1", new Object[]
+                {  new Object[] {
+                    3
+                }
+                });
+        }
+
 
     }
 }

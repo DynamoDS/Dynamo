@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Windows.Annotations;
+using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
 {
     /// <summary>
     ///     Comparison methods.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)] 
     public static class Compare
     {
         /// <summary>
@@ -15,7 +17,7 @@ namespace DSCore
         /// <param name="b">A comparable object.</param>
         /// <returns name="bool">Boolean result.</returns>
         /// <search>greater,larger,bigger</search>
-        public static bool GreaterThan(IComparable a, IComparable b)
+        public static bool GreaterThan(object a, object b)
         {
             if (a is double)
             {
@@ -27,7 +29,7 @@ namespace DSCore
                 if (b is double)
                     return (int)a > (double)b;
             }
-            return a.CompareTo(b) > 0;
+            return ((IComparable)a).CompareTo(b) > 0;
         }
 
         /// <summary>
@@ -37,7 +39,7 @@ namespace DSCore
         /// <param name="b">A comparable object.</param>
         /// <returns name="bool">Boolean result.</returns>
         /// <search>greater,larger,bigger,equal</search>
-        public static bool GreaterThanOrEqual(IComparable a, IComparable b)
+        public static bool GreaterThanOrEqual(object a, object b)
         {
             if (a is double)
             {
@@ -49,7 +51,7 @@ namespace DSCore
                 if (b is double)
                     return (int)a >= (double)b;
             }
-            return a.CompareTo(b) >= 0;
+            return ((IComparable)a).CompareTo(b) >= 0;
         }
 
         /// <summary>
@@ -59,7 +61,7 @@ namespace DSCore
         /// <param name="b">A comparable object.</param>
         /// <returns name="bool">Boolean result.</returns>
         /// <search>less,smaller</search>
-        public static bool LessThan(IComparable a, IComparable b)
+        public static bool LessThan(object a, object b)
         {
             if (a is double)
             {
@@ -71,7 +73,7 @@ namespace DSCore
                 if (b is double)
                     return (int)a < (double)b;
             }
-            return a.CompareTo(b) < 0;
+            return ((IComparable)a).CompareTo(b) < 0;
         }
 
         /// <summary>
@@ -81,7 +83,7 @@ namespace DSCore
         /// <param name="b">A comparable object.</param>
         /// <returns name="bool">Boolean result.</returns>
         /// <search>less,smaller,equal</search>
-        public static bool LessThanOrEqual(IComparable a, IComparable b)
+        public static bool LessThanOrEqual(object a, object b)
         {
             if (a is double)
             {
@@ -93,7 +95,7 @@ namespace DSCore
                 if (b is double)
                     return (int)a <= (double)b;
             }
-            return a.CompareTo(b) <= 0;
+            return ((IComparable)a).CompareTo(b) <= 0;
         }
     }
 }

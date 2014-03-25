@@ -8,7 +8,7 @@ namespace Revit.Elements
     /// A Revit FloorType
     /// </summary>
     /// http://revitapisearch.com.s3-website-us-east-1.amazonaws.com/html/b6fd8c08-7eea-1ab4-b7ab-096778b46e8f.htm
-    public class FloorType : AbstractElement
+    public class FloorType : Element
     {
         #region Internal properties
 

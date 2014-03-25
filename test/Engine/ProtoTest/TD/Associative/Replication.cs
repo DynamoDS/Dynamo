@@ -4447,6 +4447,19 @@ c=2 * {{1},{2}};";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("res", new Object[] { 2 });
         }
+   
+    
+        [Test]
+        public void T101_Replication_Empty_List()
+        {
+         String code =
+@"def foo(x: int, y: int){ return = x + y;};a = {};o = foo(a, 1);";
+            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
+            String errmsg = "";
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("o", new Object[] {  });   
+        }
+    
     }
 
 }

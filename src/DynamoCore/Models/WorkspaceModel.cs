@@ -345,11 +345,8 @@ namespace Dynamo.Models
             DynamoLogger.Instance.Log("Saving " + newPath + "...");
             try
             {
-                var xmlDoc = GetXml();
-                xmlDoc.Save(newPath);
-                FileName = newPath;
-
-                OnWorkspaceSaved();
+                if (SaveInternal(newPath))
+                    OnWorkspaceSaved();
             }
             catch (Exception ex)
             {
@@ -760,14 +757,39 @@ namespace Dynamo.Models
                 Updated(this, e);
         }
 
-        public virtual XmlDocument GetXml()
+        private bool SaveInternal(string targetFilePath)
+        {
+            // Create the xml document to write to.
+            var document = new XmlDocument();
+            document.CreateXmlDeclaration("1.0", null, null);
+            document.AppendChild(document.CreateElement("Workspace"));
+
+            Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, targetFilePath);
+
+            if (!this.PopulateXmlDocument(document))
+                return false;
+
+            this.SerializeSessionData(document);
+
+            try
+            {
+                Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, string.Empty);
+                document.Save(targetFilePath);
+            }
+            catch (System.IO.IOException)
+            {
+                return false;
+            }
+
+            FileName = targetFilePath;
+            return true;
+        }
+
+        protected virtual bool PopulateXmlDocument(XmlDocument xmlDoc)
         {
             try
             {
-                //create the xml document
-                var xmlDoc = new XmlDocument();
-                xmlDoc.CreateXmlDeclaration("1.0", null, null);
-                var root = xmlDoc.CreateElement("Workspace"); //write the root element
+                var root = xmlDoc.DocumentElement;
                 root.SetAttribute("Version", WorkspaceVersion.ToString());
                 root.SetAttribute("X", X.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
@@ -775,8 +797,6 @@ namespace Dynamo.Models
                 root.SetAttribute("Description", Description);
                 root.SetAttribute("Category", Category);
                 root.SetAttribute("Name", Name);
-
-                xmlDoc.AppendChild(root);
 
                 var elementList = xmlDoc.CreateElement("Elements");
                 //write the root element
@@ -840,12 +860,55 @@ namespace Dynamo.Models
                     note.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));
                 }
 
-                return xmlDoc;
+                return true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                return null;
+                return false;
+            }
+        }
+
+        // TODO(Ben): Documentation to come before pull request.
+        protected virtual void SerializeSessionData(XmlDocument document)
+        {
+            if (document.DocumentElement == null)
+            {
+                var message = "Workspace should have been saved before this";
+                throw new InvalidOperationException(message);
+            }
+
+            try
+            {
+                ProtoCore.Core core = null;
+                if (dynSettings.Controller != null)
+                {
+                    var engine = dynSettings.Controller.EngineController;
+                    if (engine != null && (engine.LiveRunnerCore != null))
+                        core = engine.LiveRunnerCore;
+                }
+
+                if (core == null) // No execution yet as of this point.
+                    return;
+
+                // Selecting all nodes that are either a DSFunction,
+                // a DSVarArgFunction or a CodeBlockNodeModel into a list.
+                var nodeGuids = this.Nodes.Where((n) =>
+                {
+                    return (n is DSFunction 
+                        || (n is DSVarArgFunction)
+                        || (n is CodeBlockNodeModel));
+
+                }).Select((n) => n.GUID);
+
+                core.SerializeTraceDataForNodes(nodeGuids, document);
+            }
+            catch (Exception exception)
+            {
+                // We'd prefer file saving process to not crash Dynamo,
+                // otherwise user will lose the last hope in retaining data.
+                DynamoLogger.Instance.Log(exception.Message);
+                DynamoLogger.Instance.Log(exception.StackTrace);
             }
         }
 
@@ -1123,13 +1186,21 @@ namespace Dynamo.Models
         /// <returns> the name of the first redefined variable (if exists). Else it returns null</returns>
         internal String GetFirstRedefinedVariable(CodeBlockNodeModel codeBlockNode)
         {
-            List<string> newDefVars = codeBlockNode.GetDefinedVariableNames();
+            var vars = codeBlockNode.GetDefinedVariableNames();
+
+            var otherVars = Nodes.OfType<CodeBlockNodeModel>()
+                                   .Where(x => x != codeBlockNode)
+                                   .SelectMany(x => x.GetDefinedVariableNames());
+            return vars.FirstOrDefault(v => otherVars.Contains(v));
+
+            /*
             return (from cbn in Nodes.OfType<CodeBlockNodeModel>().Where(x => x != codeBlockNode)
                     select cbn.GetDefinedVariableNames()
                         into oldDefVars
                         from newVar in newDefVars
                         where oldDefVars.Contains(newVar)
                         select newVar).FirstOrDefault();
+            */
         }
     }
 }

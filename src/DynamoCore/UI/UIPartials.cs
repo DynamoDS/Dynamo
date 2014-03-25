@@ -288,12 +288,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    public partial class Function
+    public partial class Function : IWpfNode
     {
-        public void SetupCustomUIElements(object ui)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var nodeUI = ui as dynNodeView;
-
             nodeUI.MainContextMenu.Items.Add(new System.Windows.Controls.Separator());
 
             // edit contents

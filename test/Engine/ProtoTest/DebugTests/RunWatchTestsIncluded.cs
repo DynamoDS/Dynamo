@@ -25680,7 +25680,7 @@ p1 = normalizeDepth(p1,1);";
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"import(""ProtoGeometry.dll"");
-import(""Math.dll"");
+import(""DSCoreNodes.dll"");
 raggedCollection = { 1, { 2, 3 } };
 isUniformDepthRagged = IsUniformDepth(raggedCollection);//false
 average = Average(raggedCollection);
@@ -25728,7 +25728,7 @@ newArray[2] = { 7, 8, 9 }; // and good
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"import(""ProtoGeometry.dll"");
-import(""Math.dll"");
+import(""DSCoreNodes.dll"");
 set = { true, { false, true } };
 allFalseSet = AllFalse(set);
 someFalseSet = SomeFalse(set);
@@ -25763,7 +25763,7 @@ setUnion = SetUnion(other1Dcollection, one1Dcollection); ";
         public void DebugWatch755_T80580_BuiltinFunc_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import(""Math.dll"");
+            string src = @"import(""DSCoreNodes.dll"");
 class TestClass
 {
 	
@@ -25883,7 +25883,7 @@ t15 = test.testNormalizeDepth();
         public void DebugWatch756_T80581_BuiltinFunc_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import(""Math.dll"");
+            string src = @"import(""DSCoreNodes.dll"");
 class TestClass
 {
 	b;
@@ -25966,7 +25966,7 @@ t14 = test.b14;
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"//testing ceiling()
-import(""Math.dll"");
+import(""DSCoreNodes.dll"");
 x = 1.5 ; 
 y = 0.01 ; 
 z = -0.1 ; 
@@ -43647,7 +43647,7 @@ b = 2*a;";
         public void DebugWatch1373_basicImport()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import(""Math.dll"");
+            string src = @"import(""DSCoreNodes.dll"");
 def Scale (arr : double[], scalingFactor : double)
 {
     scaledArr = [Imperative]
@@ -47752,7 +47752,7 @@ startPt = Point.ByCartesianCoordinates( 2, 1, 0 );
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"import (""GeometryLibForLanguageTesting.ds"");
-import(""math.dll"");
+import(""DSCoreNodes.dll"");
 //#include ""GeometryLibForLanguageTesting.ds""
 //circlePoint = Point.ByCartesianCoordinates(10.0*cos(0..(360)..#21), 10.0*sin(0..(360)..#21), 0.0);
 circlePoint = Point.ByCartesianCoordinates( 10.0 * Math.Cos(0..(360)..#4), 10.0 * Math.Sin(0..(360)..#4), 0.0);
@@ -47773,7 +47773,7 @@ t4 = lines[3][0].StartPoint.X;";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"import (""GeometryLibForLanguageTesting.ds"");
 //#include ""GeometryLibForLanguageTesting.ds""
-import(""math.dll"");
+import(""DSCoreNodes.dll"");
 //numPoints = 21;
 numPoints = 5;
 circlePoint = Point.ByCartesianCoordinates( 10.0*Math.Cos(0..(360)..#numPoints), 10.0*Math.Sin(0..(360)..#numPoints), 0.0 );
@@ -47811,7 +47811,7 @@ t2 = lines[1][2].StartPoint.X;";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"import (""GeometryLibForLanguageTesting.ds"");
 //#include ""GeometryLibForLanguageTesting.ds""
-import(""math.dll"");
+import(""DSCoreNodes.dll"");
 class MyPoint 
 {
 	// define general system of dependencies
@@ -52993,7 +52993,7 @@ def GenerateRoofBase (pts : Point[][])
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"import (""DemoSupportFiles.ds"");
-import(""math.dll"");
+import(""DSCoreNodes.dll"");
 // dimensions of the roof in each direction
 //
 xSize = 2;//10;

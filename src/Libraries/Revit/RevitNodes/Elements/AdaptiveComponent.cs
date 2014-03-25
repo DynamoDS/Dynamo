@@ -11,6 +11,7 @@ using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Face = Revit.GeometryObjects.Face;
 using Point = Autodesk.DesignScript.Geometry.Point;
+using Reference = Autodesk.Revit.DB.Reference;
 
 namespace Revit.Elements
 {
@@ -38,7 +39,9 @@ namespace Revit.Elements
             // just mutate it...
             if (oldFam != null)
             {
-                InternalSetFamilyInstance(oldFam);
+               InternalSetFamilyInstance(oldFam);
+                if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
+                   InternalSetFamilySymbol(fs);
                 InternalSetPositions(pts.ToXyzs());
                 return;
             }
@@ -46,7 +49,7 @@ namespace Revit.Elements
             // otherwise create a new family instance...
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractElement.Document, fs.InternalFamilySymbol);
+            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(Element.Document, fs.InternalFamilySymbol);
 
             if (fam == null)
                 throw new Exception("An adaptive component could not be found or created.");
@@ -76,6 +79,8 @@ namespace Revit.Elements
             if (oldFam != null)
             {
                 InternalSetFamilyInstance(oldFam);
+                if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
+                   InternalSetFamilySymbol(fs);
                 InternalSetUvsAndFace(pts.ToUvs(), f.InternalFace );
                 return;
             }
@@ -83,7 +88,7 @@ namespace Revit.Elements
             // otherwise create a new family instance...
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractElement.Document, fs.InternalFamilySymbol);
+            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(Element.Document, fs.InternalFamilySymbol);
 
             if (fam == null)
                 throw new Exception("An adaptive component could not be found or created.");
@@ -111,6 +116,8 @@ namespace Revit.Elements
             if (oldFam != null)
             {
                 InternalSetFamilyInstance(oldFam);
+                if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
+                   InternalSetFamilySymbol(fs);
                 InternalSetParamsAndCurve(parms, c);
                 return;
             }
@@ -118,7 +125,7 @@ namespace Revit.Elements
             // otherwise create a new family instance...
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractElement.Document, fs.InternalFamilySymbol);
+            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(Element.Document, fs.InternalFamilySymbol);
 
             if (fam == null)
                 throw new Exception("An adaptive component could not be found or created.");
@@ -142,6 +149,21 @@ namespace Revit.Elements
         #endregion
 
         #region Internal mutators
+
+       /// <summary>
+       /// Set the family symbol for the internal family instance 
+       /// </summary>
+       /// <param name="famInst"></param>
+       /// <param name="fs"></param>
+        private void InternalSetFamilySymbol( FamilySymbol fs)
+       {
+          TransactionManager.Instance.EnsureInTransaction(Document);
+
+          InternalFamilyInstance.Symbol = fs.InternalFamilySymbol;
+
+          TransactionManager.Instance.TransactionTaskDone();
+
+       }
 
         /// <summary>
         /// Set the positions of the internal family instance from a list of XYZ points
@@ -222,6 +244,27 @@ namespace Revit.Elements
             }
 
             TransactionManager.Instance.TransactionTaskDone();
+        }
+
+        #endregion
+
+        #region Public properties
+
+        public FamilySymbol Symbol
+        {
+            get
+            {
+                return FamilySymbol.FromExisting(this.InternalFamilyInstance.Symbol, true);
+            }
+        }
+
+        public Point Location
+        {
+            get
+            {
+                var pos = this.InternalFamilyInstance.Location as LocationPoint;
+                return Point.ByCoordinates(pos.Point.X, pos.Point.Y, pos.Point.Z);
+            }
         }
 
         #endregion

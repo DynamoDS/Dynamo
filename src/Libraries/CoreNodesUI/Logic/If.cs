@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -33,17 +34,17 @@ namespace DSCoreNodesUI.Logic
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var guidStr = GUID.ToString().Replace("-", "");
-            var testTmp = "__temp_test_" + guidStr;
-            var trueTmp = "__temp_true_" + guidStr;
-            var falseTmp = "__temp_false_" + guidStr;
-            
+            //var guidStr = GUID.ToString().Replace("-", "");
+            //var testTmp = "__temp_test_" + guidStr;
+            //var trueTmp = "__temp_true_" + guidStr;
+            //var falseTmp = "__temp_false_" + guidStr;
+
             return new[]
             {
                 //First, assign out inputs to temp variables, so we can cross from Associative to Imperative.
-                AstFactory.BuildAssignment(AstFactory.BuildIdentifier(testTmp), inputAstNodes[0]),
-                AstFactory.BuildAssignment(AstFactory.BuildIdentifier(trueTmp), inputAstNodes[1]),
-                AstFactory.BuildAssignment(AstFactory.BuildIdentifier(falseTmp), inputAstNodes[2]),
+                //AstFactory.BuildAssignment(AstFactory.BuildIdentifier(testTmp), inputAstNodes[0]),
+                //AstFactory.BuildAssignment(AstFactory.BuildIdentifier(trueTmp), inputAstNodes[1]),
+                //AstFactory.BuildAssignment(AstFactory.BuildIdentifier(falseTmp), inputAstNodes[2]),
 
                 // <output> = [Imperative]
                 // {
@@ -64,18 +65,18 @@ namespace DSCoreNodesUI.Logic
                             {
                                 new IfStmtNode
                                 {
-                                    IfExprNode = new ProtoCore.AST.ImperativeAST.IdentifierNode(testTmp),
+                                    IfExprNode = inputAstNodes[0].ToImperativeAST(),
                                     IfBody = new List<ImperativeNode>
                                     {
                                         new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                                             new ProtoCore.AST.ImperativeAST.IdentifierNode("return"),
-                                            new ProtoCore.AST.ImperativeAST.IdentifierNode(trueTmp),
+                                            inputAstNodes[1].ToImperativeAST(),
                                             ProtoCore.DSASM.Operator.assign)
                                     }
                                 },
                                 new ProtoCore.AST.ImperativeAST.BinaryExpressionNode(
                                     new ProtoCore.AST.ImperativeAST.IdentifierNode("return"),
-                                    new ProtoCore.AST.ImperativeAST.IdentifierNode(falseTmp),
+                                    inputAstNodes[2].ToImperativeAST(),
                                     ProtoCore.DSASM.Operator.assign)
                             }
                         }

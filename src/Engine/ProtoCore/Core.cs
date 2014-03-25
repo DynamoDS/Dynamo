@@ -11,6 +11,7 @@ using ProtoFFI;
 using Autodesk.DesignScript.Interfaces;
 using ProtoCore.AssociativeGraph;
 using System.Linq;
+using System.Xml;
 
 namespace ProtoCore
 {
@@ -632,7 +633,7 @@ namespace ProtoCore
             {
                 debugFrame.IsDotArgCall = true;
             }
-            else if (fNode.name.Equals(ProtoCore.DSDefinitions.Keyword.Dispose))
+            else if (CoreUtils.IsDisposeMethod(fNode.name))
             {
                 debugFrame.IsDisposeCall = true;
                 ReturnPCFromDispose = DebugEntryPC;
@@ -924,6 +925,21 @@ namespace ProtoCore
         None
     }
 
+    // This class keeps all the constant strings used across ProtoCore (and 
+    // might be beyond). It can really be anywhere, but I am not convinced that 
+    // it belongs in "ProtoCore.DSASM" like the "Constants" structure does.
+    // 
+    public class CoreStrings
+    {
+        public static readonly string SessionTraceDataXmlTag = "SessionTraceData";
+        public static readonly string NodeTraceDataXmlTag = "NodeTraceData";
+        public static readonly string CallsiteTraceDataXmlTag = "CallsiteTraceData";
+        public static readonly string TraceDataXmlTag = "TraceData";
+
+        public static readonly string NodeIdAttribName = "NodeId";
+        public static readonly string TraceDataAttribName = "Data";
+    }
+
     public class Core
     {
         public const int FIRST_CORE_ID = 0;
@@ -1130,6 +1146,16 @@ namespace ProtoCore
         public CallsiteExecutionState csExecutionState { get; set; }
 
         public Dictionary<int, CallSite> CallsiteCache { get; set; }
+
+        /// <summary>
+        /// Map from a callsite's guid to a graph UI node. 
+        /// </summary>
+        public Dictionary<Guid, Guid> CallSiteToNodeMap { get; private set; }
+
+        /// <summary>
+        /// Map from a AST node's ID to a callsite.
+        /// </summary>
+        public Dictionary<int, CallSite> ASTToCallSiteMap { get; private set; }
 
         // A list of graphnodes that contain a function call
         public List<AssociativeGraph.GraphNode> GraphNodeCallList { get; set; }
@@ -1682,6 +1708,9 @@ namespace ProtoCore
                 csExecutionState = new CallsiteExecutionState();
             }
             CallsiteCache = new Dictionary<int, CallSite>();
+            CallSiteToNodeMap = new Dictionary<Guid, Guid>();
+            ASTToCallSiteMap = new Dictionary<int, CallSite>();
+
             ForLoopBlockIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
 
             GraphNodeCallList = new List<GraphNode>();
@@ -2365,7 +2394,184 @@ namespace ProtoCore
             return false;
         }
 
-        public int ExecutingGraphnodeUID { get; set; }
+        public GraphNode ExecutingGraphnode { get; set; }
+
+        #region Trace Data Serialization Methods/Members
+
+        private Dictionary<Guid, XmlElement> uiNodeToXmlElementMap = null;
+
+        /// <summary>
+        /// Call this method to serialize trace data into a given XmlDocument.
+        /// Note that this only serializes trace data for the nodes specified
+        /// since callsite trace data may not have been removed for nodes that 
+        /// are deleted on the UI.
+        /// </summary>
+        /// <param name="nodeGuids">A list of System.Guid of nodes whose trace 
+        /// data is to be serialized.</param>
+        /// <param name="document">The XmlDocument under which the serialized 
+        /// trace data is to be written to.</param>
+        /// 
+        public void SerializeTraceDataForNodes(
+            IEnumerable<Guid> nodeGuids, XmlDocument document)
+        {
+            if (nodeGuids == null)
+                throw new ArgumentNullException("nodeGuids");
+            if (document == null)
+                throw new ArgumentNullException("document");
+
+            if (nodeGuids.Count() <= 0) // Nothing to persist now.
+                return;
+
+            // Attempt to get the list of graph node if one exists.
+            IEnumerable<GraphNode> graphNodes = null;
+            {
+                if (this.DSExecutable != null)
+                {
+                    var stream = this.DSExecutable.instrStreamList;
+                    if (stream != null && (stream.Length > 0))
+                    {
+                        var graph = stream[0].dependencyGraph;
+                        if (graph != null)
+                            graphNodes = graph.GraphList;
+                    }
+                }
+
+                if (graphNodes == null) // No execution has taken place.
+                    return;
+            }
+
+            // Create a session element under which all nodes go.
+            var sessionXmlElement = document.CreateElement(CoreStrings.SessionTraceDataXmlTag);
+
+            foreach (Guid nodeGuid in nodeGuids)
+            {
+                // Create a node element for this node under the session element.
+                var nodeXmlElement = document.CreateElement(CoreStrings.NodeTraceDataXmlTag);
+                nodeXmlElement.SetAttribute(CoreStrings.NodeIdAttribName, nodeGuid.ToString());
+
+                // Get a list of GraphNode objects that correspond to this node.
+                var graphNodeIds = graphNodes.
+                    Where(gn => gn.guid == nodeGuid).
+                    Select(gn => gn.UID);
+
+                if (graphNodeIds.Count() <= 0)
+                    continue;
+
+                // Get all callsites that match the graph node ids.
+                var matchingCallSites = (from cs in CallsiteCache
+                                         from gn in graphNodeIds
+                                         where cs.Key == gn
+                                         select cs.Value);
+
+                // Append each callsite element under node element.
+                foreach (CallSite callSite in matchingCallSites)
+                    nodeXmlElement.AppendChild(callSite.Serialize(document));
+
+                // No point adding this node element if it's empty.
+                if (nodeXmlElement.ChildNodes.Count > 0)
+                    sessionXmlElement.AppendChild(nodeXmlElement);
+            }
+
+            // No point saving session element if it's empty.
+            if (sessionXmlElement.ChildNodes.Count > 0)
+                document.DocumentElement.AppendChild(sessionXmlElement);
+        }
+
+        /// <summary>
+        /// Call this method to deserialize all trace data stored in the supplied 
+        /// XmlDocument.
+        /// </summary>
+        /// <param name="document">The XmlDocument from which trace data is to be 
+        /// deserialized from. The document may or may not contain any trace data.
+        /// </param>
+        /// 
+        public void DeserializeTraceDataFromXml(XmlDocument document)
+        {
+            XmlElement sessionElement = null;
+            foreach(var childNode in document.DocumentElement.ChildNodes)
+            {
+                XmlNode node = childNode as XmlNode;
+                if (!node.Name.Equals(CoreStrings.SessionTraceDataXmlTag))
+                    continue;
+
+                sessionElement = node as XmlElement;
+                break; // Found our session element.
+            }
+
+            if (sessionElement == null || (sessionElement.ChildNodes.Count <= 0))
+                return; // No session data stored in the xml document.
+
+            foreach (var childNode in sessionElement.ChildNodes)
+            {
+                XmlElement nodeElement = childNode as XmlElement;
+                Guid nodeGuid = Guid.Parse(nodeElement.GetAttribute(
+                    CoreStrings.NodeIdAttribName));
+
+                if (uiNodeToXmlElementMap == null)
+                    uiNodeToXmlElementMap = new Dictionary<Guid, XmlElement>();
+
+                uiNodeToXmlElementMap.Add(nodeGuid, nodeElement);
+            }
+        }
+
+        /// <summary>
+        /// Call this method to remove trace data XmlElement for a given node. 
+        /// This is required for the scenario where a code block node content is 
+        /// modified before its corresponding callsite objects are reconstructed
+        /// (i.e. before any execution takes place, and after a file-load). 
+        /// Modifications on UI nodes will always result in trace data being 
+        /// reconstructed again.
+        /// </summary>
+        /// <param name="nodeGuid">The System.Guid of the node for which trace 
+        /// data is to be destroyed.</param>
+        /// 
+        public void DestroyLoadedTraceDataForNode(Guid nodeGuid)
+        {
+            // There is preloaded trace data from external file.
+            if (uiNodeToXmlElementMap != null && (uiNodeToXmlElementMap.Count > 0))
+                uiNodeToXmlElementMap.Remove(nodeGuid);
+        }
+
+        /// <summary>
+        /// Call this method to pop the top-most callsite XmlElement. Note that 
+        /// this call only pops off the callsite XmlElement belonging to a given
+        /// node XmlElement corresponding to the given node guid.
+        /// </summary>
+        /// <param name="nodeGuid">The Guid of a given UI node whose top-most 
+        /// callsite is to be retrieved and removed.</param>
+        /// <returns>Returns the XmlElement representing the top-most callsite 
+        /// for the given UI node.</returns>
+        /// 
+        private XmlElement GetAndRemoveTraceDataForNode(System.Guid nodeGuid)
+        {
+            if (uiNodeToXmlElementMap == null || (uiNodeToXmlElementMap.Count <= 0))
+                return null; // There is no preloaded trace data from external file.
+
+            // Get the node element for the given node.
+            XmlElement traceDataElement = null;
+            if (!uiNodeToXmlElementMap.TryGetValue(nodeGuid, out traceDataElement))
+                return null;
+
+            // There exists a node element matching the UI node's GUID, get its 
+            // first child callsite element, remove it from the child node list,
+            // and return it to the caller.
+            // 
+            XmlElement callsiteElement = null;
+            if (traceDataElement.HasChildNodes)
+            {
+                callsiteElement = traceDataElement.FirstChild as XmlElement;
+                traceDataElement.RemoveChild(callsiteElement);
+            }
+
+            // On removal of the last child node, the <NodeTraceData> 
+            // itself will be removed from the uiNodeToXmlElementMap.
+            if (traceDataElement.HasChildNodes == false)
+                uiNodeToXmlElementMap.Remove(nodeGuid);
+
+            return callsiteElement;
+        }
+
+        #endregion // Trace Data Serialization Methods/Members
 
         /// <summary>
         /// Retrieves an existing instance of a callsite associated with a UID
@@ -2374,28 +2580,53 @@ namespace ProtoCore
         /// <param name="core"></param>
         /// <param name="uid"></param>
         /// <returns></returns>
-        public CallSite GetCallSite(int uid, int classScope, string methodName)
+        public CallSite GetCallSite(GraphNode graphNode, 
+                                    int classScope, 
+                                    string methodName)
         {
             Validity.Assert(null != FunctionTable);
             CallSite csInstance = null;
 
-            // TODO Jun: Currently generates a new callsite for imperative and internally generated functions
-            // Fix the issues that cause the cache to go out of sync when attempting to cache internal functions
-            // This may require a secondary callsite cache for internal functions so they dont clash with the graphNode UID key
+            // TODO Jun: Currently generates a new callsite for imperative and 
+            // internally generated functions.
+            // Fix the issues that cause the cache to go out of sync when 
+            // attempting to cache internal functions. This may require a 
+            // secondary callsite cache for internal functions so they dont 
+            // clash with the graphNode UID key
+            var language = DSExecutable.instrStreamList[RunningBlock].language;
+            bool isImperative =  language == Language.kImperative;
             bool isInternalFunction = CoreUtils.IsInternalFunction(methodName);
-            bool isImperative = DSExecutable.instrStreamList[RunningBlock].language == Language.kImperative;
+
             if (isInternalFunction || isImperative)
             {
-                csInstance = new CallSite(classScope, methodName, FunctionTable, Options.ExecutionMode);
+                csInstance = new CallSite(classScope, 
+                                          methodName, 
+                                          FunctionTable, 
+                                          Options.ExecutionMode);
             }
-            else
+            else if (!CallsiteCache.TryGetValue(graphNode.UID, out csInstance))
             {
-                if (!CallsiteCache.TryGetValue(uid, out csInstance))
-                {
-                    csInstance = new CallSite(classScope, methodName, FunctionTable, Options.ExecutionMode);
-                    CallsiteCache.Add(uid, csInstance);
-                }
+                // Attempt to retrieve a preloaded callsite data (optional).
+                var traceData = GetAndRemoveTraceDataForNode(graphNode.guid);
+
+                csInstance = new CallSite(classScope,
+                                          methodName,
+                                          FunctionTable,
+                                          Options.ExecutionMode,
+                                          traceData);
+
+                CallsiteCache.Add(graphNode.UID, csInstance);
+                CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
+                ASTToCallSiteMap[graphNode.AstID] = csInstance;
+
+           }
+
+            if (graphNode != null && Options.IsDeltaExecution && !CoreUtils.IsDisposeMethod(methodName))
+            {
+                csInstance.UpdateCallSite(classScope, methodName);
+                this.RuntimeStatus.ClearWarningForExpression(graphNode.exprUID);                
             }
+                
             return csInstance;
         }
 

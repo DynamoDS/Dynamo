@@ -1,4 +1,5 @@
-﻿using DSCoreNodesUI;
+﻿using Autodesk.DesignScript.Runtime;
+using DSCoreNodesUI;
 using Dynamo.Models;
 
 namespace Dynamo.Nodes
@@ -14,6 +15,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Every tom dick and harry.")]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class TomDickHarryList : EnumAsString
     {
         /// <summary>

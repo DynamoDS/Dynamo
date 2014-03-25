@@ -12,6 +12,7 @@ using RevitServices.Transactions;
 using Edge = Autodesk.DesignScript.Geometry.Edge;
 using Plane = Autodesk.DesignScript.Geometry.Plane;
 using Point = Autodesk.DesignScript.Geometry.Point;
+using Reference = Autodesk.Revit.DB.Reference;
 
 namespace Revit.Elements
 {
@@ -21,7 +22,7 @@ namespace Revit.Elements
     /// </summary>
     [RegisterForTrace]
     [ShortName("refPt")]
-    public class ReferencePoint : AbstractElement, IGraphicItem
+    public class ReferencePoint : Element, IGraphicItem
     {
 
         #region Internal properties

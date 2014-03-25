@@ -180,7 +180,7 @@ namespace DSOffice
             if (File.Exists(path))
                 return ExcelInterop.App.Workbooks.Open(path, true, false);
 
-            return null;
+            throw new ArgumentException("File path not found.", "path");
         }
 
         public static object[] GetWorksheetsFromExcelWorkbook(object workbook)
@@ -194,7 +194,12 @@ namespace DSOffice
         {
             Workbook wb = (Workbook)workbook;
 
-            return wb.Worksheets.Cast<Worksheet>().FirstOrDefault(ws => ws.Name == name);
+            var ws = wb.Worksheets.Cast<Worksheet>().FirstOrDefault(sheet => sheet.Name == name);
+
+            if (ws == null)
+                throw new ArgumentException("No worksheet matches the given string.", "name");
+
+            return ws;
         }
 
         public static object[][] GetDataFromExcelWorksheet(object worksheet)
@@ -210,12 +215,18 @@ namespace DSOffice
             if (!vals.GetType().IsArray)
                 return new object[][] { new object[] { vals } };
 
-            return ConvertToJaggedArray(vals);
+            return ConvertToJaggedArray((object[,])vals);
         }
 
         public static object WriteDataToExcelWorksheet(
             object worksheet, int startRow, int startColumn, object[][] data)
         {
+            if (startRow < 1)
+                throw new ArgumentException("Must be a positive integer.", "startRow");
+
+            if (startColumn < 1)
+                throw new ArgumentException("Must be a positive integer.", "startColumn");
+
             Worksheet ws = (Worksheet)worksheet;
             startRow = Math.Max(0, startRow);
             startColumn = Math.Max(0, startColumn);
@@ -235,10 +246,10 @@ namespace DSOffice
         {
             Workbook wb = (Workbook)workbook;
 
-            var worksheet = wb.Worksheets.Add();
-            worksheet.Name = name;
+            Worksheet ws = (Worksheet)wb.Worksheets.Add();
+            ws.Name = name;
 
-            return wb;
+            return ws;
         }
 
         public static object NewExcelWorkbook()

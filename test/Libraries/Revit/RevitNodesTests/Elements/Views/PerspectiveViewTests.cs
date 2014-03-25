@@ -30,7 +30,8 @@ namespace DSRevitNodesTests
             var view = PerspectiveView.ByEyePointAndTarget(eye, target, element, name, false);
 
             Assert.NotNull(view);
-            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(view.InternalElement.Id));
+            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(
+                 new ElementUUID(view.InternalElement.UniqueId)));
         }
 
         [Test]
@@ -48,7 +49,8 @@ namespace DSRevitNodesTests
             var view = PerspectiveView.ByEyePointAndTarget(eye, target, element, name, false);
 
             Assert.NotNull(view);
-            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(view.InternalElement.Id));
+            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(
+                 new ElementUUID(view.InternalElement.UniqueId)));
         }
 
         [Test]
@@ -91,7 +93,8 @@ namespace DSRevitNodesTests
             var view = PerspectiveView.ByEyePointTargetAndBoundingBox(eye, target, famInst.BoundingBox, name, false);
 
             Assert.NotNull(view);
-            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(view.InternalElement.Id));
+            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(
+                 new ElementUUID(view.InternalElement.UniqueId)));
         }
 
         [Test]
@@ -125,7 +128,8 @@ namespace DSRevitNodesTests
             var view = PerspectiveView.ByEyePointTargetAndElement(eye, target, famInst, name, false);
 
             Assert.NotNull(view);
-            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(view.InternalElement.Id));
+            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(
+                 new ElementUUID(view.InternalElement.UniqueId)));
         }
 
         [Test]
