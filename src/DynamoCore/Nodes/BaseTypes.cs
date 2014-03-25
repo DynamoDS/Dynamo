@@ -339,6 +339,120 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
+        /// Call this method to serialize given node-data-list pairs into an 
+        /// XmlDocument. Serialized data in the XmlDocument can be loaded by a 
+        /// call to LoadTraceDataFromXmlDocument method.
+        /// </summary>
+        /// <param name="document">The target document to which the trade data 
+        /// is to be written. This parameter cannot be null and must represent 
+        /// a valid XmlDocument object.</param>
+        /// <param name="nodeTraceDataList">A dictionary of node-data-list pairs
+        /// to be saved to the XmlDocument. This parameter cannot be null and 
+        /// must represent a non-empty list of node-data-list pairs.</param>
+        public static void SaveTraceDataToXmlDocument(XmlDocument document,
+            IEnumerable<KeyValuePair<Guid, List<string>>> nodeTraceDataList)
+        {
+            #region Parameter Validations
+
+            if (document == null)
+                throw new ArgumentNullException("document");
+
+            if (document.DocumentElement == null)
+            {
+                var message = "Document does not have a root element";
+                throw new ArgumentException(message, "document");
+            }
+
+            if (nodeTraceDataList == null)
+                throw new ArgumentNullException("nodeTraceDataList");
+
+            if (nodeTraceDataList.Count() <= 0)
+            {
+                var message = "Trade data list must be non-empty";
+                throw new ArgumentException(message, "nodeTraceDataList");
+            }
+
+            #endregion
+
+            #region Session Xml Element
+
+            var sessionElement = document.CreateElement(
+                Configurations.SessionTraceDataXmlTag);
+
+            document.DocumentElement.AppendChild(sessionElement);
+
+            #endregion
+
+            #region Serialize Node Xml Elements
+
+            foreach (var pair in nodeTraceDataList)
+            {
+                var nodeElement = document.CreateElement(
+                    Configurations.NodeTraceDataXmlTag);
+
+                // Set the node ID attribute for this element.
+                var nodeGuid = pair.Key.ToString();
+                nodeElement.SetAttribute(Configurations.NodeIdAttribName, nodeGuid);
+                sessionElement.AppendChild(nodeElement);
+
+                foreach (var data in pair.Value)
+                {
+                    var callsiteXmlElement = document.CreateElement(
+                        Configurations.CallsiteTraceDataXmlTag);
+
+                    callsiteXmlElement.InnerText = data;
+                    nodeElement.AppendChild(callsiteXmlElement);
+                }
+            }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// Call this method to load serialized node-data-list pairs (through a 
+        /// prior call to SaveTraceDataToXmlDocument) from a given XmlDocument.
+        /// </summary>
+        /// <param name="document">The XmlDocument from which serialized node-
+        /// data-list pairs are to be deserialized.</param>
+        /// <returns>Returns a dictionary of deserialized node-data-list pairs
+        /// loaded from the given XmlDocument.</returns>
+        public static IEnumerable<KeyValuePair<Guid, List<string>>>
+            LoadTraceDataFromXmlDocument(XmlDocument document)
+        {
+            if (document == null)
+                throw new ArgumentNullException("document");
+
+            if (document.DocumentElement == null)
+            {
+                var message = "Document does not have a root element";
+                throw new ArgumentException(message, "document");
+            }
+
+            var childNodes = document.DocumentElement.ChildNodes.Cast<XmlElement>();
+            var sessionXmlTagName = Configurations.SessionTraceDataXmlTag;
+            var query = from childNode in childNodes
+                        where childNode.Name.Equals(sessionXmlTagName)
+                        select childNode;
+
+            var loadedData = new Dictionary<Guid, List<string>>();
+            if (query.Count() <= 0) // There's no data, return empty dictionary.
+                return loadedData;
+
+            XmlElement sessionElement = query.ElementAt(0);
+            foreach (XmlElement nodeElement in sessionElement.ChildNodes)
+            {
+                List<string> callsites = new List<string>();
+                foreach (XmlElement callsiteElement in nodeElement.ChildNodes)
+                    callsites.Add(callsiteElement.InnerText);
+
+                var guid = nodeElement.GetAttribute(Configurations.NodeIdAttribName);
+                loadedData.Add(Guid.Parse(guid), callsites);
+            }
+
+            return loadedData;
+        }
+
+        /// <summary>
         /// Call this method to compute the relative path of a subject path 
         /// relative to the given base path.
         /// </summary>
