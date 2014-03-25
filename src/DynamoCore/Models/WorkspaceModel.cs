@@ -1177,30 +1177,5 @@ namespace Dynamo.Models
         }
         #endregion
 
-        /// <summary>
-        /// This function finds if any variable declared in the specified code block exists in the workspace
-        /// If it does, it returns the name of the first such variable it finds, otherwise returns null
-        /// </summary>
-        /// <param name="codeBlockNode">The code block node whose variables need to
-        /// be chacked for redeclaration</param>
-        /// <returns> the name of the first redefined variable (if exists). Else it returns null</returns>
-        internal String GetFirstRedefinedVariable(CodeBlockNodeModel codeBlockNode)
-        {
-            var vars = codeBlockNode.GetDefinedVariableNames();
-
-            var otherVars = Nodes.OfType<CodeBlockNodeModel>()
-                                   .Where(x => x != codeBlockNode)
-                                   .SelectMany(x => x.GetDefinedVariableNames());
-            return vars.FirstOrDefault(v => otherVars.Contains(v));
-
-            /*
-            return (from cbn in Nodes.OfType<CodeBlockNodeModel>().Where(x => x != codeBlockNode)
-                    select cbn.GetDefinedVariableNames()
-                        into oldDefVars
-                        from newVar in newDefVars
-                        where oldDefVars.Contains(newVar)
-                        select newVar).FirstOrDefault();
-            */
-        }
     }
 }
