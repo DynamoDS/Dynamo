@@ -389,6 +389,14 @@ namespace Dynamo
             if (Running)
                 return;
 
+            // If there is preloaded trace data, send that along to the current
+            // LiveRunner instance. Here we make sure it is done exactly once 
+            // by resetting WorkspaceModel.PreloadedTraceData property after it 
+            // is obtained.
+            // 
+            var traceData = DynamoViewModel.Model.HomeSpace.PreloadedTraceData;
+            DynamoViewModel.Model.HomeSpace.PreloadedTraceData = null; // Reset.
+            EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
 
 #if USE_DSENGINE
             EngineController.GenerateGraphSyncData(DynamoViewModel.Model.HomeSpace.Nodes);
@@ -427,7 +435,7 @@ namespace Dynamo
                 EvaluationThread(null, null);
         }
 
-        protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
+        private void EvaluationThread(object s, DoWorkEventArgs args)
         {
             var sw = new Stopwatch();
             sw.Start();
