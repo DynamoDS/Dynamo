@@ -275,6 +275,7 @@ namespace ProtoFFI
 
         private ClassDeclNode ParseEnumType(Type type, string alias)
         {
+            //TODO: For now Enum can't be suppressed.
             Validity.Assert(type.IsEnum, "Non enum type is being imported as enum!!");
 
             string classname = alias;
@@ -305,6 +306,11 @@ namespace ProtoFFI
                     classnode.funclist.Add(func);
                 }
             }
+
+            //Get all the attributes on this type and set it to the classnode.
+            FFIClassAttributes cattrs = new FFIClassAttributes(type);
+            classnode.ClassAttributes = cattrs;
+            SetTypeAttributes(type, cattrs);
 
             return classnode;
         }
