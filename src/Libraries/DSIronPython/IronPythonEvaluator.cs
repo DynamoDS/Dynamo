@@ -8,7 +8,6 @@ namespace DSIronPython
     /// <summary>
     /// 
     /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
     public class IronPythonEvaluator
     {
         private IronPythonEvaluator() { }
