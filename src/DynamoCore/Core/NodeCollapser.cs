@@ -4,7 +4,6 @@ using System.Linq;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.ViewModels;
 using Microsoft.Practices.Prism;
 
 namespace Dynamo.Utilities
@@ -19,6 +18,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         /// <param name="currentWorkspace"> The workspace where</param>
+        /// <param name="args"></param>
         public static void Collapse(IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace, FunctionNamePromptEventArgs args=null)
         {
             var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
@@ -180,7 +180,7 @@ namespace Dynamo.Utilities
             // workspace into the new workspace.
 
             var fullySelectedConns = new HashSet<ConnectorModel>(
-                currentWorkspace.Connectors.Where((conn) =>
+                currentWorkspace.Connectors.Where(conn =>
                 {
                     bool startSelected = selectedNodeSet.Contains(conn.Start.Owner);
                     bool endSelected = selectedNodeSet.Contains(conn.End.Owner);
@@ -200,13 +200,11 @@ namespace Dynamo.Utilities
             // Step 3: Partially selected connectors (either one of its start 
             // and end owners is in the selection) are to be destroyed.
 
-            var partiallySelectedConns = currentWorkspace.Connectors.Where((conn) =>
-            {
-                bool startSelected = selectedNodeSet.Contains(conn.Start.Owner);
-                bool endSelected = selectedNodeSet.Contains(conn.End.Owner);
-                return startSelected || endSelected;
-
-            }).ToList();
+            var partiallySelectedConns =
+                currentWorkspace.Connectors.Where(
+                    conn =>
+                        selectedNodeSet.Contains(conn.Start.Owner) 
+                        || selectedNodeSet.Contains(conn.End.Owner)).ToList();
 
             foreach (ConnectorModel connector in partiallySelectedConns)
             {
@@ -242,40 +240,15 @@ namespace Dynamo.Utilities
 
             #endregion
 
-            #region Insert new node into the current workspace
-
-            //Step 5: insert new node into original workspace
-            //var collapsedNode = dynSettings.Controller.DynamoViewModel.CreateFunction(
-            //    inputs.Select(x => x.Item1.InPortData[x.Item2].NickName),
-            //    outputs
-            //        .Where(x => !curriedNodeArgs.Any(y => y.OuterNode == x.Item3.Item2))
-            //        .Select(x => x.Item1.OutPortData[x.Item2].NickName),
-            //    newNodeDefinition);
-
-            //collapsedNode.GUID = Guid.NewGuid();
-
-            //currentWorkspace.Nodes.Add(collapsedNode);
-            //collapsedNode.WorkSpace = currentWorkspace;
-
-            //collapsedNode.X = avgX;
-            //collapsedNode.Y = avgY;
-
-            #endregion
-
-            #region Destroy all hanging connectors
-
-            //Step 6: connect inputs and outputs
-
-            #endregion
-
-            newNodeWorkspace.Nodes.ToList().ForEach(x => x.DisableReporting());
-
-            var inConnectors = new List<Tuple<NodeModel, int, int>>();
+            foreach (var node in newNodeWorkspace.Nodes)
+                node.DisableReporting();
 
             #region Process inputs
 
-            var uniqueInputSenders = new Dictionary<Tuple<NodeModel, int>, Symbol>();
+            var inConnectors = new List<Tuple<NodeModel, int>>();
 
+            var uniqueInputSenders = new Dictionary<Tuple<NodeModel, int>, Symbol>();
+            
             //Step 3: insert variables (reference step 1)
             foreach (var input in Enumerable.Range(0, inputs.Count).Zip(inputs, Tuple.Create))
             {
@@ -297,7 +270,7 @@ namespace Dynamo.Utilities
                 else
                 {
                     //MVVM : replace NodeUI reference with node
-                    inConnectors.Add(Tuple.Create(inputNode, inputData, inputIndex));
+                    inConnectors.Add(Tuple.Create(inputNode, inputData));
 
                     //Create Symbol Node
                     node = new Symbol
@@ -376,29 +349,129 @@ namespace Dynamo.Utilities
             var outConnectors = new List<Tuple<NodeModel, int, int>>();
 
             int i = 0;
-            foreach (var output in outputs)
+            if (outputs.Any())
             {
-                if (outportList.All(x => !(x.Item1 == output.Item1 && x.Item2 == output.Item2)))
+                foreach (var output in outputs)
                 {
+                    if (outportList.All(x => !(x.Item1 == output.Item1 && x.Item2 == output.Item2)))
+                    {
+                        NodeModel outputSenderNode = output.Item1;
+                        int outputSenderData = output.Item2;
+                        NodeModel outputReceiverNode = output.Item3.Item2;
+
+                        if (curriedNodeArgs.Any(x => x.OuterNode == outputReceiverNode))
+                            continue;
+
+                        outportList.Add(Tuple.Create(outputSenderNode, outputSenderData));
+
+                        //Create Symbol Node
+                        var node = new Output
+                        {
+                            Symbol = outputSenderNode.OutPortData[outputSenderData].NickName
+                        };
+
+                        //dynNodeView nodeUI = node.NodeUI;
+
+                        var elNameAttrib =
+                            node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), false)[0] as
+                                NodeNameAttribute;
+                        if (elNameAttrib != null)
+                        {
+                            node.NickName = elNameAttrib.Name;
+                        }
+
+                        node.GUID = Guid.NewGuid();
+
+                        //store the element in the elements list
+                        newNodeWorkspace.Nodes.Add(node);
+                        node.WorkSpace = newNodeWorkspace;
+
+                        node.DisableReporting();
+
+                        node.X = rightMost + 75 - leftShift;
+                        node.Y = i*(50 + node.Height);
+
+                        var conn = ConnectorModel.Make(
+                            outputSenderNode,
+                            node,
+                            outputSenderData,
+                            0,
+                            PortType.INPUT);
+
+                        if (conn != null)
+                            newNodeWorkspace.Connectors.Add(conn);
+
+                        i++;
+                    }
+                }
+
+                //Connect outputs to new node
+                foreach (var output in outputs)
+                {
+                    //Node to be connected to in CurrentWorkspace
                     NodeModel outputSenderNode = output.Item1;
+
+                    //Port to be connected to on outPutNode_outer
                     int outputSenderData = output.Item2;
+
+                    int outputReceiverData = output.Item3.Item1;
                     NodeModel outputReceiverNode = output.Item3.Item2;
 
-                    if (curriedNodeArgs.Any(x => x.OuterNode == outputReceiverNode))
-                        continue;
+                    var curriedNode = curriedNodeArgs.FirstOrDefault(x => x.OuterNode == outputReceiverNode);
 
-                    outportList.Add(Tuple.Create(outputSenderNode, outputSenderData));
+                    if (curriedNode == null)
+                    {
+                        // we create the connectors in the current space later
+                        //MVVM : replaced multiple dynNodeView refrences with dynNode
+                        outConnectors.Add(
+                            Tuple.Create(
+                                outputReceiverNode,
+                                outportList.FindIndex(
+                                    x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
+                                outputReceiverData));
+                    }
+                    else
+                    {
+                        int targetPort =
+                            curriedNode.Inputs.First(x => x.InnerNodeInputSender == outputSenderNode)
+                                .OuterNodeInPortData;
 
+                        int targetPortIndex = curriedNode.OuterNodePortDataList.IndexOf(targetPort);
+
+                        //Connect it (new dynConnector)
+
+                        var conn = ConnectorModel.Make(
+                            outputSenderNode,
+                            curriedNode.InnerNode,
+                            outputSenderData,
+                            targetPortIndex + 1,
+                            PortType.INPUT);
+
+                        if (conn != null)
+                            newNodeWorkspace.Connectors.Add(conn);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var hanging in
+                    selectedNodeSet.SelectMany(
+                        node =>
+                            Enumerable.Range(0, node.OutPortData.Count)
+                                .Where(port => !node.HasOutput(port))
+                                .Select(port => new { node, port })).Distinct())
+                {
                     //Create Symbol Node
                     var node = new Output
                     {
-                        Symbol = outputSenderNode.OutPortData[outputSenderData].NickName
+                        Symbol = hanging.node.OutPortData[hanging.port].NickName
                     };
 
                     //dynNodeView nodeUI = node.NodeUI;
 
                     var elNameAttrib =
-                        node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), false)[0] as NodeNameAttribute;
+                        node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), false)[0] as
+                            NodeNameAttribute;
                     if (elNameAttrib != null)
                     {
                         node.NickName = elNameAttrib.Name;
@@ -413,68 +486,19 @@ namespace Dynamo.Utilities
                     node.DisableReporting();
 
                     node.X = rightMost + 75 - leftShift;
-                    node.Y = i*(50 + node.Height);
+                    node.Y = i * (50 + node.Height);
 
                     var conn = ConnectorModel.Make(
-                                outputSenderNode,
-                                node,
-                                outputSenderData,
-                                0,
-                                PortType.INPUT);
-                    
-                    if (conn != null)
-                        newNodeWorkspace.Connectors.Add(conn);
-
-                    i++;
-                }
-            }
-
-            //Connect outputs to new node
-            foreach (var output in outputs)
-            {
-                //Node to be connected to in CurrentWorkspace
-                NodeModel outputSenderNode = output.Item1;
-
-                //Port to be connected to on outPutNode_outer
-                int outputSenderData = output.Item2;
-
-                int outputReceiverData = output.Item3.Item1;
-                NodeModel outputReceiverNode = output.Item3.Item2;
-
-                var curriedNode = curriedNodeArgs.FirstOrDefault(
-                    x => x.OuterNode == outputReceiverNode);
-
-                if (curriedNode == null)
-                {
-                    // we create the connectors in the current space later
-//MVVM : replaced multiple dynNodeView refrences with dynNode
-                    outConnectors.Add(
-                        Tuple.Create(
-                            outputReceiverNode,
-                            outportList.FindIndex(
-                                x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
-                            outputReceiverData));
-                }
-                else
-                {
-                    int targetPort = curriedNode.Inputs
-                                                .First(
-                                                    x => x.InnerNodeInputSender == outputSenderNode)
-                                                .OuterNodeInPortData;
-
-                    int targetPortIndex = curriedNode.OuterNodePortDataList.IndexOf(targetPort);
-                    
-                    //Connect it (new dynConnector)
-
-                    var conn = ConnectorModel.Make(
-                        outputSenderNode,
-                        curriedNode.InnerNode,
-                        outputSenderData,
-                        targetPortIndex + 1,
+                        hanging.node,
+                        node,
+                        hanging.port,
+                        0,
                         PortType.INPUT);
 
                     if (conn != null)
                         newNodeWorkspace.Connectors.Add(conn);
+
+                    i++;
                 }
             }
 
@@ -494,13 +518,13 @@ namespace Dynamo.Utilities
 
             collapsedNode.DisableReporting();
 
-            foreach (var nodeTuple in inConnectors)
+            foreach (var nodeTuple in inConnectors.Select((x, idx) => new { node=x.Item1, from=x.Item2, to=idx }))
             {
                 var conn = ConnectorModel.Make(
-                                    nodeTuple.Item1,
+                                    nodeTuple.node,
                                     collapsedNode,
-                                    nodeTuple.Item2,
-                                    nodeTuple.Item3,
+                                    nodeTuple.from,
+                                    nodeTuple.to,
                                     PortType.INPUT);
 
                 if (conn != null)

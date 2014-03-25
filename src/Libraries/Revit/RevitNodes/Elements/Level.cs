@@ -10,7 +10,7 @@ namespace Revit.Elements
     /// A Revit Level
     /// </summary>
     [RegisterForTrace]
-    public class Level : AbstractElement
+    public class Level : Element
     {
         #region Internal properties
 

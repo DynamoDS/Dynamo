@@ -3,19 +3,9 @@
 	<testAssemblies>
 		<testAssembly name="RevitNodesTests.dll">
 			<testFixture name="ReferencePointTests">
-				<test name="ByCoordinates_ValidInput" modelPath=".\empty.rfa" />
-				<test name="ByPoint_ValidInput" modelPath=".\empty.rfa" />
-				<test name="ByPointVectorDistance_ValidInput" modelPath=".\empty.rfa" />
 				<test name="ByLengthOnCurveReference_ValidInput" modelPath=".\empty.rfa" />
-				<test name="ByParameterOnCurveReference_ValidInput" modelPath=".\empty.rfa" />
-				<test name="ByParametersOnFaceReference_ValidInput" modelPath=".\block.rfa" />
-				<test name="ByPointVectorDistance_NullInput1" modelPath=".\empty.rfa" />
-				<test name="ByPointVectorDistance_NullInput2" modelPath=".\empty.rfa" />
-				<test name="ByParametersOnFaceReference_NullInput" modelPath=".\empty.rfa" />
-				<test name="ByParameterOnCurveReference_NullInput" modelPath=".\empty.rfa" />
-				<test name="ByLengthOnCurveReference_NullInput" modelPath=".\empty.rfa" />
-			<testFixture name="FamilyTests">
 			</testFixture>
+			<testFixture name="FamilyTests">
 				<test name="ByName_ValidInput" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="ByName_InvalidInput" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="ByName_NonexistentName" modelPath=".\MassWithBoxAndCone.rfa" />
@@ -63,7 +53,6 @@
 				<test name="ByFaceUVDivisions_NullArgument" modelPath=".\block.rfa" />
 			</testFixture>
 			<testFixture name="SolidTests">
-				<test name="ByExtrusion_ValidArgs" modelPath=".\empty.rfa" />
 				<test name="ByRevolve_ValidArgs" modelPath=".\empty.rfa" />
 				<test name="ByRevolve_ValidArgs_NonVertical" modelPath=".\empty.rfa" />
 				<test name="ByBlend_ValidArgs" modelPath=".\empty.rfa" />
@@ -229,6 +218,12 @@
         <test name="ByPoints_ValidArgs" runDynamo="true" modelPath=".\empty.rvt" />
         <test name="ByPoints_InvalidArgs" runDynamo="true" modelPath=".\empty.rvt" />
         <test name="ByPoints_Mutation" runDynamo="true" modelPath=".\empty.rvt" />
+      </testFixture>
+      <testFixture name="AbstractElementTests">
+        <test name="GetParameterByName_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="SetParameterByName_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="SetParametersByName_InvalidArgs" modelPath=".\empty.rfa"/>
+        <test name="OverrideColorInView_ValidArgs" modelPath=".\empty.rfa"/>
       </testFixture>
 		</testAssembly>
 	</testAssemblies>

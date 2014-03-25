@@ -96,6 +96,7 @@ namespace ProtoScript.Runners
         List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries);
 		void ReInitializeLiveRunner();
         Dictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
+        IEnumerable<ProtoCore.AST.Node> GetSSANodes(Guid nodeGuid);
 
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
@@ -166,6 +167,7 @@ namespace ProtoScript.Runners
         private Dictionary<System.Guid, Subtree> currentSubTreeList = null;
 
         private Dictionary<int, Guid> exprGuidMap = null;
+        private Dictionary<Guid, List<ProtoCore.AST.Node>> astCache = null;
 
         private readonly Object operationsMutex = new object();
 
@@ -239,6 +241,8 @@ namespace ProtoScript.Runners
             currentSubTreeList = new Dictionary<Guid, Subtree>();
 
             exprGuidMap = new Dictionary<int, Guid>();
+
+            astCache = new Dictionary<Guid, List<ProtoCore.AST.Node>>();
 
             terminating = false;
         }
@@ -967,30 +971,39 @@ namespace ProtoScript.Runners
                     // node is modifed as it does not match any existing
                     modifiedASTList.Add(node);
 
-                    // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
-                    // this means that it was a modified variable within the orevious expression.
-                    // Inherit its expression ID 
                     BinaryExpressionNode bnode = node as BinaryExpressionNode;
                     if (null != bnode && bnode.LeftNode is IdentifierNode)
                     {
-                        foreach (AssociativeNode prevNode in st.AstNodes)
+                        string lhsName = (bnode.LeftNode as IdentifierNode).Name;
+                        Validity.Assert(null != lhsName && string.Empty != lhsName);
+                        if (CoreUtils.IsSSATemp(lhsName))
                         {
-                            BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
-                            if (null != prevBinaryNode)
+                            // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
+                            // this means that it was a modified variable within the previous expression.
+                            // Inherit its expression ID 
+                            foreach (AssociativeNode prevNode in st.AstNodes)
                             {
-                                IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
-                                if (null != prevIdent)
+                                BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
+                                if (null != prevBinaryNode)
                                 {
-                                    if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
+                                    IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
+                                    if (null != prevIdent)
                                     {
-                                        bnode.InheritID(prevBinaryNode.ID);
-                                        bnode.exprUID = prevBinaryNode.exprUID;
+                                        if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
+                                        {
+                                            bnode.InheritID(prevBinaryNode.ID);
+                                            bnode.exprUID = prevBinaryNode.exprUID;
+                                        }
                                     }
                                 }
                             }
                         }
+                        else
+                        {
+                            // Handle re-defined lhs expressions
+                            HandleRedefinedLHS(bnode, st.AstNodes);
+                        }
                     }
-                    HandleRedefinedLHS(bnode, st.AstNodes);
                 }
             }
             return modifiedASTList;
@@ -1051,15 +1064,17 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Takes in a Subtree to delete or modify and marks the corresponding gragh nodes in DS inactive.
+        /// Takes in a Subtree to delete or modify and marks the corresponding 
+        /// gragh nodes in DS inactive.
+        // 
         /// This is equivalent to removing them from the VM
         /// </summary>
         /// <param name="subtree"></param>
         /// <returns></returns>
         private List<AssociativeNode> MarkGraphNodesInactive(List<AssociativeNode> modifiedASTList)
         {
-            List<AssociativeNode> astNodeList = new List<AssociativeNode>();
-            if (null != modifiedASTList && modifiedASTList.Count > 0)
+            var astNodeList = new List<AssociativeNode>();
+            if (null != modifiedASTList)
             {
                 foreach (var node in modifiedASTList)
                 {
@@ -1305,6 +1320,50 @@ namespace ProtoScript.Runners
             }
         }
 
+        /// <summary>
+        /// Update the map from graph UI node to a list of ast nodes. Each
+        /// ast node is in SSA form. 
+        /// </summary>
+        /// <param name="syncData"></param>
+        private void UpdateAstCache(GraphSyncData syncData)
+        {
+            if (syncData.ModifiedSubtrees != null)
+            {
+                foreach (var t in syncData.ModifiedSubtrees)
+                {
+                    if (astCache.Count > 0)
+                    {
+                        if (astCache.ContainsKey(t.GUID))
+                        {
+                            astCache[t.GUID].Clear();
+                            if (t.AstNodes != null)
+                            {
+                                astCache[t.GUID].AddRange(t.AstNodes);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (syncData.DeletedSubtrees != null)
+            {
+                syncData.DeletedSubtrees.ForEach(t => astCache.Remove(t.GUID));
+            }
+
+            if (syncData.AddedSubtrees != null)
+            {
+                foreach (var t in syncData.AddedSubtrees)
+                {
+                    var astNodes = new List<ProtoCore.AST.Node>();
+                    if (t.AstNodes != null)
+                    {
+                        astNodes.AddRange(t.AstNodes);
+                    }
+                    astCache[t.GUID] = astNodes;
+                }
+            }
+        }
+
         private void SynchronizeInternal(GraphSyncData syncData)
         {
             runnerCore.Options.IsDeltaCompile = true;
@@ -1319,6 +1378,8 @@ namespace ProtoScript.Runners
 
             CompileToSSA(syncData);
 
+            UpdateAstCache(syncData);
+
             if (syncData.DeletedSubtrees != null)
             {
                 foreach (var st in syncData.DeletedSubtrees)
@@ -1326,10 +1387,7 @@ namespace ProtoScript.Runners
                     if (st.AstNodes != null && st.AstNodes.Count > 0)
                     {
                         var nullNodes = MarkGraphNodesInactive(st.AstNodes);
-                        if (nullNodes != null)
-                        {
-                            deltaAstList.AddRange(nullNodes);
-                        }
+                        deltaAstList.AddRange(nullNodes);
                     }
                     else
                     {
@@ -1341,10 +1399,7 @@ namespace ProtoScript.Runners
                             if (removeSubTree.AstNodes != null)
                             {
                                 var nullNodes = MarkGraphNodesInactive(removeSubTree.AstNodes);
-                                if (nullNodes != null)
-                                {
-                                    deltaAstList.AddRange(nullNodes);
-                                }
+                                deltaAstList.AddRange(nullNodes);
                             }
                         }
                     }
@@ -1358,6 +1413,34 @@ namespace ProtoScript.Runners
                         }
                         currentSubTreeList.Remove(st.GUID);
                     }
+
+                    var exprs = exprGuidMap.Where(p => p.Value.Equals(st.GUID)).Select(p => p.Key).ToList();
+                    foreach (var expr in exprs)
+                    {
+                        exprGuidMap.Remove(expr);
+                        Core.RuntimeStatus.ClearWarningForExpression(expr); 
+                    }
+                }
+            }
+
+            if (syncData.AddedSubtrees != null)
+            {
+                foreach (var st in syncData.AddedSubtrees)
+                {
+                    if (st.AstNodes != null)
+                    {
+                        deltaAstList.AddRange(st.AstNodes);
+                        foreach (var node in st.AstNodes)
+                        {
+                            var bnode = node as BinaryExpressionNode;
+                            if (bnode != null)
+                            {
+                                exprGuidMap[bnode.exprUID] = st.GUID;
+                            }
+                        }
+                    }
+
+                    currentSubTreeList.Add(st.GUID, st);
                 }
             }
 
@@ -1376,26 +1459,30 @@ namespace ProtoScript.Runners
                         if (null != modifiedASTList && modifiedASTList.Count > 0)
                         {
                             deltaAstList.AddRange(modifiedASTList);
-                            foreach (var node in modifiedASTList)
-	                        {
-                                var bnode = node as BinaryExpressionNode;
-                                if (bnode != null)
-                                {
-                                    exprGuidMap[bnode.exprUID] = st.GUID;
-                                }
-	                        }
                         }
+
+                        var modifiedExprIDs = modifiedASTList.Where(n => n is BinaryExpressionNode)
+                                                             .Select(n => (n as BinaryExpressionNode).exprUID);
 
                         // Disable removed nodes from the cache
                         if (cachedTreeExists)
                         {
                             if (null != oldSubTree.AstNodes)
                             {
-                                List<AssociativeNode> removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+                                var removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
                                 DeactivateGraphnodes(removedNodes);
+
+                                foreach (var node in removedNodes)
+                                {
+                                    var expr = node as BinaryExpressionNode;
+                                    if (expr != null && !modifiedExprIDs.Contains(expr.exprUID))
+                                    {
+                                        exprGuidMap.Remove(expr.exprUID);
+                                        Core.RuntimeStatus.ClearWarningForExpression(expr.exprUID);
+                                    }
+                                }
                             }
                         }
-
 
                         // Handle modifed functions
                         UndefineFunctions(st.AstNodes.Where(n => n is FunctionDefinitionNode));
@@ -1452,27 +1539,6 @@ namespace ProtoScript.Runners
                 }
             }
 
-            if (syncData.AddedSubtrees != null)
-            {
-                foreach (var st in syncData.AddedSubtrees)
-                {
-                    if (st.AstNodes != null)
-                    {
-                        deltaAstList.AddRange(st.AstNodes);
-                        foreach (var node in st.AstNodes)
-	                    {
-                            var bnode = node as BinaryExpressionNode;
-                            if (bnode != null)
-                            {
-                                exprGuidMap[bnode.exprUID] = st.GUID;
-                            }
-	                    }
-                    }
-
-                    currentSubTreeList.Add(st.GUID, st);
-                }
-            }
-
             CompileAndExecuteForDeltaExecution(deltaAstList);
         }
 
@@ -1503,6 +1569,19 @@ namespace ProtoScript.Runners
             }
 
             return ret;
+        }
+
+        /// <summary>
+        /// Get ast nodes for graph UI node. The returned ast nodes are in 
+        /// SSA form.
+        /// </summary>
+        /// <param name="nodeGuid"></param>
+        /// <returns></returns>
+        public IEnumerable<ProtoCore.AST.Node> GetSSANodes(Guid nodeGuid)
+        {
+            List<ProtoCore.AST.Node> nodes = null;
+            astCache.TryGetValue(nodeGuid, out nodes);
+            return nodes;
         }
 
         private void SynchronizeInternal(string code)

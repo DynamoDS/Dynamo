@@ -20,6 +20,7 @@ namespace Dynamo.Tests
             StartDynamo();
         }
 
+        [TearDown]
         public override void Cleanup()
         {
             try
@@ -33,6 +34,8 @@ namespace Dynamo.Tests
             }
 
             base.Cleanup();
+
+            GC.Collect();
         }
 
         protected void VerifyModelExistence(Dictionary<string, bool> modelExistenceMap)

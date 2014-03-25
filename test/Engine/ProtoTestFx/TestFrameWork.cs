@@ -432,33 +432,15 @@ namespace ProtoTestFx.TD
 
                 // VerifyInternal(objs, dsObject, dsVariable, indices);
             }
-            else if (expectedType.IsArray)
-            {
-                object[] expectedArray = expectedObject as object[];
-                ProtoCore.DSASM.Mirror.DsasmArray dsArray = dsObject.Payload as ProtoCore.DSASM.Mirror.DsasmArray;
-                if (dsArray == null)
-                {
-                    Assert.Fail(String.Format("{0}{1} is expected to be an array, but its actual value isn't an array.\n{2}", dsVariable, BuildIndicesString(indices), mErrorMessage));
-                }
-                else if (expectedArray.Count() != dsArray.members.Count())
-                {
-                    Assert.Fail(String.Format("{0}{1} is expected to be an array of length {2}, but its actual length is {3}.\n{4}", dsVariable, BuildIndicesString(indices), expectedArray.Count(), dsArray.members.Count(), mErrorMessage));
-                }
-                else
-                {
-                    for (int i = 0; i < expectedArray.Count(); ++i)
-                    {
-                        indices.Add(i);
-                        VerifyInternal(expectedArray[i], dsArray.members[i], dsVariable, indices);
-                        indices.RemoveAt(indices.Count - 1);
-                    }
-                }
-            }
             else if (typeof(IEnumerable).IsAssignableFrom(expectedType))
             {
                 IEnumerable collection = expectedObject as IEnumerable;
                 int index = 0;
                 ProtoCore.DSASM.Mirror.DsasmArray dsArray = dsObject.Payload as ProtoCore.DSASM.Mirror.DsasmArray;
+                if (dsArray == null)
+                {
+                    Assert.Fail(String.Format("{0}{1} is expected to be an array, but its actual value isn't an array.\n{2}", dsVariable, BuildIndicesString(indices), mErrorMessage));
+                }
                 foreach (var item in collection)
                 {
                     indices.Add(index);

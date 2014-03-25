@@ -110,17 +110,14 @@ namespace Dynamo.Nodes
         public List<string> GetDefinedVariableNames()
         {
             var defVarNames = new List<string>();
-            
-            // For unbound identifier, if there is an input connect to it,
-            // it is defined variable. 
-            for (int i = 0; i < inputIdentifiers.Count; i++)
-            {
-                var unboundIdentifier = inputIdentifiers[i];
-                if (this.Inputs.ContainsKey(i))
-                {
-                    defVarNames.Add(unboundIdentifier);
-                }
-            }
+
+            // For unbound identifier, ideally if there is an input connect 
+            // to it, it is defined variable. But here we have to be more
+            // aggresive. For copy/paste, the connectors haven't been 
+            // created yet, so if a variable is defined in other CBN, even
+            // that variable is defined in this CBN, it is not included in
+            // the return value. 
+            defVarNames.AddRange(inputIdentifiers);
 
             // Then get all variabled on the LHS of the statements
             foreach (Statement stmnt in codeStatements)
@@ -411,6 +408,7 @@ namespace Dynamo.Nodes
                 WorkSpace.Modified();
             }
 
+            ClearError();
             if (!string.IsNullOrEmpty(errorMessage))
             {
                 Error(errorMessage);
@@ -443,7 +441,7 @@ namespace Dynamo.Nodes
 
             try
             {
-                if (GraphToDSCompiler.GraphUtilities.Parse(ref codeToParse, out parsedNodes, out errors,
+                if (GraphToDSCompiler.GraphUtilities.Parse(this.GUID, ref codeToParse, out parsedNodes, out errors,
                     out  warnings, unboundIdentifiers, out tempVariables) && parsedNodes != null)
                 {
                     //Create an instance of statement for each code statement written by the user
@@ -494,6 +492,8 @@ namespace Dynamo.Nodes
             }
 
             //Make sure variables have not been declared in other Code block nodes.
+            inputIdentifiers = unboundIdentifiers;
+
             string redefinedVariable = this.WorkSpace.GetFirstRedefinedVariable(this);
             if (redefinedVariable != null)
             {

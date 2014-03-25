@@ -223,6 +223,11 @@ def __Combine(func : _FunctionObject, lists : var[]..[])
     };
 }
 
+def __Map(func : _FunctionObject, arg : var[]..[])
+{
+	return = __Combine(func, { arg });
+}
+
 def __LaceShortest(func : _FunctionObject, lists : var[]..[])
 {
     return = [Imperative]

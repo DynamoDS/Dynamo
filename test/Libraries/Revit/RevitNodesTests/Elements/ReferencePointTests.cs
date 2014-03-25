@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Revit;
+using Revit.Application;
 using Revit.Elements;
 using NUnit.Framework;
 
@@ -46,7 +47,6 @@ namespace DSRevitNodesTests
         [Test]
         public void ByLengthOnCurveReference_ValidInput()
         {
-
             var l = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(1, 0, 0));
             var modelCurve = ModelCurve.ByCurve(l);
             var pt = ReferencePoint.ByLengthOnCurveReference(modelCurve.CurveReference, 0.5);

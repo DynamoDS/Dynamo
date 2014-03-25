@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Autodesk.Revit.DB;
 using RevitServices.Threading;
 
@@ -96,6 +97,7 @@ namespace RevitServices.Transactions
             }
             Strategy = strategy;
             TransactionWrapper = new TransactionWrapper();
+            DoAssertInIdleThread = true;
         }
 
         /// <summary>
@@ -103,8 +105,7 @@ namespace RevitServices.Transactions
         /// </summary>
         public void EnsureInTransaction(Document document)
         {
-            if (!IdlePromise.InIdleThread)
-                throw new Exception("Cannot start a transaction outside of the Revit idle thread.");
+            AssertInIdleThread();
 
             //Hand off the behaviour to the strategy
             handle = Strategy.EnsureInTransaction(TransactionWrapper, document);
@@ -116,9 +117,8 @@ namespace RevitServices.Transactions
         /// </summary>
         public void TransactionTaskDone()
         {
-            if (!IdlePromise.InIdleThread)
-                throw new Exception("Cannot end transaction task outside of the Revit idle thread.");
-            
+            AssertInIdleThread();
+
             //Hand off the behaviour to the strategy
             Strategy.TransactionTaskDone(handle);
         }
@@ -128,15 +128,28 @@ namespace RevitServices.Transactions
         /// </summary>
         public void ForceCloseTransaction()
         {
-            if (!IdlePromise.InIdleThread)
-                throw new Exception("Cannot commit transaction outside of the Revit idle thread.");
-
+             AssertInIdleThread();
+            
             //Hand off the behaviour to the strategy
             Strategy.ForceCloseTransaction(handle);
         }
+
+        /// <summary>
+        ///     Ensures that the current execution context is an IdleThread
+        /// </summary>
+        public void AssertInIdleThread()
+        {
+            if (DoAssertInIdleThread)
+                if (!IdlePromise.InIdleThread)
+                    throw new Exception("Cannot start a transaction outside of the Revit idle thread.");
+        }
+
+        /// <summary>
+        /// Determines whether the TransactionManager checks to be in an IdleThread.
+        /// </summary>
+        public bool DoAssertInIdleThread { get; set; }
     }
-
-
+    
     /// <summary>
     ///     Contains logic for managing transactions in a dynamo graph evaluation.
     /// </summary>
@@ -160,7 +173,6 @@ namespace RevitServices.Transactions
         /// <param name="handle"></param>
         void ForceCloseTransaction(TransactionHandle handle);
     }
-
 
     /// <summary>
     ///     Basic transaction handling strategy that opens
@@ -196,7 +208,8 @@ namespace RevitServices.Transactions
 
     /// <summary>
     ///     Transaction handling strategy that uses the same
-    ///     transaction for 
+    ///     transaction for all operations.  Checks to make sure the
+    ///     current transaction is using an IdleThread for execution.
     /// </summary>
     public class AutomaticTransactionStrategy : ITransactionStrategy
     {
@@ -219,7 +232,6 @@ namespace RevitServices.Transactions
                 handle.CommitTransaction();
         }
     }
-
 
     /// <summary>
     ///     Wraps Revit Transaction methods and provides events for transaction initialization
@@ -334,7 +346,6 @@ namespace RevitServices.Transactions
             public FailureProcessingResult PreprocessFailures(FailuresAccessor failuresAccessor)
             {
                 tm.ProcessFailures(failuresAccessor);
-
                 return FailureProcessingResult.Continue;
             }
         }

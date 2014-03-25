@@ -252,7 +252,10 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return nodeLogic.RenderPackages.Any(y => ((RenderPackage)y).IsNotEmpty());
+                lock (nodeLogic.RenderPackagesMutex)
+                {
+                    return nodeLogic.RenderPackages.Any(y => ((RenderPackage)y).IsNotEmpty());
+                }
             }
         }
 
@@ -420,7 +423,7 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("ArgumentLacing");
                     break;
                 case "ToolTipText":
-                    UpdateErrorBubbleContent();
+                    UpdateBubbleContent();
                     // TODO Update preview bubble visibility to false
                     break;
                 case "IsVisible":
@@ -517,13 +520,13 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void UpdateErrorBubbleContent()
+        private void UpdateBubbleContent()
         {
             if (this.ErrorBubble == null || dynSettings.Controller == null)
                 return;
             if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
-                if (NodeModel.State != ElementState.Error)
+                if (NodeModel.State != ElementState.Error && NodeModel.State != ElementState.Warning)
                 {
                     ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
                 }
@@ -535,7 +538,15 @@ namespace Dynamo.ViewModels
 
                 Point topLeft = new Point(NodeModel.X, NodeModel.Y);
                 Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
-                InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.ErrorCondensed;
+                InfoBubbleViewModel.Style style;
+                if (NodeModel.State == ElementState.Error)
+                {
+                    style = InfoBubbleViewModel.Style.ErrorCondensed;
+                }
+                else
+                {
+                    style = InfoBubbleViewModel.Style.WarningCondensed;
+                }
                 // NOTE!: If tooltip is not cached here, it will be cleared once the dispatcher is invoked below
                 string content = NodeModel.ToolTipText;
                 InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;

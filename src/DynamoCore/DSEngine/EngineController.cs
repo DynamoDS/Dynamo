@@ -212,15 +212,10 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public bool GenerateGraphSyncData(IEnumerable<NodeModel> nodes)
         {
-            var activeNodes = nodes.Where(n =>
-                            ElementState.Active == n.State ||
-                            ElementState.Warning == n.State ||
-                            (ElementState.Error != n.State && n is DSFunction));
+            var activeNodes = nodes.Where(n => n.State != ElementState.Error);
 
             if (activeNodes.Any())
-            {
                 astBuilder.CompileToAstNodes(activeNodes, true);
-            }
 
             return VerifyGraphSyncData();
         }
@@ -337,8 +332,6 @@ namespace Dynamo.DSEngine
                     node.Warning(warningMessage);
                 }
             }
-
-            liveRunnerServices.ClearRuntimeWarnings();
         }
         
         /// <summary>

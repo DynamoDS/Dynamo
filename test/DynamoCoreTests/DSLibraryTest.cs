@@ -32,6 +32,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void TestLoadLibrary()
         {
             LibraryServices libraryServices = LibraryServices.GetInstance();
@@ -68,6 +69,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failing")]
         public void TestLibraryAcrossSessions()
         {
             LibraryServices libraryServices = LibraryServices.GetInstance();

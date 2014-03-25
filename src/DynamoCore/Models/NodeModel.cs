@@ -2,16 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Odbc;
 using System.Globalization;
 using System.Linq;
+using System.Security.Permissions;
 using System.Windows;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
-using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-using Autodesk.DesignScript.Runtime;
 using Dynamo.FSchemeInterop;
+using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.DSEngine;
@@ -28,7 +27,7 @@ using Utils = Dynamo.FSchemeInterop.Utils;
 
 namespace Dynamo.Models
 {
-    public abstract class NodeModel : ModelBase
+    public abstract class NodeModel : ModelBase, IBlockingModel
     {
         #region abstract members
 
@@ -86,17 +85,34 @@ namespace Dynamo.Models
         public Dictionary<int, HashSet<Tuple<int, NodeModel>>> Outputs =
             new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
-        private Object mutex = new object();
+        public Object RenderPackagesMutex = new object();
         public List<IRenderPackage> RenderPackages
         {
-            get { return _renderPackages; }
+            get
+            {
+                lock (RenderPackagesMutex)
+                {
+                    return _renderPackages; 
+                }
+            }
             set
             {
-                lock (mutex)
+                lock (RenderPackagesMutex)
                 {
                     _renderPackages = value;
-                    RaisePropertyChanged("RenderPackages");
-                } 
+                }
+                RaisePropertyChanged("RenderPackages");
+            }
+        }
+
+        public bool HasRenderPackages
+        {
+            get
+            {
+                lock (RenderPackagesMutex)
+                {
+                    return RenderPackages.Any();
+                }
             }
         }
 
@@ -429,7 +445,7 @@ namespace Dynamo.Models
                 if (identifier == null)
                 {
                     string id = AstIdentifierBase;
-                    identifier = new IdentifierNode { Name = id, Value = id };
+                    identifier = AstFactory.BuildIdentifier(id);
                 }
                 return identifier;
             }
@@ -471,6 +487,14 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        ///     Is this node being applied partially, resulting in a partial function?
+        /// </summary>
+        public bool IsPartiallyApplied
+        {
+            get { return !Enumerable.Range(0, InPortData.Count).All(HasInput); }
+        }
+
+        /// <summary>
         ///     Flags this node as dirty.
         /// </summary>
         [Obsolete("Use RequiresRecalc = true")]
@@ -504,11 +528,10 @@ namespace Dynamo.Models
                 throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
 
             if (OutPortData.Count == 1)
-                return AstIdentifierForPreview;
+                return AstFactory.BuildIdentifier((IsPartiallyApplied ? "_local_" : "") + AstIdentifierBase);
 
-            string nameAndValue = AstIdentifierBase + "[" + outputIndex + "]";
-
-            return new IdentifierNode { Name = nameAndValue, Value = nameAndValue };
+            string id = AstIdentifierBase + "_out" + outputIndex;
+            return AstFactory.BuildIdentifier(id);
         }
 
         #endregion
@@ -695,26 +718,8 @@ namespace Dynamo.Models
 
             var result = BuildOutputAst(inputAstNodes);
 
-            /*
-            var functionDef = new FunctionDefinitionNode
-            {
-                Name = AstBuilder.StringConstants.FunctionPrefix + GUID.ToString().Replace("-", string.Empty),
-                Signature = new ArgumentSignatureNode { Arguments = InPortData.Select(x => AstFactory.BuildParamNode(x.NickName)).ToList() },
-                FunctionBody = 
-            };
-            */
-
             if (OutPortData.Count == 1)
-            {
-                return
-                    result.Concat(
-                        new[]
-                        {
-                            AstFactory.BuildAssignment(
-                                AstIdentifierForPreview,
-                                GetAstIdentifierForOutputIndex(0))
-                        });
-            }
+                return result;
 
             var emptyList = AstFactory.BuildExprList(new List<AssociativeNode>());
             var previewIdInit = AstFactory.BuildAssignment(AstIdentifierForPreview, emptyList);
@@ -2021,48 +2026,59 @@ namespace Dynamo.Models
                 return;
 
             //dispose of the current render package
-            RenderPackages.Clear();
-
-            if (State == ElementState.Error || !IsVisible)
+            lock (RenderPackagesMutex)
             {
-                return;
+                RenderPackages.Clear(); 
+
+                if (State == ElementState.Error || !IsVisible)
+                {
+                    return;
+                }
+
+                IEnumerable<string> drawableIds = GetDrawableIds();
+
+                int count = 0;
+                var labelMap = new List<string>();
+
+                var ident = AstIdentifierForPreview.Name;
+
+                foreach (var varName in drawableIds)
+                {
+                    var mirror = dynSettings.Controller.EngineController.GetMirror(varName);
+                    if (mirror != null)
+                    {
+                        var mirrorData = mirror.GetData();
+                        AddToLabelMap(mirrorData, labelMap, ident);
+                        count++;
+                    }
+                } 
+
+                count = 0;
+                foreach (var varName in drawableIds)
+                {
+                    var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
+                    if (graphItems == null)
+                        continue;
+
+                    foreach (var gItem in graphItems)
+                    {
+                        var package = new RenderPackage(IsSelected, DisplayLabels);
+
+                        PushGraphicItemIntoPackage(gItem, package, labelMap.Count > count ? labelMap[count] : "?");
+
+                        package.ItemsCount++;
+                        RenderPackages.Add(package);
+                        count++;
+                    }
+                }
             }
+        }
 
-            IEnumerable<string> drawableIds = GetDrawableIds();
-
-            int count = 0;
-            var labelMap = new List<string>();
-
-            var ident = AstIdentifierForPreview.Name;
-
-            foreach (var varName in drawableIds)
+        public void ClearRenderPackages()
+        {
+            lock (RenderPackagesMutex)
             {
-                var mirror = dynSettings.Controller.EngineController.GetMirror(varName);
-                if (mirror != null)
-                {
-                    var mirrorData = mirror.GetData();
-                    AddToLabelMap(mirrorData, labelMap, ident);
-                    count++;
-                }
-            } 
-
-            count = 0;
-            foreach (var varName in drawableIds)
-            {
-                var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
-                if (graphItems == null)
-                    continue;
-
-                foreach (var gItem in graphItems)
-                {
-                    var package = new RenderPackage(IsSelected, DisplayLabels);
-
-                    PushGraphicItemIntoPackage(gItem, package, labelMap.Count > count ? labelMap[count] : "?");
-
-                    package.ItemsCount++;
-                    RenderPackages.Add(package);
-                    count++;
-                }
+                RenderPackages.Clear();
             }
         }
 
@@ -2196,6 +2212,24 @@ namespace Dynamo.Models
         }
 
         #endregion
+
+        public event EventHandler BlockingStarted;
+        public virtual void OnBlockingStarted(EventArgs e)
+        {
+            if (BlockingStarted != null)
+            {
+                BlockingStarted(this, e);
+            }
+        }
+
+        public event EventHandler BlockingEnded;
+        public virtual void OnBlockingEnded(EventArgs e)
+        {
+            if (BlockingEnded != null)
+            {
+                BlockingEnded(this, e);
+            }
+        }
 
     }
 
@@ -2343,9 +2377,6 @@ namespace Dynamo.Models
     /// </summary>
     [AttributeUsage(AttributeTargets.All, Inherited = true)]
     public class NodeDeprecatedAttribute : Attribute { }
-
-    [AttributeUsage(AttributeTargets.All, Inherited = true)]
-    public class NodeHiddenInBrowserAttribute : Attribute { }
 
     /// <summary>
     ///     The AlsoKnownAs attribute allows the node implementor to

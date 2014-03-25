@@ -28,6 +28,7 @@
     <Color x:Key="orange2" R="235" G="187" B="78" A="255" ></Color>
     <Color x:Key="gray1" R="220" G="220" B="220" A="255" ></Color>
     <Color x:Key="gray2" R="192" G="192" B="192" A="255" ></Color>
+    <Color x:Key="warningColor" R="255" G="239" B="160" A="255" ></Color>
 
     <LinearGradientBrush x:Key="nodeActiveBrush">
         <LinearGradientBrush.StartPoint>
@@ -68,7 +69,19 @@
             <GradientStop Color="{StaticResource red2}" Offset="1"></GradientStop>
         </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
-    
+    <LinearGradientBrush x:Key="nodeWarningBrush">
+        <LinearGradientBrush.StartPoint>
+            <Point X="0.5" Y="0"/>
+        </LinearGradientBrush.StartPoint>
+        <LinearGradientBrush.EndPoint>
+            <Point X="0.5" Y="1"/>
+        </LinearGradientBrush.EndPoint>
+        <LinearGradientBrush.GradientStops>
+            <GradientStop Color="{StaticResource warningColor}" Offset="0"></GradientStop>
+            <GradientStop Color="{StaticResource warningColor}" Offset=".25"></GradientStop>
+            <GradientStop Color="{StaticResource warningColor}" Offset="1"></GradientStop>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
     <!--Update Manager-->
     <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="OrangeRed"/>
     <SolidColorBrush x:Key="UpdateManagerUpToDateBrush" Color="Green"/>

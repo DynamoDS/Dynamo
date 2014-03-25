@@ -15,7 +15,7 @@ using Solid = Revit.GeometryObjects.Solid;
 namespace Revit.Elements
 {
     [RegisterForTrace]
-    public class Form : AbstractElement
+    public class Form : Element
     {
 
         #region Internal Properties
@@ -204,6 +204,22 @@ namespace Revit.Elements
             {
                 var refArr = new ReferenceArray();
                 refArr.Append(l.InternalReference);
+                refArrArr.Append(refArr);
+            }
+
+            return new Form(isSolid, refArrArr);
+
+        }
+
+        public static Form ByLoftingCurveElements( CurveElement[] curves, bool isSolid)
+        {
+            // build references
+            var refArrArr = new ReferenceArrayArray();
+
+            foreach (var l in curves)
+            {
+                var refArr = new ReferenceArray();
+                refArr.Append(l.InternalCurveElement.GeometryCurve.Reference);
                 refArrArr.Append(refArr);
             }
 

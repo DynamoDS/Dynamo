@@ -190,7 +190,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll",
-                "Solid.FromElement", "Solid.FromElement@AbstractElement");
+                "Solid.FromElement", "Solid.FromElement@Element");
         }
     }
 
@@ -290,7 +290,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Geometry.Transform",
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Geometry.Transform",
                 "Geometry.Transform@CoordinateSystem");
         }
     }
