@@ -1966,6 +1966,41 @@ namespace ProtoCore.AST.AssociativeAST
             return new BooleanNode(value);
         }
 
+        /// <summary>
+        /// Builds a integer, double, string, boolean or null node depending
+        /// on input value type.
+        /// </summary>
+        /// <param name="value">Input value</param>
+        /// <returns>AssociativeNode</returns>
+        public static AssociativeNode BuildPrimitiveNodeFromObject(object value)
+        {
+            if (null == value)
+                return BuildNullNode();
+
+            string type = value.GetType().Name;
+            switch (type)
+            {
+                case "Int16":
+                case "Int32":
+                case "Int64":
+                case "UInt16":
+                case "UInt32":
+                case "UInt64":
+                    return BuildIntNode(Convert.ToInt32(value));
+                case "Single":
+                case "Double":
+                    return BuildDoubleNode(Convert.ToDouble(value));
+                case "String":
+                    return BuildStringNode(value.ToString());
+                case "Boolean":
+                    return BuildBooleanNode(Convert.ToBoolean(value));
+                default:
+                    Validity.Assert(false, "Invalide Input type to make AST node");
+                    break;
+            }
+            return BuildNullNode();
+        }
+
         public static InlineConditionalNode BuildConditionalNode(
             AssociativeNode condition, AssociativeNode trueExpr, AssociativeNode falseExpr)
         {

@@ -27,10 +27,10 @@ namespace Dynamo.Nodes
         public const string CORE = "Core";
         public const string CORE_INPUT = "Core.Input";
         public const string CORE_STRINGS = "Core.Strings";
-        public const string CORE_LISTS_CREATE = "Core.Lists.Create";
-        public const string CORE_LISTS_MODIFY = "Core.Lists.Modify";
-        public const string CORE_LISTS_EVALUATE = "Core.Lists.Evaluate";
-        public const string CORE_LISTS_QUERY = "Core.Lists.Query";
+        public const string CORE_LISTS_CREATE = "Core.List.Create";
+        public const string CORE_LISTS_MODIFY = "Core.List.Modify";
+        public const string CORE_LISTS_EVALUATE = "Core.List.Evaluate";
+        public const string CORE_LISTS_QUERY = "Core.List.Query";
         public const string CORE_VIEW = "Core.View";
         public const string CORE_ANNOTATE = "Core.Annotate";
         public const string CORE_EVALUATE = "Core.Evaluate";
@@ -38,7 +38,7 @@ namespace Dynamo.Nodes
         public const string CORE_SCRIPTING = "Core.Scripting";
         public const string CORE_FUNCTIONS = "Core.Functions";
 
-        public const string LOGIC = "Logic";
+        public const string LOGIC = "Core.Logic";
         public const string LOGIC_MATH_ARITHMETIC = "Logic.Math.Arithmetic";
         public const string LOGIC_MATH_ROUNDING = "Logic.Math.Rounding";
         public const string LOGIC_MATH_CONSTANTS = "Logic.Math.Constants";
@@ -47,7 +47,7 @@ namespace Dynamo.Nodes
         public const string LOGIC_MATH_OPTIMIZE = "Logic.Math.Optimize";
         public const string LOGIC_EFFECT = "Logic.Effect";
         public const string LOGIC_COMPARISON = "Logic.Comparison";
-        public const string LOGIC_CONDITIONAL = "Logic.Conditional";
+        public const string LOGIC_CONDITIONAL = "Core.Logic.Conditional";
         public const string LOGIC_LOOP = "Logic.Loop";
 
 
@@ -336,6 +336,120 @@ namespace Dynamo.Nodes
             }
 
             return attrib.Value;
+        }
+
+        /// <summary>
+        /// Call this method to serialize given node-data-list pairs into an 
+        /// XmlDocument. Serialized data in the XmlDocument can be loaded by a 
+        /// call to LoadTraceDataFromXmlDocument method.
+        /// </summary>
+        /// <param name="document">The target document to which the trade data 
+        /// is to be written. This parameter cannot be null and must represent 
+        /// a valid XmlDocument object.</param>
+        /// <param name="nodeTraceDataList">A dictionary of node-data-list pairs
+        /// to be saved to the XmlDocument. This parameter cannot be null and 
+        /// must represent a non-empty list of node-data-list pairs.</param>
+        public static void SaveTraceDataToXmlDocument(XmlDocument document,
+            IEnumerable<KeyValuePair<Guid, List<string>>> nodeTraceDataList)
+        {
+            #region Parameter Validations
+
+            if (document == null)
+                throw new ArgumentNullException("document");
+
+            if (document.DocumentElement == null)
+            {
+                var message = "Document does not have a root element";
+                throw new ArgumentException(message, "document");
+            }
+
+            if (nodeTraceDataList == null)
+                throw new ArgumentNullException("nodeTraceDataList");
+
+            if (nodeTraceDataList.Count() <= 0)
+            {
+                var message = "Trade data list must be non-empty";
+                throw new ArgumentException(message, "nodeTraceDataList");
+            }
+
+            #endregion
+
+            #region Session Xml Element
+
+            var sessionElement = document.CreateElement(
+                Configurations.SessionTraceDataXmlTag);
+
+            document.DocumentElement.AppendChild(sessionElement);
+
+            #endregion
+
+            #region Serialize Node Xml Elements
+
+            foreach (var pair in nodeTraceDataList)
+            {
+                var nodeElement = document.CreateElement(
+                    Configurations.NodeTraceDataXmlTag);
+
+                // Set the node ID attribute for this element.
+                var nodeGuid = pair.Key.ToString();
+                nodeElement.SetAttribute(Configurations.NodeIdAttribName, nodeGuid);
+                sessionElement.AppendChild(nodeElement);
+
+                foreach (var data in pair.Value)
+                {
+                    var callsiteXmlElement = document.CreateElement(
+                        Configurations.CallsiteTraceDataXmlTag);
+
+                    callsiteXmlElement.InnerText = data;
+                    nodeElement.AppendChild(callsiteXmlElement);
+                }
+            }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// Call this method to load serialized node-data-list pairs (through a 
+        /// prior call to SaveTraceDataToXmlDocument) from a given XmlDocument.
+        /// </summary>
+        /// <param name="document">The XmlDocument from which serialized node-
+        /// data-list pairs are to be deserialized.</param>
+        /// <returns>Returns a dictionary of deserialized node-data-list pairs
+        /// loaded from the given XmlDocument.</returns>
+        public static IEnumerable<KeyValuePair<Guid, List<string>>>
+            LoadTraceDataFromXmlDocument(XmlDocument document)
+        {
+            if (document == null)
+                throw new ArgumentNullException("document");
+
+            if (document.DocumentElement == null)
+            {
+                var message = "Document does not have a root element";
+                throw new ArgumentException(message, "document");
+            }
+
+            var childNodes = document.DocumentElement.ChildNodes.Cast<XmlElement>();
+            var sessionXmlTagName = Configurations.SessionTraceDataXmlTag;
+            var query = from childNode in childNodes
+                        where childNode.Name.Equals(sessionXmlTagName)
+                        select childNode;
+
+            var loadedData = new Dictionary<Guid, List<string>>();
+            if (query.Count() <= 0) // There's no data, return empty dictionary.
+                return loadedData;
+
+            XmlElement sessionElement = query.ElementAt(0);
+            foreach (XmlElement nodeElement in sessionElement.ChildNodes)
+            {
+                List<string> callsites = new List<string>();
+                foreach (XmlElement callsiteElement in nodeElement.ChildNodes)
+                    callsites.Add(callsiteElement.InnerText);
+
+                var guid = nodeElement.GetAttribute(Configurations.NodeIdAttribName);
+                loadedData.Add(Guid.Parse(guid), callsites);
+            }
+
+            return loadedData;
         }
 
         /// <summary>
