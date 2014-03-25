@@ -6,8 +6,7 @@ using Autodesk.DesignScript.Runtime;
 
 namespace Dynamo.Units
 {
-    //[SupressImportIntoVM]
-    [IsVisibleInDynamoLibrary(false)]
+    [SupressImportIntoVM]
     public enum DynamoLengthUnit
     {
         DecimalInch,
@@ -19,8 +18,7 @@ namespace Dynamo.Units
         Meter
     }
 
-    //[SupressImportIntoVM]
-    [IsVisibleInDynamoLibrary(false)]
+    [SupressImportIntoVM]
     public enum DynamoAreaUnit
     {
         SquareInch, 
@@ -30,8 +28,7 @@ namespace Dynamo.Units
         SquareMeter
     }
 
-    //[SupressImportIntoVM]
-    [IsVisibleInDynamoLibrary(false)]
+    [SupressImportIntoVM]
     public enum DynamoVolumeUnit
     {
         CubicInch,
@@ -41,12 +38,13 @@ namespace Dynamo.Units
         CubicMeter
     }
 
-    public abstract class SIUnit
+    [SupressImportIntoVM]
+    public class BaseUnit
     {
         //length conversions
         private static double meter_to_millimeter = 1000;
         private static double meter_to_centimeter = 100;
-        private static double meter_to_inch = 39.37007874 ;
+        private static double meter_to_inch = 39.37007874;
         private static double meter_to_foot = 3.280839895;
 
         //area conversions
@@ -276,7 +274,10 @@ namespace Dynamo.Units
                 }
             }
         }
+    }
 
+    public abstract class SIUnit : BaseUnit
+    {
         /// <summary>
         /// The internal value of the unit.
         /// </summary>
