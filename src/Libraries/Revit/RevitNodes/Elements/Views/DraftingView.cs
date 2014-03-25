@@ -14,7 +14,7 @@ namespace Revit.Elements.Views
     /// A Revit ViewDrafting
     /// </summary>
     [RegisterForTrace]
-    public class DraftingView : AbstractView
+    public class DraftingView : View
     {
 
         #region Internal properties
@@ -58,7 +58,7 @@ namespace Revit.Elements.Views
 
             //rename the view
             if (!vd.Name.Equals(name))
-                vd.Name = AbstractView3D.CreateUniqueViewName(name);
+                vd.Name = View3D.CreateUniqueViewName(name);
 
             InternalSetDraftingView(vd);
 

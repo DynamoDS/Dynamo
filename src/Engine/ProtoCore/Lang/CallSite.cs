@@ -11,6 +11,7 @@ using ProtoCore.Lang;
 using ProtoCore.Lang.Replication;
 using ProtoCore.Utils;
 using StackFrame = ProtoCore.DSASM.StackFrame;
+using System.Xml;
 
 namespace ProtoCore
 {
@@ -21,7 +22,31 @@ namespace ProtoCore
         /// </summary>
         class SingleRunTraceData
         {
-         
+            internal SingleRunTraceData() { }
+
+            /// <summary>
+            /// Constructs an instance of SingleRunTraceData object from the 
+            /// given XmlElement. This constructor also constructs the nested 
+            /// trace data if necessary.
+            /// </summary>
+            /// <param name="xmlElement">The XmlElement from which the instance 
+            /// of SingleRunTraceData object is to be constructed.</param>
+            /// 
+            internal SingleRunTraceData(XmlElement xmlElement)
+            {
+                var rawData = xmlElement.GetAttribute("Data");
+                if (!string.IsNullOrEmpty(rawData))
+                    this.Data = rawData;
+
+                if (xmlElement.ChildNodes != null && (xmlElement.ChildNodes.Count > 0))
+                {
+                    // Recursively construct all the child data (if any).
+                    this.NestedData = new List<SingleRunTraceData>();
+                    foreach (XmlElement childNode in xmlElement.ChildNodes)
+                        this.NestedData.Add(new SingleRunTraceData(childNode));
+                }
+            }
+
             /// <summary>
             /// Does this struct contain any trace data
             /// </summary>
@@ -61,6 +86,35 @@ namespace ProtoCore
                 }
             }
 
+            /// <summary>
+            /// Call this method to serialize the SingleRunTraceData object and 
+            /// all its nested trace data into an XmlElement.
+            /// </summary>
+            /// <param name="document">The XmlDocument that the serialized 
+            /// SingleRunTraceData object should be written to.</param>
+            /// <returns>Returns the XmlElement representing the serialized 
+            /// SingleRunTraceData object and all its nested trace data.</returns>
+            /// 
+            internal XmlElement Serialize(XmlDocument document)
+            {
+                // Create a trace data element with its mandatory data attribute.
+                var data = ((this.Data == null) ? string.Empty : this.Data.ToString());
+                var dataXmlElement = document.CreateElement(CoreStrings.TraceDataXmlTag);
+                dataXmlElement.SetAttribute(CoreStrings.TraceDataAttribName, data);
+
+                // Are there any nested data here?
+                if (this.NestedData != null && (this.NestedData.Count > 0))
+                {
+                    foreach (SingleRunTraceData childData in this.NestedData)
+                    {
+                        XmlElement childElement = childData.Serialize(document);
+                        if (childElement != null)
+                            dataXmlElement.AppendChild(childElement);
+                    }
+                }
+
+                return dataXmlElement;
+            }
 
             public List<SingleRunTraceData> NestedData;
             public Object Data;
@@ -88,7 +142,21 @@ namespace ProtoCore
             }
         }
 
-        public CallSite(int classScope, string methodName, FunctionTable globalFunctionTable, ExecutionMode execMode)
+        /// <summary>
+        /// Constructs an instance of the CallSite object given its scope and 
+        /// method information. This constructor optionally takes in a preloaded
+        /// trace data information.
+        /// </summary>
+        /// <param name="classScope"></param>
+        /// <param name="methodName"></param>
+        /// <param name="globalFunctionTable"></param>
+        /// <param name="execMode"></param>
+        /// <param name="traceData">An optional XmlElement representing the trace 
+        /// data that the callsite could use as part of its construction.</param>
+        /// 
+        public CallSite(int classScope, string methodName,
+            FunctionTable globalFunctionTable,
+            ExecutionMode execMode, XmlElement traceData = null)
         {
             //Set the ID of internal test
             callsiteID = Guid.NewGuid();
@@ -105,6 +173,16 @@ namespace ProtoCore
             if (execMode == ExecutionMode.Parallel)
                 throw new CompilerInternalException(
                     "Parrallel Mode is not yet implemented {46F83CBB-9D37-444F-BA43-5E662784B1B3}");
+
+            // Found preloaded trace data, reconstruct the instances from there.
+            if (traceData != null && (traceData.ChildNodes != null))
+            {
+                foreach (XmlElement childNode in traceData.ChildNodes)
+                {
+                    // Reconstruct trace data from the child XmlElement
+                    this.traceData.Add(new SingleRunTraceData(childNode));
+                }
+            }
         }
 
         public void UpdateCallSite(int classScope, string methodName)
@@ -1776,12 +1854,29 @@ namespace ProtoCore
             return true; //It'll replicate if it suceeds
         }
 
+        /// <summary>
+        /// Call this method to serialize the callsite along with all its 
+        /// associated trace data (including nested data, if any).
+        /// </summary>
+        /// <param name="document">The XmlDocument from which the callsite 
+        /// XmlElement is to be constructed.</param>
+        /// <returns>The XmlElement representation of the CallSite object along
+        /// with its trace data.</returns>
+        /// 
+        internal XmlElement Serialize(XmlDocument document)
+        {
+            if (this.traceData == null || (this.traceData.Count <= 0))
+                return null; // Return if there's no associated trace data.
 
+            // Create a callsite element representing this callsite.
+            var callSiteXmlElement = document.CreateElement(
+                CoreStrings.CallsiteTraceDataXmlTag);
 
+            foreach (SingleRunTraceData data in this.traceData)
+                callSiteXmlElement.AppendChild(data.Serialize(document));
 
-
-
-
+            return callSiteXmlElement;
+        }
 
         #region Unused legacy code
 

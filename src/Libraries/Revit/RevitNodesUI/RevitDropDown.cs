@@ -211,7 +211,7 @@ namespace DSRevitNodesUI
     }
 
     [NodeName("Levels")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a level in the active document")]
     [IsDesignScriptCompatible]
     public class Levels : DropDrownBase

@@ -21,7 +21,7 @@ namespace Revit.Elements
     /// A Revit ReferencePlane
     /// </summary>
     [RegisterForTrace]
-    public class ReferencePlane : AbstractElement
+    public class ReferencePlane : Element
     {
         #region Internal properties
 

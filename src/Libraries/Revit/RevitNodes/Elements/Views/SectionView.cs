@@ -15,7 +15,7 @@ namespace Revit.Elements.Views
     /// A Revit ViewSection
     /// </summary>
     [RegisterForTrace]
-    public class SectionView : AbstractView
+    public class SectionView : View
     {
 
         #region Internal properties

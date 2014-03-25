@@ -109,7 +109,7 @@ namespace DSCore
         /// <search>sort,order</search>
         public static IList Sort(IList list)
         {
-            return list.Cast<object>().OrderBy(x => x).ToList();
+            return list.Cast<object>().OrderBy(x => x, new ObjectComparer()).ToList();
         }
 
         /// <summary>
@@ -1224,5 +1224,55 @@ namespace DSCore
             return initial;
         }
         */
+    }
+
+    /// <summary>
+    /// Implements Compare function for two objects using following rule.
+    /// 1. Numbers are assumed to be smallest, then bool, string and pointers.
+    /// 2. If the two objects are IComparable and of the same type, then use
+    ///    it's native comparison mechanism.
+    /// 3. If both inputs are value type, but one of them is bool, bool is bigger
+    /// 4. Otherwise Convert them all to double and compare.
+    /// 5. Else If only one is value type, then value type object is smaller
+    /// 6. Else If only one is string, then the string is smaller than other
+    /// 7. Else don't know how to compare, so best campare them based on HashCode.
+    /// </summary>
+    class ObjectComparer : IComparer<object>
+    {
+        public int Compare(object x, object y)
+        {
+            Type xType = x.GetType();
+            Type yType = y.GetType();
+
+            //Same type and are comparable, use it's own compareTo method.
+            if (xType == yType && typeof(IComparable).IsAssignableFrom(xType))
+                return ((IComparable)x).CompareTo(y);
+            //Both are value type, can be converted to Double, use double comparison
+            if (xType.IsValueType && yType.IsValueType)
+            {
+                //Bool is bigger than other value type.
+                if (xType == typeof(bool))
+                    return 1;
+                //Other value type is smaller than bool
+                if (yType == typeof(bool))
+                    return -1;
+                return Convert.ToDouble(x).CompareTo(Convert.ToDouble(y));
+            }
+            //Value Type object will be smaller, if x is value type it is smaller
+            if (xType.IsValueType)
+                return -1;
+            //if y is value type x is bigger
+            if (yType.IsValueType)
+                return 1;
+            
+            //Next higher order object is string
+            if (xType == typeof(string))
+                return -1;
+            if (yType == typeof(string))
+                return 1;
+
+            //No idea, return based on hash code.
+            return x.GetHashCode() - y.GetHashCode();
+        }
     }
 }
