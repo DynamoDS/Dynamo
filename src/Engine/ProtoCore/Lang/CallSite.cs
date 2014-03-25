@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using ProtoCore.BuildData;
 using ProtoCore.DSASM;
@@ -89,7 +90,7 @@ namespace ProtoCore
             /// null if no data
             /// </summary>
             /// <returns></returns>
-            public Object GetLeftMostData()
+            public ISerializable GetLeftMostData()
             {
                 if (HasData)
                     return Data;
@@ -106,7 +107,7 @@ namespace ProtoCore
             }
 
             public List<SingleRunTraceData> NestedData;
-            public Object Data;
+            public ISerializable Data;
         }
 
 
@@ -1508,13 +1509,13 @@ namespace ProtoCore
 
             //TraceCache -> TLS
             //Extract left most high-D pack
-            Object traceD = previousTraceData.GetLeftMostData();
+            ISerializable traceD = previousTraceData.GetLeftMostData();
 
             if (traceD != null)
             {
                 //There was data associated with the previous execution, push this into the TLS
 
-                Dictionary<string, object> dataDict = new Dictionary<string, object>();
+                Dictionary<string, ISerializable> dataDict = new Dictionary<string, ISerializable>();
                 dataDict.Add(TRACE_KEY, traceD);
 
                 TraceUtils.SetObjectToTLS(dataDict);
@@ -1529,11 +1530,11 @@ namespace ProtoCore
             StackValue ret = finalFep.Execute(c, coercedParameters, stackFrame, core);
 
             //TLS -> TraceCache
-            Dictionary<String, Object> traceRet = TraceUtils.GetObjectFromTLS();
+            Dictionary<String, ISerializable> traceRet = TraceUtils.GetObjectFromTLS();
 
             if (traceRet.ContainsKey(TRACE_KEY))
             {
-                Object val = traceRet[TRACE_KEY];
+                var val = traceRet[TRACE_KEY];
                 newTraceData.Data = val;
             }
 
