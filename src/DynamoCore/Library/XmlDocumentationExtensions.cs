@@ -79,7 +79,8 @@ namespace Dynamo.DSEngine
                     "string(/doc/members/member[@name='{0}']/search)",
                     GetMemberElementName(member)
                     )
-                ).ToString().Split(',').Select(x => x.Trim());
+                ).ToString().Split(',').Select(x => x.Trim()).Where(x => x != String.Empty);
+
         }
 
         private static string PrimitiveMap(string s)

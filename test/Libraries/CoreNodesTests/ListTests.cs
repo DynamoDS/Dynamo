@@ -48,6 +48,23 @@ namespace DSCoreNodesTests
                 List.Sort(new ArrayList { 2, 3, 5, 4, 1 }));
         }
 
+        [Test]
+        public static void SortMixedList1()
+        {
+            Assert.AreEqual(
+                new ArrayList { 1, 2, 3.5, 4.002, 5 },
+                List.Sort(new ArrayList { 2, 3.5, 5, 4.002, 1 }));
+        }
+
+        [Test]
+        public static void SortMixedList2()
+        {
+            var obj = new object();
+            Assert.AreEqual(
+                new ArrayList { 1, 2, 3.5, 4.002, 5, false, true, "aaa", "bb", obj },
+                List.Sort(new ArrayList { obj, 2, 3.5, "bb", 5, 4.002, true, 1, false, "aaa" }));
+        }
+
         //[Test]
         //public static void SortListByKey()
         //{

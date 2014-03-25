@@ -12,7 +12,7 @@ namespace Revit.References
     /// A stable reference to a Revit curve, usually derived from a Revit Element
     /// </summary>
     /// See: http://revitapisearch.com.s3-website-us-east-1.amazonaws.com/html/d5e10517-24fa-4627-43be-8981746d30c8.htm
-    public class CurveReference : AbstractReference
+    public class CurveReference : Reference
     {
         internal CurveReference(Autodesk.Revit.DB.Curve curve)
         {

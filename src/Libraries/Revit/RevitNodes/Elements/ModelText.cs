@@ -20,7 +20,7 @@ namespace Revit.Elements
     /// A Revit ModelText Element Point
     /// </summary>
     [RegisterForTrace]
-    public class ModelText : AbstractElement
+    public class ModelText : Element
     {
 
         #region Internal properties

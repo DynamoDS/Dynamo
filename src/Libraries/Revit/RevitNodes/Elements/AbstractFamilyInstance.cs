@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
-using DSNodeServices;
 using RevitServices.Transactions;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
@@ -9,9 +9,9 @@ namespace Revit.Elements
     /// <summary>
     /// An abstract Revit FamilyInstance - implementors include FamilyInstance, AdaptiveComponent, StructuralFraming
     /// </summary>
-    [RegisterForTrace]
-    //[SupressImportIntoVM]
-    public abstract class AbstractFamilyInstance : AbstractElement
+    [DSNodeServices.RegisterForTrace]
+    [IsVisibleInDynamoLibrary(false)]
+    public abstract class AbstractFamilyInstance : Element
     {
 
         #region Internal properties
