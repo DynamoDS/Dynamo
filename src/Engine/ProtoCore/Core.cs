@@ -925,21 +925,6 @@ namespace ProtoCore
         None
     }
 
-    // This class keeps all the constant strings used across ProtoCore (and 
-    // might be beyond). It can really be anywhere, but I am not convinced that 
-    // it belongs in "ProtoCore.DSASM" like the "Constants" structure does.
-    // 
-    public class CoreStrings
-    {
-        public static readonly string SessionTraceDataXmlTag = "SessionTraceData";
-        public static readonly string NodeTraceDataXmlTag = "NodeTraceData";
-        public static readonly string CallsiteTraceDataXmlTag = "CallsiteTraceData";
-        public static readonly string TraceDataXmlTag = "TraceData";
-
-        public static readonly string NodeIdAttribName = "NodeId";
-        public static readonly string TraceDataAttribName = "Data";
-    }
-
     public class Core
     {
         public const int FIRST_CORE_ID = 0;
@@ -1718,6 +1703,161 @@ namespace ProtoCore
             newEntryPoint = ProtoCore.DSASM.Constants.kInvalidIndex;
         }
 
+        #region Trace Data Serialization Methods/Members
+
+        private Dictionary<Guid, List<string>> uiNodeToSerializedDataMap = null;
+
+        /// <summary>
+        /// Call this method to obtain serialized trace data for a list of nodes.
+        /// </summary>
+        /// <param name="nodeGuids">A list of System.Guid of nodes whose 
+        /// serialized trace data is to be retrieved. This parameter cannot be 
+        /// null.</param>
+        /// <returns>Returns a dictionary that maps each node Guid to its 
+        /// corresponding list of serialized callsite trace data.</returns>
+        /// 
+        public IEnumerable<KeyValuePair<Guid, List<string>>>
+            GetTraceDataForNodes(IEnumerable<Guid> nodeGuids)
+        {
+            if (nodeGuids == null)
+                throw new ArgumentNullException("nodeGuids");
+
+            var nodeDataPairs = new Dictionary<Guid, List<string>>();
+
+            if (nodeGuids.Count() <= 0) // Nothing to persist now.
+                return nodeDataPairs;
+
+            // Attempt to get the list of graph node if one exists.
+            IEnumerable<GraphNode> graphNodes = null;
+            {
+                if (this.DSExecutable != null)
+                {
+                    var stream = this.DSExecutable.instrStreamList;
+                    if (stream != null && (stream.Length > 0))
+                    {
+                        var graph = stream[0].dependencyGraph;
+                        if (graph != null)
+                            graphNodes = graph.GraphList;
+                    }
+                }
+
+                if (graphNodes == null) // No execution has taken place.
+                    return nodeDataPairs;
+            }
+
+            foreach (Guid nodeGuid in nodeGuids)
+            {
+                // Get a list of GraphNode objects that correspond to this node.
+                var graphNodeIds = graphNodes.
+                    Where(gn => gn.guid == nodeGuid).
+                    Select(gn => gn.UID);
+
+                if (graphNodeIds.Count() <= 0)
+                    continue;
+
+                // Get all callsites that match the graph node ids.
+                var matchingCallSites = (from cs in CallsiteCache
+                                         from gn in graphNodeIds
+                                         where cs.Key == gn
+                                         select cs.Value);
+
+                // Append each callsite element under node element.
+                var serializedCallsites = new List<string>();
+                foreach (CallSite callSite in matchingCallSites)
+                    serializedCallsites.Add(callSite.GetTraceDataToSave());
+
+                // No point adding serialized callsite data if it's empty.
+                if (serializedCallsites.Count > 0)
+                    nodeDataPairs.Add(nodeGuid, serializedCallsites);
+            }
+
+            return nodeDataPairs;
+        }
+
+        /// <summary>
+        /// Call this method to set the list of serialized trace data, 
+        /// possibly loaded from an external storage.
+        /// </summary>
+        /// <param name="nodeDataPairs">A Dictionary that matches a node Guid 
+        /// to its corresponding list of serialized callsite trace data.</param>
+        /// 
+        public void SetTraceDataForNodes(
+            IEnumerable<KeyValuePair<Guid, List<string>>> nodeDataPairs)
+        {
+            if (nodeDataPairs == null || (nodeDataPairs.Count() <= 0))
+                return; // There is no preloaded trace data.
+
+            if (uiNodeToSerializedDataMap == null)
+                uiNodeToSerializedDataMap = new Dictionary<Guid, List<string>>();
+
+            foreach (var nodeData in nodeDataPairs)
+                uiNodeToSerializedDataMap.Add(nodeData.Key, nodeData.Value);
+        }
+
+        /// <summary>
+        /// Call this method to remove the trace data list for a given UI node. 
+        /// This is required for the scenario where a code block node content is 
+        /// modified before its corresponding callsite objects are reconstructed
+        /// (i.e. before any execution takes place, and after a file-load). 
+        /// Modifications on UI nodes will always result in trace data being 
+        /// reconstructed again.
+        /// </summary>
+        /// <param name="nodeGuid">The System.Guid of the node for which trace 
+        /// data is to be destroyed.</param>
+        /// 
+        public void DestroyLoadedTraceDataForNode(Guid nodeGuid)
+        {
+            // There is preloaded trace data from external file.
+            if (uiNodeToSerializedDataMap != null)
+            {
+                if (uiNodeToSerializedDataMap.Count > 0)
+                    uiNodeToSerializedDataMap.Remove(nodeGuid);
+            }
+        }
+
+        /// <summary>
+        /// Call this method to pop the top-most serialized callsite trace data.
+        /// Note that this call only pops off a signle callsite trace data 
+        /// belonging to a given UI node denoted by the given node guid.
+        /// </summary>
+        /// <param name="nodeGuid">The Guid of a given UI node whose top-most 
+        /// callsite trace data is to be retrieved and removed.</param>
+        /// <returns>Returns the serialized callsite trace data in Base64 encoded
+        /// string for the given UI node.</returns>
+        /// 
+        private string GetAndRemoveTraceDataForNode(System.Guid nodeGuid)
+        {
+            if (uiNodeToSerializedDataMap == null)
+                return null; // There is no preloaded trace data.
+            if (uiNodeToSerializedDataMap.Count <= 0)
+                return null; // There is no preloaded trace data.
+
+            // Get the node element for the given node.
+            List<string> callsiteDataList = null;
+            if (!uiNodeToSerializedDataMap.TryGetValue(nodeGuid, out callsiteDataList))
+                return null;
+
+            // There exists a node element matching the UI node's GUID, get its 
+            // first child callsite element, remove it from the child node list,
+            // and return it to the caller.
+            // 
+            string callsiteTraceData = null;
+            if (callsiteDataList != null && (callsiteDataList.Count > 0))
+            {
+                callsiteTraceData = callsiteDataList[0];
+                callsiteDataList.RemoveAt(0);
+            }
+
+            // On removal of the last callsite trace data, the node entry
+            // itself will be removed from the uiNodeToSerializedDataMap.
+            if (callsiteDataList != null && (callsiteDataList.Count <= 0))
+                uiNodeToSerializedDataMap.Remove(nodeGuid);
+
+            return callsiteTraceData;
+        }
+
+        #endregion // Trace Data Serialization Methods/Members
+
         // The unique subscript for SSA temporaries
         // TODO Jun: Organize these variables in core into proper enums/classes/struct
         public int SSASubscript { get; set; }
@@ -2395,183 +2535,6 @@ namespace ProtoCore
         }
 
         public GraphNode ExecutingGraphnode { get; set; }
-
-        #region Trace Data Serialization Methods/Members
-
-        private Dictionary<Guid, XmlElement> uiNodeToXmlElementMap = null;
-
-        /// <summary>
-        /// Call this method to serialize trace data into a given XmlDocument.
-        /// Note that this only serializes trace data for the nodes specified
-        /// since callsite trace data may not have been removed for nodes that 
-        /// are deleted on the UI.
-        /// </summary>
-        /// <param name="nodeGuids">A list of System.Guid of nodes whose trace 
-        /// data is to be serialized.</param>
-        /// <param name="document">The XmlDocument under which the serialized 
-        /// trace data is to be written to.</param>
-        /// 
-        public void SerializeTraceDataForNodes(
-            IEnumerable<Guid> nodeGuids, XmlDocument document)
-        {
-            if (nodeGuids == null)
-                throw new ArgumentNullException("nodeGuids");
-            if (document == null)
-                throw new ArgumentNullException("document");
-
-            if (nodeGuids.Count() <= 0) // Nothing to persist now.
-                return;
-
-            // Attempt to get the list of graph node if one exists.
-            IEnumerable<GraphNode> graphNodes = null;
-            {
-                if (this.DSExecutable != null)
-                {
-                    var stream = this.DSExecutable.instrStreamList;
-                    if (stream != null && (stream.Length > 0))
-                    {
-                        var graph = stream[0].dependencyGraph;
-                        if (graph != null)
-                            graphNodes = graph.GraphList;
-                    }
-                }
-
-                if (graphNodes == null) // No execution has taken place.
-                    return;
-            }
-
-            // Create a session element under which all nodes go.
-            var sessionXmlElement = document.CreateElement(CoreStrings.SessionTraceDataXmlTag);
-
-            foreach (Guid nodeGuid in nodeGuids)
-            {
-                // Create a node element for this node under the session element.
-                var nodeXmlElement = document.CreateElement(CoreStrings.NodeTraceDataXmlTag);
-                nodeXmlElement.SetAttribute(CoreStrings.NodeIdAttribName, nodeGuid.ToString());
-
-                // Get a list of GraphNode objects that correspond to this node.
-                var graphNodeIds = graphNodes.
-                    Where(gn => gn.guid == nodeGuid).
-                    Select(gn => gn.UID);
-
-                if (graphNodeIds.Count() <= 0)
-                    continue;
-
-                // Get all callsites that match the graph node ids.
-                var matchingCallSites = (from cs in CallsiteCache
-                                         from gn in graphNodeIds
-                                         where cs.Key == gn
-                                         select cs.Value);
-
-                // Append each callsite element under node element.
-                foreach (CallSite callSite in matchingCallSites)
-                    nodeXmlElement.AppendChild(callSite.Serialize(document));
-
-                // No point adding this node element if it's empty.
-                if (nodeXmlElement.ChildNodes.Count > 0)
-                    sessionXmlElement.AppendChild(nodeXmlElement);
-            }
-
-            // No point saving session element if it's empty.
-            if (sessionXmlElement.ChildNodes.Count > 0)
-                document.DocumentElement.AppendChild(sessionXmlElement);
-        }
-
-        /// <summary>
-        /// Call this method to deserialize all trace data stored in the supplied 
-        /// XmlDocument.
-        /// </summary>
-        /// <param name="document">The XmlDocument from which trace data is to be 
-        /// deserialized from. The document may or may not contain any trace data.
-        /// </param>
-        /// 
-        public void DeserializeTraceDataFromXml(XmlDocument document)
-        {
-            XmlElement sessionElement = null;
-            foreach(var childNode in document.DocumentElement.ChildNodes)
-            {
-                XmlNode node = childNode as XmlNode;
-                if (!node.Name.Equals(CoreStrings.SessionTraceDataXmlTag))
-                    continue;
-
-                sessionElement = node as XmlElement;
-                break; // Found our session element.
-            }
-
-            if (sessionElement == null || (sessionElement.ChildNodes.Count <= 0))
-                return; // No session data stored in the xml document.
-
-            foreach (var childNode in sessionElement.ChildNodes)
-            {
-                XmlElement nodeElement = childNode as XmlElement;
-                Guid nodeGuid = Guid.Parse(nodeElement.GetAttribute(
-                    CoreStrings.NodeIdAttribName));
-
-                if (uiNodeToXmlElementMap == null)
-                    uiNodeToXmlElementMap = new Dictionary<Guid, XmlElement>();
-
-                uiNodeToXmlElementMap.Add(nodeGuid, nodeElement);
-            }
-        }
-
-        /// <summary>
-        /// Call this method to remove trace data XmlElement for a given node. 
-        /// This is required for the scenario where a code block node content is 
-        /// modified before its corresponding callsite objects are reconstructed
-        /// (i.e. before any execution takes place, and after a file-load). 
-        /// Modifications on UI nodes will always result in trace data being 
-        /// reconstructed again.
-        /// </summary>
-        /// <param name="nodeGuid">The System.Guid of the node for which trace 
-        /// data is to be destroyed.</param>
-        /// 
-        public void DestroyLoadedTraceDataForNode(Guid nodeGuid)
-        {
-            // There is preloaded trace data from external file.
-            if (uiNodeToXmlElementMap != null && (uiNodeToXmlElementMap.Count > 0))
-                uiNodeToXmlElementMap.Remove(nodeGuid);
-        }
-
-        /// <summary>
-        /// Call this method to pop the top-most callsite XmlElement. Note that 
-        /// this call only pops off the callsite XmlElement belonging to a given
-        /// node XmlElement corresponding to the given node guid.
-        /// </summary>
-        /// <param name="nodeGuid">The Guid of a given UI node whose top-most 
-        /// callsite is to be retrieved and removed.</param>
-        /// <returns>Returns the XmlElement representing the top-most callsite 
-        /// for the given UI node.</returns>
-        /// 
-        private XmlElement GetAndRemoveTraceDataForNode(System.Guid nodeGuid)
-        {
-            if (uiNodeToXmlElementMap == null || (uiNodeToXmlElementMap.Count <= 0))
-                return null; // There is no preloaded trace data from external file.
-
-            // Get the node element for the given node.
-            XmlElement traceDataElement = null;
-            if (!uiNodeToXmlElementMap.TryGetValue(nodeGuid, out traceDataElement))
-                return null;
-
-            // There exists a node element matching the UI node's GUID, get its 
-            // first child callsite element, remove it from the child node list,
-            // and return it to the caller.
-            // 
-            XmlElement callsiteElement = null;
-            if (traceDataElement.HasChildNodes)
-            {
-                callsiteElement = traceDataElement.FirstChild as XmlElement;
-                traceDataElement.RemoveChild(callsiteElement);
-            }
-
-            // On removal of the last child node, the <NodeTraceData> 
-            // itself will be removed from the uiNodeToXmlElementMap.
-            if (traceDataElement.HasChildNodes == false)
-                uiNodeToXmlElementMap.Remove(nodeGuid);
-
-            return callsiteElement;
-        }
-
-        #endregion // Trace Data Serialization Methods/Members
 
         /// <summary>
         /// Retrieves an existing instance of a callsite associated with a UID
