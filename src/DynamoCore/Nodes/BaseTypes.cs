@@ -27,10 +27,10 @@ namespace Dynamo.Nodes
         public const string CORE = "Core";
         public const string CORE_INPUT = "Core.Input";
         public const string CORE_STRINGS = "Core.Strings";
-        public const string CORE_LISTS_CREATE = "Core.Lists.Create";
-        public const string CORE_LISTS_MODIFY = "Core.Lists.Modify";
-        public const string CORE_LISTS_EVALUATE = "Core.Lists.Evaluate";
-        public const string CORE_LISTS_QUERY = "Core.Lists.Query";
+        public const string CORE_LISTS_CREATE = "Core.List.Create";
+        public const string CORE_LISTS_MODIFY = "Core.List.Modify";
+        public const string CORE_LISTS_EVALUATE = "Core.List.Evaluate";
+        public const string CORE_LISTS_QUERY = "Core.List.Query";
         public const string CORE_VIEW = "Core.View";
         public const string CORE_ANNOTATE = "Core.Annotate";
         public const string CORE_EVALUATE = "Core.Evaluate";
@@ -38,7 +38,7 @@ namespace Dynamo.Nodes
         public const string CORE_SCRIPTING = "Core.Scripting";
         public const string CORE_FUNCTIONS = "Core.Functions";
 
-        public const string LOGIC = "Logic";
+        public const string LOGIC = "Core.Logic";
         public const string LOGIC_MATH_ARITHMETIC = "Logic.Math.Arithmetic";
         public const string LOGIC_MATH_ROUNDING = "Logic.Math.Rounding";
         public const string LOGIC_MATH_CONSTANTS = "Logic.Math.Constants";
@@ -47,7 +47,7 @@ namespace Dynamo.Nodes
         public const string LOGIC_MATH_OPTIMIZE = "Logic.Math.Optimize";
         public const string LOGIC_EFFECT = "Logic.Effect";
         public const string LOGIC_COMPARISON = "Logic.Comparison";
-        public const string LOGIC_CONDITIONAL = "Logic.Conditional";
+        public const string LOGIC_CONDITIONAL = "Core.Logic.Conditional";
         public const string LOGIC_LOOP = "Logic.Loop";
 
 
