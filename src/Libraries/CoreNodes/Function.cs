@@ -12,7 +12,8 @@ namespace DSCore
         ///     Returns whatever is passed in.
         /// </summary>
         /// <param name="x">Anything.</param>
-        /// 
+        /// <returns name="x">The same as the input.</returns>
+        /// <search>identity,function</search>
        [IsVisibleInDynamoLibrary(false)] 
         public static object Identity(object x)
         {
