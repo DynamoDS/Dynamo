@@ -144,6 +144,23 @@ namespace Revit.Elements
 
         #region Public properties
 
+        public FamilySymbol Symbol
+        {
+            get
+            {
+                return FamilySymbol.FromExisting(this.InternalFamilyInstance.Symbol, true);
+            }
+        }
+
+        public Point Location
+        {
+            get
+            {
+                var pos = this.InternalFamilyInstance.Location as LocationPoint;
+                return Point.ByCoordinates(pos.Point.X, pos.Point.Y, pos.Point.Z);
+            }
+        }
+
         public Autodesk.DesignScript.Geometry.Curve[] Curves {
             get
             {
@@ -202,22 +219,22 @@ namespace Revit.Elements
         /// <summary>
         /// Place a Revit FamilyInstance given the FamilySymbol (also known as the FamilyType) and it's coordinates in world space
         /// </summary>
-        /// <param name="fs"></param>
-        /// <param name="p"></param>
+        /// <param name="familySymbol"></param>
+        /// <param name="point"></param>
         /// <returns></returns>
-        public static FamilyInstance ByPoint(FamilySymbol fs, Point p)
+        public static FamilyInstance ByPoint(FamilySymbol familySymbol, Point point)
         {
-            if (fs == null)
+            if (familySymbol == null)
             {
                 throw new ArgumentNullException();
             } 
             
-            if (p == null)
+            if (point == null)
             {
                 throw new ArgumentNullException();
             }
 
-            return new FamilyInstance(fs.InternalFamilySymbol, new XYZ(p.X, p.Y, p.Z));
+            return new FamilyInstance(familySymbol.InternalFamilySymbol, new XYZ(point.X, point.Y, point.Z));
         }
 
         /// <summary>
@@ -242,17 +259,17 @@ namespace Revit.Elements
         /// Place a Revit FamilyInstance given the FamilySymbol (also known as the FamilyType), it's coordinates in world space, and the Level
         /// </summary>
         /// <param name="familySymbol"></param>
-        /// <param name="p"></param>
+        /// <param name="point"></param>
         /// <param name="level"></param>
         /// <returns></returns>
-        public static FamilyInstance ByPointAndLevel(FamilySymbol familySymbol, Point p, Level level)
+        public static FamilyInstance ByPointAndLevel(FamilySymbol familySymbol, Point point, Level level)
         {
             if (familySymbol == null)
             {
                 throw new ArgumentNullException("familySymbol");
             }
 
-            return new FamilyInstance(familySymbol.InternalFamilySymbol, p.ToXyz(), level.InternalLevel);
+            return new FamilyInstance(familySymbol.InternalFamilySymbol, point.ToXyz(), level.InternalLevel);
         }
 
         /// <summary>

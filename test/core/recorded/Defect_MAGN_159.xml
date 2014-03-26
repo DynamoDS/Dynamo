@@ -1,4 +1,4 @@
-<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="100" CommandIntervalInMs="20">
   <CreateNodeCommand NodeId="045decd1-7454-4b85-b92e-d59d35f31ab2" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <UpdateModelValueCommand ModelGuid="045decd1-7454-4b85-b92e-d59d35f31ab2" Name="Value" Value="10" />

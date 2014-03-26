@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Revit.Interactivity;
 using Dynamo.Controls;
@@ -15,6 +16,7 @@ using Dynamo.Models;
 using Dynamo.UI;
 using ProtoCore.AST.AssociativeAST;
 using RevitServices.Persistence;
+using Dynamo.Revit.SyncedNodeExtensions;
 
 namespace Dynamo.Nodes
 {
@@ -112,11 +114,22 @@ namespace Dynamo.Nodes
                         return;
 
                     dirty = true;
+                    this.UnregisterEvalOnModified(_selected.Id);
                 }
                 else
                     dirty = value != null;
 
                 _selected = value;
+                if (value != null)
+                {
+                    this.RegisterEvalOnModified(
+                        value.Id,
+                        delAction: delegate
+                        {
+                            _selected = null;
+                            SelectedElement = null;
+                        });
+                }
 
                 if (dirty)
                     RequiresRecalc = true;
@@ -140,6 +153,13 @@ namespace Dynamo.Nodes
             }
         }
 
+        public override bool RequiresReExecute
+        {
+            get
+            {
+                return true;
+            }
+        }
         #region protected constructors
 
         protected DSElementSelection(Func<string, Element> action, string message)
@@ -296,19 +316,7 @@ namespace Dynamo.Nodes
             get { return _selected; }
             set
             {
-                bool dirty;
-
-                if (_selected != null)
-                {
-                    if (value != null && value.ElementId.Equals(_selected.ElementId))
-                        return;
-
-                    dirty = true;
-                }
-                else
-                    dirty = value != null;
-
-                dirty = value != null;
+                bool dirty = value != null;
 
                 _selected = value;
 
@@ -739,9 +747,10 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Analysis Results")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select analysis results from the document.")]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class DSAnalysisResultSelection : DSElementSelection
     {
         public DSAnalysisResultSelection()
@@ -749,7 +758,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Model Element")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a model element from the document.")]
     [IsDesignScriptCompatible]
     public class DSModelElementSelection : DSElementSelection
@@ -758,7 +767,7 @@ namespace Dynamo.Nodes
             : base(SelectionHelper.RequestModelElementSelection, "Select Model Element"){}
     }
 
-    [NodeName("Select Family Instance")]
+    /*[NodeName("Select Family Instance")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Select a family instance from the document.")]
     [IsDesignScriptCompatible]
@@ -781,9 +790,9 @@ namespace Dynamo.Nodes
 
         public DSFamilyInstanceSelection()
             :base (SelectionHelper.RequestFamilyInstanceSelection, "Select a family instance."){}
-    }
+    }*/
 
-    [NodeName("Select Level")]
+    /*[NodeName("Select Level")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Select a level from the document.")]
     [IsDesignScriptCompatible]
@@ -807,9 +816,9 @@ namespace Dynamo.Nodes
 
         public DSLevelSelection()
             :base(SelectionHelper.RequestLevelSelection,"Select a level."){}
-    }
+    }*/
 
-    [NodeName("Select Curve Element")]
+    /*[NodeName("Select Curve Element")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Select a curve element from the document.")]
     [IsDesignScriptCompatible]
@@ -832,9 +841,9 @@ namespace Dynamo.Nodes
 
         public DSCurveElementSelection()
             :base(SelectionHelper.RequestCurveElementSelection, "Select a model or reference curve."){}
-    }
+    }*/
 
-    [NodeName("Select Reference Point")]
+    /*[NodeName("Select Reference Point")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Select a reference point from the document.")]
     [IsDesignScriptCompatible]
@@ -842,10 +851,10 @@ namespace Dynamo.Nodes
     {
         public DSReferencePointSelection()
             :base(SelectionHelper.RequestReferencePointSelection,"Select a reference point."){}
-    }
+    }*/
 
     [NodeName("Select Face")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a face.")]
     [IsDesignScriptCompatible]
     public class DSFaceSelection : DSReferenceSelection
@@ -870,7 +879,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Edge")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select an edge.")]
     [IsDesignScriptCompatible]
     public class DSEdgeSelection : DSReferenceSelection
@@ -895,7 +904,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Point on Face")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a point on a face.")]
     [IsDesignScriptCompatible]
     public class DSPointOnElementSelection : DSReferenceSelection
@@ -970,9 +979,10 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select UV on Face")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a UV on a face.")]
     [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
     public class DSUVOnElementSelection : DSReferenceSelection
     {
         public override string SelectionText
@@ -1029,7 +1039,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Divided Surface Families")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a divided surface and get its family instances.")]
     [IsDesignScriptCompatible]
     public class DSDividedSurfaceFamiliesSelection : DSElementsSelection
@@ -1038,8 +1048,8 @@ namespace Dynamo.Nodes
             :base(SelectionHelper.RequestDividedSurfaceFamilyInstancesSelection, "Select a divided surface."){}
     }
 
-    [NodeName("Select Multiple Elements")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeName("Select Model Elements")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select multiple elements from the Revit document.")]
     [IsDesignScriptCompatible]
     public class DSModelElementsSelection : DSElementsSelection
@@ -1047,7 +1057,7 @@ namespace Dynamo.Nodes
         private static string formatSelectionText(IEnumerable<Element> elements)
         {
             return elements.Any()
-                ? System.String.Join(" ", elements.Select(x => x.Id.ToString()))
+                ? System.String.Join(" ", elements.Take(20).Select(x => x.Id.ToString())) + "..."
                 : "Nothing Selected";
         }
 

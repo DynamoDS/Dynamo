@@ -7,6 +7,34 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
 {
+    class DistinctComparer : IEqualityComparer<object>
+    {
+        internal static IEqualityComparer<object> Instance = new DistinctComparer();
+
+        private static bool Eq(object x, object y)
+        {
+            return object.Equals(x, y);
+        }
+
+        private bool Eq(IList x, IList y)
+        {
+            return x.Cast<object>().Zip(y.Cast<object>(), Equals).All(b => b);
+        }
+
+        public bool Equals(object x, object y)
+        {
+            return Eq(x as dynamic, y as dynamic);
+        }
+
+        public int GetHashCode(object obj)
+        {
+            if (obj is IList)
+                return -1;
+            return obj.GetHashCode();
+        }
+    }
+
+
     /// <summary>
     ///     Methods for creating and manipulating Lists.
     /// </summary>
@@ -20,7 +48,7 @@ namespace DSCore
         /// <search>unique, remove, duplicates</search>
         public static IList UniqueItems(IList list)
         {
-            return list.Cast<object>().Distinct().ToList();
+            return list.Cast<object>().Distinct(DistinctComparer.Instance).ToList();
         }
 
         /// <summary>
@@ -109,7 +137,7 @@ namespace DSCore
         /// <search>sort,order</search>
         public static IList Sort(IList list)
         {
-            return list.Cast<object>().OrderBy(x => x).ToList();
+            return list.Cast<object>().OrderBy(x => x, new ObjectComparer()).ToList();
         }
 
         /// <summary>
@@ -191,6 +219,7 @@ namespace DSCore
         /// <returns name="rest">Rest of the list.</returns>
         /// <search>first,rest</search>
         [MultiReturn(new string[]{"first", "rest"})]
+        [IsVisibleInDynamoLibrary(false)]
         public static IDictionary Deconstruct(IList list)
         {
             return new Dictionary<string, object>
@@ -343,7 +372,7 @@ namespace DSCore
             IList result = new ArrayList();
 
             int _start = start ?? 0;
-            int end = count == null ? list.Count : _start + (int)count;
+            int end = count == null ? list.Count : (int)Math.Min(list.Count, _start + ((int)count)*step);
 
             for (int i = start ?? 0; i < end; i += step)
                 result.Add(list[i]);
@@ -508,13 +537,13 @@ namespace DSCore
         /// <param name="rowLength">Length of each new sub-list.</param>
         /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
         /// <search>diagonal,right,matrix</search>
-        public static IList DiagonalRight(IList list, int subLength)
+        public static IList DiagonalRight([ArbitraryDimensionArrayImport] IList list, int subLength)
         {
             object[] flatList = null;
 
             try
             {
-                flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
+                flatList = list.Cast<ArrayList>().SelectMany(i => i.Cast<object>()).ToArray();
             }
             catch
             {
@@ -558,9 +587,6 @@ namespace DSCore
                 finalList.Add(currList);
             }
 
-            if (currList.Count > 0)
-                finalList.Add(currList);
-
             return finalList;
         }
 
@@ -577,15 +603,15 @@ namespace DSCore
 
             try
             {
-                flatList = list.Cast<IList<object>>().SelectMany(i => i).ToArray();
+                flatList = list.Cast<ArrayList>().SelectMany(i => i.Cast<object>()).ToArray();
             }
-            catch
+            catch(Exception ex)
             {
                 flatList = list.Cast<object>().ToArray();
             }
 
             if (flatList.Count() < rowLength)
-                return list;
+                return ((IList)list);
 
             var finalList = new List<List<object>>();
             List<object> currList = null;
@@ -618,9 +644,6 @@ namespace DSCore
                 }
                 finalList.Add(currList);
             }
-
-            if (currList.Count > 0)
-                finalList.Add(currList);
 
             return finalList;
         }
@@ -665,6 +688,7 @@ namespace DSCore
         /// <param name="amount">The number of times to repeat.</param>
         /// <returns name="list">List of repeated items.</returns>
         /// <search>repeat,repeated,duplicate</search>
+        [IsVisibleInDynamoLibrary(false)]
         public static IList OfRepeatedItem(
             [ArbitraryDimensionArrayImport] object item,
             int amount)
@@ -723,6 +747,7 @@ namespace DSCore
         /// <param name="length">Length of each permutation.</param>
         /// <returns name="perm">Permutations of the list of the given length.</returns>
         /// <search>permutation,permutations</search>
+        [IsVisibleInDynamoLibrary(false)]
         public static IList Permutations(IList list, int? length = null)
         {
             return
@@ -742,6 +767,7 @@ namespace DSCore
         /// </param>
         /// <returns name="comb">Combinations of the list of the given length.</returns>
         /// <search>combination,combinations</search>
+        [IsVisibleInDynamoLibrary(false)]
         public static IList Combinations(IList list, int length, bool replace = false)
         {
             return
@@ -794,6 +820,38 @@ namespace DSCore
 
                 ++i;
             }
+        }
+
+        /// <summary>
+        ///     Flattens a nested list of lists by a certain amount.
+        /// </summary>
+        /// <param name="list">List to flatten.</param>
+        /// <param name="amt">Layers of nesting to remove.</param>
+        public static IList Flatten(IList list, int amt)
+        {
+            return Flatten(list, amt, new List<object>());
+        }
+
+        private static IList Flatten(IList list, int amt, IList acc)
+        {
+            if (amt == 0)
+            {
+                foreach (var item in list)
+                {
+                    acc.Add(item);
+                }
+            }
+            else
+            {
+                foreach (var item in list)
+                {
+                    if(item is IList)
+                        acc = Flatten((IList)item, amt-1, acc);
+                    else
+                        acc.Add(item);                   
+                }
+            }
+            return acc;
         }
 
         #endregion
@@ -1135,5 +1193,55 @@ namespace DSCore
             return initial;
         }
         */
+    }
+
+    /// <summary>
+    /// Implements Compare function for two objects using following rule.
+    /// 1. Numbers are assumed to be smallest, then bool, string and pointers.
+    /// 2. If the two objects are IComparable and of the same type, then use
+    ///    it's native comparison mechanism.
+    /// 3. If both inputs are value type, but one of them is bool, bool is bigger
+    /// 4. Otherwise Convert them all to double and compare.
+    /// 5. Else If only one is value type, then value type object is smaller
+    /// 6. Else If only one is string, then the string is smaller than other
+    /// 7. Else don't know how to compare, so best campare them based on HashCode.
+    /// </summary>
+    class ObjectComparer : IComparer<object>
+    {
+        public int Compare(object x, object y)
+        {
+            Type xType = x.GetType();
+            Type yType = y.GetType();
+
+            //Same type and are comparable, use it's own compareTo method.
+            if (xType == yType && typeof(IComparable).IsAssignableFrom(xType))
+                return ((IComparable)x).CompareTo(y);
+            //Both are value type, can be converted to Double, use double comparison
+            if (xType.IsValueType && yType.IsValueType)
+            {
+                //Bool is bigger than other value type.
+                if (xType == typeof(bool))
+                    return 1;
+                //Other value type is smaller than bool
+                if (yType == typeof(bool))
+                    return -1;
+                return Convert.ToDouble(x).CompareTo(Convert.ToDouble(y));
+            }
+            //Value Type object will be smaller, if x is value type it is smaller
+            if (xType.IsValueType)
+                return -1;
+            //if y is value type x is bigger
+            if (yType.IsValueType)
+                return 1;
+            
+            //Next higher order object is string
+            if (xType == typeof(string))
+                return -1;
+            if (yType == typeof(string))
+                return 1;
+
+            //No idea, return based on hash code.
+            return x.GetHashCode() - y.GetHashCode();
+        }
     }
 }

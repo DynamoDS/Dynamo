@@ -48,6 +48,23 @@ namespace DSCoreNodesTests
                 List.Sort(new ArrayList { 2, 3, 5, 4, 1 }));
         }
 
+        [Test]
+        public static void SortMixedList1()
+        {
+            Assert.AreEqual(
+                new ArrayList { 1, 2, 3.5, 4.002, 5 },
+                List.Sort(new ArrayList { 2, 3.5, 5, 4.002, 1 }));
+        }
+
+        [Test]
+        public static void SortMixedList2()
+        {
+            var obj = new object();
+            Assert.AreEqual(
+                new ArrayList { 1, 2, 3.5, 4.002, 5, false, true, "aaa", "bb", obj },
+                List.Sort(new ArrayList { obj, 2, 3.5, "bb", 5, 4.002, true, 1, false, "aaa" }));
+        }
+
         //[Test]
         //public static void SortListByKey()
         //{
@@ -303,16 +320,16 @@ namespace DSCoreNodesTests
         public static void ListDiagonalRight()
         {
             Assert.AreEqual(
-                new ArrayList
+                new List<List<int>>()
                 {
-                    new ArrayList { 15 }, 
-                    new ArrayList { 10, 16 }, 
-                    new ArrayList { 5, 11, 17, },
-                    new ArrayList { 0, 6, 12, 18 },
-                    new ArrayList { 1, 7, 13, 19 },
-                    new ArrayList { 2, 8, 14 },
-                    new ArrayList { 3, 9 },
-                    new ArrayList { 4 }
+                    new List<int>() { 15 }, 
+                    new List<int>() { 10, 16 }, 
+                    new List<int>() { 5, 11, 17, },
+                    new List<int>() { 0, 6, 12, 18 },
+                    new List<int>() { 1, 7, 13, 19 },
+                    new List<int>(){ 2, 8, 14 },
+                    new List<int>() { 3, 9 },
+                    new List<int>() { 4 }
                 },
                 List.DiagonalRight(Enumerable.Range(0, 20).ToList(), 5));
         }
@@ -321,16 +338,16 @@ namespace DSCoreNodesTests
         public static void ListDiagonalLeft()
         {
             Assert.AreEqual(
-                new ArrayList
+                new List<List<int>>()
                 {
-                    new ArrayList { 0 }, 
-                    new ArrayList { 1, 5 }, 
-                    new ArrayList { 2, 6, 10, },
-                    new ArrayList { 3, 7, 11, 15 },
-                    new ArrayList { 4, 8, 12, 16 },
-                    new ArrayList { 9, 13, 17 },
-                    new ArrayList { 14, 18 },
-                    new ArrayList { 19 }
+                    new List<int>() { 0 }, 
+                    new List<int>() { 1, 5 }, 
+                    new List<int>() { 2, 6, 10, },
+                    new List<int>() { 3, 7, 11, 15 },
+                    new List<int>() { 4, 8, 12, 16 },
+                    new List<int>() { 9, 13, 17 },
+                    new List<int>() { 14, 18 },
+                    new List<int>() { 19 }
                 },
                 List.DiagonalLeft(Enumerable.Range(0, 20).ToList(), 5));
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Revit.GeometryConversion;
 using RevitServices.Persistence;
@@ -8,6 +9,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace Revit.GeometryObjects
 {
+    [IsVisibleInDynamoLibrary(false)]
     public class GeometryObjectSelector
     {
         /// <summary>
@@ -15,7 +17,7 @@ namespace Revit.GeometryObjects
         /// </summary>
         /// <param name="referenceString"></param>
         /// <returns></returns>
-        public static AbstractGeometryObject ByReferenceStableRepresentation(string referenceString)
+        public static GeometryObject ByReferenceStableRepresentation(string referenceString)
         {
             var geob = InternalGetGeometryByStableRepresentation(referenceString);
 
@@ -50,7 +52,7 @@ namespace Revit.GeometryObjects
         /// </summary>
         /// <param name="representation">The Revit-provided stable representation of the reference.</param>
         /// <returns></returns>
-        private static GeometryObject InternalGetGeometryByStableRepresentation(string representation)
+        private static Autodesk.Revit.DB.GeometryObject InternalGetGeometryByStableRepresentation(string representation)
         {
             var geometryReference = Reference.ParseFromStableRepresentation(DocumentManager.Instance.CurrentDBDocument, representation);
             var geob =
@@ -66,7 +68,7 @@ namespace Revit.GeometryObjects
         /// </summary>
         /// <param name="geom"></param>
         /// <returns></returns>
-        public static AbstractGeometryObject WrapGeometryObject(GeometryObject geom)
+        public static GeometryObject WrapGeometryObject(Autodesk.Revit.DB.GeometryObject geom)
         {
             dynamic dynGeom = geom;
             return Convert(dynGeom);

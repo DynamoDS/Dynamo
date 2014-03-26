@@ -11,6 +11,7 @@ using ProtoFFI;
 using Autodesk.DesignScript.Interfaces;
 using ProtoCore.AssociativeGraph;
 using System.Linq;
+using System.Xml;
 
 namespace ProtoCore
 {
@@ -1702,6 +1703,161 @@ namespace ProtoCore
             newEntryPoint = ProtoCore.DSASM.Constants.kInvalidIndex;
         }
 
+        #region Trace Data Serialization Methods/Members
+
+        private Dictionary<Guid, List<string>> uiNodeToSerializedDataMap = null;
+
+        /// <summary>
+        /// Call this method to obtain serialized trace data for a list of nodes.
+        /// </summary>
+        /// <param name="nodeGuids">A list of System.Guid of nodes whose 
+        /// serialized trace data is to be retrieved. This parameter cannot be 
+        /// null.</param>
+        /// <returns>Returns a dictionary that maps each node Guid to its 
+        /// corresponding list of serialized callsite trace data.</returns>
+        /// 
+        public IEnumerable<KeyValuePair<Guid, List<string>>>
+            GetTraceDataForNodes(IEnumerable<Guid> nodeGuids)
+        {
+            if (nodeGuids == null)
+                throw new ArgumentNullException("nodeGuids");
+
+            var nodeDataPairs = new Dictionary<Guid, List<string>>();
+
+            if (nodeGuids.Count() <= 0) // Nothing to persist now.
+                return nodeDataPairs;
+
+            // Attempt to get the list of graph node if one exists.
+            IEnumerable<GraphNode> graphNodes = null;
+            {
+                if (this.DSExecutable != null)
+                {
+                    var stream = this.DSExecutable.instrStreamList;
+                    if (stream != null && (stream.Length > 0))
+                    {
+                        var graph = stream[0].dependencyGraph;
+                        if (graph != null)
+                            graphNodes = graph.GraphList;
+                    }
+                }
+
+                if (graphNodes == null) // No execution has taken place.
+                    return nodeDataPairs;
+            }
+
+            foreach (Guid nodeGuid in nodeGuids)
+            {
+                // Get a list of GraphNode objects that correspond to this node.
+                var graphNodeIds = graphNodes.
+                    Where(gn => gn.guid == nodeGuid).
+                    Select(gn => gn.UID);
+
+                if (graphNodeIds.Count() <= 0)
+                    continue;
+
+                // Get all callsites that match the graph node ids.
+                var matchingCallSites = (from cs in CallsiteCache
+                                         from gn in graphNodeIds
+                                         where cs.Key == gn
+                                         select cs.Value);
+
+                // Append each callsite element under node element.
+                var serializedCallsites = new List<string>();
+                foreach (CallSite callSite in matchingCallSites)
+                    serializedCallsites.Add(callSite.GetTraceDataToSave());
+
+                // No point adding serialized callsite data if it's empty.
+                if (serializedCallsites.Count > 0)
+                    nodeDataPairs.Add(nodeGuid, serializedCallsites);
+            }
+
+            return nodeDataPairs;
+        }
+
+        /// <summary>
+        /// Call this method to set the list of serialized trace data, 
+        /// possibly loaded from an external storage.
+        /// </summary>
+        /// <param name="nodeDataPairs">A Dictionary that matches a node Guid 
+        /// to its corresponding list of serialized callsite trace data.</param>
+        /// 
+        public void SetTraceDataForNodes(
+            IEnumerable<KeyValuePair<Guid, List<string>>> nodeDataPairs)
+        {
+            if (nodeDataPairs == null || (nodeDataPairs.Count() <= 0))
+                return; // There is no preloaded trace data.
+
+            if (uiNodeToSerializedDataMap == null)
+                uiNodeToSerializedDataMap = new Dictionary<Guid, List<string>>();
+
+            foreach (var nodeData in nodeDataPairs)
+                uiNodeToSerializedDataMap.Add(nodeData.Key, nodeData.Value);
+        }
+
+        /// <summary>
+        /// Call this method to remove the trace data list for a given UI node. 
+        /// This is required for the scenario where a code block node content is 
+        /// modified before its corresponding callsite objects are reconstructed
+        /// (i.e. before any execution takes place, and after a file-load). 
+        /// Modifications on UI nodes will always result in trace data being 
+        /// reconstructed again.
+        /// </summary>
+        /// <param name="nodeGuid">The System.Guid of the node for which trace 
+        /// data is to be destroyed.</param>
+        /// 
+        public void DestroyLoadedTraceDataForNode(Guid nodeGuid)
+        {
+            // There is preloaded trace data from external file.
+            if (uiNodeToSerializedDataMap != null)
+            {
+                if (uiNodeToSerializedDataMap.Count > 0)
+                    uiNodeToSerializedDataMap.Remove(nodeGuid);
+            }
+        }
+
+        /// <summary>
+        /// Call this method to pop the top-most serialized callsite trace data.
+        /// Note that this call only pops off a signle callsite trace data 
+        /// belonging to a given UI node denoted by the given node guid.
+        /// </summary>
+        /// <param name="nodeGuid">The Guid of a given UI node whose top-most 
+        /// callsite trace data is to be retrieved and removed.</param>
+        /// <returns>Returns the serialized callsite trace data in Base64 encoded
+        /// string for the given UI node.</returns>
+        /// 
+        private string GetAndRemoveTraceDataForNode(System.Guid nodeGuid)
+        {
+            if (uiNodeToSerializedDataMap == null)
+                return null; // There is no preloaded trace data.
+            if (uiNodeToSerializedDataMap.Count <= 0)
+                return null; // There is no preloaded trace data.
+
+            // Get the node element for the given node.
+            List<string> callsiteDataList = null;
+            if (!uiNodeToSerializedDataMap.TryGetValue(nodeGuid, out callsiteDataList))
+                return null;
+
+            // There exists a node element matching the UI node's GUID, get its 
+            // first child callsite element, remove it from the child node list,
+            // and return it to the caller.
+            // 
+            string callsiteTraceData = null;
+            if (callsiteDataList != null && (callsiteDataList.Count > 0))
+            {
+                callsiteTraceData = callsiteDataList[0];
+                callsiteDataList.RemoveAt(0);
+            }
+
+            // On removal of the last callsite trace data, the node entry
+            // itself will be removed from the uiNodeToSerializedDataMap.
+            if (callsiteDataList != null && (callsiteDataList.Count <= 0))
+                uiNodeToSerializedDataMap.Remove(nodeGuid);
+
+            return callsiteTraceData;
+        }
+
+        #endregion // Trace Data Serialization Methods/Members
+
         // The unique subscript for SSA temporaries
         // TODO Jun: Organize these variables in core into proper enums/classes/struct
         public int SSASubscript { get; set; }
@@ -2413,10 +2569,14 @@ namespace ProtoCore
             }
             else if (!CallsiteCache.TryGetValue(graphNode.UID, out csInstance))
             {
+                // Attempt to retrieve a preloaded callsite data (optional).
+                var traceData = GetAndRemoveTraceDataForNode(graphNode.guid);
+
                 csInstance = new CallSite(classScope,
                                           methodName,
                                           FunctionTable,
-                                          Options.ExecutionMode);
+                                          Options.ExecutionMode,
+                                          traceData);
 
                 CallsiteCache.Add(graphNode.UID, csInstance);
                 CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
@@ -2426,7 +2586,8 @@ namespace ProtoCore
 
             if (graphNode != null && Options.IsDeltaExecution && !CoreUtils.IsDisposeMethod(methodName))
             {
-                this.RuntimeStatus.ClearWarningForExpression(graphNode.exprUID);
+                csInstance.UpdateCallSite(classScope, methodName);
+                this.RuntimeStatus.ClearWarningForExpression(graphNode.exprUID);                
             }
                 
             return csInstance;

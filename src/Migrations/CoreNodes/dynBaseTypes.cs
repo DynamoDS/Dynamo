@@ -914,6 +914,10 @@ namespace Dynamo.Nodes
             MigrationManager.SetFunctionSignature(dsCoreNode, "DSCoreNodes.dll",
                 "List.TakeEveryNthItem", "List.TakeEveryNthItem@var[]..[],int,int");
 
+            foreach (XmlNode child in oldNode.ChildNodes)
+            {
+                dsCoreNode.AppendChild(child.CloneNode(true));
+            }
             migratedData.AppendNode(dsCoreNode);
             string dsCoreNodeId = MigrationManager.GetGuidFromXmlElement(dsCoreNode);
 
@@ -1116,8 +1120,16 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Repeat",
-                "List.Repeat@var[]..[],int");
+            XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
+            var element = MigrationManager.CreateFunctionNodeFrom(xmlNode);
+            element.SetAttribute("assembly", "DSCoreNodes.dll");
+            element.SetAttribute("nickname", "List.OfRepeatedItem");
+            element.SetAttribute("function", "List.OfRepeatedItem@var[]..[],int");
+            element.SetAttribute("lacing", "Shortest");
+
+            var migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(element);
+            return migrationData;
         }
     }
 
@@ -1132,6 +1144,11 @@ namespace Dynamo.Nodes
 
     public class FlattenListAmt : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Flatten", "List.Flatten@var[]..[],int");
+        }
     }
 
     public class LessThan : MigrationNode
@@ -2245,7 +2262,7 @@ namespace Dynamo.Nodes
                         select attr;
 
             foreach (XmlAttribute attr in query)
-                attr.Value = HttpUtility.HtmlEncode(HttpUtility.UrlDecode(attr.Value));
+                attr.Value = HttpUtility.UrlDecode(attr.Value);
 
             migrationData.AppendNode(newNode as XmlElement);
             return migrationData;

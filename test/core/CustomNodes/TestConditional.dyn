@@ -1,0 +1,37 @@
+<Workspace Version="0.7.0.41158" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="77749d1f-9a52-40fd-8b01-fe5d03f452e2" nickname="testconditional" x="265" y="283.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="779de093-3dd6-422c-8dff-28e7fb508321" />
+      <Name value="testconditional" />
+      <Description value="" />
+      <Inputs>
+        <Input value="a" />
+      </Inputs>
+      <Outputs>
+        <Output value="c" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="6c5c3ba8-08ea-411e-aa47-755077125ef5" nickname="Code Block" x="125" y="299" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="-1;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="ec2e79de-35ed-44ad-9dea-4bedc526c612" nickname="Code Block" x="417" y="289" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="test1;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="a4cdf5fb-6b37-4381-a104-a674b1a39316" nickname="Code Block" x="133" y="477" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="bcebd1ef-d420-4c2d-9584-c2b35b40a648" nickname="testconditional" x="273" y="461.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="779de093-3dd6-422c-8dff-28e7fb508321" />
+      <Name value="testconditional" />
+      <Description value="" />
+      <Inputs>
+        <Input value="a" />
+      </Inputs>
+      <Outputs>
+        <Output value="c" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="7be13594-8d09-4377-98aa-d3cf1c716288" nickname="Code Block" x="425" y="467" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="test2;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="77749d1f-9a52-40fd-8b01-fe5d03f452e2" start_index="0" end="ec2e79de-35ed-44ad-9dea-4bedc526c612" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6c5c3ba8-08ea-411e-aa47-755077125ef5" start_index="0" end="77749d1f-9a52-40fd-8b01-fe5d03f452e2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a4cdf5fb-6b37-4381-a104-a674b1a39316" start_index="0" end="bcebd1ef-d420-4c2d-9584-c2b35b40a648" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bcebd1ef-d420-4c2d-9584-c2b35b40a648" start_index="0" end="7be13594-8d09-4377-98aa-d3cf1c716288" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

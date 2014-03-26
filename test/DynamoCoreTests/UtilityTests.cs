@@ -267,6 +267,127 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void SaveTraceDataToXmlDocument00()
+        {
+            XmlDocument document = new XmlDocument();
+            var data = new Dictionary<Guid, List<string>>();
+
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Test XmlDocument being null.
+                DynNodes.Utilities.SaveTraceDataToXmlDocument(null, data);
+            });
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                // Test valid XmlDocument without document element.
+                DynNodes.Utilities.SaveTraceDataToXmlDocument(document, data);
+            });
+
+            document.AppendChild(document.CreateElement("RootElement"));
+
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Test Dictionary being null.
+                DynNodes.Utilities.SaveTraceDataToXmlDocument(document, null);
+            });
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                // Test valid Dictionary without any entry.
+                DynNodes.Utilities.SaveTraceDataToXmlDocument(document, data);
+            });
+        }
+
+        [Test]
+        public void SaveTraceDataToXmlDocument01()
+        {
+            // Create a valid XmlDocument object.
+            XmlDocument document = new XmlDocument();
+            document.AppendChild(document.CreateElement("RootElement"));
+
+            var nodeGuid0 = Guid.NewGuid();
+            var nodeGuid1 = Guid.NewGuid();
+
+            var nodeData0 = new List<string>()
+            {
+                "TraceData00", "TraceData01", "TraceData02"
+            };
+
+            var nodeData1 = new List<string>()
+            {
+                "TraceData10", "TraceData11", "TraceData12"
+            };
+
+            // Create sample data.
+            var data = new Dictionary<Guid, List<string>>();
+            data.Add(nodeGuid0, nodeData0);
+            data.Add(nodeGuid1, nodeData1);
+
+            IEnumerable<KeyValuePair<Guid, List<string>>> outputs = null;
+
+            Assert.DoesNotThrow(() =>
+            {
+                DynNodes.Utilities.SaveTraceDataToXmlDocument(document, data);
+                outputs = DynNodes.Utilities.LoadTraceDataFromXmlDocument(document);
+            });
+
+            Assert.NotNull(outputs);
+            Assert.AreEqual(2, outputs.Count());
+            Assert.AreEqual(nodeGuid0, outputs.ElementAt(0).Key);
+            Assert.AreEqual(nodeGuid1, outputs.ElementAt(1).Key);
+
+            var outputData0 = outputs.ElementAt(0).Value;
+            var outputData1 = outputs.ElementAt(1).Value;
+
+            Assert.IsNotNull(outputData0);
+            Assert.IsNotNull(outputData1);
+            Assert.AreEqual(3, outputData0.Count);
+            Assert.AreEqual(3, outputData1.Count);
+
+            Assert.AreEqual("TraceData00", outputData0[0]);
+            Assert.AreEqual("TraceData01", outputData0[1]);
+            Assert.AreEqual("TraceData02", outputData0[2]);
+
+            Assert.AreEqual("TraceData10", outputData1[0]);
+            Assert.AreEqual("TraceData11", outputData1[1]);
+            Assert.AreEqual("TraceData12", outputData1[2]);
+        }
+
+        [Test]
+        public void LoadTraceDataFromXmlDocument00()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Test method call without a valid XmlDocument.
+                DynNodes.Utilities.LoadTraceDataFromXmlDocument(null);
+            });
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                // Test XmlDocument without a document element.
+                XmlDocument document = new XmlDocument();
+                DynNodes.Utilities.LoadTraceDataFromXmlDocument(document);
+            });
+        }
+
+        [Test]
+        public void LoadTraceDataFromXmlDocument01()
+        {
+            IEnumerable<KeyValuePair<Guid, List<string>>> outputs = null;
+
+            Assert.DoesNotThrow(() =>
+            {
+                XmlDocument document = new XmlDocument();
+                document.AppendChild(document.CreateElement("RootElement"));
+                outputs = DynNodes.Utilities.LoadTraceDataFromXmlDocument(document);
+            });
+
+            Assert.IsNotNull(outputs);
+            Assert.AreEqual(0, outputs.Count());
+        }
+
+        [Test]
         public void MakeRelativePath00()
         {
             Assert.Throws<ArgumentNullException>(() =>

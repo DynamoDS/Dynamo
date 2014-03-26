@@ -13,7 +13,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace Revit.Elements
 {
     [RegisterForTrace]
-    public class Topography : AbstractElement
+    public class Topography : Element
     {
         #region internal properties
 

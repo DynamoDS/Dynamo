@@ -2,19 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
-using DSNodeServices;
+using Revit.Elements.Views;
 using Revit.GeometryConversion;
 using Revit.Elements;
 using RevitServices.Transactions;
+using View = Revit.Elements.Views.View;
 
 namespace Revit.AnalysisDisplay
 {
     /// <summary>
     /// A Revit Point Analysis Display 
     /// </summary>
-    [RegisterForTrace]
+    [IsVisibleInDynamoLibrary(false)]
+    [DSNodeServices.RegisterForTrace]
     public class PointAnalysisDisplay : AbstractAnalysisDisplay
     {
 
@@ -108,7 +111,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="samplePoints"></param>
         /// <param name="samples"></param>
         /// <returns></returns>
-        public static PointAnalysisDisplay ByViewPointsAndValues(AbstractView view,
+        public static PointAnalysisDisplay ByViewPointsAndValues(View view,
                         Autodesk.DesignScript.Geometry.Point[] samplePoints, double[] samples)
         {
 

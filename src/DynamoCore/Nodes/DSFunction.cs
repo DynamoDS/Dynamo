@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Web.UI.WebControls;
 using System.Xml;
@@ -9,6 +10,7 @@ using Dynamo.Utilities;
 using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
+using Autodesk.DesignScript.Runtime;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 
 namespace Dynamo.Nodes
@@ -31,7 +33,7 @@ namespace Dynamo.Nodes
     [NodeName("Function Node")]
     [NodeDescription("DesignScript Builtin Functions")]
     [IsInteractive(false)]
-    [NodeHiddenInBrowser]
+    [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
     public class DSFunction : NodeModel
@@ -221,26 +223,19 @@ namespace Dynamo.Nodes
             helper.SetAttribute("name", Definition.MangledName);
         }
 
-        private List<AssociativeNode> GetConnectedInputs()
+        private IEnumerable<int> GetConnectedInputs()
         {
-            return Enumerable.Range(0, InPortData.Count)
-                             .Where(HasConnectedInput)
-                             .Select(x => new IntNode(x) as AssociativeNode)
-                             .ToList();
+            return Enumerable.Range(0, InPortData.Count).Where(HasConnectedInput);
         }
 
         private AssociativeNode CreateFunctionObject(AssociativeNode functionNode, 
                                                      List<AssociativeNode> inputs)
         {
-            var paramNumNode = new IntNode(Definition.Parameters.Count());
-            var positionNode = AstFactory.BuildExprList(GetConnectedInputs());
-            var arguments = AstFactory.BuildExprList(inputs);
-            var inputParams = new List<AssociativeNode>() { functionNode, 
-                                                            paramNumNode, 
-                                                            positionNode,
-                                                            arguments };
-
-            return AstFactory.BuildFunctionCall("_SingleFunctionObject", inputParams);
+            return AstFactory.BuildFunctionObject(
+                functionNode,
+                Definition.Parameters.Count(),
+                GetConnectedInputs(),
+                inputs);
         }
 
         /// <summary>
@@ -252,12 +247,31 @@ namespace Dynamo.Nodes
         private void AppendReplicationGuides(List<AssociativeNode> inputs)
         {
             if (inputs == null || !inputs.Any())
-            {
                 return;
-            }
 
             switch (ArgumentLacing)
             {
+                case LacingStrategy.Longest:
+
+                    for (int i = 0; i < inputs.Count(); ++i)
+                    {
+                        if (inputs[i] is ArrayNameNode)
+                        {
+                            var astNode = NodeUtils.Clone(inputs[i]) as ArrayNameNode;
+                            astNode.ReplicationGuides = new List<AssociativeNode>();
+
+                            var guideNode = new ReplicationGuideNode
+                            {
+                                RepGuide = AstFactory.BuildIdentifier("1"),
+                                IsLongest = true
+                            };
+
+                            astNode.ReplicationGuides.Add(guideNode);
+                            inputs[i] = astNode;
+                        }
+                    }
+                    break;
+
                 case LacingStrategy.CrossProduct:
 
                     int guide = 1;
@@ -448,7 +462,7 @@ namespace Dynamo.Nodes
     [NodeName("Function Node w/ VarArgs")]
     [NodeDescription("DesignScript Builtin Functions")]
     [IsInteractive(false)]
-    [NodeHiddenInBrowser]
+    [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
     public class DSVarArgFunction : VariableInputNode

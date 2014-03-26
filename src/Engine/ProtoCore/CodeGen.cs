@@ -2698,7 +2698,7 @@ namespace ProtoCore
 
                 if (node is ProtoCore.AST.AssociativeAST.IdentifierListNode)
                 {
-                    if ((node as ProtoCore.AST.AssociativeAST.IdentifierListNode).isLastSSAIdentListFactor)
+                    if ((node as ProtoCore.AST.AssociativeAST.IdentifierListNode).IsLastSSAIdentListFactor)
                     {
                         Validity.Assert(null != ssaPointerList);
                         ssaPointerList.Clear();

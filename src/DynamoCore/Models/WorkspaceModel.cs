@@ -14,6 +14,7 @@ using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Utils = Dynamo.Nodes.Utilities;
 using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Models
@@ -308,6 +309,42 @@ namespace Dynamo.Models
         public UndoRedoRecorder UndoRecorder
         {
             get { return undoRecorder; }
+        }
+
+        /// <summary>
+        /// This does not belong here, period. It is here simply because there is 
+        /// currently no better place to put it. A DYN file is loaded by DynamoModel,
+        /// subsequently populating WorkspaceModel, along the way, the trace data 
+        /// gets preloaded with the file. The best place for this cached data is in 
+        /// the EngineController (or even LiveRunner), but the engine gets reset in 
+        /// a rather nondeterministic way (for example, when Revit idle thread 
+        /// decides it is time to execute a pre-scheduled engine reset). And it gets 
+        /// done more than once during file open. So that's out. The second best 
+        /// place to store this information is then the WorkspaceModel, where file 
+        /// loading is SUPPOSED TO BE done. As of now we let DynamoModel sets the 
+        /// loaded data (since it deals with loading DYN file), but in near future,
+        /// the file loading mechanism will be completely moved into WorkspaceModel,
+        /// that's the time we removed this property setter below.
+        /// </summary>
+        private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData = null;
+
+        internal IEnumerable<KeyValuePair<Guid, List<string>>> PreloadedTraceData
+        {
+            get
+            {
+                return this.preloadedTraceData;
+            }
+
+            set
+            {
+                if (value != null && (this.preloadedTraceData != null))
+                {
+                    var message = "PreloadedTraceData cannot be set twice";
+                    throw new InvalidOperationException(message);
+                }
+
+                this.preloadedTraceData = value;
+            }
         }
 
         #endregion
@@ -769,6 +806,8 @@ namespace Dynamo.Models
             if (!this.PopulateXmlDocument(document))
                 return false;
 
+            this.SerializeSessionData(document);
+
             try
             {
                 Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, string.Empty);
@@ -864,6 +903,50 @@ namespace Dynamo.Models
             {
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 return false;
+            }
+        }
+
+        // TODO(Ben): Documentation to come before pull request.
+        protected virtual void SerializeSessionData(XmlDocument document)
+        {
+            if (document.DocumentElement == null)
+            {
+                var message = "Workspace should have been saved before this";
+                throw new InvalidOperationException(message);
+            }
+
+            try
+            {
+                ProtoCore.Core core = null;
+                if (dynSettings.Controller != null)
+                {
+                    var engine = dynSettings.Controller.EngineController;
+                    if (engine != null && (engine.LiveRunnerCore != null))
+                        core = engine.LiveRunnerCore;
+                }
+
+                if (core == null) // No execution yet as of this point.
+                    return;
+
+                // Selecting all nodes that are either a DSFunction,
+                // a DSVarArgFunction or a CodeBlockNodeModel into a list.
+                var nodeGuids = this.Nodes.Where((n) =>
+                {
+                    return (n is DSFunction 
+                        || (n is DSVarArgFunction)
+                        || (n is CodeBlockNodeModel));
+
+                }).Select((n) => n.GUID);
+
+                var nodeTraceDataList = core.GetTraceDataForNodes(nodeGuids);
+                Utils.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
+            }
+            catch (Exception exception)
+            {
+                // We'd prefer file saving process to not crash Dynamo,
+                // otherwise user will lose the last hope in retaining data.
+                DynamoLogger.Instance.Log(exception.Message);
+                DynamoLogger.Instance.Log(exception.StackTrace);
             }
         }
 

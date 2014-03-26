@@ -1,3 +1,5 @@
+#define __NO_SAMPLES_MENU
+
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -191,8 +193,10 @@ namespace Dynamo.Controls
             DynamoLogger.Instance.Log(String.Format("{0} elapsed for loading Dynamo main window.",
                                                                      _timer.Elapsed));
             InitializeShortcutBar();
-            LoadSamplesMenu();
 
+#if !__NO_SAMPLES_MENU
+            LoadSamplesMenu();
+#endif
             #region Search initialization
 
             var search = new SearchView { DataContext = dynSettings.Controller.SearchViewModel };
@@ -214,6 +218,7 @@ namespace Dynamo.Controls
             _vm.SidebarClosed += _vm_SidebarClosed;
 
             dynSettings.Controller.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
+            dynSettings.Controller.RequestTaskDialog += Controller_RequestTaskDialog;
 
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
 
@@ -354,6 +359,12 @@ namespace Dynamo.Controls
         {
             var prompt = new CrashPrompt(args);
             prompt.ShowDialog();
+        }
+
+        void Controller_RequestTaskDialog(object sender, UI.Prompts.TaskDialogEventArgs e)
+        {
+            var taskDialog = new Dynamo.UI.Prompts.GenericTaskDialog(e);
+            taskDialog.ShowDialog();
         }
 
         //void PackageManagerClient_RequestSetLoginState(object sender, LoginStateEventArgs e)
@@ -591,6 +602,7 @@ namespace Dynamo.Controls
             LogScroller.ScrollToBottom();
         }
 
+#if !__NO_SAMPLES_MENU
         /// <summary>
         ///     Setup the "Samples" sub-menu with contents of samples directory.
         /// </summary>
@@ -652,6 +664,7 @@ namespace Dynamo.Controls
             }
             //this.fileMenu.Items.Remove(this.samplesMenu);
         }
+#endif
 
         /// <summary>
         ///     Callback for opening a sample.

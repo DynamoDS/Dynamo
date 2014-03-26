@@ -246,11 +246,6 @@ namespace Dynamo.Nodes
 
     public class XyzAdd : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
-        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
-        {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.Scale", "Vector.Scale@double");
-        }
     }
 
     public class XyzSubtract : MigrationNode
@@ -393,7 +388,7 @@ namespace Dynamo.Nodes
             string translateNodeId = MigrationManager.GetGuidFromXmlElement(translateNode);
 
             XmlElement distanceToNode = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "Geometry.DistanceTo", "DistanceTo@Geometry");
+                data.Document, "ProtoGeometry.dll", "Geometry.DistanceTo", "Geometry.DistanceTo@Geometry");
             migratedData.AppendNode(distanceToNode);
             string distanceToNodeId = MigrationManager.GetGuidFromXmlElement(distanceToNode);
 
