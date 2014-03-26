@@ -39,7 +39,7 @@ Name: "custom"; Description: "Custom installation"; Flags: iscustom
 
 [Dirs]
 Name: "{app}\definitions"
-;Name: "{app}\samples"
+Name: "{app}\samples"
 Name: "{app}\dll"
 Name: "{app}\nodes"
 
@@ -63,7 +63,8 @@ Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
 Source: temp\bin\LibG\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\InstallASMForDynamo.exe; DestDir:{app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 
-
+;Samples
+Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
 
 [UninstallDelete]
