@@ -854,65 +854,6 @@ namespace DSCore
             return acc;
         }
 
-        /// <summary>
-        ///     Create a sequence of numbers in the specified range.
-        /// </summary>
-        /// <param name="start">Number to start the sequence at</param>
-        /// <param name="end">Number to end the sequence at</param>
-        /// <param name="step">Space between numbers</param>
-        public static IList NumberRange(double start, double end, double step)
-        {
-            if(step.Equals(0))
-            {
-                throw new Exception("the \"step\" cannot be zero");
-            }
-
-            List<object> list = new List<object>();
-            if (start.Equals(end))
-            {
-                list.Add(start);
-            }
-
-            else if (start < end && step>0)
-            {
-                while (start <= end)
-                {
-                    list.Add(start);
-                    start += step;
-                }
-            }
-
-            else if (start > end && step<0)
-            {
-                while (start >= end)
-                {
-                    list.Add(start);
-                    start += step;
-                }
-            }
-
-            return list;
-        }
-
-        /// <summary>
-        ///     Create a sequence of numbers.
-        /// </summary>
-        /// <param name="start">Number to start the sequence at</param>
-        /// <param name="amount">Amount of numbers in the sequence</param>
-        /// <param name="step">Space between numbers</param>
-        public static IList NumberSequence(double start, double amount, double step)
-        {
-            List<object> list = new List<object>();
-            int intamount = (int) System.Math.Floor(amount);
-            while (amount>0)
-            {               
-                list.Add(start);
-                start += step;
-                amount--;
-            }
-            return list;
-        }
-
         #endregion
 
         /* Disabled Higher-order functions
