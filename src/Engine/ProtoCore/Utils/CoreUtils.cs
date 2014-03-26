@@ -45,6 +45,7 @@ namespace ProtoCore.Utils
         fDef.IsBuiltIn = true;
         fDef.BuiltInMethodId = method.ID;
         fDef.Signature = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
+        fDef.MethodAttributes = method.MethodAttributes;
 
         foreach (KeyValuePair<string, ProtoCore.Type> param in method.Parameters)
         {
