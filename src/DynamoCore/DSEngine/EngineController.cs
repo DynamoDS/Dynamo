@@ -260,6 +260,23 @@ namespace Dynamo.DSEngine
             GraphSyncData data = syncDataManager.GetSyncData();
             syncDataManager.ResetStates();
 
+            var reExecuteNodesIds = controller.DynamoViewModel.Model.HomeSpace.Nodes
+                                                                    .Where(n => n.RequiresReExecute)
+                                                                    .Select(n => n.GUID);
+            if (reExecuteNodesIds.Any() && data.ModifiedSubtrees != null)
+            {
+                for (int i = 0; i < data.ModifiedSubtrees.Count; ++i)
+                {
+                    var st = data.ModifiedSubtrees[i];
+                    if (reExecuteNodesIds.Contains(st.GUID))
+                    {
+                        Subtree newSt = new Subtree(st.AstNodes, st.GUID);
+                        newSt.ForceExecution = true;
+                        data.ModifiedSubtrees[i] = newSt;
+                    }
+                }
+            }
+
             if ((data.AddedSubtrees != null && data.AddedSubtrees.Count > 0) ||
                 (data.ModifiedSubtrees != null && data.ModifiedSubtrees.Count > 0) ||
                 (data.DeletedSubtrees != null && data.DeletedSubtrees.Count > 0))
@@ -314,7 +331,7 @@ namespace Dynamo.DSEngine
 
             foreach (var node in warningNodes)
             {
-                node.State = ElementState.Active;
+                node.ClearError();
             }
         }
 

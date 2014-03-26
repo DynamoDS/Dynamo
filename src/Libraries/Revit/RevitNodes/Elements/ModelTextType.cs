@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Runtime;
 using RevitServices.Persistence;
 
 namespace Revit.Elements
@@ -9,7 +10,7 @@ namespace Revit.Elements
     /// <summary>
     /// A Revit ModelTextType
     /// </summary>
-    public class ModelTextType : AbstractElement
+    public class ModelTextType : Element
     {
         #region Internal properties
 
@@ -98,7 +99,7 @@ namespace Revit.Elements
         /// <param name="modelTextType"></param>
         /// <param name="isRevitOwned"></param>
         /// <returns></returns>
-        public static ModelTextType FromExisting(Autodesk.Revit.DB.ModelTextType modelTextType, bool isRevitOwned)
+        internal static ModelTextType FromExisting(Autodesk.Revit.DB.ModelTextType modelTextType, bool isRevitOwned)
         {
             return new ModelTextType(modelTextType)
             {

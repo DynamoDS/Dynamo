@@ -5,9 +5,11 @@ using System.Text;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
+using Revit.Elements.Views;
 using Revit.GeometryConversion;
 using Revit.Elements;
 using RevitServices.Transactions;
+using View = Revit.Elements.Views.View;
 
 namespace Revit.AnalysisDisplay
 {
@@ -107,7 +109,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="samplePoints"></param>
         /// <param name="samples"></param>
         /// <returns></returns>
-        public static VectorAnalysisDisplay ByViewPointsAndVectorValues(AbstractView view,
+        public static VectorAnalysisDisplay ByViewPointsAndVectorValues(View view,
                         Autodesk.DesignScript.Geometry.Point[] samplePoints, Autodesk.DesignScript.Geometry.Vector[] samples)
         {
 

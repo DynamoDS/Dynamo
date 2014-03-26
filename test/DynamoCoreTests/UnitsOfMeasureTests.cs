@@ -600,29 +600,23 @@ namespace Dynamo.Tests
         }
     }
 
-    internal class UnitsOfMeasureDynTests : DynamoUnitTest
+    internal class UnitsOfMeasureDynTests : DSEvaluationUnitTest
     {
         [Test]
-        [Category("Failing")]
         public void CanMapOverUnits()
         {
-            Assert.Inconclusive("Nodes Deprecated - Length,Area, Volume from Number");
-
             var length = Enumerable.Range(1, 5).Select(x => new Length(x)).ToList();
             var area = Enumerable.Range(1, 5).Select(x => new Area(x)).ToList();
             var volume = Enumerable.Range(1, 5).Select(x => new Volume(x)).ToList();
 
-            RunExampleTest(
-                Path.Combine(GetTestDirectory(), @"core\units\map-numbers-to-units.dyn"),
-                new[]
-                {
-                    new KeyValuePair<Guid, object>(Guid.Parse("8d46007e-e6d3-4848-8213-7c2ac3c5624d"), length),
-                    new KeyValuePair<Guid, object>(Guid.Parse("b22c8a19-04dc-473e-a3b8-d0071175ce53"), area), 
-                    new KeyValuePair<Guid, object>(Guid.Parse("92accc0a-4380-4c60-92e7-7f735cecbb6b"), volume),
-                    new KeyValuePair<Guid, object>(Guid.Parse("97fdd4df-e9dd-4f7f-9494-b2adabfdbdeb"), length), 
-                    new KeyValuePair<Guid, object>(Guid.Parse("4e830faa-d358-4086-ba4c-9b7e70f96681"), area), 
-                    new KeyValuePair<Guid, object>(Guid.Parse("e6ae471f-9cd8-4cbb-bb83-ecdf1785c35f"), volume)
-                });
+            RunModel(@"core\units\map-numbers-to-units.dyn");
+
+            AssertPreviewValue("8d46007e-e6d3-4848-8213-7c2ac3c5624d", length);
+            AssertPreviewValue("b22c8a19-04dc-473e-a3b8-d0071175ce53", area);
+            AssertPreviewValue("92accc0a-4380-4c60-92e7-7f735cecbb6b", volume);
+            AssertPreviewValue("97fdd4df-e9dd-4f7f-9494-b2adabfdbdeb", length);
+            AssertPreviewValue("4e830faa-d358-4086-ba4c-9b7e70f96681", area);
+            AssertPreviewValue("e6ae471f-9cd8-4cbb-bb83-ecdf1785c35f", volume);
         }
     }
 }

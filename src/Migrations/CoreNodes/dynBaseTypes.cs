@@ -914,6 +914,10 @@ namespace Dynamo.Nodes
             MigrationManager.SetFunctionSignature(dsCoreNode, "DSCoreNodes.dll",
                 "List.TakeEveryNthItem", "List.TakeEveryNthItem@var[]..[],int,int");
 
+            foreach (XmlNode child in oldNode.ChildNodes)
+            {
+                dsCoreNode.AppendChild(child.CloneNode(true));
+            }
             migratedData.AppendNode(dsCoreNode);
             string dsCoreNodeId = MigrationManager.GetGuidFromXmlElement(dsCoreNode);
 
@@ -2363,13 +2367,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-
-            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 1, 1);
-            migrationData.AppendNode(dummyNode);
-
-            return migrationData;
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.ToNumber", "String.ToNumber@string");
         }
     }
 

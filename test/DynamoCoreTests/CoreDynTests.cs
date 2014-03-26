@@ -389,7 +389,6 @@ namespace Dynamo.Tests
         [Test]
         public void UsingDefaultValue()
         {
-            Assert.Inconclusive("Default Value");
             var model = dynSettings.Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\default_values");
 
@@ -397,10 +396,10 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("360f3b50-5f27-460a-a57a-bb6338064d98");
-
+            var expectedValue = new int[] { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 };
             var oldVal = watch.OldValue;
-            Assert.IsNotNull(oldVal.Data);
             Assert.IsTrue(oldVal.IsCollection);
+            AssertValue(oldVal, expectedValue);
 
             // Pretend we never ran
             model.Nodes.ForEach(
@@ -413,10 +412,8 @@ namespace Dynamo.Tests
             dynSettings.Controller.RunExpression(null);
 
             var newVal = watch.OldValue;
-            Assert.IsNotNull(newVal.Data);
             Assert.IsTrue(newVal.IsCollection);
-
-            Assert.AreEqual(oldVal, newVal);
+            AssertValue(newVal, expectedValue);
         }
 
         [Test]
