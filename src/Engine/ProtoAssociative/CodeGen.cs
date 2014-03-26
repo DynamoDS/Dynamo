@@ -2740,6 +2740,11 @@ namespace ProtoAssociative
                 GroupExpressionNode groupExprNode = node as GroupExpressionNode;
                 replicationGuides = groupExprNode.ReplicationGuides;
             }
+            else if (node is NullNode)
+            {
+                // TODO Jun: This is no longer necessary once we allow SSA temps to be generated for all literals
+                replicationGuides = null;
+            }
             else
             {
                 // A parser error has occured if a replication guide gets attached to any AST besides"
@@ -3341,6 +3346,50 @@ namespace ProtoAssociative
                     // We never supported SSA on grouped expressions
                     // Keep it that way if SSA flag is off
                     ssaStack.Push(node);
+                }
+            }
+
+            // We allow a null to be generated an SSA variable
+            // TODO Jun: Generalize this into genrating SSA temps for all literals
+            else if (node is NullNode)
+            {
+                if (core.Options.GenerateSSA)
+                {
+                    string ssaTempName = string.Empty;
+                    
+                    BinaryExpressionNode bnode = new BinaryExpressionNode();
+                    bnode.Optr = ProtoCore.DSASM.Operator.assign;
+
+                    // Left node
+                    ssaTempName = ProtoCore.Utils.CoreUtils.BuildSSATemp(core);
+                    var identNode = nodeBuilder.BuildIdentfier(ssaTempName);
+                    bnode.LeftNode = identNode;
+
+                    // Right node
+                    bnode.RightNode = node;
+
+                    bnode.isSSAAssignment = true;
+
+                    astlist.Add(bnode);
+                    ssaStack.Push(bnode);
+                }
+                else
+                {
+                    BinaryExpressionNode bnode = new BinaryExpressionNode();
+                    bnode.Optr = ProtoCore.DSASM.Operator.assign;
+
+                    // Left node
+                    var identNode = nodeBuilder.BuildIdentfier(ProtoCore.Utils.CoreUtils.BuildSSATemp(core));
+                    bnode.LeftNode = identNode;
+
+                    // Right node
+                    bnode.RightNode = node;
+
+
+                    bnode.isSSAAssignment = true;
+
+                    astlist.Add(bnode);
+                    ssaStack.Push(bnode);
                 }
             }
             else
