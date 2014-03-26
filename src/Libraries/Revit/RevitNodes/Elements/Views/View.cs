@@ -95,7 +95,6 @@ namespace Revit.Elements.Views
             return Image.FromFile(destFn);
         }
 
-
         private string ViewTypeString(ViewType vt)
         {
             switch (vt)
@@ -115,6 +114,11 @@ namespace Revit.Elements.Views
                 default:
                     return "Section View";
             }
+        }
+
+        public override string ToString()
+        {
+            return this.GetType().Name + "(Name = " + this.InternalView.ViewName + " )";
         }
     }
 }
