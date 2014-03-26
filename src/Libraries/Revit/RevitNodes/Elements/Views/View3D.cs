@@ -11,10 +11,10 @@ using RevitServices.Persistence;
 using RevitServices.Threading;
 using RevitServices.Transactions;
 
-namespace Revit.Elements
+namespace Revit.Elements.Views
 {
     //[SupressImportIntoVM]
-    public abstract class AbstractView3D : AbstractView
+    public abstract class View3D : View
     {
 
         #region Internal properties
@@ -22,7 +22,7 @@ namespace Revit.Elements
         /// <summary>
         /// An internal handle on the Revit element
         /// </summary>
-        internal View3D InternalView3D
+        internal Autodesk.Revit.DB.View3D InternalView3D
         {
             get;
             private set;
@@ -131,7 +131,7 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="view"></param>
         /// <param name="element"></param>
-        protected static void IsolateInView(View3D view, Autodesk.Revit.DB.Element element)
+        protected static void IsolateInView(Autodesk.Revit.DB.View3D view, Autodesk.Revit.DB.Element element)
         {
             var fec = GetVisibleElementFilter();
 
@@ -204,7 +204,7 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="view3D"></param>
         /// <param name="bbox"></param>
-        private void IsolateInView(View3D view3D, BoundingBoxXYZ bbox)
+        private void IsolateInView(Autodesk.Revit.DB.View3D view3D, BoundingBoxXYZ bbox)
         {
             view3D.CropBox = bbox;
         }
@@ -216,7 +216,7 @@ namespace Revit.Elements
         /// <param name="name"></param>
         /// <param name="isPerspective"></param>
         /// <returns></returns>
-        protected static View3D Create3DView(ViewOrientation3D orient, string name, bool isPerspective)
+        protected static Autodesk.Revit.DB.View3D Create3DView(ViewOrientation3D orient, string name, bool isPerspective)
         {
             // (sic) From the Dynamo legacy implementation
             var viewFam = DocumentManager.Instance.ElementsOfType<ViewFamilyType>()
@@ -230,11 +230,11 @@ namespace Revit.Elements
             Autodesk.Revit.DB.View3D view;
             if (isPerspective)
             {
-                view = View3D.CreatePerspective(Document, viewFam.Id);
+                view = Autodesk.Revit.DB.View3D.CreatePerspective(Document, viewFam.Id);
             }
             else
             {
-                view = View3D.CreateIsometric(Document, viewFam.Id);
+                view = Autodesk.Revit.DB.View3D.CreateIsometric(Document, viewFam.Id);
             }
 
             view.SetOrientation(orient);
@@ -267,7 +267,7 @@ namespace Revit.Elements
             bool found = false;
 
             var collector = new FilteredElementCollector(Document);
-            collector.OfClass(typeof(View));
+            collector.OfClass(typeof(Autodesk.Revit.DB.View));
 
             if (collector.ToElements().Count(x => x.Name == name) == 0)
                 return name;
@@ -506,7 +506,7 @@ namespace Revit.Elements
         /// Set the InternalView3D property and the associated element id and unique id
         /// </summary>
         /// <param name="view"></param>
-        protected void InternalSetView3D(View3D view)
+        protected void InternalSetView3D(Autodesk.Revit.DB.View3D view)
         {
             this.InternalView3D = view;
             this.InternalElementId = view.Id;

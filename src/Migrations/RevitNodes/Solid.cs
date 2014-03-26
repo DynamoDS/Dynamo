@@ -190,7 +190,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll",
-                "Solid.FromElement", "Solid.FromElement@AbstractElement");
+                "Solid.FromElement", "Solid.FromElement@Element");
         }
     }
 

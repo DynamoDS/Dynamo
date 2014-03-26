@@ -15,7 +15,7 @@ namespace Revit.Elements
     /// A Revit FreeForm element
     /// </summary>
     [RegisterForTrace]
-    public class FreeForm : AbstractElement
+    public class FreeForm : Element
     {
 
         #region Internal properties

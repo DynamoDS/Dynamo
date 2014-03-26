@@ -14,6 +14,22 @@ namespace RevitServices.Persistence
     /// </summary>
     public class DocumentManager
     {
+        public static event Action<string> OnLogError;
+
+        internal static void LogError(string obj)
+        {
+            var handler = OnLogError;
+            if (handler != null)
+                handler(obj);
+        }
+
+        internal static void LogError(Exception exception)
+        {
+            var handler = OnLogError;
+            if (handler != null)
+                handler(exception.Message);
+        }
+
         private static DocumentManager instance;
         private static readonly Object mutex = new Object();
 
@@ -64,7 +80,14 @@ namespace RevitServices.Persistence
         {
             TransactionManager.Instance.EnsureInTransaction(CurrentDBDocument);
 
-            CurrentDBDocument.Delete(element);
+            try
+            {
+                CurrentDBDocument.Delete(element);
+            }
+            catch (Exception e)
+            {
+                LogError(e);
+            }
 
             TransactionManager.Instance.TransactionTaskDone();
         }
@@ -104,42 +127,29 @@ namespace RevitServices.Persistence
         /// Provide source of the currently active document
         /// Dynamo is reponsible for updating this before use
         /// </summary>
-        public Document CurrentDBDocument { get { return CurrentUIDocument.Document; } }
+        public Document CurrentDBDocument {
+            get
+            {
+                var c = CurrentUIDocument;
+                return c == null ? null : c.Document;
+            }
+        }
 
         /// <summary>
         /// Provides the currently active UI document.
         /// </summary>
-        public UIDocument CurrentUIDocument { get { return CurrentUIApplication.ActiveUIDocument; } }
+        public UIDocument CurrentUIDocument {
+            get
+            {
+                var c = CurrentUIApplication;
+                return c == null ? null : c.ActiveUIDocument;
+            }
+        }
 
         /// <summary>
         /// Provides the current UIApplication
         /// </summary>
         public UIApplication CurrentUIApplication { get; set; }
 
-        /// <summary>
-        /// A method to clear some elements from the CurrentDBDocument.  This is intended
-        /// only as a temporary fix until trace properly handles model cleanup
-        /// </summary>
-        public void ClearCurrentDocument()
-        {
-            TransactionManager.Instance.EnsureInTransaction(CurrentDBDocument);
-
-            var collector = new FilteredElementCollector(CurrentDBDocument);
-
-            var filter = new LogicalOrFilter(new List<ElementFilter>
-            {
-                new ElementCategoryFilter(BuiltInCategory.OST_ReferencePoints),
-                new ElementCategoryFilter(BuiltInCategory.OST_AdaptivePoints),
-                new ElementCategoryFilter(BuiltInCategory.OST_DividedPath),
-                new ElementCategoryFilter(BuiltInCategory.OST_DividedSurface),
-
-                new ElementClassFilter(typeof (FamilyInstance)),
-                new ElementClassFilter(typeof (CurveElement))
-            });
-
-            collector.WherePasses(filter).ToList().ForEach(x=> CurrentDBDocument.Delete(x.Id));
-
-            TransactionManager.Instance.TransactionTaskDone();
-        }
     }
 }

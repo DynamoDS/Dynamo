@@ -241,8 +241,7 @@ namespace Dynamo.Search
 
             foreach (var pair in _tagDictionary)
             {
-                // if (pair.Key.ToLower().Contains(query.ToLower()))
-                if (MatchWithQuerystring(pair.Key, query))
+                if (pair.Key.ToLower().Contains(query.ToLower()) || MatchWithQuerystring(pair.Key, query))
                 {
                     // it has a match, how close is it to matching the entire string?
                     double matchCloseness = ((double) query.Length) / pair.Key.Length;

@@ -11,6 +11,8 @@ namespace Revit.Transaction
     /// </summary>
     public class Transaction
     {
+        private Transaction() { }
+
         /// <summary>
         ///     Ends the current Dynamo transaction, returning whatever was
         ///     passed in.
