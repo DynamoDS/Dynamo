@@ -219,7 +219,7 @@ namespace Revit.GeometryConversion
                     return Convert(line);
               }
               //then arc
-              if (point0.DistanceTo(point1) > 1e-7)
+              if (point0.DistanceTo(point1) < 1e-7)
                  point1 = crvCurve.PointAtParameter(0.9);
               var arc = Autodesk.DesignScript.Geometry.Arc.ByThreePoints(point1, pointMid, point1);
               return Convert(arc);
