@@ -5,8 +5,10 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
+using Revit.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
@@ -16,7 +18,7 @@ namespace Revit.Elements
     /// A Revit ImportInstance Element
     /// </summary>
     [RegisterForTrace]
-    public class ImportInstance : AbstractElement
+    public class ImportInstance : Element
     {
         [Browsable(false)]
         public override Autodesk.Revit.DB.Element InternalElement
@@ -26,13 +28,15 @@ namespace Revit.Elements
 
         internal Autodesk.Revit.DB.ImportInstance InternalImportInstance { get; private set; }
 
-        internal ImportInstance(string satPath)
+        internal ImportInstance(string satPath, XYZ translation = null)
         {
+            translation = translation ?? XYZ.Zero;
+
             TransactionManager.Instance.EnsureInTransaction(Document);
 
             var options = new SATImportOptions()
             {
-
+                Unit = ImportUnit.Foot
             };
 
             var id = Document.Import(satPath, options, Document.ActiveView);
@@ -44,9 +48,22 @@ namespace Revit.Elements
                 throw new Exception("Could not obtain ImportInstance from imported Element");
             }
 
-            InternalSetImportInstance( importInstance );
+            InternalSetImportInstance(importInstance);
+            InternalUnpinAndTranslateImportInstance(translation);
 
             this.Path = satPath;
+
+            TransactionManager.Instance.TransactionTaskDone();
+        }
+
+        private void InternalUnpinAndTranslateImportInstance(Autodesk.Revit.DB.XYZ translation)
+        {
+            TransactionManager.Instance.EnsureInTransaction(Document);
+
+            // the element must be unpinned to translate
+            InternalImportInstance.Pinned = false;
+
+            if (!translation.IsZeroLength()) ElementTransformUtils.MoveElement(Document, InternalImportInstance.Id, translation);
 
             TransactionManager.Instance.TransactionTaskDone();
         }
@@ -80,7 +97,39 @@ namespace Revit.Elements
             return new ImportInstance(pathToFile);
         }
 
+        /// <summary>
+        /// Import a collection of Geometry (Solid, Curve, Surface, etc) into Revit as an ImportInstance.  This variant is much faster than
+        /// ImportInstance.ByGeometry as it uses a batch method.
+        /// </summary>
+        /// <param name="geometries">A collection of Geometry</param>
+        /// <returns></returns>
+        public static ImportInstance ByGeometries(Autodesk.DesignScript.Geometry.Geometry[] geometries)
+        {
+            if (geometries == null)
+            {
+                throw new ArgumentNullException("geometries");
+            }
 
+            // Create a temp file name to export to
+            var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
+
+            var translation = Vector.ByCoordinates(0, 0, 0);
+
+            Robustify(ref geometries, ref translation);
+
+            if (!Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(geometries, fn))
+            {
+                throw new Exception("Failed to import geometry.");
+            }
+
+            return new ImportInstance(fn, translation.ToXyz());
+        }
+
+        /// <summary>
+        /// Import a collection of Geometry (Solid, Curve, Surface, etc) into Revit as an ImportInstance.
+        /// </summary>
+        /// <param name="geometry">A single piece of geometry</param>
+        /// <returns></returns>
         public static ImportInstance ByGeometry(Autodesk.DesignScript.Geometry.Geometry geometry)
         {
             if (geometry == null)
@@ -91,13 +140,63 @@ namespace Revit.Elements
             // Create a temp file name to export to
             var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
 
+            var translation = Vector.ByCoordinates(0, 0, 0);
+            Robustify(ref geometry, ref translation);
+
             if (!geometry.ExportToSAT(fn))
             {
                 throw new Exception("Failed to import geometry.");
             }
 
-            return new ImportInstance(fn);
+            return new ImportInstance(fn, translation.ToXyz());
         }
+
+
+        #region Helper methods
+        
+        /// <summary>
+        /// This method contains workarounds for increasing the robustness of input geometry
+        /// </summary>
+        /// <param name="geometry"></param>
+        /// <param name="translation"></param>
+        private static void Robustify(ref Autodesk.DesignScript.Geometry.Geometry geometry,
+            ref Autodesk.DesignScript.Geometry.Vector translation)
+        {
+            // translate centroid of the solid to the origin
+            // export, then move back 
+            if (geometry is Autodesk.DesignScript.Geometry.Solid)
+            {
+                var solid = geometry as Autodesk.DesignScript.Geometry.Solid;
+
+                translation = solid.Centroid().AsVector();
+                var tranGeo = solid.Translate(translation.Reverse());
+
+                geometry = tranGeo;
+            }
+        }
+
+        /// <summary>
+        /// This method contains workarounds for increasing the robustness of input geometry
+        /// </summary>
+        /// <param name="geometry"></param>
+        /// <param name="translation"></param>
+        private static void Robustify(ref Autodesk.DesignScript.Geometry.Geometry[] geometry,
+            ref Autodesk.DesignScript.Geometry.Vector translation)
+        {
+            // translate all geom to centroid of bbox, then translate back
+            var bb = Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(geometry);
+
+            // get center of bbox
+            var trans = ((bb.MinPoint.ToXyz() + bb.MaxPoint.ToXyz())/2).ToVector().Reverse();
+
+            // translate all geom so that it is centered by bb
+            geometry = geometry.Select(x => x.Translate(trans)).ToArray();
+
+            // so that we can move it all back
+            translation = trans.Reverse();
+        }
+
+        #endregion
 
     }
 }

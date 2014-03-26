@@ -8,7 +8,7 @@ using Autodesk.Revit.DB;
 namespace Revit.GeometryObjects
 {
 
-    public class Edge : AbstractGeometryObject
+    public class Edge : GeometryObject
     {
         internal Autodesk.Revit.DB.Edge InternalEdge
         {
@@ -20,7 +20,7 @@ namespace Revit.GeometryObjects
             this.InternalEdge = x;
         }
 
-        protected override GeometryObject InternalGeometryObject
+        protected override Autodesk.Revit.DB.GeometryObject InternalGeometryObject
         {
             get { return InternalEdge; }
         }

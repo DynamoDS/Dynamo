@@ -8,7 +8,7 @@ namespace Revit.References
     /// <summary>
     /// A Reference to a plane extracted from a Revit ELement
     /// </summary>
-    public class PlaneReference : AbstractReference
+    public class PlaneReference : Reference
     {
         internal PlaneReference(Autodesk.Revit.DB.Reference planeReference)
         {

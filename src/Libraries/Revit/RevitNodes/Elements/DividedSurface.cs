@@ -13,7 +13,7 @@ namespace Revit.Elements
     /// A Revit DividedSurface
     /// </summary>
     [RegisterForTrace]
-    public class DividedSurface : AbstractElement
+    public class DividedSurface : Element
     {
         #region Private Properties
 

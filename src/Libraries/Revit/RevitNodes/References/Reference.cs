@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using RevitServices.Persistence;
 
@@ -12,7 +13,8 @@ namespace Revit.References
     /// A base class for revit Reference objects
     /// </summary>
     //[SupressImportIntoVM]
-    public abstract class AbstractReference
+    [IsVisibleInDynamoLibrary(false)]
+    public abstract class Reference
     {
         public static Document Document
         {

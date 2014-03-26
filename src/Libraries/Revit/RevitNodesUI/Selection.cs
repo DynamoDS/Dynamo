@@ -16,6 +16,7 @@ using Dynamo.Models;
 using Dynamo.UI;
 using ProtoCore.AST.AssociativeAST;
 using RevitServices.Persistence;
+using Dynamo.Revit.SyncedNodeExtensions;
 
 namespace Dynamo.Nodes
 {
@@ -113,11 +114,22 @@ namespace Dynamo.Nodes
                         return;
 
                     dirty = true;
+                    this.UnregisterEvalOnModified(_selected.Id);
                 }
                 else
                     dirty = value != null;
 
                 _selected = value;
+                if (value != null)
+                {
+                    this.RegisterEvalOnModified(
+                        value.Id,
+                        delAction: delegate
+                        {
+                            _selected = null;
+                            SelectedElement = null;
+                        });
+                }
 
                 if (dirty)
                     RequiresRecalc = true;
@@ -141,6 +153,13 @@ namespace Dynamo.Nodes
             }
         }
 
+        public override bool RequiresReExecute
+        {
+            get
+            {
+                return true;
+            }
+        }
         #region protected constructors
 
         protected DSElementSelection(Func<string, Element> action, string message)
@@ -1029,7 +1048,7 @@ namespace Dynamo.Nodes
             :base(SelectionHelper.RequestDividedSurfaceFamilyInstancesSelection, "Select a divided surface."){}
     }
 
-    [NodeName("Select Multiple Elements")]
+    [NodeName("Select Model Elements")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select multiple elements from the Revit document.")]
     [IsDesignScriptCompatible]
