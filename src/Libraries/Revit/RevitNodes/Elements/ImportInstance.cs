@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using Revit.GeometryConversion;
@@ -47,12 +48,22 @@ namespace Revit.Elements
                 throw new Exception("Could not obtain ImportInstance from imported Element");
             }
 
-
-            importInstance.Pinned = false;
-            ElementTransformUtils.MoveElement(Document, importInstance.Id, translation);
-            InternalSetImportInstance( importInstance );
+            InternalSetImportInstance(importInstance);
+            InternalUnpinAndTranslateImportInstance(translation);
 
             this.Path = satPath;
+
+            TransactionManager.Instance.TransactionTaskDone();
+        }
+
+        private void InternalUnpinAndTranslateImportInstance(Autodesk.Revit.DB.XYZ translation)
+        {
+            TransactionManager.Instance.EnsureInTransaction(Document);
+
+            // the element must be unpinned to translate
+            InternalImportInstance.Pinned = false;
+
+            if (!translation.IsZeroLength()) ElementTransformUtils.MoveElement(Document, InternalImportInstance.Id, translation);
 
             TransactionManager.Instance.TransactionTaskDone();
         }
@@ -86,7 +97,40 @@ namespace Revit.Elements
             return new ImportInstance(pathToFile);
         }
 
-        public static ImportInstance BySolid(Autodesk.DesignScript.Geometry.Solid geometry)
+        /// <summary>
+        /// Import a collection of Geometry (Solid, Curve, Surface, etc) into Revit as an ImportInstance.  This variant is much faster than
+        /// ImportInstance.ByGeometry as it uses a batch method.
+        /// </summary>
+        /// <param name="geometries">A collection of Geometry</param>
+        /// <returns></returns>
+        public static ImportInstance ByGeometries(Autodesk.DesignScript.Geometry.Geometry[] geometries)
+        {
+            if (geometries == null)
+            {
+                throw new ArgumentNullException("geometries");
+            }
+
+            // Create a temp file name to export to
+            var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
+
+            var translation = Vector.ByCoordinates(0, 0, 0);
+
+            Robustify(ref geometries, ref translation);
+
+            if (!Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(geometries, fn))
+            {
+                throw new Exception("Failed to import geometry.");
+            }
+
+            return new ImportInstance(fn, translation.ToXyz());
+        }
+
+        /// <summary>
+        /// Import a collection of Geometry (Solid, Curve, Surface, etc) into Revit as an ImportInstance.
+        /// </summary>
+        /// <param name="geometry">A single piece of geometry</param>
+        /// <returns></returns>
+        public static ImportInstance ByGeometry(Autodesk.DesignScript.Geometry.Geometry geometry)
         {
             if (geometry == null)
             {
@@ -96,35 +140,63 @@ namespace Revit.Elements
             // Create a temp file name to export to
             var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
 
-            var tran = geometry.Centroid().AsVector();
-            var tranGeo = geometry.Translate(tran.Reverse());
+            var translation = Vector.ByCoordinates(0, 0, 0);
+            Robustify(ref geometry, ref translation);
 
-            if (!tranGeo.ExportToSAT(fn))
+            if (!geometry.ExportToSAT(fn))
             {
                 throw new Exception("Failed to import geometry.");
             }
 
-            return new ImportInstance(fn, tran.ToXyz());
+            return new ImportInstance(fn, translation.ToXyz());
         }
 
 
-        //public static ImportInstance ByGeometry(Autodesk.DesignScript.Geometry.Geometry geometry)
-        //{
-        //    if (geometry == null)
-        //    {
-        //        throw new ArgumentNullException("geometry");
-        //    }
+        #region Helper methods
+        
+        /// <summary>
+        /// This method contains workarounds for increasing the robustness of input geometry
+        /// </summary>
+        /// <param name="geometry"></param>
+        /// <param name="translation"></param>
+        private static void Robustify(ref Autodesk.DesignScript.Geometry.Geometry geometry,
+            ref Autodesk.DesignScript.Geometry.Vector translation)
+        {
+            // translate centroid of the solid to the origin
+            // export, then move back 
+            if (geometry is Autodesk.DesignScript.Geometry.Solid)
+            {
+                var solid = geometry as Autodesk.DesignScript.Geometry.Solid;
 
-        //    // Create a temp file name to export to
-        //    var fn = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".sat";
+                translation = solid.Centroid().AsVector();
+                var tranGeo = solid.Translate(translation.Reverse());
 
-        //    if (!geometry.ExportToSAT(fn))
-        //    {
-        //        throw new Exception("Failed to import geometry.");
-        //    }
+                geometry = tranGeo;
+            }
+        }
 
-        //    return new ImportInstance(fn);
-        //}
+        /// <summary>
+        /// This method contains workarounds for increasing the robustness of input geometry
+        /// </summary>
+        /// <param name="geometry"></param>
+        /// <param name="translation"></param>
+        private static void Robustify(ref Autodesk.DesignScript.Geometry.Geometry[] geometry,
+            ref Autodesk.DesignScript.Geometry.Vector translation)
+        {
+            // translate all geom to centroid of bbox, then translate back
+            var bb = Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(geometry);
+
+            // get center of bbox
+            var trans = ((bb.MinPoint.ToXyz() + bb.MaxPoint.ToXyz())/2).ToVector().Reverse();
+
+            // translate all geom so that it is centered by bb
+            geometry = geometry.Select(x => x.Translate(trans)).ToArray();
+
+            // so that we can move it all back
+            translation = trans.Reverse();
+        }
+
+        #endregion
 
     }
 }

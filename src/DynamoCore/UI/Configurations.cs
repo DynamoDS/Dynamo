@@ -183,6 +183,15 @@ namespace Dynamo.UI
 
         #endregion
 
+        #region Externally Visible Strings
+
+        public static readonly string SessionTraceDataXmlTag = "SessionTraceData";
+        public static readonly string NodeTraceDataXmlTag = "NodeTraceData";
+        public static readonly string CallsiteTraceDataXmlTag = "CallsiteTraceData";
+        public static readonly string NodeIdAttribName = "NodeId";
+
+        #endregion
+
         public const string UpdateDownloadLocation = "http://dyn-builds-data.s3-us-west-2.amazonaws.com/";
     }
 

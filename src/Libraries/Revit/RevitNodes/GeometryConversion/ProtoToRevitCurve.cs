@@ -86,13 +86,21 @@ namespace Revit.GeometryConversion
         /// <returns></returns>
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Arc arc)
         {
+            // convert
             var center = arc.CenterPoint.ToXyz();
-            var n = arc.Normal.ToXyz();
-            n.Normalize();
             var sp = arc.StartPoint.ToXyz();
-            var x = sp - center;
-            x.Normalize();
-            var y = n.CrossProduct(x);
+
+            // get the xaxis of the arc base plane
+            var x = (sp - center).Normalize();
+
+            // get a second vector in the plane
+            var vecY = (arc.PointAtParameter(0.1).ToXyz() - center);
+
+            // get the normal to the plane
+            var n2 = x.CrossProduct(vecY).Normalize();
+
+            // obtain the y axis in the plane - perp to x and z
+            var y = n2.CrossProduct(x);
 
             var plane = new Autodesk.Revit.DB.Plane(x, y, center);
             return Autodesk.Revit.DB.Arc.Create(plane, arc.Radius, 0, arc.SweepAngle.ToRadians());
@@ -105,13 +113,21 @@ namespace Revit.GeometryConversion
         /// <returns></returns>
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Circle circ)
         {
+            // convert
             var center = circ.CenterPoint.ToXyz();
-            var n = circ.Normal.ToXyz();
-            n.Normalize();
             var sp = circ.StartPoint.ToXyz();
-            var x = sp - center;
-            x.Normalize();
-            var y = n.CrossProduct(x);
+
+            // get the xaxis of the arc base plane normalized
+            var x = (sp - center).Normalize();
+
+            // get a second vector in the plane
+            var vecY = (circ.PointAtParameter(0.1).ToXyz() - center);
+
+            // get the normal to the plane
+            var n2 = x.CrossProduct(vecY).Normalize();
+
+            // obtain the y axis in the plane - perp to x and z
+            var y = n2.CrossProduct(x);
 
             var plane = new Autodesk.Revit.DB.Plane(x, y, center);
             return Autodesk.Revit.DB.Arc.Create(plane, circ.Radius, 0, 2 * System.Math.PI);
