@@ -2961,6 +2961,151 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        public void TestCodeblockModification09()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"import(""FFITarget.dll"");",
+                "x = 1; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p = p.Translate(0,5,0);",
+                "x = 1; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p = p.Translate(0,5,0); b = p.Y;"
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            // Create CBN and run import stmt
+            Guid guid = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Add new line
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Add new line
+            modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[2]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("b", 5.0);
+        }
+
+        [Test]
+        public void TestCodeblockModification10()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"import(""FFITarget.dll"");",
+                "x = 1; p = DummyPoint.ByCoordinates(x, 0.0, 0.0);",
+                "x = 1; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p = p.Translate(0,5,0);",
+                "x = 1; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p = p.Translate(0,5,0); b = p.Y;"
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            // Create CBN and run import stmt
+            Guid guid = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Add new line
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Add new line
+            modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[2]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[3]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("b", 5.0);
+        }
+
+
+        [Test]
+        public void TestCodeblockModification11()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"import(""FFITarget.dll"");",
+                "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p[0] = p[0].Translate(0,5,0);",
+                "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p[0] = p[0].Translate(0,5,0); b = p[0].Y;"
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            // Create CBN and run import stmt
+            Guid guid = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Add new line
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Add new line
+            modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[2]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("b", 5.0);
+        }
+
+        [Test]
+        public void TestCodeblockModification12()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"import(""FFITarget.dll"");",
+                "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0);",
+                "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p[0] = p[0].Translate(0,5,0);",
+                "x = 0..2; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); p[0] = p[0].Translate(0,5,0); b = p[0].Y;"
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            // Create CBN and run import stmt
+            Guid guid = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Add new line
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Add new line
+            modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[2]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[3]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("b", 5.0);
+        }
+
+        [Test]
         public void TestEmptyCodeblock01()
         {
             List<string> codes = new List<string>() 

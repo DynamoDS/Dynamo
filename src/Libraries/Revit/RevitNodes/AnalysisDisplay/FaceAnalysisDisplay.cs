@@ -2,20 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
-using DSNodeServices;
+using Revit.Elements.Views;
 using Revit.GeometryConversion;
 using Revit.Elements;
 using Revit.References;
 using RevitServices.Transactions;
+using Reference = Autodesk.Revit.DB.Reference;
+using View = Revit.Elements.Views.View;
 
 namespace Revit.AnalysisDisplay
 {
     /// <summary>
     /// A Revit Point Analysis Display 
     /// </summary>
-    [RegisterForTrace]
+    [IsVisibleInDynamoLibrary(false)]
+    [DSNodeServices.RegisterForTrace]
     public class FaceAnalysisDisplay : AbstractAnalysisDisplay
     {
 
@@ -112,7 +116,7 @@ namespace Revit.AnalysisDisplay
         /// <param name="sampleUvPoints"></param>
         /// <param name="samples"></param>
         /// <returns></returns>
-        public static FaceAnalysisDisplay ByViewFacePointsAndValues(AbstractView view, FaceReference faceReference,
+        public static FaceAnalysisDisplay ByViewFacePointsAndValues(View view, FaceReference faceReference,
                         double[][] sampleUvPoints, double[] samples)
         {
 

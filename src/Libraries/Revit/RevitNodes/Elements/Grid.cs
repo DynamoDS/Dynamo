@@ -15,7 +15,7 @@ namespace Revit.Elements
     /// A Revit Grid Element
     /// </summary>
     [RegisterForTrace]
-    public class Grid : AbstractElement
+    public class Grid : Element
     {
         #region Internal properties
 

@@ -24,6 +24,7 @@ using Microsoft.Practices.Prism.ViewModel;
 using NUnit.Framework;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Dynamo.UI.Prompts;
 
 namespace Dynamo
 {
@@ -128,13 +129,12 @@ namespace Dynamo
             set { context = value; }
         }
 
-        private bool _isShowingConnectors = true;
         public bool IsShowingConnectors
         {
-            get { return _isShowingConnectors; }
+            get { return PreferenceSettings.ShowConnector; }
             set
             {
-                _isShowingConnectors = value;
+                PreferenceSettings.ShowConnector = value;
             }
         }
 
@@ -195,12 +195,21 @@ namespace Dynamo
                 RequestsRedraw(sender, e);
         }
 
+        // TODO(Ben): Obsolete CrashPrompt and make use of GenericTaskDialog.
         public delegate void CrashPromptHandler(object sender, CrashPromptArgs e);
         public event CrashPromptHandler RequestsCrashPrompt;
         public void OnRequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
             if (RequestsCrashPrompt != null)
                 RequestsCrashPrompt(this, args);
+        }
+
+        internal delegate void TaskDialogHandler(object sender, TaskDialogEventArgs e);
+        internal event TaskDialogHandler RequestTaskDialog;
+        internal void OnRequestTaskDialog(object sender, TaskDialogEventArgs args)
+        {
+            if (RequestTaskDialog != null)
+                RequestTaskDialog(sender, args);
         }
 
         #endregion
@@ -379,6 +388,14 @@ namespace Dynamo
             if (Running)
                 return;
 
+            // If there is preloaded trace data, send that along to the current
+            // LiveRunner instance. Here we make sure it is done exactly once 
+            // by resetting WorkspaceModel.PreloadedTraceData property after it 
+            // is obtained.
+            // 
+            var traceData = DynamoViewModel.Model.HomeSpace.PreloadedTraceData;
+            DynamoViewModel.Model.HomeSpace.PreloadedTraceData = null; // Reset.
+            EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
 
 #if USE_DSENGINE
             EngineController.GenerateGraphSyncData(DynamoViewModel.Model.HomeSpace.Nodes);
@@ -417,7 +434,7 @@ namespace Dynamo
                 EvaluationThread(null, null);
         }
 
-        protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
+        private void EvaluationThread(object s, DoWorkEventArgs args)
         {
             var sw = new Stopwatch();
             sw.Start();

@@ -30,7 +30,8 @@ namespace DSRevitNodesTests
             var view = AxonometricView.ByEyePointAndTarget(eye, target, element, name, false);
 
             Assert.NotNull(view);
-            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(view.InternalElement.Id));
+            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(
+                 new ElementUUID(view.InternalElement.UniqueId)));
         }
 
         [Test]
@@ -48,7 +49,8 @@ namespace DSRevitNodesTests
             var view = AxonometricView.ByEyePointAndTarget(eye, target, element, name, false);
 
             Assert.NotNull(view);
-            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(view.InternalElement.Id));
+            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(
+                 new ElementUUID(view.InternalElement.UniqueId)));
         }
 
         [Test]
@@ -78,7 +80,8 @@ namespace DSRevitNodesTests
             var view = AxonometricView.ByEyePointTargetAndBoundingBox(eye, target, famInst.BoundingBox, name, false);
 
             Assert.NotNull(view);
-            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(view.InternalElement.Id));
+            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(
+                 new ElementUUID(view.InternalElement.UniqueId)));
         }
 
         [Test]
@@ -112,7 +115,8 @@ namespace DSRevitNodesTests
             var view = AxonometricView.ByEyePointTargetAndElement(eye, target, famInst, name, false);
 
             Assert.NotNull(view);
-            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(view.InternalElement.Id));
+            Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(
+                 new ElementUUID(view.InternalElement.UniqueId)));
         }
 
         [Test]

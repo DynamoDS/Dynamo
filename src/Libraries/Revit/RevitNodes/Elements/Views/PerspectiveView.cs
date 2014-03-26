@@ -16,7 +16,7 @@ namespace Revit.Elements.Views
     /// A Revit View3D
     /// </summary>
     [RegisterForTrace]
-    public class PerspectiveView : AbstractView3D
+    public class PerspectiveView : View3D
     {
 
         #region Private constructors
@@ -24,7 +24,7 @@ namespace Revit.Elements.Views
         /// <summary>
         /// Private constructor
         /// </summary>
-        private PerspectiveView(View3D view)
+        private PerspectiveView(Autodesk.Revit.DB.View3D view)
         {
             InternalSetView3D(view);
         }
@@ -127,12 +127,12 @@ namespace Revit.Elements.Views
 
         /// <summary>
         /// Create a Revit Perspective View from an Eye position, a target position, and 
-        /// either an AbstractElement or BoundingBox.
+        /// either an Element or BoundingBox.
         /// </summary>
         /// <param name="eyePoint">A Point representing the eye point.</param>
         /// <param name="target">A Point representing the target of view.</param>
         /// <param name="element">This argument cannot be null, and it has to be either a 
-        /// Revit.Elements.AbstractElement or Revit.GeometryObjects.BoundingBox.</param>
+        /// Revit.Elements.Element or Revit.GeometryObjects.BoundingBox.</param>
         /// <param name="name">The name of the view.</param>
         /// <param name="isolateElement">If this argument is set to true, the element or 
         /// bounding box will be isolated in the current view by creating a minimum size
@@ -147,7 +147,7 @@ namespace Revit.Elements.Views
             if (element == null)
                 throw new ArgumentNullException("element");
 
-            AbstractElement abstractElement = element as AbstractElement;
+            Element abstractElement = element as Element;
             if (abstractElement != null)
             {
                 return ByEyePointTargetAndElement(eyePoint,
@@ -177,7 +177,7 @@ namespace Revit.Elements.Views
         /// <param name="name"></param>
         /// <param name="isolateElement"></param>
         /// <returns></returns>
-        public static PerspectiveView ByEyePointTargetAndElement(Autodesk.DesignScript.Geometry.Point eyePoint, Autodesk.DesignScript.Geometry.Point target, AbstractElement element, string name, bool isolateElement)
+        public static PerspectiveView ByEyePointTargetAndElement(Autodesk.DesignScript.Geometry.Point eyePoint, Autodesk.DesignScript.Geometry.Point target, Element element, string name, bool isolateElement)
         {
             if (eyePoint == null)
             {
@@ -246,7 +246,7 @@ namespace Revit.Elements.Views
         /// <param name="view"></param>
         /// <param name="isRevitOwned"></param>
         /// <returns></returns>
-        internal static PerspectiveView FromExisting( View3D view, bool isRevitOwned )
+        internal static PerspectiveView FromExisting( Autodesk.Revit.DB.View3D view, bool isRevitOwned )
         {
             return new PerspectiveView(view)
             {

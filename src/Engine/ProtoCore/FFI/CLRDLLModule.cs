@@ -275,6 +275,7 @@ namespace ProtoFFI
 
         private ClassDeclNode ParseEnumType(Type type, string alias)
         {
+            //TODO: For now Enum can't be suppressed.
             Validity.Assert(type.IsEnum, "Non enum type is being imported as enum!!");
 
             string classname = alias;
@@ -305,6 +306,11 @@ namespace ProtoFFI
                     classnode.funclist.Add(func);
                 }
             }
+
+            //Get all the attributes on this type and set it to the classnode.
+            FFIClassAttributes cattrs = new FFIClassAttributes(type);
+            classnode.ClassAttributes = cattrs;
+            SetTypeAttributes(type, cattrs);
 
             return classnode;
         }
@@ -372,7 +378,7 @@ namespace ProtoFFI
                     continue;
 
                 //Don't include overriden methods or generic methods
-                if (m.IsPublic && !m.IsGenericMethod && (m == m.GetBaseDefinition() || (m.GetBaseDefinition().DeclaringType == baseType && baseType == typeof(Object))))
+                if (m.IsPublic && !m.IsGenericMethod && m == m.GetBaseDefinition())
                 {
                     AssociativeNode node = ParseAndRegisterFunctionPointer(isDisposable, ref hasDisposeMethod, m);
                     classnode.funclist.Add(node);
@@ -1165,9 +1171,11 @@ namespace ProtoFFI
     public class FFIClassAttributes
     {
         public bool IsVisibleInLibrary { get; private set; }
+        public bool IsVisibleInLibrarySet { get; private set; }
         public FFIClassAttributes(Type type)
         {
             IsVisibleInLibrary = true;
+            IsVisibleInLibrarySet = false;
 
             if (type == null)
             {
@@ -1181,6 +1189,7 @@ namespace ProtoFFI
                 {
                     var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
                     IsVisibleInLibrary = visibleInLibraryAttr.Visible;
+                    IsVisibleInLibrarySet = true;
                 }
             }
         }
@@ -1199,6 +1208,7 @@ namespace ProtoFFI
         }
         private List<string> returnKeys;
         public bool IsVisibleInLibrary { get; private set; }
+        public bool IsVisibleInLibrarySet { get; private set; }
 
         public FFIMethodAttributes(MethodInfo method)
         {
@@ -1206,6 +1216,9 @@ namespace ProtoFFI
             {
                 return;
             }
+
+            IsVisibleInLibrary = true;
+            IsVisibleInLibrarySet = false;
 
             FFIClassAttributes baseAttributes = null;
             Type type = method.DeclaringType;
@@ -1239,6 +1252,7 @@ namespace ProtoFFI
                 {
                     var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
                     IsVisibleInLibrary = visibleInLibraryAttr.Visible;
+                    IsVisibleInLibrarySet = true;
                 }
             }
         }

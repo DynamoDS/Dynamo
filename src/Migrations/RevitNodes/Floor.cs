@@ -21,7 +21,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             migrationData.AppendNode(MigrationManager.CloneAndChangeName(
-                data.MigratedNodes.ElementAt(0), "DSRevitNodesUI.FloorType", "Floor Type"));
+                data.MigratedNodes.ElementAt(0), "DSRevitNodesUI.FloorTypes", "Floor Types"));
 
             return migrationData;
         }

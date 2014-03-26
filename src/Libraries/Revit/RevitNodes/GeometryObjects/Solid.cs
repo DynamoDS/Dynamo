@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Revit.Elements;
 using Revit.GeometryConversion;
 using Revit.GeometryObjects;
 using Revit.Graphics;
+using RevitServices.Persistence;
+using RevitServices.Transactions;
 using Curve = Autodesk.Revit.DB.Curve;
 using CurveLoop = Autodesk.Revit.DB.CurveLoop;
 using Edge = Revit.GeometryObjects.Edge;
+using Element = Revit.Elements.Element;
 using Face = Revit.GeometryObjects.Face;
 using PlanarFace = Autodesk.Revit.DB.PlanarFace;
 using Point = Autodesk.DesignScript.Geometry.Point;
@@ -18,7 +22,8 @@ using Solid = Autodesk.Revit.DB.Solid;
 
 namespace Revit.GeometryObjects
 {
-    public class Solid : AbstractGeometryObject
+    [IsVisibleInDynamoLibrary(false)]
+    public class Solid : GeometryObject
     {
         #region private members
 
@@ -33,7 +38,7 @@ namespace Revit.GeometryObjects
             get; private set;
         }
 
-        protected override GeometryObject InternalGeometryObject
+        protected override Autodesk.Revit.DB.GeometryObject InternalGeometryObject
         {
             get { return InternalSolid; }
         }
@@ -177,7 +182,14 @@ namespace Revit.GeometryObjects
         /// <param name="element"></param>
         internal Solid(Autodesk.Revit.DB.Element element)
         {
-            var instanceSolids = new Dictionary<ElementId, List<GeometryObject>>();;
+            // Regenerate to get the solids in the element. If the element was
+            // created during this same run, document regeneration will not have
+            // occured.
+            TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
+            DocumentManager.Instance.CurrentDBDocument.Regenerate();
+            TransactionManager.Instance.TransactionTaskDone();
+
+            var instanceSolids = new Dictionary<ElementId, List<Autodesk.Revit.DB.GeometryObject>>();;
             Autodesk.Revit.DB.Solid mySolid = null;
 
             var thisId = ElementId.InvalidElementId;
@@ -185,7 +197,7 @@ namespace Revit.GeometryObjects
             if (element != null)
             {
                 thisId = element.Id;
-                instanceSolids[thisId] = new List<GeometryObject>();
+                instanceSolids[thisId] = new List<Autodesk.Revit.DB.GeometryObject>();
             }
 
             bool bNotVisibleOption = false;
@@ -197,19 +209,20 @@ namespace Revit.GeometryObjects
             }
 
             int nTry = (bNotVisibleOption) ? 2 : 1;
-            for (int iTry = 0; iTry < nTry && (mySolid == null); iTry++)
+            for (int iTry = 0; iTry < nTry && (mySolid == null); 
+                iTry++)
             {
                 var geoOptions = new Autodesk.Revit.DB.Options();
                 geoOptions.ComputeReferences = true;
                 if (bNotVisibleOption && (iTry == 1))
                     geoOptions.IncludeNonVisibleObjects = true;
 
-                GeometryObject geomObj = element.get_Geometry(geoOptions);
+                Autodesk.Revit.DB.GeometryObject geomObj = element.get_Geometry(geoOptions);
                 var geomElement = geomObj as GeometryElement;
 
                 if (geomElement != null)
                 {
-                    foreach (GeometryObject geob in geomElement)
+                    foreach (Autodesk.Revit.DB.GeometryObject geob in geomElement)
                     {
                         var ginsta = geob as GeometryInstance;
                         if (ginsta != null && thisId != ElementId.InvalidElementId)
@@ -218,7 +231,7 @@ namespace Revit.GeometryObjects
 
                             instanceSolids[thisId].Add(instanceGeom);
 
-                            foreach (GeometryObject geobInst in instanceGeom)
+                            foreach (Autodesk.Revit.DB.GeometryObject geobInst in instanceGeom)
                             {
                                 mySolid = geobInst as Autodesk.Revit.DB.Solid;
                                 if (mySolid != null)
@@ -689,7 +702,7 @@ namespace Revit.GeometryObjects
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        public static Solid FromElement(AbstractElement element)
+        public static Solid FromElement(Element element)
         {
             if (element == null)
             {
@@ -709,7 +722,6 @@ namespace Revit.GeometryObjects
         }
 
         #endregion
-
 
         #region Tesselation
 

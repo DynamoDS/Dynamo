@@ -40,7 +40,7 @@ namespace Revit.Elements
         /// Internal constructor for ModelCurve
         /// </summary>
         /// <param name="c"></param>
-        private ModelCurve(Autodesk.Revit.DB.Curve c)
+        private ModelCurve(Autodesk.Revit.DB.Curve c, bool makeReferenceCurve)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
             var mc =
@@ -91,6 +91,8 @@ namespace Revit.Elements
             InternalSetCurveElement(mc);
             if (oldId != mc.Id && oldId != ElementId.InvalidElementId)
                DocumentManager.Instance.DeleteElement(oldId);
+            if (makeReferenceCurve)
+               mc.ChangeToReferenceLine();
 
             TransactionManager.Instance.TransactionTaskDone();
 
@@ -109,6 +111,8 @@ namespace Revit.Elements
         /// <returns></returns>
         private bool InternalSetSketchPlaneFromCurve(Autodesk.Revit.DB.Curve c)
         {
+            TransactionManager.Instance.EnsureInTransaction(Document);
+
             // Infer the sketch plane
             Autodesk.Revit.DB.Plane plane = GetPlaneFromCurve(c, false);
 
@@ -121,6 +125,8 @@ namespace Revit.Elements
             {
                 DocumentManager.Instance.DeleteElement(idSpUnused);
             }
+
+            TransactionManager.Instance.TransactionTaskDone();
 
             return !needsRemake;
         }
@@ -141,7 +147,22 @@ namespace Revit.Elements
                 throw new ArgumentNullException("curve");
             }
 
-            return new ModelCurve(curve.ToRevitType());
+            return new ModelCurve(curve.ToRevitType(), false);
+        }
+
+        // <summary>
+        /// Construct a Revit ModelCurve element from a Curve
+        /// </summary>
+        /// <param name="curve"></param>
+        /// <returns></returns>
+        public static ModelCurve ReferenceCurveByCurve(Autodesk.DesignScript.Geometry.Curve curve)
+        {
+           if (curve == null)
+           {
+              throw new ArgumentNullException("curve");
+           }
+
+           return new ModelCurve(curve.ToRevitType(), true);
         }
 
         #endregion
@@ -347,9 +368,13 @@ namespace Revit.Elements
             if (c is Autodesk.Revit.DB.NurbSpline)
             {
                 var ns = c as Autodesk.Revit.DB.NurbSpline;
-                PrincipalComponentsAnalysis(ns.CtrlPoints.ToList(), out meanPt, out orderedEigenvectors);
-                normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]).Normalize();
-                plane = Document.Application.Create.NewPlane(normal, meanPt);
+                if (plane == null)
+                {
+                   PrincipalComponentsAnalysis(ns.CtrlPoints.ToList(), out meanPt, out orderedEigenvectors);
+                   normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]).Normalize();
+
+                   plane = Document.Application.Create.NewPlane(normal, meanPt);
+                }
 
                 var projPoints = new List<XYZ>();
                 foreach (var pt in ns.CtrlPoints)

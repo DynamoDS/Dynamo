@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 using Revit.Elements.Views;
+using View3D = Revit.Elements.Views.View3D;
 
 namespace Revit.Elements
 {
     //[SupressImportIntoVM]
+    [IsVisibleInDynamoLibrary(false)]
     public static class ElementWrappingExtensions
     {
         /// <summary>
@@ -18,7 +21,7 @@ namespace Revit.Elements
         /// <param name="ele"></param>
         /// <param name="isRevitOwned">Whether the returned object should be revit owned or not</param>
         /// <returns></returns>
-        public static AbstractElement ToDSType(this Autodesk.Revit.DB.Element ele, bool isRevitOwned)
+        public static Element ToDSType(this Autodesk.Revit.DB.Element ele, bool isRevitOwned)
         {
 
             // cast to dynamic to dispatch to the appropriate wrapping method
@@ -29,9 +32,9 @@ namespace Revit.Elements
 
         #region Wrap methods
 
-        public static Element Wrap(Autodesk.Revit.DB.Element element, bool isRevitOwned)
+        public static UnknownElement Wrap(Autodesk.Revit.DB.Element element, bool isRevitOwned)
         {
-            return Element.FromExisting(element);
+            return UnknownElement.FromExisting(element);
         }
 
         public static AbstractFamilyInstance Wrap(Autodesk.Revit.DB.FamilyInstance ele, bool isRevitOwned)
@@ -144,7 +147,7 @@ namespace Revit.Elements
             return WallType.FromExisting(ele, isRevitOwned);
         }
 
-        public static AbstractView3D Wrap(Autodesk.Revit.DB.View3D view, bool isRevitOwned)
+        public static View3D Wrap(Autodesk.Revit.DB.View3D view, bool isRevitOwned)
         {
             if (view.IsPerspective)
             {
@@ -156,7 +159,7 @@ namespace Revit.Elements
             }
         }
 
-        public static AbstractElement Wrap(Autodesk.Revit.DB.ViewPlan view, bool isRevitOwned)
+        public static Element Wrap(Autodesk.Revit.DB.ViewPlan view, bool isRevitOwned)
         {
             if (view.ViewType == ViewType.CeilingPlan)
             {
@@ -169,7 +172,7 @@ namespace Revit.Elements
             else
             {
                 // unknown type of plan view, just wrap as unknown
-                return Element.FromExisting(view);
+                return UnknownElement.FromExisting(view);
             }
         }
 

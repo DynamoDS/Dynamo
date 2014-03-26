@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Enum = System.Enum;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Utils = Dynamo.Nodes.Utilities;
 using ProtoCore.DSASM;
 using Dynamo.ViewModels;
 using Dynamo.DSEngine;
@@ -457,6 +458,9 @@ namespace Dynamo.Models
             var manager = dynSettings.Controller.CustomNodeManager;
             var info = manager.AddFileToPath(workspaceHeader.FileName);
             var funcDef = manager.GetFunctionDefinition(info.Guid);
+            if (funcDef == null) // Fail to load custom function.
+                return;
+
             funcDef.AddToSearch();
 
             var ws = funcDef.WorkspaceModel;
@@ -664,6 +668,7 @@ namespace Dynamo.Models
             CurrentWorkspace.Notes.Clear(); 
             
             dynSettings.Controller.ResetEngine();
+            CurrentWorkspace.PreloadedTraceData = null;
         }
 
         /// <summary>
@@ -735,13 +740,20 @@ namespace Dynamo.Models
 
                 var dynamoModel = dynSettings.Controller.DynamoModel;
                 var currentVersion = MigrationManager.VersionFromWorkspace(dynamoModel.HomeSpace);
-                if (fileVersion < currentVersion) // Opening an older file, migrate workspace.
+                var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
+                if (decision == MigrationManager.Decision.Abort)
+                {
+                    MigrationManager.DisplayObsoleteFileMessage(fileVersion, currentVersion);
+                    return false;
+                }
+                else if (decision == MigrationManager.Decision.Migrate)
                 {
                     string backupPath = string.Empty;
                     bool isTesting = DynamoController.IsTestMode; // No backup during test.
                     if (!isTesting && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
                     {
-                        string message = string.Format("Original file '{0}' gets backed up at '{1}'",
+                        string message = string.Format(
+                            "Original file '{0}' gets backed up at '{1}'",
                             Path.GetFileName(xmlPath), backupPath);
 
                         DynamoLogger.Instance.Log(message);
@@ -995,6 +1007,14 @@ namespace Dynamo.Models
                 #endregion
 
                 HomeSpace.FileName = xmlPath;
+
+                // Allow live runner a chance to preload trace data from XML.
+                var engine = dynSettings.Controller.EngineController;
+                if (engine != null && (engine.LiveRunnerCore != null))
+                {
+                    var data = Utils.LoadTraceDataFromXmlDocument(xmlDoc);
+                    CurrentWorkspace.PreloadedTraceData = data;
+                }
             }
             catch (Exception ex)
             {
@@ -1173,6 +1193,8 @@ namespace Dynamo.Models
 #if USE_DSENGINE
                 else if (node is DSFunction)
                     nodeName = ((node as DSFunction).Definition.MangledName);
+                else if (node is DSVarArgFunction)
+                    nodeName = ((node as DSVarArgFunction).Definition.MangledName);
 #endif
 
                 var xmlDoc = new XmlDocument();

@@ -212,15 +212,10 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public bool GenerateGraphSyncData(IEnumerable<NodeModel> nodes)
         {
-            var activeNodes = nodes.Where(n =>
-                            ElementState.Active == n.State ||
-                            ElementState.Warning == n.State ||
-                            (ElementState.Error != n.State && n is DSFunction));
+            var activeNodes = nodes.Where(n => n.State != ElementState.Error);
 
             if (activeNodes.Any())
-            {
                 astBuilder.CompileToAstNodes(activeNodes, true);
-            }
 
             return VerifyGraphSyncData();
         }
@@ -264,6 +259,23 @@ namespace Dynamo.DSEngine
         {
             GraphSyncData data = syncDataManager.GetSyncData();
             syncDataManager.ResetStates();
+
+            var reExecuteNodesIds = controller.DynamoViewModel.Model.HomeSpace.Nodes
+                                                                    .Where(n => n.RequiresReExecute)
+                                                                    .Select(n => n.GUID);
+            if (reExecuteNodesIds.Any() && data.ModifiedSubtrees != null)
+            {
+                for (int i = 0; i < data.ModifiedSubtrees.Count; ++i)
+                {
+                    var st = data.ModifiedSubtrees[i];
+                    if (reExecuteNodesIds.Contains(st.GUID))
+                    {
+                        Subtree newSt = new Subtree(st.AstNodes, st.GUID);
+                        newSt.ForceExecution = true;
+                        data.ModifiedSubtrees[i] = newSt;
+                    }
+                }
+            }
 
             if ((data.AddedSubtrees != null && data.AddedSubtrees.Count > 0) ||
                 (data.ModifiedSubtrees != null && data.ModifiedSubtrees.Count > 0) ||

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Runtime;
 using DSCoreNodesUI;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -27,20 +28,19 @@ namespace DSCore
             RegisterAllPorts();
         }
 
-        public override IEnumerable<AssociativeNode> BuildOutputAst(
-            List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
             {
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
-                    AstFactory.BuildFunctionCall(
-                        "__Combine",
-                        new List<AssociativeNode>
-                        {
-                            inputAstNodes[1],
-                            AstFactory.BuildExprList(new List<AssociativeNode> { inputAstNodes[0] })
-                        }))
+                    IsPartiallyApplied
+                        ? AstFactory.BuildFunctionObject(
+                            "__Map",
+                            2,
+                            new[] { 0, 1 }.Where(HasConnectedInput),
+                            Enumerable.Reverse(inputAstNodes).ToList())
+                        : AstFactory.BuildFunctionCall("__Map", Enumerable.Reverse(inputAstNodes).ToList()))
             };
         }
     }
@@ -75,6 +75,7 @@ namespace DSCore
         }
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     [NodeName("Combine")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each element in two sequences")]
@@ -98,6 +99,7 @@ namespace DSCore
         }
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     [NodeName("For Each")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Performs a computation on each element of a list. Does not accumulate results.")]
@@ -121,6 +123,7 @@ namespace DSCore
         }
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     [NodeName("Lace Shortest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair resulting from a shortest lacing of the input lists. All lists are truncated to the length of the shortest input.")]
@@ -144,6 +147,7 @@ namespace DSCore
         }
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     [NodeName("Lace Longest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair resulting from a longest lacing of the input lists. All lists have their last element repeated to match the length of the longest input.")]
@@ -167,6 +171,7 @@ namespace DSCore
         }
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     [NodeName("Cartesian Product")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
@@ -253,6 +258,7 @@ namespace DSCore
     }
     */
 
+    [IsVisibleInDynamoLibrary(false)]
     [NodeName("Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Reduces a list into a new value by combining each element with an accumulated result.")]
@@ -309,6 +315,7 @@ namespace DSCore
         }
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     [NodeName("Filter")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Filters a sequence by a given predicate \"p\" such that for an arbitrary element \"x\" p(x) = True or False.")]

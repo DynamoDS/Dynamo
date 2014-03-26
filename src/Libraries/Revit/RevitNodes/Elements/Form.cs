@@ -15,7 +15,7 @@ using Solid = Revit.GeometryObjects.Solid;
 namespace Revit.Elements
 {
     [RegisterForTrace]
-    public class Form : AbstractElement
+    public class Form : Element
     {
 
         #region Internal Properties
