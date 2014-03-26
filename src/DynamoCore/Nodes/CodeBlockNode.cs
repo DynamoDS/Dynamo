@@ -316,58 +316,27 @@ namespace Dynamo.Nodes
                 return null;
             }
 
-            //var unboundIdentifiers = new List<string>();
             var resultNodes = new List<AssociativeNode>();
-            CodeBlockNode commentNode;
-            CodeBlockNode codeBlock = null;
-            string finalCode = "";
 
             // Define unbound variables if necessary
-            if (inputIdentifiers != null && inputIdentifiers.Count > 0)
+            if (inputIdentifiers != null && 
+                inputAstNodes != null && 
+                inputIdentifiers.Count == inputAstNodes.Count)
             {
-                if (null == inputAstNodes || inputAstNodes.Count != inputIdentifiers.Count)
-                {
-                    // This is already an invalid state. Return an empty resultNodes
-                    // A more robust fix is perhaps the ASTBuilder to ignore this node altogether if an error is reported
-                    return resultNodes;
-                }
-
-                var initStatements = new StringBuilder();
-                for (int i = 0; i < inputIdentifiers.Count; ++i)
-                {
-                    AssociativeNode astNode = inputAstNodes[i];
-                    if (astNode is IdentifierNode)
+                var initStatments = inputIdentifiers.Zip(inputAstNodes,
+                    (ident, rhs) =>
                     {
-                        string unboundVar = inputIdentifiers[i];
-                        string inputVar = (astNode as IdentifierNode).Value;
-                        if (!string.Equals(unboundVar, inputVar))
-                        {
-                            initStatements.Append(unboundVar);
-                            initStatements.Append(" = ");
-                            initStatements.Append(inputVar);
-                            initStatements.Append(";");
-                        }
-                    }
-                }
-                finalCode = initStatements.ToString();
+                        var identNode = AstFactory.BuildIdentifier(ident);
+                        MapIdentifiers(identNode);
+                        return AstFactory.BuildAssignment(identNode, rhs);
+                    });
+                resultNodes.AddRange(initStatments);
             }
-
-            try
-            {
-                codeBlock = GraphUtilities.Parse(finalCode, out commentNode) as CodeBlockNode;
-            }
-            catch (Exception ex)
-            {
-                State = ElementState.Error;
-                DynamoLogger.Instance.Log("Failed to build AST for code block node. Error: " + ex.Message);
-            }
-
-            if (codeBlock != null)
-                resultNodes.AddRange(codeBlock.Body);
 
             foreach (var stmnt in codeStatements)
             {
                 var astNode = ProtoCore.Utils.NodeUtils.Clone(stmnt.AstNode);
+                MapIdentifiers(astNode);
                 resultNodes.Add(astNode as ProtoCore.AST.AssociativeAST.AssociativeNode);
             }
 
@@ -387,7 +356,10 @@ namespace Dynamo.Nodes
                     portIndex--;
             }
 
-            return (codeStatements[statementIndex].AstNode as BinaryExpressionNode).LeftNode as IdentifierNode;
+            var ident = (codeStatements[statementIndex].AstNode as BinaryExpressionNode).LeftNode as IdentifierNode;
+            var mappedIdent = ProtoCore.Utils.NodeUtils.Clone(ident);
+            MapIdentifiers(mappedIdent);
+            return mappedIdent as IdentifierNode;
         }
 
         #endregion
@@ -494,14 +466,6 @@ namespace Dynamo.Nodes
             //Make sure variables have not been declared in other Code block nodes.
             inputIdentifiers = unboundIdentifiers;
 
-            string redefinedVariable = this.WorkSpace.GetFirstRedefinedVariable(this);
-            if (redefinedVariable != null)
-            {
-                ProcessError();
-                errorMessage = redefinedVariable + " is already defined";
-                return;
-            }
-
             SetPorts(unboundIdentifiers); //Set the input and output ports based on the statements
         }
 
@@ -512,12 +476,14 @@ namespace Dynamo.Nodes
                 var statement = parsedNodes[i] as BinaryExpressionNode;
                 if (null != statement)
                 {
-                    /*previewVariable = "temp" + Guid.NewGuid().ToString();
-                    previewVariable = previewVariable.Replace('-', '_');
-                    previewExpressionAST = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(new IdentifierNode(previewVariable), lastStatement.LeftNode, Operator.assign);*/
                     previewVariable = (statement.LeftNode as IdentifierNode).Value;
                     break;
                 }
+            }
+
+            if (!tempVariables.Contains(previewVariable))
+            {
+                previewVariable = previewVariable + "_" + this.GUID.ToString().Replace("-", string.Empty);
             }
         }
 
@@ -905,9 +871,84 @@ namespace Dynamo.Nodes
             return newText.Height;
 
         }
+
+        private void MapIdentifiers(Node astNode)
+        {
+            if (astNode == null)
+            {
+                return;
+            }
+
+            var definedVars = GetDefinedVariableNames();
+
+            if (astNode is IdentifierNode)
+            {
+                var identNode = astNode as IdentifierNode;
+                var ident = identNode.Value;
+                if ((inputIdentifiers.Contains(ident) || definedVars.Contains(ident)) 
+                    && !tempVariables.Contains(ident)
+                    && !identNode.Equals(AstIdentifierForPreview))
+                {
+                    identNode.Name = identNode.Value = ident + "_" + this.GUID.ToString().Replace("-", string.Empty);
+                }
+            }
+            else if (astNode is IdentifierListNode)
+            {
+                var node = astNode as IdentifierListNode;
+                MapIdentifiers(node.LeftNode);
+                MapIdentifiers(node.RightNode);
+            }
+            else if (astNode is FunctionCallNode)
+            {
+                var node = astNode as FunctionCallNode;
+                for (int i = 0; i < node.FormalArguments.Count; ++i)
+                {
+                    MapIdentifiers(node.FormalArguments[i]);
+                }
+            }
+            else if (astNode is ArrayNode)
+            {
+                var node = astNode as ArrayNode;
+                MapIdentifiers(node.Expr);
+            }
+            else if (astNode is ExprListNode)
+            {
+                var node = astNode as ExprListNode;
+                for (int i = 0; i < node.list.Count; ++i)
+                {
+                    MapIdentifiers(node.list[i]);
+                }
+            }
+            else if (astNode is FunctionDotCallNode)
+            {
+                var node = astNode as FunctionDotCallNode;
+            }
+            else if (astNode is InlineConditionalNode)
+            {
+                var node = astNode as InlineConditionalNode;
+                MapIdentifiers(node.ConditionExpression);
+                MapIdentifiers(node.TrueExpression);
+                MapIdentifiers(node.FalseExpression);
+            }
+            else if (astNode is RangeExprNode)
+            {
+                var node = astNode as RangeExprNode;
+                MapIdentifiers(node.FromNode);
+                MapIdentifiers(node.ToNode);
+                MapIdentifiers(node.StepNode);
+            }
+            else if (astNode is BinaryExpressionNode)
+            {
+                var node = astNode as BinaryExpressionNode;
+                MapIdentifiers(node.LeftNode);
+                MapIdentifiers(node.RightNode);
+            }
+            else
+            {
+            }
+        }
         #endregion
     }
-
 
     public class Statement
     {

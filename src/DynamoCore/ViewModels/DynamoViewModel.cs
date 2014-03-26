@@ -430,11 +430,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return this.controller.PreferenceSettings.ShowConnector;
+                return this.controller.IsShowingConnectors;
             }
             set
             {
-                this.controller.PreferenceSettings.ShowConnector = value;
+                this.controller.IsShowingConnectors = value;
 
                 RaisePropertyChanged("IsShowingConnectors");
             }
@@ -1248,8 +1248,6 @@ namespace Dynamo.ViewModels
 
         public void ShowConnectors(object parameter)
         {
-            if (IsShowingConnectors == false)
-                IsShowingConnectors = true;
         }
 
         internal bool CanShowConnectors(object parameter)
