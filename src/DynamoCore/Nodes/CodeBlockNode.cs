@@ -891,6 +891,8 @@ namespace Dynamo.Nodes
                 {
                     identNode.Name = identNode.Value = ident + "_" + this.GUID.ToString().Replace("-", string.Empty);
                 }
+
+                MapIdentifiers(identNode.ArrayDimensions);
             }
             else if (astNode is IdentifierListNode)
             {
@@ -905,6 +907,8 @@ namespace Dynamo.Nodes
                 {
                     MapIdentifiers(node.FormalArguments[i]);
                 }
+
+                MapIdentifiers(node.ArrayDimensions);
             }
             else if (astNode is ArrayNode)
             {
@@ -918,6 +922,7 @@ namespace Dynamo.Nodes
                 {
                     MapIdentifiers(node.list[i]);
                 }
+                MapIdentifiers(node.ArrayDimensions);
             }
             else if (astNode is FunctionDotCallNode)
             {
@@ -936,6 +941,7 @@ namespace Dynamo.Nodes
                 MapIdentifiers(node.FromNode);
                 MapIdentifiers(node.ToNode);
                 MapIdentifiers(node.StepNode);
+                MapIdentifiers(node.ArrayDimensions);
             }
             else if (astNode is BinaryExpressionNode)
             {
