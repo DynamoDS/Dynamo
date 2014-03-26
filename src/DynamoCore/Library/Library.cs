@@ -1004,10 +1004,12 @@ namespace Dynamo.DSEngine
                 new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.or), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
                
                 new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.nq), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
+                /*
                 new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.assign), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
                 new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwiseand), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
                 new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwiseor), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
                 new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwisexor), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
+                */
 
                 new FunctionDescriptor(null, null, Op.GetUnaryOpFunction(UnaryOperator.Not), GetUnaryFuncArgs(), null, FunctionType.GenericFunction),
             };
