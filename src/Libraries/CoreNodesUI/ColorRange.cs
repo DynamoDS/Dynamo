@@ -88,29 +88,34 @@ namespace DSCoreNodesUI
                     var startMirror = dynSettings.Controller.EngineController.GetMirror(startId);
                     var endMirror = dynSettings.Controller.EngineController.GetMirror(endId);
 
-                    Color start = null;
-                    Color end = null;
+                    object start = null;
+                    object end = null;
 
                     if (startMirror.GetData().IsCollection)
                     {
-                        start = (Color) startMirror.GetData().GetElements().Select(x => x.Data).FirstOrDefault();
+                        start = startMirror.GetData().GetElements().Select(x => x.Data).FirstOrDefault();
                     }
                     else
                     {
-                        start = (Color)startMirror.GetData().Data;
+                        start = startMirror.GetData().Data;
                     }
 
                     if (endMirror.GetData().IsCollection)
                     {
-                        end = (Color) endMirror.GetData().GetElements().Select(x => x.Data).FirstOrDefault();
+                        end = endMirror.GetData().GetElements().Select(x => x.Data).FirstOrDefault();
                     }
                     else
                     {
-                        end = (Color)endMirror.GetData().Data;
+                        end = endMirror.GetData().Data;
                     }
-                    
-                    WriteableBitmap bmp = CompleteColorScale(start, end);
-                    drawPlane.Source = bmp;
+
+                    Color startColor = start as Color;
+                    Color endColor = end as Color;
+                    if (null != startColor && null != endColor)
+                    {
+                        WriteableBitmap bmp = CompleteColorScale(startColor, endColor);
+                        drawPlane.Source = bmp;
+                    }
                 });
             };
         }

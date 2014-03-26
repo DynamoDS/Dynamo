@@ -111,6 +111,8 @@ namespace Revit.Elements
         /// <returns></returns>
         private bool InternalSetSketchPlaneFromCurve(Autodesk.Revit.DB.Curve c)
         {
+            TransactionManager.Instance.EnsureInTransaction(Document);
+
             // Infer the sketch plane
             Autodesk.Revit.DB.Plane plane = GetPlaneFromCurve(c, false);
 
@@ -123,6 +125,8 @@ namespace Revit.Elements
             {
                 DocumentManager.Instance.DeleteElement(idSpUnused);
             }
+
+            TransactionManager.Instance.TransactionTaskDone();
 
             return !needsRemake;
         }

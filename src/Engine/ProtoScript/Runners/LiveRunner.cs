@@ -31,11 +31,13 @@ namespace ProtoScript.Runners
     {
         public Guid GUID;
         public List<AssociativeNode> AstNodes;
+        public bool ForceExecution;
 
         public Subtree(List<AssociativeNode> astNodes, System.Guid guid)
         {
             GUID = guid;
             AstNodes = astNodes;
+            ForceExecution = false;
         }
     }
 
@@ -957,12 +959,15 @@ namespace ProtoScript.Runners
             {
                 // Check if node exists in the prev AST list
                 bool nodeFound = false;
-                foreach (AssociativeNode prevNode in st.AstNodes)
+                if (!subtree.ForceExecution)
                 {
-                    if (prevNode.Equals(node))
+                    foreach (AssociativeNode prevNode in st.AstNodes)
                     {
-                        nodeFound = true;
-                        break;
+                        if (prevNode.Equals(node))
+                        {
+                            nodeFound = true;
+                            break;
+                        }
                     }
                 }
 
@@ -1469,7 +1474,15 @@ namespace ProtoScript.Runners
                         {
                             if (null != oldSubTree.AstNodes)
                             {
-                                var removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+                                List<AssociativeNode> removedNodes = null;
+                                if (st.ForceExecution)
+                                {
+                                    removedNodes = oldSubTree.AstNodes;
+                                }
+                                else
+                                {
+                                    removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+                                }
                                 DeactivateGraphnodes(removedNodes);
 
                                 foreach (var node in removedNodes)

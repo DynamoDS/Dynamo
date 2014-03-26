@@ -14,6 +14,7 @@ using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Utils = Dynamo.Nodes.Utilities;
 using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Models
@@ -308,6 +309,42 @@ namespace Dynamo.Models
         public UndoRedoRecorder UndoRecorder
         {
             get { return undoRecorder; }
+        }
+
+        /// <summary>
+        /// This does not belong here, period. It is here simply because there is 
+        /// currently no better place to put it. A DYN file is loaded by DynamoModel,
+        /// subsequently populating WorkspaceModel, along the way, the trace data 
+        /// gets preloaded with the file. The best place for this cached data is in 
+        /// the EngineController (or even LiveRunner), but the engine gets reset in 
+        /// a rather nondeterministic way (for example, when Revit idle thread 
+        /// decides it is time to execute a pre-scheduled engine reset). And it gets 
+        /// done more than once during file open. So that's out. The second best 
+        /// place to store this information is then the WorkspaceModel, where file 
+        /// loading is SUPPOSED TO BE done. As of now we let DynamoModel sets the 
+        /// loaded data (since it deals with loading DYN file), but in near future,
+        /// the file loading mechanism will be completely moved into WorkspaceModel,
+        /// that's the time we removed this property setter below.
+        /// </summary>
+        private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData = null;
+
+        internal IEnumerable<KeyValuePair<Guid, List<string>>> PreloadedTraceData
+        {
+            get
+            {
+                return this.preloadedTraceData;
+            }
+
+            set
+            {
+                if (value != null && (this.preloadedTraceData != null))
+                {
+                    var message = "PreloadedTraceData cannot be set twice";
+                    throw new InvalidOperationException(message);
+                }
+
+                this.preloadedTraceData = value;
+            }
         }
 
         #endregion
@@ -901,7 +938,8 @@ namespace Dynamo.Models
 
                 }).Select((n) => n.GUID);
 
-                core.SerializeTraceDataForNodes(nodeGuids, document);
+                var nodeTraceDataList = core.GetTraceDataForNodes(nodeGuids);
+                Utils.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
             }
             catch (Exception exception)
             {
