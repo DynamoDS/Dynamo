@@ -120,7 +120,7 @@ namespace Dynamo.Tests
             }
         }
 
-        private void AssertValue(MirrorData data, object value)
+        public void AssertValue(MirrorData data, object value)
         {
             if (data.IsCollection)
                 AssertCollection(data, value as IEnumerable);

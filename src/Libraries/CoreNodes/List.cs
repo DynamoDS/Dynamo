@@ -7,6 +7,34 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
 {
+    class DistinctComparer : IEqualityComparer<object>
+    {
+        internal static IEqualityComparer<object> Instance = new DistinctComparer();
+
+        private static bool Eq(object x, object y)
+        {
+            return object.Equals(x, y);
+        }
+
+        private bool Eq(IList x, IList y)
+        {
+            return x.Cast<object>().Zip(y.Cast<object>(), Equals).All(b => b);
+        }
+
+        public bool Equals(object x, object y)
+        {
+            return Eq(x as dynamic, y as dynamic);
+        }
+
+        public int GetHashCode(object obj)
+        {
+            if (obj is IList)
+                return -1;
+            return obj.GetHashCode();
+        }
+    }
+
+
     /// <summary>
     ///     Methods for creating and manipulating Lists.
     /// </summary>
@@ -20,7 +48,7 @@ namespace DSCore
         /// <search>unique, remove, duplicates</search>
         public static IList UniqueItems(IList list)
         {
-            return list.Cast<object>().Distinct().ToList();
+            return list.Cast<object>().Distinct(DistinctComparer.Instance).ToList();
         }
 
         /// <summary>
@@ -344,7 +372,7 @@ namespace DSCore
             IList result = new ArrayList();
 
             int _start = start ?? 0;
-            int end = count == null ? list.Count : _start + (int)count;
+            int end = count == null ? list.Count : (int)Math.Min(list.Count, _start + ((int)count)*step);
 
             for (int i = start ?? 0; i < end; i += step)
                 result.Add(list[i]);
