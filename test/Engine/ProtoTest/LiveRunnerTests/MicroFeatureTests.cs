@@ -3113,8 +3113,8 @@ z=Point.ByCoordinates(y,a,a);
                 @"import(""FFITarget.dll"");",
                 "a = 1;",
                 "a = 10;",
-                "p = DummyPoint.ByCoordinates(x, 0.0, 0.0);",
-                "x = a; p = DummyPoint.ByCoordinates(x, 0.0, 0.0);"
+                "p = DummyPoint.ByCoordinates(x, 0.0, 0.0); i = p.X;",
+                "x = a; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); i = p.X;",
             };
 
             List<Subtree> added = new List<Subtree>();
@@ -3146,6 +3146,8 @@ z=Point.ByCoordinates(y,a,a);
             modified.Add(CreateSubTreeFromCode(guid2, codes[2]));
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("i", 10.0);
         }
 
 
@@ -3157,8 +3159,8 @@ z=Point.ByCoordinates(y,a,a);
                 @"import(""FFITarget.dll"");",
                 "a = 1;",
                 "a = 10;",
-                "p = DummyPoint.ByCoordinates(x, 0.0, 0.0);",
-                "p = DummyPoint.ByCoordinates(x, 0.0, 0.0); x = a; "
+                "p = DummyPoint.ByCoordinates(x, 0.0, 0.0); i = p.X;",
+                "p = DummyPoint.ByCoordinates(x, 0.0, 0.0); i = p.X; x = a;",
             };
 
             List<Subtree> added = new List<Subtree>();
@@ -3190,6 +3192,8 @@ z=Point.ByCoordinates(y,a,a);
             modified.Add(CreateSubTreeFromCode(guid2, codes[2]));
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("i", 10.0);
         }
 
         [Test]
