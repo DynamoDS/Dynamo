@@ -331,7 +331,7 @@ namespace Dynamo.DSEngine
 
             foreach (var node in warningNodes)
             {
-                node.State = ElementState.Active;
+                node.ClearError();
             }
         }
 
