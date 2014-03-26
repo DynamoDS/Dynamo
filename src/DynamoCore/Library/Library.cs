@@ -957,7 +957,8 @@ namespace Dynamo.DSEngine
         {
             var functions = from method in GraphUtilities.BuiltInMethods
                             let arguments = method.argInfoList.Zip(method.argTypeList, (arg, argType) => new TypedParameter(arg.Name, argType.ToString()))
-                            select new FunctionDescriptor(null, null, method.name, arguments,  method.returntype.ToString(), FunctionType.GenericFunction);
+                            let visibleInLibrary = (method.MethodAttribute == null || !method.MethodAttribute.HiddenInLibrary)
+                            select new FunctionDescriptor(null, null, method.name, arguments,  method.returntype.ToString(), FunctionType.GenericFunction, visibleInLibrary);
 
             AddBuiltinFunctions(functions);
         }
@@ -1037,16 +1038,18 @@ namespace Dynamo.DSEngine
                 return;
 
             bool isVisibleInLibrary = true;
-            if(null !=proc.MethodAttribute && !proc.MethodAttribute.IsVisibleInLibrary)
+            if(null !=proc.MethodAttribute && proc.MethodAttribute.HiddenInLibrary)
             {
                 isVisibleInLibrary = false;
             }
 
-            if ((null != classNode.ClassAttributes && !classNode.ClassAttributes.IsVisibleInLibrary)
-                && (null == proc.MethodAttribute || !proc.MethodAttribute.IsVisibleInLibrarySet ||
-                !proc.MethodAttribute.IsVisibleInLibrary))
+            //If the class is Hidden all methods are hidden. 
+            if (null != classNode.ClassAttributes && classNode.ClassAttributes.HiddenInLibrary) 
             {
                 isVisibleInLibrary = false;
+                //But if a particular method is not hidden, then this method is visible
+                if (null != proc.MethodAttribute && !proc.MethodAttribute.HiddenInLibrary)
+                    isVisibleInLibrary = true;
             }
 
             string procName = proc.name;
