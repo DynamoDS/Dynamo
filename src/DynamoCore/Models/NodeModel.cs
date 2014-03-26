@@ -850,7 +850,7 @@ namespace Dynamo.Models
             ToolTipText = "";
         }
 
-        protected void ClearError()
+        public void ClearError()
         {
             State = ElementState.Dead;
             ClearTooltipText();

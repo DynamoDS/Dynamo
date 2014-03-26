@@ -235,8 +235,8 @@ namespace Dynamo.Tests
             // a=1;
             // b=2;
             RunModel(@"core\dsevaluation\multiline_614.dyn");
-            AssertValue("a", 1);
-            AssertValue("b", 2);
+            AssertValue("a_a826eb6109534282aca0f888679fe084", 1);
+            AssertValue("b_a826eb6109534282aca0f888679fe084", 2);
         }
 
         [Test]
@@ -247,8 +247,8 @@ namespace Dynamo.Tests
             // b=2;
 
             RunModel(@"core\dsevaluation\multiline_614_2.dyn");
-            AssertValue("a", 1);
-            AssertValue("b", 2);
+            AssertValue("a_a826eb6109534282aca0f888679fe084", 1);
+            AssertValue("b_a826eb6109534282aca0f888679fe084", 2);
         }
         [Test]
         public void CBN_String_599()
@@ -257,7 +257,7 @@ namespace Dynamo.Tests
             // a="Dynamo";
 
             RunModel(@"core\dsevaluation\CBN_string_599.dyn");
-            AssertValue("a", "Dynamo");
+            AssertPreviewValue("f098c8de-8714-49a4-b556-7dee2953590a", "Dynamo");
             
         }
         [Test]
@@ -266,14 +266,14 @@ namespace Dynamo.Tests
         // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-697
             // a=1;
             RunModel(@"core\dsevaluation\CBN_Create_697.dyn");
-            AssertValue("a", 1);
+            AssertPreviewValue("df8f3354-78a6-4786-9a0f-8844073b898f", 1);
         }
         [Test]
         public void CBN_Math_Pi_621()
         {
         // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-621
             RunModel(@"core\dsevaluation\CBN_Math_Pi_621.dyn");
-            AssertValue("a", Math.PI);
+            AssertPreviewValue("b1d53709-114b-4ea6-8687-5f4456ddc336", Math.PI);
 
         }
         
@@ -282,8 +282,8 @@ namespace Dynamo.Tests
         {
         // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-614
             RunModel(@"core\dsevaluation\CBN_Multiple_Assignement_614.dyn");
-            AssertValue("a", 1);
-            AssertValue("b", 1);
+            AssertValue("a_42f211b3faf04b99add9764a0f9d0df4", 1);
+            AssertValue("b_42f211b3faf04b99add9764a0f9d0df4", 1);
 
         }
         [Test]
@@ -291,7 +291,7 @@ namespace Dynamo.Tests
         {
         // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-612
             RunModel(@"core\dsevaluation\CBN_Conditional_612.dyn");
-            AssertValue("a", new int[] { 1,2 });
+            AssertPreviewValue("59084c1a-86c9-47e7-bae1-7edce5ffb83b", new int[] { 1, 2 });
             
         }
         [Test]
@@ -299,7 +299,7 @@ namespace Dynamo.Tests
         {
         // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-593
             RunModel(@"core\dsevaluation\CBN_Reference_593.dyn");
-            AssertValue("b", 3);
+            AssertPreviewValue("e7b304bf-3d30-482d-951b-5e28c811c411", 3);
 
         }
         [Test]
@@ -307,7 +307,7 @@ namespace Dynamo.Tests
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-593
             RunModel(@"core\dsevaluation\CBN_Reference_593_2.dyn");
-            AssertValue("b", new int[] {1,2,3,4,5});
+            AssertPreviewValue("d177c6b4-2bb4-4f3a-a2e9-6d8d9e8db17b", new int[] { 1, 2, 3, 4, 5 });
 
         }
         [Test]
@@ -315,7 +315,7 @@ namespace Dynamo.Tests
         {
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-607
             RunModel(@"core\dsevaluation\CBN_binary_607.dyn");
-            AssertValue("c", true);
+            AssertPreviewValue("81f25df3-a55e-48c9-9fe8-0ce0cc17fdc3", true);
 
         }
         [Test]
@@ -323,7 +323,7 @@ namespace Dynamo.Tests
         {
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-607
             RunModel(@"core\dsevaluation\CBN_multiple_binary_607.dyn");
-            AssertValue("c", true);
+            AssertPreviewValue("56383e77-7cfc-47af-b136-e268edd21486", true);
 
         }
         [Test]
@@ -331,7 +331,7 @@ namespace Dynamo.Tests
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-597
             RunModel(@"core\dsevaluation\CBN_conditionals_597.dyn");
-            AssertValue("b", 1);
+            AssertPreviewValue("5e1e0e66-793e-4766-8935-81c56d8b1dc3", 1);
 
         }
         [Test]
@@ -339,7 +339,7 @@ namespace Dynamo.Tests
         {
         // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-597
             RunModel(@"core\dsevaluation\CBN_conditionals_597_2.dyn");
-            AssertValue("b", 5);
+            AssertPreviewValue("5e1e0e66-793e-4766-8935-81c56d8b1dc3", 5);
 
         }
         [Test]
@@ -347,7 +347,7 @@ namespace Dynamo.Tests
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-608
             RunModel(@"core\dsevaluation\CBN_nested_Conditionals_608.dyn");
-            AssertValue("a", false);
+            AssertPreviewValue("ecc394fe-4253-4c1f-b83b-0cc56ba69fdd", false);
 
         }
         [Test]
@@ -355,7 +355,7 @@ namespace Dynamo.Tests
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-608
             RunModel(@"core\dsevaluation\CBN_nested_Conditionals_608_2.dyn");
-            AssertValue("a", false);
+            AssertPreviewValue("688763a6-4891-45f2-9ce6-7722546c48b8", false);
 
         }
         [Test]
@@ -363,7 +363,7 @@ namespace Dynamo.Tests
         {
         // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-612
             RunModel(@"core\dsevaluation\CBN_ConditionalWithExpression_612.dyn");
-            AssertValue("a", new int[] { 1, 2 });
+            AssertPreviewValue("688763a6-4891-45f2-9ce6-7722546c48b8", new int[] { 1, 2 });
 
         }
         [Test]
@@ -371,7 +371,7 @@ namespace Dynamo.Tests
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-612
             RunModel(@"core\dsevaluation\CBN_ConditionalWithExpression_612_2.dyn");
-            AssertValue("a", new int[] { 1, 2 });
+            AssertPreviewValue("688763a6-4891-45f2-9ce6-7722546c48b8", new int[] { 1, 2 });
 
         }
         [Test]
@@ -379,7 +379,7 @@ namespace Dynamo.Tests
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-705
             RunModel(@"core\dsevaluation\CBN_multiline_705.dyn");
-            AssertValue("c",3);
+            AssertPreviewValue("d59b7582-7d01-41b5-ad25-d6133e85cd58",3);
 
         }
         
@@ -396,7 +396,7 @@ namespace Dynamo.Tests
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-625
             RunModel(@"core\dsevaluation\CBN_Class_GetterProperty_625.dyn");
-            AssertValue("b", 0.00);
+            AssertPreviewValue("0cec98ab-010c-4335-bd84-34d1847326ab", 0.00);
 
         }
 
@@ -442,7 +442,7 @@ namespace Dynamo.Tests
 
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-330
             RunModel(@"core\dsevaluation\CBN_Double_Array_330.dyn");
-            AssertValue("y", 4);
+            AssertPreviewValue("da9c8ae9-034b-4ab7-b189-b40ad597110b", 4);
 
         }
              
@@ -452,8 +452,8 @@ namespace Dynamo.Tests
 
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-622
             RunModel(@"core\dsevaluation\CBN_Dynamic_Array_622.dyn");
-            AssertValue("y", new int[] {1});
-            AssertValue("c", 1 );
+            AssertValue("y_1086551ad8514eccb9bf9eeba3e9f6bf", new int[] {1});
+            AssertValue("c_1086551ad8514eccb9bf9eeba3e9f6bf", 1 );
 
         }
         [Test]
@@ -462,7 +462,7 @@ namespace Dynamo.Tests
 
         //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-622
             RunModel(@"core\dsevaluation\CBN_Dynamic_Array_622_2.dyn");
-            AssertValue("z", 4);
+            AssertPreviewValue("1086551a-d851-4ecc-b9bf-9eeba3e9f6bf", 4);
 
         }
         [Test]
@@ -471,7 +471,7 @@ namespace Dynamo.Tests
 
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-592
             RunModel(@"core\dsevaluation\CBN_nestedrange592.dyn");
-            AssertValue("a", new int[][] {new int[]{1,2,3,4,5,6,7,8,9,10,11},new int[]{2,4,6,8,10,12},new int[] {3,6,9,12}});
+            AssertPreviewValue("ae1def01-2d92-43ab-9c64-68b36ee4d4aa", new int[][] {new int[]{1,2,3,4,5,6,7,8,9,10,11},new int[]{2,4,6,8,10,12},new int[] {3,6,9,12}});
 
         }
         [Test]
@@ -480,7 +480,7 @@ namespace Dynamo.Tests
 
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-592
             RunModel(@"core\dsevaluation\CBN_nestedrange592_2.dyn");
-            AssertValue("a", new int[][] { new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, new int[] { 2, 3, 4, 5, 6, 7,8,9,10 }, new int[] { 3, 4,5,6,7,8,9,10 } });
+            AssertPreviewValue("ae1def01-2d92-43ab-9c64-68b36ee4d4aa", new int[][] { new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, new int[] { 2, 3, 4, 5, 6, 7,8,9,10 }, new int[] { 3, 4,5,6,7,8,9,10 } });
         }
         [Test]
         public void CBN_Dynamic_Array_433()
@@ -502,28 +502,28 @@ namespace Dynamo.Tests
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-629
             RunModel(@"core\dsevaluation\CBN_Array_Range_629.dyn");
-            AssertValue("a", new int[][] { new int[] { 1, 2 } });
+            AssertPreviewValue("f5b252f3-67b9-4287-a003-eb8d3b8f9cb2", new int[][] { new int[] { 1, 2 } });
         }
         [Test]
         public void CBN_Array_Range_629_2()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-629
             RunModel(@"core\dsevaluation\CBN_Array_Range_629_2.dyn");
-            AssertValue("a",  new int[]{4});
+            AssertPreviewValue("f5b252f3-67b9-4287-a003-eb8d3b8f9cb2",  new int[]{4});
         }
         [Test]
         public void CBN_Empty_722()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-722
             RunModel(@"core\dsevaluation\CBN_Empty_722.dyn");
-            AssertValue("a",  10.00);
+            AssertPreviewValue("25b8e1de-925a-46fb-9fcf-5d4100a5af0d",  10.00);
         }
         [Test]
         public void CBN_array_indexnull_619()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-722
             RunModel(@"core\dsevaluation\CBN_array_indexnull_619.dyn");
-            AssertValue("a",  new int []{5});
+            AssertPreviewValue("6985948e-992c-4420-8c39-1f5f5d57dc64", new int[] { 5 });
         }
         
 
@@ -629,14 +629,14 @@ namespace Dynamo.Tests
             //               ==> a[0]= 3;
             RunModel(@"core\dsevaluation\Defect_MAGN_610.dyn");
             AssertPreviewValue("aa78716b-f3f6-4676-bb72-2cb1c34181f8", new int[] { 3, 2, 3 });
-            AssertValue("a", new int[] { 3, 2, 3 });
+            AssertValue("a_aa78716bf3f64676bb722cb1c34181f8", new int[] { 3, 2, 3 });
         }
 
         [Test]
         public void UsingFunctionObject01()
         {
             RunModel(@"core\dsevaluation\FunctionObject.dyn");
-            AssertValue("r", 45);
+            AssertPreviewValue("5dad688a-e6f3-4153-b87e-d1713b645de9", 45);
         }
 
         [Test]
