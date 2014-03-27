@@ -1638,7 +1638,7 @@ namespace ProtoCore
                         , null, core);
 
                     GCUtils.GCRetain(newSV, core);
-                    GCUtils.GCRelease(oldSv, core);
+                    // GCUtils.GCRelease(oldSv, core);
 
                     oldSv = newSV;
                 }
