@@ -31,11 +31,14 @@ namespace FFITarget
 
     }
 
-    public class IncrementerTracedClass
+    public class IncrementerTracedClass : IDisposable
     {
+        public static List<int> DisposedElementIDs = new List<int>(); 
+
         public static void ResetForNextTest()
         {
             nextID = -1;
+            DisposedElementIDs = new List<int>();
         }
 
         public static int nextID = -1;
@@ -70,6 +73,35 @@ namespace FFITarget
             }
         }
 
+        /// <summary>
+        /// Note that x is a dummy var here that is intended to force replicated dispatch
+        /// it's not actually used
+        /// </summary>
+        /// <param name="x">Dummy var used to force replicated dispatch</param>
+        /// <param name="failWithException">Fail dispatch with an exception rather than </param>
+        public IncrementerTracedClass(int x, bool failWithException)
+        {
+            if (failWithException)
+                throw new ArgumentException("Failure requested");
+
+            var retVal = DSNodeServices.TraceUtils.GetTraceData(__TEMP_REVIT_TRACE_ID);
+
+            if (retVal != null)
+            {
+                wasTraced = true;
+
+                IDHolder idHolder = (IDHolder)retVal;
+                ID = idHolder.ID;
+
+            }
+            else
+            {
+                nextID++;
+                ID = nextID;
+                DSNodeServices.TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new IDHolder() { ID = nextID });
+            }
+        }
+
 
 
         public bool WasCreatedWithTrace()
@@ -77,6 +109,11 @@ namespace FFITarget
             return wasTraced;
         }
 
+
+        public void Dispose()
+        {
+            IncrementerTracedClass.DisposedElementIDs.Add(ID);
+        }
     }
 
 
