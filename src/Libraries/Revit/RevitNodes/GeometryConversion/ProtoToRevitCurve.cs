@@ -198,5 +198,35 @@ namespace Revit.GeometryConversion
             return e;
         }
 
+        /// <summary>
+        /// Convert a generic Circle to a Revit Curve
+        /// </summary>
+        /// <param name="crvCurve"></param>
+        /// <returns></returns>
+        private static Autodesk.Revit.DB.Curve Convert(Autodesk.DesignScript.Geometry.Curve crvCurve)
+        {
+           Autodesk.DesignScript.Geometry.Curve[] curves = crvCurve.ApproximateWithArcAndLineSegments();
+           if (curves.Length == 1)
+           {
+              //line or arc?
+              var point0 = crvCurve.PointAtParameter(0.0);
+              var point1 = crvCurve.PointAtParameter(1.0);
+              var pointMid = crvCurve.PointAtParameter(0.5);
+              if (point0.DistanceTo(point1) > 1e-7)
+              {
+                 var line = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(point0, point1);
+                 if (pointMid.DistanceTo(line) < 1e-7)
+                    return Convert(line);
+              }
+              //then arc
+              if (point0.DistanceTo(point1) < 1e-7)
+                 point1 = crvCurve.PointAtParameter(0.9);
+              var arc = Autodesk.DesignScript.Geometry.Arc.ByThreePoints(point0, pointMid, point1);
+              return Convert(arc);
+           }
+   
+           return Convert(crvCurve.ToNurbsCurve());
+        }
+
     }
 }

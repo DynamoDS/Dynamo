@@ -22,7 +22,7 @@ namespace DSRevitNodesTests.Elements
             Assert.NotNull(p2);
             Assert.NotNull(p3);
 
-            var curveByPoints = CurveByPoints.ByReferencePoints(new List<ReferencePoint>{p1,p2,p3});
+            var curveByPoints = CurveByPoints.ByReferencePoints(new List<ReferencePoint>{p1,p2,p3}.ToArray());
             Assert.NotNull(curveByPoints);
 
             var curveRef = curveByPoints.CurveReference;
@@ -43,7 +43,7 @@ namespace DSRevitNodesTests.Elements
             //ensure that the call to create a curve by points with 
             //duplicate points is handled and a system exception is thrown
             Assert.Throws<Exception>(
-                () => CurveByPoints.ByReferencePoints(new List<ReferencePoint> {p1, p2, p2}));
+                () => CurveByPoints.ByReferencePoints(new List<ReferencePoint> {p1, p2, p2}.ToArray()));
         }
 
         [Test]
@@ -61,14 +61,14 @@ namespace DSRevitNodesTests.Elements
 
             ElementBinder.IsEnabled = true;
 
-            var curveByPoints = CurveByPoints.ByReferencePoints(new List<ReferencePoint> { p1, p2, p3 });
+            var curveByPoints = CurveByPoints.ByReferencePoints(new List<ReferencePoint> { p1, p2, p3 }.ToArray());
             Assert.NotNull(curveByPoints);
 
             var curveRef = curveByPoints.CurveReference;
             Assert.NotNull(curveRef);
 
             var p4 = ReferencePoint.ByCoordinates(3, 3, 3);
-            curveByPoints = CurveByPoints.ByReferencePoints(new List<ReferencePoint> { p1, p2, p4 });
+            curveByPoints = CurveByPoints.ByReferencePoints(new List<ReferencePoint> { p1, p2, p4 }.ToArray());
             Assert.NotNull(curveByPoints);
         }
     }

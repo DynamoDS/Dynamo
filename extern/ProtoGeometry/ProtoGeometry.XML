@@ -469,6 +469,11 @@
             Create a Solid by lofting between input cross section closed Curves.
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(Autodesk.DesignScript.Geometry.PolyCurve[])">
+            <summary>
+            Create a Solid by lofting between input cross section closed PolyCurves.
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(Autodesk.DesignScript.Geometry.Curve[],Autodesk.DesignScript.Geometry.Curve)">
             <summary>
             Create a Solid by lofting between input cross section closed Curves,  with guide Curve to assist. Guide Curve must intersect all cross section Curves.
