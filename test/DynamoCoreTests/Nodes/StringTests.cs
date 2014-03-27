@@ -75,6 +75,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath); //later will add node and connector count verification.
 
+            Assert.Inconclusive();
         }
 
         #endregion
@@ -119,7 +120,13 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSubstring_invalidInput.dyn");
 
-            RunModel(testFilePath);//later will add node and connector count verification.
+            RunModel(testFilePath);
+
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+
+            NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("aa03e3b7-066b-4564-91bc-69c247bc8bdb");
+            Assert.AreEqual(ElementState.Warning, nodeModel.State);
         }
 
         [Test]
@@ -167,6 +174,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);//later will add node and connector count verification.
 
+            Assert.Inconclusive();
         }
 
         [Test]
@@ -201,8 +209,13 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestNumberToString_invalidInput.dyn");
 
-            RunModel(testFilePath);//later will add node and connector count verification.
+            RunModel(testFilePath);
 
+            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
+
+            NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("b8e70cee-f3dd-4a54-a9c6-cf62fee67c5a");
+            Assert.AreEqual(ElementState.Warning, nodeModel.State);
         }
 
         [Test]
@@ -270,8 +283,13 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_invalidInput.dyn");
 
-            RunModel(testFilePath);//later will add node and connector count verification.
+            RunModel(testFilePath);
 
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+
+            NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("d36759fb-da7a-475a-a43a-9c85996ad55d");
+            Assert.AreEqual(ElementState.Warning, nodeModel.State);
         }
 
         [Test]
@@ -329,6 +347,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);//later will add node and connector count verification.
 
+            Assert.Inconclusive();
         }
 
         [Test]
@@ -354,46 +373,27 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);//later will add node and connector count verification.
 
+            Assert.Inconclusive();
         }
 
         [Test]
         public void TestStringToNumberFileInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            var testDynFile = "TestStringToNumber_fromFile.dyn";
-            OpenModel(Path.Combine(localDynamoStringTestFloder, testDynFile));
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_fromFile.dyn");
 
-            // "Dynamo.Nodes.dynString2Num" has been deprecated.
-            var workspace = model.CurrentWorkspace;
-            var nodeGuid = "0f912454-b278-499f-b15f-c42c039a5453";
-            var nodeModel = workspace.NodeFromWorkspace(nodeGuid);
-            Assert.IsNotNull(nodeModel);
-            Assert.IsTrue(nodeModel is DSCoreNodesUI.DummyNode);
-
-            var dummyNode = nodeModel as DSCoreNodesUI.DummyNode;
-            Assert.AreEqual(1, dummyNode.InputCount);
-            Assert.AreEqual(1, dummyNode.OutputCount);
-            Assert.AreEqual("Dynamo.Nodes.dynString2Num", dummyNode.LegacyNodeName);
+            RunModel(testFilePath);
+            AssertPreviewValue("f8767579-f7c1-475f-980e-7cd6a42684c8", 123521);
         }
 
         [Test]
         public void TestStringToNumberFunctionInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            var testDynFile = "TestStringToNumber_fromFunction.dyn";
-            OpenModel(Path.Combine(localDynamoStringTestFloder, testDynFile));
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_fromFunction.dyn");
 
-            // "Dynamo.Nodes.dynString2Num" has been deprecated.
-            var workspace = model.CurrentWorkspace;
-            var nodeGuid = "0f912454-b278-499f-b15f-c42c039a5453";
-            var nodeModel = workspace.NodeFromWorkspace(nodeGuid);
-            Assert.IsNotNull(nodeModel);
-            Assert.IsTrue(nodeModel is DSCoreNodesUI.DummyNode);
-
-            var dummyNode = nodeModel as DSCoreNodesUI.DummyNode;
-            Assert.AreEqual(1, dummyNode.InputCount);
-            Assert.AreEqual(1, dummyNode.OutputCount);
-            Assert.AreEqual("Dynamo.Nodes.dynString2Num", dummyNode.LegacyNodeName);
+            RunModel(testFilePath);
+            AssertPreviewValue("f8767579-f7c1-475f-980e-7cd6a42684c8", 12);
         }
 
         [Test]
@@ -402,8 +402,13 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_invalidInput.dyn");
 
-            RunModel(testFilePath);//later will add node and connector count verification.
+            RunModel(testFilePath);
 
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+
+            NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("0f912454-b278-499f-b15f-c42c039a5453");
+            Assert.AreEqual(ElementState.Warning, nodeModel.State);
         }
 
         [Test]
@@ -413,15 +418,10 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_normal.dyn");
 
             RunModel(testFilePath);
-
-            var dummy = model.CurrentWorkspace.NodeFromWorkspace<DSCoreNodesUI.DummyNode>("301a5d5f-3c61-471d-ab4c-180a775df93e");
-            Assert.IsNotNull(dummy);
-
-            //AssertPreviewValue("ca09bc3a-35c3-488f-a013-c05a5b7733c5", 12);
-            //AssertPreviewValue("251210e5-2e04-4e81-b11d-39a8aff10887", 12.3);
-            //AssertPreviewValue("898ee89d-a934-4b43-a051-da3459be329a", 1000);
-            //AssertPreviewValue("0afc0a8f-3d8a-4d7c-a2ec-d868cbb29b5f", 123456789);
-
+            AssertPreviewValue("ca09bc3a-35c3-488f-a013-c05a5b7733c5", 12);
+            AssertPreviewValue("251210e5-2e04-4e81-b11d-39a8aff10887", 12.3);
+            AssertPreviewValue("898ee89d-a934-4b43-a051-da3459be329a", 1000);
+            AssertPreviewValue("0afc0a8f-3d8a-4d7c-a2ec-d868cbb29b5f", 123456789);
         }
 
         #endregion
@@ -466,7 +466,13 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_invalidInput.dyn");
 
-            RunModel(testFilePath);//later will add node and connector count verification.
+            RunModel(testFilePath);
+
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+
+            NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("294a2376-6751-43c3-a8b1-5492fa942dbe");
+            Assert.AreEqual(ElementState.Warning, nodeModel.State);
 
         }
 
