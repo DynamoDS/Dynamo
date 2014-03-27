@@ -1,4 +1,4 @@
-﻿#define __NO_SAMPLES_MENU
+﻿//#define __NO_SAMPLES_MENU
 
 using System;
 using System.Collections.Generic;
