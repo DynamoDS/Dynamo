@@ -31,6 +31,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(listTestFolder, "testBuildSubLists_invalidInput.dyn");
             RunModel(testFilePath);
 
+            Assert.Inconclusive("Add assertions");
         }
 
         [Test]
@@ -107,6 +108,8 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testDiagonaLeftList_invalidInput.dyn");
             RunModel(testFilePath);
+
+            Assert.Inconclusive("Add assertions");
         }
 
         [Test]
@@ -353,6 +356,8 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testPlatten_singleInput.dyn");
             RunModel(testFilePath);
+
+            Assert.Inconclusive("Add assertions");
         }
 
         [Test]
@@ -386,6 +391,8 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testPlattenCompletely_singleInput.dyn");
             RunModel(testFilePath);
+
+            Assert.Inconclusive("Add assertions");
         }
 
         [Test]
@@ -443,6 +450,8 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testRestOfList_emptyInput.dyn");
             RunModel(testFilePath);
+
+            Assert.Inconclusive("Add assertions");
         }
 
         [Test]
