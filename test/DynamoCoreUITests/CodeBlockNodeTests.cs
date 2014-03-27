@@ -56,7 +56,7 @@ namespace DynamoCoreUITests
 
         #endregion
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
         //Run the CBN without an input to get the error message
         //Connent a input to the CBN and run
         //Change the value of the input and run 
@@ -78,7 +78,7 @@ namespace DynamoCoreUITests
         }
 
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
         //Assign a vale to a CodeBlockNode and run
         //Remove the input of this CBN by assign a literals to the CBN's text and run
         //Change the value of the literals and run 
