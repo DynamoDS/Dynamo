@@ -48,6 +48,7 @@ namespace DynamoCoreUITests
             {
                 this.Controller.ShutDown(true);
                 this.Controller = null;
+                this.commandCallback = null;
             }
 
             GC.Collect();
