@@ -551,9 +551,32 @@ namespace Dynamo
             {
             }
 
+            // We have caught all possible exceptions in UpdateGraph call, I am 
+            // not certain if this try-catch block is still meaningful or not.
             try
             {
-                bool updated = EngineController.UpdateGraph();
+                Exception fatalException = null;
+                bool updated = EngineController.UpdateGraph(ref fatalException);
+
+                // If there's a fatal exception, show it to the user, unless of course 
+                // if we're running in a unit-test, in which case there's no user. I'd 
+                // like not to display the dialog and hold up the continuous integration.
+                // 
+                if (DynamoController.IsTestMode == false && (fatalException != null))
+                {
+                    Action showFailureMessage = new Action(() =>
+                    {
+                        Dynamo.Nodes.Utilities.DisplayEngineFailureMessage(fatalException);
+                    });
+
+                    // The "Run" method is guaranteed to be called on a background 
+                    // thread (for Revit's case, it is the idle thread). Here we 
+                    // schedule the message to show up when the UI gets around and 
+                    // handle it.
+                    // 
+                    if (this.UIDispatcher != null)
+                        this.UIDispatcher.BeginInvoke(showFailureMessage);
+                }
 
                 // Currently just use inefficient way to refresh preview values. 
                 // After we switch to async call, only those nodes that are really 
