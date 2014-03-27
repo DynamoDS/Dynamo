@@ -842,7 +842,7 @@ namespace ProtoScript.Runners
                 RetainVMStatesForDeltaExecution();
             }
         }
-
+      
         private List<AssociativeNode> GetASTNodesDependentOnFunctionList(FunctionDefinitionNode functionNode)
         {
             // Determine if the modified function was used in any of the current nodes
@@ -1544,10 +1544,12 @@ namespace ProtoScript.Runners
                     {
                         // These ASTs are to be re-executed as they depend on the modified function
                         // They must be marked dirty
-                        List<AssociativeNode> astDependentOnFunctionList = GetASTNodesDependentOnFunctionList(fnode);
-                        ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(runnerCore, astDependentOnFunctionList);
 
-                        //deltaAstList.AddRange(astDependentOnFunctionList);
+                        //List<AssociativeNode> astDependentOnFunctionList = GetASTNodesDependentOnFunctionList(fnode);
+                        //ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(runnerCore, astDependentOnFunctionList);
+
+
+                        ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(runnerCore, runnerCore.GraphNodeCallList);
                     }
                 }
             }
