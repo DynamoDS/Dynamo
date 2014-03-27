@@ -66,6 +66,23 @@ namespace ProtoCore.AssociativeEngine
                 }
             }
         }
+
+        public static void MarkGraphNodesDirty(ProtoCore.Core core, List<AssociativeGraph.GraphNode> graphNodeList)
+        {
+            bool setEntryPoint = false;
+            foreach (var gnode in graphNodeList)
+            {
+                if (gnode.isActive)
+                {
+                    if (!setEntryPoint)
+                    {
+                        setEntryPoint = true;
+                        core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                    }
+                    gnode.isDirty = true;
+                }
+            }
+        }
     }
 
     public class ArrayUpdate
