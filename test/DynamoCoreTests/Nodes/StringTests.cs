@@ -68,10 +68,10 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestConcatStringInvalidInput()
+        public void TestConcatStringMultipleInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_invalidInput.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_multipleInput.dyn");
 
             RunModel(testFilePath); //later will add node and connector count verification.
 
@@ -167,10 +167,10 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestJoinStringInvalidInput()
+        public void TestJoinStringSingleInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestJoinString_invalidInput.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestJoinString_singleInput.dyn");
 
             RunModel(testFilePath);//later will add node and connector count verification.
 
@@ -211,11 +211,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
 
-            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
-
-            NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("b8e70cee-f3dd-4a54-a9c6-cf62fee67c5a");
-            Assert.AreEqual(ElementState.Warning, nodeModel.State);
+            Assert.Inconclusive("Add assertions");
         }
 
         [Test]
@@ -340,10 +336,10 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestStringLengthInvalidInput()
+        public void TestStringLengthMultipleInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_invalidInput.dyn");
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_multipleInput.dyn");
 
             RunModel(testFilePath);//later will add node and connector count verification.
 
@@ -371,9 +367,13 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_empltyString.dyn");
 
-            RunModel(testFilePath);//later will add node and connector count verification.
+            RunModel(testFilePath);
 
-            Assert.Inconclusive("Add assertions");
+            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
+
+            NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("0f912454-b278-499f-b15f-c42c039a5453");
+            Assert.AreEqual(ElementState.Warning, nodeModel.State);
         }
 
         [Test]
