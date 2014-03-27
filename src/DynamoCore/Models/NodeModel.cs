@@ -920,13 +920,20 @@ namespace Dynamo.Models
                     // if there are inputs without connections
                     // mark as dead; otherwise, if the original state is dead,
                     // update it as active.
-                    if (State == ElementState.Active)
+                    if (inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled)))
                     {
-                        if (inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled)))
+                        if (State == ElementState.Active)
+                        {
                             State = ElementState.Dead;
+                        }
                     }
-                    else if (State == ElementState.Dead)
-                        State = ElementState.Active;
+                    else
+                    {
+                        if (State == ElementState.Dead)
+                        {
+                            State = ElementState.Active;
+                        }
+                    }
                 });
 
             if (dynSettings.Controller != null &&
