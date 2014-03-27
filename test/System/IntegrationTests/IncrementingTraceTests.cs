@@ -487,6 +487,91 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
         }
 
 
+        [Test]
+        [Category("Trace")]
+        public void SingleToExceptionToSingle()
+        {
+
+            //Test to ensure that the first time the code is executed the wasTraced attribute is marked as false
+            //and the secodn time it is marked as true
+
+
+            string setupCode =
+            @"import(""FFITarget.dll""); 
+x = 0; 
+fail = false;
+mtcA = IncrementerTracedClass.IncrementerTracedClass(x, fail); 
+mtcAID = mtcA.ID;
+mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
+
+
+
+            // Create 2 CBNs
+
+            List<Subtree> added = new List<Subtree>();
+
+
+            // Simulate a new new CBN
+            Guid guid1 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            TestFrameWork.AssertValue("mtcAID", 0, astLiveRunner);
+            TestFrameWork.AssertValue("mtcAWasTraced", false, astLiveRunner);
+
+
+
+            // Simulate a new new CBN
+            Guid guid2 = System.Guid.NewGuid();
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid2, "x = 1;"));
+
+
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Verify that a is re-executed
+            TestFrameWork.AssertValue("mtcAID", 0, astLiveRunner);
+            TestFrameWork.AssertValue("mtcAWasTraced", true, astLiveRunner);
+
+
+
+            // Simulate a new new CBN
+            //Cause an exception to be thrown
+            //Force exception to be thrown
+            Guid guid3 = System.Guid.NewGuid();
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid3, "fail = true;"));
+
+
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Verify that a is re-executed
+            TestFrameWork.AssertValue("mtcAID", null, astLiveRunner);
+
+
+
+
+            // Simulate a new  CBN
+            Guid guid4 = System.Guid.NewGuid();
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid4, "fail = false;"));
+
+
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Verify that a is re-executed
+            //This should cause a new entity
+            TestFrameWork.AssertValue("mtcAID", 1, astLiveRunner);
+            TestFrameWork.AssertValue("mtcAWasTraced", false, astLiveRunner);
+
+
+        }
+
 
 
         //Migrate this code into the test framework
