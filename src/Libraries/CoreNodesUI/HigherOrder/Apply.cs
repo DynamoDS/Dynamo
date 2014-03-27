@@ -23,11 +23,17 @@ namespace DSCoreNodesUI.HigherOrder
 
         protected override string GetInputName(int index)
         {
+            if (index == 0)
+                return "func";
+
             return "arg" + index;
         }
 
         protected override string GetInputTooltip(int index)
         {
+            if (index == 0)
+                return "Function to apply.";
+
             return "Argument #" + index;
         }
 
