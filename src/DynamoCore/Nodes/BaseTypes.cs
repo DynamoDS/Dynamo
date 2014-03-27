@@ -548,20 +548,25 @@ namespace Dynamo.Nodes
             var summary = "Unhandled exception in Dynamo engine";
             var description = "The virtual machine that powers Dynamo is " +
                 "experiencing some unexpected errors internally and is likely " +
-                "having great difficulties to pull itself together. It is " +
-                "recommended that you save your work now and restart Dynamo. " +
-                "Giving Dynamo VM a new lease of life can potentially make it " +
-                "feel happier and behave better.";
+                "having great difficulties pulling itself together. It is " +
+                "recommended that you save your work now and reload the file. " +
+                "Giving the Dynamo VM a new lease of life can potentially make " +
+                "it feel happier and behave better.\n\n" +
+                "If you don't mind, it would be helpful for you to send us your " +
+                "file. That will make it quicker for us to get these issues fixed.";
 
             var imageUri = "/DynamoCore;component/UI/Images/task_dialog_crash.png";
             var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Unhandled exception", summary, description);
 
-            args.AddRightAlignedButton(43420, "Okay, got it");
+            args.AddRightAlignedButton(43420, "Submit Bug To Github");
+            args.AddRightAlignedButton(43421, "Arrrrg, ok");
             args.Exception = exception;
 
             dynSettings.Controller.OnRequestTaskDialog(null, args);
+            if (args.ClickedButtonId == 43420)
+                dynSettings.Controller.ReportABug(null);
         }
 
         private static bool HasPathInformation(string fileNameOrPath)
