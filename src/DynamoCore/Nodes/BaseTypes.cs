@@ -514,6 +514,56 @@ namespace Dynamo.Nodes
             return resultUri.LocalPath;
         }
 
+        /// <summary>
+        /// Call this method to display a message box when a file of an older 
+        /// version cannot be opened by the current version of Dynamo.
+        /// </summary>
+        /// <param name="fileVersion">Version of the input file.</param>
+        /// <param name="currVersion">Current version of the Dynamo.</param>
+        internal static void DisplayObsoleteFileMessage(
+            Version fileVersion, Version currVersion)
+        {
+            var summary = "Your file cannot be opened";
+            var description = string.Format("Your file of version '{0}' cannot " +
+                "be opened by this version of Dynamo ({1})", fileVersion, currVersion);
+
+            var imageUri = "/DynamoCore;component/UI/Images/crash_pic.png";
+            var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
+                new Uri(imageUri, UriKind.Relative),
+                "Obsolete File", summary, description);
+
+            args.AddRightAlignedButton(43420, "OK");
+
+            dynSettings.Controller.OnRequestTaskDialog(null, args);
+        }
+
+        /// <summary>
+        /// Call this method to display an error message in an event when live 
+        /// runner throws an exception that is not handled anywhere else. This 
+        /// message instructs user to save their work and restart Dynamo.
+        /// </summary>
+        /// <param name="exception">The exception to display.</param>
+        internal static void DisplayEngineFailureMessage(Exception exception)
+        {
+            var summary = "Unhandled exception in Dynamo engine";
+            var description = "The virtual machine that powers Dynamo is " +
+                "experiencing some unexpected errors internally and is likely " +
+                "having great difficulties to pull itself together. It is " +
+                "recommended that you save your work now and restart Dynamo. " +
+                "Giving Dynamo VM a new lease of life can potentially make it " +
+                "feel happier and behave better.";
+
+            var imageUri = "/DynamoCore;component/UI/Images/crash_pic.png";
+            var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
+                new Uri(imageUri, UriKind.Relative),
+                "Unhandled exception", summary, description);
+
+            args.AddRightAlignedButton(43420, "Okay, got it");
+            args.Exception = exception;
+
+            dynSettings.Controller.OnRequestTaskDialog(null, args);
+        }
+
         private static bool HasPathInformation(string fileNameOrPath)
         {
             int indexOfSeparator = fileNameOrPath.IndexOfAny(new char[]
