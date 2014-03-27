@@ -68,6 +68,17 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestConcatStringInvalidInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_invalidInput.dyn");
+
+            RunModel(testFilePath); //later will add node and connector count verification.
+
+            Assert.Inconclusive("Add assertions");
+        }
+
+        [Test]
         public void TestConcatStringMultipleInput()
         {
             DynamoModel model = Controller.DynamoModel;
