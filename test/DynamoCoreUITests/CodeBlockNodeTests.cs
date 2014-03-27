@@ -56,8 +56,11 @@ namespace DynamoCoreUITests
         #endregion
 
         [Test, RequiresSTA, Category("Failing")]
-        //when reassign input value to a code block node, 
-        //the result of the code block node does not update
+        //Run the CBN without an input to get the error message
+        //Connent a input to the CBN and run
+        //Change the value of the input and run 
+        //  : the result will not be updated
+
         public void CodeBlockNode_ReassignInput()
         {
             RunCommandsFromFile("CodeBlockNode_ReassignInput.xml", false, (commandTag) =>
@@ -72,6 +75,33 @@ namespace DynamoCoreUITests
                 }
             });
         }
+
+
+        [Test, RequiresSTA, Category("Failing")]
+        //Assign a vale to a CodeBlockNode and run
+        //Remove the input of this CBN by assign a literals to the CBN's text and run
+        //Change the value of the literals and run 
+        //  : the result will not be updated
+        public void CodeBlockNode_ReassignInput_2()
+        {
+            RunCommandsFromFile("CodeBlockNode_ReassignInput_2.xml", false, (commandTag) =>
+            {
+                if (commandTag == "InitialRun")
+                {
+                    AssertPreviewValue("f2b8dd8d-dcb2-4e50-bc9e-29fd1ecce84b", 0.017452);
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("f2b8dd8d-dcb2-4e50-bc9e-29fd1ecce84b", 0.034899);
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    AssertPreviewValue("f2b8dd8d-dcb2-4e50-bc9e-29fd1ecce84b", 0.052336);
+                }
+            });
+        }
+
+
 
         #region Private Helper Methods
 
