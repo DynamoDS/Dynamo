@@ -75,7 +75,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath); //later will add node and connector count verification.
 
-            Assert.Inconclusive();
+            Assert.Inconclusive("Add assertions");
         }
 
         #endregion
@@ -174,7 +174,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);//later will add node and connector count verification.
 
-            Assert.Inconclusive();
+            Assert.Inconclusive("Add assertions");
         }
 
         [Test]
@@ -347,7 +347,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);//later will add node and connector count verification.
 
-            Assert.Inconclusive();
+            Assert.Inconclusive("Add assertions");
         }
 
         [Test]
@@ -373,7 +373,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);//later will add node and connector count verification.
 
-            Assert.Inconclusive();
+            Assert.Inconclusive("Add assertions");
         }
 
         [Test]
