@@ -94,7 +94,7 @@ namespace DynamoCoreUITests
         //Create CBN node with Math.Sin(x);
         //Create node with value 1 and attach to the CBN
         //Execute(InitialRun)
-        //Disattach the node and update the CBN to Math.Sin(2)
+        //Disattach the two nodes and update the CBN to Math.Sin(2)
         //Execute(SecondRun)
         //Update the CBN to Math.Sin(3)
         //Execute(ThirdRun)
