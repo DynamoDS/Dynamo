@@ -44,6 +44,12 @@ namespace FFITarget
         private bool wasTraced = false;
 
         public int ID { get; set; }
+        
+        /// <summary>
+        /// Note that x is a dummy var here that is intended to force replicated dispatch
+        /// it's not actually used
+        /// </summary>
+        /// <param name="x"></param>
         public IncrementerTracedClass(int x)
         {
             var retVal = DSNodeServices.TraceUtils.GetTraceData(__TEMP_REVIT_TRACE_ID);
@@ -62,10 +68,10 @@ namespace FFITarget
                 ID = nextID;
                 DSNodeServices.TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new IDHolder() { ID = nextID });
             }
-
-
-            
         }
+
+
+
         public bool WasCreatedWithTrace()
         {
             return wasTraced;
