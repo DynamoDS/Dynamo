@@ -62,6 +62,13 @@ namespace DynamoCoreUITests
         //Change the value of the input and run 
         //  : the result will not be updated
 
+        //Create CBN node with Math.Sin(x);
+        //Execute
+        //Create node with value 10 and attach to the CBN
+        //Execute(InitialRun)
+        //Update the value from 10 to 0
+        //Execute(SecondRun)
+
         public void CodeBlockNode_ReassignInput()
         {
             RunCommandsFromFile("CodeBlockNode_ReassignInput.xml", false, (commandTag) =>
@@ -83,6 +90,15 @@ namespace DynamoCoreUITests
         //Remove the input of this CBN by assign a literals to the CBN's text and run
         //Change the value of the literals and run 
         //  : the result will not be updated
+
+        //Create CBN node with Math.Sin(x);
+        //Create node with value 1 and attach to the CBN
+        //Execute(InitialRun)
+        //Disattach the node and update the CBN to Math.Sin(2)
+        //Execute(SecondRun)
+        //Update the CBN to Math.Sin(3)
+        //Execute(ThirdRun)
+
         public void CodeBlockNode_ReassignInput_2()
         {
             RunCommandsFromFile("CodeBlockNode_ReassignInput_2.xml", false, (commandTag) =>
