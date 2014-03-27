@@ -74,11 +74,11 @@ namespace Revit.Elements
         #region public constructors
 
         /// <summary>
-        /// Construct a Revit ModelCurve element from a Curve
+        /// Construct a Revit CurveByPoints Element (a CurveElement) from a collection of ReferencePoint's
         /// </summary>
         /// <param name="curve"></param>
         /// <returns></returns>
-        public static CurveByPoints ByReferencePoints(IEnumerable<ReferencePoint> points)
+        public static CurveByPoints ByReferencePoints(ReferencePoint[] points)
         {
             if (points.Count() < 2)
             {
@@ -89,7 +89,7 @@ namespace Revit.Elements
         }
 
         /// <summary>
-        /// Construct a Revit ModelCurve element from an existing element.  The result is Dynamo owned.
+        /// Construct a Revit ModelCurve element from an existing element.
         /// </summary>
         /// <param name="modelCurve"></param>
         /// <returns></returns>
