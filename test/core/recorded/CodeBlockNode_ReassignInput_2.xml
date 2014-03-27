@@ -1,0 +1,25 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="f2b8dd8d-dcb2-4e50-bc9e-29fd1ecce84b" NodeName="Code Block" X="354" Y="146" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="f2b8dd8d-dcb2-4e50-bc9e-29fd1ecce84b" Name="Code" Value="Math.Sin(x)" />
+  <SelectModelCommand ModelGuid="f2b8dd8d-dcb2-4e50-bc9e-29fd1ecce84b" Modifiers="0" />
+  <DragSelectionCommand X="331" Y="129" DragOperation="0" />
+  <DragSelectionCommand X="456" Y="158" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="e4b940d4-e92d-46a2-bd97-deb06732b18c" NodeName="Code Block" X="138" Y="144" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="e4b940d4-e92d-46a2-bd97-deb06732b18c" Name="Code" Value="1" />
+  <MakeConnectionCommand NodeId="e4b940d4-e92d-46a2-bd97-deb06732b18c" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="f2b8dd8d-dcb2-4e50-bc9e-29fd1ecce84b" PortIndex="0" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="InitialRun" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="f2b8dd8d-dcb2-4e50-bc9e-29fd1ecce84b" Name="Code" Value="Math.Sin(2);" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="SecondRun" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="f2b8dd8d-dcb2-4e50-bc9e-29fd1ecce84b" Name="Code" Value="Math.Sin(3);" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="ThirdRun" PauseDurationInMs="20" />
+</Commands>

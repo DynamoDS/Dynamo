@@ -884,32 +884,7 @@ namespace ProtoAssociative
             StackValue opReturn = StackValue.BuildRegister(Registers.RX);
             EmitPush(opReturn);
         }
-
-        private List<ProtoCore.AST.AssociativeAST.AssociativeNode> GetReplicationGuides(ProtoCore.AST.Node node)
-        {
-            if (node is ProtoCore.AST.AssociativeAST.IntNode
-                || node is ProtoCore.AST.AssociativeAST.DoubleNode
-                || node is ProtoCore.AST.AssociativeAST.BooleanNode
-                || node is ProtoCore.AST.AssociativeAST.CharNode
-                || node is ProtoCore.AST.AssociativeAST.StringNode
-                || node is ProtoCore.AST.AssociativeAST.NullNode
-                )
-            {
-                return null;
-            }
-            else if (node is ProtoCore.AST.AssociativeAST.ExprListNode)
-            {
-                return (node as ProtoCore.AST.AssociativeAST.ExprListNode).ReplicationGuides;
-            }
-            else if (node is ProtoCore.AST.AssociativeAST.GroupExpressionNode)
-            {
-                return (node as ProtoCore.AST.AssociativeAST.GroupExpressionNode).ReplicationGuides;
-            }
-
-            return null;
-        }
-
-
+        
         public ProcedureNode TraverseDotFunctionCall(
                                 ProtoCore.AST.Node node, 
                                 ProtoCore.AST.Node parentNode, 
@@ -2296,7 +2271,7 @@ namespace ProtoAssociative
 
                     // Left node
                     var identNode = nodeBuilder.BuildIdentfier(ProtoCore.Utils.CoreUtils.BuildSSATemp(core));
-                    (identNode as IdentifierNode).ReplicationGuides = GetReplicationGuidesFromASTNode(ident);
+                    (identNode as IdentifierNode).ReplicationGuides = GetReplicationGuides(ident);
                     bnode.LeftNode = identNode;
 
                     // Right node
@@ -2402,16 +2377,25 @@ namespace ProtoAssociative
                     for (int idx = 0; idx < fcNode.FormalArguments.Count; idx++)
                     {
                         AssociativeNode arg = fcNode.FormalArguments[idx];
+                        var replicationGuides = GetReplicationGuides(arg);
+                        if (replicationGuides == null)
+                        {
+                            replicationGuides = new List<AssociativeNode> { };
+                        }
+                        else
+                        {
+                            RemoveReplicationGuides(arg);
+                        }
 
                         DFSEmitSSA_AST(arg, ssaStack, ref astlistArgs);
 
-                        AssociativeNode argNode = ssaStack.Pop();
-                        if (argNode is BinaryExpressionNode)
+                        var argNode = ssaStack.Pop();
+                        var argBinaryExpr = argNode as BinaryExpressionNode;
+                        if (argBinaryExpr != null)
                         {
-                            BinaryExpressionNode argBinaryExpr = argNode as BinaryExpressionNode;
-                            (argBinaryExpr.LeftNode as IdentifierNode).ReplicationGuides = GetReplicationGuidesFromASTNode(arg);
-
-                            fcNode.FormalArguments[idx] = argBinaryExpr.LeftNode;
+                            var newArgNode = NodeUtils.Clone(argBinaryExpr.LeftNode);
+                            (newArgNode as IdentifierNode).ReplicationGuides = replicationGuides;
+                            fcNode.FormalArguments[idx] = newArgNode;
                         }
                         else
                         {
@@ -2671,90 +2655,51 @@ namespace ProtoAssociative
         }
 
         /// <summary>
-        /// This helper function extracts the replication guide data from the AST node
-        /// Merge this function with GetReplicationGuides
+        /// This helper function extracts the replication guide data from the 
+        /// AST node
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        private List<AssociativeNode> GetReplicationGuidesFromASTNode(AssociativeNode node)
+        private List<AssociativeNode> GetReplicationGuides(AssociativeNode node)
         {
-            List<AssociativeNode> replicationGuides = null;
-            if (node is IdentifierNode)
+            if (node is ArrayNameNode)
             {
-                replicationGuides = (node as IdentifierNode).ReplicationGuides;
+                var nodeWithReplication = node as ArrayNameNode;
+                return nodeWithReplication.ReplicationGuides;
             }
             else if (node is IdentifierListNode)
             {
-                IdentifierListNode identList = node as IdentifierListNode;
-
-                // Get the replication guide and append it to the last identifier
-                if (identList.RightNode is IdentifierNode)
-                {
-                    replicationGuides = (identList.RightNode as IdentifierNode).ReplicationGuides;
-                }
-                else if (identList.RightNode is FunctionCallNode)
-                {
-                    replicationGuides = (identList.RightNode as FunctionCallNode).ReplicationGuides;
-                }
-                else
-                {
-                    Validity.Assert(false);
-                }
+                var identListNode = node as IdentifierListNode;
+                return GetReplicationGuides(identListNode.RightNode);
             }
             else if (node is FunctionDotCallNode)
             {
-                FunctionDotCallNode dotCall = node as FunctionDotCallNode;
+                var dotCallNode = node as FunctionDotCallNode;
+                return GetReplicationGuides(dotCallNode.FunctionCall.Function);
+            }
 
-                // Get the replication guide from the dotcall
-                IdentifierNode functionCallIdent = dotCall.FunctionCall.Function as IdentifierNode;
-                Validity.Assert(null != functionCallIdent);
-                replicationGuides = functionCallIdent.ReplicationGuides;
-            }
-            else if (node is FunctionCallNode)
-            {
-                FunctionCallNode functionCall = node as FunctionCallNode;
-
-                // Get the replication guide from the dotcall
-                replicationGuides = functionCall.ReplicationGuides;
-            }
-            else if (node is RangeExprNode)
-            {
-                RangeExprNode rangeExpr = node as RangeExprNode;
-
-                // Get the replication guide from the dotcall
-                replicationGuides = rangeExpr.ReplicationGuides;
-            }
-            else if (node is InlineConditionalNode)
-            {
-                // TODO Jun: Parser should support replication guides on an entire inline conditional
-                InlineConditionalNode inlineCondition = node as InlineConditionalNode;
-                replicationGuides = null;
-            }
-            else if (node is ExprListNode)
-            {
-                ExprListNode exprlistNode = node as ExprListNode;
-                replicationGuides = exprlistNode.ReplicationGuides;
-            }
-            else if (node is GroupExpressionNode)
-            {
-                GroupExpressionNode groupExprNode = node as GroupExpressionNode;
-                replicationGuides = groupExprNode.ReplicationGuides;
-            }
-            else if (node is NullNode)
-            {
-                // TODO Jun: This is no longer necessary once we allow SSA temps to be generated for all literals
-                replicationGuides = null;
-            }
-            else
-            {
-                // A parser error has occured if a replication guide gets attached to any AST besides"
-                // Ident, identlist, functioncall and functiondotcall
-                Validity.Assert(false, "This AST node should not have a replication guide.");
-            }
-            return replicationGuides;
+            return null;
         }
 
-
+        // Remove replication guides
+        private void RemoveReplicationGuides(AssociativeNode node)
+        {
+            if (node is ArrayNameNode)
+            {
+                var nodeWithReplication = node as ArrayNameNode;
+                nodeWithReplication.ReplicationGuides = new List<AssociativeNode>();
+            }
+            else if (node is IdentifierListNode)
+            {
+                var identListNode = node as IdentifierListNode;
+                RemoveReplicationGuides(identListNode.RightNode);
+            }
+            else if (node is FunctionDotCallNode)
+            {
+                var dotCallNode = node as FunctionDotCallNode;
+                RemoveReplicationGuides(dotCallNode.FunctionCall.Function);
+            }
+        }
         /*
         proc DFSEmit_SSA_AST(node, ssastack[], astlist[])
             if node is binary expression
@@ -2998,7 +2943,7 @@ namespace ProtoAssociative
                         {
                             BinaryExpressionNode argBinaryExpr = argNode as BinaryExpressionNode;
                             //(argBinaryExpr.LeftNode as IdentifierNode).ReplicationGuides = GetReplicationGuidesFromASTNode(argBinaryExpr.RightNode);
-                            (argBinaryExpr.LeftNode as IdentifierNode).ReplicationGuides = GetReplicationGuidesFromASTNode(arg);
+                            (argBinaryExpr.LeftNode as IdentifierNode).ReplicationGuides = GetReplicationGuides(arg);
                             
                             fcNode.FormalArguments[idx] = argBinaryExpr.LeftNode;
                         }
@@ -3021,7 +2966,7 @@ namespace ProtoAssociative
                 // Store the replication guide from the function call to the temp
                 if (null != fcNode)
                 {
-                    (identNode as IdentifierNode).ReplicationGuides = GetReplicationGuidesFromASTNode(fcNode);
+                    (identNode as IdentifierNode).ReplicationGuides = GetReplicationGuides(fcNode);
                 }
 
                 //Right node
