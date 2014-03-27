@@ -1,0 +1,21 @@
+<Workspace Version="0.7.0.21043" X="183.671129733528" Y="120.541162156057" zoom="0.864175344480775" Description="" Category="" Name="Home">
+  <Elements>
+    <DSCoreNodesUI.CreateList type="DSCoreNodesUI.CreateList" guid="c75636a5-d6e5-4be3-a4b2-7726f9251ff7" nickname="Create List" x="285.075542791256" y="131.344074501021" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2" />
+    <DSCoreNodesUI.BoolSelector type="DSCoreNodesUI.BoolSelector" guid="22d8c430-776a-43d2-af5e-3bc59cf2cf04" nickname="Boolean" x="288.075542791256" y="248.951105104416" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean>False</System.Boolean>
+    </DSCoreNodesUI.BoolSelector>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="419a3bf8-96dd-4fd1-8e37-8be3765afa84" nickname="Form.ByLoftingCurveElements" x="553.559774994064" y="161.571799191905" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="..\..\RevitNodes.dll" function="Revit.Elements.Form.ByLoftingCurveElements@Revit.Elements.CurveElement[],bool" />
+    <Dynamo.Nodes.DSModelElementSelection type="Dynamo.Nodes.DSModelElementSelection" guid="12fe17cb-2b01-427a-a984-a3ccfce50abd" nickname="Select Model Element" x="-4.29967663676661" y="54.0112247198931" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSModelElementSelection type="Dynamo.Nodes.DSModelElementSelection" guid="9c70c228-0521-4e69-ba71-88f824629d1b" nickname="Select Model Element" x="2.28698670414326" y="227.734470336391" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c75636a5-d6e5-4be3-a4b2-7726f9251ff7" start_index="0" end="419a3bf8-96dd-4fd1-8e37-8be3765afa84" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="22d8c430-776a-43d2-af5e-3bc59cf2cf04" start_index="0" end="419a3bf8-96dd-4fd1-8e37-8be3765afa84" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="12fe17cb-2b01-427a-a984-a3ccfce50abd" start_index="0" end="c75636a5-d6e5-4be3-a4b2-7726f9251ff7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9c70c228-0521-4e69-ba71-88f824629d1b" start_index="0" end="c75636a5-d6e5-4be3-a4b2-7726f9251ff7" end_index="1" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Select curve from Revit" x="-1.81636648198668" y="8.2003433125842" />
+    <Dynamo.Models.NoteModel text="Select curve from Revit" x="2.9417497039193" y="179.666563715143" />
+  </Notes>
+</Workspace>

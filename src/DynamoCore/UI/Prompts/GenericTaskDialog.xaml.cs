@@ -48,7 +48,11 @@ namespace Dynamo.UI.Prompts
 
         #region Public Class Properties
 
+        // Settable properties.
         internal int ClickedButtonId { get; set; }
+        internal Exception Exception { get; set; }
+
+        // Read-only properties.
         internal Uri ImageUri { get; private set; }
         internal string DialogTitle { get; private set; }
         internal string Summary { get; private set; }
@@ -85,6 +89,7 @@ namespace Dynamo.UI.Prompts
             this.DescriptionText.Text = taskDialogParams.Description;
 
             InitializeButtons();
+            InitializeDetailedContent();
         }
 
         #endregion
@@ -125,6 +130,17 @@ namespace Dynamo.UI.Prompts
                     RightButtonStackPanel.Children.Add(buttonElement);
                 }
             }
+        }
+
+        private void InitializeDetailedContent()
+        {
+            if (this.taskDialogParams.Exception == null)
+                return;
+
+            var e = this.taskDialogParams.Exception;
+            var contents = string.Format("{0}\n\n{1}", e.Message, e.StackTrace);
+            DetailedContent.Text = contents;
+            DetailedContent.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void OnButtonElementClicked(object sender, RoutedEventArgs e)
