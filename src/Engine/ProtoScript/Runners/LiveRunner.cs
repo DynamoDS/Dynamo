@@ -666,7 +666,7 @@ namespace ProtoScript.Runners
         private bool Compile(List<AssociativeNode> astList, out int blockId)
         {
             // The ASTs have already been transformed to SSA
-            runnerCore.Options.GenerateSSA = false;
+            //runnerCore.Options.GenerateSSA = false;
 
             bool succeeded = runner.Compile(astList, runnerCore, out blockId);
             if (succeeded)
@@ -1381,7 +1381,7 @@ namespace ProtoScript.Runners
                 return;
             }
 
-            CompileToSSA(syncData);
+            //CompileToSSA(syncData);
 
             UpdateAstCache(syncData);
 
