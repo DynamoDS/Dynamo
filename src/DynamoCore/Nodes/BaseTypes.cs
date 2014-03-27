@@ -527,7 +527,7 @@ namespace Dynamo.Nodes
             var description = string.Format("Your file of version '{0}' cannot " +
                 "be opened by this version of Dynamo ({1})", fileVersion, currVersion);
 
-            var imageUri = "/DynamoCore;component/UI/Images/crash_pic.png";
+            var imageUri = "/DynamoCore;component/UI/Images/task_dialog_obsolete_file.png";
             var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Obsolete File", summary, description);
@@ -553,7 +553,7 @@ namespace Dynamo.Nodes
                 "Giving Dynamo VM a new lease of life can potentially make it " +
                 "feel happier and behave better.";
 
-            var imageUri = "/DynamoCore;component/UI/Images/crash_pic.png";
+            var imageUri = "/DynamoCore;component/UI/Images/task_dialog_crash.png";
             var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Unhandled exception", summary, description);
