@@ -23,17 +23,17 @@ Dynamo has been developed based on feedback from several parties including Arup,
 
 ## Running Dynamo ##
 
-The current version will run on top of Revit 2013, Revit 2014, and Project Vasari Beta 3. 
+The current version will run on top of Autodesk Revit 2013, Autodesk Revit 2014, and AUtodest Project Vasari Beta 3. 
 
 ## Releases ##
 
 ###0.6.3###
 
-February 2014
+March 2014
 
 New
 
-- Dynamo Sandbox:   Explore Dynamo without Revit or Vasari installed (Dynamo Installation folder>Core>DynamoSandbox.exe)
+- Dynamo Sandbox:   Explore Dynamo without running Revit or Vasari (see your Start Menu)
 - Application level settings for Imperial and Metric Units
 - Daylighting with cloud Rendering service sample files
 - Set Parameters Node (not restricted to Families)
@@ -621,11 +621,11 @@ http://msdn.microsoft.com/en-us/library/gg406140.aspx
 http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx  
 
 
-###ASM v. 220###
-© 2013 Autodesk, Inc.  All rights reserved.   
+###ASM v. 219###
+© 2014 Autodesk, Inc.  All rights reserved.   
 
 
-All use of this Software is subject to the terms and conditions of the Autodesk license agreement accepted upon installation of this Software and/or packaged with the Software. 
+All use of this Software is subject to the terms and conditions of the Autodesk license agreement accepted upon installation of Autodesk Revit or Autodesk Vasari. 
 
 
 
