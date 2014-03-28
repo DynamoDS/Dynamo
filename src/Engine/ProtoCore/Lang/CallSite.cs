@@ -1528,6 +1528,13 @@ namespace ProtoCore
             //EXECUTE
             StackValue ret = finalFep.Execute(c, coercedParameters, stackFrame, core);
 
+            if (StackUtils.IsNull(ret))
+            {
+
+                //wipe the trace cache
+                TraceUtils.ClearTLSKey(TRACE_KEY);
+            }
+
             //TLS -> TraceCache
             Dictionary<String, Object> traceRet = TraceUtils.GetObjectFromTLS();
 
