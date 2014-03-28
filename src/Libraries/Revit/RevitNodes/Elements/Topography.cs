@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
-using DSNodeServices;
 using Revit.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Threading;
@@ -12,7 +12,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace Revit.Elements
 {
-    [RegisterForTrace]
+    [DSNodeServices.RegisterForTrace]
     public class Topography : Element
     {
         #region internal properties
@@ -20,6 +20,7 @@ namespace Revit.Elements
         /// <summary>
         /// Internal variable containing the wrapped Revit object
         /// </summary>
+        [SupressImportIntoVM]
         internal TopographySurface InternalTopographySurface
         {
             get;
@@ -78,6 +79,7 @@ namespace Revit.Elements
             }
         }
 
+        [SupressImportIntoVM]
         private Topography(TopographySurface topoSurface)
         {
             InternalSetTopographySurface(topoSurface);
@@ -107,6 +109,7 @@ namespace Revit.Elements
 
         #region private mutators
 
+        [SupressImportIntoVM]
         private void InternalSetTopographySurface(TopographySurface topoSurface)
         {
             InternalTopographySurface = topoSurface;
@@ -118,6 +121,7 @@ namespace Revit.Elements
 
         #region internal static constructors
 
+        [SupressImportIntoVM]
         internal static Topography FromExisting(TopographySurface topoSurface, bool isRevitOwned)
         {
             return new Topography(topoSurface)
