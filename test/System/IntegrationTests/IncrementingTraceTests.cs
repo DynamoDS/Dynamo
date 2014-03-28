@@ -1561,7 +1561,7 @@ mtcAID = mtcA.ID;";
             astLiveRunner.UpdateGraph(syncData);
 
             // Verify that a is re-executed
-            TestFrameWork.AssertValue("mtcAID", new List<int>() { 0, 1, 2}, astLiveRunner);
+            TestFrameWork.AssertValue("mtcAID", new List<int>() { 0, 1}, astLiveRunner);
 
             Console.WriteLine("==============Completed second verification ===================");
 
