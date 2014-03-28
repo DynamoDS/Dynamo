@@ -145,9 +145,9 @@ namespace ProtoCore
         {
             filename = filename ?? string.Empty;
 
-            if (string.IsNullOrEmpty(filename) || 
+            if (!this.core.Options.IsDeltaExecution && (string.IsNullOrEmpty(filename) || 
                 line == Constants.kInvalidIndex || 
-                col == Constants.kInvalidIndex)
+                col == Constants.kInvalidIndex))
             {
                 CodeGen.AuditCodeLocation(core, ref filename, ref line, ref col);
             }
