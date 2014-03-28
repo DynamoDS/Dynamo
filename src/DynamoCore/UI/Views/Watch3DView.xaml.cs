@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Web.UI.HtmlControls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -282,7 +283,6 @@ namespace Dynamo.Controls
         {
             try
             {
-
                 //check the id, if the id is meant for another watch,
                 //then ignore it
                 if (e.Id != _id)
@@ -313,14 +313,15 @@ namespace Dynamo.Controls
                 var greenLines = new List<Point3D>();
                 var blueLines = new List<Point3D>();
                 var text = new List<BillboardTextItem>();
-                var meshes = new List<MeshGeometry3D>();
-                var meshesSelected = new List<MeshGeometry3D>();
+
+                var builder = new MeshBuilder();
+                var selBuilder = new MeshBuilder();
 
                 foreach (var package in e.Packages)
                 {
                     ConvertPoints(package, points, pointsSelected, text);
                     ConvertLines(package, lines, linesSelected, redLines, greenLines, blueLines, text);
-                    ConvertMeshes(package, meshes, meshesSelected);
+                    ConvertMeshes(package, ref builder, ref selBuilder);
                 }
 
                 Points = points;
@@ -331,20 +332,17 @@ namespace Dynamo.Controls
                 YAxes = greenLines;
                 ZAxes = blueLines;
 
-                MeshCount += meshes.Count + meshesSelected.Count;
+                Mesh = builder.ToMesh();
+                MeshSelected = selBuilder.ToMesh();
 
-                Mesh = MergeMeshes(meshes);
-                MeshSelected = MergeMeshes(meshesSelected);
                 Text = text;
 
                 sw.Stop();
-                //DynamoLogger.Instance.Log(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
 
                 Debug.WriteLine(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
             }
             catch (InvalidOperationException exp)
             {
-
                 Debug.WriteLine("WARNING: Exception occured in rendering " + exp.ToString());
             }
         }
@@ -437,13 +435,8 @@ namespace Dynamo.Controls
         }
 
         private void ConvertMeshes(RenderPackage p,
-            List<MeshGeometry3D> meshes,
-            List<MeshGeometry3D> meshesSelected)
+            ref MeshBuilder builder,ref MeshBuilder selBuilder)
         {
-            //var sw = new Stopwatch();
-            //sw.Start();
-
-            var builder = new MeshBuilder();
             var points = new Point3DCollection();
             var tex = new PointCollection();
             var norms = new Vector3DCollection();
@@ -493,20 +486,16 @@ namespace Dynamo.Controls
                 //octree.AddNode(new_point.X, new_point.Y, new_point.Z, node.GUID.ToString());
             }
 
-            builder.Append(points, tris, norms, tex);
-
-            //don't add empty meshes
-            if (builder.Positions.Count > 0)
+            if (p.Selected)
             {
-                if (p.Selected)
-                {
-                    meshesSelected.Add(builder.ToMesh(true));
-                }
-                else
-                {
-                    meshes.Add(builder.ToMesh(true));
-                }
+                selBuilder.Append(points, tris, norms, tex);
             }
+            else
+            {
+                builder.Append(points,tris,norms,tex);
+            }
+
+            MeshCount++;
         }
 
         private string CleanTag(string tag)
