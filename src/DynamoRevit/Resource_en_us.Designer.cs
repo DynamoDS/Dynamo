@@ -61,7 +61,7 @@ namespace Dynamo.Applications {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Visual Programming DS.
+        ///   Looks up a localized string similar to Visual Programming DS 0.7.
         /// </summary>
         internal static string App_Description {
             get {
