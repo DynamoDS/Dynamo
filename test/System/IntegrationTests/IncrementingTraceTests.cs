@@ -277,6 +277,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
         {
             string setupCode =
             @"import(""FFITarget.dll""); 
+dump = IncrementerTracedClass.IncrementerTracedClass(0); 
 x = 0..2; 
 mtcA = IncrementerTracedClass.IncrementerTracedClass(x); 
 mtcAID = mtcA.ID;
@@ -297,9 +298,9 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             TestFrameWork.AssertValue("mtcAID", new List<int>()
                 {
-                    0,
                     1,
-                    2
+                    2,
+                    3
                 }, astLiveRunner);
 
             TestFrameWork.AssertValue("mtcAWasTraced", new List<bool>()
@@ -323,9 +324,9 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Verify that a is re-executed
             TestFrameWork.AssertValue("mtcAID", new List<int>()
             {
-                0,
-                1 ,
-                2
+                1,
+                2 ,
+                3
             }, astLiveRunner);
             TestFrameWork.AssertValue("mtcAWasTraced", new List<bool>()
                 {
@@ -825,6 +826,12 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
                 }, astLiveRunner);
 
 
+            Assert.IsTrue(
+                astLiveRunner.Core.CallsiteCache.First().Value.TraceData[0].HasNestedData);
+
+            Assert.IsTrue(
+                astLiveRunner.Core.CallsiteCache.First().Value.TraceData[0].NestedData.Count == 3);
+
 
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
@@ -1293,7 +1300,12 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
                     false
                 }, astLiveRunner);
 
+            Assert.IsTrue(
+                astLiveRunner.Core.CallsiteCache.First().Value.TraceData[0].HasNestedData);
 
+
+            Assert.IsTrue(
+                astLiveRunner.Core.CallsiteCache.First().Value.TraceData[0].NestedData.Count == 3);
 
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
@@ -1623,7 +1635,7 @@ mtcAID = mtcA.ID;";
             TestFrameWork.AssertValue("mtcAID", new List<int>() { 0, 1 }, astLiveRunner);
 
             Assert.IsTrue(astLiveRunner.Core.CallsiteCache.Count == 1);
-
+            //astLiveRunner.Core.CallsiteCache.First().Value.
 
             Console.WriteLine("==============Completed first verification ===================");
 
