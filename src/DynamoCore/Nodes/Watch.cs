@@ -245,7 +245,8 @@ namespace Dynamo.Nodes
 
                 //Get MirrorData from the RuntimeMirror
                 var mirrorData = mirror.GetData();
-                return Process(mirrorData, inputVar, Root.ShowRawData);
+
+                return Root != null ? Process(mirrorData, inputVar, Root.ShowRawData) : Process(mirrorData, inputVar);
             }
         }
 
