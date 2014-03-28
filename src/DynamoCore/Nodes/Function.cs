@@ -14,19 +14,6 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Nodes
 {
-    public class ObsoleteCustomNodeException : Exception
-    {
-        public ObsoleteCustomNodeException(int inPortCount, int outPortCount)
-            : base()
-        {
-            this.InPortCount = inPortCount;
-            this.OutPortCount = outPortCount;
-        }
-
-        public int InPortCount { get; private set; }
-        public int OutPortCount { get; private set; }
-    }
-
     /// <summary>
     ///     DesignScript Custom Node instance.
     /// </summary>
@@ -286,11 +273,6 @@ namespace Dynamo.Nodes
                 }
 
                 #endregion
-            }
-
-            if (Definition.IsObsolete)
-            {
-                throw new ObsoleteCustomNodeException(InPortData.Count, OutPortData.Count);
             }
 
             RegisterAllPorts();
