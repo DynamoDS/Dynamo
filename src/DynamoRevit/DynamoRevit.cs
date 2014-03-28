@@ -50,7 +50,7 @@ namespace Dynamo.Applications
                 RibbonPanel ribbonPanel = application.CreateRibbonPanel(res.GetString("App_Description"));
 
                 //Create a push button in the ribbon panel 
-                var pushButton = ribbonPanel.AddItem(new PushButtonData("DynamoDS",
+                var pushButton = ribbonPanel.AddItem(new PushButtonData("Dynamo 0.7 Alpha",
                                                                         res.GetString("App_Name"), m_AssemblyName,
                                                                         "Dynamo.Applications.DynamoRevit")) as
                                  PushButton;
