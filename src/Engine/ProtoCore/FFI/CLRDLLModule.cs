@@ -768,37 +768,17 @@ namespace ProtoFFI
                     paramNode.ArgumentType = argType;
                 }
 
-                if (parameter.IsOptional)
-                {
-                    var lhs = paramNode.NameNode;
+                //if (parameter.IsOptional)
+                //{
+                //    var lhs = paramNode.NameNode;
 
-                    var defaultValue = parameter.DefaultValue;
-                    if (defaultValue != null)
-                    {
-                        AssociativeNode rhs;
-                        if (defaultValue is int)
-                        {
-                            rhs = AstFactory.BuildIntNode((int)defaultValue);
-                        }
-                        else if (defaultValue is double)
-                        {
-                            rhs = AstFactory.BuildDoubleNode((double)defaultValue);
-                        }
-                        else if (defaultValue is bool)
-                        {
-                            rhs = AstFactory.BuildBooleanNode((bool)defaultValue);
-                        }
-                        else if (defaultValue is string)
-                        {
-                            rhs = AstFactory.BuildStringNode(defaultValue.ToString());
-                        }
-                        else
-                        {
-                            rhs = AstFactory.BuildNullNode();
-                        }
-                        paramNode.NameNode = AstFactory.BuildBinaryExpression(lhs, rhs, ProtoCore.DSASM.Operator.assign);
-                    }
-                }
+                //    var defaultValue = parameter.DefaultValue;
+                //    if (defaultValue != null)
+                //    {
+                //        var rhs = AstFactory.BuildPrimitiveNodeFromObject(defaultValue);
+                //        paramNode.NameNode = AstFactory.BuildBinaryExpression(lhs, rhs, ProtoCore.DSASM.Operator.assign);
+                //    }
+                //}
                 argumentSignature.AddArgument(paramNode);
             }
 
