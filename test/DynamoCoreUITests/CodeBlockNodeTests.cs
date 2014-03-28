@@ -125,7 +125,7 @@ namespace DynamoCoreUITests
         protected ModelBase GetNode(string guid)
         {
             Guid id = Guid.Parse(guid);
-            return workspace.GetModelInternal(id);
+            return Controller.DynamoModel.CurrentWorkspace.GetModelInternal(id);
         }
 
         protected void RunCommandsFromFile(string commandFileName,
