@@ -870,6 +870,11 @@ namespace Dynamo.Models
                         var e = elNode as XmlElement;
                         dummyElement = MigrationManager.CreateDummyNodeForFunction(e);
                     }
+                    catch (ObsoleteCustomNodeException ex)
+                    {
+                        var e = elNode as XmlElement;
+                        dummyElement = MigrationManager.CreateDummyNode(e, ex.InPortCount, ex.OutPortCount);
+                    }
 
                     if (dummyElement != null) // If a dummy node placement is desired.
                     {

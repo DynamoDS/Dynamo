@@ -62,6 +62,8 @@ namespace Dynamo
 
         public bool IsBeingLoaded { get; set; }
 
+        public bool IsObsolete { get; set; }
+
         private IEnumerable<CustomNodeDefinition> FindAllDependencies(HashSet<CustomNodeDefinition> dependencySet)
         {
             var query = DirectDependencies.Where(def => !dependencySet.Contains(def));
