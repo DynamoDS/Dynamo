@@ -115,7 +115,7 @@ namespace Dynamo.Nodes
 
                 foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
                 {
-                    node.Children.Add(Process(e.Element, path + ":" + e.Index, true));
+                    node.Children.Add(Process(e.Element, path + ":" + e.Index, showRawData));
                 }
             }
             else
@@ -245,7 +245,7 @@ namespace Dynamo.Nodes
 
                 //Get MirrorData from the RuntimeMirror
                 var mirrorData = mirror.GetData();
-                return Process(mirrorData, inputVar, false);
+                return Process(mirrorData, inputVar, Root.ShowRawData);
             }
         }
 
