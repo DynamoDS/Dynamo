@@ -655,10 +655,10 @@ namespace Dynamo.Utilities
                 var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
                 if (decision == MigrationManager.Decision.Abort)
                 {
-                    Utils.DisplayObsoleteFileMessage(fileVersion, currentVersion);
+                    Utils.DisplayObsoleteCustomNodeFileMessage(fileVersion, currentVersion);
 
-                    def = null;
-                    return false;
+                    def = new CustomNodeDefinition { IsObsolete = true };
+                    return true;
                 }
                 else if (decision == MigrationManager.Decision.Migrate)
                 {

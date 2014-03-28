@@ -1,0 +1,26 @@
+<Workspace Version="0.7.0.25326" X="0" Y="0" zoom="1" Description="" Category="buildz" Name="Add Three" ID="09b3ae40-bc3f-42c8-9912-84ad6f76b436">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7e7f75a3-31ab-4029-b273-a940fdc41a0c" nickname="Input" x="138" y="128.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="x" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="3500af3a-cc5a-4911-b735-ee102e9ca298" nickname="Input" x="127" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="y" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f9736f0d-c242-431e-91f5-26463305dc0b" nickname="Input" x="124" y="278.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="z" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="d8c4778e-cdfa-424f-9a5e-0266821318e8" nickname="Output" x="504" y="214.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="x+y+z" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="730c7922-5ed1-419b-a9ac-260c2df7bcdf" nickname="+" x="282" y="106.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="+@," />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="514e13c3-7fee-4075-a717-b3ed57f96c48" nickname="+" x="372" y="222.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="+@," />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="7e7f75a3-31ab-4029-b273-a940fdc41a0c" start_index="0" end="730c7922-5ed1-419b-a9ac-260c2df7bcdf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3500af3a-cc5a-4911-b735-ee102e9ca298" start_index="0" end="730c7922-5ed1-419b-a9ac-260c2df7bcdf" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f9736f0d-c242-431e-91f5-26463305dc0b" start_index="0" end="514e13c3-7fee-4075-a717-b3ed57f96c48" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="730c7922-5ed1-419b-a9ac-260c2df7bcdf" start_index="0" end="514e13c3-7fee-4075-a717-b3ed57f96c48" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="514e13c3-7fee-4075-a717-b3ed57f96c48" start_index="0" end="d8c4778e-cdfa-424f-9a5e-0266821318e8" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
