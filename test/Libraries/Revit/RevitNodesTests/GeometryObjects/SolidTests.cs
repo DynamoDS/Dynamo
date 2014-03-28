@@ -339,23 +339,23 @@ namespace DSRevitNodesTests.GeometryObjects
             WriteToOBJ(modelPath, new List<IRenderPackage>() { package });
         }
 
-        [Test]
-        public void FromElement_ValidArgs()
-        {
-            var solidA = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
-            var solidB = Solid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
-            var difference = Solid.ByBooleanDifference(solidA, solidB);
+        //[Test]
+        //public void FromElement_ValidArgs()
+        //{
+        //    var solidA = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
+        //    var solidB = Solid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
+        //    var difference = Solid.ByBooleanDifference(solidA, solidB);
 
-            var ff = FreeForm.BySolid(difference);
+        //    var ff = FreeForm.BySolid(difference);
 
-            var extract = Solid.FromElement(ff);
-            Assert.IsNotNull(extract);
+        //    var extract = Solid.FromElement(ff);
+        //    Assert.IsNotNull(extract);
 
-            var package = new RenderPackage();
-            extract.Tessellate(package);
+        //    var package = new RenderPackage();
+        //    extract.Tessellate(package);
 
-            ExportModel("FromElement_ValidArgs.obj", package);
-        }
+        //    ExportModel("FromElement_ValidArgs.obj", package);
+        //}
 
         private void ExportModel(string fileName, IRenderPackage package)
         {
