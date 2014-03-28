@@ -16,7 +16,7 @@ VersionInfoCompany=Autodesk
 VersionInfoDescription=DynamoDS 0.7.0
 VersionInfoTextVersion=DynamoDS 0.7.0
 VersionInfoCopyright=
-DefaultDirName=C:\Autodesk\Dynamo0.7\Core
+DefaultDirName=C:\Autodesk\Dynamo07\Core
 DefaultGroupName=Dynamo
 OutputDir=Installers
 OutputBaseFilename=InstallDynamoDS
@@ -68,9 +68,9 @@ Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwrite
 
 
 [UninstallDelete]
-Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo0.7.addin"
-Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo0.7.addin"
-Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo0.7.addin"
+Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo07.addin"
+Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo07.addin"
+Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo07.addin"
 Type: filesandordirs; Name: {app}\dll
 
 [Run]
@@ -173,7 +173,7 @@ begin
 	AddInFileContents := '<?xml version="1.0" encoding="utf-8" standalone="no"?>' + #13#10;
 	AddInFileContents := AddInFileContents + '<RevitAddIns>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <AddIn Type="Application">' + #13#10;
-  AddInFileContents := AddInFileContents + '    <Name>Dynamo0.7</Name>' + #13#10;
+  AddInFileContents := AddInFileContents + '    <Name>Dynamo07</Name>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevitDS.dll</Assembly>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <AddInId>8D83C886-B739-4ACD-A9DB-1BC78F315B2B</AddInId>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <FullClassName>Dynamo.Applications.DynamoRevitApp</FullClassName>' + #13#10;
@@ -193,17 +193,17 @@ begin
 	
     if (WizardForm.ComponentsList.Checked[1]) then
     begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo0.7.addin'), AddInFileContents, False);
+      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo07.addin'), AddInFileContents, False);
     end;
   
     if (WizardForm.ComponentsList.Checked[2]) then
     begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo0.7.addin'), AddInFileContents, False);
+      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo07.addin'), AddInFileContents, False);
     end;
 
     if (WizardForm.ComponentsList.Checked[3]) then
     begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo0.7.addin'), AddInFileContents, False);
+      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo07.addin'), AddInFileContents, False);
     end;
 
   end;
