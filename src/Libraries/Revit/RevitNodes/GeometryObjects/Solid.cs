@@ -725,7 +725,7 @@ namespace Revit.GeometryObjects
 
         #region Tesselation
 
-        public override void Tessellate(IRenderPackage package)
+        public override void Tessellate(IRenderPackage package, double tol = -1)
         {
             var meshes = this.InternalSolid.Faces.Cast<Autodesk.Revit.DB.Face>()
                 .Select(x => x.Triangulate(GraphicsManager.TesselationLevelOfDetail));
