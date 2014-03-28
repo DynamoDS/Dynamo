@@ -138,6 +138,7 @@ limitations under the License.
     <Compile Include="Interfaces\IPreferences.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
+    <Compile Include="Nodes\WatchImage.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>
@@ -698,9 +699,9 @@ limitations under the License.
     <Resource Include="UI\Images\consent_form_image.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\crash_pic.png" />
+    <Resource Include="UI\Images\task_dialog_crash.png" />
+    <Resource Include="UI\Images\task_dialog_obsolete_file.png" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>

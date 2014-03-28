@@ -129,13 +129,12 @@ namespace Dynamo
             set { context = value; }
         }
 
-        private bool _isShowingConnectors = true;
         public bool IsShowingConnectors
         {
-            get { return _isShowingConnectors; }
+            get { return PreferenceSettings.ShowConnector; }
             set
             {
-                _isShowingConnectors = value;
+                PreferenceSettings.ShowConnector = value;
             }
         }
 
@@ -389,6 +388,14 @@ namespace Dynamo
             if (Running)
                 return;
 
+            // If there is preloaded trace data, send that along to the current
+            // LiveRunner instance. Here we make sure it is done exactly once 
+            // by resetting WorkspaceModel.PreloadedTraceData property after it 
+            // is obtained.
+            // 
+            var traceData = DynamoViewModel.Model.HomeSpace.PreloadedTraceData;
+            DynamoViewModel.Model.HomeSpace.PreloadedTraceData = null; // Reset.
+            EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
 
 #if USE_DSENGINE
             EngineController.GenerateGraphSyncData(DynamoViewModel.Model.HomeSpace.Nodes);
@@ -427,7 +434,7 @@ namespace Dynamo
                 EvaluationThread(null, null);
         }
 
-        protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
+        private void EvaluationThread(object s, DoWorkEventArgs args)
         {
             var sw = new Stopwatch();
             sw.Start();
@@ -544,9 +551,32 @@ namespace Dynamo
             {
             }
 
+            // We have caught all possible exceptions in UpdateGraph call, I am 
+            // not certain if this try-catch block is still meaningful or not.
             try
             {
-                bool updated = EngineController.UpdateGraph();
+                Exception fatalException = null;
+                bool updated = EngineController.UpdateGraph(ref fatalException);
+
+                // If there's a fatal exception, show it to the user, unless of course 
+                // if we're running in a unit-test, in which case there's no user. I'd 
+                // like not to display the dialog and hold up the continuous integration.
+                // 
+                if (DynamoController.IsTestMode == false && (fatalException != null))
+                {
+                    Action showFailureMessage = new Action(() =>
+                    {
+                        Dynamo.Nodes.Utilities.DisplayEngineFailureMessage(fatalException);
+                    });
+
+                    // The "Run" method is guaranteed to be called on a background 
+                    // thread (for Revit's case, it is the idle thread). Here we 
+                    // schedule the message to show up when the UI gets around and 
+                    // handle it.
+                    // 
+                    if (this.UIDispatcher != null)
+                        this.UIDispatcher.BeginInvoke(showFailureMessage);
+                }
 
                 // Currently just use inefficient way to refresh preview values. 
                 // After we switch to async call, only those nodes that are really 

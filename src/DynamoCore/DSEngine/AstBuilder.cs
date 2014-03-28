@@ -265,7 +265,7 @@ namespace Dynamo.DSEngine
                     if (!port.HasDefaultValue)
                         inputAstNodes.Add(new NullNode());
                     else
-                        inputAstNodes.Add(port.DefaultValue as AssociativeNode ?? new NullNode());
+                        inputAstNodes.Add(AstFactory.BuildPrimitiveNodeFromObject(port.DefaultValue));
                 }
                 else
                 {

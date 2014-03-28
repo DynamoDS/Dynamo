@@ -27,10 +27,10 @@ namespace Dynamo.Nodes
         public const string CORE = "Core";
         public const string CORE_INPUT = "Core.Input";
         public const string CORE_STRINGS = "Core.Strings";
-        public const string CORE_LISTS_CREATE = "Core.Lists.Create";
-        public const string CORE_LISTS_MODIFY = "Core.Lists.Modify";
-        public const string CORE_LISTS_EVALUATE = "Core.Lists.Evaluate";
-        public const string CORE_LISTS_QUERY = "Core.Lists.Query";
+        public const string CORE_LISTS_CREATE = "Core.List.Create";
+        public const string CORE_LISTS_MODIFY = "Core.List.Modify";
+        public const string CORE_LISTS_EVALUATE = "Core.List.Evaluate";
+        public const string CORE_LISTS_QUERY = "Core.List.Query";
         public const string CORE_VIEW = "Core.View";
         public const string CORE_ANNOTATE = "Core.Annotate";
         public const string CORE_EVALUATE = "Core.Evaluate";
@@ -38,7 +38,7 @@ namespace Dynamo.Nodes
         public const string CORE_SCRIPTING = "Core.Scripting";
         public const string CORE_FUNCTIONS = "Core.Functions";
 
-        public const string LOGIC = "Logic";
+        public const string LOGIC = "Core.Logic";
         public const string LOGIC_MATH_ARITHMETIC = "Logic.Math.Arithmetic";
         public const string LOGIC_MATH_ROUNDING = "Logic.Math.Rounding";
         public const string LOGIC_MATH_CONSTANTS = "Logic.Math.Constants";
@@ -47,7 +47,7 @@ namespace Dynamo.Nodes
         public const string LOGIC_MATH_OPTIMIZE = "Logic.Math.Optimize";
         public const string LOGIC_EFFECT = "Logic.Effect";
         public const string LOGIC_COMPARISON = "Logic.Comparison";
-        public const string LOGIC_CONDITIONAL = "Logic.Conditional";
+        public const string LOGIC_CONDITIONAL = "Core.Logic.Conditional";
         public const string LOGIC_LOOP = "Logic.Loop";
 
 
@@ -339,6 +339,120 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
+        /// Call this method to serialize given node-data-list pairs into an 
+        /// XmlDocument. Serialized data in the XmlDocument can be loaded by a 
+        /// call to LoadTraceDataFromXmlDocument method.
+        /// </summary>
+        /// <param name="document">The target document to which the trade data 
+        /// is to be written. This parameter cannot be null and must represent 
+        /// a valid XmlDocument object.</param>
+        /// <param name="nodeTraceDataList">A dictionary of node-data-list pairs
+        /// to be saved to the XmlDocument. This parameter cannot be null and 
+        /// must represent a non-empty list of node-data-list pairs.</param>
+        public static void SaveTraceDataToXmlDocument(XmlDocument document,
+            IEnumerable<KeyValuePair<Guid, List<string>>> nodeTraceDataList)
+        {
+            #region Parameter Validations
+
+            if (document == null)
+                throw new ArgumentNullException("document");
+
+            if (document.DocumentElement == null)
+            {
+                var message = "Document does not have a root element";
+                throw new ArgumentException(message, "document");
+            }
+
+            if (nodeTraceDataList == null)
+                throw new ArgumentNullException("nodeTraceDataList");
+
+            if (nodeTraceDataList.Count() <= 0)
+            {
+                var message = "Trade data list must be non-empty";
+                throw new ArgumentException(message, "nodeTraceDataList");
+            }
+
+            #endregion
+
+            #region Session Xml Element
+
+            var sessionElement = document.CreateElement(
+                Configurations.SessionTraceDataXmlTag);
+
+            document.DocumentElement.AppendChild(sessionElement);
+
+            #endregion
+
+            #region Serialize Node Xml Elements
+
+            foreach (var pair in nodeTraceDataList)
+            {
+                var nodeElement = document.CreateElement(
+                    Configurations.NodeTraceDataXmlTag);
+
+                // Set the node ID attribute for this element.
+                var nodeGuid = pair.Key.ToString();
+                nodeElement.SetAttribute(Configurations.NodeIdAttribName, nodeGuid);
+                sessionElement.AppendChild(nodeElement);
+
+                foreach (var data in pair.Value)
+                {
+                    var callsiteXmlElement = document.CreateElement(
+                        Configurations.CallsiteTraceDataXmlTag);
+
+                    callsiteXmlElement.InnerText = data;
+                    nodeElement.AppendChild(callsiteXmlElement);
+                }
+            }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// Call this method to load serialized node-data-list pairs (through a 
+        /// prior call to SaveTraceDataToXmlDocument) from a given XmlDocument.
+        /// </summary>
+        /// <param name="document">The XmlDocument from which serialized node-
+        /// data-list pairs are to be deserialized.</param>
+        /// <returns>Returns a dictionary of deserialized node-data-list pairs
+        /// loaded from the given XmlDocument.</returns>
+        public static IEnumerable<KeyValuePair<Guid, List<string>>>
+            LoadTraceDataFromXmlDocument(XmlDocument document)
+        {
+            if (document == null)
+                throw new ArgumentNullException("document");
+
+            if (document.DocumentElement == null)
+            {
+                var message = "Document does not have a root element";
+                throw new ArgumentException(message, "document");
+            }
+
+            var childNodes = document.DocumentElement.ChildNodes.Cast<XmlElement>();
+            var sessionXmlTagName = Configurations.SessionTraceDataXmlTag;
+            var query = from childNode in childNodes
+                        where childNode.Name.Equals(sessionXmlTagName)
+                        select childNode;
+
+            var loadedData = new Dictionary<Guid, List<string>>();
+            if (query.Count() <= 0) // There's no data, return empty dictionary.
+                return loadedData;
+
+            XmlElement sessionElement = query.ElementAt(0);
+            foreach (XmlElement nodeElement in sessionElement.ChildNodes)
+            {
+                List<string> callsites = new List<string>();
+                foreach (XmlElement callsiteElement in nodeElement.ChildNodes)
+                    callsites.Add(callsiteElement.InnerText);
+
+                var guid = nodeElement.GetAttribute(Configurations.NodeIdAttribName);
+                loadedData.Add(Guid.Parse(guid), callsites);
+            }
+
+            return loadedData;
+        }
+
+        /// <summary>
         /// Call this method to compute the relative path of a subject path 
         /// relative to the given base path.
         /// </summary>
@@ -398,6 +512,61 @@ namespace Dynamo.Nodes
             Uri relativeUri = new Uri(relativePath, UriKind.Relative);
             Uri resultUri = new Uri(baseUri, relativeUri);
             return resultUri.LocalPath;
+        }
+
+        /// <summary>
+        /// Call this method to display a message box when a file of an older 
+        /// version cannot be opened by the current version of Dynamo.
+        /// </summary>
+        /// <param name="fileVersion">Version of the input file.</param>
+        /// <param name="currVersion">Current version of the Dynamo.</param>
+        internal static void DisplayObsoleteFileMessage(
+            Version fileVersion, Version currVersion)
+        {
+            var summary = "Your file cannot be opened";
+            var description = string.Format("Your file of version '{0}' cannot " +
+                "be opened by this version of Dynamo ({1})", fileVersion, currVersion);
+
+            var imageUri = "/DynamoCore;component/UI/Images/task_dialog_obsolete_file.png";
+            var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
+                new Uri(imageUri, UriKind.Relative),
+                "Obsolete File", summary, description);
+
+            args.AddRightAlignedButton(43420, "OK");
+
+            dynSettings.Controller.OnRequestTaskDialog(null, args);
+        }
+
+        /// <summary>
+        /// Call this method to display an error message in an event when live 
+        /// runner throws an exception that is not handled anywhere else. This 
+        /// message instructs user to save their work and restart Dynamo.
+        /// </summary>
+        /// <param name="exception">The exception to display.</param>
+        internal static void DisplayEngineFailureMessage(Exception exception)
+        {
+            var summary = "Unhandled exception in Dynamo engine";
+            var description = "The virtual machine that powers Dynamo is " +
+                "experiencing some unexpected errors internally and is likely " +
+                "having great difficulties pulling itself together. It is " +
+                "recommended that you save your work now and reload the file. " +
+                "Giving the Dynamo VM a new lease of life can potentially make " +
+                "it feel happier and behave better.\n\n" +
+                "If you don't mind, it would be helpful for you to send us your " +
+                "file. That will make it quicker for us to get these issues fixed.";
+
+            var imageUri = "/DynamoCore;component/UI/Images/task_dialog_crash.png";
+            var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
+                new Uri(imageUri, UriKind.Relative),
+                "Unhandled exception", summary, description);
+
+            args.AddRightAlignedButton(43420, "Submit Bug To Github");
+            args.AddRightAlignedButton(43421, "Arrrrg, ok");
+            args.Exception = exception;
+
+            dynSettings.Controller.OnRequestTaskDialog(null, args);
+            if (args.ClickedButtonId == 43420)
+                dynSettings.Controller.ReportABug(null);
         }
 
         private static bool HasPathInformation(string fileNameOrPath)
