@@ -20,7 +20,7 @@ namespace ProtoCore
         /// <summary>
         /// Data structure used to carry trace data
         /// </summary>
-        class SingleRunTraceData
+        public class SingleRunTraceData
         {
             internal SingleRunTraceData() { }
 
@@ -119,7 +119,10 @@ namespace ProtoCore
         //TODO(Luke): This should be loaded from the attribute
         private string TRACE_KEY = TraceUtils.__TEMP_REVIT_TRACE_ID;
 
-        private List<Object> traceData = new List<object>();
+        public List<SingleRunTraceData> TraceData { 
+            get { return traceData; } private set { traceData = value; } }
+
+        private List<SingleRunTraceData> traceData = new List<SingleRunTraceData>();
         private int invokeCount; //Number of times the callsite has been executed within this run
 
         private Guid callsiteID = Guid.Empty;
@@ -130,6 +133,8 @@ namespace ProtoCore
                 return callsiteID;
             }
         }
+
+
 
         /// <summary>
         /// Constructs an instance of the CallSite object given its scope and 
@@ -1223,7 +1228,7 @@ namespace ProtoCore
                 }
 
                 StackValue[] retSVs = new StackValue[retSize];
-                SingleRunTraceData retTrace = new SingleRunTraceData();
+                SingleRunTraceData retTrace = newTraceData;
                 retTrace.NestedData = new List<SingleRunTraceData>(); //this will shadow the SVs as they are created
 
                 //Populate out the size of the list with default values
@@ -1286,11 +1291,10 @@ namespace ProtoCore
                     newRIs.RemoveAt(0);
 
 
-                    previousTraceData = lastExecTrace;
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
                     retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
-                                                    funcGroup, previousTraceData, cleanRetTrace);
+                                                    funcGroup, lastExecTrace, cleanRetTrace);
 
 
 
