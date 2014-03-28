@@ -1325,6 +1325,9 @@ namespace ProtoScript.Runners
             }
         }
 
+    
+
+
         /// <summary>
         /// Update the map from graph UI node to a list of ast nodes. Each
         /// ast node is in SSA form. 
@@ -1369,11 +1372,12 @@ namespace ProtoScript.Runners
             }
         }
 
+
         private void SynchronizeInternal(GraphSyncData syncData)
         {
             runnerCore.Options.IsDeltaCompile = true;
 
-            List<AssociativeNode> deltaAstList = new List<AssociativeNode>();
+            List<AssociativeNode> finalDeltaAstList = new List<AssociativeNode>();
 
             if (syncData == null)
             {
@@ -1389,6 +1393,7 @@ namespace ProtoScript.Runners
             {
                 foreach (var st in syncData.DeletedSubtrees)
                 {
+                    List<AssociativeNode> deltaAstList = new List<AssociativeNode>();
                     if (st.AstNodes != null && st.AstNodes.Count > 0)
                     {
                         var nullNodes = MarkGraphNodesInactive(st.AstNodes);
@@ -1423,7 +1428,16 @@ namespace ProtoScript.Runners
                     foreach (var expr in exprs)
                     {
                         exprGuidMap.Remove(expr);
-                        Core.RuntimeStatus.ClearWarningForExpression(expr); 
+                        Core.RuntimeStatus.ClearWarningForExpression(expr);
+                    }
+
+                    foreach (AssociativeNode node in deltaAstList)
+                    {
+                        if (node is BinaryExpressionNode)
+                        {
+                            (node as BinaryExpressionNode).guid = st.GUID;
+                        }
+                        finalDeltaAstList.Add(node);
                     }
                 }
             }
@@ -1432,6 +1446,7 @@ namespace ProtoScript.Runners
             {
                 foreach (var st in syncData.AddedSubtrees)
                 {
+                    List<AssociativeNode> deltaAstList = new List<AssociativeNode>();
                     if (st.AstNodes != null)
                     {
                         deltaAstList.AddRange(st.AstNodes);
@@ -1446,6 +1461,15 @@ namespace ProtoScript.Runners
                     }
 
                     currentSubTreeList.Add(st.GUID, st);
+
+                    foreach (AssociativeNode node in deltaAstList)
+                    {
+                        if (node is BinaryExpressionNode)
+                        {
+                            (node as BinaryExpressionNode).guid = st.GUID;
+                        }
+                        finalDeltaAstList.Add(node);
+                    }
                 }
             }
 
@@ -1453,6 +1477,7 @@ namespace ProtoScript.Runners
             {
                 foreach (var st in syncData.ModifiedSubtrees)
                 {
+                    List<AssociativeNode> deltaAstList = new List<AssociativeNode>();
                     Subtree oldSubTree;
                     bool cachedTreeExists = currentSubTreeList.TryGetValue(st.GUID, out oldSubTree);
 
@@ -1551,12 +1576,24 @@ namespace ProtoScript.Runners
 
                         ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(runnerCore, runnerCore.GraphNodeCallList);
                     }
+
+                    foreach (AssociativeNode node in deltaAstList)
+                    {
+                        if (node is BinaryExpressionNode)
+                        {
+                            (node as BinaryExpressionNode).guid = st.GUID;
+                        }
+                        finalDeltaAstList.Add(node);
+                    }
                 }
             }
 
-            CompileAndExecuteForDeltaExecution(deltaAstList);
-        }
 
+
+            CompileAndExecuteForDeltaExecution(finalDeltaAstList);
+        }
+        
+        
         /// <summary>
         /// Returns runtime warnings.
         /// </summary>

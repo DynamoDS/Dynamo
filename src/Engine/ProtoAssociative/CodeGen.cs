@@ -3461,6 +3461,7 @@ namespace ProtoAssociative
                                 BinaryExpressionNode ssaNode = aNode as BinaryExpressionNode;
                                 ssaNode.exprUID = ssaID;
                                 ssaNode.ssaExprID = ssaExprID;
+                                ssaNode.guid = bnode.guid;
                                 NodeUtils.SetNodeLocation(ssaNode, node, node);
                             }
 
@@ -8014,6 +8015,7 @@ namespace ProtoAssociative
                     graphNode.exprUID = bnode.exprUID;
                     graphNode.ssaExprID = bnode.ssaExprID;
                     graphNode.guid = core.SSASubscript_GUID;
+                    graphNode.guid = bnode.guid;
                     graphNode.modBlkUID = bnode.modBlkUID;
                     graphNode.procIndex = globalProcIndex;
                     graphNode.classIndex = globalClassIndex;
