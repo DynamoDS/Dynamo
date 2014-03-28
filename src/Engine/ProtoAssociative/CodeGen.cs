@@ -3921,6 +3921,8 @@ namespace ProtoAssociative
                             this.core.ClassTable.AuditMultipleDefinition(this.core.BuildStatus);
                         }
                         codeblock.Body = BuildSSA(codeblock.Body, context);
+                        core.CachedSSANodes.Clear();
+                        core.CachedSSANodes.AddRange(codeblock.Body);
                         ssaTransformed = true;
                         if (core.Options.DumpIL)
                         {
