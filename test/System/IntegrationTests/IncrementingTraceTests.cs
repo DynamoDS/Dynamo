@@ -1554,14 +1554,14 @@ mtcAID = mtcA.ID;";
             //Force exception to be thrown
             Guid guid3 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid3, "x = {44, 54}; fail = {false, false};"));
+            added.Add(CreateSubTreeFromCode(guid3, "x = {44, 54}; fail = {false, true};"));
 
 
             syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
 
             // Verify that a is re-executed
-            TestFrameWork.AssertValue("mtcAID", new List<int>() { 0, 1}, astLiveRunner);
+            TestFrameWork.AssertValue("mtcAID", new List<object>() { 0, null}, astLiveRunner);
 
             Console.WriteLine("==============Completed second verification ===================");
 
@@ -1569,7 +1569,7 @@ mtcAID = mtcA.ID;";
             // Simulate a new  CBN
             Guid guid4 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid4, "x = {47, 67};"));
+            added.Add(CreateSubTreeFromCode(guid4, "x = {47, 67}; fail = {false, false};"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1577,7 +1577,7 @@ mtcAID = mtcA.ID;";
 
             // Verify that a is re-executed
             //This should cause a new entity
-            TestFrameWork.AssertValue("mtcAID", new List<int>() { 0, 1}, astLiveRunner);
+            TestFrameWork.AssertValue("mtcAID", new List<int>() { 0, 2}, astLiveRunner);
 
             Console.WriteLine("==============Completed third verification ===================");
 
@@ -1586,14 +1586,14 @@ mtcAID = mtcA.ID;";
             //Force exception to be thrown
             Guid guid5 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid5, "x = {4, 5, 6};"));
+            added.Add(CreateSubTreeFromCode(guid5, "x = {4, 5, 6};")); //shortest lacing will cap this to 2 values
 
 
             syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
 
             // Verify that a is re-executed
-            TestFrameWork.AssertValue("mtcAID", new List<Object>() { 0, 1, 3 }, astLiveRunner);
+            TestFrameWork.AssertValue("mtcAID", new List<int>() { 0, 2}, astLiveRunner);
 
         }
 
