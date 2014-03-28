@@ -629,7 +629,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract partial class String
+    public abstract partial class AbstractString
     {
         public override void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
@@ -657,6 +657,55 @@ namespace Dynamo.Nodes
                 return true;
             }
 
+            return base.UpdateValueCore(name, value);
+        }
+    }
+
+    public partial class StringInput : AbstractString
+    {
+        public override void SetupCustomUIElements(dynNodeView ui)
+        {
+            var nodeUI = ui as dynNodeView;
+
+            base.SetupCustomUIElements(nodeUI);
+
+            //add a text box to the input grid of the control
+            var tb = new StringTextBox
+            {
+                AcceptsReturn = true,
+                AcceptsTab = true,
+                TextWrapping = TextWrapping.Wrap,
+                MaxWidth = 200,
+                VerticalAlignment = VerticalAlignment.Top
+            };
+
+            nodeUI.inputGrid.Children.Add(tb);
+            System.Windows.Controls.Grid.SetColumn(tb, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 0);
+
+            tb.DataContext = this;
+            tb.BindToProperty(new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new StringDisplay(),
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                var converter = new StringDisplay();
+                this.Value = ((string)converter.ConvertBack(value, typeof(string), null, null));
+                return true; // UpdateValueCore handled.
+            }
+
+            // There's another 'UpdateValueCore' method in 'String' base class,
+            // since they are both bound to the same property, 'StringInput' 
+            // should be given a chance to handle the property value change first
+            // before the base class 'String'.
             return base.UpdateValueCore(name, value);
         }
     }
