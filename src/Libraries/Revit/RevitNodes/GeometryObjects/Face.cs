@@ -111,7 +111,7 @@ namespace Revit.GeometryObjects
 
         #region Tesselation
 
-        public override void Tessellate(IRenderPackage package)
+        public override void Tessellate(IRenderPackage package, double tol)
         {
             var mesh = this.InternalFace.Triangulate(GraphicsManager.TesselationLevelOfDetail);
             GraphicsManager.PushMesh(mesh, package);
