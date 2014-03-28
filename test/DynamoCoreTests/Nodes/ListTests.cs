@@ -31,6 +31,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(listTestFolder, "testBuildSubLists_invalidInput.dyn");
             RunModel(testFilePath);
 
+            Assert.Inconclusive("Add assertions");
         }
 
         [Test]
@@ -69,11 +70,13 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestConcatenateListsInvalidInput()
+        public void TestConcatenateListsSingleInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(listTestFolder, "testConcatenateLists_invalidInput.dyn");
+            string testFilePath = Path.Combine(listTestFolder, "testConcatenateLists_singleInput.dyn");
             RunModel(testFilePath);
+
+            AssertPreviewValue("c03730e8-320d-4da4-b54d-1dc990dd5def", new object[] { 20, 10 });
         }
 
         [Test]
@@ -105,6 +108,8 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testDiagonaLeftList_invalidInput.dyn");
             RunModel(testFilePath);
+
+            Assert.Inconclusive("Add assertions");
         }
 
         [Test]
@@ -172,11 +177,13 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestFirstOfListInvalidInput()
+        public void TestFirstOfListSingleInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(listTestFolder, "testFirstOfList_invalidInput.dyn");
+            string testFilePath = Path.Combine(listTestFolder, "testFirstOfList_singleInput.dyn");
             RunModel(testFilePath);
+
+            AssertPreviewValue("3d5f481b-0701-4948-bf84-134bbe360449", 20);
         }
 
         [Test]
@@ -212,11 +219,13 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestIsEmptyListInvalidInput()
+        public void TestIsEmptyListSingleInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(listTestFolder, "testIsEmptyList_invalidInput.dyn");
+            string testFilePath = Path.Combine(listTestFolder, "testIsEmptyList_singleInput.dyn");
             RunModel(testFilePath);
+
+            AssertPreviewValue("d98b4671-fa55-4303-a9a2-e1b383d737da", false);
         }
 
         [Test]
@@ -254,11 +263,13 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestStringLengthInvalidInput()
+        public void TestStringLengthSingleInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(listTestFolder, "testListLength_invalidInput.dyn");
+            string testFilePath = Path.Combine(listTestFolder, "testListLength_singleInput.dyn");
             RunModel(testFilePath);
+
+            AssertPreviewValue("bb376d8d-ce77-46a4-822a-b8136a56287a", 1);
         }
 
         [Test]
@@ -296,11 +307,13 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestPartitionStringInvalidInput()
+        public void TestPartitionStringSingleInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(listTestFolder, "testPartitionList_invalidInput.dyn");
+            string testFilePath = Path.Combine(listTestFolder, "testPartitionList_singleInput.dyn");
             RunModel(testFilePath);
+
+            AssertPreviewValue("4070b941-f4ef-4fc0-bced-2eb469fcd5f8", new object[] { 20 });
         }
 
         [Test]
@@ -338,11 +351,13 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestFlattenInvalidInput()
+        public void TestFlattenSingleInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(listTestFolder, "testPlatten_invalidInput.dyn");
+            string testFilePath = Path.Combine(listTestFolder, "testPlatten_singleInput.dyn");
             RunModel(testFilePath);
+
+            Assert.Inconclusive("Add assertions");
         }
 
         [Test]
@@ -371,11 +386,13 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestFlattenCompletlyInvalidInput()
+        public void TestFlattenCompletlySingleInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(listTestFolder, "testPlattenCompletely_invalidInput.dyn");
+            string testFilePath = Path.Combine(listTestFolder, "testPlattenCompletely_singleInput.dyn");
             RunModel(testFilePath);
+
+            Assert.Inconclusive("Add assertions");
         }
 
         [Test]
@@ -433,14 +450,18 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testRestOfList_emptyInput.dyn");
             RunModel(testFilePath);
+
+            Assert.Inconclusive("Add assertions");
         }
 
         [Test]
-        public void TestRestOfListInvalidInput()
+        public void TestRestOfListSingleInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(listTestFolder, "testRestOfList_invalidInput.dyn");
+            string testFilePath = Path.Combine(listTestFolder, "testRestOfList_singleInput.dyn");
             RunModel(testFilePath);
+
+            AssertPreviewValue("25af2003-1b6e-4a97-9727-a7583119271d", new object[] { });
         }
 
         [Test]
@@ -480,11 +501,13 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestTransposeInvalidInput()
+        public void TestTransposeSingleInput()
         {
             DynamoModel model = Controller.DynamoModel;
-            string testFilePath = Path.Combine(listTestFolder, "testTransposeList_invalidInput.dyn");
+            string testFilePath = Path.Combine(listTestFolder, "testTransposeList_singleInput.dyn");
             RunModel(testFilePath);
+
+            AssertPreviewValue("d37a5827-d7d3-41d4-bd68-8ab6666aed39", 20);
         }
 
         [Test]
@@ -590,7 +613,7 @@ namespace Dynamo.Tests
 
 
         [Test]
-        public void Sort_StringsAndNumbers_NegativeTest()
+        public void Sort_StringsAndNumbers()
         {
             var model = dynSettings.Controller.DynamoModel;
 
@@ -601,6 +624,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
 
+            AssertPreviewValue("14fae78b-b009-4503-afe9-b714e08db1ec",
+                new object[] { 0, "a", "aa", "bbbbbbbbbbbbb", "dddd" });
         }
 
         [Test]
@@ -808,11 +833,11 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Reverse_WithSingletonInput()
+        public void Reverse_WithSingleInput()
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\list\Reverse_WithSingletonInput.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\Reverse_WithSingleInput.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
@@ -1867,17 +1892,25 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void ShiftListIndices_NegativeTest()
+        public void ShiftListIndices_MultipleInput()
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\list\ShiftListIndeces_NegativeTest.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\ShiftListIndeces_MultipleInput.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
+            AssertPreviewValue("7f6cbd60-b9fb-4b16-81d3-4fab26790446",
+                new object[][]
+                {
+                    new object[] { 10, 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+                    new object[] { 9, 10, 1, 2, 3, 4, 5, 6, 7, 8 },
+                    new object[] { 8, 9, 10, 1, 2, 3, 4, 5, 6, 7 },
+                    new object[] { 7, 8, 9, 10, 1, 2, 3, 4, 5, 6 }
+                });
         }
         #endregion
 
@@ -2044,6 +2077,9 @@ namespace Dynamo.Tests
             // check all the nodes and connectors are loaded
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+
+            NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("b18e5ac3-5732-4c78-9a3b-56b375c9beee");
+            Assert.AreEqual(ElementState.Warning, nodeModel.State);
         }
         #endregion
 
@@ -2269,16 +2305,24 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void SliceList_NegativeTest()
+        public void SliceList_MultipleInput()
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\list\SliceList_NegativeTest.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\SliceList_MultipleInput.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(11 + 1, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(12 + 1, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
+
+            AssertPreviewValue("cc3ae092-8644-4a36-ad38-12ffa15cebda",
+                new object[][]
+                {
+                    new object[] { },
+                    new object[] { "Design", 4.5 },
+                    new object[] { "Design", 4.5, "Dynamo" }
+                });
         }
         #endregion
 
