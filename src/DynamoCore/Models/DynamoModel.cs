@@ -870,8 +870,10 @@ namespace Dynamo.Models
                         var e = elNode as XmlElement;
                         dummyElement = MigrationManager.CreateDummyNodeForFunction(e);
                     }
-                    
-                    if ((el is Dynamo.Nodes.Function) && (((Dynamo.Nodes.Function)el).Definition == null))
+
+                    // If a custom node fails to load its definition, convert it into a dummy node.
+                    var function = el as Dynamo.Nodes.Function;
+                    if ((function != null) && (function.Definition == null))
                     {
                         var e = elNode as XmlElement;
                         dummyElement = MigrationManager.CreateDummyNode(e, el.InPortData.Count, el.OutPortData.Count);
