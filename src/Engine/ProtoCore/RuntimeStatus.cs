@@ -145,12 +145,12 @@ namespace ProtoCore
         {
             filename = filename ?? string.Empty;
 
-            if (string.IsNullOrEmpty(filename) || 
-                line == Constants.kInvalidIndex || 
-                col == Constants.kInvalidIndex)
-            {
-                CodeGen.AuditCodeLocation(core, ref filename, ref line, ref col);
-            }
+            //if (string.IsNullOrEmpty(filename) || 
+            //    line == Constants.kInvalidIndex || 
+            //    col == Constants.kInvalidIndex)
+            //{
+            //    CodeGen.AuditCodeLocation(core, ref filename, ref line, ref col);
+            //}
 
             var warningMsg = string.Format(WarningMessage.kConsoleWarningMessage, 
                                            message, filename, line, col);
