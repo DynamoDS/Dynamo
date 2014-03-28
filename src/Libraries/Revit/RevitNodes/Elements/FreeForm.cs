@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
-using DSNodeServices;
 using Revit.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
@@ -14,7 +14,8 @@ namespace Revit.Elements
     /// <summary>
     /// A Revit FreeForm element
     /// </summary>
-    [RegisterForTrace]
+    [DSNodeServices.RegisterForTrace]
+    [IsVisibleInDynamoLibrary(false)]
     public class FreeForm : Element
     {
 
@@ -23,9 +24,11 @@ namespace Revit.Elements
         /// <summary>
         /// Reference to the Element
         /// </summary>
+        [SupressImportIntoVM]
         internal Autodesk.Revit.DB.FreeFormElement InternalFreeFormElement
         {
-            get; private set;
+            get;
+            private set;
         }
 
         /// <summary>
@@ -44,6 +47,7 @@ namespace Revit.Elements
         /// Private constructor that allows wrapping of an existing FreeForm element.
         /// </summary>
         /// <param name="ele"></param>
+        [SupressImportIntoVM]
         private FreeForm(Autodesk.Revit.DB.FreeFormElement ele)
         {
             InternalSetFreeFormElement(ele);
@@ -57,7 +61,7 @@ namespace Revit.Elements
         private FreeForm(Autodesk.Revit.DB.Solid mySolid)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
-            var ele = 
+            var ele =
                 ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.FreeFormElement>(Document);
 
             // mutate with new solid, if possible
@@ -106,7 +110,7 @@ namespace Revit.Elements
             {
                 TransactionManager.Instance.EnsureInTransaction(Document);
 
-                method.Invoke(InternalFreeFormElement, new object[] {solid});
+                method.Invoke(InternalFreeFormElement, new object[] { solid });
 
                 TransactionManager.Instance.TransactionTaskDone();
 
@@ -120,6 +124,7 @@ namespace Revit.Elements
         /// Set the FreeFormElement and update it's id and unique id
         /// </summary>
         /// <param name="ele"></param>
+        [SupressImportIntoVM]
         private void InternalSetFreeFormElement(Autodesk.Revit.DB.FreeFormElement ele)
         {
             this.InternalFreeFormElement = ele;
@@ -162,6 +167,7 @@ namespace Revit.Elements
         /// <param name="freeFormElement"></param>
         /// <param name="isRevitOwned"></param>
         /// <returns></returns>
+        [SupressImportIntoVM]
         internal static FreeForm FromExisting(Autodesk.Revit.DB.FreeFormElement freeFormElement, bool isRevitOwned)
         {
             return new FreeForm(freeFormElement)

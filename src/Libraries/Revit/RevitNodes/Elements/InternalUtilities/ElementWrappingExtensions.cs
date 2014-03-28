@@ -87,6 +87,7 @@ namespace Revit.Elements
             return Form.FromExisting(ele, isRevitOwned);
         }
 
+        [SupressImportIntoVM]
         public static FreeForm Wrap(Autodesk.Revit.DB.FreeFormElement ele, bool isRevitOwned)
         {
             return FreeForm.FromExisting(ele, isRevitOwned);
@@ -191,6 +192,7 @@ namespace Revit.Elements
             return DraftingView.FromExisting(view, isRevitOwned);
         }
 
+        [SupressImportIntoVM]
         public static Topography Wrap(Autodesk.Revit.DB.Architecture.TopographySurface topoSurface, bool isRevitOwned)
         {
             return Topography.FromExisting(topoSurface, isRevitOwned);
