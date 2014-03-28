@@ -1094,10 +1094,10 @@
                       IsEnabled="{Binding Path=CanRunDynamically, Mode=OneWay}"
                       VerticalAlignment="Center" VerticalContentAlignment="Center"/>
 
-                    <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
+                    <!--CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
                       FontSize="11" VerticalAlignment="Center" Foreground="Gray"
                       IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}" Focusable="False"
-                      Content="Debug" VerticalContentAlignment="Center"/>
+                      Content="Debug" VerticalContentAlignment="Center"/-->
 
                 </WrapPanel>
                 <TextBlock Name="warningText" Grid.Column="1" Text="{Binding Source={x:Static dynamo:DynamoLogger.Instance}, Path=Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}" FontStyle="Italic" FontSize="12" 
