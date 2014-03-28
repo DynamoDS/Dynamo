@@ -14,6 +14,7 @@ using ProtoCore.AST.AssociativeAST;
 using Utils = Dynamo.FSchemeInterop.Utils;
 using System.IO;
 using Dynamo.UI;
+using System.Web;
 
 namespace Dynamo.Nodes
 {
@@ -1408,7 +1409,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract partial class String : BasicInteractive<string>
+    public abstract partial class AbstractString : BasicInteractive<string>
     {
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -1443,6 +1444,120 @@ namespace Dynamo.Nodes
         }
 
         #endregion
+    }
+
+    [NodeName("String")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("Creates a string.")]
+    [IsDesignScriptCompatible]
+    public partial class StringInput : AbstractString
+    {
+        //dynTextBox tb;
+
+        public override string Value
+        {
+            get
+            {
+                return HttpUtility.HtmlDecode(base.Value);
+            }
+            set
+            {
+                base.Value = value;
+            }
+        }
+
+        public StringInput()
+        {
+            RegisterAllPorts();
+            Value = "";
+        }
+
+        protected override string SerializeValue(string val)
+        {
+            return val;
+        }
+
+        protected override string DeserializeValue(string val)
+        {
+            return val;
+        }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            XmlElement outEl = xmlDoc.CreateElement(typeof(string).FullName);
+            outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
+            nodeElement.AppendChild(outEl);
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            {
+                if (subNode.Name.Equals(typeof(string).FullName))
+                {
+                    foreach (XmlAttribute attr in subNode.Attributes)
+                    {
+                        if (attr.Name.Equals("value"))
+                        {
+                            Value = DeserializeValue(attr.Value);
+                        }
+                    }
+                }
+            }
+        }
+
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        {
+            string content = this.Value;
+            content = content.Replace("\r\n", "\\n");
+            content = content.Replace("\t", "\\t");
+            content = content.Replace("\"", "\\\"");
+            
+            var rhs = AstFactory.BuildStringNode(content);
+            var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
+
+            return new[] { assignment };
+        }
+
+        [NodeMigration(from: "0.5.3.0", to: "0.6.3.0")]
+        public static NodeMigrationData Migrate_0530_to_0600(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlNode nodeElement = data.MigratedNodes.ElementAt(0);
+            XmlNode newNode = nodeElement.CloneNode(true);
+
+            var query = from XmlNode subNode in newNode.ChildNodes
+                        where subNode.Name.Equals(typeof(string).FullName)
+                        from XmlAttribute attr in subNode.Attributes
+                        where attr.Name.Equals("value")
+                        select attr;
+
+            foreach (XmlAttribute attr in query)
+                attr.Value = HttpUtility.UrlDecode(attr.Value);
+
+            migrationData.AppendNode(newNode as XmlElement);
+            return migrationData;
+        }
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement original = data.MigratedNodes.ElementAt(0);
+
+            // Escape special characters for display in code block node.
+            string content = ExtensionMethods.GetChildNodeStringValue(original);
+            content = content.Replace("\r\n", "\\n");
+            content = content.Replace("\t", "\\t");
+            content = content.Replace("\"", "\\\"");
+            content = string.Format("\"{0}\";", content);
+
+            XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(original);
+            newNode.SetAttribute("CodeText", content);
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
     }
 
     public delegate double ConversionDelegate(double value);
