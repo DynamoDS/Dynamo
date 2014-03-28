@@ -71,9 +71,11 @@ namespace ProtoFFI
             IDictionaryEnumerator i = mExtensionApps.GetEnumerator();
             while (i.MoveNext())
             {
-                IExtensionApplication app = i.Value as IExtensionApplication;
+                var app = i.Value as IExtensionApplication;
                 if (null != app)
+                {
                     app.ShutDown();
+                }  
             }
             mExtensionApps.Clear();
             mAssemblies.Clear();
