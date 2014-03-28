@@ -486,16 +486,19 @@ namespace Dynamo.Controls
                 //octree.AddNode(new_point.X, new_point.Y, new_point.Z, node.GUID.ToString());
             }
 
-            if (p.Selected)
+            if (tris.Count > 0)
             {
-                selBuilder.Append(points, tris, norms, tex);
-            }
-            else
-            {
-                builder.Append(points,tris,norms,tex);
-            }
+                if (p.Selected)
+                {
+                    selBuilder.Append(points, tris, norms, tex);
+                }
+                else
+                {
+                    builder.Append(points, tris, norms, tex);
+                }
 
-            MeshCount++;
+                MeshCount++;
+            }
         }
 
         private string CleanTag(string tag)
