@@ -87,10 +87,11 @@ namespace Revit.Elements
             return Form.FromExisting(ele, isRevitOwned);
         }
 
-        //public static FreeForm Wrap(Autodesk.Revit.DB.FreeFormElement ele, bool isRevitOwned)
-        //{
-        //    return FreeForm.FromExisting(ele, isRevitOwned);
-        //}
+        [SupressImportIntoVM]
+        public static FreeForm Wrap(Autodesk.Revit.DB.FreeFormElement ele, bool isRevitOwned)
+        {
+            return FreeForm.FromExisting(ele, isRevitOwned);
+        }
 
         public static Grid Wrap(Autodesk.Revit.DB.Grid ele, bool isRevitOwned)
         {
