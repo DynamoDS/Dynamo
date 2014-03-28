@@ -1,8 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using Dynamo.Nodes;
 using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -76,12 +73,11 @@ namespace Dynamo.Interfaces
             {
                 if (data.Data == null && !data.IsNull) //Must be a DS Class instance.
                     return ProcessThing(classMirror.ClassName, tag); //just show the class name.
-                return ProcessThing(data.Data, tag);
+                return ProcessThing(data.Data as dynamic, tag, showRawData);
             }
 
             //Finally for all else get the string representation of data as watch content.
-            string previewData = ToString(data.Data);
-            return new WatchViewModel(previewData, tag);
+            return ProcessThing(data.Data as dynamic, tag, showRawData);
         }
 
         private string ToString(object obj)

@@ -260,6 +260,23 @@ namespace Dynamo.DSEngine
             GraphSyncData data = syncDataManager.GetSyncData();
             syncDataManager.ResetStates();
 
+            var reExecuteNodesIds = controller.DynamoViewModel.Model.HomeSpace.Nodes
+                                                                    .Where(n => n.RequiresReExecute)
+                                                                    .Select(n => n.GUID);
+            if (reExecuteNodesIds.Any() && data.ModifiedSubtrees != null)
+            {
+                for (int i = 0; i < data.ModifiedSubtrees.Count; ++i)
+                {
+                    var st = data.ModifiedSubtrees[i];
+                    if (reExecuteNodesIds.Contains(st.GUID))
+                    {
+                        Subtree newSt = new Subtree(st.AstNodes, st.GUID);
+                        newSt.ForceExecution = true;
+                        data.ModifiedSubtrees[i] = newSt;
+                    }
+                }
+            }
+
             if ((data.AddedSubtrees != null && data.AddedSubtrees.Count > 0) ||
                 (data.ModifiedSubtrees != null && data.ModifiedSubtrees.Count > 0) ||
                 (data.DeletedSubtrees != null && data.DeletedSubtrees.Count > 0))
@@ -277,9 +294,17 @@ namespace Dynamo.DSEngine
         /// <summary>
         /// Update graph with graph sync data.
         /// </summary>
-        public bool UpdateGraph()
+        /// <param name="fatalException">The exception that is not handled 
+        /// anywhere within the LiveRunnerServices.UpdateGraph method. This 
+        /// parameter will always be set to null if there is no unhandled 
+        /// exception thrown from within the UpdateGraph call.</param>
+        /// <returns>Returns true if any update has taken place, or false 
+        /// otherwise.</returns>
+        /// 
+        public bool UpdateGraph(ref Exception fatalException)
         {
             bool updated = false;
+            fatalException = null;
 
             ClearWarnings();
 
@@ -295,6 +320,16 @@ namespace Dynamo.DSEngine
                     }
                     catch (Exception e)
                     {
+                        // The exception that is not handled within the UpdateGraph
+                        // method is recorded here. The only thing for now is, we 
+                        // are only interested in the first unhandled exception.
+                        // This decision may change in the future if we decided to 
+                        // clear up "graphSyncDataQueue" whenever there is a fatal 
+                        // exception?
+                        // 
+                        if (fatalException == null)
+                            fatalException = e;
+
                         DynamoLogger.Instance.Log("Update graph failed: " + e.Message);
                     }
                 }
@@ -314,7 +349,7 @@ namespace Dynamo.DSEngine
 
             foreach (var node in warningNodes)
             {
-                node.State = ElementState.Active;
+                node.ClearError();
             }
         }
 

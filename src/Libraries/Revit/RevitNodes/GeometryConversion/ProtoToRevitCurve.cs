@@ -86,13 +86,21 @@ namespace Revit.GeometryConversion
         /// <returns></returns>
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Arc arc)
         {
+            // convert
             var center = arc.CenterPoint.ToXyz();
-            var n = arc.Normal.ToXyz();
-            n.Normalize();
             var sp = arc.StartPoint.ToXyz();
-            var x = sp - center;
-            x.Normalize();
-            var y = n.CrossProduct(x);
+
+            // get the xaxis of the arc base plane
+            var x = (sp - center).Normalize();
+
+            // get a second vector in the plane
+            var vecY = (arc.PointAtParameter(0.1).ToXyz() - center);
+
+            // get the normal to the plane
+            var n2 = x.CrossProduct(vecY).Normalize();
+
+            // obtain the y axis in the plane - perp to x and z
+            var y = n2.CrossProduct(x);
 
             var plane = new Autodesk.Revit.DB.Plane(x, y, center);
             return Autodesk.Revit.DB.Arc.Create(plane, arc.Radius, 0, arc.SweepAngle.ToRadians());
@@ -105,13 +113,21 @@ namespace Revit.GeometryConversion
         /// <returns></returns>
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Circle circ)
         {
+            // convert
             var center = circ.CenterPoint.ToXyz();
-            var n = circ.Normal.ToXyz();
-            n.Normalize();
             var sp = circ.StartPoint.ToXyz();
-            var x = sp - center;
-            x.Normalize();
-            var y = n.CrossProduct(x);
+
+            // get the xaxis of the arc base plane normalized
+            var x = (sp - center).Normalize();
+
+            // get a second vector in the plane
+            var vecY = (circ.PointAtParameter(0.1).ToXyz() - center);
+
+            // get the normal to the plane
+            var n2 = x.CrossProduct(vecY).Normalize();
+
+            // obtain the y axis in the plane - perp to x and z
+            var y = n2.CrossProduct(x);
 
             var plane = new Autodesk.Revit.DB.Plane(x, y, center);
             return Autodesk.Revit.DB.Arc.Create(plane, circ.Radius, 0, 2 * System.Math.PI);
@@ -180,6 +196,36 @@ namespace Revit.GeometryConversion
             var e = Autodesk.Revit.DB.Ellipse.Create(center, xw, yw, x, y, sa, ea);
             e.MakeBound(sa, ea);
             return e;
+        }
+
+        /// <summary>
+        /// Convert a generic Circle to a Revit Curve
+        /// </summary>
+        /// <param name="crvCurve"></param>
+        /// <returns></returns>
+        private static Autodesk.Revit.DB.Curve Convert(Autodesk.DesignScript.Geometry.Curve crvCurve)
+        {
+           Autodesk.DesignScript.Geometry.Curve[] curves = crvCurve.ApproximateWithArcAndLineSegments();
+           if (curves.Length == 1)
+           {
+              //line or arc?
+              var point0 = crvCurve.PointAtParameter(0.0);
+              var point1 = crvCurve.PointAtParameter(1.0);
+              var pointMid = crvCurve.PointAtParameter(0.5);
+              if (point0.DistanceTo(point1) > 1e-7)
+              {
+                 var line = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(point0, point1);
+                 if (pointMid.DistanceTo(line) < 1e-7)
+                    return Convert(line);
+              }
+              //then arc
+              if (point0.DistanceTo(point1) < 1e-7)
+                 point1 = crvCurve.PointAtParameter(0.9);
+              var arc = Autodesk.DesignScript.Geometry.Arc.ByThreePoints(point0, pointMid, point1);
+              return Convert(arc);
+           }
+   
+           return Convert(crvCurve.ToNurbsCurve());
         }
 
     }

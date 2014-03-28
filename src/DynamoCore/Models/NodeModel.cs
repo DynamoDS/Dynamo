@@ -440,15 +440,7 @@ namespace Dynamo.Models
         /// </summary>
         internal IdentifierNode AstIdentifierForPreview
         {
-            get
-            {
-                if (identifier == null)
-                {
-                    string id = AstIdentifierBase;
-                    identifier = AstFactory.BuildIdentifier(id);
-                }
-                return identifier;
-            }
+            get { return identifier ?? (identifier = AstFactory.BuildIdentifier(AstIdentifierBase)); }
         }
 
         /// <summary>
@@ -528,7 +520,7 @@ namespace Dynamo.Models
                 throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
 
             if (OutPortData.Count == 1)
-                return AstFactory.BuildIdentifier((IsPartiallyApplied ? "_local_" : "") + AstIdentifierBase);
+                return AstFactory.BuildIdentifier(/* (IsPartiallyApplied ? "_local_" : "") + */ AstIdentifierBase);
 
             string id = AstIdentifierBase + "_out" + outputIndex;
             return AstFactory.BuildIdentifier(id);
@@ -858,7 +850,7 @@ namespace Dynamo.Models
             ToolTipText = "";
         }
 
-        protected void ClearError()
+        public void ClearError()
         {
             State = ElementState.Dead;
             ClearTooltipText();
@@ -929,9 +921,19 @@ namespace Dynamo.Models
                     // mark as dead; otherwise, if the original state is dead,
                     // update it as active.
                     if (inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled)))
-                        State = ElementState.Dead;
-                    else if (State == ElementState.Dead)
-                        State = ElementState.Active;
+                    {
+                        if (State == ElementState.Active)
+                        {
+                            State = ElementState.Dead;
+                        }
+                    }
+                    else
+                    {
+                        if (State == ElementState.Dead)
+                        {
+                            State = ElementState.Active;
+                        }
+                    }
                 });
 
             if (dynSettings.Controller != null &&
@@ -2010,6 +2012,17 @@ namespace Dynamo.Models
             } 
         }
 
+        /// <summary>
+        ///     This property forces all AST nodes that generated from this node
+        ///     to be executed, even there is no change in AST nodes.
+        /// </summary>
+        public virtual bool RequiresReExecute
+        {
+            get
+            {
+                return false;
+            }
+        }
         #endregion
 
         /// <summary>

@@ -251,4 +251,49 @@ namespace DSRevitNodesUI
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
     }
+
+    [NodeName("Structural Framing Types")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("Select a level in the active document")]
+    [IsDesignScriptCompatible]
+    public class StructuralFramingTypes : DropDrownBase
+    {
+        public StructuralFramingTypes()
+        {
+            OutPortData.Add(new PortData("type", "The selected structural framing type.", typeof(object)));
+
+            RegisterAllPorts();
+
+            PopulateItems();
+        }
+
+        public override void PopulateItems()
+        {
+            Items.Clear();
+
+            //find all the structural framing family types in the project
+            var collector = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+
+            var catFilter = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFraming);
+            collector.OfClass(typeof(FamilySymbol)).WherePasses(catFilter);
+
+            foreach (var e in collector.ToElements())
+                Items.Add(new DynamoDropDownItem(e.Name, e));
+
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            var node = AstFactory.BuildFunctionCall(
+                "Revit.Elements.ElementSelector",
+                "ByElementId",
+                new List<AssociativeNode>
+                {
+                    AstFactory.BuildIntNode(((Element)Items[SelectedIndex].Item).Id.IntegerValue)
+                });
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+        }
+    }
 }

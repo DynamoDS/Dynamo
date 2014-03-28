@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Enum = System.Enum;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Utils = Dynamo.Nodes.Utilities;
 using ProtoCore.DSASM;
 using Dynamo.ViewModels;
 using Dynamo.DSEngine;
@@ -667,6 +668,7 @@ namespace Dynamo.Models
             CurrentWorkspace.Notes.Clear(); 
             
             dynSettings.Controller.ResetEngine();
+            CurrentWorkspace.PreloadedTraceData = null;
         }
 
         /// <summary>
@@ -741,7 +743,7 @@ namespace Dynamo.Models
                 var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
                 if (decision == MigrationManager.Decision.Abort)
                 {
-                    MigrationManager.DisplayObsoleteFileMessage(fileVersion, currentVersion);
+                    Utils.DisplayObsoleteFileMessage(fileVersion, currentVersion);
                     return false;
                 }
                 else if (decision == MigrationManager.Decision.Migrate)
@@ -1009,7 +1011,10 @@ namespace Dynamo.Models
                 // Allow live runner a chance to preload trace data from XML.
                 var engine = dynSettings.Controller.EngineController;
                 if (engine != null && (engine.LiveRunnerCore != null))
-                    engine.LiveRunnerCore.DeserializeTraceDataFromXml(xmlDoc);
+                {
+                    var data = Utils.LoadTraceDataFromXmlDocument(xmlDoc);
+                    CurrentWorkspace.PreloadedTraceData = data;
+                }
             }
             catch (Exception ex)
             {

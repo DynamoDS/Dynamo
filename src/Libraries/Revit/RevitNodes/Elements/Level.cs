@@ -250,7 +250,7 @@ namespace Revit.Elements
 
         public override string ToString()
         {
-            return string.Format("Level: Name={0}, Elevation={1}", InternalLevel.Name, InternalLevel.Elevation);
+            return string.Format("Level(Name={0}, Elevation={1})", InternalLevel.Name, InternalLevel.Elevation);
         }
     }
 }

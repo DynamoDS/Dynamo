@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
 
 namespace ProtoCore.DSASM
@@ -17,7 +18,7 @@ namespace ProtoCore.DSASM
         public int classId { get; set; }
         public List<int> baseList { get; set; }
         public bool IsImportedClass { get; set; }
-        public ProtoFFI.FFIClassAttributes ClassAttributes { get; set; }
+        public ClassAttributes ClassAttributes { get; set; }
 
         /// <summary>
         /// String description of where the classnode was loaded from 
