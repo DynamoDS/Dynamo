@@ -666,7 +666,7 @@ namespace ProtoScript.Runners
         private bool Compile(List<AssociativeNode> astList, out int blockId)
         {
             // The ASTs have already been transformed to SSA
-            runnerCore.Options.GenerateSSA = false;
+            //runnerCore.Options.GenerateSSA = false;
 
             bool succeeded = runner.Compile(astList, runnerCore, out blockId);
             if (succeeded)
@@ -842,7 +842,7 @@ namespace ProtoScript.Runners
                 RetainVMStatesForDeltaExecution();
             }
         }
-
+      
         private List<AssociativeNode> GetASTNodesDependentOnFunctionList(FunctionDefinitionNode functionNode)
         {
             // Determine if the modified function was used in any of the current nodes
@@ -1381,7 +1381,7 @@ namespace ProtoScript.Runners
                 return;
             }
 
-            CompileToSSA(syncData);
+            //CompileToSSA(syncData);
 
             UpdateAstCache(syncData);
 
@@ -1544,10 +1544,12 @@ namespace ProtoScript.Runners
                     {
                         // These ASTs are to be re-executed as they depend on the modified function
                         // They must be marked dirty
-                        List<AssociativeNode> astDependentOnFunctionList = GetASTNodesDependentOnFunctionList(fnode);
-                        ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(runnerCore, astDependentOnFunctionList);
 
-                        //deltaAstList.AddRange(astDependentOnFunctionList);
+                        //List<AssociativeNode> astDependentOnFunctionList = GetASTNodesDependentOnFunctionList(fnode);
+                        //ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(runnerCore, astDependentOnFunctionList);
+
+
+                        ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(runnerCore, runnerCore.GraphNodeCallList);
                     }
                 }
             }

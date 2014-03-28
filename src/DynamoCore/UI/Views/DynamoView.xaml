@@ -333,11 +333,11 @@
                     </MenuItem>
                     
                     <MenuItem Header="Help" Focusable="False">
-                        <!--<MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
+                        <MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
                             <MenuItem.Icon>
                                 <Image Source="/DynamoCore;component/UI/Images/OpenSelectedItemHS.png" Width="14" Height="14" />
                             </MenuItem.Icon>
-                        </MenuItem>-->
+                        </MenuItem>
                         <MenuItem Header="_Report A Bug" Command="{Binding ReportABugCommand}"  Name="bugCommand" Focusable="False"/>
                         <MenuItem Header="_Go To Project Website" Command="{Binding GoToSourceCodeCommand}"  Name="sourceCode" Focusable="False"/>
                         <MenuItem Header="_Go To Project Wiki" Command="{Binding GoToWikiCommand}"  Name="wiki" Focusable="False"/>

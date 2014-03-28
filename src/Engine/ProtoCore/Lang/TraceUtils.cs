@@ -65,6 +65,19 @@ namespace ProtoCore.Lang
         }
 
         /// <summary>
+        /// Clear a specific key
+        /// </summary>
+        /// <param name="key"></param>
+        public static void ClearTLSKey(string key)
+        {
+            Dictionary<String, Object> objs = new Dictionary<string, object>();
+            objs.Add(key, null);
+            SetObjectToTLS(objs);
+            
+        }
+
+
+        /// <summary>
         /// Clear the named slots for all the know keys
         /// </summary>
         public static void ClearAllKnownTLSKeys()
