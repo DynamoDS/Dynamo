@@ -119,6 +119,71 @@ namespace DynamoCoreUITests
         }
 
 
+        [Test, RequiresSTA, Category("Failing")]
+        // Create a cyclic chain of three code block nodes, and verify that a
+        // warning is shown on one of the cyclic nodes.
+        // Reconnect a valid value to one of the chain items, and verify that the
+        // warning is turned off and the values are evaluated properly.
+        // Create another cyclic chain of two nodes, and verify the same behavior.
+        //
+        public void CodeBlockNode_ReassignCyclic()
+        {
+            RunCommandsFromFile("CodeBlockNode_ReassignCyclic.xml", true, (commandTag) =>
+            {
+                var nodeA = GetNode("2e0d1d7e-7ef3-4cf5-9884-93ac77697e5f") as NodeModel;
+                var nodeB = GetNode("9699d07d-ec4e-48ad-9a3d-170154a4a106") as NodeModel;
+                var nodeC = GetNode("73959903-fd79-4645-9b58-28fe88545f8b") as NodeModel;
+
+                if (commandTag == "NormalThreeNodes")
+                {
+                    // Create four code block nodes [3;], [a;], [b;], [c;]
+                    // Connect [3;]-[a;], connect [a;]-[b;], connect [b;]-[c;]
+
+                    AssertPreviewValue("73959903-fd79-4645-9b58-28fe88545f8b", 3);
+                }
+                else if (commandTag == "CyclicThreeNodes")
+                {
+                    // Connect [c;]-[a;]
+
+                    bool hasWarning = false;
+
+                    if (nodeA.State == ElementState.Warning) hasWarning = true;
+                    if (nodeB.State == ElementState.Warning) hasWarning = true;
+                    if (nodeC.State == ElementState.Warning) hasWarning = true;
+
+                    Assert.AreEqual(true, hasWarning);
+                }
+                else if (commandTag == "Recover")
+                {
+                    // Change the code block node [3;] into [4;]
+                    // Connect [4;]-[c;]
+
+                    bool hasWarning = false;
+
+                    if (nodeA.State == ElementState.Warning) hasWarning = true;
+                    if (nodeB.State == ElementState.Warning) hasWarning = true;
+                    if (nodeC.State == ElementState.Warning) hasWarning = true;
+
+                    Assert.AreEqual(false, hasWarning);
+                    AssertPreviewValue("73959903-fd79-4645-9b58-28fe88545f8b", 4);
+                }
+                else if (commandTag == "CyclicTwoNodes")
+                {
+                    // Create two more code block nodes [d;] and [e;]
+                    // Connect [4;]-[d;] and [d;]-[e;], then connect [e;]-[d;]
+
+                    bool hasWarning = false;
+
+                    var nodeD = GetNode("05126ec5-1612-47cb-9ccc-fd96aec269b1") as NodeModel;
+                    var nodeE = GetNode("de271687-bb0d-49fc-81a1-e83680250f55") as NodeModel;
+
+                    if (nodeD.State == ElementState.Warning) hasWarning = true;
+                    if (nodeE.State == ElementState.Warning) hasWarning = true;
+
+                    Assert.AreEqual(true, hasWarning);
+                }
+            });
+        }
 
         #region Private Helper Methods
 
