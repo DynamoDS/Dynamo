@@ -104,6 +104,33 @@ begin
   Result := (GetUninstallString() <> '');
 end;
 
+function Revit2014Installed(): Boolean;
+begin
+   result := FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014'));
+end;
+
+function Revit2013Installed(): Boolean;
+begin
+   result := FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2013'));
+end;
+
+function FormItInstalled(): Boolean;
+begin
+   result := FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014'));
+end;
+
+function InitializeSetup(): Boolean;
+begin
+  if (Revit2014Installed() or Revit2013Installed() or FormItInstalled()) then
+    begin
+    result := true;
+    end
+  else
+    begin
+    MsgBox('Dynamo requires an installation of Revit 2013, Revit 2014, or FormIt in order to proceed!', mbCriticalError, MB_OK);
+    result := false;
+    end;
+end;
 
 /////////////////////////////////////////////////////////////////////
 function UnInstallOldVersion(): Integer;
