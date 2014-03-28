@@ -426,7 +426,8 @@ namespace Revit.Elements
         /// Tessellate Reference Point to render package for visualization.
         /// </summary>
         /// <param name="package"></param>
-        void IGraphicItem.Tessellate(IRenderPackage package)
+        /// <param name="tol"></param>
+        void IGraphicItem.Tessellate(IRenderPackage package, double tol)
         {
             package.PushPointVertex(this.X, this.Y, this.Z);
         }
