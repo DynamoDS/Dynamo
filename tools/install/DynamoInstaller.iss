@@ -7,7 +7,7 @@ AppVerName=DynamoDS 0.7.0
 AppPublisher=Autodesk, Inc.
 AppID={{6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B}
 AppCopyright=
-AppPublisherURL=http://www.dynamobim.com
+AppPublisherURL=http://www.dynamobim.org
 AppSupportURL=
 AppUpdatesURL=
 AppVersion=0.7.0
@@ -66,7 +66,6 @@ Source: Extra\InstallASMForDynamo.exe; DestDir:{app}; Flags: ignoreversion overw
 ;Samples
 Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
-
 [UninstallDelete]
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo07.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo07.addin"
@@ -99,6 +98,33 @@ begin
   Result := sUnInstallString;
 end;
 
+function Revit2014Installed(): Boolean;
+begin
+   result := FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014'));
+end;
+
+function Revit2013Installed(): Boolean;
+begin
+   result := FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2013'));
+end;
+
+function FormItInstalled(): Boolean;
+begin
+   result := FileOrDirExists(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014'));
+end;
+
+function InitializeSetup(): Boolean;
+begin
+  if (Revit2014Installed() or Revit2013Installed() or FormItInstalled()) then
+    begin
+    result := true;
+    end
+  else
+    begin
+    MsgBox('Dynamo requires an installation of Revit 2013, Revit 2014, or FormIt in order to proceed!', mbCriticalError, MB_OK);
+    result := false;
+    end;
+end;
 
 /////////////////////////////////////////////////////////////////////
 function IsUpgrade(): Boolean;
