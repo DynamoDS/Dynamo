@@ -122,6 +122,12 @@ namespace DSOffice
 
     public class Excel
     {
+
+        private Excel()
+        {
+
+        }
+
         #region Helper methods
 
         private static object[][] ConvertToJaggedArray(object[,] input)

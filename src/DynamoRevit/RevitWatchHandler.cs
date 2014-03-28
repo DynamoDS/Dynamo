@@ -56,7 +56,7 @@ namespace Dynamo.Applications
 
         internal WatchViewModel ProcessThing(object value, string tag, bool showRawData = true)
         {
-            var node = new WatchViewModel(value.ToString(), tag);
+            var node = new WatchViewModel(ToString(value), tag);
             return node;
         }
 
@@ -85,12 +85,18 @@ namespace Dynamo.Applications
             var classMirror = data.Class;
             if (null != classMirror)
             {
-                return ProcessThing(data.Data, tag);
+                if (data.Data == null && !data.IsNull) //Must be a DS Class instance.
+                    return ProcessThing(classMirror.ClassName, tag); //just show the class name.
+                return ProcessThing(data.Data as dynamic, tag, showRawData);
             }
 
             //Finally for all else get the string representation of data as watch content.
-            string previewData = data.Data.ToString();
-            return new WatchViewModel(previewData, tag);
+            return ProcessThing(data.Data as dynamic, tag);
+        }
+
+        private string ToString(object obj)
+        {
+            return obj != null ? obj.ToString() : "null";
         }
 
         public WatchViewModel Process(dynamic value, string tag, bool showRawData = true)

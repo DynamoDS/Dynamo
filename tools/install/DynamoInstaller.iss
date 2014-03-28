@@ -16,7 +16,7 @@ VersionInfoCompany=Autodesk
 VersionInfoDescription=DynamoDS 0.7.0
 VersionInfoTextVersion=DynamoDS 0.7.0
 VersionInfoCopyright=
-DefaultDirName=C:\Autodesk\DynamoDS\Core
+DefaultDirName=C:\Autodesk\Dynamo07\Core
 DefaultGroupName=Dynamo
 OutputDir=Installers
 OutputBaseFilename=InstallDynamoDS
@@ -63,13 +63,14 @@ Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
 Source: temp\bin\LibG\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\InstallASMForDynamo.exe; DestDir:{app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 
-
+;Samples
+Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
 
 [UninstallDelete]
-Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2013\DynamoDS.addin"
-Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\DynamoDS.addin"
-Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\DynamoDS.addin"
+Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo07.addin"
+Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo07.addin"
+Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo07.addin"
 Type: filesandordirs; Name: {app}\dll
 
 [Run]
@@ -172,16 +173,16 @@ begin
 	AddInFileContents := '<?xml version="1.0" encoding="utf-8" standalone="no"?>' + #13#10;
 	AddInFileContents := AddInFileContents + '<RevitAddIns>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <AddIn Type="Application">' + #13#10;
-  AddInFileContents := AddInFileContents + '    <Name>DynamoDS</Name>' + #13#10;
+  AddInFileContents := AddInFileContents + '    <Name>Dynamo07</Name>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevitDS.dll</Assembly>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <AddInId>F2E59889-3233-4B1A-934A-724007E92195</AddInId>' + #13#10;
+	AddInFileContents := AddInFileContents + '    <AddInId>8D83C886-B739-4ACD-A9DB-1BC78F315B2B</AddInId>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <FullClassName>Dynamo.Applications.DynamoRevitApp</FullClassName>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <VendorId>ADSK</VendorId>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
 	AddInFileContents := AddInFileContents + '  </AddIn>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <AddIn Type="Command">' + #13#10;
 	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevitDS.dll</Assembly>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <AddInId>7efcdea9-8d54-4985-88a5-97febdb7567c</AddInId>' + #13#10;
+	AddInFileContents := AddInFileContents + '    <AddInId>9BD65929-12F9-4AC3-9880-033E0E4177AD</AddInId>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <FullClassName>Dynamo.Applications.DynamoRevit</FullClassName>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <VendorId>ADSK</VendorId>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
@@ -192,17 +193,17 @@ begin
 	
     if (WizardForm.ComponentsList.Checked[1]) then
     begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2013\DynamoDS.addin'), AddInFileContents, False);
+      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo07.addin'), AddInFileContents, False);
     end;
   
     if (WizardForm.ComponentsList.Checked[2]) then
     begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014\DynamoDS.addin'), AddInFileContents, False);
+      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo07.addin'), AddInFileContents, False);
     end;
 
     if (WizardForm.ComponentsList.Checked[3]) then
     begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014\DynamoDS.addin'), AddInFileContents, False);
+      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo07.addin'), AddInFileContents, False);
     end;
 
   end;

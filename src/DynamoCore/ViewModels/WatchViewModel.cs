@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Autodesk.DesignScript.Interfaces;
-using Dynamo.Controls;
-using Dynamo.DSEngine;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;

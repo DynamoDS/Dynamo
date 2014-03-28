@@ -1302,7 +1302,9 @@ namespace Dynamo.Controls
                 return latest;
             }
 
-            return "(Up-to-date)";
+            //Hide the "(Up-to-date)" text by return an empty string.
+            //It should be brought back when the "update" function is avaliable.
+            return "";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

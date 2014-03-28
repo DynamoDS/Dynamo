@@ -7,34 +7,6 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
 {
-    class DistinctComparer : IEqualityComparer<object>
-    {
-        internal static IEqualityComparer<object> Instance = new DistinctComparer();
-
-        private static bool Eq(object x, object y)
-        {
-            return object.Equals(x, y);
-        }
-
-        private bool Eq(IList x, IList y)
-        {
-            return x.Cast<object>().Zip(y.Cast<object>(), Equals).All(b => b);
-        }
-
-        public bool Equals(object x, object y)
-        {
-            return Eq(x as dynamic, y as dynamic);
-        }
-
-        public int GetHashCode(object obj)
-        {
-            if (obj is IList)
-                return -1;
-            return obj.GetHashCode();
-        }
-    }
-
-
     /// <summary>
     ///     Methods for creating and manipulating Lists.
     /// </summary>
@@ -50,6 +22,37 @@ namespace DSCore
         {
             return list.Cast<object>().Distinct(DistinctComparer.Instance).ToList();
         }
+
+        #region UniqueItems Comparer
+
+        private class DistinctComparer : IEqualityComparer<object>
+        {
+            internal static readonly IEqualityComparer<object> Instance = new DistinctComparer();
+
+            private static bool Eq(object x, object y)
+            {
+                return object.Equals(x, y);
+            }
+
+            private bool Eq(IList x, IList y)
+            {
+                return x.Cast<object>().Zip(y.Cast<object>(), Equals).All(b => b);
+            }
+
+            public bool Equals(object x, object y)
+            {
+                return Eq(x as dynamic, y as dynamic);
+            }
+
+            public int GetHashCode(object obj)
+            {
+                if (obj is IList)
+                    return -1;
+                return obj.GetHashCode();
+            }
+        }
+
+        #endregion
 
         /// <summary>
         ///     Determines if the given list contains the given item.

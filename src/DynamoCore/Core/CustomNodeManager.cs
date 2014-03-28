@@ -12,6 +12,7 @@ using Dynamo.FSchemeInterop;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using Enum = System.Enum;
+using Utils = Dynamo.Nodes.Utilities;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using Dynamo.DSEngine;
 
@@ -654,7 +655,7 @@ namespace Dynamo.Utilities
                 var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
                 if (decision == MigrationManager.Decision.Abort)
                 {
-                    MigrationManager.DisplayObsoleteFileMessage(fileVersion, currentVersion);
+                    Utils.DisplayObsoleteFileMessage(fileVersion, currentVersion);
 
                     def = null;
                     return false;
