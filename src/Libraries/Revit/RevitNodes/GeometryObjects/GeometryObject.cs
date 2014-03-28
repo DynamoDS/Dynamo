@@ -30,6 +30,6 @@ namespace Revit.GeometryObjects
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public abstract void Tessellate(IRenderPackage package);
+        public abstract void Tessellate(IRenderPackage package, double tol);
     }
 }

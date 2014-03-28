@@ -114,9 +114,9 @@ namespace Revit.Elements
 
         #endregion
 
-        public void Tessellate(IRenderPackage package)
+        public void Tessellate(IRenderPackage package, double tol)
         {
-            this.Curve.Tessellate(package);
+            this.Curve.Tessellate(package, tol);
         }
     }
 }
