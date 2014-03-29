@@ -62,5 +62,6 @@ Dynamo.sln.DotSettings
 *.backup
 
 #ASM
+extern/DynamoAsm/
 extern/ASM/
 
