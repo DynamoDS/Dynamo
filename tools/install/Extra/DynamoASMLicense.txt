@@ -1,6 +1,6 @@
-ASM v. 220
-© 2013 Autodesk, Inc.  All rights reserved.   
-All use of this Software is subject to the terms and conditions of the Autodesk license agreement accepted upon installation of this Software and/or packaged with the Software. 
+ASM v. 219
+© 2014 Autodesk, Inc.  All rights reserved.   
+All use of this Software is subject to the terms and conditions of the Autodesk license agreement accepted upon previous installation of Autodesk Revit or Autodesk Vasari. 
 
 Trademarks:
 Autodesk and T-Splines are registered trademarks or trademarks of Autodesk, Inc., and/or its subsidiaries and/or affiliates.  
