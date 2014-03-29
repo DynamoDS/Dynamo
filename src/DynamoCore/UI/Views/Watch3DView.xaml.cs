@@ -37,14 +37,14 @@ namespace Dynamo.Controls
         private readonly string _id="";
         Point _rightMousePoint;
 
-        private List<Point3D> _points = new List<Point3D>();
-        private List<Point3D> _lines = new List<Point3D>();
-        private List<Point3D> _xAxis = new List<Point3D>();
-        private List<Point3D> _yAxis = new List<Point3D>();
-        private List<Point3D> _zAxis = new List<Point3D>();
+        private Point3DCollection _points = new Point3DCollection();
+        private Point3DCollection _lines = new Point3DCollection();
+        private Point3DCollection _xAxis = new Point3DCollection();
+        private Point3DCollection _yAxis = new Point3DCollection();
+        private Point3DCollection _zAxis = new Point3DCollection();
         private MeshGeometry3D _mesh = new MeshGeometry3D();
-        private List<Point3D> _pointsSelected = new List<Point3D>();
-        private List<Point3D> _linesSelected = new List<Point3D>();
+        private Point3DCollection _pointsSelected = new Point3DCollection();
+        private Point3DCollection _linesSelected = new Point3DCollection();
         private MeshGeometry3D _meshSelected = new MeshGeometry3D();
         private List<Point3D> _grid = new List<Point3D>();
         private List<BillboardTextItem> _text = new List<BillboardTextItem>();
@@ -64,7 +64,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> Points
+        public Point3DCollection Points
         {
             get { return _points; }
             set
@@ -74,7 +74,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> Lines
+        public Point3DCollection Lines
         {
             get { return _lines; }
             set
@@ -84,7 +84,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> XAxes
+        public Point3DCollection XAxes
         {
             get { return _xAxis; }
             set
@@ -94,7 +94,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> YAxes
+        public Point3DCollection YAxes
         {
             get { return _yAxis; }
             set
@@ -104,7 +104,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> ZAxes
+        public Point3DCollection ZAxes
         {
             get { return _zAxis; }
             set
@@ -124,7 +124,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> PointsSelected
+        public Point3DCollection PointsSelected
         {
             get { return _pointsSelected; }
             set
@@ -134,7 +134,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> LinesSelected
+        public Point3DCollection LinesSelected
         {
             get { return _linesSelected; }
             set
@@ -312,14 +312,17 @@ namespace Dynamo.Controls
                 //pre-size the points collections
                 var pointsCount = packages.Select(x => x.PointVertices.Count/3).Sum();
                 var selPointsCount = selPackages.Select(x => x.PointVertices.Count / 3).Sum();
-                var points = new List<Point3D>(pointsCount);
-                var pointsSelected = new List<Point3D>(selPointsCount);
+                var points = new Point3DCollection(pointsCount);
+                var pointsSelected = new Point3DCollection(selPointsCount);
 
-                var lines = new List<Point3D>();
-                var linesSelected = new List<Point3D>();
-                var redLines = new List<Point3D>();
-                var greenLines = new List<Point3D>();
-                var blueLines = new List<Point3D>();
+                //pre-size the lines collections
+                var lineCount = packages.Select(x => x.LineStripVertices.Count/3).Sum();
+                var lineSelCount = selPackages.Select(x => x.LineStripVertices.Count / 3).Sum();
+                var lines = new Point3DCollection(lineCount);
+                var linesSelected = new Point3DCollection(lineSelCount);
+                var redLines = new Point3DCollection(lineCount);
+                var greenLines = new Point3DCollection(lineCount);
+                var blueLines = new Point3DCollection(lineCount);
 
                 //pre-size the text collection
                 var textCount = e.Packages.Count(x => x.DisplayLabels);
@@ -338,7 +341,7 @@ namespace Dynamo.Controls
                 var normsSel = new Vector3DCollection(meshVertSelCount);
                 var tris = new Int32Collection(meshVertCount);
                 var trisSel = new Int32Collection(meshVertSelCount);
-
+                
                 foreach (var package in packages)
                 {
                     ConvertPoints(package, points, text);
@@ -353,8 +356,16 @@ namespace Dynamo.Controls
                     ConvertMeshes(package, vertsSel, normsSel, trisSel);
                 }
 
+                points.Freeze();
+                pointsSelected.Freeze();
                 Points = points;
                 PointsSelected = pointsSelected;
+
+                lines.Freeze();
+                linesSelected.Freeze();
+                redLines.Freeze();
+                greenLines.Freeze();
+                blueLines.Freeze();
                 Lines = lines;
                 LinesSelected = linesSelected;
                 XAxes = redLines;
