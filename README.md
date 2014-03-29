@@ -23,7 +23,7 @@ Dynamo has been developed based on feedback from several parties including Arup,
 
 ## Running Dynamo ##
 
-The current version will run on top of Autodesk Revit 2013, Autodesk Revit 2014, and AUtodest Project Vasari Beta 3. 
+The current version will run on top of Autodesk Revit 2013, Autodesk Revit 2014, and Autodesk Project Vasari Beta 3. 
 
 ## Releases ##
 
