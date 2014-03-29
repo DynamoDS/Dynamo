@@ -320,10 +320,13 @@ namespace Dynamo.Controls
                 var redLines = new List<Point3D>();
                 var greenLines = new List<Point3D>();
                 var blueLines = new List<Point3D>();
-                var text = new List<BillboardTextItem>();
+
+                //pre-size the text collection
+                var textCount = e.Packages.Count(x => x.DisplayLabels);
+                var text = new List<BillboardTextItem>(textCount);
 
                 //http://blogs.msdn.com/b/timothyc/archive/2006/08/31/734308.aspx
-
+                //presize the mesh collections
                 var meshVertCount = packages.Select(x => x.TriangleVertices.Count / 3).Sum();
                 var meshVertSelCount = selPackages.Select(x => x.TriangleVertices.Count / 3).Sum();
 
@@ -358,6 +361,13 @@ namespace Dynamo.Controls
                 YAxes = greenLines;
                 ZAxes = blueLines;
 
+                verts.Freeze();
+                norms.Freeze();
+                tris.Freeze();
+                vertsSel.Freeze();
+                normsSel.Freeze();
+                trisSel.Freeze();
+
                 mesh.Positions = verts;
                 mesh.Normals = norms;
                 mesh.TriangleIndices = tris;
@@ -381,8 +391,8 @@ namespace Dynamo.Controls
         }
 
         private void ConvertPoints(RenderPackage p,
-            List<Point3D> pointColl,
-            List<BillboardTextItem> text)
+            ICollection<Point3D> pointColl,
+            ICollection<BillboardTextItem> text)
         {
             for (int i = 0; i < p.PointVertices.Count; i += 3)
             {
@@ -401,11 +411,11 @@ namespace Dynamo.Controls
         }
 
         private void ConvertLines(RenderPackage p,
-            List<Point3D> lineColl,
-            List<Point3D> redLines,
-            List<Point3D> greenLines,
-            List<Point3D> blueLines,
-            List<BillboardTextItem> text)
+            ICollection<Point3D> lineColl,
+            ICollection<Point3D> redLines,
+            ICollection<Point3D> greenLines,
+            ICollection<Point3D> blueLines,
+            ICollection<BillboardTextItem> text)
         {
             int idx = 0;
             int color_idx = 0;
@@ -463,14 +473,9 @@ namespace Dynamo.Controls
         }
 
         private void ConvertMeshes(RenderPackage p,
-            Point3DCollection points, Vector3DCollection norms,
-            Int32Collection tris)
+            ICollection<Point3D> points, ICollection<Vector3D> norms,
+            ICollection<int> tris)
         {
-            //var points = new Point3DCollection();
-            //var tex = new PointCollection();
-            //var norms = new Vector3DCollection();
-            //var tris = new List<int>();
-
             for (int i = 0; i < p.TriangleVertices.Count; i+=3)
             {
                 var new_point = new Point3D(p.TriangleVertices[i],
@@ -510,22 +515,10 @@ namespace Dynamo.Controls
                 tris.Add(points.Count);
                 points.Add(new_point);
                 norms.Add(normal);
-                //tex.Add(new System.Windows.Point(0,0));
-
-                //octree.AddNode(new_point.X, new_point.Y, new_point.Z, node.GUID.ToString());
             }
 
             if (tris.Count > 0)
             {
-                //if (p.Selected)
-                //{
-                //    selBuilder.Append(points, tris, norms, tex);
-                //}
-                //else
-                //{
-                //    builder.Append(points, tris, norms, tex);
-                //}
-
                 MeshCount++;
             }
         }
@@ -541,45 +534,6 @@ namespace Dynamo.Controls
                 sb.AppendFormat("[{0}]", splits[i]);
             }
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// A utility method for merging multiple meshes into one.
-        /// </summary>
-        /// <param name="meshes"></param>
-        /// <returns></returns>
-        private MeshGeometry3D MergeMeshes(List<MeshGeometry3D> meshes)
-        {
-            if (meshes.Count == 0)
-                return null;
-
-            int offset = 0;
-
-            var builder = new MeshBuilder();
-
-            foreach (MeshGeometry3D m in meshes)
-            {
-                foreach (var pos in m.Positions)
-                {
-                    builder.Positions.Add(pos);
-                }
-                foreach (var index in m.TriangleIndices)
-                {
-                    builder.TriangleIndices.Add(index + offset);
-                }
-                foreach (var norm in m.Normals)
-                {
-                    builder.Normals.Add(norm);
-                }
-                foreach (var tc in m.TextureCoordinates)
-                {
-                    builder.TextureCoordinates.Add(tc);
-                }
-
-                offset += m.Positions.Count;
-            }
-
-            return builder.ToMesh(false);
         }
 
         protected void mi_Click(object sender, RoutedEventArgs e)
