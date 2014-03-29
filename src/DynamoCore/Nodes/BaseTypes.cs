@@ -522,11 +522,11 @@ namespace Dynamo.Nodes
         /// <param name="fileVersion">Version of the input file.</param>
         /// <param name="currVersion">Current version of the Dynamo.</param>
         internal static void DisplayObsoleteFileMessage(
-            Version fileVersion, Version currVersion)
+            string fullFilePath, Version fileVersion, Version currVersion)
         {
             var summary = "Your file cannot be opened";
-            var description = string.Format("Your file of version '{0}' cannot " +
-                "be opened by this version of Dynamo ({1})", fileVersion, currVersion);
+            var description = string.Format("Your file '{0}' of version '{1}' cannot " +
+                "be opened by this version of Dynamo ({2})", fullFilePath, fileVersion, currVersion);
 
             var imageUri = "/DynamoCore;component/UI/Images/task_dialog_obsolete_file.png";
             var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
