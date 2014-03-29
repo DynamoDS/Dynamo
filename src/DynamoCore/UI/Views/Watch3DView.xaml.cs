@@ -305,8 +305,16 @@ namespace Dynamo.Controls
                 Text = null;
                 MeshCount = 0;
 
-                var points = new List<Point3D>();
-                var pointsSelected = new List<Point3D>();
+                //separate the selected packages
+                var packages = e.Packages.Where(x => x.Selected == false).ToArray();
+                var selPackages = e.Packages.Where(x => x.Selected).ToArray();
+
+                //pre-size the points collections
+                var pointsCount = packages.Select(x => x.PointVertices.Count/3).Sum();
+                var selPointsCount = selPackages.Select(x => x.PointVertices.Count / 3).Sum();
+                var points = new List<Point3D>(pointsCount);
+                var pointsSelected = new List<Point3D>(selPointsCount);
+
                 var lines = new List<Point3D>();
                 var linesSelected = new List<Point3D>();
                 var redLines = new List<Point3D>();
@@ -314,14 +322,32 @@ namespace Dynamo.Controls
                 var blueLines = new List<Point3D>();
                 var text = new List<BillboardTextItem>();
 
-                var builder = new MeshBuilder();
-                var selBuilder = new MeshBuilder();
+                //http://blogs.msdn.com/b/timothyc/archive/2006/08/31/734308.aspx
 
-                foreach (var package in e.Packages)
+                var meshVertCount = packages.Select(x => x.TriangleVertices.Count / 3).Sum();
+                var meshVertSelCount = selPackages.Select(x => x.TriangleVertices.Count / 3).Sum();
+
+                var mesh = new MeshGeometry3D();
+                var meshSel = new MeshGeometry3D();
+                var verts = new Point3DCollection(meshVertCount);
+                var vertsSel = new Point3DCollection(meshVertSelCount);
+                var norms = new Vector3DCollection(meshVertCount);
+                var normsSel = new Vector3DCollection(meshVertSelCount);
+                var tris = new Int32Collection(meshVertCount);
+                var trisSel = new Int32Collection(meshVertSelCount);
+
+                foreach (var package in packages)
                 {
-                    ConvertPoints(package, points, pointsSelected, text);
-                    ConvertLines(package, lines, linesSelected, redLines, greenLines, blueLines, text);
-                    ConvertMeshes(package, ref builder, ref selBuilder);
+                    ConvertPoints(package, points, text);
+                    ConvertLines(package, lines, redLines, greenLines, blueLines, text);
+                    ConvertMeshes(package, verts, norms, tris);
+                }
+
+                foreach (var package in selPackages)
+                {
+                    ConvertPoints(package, pointsSelected, text);
+                    ConvertLines(package, linesSelected, redLines, greenLines, blueLines, text);
+                    ConvertMeshes(package, vertsSel, normsSel, trisSel);
                 }
 
                 Points = points;
@@ -332,8 +358,15 @@ namespace Dynamo.Controls
                 YAxes = greenLines;
                 ZAxes = blueLines;
 
-                Mesh = builder.ToMesh();
-                MeshSelected = selBuilder.ToMesh();
+                mesh.Positions = verts;
+                mesh.Normals = norms;
+                mesh.TriangleIndices = tris;
+                meshSel.Positions = vertsSel;
+                meshSel.Normals = normsSel;
+                meshSel.TriangleIndices = trisSel;
+
+                Mesh = mesh;
+                MeshSelected = meshSel;
 
                 Text = text;
 
@@ -348,11 +381,9 @@ namespace Dynamo.Controls
         }
 
         private void ConvertPoints(RenderPackage p,
-            List<Point3D> points,
-            List<Point3D> pointsSelected,
+            List<Point3D> pointColl,
             List<BillboardTextItem> text)
         {
-            var pointColl = p.Selected ? pointsSelected : points;
             for (int i = 0; i < p.PointVertices.Count; i += 3)
             {
                 var pos = new Point3D(
@@ -370,18 +401,15 @@ namespace Dynamo.Controls
         }
 
         private void ConvertLines(RenderPackage p,
-            List<Point3D> lines,
-            List<Point3D> linesSelected,
+            List<Point3D> lineColl,
             List<Point3D> redLines,
             List<Point3D> greenLines,
             List<Point3D> blueLines,
             List<BillboardTextItem> text)
         {
-            //int colorCount = 0;
             int idx = 0;
             int color_idx = 0;
 
-            var lineColl = p.Selected ? linesSelected : lines;
             int outerCount = 0;
             foreach (var count in p.LineStripVertexCounts)
             {
@@ -435,12 +463,13 @@ namespace Dynamo.Controls
         }
 
         private void ConvertMeshes(RenderPackage p,
-            ref MeshBuilder builder,ref MeshBuilder selBuilder)
+            Point3DCollection points, Vector3DCollection norms,
+            Int32Collection tris)
         {
-            var points = new Point3DCollection();
-            var tex = new PointCollection();
-            var norms = new Vector3DCollection();
-            var tris = new List<int>();
+            //var points = new Point3DCollection();
+            //var tex = new PointCollection();
+            //var norms = new Vector3DCollection();
+            //var tris = new List<int>();
 
             for (int i = 0; i < p.TriangleVertices.Count; i+=3)
             {
@@ -481,21 +510,21 @@ namespace Dynamo.Controls
                 tris.Add(points.Count);
                 points.Add(new_point);
                 norms.Add(normal);
-                tex.Add(new System.Windows.Point(0,0));
+                //tex.Add(new System.Windows.Point(0,0));
 
                 //octree.AddNode(new_point.X, new_point.Y, new_point.Z, node.GUID.ToString());
             }
 
             if (tris.Count > 0)
             {
-                if (p.Selected)
-                {
-                    selBuilder.Append(points, tris, norms, tex);
-                }
-                else
-                {
-                    builder.Append(points, tris, norms, tex);
-                }
+                //if (p.Selected)
+                //{
+                //    selBuilder.Append(points, tris, norms, tex);
+                //}
+                //else
+                //{
+                //    builder.Append(points, tris, norms, tex);
+                //}
 
                 MeshCount++;
             }
