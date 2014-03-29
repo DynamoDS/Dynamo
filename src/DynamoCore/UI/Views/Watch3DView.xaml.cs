@@ -316,6 +316,8 @@ namespace Dynamo.Controls
                 var pointsSelected = new Point3DCollection(selPointsCount);
 
                 //pre-size the lines collections
+                //these sizes are conservative as the axis lines will be
+                //taken from the linestripvertex collections as well.
                 var lineCount = packages.Select(x => x.LineStripVertices.Count/3).Sum();
                 var lineSelCount = selPackages.Select(x => x.LineStripVertices.Count / 3).Sum();
                 var lines = new Point3DCollection(lineCount);
