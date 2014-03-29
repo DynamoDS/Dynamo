@@ -582,10 +582,10 @@ namespace Dynamo.Controls
 
         private void Watch_view_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            Point mousePos = e.GetPosition(watch_view);
-            PointHitTestParameters hitParams = new PointHitTestParameters(mousePos);
-            VisualTreeHelper.HitTest(watch_view, null, ResultCallback, hitParams);
-            e.Handled = true;
+            //Point mousePos = e.GetPosition(watch_view);
+            //PointHitTestParameters hitParams = new PointHitTestParameters(mousePos);
+            //VisualTreeHelper.HitTest(watch_view, null, ResultCallback, hitParams);
+            //e.Handled = true;
         }
 
         public HitTestResultBehavior ResultCallback(HitTestResult result)
