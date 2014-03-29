@@ -655,7 +655,7 @@ namespace Dynamo.Utilities
                 var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
                 if (decision == MigrationManager.Decision.Abort)
                 {
-                    Utils.DisplayObsoleteFileMessage(fileVersion, currentVersion);
+                    Utils.DisplayObsoleteFileMessage(xmlPath, fileVersion, currentVersion);
 
                     def = null;
                     return false;
