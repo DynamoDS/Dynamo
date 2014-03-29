@@ -1,24 +1,23 @@
-<dynWorkspace X="144.933333333333" Y="90.616" zoom="0.6">
-  <dynElements>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="32534b9a-8fe9-4cbd-867a-1741b23e1e6c" nickname="Number" x="99.2592592592592" y="71.1722222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+<Workspace Version="0.7.0.19118" X="-100.362493951376" Y="40.9618285204277" zoom="0.847618571998227" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="6816a2a6-8bfe-47cf-a79a-b5fafe881bd4" nickname="Number" x="256" y="160.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="0" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynXYZ type="Dynamo.Nodes.dynXYZ" guid="14af8f89-a133-43cc-8449-95336fb0bb6d" nickname="XYZ" x="338.555555555556" y="144.972222222222" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="c504eb7d-dd66-4466-9b11-87c0dfced275" nickname="Number" x="99.2592592592592" y="176.133333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="55c811eb-78ca-4e4b-af39-1e0d85072ca9" nickname="Number" x="256" y="242.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="0" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="2eb70bdb-773d-4cf4-a10e-828dd39a0cca" nickname="Number Slider" x="5.92592592592585" y="259.75" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="0" min="0" max="100" />
-    </Dynamo.Nodes.dynDoubleSliderInput>
-    <Dynamo.Nodes.dynReferencePointByXYZ type="Dynamo.Nodes.dynReferencePointByXYZ" guid="16d1ceb2-c780-45d1-9dfb-d9c49836a931" nickname="Reference Point" x="516.788386739226" y="149.54992346597" isVisible="true" isUpstreamVisible="true" lacing="Longest">
-      <Run />
-    </Dynamo.Nodes.dynReferencePointByXYZ>
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Connectors.dynConnectorModel start="32534b9a-8fe9-4cbd-867a-1741b23e1e6c" start_index="0" end="14af8f89-a133-43cc-8449-95336fb0bb6d" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="14af8f89-a133-43cc-8449-95336fb0bb6d" start_index="0" end="16d1ceb2-c780-45d1-9dfb-d9c49836a931" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="c504eb7d-dd66-4466-9b11-87c0dfced275" start_index="0" end="14af8f89-a133-43cc-8449-95336fb0bb6d" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="2eb70bdb-773d-4cf4-a10e-828dd39a0cca" start_index="0" end="14af8f89-a133-43cc-8449-95336fb0bb6d" end_index="2" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.IntegerSlider type="Dynamo.Nodes.IntegerSlider" guid="3e985316-ea3c-4cda-8867-bbb248e5b1a1" nickname="Integer Slider" x="50" y="318.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Int32>19</System.Int32>
+      <Range min="0" max="100" />
+    </Dynamo.Nodes.IntegerSlider>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="d324c214-a5ee-4d68-a600-363ac016b0b3" nickname="Point.ByCoordinates" x="441.721551047063" y="165.174333948128" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="32c453d9-dc7e-43c7-ac94-c3a1f0029030" nickname="ReferencePoint.ByPoint" x="639.403243658392" y="191.651583789075" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="..\..\..\..\..\..\..\..\..\..\Autodesk\Dynamo07\Core\RevitNodes.dll" function="Revit.Elements.ReferencePoint.ByPoint@Autodesk.DesignScript.Geometry.Point" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6816a2a6-8bfe-47cf-a79a-b5fafe881bd4" start_index="0" end="d324c214-a5ee-4d68-a600-363ac016b0b3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="55c811eb-78ca-4e4b-af39-1e0d85072ca9" start_index="0" end="d324c214-a5ee-4d68-a600-363ac016b0b3" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3e985316-ea3c-4cda-8867-bbb248e5b1a1" start_index="0" end="d324c214-a5ee-4d68-a600-363ac016b0b3" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d324c214-a5ee-4d68-a600-363ac016b0b3" start_index="0" end="32c453d9-dc7e-43c7-ac94-c3a1f0029030" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
