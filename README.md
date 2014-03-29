@@ -23,17 +23,17 @@ Dynamo has been developed based on feedback from several parties including Arup,
 
 ## Running Dynamo ##
 
-The current version will run on top of Revit 2013, Revit 2014, and Project Vasari Beta 3. 
+The current version will run on top of Autodesk Revit 2013, Autodesk Revit 2014, and Autodesk Project Vasari Beta 3. 
 
 ## Releases ##
 
 ###0.6.3###
 
-February 2014
+March 2014
 
 New
 
-- Dynamo Sandbox:   Explore Dynamo without Revit or Vasari installed (Dynamo Installation folder>Core>DynamoSandbox.exe)
+- Dynamo Sandbox:   Explore Dynamo without running Revit or Vasari (see your Start Menu)
 - Application level settings for Imperial and Metric Units
 - Daylighting with cloud Rendering service sample files
 - Set Parameters Node (not restricted to Families)
@@ -621,11 +621,11 @@ http://msdn.microsoft.com/en-us/library/gg406140.aspx
 http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx  
 
 
-###ASM v. 220###
-© 2013 Autodesk, Inc.  All rights reserved.   
+###ASM v. 219###
+© 2014 Autodesk, Inc.  All rights reserved.   
 
 
-All use of this Software is subject to the terms and conditions of the Autodesk license agreement accepted upon installation of this Software and/or packaged with the Software. 
+All use of this Software is subject to the terms and conditions of the Autodesk license agreement accepted upon previous installation of Autodesk Revit or Autodesk Vasari. 
 
 
 
@@ -712,3 +712,4 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 
 This Autodesk software contains Eigen 3.2.0.  Eigen is licensed under the Mozilla Public License v.2.0, which can be found at http://www.mozilla.org/MPL/2.0/.   A text copy of this license and the source code for Eigen v.3.2.0 (and modifications made by Autodesk, if any) are included on the media provided by Autodesk or with the download of this Autodesk software.   
+
