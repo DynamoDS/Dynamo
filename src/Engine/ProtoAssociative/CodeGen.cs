@@ -3461,6 +3461,7 @@ namespace ProtoAssociative
                                 BinaryExpressionNode ssaNode = aNode as BinaryExpressionNode;
                                 ssaNode.exprUID = ssaID;
                                 ssaNode.ssaExprID = ssaExprID;
+                                ssaNode.guid = bnode.guid;
                                 NodeUtils.SetNodeLocation(ssaNode, node, node);
                             }
 
@@ -3920,6 +3921,8 @@ namespace ProtoAssociative
                             this.core.ClassTable.AuditMultipleDefinition(this.core.BuildStatus);
                         }
                         codeblock.Body = BuildSSA(codeblock.Body, context);
+                        core.CachedSSANodes.Clear();
+                        core.CachedSSANodes.AddRange(codeblock.Body);
                         ssaTransformed = true;
                         if (core.Options.DumpIL)
                         {
@@ -8014,6 +8017,7 @@ namespace ProtoAssociative
                     graphNode.exprUID = bnode.exprUID;
                     graphNode.ssaExprID = bnode.ssaExprID;
                     graphNode.guid = core.SSASubscript_GUID;
+                    graphNode.guid = bnode.guid;
                     graphNode.modBlkUID = bnode.modBlkUID;
                     graphNode.procIndex = globalProcIndex;
                     graphNode.classIndex = globalClassIndex;

@@ -1278,6 +1278,7 @@ namespace ProtoCore.AST.AssociativeAST
         public int exprUID { get; set; }
         public int ssaExprID { get; set; }
         public int modBlkUID { get; set; }
+        public Guid guid { get; set; }
         public bool isSSAAssignment { get; set; }
         public bool isSSAPointerAssignment { get; set; }
         public bool isSSAFirstAssignment { get; set; }
@@ -1299,6 +1300,7 @@ namespace ProtoCore.AST.AssociativeAST
             isMultipleAssign = false;
             exprUID = Constants.kInvalidIndex;
             modBlkUID = Constants.kInvalidIndex;
+            guid = System.Guid.Empty;
             LeftNode = left;
             Optr = optr;
             RightNode = right;
@@ -1312,6 +1314,7 @@ namespace ProtoCore.AST.AssociativeAST
             isMultipleAssign = rhs.isMultipleAssign;
             exprUID = rhs.exprUID;
             modBlkUID = rhs.modBlkUID;
+            guid = rhs.guid;
 
             Optr = rhs.Optr;
             LeftNode = NodeUtils.Clone(rhs.LeftNode);

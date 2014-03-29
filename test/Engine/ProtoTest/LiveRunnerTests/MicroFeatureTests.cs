@@ -3197,6 +3197,35 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        public void TestCodeblockModification15()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 1;",
+                "x = a;",
+                "a = 2;"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("x", 1);
+
+
+            // Modify the CBN
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid1, codes[2]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("x", 2);
+        }
+
+        [Test]
         public void TestEmptyCodeblock01()
         {
             List<string> codes = new List<string>() 
@@ -3632,7 +3661,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         [Test]
         public void TestNodeMapping()
         {
-            List<string> codes = new List<string>() 
+            List<string> codes = new List<string>()
             {
                 @"def foo(x) { return = x + 42; }",
                 @"x = 1; y = foo(x);",
@@ -3649,7 +3678,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             astLiveRunner.UpdateGraph(syncData);
 
             // Graph UI node -> ASTs
-            var astNodes = astLiveRunner.GetSSANodes(guid2);
+            var astNodes = astLiveRunner.Core.CachedSSANodes;
             bool foundCallsite = false;
             Guid callsiteId = Guid.Empty;
 
@@ -3664,6 +3693,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
                     break;
                 }
             }
+
 
             // CallSite -> Graph UI node
             Assert.IsTrue(foundCallsite);
