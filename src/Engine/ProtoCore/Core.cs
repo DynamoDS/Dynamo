@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Exceptions;
 using System.Timers;
 using ProtoCore.DSASM;
@@ -1131,6 +1132,8 @@ namespace ProtoCore
         public CallsiteExecutionState csExecutionState { get; set; }
 
         public Dictionary<int, CallSite> CallsiteCache { get; set; }
+        public List<ProtoCore.AST.AssociativeAST.AssociativeNode> CachedSSANodes { get; set; }
+
 
         /// <summary>
         /// Map from a callsite's guid to a graph UI node. 
@@ -1693,6 +1696,7 @@ namespace ProtoCore
                 csExecutionState = new CallsiteExecutionState();
             }
             CallsiteCache = new Dictionary<int, CallSite>();
+            CachedSSANodes = new List<AssociativeNode>();
             CallSiteToNodeMap = new Dictionary<Guid, Guid>();
             ASTToCallSiteMap = new Dictionary<int, CallSite>();
 

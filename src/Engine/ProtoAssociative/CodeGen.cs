@@ -14,45 +14,6 @@ using ProtoCore.BuildData;
 
 namespace ProtoAssociative
 {
-    public class OpStack
-    {
-        public OpStack()
-        {
-            opstack = new List<ProtoCore.DSASM.AddressType>();
-            throw new NotImplementedException();
-        }
-
-        public void push(ProtoCore.DSASM.AddressType op)
-        {
-            opstack.Add(op);
-            throw new NotImplementedException();
-        }
-
-        public ProtoCore.DSASM.AddressType pop()
-        {
-            throw new NotImplementedException();
-            /*
-            int last = opstack.Count - 1;
-            ProtoCore.DSASM.AddressType opval = opstack[last];
-            opstack.RemoveAt(last);
-            return opval;
-            */
-        }
-
-        private readonly List<ProtoCore.DSASM.AddressType> opstack;
-    }
-
-    public class GlobalInstanceProc
-    {
-        public int classIndex { get; set; }
-        public ProtoCore.AST.AssociativeAST.FunctionDefinitionNode procNode { get; set; }
-
-        public GlobalInstanceProc()
-        {
-            classIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
-            procNode = null;
-        }
-    }
 
     public class ThisPointerProcOverload
     {
@@ -71,7 +32,6 @@ namespace ProtoAssociative
         private readonly bool ignoreRankCheck;
 
         private readonly List<AssociativeNode> astNodes;
-        private List<GlobalInstanceProc> globalInstanceProcList;
 
         public ProtoCore.DSASM.AssociativeCompilePass compilePass;
 
@@ -121,7 +81,6 @@ namespace ProtoAssociative
             emitReplicationGuide = false;
 
             astNodes = new List<AssociativeNode>();
-            globalInstanceProcList = new List<GlobalInstanceProc>();
             setConstructorStartPC = false;
 
             // Re-use the existing procedureTable and symbolTable to access the built-in and predefined functions
@@ -155,9 +114,7 @@ namespace ProtoAssociative
             //
             ignoreRankCheck = false;
             emitReplicationGuide = false;
-
             astNodes = new List<AssociativeNode>();
-            globalInstanceProcList = new List<GlobalInstanceProc>();
             setConstructorStartPC = false;
 
 
@@ -3461,6 +3418,7 @@ namespace ProtoAssociative
                                 BinaryExpressionNode ssaNode = aNode as BinaryExpressionNode;
                                 ssaNode.exprUID = ssaID;
                                 ssaNode.ssaExprID = ssaExprID;
+                                ssaNode.guid = bnode.guid;
                                 NodeUtils.SetNodeLocation(ssaNode, node, node);
                             }
 
@@ -3920,6 +3878,8 @@ namespace ProtoAssociative
                             this.core.ClassTable.AuditMultipleDefinition(this.core.BuildStatus);
                         }
                         codeblock.Body = BuildSSA(codeblock.Body, context);
+                        core.CachedSSANodes.Clear();
+                        core.CachedSSANodes.AddRange(codeblock.Body);
                         ssaTransformed = true;
                         if (core.Options.DumpIL)
                         {
@@ -8014,6 +7974,7 @@ namespace ProtoAssociative
                     graphNode.exprUID = bnode.exprUID;
                     graphNode.ssaExprID = bnode.ssaExprID;
                     graphNode.guid = core.SSASubscript_GUID;
+                    graphNode.guid = bnode.guid;
                     graphNode.modBlkUID = bnode.modBlkUID;
                     graphNode.procIndex = globalProcIndex;
                     graphNode.classIndex = globalClassIndex;

@@ -743,7 +743,7 @@ namespace Dynamo.Models
                 var decision = MigrationManager.ShouldMigrateFile(fileVersion, currentVersion);
                 if (decision == MigrationManager.Decision.Abort)
                 {
-                    Utils.DisplayObsoleteFileMessage(fileVersion, currentVersion);
+                    Utils.DisplayObsoleteFileMessage(xmlPath, fileVersion, currentVersion);
                     return false;
                 }
                 else if (decision == MigrationManager.Decision.Migrate)
@@ -869,6 +869,14 @@ namespace Dynamo.Models
                         // 
                         var e = elNode as XmlElement;
                         dummyElement = MigrationManager.CreateDummyNodeForFunction(e);
+                    }
+
+                    // If a custom node fails to load its definition, convert it into a dummy node.
+                    var function = el as Dynamo.Nodes.Function;
+                    if ((function != null) && (function.Definition == null))
+                    {
+                        var e = elNode as XmlElement;
+                        dummyElement = MigrationManager.CreateDummyNode(e, el.InPortData.Count, el.OutPortData.Count);
                     }
 
                     if (dummyElement != null) // If a dummy node placement is desired.

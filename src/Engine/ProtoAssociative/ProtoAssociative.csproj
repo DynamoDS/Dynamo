@@ -80,11 +80,7 @@
     <Compile Include="CodeGen.cs" />
     <Compile Include="Executive.cs" />
     <Compile Include="DependencyPass\GraphOptimiser.cs" />
-    <Compile Include="ExecutePass\XCompiler.cs" />
-    <Compile Include="ExecutePass\ParrallelExecutive.cs" />
-    <Compile Include="ExecutePass\LinearExecutive.cs" />
     <Compile Include="DependencyPass\Analyser.cs" />
-    <Compile Include="MulitiMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
