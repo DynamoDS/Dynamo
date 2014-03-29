@@ -55,5 +55,5 @@ doc/html/
 *.sdf
 
 #ASM
-extern/DynamoASM/
+extern/DynamoAsm/
 extern/ASM/
