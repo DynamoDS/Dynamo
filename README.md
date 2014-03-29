@@ -625,7 +625,7 @@ http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx
 © 2014 Autodesk, Inc.  All rights reserved.   
 
 
-All use of this Software is subject to the terms and conditions of the Autodesk license agreement accepted upon installation of Autodesk Revit or Autodesk Vasari. 
+All use of this Software is subject to the terms and conditions of the Autodesk license agreement accepted upon previous installation of Autodesk Revit or Autodesk Vasari. 
 
 
 
