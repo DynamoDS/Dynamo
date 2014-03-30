@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Text;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Interop;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.Mirror;
 using Image = System.Windows.Controls.Image;
 
 namespace Dynamo.Nodes
@@ -26,8 +25,8 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class WatchImageCore : NodeModel, IWpfNode
     {
-        private ResultImageUI resultImageUI = new ResultImageUI();
-        private System.Windows.Controls.Image image = null;
+        //private ResultImageUI resultImageUI = new ResultImageUI();
+        private Image image;
 
         public WatchImageCore()
         {
@@ -35,8 +34,6 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("image", "image", typeof(System.Drawing.Bitmap)));
 
             RegisterAllPorts();
-
-            this.PropertyChanged += NodeValueUpdated;
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
@@ -51,51 +48,38 @@ namespace Dynamo.Nodes
 
         public void SetupCustomUIElements(dynNodeView nodeUi)
         {
-            image = new System.Windows.Controls.Image();
-            image.Width = 320;
-            image.Height = 240;
-            image.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-            image.Name = "image1";
-            image.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-
-            var bindingVal = new System.Windows.Data.Binding("ResultImage")
+            image = new Image
             {
-                Mode = BindingMode.OneWay,
-                NotifyOnValidationError = false,
-                Source = resultImageUI,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                MaxWidth = 400,
+                MaxHeight = 400,
+                Margin = new Thickness(5),
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+                Name = "image1",
+                VerticalAlignment = System.Windows.VerticalAlignment.Center
             };
 
-            image.SetBinding(System.Windows.Controls.Image.SourceProperty, bindingVal);
+            this.PropertyChanged += (sender, args) => 
+            {
+                if (args.PropertyName != "IsUpdated") return;
+                var im = GetImageFromMirror();
+                nodeUi.Dispatcher.Invoke(new Action<Bitmap>(SetImageSource), new object[] { im });
+            };
 
-            nodeUi.inputGrid.Children.Add(image);
-
+            nodeUi.grid.Children.Add(image);
+            image.SetValue(Grid.RowProperty, 2);
+            image.SetValue(Grid.ColumnProperty, 0);
+            image.SetValue(Grid.ColumnSpanProperty, 3);
         }
 
-        private System.Windows.Media.ImageSource ConvertToImageSource(System.Drawing.Bitmap image)
+        private void SetImageSource(System.Drawing.Bitmap bmp)
         {
-            var bitmap = new System.Windows.Media.Imaging.BitmapImage();
+            // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
+            // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
+            // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
 
-            bitmap.BeginInit();
-
-            var memoryStream = new MemoryStream();
-            image.Save(memoryStream, image.RawFormat);
-
-            bitmap.StreamSource = memoryStream;
-            bitmap.EndInit();
-
-            return bitmap;
-        }
-
-        private void NodeValueUpdated(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName != "IsUpdated")
-                return;
-
-            var im = GetImageFromMirror();
-            var bm = ConvertToImageSource(im);
-
-            DispatchOnUIThread(() => { if (bm != null) resultImageUI.ResultImage = bm; });
+            var hbitmap = bmp.GetHbitmap();
+            var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
+            image.Source =  imageSource;
         }
 
         private System.Drawing.Bitmap GetImageFromMirror()
