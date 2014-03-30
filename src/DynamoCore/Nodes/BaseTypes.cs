@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
+using Dynamo.Services;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
@@ -524,6 +525,12 @@ namespace Dynamo.Nodes
         internal static void DisplayObsoleteFileMessage(
             string fullFilePath, Version fileVersion, Version currVersion)
         {
+            if (fileVersion != null && currVersion != null)
+                InstrumentationLogger.LogInfo("ObsoleteFileMessage", fullFilePath + " :: fileVersion:" +
+                    fileVersion + " :: currVersion:" + currVersion);
+            else
+                InstrumentationLogger.LogInfo("ObsoleteFileMessage", fullFilePath + " :: null");
+
             var summary = "Your file cannot be opened";
             var description = string.Format("Your file '{0}' of version '{1}' cannot " +
                 "be opened by this version of Dynamo ({2})", fullFilePath, fileVersion, currVersion);
@@ -546,6 +553,12 @@ namespace Dynamo.Nodes
         /// <param name="exception">The exception to display.</param>
         internal static void DisplayEngineFailureMessage(Exception exception)
         {
+            if (exception != null)
+                InstrumentationLogger.LogInfo("EngineFailure", exception + " :: " + exception.StackTrace);
+            else
+                InstrumentationLogger.LogInfo("EngineFailure", "null");
+            
+
             var summary = "Unhandled exception in Dynamo engine";
             var description = "The virtual machine that powers Dynamo is " +
                 "experiencing some unexpected errors internally and is likely " +
