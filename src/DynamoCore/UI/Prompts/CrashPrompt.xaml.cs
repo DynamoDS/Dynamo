@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Dynamo.Services;
 using Dynamo.Utilities;
 using System.Windows.Controls;
 using System.IO;
@@ -38,6 +39,13 @@ namespace Dynamo.Nodes.Prompts
                 this.details = args.Details;
                 this.CrashDetailsContent.Text = args.Details;
                 this.btnDetails.Visibility = Visibility.Visible;
+
+                InstrumentationLogger.LogInfo("CrasphPrompt", args.Details);
+            }
+            else
+            {
+                InstrumentationLogger.LogInfo("CrasphPrompt", "No details");
+                
             }
 
             if (args.IsFilePath())
