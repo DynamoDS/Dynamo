@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI;
@@ -25,7 +22,6 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class WatchImageCore : NodeModel, IWpfNode
     {
-        //private ResultImageUI resultImageUI = new ResultImageUI();
         private Image image;
 
         public WatchImageCore()
@@ -103,53 +99,6 @@ namespace Dynamo.Nodes
             //do nothing
             //a watch should not draw its outputs
         }
-
-        public class ResultImageUI : INotifyPropertyChanged
-        {
-            private System.Windows.Media.ImageSource resultImage;
-            public System.Windows.Media.ImageSource ResultImage
-            {
-                get { return resultImage; }
-
-                set
-                {
-                    resultImage = value;
-                    Notify("ResultImage");
-                }
-            }
-
-            public event PropertyChangedEventHandler PropertyChanged;
-
-            protected void OnPropertyChanged(PropertyChangedEventArgs e)
-            {
-                PropertyChangedEventHandler handler = PropertyChanged;
-                if (handler != null)
-                    handler(this, e);
-            }
-
-            protected void OnPropertyChanged(string propertyName)
-            {
-                OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-            }
-
-            protected void Notify(string propertyName)
-            {
-                if (this.PropertyChanged != null)
-                {
-                    try
-                    {
-                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-                    }
-                    catch (Exception ex)
-                    {
-                        DynamoLogger.Instance.Log(ex.Message);
-                        DynamoLogger.Instance.Log(ex.StackTrace);
-                    }
-                }
-            }
-
-        }
-
     }
 
 }
