@@ -10,6 +10,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using NUnit.Framework;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Tests
 {
@@ -32,7 +33,33 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
+        }
 
+        [Test]
+        public void CleanWorkbenchClearsUndoStack()
+        {
+            var dynamoModel = Controller.DynamoModel;
+            Assert.IsNotNull(dynamoModel.CurrentWorkspace);
+
+            var workspace = dynamoModel.CurrentWorkspace;
+            Assert.AreEqual(false, workspace.CanUndo);
+            Assert.AreEqual(false, workspace.CanRedo);
+            Assert.AreEqual(0, workspace.Nodes.Count); // An empty workspace
+
+            var createNodeCommand = new DynamoViewModel.CreateNodeCommand(
+                Guid.NewGuid(), "Add", 0, 0, false, false);
+
+            // Create a new node in the empty workspace.
+            Controller.DynamoViewModel.ExecuteCommand(createNodeCommand);
+            Assert.AreEqual(1, workspace.Nodes.Count);
+
+            Assert.AreEqual(true, workspace.CanUndo);
+            Assert.AreEqual(false, workspace.CanRedo);
+            dynamoModel.CleanWorkbench(); // Clearing current workspace.
+
+            // Undo stack should be cleared.
+            Assert.AreEqual(false, workspace.CanUndo);
+            Assert.AreEqual(false, workspace.CanRedo);
         }
 
         [Test]
