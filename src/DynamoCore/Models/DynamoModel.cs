@@ -665,8 +665,13 @@ namespace Dynamo.Models
 
             CurrentWorkspace.Connectors.Clear();
             CurrentWorkspace.Nodes.Clear();
-            CurrentWorkspace.Notes.Clear(); 
-            
+            CurrentWorkspace.Notes.Clear();
+
+            // Clear undo/redo stacks.
+            CurrentWorkspace.ClearUndoRecorder();
+            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+
             dynSettings.Controller.ResetEngine();
             CurrentWorkspace.PreloadedTraceData = null;
         }
@@ -1618,11 +1623,6 @@ namespace Dynamo.Models
             CurrentWorkspace.FileName = "";
             CurrentWorkspace.HasUnsavedChanges = false;
             CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
-
-            // Clear undo/redo stacks.
-            CurrentWorkspace.ClearUndoRecorder();
-            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
 
             //OnModelCleared();
 

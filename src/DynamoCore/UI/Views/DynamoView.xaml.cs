@@ -667,7 +667,7 @@ namespace Dynamo.Controls
 #endif
 
         /// <summary>
-        ///     Callback for opening a sample.
+        /// Setup the "Samples" sub-menu with contents of samples directory.
         /// </summary>
         private void OpenSample_Click(object sender, RoutedEventArgs e)
         {
@@ -677,6 +677,13 @@ namespace Dynamo.Controls
                 _vm.QueueLoad(path);
             else
             {
+                var workspace = _vm.Model.HomeSpace;
+                if (workspace.HasUnsavedChanges)
+                {
+                    if (!_vm.AskUserToSaveWorkspaceOrCancel(workspace))
+                        return; // User has not saved his/her work.
+                }
+
                 if (dynSettings.Controller.DynamoModel.CanGoHome(null))
                     dynSettings.Controller.DynamoModel.Home(null);
 
