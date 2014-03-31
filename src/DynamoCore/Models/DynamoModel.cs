@@ -859,7 +859,7 @@ namespace Dynamo.Models
                         else
                         {
                             var e = elNode as XmlElement;
-                            dummyElement = MigrationManager.CreateDummyNode(e, 1, 1);
+                            dummyElement = MigrationManager.CreateMissingNode(e, 1, 1);
                         }
                     }
                     catch (UnresolvedFunctionException)
@@ -876,7 +876,8 @@ namespace Dynamo.Models
                     if ((function != null) && (function.Definition == null))
                     {
                         var e = elNode as XmlElement;
-                        dummyElement = MigrationManager.CreateDummyNode(e, el.InPortData.Count, el.OutPortData.Count);
+                        dummyElement = MigrationManager.CreateMissingNode(
+                            e, el.InPortData.Count, el.OutPortData.Count);
                     }
 
                     if (dummyElement != null) // If a dummy node placement is desired.

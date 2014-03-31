@@ -150,7 +150,7 @@ namespace Dynamo.Models
                 {
                     // If we are not able to resolve the type given its name, 
                     // turn it into a deprecated node so that user is aware.
-                    migratedNodes.Add(MigrationManager.CreateDummyNode(
+                    migratedNodes.Add(MigrationManager.CreateMissingNode(
                         elNode as XmlElement, 1, 1));
 
                     continue; // Error displayed in console, continue on.

@@ -801,7 +801,7 @@ namespace Dynamo.Utilities
                         else
                         {
                             var e = elNode as XmlElement;
-                            dummyElement = MigrationManager.CreateDummyNode(e, 1, 1);
+                            dummyElement = MigrationManager.CreateMissingNode(e, 1, 1);
                         }
                     }
                     catch (UnresolvedFunctionException)
