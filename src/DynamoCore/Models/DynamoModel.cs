@@ -868,7 +868,7 @@ namespace Dynamo.Models
                         // function node into a dummy node (instead of crashing the workflow).
                         // 
                         var e = elNode as XmlElement;
-                        dummyElement = MigrationManager.CreateDummyNodeForFunction(e);
+                        dummyElement = MigrationManager.CreateUnresolvedFunctionNode(e);
                     }
 
                     // If a custom node fails to load its definition, convert it into a dummy node.

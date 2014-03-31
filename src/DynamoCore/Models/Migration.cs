@@ -712,17 +712,19 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Call this method to convert a DSFunction element into an equivalent 
-        /// dummy node. This method retains the number of input ports based on the 
-        /// function signature that comes with the XmlElement that represent the 
-        /// function node.
+        /// Call this method to convert a DSFunction/DSVarArgFunction element into 
+        /// an equivalent dummy node to indicate that a function node cannot be 
+        /// resolved during load time. This method retains the number of input 
+        /// ports based on the function signature that comes with the XmlElement 
+        /// that represent the function node.
         /// </summary>
         /// <param name="element">XmlElement representing the original DSFunction
-        /// node which has failed migration. This XmlElement must be of type 
-        /// "Dynamo.Nodes.DSFunction" otherwise an exception will be thrown.</param>
+        /// node which has failed function resolution. This XmlElement must be of 
+        /// type "DSFunction" or "DSVarArgFunction" otherwise an exception will be 
+        /// thrown.</param>
         /// <returns>Returns a new XmlElement representing the dummy node.</returns>
         /// 
-        public static XmlElement CreateDummyNodeForFunction(XmlElement element)
+        public static XmlElement CreateUnresolvedFunctionNode(XmlElement element)
         {
             if (element == null)
                 throw new ArgumentNullException("element");

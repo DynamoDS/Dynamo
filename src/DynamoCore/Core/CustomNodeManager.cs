@@ -810,7 +810,7 @@ namespace Dynamo.Utilities
                         // function node into a dummy node (instead of crashing the workflow).
                         // 
                         var e = elNode as XmlElement;
-                        dummyElement = MigrationManager.CreateDummyNodeForFunction(e);
+                        dummyElement = MigrationManager.CreateUnresolvedFunctionNode(e);
                     }
 
                     if (dummyElement != null) // If a dummy node placement is desired.
