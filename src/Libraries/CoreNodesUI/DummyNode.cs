@@ -40,6 +40,7 @@ namespace DSCoreNodesUI
 
             Image dummyNodeImage = new Image()
             {
+                Stretch = System.Windows.Media.Stretch.None,
                 Source = new BitmapImage(new Uri(src, UriKind.Relative))
             };
 
