@@ -84,9 +84,9 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_multipleInput.dyn");
 
-            RunModel(testFilePath); //later will add node and connector count verification.
+            RunModel(testFilePath);
 
-            Assert.Inconclusive("Add assertions");
+            AssertPreviewValue("fbc947fb-460b-49b9-8460-b223bffb63d5", new string[] { "abef", "cdgh" });
         }
 
         #endregion
@@ -222,7 +222,10 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
 
-            Assert.Inconclusive("Add assertions");
+            // The input is a function object "String Length" unconnected to any input
+            // To assert that the watch node is not displaying something such as "Pointer, opdata = 10, metaData = 58"
+            StringAssert.DoesNotContain("ointer", model.CurrentWorkspace.NodeFromWorkspace<Watch>(
+                "f8767579-f7c1-475f-980e-7cd6a42684c8").OldValue.Data.ToString());
         }
 
         [Test]
