@@ -787,11 +787,6 @@ namespace Dynamo.Models
                 XmlNode cNodesList = cNodes[0];
                 XmlNode nNodesList = nNodes[0];
 
-                //if there is any problem loading a node, then
-                //add the node's guid to the bad nodes collection
-                //so we can avoid attempting to make connections to it
-                List<Guid> badNodes = new List<Guid>();
-
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
                     XmlAttribute typeAttrib = elNode.Attributes["type"];
@@ -820,14 +815,6 @@ namespace Dynamo.Models
                     double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
                     double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
 
-                    typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
-                    System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
-                    if (null == type)
-                    {
-                        badNodes.Add(guid);
-                        continue;
-                    }
-
                     bool isVisible = true;
                     if (isVisAttrib != null)
                         isVisible = isVisAttrib.Value == "true" ? true : false;
@@ -850,7 +837,11 @@ namespace Dynamo.Models
                         // is possible since some legacy nodes have been made to derive from
                         // "MigrationNode" object type that is not derived from "NodeModel".
                         // 
-                        el = CreateNodeInstance(type, nickname, signature, guid);
+                        typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
+                        System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
+                        if (type != null)
+                            el = CreateNodeInstance(type, nickname, signature, guid);
+
                         if (el != null)
                         {
                             el.WorkSpace = CurrentWorkspace;
@@ -859,7 +850,7 @@ namespace Dynamo.Models
                         else
                         {
                             var e = elNode as XmlElement;
-                            dummyElement = MigrationManager.CreateDummyNode(e, 1, 1);
+                            dummyElement = MigrationManager.CreateMissingNode(e, 1, 1);
                         }
                     }
                     catch (UnresolvedFunctionException)
@@ -868,7 +859,7 @@ namespace Dynamo.Models
                         // function node into a dummy node (instead of crashing the workflow).
                         // 
                         var e = elNode as XmlElement;
-                        dummyElement = MigrationManager.CreateDummyNodeForFunction(e);
+                        dummyElement = MigrationManager.CreateUnresolvedFunctionNode(e);
                     }
 
                     // If a custom node fails to load its definition, convert it into a dummy node.
@@ -876,14 +867,15 @@ namespace Dynamo.Models
                     if ((function != null) && (function.Definition == null))
                     {
                         var e = elNode as XmlElement;
-                        dummyElement = MigrationManager.CreateDummyNode(e, el.InPortData.Count, el.OutPortData.Count);
+                        dummyElement = MigrationManager.CreateMissingNode(
+                            e, el.InPortData.Count, el.OutPortData.Count);
                     }
 
                     if (dummyElement != null) // If a dummy node placement is desired.
                     {
                         // The new type representing the dummy node.
                         typeName = dummyElement.GetAttribute("type");
-                        type = Dynamo.Nodes.Utilities.ResolveType(typeName);
+                        System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
 
                         el = CreateNodeInstance(type, nickname, string.Empty, guid);
                         el.WorkSpace = CurrentWorkspace;
@@ -941,9 +933,6 @@ namespace Dynamo.Models
                     //find the elements to connect
                     NodeModel start = null;
                     NodeModel end = null;
-
-                    if (badNodes.Contains(guidStart) || badNodes.Contains(guidEnd))
-                        continue;
 
                     foreach (NodeModel e in Nodes)
                     {

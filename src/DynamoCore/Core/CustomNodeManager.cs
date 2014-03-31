@@ -732,8 +732,6 @@ namespace Dynamo.Utilities
 
                 #region instantiate nodes
 
-                var badNodes = new List<Guid>();
-
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
                     XmlAttribute typeAttrib = elNode.Attributes["type"];
@@ -762,14 +760,6 @@ namespace Dynamo.Utilities
                     double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
                     double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
 
-                    typeName = Nodes.Utilities.PreprocessTypeName(typeName);
-                    Type type = Nodes.Utilities.ResolveType(typeName);
-                    if (null == type)
-                    {
-                        badNodes.Add(guid);
-                        continue;
-                    }
-
                     bool isVisible = true;
                     if (isVisAttrib != null)
                         isVisible = isVisAttrib.Value == "true" ? true : false;
@@ -792,7 +782,11 @@ namespace Dynamo.Utilities
                         // is possible since some legacy nodes have been made to derive from
                         // "MigrationNode" object type that is not derived from "NodeModel".
                         // 
-                        el = dynamoModel.CreateNodeInstance(type, nickname, signature, guid);
+                        typeName = Nodes.Utilities.PreprocessTypeName(typeName);
+                        System.Type type = Nodes.Utilities.ResolveType(typeName);
+                        if (type != null)
+                            el = dynamoModel.CreateNodeInstance(type, nickname, signature, guid);
+
                         if (el != null)
                         {
                             el.WorkSpace = ws;
@@ -801,7 +795,7 @@ namespace Dynamo.Utilities
                         else
                         {
                             var e = elNode as XmlElement;
-                            dummyElement = MigrationManager.CreateDummyNode(e, 1, 1);
+                            dummyElement = MigrationManager.CreateMissingNode(e, 1, 1);
                         }
                     }
                     catch (UnresolvedFunctionException)
@@ -810,14 +804,14 @@ namespace Dynamo.Utilities
                         // function node into a dummy node (instead of crashing the workflow).
                         // 
                         var e = elNode as XmlElement;
-                        dummyElement = MigrationManager.CreateDummyNodeForFunction(e);
+                        dummyElement = MigrationManager.CreateUnresolvedFunctionNode(e);
                     }
 
                     if (dummyElement != null) // If a dummy node placement is desired.
                     {
                         // The new type representing the dummy node.
                         typeName = dummyElement.GetAttribute("type");
-                        type = Dynamo.Nodes.Utilities.ResolveType(typeName);
+                        System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
 
                         el = dynamoModel.CreateNodeInstance(type, nickname, string.Empty, guid);
                         el.WorkSpace = ws;
@@ -863,9 +857,6 @@ namespace Dynamo.Utilities
                     //find the elements to connect
                     NodeModel start = null;
                     NodeModel end = null;
-
-                    if (badNodes.Contains(guidStart) || badNodes.Contains(guidEnd))
-                        continue;
 
                     foreach (NodeModel e in ws.Nodes)
                     {
