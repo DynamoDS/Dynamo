@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.21043" X="197.907858080797" Y="119.837468755611" zoom="0.867977507649016" Description="" Category="" Name="Home">
+<Workspace Version="0.7.0.29588" X="11.8744750480132" Y="87.7196686321531" zoom="0.832737936913066" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="a1844c0d-99bd-4a32-84f8-2e94685f3229" nickname="Number Slider" x="-255.090712742981" y="186.319114470842" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double>33.333</System.Double>
@@ -18,7 +18,7 @@
     <Dynamo.Models.ConnectorModel start="92552ee0-bf78-48ad-9f66-97291b175a48" start_index="0" end="6e9a64fa-8937-4cea-95fc-bd52aaf3404a" end_index="0" portType="0" />
   </Connectors>
   <Notes>
-    <Dynamo.Models.NoteModel text="Converting Revit curve to DS Curve" x="177.184676917625" y="24.6392233648715" />
+    <Dynamo.Models.NoteModel text="Converting Revit curve to Curve Geometry" x="177.184676917625" y="24.6392233648715" />
     <Dynamo.Models.NoteModel text="Paramter should be 0 to 1 and 'x' is for defining number of Points on Curve" x="152.981784677773" y="264.770036120399" />
     <Dynamo.Models.NoteModel text="Select curve from Revit" x="-63.8933024180454" y="4.6905074041183" />
   </Notes>
