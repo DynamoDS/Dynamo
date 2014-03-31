@@ -44,6 +44,7 @@ namespace DSCoreNodesUI
             };
 
             nodeUI.inputGrid.Children.Add(dummyNodeImage);
+            this.Warning(GetDescription());
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -122,7 +123,7 @@ namespace DSCoreNodesUI
                 }
                 else
                 {
-                    var format = "Node of type '{0}' (from assembly '{1}') is now deprecated";
+                    var format = "Node of type '{0}' ({1}) is now deprecated";
                     return string.Format(format, this.LegacyNodeName, this.LegacyAssembly);
                 }
             }
@@ -135,7 +136,7 @@ namespace DSCoreNodesUI
                 }
                 else
                 {
-                    var format = "Node of type '{0}' (from assembly '{1}') cannot be resolved";
+                    var format = "Node of type '{0}' ({1}) cannot be resolved";
                     return string.Format(format, this.LegacyNodeName, this.LegacyAssembly);
                 }
             }
