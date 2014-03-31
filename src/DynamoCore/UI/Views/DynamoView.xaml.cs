@@ -667,7 +667,7 @@ namespace Dynamo.Controls
 #endif
 
         /// <summary>
-        ///     Callback for opening a sample.
+        /// Setup the "Samples" sub-menu with contents of samples directory.
         /// </summary>
         private void OpenSample_Click(object sender, RoutedEventArgs e)
         {
