@@ -21,6 +21,7 @@ namespace DSCoreNodesUI
         public DummyNode()
         {
             this.LegacyNodeName = "DSCoreNodesUI.DummyNode";
+            this.LegacyAssembly = string.Empty;
         }
 
         public void SetupCustomUIElements(Dynamo.Controls.dynNodeView nodeUI)
@@ -40,10 +41,14 @@ namespace DSCoreNodesUI
             var inputCount = nodeElement.Attributes["inputCount"];
             var outputCount = nodeElement.Attributes["outputCount"];
             var legacyName = nodeElement.Attributes["legacyNodeName"];
+            var legacyAsm = nodeElement.Attributes["legacyAssembly"];
 
             this.InputCount = Int32.Parse(inputCount.Value);
             this.OutputCount = Int32.Parse(outputCount.Value);
             this.LegacyNodeName = legacyName.Value;
+
+            if (legacyAsm != null)
+                this.LegacyAssembly = legacyAsm.Value;
 
             for (int input = 0; input < this.InputCount; input++)
             {
@@ -66,6 +71,7 @@ namespace DSCoreNodesUI
             nodeElement.SetAttribute("inputCount", this.InputCount.ToString());
             nodeElement.SetAttribute("outputCount", this.OutputCount.ToString());
             nodeElement.SetAttribute("legacyNodeName", this.LegacyNodeName);
+            nodeElement.SetAttribute("legacyAssembly", this.LegacyAssembly);
         }
 
         #region SerializeCore/DeserializeCore
@@ -102,5 +108,6 @@ namespace DSCoreNodesUI
         public int InputCount { get; private set; }
         public int OutputCount { get; private set; }
         public string LegacyNodeName { get; private set; }
+        public string LegacyAssembly { get; private set; }
     }
 }

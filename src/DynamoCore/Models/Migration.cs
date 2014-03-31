@@ -754,10 +754,12 @@ namespace Dynamo.Models
 
             // Determine the number of input and output count (always 1).
             int inportCount = DetermineFunctionInputCount(element);
+            var assembly = DetermineAssemblyName(element);
 
             // Create an XmlElement representation of the new dummy node.
             var dummy = CreateDummyNode(element, inportCount, 1);
             dummy.SetAttribute("legacyNodeName", nickname);
+            dummy.SetAttribute("legacyAssembly", assembly);
             return dummy;
         }
 
@@ -819,6 +821,24 @@ namespace Dynamo.Models
             }
 
             return additionalPort + 1; // At least one.
+        }
+
+        private static string DetermineAssemblyName(XmlElement element)
+        {
+            var assemblyAttrib = element.Attributes["assembly"];
+            if (assemblyAttrib != null)
+                return assemblyAttrib.Value;
+
+            if (element.ChildNodes.Count > 0)
+            {
+                // We have an old file format with "FunctionItem" child element.
+                var childElement = element.ChildNodes[0] as XmlElement;
+                var funcItemAsmAttrib = childElement.Attributes["Assembly"];
+                if (funcItemAsmAttrib != null)
+                    return funcItemAsmAttrib.Value;
+            }
+
+            return string.Empty;
         }
 
         public static void SetFunctionSignature(XmlElement element,
