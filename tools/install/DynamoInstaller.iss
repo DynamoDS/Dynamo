@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 [Setup]
-AppName=DynamoDS
+AppName=Dynamo07
 AppVerName=DynamoDS 0.7.0
 AppPublisher=Autodesk, Inc.
 AppID={{6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B}
@@ -19,7 +19,7 @@ VersionInfoCopyright=
 DefaultDirName=C:\Autodesk\Dynamo07\Core
 DefaultGroupName=Dynamo
 OutputDir=Installers
-OutputBaseFilename=InstallDynamoDS
+OutputBaseFilename=InstallDynamo07
 SetupIconFile=Extra\logo_square_32x32.ico
 Compression=lzma
 SolidCompression=true
