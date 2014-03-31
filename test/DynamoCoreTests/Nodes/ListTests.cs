@@ -357,7 +357,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(listTestFolder, "testPlatten_singleInput.dyn");
             RunModel(testFilePath);
 
-            Assert.Inconclusive("Add assertions");
+            AssertPreviewValue("4cc4e5f0-4338-43bb-911e-d7c10ea2b53c", new int[] { 20 });
         }
 
         [Test]
@@ -392,7 +392,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(listTestFolder, "testPlattenCompletely_singleInput.dyn");
             RunModel(testFilePath);
 
-            Assert.Inconclusive("Add assertions");
+            AssertPreviewValue("641db696-5626-4af0-b07e-6335c6dc4bc9", new int[] { 20 });
         }
 
         [Test]
