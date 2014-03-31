@@ -767,6 +767,30 @@ namespace Dynamo.Models
             return dummy;
         }
 
+        /// <summary>
+        /// Call this method to create a dummy node, should a node failed to be 
+        /// migrated. This results in a dummy node with a description of what the 
+        /// original node type was, and also retain the number of input and output
+        /// ports.
+        /// </summary>
+        /// <param name="element">XmlElement representing the original node which
+        /// has failed migration.</param>
+        /// <param name="inportCount">The number of input ports required on the 
+        /// new dummy node. This number must be a positive number greater or 
+        /// equal to zero.</param>
+        /// <param name="outportCount">The number of output ports required on the 
+        /// new dummy node. This number must be a positive number greater or 
+        /// equal to zero.</param>
+        /// <returns>Returns a new XmlElement representing the dummy node.</returns>
+        /// 
+        public static XmlElement CreateMissingNode(
+            XmlElement element, int inportCount, int outportCount)
+        {
+            var dummy = CreateDummyNode(element, inportCount, outportCount);
+            dummy.SetAttribute("nodeNature", "Unresolved");
+            return dummy;
+        }
+
         private static int DetermineFunctionInputCount(XmlElement element)
         {
             int additionalPort = 0;
