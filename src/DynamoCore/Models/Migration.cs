@@ -707,6 +707,7 @@ namespace Dynamo.Models
             dummy.SetAttribute("legacyNodeName", element.GetAttribute("type"));
             dummy.SetAttribute("inputCount", inportCount.ToString());
             dummy.SetAttribute("outputCount", outportCount.ToString());
+            dummy.SetAttribute("nodeNature", "Obsolete");
             return dummy;
         }
 
@@ -760,6 +761,7 @@ namespace Dynamo.Models
             var dummy = CreateDummyNode(element, inportCount, 1);
             dummy.SetAttribute("legacyNodeName", nickname);
             dummy.SetAttribute("legacyAssembly", assembly);
+            dummy.SetAttribute("nodeNature", "Unresolved");
             return dummy;
         }
 
@@ -825,20 +827,24 @@ namespace Dynamo.Models
 
         private static string DetermineAssemblyName(XmlElement element)
         {
+            var assemblyName = string.Empty;
             var assemblyAttrib = element.Attributes["assembly"];
             if (assemblyAttrib != null)
-                return assemblyAttrib.Value;
-
-            if (element.ChildNodes.Count > 0)
+                assemblyName = assemblyAttrib.Value;
+            else if (element.ChildNodes.Count > 0)
             {
                 // We have an old file format with "FunctionItem" child element.
                 var childElement = element.ChildNodes[0] as XmlElement;
                 var funcItemAsmAttrib = childElement.Attributes["Assembly"];
                 if (funcItemAsmAttrib != null)
-                    return funcItemAsmAttrib.Value;
+                    assemblyName = funcItemAsmAttrib.Value;
             }
 
-            return string.Empty;
+            if (string.IsNullOrEmpty(assemblyName))
+                return string.Empty;
+
+            try { return Path.GetFileName(assemblyName); }
+            catch (Exception) { return string.Empty; }
         }
 
         public static void SetFunctionSignature(XmlElement element,

@@ -18,10 +18,16 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class DummyNode : NodeModel
     {
+        public enum Nature
+        {
+            Obsolete, Unresolved
+        }
+
         public DummyNode()
         {
             this.LegacyNodeName = "DSCoreNodesUI.DummyNode";
             this.LegacyAssembly = string.Empty;
+            this.NodeNature = Nature.Unresolved;
         }
 
         public void SetupCustomUIElements(Dynamo.Controls.dynNodeView nodeUI)
@@ -41,14 +47,21 @@ namespace DSCoreNodesUI
             var inputCount = nodeElement.Attributes["inputCount"];
             var outputCount = nodeElement.Attributes["outputCount"];
             var legacyName = nodeElement.Attributes["legacyNodeName"];
-            var legacyAsm = nodeElement.Attributes["legacyAssembly"];
 
             this.InputCount = Int32.Parse(inputCount.Value);
             this.OutputCount = Int32.Parse(outputCount.Value);
             this.LegacyNodeName = legacyName.Value;
 
+            var legacyAsm = nodeElement.Attributes["legacyAssembly"];
             if (legacyAsm != null)
                 this.LegacyAssembly = legacyAsm.Value;
+
+            var nodeNature = nodeElement.Attributes["nodeNature"];
+            if (nodeNature != null)
+            {
+                var nature = Enum.Parse(typeof(Nature), nodeNature.Value);
+                this.NodeNature = ((Nature)nature);
+            }
 
             for (int input = 0; input < this.InputCount; input++)
             {
@@ -72,6 +85,7 @@ namespace DSCoreNodesUI
             nodeElement.SetAttribute("outputCount", this.OutputCount.ToString());
             nodeElement.SetAttribute("legacyNodeName", this.LegacyNodeName);
             nodeElement.SetAttribute("legacyAssembly", this.LegacyAssembly);
+            nodeElement.SetAttribute("nodeNature", this.NodeNature.ToString());
         }
 
         #region SerializeCore/DeserializeCore
@@ -109,5 +123,6 @@ namespace DSCoreNodesUI
         public int OutputCount { get; private set; }
         public string LegacyNodeName { get; private set; }
         public string LegacyAssembly { get; private set; }
+        public Nature NodeNature { get; private set; }
     }
 }
