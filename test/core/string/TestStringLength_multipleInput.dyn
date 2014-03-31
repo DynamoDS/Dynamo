@@ -4,7 +4,7 @@
     <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="f72f6210-b32f-4dc4-9b2a-61f0144a0109" nickname="Watch" x="609" y="310.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.dynSplitString type="Dynamo.Nodes.dynSplitString" guid="cf4fffaf-c4e1-4297-9480-c4c90418adb2" nickname="Split String" x="201" y="307.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="a40f84d6-5b21-4e21-b6ab-a8ead2051f9c" nickname="String" x="42" y="262.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="a.b" />
+      <System.String value="ab.cde" />
     </Dynamo.Nodes.dynStringInput>
     <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="8553e762-0cd4-4e15-b567-6536fb4f4bf0" nickname="String" x="32" y="354.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.String value="." />

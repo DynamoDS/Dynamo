@@ -183,9 +183,9 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestJoinString_singleInput.dyn");
 
-            RunModel(testFilePath);//later will add node and connector count verification.
+            RunModel(testFilePath);
 
-            Assert.Inconclusive("Add assertions");
+            AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "a");
         }
 
         [Test]
@@ -309,6 +309,20 @@ namespace Dynamo.Tests
             AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", new string[]{"today","yesterday"});
         }
 
+        [Test]
+        public void TestSplitStringMultipleInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_multipleInput.dyn");
+            RunModel(testFilePath);
+            AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109",
+                new string[][]
+                {
+                    new string[] { "today", "yesterday" },
+                    new string[] { "tomorrow", "and forever" }
+                });
+        }
+ 
         #endregion
 
         #region string length test cases  
@@ -352,9 +366,9 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_multipleInput.dyn");
 
-            RunModel(testFilePath);//later will add node and connector count verification.
+            RunModel(testFilePath);
 
-            Assert.Inconclusive("Add assertions");
+            AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", new object[] { 2, 3 });
         }
 
         [Test]
