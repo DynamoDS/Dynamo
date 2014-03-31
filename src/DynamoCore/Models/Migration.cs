@@ -707,7 +707,7 @@ namespace Dynamo.Models
             dummy.SetAttribute("legacyNodeName", element.GetAttribute("type"));
             dummy.SetAttribute("inputCount", inportCount.ToString());
             dummy.SetAttribute("outputCount", outportCount.ToString());
-            dummy.SetAttribute("nodeNature", "Obsolete");
+            dummy.SetAttribute("nodeNature", "Deprecated");
             return dummy;
         }
 

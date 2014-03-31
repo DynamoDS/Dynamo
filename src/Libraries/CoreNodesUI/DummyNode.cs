@@ -20,7 +20,7 @@ namespace DSCoreNodesUI
     {
         public enum Nature
         {
-            Obsolete, Unresolved
+            Deprecated, Unresolved
         }
 
         public DummyNode()
@@ -32,7 +32,11 @@ namespace DSCoreNodesUI
 
         public void SetupCustomUIElements(Dynamo.Controls.dynNodeView nodeUI)
         {
-            var src = @"/DSCoreNodesUI;component/Resources/DummyNode.png";
+            var fileName = "DeprecatedNode.png";
+            if (this.NodeNature == Nature.Unresolved)
+                fileName = "MissingNode.png";
+
+            var src = @"/DSCoreNodesUI;component/Resources/" + fileName;
 
             Image dummyNodeImage = new Image()
             {
@@ -109,8 +113,35 @@ namespace DSCoreNodesUI
 
         private string GetDescription()
         {
-            return string.Format(
-                "Obsolete node type {0}", this.LegacyNodeName);
+            if (this.NodeNature == Nature.Deprecated)
+            {
+                if (string.IsNullOrEmpty(this.LegacyAssembly))
+                {
+                    var format = "Node of type '{0}' is now deprecated";
+                    return string.Format(format, this.LegacyNodeName);
+                }
+                else
+                {
+                    var format = "Node of type '{0}' (from assembly '{1}') is now deprecated";
+                    return string.Format(format, this.LegacyNodeName, this.LegacyAssembly);
+                }
+            }
+            else if (this.NodeNature == Nature.Unresolved)
+            {
+                if (string.IsNullOrEmpty(this.LegacyAssembly))
+                {
+                    var format = "Node of type '{0}' cannot be resolved";
+                    return string.Format(format, this.LegacyNodeName);
+                }
+                else
+                {
+                    var format = "Node of type '{0}' (from assembly '{1}') cannot be resolved";
+                    return string.Format(format, this.LegacyNodeName, this.LegacyAssembly);
+                }
+            }
+
+            var message = "Unhandled 'DummyNode.NodeNature' value: {0}";
+            throw new InvalidOperationException(string.Format(message, NodeNature.ToString()));
         }
 
         public override string Description

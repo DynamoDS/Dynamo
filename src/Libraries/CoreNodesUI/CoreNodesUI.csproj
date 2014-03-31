@@ -87,7 +87,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\DummyNode.png" />
+    <Resource Include="Resources\DeprecatedNode.png" />
+    <Resource Include="Resources\MissingNode.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
