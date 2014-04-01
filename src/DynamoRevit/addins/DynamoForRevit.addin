@@ -6,6 +6,6 @@
     <AddInId>8D83C886-B739-4ACD-A9DB-1BC78F315B2B</AddInId>
     <FullClassName>Dynamo.Applications.DynamoRevitApp</FullClassName>
     <VendorId>ADSK</VendorId>
-    <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>
+    <VendorDescription>Autodesk, github.com/DynamoDS/Dynamo</VendorDescription>
   </AddIn>
 </RevitAddIns>
