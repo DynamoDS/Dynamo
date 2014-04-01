@@ -93,6 +93,10 @@ namespace ProtoCore.AssociativeEngine
                             if (gnode.exprUID == exprId)
                             {
                                 gnode.isDirty = true;
+                                if (gnode.IsLastNodeInSSA)
+                                {
+                                    exprId = ProtoCore.DSASM.Constants.kInvalidIndex;
+                                }
                             }
                         }
                     }
