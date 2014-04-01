@@ -6317,8 +6317,9 @@ namespace ProtoAssociative
                     graphNode.firstProc = procNode;
                     graphNode.firstProcRefIndex = graphNode.dependentList.Count - 1;
 
-                    // Memoize the graphnode that contains a user-defined function call
-                    if (!procNode.isExternal)
+                    // Memoize the graphnode that contains a user-defined function call in the global scope
+                    bool inGlobalScope = ProtoCore.DSASM.Constants.kGlobalScope == globalProcIndex && ProtoCore.DSASM.Constants.kInvalidIndex == globalClassIndex;
+                    if (!procNode.isExternal && inGlobalScope)
                     {
                         core.GraphNodeCallList.Add(graphNode);
                     }

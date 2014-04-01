@@ -128,7 +128,7 @@
                 </ItemsControl>
                 
                 <controls:GraphUpdateNotificationControl x:Name="UpdateControl" HorizontalAlignment="Right" 
-                                                         Margin="0,0,50,0" 
+                                                         Margin="0,0,50,0"
                                                          Visibility="{Binding Path=DataContext.IsUpdateAvailable, RelativeSource={RelativeSource AncestorType={x:Type Window}}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
             </Grid>
         </Border>
