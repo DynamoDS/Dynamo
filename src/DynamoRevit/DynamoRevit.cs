@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
@@ -48,14 +49,13 @@ namespace Dynamo.Applications
                 // Create new ribbon panel
                 RibbonPanel ribbonPanel = application.CreateRibbonPanel(res.GetString("App_Description"));
 
-                //Create a push button in the ribbon panel 
                 var pushButton =
-                    ribbonPanel.AddItem(
-                        new PushButtonData(
-                            "Dynamo 0.7 Alpha",
-                            res.GetString("App_Name"),
-                            assemblyName,
-                            "Dynamo.Applications.DynamoRevit")) as PushButton;
+                        ribbonPanel.AddItem(
+                            new PushButtonData(
+                                "Dynamo 0.7 Alpha",
+                                res.GetString("App_Name"),
+                                assemblyName,
+                                "Dynamo.Applications.DynamoRevit")) as PushButton;
 
                 Bitmap dynamoIcon = Resources.logo_square_32x32;
 
@@ -85,11 +85,6 @@ namespace Dynamo.Applications
 
         public Result OnShutdown(UIControlledApplication application)
         {
-            //UpdaterRegistry.UnregisterUpdater(Updater.GetUpdaterId());
-
-            //if(Application.Current != null)
-            //    Application.Current.Shutdown();
-
             return Result.Succeeded;
         }
     }
