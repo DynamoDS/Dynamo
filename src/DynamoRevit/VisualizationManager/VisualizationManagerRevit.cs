@@ -8,7 +8,6 @@ using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using HelixToolkit.Wpf;
 using Curve = Autodesk.Revit.DB.Curve;
 using Solid = Autodesk.Revit.DB.Solid;
 using Face = Autodesk.Revit.DB.Face;

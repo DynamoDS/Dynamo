@@ -60,33 +60,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\GregRevitAuth.dll</HintPath>
     </Reference>
-    <Reference Include="HelixToolkit.Wpf">
-      <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="JobMonitor">
-      <HintPath>..\..\extern\DynamoRaaS\JobMonitor.dll</HintPath>
-    </Reference>
-    <Reference Include="MathNet.Numerics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\mathnet-numerics-build\lib\Net40\MathNet.Numerics.dll</HintPath>
-    </Reference>
-    <Reference Include="MathNet.Numerics.IO">
-      <HintPath>..\..\extern\mathnet-numerics-build\lib\Net40\MathNet.Numerics.IO.dll</HintPath>
-    </Reference>
-    <Reference Include="MIConvexHullPlugin">
-      <HintPath>..\..\extern\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-    </Reference>
-    <Reference Include="NCalc, Version=1.3.8.0, Culture=neutral, PublicKeyToken=973cde3f1cafed03, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\NCalc\NCalc.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -94,18 +70,12 @@
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="ProtoGeometry, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="ProtoGeometry, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\greg\RestSharp.dll</HintPath>
-    </Reference>
+    <Reference Include="ProtoInterface, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="RevitAPI">
       <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
       <Private>False</Private>
@@ -114,19 +84,11 @@
       <HintPath>$(REVITAPI)\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="RevitRaaS">
-      <HintPath>..\..\extern\DynamoRaaS\RevitRaaS.dll</HintPath>
-    </Reference>
-    <Reference Include="SDF">
-      <HintPath>..\..\extern\DynamoRaaS\SDF.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Numerics" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -183,25 +145,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Engine\GraphToDSCompiler\GraphToDSCompiler.csproj">
-      <Project>{593be9fc-7482-4cd6-9f87-77e7ac5cdff2}</Project>
-      <Name>GraphToDSCompiler</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Engine\ProtoAssociative\ProtoAssociative.csproj">
-      <Project>{7318d5e5-9d15-4abe-8a51-92f58d4f0b85}</Project>
-      <Name>ProtoAssociative</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Engine\ProtoImperative\ProtoImperative.csproj">
-      <Project>{0d3d43dc-bd7e-46f0-93f7-1c6a6cc79948}</Project>
-      <Name>ProtoImperative</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Engine\ProtoScript\ProtoScript.csproj">
-      <Project>{a4794476-7d0e-41c0-ad83-4ab929c0a46c}</Project>
-      <Name>ProtoScript</Name>
     </ProjectReference>
     <ProjectReference Include="..\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
       <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
@@ -210,10 +156,6 @@
     <ProjectReference Include="..\Legacy\FScheme\FScheme.2012.fsproj">
       <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
       <Name>FScheme.2012</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\CoreNodes\CoreNodes.csproj">
-      <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
-      <Name>CoreNodes</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>

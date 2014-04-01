@@ -142,15 +142,13 @@ namespace Dynamo.Controls
             redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
             redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
 
-            /*
-            ShortcutBarItem updateButton = new ShortcutBarItem();
-            //redoButton.ShortcutToolTip = "Update [Ctrl + ]";
-            updateButton.ShortcutCommand = _vm.CheckForUpdateCommand;
-            updateButton.ShortcutCommandParameter = null;
-            updateButton.ImgNormalSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
-            updateButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
-            updateButton.ImgHoverSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
-            */
+            //ShortcutBarItem updateButton = new ShortcutBarItem();
+            ////redoButton.ShortcutToolTip = "Update [Ctrl + ]";
+            //updateButton.ShortcutCommand = _vm.CheckForUpdateCommand;
+            //updateButton.ShortcutCommandParameter = null;
+            //updateButton.ImgNormalSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
+            //updateButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
+            //updateButton.ImgHoverSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
 
             // PLACEHOLDER FOR FUTURE SHORTCUTS
             //ShortcutBarItem runButton = new ShortcutBarItem();
