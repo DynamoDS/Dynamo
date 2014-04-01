@@ -19,7 +19,7 @@
       </Outputs>
     </Dynamo.Nodes.FunctionWithRevit>
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="e7f8f4da-ea03-4afb-908d-3db8a1a631d5" nickname="Number" x="774.545681604947" y="463.248815594563" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value=".75" />
+      <System.Double value=".76" />
     </Dynamo.Nodes.DoubleInput>
     <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="3543bb3d-90d4-4e3b-afc8-c2f4c22899d8" nickname="Mutate Parent Daylight" x="2.84420278775042" y="120.089811429493" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <ID value="b0625e59-4644-4eba-b6ad-ee736dbcb9e0" />
