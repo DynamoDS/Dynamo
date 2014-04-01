@@ -1521,12 +1521,7 @@ namespace Dynamo.Nodes
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            string content = this.Value;
-            content = content.Replace("\r\n", "\\n");
-            content = content.Replace("\t", "\\t");
-            content = content.Replace("\"", "\\\"");
-            
-            var rhs = AstFactory.BuildStringNode(content);
+            var rhs = AstFactory.BuildStringNode(this.Value);
             var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
 
             return new[] { assignment };
@@ -1550,25 +1545,6 @@ namespace Dynamo.Nodes
                 attr.Value = HttpUtility.UrlDecode(attr.Value);
 
             migrationData.AppendNode(newNode as XmlElement);
-            return migrationData;
-        }
-
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
-        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
-        {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            XmlElement original = data.MigratedNodes.ElementAt(0);
-
-            // Escape special characters for display in code block node.
-            string content = ExtensionMethods.GetChildNodeStringValue(original);
-            content = content.Replace("\r\n", "\\n");
-            content = content.Replace("\t", "\\t");
-            content = content.Replace("\"", "\\\"");
-            content = string.Format("\"{0}\";", content);
-
-            XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(original);
-            newNode.SetAttribute("CodeText", content);
-            migrationData.AppendNode(newNode);
             return migrationData;
         }
     }

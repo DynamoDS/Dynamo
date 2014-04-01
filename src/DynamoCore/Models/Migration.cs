@@ -150,7 +150,7 @@ namespace Dynamo.Models
                 {
                     // If we are not able to resolve the type given its name, 
                     // turn it into a deprecated node so that user is aware.
-                    migratedNodes.Add(MigrationManager.CreateDummyNode(
+                    migratedNodes.Add(MigrationManager.CreateMissingNode(
                         elNode as XmlElement, 1, 1));
 
                     continue; // Error displayed in console, continue on.
@@ -707,21 +707,24 @@ namespace Dynamo.Models
             dummy.SetAttribute("legacyNodeName", element.GetAttribute("type"));
             dummy.SetAttribute("inputCount", inportCount.ToString());
             dummy.SetAttribute("outputCount", outportCount.ToString());
+            dummy.SetAttribute("nodeNature", "Deprecated");
             return dummy;
         }
 
         /// <summary>
-        /// Call this method to convert a DSFunction element into an equivalent 
-        /// dummy node. This method retains the number of input ports based on the 
-        /// function signature that comes with the XmlElement that represent the 
-        /// function node.
+        /// Call this method to convert a DSFunction/DSVarArgFunction element into 
+        /// an equivalent dummy node to indicate that a function node cannot be 
+        /// resolved during load time. This method retains the number of input 
+        /// ports based on the function signature that comes with the XmlElement 
+        /// that represent the function node.
         /// </summary>
         /// <param name="element">XmlElement representing the original DSFunction
-        /// node which has failed migration. This XmlElement must be of type 
-        /// "Dynamo.Nodes.DSFunction" otherwise an exception will be thrown.</param>
+        /// node which has failed function resolution. This XmlElement must be of 
+        /// type "DSFunction" or "DSVarArgFunction" otherwise an exception will be 
+        /// thrown.</param>
         /// <returns>Returns a new XmlElement representing the dummy node.</returns>
         /// 
-        public static XmlElement CreateDummyNodeForFunction(XmlElement element)
+        public static XmlElement CreateUnresolvedFunctionNode(XmlElement element)
         {
             if (element == null)
                 throw new ArgumentNullException("element");
@@ -754,10 +757,37 @@ namespace Dynamo.Models
 
             // Determine the number of input and output count (always 1).
             int inportCount = DetermineFunctionInputCount(element);
+            var assembly = DetermineAssemblyName(element);
 
             // Create an XmlElement representation of the new dummy node.
             var dummy = CreateDummyNode(element, inportCount, 1);
             dummy.SetAttribute("legacyNodeName", nickname);
+            dummy.SetAttribute("legacyAssembly", assembly);
+            dummy.SetAttribute("nodeNature", "Unresolved");
+            return dummy;
+        }
+
+        /// <summary>
+        /// Call this method to create a dummy node, should a node failed to be 
+        /// migrated. This results in a dummy node with a description of what the 
+        /// original node type was, and also retain the number of input and output
+        /// ports.
+        /// </summary>
+        /// <param name="element">XmlElement representing the original node which
+        /// has failed migration.</param>
+        /// <param name="inportCount">The number of input ports required on the 
+        /// new dummy node. This number must be a positive number greater or 
+        /// equal to zero.</param>
+        /// <param name="outportCount">The number of output ports required on the 
+        /// new dummy node. This number must be a positive number greater or 
+        /// equal to zero.</param>
+        /// <returns>Returns a new XmlElement representing the dummy node.</returns>
+        /// 
+        public static XmlElement CreateMissingNode(
+            XmlElement element, int inportCount, int outportCount)
+        {
+            var dummy = CreateDummyNode(element, inportCount, outportCount);
+            dummy.SetAttribute("nodeNature", "Unresolved");
             return dummy;
         }
 
@@ -819,6 +849,28 @@ namespace Dynamo.Models
             }
 
             return additionalPort + 1; // At least one.
+        }
+
+        private static string DetermineAssemblyName(XmlElement element)
+        {
+            var assemblyName = string.Empty;
+            var assemblyAttrib = element.Attributes["assembly"];
+            if (assemblyAttrib != null)
+                assemblyName = assemblyAttrib.Value;
+            else if (element.ChildNodes.Count > 0)
+            {
+                // We have an old file format with "FunctionItem" child element.
+                var childElement = element.ChildNodes[0] as XmlElement;
+                var funcItemAsmAttrib = childElement.Attributes["Assembly"];
+                if (funcItemAsmAttrib != null)
+                    assemblyName = funcItemAsmAttrib.Value;
+            }
+
+            if (string.IsNullOrEmpty(assemblyName))
+                return string.Empty;
+
+            try { return Path.GetFileName(assemblyName); }
+            catch (Exception) { return string.Empty; }
         }
 
         public static void SetFunctionSignature(XmlElement element,

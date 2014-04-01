@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.21043" X="-54.7177704461947" Y="-304.782221785022" zoom="0.56288" Description="" Category="" Name="Home">
+<Workspace Version="0.7.0.29588" X="126.28814074849" Y="-866.608972148389" zoom="1.2507977607675" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="6a3a7009-4cf9-41ab-b49d-04017651da53" nickname="CurveElement.Curve" x="326.5" y="852.75" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="..\..\RevitNodes.dll" function="Revit.Elements.CurveElement.Curve" />
     <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="13e877fc-e969-445b-a866-736a41c35cac" nickname="Number Slider" x="-76.6335341963779" y="955.331994577438" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
@@ -15,13 +15,11 @@
       <Range min="0" max="100" />
     </Dynamo.Nodes.DoubleSlider>
     <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="adc1095a-f91c-42bf-b1af-387affa3c5ca" nickname="Watch 3D" x="1140.1452991453" y="782.542735042735" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <view width="229" height="372">
-        <camera pos_x="107.011705181315" pos_y="107.011705181315" pos_z="107.010705181315" look_x="-107.011705181315" look_y="-107.011705181315" look_z="-107.011705181315" />
+      <view width="239" height="429">
+        <camera pos_x="20.6975697527233" pos_y="20.6975697527233" pos_z="20.6965697527233" look_x="-20.6975697527233" look_y="-20.6975697527233" look_z="-20.6975697527233" />
       </view>
     </Dynamo.Nodes.Watch3D>
-    <Dynamo.Nodes.DSModelElementSelection type="Dynamo.Nodes.DSModelElementSelection" guid="dfa7a3b4-ff7d-4337-99f9-40ae131b6b17" nickname="Select Model Element" x="96.0446932133918" y="835.501520427582" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <instance id="18dab85c-38ed-467a-a572-ffa43f2aab62-000081a6" />
-    </Dynamo.Nodes.DSModelElementSelection>
+    <Dynamo.Nodes.DSModelElementSelection type="Dynamo.Nodes.DSModelElementSelection" guid="dfa7a3b4-ff7d-4337-99f9-40ae131b6b17" nickname="Select Model Element" x="96.0446932133918" y="835.501520427582" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </Elements>
   <Connectors>
     <Dynamo.Models.ConnectorModel start="6a3a7009-4cf9-41ab-b49d-04017651da53" start_index="0" end="57fbdaf1-a86d-48d4-ba63-2f0b2ee39de0" end_index="0" portType="0" />
@@ -35,5 +33,7 @@
     <Dynamo.Models.ConnectorModel start="7732ee54-0c5c-435a-8985-a2c052170044" start_index="0" end="6dc181cc-c971-493b-97b5-c1dae69bf9c9" end_index="1" portType="0" />
     <Dynamo.Models.ConnectorModel start="dfa7a3b4-ff7d-4337-99f9-40ae131b6b17" start_index="0" end="6a3a7009-4cf9-41ab-b49d-04017651da53" end_index="0" portType="0" />
   </Connectors>
-  <Notes />
+  <Notes>
+    <Dynamo.Models.NoteModel text="Select curve from Revit." x="92.4466662810519" y="791.51820312194" />
+  </Notes>
 </Workspace>
