@@ -13,7 +13,6 @@ using Autodesk.Revit.UI.Events;
 using DSNodeServices;
 using Dynamo.Applications;
 using Dynamo.DSEngine;
-using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
@@ -43,8 +42,7 @@ namespace Dynamo
         /// </summary>
         private Assembly singleSignOnAssembly;
 
-        public DynamoController_Revit(
-            ExecutionEnvironment env, RevitServicesUpdater updater, Type viewModelType, string context)
+        public DynamoController_Revit(RevitServicesUpdater updater, Type viewModelType, string context)
             : base(
                 viewModelType,
                 context,
