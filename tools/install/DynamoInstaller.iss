@@ -206,15 +206,6 @@ begin
 	AddInFileContents := AddInFileContents + '  <VendorId>ADSK</VendorId>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
 	AddInFileContents := AddInFileContents + '  </AddIn>' + #13#10;
-	AddInFileContents := AddInFileContents + '  <AddIn Type="Command">' + #13#10;
-	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevitDS.dll</Assembly>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <AddInId>9BD65929-12F9-4AC3-9880-033E0E4177AD</AddInId>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <FullClassName>Dynamo.Applications.DynamoRevit</FullClassName>' + #13#10;
-	AddInFileContents := AddInFileContents + '  <VendorId>ADSK</VendorId>' + #13#10;
-	AddInFileContents := AddInFileContents + '  <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
-  AddInFileContents := AddInFileContents + '    <Text>Dynamo</Text>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <Description>Visual programming for BIM.</Description>' + #13#10;
-	AddInFileContents := AddInFileContents + '  </AddIn>' + #13#10;
   AddInFileContents := AddInFileContents + '</RevitAddIns>' + #13#10;
 	
     if (WizardForm.ComponentsList.Checked[1]) then
