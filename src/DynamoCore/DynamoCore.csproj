@@ -209,6 +209,7 @@ limitations under the License.
     </Compile>
     <Compile Include="UpdateManager\BinaryVersion.cs" />
     <Compile Include="UpdateManager\UpdateManager.cs" />
+    <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
     <Compile Include="Utilities\MathUtils.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
