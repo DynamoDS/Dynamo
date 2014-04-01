@@ -381,7 +381,7 @@ namespace Dynamo.Nodes
 
                     var outId = GetAstIdentifierForOutputIndex(0);
 
-                    if (!Equals(AstIdentifierForPreview, outId))
+                    if (AstIdentifierForPreview.Value != outId.Value)
                         resultAst.Add(AstFactory.BuildAssignment(outId, AstIdentifierForPreview));
                 }
             }
