@@ -2226,6 +2226,59 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        public void TestSimpleFunctionRedefinition03()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "def f() { return = null;}",
+                "def f() { return = 10; }",
+                "x = f();",
+                "def f() { return = 5; }",
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+
+            {
+                List<Subtree> added = new List<Subtree>();
+                added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+
+                var syncData = new GraphSyncData(null, added, null);
+                astLiveRunner.UpdateGraph(syncData);
+            }
+
+            {
+                // Modify the function 
+                List<Subtree> modified = new List<Subtree>();
+                modified.Add(CreateSubTreeFromCode(guid1, codes[1]));
+
+                var syncData = new GraphSyncData(null, null, modified);
+                astLiveRunner.UpdateGraph(syncData);
+            }
+
+
+            {
+                // Call the function
+                List<Subtree> added = new List<Subtree>();
+                added.Add(CreateSubTreeFromCode(guid2, codes[2]));
+
+                var syncData = new GraphSyncData(null, added, null);
+                astLiveRunner.UpdateGraph(syncData);
+                AssertValue("x", 10);
+            }
+
+            {
+                // Modify the function 
+                List<Subtree> modified = new List<Subtree>();
+                modified.Add(CreateSubTreeFromCode(guid1, codes[3]));
+
+                var syncData = new GraphSyncData(null, null, modified);
+                astLiveRunner.UpdateGraph(syncData);
+                AssertValue("x", 5);
+            }
+        }
+
+        [Test]
         public void TestFunctionRedefinitionOnNewNode01()
         {
             List<string> codes = new List<string>() 
