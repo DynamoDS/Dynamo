@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.29588" X="65.174167575097" Y="-42.0324714516731" zoom="0.91641764948594" Description="" Category="" Name="Home">
+<Workspace Version="0.7.0.18969" X="-1719.78221599152" Y="-421.658653244391" zoom="2.17921759637986" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="5adff29b-3cac-4387-8d1d-b75ceb9c6dec" nickname="Number Slider" x="-33.5046665852747" y="132.909117860564" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double>5.955</System.Double>
@@ -37,6 +37,6 @@
     <Dynamo.Models.NoteModel text="Number of points along X and Y" x="-33.5046665852747" y="86.1940668936282" />
     <Dynamo.Models.NoteModel text="Distance in X direction" x="-33.5046665852747" y="236.073433451287" />
     <Dynamo.Models.NoteModel text="Distance in Y direction" x="-33.5046665852747" y="376.139556748478" />
-    <Dynamo.Models.NoteModel text="Plance Families in Revit based on Point Grid" x="888.925579051632" y="256.056779488903" />
+    <Dynamo.Models.NoteModel text="Place Families in Revit based on Point Grid" x="888.925579051632" y="256.056779488903" />
   </Notes>
 </Workspace>
