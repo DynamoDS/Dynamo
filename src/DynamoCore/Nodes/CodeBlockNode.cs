@@ -348,16 +348,31 @@ namespace Dynamo.Nodes
             if (State == ElementState.Error)
                 return null;
 
-            int statementIndex = -1;
-            while (portIndex >= 0)
+            Statement statement = null;
+            var svs = CodeBlockUtils.GetStatementVariables(codeStatements, true);
+            for (int stmt = 0, port = 0; stmt < codeStatements.Count; stmt++)
             {
-                statementIndex++;
-                if (RequiresOutPort(codeStatements[statementIndex], statementIndex))
-                    portIndex--;
+                if (CodeBlockUtils.StatementRequiresOutputPort(svs, stmt))
+                {
+                    if (port == portIndex)
+                    {
+                        statement = codeStatements[stmt];
+                        break;
+                    }
+
+                    port = port + 1;
+                }
             }
 
-            var ident = (codeStatements[statementIndex].AstNode as BinaryExpressionNode).LeftNode as IdentifierNode;
-            var mappedIdent = ProtoCore.Utils.NodeUtils.Clone(ident);
+            if (statement == null)
+                return null;
+
+            var binExprNode = statement.AstNode as BinaryExpressionNode;
+            if (binExprNode == null || (binExprNode.LeftNode == null))
+                return null;
+
+            var identNode = binExprNode.LeftNode as IdentifierNode;
+            var mappedIdent = ProtoCore.Utils.NodeUtils.Clone(identNode);
             MapIdentifiers(mappedIdent);
             return mappedIdent as IdentifierNode;
         }
@@ -466,7 +481,7 @@ namespace Dynamo.Nodes
             //Make sure variables have not been declared in other Code block nodes.
             inputIdentifiers = unboundIdentifiers;
 
-            SetPorts(unboundIdentifiers); //Set the input and output ports based on the statements
+            GeneratePorts(unboundIdentifiers); //Set the input and output ports based on the statements
         }
 
         private void SetPreviewVariable(List<Node> parsedNodes)
@@ -491,22 +506,26 @@ namespace Dynamo.Nodes
         ///     Creates the inport and outport data based on the statements generated form the user code
         /// </summary>
         /// <param name="unboundIdentifiers"> List of unbound identifiers to be used an inputs</param>
-        private void SetPorts(List<string> unboundIdentifiers)
+        private void GeneratePorts(List<string> unboundIdentifiers)
         {
-            inputIdentifiers = unboundIdentifiers;
+            this.inputIdentifiers = unboundIdentifiers;
 
             InPortData.Clear();
             OutPortData.Clear();
-            if (codeStatements.Count == 0 || codeStatements == null)
+            if (codeStatements == null || (codeStatements.Count == 0))
             {
                 RegisterAllPorts();
                 return;
             }
 
-            SetInputPorts(unboundIdentifiers);
+            // Generate input port data list from the unbound identifiers.
+            var inportData = CodeBlockUtils.GenerateInputPortData(unboundIdentifiers);
+            foreach (var portData in inportData)
+                InPortData.Add(portData);
 
-            //Since output ports need to be aligned with the statements, calculate the margins
-            //needed based on the statement lines and add them to port data.
+            // Since output ports need to be aligned with the statements, 
+            // calculate the margins needed based on the statement lines 
+            // and add them to port data.
             List<double> verticalMargin = CalculateMarginInPixels();
             SetOutputPorts(verticalMargin);
 
@@ -519,34 +538,25 @@ namespace Dynamo.Nodes
         /// <param name="verticalMargin"> Distance between the consequtive output ports </param>
         private void SetOutputPorts(List<double> verticalMargin)
         {
+            var svs = CodeBlockUtils.GetStatementVariables(codeStatements, true);
+
             int outportCount = 0;
             for (int i = 0; i < codeStatements.Count; i++)
             {
+                if (CodeBlockUtils.StatementRequiresOutputPort(svs, i) == false)
+                    continue;
+
                 Statement s = codeStatements[i];
-                if (RequiresOutPort(s, i))
+                string nickName = Statement.GetDefinedVariableNames(s, true)[0];
+                if (tempVariables.Contains(nickName))
+                    nickName = "Statement Output"; //Set tool tip incase of random var name
+
+                OutPortData.Add(new PortData("", nickName, typeof(object))
                 {
-                    string nickName = Statement.GetDefinedVariableNames(s, true)[0];
-                    if (tempVariables.Contains(nickName))
-                        nickName = "Statement Output"; //Set tool tip incase of random var name
+                    VerticalMargin = verticalMargin[outportCount]
+                });
 
-                    OutPortData.Add(
-                        new PortData("", nickName, typeof(object)) { VerticalMargin = verticalMargin[outportCount] });
-                    outportCount++;
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Set a port for each different unbound identifier
-        /// </summary>
-        private void SetInputPorts(IEnumerable<string> unboundIdentifier)
-        {
-            foreach (string name in unboundIdentifier)
-            {
-                string portName = name;
-                if (portName.Length > Configurations.CBNMaxPortNameLength)
-                    portName = portName.Remove(Configurations.CBNMaxPortNameLength - 3) + "...";
-                InPortData.Add(new PortData(portName, name, typeof(object)));
+                outportCount++;
             }
         }
 
@@ -556,6 +566,8 @@ namespace Dynamo.Nodes
         /// </summary>
         private List<double> CalculateMarginInPixels()
         {
+            var svs = CodeBlockUtils.GetStatementVariables(codeStatements, true);
+
             var result = new List<double>();
             int currentOffset = 1; //Used to mark the line immediately after the last output port line
             int textWrapping = 0;
@@ -563,7 +575,7 @@ namespace Dynamo.Nodes
             for (int i = 0; i < codeStatements.Count; i++)
             {
                 //Dont calculate margin for ports that dont require a port
-                if (!RequiresOutPort(codeStatements[i], i))
+                if (CodeBlockUtils.StatementRequiresOutputPort(svs, i))
                     continue;
 
                 //Margin = diff between this line and prev port line x port height
@@ -603,35 +615,6 @@ namespace Dynamo.Nodes
                 initialMarginRequired = 0;
             }
             return result;
-        }
-
-        /// <summary>
-        ///     Checks wheter an outport is required for a given statement. An outport is not required
-        ///     if there are no defined variables or if any of the defined variables have been
-        ///     declared again later on in the code block
-        /// </summary>
-        /// <param name="s"> Statement to check the port</param>
-        /// <param name="pos"> Position of the statement in codeStatements</param>
-        /// <returns></returns>
-        private bool RequiresOutPort(Statement s, int pos)
-        {
-            List<string> defVariables = Statement.GetDefinedVariableNames(s, true);
-
-            //Check if defined variables exist
-            if (defVariables.Count == 0)
-                return false;
-
-            //Check if variable has been redclared later on in the CBN
-            foreach (string varName in defVariables)
-            {
-                for (int i = pos + 1; i < codeStatements.Count; i++)
-                {
-                    List<string> laterDefVariables = Statement.GetDefinedVariableNames(codeStatements[i], true);
-                    if (laterDefVariables.Contains(varName))
-                        return false;
-                }
-            }
-            return true;
         }
 
         /// <summary>
