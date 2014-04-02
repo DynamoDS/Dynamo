@@ -48,7 +48,7 @@ namespace Dynamo.Applications
                 res = Resource_en_us.ResourceManager;
                 // Create new ribbon panel
                 RibbonPanel ribbonPanel = application.CreateRibbonPanel(res.GetString("App_Description"));
-
+                
                 var pushButton =
                         ribbonPanel.AddItem(
                             new PushButtonData(
