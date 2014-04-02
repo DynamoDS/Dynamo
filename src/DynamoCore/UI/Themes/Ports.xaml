@@ -55,6 +55,15 @@
                          RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}" />
             </Grid.Width>-->
 
+            <Grid.ToolTip>
+                <ToolTip Placement="{Binding Path=PortType, Converter={StaticResource PortToPlacementConverter}}"
+                         Style="{DynamicResource ResourceKey=SLightToolTip}">
+                    <Grid>
+                        <TextBlock Text="{Binding Path=ToolTipContent}"></TextBlock>
+                    </Grid>
+                </ToolTip>
+            </Grid.ToolTip>
+
             <!--
                 We could have changed the Grid opacity directly here but didn't.
                 The reason is that if the opacity of the Grid is modified, the 
