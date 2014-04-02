@@ -330,56 +330,6 @@ namespace Dynamo.Controls
                 dynSettings.Controller.DynamoViewModel.FadeOutInfoBubble(null);
         }
 
-        private void InputPort_OnMouseEnter(object sender, MouseEventArgs e)
-        {
-            SetupAndShowTooltip((UIElement)sender, InfoBubbleViewModel.Direction.Right);
-        }
-
-        private void InputPort_OnMouseLeave(object sender, MouseEventArgs e)
-        {
-            if (toolTipDelayTimer != null && toolTipDelayTimer.IsEnabled)
-                toolTipDelayTimer.Stop();
-
-            if (ViewModel != null)
-                ViewModel.FadeOutTooltipCommand.Execute(null);
-            else if (dynSettings.Controller != null)
-                dynSettings.Controller.DynamoViewModel.FadeOutInfoBubble(null);
-        }
-
-        private void InputPort_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (toolTipDelayTimer != null && toolTipDelayTimer.IsEnabled)
-                toolTipDelayTimer.Stop();
-
-            dynSettings.Controller.InfoBubbleViewModel.OnRequestAction(
-                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
-        }
-
-        private void OutputPort_OnMouseEnter(object sender, MouseEventArgs e)
-        {
-            SetupAndShowTooltip((UIElement)sender, InfoBubbleViewModel.Direction.Left);
-        }
-
-        private void OutputPort_OnMouseLeave(object sender, MouseEventArgs e)
-        {
-            if (toolTipDelayTimer != null && toolTipDelayTimer.IsEnabled)
-                toolTipDelayTimer.Stop();
-
-            if (ViewModel != null)
-                ViewModel.FadeOutTooltipCommand.Execute(null);
-            else if (dynSettings.Controller != null)
-                dynSettings.Controller.DynamoViewModel.FadeOutInfoBubble(null);
-        }
-
-        private void OutputPort_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (toolTipDelayTimer != null && toolTipDelayTimer.IsEnabled)
-                toolTipDelayTimer.Stop();
-
-            dynSettings.Controller.InfoBubbleViewModel.OnRequestAction(
-                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
-        }
-
         private void PreviewArrow_MouseEnter(object sender, MouseEventArgs e)
         {
             UIElement uiElement = sender as UIElement;

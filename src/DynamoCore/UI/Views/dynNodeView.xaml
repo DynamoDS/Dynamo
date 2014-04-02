@@ -214,18 +214,6 @@
                    Canvas.ZIndex="20">
             <ItemsControl ItemsSource="{Binding Path=InPorts}"
                             HorizontalContentAlignment="Stretch">
-                <ItemsControl.ItemContainerStyle>
-                    <Style TargetType="{x:Type ContentPresenter}">
-                        <Setter Property="HorizontalAlignment"
-                                Value="Left" />
-                        <EventSetter Event="MouseEnter"
-                                        Handler="InputPort_OnMouseEnter" />
-                        <EventSetter Event="MouseLeave"
-                                        Handler="InputPort_OnMouseLeave" />
-                        <EventSetter Event="PreviewMouseDown"
-                                        Handler="InputPort_OnPreviewMouseDown" />
-                    </Style>
-                </ItemsControl.ItemContainerStyle>
             </ItemsControl>
         </DockPanel>
 
@@ -239,18 +227,6 @@
                    Background="Transparent"
                    Canvas.ZIndex="20">
             <ItemsControl ItemsSource="{Binding Path=OutPorts}">
-                <ItemsControl.ItemContainerStyle>
-                    <Style TargetType="{x:Type ContentPresenter}">
-                        <Setter Property="HorizontalAlignment"
-                                    Value="Right" />
-                        <EventSetter Event="MouseEnter"
-                                         Handler="OutputPort_OnMouseEnter" />
-                        <EventSetter Event="MouseLeave"
-                                         Handler="OutputPort_OnMouseLeave" />
-                        <EventSetter Event="PreviewMouseDown"
-                                         Handler="OutputPort_OnPreviewMouseDown" />
-                    </Style>
-                </ItemsControl.ItemContainerStyle>
             </ItemsControl>
         </DockPanel>
 
