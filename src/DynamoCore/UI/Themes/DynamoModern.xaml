@@ -50,7 +50,7 @@
     <Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
 
     <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
-    
+
     <!--InfoBubble colors-->
     <SolidColorBrush x:Key="InfoBubbleBackNormalBrush"
                      Color="White"></SolidColorBrush>
@@ -1087,18 +1087,36 @@
                                 BorderBrush="{StaticResource InfoBubbleEdgeNormalBrush}"
                                 Background="{StaticResource InfoBubbleBackNormalBrush}">
                         </Border>
-                        <Path Grid.Row="{Binding RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource PlacementToRowColumn}, ConverterParameter=Row}"
-                              Grid.Column="{Binding RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource PlacementToRowColumn}, ConverterParameter=Column}"
-                              HorizontalAlignment="Center"
+                        <Path HorizontalAlignment="Center"
                               VerticalAlignment="Center"
                               Stroke="{StaticResource InfoBubbleEdgeNormalBrush}"
                               StrokeThickness="1"
                               Fill="{StaticResource InfoBubbleBackNormalBrush}">
+                            <Grid.Row>
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                         Converter="{StaticResource PlacementToRowColumn}"
+                                         ConverterParameter="Row" />
+                            </Grid.Row>
+                            <Grid.Column>
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                         Converter="{StaticResource PlacementToRowColumn}"
+                                         ConverterParameter="Column" />
+                            </Grid.Column>
                             <Path.Data>
                                 <PathGeometry>
-                                    <PathFigure IsClosed="False"
-                                                StartPoint="{Binding RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource PlacementToPathConverter}, ConverterParameter=Start}">
-                                        <PolyLineSegment Points="{Binding RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource PlacementToPathConverter}, ConverterParameter=Points}" />
+                                    <PathFigure IsClosed="False">
+                                        <PathFigure.StartPoint>
+                                            <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                                     Converter="{StaticResource PlacementToPathConverter}"
+                                                     ConverterParameter="Start" />
+                                        </PathFigure.StartPoint>
+                                        <PolyLineSegment>
+                                            <PolyLineSegment.Points>
+                                                <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                                         Converter="{StaticResource PlacementToPathConverter}"
+                                                         ConverterParameter="Points" />
+                                            </PolyLineSegment.Points>
+                                        </PolyLineSegment>
                                     </PathFigure>
                                 </PathGeometry>
                             </Path.Data>
