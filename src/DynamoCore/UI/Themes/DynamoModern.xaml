@@ -1057,46 +1057,33 @@
         <Setter Property="OverridesDefaultStyle"
                 Value="true" />
         <Setter Property="HasDropShadow"
-                Value="True" />
+                Value="False" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToolTip">
-                    <Border Name="Border"
-                            BorderThickness="1"
-                            Width="{TemplateBinding Width}"
-                            Height="{TemplateBinding Height}">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0"
-                                                 EndPoint="0,1">
-                                <LinearGradientBrush.GradientStops>
-                                    <GradientStopCollection>
-                                        <GradientStop Color="{DynamicResource ControlLightColor}"
-                                                      Offset="0.0" />
-                                        <GradientStop Color="{DynamicResource ControlMediumColor}"
-                                                      Offset="1.0" />
-                                    </GradientStopCollection>
-                                </LinearGradientBrush.GradientStops>
-                            </LinearGradientBrush>
-
-                        </Border.Background>
-                        <Border.BorderBrush>
-                            <SolidColorBrush Color="{DynamicResource BorderMediumColor}" />
-                        </Border.BorderBrush>
-                        <ContentPresenter Margin="4"
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition MinWidth="1"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition MinWidth="1"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition MinHeight="1"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition MinHeight="1"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="-1"
+                                BorderThickness="1"
+                                BorderBrush="Black"
+                                Background="White"></Border>
+                        <ContentPresenter Grid.Column="1"
+                                          Grid.Row="1"
+                                          Margin="4"
                                           HorizontalAlignment="Left"
                                           VerticalAlignment="Top" />
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="HasDropShadow"
-                                 Value="true">
-                            <Setter TargetName="Border"
-                                    Property="CornerRadius"
-                                    Value="4" />
-                            <Setter TargetName="Border"
-                                    Property="SnapsToDevicePixels"
-                                    Value="true" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
