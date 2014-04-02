@@ -64,9 +64,14 @@ namespace Dynamo.Applications
             // now we have a default path, but let's look at
             // the load path file to see what was last selected
             var cachedPath = string.Empty;
-            using (var sr = new StreamReader(Utils.GetVersionSaveFileLocation()))
+            var fileLoc = Utils.GetVersionSaveFileLocation();
+
+            if (File.Exists(fileLoc))
             {
-                cachedPath = sr.ReadToEnd();
+                using (var sr = new StreamReader(fileLoc))
+                {
+                    cachedPath = sr.ReadToEnd();
+                }
             }
 
             if (File.Exists(cachedPath))
