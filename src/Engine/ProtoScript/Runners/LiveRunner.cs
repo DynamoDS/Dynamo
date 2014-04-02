@@ -1563,19 +1563,8 @@ namespace ProtoScript.Runners
                         }
                     }
 
-                    // Get the AST's dependent on every function in the modified function list,
-                    // and append them to the list of AST's to be compiled and executed
-                    foreach (FunctionDefinitionNode fnode in modifiedFunctions)
-                    {
-                        // These ASTs are to be re-executed as they depend on the modified function
-                        // They must be marked dirty
-
-                        //List<AssociativeNode> astDependentOnFunctionList = GetASTNodesDependentOnFunctionList(fnode);
-                        //ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(runnerCore, astDependentOnFunctionList);
-
-
-                        ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(runnerCore, runnerCore.GraphNodeCallList);
-                    }
+                    // Mark all graphnodes dependent on the modified functions as dirty
+                    ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(runnerCore, modifiedFunctions);
 
                     foreach (AssociativeNode node in deltaAstList)
                     {

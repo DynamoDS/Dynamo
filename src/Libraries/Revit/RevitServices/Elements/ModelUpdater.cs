@@ -17,10 +17,11 @@ using System.Collections.Generic;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
+using RevitServices.Persistence;
 
 namespace RevitServices.Elements
 {
-    public class RevitServicesUpdater // : IUpdater
+    public class RevitServicesUpdater : IDisposable // : IUpdater
     {
         //static UpdaterId _mUpdaterId;
 
@@ -28,6 +29,8 @@ namespace RevitServices.Elements
 
         private readonly Dictionary<ElementId, ElementUpdateDelegate> _deletedCallbacks = new Dictionary<ElementId, ElementUpdateDelegate>();
         private readonly Dictionary<ElementId, ElementUpdateDelegate> _modifiedCallbacks = new Dictionary<ElementId, ElementUpdateDelegate>();
+
+        private readonly ControlledApplication application;
 
         public event ElementUpdateDelegate ElementsAdded;
 
@@ -41,15 +44,24 @@ namespace RevitServices.Elements
         public RevitServicesUpdater(/*AddInId id, */ControlledApplication app)
         {
             //_mUpdaterId = new UpdaterId(id, new Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")); //[Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")]
-            
-            app.DocumentChanged += Application_DocumentChanged;
+
+            application = app;
+            application.DocumentChanged += Application_DocumentChanged;
+        }
+
+        public void Dispose()
+        {
+            application.DocumentChanged -= Application_DocumentChanged;
         }
 
         //TODO: remove once we are using unique ids
         /// <summary>
         /// Document that is being watched for changes.
         /// </summary>
-        public Document DocumentToWatch { get; set; }
+        public Document DocumentToWatch
+        {
+            get { return DocumentManager.Instance.CurrentDBDocument; }
+        }
 
         /// <summary>
         /// Forces all deletion callbacks to be called for given sequence of elements.

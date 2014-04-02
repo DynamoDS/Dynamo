@@ -2,8 +2,8 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 [Setup]
-AppName=Dynamo07
-AppVerName=DynamoDS 0.7.0
+AppName=Dynamo 0.7.0
+AppVerName=Dynamo 0.7.0
 AppPublisher=Autodesk, Inc.
 AppID={{6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B}
 AppCopyright=
@@ -13,13 +13,13 @@ AppUpdatesURL=
 AppVersion=0.7.0
 VersionInfoVersion=0.7.0
 VersionInfoCompany=Autodesk 
-VersionInfoDescription=DynamoDS 0.7.0
-VersionInfoTextVersion=DynamoDS 0.7.0
+VersionInfoDescription=Dynamo 0.7.0
+VersionInfoTextVersion=Dynamo 0.7.0
 VersionInfoCopyright=
 DefaultDirName=C:\Autodesk\Dynamo07\Core
 DefaultGroupName=Dynamo
 OutputDir=Installers
-OutputBaseFilename=InstallDynamo07
+OutputBaseFilename=InstallDynamo0.7.0
 SetupIconFile=Extra\logo_square_32x32.ico
 Compression=lzma
 SolidCompression=true
@@ -29,7 +29,7 @@ ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\logo_square_32x32.ico
-UninstallDisplayName=DynamoDS 0.7.0
+UninstallDisplayName=Dynamo 0.7.0
 UsePreviousAppDir=no
 
 [Types]
@@ -199,37 +199,28 @@ begin
 	AddInFileContents := '<?xml version="1.0" encoding="utf-8" standalone="no"?>' + #13#10;
 	AddInFileContents := AddInFileContents + '<RevitAddIns>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <AddIn Type="Application">' + #13#10;
-  AddInFileContents := AddInFileContents + '    <Name>Dynamo07</Name>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevitDS.dll</Assembly>' + #13#10;
+  AddInFileContents := AddInFileContents + '    <Name>Dynamo For Revit</Name>' + #13#10;
+	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevitVersionSelector.dll</Assembly>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <AddInId>8D83C886-B739-4ACD-A9DB-1BC78F315B2B</AddInId>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <FullClassName>Dynamo.Applications.DynamoRevitApp</FullClassName>' + #13#10;
+	AddInFileContents := AddInFileContents + '    <FullClassName>Dynamo.Applications.VersionLoader</FullClassName>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <VendorId>ADSK</VendorId>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
-	AddInFileContents := AddInFileContents + '  </AddIn>' + #13#10;
-	AddInFileContents := AddInFileContents + '  <AddIn Type="Command">' + #13#10;
-	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevitDS.dll</Assembly>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <AddInId>9BD65929-12F9-4AC3-9880-033E0E4177AD</AddInId>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <FullClassName>Dynamo.Applications.DynamoRevit</FullClassName>' + #13#10;
-	AddInFileContents := AddInFileContents + '  <VendorId>ADSK</VendorId>' + #13#10;
-	AddInFileContents := AddInFileContents + '  <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
-  AddInFileContents := AddInFileContents + '    <Text>Dynamo</Text>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <Description>Visual programming for BIM.</Description>' + #13#10;
 	AddInFileContents := AddInFileContents + '  </AddIn>' + #13#10;
   AddInFileContents := AddInFileContents + '</RevitAddIns>' + #13#10;
 	
     if (WizardForm.ComponentsList.Checked[1]) then
     begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo07.addin'), AddInFileContents, False);
+      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin'), AddInFileContents, False);
     end;
   
     if (WizardForm.ComponentsList.Checked[2]) then
     begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo07.addin'), AddInFileContents, False);
+      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo.addin'), AddInFileContents, False);
     end;
 
     if (WizardForm.ComponentsList.Checked[3]) then
     begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo07.addin'), AddInFileContents, False);
+      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo.addin'), AddInFileContents, False);
     end;
 
   end;
