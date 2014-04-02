@@ -17,6 +17,7 @@ using Dynamo.PackageManager;
 using System.Windows.Controls;
 using Dynamo.Core;
 using ProtoCore.AST.ImperativeAST;
+using System.Windows.Controls.Primitives;
 
 namespace Dynamo.Controls
 {
@@ -554,6 +555,93 @@ namespace Dynamo.Controls
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return null;
+        }
+    }
+
+    public class PlacementToBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // PlacementMode mode = ((PlacementMode)value);
+            return new SolidColorBrush(Colors.CornflowerBlue);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class PlacementToPathConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var result = "0,0 6,5 0,10"; // Default, catch-all.
+            ToolTip tooltip = value as ToolTip;
+            switch (tooltip.Placement)
+            {
+                case PlacementMode.Left:
+                    result = "0,0 6,5 0,10";
+                    break;
+                case PlacementMode.Right:
+                    result = "6,0 0,5, 6,10";
+                    break;
+                case PlacementMode.Top:
+                    result = "0,0 5,6, 10,0";
+                    break;
+                case PlacementMode.Bottom:
+                    result = "0,6 5,0 10,6";
+                    break;
+            }
+
+            if (parameter != null && ((parameter as string).Equals("Start")))
+            {
+                var index = result.IndexOf(' ');
+                result = result.Substring(0, index);
+            }
+
+            return result;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class PlacementToRowColumn : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int row = 1, column = 2;
+            ToolTip tooltip = value as ToolTip;
+            switch (tooltip.Placement)
+            {
+                case PlacementMode.Left:
+                    row = 1;
+                    column = 2;
+                    break;
+                case PlacementMode.Right:
+                    row = 1;
+                    column = 0;
+                    break;
+                case PlacementMode.Top:
+                    row = 2;
+                    column = 1;
+                    break;
+                case PlacementMode.Bottom:
+                    row = 0;
+                    column = 1;
+                    break;
+            }
+
+            bool isRow = ((parameter as string).Equals("Row"));
+            return isRow ? row : column;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 

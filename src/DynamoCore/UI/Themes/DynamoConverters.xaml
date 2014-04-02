@@ -54,6 +54,9 @@
         OuterBorderSelection="{StaticResource outerBorderSelection}">
     </controls:StateToColorConverter>
 
+    <controls:PlacementToBrushConverter x:Key="PlacementToBrushConverter" />
+    <controls:PlacementToPathConverter x:Key="PlacementToPathConverter" />
+    <controls:PlacementToRowColumn x:Key="PlacementToRowColumn" />
     <controls:PortNameConverter x:Key="PortNameConverter"/>
     <controls:FilePathDisplayConverter x:Key="FilePathDisplayConverter"/>
     <controls:PathToFileNameConverter x:Key="PathToFileNameConverter"/>
