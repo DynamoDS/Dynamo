@@ -1,4 +1,4 @@
-<Workspace Version="0.6.3.18002" X="-1987.98381718492" Y="-69.9636055509821" zoom="0.824237172510421" Description="" Category="Misc" Name="RenderWithWeatherData_Return List of data" ID="4dac969f-c00e-4d1b-b65c-00bb7d4e80b1">
+<Workspace Version="0.6.3.16460" X="-45.2911108816584" Y="-499.094273058895" zoom="0.68483242074758" Description="" Category="Misc" Name="RenderWithWeatherData_Return List of data" ID="4dac969f-c00e-4d1b-b65c-00bb7d4e80b1">
   <Elements>
     <Dynamo.Nodes.WatchImage type="Dynamo.Nodes.WatchImage" guid="00f8c900-a7f3-4665-b0b9-f9194aa5dc04" nickname="Watch Image" x="3331.72076849908" y="136.35032806581" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.GetDaylightingColors type="Dynamo.Nodes.GetDaylightingColors" guid="6f90c90f-0b0f-4842-bae8-cb93f696af8f" nickname="Get Daylighting Grid Colors" x="3055.95156193665" y="369.408019296727" isVisible="true" isUpstreamVisible="true" lacing="Longest">
@@ -9,7 +9,7 @@
       <PortInfo index="1" default="True" />
       <PortInfo index="2" default="True" />
     </Dynamo.Nodes.GetDaylightingForegroundImage>
-    <Dynamo.Nodes.GetDaylightingIlluminanceValues type="Dynamo.Nodes.GetDaylightingIlluminanceValues" guid="d3cb3f6d-bfb6-454f-817d-3283092476f3" nickname="Get Daylighting Grid Illuminance Values" x="3057.53415342731" y="493.35778600175" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+    <Dynamo.Nodes.GetDaylightingIlluminanceValues type="Dynamo.Nodes.GetDaylightingIlluminanceValues" guid="d3cb3f6d-bfb6-454f-817d-3283092476f3" nickname="Get Daylighting Grid Illuminance Values" x="3052.73428698231" y="485.358008593418" isVisible="true" isUpstreamVisible="true" lacing="Longest">
       <PortInfo index="1" default="True" />
     </Dynamo.Nodes.GetDaylightingIlluminanceValues>
     <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="559559c5-a203-4618-a775-1c229ede00e0" nickname="List" x="3468.82048984282" y="514.453965850024" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
@@ -139,7 +139,7 @@
       <PortInfo index="1" default="True" />
     </Dynamo.Nodes.GetSDFResolution>
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="8acee33b-fd88-47a6-a4b9-e1623eeee0b4" nickname="Number" x="146.63127063197" y="1111.93338783439" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="5" />
+      <System.Double value="6" />
     </Dynamo.Nodes.DoubleInput>
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="18b76fac-bea0-448e-b727-f94a68813f38" nickname="Number" x="145.639772540785" y="1185.14584895084" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="5" />
@@ -151,6 +151,8 @@
     <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4b81479c-8621-4ca3-b33c-928802b53aba" nickname="Input" x="156.076491311028" y="896.781566987591" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <Symbol value="weatherDataFilePath" />
     </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="3364517b-2b22-47f5-89a2-8f8f94a0ce97" nickname="Watch" x="1913.7142914908" y="1049.20042537295" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="5f5765ec-fe53-41d0-91e6-df73fd38fe70" nickname="Watch" x="2151.87517233497" y="598.215318420644" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </Elements>
   <Connectors>
     <Dynamo.Models.ConnectorModel start="6f90c90f-0b0f-4842-bae8-cb93f696af8f" start_index="0" end="559559c5-a203-4618-a775-1c229ede00e0" end_index="1" portType="0" />
@@ -174,6 +176,7 @@
     <Dynamo.Models.ConnectorModel start="bbb474ed-1f0e-4340-ac59-c417d07ccfc5" start_index="0" end="559559c5-a203-4618-a775-1c229ede00e0" end_index="3" portType="0" />
     <Dynamo.Models.ConnectorModel start="4307fd63-706b-4214-b066-8ef0a50cbd78" start_index="0" end="bfc7b0a7-8377-4353-b573-64adc98bc8e7" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="13e51aab-e379-466a-840c-1d93c880bedf" start_index="0" end="4307fd63-706b-4214-b066-8ef0a50cbd78" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="13e51aab-e379-466a-840c-1d93c880bedf" start_index="0" end="5f5765ec-fe53-41d0-91e6-df73fd38fe70" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="91b2f5fc-cd7a-402f-b2c3-522cccff697e" start_index="0" end="13e51aab-e379-466a-840c-1d93c880bedf" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="73292506-d8e1-40c1-b444-7dc898b4c41b" start_index="0" end="13e51aab-e379-466a-840c-1d93c880bedf" end_index="1" portType="0" />
     <Dynamo.Models.ConnectorModel start="d1aedcb6-dfc8-4d60-8b96-6f448882e2f0" start_index="0" end="e34b339f-17c0-49c5-887a-61d3a3489933" end_index="3" portType="0" />
@@ -184,6 +187,7 @@
     <Dynamo.Models.ConnectorModel start="65ba9176-73e0-4adf-b2d2-cd9bac488f7e" start_index="0" end="6c919ba8-b71b-4710-9c86-4ebf066589e7" end_index="1" portType="0" />
     <Dynamo.Models.ConnectorModel start="54d14d96-02ac-46f3-afd9-1ca70e698ca0" start_index="0" end="13e51aab-e379-466a-840c-1d93c880bedf" end_index="5" portType="0" />
     <Dynamo.Models.ConnectorModel start="e34b339f-17c0-49c5-887a-61d3a3489933" start_index="0" end="13e51aab-e379-466a-840c-1d93c880bedf" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e34b339f-17c0-49c5-887a-61d3a3489933" start_index="0" end="3364517b-2b22-47f5-89a2-8f8f94a0ce97" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="43a7531a-7ad4-43fa-b497-d8a9ecffd607" start_index="0" end="1cfccf5a-6204-4ff5-b6a7-d3df978f0884" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="43a7531a-7ad4-43fa-b497-d8a9ecffd607" start_index="0" end="1cfccf5a-6204-4ff5-b6a7-d3df978f0884" end_index="1" portType="0" />
     <Dynamo.Models.ConnectorModel start="43a7531a-7ad4-43fa-b497-d8a9ecffd607" start_index="0" end="65ba9176-73e0-4adf-b2d2-cd9bac488f7e" end_index="1" portType="0" />
