@@ -101,6 +101,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoMSOffice", "Libraries
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations", "Migrations\Migrations.csproj", "{06B9E5B0-7C50-4351-9D88-E159DC25755F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevitVersionSelector", "DynamoRevitVersionSelector\DynamoRevitVersionSelector.csproj", "{53D05530-CF64-4883-8F86-B2B819934F83}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -271,6 +273,10 @@ Global
 		{06B9E5B0-7C50-4351-9D88-E159DC25755F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06B9E5B0-7C50-4351-9D88-E159DC25755F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06B9E5B0-7C50-4351-9D88-E159DC25755F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53D05530-CF64-4883-8F86-B2B819934F83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53D05530-CF64-4883-8F86-B2B819934F83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53D05530-CF64-4883-8F86-B2B819934F83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53D05530-CF64-4883-8F86-B2B819934F83}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
