@@ -1012,18 +1012,21 @@ namespace Dynamo.Models
             if (index == -1)
                 return verticalOffset;
 
+            double portHeight = portModel.Height;
+
             if (portType == PortType.INPUT)
             {
                 for (int i = 0; i < index; i++)
-                    verticalOffset += inPorts[i].MarginThickness.Top + 20;
+                    verticalOffset += inPorts[i].MarginThickness.Top + portHeight;
                 verticalOffset += inPorts[index].MarginThickness.Top;
             }
             else if (portType == PortType.OUTPUT)
             {
                 for (int i = 0; i < index; i++)
-                    verticalOffset += outPorts[i].MarginThickness.Top + 20;
+                    verticalOffset += outPorts[i].MarginThickness.Top + portHeight;
                 verticalOffset += outPorts[index].MarginThickness.Top;
             }
+
             return verticalOffset;
         }
 

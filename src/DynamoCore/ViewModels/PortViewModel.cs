@@ -55,6 +55,11 @@ namespace Dynamo.ViewModels
             get { return _port.IsConnected; }
         }
 
+        public double Height
+        {
+            get { return _port.Height; }
+        }
+
         public Point Center
         {
             get { return _port.Center; }

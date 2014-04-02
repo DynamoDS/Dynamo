@@ -42,8 +42,6 @@ namespace Dynamo.Models
         private bool _usingDefaultValue;
         private bool _defaultValueEnabled;
         private Thickness marginThickness;
-        private double _headerHeight = 20;
-        private double _portHeight = 20;
 
         #endregion
 
@@ -141,18 +139,18 @@ namespace Dynamo.Models
         {
             get
             {
-                var pt = new Point();
-                double height = owner.GetPortVerticalOffset(this);
-                if (portType == PortType.INPUT)
-                {
-                    pt = new Point(owner.X, owner.Y + _headerHeight + 5 + _portHeight/2 + height+1);
-                }
-                else if (portType == PortType.OUTPUT)
-                {
-                    pt = new Point(owner.X + owner.Width, owner.Y + _headerHeight + 5 + _portHeight / 2 + height);
-                }
+                double halfHeight = this.Height * 0.5;
+                double headerHeight = 25;
 
-                return pt;
+                double offset = owner.GetPortVerticalOffset(this);
+                double y = owner.Y + headerHeight + 5 + halfHeight + offset;
+
+                if (portType == PortType.INPUT)
+                    return new Point(owner.X, y);
+                else if (portType == PortType.OUTPUT)
+                    return new Point(owner.X + owner.Width, y);
+
+                return new Point();
             }
         }
 
@@ -206,6 +204,7 @@ namespace Dynamo.Models
             UsingDefaultValue = false;
             DefaultValueEnabled = false;
             MarginThickness = new Thickness(0);
+            this.Height = 20.0;
         }
 
         /// <summary>
