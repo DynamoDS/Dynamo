@@ -31,7 +31,7 @@
         <Grid Name="mainGrid"
               Background="Transparent"
               IsHitTestVisible="True"
-              Margin="0,0,0,1"
+              Margin="{Binding Path=MarginThickness}"
               Height="{Binding Path=Height}">
 
             <interactivity:Interaction.Triggers>
@@ -53,7 +53,7 @@
                 <Binding Path="ActualWidth"
                          RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}" />
             </Grid.Width>
-            
+
             <!--
                 We could have changed the Grid opacity directly here but didn't.
                 The reason is that if the opacity of the Grid is modified, the 
@@ -62,8 +62,9 @@
             -->
 
             <Rectangle Name="highlightOverlay"
-                    Fill="White"
-                    IsHitTestVisible="True">
+                       Fill="White"
+                       Margin="0,0,0,1"
+                       IsHitTestVisible="True">
                 <Rectangle.Style>
                     <Style TargetType="{x:Type Rectangle}">
                         <Style.Triggers>
