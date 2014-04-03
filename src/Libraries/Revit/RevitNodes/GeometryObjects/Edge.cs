@@ -41,7 +41,7 @@ namespace Revit.GeometryObjects
 
         #region Tesselation
 
-        public override void Tessellate(IRenderPackage package, double tol)
+        public override void Tessellate(IRenderPackage package, double tol, int gridLines)
         {
             InternalEdge.AsCurve().Tessellate()
                 .ToList()

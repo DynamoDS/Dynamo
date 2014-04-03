@@ -30,6 +30,6 @@ namespace Revit.GeometryObjects
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public abstract void Tessellate(IRenderPackage package, double tol);
+        public abstract void Tessellate(IRenderPackage package, double tol, int gridLines);
     }
 }

@@ -2103,7 +2103,7 @@ namespace Dynamo.Models
 
         private void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag, double size)
         {
-            graphicItem.Tessellate(package, size.Equals(-1.0)? -1.0 : size * 0.5);
+            graphicItem.Tessellate(package, -1.0, 12);
             package.Tag = tag;
         }
 
