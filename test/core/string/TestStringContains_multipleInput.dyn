@@ -1,0 +1,29 @@
+<Workspace Version="0.7.0.26857" X="57.5466060150309" Y="-19.7616830233849" zoom="0.954042924882813" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="9e19aed1-90ec-4de3-bb5d-e0b547f69138" nickname="String.Contains" x="294.309354217423" y="76.7357017147572" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.Contains@string,string,bool" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="ed9db35d-f0be-43b5-8fb1-37acc26bad0c" nickname="Code Block" x="-21.3371960709837" y="67.7012045988271" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;This is the original string.&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="68bba59b-dc1b-4bb9-8838-dddf17130c07" nickname="Code Block" x="-22.0732615185871" y="151.132238124432" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{&quot;String&quot;,&quot;Copy&quot;,&quot;Original&quot;};" ShouldFocus="false" />
+    <DSCoreNodesUI.BoolSelector type="DSCoreNodesUI.BoolSelector" guid="d1d882a2-2e68-48d8-ac83-761d4cb9a8f2" nickname="Boolean" x="34.6628039290163" y="232.201204598827" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean>True</System.Boolean>
+    </DSCoreNodesUI.BoolSelector>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="4e7c00fe-120f-4779-957f-a1e909a20289" nickname="Watch" x="501.964832549492" y="82.1154892003686" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="a1e5f019-4dea-48c2-a30a-0491549bcd74" nickname="Watch" x="508.878261012398" y="368.266135968734" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="6028834c-d4c5-4747-aed8-6acebdaf3db1" nickname="String.Contains" x="301.222782680329" y="362.886348483123" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.Contains@string,string,bool" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="9c4ecead-6057-41a6-a980-37d2f8460ba5" nickname="Code Block" x="-16.5201093426447" y="338.129288357942" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{&quot;This is the original string,&quot;,&#xA;&quot;and this is a string.&quot;};" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="ca1959f6-20f9-4bd1-9adf-9f7b0adaad2a" nickname="Code Block" x="63.4529819905729" y="438.331055760081" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;and&quot;;" ShouldFocus="false" />
+    <DSCoreNodesUI.BoolSelector type="DSCoreNodesUI.BoolSelector" guid="6f1949a5-2446-49ec-afdd-a914e0c79803" nickname="Boolean" x="41.5762323919221" y="518.351851367193" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean>True</System.Boolean>
+    </DSCoreNodesUI.BoolSelector>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="9e19aed1-90ec-4de3-bb5d-e0b547f69138" start_index="0" end="4e7c00fe-120f-4779-957f-a1e909a20289" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ed9db35d-f0be-43b5-8fb1-37acc26bad0c" start_index="0" end="9e19aed1-90ec-4de3-bb5d-e0b547f69138" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="68bba59b-dc1b-4bb9-8838-dddf17130c07" start_index="0" end="9e19aed1-90ec-4de3-bb5d-e0b547f69138" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d1d882a2-2e68-48d8-ac83-761d4cb9a8f2" start_index="0" end="9e19aed1-90ec-4de3-bb5d-e0b547f69138" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6028834c-d4c5-4747-aed8-6acebdaf3db1" start_index="0" end="a1e5f019-4dea-48c2-a30a-0491549bcd74" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9c4ecead-6057-41a6-a980-37d2f8460ba5" start_index="0" end="6028834c-d4c5-4747-aed8-6acebdaf3db1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ca1959f6-20f9-4bd1-9adf-9f7b0adaad2a" start_index="0" end="6028834c-d4c5-4747-aed8-6acebdaf3db1" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6f1949a5-2446-49ec-afdd-a914e0c79803" start_index="0" end="6028834c-d4c5-4747-aed8-6acebdaf3db1" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

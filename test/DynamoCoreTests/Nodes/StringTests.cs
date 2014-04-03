@@ -75,7 +75,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath); //later will add node and connector count verification.
 
-            Assert.Inconclusive("Add assertions");
+            Assert.Inconclusive("Need behavior confirmation");
         }
 
         [Test]
@@ -561,6 +561,318 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
             AssertPreviewValue("f72f6210-b32f-4dc4-9b2a-61f0144a0109", "123456\n");
+        }
+
+        #endregion
+
+        #region String.Contains test cases
+
+        [Test]
+        public void TestStringContainsNormalInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringContains_normal.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("4e7c00fe-120f-4779-957f-a1e909a20289", true);
+            AssertPreviewValue("2cfb7395-1ee2-4b01-823a-3d17e6b2b776", false);
+            AssertPreviewValue("a983daca-7755-49f1-8a15-061691172e56", false);
+            AssertPreviewValue("cc7f1487-f493-409e-96f8-6ab9890184b6", false);
+        }
+
+        [Test]
+        public void TestStringContainsMultipleInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringContains_multipleInput.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("4e7c00fe-120f-4779-957f-a1e909a20289", new object[] { true, false, true });
+            AssertPreviewValue("a1e5f019-4dea-48c2-a30a-0491549bcd74", new object[] { false, true });
+        }
+
+        [Test]
+        public void TestStringContainsEmptyInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringContains_emptyString.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("4e7c00fe-120f-4779-957f-a1e909a20289", false);
+            AssertPreviewValue("a983daca-7755-49f1-8a15-061691172e56", true);
+        }
+
+        [Test]
+        public void TestStringContainsInvalidInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringContains_invalidInput.dyn");
+
+            RunModel(testFilePath);
+
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+
+            NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("9e19aed1-90ec-4de3-bb5d-e0b547f69138");
+            Assert.AreEqual(ElementState.Warning, nodeModel.State);
+        }
+
+        #endregion
+
+        #region String.StartsWith and String.EndsWith test cases
+
+        [Test]
+        public void TestStringStartsWithNormalInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringStartsWith_normal.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("4e7c00fe-120f-4779-957f-a1e909a20289", true);
+            AssertPreviewValue("2cfb7395-1ee2-4b01-823a-3d17e6b2b776", false);
+            AssertPreviewValue("a983daca-7755-49f1-8a15-061691172e56", false);
+            AssertPreviewValue("cc7f1487-f493-409e-96f8-6ab9890184b6", false);
+        }
+
+        [Test]
+        public void TestStringEndsWithNormalInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringEndsWith_normal.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("4e7c00fe-120f-4779-957f-a1e909a20289", false);
+            AssertPreviewValue("2cfb7395-1ee2-4b01-823a-3d17e6b2b776", false);
+            AssertPreviewValue("a983daca-7755-49f1-8a15-061691172e56", true);
+            AssertPreviewValue("cc7f1487-f493-409e-96f8-6ab9890184b6", false);
+        }
+
+        #endregion
+
+        #region String.IndexOf test cases
+
+        [Test]
+        public void TestStringIndexOfNormalInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringIndexOf_normal.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("4e7c00fe-120f-4779-957f-a1e909a20289", 0);
+            AssertPreviewValue("2cfb7395-1ee2-4b01-823a-3d17e6b2b776", -1);
+            AssertPreviewValue("a983daca-7755-49f1-8a15-061691172e56", 16);
+            AssertPreviewValue("cc7f1487-f493-409e-96f8-6ab9890184b6", -1);
+        }
+
+        [Test]
+        public void TestStringIndexOfMultipleInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringIndexOf_multipleInput.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("4e7c00fe-120f-4779-957f-a1e909a20289",
+                new object[] { 2, 6, -1 });
+
+            AssertPreviewValue("a983daca-7755-49f1-8a15-061691172e56",
+                new object[] { 18, 10, 2, 12, -1 });
+        }
+
+        [Test]
+        public void TestStringIndexOfEmptyInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringIndexOf_emptyString.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("4e7c00fe-120f-4779-957f-a1e909a20289", -1);
+            AssertPreviewValue("a983daca-7755-49f1-8a15-061691172e56", 0);
+        }
+
+        #endregion
+
+        #region String.Insert test cases
+
+        [Test]
+        public void TestStringInsertNormalInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringInsert_normal.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("2b1997c5-d72d-443f-9df8-29a33cc0fbd0", "This is a string.");
+            AssertPreviewValue("36774b24-e6dd-41b1-889b-3847aa0ad6ee", "This is another string.");
+        }
+
+        [Test]
+        public void TestStringInsertMultipleInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringInsert_multipleInput.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("2b1997c5-d72d-443f-9df8-29a33cc0fbd0",
+                new string[] {
+                   "My name is Jude.",
+                   "My name is Bryan.",
+                   "My name is Dave."
+                });
+
+            AssertPreviewValue("36774b24-e6dd-41b1-889b-3847aa0ad6ee",
+                new string[] { "Arrraagh", "Aarrragh", "Aaarrrgh" });
+        }
+
+        [Test]
+        public void TestStringInsertInvalidInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringInsert_invalidInput.dyn");
+
+            RunModel(testFilePath);
+
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+
+            NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("a20ad56b-cd14-4aa3-b39c-d9bd0ac0e9f8");
+            Assert.AreEqual(ElementState.Warning, nodeModel.State);
+        }
+
+        #endregion
+
+        #region String.Replace test cases
+
+        [Test]
+        public void TestStringReplaceNormalInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringReplace_normal.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("36774b24-e6dd-41b1-889b-3847aa0ad6ee",
+                "A String object's text content can be replaced by another text.");
+        }
+
+        [Test]
+        public void TestStringReplaceMultipleInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringReplace_multipleInput.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("36774b24-e6dd-41b1-889b-3847aa0ad6ee",
+                new string[] {
+                    "I am going to meet him and Dave.",
+                    "I am going to meet Bryan and him."
+                });
+
+            AssertPreviewValue("b61394da-efa0-4e7e-aec7-9f55a90e8449",
+                new string[] {
+                    "My name is Dave.",
+                    "Dave is my name."
+                });
+        }
+
+        [Test]
+        public void TestStringReplaceEmptyInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringReplace_emptyString.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("36774b24-e6dd-41b1-889b-3847aa0ad6ee",
+                "A String object's content can be replaced by another.");
+        }
+
+        [Test]
+        public void TestStringReplaceInvalidInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringReplace_invalidInput.dyn");
+
+            RunModel(testFilePath);
+
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+
+            NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("6b6593df-5c71-4472-a91b-7fc69feb14d4");
+            Assert.AreEqual(ElementState.Warning, nodeModel.State);
+        }
+
+        #endregion
+
+        #region String.TrimWhitespace test cases
+
+        [Test]
+        public void TestTrimWhitespaceNormalInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestTrimWhitespace_normal.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("6a233902-f291-4cd3-aa46-de4fa36ecac7", "123abc");
+            AssertPreviewValue("cc4c02a1-1438-4d7d-b62c-08d4b31f9a77", "abc234");
+            AssertPreviewValue("bd08fd1e-7b3b-4a27-a7aa-38f3b30ae5f2", "345abc");
+            AssertPreviewValue("9bd75396-03b6-4ded-8695-eb64510c4ab4", "456   abc789");
+        }
+
+        [Test]
+        public void TestSTrimWhitespaceMultipleInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestTrimWhitespace_multipleInput.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("6a233902-f291-4cd3-aa46-de4fa36ecac7",
+                new string[] {
+                    "123abc",
+                    "abc234",
+                    "345abc",
+                    "456   abc789"
+                });
+        }
+
+        [Test]
+        public void TestTrimWhitespaceEmptyInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestTrimWhitespace_emptyString.dyn");
+
+            RunModel(testFilePath);
+
+            AssertPreviewValue("6a233902-f291-4cd3-aa46-de4fa36ecac7", 0);
+            AssertPreviewValue("cc4c02a1-1438-4d7d-b62c-08d4b31f9a77", 0);
+            AssertPreviewValue("bd08fd1e-7b3b-4a27-a7aa-38f3b30ae5f2", 0);
+            AssertPreviewValue("9bd75396-03b6-4ded-8695-eb64510c4ab4", 0);
+        }
+
+        [Test]
+        public void TestTrimWhitespaceInvalidInput()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestTrimWhitespace_invalidInput.dyn");
+
+            RunModel(testFilePath);
+
+            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
+
+            NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("6a6a3d81-57bc-44ae-af37-9dabcf25b8e4");
+            Assert.AreEqual(ElementState.Warning, nodeModel.State);
         }
 
         #endregion
