@@ -18,6 +18,7 @@ using System.Windows.Controls;
 using Dynamo.Core;
 using ProtoCore.AST.ImperativeAST;
 using System.Windows.Controls.Primitives;
+using Dynamo.UI.Controls;
 
 namespace Dynamo.Controls
 {
@@ -228,12 +229,15 @@ namespace Dynamo.Controls
         }
     }
 
-    public class PortToPlacementConverter : IValueConverter
+    public class PortToAttachmentConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             PortType portType = ((PortType)value);
-            return ((portType == PortType.INPUT) ? PlacementMode.Left : PlacementMode.Right);
+            if (((PortType)value) == PortType.INPUT)
+                return DynamoToolTip.Side.Left;
+
+            return DynamoToolTip.Side.Right;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -572,24 +576,24 @@ namespace Dynamo.Controls
         }
     }
 
-    public class PlacementToPathConverter : IValueConverter
+    public class AttachmentToPathConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var result = "0,0 6,5 0,10"; // Default, catch-all.
-            ToolTip tooltip = value as ToolTip;
-            switch (tooltip.Placement)
+            DynamoToolTip tooltip = value as DynamoToolTip;
+            switch (tooltip.AttachmentSide)
             {
-                case PlacementMode.Left:
+                case DynamoToolTip.Side.Left:
                     result = "0,0 6,5 0,10";
                     break;
-                case PlacementMode.Right:
+                case DynamoToolTip.Side.Right:
                     result = "6,0 0,5, 6,10";
                     break;
-                case PlacementMode.Top:
+                case DynamoToolTip.Side.Top:
                     result = "0,0 5,6, 10,0";
                     break;
-                case PlacementMode.Bottom:
+                case DynamoToolTip.Side.Bottom:
                     result = "0,6 5,0 10,6";
                     break;
             }
@@ -609,27 +613,27 @@ namespace Dynamo.Controls
         }
     }
 
-    public class PlacementToRowColumn : IValueConverter
+    public class AttachmentToRowColumnConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             int row = 1, column = 2;
-            ToolTip tooltip = value as ToolTip;
-            switch (tooltip.Placement)
+            DynamoToolTip tooltip = value as DynamoToolTip;
+            switch (tooltip.AttachmentSide)
             {
-                case PlacementMode.Left:
+                case DynamoToolTip.Side.Left:
                     row = 1;
                     column = 2;
                     break;
-                case PlacementMode.Right:
+                case DynamoToolTip.Side.Right:
                     row = 1;
                     column = 0;
                     break;
-                case PlacementMode.Top:
+                case DynamoToolTip.Side.Top:
                     row = 2;
                     column = 1;
                     break;
-                case PlacementMode.Bottom:
+                case DynamoToolTip.Side.Bottom:
                     row = 0;
                     column = 1;
                     break;

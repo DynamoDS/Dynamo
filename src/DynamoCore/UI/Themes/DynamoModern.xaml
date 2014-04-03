@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:clr="clr-namespace:System;assembly=mscorlib"
                     xmlns:controls="clr-namespace:Dynamo.Views"
+                    xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
                     xmlns:nodes="clr-namespace:Dynamo.Nodes">
 
     <ResourceDictionary.MergedDictionaries>
@@ -1061,14 +1062,14 @@
 
     <!-- Tool Tip Control -->
     <Style x:Key="SLightToolTip"
-           TargetType="ToolTip">
+           TargetType="{x:Type dynui:DynamoToolTip}">
         <Setter Property="OverridesDefaultStyle"
                 Value="true" />
         <Setter Property="HasDropShadow"
                 Value="False" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="ToolTip">
+                <ControlTemplate TargetType="{x:Type dynui:DynamoToolTip}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition MinWidth="1"></ColumnDefinition>
@@ -1094,12 +1095,12 @@
                               Fill="{StaticResource InfoBubbleBackNormalBrush}">
                             <Grid.Row>
                                 <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                         Converter="{StaticResource PlacementToRowColumn}"
+                                         Converter="{StaticResource AttachmentToRowColumnConverter}"
                                          ConverterParameter="Row" />
                             </Grid.Row>
                             <Grid.Column>
                                 <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                         Converter="{StaticResource PlacementToRowColumn}"
+                                         Converter="{StaticResource AttachmentToRowColumnConverter}"
                                          ConverterParameter="Column" />
                             </Grid.Column>
                             <Path.Data>
@@ -1107,13 +1108,13 @@
                                     <PathFigure IsClosed="False">
                                         <PathFigure.StartPoint>
                                             <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                                     Converter="{StaticResource PlacementToPathConverter}"
+                                                     Converter="{StaticResource AttachmentToPathConverter}"
                                                      ConverterParameter="Start" />
                                         </PathFigure.StartPoint>
                                         <PolyLineSegment>
                                             <PolyLineSegment.Points>
                                                 <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                                         Converter="{StaticResource PlacementToPathConverter}"
+                                                         Converter="{StaticResource AttachmentToPathConverter}"
                                                          ConverterParameter="Points" />
                                             </PolyLineSegment.Points>
                                         </PolyLineSegment>
