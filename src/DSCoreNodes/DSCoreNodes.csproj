@@ -37,9 +37,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LibGNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
+    <Reference Include="LibGNet">
+      <HintPath>..\..\bin\AnyCPU\Debug\dll\LibGNet.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
