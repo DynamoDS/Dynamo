@@ -38,7 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LibGNet">
-      <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
+      <HintPath>..\..\bin\AnyCPU\Debug\dll\LibGNet.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="nunit.framework">
