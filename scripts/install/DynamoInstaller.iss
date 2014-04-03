@@ -218,17 +218,38 @@ begin
 	
     if (WizardForm.ComponentsList.Checked[1]) then
     begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin'), AddInFileContents, False);
+      if FileExists(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2013\DynamoVersionSelector.addin')) then
+        begin
+          SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo.OLD'), AddInFileContents, False);
+        end
+      else
+        begin
+          SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin'), AddInFileContents, False);
+        end
     end;
   
     if (WizardForm.ComponentsList.Checked[2]) then
     begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo.addin'), AddInFileContents, False);
+      if FileExists(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014\DynamoVersionSelector.addin')) then
+        begin
+          SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo.OLD'), AddInFileContents, False);
+        end
+      else
+        begin
+          SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo.addin'), AddInFileContents, False);
+        end
     end;
 
     if (WizardForm.ComponentsList.Checked[3]) then
     begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo.addin'), AddInFileContents, False);
+      if FileExists(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014\DynamoVersionSelector.addin')) then
+        begin
+          SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo.OLD'), AddInFileContents, False);
+        end
+      else
+        begin
+          SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo.addin'), AddInFileContents, False);
+        end
     end;
 
   end;
