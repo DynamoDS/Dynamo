@@ -29,7 +29,8 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="Auto" MinWidth="40"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"
+                              MinWidth="40"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
@@ -140,10 +141,10 @@
                    Canvas.ZIndex="10">
             <Rectangle.Fill>
                 <Binding Path="State"
-                     UpdateSourceTrigger="PropertyChanged"
-                     Mode="OneWay"
-                     ConverterParameter="BodyBackground"
-                     Converter="{StaticResource StateToColorConverter}">
+                         UpdateSourceTrigger="PropertyChanged"
+                         Mode="OneWay"
+                         ConverterParameter="BodyBackground"
+                         Converter="{StaticResource StateToColorConverter}">
                 </Binding>
             </Rectangle.Fill>
         </Rectangle>
@@ -152,8 +153,9 @@
                    Grid.Row="1"
                    Grid.ColumnSpan="3"
                    StrokeThickness="0,0,0,1"
-                   IsHitTestVisible="False"
-                   Canvas.ZIndex="11">
+                   IsHitTestVisible="True"
+                   Canvas.ZIndex="11"
+                   MouseDown="NickNameBlock_OnMouseDown">
             <Rectangle.Stroke>
                 <Binding Path="State"
                          UpdateSourceTrigger="PropertyChanged"
@@ -170,6 +172,14 @@
                          Converter="{StaticResource StateToColorConverter}">
                 </Binding>
             </Rectangle.Fill>
+            <Rectangle.ToolTip>
+                <ToolTip Placement="Top"
+                         Style="{DynamicResource ResourceKey=SLightToolTip}">
+                    <Grid>
+                        <TextBlock Text="{Binding Path=Description}"></TextBlock>
+                    </Grid>
+                </ToolTip>
+            </Rectangle.ToolTip>
         </Rectangle>
 
         <TextBlock Name="nickNameBlock"
@@ -183,15 +193,11 @@
                    FontWeight="SemiBold"
                    FontFamily="{StaticResource OpenSansSemibold}"
                    TextAlignment="Center"
-                   IsHitTestVisible="True"
+                   IsHitTestVisible="False"
                    Canvas.ZIndex="12"
                    Height="27"
                    Background="{x:Null}"
-                   Style="{StaticResource SZoomFadeText}"
-                   MouseDown="NickNameBlock_OnMouseDown"
-                   MouseUp="NickNameBlock_OnMouseUp"
-                   MouseEnter="NickNameBlock_OnMouseEnter"
-                   MouseLeave="NickNameBlock_OnMouseLeave">
+                   Style="{StaticResource SZoomFadeText}">
             <TextBlock.Foreground>
                 <Binding Path="State"
                          UpdateSourceTrigger="PropertyChanged"
@@ -213,7 +219,7 @@
                    Background="Transparent"
                    Canvas.ZIndex="20">
             <ItemsControl ItemsSource="{Binding Path=InPorts}"
-                            HorizontalContentAlignment="Stretch">
+                          HorizontalContentAlignment="Stretch">
             </ItemsControl>
         </DockPanel>
 
@@ -233,17 +239,17 @@
         <!-- INPUT GRID -->
 
         <Grid Name="inputGrid"
-                  Grid.Column="1"
-                  Grid.Row="2"
-                  x:FieldModifier="public"
-                  VerticalAlignment="Stretch"
-                  HorizontalAlignment="Stretch"
-                  Height="Auto"
-                  Width="Auto"
-                  Background="Transparent"
-                  Margin="5,0,5,0"
-                  Canvas.ZIndex="20"
-                  IsEnabled="{Binding Path=IsInteractionEnabled}">
+              Grid.Column="1"
+              Grid.Row="2"
+              x:FieldModifier="public"
+              VerticalAlignment="Stretch"
+              HorizontalAlignment="Stretch"
+              Height="Auto"
+              Width="Auto"
+              Background="Transparent"
+              Margin="5,0,5,0"
+              Canvas.ZIndex="20"
+              IsEnabled="{Binding Path=IsInteractionEnabled}">
         </Grid>
 
         <TextBlock Name="lacingOptionTextBlock"
