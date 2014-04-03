@@ -366,7 +366,8 @@ namespace Dynamo.Nodes
                         Enumerable.Range(0, count).Where(HasInput),
                         inputAstNodes);
                     resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall));
-                    resultAst.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstIdentifierForPreview));
+                    resultAst.Add(
+                        AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstIdentifierForPreview));
                 }
                 else
                 {
@@ -377,10 +378,11 @@ namespace Dynamo.Nodes
                     resultAst.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall));
 
                     // assign the entire result to the only output port
-                    resultAst.Add(
-                        AstFactory.BuildAssignment(
-                            GetAstIdentifierForOutputIndex(0), 
-                            AstIdentifierForPreview));
+
+                    var outId = GetAstIdentifierForOutputIndex(0);
+
+                    if (AstIdentifierForPreview.Value != outId.Value)
+                        resultAst.Add(AstFactory.BuildAssignment(outId, AstIdentifierForPreview));
                 }
             }
             else

@@ -67,19 +67,39 @@ namespace ProtoCore.AssociativeEngine
             }
         }
 
-        public static void MarkGraphNodesDirty(ProtoCore.Core core, List<AssociativeGraph.GraphNode> graphNodeList)
+        public static void MarkGraphNodesDirty(ProtoCore.Core core, List<ProtoCore.AST.AssociativeAST.FunctionDefinitionNode> fnodeList)
         {
-            bool setEntryPoint = false;
-            foreach (var gnode in graphNodeList)
+            foreach (ProtoCore.AST.AssociativeAST.FunctionDefinitionNode fnode in fnodeList)
             {
-                if (gnode.isActive)
+                int exprId = ProtoCore.DSASM.Constants.kInvalidIndex;
+                foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
                 {
-                    if (!setEntryPoint)
+                    if (gnode.isActive)
                     {
-                        setEntryPoint = true;
-                        core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                        if (null != gnode.firstProc)
+                        {
+                            if (fnode.Name == gnode.firstProc.name && fnode.Signature.Arguments.Count == gnode.firstProc.argInfoList.Count)
+                            {
+                                if (ProtoCore.DSASM.Constants.kInvalidIndex == exprId)
+                                {
+                                    exprId = gnode.exprUID;
+                                    core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                                }
+                                gnode.isDirty = true;
+                            }
+                        }
+                        else if (ProtoCore.DSASM.Constants.kInvalidIndex != exprId)
+                        {
+                            if (gnode.exprUID == exprId)
+                            {
+                                gnode.isDirty = true;
+                                if (gnode.IsLastNodeInSSA)
+                                {
+                                    exprId = ProtoCore.DSASM.Constants.kInvalidIndex;
+                                }
+                            }
+                        }
                     }
-                    gnode.isDirty = true;
                 }
             }
         }

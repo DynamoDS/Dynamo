@@ -672,6 +672,9 @@ namespace Dynamo.Models
             dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
 
+            // Reset workspace state
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CancelActiveState();
+
             dynSettings.Controller.ResetEngine();
             CurrentWorkspace.PreloadedTraceData = null;
         }
@@ -1577,6 +1580,14 @@ namespace Dynamo.Models
         /// <param name="node"></param>
         public void OnNodeDeleted(NodeModel node)
         {
+            WorkspaceViewModel wvm = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel;
+
+            if (wvm.CurrentState == WorkspaceViewModel.StateMachine.State.Connection)
+            {
+                if (node == wvm.ActiveConnector.ActiveStartPort.Owner)
+                    wvm.CancelActiveState();
+            }
+            
             if (NodeDeleted != null)
             {
                 NodeDeleted(node);

@@ -196,7 +196,7 @@ namespace Dynamo.DSEngine
         }
 
         // Reverse post-order to sort nodes
-        private void MarkNode(NodeModel node, Dictionary<NodeModel, MarkFlag> nodeFlags, Stack<NodeModel> sortedList)
+        private static void MarkNode(NodeModel node, Dictionary<NodeModel, MarkFlag> nodeFlags, Stack<NodeModel> sortedList)
         {
             MarkFlag flag;
             if (!nodeFlags.TryGetValue(node, out flag))
@@ -234,13 +234,13 @@ namespace Dynamo.DSEngine
 
             Dictionary<NodeModel, MarkFlag> nodeFlags = nodeModels.ToDictionary(node => node, _ => MarkFlag.NoMark);
 
-            foreach (NodeModel candidate in TSortCandidates(nodeFlags))
+            foreach (NodeModel candidate in SortCandidates(nodeFlags))
                 MarkNode(candidate, nodeFlags, sortedNodes);
 
             return sortedNodes.Where(nodeModels.Contains);
         }
 
-        private IEnumerable<NodeModel> TSortCandidates(Dictionary<NodeModel, MarkFlag> nodeFlags)
+        private static IEnumerable<NodeModel> SortCandidates(Dictionary<NodeModel, MarkFlag> nodeFlags)
         {
             while (true)
             {
@@ -259,20 +259,20 @@ namespace Dynamo.DSEngine
             {
                 Tuple<int, NodeModel> inputTuple;
 
-                if (!node.TryGetInput(index, out inputTuple))
-                {
-                    PortData port = node.InPortData[index];
-                    if (!port.HasDefaultValue)
-                        inputAstNodes.Add(new NullNode());
-                    else
-                        inputAstNodes.Add(AstFactory.BuildPrimitiveNodeFromObject(port.DefaultValue));
-                }
-                else
+                if (node.TryGetInput(index, out inputTuple))
                 {
                     int outputIndexOfInput = inputTuple.Item1;
                     NodeModel inputModel = inputTuple.Item2;
                     AssociativeNode inputNode = inputModel.GetAstIdentifierForOutputIndex(outputIndexOfInput);
                     inputAstNodes.Add(inputNode);
+                }
+                else
+                {
+                    PortData port = node.InPortData[index];
+                    inputAstNodes.Add(
+                        port.HasDefaultValue
+                            ? AstFactory.BuildPrimitiveNodeFromObject(port.DefaultValue)
+                            : new NullNode());
                 }
             }
 
