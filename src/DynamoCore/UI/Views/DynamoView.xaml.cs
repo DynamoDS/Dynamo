@@ -1,4 +1,4 @@
-#define __NO_SAMPLES_MENU
+//#define __NO_SAMPLES_MENU
 
 using System;
 using System.ComponentModel;
@@ -142,15 +142,13 @@ namespace Dynamo.Controls
             redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
             redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
 
-            /*
-            ShortcutBarItem updateButton = new ShortcutBarItem();
-            //redoButton.ShortcutToolTip = "Update [Ctrl + ]";
-            updateButton.ShortcutCommand = _vm.CheckForUpdateCommand;
-            updateButton.ShortcutCommandParameter = null;
-            updateButton.ImgNormalSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
-            updateButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
-            updateButton.ImgHoverSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
-            */
+            //ShortcutBarItem updateButton = new ShortcutBarItem();
+            ////redoButton.ShortcutToolTip = "Update [Ctrl + ]";
+            //updateButton.ShortcutCommand = _vm.CheckForUpdateCommand;
+            //updateButton.ShortcutCommandParameter = null;
+            //updateButton.ImgNormalSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
+            //updateButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
+            //updateButton.ImgHoverSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
 
             // PLACEHOLDER FOR FUTURE SHORTCUTS
             //ShortcutBarItem runButton = new ShortcutBarItem();
@@ -667,7 +665,7 @@ namespace Dynamo.Controls
 #endif
 
         /// <summary>
-        ///     Callback for opening a sample.
+        /// Setup the "Samples" sub-menu with contents of samples directory.
         /// </summary>
         private void OpenSample_Click(object sender, RoutedEventArgs e)
         {
@@ -677,6 +675,13 @@ namespace Dynamo.Controls
                 _vm.QueueLoad(path);
             else
             {
+                var workspace = _vm.Model.HomeSpace;
+                if (workspace.HasUnsavedChanges)
+                {
+                    if (!_vm.AskUserToSaveWorkspaceOrCancel(workspace))
+                        return; // User has not saved his/her work.
+                }
+
                 if (dynSettings.Controller.DynamoModel.CanGoHome(null))
                     dynSettings.Controller.DynamoModel.Home(null);
 

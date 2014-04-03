@@ -1,4 +1,4 @@
-﻿#define __NO_SAMPLES_MENU
+﻿//#define __NO_SAMPLES_MENU
 
 using System;
 using System.Collections.Generic;
@@ -374,88 +374,6 @@ namespace Dynamo.Utilities
             }
 
             return AssemblyPathToTypesLoaded[assembly.Location];
-        }
-
-#if !__NO_SAMPLES_MENU
-        /// <summary>
-        ///     Setup the "Samples" sub-menu with contents of samples directory.
-        /// </summary>
-        /// <param name="bench">The bench where the UI will be loaded</param>
-        public static void LoadSamplesMenu(DynamoView bench)
-        {
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string samplesPath = Path.Combine(directory, "samples");
-
-            if (Directory.Exists(samplesPath))
-            {
-                string[] dirPaths = Directory.GetDirectories(samplesPath);
-                string[] filePaths = Directory.GetFiles(samplesPath, "*.dyn");
-
-                // handle top-level files
-                if (filePaths.Any())
-                {
-                    foreach (string path in filePaths)
-                    {
-                        var item = new MenuItem
-                        {
-                            Header = Path.GetFileNameWithoutExtension(path),
-                            Tag = path
-                        };
-                        item.Click += OpenSample_Click;
-                        bench.SamplesMenu.Items.Add(item);
-                    }
-                }
-
-                // handle top-level dirs, TODO - factor out to a seperate function, make recusive
-                if (dirPaths.Any())
-                {
-                    foreach (string dirPath in dirPaths)
-                    {
-                        var dirItem = new MenuItem
-                        {
-                            Header = Path.GetFileName(dirPath),
-                            Tag = Path.GetFileName(dirPath)
-                        };
-
-                        filePaths = Directory.GetFiles(dirPath, "*.dyn");
-                        if (filePaths.Any())
-                        {
-                            foreach (string path in filePaths)
-                            {
-                                var item = new MenuItem
-                                {
-                                    Header = Path.GetFileNameWithoutExtension(path),
-                                    Tag = path
-                                };
-                                item.Click += OpenSample_Click;
-                                dirItem.Items.Add(item);
-                            }
-                        }
-                        bench.SamplesMenu.Items.Add(dirItem);
-                    }
-                    return;
-                }
-            }
-            //this.fileMenu.Items.Remove(this.samplesMenu);
-        }
-#endif
-
-        /// <summary>
-        ///     Callback for opening a sample.
-        /// </summary>
-        private static void OpenSample_Click(object sender, RoutedEventArgs e)
-        {
-            var path = (string)((MenuItem)sender).Tag;
-
-            if (dynSettings.Controller.DynamoViewModel.IsUILocked)
-                dynSettings.Controller.DynamoViewModel.QueueLoad(path);
-            else
-            {
-                if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
-                    dynSettings.Controller.DynamoModel.ViewHomeWorkspace();
-
-                dynSettings.Controller.DynamoModel.OpenWorkspace(path);
-            }
         }
 
         /// <summary>

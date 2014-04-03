@@ -108,7 +108,7 @@ namespace ProtoCore.Mirror
             return provider;
         }
 
-        public void Tessellate(List<object> objects, IRenderPackage package)
+        public void Tessellate(List<object> objects, IRenderPackage package, double tol)
         {
             foreach (var item in objects)
             {
@@ -118,7 +118,7 @@ namespace ProtoCore.Mirror
 
                 foreach (var g in graphicItems)
                 {
-                    g.Tessellate(package);
+                    g.Tessellate(package, tol);
                 }
             }
         }
@@ -149,9 +149,10 @@ namespace ProtoCore.Mirror
 
             try
             {
+                ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, false);
                 var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);
                 var marshaler = helper.GetMarshaller(core);
-                return marshaler.UnMarshal(svData, null, null, typeof(object));
+                return marshaler.UnMarshal(svData, null, interpreter, typeof(object));
             }
             catch (System.Exception)
             {
@@ -211,7 +212,7 @@ namespace ProtoCore.Mirror
             return null;
         }
 
-        public void Tessellate(List<object> objects, IRenderPackage package)
+        public void Tessellate(List<object> objects, IRenderPackage package, double tol)
         {
             throw new NotImplementedException();
         }

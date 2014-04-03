@@ -6,16 +6,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Forms;
 using System.Windows.Threading;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
-using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 using DSNodeServices;
 using Dynamo.Applications;
 using Dynamo.DSEngine;
-using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
@@ -45,8 +42,7 @@ namespace Dynamo
         /// </summary>
         private Assembly singleSignOnAssembly;
 
-        public DynamoController_Revit(
-            ExecutionEnvironment env, RevitServicesUpdater updater, Type viewModelType, string context)
+        public DynamoController_Revit(RevitServicesUpdater updater, Type viewModelType, string context)
             : base(
                 viewModelType,
                 context,
@@ -558,19 +554,24 @@ namespace Dynamo
             Updater.UnRegisterAllChangeHooks();
             RevertPythonBindings();
 
-            if (shutDownHost)
-            {
-                //shut down revit
-                RevitCommandId exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
-                UIApplication uiapp = DocumentManager.Instance.CurrentUIApplication;
-                if (uiapp.CanPostCommand(exitCommand))
-                    uiapp.PostCommand(exitCommand);
-                else
-                {
-                    MessageBox.Show(
-                        "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
-                }
-            }
+            // PB: killed this block as the LookupPostableCommandId method is not available in revit 2013
+            //     dynamo will crash consistently on shutdown without this commented out.  
+            //     TODO: fix with proper reflection call
+
+            //if (shutDownHost)
+            //{
+            //    // this method cannot be called without Revit 2014
+            //    var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
+
+            //    UIApplication uiapp = DocumentManager.Instance.CurrentUIApplication;
+            //    if (uiapp.CanPostCommand(exitCommand))
+            //        uiapp.PostCommand(exitCommand);
+            //    else
+            //    {
+            //        MessageBox.Show(
+            //            "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
+            //    }
+            //}
         }
 
         protected override void Run()

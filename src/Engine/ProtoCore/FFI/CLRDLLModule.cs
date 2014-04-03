@@ -275,6 +275,7 @@ namespace ProtoFFI
 
         private ClassDeclNode ParseEnumType(Type type, string alias)
         {
+            //TODO: For now Enum can't be suppressed.
             Validity.Assert(type.IsEnum, "Non enum type is being imported as enum!!");
 
             string classname = alias;
@@ -305,6 +306,11 @@ namespace ProtoFFI
                     classnode.funclist.Add(func);
                 }
             }
+
+            //Get all the attributes on this type and set it to the classnode.
+            FFIClassAttributes cattrs = new FFIClassAttributes(type);
+            classnode.ClassAttributes = cattrs;
+            SetTypeAttributes(type, cattrs);
 
             return classnode;
         }
@@ -762,37 +768,17 @@ namespace ProtoFFI
                     paramNode.ArgumentType = argType;
                 }
 
-                if (parameter.IsOptional)
-                {
-                    var lhs = paramNode.NameNode;
+                //if (parameter.IsOptional)
+                //{
+                //    var lhs = paramNode.NameNode;
 
-                    var defaultValue = parameter.DefaultValue;
-                    if (defaultValue != null)
-                    {
-                        AssociativeNode rhs;
-                        if (defaultValue is int)
-                        {
-                            rhs = AstFactory.BuildIntNode((int)defaultValue);
-                        }
-                        else if (defaultValue is double)
-                        {
-                            rhs = AstFactory.BuildDoubleNode((double)defaultValue);
-                        }
-                        else if (defaultValue is bool)
-                        {
-                            rhs = AstFactory.BuildBooleanNode((bool)defaultValue);
-                        }
-                        else if (defaultValue is string)
-                        {
-                            rhs = AstFactory.BuildStringNode(defaultValue.ToString());
-                        }
-                        else
-                        {
-                            rhs = AstFactory.BuildNullNode();
-                        }
-                        paramNode.NameNode = AstFactory.BuildBinaryExpression(lhs, rhs, ProtoCore.DSASM.Operator.assign);
-                    }
-                }
+                //    var defaultValue = parameter.DefaultValue;
+                //    if (defaultValue != null)
+                //    {
+                //        var rhs = AstFactory.BuildPrimitiveNodeFromObject(defaultValue);
+                //        paramNode.NameNode = AstFactory.BuildBinaryExpression(lhs, rhs, ProtoCore.DSASM.Operator.assign);
+                //    }
+                //}
                 argumentSignature.AddArgument(paramNode);
             }
 
@@ -1162,15 +1148,10 @@ namespace ProtoFFI
         }
     }
 
-    public class FFIClassAttributes
+    public class FFIClassAttributes : ClassAttributes
     {
-        public bool IsVisibleInLibrary { get; private set; }
-        public bool IsVisibleInLibrarySet { get; private set; }
         public FFIClassAttributes(Type type)
         {
-            IsVisibleInLibrary = true;
-            IsVisibleInLibrarySet = false;
-
             if (type == null)
             {
                 return;
@@ -1182,37 +1163,20 @@ namespace ProtoFFI
                 if (attr is IsVisibleInDynamoLibraryAttribute)
                 {
                     var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
-                    IsVisibleInLibrary = visibleInLibraryAttr.Visible;
-                    IsVisibleInLibrarySet = true;
+                    HiddenInLibrary = (visibleInLibraryAttr.Visible == false);
                 }
             }
         }
     }
 
-    public class FFIMethodAttributes
+    public class FFIMethodAttributes : ProtoCore.AST.AssociativeAST.MethodAttributes
     {
-        public bool AllowRankReduction { get; private set; }
-        public bool RequireTracing { get; private set; }
-        public IEnumerable<string> ReturnKeys
-        {
-            get
-            {
-                return returnKeys;
-            }
-        }
-        private List<string> returnKeys;
-        public bool IsVisibleInLibrary { get; private set; }
-        public bool IsVisibleInLibrarySet { get; private set; }
-
         public FFIMethodAttributes(MethodInfo method)
         {
             if (method == null)
             {
                 return;
             }
-
-            IsVisibleInLibrary = true;
-            IsVisibleInLibrarySet = false;
 
             FFIClassAttributes baseAttributes = null;
             Type type = method.DeclaringType;
@@ -1223,7 +1187,7 @@ namespace ProtoFFI
             }
             if (null != baseAttributes)
             {
-                IsVisibleInLibrary = baseAttributes.IsVisibleInLibrary;
+                HiddenInLibrary = baseAttributes.HiddenInLibrary;
             }
 
             object[] attrs = method.GetCustomAttributes(false);
@@ -1245,8 +1209,7 @@ namespace ProtoFFI
                 else if (attr is IsVisibleInDynamoLibraryAttribute)
                 {
                     var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
-                    IsVisibleInLibrary = visibleInLibraryAttr.Visible;
-                    IsVisibleInLibrarySet = true;
+                    HiddenInLibrary = (visibleInLibraryAttr.Visible == false);
                 }
             }
         }

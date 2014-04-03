@@ -2,8 +2,8 @@
 Dim Jrn
 Set Jrn = CrsJournalScript
 Jrn.Command "StartupPage" , "Open this project , ID_FILE_MRU_FIRST"
-Jrn.Data "MRUFileName"  , ".\empty.rfa"
+Jrn.Data "MRUFileName"  , ".\empty.rvt"
 Jrn.RibbonEvent "Execute external command:487f9ff0-5b34-4e7e-97bf-70fbff69194f:Dynamo.Tests.DynamoTestFramework"
-Jrn.Data "APIStringStringMapJournalData", 6, "testName", "ByLengthOnCurveReference_ValidInput", "fixtureName", "ReferencePointTests", "testAssembly", "RevitNodesTests.dll", "resultsPath", "C:\Users\boyerp\Dropbox\Github\Autodesk\ChocoButter2\Dynamo\test\System\revit\DSRevitNodesTestsResults.xml", "runDynamo","None", "debug","False"
+Jrn.Data "APIStringStringMapJournalData", 6, "testName", "ByPoints_ValidArgs", "fixtureName", "TopographyTests", "testAssembly", "RevitNodesTests.dll", "resultsPath", "c:\users\ian\Documents\Dynamo\test\System\revit\ByPoints_ValidArgsResult.xml", "runDynamo","true", "debug","true"
 Jrn.Command "Internal" , "Flush undo and redo stacks , ID_FLUSH_UNDO"
 Jrn.Command "SystemMenu" , "Quit the application; prompts to save projects , ID_APP_EXIT"

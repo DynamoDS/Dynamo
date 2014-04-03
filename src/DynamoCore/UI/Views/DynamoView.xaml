@@ -207,8 +207,8 @@
                                 <Image Source="/DynamoCore;component/UI/Images/screenshot_normal.png" Width="14" Height="14"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Focusable="False" Header="_Export Model to STL..." Command="{Binding ExportToSTLCommand}" Name="saveSTL">
-                        </MenuItem>
+                        <!--<MenuItem Focusable="False" Header="_Export Model to STL..." Command="{Binding ExportToSTLCommand}" Name="saveSTL">
+                        </MenuItem>-->
                         <Separator />
                         <MenuItem Header="_Exit" Command="{Binding ExitCommand}"  Name="exit" InputGestureText="Alt + F4" Focusable="False"/>
                     </MenuItem>
@@ -333,11 +333,11 @@
                     </MenuItem>
                     
                     <MenuItem Header="Help" Focusable="False">
-                        <!--<MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
+                        <MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
                             <MenuItem.Icon>
                                 <Image Source="/DynamoCore;component/UI/Images/OpenSelectedItemHS.png" Width="14" Height="14" />
                             </MenuItem.Icon>
-                        </MenuItem>-->
+                        </MenuItem>
                         <MenuItem Header="_Report A Bug" Command="{Binding ReportABugCommand}"  Name="bugCommand" Focusable="False"/>
                         <MenuItem Header="_Go To Project Website" Command="{Binding GoToSourceCodeCommand}"  Name="sourceCode" Focusable="False"/>
                         <MenuItem Header="_Go To Project Wiki" Command="{Binding GoToWikiCommand}"  Name="wiki" Focusable="False"/>
@@ -1094,10 +1094,10 @@
                       IsEnabled="{Binding Path=CanRunDynamically, Mode=OneWay}"
                       VerticalAlignment="Center" VerticalContentAlignment="Center"/>
 
-                    <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
+                    <!--CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
                       FontSize="11" VerticalAlignment="Center" Foreground="Gray"
                       IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}" Focusable="False"
-                      Content="Debug" VerticalContentAlignment="Center"/>
+                      Content="Debug" VerticalContentAlignment="Center"/-->
 
                 </WrapPanel>
                 <TextBlock Name="warningText" Grid.Column="1" Text="{Binding Source={x:Static dynamo:DynamoLogger.Instance}, Path=Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}" FontStyle="Italic" FontSize="12" 

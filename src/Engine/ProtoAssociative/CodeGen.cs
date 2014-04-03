@@ -14,45 +14,6 @@ using ProtoCore.BuildData;
 
 namespace ProtoAssociative
 {
-    public class OpStack
-    {
-        public OpStack()
-        {
-            opstack = new List<ProtoCore.DSASM.AddressType>();
-            throw new NotImplementedException();
-        }
-
-        public void push(ProtoCore.DSASM.AddressType op)
-        {
-            opstack.Add(op);
-            throw new NotImplementedException();
-        }
-
-        public ProtoCore.DSASM.AddressType pop()
-        {
-            throw new NotImplementedException();
-            /*
-            int last = opstack.Count - 1;
-            ProtoCore.DSASM.AddressType opval = opstack[last];
-            opstack.RemoveAt(last);
-            return opval;
-            */
-        }
-
-        private readonly List<ProtoCore.DSASM.AddressType> opstack;
-    }
-
-    public class GlobalInstanceProc
-    {
-        public int classIndex { get; set; }
-        public ProtoCore.AST.AssociativeAST.FunctionDefinitionNode procNode { get; set; }
-
-        public GlobalInstanceProc()
-        {
-            classIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
-            procNode = null;
-        }
-    }
 
     public class ThisPointerProcOverload
     {
@@ -71,7 +32,6 @@ namespace ProtoAssociative
         private readonly bool ignoreRankCheck;
 
         private readonly List<AssociativeNode> astNodes;
-        private List<GlobalInstanceProc> globalInstanceProcList;
 
         public ProtoCore.DSASM.AssociativeCompilePass compilePass;
 
@@ -121,7 +81,6 @@ namespace ProtoAssociative
             emitReplicationGuide = false;
 
             astNodes = new List<AssociativeNode>();
-            globalInstanceProcList = new List<GlobalInstanceProc>();
             setConstructorStartPC = false;
 
             // Re-use the existing procedureTable and symbolTable to access the built-in and predefined functions
@@ -155,9 +114,7 @@ namespace ProtoAssociative
             //
             ignoreRankCheck = false;
             emitReplicationGuide = false;
-
             astNodes = new List<AssociativeNode>();
-            globalInstanceProcList = new List<GlobalInstanceProc>();
             setConstructorStartPC = false;
 
 
@@ -884,32 +841,7 @@ namespace ProtoAssociative
             StackValue opReturn = StackValue.BuildRegister(Registers.RX);
             EmitPush(opReturn);
         }
-
-        private List<ProtoCore.AST.AssociativeAST.AssociativeNode> GetReplicationGuides(ProtoCore.AST.Node node)
-        {
-            if (node is ProtoCore.AST.AssociativeAST.IntNode
-                || node is ProtoCore.AST.AssociativeAST.DoubleNode
-                || node is ProtoCore.AST.AssociativeAST.BooleanNode
-                || node is ProtoCore.AST.AssociativeAST.CharNode
-                || node is ProtoCore.AST.AssociativeAST.StringNode
-                || node is ProtoCore.AST.AssociativeAST.NullNode
-                )
-            {
-                return null;
-            }
-            else if (node is ProtoCore.AST.AssociativeAST.ExprListNode)
-            {
-                return (node as ProtoCore.AST.AssociativeAST.ExprListNode).ReplicationGuides;
-            }
-            else if (node is ProtoCore.AST.AssociativeAST.GroupExpressionNode)
-            {
-                return (node as ProtoCore.AST.AssociativeAST.GroupExpressionNode).ReplicationGuides;
-            }
-
-            return null;
-        }
-
-
+        
         public ProcedureNode TraverseDotFunctionCall(
                                 ProtoCore.AST.Node node, 
                                 ProtoCore.AST.Node parentNode, 
@@ -2296,7 +2228,7 @@ namespace ProtoAssociative
 
                     // Left node
                     var identNode = nodeBuilder.BuildIdentfier(ProtoCore.Utils.CoreUtils.BuildSSATemp(core));
-                    (identNode as IdentifierNode).ReplicationGuides = GetReplicationGuidesFromASTNode(ident);
+                    (identNode as IdentifierNode).ReplicationGuides = GetReplicationGuides(ident);
                     bnode.LeftNode = identNode;
 
                     // Right node
@@ -2402,16 +2334,25 @@ namespace ProtoAssociative
                     for (int idx = 0; idx < fcNode.FormalArguments.Count; idx++)
                     {
                         AssociativeNode arg = fcNode.FormalArguments[idx];
+                        var replicationGuides = GetReplicationGuides(arg);
+                        if (replicationGuides == null)
+                        {
+                            replicationGuides = new List<AssociativeNode> { };
+                        }
+                        else
+                        {
+                            RemoveReplicationGuides(arg);
+                        }
 
                         DFSEmitSSA_AST(arg, ssaStack, ref astlistArgs);
 
-                        AssociativeNode argNode = ssaStack.Pop();
-                        if (argNode is BinaryExpressionNode)
+                        var argNode = ssaStack.Pop();
+                        var argBinaryExpr = argNode as BinaryExpressionNode;
+                        if (argBinaryExpr != null)
                         {
-                            BinaryExpressionNode argBinaryExpr = argNode as BinaryExpressionNode;
-                            (argBinaryExpr.LeftNode as IdentifierNode).ReplicationGuides = GetReplicationGuidesFromASTNode(arg);
-
-                            fcNode.FormalArguments[idx] = argBinaryExpr.LeftNode;
+                            var newArgNode = NodeUtils.Clone(argBinaryExpr.LeftNode);
+                            (newArgNode as IdentifierNode).ReplicationGuides = replicationGuides;
+                            fcNode.FormalArguments[idx] = newArgNode;
                         }
                         else
                         {
@@ -2671,85 +2612,51 @@ namespace ProtoAssociative
         }
 
         /// <summary>
-        /// This helper function extracts the replication guide data from the AST node
-        /// Merge this function with GetReplicationGuides
+        /// This helper function extracts the replication guide data from the 
+        /// AST node
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        private List<AssociativeNode> GetReplicationGuidesFromASTNode(AssociativeNode node)
+        private List<AssociativeNode> GetReplicationGuides(AssociativeNode node)
         {
-            List<AssociativeNode> replicationGuides = null;
-            if (node is IdentifierNode)
+            if (node is ArrayNameNode)
             {
-                replicationGuides = (node as IdentifierNode).ReplicationGuides;
+                var nodeWithReplication = node as ArrayNameNode;
+                return nodeWithReplication.ReplicationGuides;
             }
             else if (node is IdentifierListNode)
             {
-                IdentifierListNode identList = node as IdentifierListNode;
-
-                // Get the replication guide and append it to the last identifier
-                if (identList.RightNode is IdentifierNode)
-                {
-                    replicationGuides = (identList.RightNode as IdentifierNode).ReplicationGuides;
-                }
-                else if (identList.RightNode is FunctionCallNode)
-                {
-                    replicationGuides = (identList.RightNode as FunctionCallNode).ReplicationGuides;
-                }
-                else
-                {
-                    Validity.Assert(false);
-                }
+                var identListNode = node as IdentifierListNode;
+                return GetReplicationGuides(identListNode.RightNode);
             }
             else if (node is FunctionDotCallNode)
             {
-                FunctionDotCallNode dotCall = node as FunctionDotCallNode;
+                var dotCallNode = node as FunctionDotCallNode;
+                return GetReplicationGuides(dotCallNode.FunctionCall.Function);
+            }
 
-                // Get the replication guide from the dotcall
-                IdentifierNode functionCallIdent = dotCall.FunctionCall.Function as IdentifierNode;
-                Validity.Assert(null != functionCallIdent);
-                replicationGuides = functionCallIdent.ReplicationGuides;
-            }
-            else if (node is FunctionCallNode)
-            {
-                FunctionCallNode functionCall = node as FunctionCallNode;
-
-                // Get the replication guide from the dotcall
-                replicationGuides = functionCall.ReplicationGuides;
-            }
-            else if (node is RangeExprNode)
-            {
-                RangeExprNode rangeExpr = node as RangeExprNode;
-
-                // Get the replication guide from the dotcall
-                replicationGuides = rangeExpr.ReplicationGuides;
-            }
-            else if (node is InlineConditionalNode)
-            {
-                // TODO Jun: Parser should support replication guides on an entire inline conditional
-                InlineConditionalNode inlineCondition = node as InlineConditionalNode;
-                replicationGuides = null;
-            }
-            else if (node is ExprListNode)
-            {
-                ExprListNode exprlistNode = node as ExprListNode;
-                replicationGuides = exprlistNode.ReplicationGuides;
-            }
-            else if (node is GroupExpressionNode)
-            {
-                GroupExpressionNode groupExprNode = node as GroupExpressionNode;
-                replicationGuides = groupExprNode.ReplicationGuides;
-            }
-            else
-            {
-                // A parser error has occured if a replication guide gets attached to any AST besides"
-                // Ident, identlist, functioncall and functiondotcall
-                Validity.Assert(false, "This AST node should not have a replication guide.");
-            }
-            return replicationGuides;
+            return null;
         }
 
-
+        // Remove replication guides
+        private void RemoveReplicationGuides(AssociativeNode node)
+        {
+            if (node is ArrayNameNode)
+            {
+                var nodeWithReplication = node as ArrayNameNode;
+                nodeWithReplication.ReplicationGuides = new List<AssociativeNode>();
+            }
+            else if (node is IdentifierListNode)
+            {
+                var identListNode = node as IdentifierListNode;
+                RemoveReplicationGuides(identListNode.RightNode);
+            }
+            else if (node is FunctionDotCallNode)
+            {
+                var dotCallNode = node as FunctionDotCallNode;
+                RemoveReplicationGuides(dotCallNode.FunctionCall.Function);
+            }
+        }
         /*
         proc DFSEmit_SSA_AST(node, ssastack[], astlist[])
             if node is binary expression
@@ -2993,7 +2900,7 @@ namespace ProtoAssociative
                         {
                             BinaryExpressionNode argBinaryExpr = argNode as BinaryExpressionNode;
                             //(argBinaryExpr.LeftNode as IdentifierNode).ReplicationGuides = GetReplicationGuidesFromASTNode(argBinaryExpr.RightNode);
-                            (argBinaryExpr.LeftNode as IdentifierNode).ReplicationGuides = GetReplicationGuidesFromASTNode(arg);
+                            (argBinaryExpr.LeftNode as IdentifierNode).ReplicationGuides = GetReplicationGuides(arg);
                             
                             fcNode.FormalArguments[idx] = argBinaryExpr.LeftNode;
                         }
@@ -3016,7 +2923,7 @@ namespace ProtoAssociative
                 // Store the replication guide from the function call to the temp
                 if (null != fcNode)
                 {
-                    (identNode as IdentifierNode).ReplicationGuides = GetReplicationGuidesFromASTNode(fcNode);
+                    (identNode as IdentifierNode).ReplicationGuides = GetReplicationGuides(fcNode);
                 }
 
                 //Right node
@@ -3343,6 +3250,50 @@ namespace ProtoAssociative
                     ssaStack.Push(node);
                 }
             }
+
+            // We allow a null to be generated an SSA variable
+            // TODO Jun: Generalize this into genrating SSA temps for all literals
+            else if (node is NullNode)
+            {
+                if (core.Options.GenerateSSA)
+                {
+                    string ssaTempName = string.Empty;
+                    
+                    BinaryExpressionNode bnode = new BinaryExpressionNode();
+                    bnode.Optr = ProtoCore.DSASM.Operator.assign;
+
+                    // Left node
+                    ssaTempName = ProtoCore.Utils.CoreUtils.BuildSSATemp(core);
+                    var identNode = nodeBuilder.BuildIdentfier(ssaTempName);
+                    bnode.LeftNode = identNode;
+
+                    // Right node
+                    bnode.RightNode = node;
+
+                    bnode.isSSAAssignment = true;
+
+                    astlist.Add(bnode);
+                    ssaStack.Push(bnode);
+                }
+                else
+                {
+                    BinaryExpressionNode bnode = new BinaryExpressionNode();
+                    bnode.Optr = ProtoCore.DSASM.Operator.assign;
+
+                    // Left node
+                    var identNode = nodeBuilder.BuildIdentfier(ProtoCore.Utils.CoreUtils.BuildSSATemp(core));
+                    bnode.LeftNode = identNode;
+
+                    // Right node
+                    bnode.RightNode = node;
+
+
+                    bnode.isSSAAssignment = true;
+
+                    astlist.Add(bnode);
+                    ssaStack.Push(bnode);
+                }
+            }
             else
             {
                 ssaStack.Push(node);
@@ -3467,6 +3418,7 @@ namespace ProtoAssociative
                                 BinaryExpressionNode ssaNode = aNode as BinaryExpressionNode;
                                 ssaNode.exprUID = ssaID;
                                 ssaNode.ssaExprID = ssaExprID;
+                                ssaNode.guid = bnode.guid;
                                 NodeUtils.SetNodeLocation(ssaNode, node, node);
                             }
 
@@ -3926,6 +3878,8 @@ namespace ProtoAssociative
                             this.core.ClassTable.AuditMultipleDefinition(this.core.BuildStatus);
                         }
                         codeblock.Body = BuildSSA(codeblock.Body, context);
+                        core.CachedSSANodes.Clear();
+                        core.CachedSSANodes.AddRange(codeblock.Body);
                         ssaTransformed = true;
                         if (core.Options.DumpIL)
                         {
@@ -6363,8 +6317,9 @@ namespace ProtoAssociative
                     graphNode.firstProc = procNode;
                     graphNode.firstProcRefIndex = graphNode.dependentList.Count - 1;
 
-                    // Memoize the graphnode that contains a user-defined function call
-                    if (!procNode.isExternal)
+                    // Memoize the graphnode that contains a user-defined function call in the global scope
+                    bool inGlobalScope = ProtoCore.DSASM.Constants.kGlobalScope == globalProcIndex && ProtoCore.DSASM.Constants.kInvalidIndex == globalClassIndex;
+                    if (!procNode.isExternal && inGlobalScope)
                     {
                         core.GraphNodeCallList.Add(graphNode);
                     }
@@ -8020,6 +7975,7 @@ namespace ProtoAssociative
                     graphNode.exprUID = bnode.exprUID;
                     graphNode.ssaExprID = bnode.ssaExprID;
                     graphNode.guid = core.SSASubscript_GUID;
+                    graphNode.guid = bnode.guid;
                     graphNode.modBlkUID = bnode.modBlkUID;
                     graphNode.procIndex = globalProcIndex;
                     graphNode.classIndex = globalClassIndex;

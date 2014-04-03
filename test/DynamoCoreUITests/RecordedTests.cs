@@ -320,7 +320,19 @@ namespace DynamoCoreUITests
             Assert.AreEqual("# Modification 3", python.Script);
             Assert.AreEqual("# Modification 4", pvarin.Script);
         }
+        [Test, Category("Failing")]
+        public void CustomNodeCreate()
+        {
+            RunCommandsFromFile("CustomNodeCreate.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
 
+
+            AssertPreviewValue("99a7b5ef-268f-44c2-94ce-84cf43054bb8", 1);
+            AssertPreviewValue("26e3e31a-c9d5-4b3b-b409-005b3595e5df", 1);
+
+            
+        }
         #endregion
 
         #region Private Helper Methods
@@ -1756,6 +1768,105 @@ namespace DynamoCoreUITests
                 }
             });
         }
+
+
+        [Test, RequiresSTA]
+        public void TestCallsiteMapModifyFunctionParamValue()
+        {
+            Guid callsiteGuidFirstCall = Guid.Empty;
+            Guid callsiteGuidSecondCall = Guid.Empty;
+            Guid FunctionCallNodeGuid = new Guid("22939bf5-50bc-4aa3-9c91-0dc5b5017252");
+
+            RunCommandsFromFile("TestCallsiteMapModifyFunctionParamValue.xml", false, (commandTag) =>
+            {
+                ProtoCore.Core core = Controller.EngineController.LiveRunnerCore;
+                if (commandTag == "ModifyX_FirstTime")
+                {
+                    // There must only be 1 callsite at this point
+                    Assert.AreEqual(1, core.CallSiteToNodeMap.Count);
+
+                    // Verify that the nodemap contains the node guid
+                    bool containsNodeGuid = core.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    Assert.AreEqual(true, containsNodeGuid);
+
+                    // Get the callsite guid
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.CallSiteToNodeMap)
+                    {
+                        callsiteGuidFirstCall = kvp.Key;
+                    }
+                }
+                else if (commandTag == "ModifyX_SecondTime")
+                {
+                    // There must only be 1 callsite at this point
+                    Assert.AreEqual(1, core.CallSiteToNodeMap.Count);
+
+                    // Verify that the nodemap contains the node guid
+                    bool containsNodeGuid = core.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    Assert.AreEqual(true, containsNodeGuid);
+
+                    // Get the callsite guid
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.CallSiteToNodeMap)
+                    {
+                        callsiteGuidSecondCall = kvp.Key;
+                    }
+
+                    // The callsite guid must match 
+                    // This means that that the callsite was cached and reused
+                    Assert.AreEqual(callsiteGuidFirstCall, callsiteGuidSecondCall);
+                }
+
+            });
+        }
+
+        [Test, RequiresSTA]
+        public void TestCallsiteMapModifyInputConnection()
+        {
+            Guid callsiteGuidFirstCall = Guid.Empty;
+            Guid callsiteGuidSecondCall = Guid.Empty;
+            Guid FunctionCallNodeGuid = new Guid("16e960e5-8a24-44e7-ac81-3759aaf11d25");
+
+            RunCommandsFromFile("TestCallsiteMapModifyModifyInputConnection.xml", false, (commandTag) =>
+            {
+                ProtoCore.Core core = Controller.EngineController.LiveRunnerCore;
+                if (commandTag == "ModifyX_FirstTime")
+                {
+                    // There must only be 1 callsite at this point
+                    Assert.AreEqual(1, core.CallSiteToNodeMap.Count);
+
+                    // Verify that the nodemap contains the node guid
+                    bool containsNodeGuid = core.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    Assert.AreEqual(true, containsNodeGuid);
+
+                    // Get the callsite guid
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.CallSiteToNodeMap)
+                    {
+                        callsiteGuidFirstCall = kvp.Key;
+                    }
+                }
+                else if (commandTag == "ModifyX_SecondTime")
+                {
+                    // There must only be 1 callsite at this point
+                    Assert.AreEqual(1, core.CallSiteToNodeMap.Count);
+
+                    // Verify that the nodemap contains the node guid
+                    bool containsNodeGuid = core.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    Assert.AreEqual(true, containsNodeGuid);
+
+                    // Get the callsite guid
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.CallSiteToNodeMap)
+                    {
+                        callsiteGuidSecondCall = kvp.Key;
+                    }
+
+                    // The callsite guid must match 
+                    // This means that that the callsite was cached and reused
+                    Assert.AreEqual(callsiteGuidFirstCall, callsiteGuidSecondCall);
+                }
+
+            });
+        }
+
+
        
         #endregion
 

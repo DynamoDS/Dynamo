@@ -234,7 +234,7 @@ namespace Dynamo.ViewModels
             NodeCategories = new Dictionary<string, CategorySearchElement>();
             SearchDictionary = new SearchDictionary<SearchElementBase>();
             SearchResults = new ObservableCollection<SearchElementBase>();
-            MaxNumSearchResults = 20;
+            MaxNumSearchResults = 35;
             Visible = false;
             searchText = "";
             IncludeRevitAPIElements = true; // revit api

@@ -2245,50 +2245,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    public partial class StringInput : MigrationNode
-    {
-        [NodeMigration(from: "0.5.3.0", to: "0.6.3.0")]
-        public static NodeMigrationData Migrate_0530_to_0600(NodeMigrationData data)
-        {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-
-            XmlNode nodeElement = data.MigratedNodes.ElementAt(0);
-            XmlNode newNode = nodeElement.CloneNode(true);
-
-            var query = from XmlNode subNode in newNode.ChildNodes
-                        where subNode.Name.Equals(typeof(string).FullName)
-                        from XmlAttribute attr in subNode.Attributes
-                        where attr.Name.Equals("value")
-                        select attr;
-
-            foreach (XmlAttribute attr in query)
-                attr.Value = HttpUtility.UrlDecode(attr.Value);
-
-            migrationData.AppendNode(newNode as XmlElement);
-            return migrationData;
-        }
-
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
-        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
-        {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            XmlElement original = data.MigratedNodes.ElementAt(0);
-
-            // Escape special characters for display in code block node.
-            string content = ExtensionMethods.GetChildNodeStringValue(original);
-            content = content.Replace("\r\n", "\\n");
-            content = content.Replace("\t", "\\t");
-            content = content.Replace("\"", "\\\"");
-            content = string.Format("\"{0}\";", content);
-
-            XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(original);
-            newNode.SetAttribute("CodeText", content);
-            migrationData.AppendNode(newNode);
-            return migrationData;
-        }
-
-    }
-
     public partial class StringDirectory : StringFilename
     {
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
@@ -2367,13 +2323,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-
-            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 1, 1);
-            migrationData.AppendNode(dummyNode);
-
-            return migrationData;
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.ToNumber", "String.ToNumber@string");
         }
     }
 

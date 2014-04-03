@@ -5,9 +5,20 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DSCore.File
 {
-    [IsVisibleInDynamoLibrary(false)]
+    [IsVisibleInDynamoLibrary(true)]
     public static class FileReader
     {
+        /// <summary>
+        ///     Load a bitmap from a file path.
+        /// </summary>
+        /// <param name="path">The path to the image file.</param>
+        /// <returns></returns>
+        public static Bitmap LoadImageFromPath(string path)
+        {
+            var bmp = new Bitmap(path);
+            return bmp;
+        }
+
         /// <summary>
         ///     Reads an image file and returns the color values at the specified grid locations.
         /// </summary>

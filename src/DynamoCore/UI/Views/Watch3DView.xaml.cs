@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Web.UI.HtmlControls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -36,14 +37,14 @@ namespace Dynamo.Controls
         private readonly string _id="";
         Point _rightMousePoint;
 
-        private List<Point3D> _points = new List<Point3D>();
-        private List<Point3D> _lines = new List<Point3D>();
-        private List<Point3D> _xAxis = new List<Point3D>();
-        private List<Point3D> _yAxis = new List<Point3D>();
-        private List<Point3D> _zAxis = new List<Point3D>();
+        private Point3DCollection _points = new Point3DCollection();
+        private Point3DCollection _lines = new Point3DCollection();
+        private Point3DCollection _xAxis = new Point3DCollection();
+        private Point3DCollection _yAxis = new Point3DCollection();
+        private Point3DCollection _zAxis = new Point3DCollection();
         private MeshGeometry3D _mesh = new MeshGeometry3D();
-        private List<Point3D> _pointsSelected = new List<Point3D>();
-        private List<Point3D> _linesSelected = new List<Point3D>();
+        private Point3DCollection _pointsSelected = new Point3DCollection();
+        private Point3DCollection _linesSelected = new Point3DCollection();
         private MeshGeometry3D _meshSelected = new MeshGeometry3D();
         private List<Point3D> _grid = new List<Point3D>();
         private List<BillboardTextItem> _text = new List<BillboardTextItem>();
@@ -63,7 +64,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> Points
+        public Point3DCollection Points
         {
             get { return _points; }
             set
@@ -73,7 +74,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> Lines
+        public Point3DCollection Lines
         {
             get { return _lines; }
             set
@@ -83,7 +84,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> XAxes
+        public Point3DCollection XAxes
         {
             get { return _xAxis; }
             set
@@ -93,7 +94,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> YAxes
+        public Point3DCollection YAxes
         {
             get { return _yAxis; }
             set
@@ -103,7 +104,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> ZAxes
+        public Point3DCollection ZAxes
         {
             get { return _zAxis; }
             set
@@ -123,7 +124,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> PointsSelected
+        public Point3DCollection PointsSelected
         {
             get { return _pointsSelected; }
             set
@@ -133,7 +134,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> LinesSelected
+        public Point3DCollection LinesSelected
         {
             get { return _linesSelected; }
             set
@@ -282,7 +283,6 @@ namespace Dynamo.Controls
         {
             try
             {
-
                 //check the id, if the id is meant for another watch,
                 //then ignore it
                 if (e.Id != _id)
@@ -305,56 +305,108 @@ namespace Dynamo.Controls
                 Text = null;
                 MeshCount = 0;
 
-                var points = new List<Point3D>();
-                var pointsSelected = new List<Point3D>();
-                var lines = new List<Point3D>();
-                var linesSelected = new List<Point3D>();
-                var redLines = new List<Point3D>();
-                var greenLines = new List<Point3D>();
-                var blueLines = new List<Point3D>();
-                var text = new List<BillboardTextItem>();
-                var meshes = new List<MeshGeometry3D>();
-                var meshesSelected = new List<MeshGeometry3D>();
+                //separate the selected packages
+                var packages = e.Packages.Where(x => x.Selected == false).ToArray();
+                var selPackages = e.Packages.Where(x => x.Selected).ToArray();
 
-                foreach (var package in e.Packages)
+                //pre-size the points collections
+                var pointsCount = packages.Select(x => x.PointVertices.Count/3).Sum();
+                var selPointsCount = selPackages.Select(x => x.PointVertices.Count / 3).Sum();
+                var points = new Point3DCollection(pointsCount);
+                var pointsSelected = new Point3DCollection(selPointsCount);
+
+                //pre-size the lines collections
+                //these sizes are conservative as the axis lines will be
+                //taken from the linestripvertex collections as well.
+                var lineCount = packages.Select(x => x.LineStripVertices.Count/3).Sum();
+                var lineSelCount = selPackages.Select(x => x.LineStripVertices.Count / 3).Sum();
+                var lines = new Point3DCollection(lineCount);
+                var linesSelected = new Point3DCollection(lineSelCount);
+                var redLines = new Point3DCollection(lineCount);
+                var greenLines = new Point3DCollection(lineCount);
+                var blueLines = new Point3DCollection(lineCount);
+
+                //pre-size the text collection
+                var textCount = e.Packages.Count(x => x.DisplayLabels);
+                var text = new List<BillboardTextItem>(textCount);
+
+                //http://blogs.msdn.com/b/timothyc/archive/2006/08/31/734308.aspx
+                //presize the mesh collections
+                var meshVertCount = packages.Select(x => x.TriangleVertices.Count / 3).Sum();
+                var meshVertSelCount = selPackages.Select(x => x.TriangleVertices.Count / 3).Sum();
+
+                var mesh = new MeshGeometry3D();
+                var meshSel = new MeshGeometry3D();
+                var verts = new Point3DCollection(meshVertCount);
+                var vertsSel = new Point3DCollection(meshVertSelCount);
+                var norms = new Vector3DCollection(meshVertCount);
+                var normsSel = new Vector3DCollection(meshVertSelCount);
+                var tris = new Int32Collection(meshVertCount);
+                var trisSel = new Int32Collection(meshVertSelCount);
+                
+                foreach (var package in packages)
                 {
-                    ConvertPoints(package, points, pointsSelected, text);
-                    ConvertLines(package, lines, linesSelected, redLines, greenLines, blueLines, text);
-                    ConvertMeshes(package, meshes, meshesSelected);
+                    ConvertPoints(package, points, text);
+                    ConvertLines(package, lines, redLines, greenLines, blueLines, text);
+                    ConvertMeshes(package, verts, norms, tris);
                 }
 
+                foreach (var package in selPackages)
+                {
+                    ConvertPoints(package, pointsSelected, text);
+                    ConvertLines(package, linesSelected, redLines, greenLines, blueLines, text);
+                    ConvertMeshes(package, vertsSel, normsSel, trisSel);
+                }
+
+                points.Freeze();
+                pointsSelected.Freeze();
                 Points = points;
                 PointsSelected = pointsSelected;
+
+                lines.Freeze();
+                linesSelected.Freeze();
+                redLines.Freeze();
+                greenLines.Freeze();
+                blueLines.Freeze();
                 Lines = lines;
                 LinesSelected = linesSelected;
                 XAxes = redLines;
                 YAxes = greenLines;
                 ZAxes = blueLines;
 
-                MeshCount += meshes.Count + meshesSelected.Count;
+                verts.Freeze();
+                norms.Freeze();
+                tris.Freeze();
+                vertsSel.Freeze();
+                normsSel.Freeze();
+                trisSel.Freeze();
 
-                Mesh = MergeMeshes(meshes);
-                MeshSelected = MergeMeshes(meshesSelected);
+                mesh.Positions = verts;
+                mesh.Normals = norms;
+                mesh.TriangleIndices = tris;
+                meshSel.Positions = vertsSel;
+                meshSel.Normals = normsSel;
+                meshSel.TriangleIndices = trisSel;
+
+                Mesh = mesh;
+                MeshSelected = meshSel;
+
                 Text = text;
 
                 sw.Stop();
-                //DynamoLogger.Instance.Log(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
 
                 Debug.WriteLine(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
             }
             catch (InvalidOperationException exp)
             {
-
                 Debug.WriteLine("WARNING: Exception occured in rendering " + exp.ToString());
             }
         }
 
         private void ConvertPoints(RenderPackage p,
-            List<Point3D> points,
-            List<Point3D> pointsSelected,
-            List<BillboardTextItem> text)
+            ICollection<Point3D> pointColl,
+            ICollection<BillboardTextItem> text)
         {
-            var pointColl = p.Selected ? pointsSelected : points;
             for (int i = 0; i < p.PointVertices.Count; i += 3)
             {
                 var pos = new Point3D(
@@ -372,18 +424,15 @@ namespace Dynamo.Controls
         }
 
         private void ConvertLines(RenderPackage p,
-            List<Point3D> lines,
-            List<Point3D> linesSelected,
-            List<Point3D> redLines,
-            List<Point3D> greenLines,
-            List<Point3D> blueLines,
-            List<BillboardTextItem> text)
+            ICollection<Point3D> lineColl,
+            ICollection<Point3D> redLines,
+            ICollection<Point3D> greenLines,
+            ICollection<Point3D> blueLines,
+            ICollection<BillboardTextItem> text)
         {
-            //int colorCount = 0;
             int idx = 0;
             int color_idx = 0;
 
-            var lineColl = p.Selected ? linesSelected : lines;
             int outerCount = 0;
             foreach (var count in p.LineStripVertexCounts)
             {
@@ -437,18 +486,9 @@ namespace Dynamo.Controls
         }
 
         private void ConvertMeshes(RenderPackage p,
-            List<MeshGeometry3D> meshes,
-            List<MeshGeometry3D> meshesSelected)
+            ICollection<Point3D> points, ICollection<Vector3D> norms,
+            ICollection<int> tris)
         {
-            //var sw = new Stopwatch();
-            //sw.Start();
-
-            var builder = new MeshBuilder();
-            var points = new Point3DCollection();
-            var tex = new PointCollection();
-            var norms = new Vector3DCollection();
-            var tris = new List<int>();
-
             for (int i = 0; i < p.TriangleVertices.Count; i+=3)
             {
                 var new_point = new Point3D(p.TriangleVertices[i],
@@ -488,24 +528,11 @@ namespace Dynamo.Controls
                 tris.Add(points.Count);
                 points.Add(new_point);
                 norms.Add(normal);
-                tex.Add(new System.Windows.Point(0,0));
-
-                //octree.AddNode(new_point.X, new_point.Y, new_point.Z, node.GUID.ToString());
             }
 
-            builder.Append(points, tris, norms, tex);
-
-            //don't add empty meshes
-            if (builder.Positions.Count > 0)
+            if (tris.Count > 0)
             {
-                if (p.Selected)
-                {
-                    meshesSelected.Add(builder.ToMesh(true));
-                }
-                else
-                {
-                    meshes.Add(builder.ToMesh(true));
-                }
+                MeshCount++;
             }
         }
 
@@ -520,45 +547,6 @@ namespace Dynamo.Controls
                 sb.AppendFormat("[{0}]", splits[i]);
             }
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// A utility method for merging multiple meshes into one.
-        /// </summary>
-        /// <param name="meshes"></param>
-        /// <returns></returns>
-        private MeshGeometry3D MergeMeshes(List<MeshGeometry3D> meshes)
-        {
-            if (meshes.Count == 0)
-                return null;
-
-            int offset = 0;
-
-            var builder = new MeshBuilder();
-
-            foreach (MeshGeometry3D m in meshes)
-            {
-                foreach (var pos in m.Positions)
-                {
-                    builder.Positions.Add(pos);
-                }
-                foreach (var index in m.TriangleIndices)
-                {
-                    builder.TriangleIndices.Add(index + offset);
-                }
-                foreach (var norm in m.Normals)
-                {
-                    builder.Normals.Add(norm);
-                }
-                foreach (var tc in m.TextureCoordinates)
-                {
-                    builder.TextureCoordinates.Add(tc);
-                }
-
-                offset += m.Positions.Count;
-            }
-
-            return builder.ToMesh(false);
         }
 
         protected void mi_Click(object sender, RoutedEventArgs e)
@@ -594,10 +582,10 @@ namespace Dynamo.Controls
 
         private void Watch_view_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            Point mousePos = e.GetPosition(watch_view);
-            PointHitTestParameters hitParams = new PointHitTestParameters(mousePos);
-            VisualTreeHelper.HitTest(watch_view, null, ResultCallback, hitParams);
-            e.Handled = true;
+            //Point mousePos = e.GetPosition(watch_view);
+            //PointHitTestParameters hitParams = new PointHitTestParameters(mousePos);
+            //VisualTreeHelper.HitTest(watch_view, null, ResultCallback, hitParams);
+            //e.Handled = true;
         }
 
         public HitTestResultBehavior ResultCallback(HitTestResult result)

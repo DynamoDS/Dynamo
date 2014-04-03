@@ -2184,6 +2184,101 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        public void TestSimpleFunctionRedefinition02()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "def f() { return = null;}",
+                "def f() { return = 10; }",
+                "x = f();"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+
+            {
+                List<Subtree> added = new List<Subtree>();
+                added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+
+                var syncData = new GraphSyncData(null, added, null);
+                astLiveRunner.UpdateGraph(syncData);
+            }
+
+            {
+                // Modify the function 
+                List<Subtree> modified = new List<Subtree>();
+                modified.Add(CreateSubTreeFromCode(guid1, codes[1]));
+
+                var syncData = new GraphSyncData(null, null, modified);
+                astLiveRunner.UpdateGraph(syncData);
+            }
+
+
+            {
+                // Call the function
+                List<Subtree> added = new List<Subtree>();
+                added.Add(CreateSubTreeFromCode(guid2, codes[2]));
+
+                var syncData = new GraphSyncData(null, added, null);
+                astLiveRunner.UpdateGraph(syncData);
+                AssertValue("x", 10);
+            }
+        }
+
+        [Test]
+        public void TestSimpleFunctionRedefinition03()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "def f() { return = null;}",
+                "def f() { return = 10; }",
+                "x = f();",
+                "def f() { return = 5; }",
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+
+            {
+                List<Subtree> added = new List<Subtree>();
+                added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+
+                var syncData = new GraphSyncData(null, added, null);
+                astLiveRunner.UpdateGraph(syncData);
+            }
+
+            {
+                // Modify the function 
+                List<Subtree> modified = new List<Subtree>();
+                modified.Add(CreateSubTreeFromCode(guid1, codes[1]));
+
+                var syncData = new GraphSyncData(null, null, modified);
+                astLiveRunner.UpdateGraph(syncData);
+            }
+
+
+            {
+                // Call the function
+                List<Subtree> added = new List<Subtree>();
+                added.Add(CreateSubTreeFromCode(guid2, codes[2]));
+
+                var syncData = new GraphSyncData(null, added, null);
+                astLiveRunner.UpdateGraph(syncData);
+                AssertValue("x", 10);
+            }
+
+            {
+                // Modify the function 
+                List<Subtree> modified = new List<Subtree>();
+                modified.Add(CreateSubTreeFromCode(guid1, codes[3]));
+
+                var syncData = new GraphSyncData(null, null, modified);
+                astLiveRunner.UpdateGraph(syncData);
+                AssertValue("x", 5);
+            }
+        }
+
+        [Test]
         public void TestFunctionRedefinitionOnNewNode01()
         {
             List<string> codes = new List<string>() 
@@ -3106,6 +3201,126 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        public void TestCodeblockModification13()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"import(""FFITarget.dll"");",
+                "a = 1;",
+                "a = 10;",
+                "p = DummyPoint.ByCoordinates(x, 0.0, 0.0); i = p.X;",
+                "x = a; p = DummyPoint.ByCoordinates(x, 0.0, 0.0); i = p.X;",
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+
+            // Create CBN and run import stmt
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Add new lines
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(CreateSubTreeFromCode(guid3, codes[3]));
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Connect Point to 'a'
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid3, codes[4]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Modify x
+            modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("i", 10.0);
+        }
+
+
+        [Test]
+        public void TestCodeblockModification14()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"import(""FFITarget.dll"");",
+                "a = 1;",
+                "a = 10;",
+                "p = DummyPoint.ByCoordinates(x, 0.0, 0.0); i = p.X;",
+                "p = DummyPoint.ByCoordinates(x, 0.0, 0.0); i = p.X; x = a;",
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+
+            // Create CBN and run import stmt
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Add new lines
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(CreateSubTreeFromCode(guid3, codes[3]));
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Connect Point to 'a'
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid3, codes[4]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Modify x
+            modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("i", 10.0);
+        }
+
+        [Test]
+        public void TestCodeblockModification15()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 1;",
+                "x = a;",
+                "a = 2;"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("x", 1);
+
+
+            // Modify the CBN
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid1, codes[2]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("x", 2);
+        }
+
+        [Test]
         public void TestEmptyCodeblock01()
         {
             List<string> codes = new List<string>() 
@@ -3541,7 +3756,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         [Test]
         public void TestNodeMapping()
         {
-            List<string> codes = new List<string>() 
+            List<string> codes = new List<string>()
             {
                 @"def foo(x) { return = x + 42; }",
                 @"x = 1; y = foo(x);",
@@ -3558,7 +3773,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             astLiveRunner.UpdateGraph(syncData);
 
             // Graph UI node -> ASTs
-            var astNodes = astLiveRunner.GetSSANodes(guid2);
+            var astNodes = astLiveRunner.Core.CachedSSANodes;
             bool foundCallsite = false;
             Guid callsiteId = Guid.Empty;
 
@@ -3573,6 +3788,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
                     break;
                 }
             }
+
 
             // CallSite -> Graph UI node
             Assert.IsTrue(foundCallsite);

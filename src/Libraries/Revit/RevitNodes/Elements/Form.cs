@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using Revit.GeometryObjects;
@@ -197,7 +198,6 @@ namespace Revit.Elements
 
         public static Form ByLoftingCurveReferences( CurveReference[] curves, bool isSolid )
         {
-            // build references
             var refArrArr = new ReferenceArrayArray();
 
             foreach (var l in curves)
@@ -213,13 +213,42 @@ namespace Revit.Elements
 
         public static Form ByLoftingCurveElements( CurveElement[] curves, bool isSolid)
         {
-            // build references
             var refArrArr = new ReferenceArrayArray();
 
             foreach (var l in curves)
             {
                 var refArr = new ReferenceArray();
                 refArr.Append(l.InternalCurveElement.GeometryCurve.Reference);
+                refArrArr.Append(refArr);
+            }
+
+            return new Form(isSolid, refArrArr);
+
+        }
+
+        public static Form ByLoftingCurveReferences( CurveReference[][] curves, bool isSolid )
+        {
+            var refArrArr = new ReferenceArrayArray();
+
+            foreach (var curveArr in curves)
+            {
+                var refArr = new ReferenceArray();
+                curveArr.ForEach(x => refArr.Append(x.InternalReference));
+                refArrArr.Append(refArr);
+            }
+
+            return new Form(isSolid, refArrArr);
+
+        }
+
+        public static Form ByLoftingCurveElements( CurveElement[][] curves, bool isSolid )
+        {
+            var refArrArr = new ReferenceArrayArray();
+
+            foreach (var curveArr in curves)
+            {
+                var refArr = new ReferenceArray();
+                curveArr.ForEach(x => refArr.Append(x.InternalCurveElement.GeometryCurve.Reference));
                 refArrArr.Append(refArr);
             }
 

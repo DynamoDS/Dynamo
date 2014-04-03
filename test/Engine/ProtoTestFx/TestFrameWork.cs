@@ -626,34 +626,32 @@ namespace ProtoTestFx.TD
         {
             var mirror = liveRunner.InspectNodeValue(varname);
             MirrorData data = mirror.GetData();
-            object svValue = data.Data;
-            if (value is double)
-            {
-                Assert.AreEqual((double)svValue, Convert.ToDouble(value));
-            }
-            else if (value is int)
-            {
-                Assert.AreEqual((Int64)svValue, Convert.ToInt64(value));
-            }
-            else if (value is bool)
-            {
-                Assert.AreEqual((bool)svValue, Convert.ToBoolean(value));
-            }
-            else if (value is IEnumerable<int>)
-            {
-                Assert.IsTrue(data.IsCollection);
-                var values = (value as IEnumerable<int>).ToList().Select(v => (object)v).ToList();
-                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(Int64)));
-            }
-            else if (value is IEnumerable<double>)
-            {
-                Assert.IsTrue(data.IsCollection);
-                var values = (value as IEnumerable<double>).ToList().Select(v => (object)v).ToList();
-                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(double)));
-            }
+            AssertValue(data, value);
         }
-    
-    
-    
+
+        public static void AssertValue(MirrorData data, object value)
+        {
+            if (data.IsCollection)
+                AssertCollection(data, value as IEnumerable);
+            else if (value == null)
+                Assert.IsTrue(data.IsNull);
+            else if (value is int)
+                Assert.AreEqual((int)value, Convert.ToInt32(data.Data));
+            else if (value is double)
+                Assert.AreEqual((double)value, Convert.ToDouble(data.Data), 0.00001);
+            else
+                Assert.AreEqual(value, data.Data);
+        }
+
+        private static void AssertCollection(MirrorData data, IEnumerable collection)
+        {
+            Assert.IsTrue(data.IsCollection);
+            List<MirrorData> elements = data.GetElements();
+            int i = 0;
+            foreach (var item in collection)
+            {
+                AssertValue(elements[i++], item);
+            }
+        }    
     }
 }

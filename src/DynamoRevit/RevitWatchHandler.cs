@@ -1,11 +1,11 @@
 ﻿using System.Globalization;
-using Autodesk.Revit.DB;
 using Dynamo.Interfaces;
 using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using ProtoCore.Mirror;
 using RevitServices.Persistence;
+using Element = Revit.Elements.Element;
 
 namespace Dynamo.Applications
 {
@@ -29,34 +29,15 @@ namespace Dynamo.Applications
             var id = element.Id;
 
             var node = new WatchViewModel(element.Name, tag);
-            node.Clicked += () => DocumentManager.Instance.CurrentUIDocument.ShowElements(element);
-            node.Link = id.IntegerValue.ToString(CultureInfo.InvariantCulture);
+            node.Clicked += () => DocumentManager.Instance.CurrentUIDocument.ShowElements(element.InternalElement);
+            node.Link = id.ToString(CultureInfo.InvariantCulture);
 
             return node;
         }
 
-        internal WatchViewModel ProcessThing(XYZ pt, string tag, bool showRawData = true)
-        {
-            if (!showRawData)
-            {
-                ///xyzs will be in feet, but we need to show them
-                ///in the display units of choice
-                /// 
-
-                var xyzStr = string.Format("{0:f3}, {1:f3}, {2:f3}",
-                    new Units.Length(pt.X / SIUnit.ToFoot),
-                    new Units.Length(pt.Y / SIUnit.ToFoot),
-                    new Units.Length(pt.Z / SIUnit.ToFoot));
-
-                return new WatchViewModel("{" + xyzStr + "}", tag);
-            }
-            
-            return new WatchViewModel(pt.ToString(), tag);
-        }
-
         internal WatchViewModel ProcessThing(object value, string tag, bool showRawData = true)
         {
-            var node = new WatchViewModel(value.ToString(), tag);
+            var node = new WatchViewModel(ToString(value), tag);
             return node;
         }
 
@@ -85,12 +66,18 @@ namespace Dynamo.Applications
             var classMirror = data.Class;
             if (null != classMirror)
             {
-                return ProcessThing(data.Data, tag);
+                if (data.Data == null && !data.IsNull) //Must be a DS Class instance.
+                    return ProcessThing(classMirror.ClassName, tag); //just show the class name.
+                return ProcessThing(data.Data as dynamic, tag, showRawData);
             }
 
             //Finally for all else get the string representation of data as watch content.
-            string previewData = data.Data.ToString();
-            return new WatchViewModel(previewData, tag);
+            return ProcessThing(data.Data as dynamic, tag);
+        }
+
+        private string ToString(object obj)
+        {
+            return obj != null ? obj.ToString() : "null";
         }
 
         public WatchViewModel Process(dynamic value, string tag, bool showRawData = true)

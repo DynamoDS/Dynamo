@@ -18,21 +18,34 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class DummyNode : NodeModel
     {
+        public enum Nature
+        {
+            Deprecated, Unresolved
+        }
+
         public DummyNode()
         {
             this.LegacyNodeName = "DSCoreNodesUI.DummyNode";
+            this.LegacyAssembly = string.Empty;
+            this.NodeNature = Nature.Unresolved;
         }
 
         public void SetupCustomUIElements(Dynamo.Controls.dynNodeView nodeUI)
         {
-            var src = @"/DSCoreNodesUI;component/Resources/DummyNode.png";
+            var fileName = "DeprecatedNode.png";
+            if (this.NodeNature == Nature.Unresolved)
+                fileName = "MissingNode.png";
+
+            var src = @"/DSCoreNodesUI;component/Resources/" + fileName;
 
             Image dummyNodeImage = new Image()
             {
+                Stretch = System.Windows.Media.Stretch.None,
                 Source = new BitmapImage(new Uri(src, UriKind.Relative))
             };
 
             nodeUI.inputGrid.Children.Add(dummyNodeImage);
+            this.Warning(GetDescription());
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -44,6 +57,17 @@ namespace DSCoreNodesUI
             this.InputCount = Int32.Parse(inputCount.Value);
             this.OutputCount = Int32.Parse(outputCount.Value);
             this.LegacyNodeName = legacyName.Value;
+
+            var legacyAsm = nodeElement.Attributes["legacyAssembly"];
+            if (legacyAsm != null)
+                this.LegacyAssembly = legacyAsm.Value;
+
+            var nodeNature = nodeElement.Attributes["nodeNature"];
+            if (nodeNature != null)
+            {
+                var nature = Enum.Parse(typeof(Nature), nodeNature.Value);
+                this.NodeNature = ((Nature)nature);
+            }
 
             for (int input = 0; input < this.InputCount; input++)
             {
@@ -66,6 +90,8 @@ namespace DSCoreNodesUI
             nodeElement.SetAttribute("inputCount", this.InputCount.ToString());
             nodeElement.SetAttribute("outputCount", this.OutputCount.ToString());
             nodeElement.SetAttribute("legacyNodeName", this.LegacyNodeName);
+            nodeElement.SetAttribute("legacyAssembly", this.LegacyAssembly);
+            nodeElement.SetAttribute("nodeNature", this.NodeNature.ToString());
         }
 
         #region SerializeCore/DeserializeCore
@@ -89,8 +115,35 @@ namespace DSCoreNodesUI
 
         private string GetDescription()
         {
-            return string.Format(
-                "Obsolete node type {0}", this.LegacyNodeName);
+            if (this.NodeNature == Nature.Deprecated)
+            {
+                if (string.IsNullOrEmpty(this.LegacyAssembly))
+                {
+                    var format = "Node of type '{0}' is now deprecated";
+                    return string.Format(format, this.LegacyNodeName);
+                }
+                else
+                {
+                    var format = "Node of type '{0}' ({1}) is now deprecated";
+                    return string.Format(format, this.LegacyNodeName, this.LegacyAssembly);
+                }
+            }
+            else if (this.NodeNature == Nature.Unresolved)
+            {
+                if (string.IsNullOrEmpty(this.LegacyAssembly))
+                {
+                    var format = "Node of type '{0}' cannot be resolved";
+                    return string.Format(format, this.LegacyNodeName);
+                }
+                else
+                {
+                    var format = "Node of type '{0}' ({1}) cannot be resolved";
+                    return string.Format(format, this.LegacyNodeName, this.LegacyAssembly);
+                }
+            }
+
+            var message = "Unhandled 'DummyNode.NodeNature' value: {0}";
+            throw new InvalidOperationException(string.Format(message, NodeNature.ToString()));
         }
 
         public override string Description
@@ -102,5 +155,7 @@ namespace DSCoreNodesUI
         public int InputCount { get; private set; }
         public int OutputCount { get; private set; }
         public string LegacyNodeName { get; private set; }
+        public string LegacyAssembly { get; private set; }
+        public Nature NodeNature { get; private set; }
     }
 }

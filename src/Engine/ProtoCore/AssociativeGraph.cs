@@ -66,6 +66,43 @@ namespace ProtoCore.AssociativeEngine
                 }
             }
         }
+
+        public static void MarkGraphNodesDirty(ProtoCore.Core core, List<ProtoCore.AST.AssociativeAST.FunctionDefinitionNode> fnodeList)
+        {
+            foreach (ProtoCore.AST.AssociativeAST.FunctionDefinitionNode fnode in fnodeList)
+            {
+                int exprId = ProtoCore.DSASM.Constants.kInvalidIndex;
+                foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
+                {
+                    if (gnode.isActive)
+                    {
+                        if (null != gnode.firstProc)
+                        {
+                            if (fnode.Name == gnode.firstProc.name && fnode.Signature.Arguments.Count == gnode.firstProc.argInfoList.Count)
+                            {
+                                if (ProtoCore.DSASM.Constants.kInvalidIndex == exprId)
+                                {
+                                    exprId = gnode.exprUID;
+                                    core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                                }
+                                gnode.isDirty = true;
+                            }
+                        }
+                        else if (ProtoCore.DSASM.Constants.kInvalidIndex != exprId)
+                        {
+                            if (gnode.exprUID == exprId)
+                            {
+                                gnode.isDirty = true;
+                                if (gnode.IsLastNodeInSSA)
+                                {
+                                    exprId = ProtoCore.DSASM.Constants.kInvalidIndex;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public class ArrayUpdate

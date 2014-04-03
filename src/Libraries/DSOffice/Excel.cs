@@ -24,7 +24,7 @@ namespace DSOffice
             }
         }
 
-        private static bool _showOnStartup = false;
+        private static bool _showOnStartup = true;
         public static bool ShowOnStartup
         {
             get { return _showOnStartup; }
@@ -122,6 +122,12 @@ namespace DSOffice
 
     public class Excel
     {
+
+        private Excel()
+        {
+
+        }
+
         #region Helper methods
 
         private static object[][] ConvertToJaggedArray(object[,] input)
@@ -221,12 +227,6 @@ namespace DSOffice
         public static object WriteDataToExcelWorksheet(
             object worksheet, int startRow, int startColumn, object[][] data)
         {
-            if (startRow < 1)
-                throw new ArgumentException("Must be a positive integer.", "startRow");
-
-            if (startColumn < 1)
-                throw new ArgumentException("Must be a positive integer.", "startColumn");
-
             Worksheet ws = (Worksheet)worksheet;
             startRow = Math.Max(0, startRow);
             startColumn = Math.Max(0, startColumn);

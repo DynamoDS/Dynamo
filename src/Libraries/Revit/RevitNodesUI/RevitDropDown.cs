@@ -48,7 +48,8 @@ namespace DSRevitNodesUI
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             if (Items.Count == 0 ||
-                Items[0].Name == noFamilyTypes)
+                Items[0].Name == noFamilyTypes ||
+                SelectedIndex == -1)
             {
                 return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
             }
@@ -103,7 +104,8 @@ namespace DSRevitNodesUI
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             if (Items.Count == 0 || 
-                Items[0].Name == noFloorTypes)
+                Items[0].Name == noFloorTypes ||
+                SelectedIndex == -1)
             {
                 return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
             }
@@ -155,8 +157,9 @@ namespace DSRevitNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            if (Items.Count == 0 || 
-                Items[0].Name == noWallTypes)
+            if (Items.Count == 0 ||
+                Items[0].Name == noWallTypes ||
+                SelectedIndex == -1)
             {
                 return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
             }
@@ -216,6 +219,8 @@ namespace DSRevitNodesUI
     [IsDesignScriptCompatible]
     public class Levels : DropDrownBase
     {
+        private const string noLevels = "No levels available.";
+
         public Levels()
         {
             OutPortData.Add(new PortData("Level", "The level.", typeof(object)));
@@ -233,6 +238,13 @@ namespace DSRevitNodesUI
             var levelColl = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             levelColl.OfClass(typeof(Level));
 
+            if (levelColl.ToElements().Count == 0)
+            {
+                Items.Add(new DynamoDropDownItem(noLevels, null));
+                SelectedIndex = 0;
+                return;
+            }
+
             levelColl.ToElements().ToList().ForEach(x => Items.Add(new DynamoDropDownItem(x.Name, x)));
 
             Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
@@ -240,12 +252,80 @@ namespace DSRevitNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            if (Items.Count == 0 ||
+                Items[0].Name == noLevels ||
+                SelectedIndex == -1)
+            {
+                return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
+            }
+
             var node = AstFactory.BuildFunctionCall(
                 "Revit.Elements.ElementSelector",
                 "ByElementId",
                 new List<AssociativeNode>
                 {
                     AstFactory.BuildIntNode(((Level)Items[SelectedIndex].Item).Id.IntegerValue)
+                });
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+        }
+    }
+
+    [NodeName("Structural Framing Types")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("Select a level in the active document")]
+    [IsDesignScriptCompatible]
+    public class StructuralFramingTypes : DropDrownBase
+    {
+        private const string noFraming = "No structural framing types available.";
+
+        public StructuralFramingTypes()
+        {
+            OutPortData.Add(new PortData("type", "The selected structural framing type.", typeof(object)));
+
+            RegisterAllPorts();
+
+            PopulateItems();
+        }
+
+        public override void PopulateItems()
+        {
+            Items.Clear();
+
+            //find all the structural framing family types in the project
+            var collector = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+
+            var catFilter = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFraming);
+            collector.OfClass(typeof(FamilySymbol)).WherePasses(catFilter);
+
+            if (collector.ToElements().Count == 0)
+            {
+                Items.Add(new DynamoDropDownItem(noFraming, null));
+                SelectedIndex = 0;
+                return;
+            }
+
+            foreach (var e in collector.ToElements())
+                Items.Add(new DynamoDropDownItem(e.Name, e));
+
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            if (Items.Count == 0 ||
+                Items[0].Name == noFraming ||
+                SelectedIndex == -1)
+            {
+                return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
+            }
+
+            var node = AstFactory.BuildFunctionCall(
+                "Revit.Elements.ElementSelector",
+                "ByElementId",
+                new List<AssociativeNode>
+                {
+                    AstFactory.BuildIntNode(((Element)Items[SelectedIndex].Item).Id.IntegerValue)
                 });
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
