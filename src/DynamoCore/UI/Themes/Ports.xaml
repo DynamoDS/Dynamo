@@ -88,12 +88,12 @@
                        Style="{StaticResource SZoomFadeText}"
                        Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter} }"
                        VerticalAlignment="Center"
-                       FontSize="12"
-                       FontFamily="Trebuchet"
+                       FontSize="13"
+                       FontFamily="{StaticResource OpenSansRegular}"
                        Padding="6,7,6,7"
                        IsHitTestVisible="False"
                        Background="{x:Null}"
-                       Foreground="#FF505050">
+                       Foreground="#555555">
             </TextBlock>
 
         </Grid>

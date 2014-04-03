@@ -7,6 +7,7 @@ using Dynamo.FSchemeInterop;
 using System.Windows.Media;
 using System.Xml;
 using Dynamo.Utilities;
+using Dynamo.UI;
 
 namespace Dynamo.Models
 {
@@ -204,7 +205,7 @@ namespace Dynamo.Models
             UsingDefaultValue = false;
             DefaultValueEnabled = false;
             MarginThickness = new Thickness(0);
-            this.Height = 20.0;
+            this.Height = Configurations.PortHeightInPixels;
         }
 
         /// <summary>

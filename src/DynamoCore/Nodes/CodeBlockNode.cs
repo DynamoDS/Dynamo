@@ -835,7 +835,7 @@ namespace Dynamo.Nodes
         /// <returns> Returns the extra number of lines caused by text wrapping. For example, the above statement would return 1 </returns>
         private int GetExtraLinesDueToTextWrapping(string statement)
         {
-            double portHeight = Configurations.PortHeight - 0.1;
+            double portHeight = Configurations.PortHeightInPixels - 0.1;
             int numberOfLines = 0;
             string[] lines = statement.Split('\n');
             foreach (string line in lines)
