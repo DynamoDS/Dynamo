@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:search="clr-namespace:Dynamo.Nodes.Search"
              xmlns:searchElements="clr-namespace:Dynamo.Search.SearchElements"
+             xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:clr="clr-namespace:System;assembly=mscorlib"
              xmlns:dynamo="clr-namespace:Dynamo"
              mc:Ignorable="d" 
@@ -348,6 +349,7 @@
                     <Setter Property="Foreground" Value="#DDD"/>
                     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="{Binding Path=SearchScrollBarVisibility, Converter={StaticResource BoolToScrollBarVisibilityConverter}}"/>
                     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="{Binding Path=SearchScrollBarVisibility, Converter={StaticResource BoolToScrollBarVisibilityConverter}}"/>
+                    <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ScrollViewer}}, Path=ActualWidth}" />
                     <Setter Property="VerticalContentAlignment" Value="Center"/>
 
                     <Setter Property="Template">
@@ -439,6 +441,18 @@
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=OneWay}"></Setter>
                     <Setter Property="IsSelected" Value="{Binding IsSelected}"></Setter>
                     <Setter Property="Visibility" Value="{Binding Visibility, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}"></Setter>
+                    <Setter Property="ToolTip">
+                        <Setter.Value>
+                            <dynui:DynamoToolTip AttachmentSide="Right"
+                                                 Style="{DynamicResource ResourceKey=SLightToolTip}">
+                                <Grid>
+                                    <TextBlock TextWrapping="Wrap"
+                                               MaxWidth="320"
+                                               Text="{Binding Path=Description}"></TextBlock>
+                                </Grid>
+                            </dynui:DynamoToolTip>
+                        </Setter.Value>
+                    </Setter>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TreeViewItem}">
@@ -544,8 +558,6 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-                    <EventSetter Event="MouseEnter" Handler="LibraryItem_OnMouseEnter"/>
-                    <EventSetter Event="MouseLeave" Handler="LibraryItem_OnMouseLeave"/>
                 </Style>
 
                 <DataTemplate x:Key="ContextMenuStyle">
