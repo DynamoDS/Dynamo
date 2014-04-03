@@ -236,7 +236,7 @@
         <DockPanel Name="outPortGrid"
                    Grid.Row="2"
                    Grid.Column="2"
-                   VerticalAlignment="Center"
+                   VerticalAlignment="Top"
                    IsHitTestVisible="True"
                    Background="Transparent"
                    Canvas.ZIndex="20"
