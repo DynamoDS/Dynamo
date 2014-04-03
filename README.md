@@ -46,6 +46,7 @@ Temporarily Unavailable Functionality from 0.6.3 (coming back soon!)
  
  
 Known Problem Areas
+- To have both 0.7.0 and 0.6.3 installed, you must install 0.7.0 AFTER 0.6.3
 - You can only load 0.7.0 or 0.6.3 in a Revit session.  You must close Revit before changing from one to the other.
 - Visualization can be slow with lots of curvy stuff
 - Manually Deleting and recreating Revit elements created by Dynamo can cause element duplication or failure to be re-created when the graph is re-run,
