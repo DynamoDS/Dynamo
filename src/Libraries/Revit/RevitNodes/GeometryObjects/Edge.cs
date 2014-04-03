@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
+using Revit.GeometryConversion;
 
 namespace Revit.GeometryObjects
 {
@@ -28,6 +29,14 @@ namespace Revit.GeometryObjects
         internal static Edge FromExisting(Autodesk.Revit.DB.Edge f)
         {
             return new Edge(f);
+        }
+
+        /// <summary>
+        /// Get the underlying curve representation of the Edge
+        /// </summary>
+        public Autodesk.DesignScript.Geometry.Curve Curve
+        {
+            get { return InternalEdge.AsCurve().ToProtoType(); }
         }
 
         #region Tesselation
