@@ -122,8 +122,8 @@ namespace Dynamo.Nodes
             }
             else
             {
-                string returnType = IsConstructor() ? Definition.UnqualifedClassName : Definition.ReturnType;
-                OutPortData.Add(new PortData("", returnType));
+                string displayReturnType = IsConstructor() ? Definition.UnqualifedClassName : Definition.ReturnType;
+                OutPortData.Add(new PortData("", displayReturnType));
             }
 
             RegisterAllPorts();
