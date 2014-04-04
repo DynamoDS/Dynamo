@@ -71,7 +71,7 @@ namespace ProtoCore.Lang
         /// <param name="key"></param>
         public static void ClearTLSKey(string key)
         {
-            Dictionary<String, Object> objs = new Dictionary<string, object>();
+            Dictionary<String, ISerializable> objs = new Dictionary<string, ISerializable>();
             objs.Add(key, null);
             SetObjectToTLS(objs);
             
