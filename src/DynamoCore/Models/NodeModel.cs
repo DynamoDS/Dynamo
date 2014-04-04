@@ -2064,7 +2064,7 @@ namespace Dynamo.Models
                     {
                         var mirrorData = mirror.GetData();
                         AddToLabelMap(mirrorData, labelMap, ident);
-                        AddToSizeMap(mirrorData, sizeMap);
+                        //AddToSizeMap(mirrorData, sizeMap);
                         count++;
                     }
                 } 
