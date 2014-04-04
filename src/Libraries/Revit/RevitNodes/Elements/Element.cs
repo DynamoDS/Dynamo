@@ -176,7 +176,7 @@ namespace Revit.Elements
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol)
+        public void Tessellate(IRenderPackage package, double tol, int gridLines)
         {
             // Do nothing. We implement this method only to prevent the GraphicDataProvider from
             // attempting to interrogate the public properties, some of which may require regeneration

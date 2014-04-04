@@ -8,6 +8,7 @@ using System.Security.Permissions;
 using System.Windows;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.FSchemeInterop;
 using Dynamo.Interfaces;
@@ -2052,6 +2053,7 @@ namespace Dynamo.Models
 
                 int count = 0;
                 var labelMap = new List<string>();
+                var sizeMap = new List<double>();
 
                 var ident = AstIdentifierForPreview.Name;
 
@@ -2062,6 +2064,7 @@ namespace Dynamo.Models
                     {
                         var mirrorData = mirror.GetData();
                         AddToLabelMap(mirrorData, labelMap, ident);
+                        //AddToSizeMap(mirrorData, sizeMap);
                         count++;
                     }
                 } 
@@ -2076,8 +2079,11 @@ namespace Dynamo.Models
                     foreach (var gItem in graphItems)
                     {
                         var package = new RenderPackage(IsSelected, DisplayLabels);
-
-                        PushGraphicItemIntoPackage(gItem, package, labelMap.Count > count ? labelMap[count] : "?");
+                        
+                        PushGraphicItemIntoPackage(gItem, 
+                            package, 
+                            labelMap.Count > count ? labelMap[count] : "?",
+                            sizeMap.Count > count ? sizeMap[count] : -1.0);
 
                         package.ItemsCount++;
                         RenderPackages.Add(package);
@@ -2095,9 +2101,9 @@ namespace Dynamo.Models
             }
         }
 
-        private void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag)
+        private void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag, double size)
         {
-            graphicItem.Tessellate(package,.1);
+            graphicItem.Tessellate(package, -1.0, 12);
             package.Tag = tag;
         }
 
@@ -2153,6 +2159,54 @@ namespace Dynamo.Models
                 }
                 count++;
             }
+        }
+
+        private void AddToSizeMap(MirrorData data, ICollection<double> map)
+        {
+            if (data.IsCollection)
+            {
+                var list = data.GetElements();
+                foreach (MirrorData t in list)
+                {
+                    AddToSizeMap(t, map);
+                }
+            }
+            else if (data.Data is IEnumerable)
+            {
+                var list = data.Data as IEnumerable;
+                AddToSizeMap(list, map);
+            }
+            else
+            {
+                map.Add(ComputeBBoxDiagonalSize(data.Data));
+            }
+        }
+
+        private void AddToSizeMap(IEnumerable list, ICollection<double> map)
+        {
+            foreach (var obj in list)
+            {
+                if (obj is IEnumerable)
+                {
+                    AddToSizeMap(obj as IEnumerable, map);
+                }
+                else
+                {
+                    map.Add(ComputeBBoxDiagonalSize(obj));
+                }
+            }
+        }
+
+        private static double ComputeBBoxDiagonalSize(object obj)
+        {
+            var size = -1.0;
+
+            var entity = obj as Geometry;
+            if (entity != null)
+            {
+                size = entity.BoundingBox.MinPoint.DistanceTo(entity.BoundingBox.MaxPoint);
+            }
+            return size;
         }
 
         /// <summary>

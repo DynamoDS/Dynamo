@@ -1296,15 +1296,10 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((bool) value == true)
-            {
-                var latest = dynSettings.Controller.UpdateManager.AvailableVersion;
-                return latest;
-            }
+            if ((bool) value != true) return "(Up-to-date)";
 
-            //Hide the "(Up-to-date)" text by return an empty string.
-            //It should be brought back when the "update" function is avaliable.
-            return "";
+            var latest = dynSettings.Controller.UpdateManager.AvailableVersion;
+            return latest;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -263,9 +263,9 @@ namespace Dynamo.Tests
             //DocumentManager.Instance.CurrentUIDocument = DocumentManager.Instance.CurrentUIDocument;
             dynRevitSettings.DefaultLevel = null;
 
-            SIUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
-            SIUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
-            SIUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
+            BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
+            BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
+            BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
             //create dynamo
             var r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
@@ -274,7 +274,7 @@ namespace Dynamo.Tests
             // create the transaction manager object
             TransactionManager.SetupManager(new AutomaticTransactionStrategy());
 
-            var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context);
+            var dynamoController = new DynamoController_Revit(DynamoRevit.Updater, typeof(DynamoRevitViewModel), context);
             DynamoController.IsTestMode = true;
         }
 
