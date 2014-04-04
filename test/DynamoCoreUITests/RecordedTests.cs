@@ -320,7 +320,19 @@ namespace DynamoCoreUITests
             Assert.AreEqual("# Modification 3", python.Script);
             Assert.AreEqual("# Modification 4", pvarin.Script);
         }
+        [Test, Category("Failing")]
+        public void CustomNodeCreate()
+        {
+            RunCommandsFromFile("CustomNodeCreate.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
 
+
+            AssertPreviewValue("99a7b5ef-268f-44c2-94ce-84cf43054bb8", 1);
+            AssertPreviewValue("26e3e31a-c9d5-4b3b-b409-005b3595e5df", 1);
+
+            
+        }
         #endregion
 
         #region Private Helper Methods

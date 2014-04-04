@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.21043" X="-93.4748837717397" Y="186.468453979704" zoom="0.612874638577804" Description="" Category="" Name="Home">
+<Workspace Version="0.7.0.35318" X="40.6901783237211" Y="204.086342488611" zoom="0.409080883000782" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="61cba6a0-0abd-44ea-863b-13d3f1169b85" nickname="Code Block" x="171.389177489177" y="35.8080808080807" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0;" ShouldFocus="false" />
     <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="92215dde-c3d5-413b-a163-5dbba58e8836" nickname="Code Block" x="334.8113997114" y="309.131313131313" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="start0..end1..step2;" ShouldFocus="false" />
@@ -10,29 +10,26 @@
     <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="ae62dcbc-6305-4745-acb8-7a171d6522c6" nickname="Code Block" x="175.833621933621" y="370.030303030303" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="10;" ShouldFocus="false" />
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="7884cf4d-9546-487d-af78-9880ebd8dd80" nickname="Watch" x="766.464269208127" y="91.5942498182862" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="b1718ada-fc09-4b35-aa89-d07afb14d954" nickname="Watch" x="563.058825623666" y="310.014795294926" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="6f0dff57-dcc0-45ca-89e4-1e1905fffd43" nickname="Watch" x="927.105283209977" y="26.6424242424243" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="f581d0a1-ba73-4cda-a873-2a8030a080b9" nickname="Code Block" x="718.465208185733" y="336.630452461656" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..10..2;" ShouldFocus="false" />
-    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="0599377c-63a1-41db-b140-8eee5bd11613" nickname="Watch" x="864.373800678374" y="315.85046750123" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="a530953d-91cc-4983-a53b-bea3ec0f57a0" nickname="Code Block" x="1326.30533910534" y="31.7979797979797" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..4;" ShouldFocus="false" />
-    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="03485a5d-6a3b-4024-835b-1d5a58e25f69" nickname="Watch" x="1486.74978354978" y="31.7979797979797" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="22fdc5fa-56cd-4c57-8874-726c9ceea4da" nickname="Watch" x="1799.54978354978" y="31.7979797979797" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="8c13121e-03ad-4a47-9940-1517076724fa" nickname="Code Block" x="1326.30533910534" y="228.161616161616" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..4..2;" ShouldFocus="false" />
-    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="e6d4f5cc-45c8-4807-a812-c16e5ef4cbeb" nickname="Watch" x="1486.74978354978" y="229.616161616162" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="15226118-6d20-409f-8b45-4640544e6974" nickname="Watch" x="1799.54978354978" y="229.616161616162" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="6403e1dc-0141-430b-bae2-819bdeff5772" nickname="Watch" x="1661.65887445887" y="450.707070707071" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="9d772639-a7b0-4b98-bae3-6ef2ac05c653" nickname="Code Block" x="1326.30533910534" y="450.707070707071" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..6.000;" ShouldFocus="false" />
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="1be407a3-a306-4f7d-91f9-991f24230e7a" nickname="Number" x="773.755988522746" y="12.5228440772494" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="0..#10..2" />
-    </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="441c3ba0-dc0d-490c-8329-6de7e4dea6e1" nickname="Number" x="1643.28598655788" y="24.4186635504243" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="0..#4..10" />
-    </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="5acb2385-0cd1-422a-bb18-ff89a19a54c7" nickname="Number" x="1655.8523295044" y="236.999298395689" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="f581d0a1-ba73-4cda-a873-2a8030a080b9" nickname="Code Block" x="725.128950468728" y="369.116196091258" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..10..2;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="0599377c-63a1-41db-b140-8eee5bd11613" nickname="Watch" x="871.037542961369" y="348.336211130832" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="03485a5d-6a3b-4024-835b-1d5a58e25f69" nickname="Watch" x="1551.07660286682" y="18.0136613728986" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="e6d4f5cc-45c8-4807-a812-c16e5ef4cbeb" nickname="Watch" x="1548.59394703352" y="189.28021566469" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="15226118-6d20-409f-8b45-4640544e6974" nickname="Watch" x="1545.88868663098" y="330.754899956825" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="5acb2385-0cd1-422a-bb18-ff89a19a54c7" nickname="Number" x="1402.1912325856" y="338.138036736351" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="0..1..#5" />
     </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="13572c32-1c43-4fd8-8554-fcf84b1155cd" nickname="Number" x="1500.86743316401" y="451.674323732039" isVisible="true" isUpstreamVisible="true" lacing="Longest">
-      <System.Double value="0..#a..50" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="f3050982-4022-46ed-81ae-7f4d8991a569" nickname="Code Block" x="2058.17004081827" y="17.2671568778065" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..4;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="18a6dbce-9c7b-4513-a027-cf37cecc5fa1" nickname="Code Block" x="2042.62259103556" y="209.284146089077" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..4..2;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="8d344a47-e145-4b83-8c84-3229c189d721" nickname="Code Block" x="2027.60866518861" y="375.972503576372" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..4..#3;" ShouldFocus="false" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="0aece4ca-caa6-4983-8856-988ac6df5392" nickname="Number" x="1411.22234806219" y="20.1405433220966" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0..4" />
     </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="05725f31-03d7-4e7f-9e1d-13382d621617" nickname="Number" x="1401.46362910128" y="191.03528361266" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0..4..2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="3ca18cdd-dedb-48a4-9aaf-d1ca3a579fee" nickname="Watch" x="2164.63616728876" y="16.4739447935821" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="60e92069-25a3-4316-b33d-f676ed830e49" nickname="Watch" x="2169.09918370392" y="207.267896541856" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="d7a65b1c-653f-4bea-88bd-0a3c29296e24" nickname="Watch" x="2162.46780950605" y="375.500151241656" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </Elements>
   <Connectors>
     <Dynamo.Models.ConnectorModel start="61cba6a0-0abd-44ea-863b-13d3f1169b85" start_index="0" end="38ee0609-a32d-41c3-a1ef-b4a3b31cccf6" end_index="0" portType="0" />
@@ -44,16 +41,15 @@
     <Dynamo.Models.ConnectorModel start="ec055752-f2ac-4bdb-b9fb-78cef31ee621" start_index="0" end="92215dde-c3d5-413b-a163-5dbba58e8836" end_index="2" portType="0" />
     <Dynamo.Models.ConnectorModel start="ae62dcbc-6305-4745-acb8-7a171d6522c6" start_index="0" end="92215dde-c3d5-413b-a163-5dbba58e8836" end_index="1" portType="0" />
     <Dynamo.Models.ConnectorModel start="f581d0a1-ba73-4cda-a873-2a8030a080b9" start_index="0" end="0599377c-63a1-41db-b140-8eee5bd11613" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="a530953d-91cc-4983-a53b-bea3ec0f57a0" start_index="0" end="03485a5d-6a3b-4024-835b-1d5a58e25f69" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="8c13121e-03ad-4a47-9940-1517076724fa" start_index="0" end="e6d4f5cc-45c8-4807-a812-c16e5ef4cbeb" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="9d772639-a7b0-4b98-bae3-6ef2ac05c653" start_index="0" end="13572c32-1c43-4fd8-8554-fcf84b1155cd" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="1be407a3-a306-4f7d-91f9-991f24230e7a" start_index="0" end="6f0dff57-dcc0-45ca-89e4-1e1905fffd43" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="441c3ba0-dc0d-490c-8329-6de7e4dea6e1" start_index="0" end="22fdc5fa-56cd-4c57-8874-726c9ceea4da" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="5acb2385-0cd1-422a-bb18-ff89a19a54c7" start_index="0" end="15226118-6d20-409f-8b45-4640544e6974" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="13572c32-1c43-4fd8-8554-fcf84b1155cd" start_index="0" end="6403e1dc-0141-430b-bae2-819bdeff5772" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f3050982-4022-46ed-81ae-7f4d8991a569" start_index="0" end="3ca18cdd-dedb-48a4-9aaf-d1ca3a579fee" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="18a6dbce-9c7b-4513-a027-cf37cecc5fa1" start_index="0" end="60e92069-25a3-4316-b33d-f676ed830e49" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8d344a47-e145-4b83-8c84-3229c189d721" start_index="0" end="d7a65b1c-653f-4bea-88bd-0a3c29296e24" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0aece4ca-caa6-4983-8856-988ac6df5392" start_index="0" end="03485a5d-6a3b-4024-835b-1d5a58e25f69" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="05725f31-03d7-4e7f-9e1d-13382d621617" start_index="0" end="e6d4f5cc-45c8-4807-a812-c16e5ef4cbeb" end_index="0" portType="0" />
   </Connectors>
   <Notes>
-    <Dynamo.Models.NoteModel text="Additionally, you can insert variables within the ranges and sequences like 0..#a..50" x="1029.34141414141" y="447.578643578644" />
-    <Dynamo.Models.NoteModel text="insert ranges and sequences directly into number nodes following this syntax&#xD;&#xA;&#xD;&#xA;Start..End&#xD;&#xA;0..4 will yield  0,1,2,3,4&#xD;&#xA;&#xD;&#xA;Start..End..Interval&#xD;&#xA;0..4..2 will yield 0,2,4&#xD;&#xA;&#xD;&#xA;Start..End..#Count&#xD;&#xA;0..1..#5 will yield 0, 0.25, 0.5, 0.75, 1&#xD;&#xA;&#xD;&#xA;Start..#List Length..Interval&#xD;&#xA;0..#4..10 will yield 0,10,20,30" x="1025.4303030303" y="31.045310245311" />
+    <Dynamo.Models.NoteModel text="insert ranges and sequences directly into number nodes following this syntax&#xD;&#xA;&#xD;&#xA;Start..End&#xD;&#xA;0..4 will yield  0,1,2,3,4&#xD;&#xA;&#xD;&#xA;Start..End..Interval&#xD;&#xA;0..4..2 will yield 0,2,4&#xD;&#xA;&#xD;&#xA;Start..End..#Count&#xD;&#xA;0..1..#5 will yield 0, 0.25, 0.5, 0.75, 1" x="1071.67148094695" y="30.825222870529" />
+    <Dynamo.Models.NoteModel text="insert ranges and sequences directly into Code Block Node (CBN) following this syntax&#xD;&#xA;&#xD;&#xA;Start..End&#xD;&#xA;0..4 will yield  0,1,2,3,4&#xD;&#xA;&#xD;&#xA;Start..End..Interval&#xD;&#xA;0..4..2 will yield 0,2,4&#xD;&#xA;&#xD;&#xA;Start..End..#Count&#xD;&#xA;0..1..#5 will yield 0, 0.25, 0.5, 0.75, 1" x="1748.54630209097" y="16.0790651140811" />
   </Notes>
 </Workspace>

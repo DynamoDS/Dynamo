@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.29588" X="182.747405928229" Y="325.788900897246" zoom="0.695616441301117" Description="" Category="" Name="Home">
+<Workspace Version="0.7.0.18969" X="-75.0175915204869" Y="-236.803176430994" zoom="2.2400998423069" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="7e23ea22-600f-4263-89af-defa541e90f2" nickname="ReferencePoint.ByPoint" x="616.799136739771" y="101.244013709725" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="..\..\RevitNodes.dll" function="Revit.Elements.ReferencePoint.ByPoint@Autodesk.DesignScript.Geometry.Point" />
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="6e9a64fa-8937-4cea-95fc-bd52aaf3404a" nickname="CurveElement.Curve" x="203.586846097514" y="68.7416719484366" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="..\..\RevitNodes.dll" function="Revit.Elements.CurveElement.Curve" />
@@ -14,7 +14,7 @@
   </Connectors>
   <Notes>
     <Dynamo.Models.NoteModel text="Converting Revit curve to Curve Geometry." x="177.184676917625" y="24.6392233648715" />
-    <Dynamo.Models.NoteModel text="Paramter should be 0 to 1 and '#10' defines number of Points on Curve" x="145.907410888007" y="258.579959054354" />
+    <Dynamo.Models.NoteModel text="Parameter should be 0 to 1 and '#10' defines number of Points on Curve" x="145.907410888007" y="258.579959054354" />
     <Dynamo.Models.NoteModel text="Select curve from Revit" x="-66.2431767932392" y="3.38320593452152" />
   </Notes>
 </Workspace>

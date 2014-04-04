@@ -875,10 +875,10 @@ namespace Dynamo.ViewModels
 
                     if (isOverloaded)
                     {
-                        displayString = string.Join(", ", function.Parameters.Select(p => p.ToString()));
-                        if (string.IsNullOrEmpty(displayString))
-                            displayString = "void";
-                        category = category + "." + function.UserFriendlyName; 
+                        var args = string.Join(", ", function.Parameters.Select(p => p.ToString()));
+
+                        if (!string.IsNullOrEmpty(args))
+                            displayString = displayString + "(" + args + ")";
                     }
 
                     var searchElement = new DSFunctionNodeSearchElement(displayString, function);
