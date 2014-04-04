@@ -96,15 +96,14 @@ namespace ProtoScript.Runners
             astCache = new Dictionary<Guid, List<ProtoCore.AST.Node>>();
         }
 
-        public List<AssociativeNode> GetDeltaASTList(GraphSyncData syncData)
+
+        private List<AssociativeNode> GetDeltaAstListDeleted(List<Subtree> deletedSubTrees)
         {
             List<AssociativeNode> finalDeltaAstList = new List<AssociativeNode>();
 
-            UpdateAstCache(syncData);
-
-            if (syncData.DeletedSubtrees != null)
+            if (deletedSubTrees != null)
             {
-                foreach (var st in syncData.DeletedSubtrees)
+                foreach (var st in deletedSubTrees)
                 {
                     List<AssociativeNode> deltaAstList = new List<AssociativeNode>();
                     if (st.AstNodes != null && st.AstNodes.Count > 0)
@@ -154,10 +153,15 @@ namespace ProtoScript.Runners
                     }
                 }
             }
+            return finalDeltaAstList;
+        }
 
-            if (syncData.AddedSubtrees != null)
+        public List<AssociativeNode> GetDeltaAstListAdded(List<Subtree> addedSubTrees)
+        {
+            List<AssociativeNode> finalDeltaAstList = new List<AssociativeNode>();
+            if (addedSubTrees != null)
             {
-                foreach (var st in syncData.AddedSubtrees)
+                foreach (var st in addedSubTrees)
                 {
                     List<AssociativeNode> deltaAstList = new List<AssociativeNode>();
                     if (st.AstNodes != null)
@@ -186,9 +190,15 @@ namespace ProtoScript.Runners
                 }
             }
 
-            if (syncData.ModifiedSubtrees != null)
+            return finalDeltaAstList;
+        }
+
+        public List<AssociativeNode> GetDeltaAstListModified(List<Subtree> modifiedSubTrees)
+        {
+            List<AssociativeNode> finalDeltaAstList = new List<AssociativeNode>();
+            if (modifiedSubTrees != null)
             {
-                foreach (var st in syncData.ModifiedSubtrees)
+                foreach (var st in modifiedSubTrees)
                 {
                     List<AssociativeNode> deltaAstList = new List<AssociativeNode>();
                     Subtree oldSubTree;
@@ -289,8 +299,18 @@ namespace ProtoScript.Runners
                     }
                 }
             }
+            return finalDeltaAstList;
+        }
 
 
+        public List<AssociativeNode> GetDeltaASTList(GraphSyncData syncData)
+        {
+            UpdateAstCache(syncData);
+
+            List<AssociativeNode> finalDeltaAstList = new List<AssociativeNode>();
+            finalDeltaAstList.AddRange(GetDeltaAstListDeleted(syncData.DeletedSubtrees));
+            finalDeltaAstList.AddRange(GetDeltaAstListAdded(syncData.AddedSubtrees));
+            finalDeltaAstList.AddRange(GetDeltaAstListModified(syncData.ModifiedSubtrees));
 
             return finalDeltaAstList;
         }
