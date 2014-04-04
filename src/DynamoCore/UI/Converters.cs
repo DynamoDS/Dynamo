@@ -19,6 +19,7 @@ using Dynamo.Core;
 using ProtoCore.AST.ImperativeAST;
 using System.Windows.Controls.Primitives;
 using Dynamo.UI.Controls;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Controls
 {
@@ -641,6 +642,22 @@ namespace Dynamo.Controls
 
             bool isRow = ((parameter as string).Equals("Row"));
             return isRow ? row : column;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class BrowserItemToBooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is NodeSearchElement)
+                return true;
+
+            return false;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
