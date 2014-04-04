@@ -427,7 +427,7 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="package"></param>
         /// <param name="tol"></param>
-        void IGraphicItem.Tessellate(IRenderPackage package, double tol)
+        void IGraphicItem.Tessellate(IRenderPackage package, double tol, int gridLines)
         {
             package.PushPointVertex(this.X, this.Y, this.Z);
         }
