@@ -348,11 +348,18 @@ namespace Dynamo.Nodes
             if (State == ElementState.Error)
                 return null;
 
+            // Here the "portIndex" is back mapped to the corresponding "Statement" 
+            // object. However, not all "Statement" objects produce an output port,
+            // so "portIndex" cannot be used directly to index into "codeStatements" 
+            // list. This loop goes through "codeStatements", decrementing "portIndex"
+            // along the way to determine the right "Statement" object matching the 
+            // port index.
+            // 
             Statement statement = null;
             var svs = CodeBlockUtils.GetStatementVariables(codeStatements, true);
             for (int stmt = 0, port = 0; stmt < codeStatements.Count; stmt++)
             {
-                if (CodeBlockUtils.StatementRequiresOutputPort(svs, stmt))
+                if (CodeBlockUtils.DoesStatementRequireOutputPort(svs, stmt))
                 {
                     if (port == portIndex)
                     {
@@ -543,7 +550,7 @@ namespace Dynamo.Nodes
             int outportCount = 0;
             for (int i = 0; i < codeStatements.Count; i++)
             {
-                if (CodeBlockUtils.StatementRequiresOutputPort(svs, i) == false)
+                if (CodeBlockUtils.DoesStatementRequireOutputPort(svs, i) == false)
                     continue;
 
                 Statement s = codeStatements[i];
@@ -575,7 +582,7 @@ namespace Dynamo.Nodes
             for (int i = 0; i < codeStatements.Count; i++)
             {
                 //Dont calculate margin for ports that dont require a port
-                if (CodeBlockUtils.StatementRequiresOutputPort(svs, i))
+                if (CodeBlockUtils.DoesStatementRequireOutputPort(svs, i))
                     continue;
 
                 //Margin = diff between this line and prev port line x port height

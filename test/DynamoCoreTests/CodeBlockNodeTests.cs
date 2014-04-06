@@ -226,8 +226,8 @@ b = c[w][x][y][z];";
             string openPath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\Defect_MAGN_784.dyn");
             model.Open(openPath);
 
-            Assert.AreEqual(false, Controller.DynamoModel.CurrentWorkspace.CanUndo);
-            Assert.AreEqual(false, Controller.DynamoModel.CurrentWorkspace.CanRedo);
+            Assert.IsFalse(Controller.DynamoModel.CurrentWorkspace.CanUndo);
+            Assert.IsFalse(Controller.DynamoModel.CurrentWorkspace.CanRedo);
         }
 
         #region CodeBlockUtils Specific Tests
@@ -285,6 +285,7 @@ b = c[w][x][y][z];";
         [Test]
         public void GetStatementVariables01()
         {
+            // Create a statement of "Value = 1234".
             var leftNode = new IdentifierNode("Value");
             var rightNode = new IntNode(1234);
             var binExprNode = new BinaryExpressionNode(
@@ -311,7 +312,7 @@ b = c[w][x][y][z];";
             Assert.Throws<ArgumentNullException>(() =>
             {
                 // Null as argument will cause exception.
-                CodeBlockUtils.StatementRequiresOutputPort(null, 0);
+                CodeBlockUtils.DoesStatementRequireOutputPort(null, 0);
             });
 
             // Create a list of another empty list.
@@ -320,13 +321,13 @@ b = c[w][x][y][z];";
             Assert.Throws<IndexOutOfRangeException>(() =>
             {
                 // -1 as index argument will cause exception.
-                CodeBlockUtils.StatementRequiresOutputPort(svs, -1);
+                CodeBlockUtils.DoesStatementRequireOutputPort(svs, -1);
             });
 
             Assert.Throws<IndexOutOfRangeException>(() =>
             {
                 // Out-of-bound index argument will cause exception.
-                CodeBlockUtils.StatementRequiresOutputPort(svs, 1);
+                CodeBlockUtils.DoesStatementRequireOutputPort(svs, 1);
             });
         }
 
@@ -334,7 +335,7 @@ b = c[w][x][y][z];";
         public void StatementRequiresOutputPort01()
         {
             var svs = new List<List<string>>(); // An empty list should return false.
-            Assert.AreEqual(false, CodeBlockUtils.StatementRequiresOutputPort(svs, 0));
+            Assert.IsFalse(CodeBlockUtils.DoesStatementRequireOutputPort(svs, 0));
         }
 
         [Test]
@@ -358,14 +359,61 @@ b = c[w][x][y][z];";
                 }
             };
 
-            // "Apple" is redefined on the last statement, so first statement no port.
-            Assert.AreEqual(false, CodeBlockUtils.StatementRequiresOutputPort(svs, 0));
+            // "Apple" is redefined on the last statement, no port for first statement.
+            Assert.IsFalse(CodeBlockUtils.DoesStatementRequireOutputPort(svs, 0));
 
             // None of the variables on statement 1 is redefined, so show output port.
-            Assert.AreEqual(true, CodeBlockUtils.StatementRequiresOutputPort(svs, 1));
+            Assert.IsTrue(CodeBlockUtils.DoesStatementRequireOutputPort(svs, 1));
 
             // The last line will display an output port as long as it defines variable.
-            Assert.AreEqual(true, CodeBlockUtils.StatementRequiresOutputPort(svs, 2));
+            Assert.IsTrue(CodeBlockUtils.DoesStatementRequireOutputPort(svs, 2));
+        }
+
+        [Test]
+        public void GetStatementFromOutputPortIndex00()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                CodeBlockUtils.GetStatementFromOutputPortIndex(null, 0);
+            });
+
+            // Empty list returns a null before port index (second parameter) is 
+            // validated to be within range, so 
+            var emptyList = new List<Statement>();
+            Assert.IsNull(CodeBlockUtils.GetStatementFromOutputPortIndex(emptyList, -1));
+        }
+
+
+        [Test]
+        public void GetStatementFromOutputPortIndex01()
+        {
+            // Create a statement of "Value = 1234".
+            var leftNode = new IdentifierNode("Value");
+            var rightNode = new IntNode(1234);
+            var binExprNode = new BinaryExpressionNode(
+                leftNode, rightNode, Operator.assign);
+
+            var statements = new List<Statement>()
+            {
+                Statement.CreateInstance(binExprNode)
+            };
+
+            Assert.Throws<IndexOutOfRangeException>(() =>
+            {
+                // Output port index cannot be less than zero.
+                CodeBlockUtils.GetStatementFromOutputPortIndex(statements, -1);
+            });
+
+            Assert.Throws<IndexOutOfRangeException>(() =>
+            {
+                // Output port index must be less than the number of statements.
+                CodeBlockUtils.GetStatementFromOutputPortIndex(statements, 1);
+            });
+
+            // Should retrieve the one and only Statement object in the list.
+            var targetStatement = statements[0];
+            Assert.AreEqual(targetStatement,
+                CodeBlockUtils.GetStatementFromOutputPortIndex(statements, 0));
         }
 
         #endregion
