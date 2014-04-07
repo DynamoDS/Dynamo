@@ -28,6 +28,8 @@ namespace Dynamo.Tests
     [Journaling(JournalingMode.UsingCommandData)]
     public class DynamoTestFramework : IExternalCommand
     {
+        #region private members
+
         private resultType resultsRoot;
 
         public testsuiteType rootSuite
@@ -73,64 +75,23 @@ namespace Dynamo.Tests
         /// </summary>
         private bool isDebug;
 
+        #endregion
+
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
             AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.CurrentDomain_AssemblyResolve;
-
-            //Get the data map from the running journal file.
-            IDictionary<string, string> dataMap = revit.JournalData;
 
             try
             {
                 var docManager = DocumentManager.Instance;
                 docManager.CurrentUIApplication = revit.Application;
-                //docManager.CurrentDBDocument = revit.Application.ActiveUIDocument.Document;
-                //docManager.CurrentUIDocument = revit.Application.ActiveUIDocument;
-                
+
+                //Get the data map from the running journal file.
+                IDictionary<string, string> dataMap = revit.JournalData;
+
                 bool canReadData = (0 < dataMap.Count);
 
-                if (canReadData)
-                {
-                    if (dataMap.ContainsKey("testName"))
-                    {
-                        testName = dataMap["testName"];
-                    }
-                    if (dataMap.ContainsKey("fixtureName"))
-                    {
-                        fixtureName = dataMap["fixtureName"];
-                    }
-                    if (dataMap.ContainsKey("testAssembly"))
-                    {
-                        testAssembly = dataMap["testAssembly"];
-                    }
-                    if (dataMap.ContainsKey("resultsPath"))
-                    {
-                        resultsPath = dataMap["resultsPath"];
-                    }
-                    if (dataMap.ContainsKey("runDynamo"))
-                    {
-                        try
-                        {
-                            runDynamo = Convert.ToBoolean(dataMap["runDynamo"]);
-                        }
-                        catch
-                        {
-                            runDynamo = false;
-                        }
-
-                    }
-                    if (dataMap.ContainsKey("debug"))
-                    {
-                        try
-                        {
-                            isDebug = Convert.ToBoolean(dataMap["debug"]);
-                        }
-                        catch
-                        {
-                            isDebug = false;
-                        }
-                    }
-                }
+                ReadDataFromJournalHash(canReadData, dataMap);
 
                 if (string.IsNullOrEmpty(testAssembly))
                 {
@@ -152,83 +113,10 @@ namespace Dynamo.Tests
                     StartDynamo();
                 }
 
-                // Tests do not necessarily run from idle thread
+                // Tests do not run from idle thread.
                 TransactionManager.Instance.DoAssertInIdleThread = false;
 
-                //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
-
-                //Tests must be executed on the main thread in order to access the Revit API.
-                //NUnit's SimpleTestRunner runs the tests on the main thread
-                //http://stackoverflow.com/questions/16216011/nunit-c-run-specific-tests-through-coding?rq=1
-                CoreExtensions.Host.InitializeService();
-                var runner = new SimpleTestRunner();
-                var builder = new TestSuiteBuilder();
-                string testAssemblyLoc = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), testAssembly);
-
-                var package = new TestPackage("DynamoTestFramework", new List<string>() {testAssemblyLoc});
-                runner.Load(package);
-                TestSuite suite = builder.Build(package);
-
-                TestFixture fixture = null;
-                FindFixtureByName(out fixture, suite, fixtureName);
-                if (fixture == null)
-                    throw new Exception(string.Format("Could not find fixture: {0}", fixtureName));
-
-                InitializeResults();
-
-                if (!canReadData)
-                {
-                    var currInvalid = Convert.ToInt16(resultsRoot.invalid);
-                    resultsRoot.invalid = currInvalid + 1;
-                    resultsRoot.testsuite.result = "Error";
-
-                    throw new Exception("Journal file's data map contains no information about tests.");
-                }
-
-                //find or create a fixture
-                var fixtureResult = FindOrCreateFixtureResults(dynamoResults, fixtureName);
-
-                //convert the fixture's results array to a list
-                var runningResults = fixtureResult.results.Items.ToList();
-
-                //if the test name is not specified
-                //run all tests in the fixture
-                if (string.IsNullOrEmpty(testName) || testName == "None")
-                {
-                    var fixtureResults = RunFixture(fixture);
-                    runningResults.AddRange(fixtureResults);
-                }
-                else
-                {
-                    var t = FindTestByName(fixture, testName);
-                    if (t != null)
-                    {
-                        if (t is ParameterizedMethodSuite)
-                        {
-                            var paramSuite = t as ParameterizedMethodSuite;
-                            runningResults.AddRange(
-                                paramSuite.Tests.OfType<TestMethod>()
-                                .Select(RunTest).Cast<object>());
-                        }
-                        else
-                        {
-                            var method = t as TestMethod;
-                            if (method != null)
-                            {
-                                runningResults.Add(RunTest(method));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //we have a journal file, but the specified test could not be found
-                        var currInvalid = Convert.ToInt16(resultsRoot.invalid);
-                        resultsRoot.invalid = currInvalid + 1;
-                        resultsRoot.testsuite.result = "Error";
-                    }
-                }
-
-                fixtureResult.results.Items = runningResults.ToArray();
+                var fixtureResult = RunTests(canReadData);
 
                 CalculateCaseTotalsOnSuite(fixtureResult);
                 CalculateSweetTotalsOnOuterSweet(rootSuite);
@@ -252,6 +140,130 @@ namespace Dynamo.Tests
             }
 
             return Result.Succeeded;
+        }
+
+        private testsuiteType RunTests(bool canReadData)
+        {
+            //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
+
+            //Tests must be executed on the main thread in order to access the Revit API.
+            //NUnit's SimpleTestRunner runs the tests on the main thread
+            //http://stackoverflow.com/questions/16216011/nunit-c-run-specific-tests-through-coding?rq=1
+            CoreExtensions.Host.InitializeService();
+            var runner = new SimpleTestRunner();
+            var builder = new TestSuiteBuilder();
+            string testAssemblyLoc = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), testAssembly);
+
+            var package = new TestPackage("DynamoTestFramework", new List<string>() {testAssemblyLoc});
+            runner.Load(package);
+            TestSuite suite = builder.Build(package);
+
+            TestFixture fixture = null;
+            FindFixtureByName(out fixture, suite, fixtureName);
+            if (fixture == null)
+                throw new Exception(string.Format("Could not find fixture: {0}", fixtureName));
+
+            InitializeResults();
+
+            // If we can't read data, add a failed test result to root.
+            if (!canReadData)
+            {
+                var currInvalid = Convert.ToInt16(resultsRoot.invalid);
+                resultsRoot.invalid = currInvalid + 1;
+                resultsRoot.testsuite.result = "Error";
+
+                throw new Exception("Journal file's data map contains no information about tests.");
+            }
+
+            //find or create a fixture
+            var fixtureResult = FindOrCreateFixtureResults(dynamoResults, fixtureName);
+
+            //convert the fixture's results array to a list
+            var runningResults = fixtureResult.results.Items.ToList();
+
+            //if the test name is not specified
+            //run all tests in the fixture
+            if (string.IsNullOrEmpty(testName) || testName == "None")
+            {
+                var fixtureResults = RunFixture(fixture);
+                runningResults.AddRange(fixtureResults);
+            }
+            else
+            {
+                var t = FindTestByName(fixture, testName);
+                if (t != null)
+                {
+                    if (t is ParameterizedMethodSuite)
+                    {
+                        var paramSuite = t as ParameterizedMethodSuite;
+                        runningResults.AddRange(
+                            paramSuite.Tests.OfType<TestMethod>()
+                                .Select(RunTest).Cast<object>());
+                    }
+                    else
+                    {
+                        var method = t as TestMethod;
+                        if (method != null)
+                        {
+                            runningResults.Add(RunTest(method));
+                        }
+                    }
+                }
+                else
+                {
+                    //we have a journal file, but the specified test could not be found
+                    var currInvalid = Convert.ToInt16(resultsRoot.invalid);
+                    resultsRoot.invalid = currInvalid + 1;
+                    resultsRoot.testsuite.result = "Error";
+                }
+            }
+
+            fixtureResult.results.Items = runningResults.ToArray();
+            return fixtureResult;
+        }
+
+        private void ReadDataFromJournalHash(bool canReadData, IDictionary<string, string> dataMap)
+        {
+            if (!canReadData) return;
+
+            if (dataMap.ContainsKey("testName"))
+            {
+                testName = dataMap["testName"];
+            }
+            if (dataMap.ContainsKey("fixtureName"))
+            {
+                fixtureName = dataMap["fixtureName"];
+            }
+            if (dataMap.ContainsKey("testAssembly"))
+            {
+                testAssembly = dataMap["testAssembly"];
+            }
+            if (dataMap.ContainsKey("resultsPath"))
+            {
+                resultsPath = dataMap["resultsPath"];
+            }
+            if (dataMap.ContainsKey("runDynamo"))
+            {
+                try
+                {
+                    runDynamo = Convert.ToBoolean(dataMap["runDynamo"]);
+                }
+                catch
+                {
+                    runDynamo = false;
+                }
+            }
+            if (dataMap.ContainsKey("debug"))
+            {
+                try
+                {
+                    isDebug = Convert.ToBoolean(dataMap["debug"]);
+                }
+                catch
+                {
+                    isDebug = false;
+                }
+            }
         }
 
         private void StartDynamo()
