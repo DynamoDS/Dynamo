@@ -45,10 +45,17 @@ namespace Dynamo.Nodes
 
     public class CurveByPoints : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "RevitNodes.dll",
+                "CurveByPoints.ByReferencePoints", "CurveByPoints.ByReferencePoints@ReferencePoint,bool");
+        }
     }
 
     public class CurveByPointsByLine : MigrationNode
     {
+
     }
 
     public class CurveRef : MigrationNode
@@ -83,6 +90,12 @@ namespace Dynamo.Nodes
 
     public class ThickenCurveLoop : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "PolyCurve.OffsetPlanarPolyCurve", 
+                "PolyCurve.OffsetPlanarPolyCurve@double,bool,bool");
+        }
     }
 
     public class ListCurveLoop : MigrationNode
@@ -165,6 +178,12 @@ namespace Dynamo.Nodes
 
     public class CurveLength : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Curve.Length",
+                "Curve.Length");
+        }
     }
 }
 
