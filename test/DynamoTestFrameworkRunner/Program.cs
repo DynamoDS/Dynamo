@@ -86,7 +86,7 @@ namespace DynamoTestFrameworkRunner
                 {"a=|assembly=", "The path to the test assembly.", v => _testAssembly = Path.GetFullPath(v)},
                 {"r=|results=", "The path to the results file.", v=>_results = Path.GetFullPath(v)},
                 {"f:|fixture:", "The full name (with namespace) of the test fixture.", v => _fixture = v},
-                {"n:|test name:", "The name of a test to run", v => _test = v},
+                {"t:|testName:", "The name of a test to run", v => _test = v},
                 {"d|debug", "Run in debug mode.", v=>_debug = v != null},
                 {"h|help", "Show this message and exit.", v=> showHelp = v != null}
             };
@@ -146,7 +146,7 @@ namespace DynamoTestFrameworkRunner
             try
             {
                 var assembly = Assembly.LoadFrom(assemblyPath);
-
+                
                 // If a fixture is specified, then create 
                 // journals for the fixture
                 if (!string.IsNullOrEmpty(fixtureName))
@@ -158,6 +158,21 @@ namespace DynamoTestFrameworkRunner
                         return false;
                     }
                 }
+                // If no fixture is specified, but a test is specified, then
+                // attempt to create a journal for that test.
+                //else if (string.IsNullOrEmpty(fixtureName) && !string.IsNullOrEmpty(testName))
+                //{
+                //    // Attempt to find the test by method name alone
+                //    var test = assembly.GetTypes().SelectMany(t => t.GetMethods()).FirstOrDefault(x => x.DeclaringType.Name + "." + x.Name == testName);
+                //    if (test != null)
+                //    {
+                //        if (!CreateJournalsForFixture(test.DeclaringType, testName))
+                //        {
+                //            Console.WriteLine(string.Format("A journal could not be created for {0}", testName));
+                //            return false;
+                //        }
+                //    }
+                //}
                 // If no fixture is specified, then create
                 // journals for every fixture in the assembly
                 else
