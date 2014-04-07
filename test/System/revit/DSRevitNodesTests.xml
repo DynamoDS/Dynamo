@@ -17,21 +17,21 @@
 				<test name="ByFamilyAndName_GoodArgs" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="ByFamilyAndName_BadArgs" modelPath=".\MassWithBoxAndCone.rfa" />
 			</testFixture>-->
-			<testFixture name="AdaptiveComponentTests">
+			<!--<testFixture name="AdaptiveComponentTests">
 				<test name="ByPoints_ValidInput" modelPath=".\AdaptiveComponents.rfa" />
 				<test name="ByPoints_NonMatchingNumberOfPoints" modelPath=".\AdaptiveComponents.rfa" />
 				<test name="ByPoints_NullFamilySymbol" modelPath=".\AdaptiveComponents.rfa" />
 				<test name="ByPoints_NullPts" modelPath=".\AdaptiveComponents.rfa" />
 				<test name="ByPointsOnCurve_ValidInput" modelPath=".\AdaptiveComponents.rfa" />
 				<test name="ByPointsOnFace_ValidInput" modelPath=".\AdaptiveComponents.rfa" />
-			</testFixture>
-			<testFixture name="FamilyInstanceTests">
+			</testFixture>-->
+			<!--<testFixture name="FamilyInstanceTests">
 				<test name="ByCoordinates_ValidInput" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="ByPoint_ValidInput" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="ByPoint_NullFamilySymbol" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="ByPoint_NullPoint" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="ByPoint_NullFamilySymbol" modelPath=".\MassWithBoxAndCone.rfa" />
-			</testFixture>
+			</testFixture>-->
 			<testFixture name="ElementSelectorTests">
 				<test name="FamilyByElementId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="FormByType_ValidArgs" modelPath=".\block.rfa" />
