@@ -101,7 +101,7 @@ namespace Dynamo.Nodes
             inputCode = statements.Where(stmnt => stmnt.Any(c => !char.IsWhiteSpace(c)))
                                   .Aggregate("", (current, stmnt) => current + (stmnt + ";"));
 
-            if (inputCode.Equals(""))
+            if (string.IsNullOrEmpty(inputCode))
                 return inputCode;
 
             //Add the ';' if required
@@ -428,7 +428,7 @@ namespace Dynamo.Nodes
             //New code => Revamp everything
             codeStatements.Clear();
 
-            if (Code.Equals("")) //If its null then set preview to null
+            if (string.IsNullOrEmpty(Code))
             {
                 previewVariable = null;
             }
