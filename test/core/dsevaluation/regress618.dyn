@@ -1,0 +1,14 @@
+<Workspace Version="0.6.3.26821" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="be1aa537-72ec-4dea-88b0-835d381f215a" nickname="Code Block" x="25" y="166.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a = 0..10;&#xA;b = a;&#xA;b[2] = 100;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="63064224-2665-4470-9df2-4d4f1b6e490b" nickname="Code Block" x="88" y="323.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="f = 0;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="60e002e2-e723-4e39-b059-d761596f24da" nickname="+" x="335" y="239.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="" function="+@," />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="01a3ab8b-b622-452d-b847-8078e5d58e57" nickname="Code Block" x="192" y="111.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="x = b;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="be1aa537-72ec-4dea-88b0-835d381f215a" start_index="1" end="01a3ab8b-b622-452d-b847-8078e5d58e57" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="63064224-2665-4470-9df2-4d4f1b6e490b" start_index="0" end="60e002e2-e723-4e39-b059-d761596f24da" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="01a3ab8b-b622-452d-b847-8078e5d58e57" start_index="0" end="60e002e2-e723-4e39-b059-d761596f24da" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

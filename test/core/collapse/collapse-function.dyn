@@ -1,7 +1,7 @@
 <Workspace Version="0.6.2.23503" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
   <Elements>
-    <Dynamo.Nodes.Addition type="Dynamo.Nodes.Addition" guid="34d7a656-338d-43bd-bb3d-224515a855eb" nickname="Add" x="394" y="305.3" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-    <Dynamo.Nodes.Multiplication type="Dynamo.Nodes.Multiplication" guid="7bae9908-6e44-41a4-8b9a-e6cd58791194" nickname="Multiply" x="520" y="148.3" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Addition type="Dynamo.Nodes.Addition" guid="34d7a656-338d-43bd-bb3d-224515a855eb" nickname="Add" x="394" y="305.3" isVisible="true" isUpstreamVisible="true" lacing="Shortest" />
+    <Dynamo.Nodes.Multiplication type="Dynamo.Nodes.Multiplication" guid="7bae9908-6e44-41a4-8b9a-e6cd58791194" nickname="Multiply" x="520" y="148.3" isVisible="true" isUpstreamVisible="true" lacing="Shortest" />
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="7c7dd0c1-209f-4b92-bb34-94c746bb660e" nickname="Number" x="154" y="222.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="0" />
     </Dynamo.Nodes.DoubleInput>

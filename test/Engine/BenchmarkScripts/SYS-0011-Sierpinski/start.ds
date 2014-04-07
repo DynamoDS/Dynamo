@@ -1,0 +1,60 @@
+import ("ProtoGeometry.dll");
+import ("Math.dll");
+
+class tetrahedron
+{
+	basepoints: Point[];
+    top: Point;
+	constructor tetrahedron(p: Point[])
+	{
+		basepoints = {p[0], p[1], p[2]};
+		top = p[3];
+	}
+
+}
+
+def mid(p1: Point, p2: Point)
+{
+	return=Point.ByCoordinates((p1.X+p2.X)/2, (p1.Y+p2.Y)/2, (p1.Z+p2.Z)/2);
+}
+
+def render (p: tetrahedron)
+	{
+		p0=p.basepoints[0];	p1=p.basepoints[1];	p2=p.basepoints[2];	//p3=p.point[3];
+		
+        s1=BSplineCurve.ByControlVertices({p0,p1,p2},1,true);//Surface.LoftFromCrossSections({l1,l2,l3});
+		s2=Circle.ByCenterPointRadius(p.top,0.01);
+		sol=Solid.LoftFromCrossSections({s1,s2});
+		return={sol};
+		
+	}
+
+
+def createTetra (p: tetrahedron)
+{
+	
+	p0=p.basepoints[0];	p1=p.basepoints[1];	p2=p.basepoints[2]; p3=p.top;
+	m1=mid(p0,p3);	m2=mid(p2,p3);	m3=mid(p1,p3);
+	m4=mid(p0,p2);	m5=mid(p2,p1);	m6=mid(p1,p0);
+
+	tet1=tetrahedron.tetrahedron({p3,m1,m2,m3});
+	tet2=tetrahedron.tetrahedron({p0,m4,m6,m1});
+	tet3=tetrahedron.tetrahedron({p2,m4,m5,m2});
+	tet4=tetrahedron.tetrahedron({p1,m5,m6,m3});
+
+	return={tet1, tet2, tet3, tet4};
+}
+
+point1=Point.ByCoordinates(5,0,0);
+point2=Point.ByCoordinates(-5,0,0);
+point3=Point.ByCoordinates(0,Math.Sqrt(75),0);
+point4=Point.ByCoordinates(0,Math.Sqrt(75)/3, Math.Sqrt(75));
+
+t1=tetrahedron.tetrahedron({point1,point2,point3,point4});
+t2=Flatten(createTetra(t1));
+t3=Flatten(createTetra(t2));
+t4=Flatten(createTetra(t3));
+
+neglect = render(t4);
+
+

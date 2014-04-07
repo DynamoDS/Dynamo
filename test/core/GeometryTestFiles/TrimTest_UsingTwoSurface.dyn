@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.18768" X="118.507242757243" Y="253.200356310358" zoom="0.6" Description="" Category="" Name="Home">
+<Workspace Version="0.6.3.18768" X="118.507242757243" Y="253.200356310358" zoom="0.6" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.TrimNode type="Dynamo.Nodes.TrimNode" guid="97ba959c-ad9f-4358-84db-8bedd9020069" nickname="Trim" x="1315.69841269842" y="768.024603174603" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.ExtrudeNode type="Dynamo.Nodes.ExtrudeNode" guid="bdbca2f7-2e79-4aaf-978a-5bf519b9bdd3" nickname="Extrude Curve" x="813.587301587301" y="531.385714285714" isVisible="true" isUpstreamVisible="true" lacing="Longest" />

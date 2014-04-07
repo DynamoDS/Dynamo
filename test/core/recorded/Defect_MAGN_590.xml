@@ -1,0 +1,20 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand NodeId="dd732f82-2d2e-40eb-ad1a-65b6eea66eac" NodeName="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="dd732f82-2d2e-40eb-ad1a-65b6eea66eac" Modifiers="0" />
+  <DragSelectionCommand X="315" Y="231" DragOperation="0" />
+  <DragSelectionCommand X="533" Y="264" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="88295180-7478-4c70-af15-cdac34835abf" NodeName="Code Block" X="160" Y="285" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="88295180-7478-4c70-af15-cdac34835abf" Name="Code" Value="a=1;&#xD;&#xA;b=2;&#xD;&#xA;c=3;" />
+  <MakeConnectionCommand NodeId="88295180-7478-4c70-af15-cdac34835abf" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="dd732f82-2d2e-40eb-ad1a-65b6eea66eac" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="88295180-7478-4c70-af15-cdac34835abf" PortIndex="1" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="dd732f82-2d2e-40eb-ad1a-65b6eea66eac" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="88295180-7478-4c70-af15-cdac34835abf" PortIndex="2" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="dd732f82-2d2e-40eb-ad1a-65b6eea66eac" PortIndex="2" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="88295180-7478-4c70-af15-cdac34835abf" Name="Code" Value="a=1;&#xA;&#xA;c=3;" />
+</Commands>

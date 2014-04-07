@@ -7,6 +7,9 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
+using RevitServices.Persistence;
+using RevitServices.Threading;
+using RevitServices.Transactions;
 using Expression = Dynamo.FScheme.Expression;
 using Value = Dynamo.FScheme.Value;
 
@@ -26,22 +29,16 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override bool RequiresRecalc
-        {
-            get { return Inputs[0].Item2.RequiresRecalc; }
-            set { }
-        }
-
-        protected override INode Build(
-            Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
-        {
-            if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
-            {
-                Error("Input must be connected.");
-                throw new Exception("Transaction Node requires all inputs to be connected.");
-            }
-            return new PreviewUpdate(this) { WrappedNode = base.Build(preBuilt, outPort) };
-        }
+        //protected override INode Build(
+        //    Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+        //{
+        //    if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
+        //    {
+        //        Error("Input must be connected.");
+        //        throw new Exception("Transaction Node requires all inputs to be connected.");
+        //    }
+        //    return new PreviewUpdate(this) { WrappedNode = base.Build(preBuilt, outPort) };
+        //}
 
         protected override InputNode Compile(IEnumerable<string> portNames)
         {
@@ -80,15 +77,17 @@ namespace Dynamo.Nodes
 
                                 if (dynSettings.Controller.DynamoViewModel.RunInDebug)
                                 {
-                                    _node.OldValue = f.Invoke(FSharpList<Value>.Empty);
-                                    return _node.OldValue;
+                                    //_node.OldValue = f.Invoke(FSharpList<Value>.Empty);
+                                    //return _node.OldValue;
+                                    return f.Invoke(FSharpList<Value>.Empty);
                                 }
 
-                                return IdlePromise<Value>.ExecuteOnIdle(
-                                    () =>
+                                return IdlePromise.ExecuteOnIdleSync(
+                                () =>
                                     {
-                                        _node.OldValue = f.Invoke(FSharpList<Value>.Empty);
-                                        return _node.OldValue;
+                                        //_node.OldValue = f.Invoke(FSharpList<Value>.Empty);
+                                        //return _node.OldValue;
+                                        return f.Invoke(FSharpList<Value>.Empty);
                                     });
                             }));
 
@@ -99,13 +98,12 @@ namespace Dynamo.Nodes
                         FSharpFunc<FSharpList<Value>, Value>.FromConverter(
                             _ =>
                             {
-                                if (_node.Controller.RunCancelled)
+                                if (dynSettings.Controller.RunCancelled)
                                     throw new CancelEvaluationException(false);
 
                                 if (!dynSettings.Controller.DynamoViewModel.RunInDebug)
                                 {
-                                    dynRevitSettings.Controller.InIdleThread = true;
-                                    dynRevitSettings.Controller.InitTransaction();
+                                    TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
                                 }
 
                                 return Value.NewDummy("started transaction");
@@ -120,8 +118,7 @@ namespace Dynamo.Nodes
                             {
                                 if (!dynRevitSettings.Controller.DynamoViewModel.RunInDebug)
                                 {
-                                    dynRevitSettings.Controller.EndTransaction();
-                                    dynRevitSettings.Controller.InIdleThread = false;
+                                    TransactionManager.Instance.ForceCloseTransaction();
 
                                     dynSettings.Controller.DynamoModel.OnRequestLayoutUpdate(
                                         this,

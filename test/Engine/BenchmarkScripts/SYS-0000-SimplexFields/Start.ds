@@ -1,0 +1,28 @@
+import ("Experimental.dll");
+import ("Math.dll");
+import ("ProtoGeometry.dll");
+
+xMax = yMax = 1000; 
+xCount = yCount = 100;
+lineLength = 15;
+
+
+xNoiseField = 0..(xCount * 0.02)..#xCount;
+yNoiseField = 0..(xCount * 0.02)..#yCount;
+
+noise = SimplexNoise.Generate(xNoiseField<1>, yNoiseField<2>);
+
+pts = RenderField((0..xMax..#xCount)<1>, (0..yMax..#xCount)<2>, noise<1><2>);
+
+def RenderField(x,y,z)
+{
+    deg = z * 360;
+    v = Vector.ByCoordinates(Math.Cos(deg), Math.Sin(deg), 0);
+    ln = Line.ByStartPointDirectionLength(
+        Point.ByCoordinates(x,y,0), 
+        v, lineLength);
+    ln = ln.SetColor(Color.ByARGB(128, 255, 255, 255));
+    return = ln;
+}
+
+Print("Score: " + xCount * yCount);

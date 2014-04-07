@@ -29,11 +29,31 @@
                                 True="#38D7FF" 
                                 False="#444">
     </controls:BooleanToSelectionColorConverter>
+
     <controls:StateToColorConverter x:Key="StateToColorConverter"
-                                        ActiveBrush="{StaticResource nodeActiveBrush}"
-                                        DeadBrush="{StaticResource nodeDeadBrush}"
-                                        ErrorBrush="{StaticResource nodeErrorBrush}">
+        HeaderBackgroundInactive="{StaticResource headerBackgroundInactive}"
+        HeaderForegroundInactive="{StaticResource headerForegroundInactive}"
+        HeaderBorderInactive="{StaticResource headerBorderInactive}"
+        OuterBorderInactive="{StaticResource outerBorderInactive}"
+        BodyBackgroundInactive="{StaticResource bodyBackgroundInactive}"
+        HeaderBackgroundActive="{StaticResource headerBackgroundActive}"
+        HeaderForegroundActive="{StaticResource headerForegroundActive}"
+        HeaderBorderActive="{StaticResource headerBorderActive}"
+        OuterBorderActive="{StaticResource outerBorderActive}"
+        BodyBackgroundActive="{StaticResource bodyBackgroundActive}"
+        HeaderBackgroundWarning="{StaticResource headerBackgroundWarning}"
+        HeaderForegroundWarning="{StaticResource headerForegroundWarning}"
+        HeaderBorderWarning="{StaticResource headerBorderWarning}"
+        OuterBorderWarning="{StaticResource outerBorderWarning}"
+        BodyBackgroundWarning="{StaticResource bodyBackgroundWarning}"
+        HeaderBackgroundError="{StaticResource headerBackgroundError}"
+        HeaderForegroundError="{StaticResource headerForegroundError}"
+        HeaderBorderError="{StaticResource headerBorderError}"
+        OuterBorderError="{StaticResource outerBorderError}"
+        BodyBackgroundError="{StaticResource bodyBackgroundError}"
+        OuterBorderSelection="{StaticResource outerBorderSelection}">
     </controls:StateToColorConverter>
+
     <controls:PortNameConverter x:Key="PortNameConverter"/>
     <controls:FilePathDisplayConverter x:Key="FilePathDisplayConverter"/>
     <controls:PathToFileNameConverter x:Key="PathToFileNameConverter"/>

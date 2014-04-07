@@ -40,6 +40,8 @@ namespace Dynamo.ViewModels
             None,
             LibraryItemPreview,
             NodeTooltip,
+            Warning,
+            WarningCondensed,
             Error,
             ErrorCondensed,
             Preview,
@@ -180,6 +182,7 @@ namespace Dynamo.ViewModels
         private void UpdatePosition(object parameter)
         {
             InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
+
             TargetTopLeft = data.TopLeft;
             TargetBotRight = data.BotRight;
         }
@@ -279,6 +282,7 @@ namespace Dynamo.ViewModels
                     else
                         Content = FullContent;
                     break;
+                case Style.WarningCondensed:
                 case Style.ErrorCondensed:
                     Content = "...";
                     break;

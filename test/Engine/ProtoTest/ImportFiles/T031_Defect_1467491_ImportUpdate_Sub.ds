@@ -1,0 +1,18 @@
+class A
+{
+    x : int;
+    
+    constructor (X:int)
+    {
+        x = X;
+    }
+    
+    def New()
+    {
+        return = A(x + 1);
+    }
+   
+}
+t = 2;
+a = A(t);
+a = a.New();

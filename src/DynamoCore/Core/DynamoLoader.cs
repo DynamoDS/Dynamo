@@ -1,13 +1,15 @@
-﻿using System;
+﻿//#define __NO_SAMPLES_MENU
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Controls;
 using System.Reflection;
 using System.IO;
 using System.Windows.Controls;
 using System.Windows;
+using Autodesk.DesignScript.Runtime;
 using String = System.String;
 
 namespace Dynamo.Utilities
@@ -112,12 +114,98 @@ namespace Dynamo.Utilities
                 }
             }
 
+#if USE_DSENGINE
+            dynSettings.Controller.SearchViewModel.Add(dynSettings.Controller.EngineController.GetFunctionGroups());
+#endif
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 
             #endregion
 
         }
 
+        /// <summary>
+        /// Load all types which inherit from NodeModel whose assemblies are located in
+        /// the bin/nodes directory. Add the types to the searchviewmodel and
+        /// the controller's dictionaries.
+        /// </summary>
+        internal static void LoadNodeModels()
+        {
+            string location = Path.Combine(GetDynamoDirectory(), "nodes");
+
+            var allLoadedAssembliesByPath = new Dictionary<string, Assembly>();
+            var allLoadedAssemblies = new Dictionary<string, Assembly>();
+
+            // cache the loaded assembly information
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                try
+                {
+                    allLoadedAssembliesByPath[assembly.Location] = assembly;
+                    allLoadedAssemblies[assembly.FullName] = assembly;
+                }
+                catch { }
+            }
+
+            // find all the dlls registered in all search paths
+            // and concatenate with all dlls in the current directory
+            List<string> allDynamoAssemblyPaths =
+                SearchPaths.Select(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly))
+                           .Aggregate(
+                                Directory.GetFiles(location, "*.dll") as IEnumerable<string>,
+                                Enumerable.Concat).ToList();
+
+            // add the core assembly to get things like code block nodes and watches.
+            allDynamoAssemblyPaths.Add(Path.Combine(GetDynamoDirectory(), "DynamoCore.dll"));
+
+            var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
+            {
+                Assembly result;
+                allLoadedAssemblies.TryGetValue(args.Name, out result);
+                return result;
+            });
+
+            AppDomain.CurrentDomain.AssemblyResolve += resolver;
+
+            foreach (var assemblyPath in allDynamoAssemblyPaths)
+            {
+                var fn = Path.GetFileName(assemblyPath);
+
+                if (fn == null)
+                    continue;
+
+                // if the assembly has already been loaded, then
+                // skip it, otherwise cache it.
+                if (LoadedAssemblyNames.Contains(fn))
+                    continue;
+
+                LoadedAssemblyNames.Add(fn);
+
+                if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
+                {
+                    LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath]);
+                }
+                else
+                {
+                    try
+                    {
+                        var assembly = Assembly.LoadFrom(assemblyPath);
+                        allLoadedAssemblies[assembly.GetName().Name] = assembly;
+                        LoadNodesFromAssembly(assembly);
+                    }
+                    catch (BadImageFormatException)
+                    {
+                        //swallow these warnings.
+                    }
+                    catch (Exception e)
+                    {
+                        DynamoLogger.Instance.Log(e);
+                    }
+                }
+            }
+
+            dynSettings.Controller.SearchViewModel.Add(dynSettings.Controller.EngineController.GetFunctionGroups());
+            AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+        }
 
         /// <summary>
         ///     Determine if a Type is a node.  Used by LoadNodesFromAssembly to figure
@@ -127,7 +215,7 @@ namespace Dynamo.Utilities
         /// <returns>True if the type is node.</returns>
         public static bool IsNodeSubType(Type t)
         {
-            return t.Namespace == "Dynamo.Nodes" &&
+            return //t.Namespace == "Dynamo.Nodes" &&
                    !t.IsAbstract &&
                    t.IsSubclassOf(typeof(NodeModel));
         }
@@ -159,9 +247,22 @@ namespace Dynamo.Utilities
                         //only load types that are in the right namespace, are not abstract
                         //and have the elementname attribute
                         var attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
-                        var isHidden = t.GetCustomAttributes(typeof (NodeHiddenInBrowserAttribute), true).Any();
+                        var isDeprecated = t.GetCustomAttributes(typeof (NodeDeprecatedAttribute), true).Any();
+                        var isMetaNode = t.GetCustomAttributes(typeof(IsMetaNodeAttribute), false).Any();
+                        var isDSCompatible = t.GetCustomAttributes(typeof(IsDesignScriptCompatibleAttribute), true).Any();
 
-                        if (!IsNodeSubType(t)) /*&& attribs.Length > 0*/
+                        bool isHidden = false;
+                        var attrs = t.GetCustomAttributes(typeof(IsVisibleInDynamoLibraryAttribute), true);
+                        if (null != attrs && attrs.Count() > 0)
+                        {
+                            var isVisibleAttr = attrs[0] as IsVisibleInDynamoLibraryAttribute;
+                            if (null != isVisibleAttr && isVisibleAttr.Visible == false)
+                            {
+                                isHidden = true;
+                            }
+                        }
+
+                        if (!IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
                             continue;
 
                         //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
@@ -207,7 +308,11 @@ namespace Dynamo.Utilities
 
                         string typeName;
 
-                        if (attribs.Length > 0 && !isHidden)
+#if USE_DSENGINE
+                        if (attribs.Length > 0 && !isDeprecated && !isMetaNode && isDSCompatible && !isHidden)
+#else
+                        if (attribs.Length > 0 && !isDeprecated && !isMetaNode && !isHidden)
+#endif
                         {
                             searchViewModel.Add(t);
                             typeName = (attribs[0] as NodeNameAttribute).Name;
@@ -269,87 +374,6 @@ namespace Dynamo.Utilities
             }
 
             return AssemblyPathToTypesLoaded[assembly.Location];
-        }
-
-
-        /// <summary>
-        ///     Setup the "Samples" sub-menu with contents of samples directory.
-        /// </summary>
-        /// <param name="bench">The bench where the UI will be loaded</param>
-        public static void LoadSamplesMenu(DynamoView bench)
-        {
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string samplesPath = Path.Combine(directory, "samples");
-
-            if (Directory.Exists(samplesPath))
-            {
-                string[] dirPaths = Directory.GetDirectories(samplesPath);
-                string[] filePaths = Directory.GetFiles(samplesPath, "*.dyn");
-
-                // handle top-level files
-                if (filePaths.Any())
-                {
-                    foreach (string path in filePaths)
-                    {
-                        var item = new MenuItem
-                        {
-                            Header = Path.GetFileNameWithoutExtension(path),
-                            Tag = path
-                        };
-                        item.Click += OpenSample_Click;
-                        bench.SamplesMenu.Items.Add(item);
-                    }
-                }
-
-                // handle top-level dirs, TODO - factor out to a seperate function, make recusive
-                if (dirPaths.Any())
-                {
-                    foreach (string dirPath in dirPaths)
-                    {
-                        var dirItem = new MenuItem
-                        {
-                            Header = Path.GetFileName(dirPath),
-                            Tag = Path.GetFileName(dirPath)
-                        };
-
-                        filePaths = Directory.GetFiles(dirPath, "*.dyn");
-                        if (filePaths.Any())
-                        {
-                            foreach (string path in filePaths)
-                            {
-                                var item = new MenuItem
-                                {
-                                    Header = Path.GetFileNameWithoutExtension(path),
-                                    Tag = path
-                                };
-                                item.Click += OpenSample_Click;
-                                dirItem.Items.Add(item);
-                            }
-                        }
-                        bench.SamplesMenu.Items.Add(dirItem);
-                    }
-                    return;
-                }
-            }
-            //this.fileMenu.Items.Remove(this.samplesMenu);
-        }
-
-        /// <summary>
-        ///     Callback for opening a sample.
-        /// </summary>
-        private static void OpenSample_Click(object sender, RoutedEventArgs e)
-        {
-            var path = (string)((MenuItem)sender).Tag;
-
-            if (dynSettings.Controller.DynamoViewModel.IsUILocked)
-                dynSettings.Controller.DynamoViewModel.QueueLoad(path);
-            else
-            {
-                if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
-                    dynSettings.Controller.DynamoModel.ViewHomeWorkspace();
-
-                dynSettings.Controller.DynamoModel.OpenWorkspace(path);
-            }
         }
 
         /// <summary>

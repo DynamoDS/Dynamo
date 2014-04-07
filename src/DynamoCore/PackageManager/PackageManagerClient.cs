@@ -217,7 +217,7 @@ namespace Dynamo.PackageManager
 
             if (currentFunDef != null)
             {
-                ShowNodePublishInfo(new List<FunctionDefinition> { currentFunDef });
+                ShowNodePublishInfo(new List<CustomNodeDefinition> { currentFunDef });
             }
             else
             {
@@ -261,9 +261,9 @@ namespace Dynamo.PackageManager
 
         private void ShowNodePublishInfo(object funcDef)
         {
-            if (funcDef is List<FunctionDefinition>)
+            if (funcDef is List<CustomNodeDefinition>)
             {
-                var fs = funcDef as List<FunctionDefinition>;
+                var fs = funcDef as List<CustomNodeDefinition>;
 
                 foreach (var f in fs)
                 {

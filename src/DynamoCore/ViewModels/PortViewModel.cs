@@ -55,6 +55,11 @@ namespace Dynamo.ViewModels
             get { return _port.IsConnected; }
         }
 
+        public double Height
+        {
+            get { return _port.Height; }
+        }
+
         public Point Center
         {
             get { return _port.Center; }
@@ -75,6 +80,11 @@ namespace Dynamo.ViewModels
         {
             get { return _port.UsingDefaultValue; }
             set { _port.UsingDefaultValue = value; }
+        }
+
+        public Thickness MarginThickness
+        {
+            get { return _port.MarginThickness; }
         }
 
         public PortViewModel(PortModel port, NodeModel node)
@@ -126,6 +136,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "UsingDefaultValue":
                     RaisePropertyChanged("UsingDefaultValue");
+                    break;
+                case "MarginThickness":
+                    RaisePropertyChanged("MarginThickness");
                     break;
             }
             

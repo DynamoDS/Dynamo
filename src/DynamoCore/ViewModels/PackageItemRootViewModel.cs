@@ -22,7 +22,7 @@ namespace Dynamo.PackageManager.UI
         private ObservableCollection<PackageItemViewModel> _items = new ObservableCollection<PackageItemViewModel>();
         public override ObservableCollection<PackageItemViewModel> Items { get { return _items; } set { _items = value; } }
 
-        public PackageItemRootViewModel(FunctionDefinition def)
+        public PackageItemRootViewModel(CustomNodeDefinition def)
         {
             this.Height = 32;
             this.DependencyType = DependencyType.CustomNode;

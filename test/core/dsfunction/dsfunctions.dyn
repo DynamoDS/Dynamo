@@ -1,0 +1,37 @@
+<Workspace Version="0.6.3.18405" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="072a034d-33e8-4cf7-9ada-166c06597a37" nickname="Number" x="36" y="260.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="623e7075-0f00-4569-8b4e-37ff3e96fa12" nickname="Count" x="167" y="243.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="" Category="Builtin Functions" ClassName="" Name="Count" DisplayName="Count" Type="GenericFunction" Parameters="array" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="1b6de472-0402-42c4-bb72-6cbd7f267cf2" nickname="+" x="168" y="24.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="" Category="Opertors" ClassName="" Name="%add" DisplayName="+" Type="GenericFunction" Parameters="operand1;operand2" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="2b9388a1-0568-4fbb-87d7-c574a3f7d73a" nickname="*" x="168" y="125.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="" Category="Opertors" ClassName="" Name="%mul" DisplayName="*" Type="GenericFunction" Parameters="operand1;operand2" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="e2f3d3f2-d89e-4d42-8049-31cbb611d812" nickname="Math.Cos" x="168" y="339.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="Math.dll" Category="Math.Math" ClassName="Math" Name="Cos" DisplayName="Math.Cos" Type="StaticMethod" Parameters="value" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="c17e4e98-6627-47c2-a272-47470343b2c6" nickname="Math.PI" x="172" y="424.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="Math.dll" Category="Math.Math" ClassName="Math" Name="%get_PI" DisplayName="Math.PI" Type="StaticProperty" Parameters="" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="a89d3583-99d4-446e-98f5-dde49d05798a" nickname="Point.X" x="402" y="336.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="ProtoGeometry.dll" Category="ProtoGeometry.Point" ClassName="Point" Name="%get_X" DisplayName="Point.X" Type="InstanceProperty" Parameters="" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="1f727871-4331-45b4-9451-c44fc9b7fb28" nickname="Point.ByCoordinates" x="173" y="504.8" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="072a034d-33e8-4cf7-9ada-166c06597a37" start_index="0" end="1b6de472-0402-42c4-bb72-6cbd7f267cf2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="072a034d-33e8-4cf7-9ada-166c06597a37" start_index="0" end="1b6de472-0402-42c4-bb72-6cbd7f267cf2" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="072a034d-33e8-4cf7-9ada-166c06597a37" start_index="0" end="623e7075-0f00-4569-8b4e-37ff3e96fa12" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="072a034d-33e8-4cf7-9ada-166c06597a37" start_index="0" end="e2f3d3f2-d89e-4d42-8049-31cbb611d812" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="072a034d-33e8-4cf7-9ada-166c06597a37" start_index="0" end="1f727871-4331-45b4-9451-c44fc9b7fb28" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="072a034d-33e8-4cf7-9ada-166c06597a37" start_index="0" end="1f727871-4331-45b4-9451-c44fc9b7fb28" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="072a034d-33e8-4cf7-9ada-166c06597a37" start_index="0" end="1f727871-4331-45b4-9451-c44fc9b7fb28" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1f727871-4331-45b4-9451-c44fc9b7fb28" start_index="0" end="a89d3583-99d4-446e-98f5-dde49d05798a" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Experimental", "Experimental.csproj", "{E88B55C3-216B-4B4C-B46A-EC208D3520C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "..\Tests\Tests.csproj", "{A0797EDF-37F8-451A-A1A5-77CE896D3A35}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E88B55C3-216B-4B4C-B46A-EC208D3520C7}.Debug|x64.ActiveCfg = Debug|x64
+		{E88B55C3-216B-4B4C-B46A-EC208D3520C7}.Debug|x64.Build.0 = Debug|x64
+		{E88B55C3-216B-4B4C-B46A-EC208D3520C7}.Release|x64.ActiveCfg = Release|x64
+		{E88B55C3-216B-4B4C-B46A-EC208D3520C7}.Release|x64.Build.0 = Release|x64
+		{A0797EDF-37F8-451A-A1A5-77CE896D3A35}.Debug|x64.ActiveCfg = Debug|x64
+		{A0797EDF-37F8-451A-A1A5-77CE896D3A35}.Debug|x64.Build.0 = Debug|x64
+		{A0797EDF-37F8-451A-A1A5-77CE896D3A35}.Release|x64.ActiveCfg = Release|x64
+		{A0797EDF-37F8-451A-A1A5-77CE896D3A35}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

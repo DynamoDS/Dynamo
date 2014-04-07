@@ -1,0 +1,10 @@
+<Workspace Version="0.6.2.26029" X="-81.4428571428574" Y="-121" zoom="1.3" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="3c9b3bb2-726f-4dbf-b889-9332604c1c01" nickname="Code Block" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a = 1;&#xA;b;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="ec0acae2-cf18-431c-9fbc-75802a771258" nickname="Code Block" x="119" y="390.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="b = 3;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ec0acae2-cf18-431c-9fbc-75802a771258" start_index="0" end="3c9b3bb2-726f-4dbf-b889-9332604c1c01" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

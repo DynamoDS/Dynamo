@@ -19,58 +19,40 @@
     <SolidColorBrush x:Key="WorkspaceTabBorderSelectedFalse" Color="#232323"/>    
 
     <!--Nodes-->
-    
-    <Color x:Key="red1" R="255" G="64" B="64" A="255"></Color>
-    <Color x:Key="red2" R="205" G="51" B="51" A="255"></Color>
-    <Color x:Key="green1" R="193" G="255" B="193" A="255" ></Color>
-    <Color x:Key="green2" R="155" G="250" B="155" A="255" ></Color>
-    <Color x:Key="orange1" R="255" G="207" B="98" A="255" ></Color>
-    <Color x:Key="orange2" R="235" G="187" B="78" A="255" ></Color>
-    <Color x:Key="gray1" R="220" G="220" B="220" A="255" ></Color>
-    <Color x:Key="gray2" R="192" G="192" B="192" A="255" ></Color>
 
-    <LinearGradientBrush x:Key="nodeActiveBrush">
-        <LinearGradientBrush.StartPoint>
-            <Point X="0.5" Y="0"/>
-        </LinearGradientBrush.StartPoint>
-        <LinearGradientBrush.EndPoint>
-            <Point X="0.5" Y="1"/>
-        </LinearGradientBrush.EndPoint>
-        <LinearGradientBrush.GradientStops>
-            <GradientStop Color="{StaticResource orange1}" Offset="0"></GradientStop>
-            <GradientStop Color="{StaticResource orange2}" Offset=".25"></GradientStop>
-            <GradientStop Color="{StaticResource orange2}" Offset="1"></GradientStop>
-        </LinearGradientBrush.GradientStops>
-    </LinearGradientBrush>
-    <LinearGradientBrush x:Key="nodeDeadBrush">
-        <LinearGradientBrush.StartPoint>
-            <Point X="0.5" Y="0"/>
-        </LinearGradientBrush.StartPoint>
-        <LinearGradientBrush.EndPoint>
-            <Point X="0.5" Y="1"/>
-        </LinearGradientBrush.EndPoint>
-        <LinearGradientBrush.GradientStops>
-            <GradientStop Color="{StaticResource gray1}" Offset="0"></GradientStop>
-            <GradientStop Color="{StaticResource gray2}" Offset=".25"></GradientStop>
-            <GradientStop Color="{StaticResource gray2}" Offset="1"></GradientStop>
-        </LinearGradientBrush.GradientStops>
-    </LinearGradientBrush>
-    <LinearGradientBrush x:Key="nodeErrorBrush">
-        <LinearGradientBrush.StartPoint>
-            <Point X="0.5" Y="0"/>
-        </LinearGradientBrush.StartPoint>
-        <LinearGradientBrush.EndPoint>
-            <Point X="0.5" Y="1"/>
-        </LinearGradientBrush.EndPoint>
-        <LinearGradientBrush.GradientStops>
-            <GradientStop Color="{StaticResource red1}" Offset="0"></GradientStop>
-            <GradientStop Color="{StaticResource red2}" Offset=".25"></GradientStop>
-            <GradientStop Color="{StaticResource red2}" Offset="1"></GradientStop>
-        </LinearGradientBrush.GradientStops>
-    </LinearGradientBrush>
-    
+    <!-- Node colors in inactive state -->
+    <SolidColorBrush x:Key="headerBackgroundInactive" Color="#cbc6be" />
+    <SolidColorBrush x:Key="headerForegroundInactive" Color="#4c4b4a" />
+    <SolidColorBrush x:Key="headerBorderInactive" Color="#7f7e7d" />
+    <SolidColorBrush x:Key="outerBorderInactive" Color="#7f7e7d" />
+    <SolidColorBrush x:Key="bodyBackgroundInactive" Color="#dbd7d1" />
+
+    <!-- Node colors in active state -->
+    <SolidColorBrush x:Key="headerBackgroundActive" Color="#5e5c5a" />
+    <SolidColorBrush x:Key="headerForegroundActive" Color="#ffffff" />
+    <SolidColorBrush x:Key="headerBorderActive" Color="#5e5c5a" />
+    <SolidColorBrush x:Key="outerBorderActive" Color="#5e5c5a" />
+    <SolidColorBrush x:Key="bodyBackgroundActive" Color="#cbc6be" />
+
+    <!-- Node colors in warning state -->
+    <SolidColorBrush x:Key="headerBackgroundWarning" Color="#5e5543" />
+    <SolidColorBrush x:Key="headerForegroundWarning" Color="#ffffff" />
+    <SolidColorBrush x:Key="headerBorderWarning" Color="#5e5543" />
+    <SolidColorBrush x:Key="outerBorderWarning" Color="#5e5543" />
+    <SolidColorBrush x:Key="bodyBackgroundWarning" Color="#fcdc95" />
+
+    <!-- Node colors in erroneous state -->
+    <SolidColorBrush x:Key="headerBackgroundError" Color="#c14c49" />
+    <SolidColorBrush x:Key="headerForegroundError" Color="#ffffff" />
+    <SolidColorBrush x:Key="headerBorderError" Color="#c14c49" />
+    <SolidColorBrush x:Key="outerBorderError" Color="#c14c49" />
+    <SolidColorBrush x:Key="bodyBackgroundError" Color="#f8bcbd" />
+
+    <!-- Node colors in selected state -->
+    <SolidColorBrush x:Key="outerBorderSelection" Color="#4192d9" />
+
     <!--Update Manager-->
     <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="OrangeRed"/>
     <SolidColorBrush x:Key="UpdateManagerUpToDateBrush" Color="Green"/>
-    
+
 </ResourceDictionary>

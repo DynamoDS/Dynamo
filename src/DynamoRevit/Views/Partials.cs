@@ -7,17 +7,14 @@ using Autodesk.Revit.DB;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using RevitServices.Persistence;
 
 namespace Dynamo.Revit
 {
-    public partial class RevitTransactionNode : NodeModel
+    public partial class RevitTransactionNode
     {
-        public override void SetupCustomUIElements(object ui)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var nodeUI = ui as dynNodeView;
-
-            base.SetupCustomUIElements(nodeUI);
-
             var mi = new MenuItem
             {
                 Header = "Show Elements"
@@ -35,7 +32,7 @@ namespace Dynamo.Revit
                 return;
 
             //select the elements
-            dynRevitSettings.Doc.Selection.Elements.Clear();
+            DocumentManager.Instance.CurrentUIDocument.Selection.Elements.Clear();
 
             var existingElements = new List<Element>();
 
@@ -48,10 +45,10 @@ namespace Dynamo.Revit
                 }
             }
 
-            existingElements.ForEach(x => dynRevitSettings.Doc.Selection.Elements.Add(x));
+            existingElements.ForEach(x => DocumentManager.Instance.CurrentUIDocument.Selection.Elements.Add(x));
 
             //show the elements
-            dynRevitSettings.Doc.ShowElements(existingElements.Select(x => x.Id).ToList());
+            DocumentManager.Instance.CurrentUIDocument.ShowElements(existingElements.Select(x => x.Id).ToList());
         }
     }
 }

@@ -1,0 +1,204 @@
+import("ProtoGeometry.dll");	   //  use the standard DesignScript geometry library
+import("Math.dll");
+
+def Unflatten : var[][](input1Darray : var[], length : int)
+{
+    return2Darray = { { } };
+    
+    [Imperative]
+    {
+        iCount = Count(input1Darray);
+        
+        if (length <= iCount)
+        {
+            iCount = Math.Floor(iCount / length);
+            
+            index = 0;
+            for(i in 0..(iCount-1))
+            {
+                for(j in 0..length-1)
+                {
+                    return2Darray[i][j] = input1Darray[index];
+                    
+                    index = index + 1;
+                }    
+            }
+        }
+    }
+    
+    return = return2Darray;
+}
+
+
+def FindMax : double (input : double[][])
+{
+	flattenedInput = Flatten(input);
+	indexOfMax = SortIndexByValue (flattenedInput, false);
+
+	return = flattenedInput[indexOfMax[0]];
+}
+
+def FindMin : double (input : double[][])
+{
+	flattenedInput = Flatten(input);
+	indexOfMin = SortIndexByValue (flattenedInput, true);
+
+	return = flattenedInput[indexOfMin[0]];
+}
+
+def Centroid : Point(inputPoints : Point[]) = Point.ByCoordinates(Average(inputPoints.X), Average(inputPoints.Y), Average(inputPoints.Z));
+
+def QuadPoints : Point[][][](inputPoints : Point[][])
+{
+    // assumes that inputPoints is a rectrangular array at least 2x2
+    
+    // converts an m by n array of points
+    // into a m-1 by n-1 by 4 array of (quad) points
+    
+    iCount = Count(inputPoints) -1;
+    jCount = Count(inputPoints[0]) - 1;
+    
+    quadPoints = { };
+    [Imperative]
+    {
+        if ((iCount > 1) && (jCount > 1))
+        {
+            for(i in 1..iCount)
+            {
+                for(j in 1 .. jCount)
+                {
+                    quadPoints[i-1][j-1] = { inputPoints[i - 1][j - 1], inputPoints[i][j - 1], inputPoints[i][j], inputPoints[i - 1][j] };
+                }
+            }
+        }
+    }
+    return = quadPoints;
+}
+
+class CrossBar 
+{
+    Result : var[]; 
+
+    public constructor ByQuadPoints(inputPoints : Point[], radius: double, levelOfDetail : int, color : Color)
+    {
+        [Imperative]
+        {
+            if (levelOfDetail > 1)
+            {
+                [Associative]
+                {
+                    midPoint = Point.ByCoordinates(Average(inputPoints.X), Average(inputPoints.Y), Average(inputPoints.Z));
+		            Result =  Cone.ByStartPointEndPointRadius(inputPoints,  midPoint, radius, radius).SetColor(color);
+                }
+            }
+            else if (levelOfDetail == 1)
+            {
+                [Associative]
+                {
+                    Result = Cone.ByStartPointEndPointRadius(inputPoints[{ 0, 1 }], inputPoints[{ 2, 3 }], radius, radius).SetColor(color);
+                }
+            }
+            else
+            {   [Associative]
+                {
+                    Result = Line.ByStartPointEndPoint(inputPoints[{ 0, 1 }], inputPoints[{ 2, 3 }]).SetColor(color);
+                }
+            }
+        }
+    }
+}
+
+
+def CombineArrays : double[][](input : double[][][])
+{
+    iCount = Count(input);
+    result = input[0];
+    
+    [Imperative]
+    {
+        for (i in(1..(iCount - 1)))
+        {
+            [Associative]
+            {
+                result = result + input[i];
+            }
+        }
+    }
+    return = result;
+}
+
+def HeightDisplacementFromDistance : double(ctrlPoint : Point, targetPoint : Point, limit : double, height : double)
+{
+    distance = ctrlPoint.DistanceTo(targetPoint);
+    heightToUse = ctrlPoint.Z < height ? height : -height;
+    proportionA = (limit - distance) / limit;
+    proportionB = (proportionA *2.0)- 1.0;
+    
+    sineValue = Math.Sin(proportionB * 90.0);
+    // Print("heightToUse = " + heightToUse);
+    return = distance<limit? (sineValue * heightToUse)+heightToUse : 0;
+}
+
+class Axis
+{
+    CurveGeometry : Line; // for now
+    
+    constructor ByBasePoint(basePoint : Point, defaultHeight : double)
+    {
+        defaultUpperPoint = basePoint.Translate(0.0, 0.0, defaultHeight);
+        
+        CurveGeometry  = Line.ByStartPointEndPoint(basePoint, defaultUpperPoint);
+    }
+    
+    constructor ByBasePointRoof(basePoint : Point, thresholdDistance : double, xSpread : double, ySpread : double, flattenedRoofPoints : Point[], fixed : bool)
+    {
+        nearestRoofPointToBasePoint = basePoint.SelectNearest(flattenedRoofPoints).SetVisibility(false);
+        
+        heightDelta = basePoint.Z < nearestRoofPointToBasePoint.Z ? nearestRoofPointToBasePoint.Z - basePoint.Z : - (basePoint.Z - nearestRoofPointToBasePoint.Z);
+        defaultUpperPoint = basePoint.Translate(xSpread, ySpread, heightDelta).SetVisibility(false);
+        
+        nearestRoofPoint = defaultUpperPoint.SelectNearest(flattenedRoofPoints).SetVisibility(false);
+        
+        distance = defaultUpperPoint.DistanceTo(nearestRoofPoint);
+        
+        direction = defaultUpperPoint.DirectionTo(nearestRoofPoint);
+        tolerance = thresholdDistance * 2.5;
+        
+        intermediatePoint = defaultUpperPoint.Translate(direction, distance * ((tolerance - distance) / tolerance)); // .SetVisibility(false);
+        
+        // Print("distance = " + distance + "tolerance = " + tolerance + " thresholdDistance = " + thresholdDistance);
+        // (limit - distance) / limit;
+        // actualUpperPoint = distance < thresholdDistance*2.0 ? nearestRoofPoint : defaultUpperPoint;
+        
+        actualUpperPoint = fixed? defaultUpperPoint: (distance < thresholdDistance ? nearestRoofPoint : (distance < tolerance ? intermediatePoint :defaultUpperPoint));
+        CurveGeometry = Line.ByStartPointEndPoint(basePoint, actualUpperPoint).SetVisibility(false);
+    }
+}
+
+class Tree
+{
+    BasePoint : Point;
+    TrunkAxis : Axis;
+    Trunk : Cone;
+    BranchPoint : Point;
+    BranchAxes;
+    Branches : Cone[];
+    
+    constructor ByBasePointRoof(basePoint : Point, thresholdDistance : double, roofPoints : Point[][], branchRatio : double, xBranchSpread : double, yBranchSpread : double, baseRadius : double, branchStartRadius : double, branchEndRadius : double, fixed : bool)
+    {
+        BasePoint = basePoint;
+        flattenedRoofPoints = Flatten(roofPoints);
+        TrunkAxis = Axis.ByBasePointRoof(basePoint, thresholdDistance, 0.0, 0.0, flattenedRoofPoints, fixed);
+        
+        BranchPoint = basePoint.Translate(TrunkAxis.CurveGeometry.Direction, TrunkAxis.CurveGeometry.Length * branchRatio).SetVisibility(false);
+        
+        Trunk = Cone.ByStartPointEndPointRadius(basePoint, BranchPoint, baseRadius, branchStartRadius);
+        
+        xSpreads = { -xBranchSpread, xBranchSpread, xBranchSpread, -xBranchSpread };
+        ySpreads = { -yBranchSpread, -yBranchSpread, yBranchSpread, yBranchSpread };
+        
+        actualThresholdDistance = thresholdDistance * { 0.4, 0.5, 0.4, 0.5 }; // stagger crierial to mimic walking 
+        BranchAxes = Axis.ByBasePointRoof(BranchPoint, thresholdDistance*0.5, xSpreads, ySpreads, flattenedRoofPoints, fixed);
+        Branches = Cone.ByStartPointEndPointRadius(BranchPoint, BranchAxes.CurveGeometry.EndPoint, branchStartRadius, branchEndRadius);
+    }
+}

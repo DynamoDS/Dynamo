@@ -1,0 +1,28 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="3ead0dae-90da-4d41-a6c8-275b6da3830b" NodeName="Code Block" X="127" Y="112" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="3ead0dae-90da-4d41-a6c8-275b6da3830b" Name="Code" Value="1" />
+  <CreateNodeCommand NodeId="9d6a92fc-bfa0-4865-b195-49a9f8ebb961" NodeName="Code Block" X="121" Y="241" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="9d6a92fc-bfa0-4865-b195-49a9f8ebb961" Name="Code" Value="2" />
+  <CreateNodeCommand NodeId="10be958a-9405-4b53-a6dc-3633d392e695" NodeName="Code Block" X="162" Y="402" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="10be958a-9405-4b53-a6dc-3633d392e695" Name="Code" Value="3" />
+  <CreateNodeCommand NodeId="22939bf5-50bc-4aa3-9c91-0dc5b5017252" NodeName="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <MakeConnectionCommand NodeId="3ead0dae-90da-4d41-a6c8-275b6da3830b" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="22939bf5-50bc-4aa3-9c91-0dc5b5017252" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="9d6a92fc-bfa0-4865-b195-49a9f8ebb961" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="22939bf5-50bc-4aa3-9c91-0dc5b5017252" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="10be958a-9405-4b53-a6dc-3633d392e695" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="22939bf5-50bc-4aa3-9c91-0dc5b5017252" PortIndex="2" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="ModifyX_FirstTime" PauseDurationInMs="100" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="3ead0dae-90da-4d41-a6c8-275b6da3830b" Name="Code" Value="10;" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="ModifyX_SecondTime" PauseDurationInMs="100" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="3ead0dae-90da-4d41-a6c8-275b6da3830b" Name="Code" Value="5;" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+</Commands>

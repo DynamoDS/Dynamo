@@ -155,6 +155,11 @@
                             <ColumnDefinition Width="10" />
                             <ColumnDefinition Width="10" />
                         </Grid.ColumnDefinitions>
+                        <Border Name="CheckMarkBackground"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                HorizontalAlignment="Stretch"
+                                Visibility="Visible" />
                         <ContentPresenter Name="Icon"
                                           Grid.Column="0"
                                           Margin="6,0,6,0"
@@ -256,12 +261,11 @@
                                           Margin="6,0,6,0"
                                           VerticalAlignment="Center"
                                           ContentSource="Icon" />
-                        <Border Name="Check"
+                        <Border Name="CheckMarkBackground"
                                 Grid.Column="0"
-                                Width="13"
-                                Height="13"
-                                HorizontalAlignment="Center"
-                                Visibility="Collapsed">
+                                Background="Transparent"
+                                HorizontalAlignment="Stretch"
+                                Visibility="Visible">
                             <Image Name="CheckMark"
                                    Width="8"
                                    Height="8"
@@ -293,18 +297,12 @@
                     </Trigger>
                     <Trigger Property="IsChecked"
                              Value="true">
-                        <Setter TargetName="Check"
-                                Property="Visibility"
-                                Value="Visible" />
                         <Setter TargetName="CheckMark"
                                 Property="Visibility"
                                 Value="Visible" />
                     </Trigger>
                     <Trigger Property="IsChecked"
                              Value="false">
-                        <Setter TargetName="Check"
-                                Property="Visibility"
-                                Value="Collapsed" />
                         <Setter TargetName="CheckMark"
                                 Property="Visibility"
                                 Value="Hidden" />

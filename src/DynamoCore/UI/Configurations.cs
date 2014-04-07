@@ -5,8 +5,26 @@ namespace Dynamo.UI
 {
     public class Configurations
     {
+        #region Dynamo Universal Constants
+        // Add 0.5 to place the point in the middle of a pixel to sharpen it
+        public static readonly double PixelSharpeningConstant = 0.5;
+        public static readonly string BackupFolderName = "backup";
+        public static readonly string FilePathAttribName = "TargetXmlFilePath";
+        public static readonly double DoubleSliderTextBoxWidth = 55.0;
+        public static readonly double IntegerSliderTextBoxWidth = 30.0;
+        #endregion
+
+        #region Usage Reporting Error Message
+        public static string GitHubBugReportingLink = "https://github.com/ikeough/Dynamo/issues?state=open";
+
+        public static string UsageReportingErrorMessage = "Uh oh...\n\rWe're sorry - we tried to save your decisions, but something went wrong. The decision probably hasn't been saved. This really shouldn't have happened. Please get in touch via GitHub and send us this information.\n\rYou can also try deleting [FILEPATH] and trying again.\n\rDepending on your previous choice, instrumentation may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.\n\rSorry about that.";
+        #endregion
+
         #region Canvas Configurations
         //public static readonly double Minimum
+
+        // Generic Constants
+        public static readonly double PortHeightInPixels = 26.0;
 
         // Grid Settings
         public static readonly int GridSpacing = 100;
@@ -15,6 +33,10 @@ namespace Dynamo.UI
 
         // Canvas Control
         public static readonly double ZoomIncrement = 0.05;
+
+        // Double Clicking
+        // Maximum distance allowed between first and second click to be accepted as a double click
+        public static readonly int DoubleClickAcceptableDistance = 10; // in pixel
         #endregion
 
         #region Tab Bar Configurations
@@ -66,6 +88,12 @@ namespace Dynamo.UI
 
         #endregion
 
+        #region Warning Bubble
+        public static SolidColorBrush WarningFrameFill = new SolidColorBrush(Color.FromRgb(0xff, 0xef, 0xa0));
+        public static SolidColorBrush WarningFrameStrokeColor = new SolidColorBrush(Color.FromRgb(0xf2, 0xbd, 0x53));
+        public static SolidColorBrush WarningTextForeground = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
+        #endregion
+
         #region Error Bubble
 
         public static SolidColorBrush ErrorFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
@@ -85,7 +113,7 @@ namespace Dynamo.UI
         public static double ErrorCondensedContentMaxHeight = ErrorCondensedMaxHeight - 16;
 
         public static double ErrorTextFontSize = 13;
-        public static FontWeight ErrorTextFontWeight = FontWeights.Light;
+        public static FontWeight ErrorTextFontWeight = FontWeights.Normal;
         public static SolidColorBrush ErrorTextForeground = new SolidColorBrush(Color.FromRgb(190, 70, 70));
         public static TextWrapping ErrorContentWrapping = TextWrapping.Wrap;
         public static Thickness ErrorContentMargin = new Thickness(5, 5, 5, 12);
@@ -147,11 +175,29 @@ namespace Dynamo.UI
 
         #endregion
 
+        #region CodeBlockNode
+
+        public static readonly int CBNMaxPortNameLength = 24;
+        public static readonly int CBNMaxTextBoxWidth = 500;
+        public static readonly double CBNFontSize = 14.67;
+
+        #endregion
+
+        #region Externally Visible Strings
+
+        public static readonly string SessionTraceDataXmlTag = "SessionTraceData";
+        public static readonly string NodeTraceDataXmlTag = "NodeTraceData";
+        public static readonly string CallsiteTraceDataXmlTag = "CallsiteTraceData";
+        public static readonly string NodeIdAttribName = "NodeId";
+
+        #endregion
+
         public const string UpdateDownloadLocation = "http://dyn-builds-data.s3-us-west-2.amazonaws.com/";
     }
 
     public class ResourceNames
     {
+        public static readonly string FontResourceUri = "./UI/Fonts/#Open Sans";
         public static readonly string ResourceBaseUri = "pack://application:,,,/DynamoCore;component/UI/Images/";
     }
 }

@@ -1,0 +1,46 @@
+import("ProtoGeometry.dll");
+import("Math.dll");
+GeometrySettings.PointVisibility = false;
+WCS = CoordinateSystem.Identity();
+
+len = 10;
+wid = 10;
+hei = 20;
+
+p[0] = Point.ByCoordinates(len / 2, 0, 0);
+p[1] = Point.ByCoordinates(0, wid / 2, hei / 2.5);
+p[2] = Point.ByCoordinates(-len / 2, 0, 0);
+p[3] = Point.ByCoordinates(0, -wid / 2, hei / 2.5);
+
+centerCurve = BSplineCurve.ByPoints(p, true);
+
+q[0] = Point.ByCoordinates(len * 2.5, 0, hei / 2);
+q[1] = Point.ByCoordinates(0, wid, 0);
+q[2] = Point.ByCoordinates(-len * 1.5, 0, hei / 2.5);
+q[3] = Point.ByCoordinates(0, -wid * 1.5, 0);
+
+outerCurve = BSplineCurve.ByPoints(q, true).SetColor(Color.Green);
+
+surface = Surface.LoftFromCrossSections({ centerCurve, outerCurve });
+surface.Visible = false;
+
+//bSplineSurf = surface.ConvertToBSplineSurface();
+
+u = 0..1..#40;
+cenPts = Point.AtParameter(centerCurve, u);
+outPts = Point.AtParameter(outerCurve, u);
+
+v = -3..Count(u) - 4;
+line1 = Line.ByStartPointEndPoint(cenPts[v], outPts[v]).Translate(0, 0, -20).SetVisibility(false);
+lines1 = line1.Project(surface, WCS.ZAxis);
+
+w = -5..Count(u) - 6;
+line2 = Line.ByStartPointEndPoint(cenPts[w], outPts[w + 5]).Translate(0, 0, -20).SetVisibility(false);
+lines2 = line2.Project(surface, WCS.ZAxis);
+
+
+thickness = 0.1;
+cir = Circle.ByCenterPointRadius(p[0], thickness);
+
+solid = Solid.Sweep(cir, { lines1, lines2, centerCurve, outerCurve });
+solid.Color = Color.Orange;

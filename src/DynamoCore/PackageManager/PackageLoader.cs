@@ -98,7 +98,7 @@ namespace Dynamo.PackageManager
             return LocalPackages.Any(ele => ele.ContainsFile(path));
         }
 
-        public bool IsUnderPackageControl(FunctionDefinition def)
+        public bool IsUnderPackageControl(CustomNodeDefinition def)
         {
             return IsUnderPackageControl(def.WorkspaceModel.FileName);
         }
@@ -118,7 +118,7 @@ namespace Dynamo.PackageManager
             return LocalPackages.FirstOrDefault(package => package.LoadedTypes.Contains(t));
         }
 
-        public Package GetOwnerPackage(FunctionDefinition def)
+        public Package GetOwnerPackage(CustomNodeDefinition def)
         {
             return GetOwnerPackage(def.WorkspaceModel.FileName);
         }

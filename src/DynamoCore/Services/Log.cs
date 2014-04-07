@@ -150,7 +150,7 @@ namespace net.riversofdata.dhlogger
         System.Diagnostics.Stopwatch sw;
 
         private Thread uploaderThread;
-        private const int EMPTY_DELAY_MS = 1000;
+        private const int EMPTY_DELAY_MS = 500;
         private const int ERROR_DELAY_MS = 10000;
         private const int DELAY_MS = 10;
 
@@ -180,7 +180,7 @@ namespace net.riversofdata.dhlogger
                 sw.Start();
 
 
-                uploaderThread = new Thread(new ThreadStart(UploaderExec));
+                uploaderThread = new Thread(UploaderExec);
                 uploaderThread.IsBackground = true;
                 uploaderThread.Start();
             }

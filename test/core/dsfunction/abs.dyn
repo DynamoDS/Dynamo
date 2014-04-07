@@ -1,0 +1,22 @@
+<Workspace Version="0.6.3.21110" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="123b4328-1f4a-4a18-8689-04f90abe312b" nickname="Number" x="73" y="162.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-10" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="2c26388d-3d14-443a-ac41-c2bb0987a58e" nickname="Math.Abs" x="235" y="220.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="Math.dll" Category="Math.Math" ClassName="Math" Name="Abs" DisplayName="Math.Abs" Type="StaticMethod" Parameters="d_value" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0c85072f-f9c5-45f3-8099-832161dfcacb" nickname="*" x="414" y="271.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="" Category="Opertors" ClassName="" Name="%mul" DisplayName="*" Type="GenericFunction" Parameters="operand1;operand2" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="8d75c6a9-1b69-40af-a01f-5b39cdd06a24" nickname="Number" x="236" y="333.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="10" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="123b4328-1f4a-4a18-8689-04f90abe312b" start_index="0" end="2c26388d-3d14-443a-ac41-c2bb0987a58e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2c26388d-3d14-443a-ac41-c2bb0987a58e" start_index="0" end="0c85072f-f9c5-45f3-8099-832161dfcacb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8d75c6a9-1b69-40af-a01f-5b39cdd06a24" start_index="0" end="0c85072f-f9c5-45f3-8099-832161dfcacb" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,7 +1,7 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using Dynamo;
-using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 
 namespace DynamoCore.UI.Controls
@@ -19,10 +19,15 @@ namespace DynamoCore.UI.Controls
 
         private void OnInstallButtonClicked(object sender, RoutedEventArgs e)
         {
-            DynamoLogger.Instance.LogInfo("UpdateNotificationControl-OnInstallButtonClicked",
-                "UpdateNotificationControl-OnInstallButtonClicked");
+            //DynamoLogger.Instance.LogInfo("UpdateNotificationControl-OnInstallButtonClicked",
+            //    "UpdateNotificationControl-OnInstallButtonClicked");
 
-            dynSettings.Controller.UpdateManager.QuitAndInstallUpdate(); // Quit application
+            //dynSettings.Controller.UpdateManager.QuitAndInstallUpdate(); // Quit application
+
+            //Disable the update check for 0.6.3. Just send he user to the downloads page.
+            //dynSettings.Controller.UpdateManager.CheckForProductUpdate();
+
+            Process.Start("http://dyn-builds-pub.s3-website-us-west-2.amazonaws.com/");
         }
     }
 }

@@ -2,11 +2,24 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Xml;
 
 namespace Dynamo.Utilities
 {
     public static class ExtensionMethods
     {
+        public struct EnumerationIndex<T>
+        {
+            public int Index;
+            public T Element;
+        }
+
+
+        public static IEnumerable<EnumerationIndex<T>> Enumerate<T>(this IEnumerable<T> seq)
+        {
+            return seq.Select((x, i) => new EnumerationIndex<T> { Element = x, Index = i });
+        }
+
         /// <summary>
         /// An extension to the ObservableCollection class which allows you 
         /// to remove all objects which don't pass a predicate method.
@@ -163,6 +176,37 @@ namespace Dynamo.Utilities
             }
             return tsl;
         }
-        
+
+        public static string GetFullName(this Delegate del)
+        {
+            if (del.Method.DeclaringType == null)
+                throw new ArgumentException("Delegate has no declaring type.", @"del");
+
+            return String.Format("{0}.{1}", del.Method.DeclaringType.FullName, del.Method.Name);
+        }
+
+        public static string GetChildNodeStringValue(XmlNode nodeElement)
+        {
+            return GetChildNodeValue(nodeElement, typeof(string).FullName);
+        }
+
+        public static string GetChildNodeDoubleValue(XmlNode nodeElement)
+        {
+            return GetChildNodeValue(nodeElement, typeof(double).FullName);
+        }
+
+        private static string GetChildNodeValue(XmlNode nodeElement, string typeName)
+        {
+            var query = from XmlNode childNode in nodeElement.ChildNodes
+                        where childNode.Name.Equals(typeName)
+                        from XmlAttribute attribute in childNode.Attributes
+                        where attribute.Name.Equals("value")
+                        select attribute;
+
+            foreach (XmlAttribute attribute in query)
+                return attribute.Value;
+
+            return string.Empty;
+        }
     }
 }

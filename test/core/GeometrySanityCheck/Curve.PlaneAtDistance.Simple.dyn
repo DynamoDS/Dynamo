@@ -1,0 +1,18 @@
+<Workspace Version="0.6.3.12415" X="-674.664363500904" Y="-474.50323141071" zoom="0.889203022025035" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="c2bd117e-89b3-4578-97a0-a146d111d242" nickname="Code Block" x="1052.60487160395" y="746.981334420475" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="point1              = Point.ByCoordinates(0,0,0);&#xA;point2              = Point.ByCoordinates(0,10,0);&#xA;curve               = Line.ByStartPointEndPoint(point1, point2);&#xA;distanceForPlane    = 8;&#xA;myPlaneAtDistance = curve.PlaneAtDistance(distanceForPlane);&#xA;&#xA;myPlaneOrigin       = myPlaneAtDistance.Origin;&#xA;myPlaneNormal       = myPlaneAtDistance.Normal;&#xA;myPlaneSize         = myPlaneAtDistance.Size;&#xA;myPlaneDistance     = myPlaneAtDistance.Distance;&#xA;myPlaneParameter    = myPlaneAtDistance.T;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="e823b80c-a2dd-4fae-9a71-283171be5932" nickname="Watch" x="1810.16886088292" y="806.311745207325" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="b6c7580a-6ab7-485c-b975-532055e749f3" nickname="Watch" x="1823.24033210926" y="1078.50591074405" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="56cf6f40-4d3e-453e-965b-0b889523a4e8" nickname="Watch" x="1829.39161268636" y="925.492806388659" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="a715967a-b678-4e05-ae8e-fec6a3db3506" nickname="Watch" x="1877.06403715889" y="1181.53986041049" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="ff9708f0-2947-453f-abd1-c3e16197390e" nickname="Watch" x="1949.34158393983" y="1023.14438555014" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c2bd117e-89b3-4578-97a0-a146d111d242" start_index="5" end="e823b80c-a2dd-4fae-9a71-283171be5932" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c2bd117e-89b3-4578-97a0-a146d111d242" start_index="6" end="56cf6f40-4d3e-453e-965b-0b889523a4e8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c2bd117e-89b3-4578-97a0-a146d111d242" start_index="7" end="ff9708f0-2947-453f-abd1-c3e16197390e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c2bd117e-89b3-4578-97a0-a146d111d242" start_index="8" end="b6c7580a-6ab7-485c-b975-532055e749f3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c2bd117e-89b3-4578-97a0-a146d111d242" start_index="9" end="a715967a-b678-4e05-ae8e-fec6a3db3506" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -7,23 +7,24 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Threading;
+using DSNodeServices;
+using Dynamo.DSEngine;
 using Dynamo.FSchemeInterop;
-using Dynamo.FSchemeInterop.Node;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.PackageManager;
+using Dynamo.Selection;
+using Dynamo.Services;
 using Dynamo.UI;
 using Dynamo.Units;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynamoUnits;
 using Microsoft.Practices.Prism.ViewModel;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Dynamo.UI.Prompts;
 
 namespace Dynamo
 {
@@ -46,7 +47,17 @@ namespace Dynamo
 
     public class DynamoController:NotificationObject
     {
+        private static bool testing = false;
+        
+
         #region properties
+
+        private bool _isCrashing = false;
+        public bool IsCrashing
+        {
+            get { return _isCrashing; }
+            set { _isCrashing = value; }
+        }
 
         private bool uiLocked = true;
         public bool IsUILocked
@@ -65,10 +76,7 @@ namespace Dynamo
         private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
             new Dictionary<string, TypeLoadData>();
 
-        private readonly Dictionary<string, object> builtInFunctions = new Dictionary<String, object>();
-
-        private static bool testing = false;
-
+        
         protected VisualizationManager visualizationManager;
 
         public CustomNodeManager CustomNodeManager { get; internal set; }
@@ -78,13 +86,12 @@ namespace Dynamo
         public DynamoModel DynamoModel { get; set; }
         public Dispatcher UIDispatcher { get; set; }
         public IUpdateManager UpdateManager { get; set; }
-        public IUnitsManager UnitsManager { get; set; }
         public IWatchHandler WatchHandler { get; set; }
         public IPreferences PreferenceSettings { get; set; }
 
         public virtual VisualizationManager VisualizationManager
         {
-            get { return visualizationManager ?? (visualizationManager = new VisualizationManagerASM()); }
+            get { return visualizationManager ?? (visualizationManager = new VisualizationManager(this)); }
         }
 
         /// <summary>
@@ -115,13 +122,6 @@ namespace Dynamo
             get { return builtinTypesByTypeName; }
         }
 
-        public Dictionary<string, object> BuiltInFunctions
-        {
-            get { return builtInFunctions; }
-        }
-
-        public ExecutionEnvironment FSchemeEnvironment { get; private set; }
-
         private string context;
         public string Context
         {
@@ -129,13 +129,12 @@ namespace Dynamo
             set { context = value; }
         }
 
-        private bool _isShowingConnectors = true;
         public bool IsShowingConnectors
         {
-            get { return _isShowingConnectors; }
+            get { return PreferenceSettings.ShowConnector; }
             set
             {
-                _isShowingConnectors = value;
+                PreferenceSettings.ShowConnector = value;
             }
         }
 
@@ -153,6 +152,13 @@ namespace Dynamo
         {
             get { return isShowPreViewByDefault;}
             set { isShowPreViewByDefault = value; RaisePropertyChanged("IsShowPreviewByDefault"); }
+        }
+
+        private EngineController _engineController = null;
+        public EngineController EngineController
+        {
+            get { return _engineController; }
+            protected set { _engineController = value; }
         }
 
         #endregion
@@ -189,12 +195,21 @@ namespace Dynamo
                 RequestsRedraw(sender, e);
         }
 
-        public delegate void CrashPromptHandler(object sender, DispatcherUnhandledExceptionEventArgs e);
+        // TODO(Ben): Obsolete CrashPrompt and make use of GenericTaskDialog.
+        public delegate void CrashPromptHandler(object sender, CrashPromptArgs e);
         public event CrashPromptHandler RequestsCrashPrompt;
-        public void OnRequestsCrashPrompt(object sender, DispatcherUnhandledExceptionEventArgs e)
+        public void OnRequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
             if (RequestsCrashPrompt != null)
-                RequestsCrashPrompt(this, e);
+                RequestsCrashPrompt(this, args);
+        }
+
+        internal delegate void TaskDialogHandler(object sender, TaskDialogEventArgs e);
+        internal event TaskDialogHandler RequestTaskDialog;
+        internal void OnRequestTaskDialog(object sender, TaskDialogEventArgs args)
+        {
+            if (RequestTaskDialog != null)
+                RequestTaskDialog(sender, args);
         }
 
         #endregion
@@ -203,43 +218,41 @@ namespace Dynamo
 
         public static DynamoController MakeSandbox(string commandFilePath = null)
         {
-            var env = new ExecutionEnvironment();
+            //var env = new ExecutionEnvironment();
 
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
-                return new DynamoController(env, typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager(), new UnitsManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
+                return new DynamoController(typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
 
-            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager(), new UnitsManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
+            return new DynamoController(typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
         }
 
-        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context, IUpdateManager updateManager, IUnitsManager units, IWatchHandler watchHandler, IPreferences preferences) : 
-            this(env, viewModelType, context, null, updateManager, units, watchHandler, preferences)
+        public DynamoController(Type viewModelType, string context, IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences) : 
+            this(viewModelType, context, null, updateManager, watchHandler, preferences)
         {
         }
 
         /// <summary>
         ///     Class constructor
         /// </summary>
-        public DynamoController(ExecutionEnvironment env,
-            Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager, IUnitsManager units, IWatchHandler watchHandler, IPreferences preferences)
+        public DynamoController(Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences)
         {
             DynamoLogger.Instance.StartLogging();
 
             dynSettings.Controller = this;
 
-            this.Context = context;
+            Context = context;
 
             //Start heartbeat reporting
-            Services.InstrumentationLogger.Start();
+            InstrumentationLogger.Start();
 
             PreferenceSettings = preferences;
             ((PreferenceSettings) PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
-            UnitsManager = units;
-            UnitsManager.LengthUnit = PreferenceSettings.LengthUnit;
-            UnitsManager.AreaUnit = PreferenceSettings.AreaUnit;
-            UnitsManager.VolumeUnit = PreferenceSettings.VolumeUnit;
-            UnitsManager.NumberFormat = PreferenceSettings.NumberFormat;
+            SIUnit.LengthUnit = PreferenceSettings.LengthUnit;
+            SIUnit.AreaUnit = PreferenceSettings.AreaUnit;
+            SIUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
+            SIUnit.NumberFormat = PreferenceSettings.NumberFormat;
 
             UpdateManager = updateManager;
             UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
@@ -250,7 +263,7 @@ namespace Dynamo
 
             //create the view model to which the main window will bind
             //the DynamoModel is created therein
-            this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
+            DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
                 viewModelType, new object[] { this, commandFilePath });
 
             // custom node loader
@@ -266,17 +279,22 @@ namespace Dynamo
             dynSettings.PackageLoader.DoCachedPackageUninstalls();
             dynSettings.PackageLoader.LoadPackages();
             
-            FSchemeEnvironment = env;
-
             DynamoViewModel.Model.CurrentWorkspace.X = 0;
             DynamoViewModel.Model.CurrentWorkspace.Y = 0;
+
+            DisposeLogic.IsShuttingDown = false;
+            EngineController = new EngineController(this, false);
+            //This is necessary to avoid a race condition by causing a thread join
+            //inside the vm exec
+            //TODO(Luke): Push this into a resync call with the engine controller
+            ResetEngine();
 
             DynamoLogger.Instance.Log(String.Format(
                 "Dynamo -- Build {0}",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
             DynamoLoader.ClearCachedAssemblies();
-            DynamoLoader.LoadBuiltinTypes();
+            DynamoLoader.LoadNodeModels();
 
             //run tests
             if (FScheme.RunTests(DynamoLogger.Instance.Log))
@@ -284,7 +302,7 @@ namespace Dynamo
                 DynamoLogger.Instance.Log("All Tests Passed. Core library loaded OK.");
             }
 
-            this.InfoBubbleViewModel = new InfoBubbleViewModel();
+            InfoBubbleViewModel = new InfoBubbleViewModel();
 
             AddPythonBindings();
 
@@ -302,16 +320,16 @@ namespace Dynamo
             switch (e.PropertyName)
             {
                 case "LengthUnit":
-                    UnitsManager.LengthUnit = PreferenceSettings.LengthUnit;
+                    SIUnit.LengthUnit = PreferenceSettings.LengthUnit;
                     break;
                 case "AreaUnit":
-                    UnitsManager.AreaUnit = PreferenceSettings.AreaUnit;
+                    SIUnit.AreaUnit = PreferenceSettings.AreaUnit;
                     break;
                 case "VolumeUnit":
-                    UnitsManager.VolumeUnit = PreferenceSettings.VolumeUnit;
+                    SIUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
                     break;
                 case "NumberFormat":
-                    UnitsManager.NumberFormat = PreferenceSettings.NumberFormat;
+                    SIUnit.NumberFormat = PreferenceSettings.NumberFormat;
                     break;
             }
         }
@@ -334,15 +352,15 @@ namespace Dynamo
 
         public virtual void ShutDown(bool shutDownHost)
         {
+            EngineController.Dispose();
+            EngineController = null;
+
             PreferenceSettings.Save();
 
-            VisualizationManager.ClearVisualizations();
-
-            dynSettings.Controller.DynamoModel.OnCleanup(null);
+            //dynSettings.Controller.DynamoModel.OnCleanup(null);
             dynSettings.Controller = null;
             
-            Selection.DynamoSelection.Instance.ClearSelection();
-
+            DynamoSelection.Instance.ClearSelection();
             DynamoLogger.Instance.FinishLogging();
         }
 
@@ -369,6 +387,23 @@ namespace Dynamo
             //If we're already running, do nothing.
             if (Running)
                 return;
+
+            // If there is preloaded trace data, send that along to the current
+            // LiveRunner instance. Here we make sure it is done exactly once 
+            // by resetting WorkspaceModel.PreloadedTraceData property after it 
+            // is obtained.
+            // 
+            var traceData = DynamoViewModel.Model.HomeSpace.PreloadedTraceData;
+            DynamoViewModel.Model.HomeSpace.PreloadedTraceData = null; // Reset.
+            EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
+
+#if USE_DSENGINE
+            EngineController.GenerateGraphSyncData(DynamoViewModel.Model.HomeSpace.Nodes);
+            if (!EngineController.HasPendingGraphSyncData)
+            {
+                return;
+            }
+#endif
 
             _showErrors = showErrors;
 
@@ -399,28 +434,27 @@ namespace Dynamo
                 EvaluationThread(null, null);
         }
 
-        protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
+        private void EvaluationThread(object s, DoWorkEventArgs args)
         {
             var sw = new Stopwatch();
             sw.Start();
 
+#if !USE_DSENGINE
             //Get our entry points (elements with nothing connected to output)
             List<NodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes().ToList();
 
             //Mark the topmost as dirty/clean
             foreach (NodeModel topMost in topElements)
             {
-                /*
-                AstBuilder builder = AstBuilder.Instance;
-                topMost.CompileToAstNode(builder);
-                builder.Execute();
-                */
-
                 topMost.MarkDirty();
             }
-
+#endif
             try
             {
+
+#if USE_DSENGINE
+                Run();
+#else
                 var topNode = new BeginNode(new List<string>());
                 int i = 0;
                 var buildDict = new Dictionary<NodeModel, Dictionary<int, INode>>();
@@ -442,6 +476,7 @@ namespace Dynamo
                 // inform any objects that a run has happened
 
                 //DynamoLogger.Instance.Log(runningExpression);
+#endif
             }
             catch (CancelEvaluationException ex)
             {
@@ -487,7 +522,7 @@ namespace Dynamo
                 //No longer running
                 Running = false;
 
-                foreach (FunctionDefinition def in dynSettings.FunctionWasEvaluated)
+                foreach (CustomNodeDefinition def in dynSettings.FunctionWasEvaluated)
                     def.RequiresRecalc = false;
 
                 
@@ -509,37 +544,56 @@ namespace Dynamo
             }
         }
 
-        protected virtual void Run(List<NodeModel> topElements, FScheme.Expression runningExpression)
+        protected virtual void Run()
         {
             //Print some stuff if we're in debug mode
             if (DynamoViewModel.RunInDebug)
             {
-                if (dynSettings.Controller.UIDispatcher != null)
-                {
-                    foreach (string exp in topElements.Select(node => node.PrintExpression()))
-                        DynamoLogger.Instance.Log("> " + exp);
-                }
             }
 
+            // We have caught all possible exceptions in UpdateGraph call, I am 
+            // not certain if this try-catch block is still meaningful or not.
             try
             {
-                //Evaluate the expression
-                FScheme.Value expr = FSchemeEnvironment.Evaluate(runningExpression);
+                Exception fatalException = null;
+                bool updated = EngineController.UpdateGraph(ref fatalException);
 
-                if (dynSettings.Controller.UIDispatcher != null)
+                // If there's a fatal exception, show it to the user, unless of course 
+                // if we're running in a unit-test, in which case there's no user. I'd 
+                // like not to display the dialog and hold up the continuous integration.
+                // 
+                if (DynamoController.IsTestMode == false && (fatalException != null))
                 {
-                    //Print some more stuff if we're in debug mode
-                    if (DynamoViewModel.RunInDebug && expr != null)
+                    Action showFailureMessage = new Action(() =>
                     {
-                        DynamoLogger.Instance.Log("Evaluating the expression...");
-                        DynamoLogger.Instance.Log(FScheme.print(expr));
+                        Dynamo.Nodes.Utilities.DisplayEngineFailureMessage(fatalException);
+                    });
+
+                    // The "Run" method is guaranteed to be called on a background 
+                    // thread (for Revit's case, it is the idle thread). Here we 
+                    // schedule the message to show up when the UI gets around and 
+                    // handle it.
+                    // 
+                    if (this.UIDispatcher != null)
+                        this.UIDispatcher.BeginInvoke(showFailureMessage);
+                }
+
+                // Currently just use inefficient way to refresh preview values. 
+                // After we switch to async call, only those nodes that are really 
+                // updated in this execution session will be required to update 
+                // preview value.
+                if (updated)
+                {
+                    var nodes = DynamoViewModel.Model.HomeSpace.Nodes;
+                    foreach (NodeModel node in nodes)
+                    {
+                        node.IsUpdated = true;
                     }
                 }
             }
             catch (CancelEvaluationException ex)
             {
                 /* Evaluation was cancelled */
-
                 OnRunCancelled(false);
                 RunCancelled = false;
                 if (ex.Force)
@@ -565,6 +619,62 @@ namespace Dynamo
             OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
+        //protected virtual void Run(List<NodeModel> topElements, FScheme.Expression runningExpression)
+        //{
+        //    //Print some stuff if we're in debug mode
+        //    if (DynamoViewModel.RunInDebug)
+        //    {
+        //        if (dynSettings.Controller.UIDispatcher != null)
+        //        {
+        //            foreach (string exp in topElements.Select(node => node.PrintExpression()))
+        //                DynamoLogger.Instance.Log("> " + exp);
+        //        }
+        //    }
+
+        //    try
+        //    {
+        //        //Evaluate the expression
+        //        FScheme.Value expr = FSchemeEnvironment.Evaluate(runningExpression);
+
+        //        if (dynSettings.Controller.UIDispatcher != null)
+        //        {
+        //            //Print some more stuff if we're in debug mode
+        //            if (DynamoViewModel.RunInDebug && expr != null)
+        //            {
+        //                DynamoLogger.Instance.Log("Evaluating the expression...");
+        //                DynamoLogger.Instance.Log(FScheme.print(expr));
+        //            }
+        //        }
+        //    }
+        //    catch (CancelEvaluationException ex)
+        //    {
+        //        /* Evaluation was cancelled */
+
+        //        OnRunCancelled(false);
+        //        RunCancelled = false;
+        //        if (ex.Force)
+        //            runAgain = false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        /* Evaluation failed due to error */
+
+        //        DynamoLogger.Instance.Log(ex);
+
+        //        OnRunCancelled(true);
+        //        RunCancelled = true;
+        //        runAgain = false;
+
+        //        //If we are testing, we need to throw an exception here
+        //        //which will, in turn, throw an Assert.Fail in the 
+        //        //Evaluation thread.
+        //        if (Testing)
+        //            throw new Exception(ex.Message);
+        //    }
+
+        //    OnEvaluationCompleted(this, EventArgs.Empty);
+        //}
+
         protected virtual void OnRunCancelled(bool error)
         {
             //DynamoLogger.Instance.Log("Run cancelled. Error: " + error);
@@ -585,6 +695,14 @@ namespace Dynamo
 
     #endregion
 
+        public virtual void ResetEngine()
+        {
+            if (EngineController != null)
+                EngineController.Dispose();
+
+            EngineController = new EngineController(this, true);
+        }
+
         public void RequestRedraw()
         {
             OnRequestsRedraw(this, EventArgs.Empty);
@@ -592,7 +710,7 @@ namespace Dynamo
 
         public void RequestClearDrawables()
         {
-            VisualizationManager.ClearRenderables();
+            //VisualizationManager.ClearRenderables();
         }
 
         public void CancelRunCmd(object parameter)
@@ -648,7 +766,7 @@ namespace Dynamo
 
         public void ReportABug(object parameter)
         {
-            Process.Start("https://github.com/ikeough/Dynamo/issues?state=open");
+            Process.Start(Configurations.GitHubBugReportingLink);
         }
 
         internal bool CanReportABug(object parameter)
@@ -745,6 +863,58 @@ namespace Dynamo
             : base("Run Cancelled")
         {
             Force = force;
+        }
+    }
+    
+    public class CrashPromptArgs : EventArgs
+    {
+        public enum DisplayOptions
+        {
+            IsDefaultTextOverridden = 0x00000001,
+            HasDetails = 0x00000002,
+            HasFilePath = 0x00000004
+        }
+
+        public DisplayOptions Options { get; private set; }
+        public string Details { get; private set; }
+        public string OverridingText { get; private set; }
+        public string FilePath { get; private set; }
+
+        // Default Crash Prompt
+        public CrashPromptArgs(string details, string overridingText = null, string filePath = null)
+        {
+            if (details != null)
+            {
+                Details = details;
+                Options |= DisplayOptions.HasDetails;
+            }
+
+            if (overridingText != null)
+            {
+                OverridingText = overridingText;
+                Options |= DisplayOptions.IsDefaultTextOverridden;
+            }
+
+            if (filePath != null)
+            {
+                FilePath = filePath;
+                Options |= DisplayOptions.HasFilePath;
+            }
+        }
+
+        public bool IsDefaultTextOverridden()
+        {
+            return Options.HasFlag(DisplayOptions.IsDefaultTextOverridden);
+        }
+
+        public bool HasDetails()
+        {
+            return Options.HasFlag(DisplayOptions.HasDetails);
+        }
+
+        public bool IsFilePath()
+        {
+            return Options.HasFlag(DisplayOptions.HasFilePath);
         }
     }
 

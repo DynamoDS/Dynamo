@@ -18,6 +18,7 @@ using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
+using Dynamo.Services;
 
 namespace Dynamo.ViewModels
 {
@@ -144,7 +145,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand AddToSelectionCommand { get; set; }
         public DelegateCommand ShowNewFunctionDialogCommand { get; set; }
         public DelegateCommand SaveRecordedCommand { get; set; }
-        public DelegateCommand ClearCommand { get; set; }
+        public DelegateCommand InsertPausePlaybackCommand { get; set; }
         public DelegateCommand GoHomeCommand { get; set; }
         public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
         public DelegateCommand ShowInstalledPackagesCommand { get; set; }
@@ -189,6 +190,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
         public DelegateCommand TogglePreviewBubbleVisibilityCommand { get; set; }
         public DelegateCommand ExportToSTLCommand { get; set; }
+        public DelegateCommand ImportLibraryCommand { get; set; }
         public DelegateCommand SetLengthUnitCommand { get; set; }
         public DelegateCommand SetAreaUnitCommand { get; set; }
         public DelegateCommand SetVolumeUnitCommand { get; set; }
@@ -325,6 +327,8 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal AutomationSettings Automation { get { return this.automationSettings; } }
+
         public string EditName
         {
             get { return _model.editName; }
@@ -426,11 +430,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return this.controller.PreferenceSettings.ShowConnector;
+                return this.controller.IsShowingConnectors;
             }
             set
             {
-                this.controller.PreferenceSettings.ShowConnector = value;
+                this.controller.IsShowingConnectors = value;
 
                 RaisePropertyChanged("IsShowingConnectors");
             }
@@ -454,6 +458,14 @@ namespace Dynamo.ViewModels
                 this.controller.ConnectorType = value;
 
                 RaisePropertyChanged("ConnectorType");
+            }
+        }
+
+        public bool IsUsageReportingApproved
+        {
+            get
+            {
+                return UsageReportingManager.Instance.IsUsageReportingApproved;
             }
         }
 
@@ -503,6 +515,7 @@ namespace Dynamo.ViewModels
                 return licensePath;
             }
         }
+
         #endregion
 
         public DynamoViewModel(DynamoController controller, string commandFilePath)
@@ -514,7 +527,7 @@ namespace Dynamo.ViewModels
             //register for property change notifications 
             //on the model and the controller
             _model.PropertyChanged += _model_PropertyChanged;
-            dynSettings.Controller.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Controller_PropertyChanged);
+            dynSettings.Controller.PropertyChanged += Controller_PropertyChanged;
             _model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
 
             _model.AddHomeWorkspace();
@@ -536,7 +549,7 @@ namespace Dynamo.ViewModels
             AddToSelectionCommand = new DelegateCommand(_model.AddToSelection, _model.CanAddToSelection);
             ShowNewFunctionDialogCommand = new DelegateCommand(_model.ShowNewFunctionDialogAndMakeFunction, _model.CanShowNewFunctionDialogCommand);
             SaveRecordedCommand = new DelegateCommand(SaveRecordedCommands, CanSaveRecordedCommands);
-            ClearCommand = new DelegateCommand(_model.Clear, _model.CanClear);
+            InsertPausePlaybackCommand = new DelegateCommand(ExecInsertPausePlaybackCommand, CanInsertPausePlaybackCommand);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResult);
@@ -582,6 +595,7 @@ namespace Dynamo.ViewModels
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
             TogglePreviewBubbleVisibilityCommand = new DelegateCommand(TogglePreviewBubbleVisibility, CanTogglePreviewBubbleVisibility);
             ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
+            ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
             SetLengthUnitCommand = new DelegateCommand(SetLengthUnit, CanSetLengthUnit);
             SetAreaUnitCommand = new DelegateCommand(SetAreaUnit, CanSetAreaUnit);
             SetVolumeUnitCommand = new DelegateCommand(SetVolumeUnit, CanSetVolumeUnit);
@@ -592,7 +606,7 @@ namespace Dynamo.ViewModels
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
-            dynSettings.Controller.VisualizationManager.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(VisualizationManager_PropertyChanged);
+            dynSettings.Controller.VisualizationManager.PropertyChanged += VisualizationManager_PropertyChanged;
 
             this.Model.PropertyChanged += (e, args) =>
             {
@@ -610,6 +624,8 @@ namespace Dynamo.ViewModels
                     dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync();
                 }
             };
+
+            UsageReportingManager.Instance.PropertyChanged += CollectInfoManager_PropertyChanged;
 
             WatchIsResizable = false;
         }
@@ -629,6 +645,16 @@ namespace Dynamo.ViewModels
                     break;
                 case "ShowGeometryInAlternateContext":
                     RaisePropertyChanged("ShowGeometryInAlternateContext");
+                    break;
+            }
+        }
+
+        void CollectInfoManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "CollectInfoOption":
+                    RaisePropertyChanged("CollectInfoOption");
                     break;
             }
         }
@@ -758,7 +784,8 @@ namespace Dynamo.ViewModels
         /// <param name="workspace">The workspace for which to show the dialog</param>
         internal void ShowSaveDialogIfNeededAndSave(WorkspaceModel workspace)
         {
-            if (workspace.FileName != null)
+            // crash sould always allow save as
+            if (workspace.FileName != null && !dynSettings.Controller.IsCrashing)
             {
                 workspace.Save();
             }
@@ -828,7 +855,7 @@ namespace Dynamo.ViewModels
         ///     Change the currently visible workspace to a custom node's workspace
         /// </summary>
         /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
-        internal void FocusCustomNodeWorkspace(FunctionDefinition symbol)
+        internal void FocusCustomNodeWorkspace(CustomNodeDefinition symbol)
         {
             if (symbol == null)
             {
@@ -838,8 +865,8 @@ namespace Dynamo.ViewModels
             if (_model.CurrentWorkspace is CustomNodeWorkspaceModel)
             {
                 var customNodeWorkspace = _model.CurrentWorkspace as CustomNodeWorkspaceModel;
-                if (customNodeWorkspace.FunctionDefinition.FunctionId
-                    == symbol.WorkspaceModel.FunctionDefinition.FunctionId)
+                if (customNodeWorkspace.CustomNodeDefinition.FunctionId
+                    == symbol.WorkspaceModel.CustomNodeDefinition.FunctionId)
                 {
                     return;
                 }
@@ -861,10 +888,9 @@ namespace Dynamo.ViewModels
             vm.OnZoomChanged(this, new ZoomEventArgs(newWs.Zoom));
         }
 
-        public virtual Function CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs,
-                                                     FunctionDefinition functionDefinition)
+        public virtual Function CreateFunction(CustomNodeDefinition customNodeDefinition)
         {
-            return new Function(inputs, outputs, functionDefinition);
+            return new Function(customNodeDefinition);
         }
 
         /// <summary>
@@ -889,7 +915,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    foreach (FunctionDefinition funcDef in Controller.CustomNodeManager.GetLoadedDefinitions())
+                    foreach (CustomNodeDefinition funcDef in Controller.CustomNodeManager.GetLoadedDefinitions())
                     {
                         if (funcDef.WorkspaceModel.Nodes.Contains(e))
                         {
@@ -1100,7 +1126,7 @@ namespace Dynamo.ViewModels
                 // behind unsaved changes (if saving is desired, then the save command 
                 // should have been recorded for the test case to it can be replayed).
                 // 
-                if (automationSettings.CurrentMode == AutomationSettings.Mode.Playback)
+                if (automationSettings.IsInPlaybackMode)
                     return true; // In playback mode, just exit without saving.
             }
 
@@ -1222,8 +1248,6 @@ namespace Dynamo.ViewModels
 
         public void ShowConnectors(object parameter)
         {
-            if (IsShowingConnectors == false)
-                IsShowingConnectors = true;
         }
 
         internal bool CanShowConnectors(object parameter)
@@ -1337,6 +1361,35 @@ namespace Dynamo.ViewModels
             return CurrentSpaceViewModel.FitViewCommand.CanExecute(parameter);
         }
 
+#if USE_DSENGINE
+        public void ImportLibrary(object parameter)
+        {
+            string fileFilter = "Library Files (*.dll, *.ds)|*.dll;*.ds|"
+                              + "Assembly Library Files (*.dll)|*.dll|"
+                              + "DesignScript Files (*.ds)|*.ds|"
+                              + "All Files (*.*)|*.*";
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = fileFilter;
+            openFileDialog.Title = "Import Library";
+            openFileDialog.Multiselect = true;
+            openFileDialog.RestoreDirectory = true;
+
+            DialogResult result = openFileDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                foreach (var file in openFileDialog.FileNames)
+                {
+                    dynSettings.Controller.EngineController.ImportLibrary(file);
+                }
+            }
+        }
+
+        internal bool CanImportLibrary(object parameter)
+        {
+            return true;
+        }
+#endif
         public void TogglePan(object parameter)
         {
             CurrentSpaceViewModel.TogglePanCommand.Execute(parameter);
@@ -1572,14 +1625,14 @@ namespace Dynamo.ViewModels
 
         internal void SelectVisualizationInView(object parameters)
         {
-            Debug.WriteLine("Selecting mesh from background watch.");
+            //Debug.WriteLine("Selecting mesh from background watch.");
 
-            var arr = (double[])parameters;
-            double x = arr[0];
-            double y = arr[1];
-            double z = arr[2];
+            //var arr = (double[])parameters;
+            //double x = arr[0];
+            //double y = arr[1];
+            //double z = arr[2];
 
-            dynSettings.Controller.VisualizationManager.LookupSelectedElement(x, y, z);
+            //dynSettings.Controller.VisualizationManager.LookupSelectedElement(x, y, z);
         }
 
         internal bool CanSelectVisualizationInView(object parameters)
@@ -1594,7 +1647,7 @@ namespace Dynamo.ViewModels
 
         public void GetBranchVisualization(object parameters)
         {
-            dynSettings.Controller.VisualizationManager.RenderUpstream(null);
+            dynSettings.Controller.VisualizationManager.AggregateUpstreamRenderPackages(null);
         }
 
         public bool CanGetBranchVisualization(object parameter)

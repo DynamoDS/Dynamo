@@ -47,6 +47,24 @@ namespace Dynamo.ViewModels
             return automationSettings.CanSaveRecordedCommands;
         }
 
+        private void ExecInsertPausePlaybackCommand(object parameters)
+        {
+            if (automationSettings != null)
+            {
+                var msg = string.Format("PausePlaybackCommand '{0}' inserted",
+                    automationSettings.InsertPausePlaybackCommand());
+                DynamoLogger.Instance.Log(msg);
+            }
+        }
+
+        private bool CanInsertPausePlaybackCommand(object parameters)
+        {
+            if (null == automationSettings)
+                return false;
+
+            return (automationSettings.CurrentState == AutomationSettings.State.Recording);
+        }
+
         #endregion
 
         #region Workspace Command Entry Point
@@ -210,6 +228,15 @@ namespace Dynamo.ViewModels
 
             UndoCommand.RaiseCanExecuteChanged();
             RedoCommand.RaiseCanExecuteChanged();
+        }
+
+        private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
+        {
+            CurrentSpace.ConvertNodesToCodeInternal(command.NodeId);
+
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
+            CurrentSpace.HasUnsavedChanges = true;
         }
 
         #endregion

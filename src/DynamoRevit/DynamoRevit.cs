@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
@@ -10,20 +10,24 @@ using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.UI.Events;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Analysis;
 using Autodesk.Revit.UI;
 
 using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Units;
 using Dynamo.Utilities;
+using RevitServices.Elements;
+using RevitServices.Transactions;
+using RevitServices.Persistence;
+
 using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
-using Dynamo.FSchemeInterop;
+using RevThread = RevitServices.Threading;
 using System.IO;
 
 namespace Dynamo.Applications
@@ -32,10 +36,9 @@ namespace Dynamo.Applications
     [Regeneration(RegenerationOption.Manual)]
     public class DynamoRevitApp : IExternalApplication
     {
-        private static readonly string m_AssemblyName = Assembly.GetExecutingAssembly().Location;
-        public static DynamoUpdater Updater;
+        private static readonly string assemblyName = Assembly.GetExecutingAssembly().Location;
         private static ResourceManager res;
-        public static ExecutionEnvironment env;
+        internal static ControlledApplication ControlledApplication;
 
         public Result OnStartup(UIControlledApplication application)
         {
@@ -45,15 +48,16 @@ namespace Dynamo.Applications
                 res = Resource_en_us.ResourceManager;
                 // Create new ribbon panel
                 RibbonPanel ribbonPanel = application.CreateRibbonPanel(res.GetString("App_Description"));
-
-                //Create a push button in the ribbon panel 
-                var pushButton = ribbonPanel.AddItem(new PushButtonData("Dynamo",
-                                                                        res.GetString("App_Name"), m_AssemblyName,
-                                                                        "Dynamo.Applications.DynamoRevit")) as
-                                 PushButton;
+                
+                var pushButton =
+                        ribbonPanel.AddItem(
+                            new PushButtonData(
+                                "Dynamo 0.7 Alpha",
+                                res.GetString("App_Name"),
+                                assemblyName,
+                                "Dynamo.Applications.DynamoRevit")) as PushButton;
 
                 Bitmap dynamoIcon = Resources.logo_square_32x32;
-
 
                 BitmapSource bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
                     dynamoIcon.GetHbitmap(),
@@ -64,32 +68,11 @@ namespace Dynamo.Applications
                 pushButton.LargeImage = bitmapSource;
                 pushButton.Image = bitmapSource;
 
-                IdlePromise.RegisterIdle(application);
+                ControlledApplication = application.ControlledApplication;
 
-                Updater = new DynamoUpdater(application.ActiveAddInId, application.ControlledApplication);
-                if (!UpdaterRegistry.IsUpdaterRegistered(Updater.GetUpdaterId()))
-                    UpdaterRegistry.RegisterUpdater(Updater);
-
-                var SpatialFieldFilter = new ElementClassFilter(typeof (SpatialFieldManager));
-                var familyFilter = new ElementClassFilter(typeof (FamilyInstance));
-                var refPointFilter = new ElementCategoryFilter(BuiltInCategory.OST_ReferencePoints);
-                var modelCurveFilter = new ElementClassFilter(typeof (CurveElement));
-                var sunFilter = new ElementClassFilter(typeof (SunAndShadowSettings));
-                IList<ElementFilter> filterList = new List<ElementFilter>();
-
-                filterList.Add(SpatialFieldFilter);
-                filterList.Add(familyFilter);
-                filterList.Add(modelCurveFilter);
-                filterList.Add(refPointFilter);
-                filterList.Add(sunFilter);
-
-                ElementFilter filter = new LogicalOrFilter(filterList);
-
-                UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeAny());
-                UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeElementDeletion());
-                UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeElementAddition());
-
-                env = new ExecutionEnvironment();
+                RevThread.IdlePromise.RegisterIdle(application);
+                TransactionManager.SetupManager(new AutomaticTransactionStrategy());
+                ElementBinder.IsEnabled = true;
 
                 return Result.Succeeded;
             }
@@ -102,33 +85,27 @@ namespace Dynamo.Applications
 
         public Result OnShutdown(UIControlledApplication application)
         {
-            UpdaterRegistry.UnregisterUpdater(Updater.GetUpdaterId());
-
-            //if(Application.Current != null)
-            //    Application.Current.Shutdown();
-
             return Result.Succeeded;
         }
     }
 
     [Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
-    internal class DynamoRevit : IExternalCommand
+    public class DynamoRevit : IExternalCommand
     {
+        public static RevitServicesUpdater Updater;
         private static DynamoView dynamoView;
-        private UIDocument m_doc;
-        private UIApplication m_revit;
         private DynamoController dynamoController;
-        private static bool isRunning = false;
-        public static double? dynamoViewX = null;
-        public static double? dynamoViewY = null;
-        public static double? dynamoViewWidth = null;
-        public static double? dynamoViewHeight = null;
-        private bool handledCrash = false;
+        private static bool isRunning;
+        public static double? DynamoViewX = null;
+        public static double? DynamoViewY = null;
+        public static double? DynamoViewWidth = null;
+        public static double? DynamoViewHeight = null;
+        private bool handledCrash;
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
-            AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.CurrentDomain_AssemblyResolve;
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
             AppDomain.CurrentDomain.AssemblyResolve += DynamoRaaS.AssemblyHelper.ResolveAssemblies;
 
             //Add an assembly load step for the System.Windows.Interactivity assembly
@@ -154,80 +131,78 @@ namespace Dynamo.Applications
 
             try
             {
-                m_revit = revit.Application;
-                m_doc = m_revit.ActiveUIDocument;
-
                 #region default level
 
-                Level defaultLevel = null;
-                var fecLevel = new FilteredElementCollector(m_doc.Document);
-                fecLevel.OfClass(typeof (Level));
-                defaultLevel = fecLevel.ToElements()[0] as Level;
+                var fecLevel = new FilteredElementCollector(revit.Application.ActiveUIDocument.Document);
+                fecLevel.OfClass(typeof(Level));
+                var defaultLevel = fecLevel.ToElements()[0] as Level;
 
                 #endregion
 
-                dynRevitSettings.Revit = m_revit;
-                dynRevitSettings.Doc = m_doc;
+                if (DocumentManager.Instance.CurrentUIApplication == null)
+                    DocumentManager.Instance.CurrentUIApplication = revit.Application;
+
+                DocumentManager.OnLogError += DynamoLogger.Instance.Log;
+
                 dynRevitSettings.DefaultLevel = defaultLevel;
-                
-                IdlePromise.ExecuteOnIdle(delegate
-                {
-                    //get window handle
-                    IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
-                    Regex r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
-                    string context = r.Replace(m_revit.Application.VersionName, "");
+                //TODO: has to be changed when we handle multiple docs
+                Updater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication);
 
-                    //they changed the application version name conventions for vasari
-                    //it no longer has a version year so we can't compare it to other versions
-                    //TODO:come up with a more stable way to test for Vasari beta 3
-                    if (context == "Vasari")
-                        context = "Vasari 2014";
-
-                    var units = new UnitsManager
+                RevThread.IdlePromise.ExecuteOnIdleAsync(
+                    delegate
                     {
-                        HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot,
-                        HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot,
-                        HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot
-                    };
+                        //get window handle
+                        IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
-                    dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context, units);
+                        var r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
+                        string context = r.Replace(revit.Application.Application.VersionName, "");
+
+                        //they changed the application version name conventions for vasari
+                        //it no longer has a version year so we can't compare it to other versions
+                        //TODO:come up with a more stable way to test for Vasari beta 3
+                        if (context == "Vasari")
+                            context = "Vasari 2014";
+
+                        BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
+                        BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
+                        BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
+
+                        dynamoController = new DynamoController_Revit(Updater, typeof(DynamoRevitViewModel), context);
                         
-                    dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
-                    dynamoController.UIDispatcher = dynamoView.Dispatcher;
+                        dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
+                        dynamoController.UIDispatcher = dynamoView.Dispatcher;
 
-                    //set window handle and show dynamo
-                    new WindowInteropHelper(dynamoView).Owner = mwHandle;
+                        //set window handle and show dynamo
+                        new WindowInteropHelper(dynamoView).Owner = mwHandle;
 
-                    handledCrash = false;
+                        handledCrash = false;
 
-                    dynamoView.WindowStartupLocation = WindowStartupLocation.Manual;
+                        dynamoView.WindowStartupLocation = WindowStartupLocation.Manual;
 
-                    Rectangle bounds = Screen.PrimaryScreen.Bounds;
-                    dynamoView.Left = dynamoViewX ?? bounds.X;
-                    dynamoView.Top = dynamoViewY ?? bounds.Y;
-                    dynamoView.Width = dynamoViewWidth ?? 1000.0;
-                    dynamoView.Height = dynamoViewHeight ?? 800.0;
+                        Rectangle bounds = Screen.PrimaryScreen.Bounds;
+                        dynamoView.Left = DynamoViewX ?? bounds.X;
+                        dynamoView.Top = DynamoViewY ?? bounds.Y;
+                        dynamoView.Width = DynamoViewWidth ?? 1000.0;
+                        dynamoView.Height = DynamoViewHeight ?? 800.0;
 
-                    dynamoView.Show();
+                        dynamoView.Show();
 
-                    dynamoView.Dispatcher.UnhandledException -= DispatcherOnUnhandledException; 
-                    dynamoView.Dispatcher.UnhandledException += DispatcherOnUnhandledException; 
-                    dynamoView.Closing += dynamoView_Closing;
-                    dynamoView.Closed += dynamoView_Closed;
+                        dynamoView.Dispatcher.UnhandledException += DispatcherOnUnhandledException; 
+                        dynamoView.Closing += dynamoView_Closing;
+                        dynamoView.Closed += dynamoView_Closed;
 
-                    //revit.Application.ViewActivated += new EventHandler<Autodesk.Revit.UI.Events.ViewActivatedEventArgs>(Application_ViewActivated);
-                    revit.Application.ViewActivating += Application_ViewActivating;
-                });
+                        revit.Application.ViewActivating += Application_ViewActivating;
+                    });
             }
             catch (Exception ex)
             {
                 isRunning = false;
                 MessageBox.Show(ex.ToString());
 
-                DynamoLogger.Instance.Log(ex.Message);
-                DynamoLogger.Instance.Log(ex.StackTrace);
-                DynamoLogger.Instance.Log("Dynamo log ended " + DateTime.Now.ToString());
+                DynamoLogger.Instance.LogError(ex.Message);
+                DynamoLogger.Instance.LogError(ex.StackTrace);
+                DynamoLogger.Instance.LogError("Dynamo log ended " + DateTime.Now);
 
                 return Result.Failed;
             }
@@ -286,8 +261,8 @@ namespace Dynamo.Applications
 
             try
             {
-                DynamoLogger.Instance.Log("Dynamo Unhandled Exception");
-                DynamoLogger.Instance.Log(exceptionMessage);
+                DynamoLogger.Instance.LogError("Dynamo Unhandled Exception");
+                DynamoLogger.Instance.LogError(exceptionMessage);
             }
             catch
             {
@@ -296,7 +271,8 @@ namespace Dynamo.Applications
 
             try
             {
-                dynSettings.Controller.OnRequestsCrashPrompt(this, args);
+                dynSettings.Controller.IsCrashing = true;
+                dynSettings.Controller.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Exception.Message + "\n\n" + args.Exception.StackTrace));
                 dynSettings.Controller.DynamoViewModel.Exit(false); // don't allow cancellation
             }
             catch
@@ -318,12 +294,12 @@ namespace Dynamo.Applications
         private void dynamoView_Closing(object sender, EventArgs e)
         {
             // cache the size of the window for later reloading
-            dynamoViewX = dynamoView.Left;
-            dynamoViewY = dynamoView.Top;
-            dynamoViewWidth = dynamoView.ActualWidth;
-            dynamoViewHeight = dynamoView.ActualHeight;
-            IdlePromise.ClearPromises();
-            IdlePromise.Shutdown();
+            DynamoViewX = dynamoView.Left;
+            DynamoViewY = dynamoView.Top;
+            DynamoViewWidth = dynamoView.ActualWidth;
+            DynamoViewHeight = dynamoView.ActualHeight;
+            RevThread.IdlePromise.ClearPromises();
+            RevThread.IdlePromise.Shutdown();
         }
 
         /// <summary>
@@ -333,26 +309,37 @@ namespace Dynamo.Applications
         /// <param name="e"></param>
         private void dynamoView_Closed(object sender, EventArgs e)
         {
+            var view = (DynamoView)sender;
+
             dynamoView = null;
             isRunning = false;
+
+            Updater.Dispose();
+            DocumentManager.OnLogError -= DynamoLogger.Instance.Log;
+
+            view.Dispatcher.UnhandledException -= DispatcherOnUnhandledException;
+            view.Closing -= dynamoView_Closing;
+            view.Closed -= dynamoView_Closed;
+            DocumentManager.Instance.CurrentUIApplication.ViewActivating -= Application_ViewActivating;
+
+            AppDomain.CurrentDomain.AssemblyResolve -= AssemblyHelper.CurrentDomain_AssemblyResolve;
+            AppDomain.CurrentDomain.AssemblyResolve -= DynamoRaaS.AssemblyHelper.ResolveAssemblies;
         }
     }
 
     internal class WindowHandle : IWin32Window
     {
-        private readonly IntPtr _hwnd;
+        private readonly IntPtr hwnd;
 
         public WindowHandle(IntPtr h)
         {
-            Debug.Assert(IntPtr.Zero != h,
-                         "expected non-null window handle");
-
-            _hwnd = h;
+            Debug.Assert(IntPtr.Zero != h, "expected non-null window handle");
+            hwnd = h;
         }
 
         public IntPtr Handle
         {
-            get { return _hwnd; }
+            get { return hwnd; }
         }
     }
 }

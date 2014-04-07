@@ -1,0 +1,17 @@
+<Workspace Version="0.6.3.13215" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="e24c613b-8bb7-4f44-8fa1-dc604bfb1f33" nickname="Math.Abs" x="155" y="192.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="Math.dll" Category="Math.Math" ClassName="Math" Name="Abs" DisplayName="Math.Abs" Type="StaticMethod" Parameters="d_value" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="cae561d4-344c-41f5-9939-4484b4fe09ea" nickname="Code Block" x="149" y="87" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="" ShouldFocus="false" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="6696f197-78be-4aee-a44c-3cc28aec5ba2" nickname="Number" x="19" y="187.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-10" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="25b8e1de-925a-46fb-9fcf-5d4100a5af0d" nickname="Code Block" x="353" y="200" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e24c613b-8bb7-4f44-8fa1-dc604bfb1f33" start_index="0" end="25b8e1de-925a-46fb-9fcf-5d4100a5af0d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6696f197-78be-4aee-a44c-3cc28aec5ba2" start_index="0" end="e24c613b-8bb7-4f44-8fa1-dc604bfb1f33" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

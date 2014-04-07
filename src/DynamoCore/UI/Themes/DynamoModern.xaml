@@ -67,7 +67,7 @@
     <FontFamily x:Key="OpenSansLightItalic">/DynamoCore;component/UI/Fonts/#Open Sans Light Italic</FontFamily>
     <FontFamily x:Key="OpenSansSemiboldItalic">/DynamoCore;component/UI/Fonts/#Open Sans Semibold Italic</FontFamily>
     <FontFamily x:Key="OpenSansBoldItalic">/DynamoCore;component/UI/Fonts/#Open Sans Bold Italic</FontFamily>
-    
+
     <!-- Window Common Styling -->
     <Style x:Key="DynamoWindowStyle"  TargetType="{x:Type Window}">
         <Setter Property="FontFamily" Value="{StaticResource OpenSansRegular}" />
@@ -353,7 +353,9 @@
                             Background="#2c2c2c">
                         <Grid>
                             <ScrollViewer x:Name="PART_ContentHost"
-                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          Style="{DynamicResource ResourceKey=SDarkScrollViewer}"
+                                          Margin="5,5,0,0"/>
                             <TextBlock x:Name="previewText"
                                        Foreground="#555555"
                                        FontSize="12px"
@@ -613,6 +615,72 @@
         </Setter>
     </Style>
 
+    <Style x:Key="SDarkScrollViewer"
+           TargetType="{x:Type ScrollViewer}">
+        <Setter Property="HorizontalScrollBarVisibility"
+                Value="Hidden" />
+        <Setter Property="VerticalScrollBarVisibility"
+                Value="Hidden" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                    <Grid>
+                        <Grid Background="{TemplateBinding Background}">
+                            <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                                    Margin="{TemplateBinding Padding}"
+                                                    Content="{TemplateBinding Content}"
+                                                    ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                    CanContentScroll="{TemplateBinding CanContentScroll}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <ScrollBar x:Name="PART_VerticalScrollBar"
+                                       Grid.Column="1"
+                                       Minimum="0.0"
+                                       Maximum="{TemplateBinding ScrollableHeight}"
+                                       ViewportSize="{TemplateBinding ViewportHeight}"
+                                       Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=VerticalOffset, Mode=OneWay}"
+                                       Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                                       Cursor="Arrow"
+                                       AutomationProperties.AutomationId="VerticalScrollBar" />
+                            <ScrollBar x:Name="PART_HorizontalScrollBar"
+                                       Orientation="Horizontal"
+                                       Grid.Row="1"
+                                       Minimum="0.0"
+                                       Maximum="{TemplateBinding ScrollableWidth}"
+                                       ViewportSize="{TemplateBinding ViewportWidth}"
+                                       Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=HorizontalOffset, Mode=OneWay}"
+                                       Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
+                                       Cursor="Arrow"
+                                       AutomationProperties.AutomationId="HorizontalScrollBar" />
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled"
+                     Value="false">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver"
+                     Value="true">
+                <Setter Property="HorizontalScrollBarVisibility"
+                        Value="Visible" />
+                <Setter Property="VerticalScrollBarVisibility"
+                        Value="Visible" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <!--Scrollbar Thumbs-->
     <Style x:Key="SScrollThumbs" TargetType="{x:Type Thumb}">
         <Setter Property="Template">
@@ -623,9 +691,14 @@
                         <Border x:Name="Rectangle1" CornerRadius="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto"  Background="{TemplateBinding Background}" />
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="Tag" Value="Horizontal">
-                            <Setter TargetName="Rectangle1" Property="Width" Value="Auto" />
-                            <Setter TargetName="Rectangle1" Property="Height" Value="7" />
+                        <Trigger Property="Tag"
+                                    Value="Horizontal">
+                            <Setter TargetName="Rectangle1"
+                                    Property="Width"
+                                    Value="Auto" />
+                            <Setter TargetName="Rectangle1"
+                                    Property="Height"
+                                    Value="7" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -683,7 +756,7 @@
                                 </Setter.Value>
                             </Setter>
                             <Setter Property="Width" Value="Auto" />
-                            <Setter Property="Height" Value="12" />
+                            <Setter Property="Height" Value="8" />
                             <Setter TargetName="Thumb" Property="Tag" Value="Horizontal" />
                             <Setter TargetName="PageDown" Property="Command" Value="ScrollBar.PageLeftCommand" />
                             <Setter TargetName="PageUp" Property="Command" Value="ScrollBar.PageRightCommand" />
@@ -700,5 +773,63 @@
     <clr:Int32 x:Key="connector_stroke_thickness">2</clr:Int32>
     <clr:Double x:Key="connector_stroke_opacity">0.6</clr:Double>
     <clr:Double x:Key="connector_bezier_offset">20.0</clr:Double>
+    
+    <!-- CodeBlockNode Text Box Watermark -->
+
+    <Style x:Key="CodeBlockNodeTextBox"
+           BasedOn="{StaticResource {x:Type TextBox}}"
+           TargetType="{x:Type TextBox}">
+        <Setter Property="Foreground" Value="#444" />
+        <Setter Property="CaretBrush" Value="#333" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="FontSize" Value="14.67px" />
+        <Setter Property="Padding" Value="3" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border Name="borderText"
+                            BorderThickness="1px"
+                            BorderBrush="#444"
+                            Background="#88FFFFFF">
+                        <Grid>
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            <TextBlock x:Name="previewText"
+                                       Foreground="#777777"
+                                       FontSize="14.67px"
+                                       Padding="3"
+                                       Margin="4 0 4 0"
+                                       IsHitTestVisible="False"
+                                       Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}"
+                                       Text="{TemplateBinding Tag}" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="borderText"
+                                    Property="BorderBrush"
+                                    Value="#666" />
+                            <Setter Property="Background"
+                                    Value="#aaa" />
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground"
+                                    Value="#444" />
+                            <Setter TargetName="borderText"
+                                    Property="BorderBrush"
+                                    Value="#444" />
+                        </Trigger>
+
+                        <Trigger Property="Text" Value="">
+                            <Setter Property="Visibility"
+                                    TargetName="previewText"
+                                    Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>
