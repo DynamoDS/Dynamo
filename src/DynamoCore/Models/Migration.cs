@@ -430,8 +430,8 @@ namespace Dynamo.Models
             }
 
             // For end-users, disable migration.
-            if (fileVersion < currVersion)
-                return Decision.Abort;
+            //if (fileVersion < currVersion)
+            //    return Decision.Abort;
 
             return Decision.Retain; // User has latest file, allow usage.
         }
