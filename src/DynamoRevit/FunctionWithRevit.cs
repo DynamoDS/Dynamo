@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Dynamo.Models;
-using Dynamo.Nodes;
-using Microsoft.FSharp.Collections;
 using Dynamo.Utilities;
 using Dynamo.Revit;
 using System.Xml;
 using Autodesk.Revit.DB;
 using RevitServices.Persistence;
-using RevitServices.Threading;
 using RevitServices.Transactions;
 using RevThread = RevitServices.Threading;
 
@@ -106,9 +102,9 @@ namespace Dynamo.Nodes
                             }
                         }
                     }
-                    var rNode = Definition.WorkspaceModel.Nodes.FirstOrDefault(x => x.GUID == nodeId) as RevitTransactionNode;
-                    if (rNode != null)
-                        rNode.RegisterAllElementsDeleteHook();
+                    //var rNode = Definition.WorkspaceModel.Nodes.FirstOrDefault(x => x.GUID == nodeId) as RevitTransactionNode;
+                    //if (rNode != null)
+                    //    rNode.RegisterAllElementsDeleteHook();
                 }
             }
         }
