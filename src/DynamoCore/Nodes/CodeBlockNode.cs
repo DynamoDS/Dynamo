@@ -35,6 +35,13 @@ namespace Dynamo.Nodes
         private string previewVariable = null;
         private bool shouldFocus = true;
 
+        private struct Formatting
+        {
+            public const int InitialMargin = 4;
+            public const int VerticalMargin = 20;
+            public const string ToolTipForTempVariable = "Statement Output";
+        }
+
         #region Public Methods
 
         public CodeBlockNodeModel()
@@ -94,7 +101,7 @@ namespace Dynamo.Nodes
             inputCode = statements.Where(stmnt => stmnt.Any(c => !char.IsWhiteSpace(c)))
                                   .Aggregate("", (current, stmnt) => current + (stmnt + ";"));
 
-            if (inputCode.Equals(""))
+            if (string.IsNullOrEmpty(inputCode))
                 return inputCode;
 
             //Add the ';' if required
@@ -421,7 +428,7 @@ namespace Dynamo.Nodes
             //New code => Revamp everything
             codeStatements.Clear();
 
-            if (Code.Equals("")) //If its null then set preview to null
+            if (string.IsNullOrEmpty(Code))
             {
                 previewVariable = null;
             }
@@ -487,8 +494,8 @@ namespace Dynamo.Nodes
 
             //Make sure variables have not been declared in other Code block nodes.
             inputIdentifiers = unboundIdentifiers;
-
-            GeneratePorts(unboundIdentifiers); //Set the input and output ports based on the statements
+            //Set the input and output ports based on the statements
+            GeneratePorts(); 
         }
 
         private void SetPreviewVariable(List<Node> parsedNodes)
@@ -512,11 +519,8 @@ namespace Dynamo.Nodes
         /// <summary>
         ///     Creates the inport and outport data based on the statements generated form the user code
         /// </summary>
-        /// <param name="unboundIdentifiers"> List of unbound identifiers to be used an inputs</param>
-        private void GeneratePorts(List<string> unboundIdentifiers)
+        private void GeneratePorts()
         {
-            this.inputIdentifiers = unboundIdentifiers;
-
             InPortData.Clear();
             OutPortData.Clear();
             if (codeStatements == null || (codeStatements.Count == 0))
@@ -525,103 +529,66 @@ namespace Dynamo.Nodes
                 return;
             }
 
-            // Generate input port data list from the unbound identifiers.
-            var inportData = CodeBlockUtils.GenerateInputPortData(unboundIdentifiers);
-            foreach (var portData in inportData)
-                InPortData.Add(portData);
-
-            // Since output ports need to be aligned with the statements, 
-            // calculate the margins needed based on the statement lines 
-            // and add them to port data.
-            List<double> verticalMargin = CalculateMarginInPixels();
-            SetOutputPorts(verticalMargin);
+            SetInputPorts();
+            SetOutputPorts();
 
             RegisterAllPorts();
         }
 
-        /// <summary>
-        ///     Creates the output ports with the necessary margins for port alignment
-        /// </summary>
-        /// <param name="verticalMargin"> Distance between the consequtive output ports </param>
-        private void SetOutputPorts(List<double> verticalMargin)
+        private void SetInputPorts()
         {
-            var svs = CodeBlockUtils.GetStatementVariables(codeStatements, true);
-
-            int outportCount = 0;
-            for (int i = 0; i < codeStatements.Count; i++)
-            {
-                if (CodeBlockUtils.DoesStatementRequireOutputPort(svs, i) == false)
-                    continue;
-
-                Statement s = codeStatements[i];
-                string nickName = Statement.GetDefinedVariableNames(s, true)[0];
-                if (tempVariables.Contains(nickName))
-                    nickName = "Statement Output"; //Set tool tip incase of random var name
-
-                OutPortData.Add(new PortData("", nickName, typeof(object))
-                {
-                    VerticalMargin = verticalMargin[outportCount]
-                });
-
-                outportCount++;
-            }
+            // Generate input port data list from the unbound identifiers.
+            var inportData = CodeBlockUtils.GenerateInputPortData(this.inputIdentifiers);
+            foreach (var portData in inportData)
+                InPortData.Add(portData);
         }
 
-        /// <summary>
-        ///     Based on the start line of ech statement and type, it returns a list of
-        ///     top margins required for the ports
-        /// </summary>
-        private List<double> CalculateMarginInPixels()
+        private void SetOutputPorts()
         {
-            var svs = CodeBlockUtils.GetStatementVariables(codeStatements, true);
+            // Get all defined variables and their locations
+            var definedVars = codeStatements.Select(s => new KeyValuePair<Variable, int>(s.FirstDefinedVariable, s.StartLine))
+                                            .Where(pair => pair.Key != null)
+                                            .Select(pair => new KeyValuePair<string, int>(pair.Key.Name, pair.Value))
+                                            .OrderBy(pair => pair.Key)
+                                            .GroupBy(pair => pair.Key);
 
-            var result = new List<double>();
-            int currentOffset = 1; //Used to mark the line immediately after the last output port line
-            int textWrapping = 0;
-            double initialMarginRequired = 4;
-            for (int i = 0; i < codeStatements.Count; i++)
+            // Calc each variable's last location of definition
+            var locationMap = new Dictionary<string, int>();
+            foreach (var defs in definedVars)
             {
-                //Dont calculate margin for ports that dont require a port
-                if (CodeBlockUtils.DoesStatementRequireOutputPort(svs, i))
-                    continue;
-
-                //Margin = diff between this line and prev port line x port height
-                double margin;
-                if (codeStatements[i].StartLine - currentOffset >= 0)
-                {
-                    margin = (codeStatements[i].StartLine - currentOffset) * 20;
-                    currentOffset = codeStatements[i].StartLine + 1;
-                }
-                else
-                {
-                    margin = 0.0;
-                    currentOffset += 1;
-                }
-
-                // CRASH:Extract Statement from code does not work for Function calls and causes it to crash
-                //       Hence, am commenting out the formatting die to text wrapping until it gets fixed
-                /*//Calculate extra margin required due to text wrapping
-                if (i != 0)
-                {
-                    Node statementNode = codeStatements[i - 1].AstNode;
-
-                    if (!(statementNode is FunctionDefinitionNode))
-                    {
-                        string firstDefinedVariable = Statement.GetDefinedVariableNames(codeStatements[i - 1], true)[0];
-                        if (this.TempVariables.Contains(firstDefinedVariable))
-                            statementNode = (statementNode as BinaryExpressionNode).RightNode;
-                    }
-                    string stmntText = ProtoCore.Utils.ParserUtils.ExtractStatementFromCode(code, statementNode);
-
-                    textWrapping = GetExtraLinesDueToTextWrapping(stmntText) * 20;
-                }
-                else
-                    textWrapping = 0;  */
-
-                result.Add(margin + initialMarginRequired + textWrapping);
-                initialMarginRequired = 0;
+                var name = defs.FirstOrDefault().Key;
+                var loc = defs.Select(p => p.Value).Max<int>();
+                locationMap[name] = loc;
             }
-            return result;
+
+            // Create output ports
+            var allDefs = locationMap.OrderBy(p => p.Value);
+            if (allDefs.Any())
+            {
+                // Create first output port for the first defined variable
+                var firstVar = allDefs.FirstOrDefault();
+                string tooltip = tempVariables.Contains(firstVar.Key) ? Formatting.ToolTipForTempVariable : firstVar.Key;
+                OutPortData.Add(new PortData("", firstVar.Key, typeof(object))
+                {
+                    VerticalMargin = Formatting.InitialMargin + (firstVar.Value - 1) * Formatting.VerticalMargin
+                });
+
+                // Calc the diff between the definition location of variable 
+                // and the defintion location of previous variable
+                var defs = allDefs.Skip(1)
+                                   .Zip(allDefs.Take(allDefs.Count() - 1), 
+                                        (kvp1, kvp2) => new KeyValuePair<string, int>(kvp1.Key, kvp1.Value - kvp2.Value - 1));
+
+                // Create output ports for variables
+                foreach (var pair in defs)
+                {
+                    tooltip = tempVariables.Contains(pair.Key) ? Formatting.ToolTipForTempVariable : pair.Key;
+                    OutPortData.Add(new PortData("", tooltip, typeof(object))
+                    {
+                        VerticalMargin = pair.Value < 0 ? 0 : pair.Value * Formatting.VerticalMargin
+                    });
+                }
+            }
         }
 
         /// <summary>
@@ -663,7 +630,7 @@ namespace Dynamo.Nodes
             {
                 PortModel portModel = OutPorts[i];
                 string portName = portModel.ToolTipContent;
-                if (portModel.ToolTipContent.Equals("Statement Output"))
+                if (portModel.ToolTipContent.Equals(Formatting.ToolTipForTempVariable))
                     portName += i.ToString(CultureInfo.InvariantCulture);
                 if (portModel.Connectors.Count != 0)
                 {

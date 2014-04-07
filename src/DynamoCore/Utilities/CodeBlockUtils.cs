@@ -111,52 +111,5 @@ namespace Dynamo.Utilities
 
             return true;
         }
-
-        /// <summary>
-        /// Call this method to retrieve the corresponding "Statement" object 
-        /// from the given output port index.
-        /// </summary>
-        /// <param name="statements">List of Statement objects from which the 
-        /// target Statement is to be retrieved.</param>
-        /// <param name="outputPortIndex">The output port index for which the 
-        /// corresponding Statement object is to be retrieved.</param>
-        /// <returns>Returns the Statement object if one is found, or null 
-        /// otherwise.</returns>
-        /// 
-        public static Statement GetStatementFromOutputPortIndex(
-            IEnumerable<Statement> statements, int outputPortIndex)
-        {
-            if (statements == null)
-                throw new ArgumentNullException("statements");
-
-            int statementCount = statements.Count();
-            if (statementCount <= 0)
-                return null;
-
-            if (outputPortIndex < 0 || (outputPortIndex >= statementCount))
-                throw new IndexOutOfRangeException("outputPortIndex is out of range");
-
-            // Here the "portIndex" is back mapped to the corresponding "Statement" 
-            // object. However, not all "Statement" objects produce an output port,
-            // so "portIndex" cannot be used directly to index into "codeStatements" 
-            // list. This loop goes through "codeStatements", decrementing "portIndex"
-            // along the way to determine the right "Statement" object matching the 
-            // port index.
-            // 
-            var svs = CodeBlockUtils.GetStatementVariables(statements, true);
-            for (int stmt = 0, portIndex = 0; stmt < statementCount; stmt++)
-            {
-                // This statement requires an output port, count its index in.
-                if (CodeBlockUtils.DoesStatementRequireOutputPort(svs, stmt))
-                {
-                    if (portIndex == outputPortIndex)
-                        return statements.ElementAt(stmt);
-
-                    portIndex = portIndex + 1;
-                }
-            }
-
-            return null;
-        }
     }
 }
