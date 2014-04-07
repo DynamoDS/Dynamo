@@ -330,13 +330,17 @@ namespace ProtoCore.DSASM
                 return currentProcedure;
             }
 
-            // For every procedure in this table
+            // how many default parameters are used
+            int defaultParamNum = Int32.MaxValue;
+
             for (int n = 0; n < procList.Count; ++n)
             {
-                int defaultArgNum = procList[n].argInfoList.Count(X => X.isDefault);
-                if (name == procList[n].name
-                    && procList[n].argTypeList.Count >= argTypeList.Count
-                    && (procList[n].argTypeList.Count - argTypeList.Count <= defaultArgNum))
+                var proc = procList[n];
+                var argNum = proc.argTypeList.Count;
+                var paramNum = argTypeList.Count;
+                int defaultArgNum = proc.argInfoList.Count(X => X.isDefault);
+
+                if (name.Equals(proc.name) && (argNum >= paramNum) && (argNum - paramNum <= defaultArgNum))
                 {
 #if STATIC_TYPE_CHECKING
                     int currentDist = procList[n].GetDistance(name, argTypeList, classtable);
@@ -356,10 +360,19 @@ namespace ProtoCore.DSASM
                     }
 #else
                     if (!isStaticOrConstructor ||
-                        (isStaticOrConstructor && (procList[n].isStatic || procList[n].isConstructor)))
+                        (isStaticOrConstructor && (proc.isStatic || proc.isConstructor)))
                     {
-                        currentProcedure = n;
-                        break;
+                        var num = argNum - paramNum;
+                        if (num < defaultParamNum)
+                        {
+                            defaultParamNum = num;
+                            currentProcedure = n;
+                        }
+
+                        if (defaultParamNum == 0)
+                        {
+                            break;
+                        }
                     }
 #endif
                 }
