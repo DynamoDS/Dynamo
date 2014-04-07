@@ -614,7 +614,7 @@ namespace DSCore
             }
 
             if (flatList.Count() < rowLength)
-                return ((IList)list);
+                return list;
 
             var finalList = new List<List<object>>();
             List<object> currList = null;
