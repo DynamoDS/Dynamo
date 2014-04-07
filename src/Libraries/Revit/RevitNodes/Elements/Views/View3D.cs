@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using Autodesk.Revit.DB;
-using Revit.Elements;
-using Revit.GeometryConversion;
 using RevitServices.Persistence;
-using RevitServices.Threading;
-using RevitServices.Transactions;
 
 namespace Revit.Elements.Views
 {
@@ -144,8 +138,7 @@ namespace Revit.Elements.Views
             if (toHide.Count > 0)
                 view.HideElements(toHide);
 
-                                           // (sic)
-            IdlePromise.ExecuteOnIdleSync( Document.Regenerate );
+            DocumentManager.Regenerate();
 
             if (view.IsPerspective)
             {
