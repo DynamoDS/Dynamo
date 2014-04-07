@@ -61,7 +61,7 @@ namespace Dynamo.Nodes
 
     public class CurveByPointsByLine : MigrationNode
     {
-
+        // Deprecated
     }
 
     public class CurveRef : MigrationNode
