@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Autodesk.DesignScript.Geometry;
-using Revit;
+using Dynamo.Tests;
 using Revit.Elements;
-using Revit.GeometryObjects;
 using NUnit.Framework;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
@@ -15,6 +11,7 @@ namespace DSRevitNodesTests
     class AdaptiveComponentTests : ProtoGeometryTest
     {
         [Test]
+        [TestModel(@".\AdaptiveComponents.rfa")]
         public void ByPoints_ValidInput()
         {
             var pts = new Point[]
@@ -30,6 +27,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\AdaptiveComponents.rfa")]
         public void ByPoints_NonMatchingNumberOfPoints()
         {
             var pts = new Point[]
@@ -43,6 +41,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\AdaptiveComponents.rfa")]
         public void ByPoints_NullFamilySymbol()
         {
             var pts = new Point[]
@@ -56,6 +55,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\AdaptiveComponents.rfa")]
         public void ByPoints_NullPts()
         {
             var fs = FamilySymbol.ByName("3PointAC");
@@ -64,6 +64,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\AdaptiveComponents.rfa")]
         public void ByPointsOnCurve_ValidInput()
         {
             // create spline
@@ -98,6 +99,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\AdaptiveComponents.rfa")]
         public void ByPointsOnFace_ValidInput()
         {
             Assert.Inconclusive();
