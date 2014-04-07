@@ -1,60 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml;
-using Autodesk.Revit.DB;
 using Dynamo.Controls;
-using Dynamo.FSchemeInterop;
 using Dynamo.Models;
-using Dynamo.Revit;
 using Dynamo.Revit.SyncedNodeExtensions; //Gives the RegisterEval... methods
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
-using RevitServices.Persistence;
-using RevitServices.Threading;
-using Value = Dynamo.FScheme.Value;
 using TextBox = System.Windows.Controls.TextBox;
 using RevThread = RevitServices.Threading;
 
 namespace Dynamo.Nodes
 {
     [IsInteractive(true)]
-    public abstract class SelectionBase : NodeWithOneOutput
+    public abstract class SelectionBase : NodeModel
     {
         #region private members
         
-        private bool _canSelect = true;
-        protected string _selectButtonContent;
-        protected string _selectionMessage;
-        private Element _selected;
-        protected string _selectionText;
-        private bool _buttonEnabled;
-        
+        private bool canSelect = true;
+        private string selectButtonContent;
+        private string selected;
+
         #endregion
 
         #region properties
 
         public bool CanSelect
         {
-            get { return _canSelect; }
+            get { return canSelect; }
             set
             {
-                _canSelect = value;
+                canSelect = value;
                 RaisePropertyChanged("CanSelect");
             }
         }
 
         public string SelectButtonContent
         {
-            get { return _selectButtonContent; }
+            get { return selectButtonContent; }
             set
             {
-                _selectButtonContent = value;
+                selectButtonContent = value;
                 RaisePropertyChanged("SelectButtonContent");
             }
         }
@@ -63,31 +52,31 @@ namespace Dynamo.Nodes
         /// The Element which is selected. Setting this property will automatically register the Element
         /// for proper updating, and will update this node's IsDirty value.
         /// </summary>
-        public virtual Element SelectedElement
+        public virtual string SelectedElement
         {
-            get { return _selected; }
+            get { return selected; }
             set
             {
                 bool dirty;
-                if (_selected != null)
+                if (selected != null)
                 {
-                    if (value != null && value.Id.Equals(_selected.Id))
+                    if (value != null && value.Equals(selected))
                         return;
 
                     dirty = true;
-                    this.UnregisterEvalOnModified(_selected.Id);
+                    this.UnregisterEvalOnModified(selected);
                 }
                 else
                     dirty = value != null;
 
-                _selected = value;
+                selected = value;
                 if (value != null)
                 {
                     this.RegisterEvalOnModified(
-                        value.Id,
+                        value,
                         delAction: delegate
                         {
-                            _selected = null;
+                            selected = null;
                             SelectedElement = null;
                         });
 
@@ -129,7 +118,7 @@ namespace Dynamo.Nodes
         
         #endregion
 
-        void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "RunEnabled")
             {
@@ -156,7 +145,7 @@ namespace Dynamo.Nodes
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
-                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
+                Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)),
                 BorderThickness = new Thickness(0),
                 IsReadOnly = true,
                 IsReadOnlyCaretVisible = false
@@ -176,29 +165,29 @@ namespace Dynamo.Nodes
             nodeUI.inputGrid.Children.Add(tb);
             nodeUI.inputGrid.Children.Add(selectButton);
 
-            System.Windows.Controls.Grid.SetRow(selectButton, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 1);
+            Grid.SetRow(selectButton, 0);
+            Grid.SetRow(tb, 1);
 
             tb.DataContext = this;
             selectButton.DataContext = this;
 
-            var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
+            var selectTextBinding = new Binding("SelectionText")
             {
                 Mode = BindingMode.TwoWay,
             };
             tb.SetBinding(TextBox.TextProperty, selectTextBinding);
 
-            var buttonTextBinding = new System.Windows.Data.Binding("SelectButtonContent")
+            var buttonTextBinding = new Binding("SelectButtonContent")
             {
                 Mode = BindingMode.TwoWay,
             };
             selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
 
-            var buttonEnabledBinding = new System.Windows.Data.Binding("CanSelect")
+            var buttonEnabledBinding = new Binding("CanSelect")
             {
                 Mode = BindingMode.TwoWay,
             };
-            selectButton.SetBinding(Button.IsEnabledProperty, buttonEnabledBinding);
+            selectButton.SetBinding(UIElement.IsEnabledProperty, buttonEnabledBinding);
         }
 
         private void selectButton_Click(object sender, RoutedEventArgs e)
@@ -225,32 +214,18 @@ namespace Dynamo.Nodes
             if (SelectedElement != null)
             {
                 XmlElement outEl = xmlDoc.CreateElement("instance");
-                outEl.SetAttribute("id", SelectedElement.UniqueId);
+                outEl.SetAttribute("id", SelectedElement);
                 nodeElement.AppendChild(outEl);
             }
         }
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                if (subNode.Name.Equals("instance"))
-                {
-                    Element saved = null;
-                    var id = subNode.Attributes[0].Value;
-                    try
-                    {
-                        saved = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(id); // FamilyInstance;
-                    }
-                    catch
-                    {
-                        DynamoLogger.Instance.Log(
-                            "Unable to find element with ID: " + id);
-                    }
-                    SelectedElement = saved;
-                }
-            }
+            SelectedElement = (from XmlNode subNode in nodeElement.ChildNodes
+                               where subNode.Name.Equals("instance")
+                               let xmlAttributeCollection = subNode.Attributes
+                               where xmlAttributeCollection != null
+                               select xmlAttributeCollection[0].Value).Last();
         }
-
     }
 }
