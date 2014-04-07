@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Geometry;
+﻿using Autodesk.DesignScript.Geometry;
+using Dynamo.Tests;
 using Revit.AnalysisDisplay;
 using Revit.Application;
-using Revit.Elements;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.AnalysisDisplay
@@ -14,6 +10,7 @@ namespace DSRevitNodesTests.AnalysisDisplay
     public class VectorAnalysisDisplayTests
     {
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByViewPointsAndVectorValues_ValidArgs()
         {
             var samplePoints = new[]
@@ -37,6 +34,7 @@ namespace DSRevitNodesTests.AnalysisDisplay
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByViewPointsAndVectorValues_BadArgs()
         {
             var samplePoints = new[]

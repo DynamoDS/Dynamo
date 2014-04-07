@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Geometry;
-using Revit;
+﻿using Autodesk.DesignScript.Geometry;
+using Dynamo.Tests;
 using Revit.Elements;
 using Revit.GeometryConversion;
-using Revit.GeometryObjects;
 using NUnit.Framework;
-using RevitServices.Persistence;
-using RevitServices.Transactions;
 
 namespace DSRevitNodesTests.Conversion
 {
@@ -18,6 +11,7 @@ namespace DSRevitNodesTests.Conversion
     {
 
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void CanConvertRevitToProtoType()
         {
             var famSym = FamilySymbol.ByName("Box");
@@ -36,6 +30,7 @@ namespace DSRevitNodesTests.Conversion
         }
 
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void CanConvertProtoToRevitType()
         {
             var famSym = FamilySymbol.ByName("Box");

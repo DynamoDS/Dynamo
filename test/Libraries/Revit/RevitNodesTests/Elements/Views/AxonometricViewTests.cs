@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Revit;
+using Dynamo.Tests;
 using Revit.Elements;
 using Revit.Elements.Views;
-using Revit.GeometryObjects;
 using NUnit.Framework;
 using RevitServices.Persistence;
 using Point = Autodesk.DesignScript.Geometry.Point;
@@ -16,6 +12,7 @@ namespace DSRevitNodesTests
     class AxonometricViewTests
     {
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByEyePointAndTarget_ValidBoundingBox()
         {
             var eye = Point.ByCoordinates(100, 100, 100);
@@ -35,6 +32,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByEyePointAndTarget_ValidAbstractElement()
         {
             var eye = Point.ByCoordinates(100, 100, 100);
@@ -54,6 +52,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByEyePointAndTarget_BadArgs0()
         {
             var eye = Point.ByCoordinates(100, 100, 100);
@@ -67,6 +66,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByEyePointTargetAndBoundingBox_ValidArgs()
         {
             var eye = Point.ByCoordinates(100, 100, 100);
@@ -85,6 +85,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByEyePointTargetAndBoundingBox_BadArgs()
         {
             var eye = Point.ByCoordinates(100, 100, 100);
@@ -102,6 +103,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByEyePointTargetAndElement_ValidArgs()
         {
             var eye = Point.ByCoordinates(100, 100, 100);
@@ -120,6 +122,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByEyePointTargetAndElement_BadArgs()
         {
             var eye = Point.ByCoordinates(100, 100, 100);

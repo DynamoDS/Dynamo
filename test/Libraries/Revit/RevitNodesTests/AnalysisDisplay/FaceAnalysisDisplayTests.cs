@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Geometry;
+﻿using System.Linq;
+using Dynamo.Tests;
 using Revit.AnalysisDisplay;
 using Revit.Application;
 using Revit.Elements;
@@ -14,6 +11,7 @@ namespace DSRevitNodesTests.AnalysisDisplay
     public class FaceAnalysisDisplayTests
     {
         [Test]
+        [TestModel(@".\ColumnFamilyInstance.rvt")]
         public void ByViewFacePointsAndValues_ValidArgs()
         {
 
@@ -44,6 +42,7 @@ namespace DSRevitNodesTests.AnalysisDisplay
         }
 
         [Test]
+        [TestModel(@".\ColumnFamilyInstance.rvt")]
         public void ByViewFacePointsAndValues_BadArgs()
         {
             // get the face from the document

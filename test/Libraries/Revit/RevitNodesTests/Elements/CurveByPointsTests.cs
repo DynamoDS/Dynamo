@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Dynamo.Tests;
 using NUnit.Framework;
 using Revit.Elements;
 using RevitServices.Persistence;
@@ -10,6 +11,7 @@ namespace DSRevitNodesTests.Elements
     public class CurveByPointsTests
     {
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByReferencePoints_ValidArgs()
         {
             ElementBinder.IsEnabled = false;
@@ -30,6 +32,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByReferencePoints_DuplicatePoints()
         {
             ElementBinder.IsEnabled = false;
@@ -47,6 +50,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByReferencePoints_Mutation()
         {
             ElementBinder.IsEnabled = false;

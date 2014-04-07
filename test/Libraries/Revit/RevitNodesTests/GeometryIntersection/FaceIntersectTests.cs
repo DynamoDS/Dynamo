@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
 using Autodesk.DesignScript.Geometry;
-using Autodesk.Revit.DB;
-using Revit.Elements;
-using Revit.GeometryConversion;
+using Dynamo.Tests;
 using Revit.GeometryObjects;
 using NUnit.Framework;
 using Point = Autodesk.DesignScript.Geometry.Point;
@@ -30,6 +25,7 @@ namespace DSRevitNodesTests.GeometryIntersection
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void IntersectingCurveFace_ValidArgs()
         {
 
@@ -59,6 +55,7 @@ namespace DSRevitNodesTests.GeometryIntersection
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void IntersectingCurveFace_BadArgs()
         {
 
@@ -80,6 +77,7 @@ namespace DSRevitNodesTests.GeometryIntersection
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void NonIntersectingCurveFace_ValidArgs()
         {
 
@@ -102,6 +100,7 @@ namespace DSRevitNodesTests.GeometryIntersection
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void IntersectingFaceFace_ValidArgs()
         {
 
@@ -132,6 +131,7 @@ namespace DSRevitNodesTests.GeometryIntersection
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void IntersectingFaceFace_BadArgs()
         {
 
@@ -151,6 +151,7 @@ namespace DSRevitNodesTests.GeometryIntersection
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void NonIntersectingFaceFace_ValidArgs()
         {
 

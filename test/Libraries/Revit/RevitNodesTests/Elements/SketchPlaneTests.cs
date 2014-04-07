@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Geometry;
+﻿using Autodesk.DesignScript.Geometry;
+using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
 
@@ -12,6 +9,7 @@ namespace DSRevitNodesTests.Elements
     public class SketchPlaneTests
     {
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByPlane_ValidArgs()
         {
             var origin = Point.ByCoordinates(1, 2, 3);
@@ -28,10 +26,10 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByPlane_NullInput()
         {
             Assert.Throws(typeof(System.ArgumentNullException), () => SketchPlane.ByPlane(null));
         }
-
     }
 }

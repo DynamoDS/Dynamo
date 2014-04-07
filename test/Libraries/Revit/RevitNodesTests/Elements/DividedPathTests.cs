@@ -1,5 +1,6 @@
 ﻿using System;
 using Autodesk.DesignScript.Geometry;
+using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
 using ArgumentNullException = Autodesk.Revit.Exceptions.ArgumentNullException;
@@ -22,6 +23,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByCurveAndEqualDivisions_ValidArgs()
         {
             // create spline
@@ -48,6 +50,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByCurveAndEqualDivisions_NullArgument()
         {
             // build dividedPath
@@ -55,6 +58,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByCurveAndEqualDivisions_InvalidDivisions()
         {
             // create spline

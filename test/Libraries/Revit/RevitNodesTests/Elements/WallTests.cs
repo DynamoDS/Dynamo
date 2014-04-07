@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Autodesk.DesignScript.Geometry;
-using Revit;
+using Dynamo.Tests;
 using Revit.Elements;
-using Revit.GeometryObjects;
 using NUnit.Framework;
 using RevitServices.Persistence;
 
@@ -15,6 +11,7 @@ namespace DSRevitNodesTests.Elements
     public class WallTests
     {
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByCurveAndHeight_ValidArgs()
         {
             var elevation = 0;
@@ -28,6 +25,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByCurveAndHeight_NullArgs()
         {
             var elevation = 0;
@@ -41,6 +39,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByCurveAndLevels_ValidArgs()
         {
             // prevent rebinding when creating levels
@@ -58,6 +57,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByCurveAndLevels_NullArgs()
         {
             var elevation = 100;
