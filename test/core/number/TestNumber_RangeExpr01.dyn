@@ -1,0 +1,22 @@
+<Workspace Version="0.7.0.27049" X="33.16" Y="37.735" zoom="0.8425" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="572c5ff9-1b83-4c58-986f-f8f4453a6d09" nickname="Watch" x="440" y="60.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="0d5a1371-c6b1-4f15-9635-78200ebbff2f" nickname="Number" x="66" y="117.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1..#4..6" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="966a2c25-694a-464b-ab70-9dc68c27b2c5" nickname="Number" x="60" y="267.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1..#5.3..-3" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="918bd9e0-bbfd-45f7-b405-13c35118624d" nickname="Number" x="63" y="421.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1..#0..3" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="2bed6a11-aceb-469b-ba59-79a1ac7b7396" nickname="Watch" x="452" y="440.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="1f62b414-7118-4606-9924-32a4b09c32a9" nickname="Watch" x="436" y="244.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0d5a1371-c6b1-4f15-9635-78200ebbff2f" start_index="0" end="572c5ff9-1b83-4c58-986f-f8f4453a6d09" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="966a2c25-694a-464b-ab70-9dc68c27b2c5" start_index="0" end="1f62b414-7118-4606-9924-32a4b09c32a9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="918bd9e0-bbfd-45f7-b405-13c35118624d" start_index="0" end="2bed6a11-aceb-469b-ba59-79a1ac7b7396" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

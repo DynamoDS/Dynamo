@@ -539,5 +539,18 @@ namespace Dynamo.Tests
 
             Assert.Pass();
         }
+
+        [Test]
+        public void TestNumber_RangeExpr01()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\number");
+
+            RunModel(Path.Combine(exPath, @"TestNumber_RangeExpr01.dyn"));
+
+            AssertPreviewValue("572c5ff9-1b83-4c58-986f-f8f4453a6d09", new[] {1, 7, 13, 19});
+            AssertPreviewValue("1f62b414-7118-4606-9924-32a4b09c32a9", new[] {1, -2, -5, -8, -11});
+            AssertPreviewValue("2bed6a11-aceb-469b-ba59-79a1ac7b7396", null);
+        }
     }
 }
