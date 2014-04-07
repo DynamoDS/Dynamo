@@ -43,7 +43,8 @@ namespace Revit.Elements
         {
             get
             {
-                IdlePromise.ExecuteOnIdleSync(DocumentManager.Instance.CurrentDBDocument.Regenerate);
+                //IdlePromise.ExecuteOnIdleSync(DocumentManager.Instance.CurrentDBDocument.Regenerate);
+                DocumentManager.Regenerate();
                 var pts = InternalTopographySurface.GetPoints();
                 return pts.Select(x => x.ToPoint()).ToList();
             }

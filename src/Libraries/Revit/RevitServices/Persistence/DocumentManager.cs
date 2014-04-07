@@ -4,6 +4,7 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using RevitServices.Elements;
+using RevitServices.Threading;
 using RevitServices.Transactions;
 
 namespace RevitServices.Persistence
@@ -151,5 +152,20 @@ namespace RevitServices.Persistence
         /// </summary>
         public UIApplication CurrentUIApplication { get; set; }
 
+        /// <summary>
+        /// Trigger a document regeneration in the idle context or without
+        /// depending on the state of the transaction manager.
+        /// </summary>
+        public static void Regenerate()
+        {
+            if (TransactionManager.Instance.DoAssertInIdleThread)
+            {
+                IdlePromise.ExecuteOnIdleSync(Instance.CurrentDBDocument.Regenerate);
+            }
+            else
+            {
+                Instance.CurrentDBDocument.Regenerate();
+            }
+        }
     }
 }
