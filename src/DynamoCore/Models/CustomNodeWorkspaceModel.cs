@@ -159,17 +159,12 @@ namespace Dynamo.Models
             if (!base.PopulateXmlDocument(document))
                 return false;
 
-            Guid guid;
-            if (CustomNodeDefinition != null)
-            {
-                guid = CustomNodeDefinition.FunctionId;
-            }
-            else
-            {
-                guid = Guid.NewGuid();
-            }
+            Guid guid = CustomNodeDefinition != null ? CustomNodeDefinition.FunctionId : Guid.NewGuid();
 
             var root = document.DocumentElement;
+            if (root == null)
+                return false;
+                
             root.SetAttribute("ID", guid.ToString());
 
             return true;

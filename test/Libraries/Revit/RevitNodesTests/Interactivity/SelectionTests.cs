@@ -15,7 +15,7 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void SelectElementASTGeneration()
         {
-            ReferencePoint refPoint = null;
+            ReferencePoint refPoint;
 
             using (var trans = new Transaction(DocumentManager.Instance.CurrentDBDocument, "CreateAndDeleteAreReferencePoint"))
             {
@@ -30,7 +30,7 @@ namespace Dynamo.Tests
                 trans.Commit();
             }
 
-            var sel = new DSModelElementSelection {SelectedElement = refPoint};
+            var sel = new DSModelElementSelection { SelectedElement = refPoint.UniqueId };
 
             var buildOutput = sel.BuildOutputAst(new List<AssociativeNode>());
 
@@ -70,7 +70,7 @@ namespace Dynamo.Tests
                 trans.Commit();
             }
 
-            var sel = new DSModelElementsSelection() { SelectedElement = refPoints.Cast<Element>().ToList() };
+            var sel = new DSModelElementsSelection { SelectedElement = refPoints.Cast<Element>().Select(x => x.UniqueId).ToList() };
 
             var buildOutput = sel.BuildOutputAst(new List<AssociativeNode>());
             var funCall = (ExprListNode)((BinaryExpressionNode)buildOutput.First()).RightNode;
@@ -83,7 +83,7 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void SelectReferenceASTGeneration()
         {
-            Form extrude = null;
+            Form extrude;
 
             using (var trans = new Transaction(DocumentManager.Instance.CurrentDBDocument, "Create an extrusion Form"))
             {
