@@ -335,6 +335,15 @@ namespace Revit.GeometryObjects
 
         #endregion
 
+        #region Public methods
+
+        public override object[] Explode()
+        {
+            return Faces;
+        }
+
+        #endregion
+
         #region Public static constructors
 
         /// <summary>
