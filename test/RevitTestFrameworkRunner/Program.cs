@@ -48,7 +48,7 @@ namespace RevitTestFrameworkRunner
                 }
                 else
                 {
-                    if (!ReadAssembly(_testAssembly, vm.Assemblies, _fixture, _test))
+                    if (!ReadAssembly(_testAssembly, vm.Assemblies))
                     {
                         return;
                     }
@@ -158,7 +158,7 @@ namespace RevitTestFrameworkRunner
             p.WriteOptionDescriptions(Console.Out);
         }
 
-        private static bool ReadAssembly(string assemblyPath, IList<IAssemblyData> data,  string fixtureName="", string testName="")
+        private static bool ReadAssembly(string assemblyPath, IList<IAssemblyData> data)
         {
             try
             {
@@ -167,27 +167,12 @@ namespace RevitTestFrameworkRunner
                 var assData = new AssemblyData(assemblyPath, assembly.GetName().Name);
                 data.Add(assData);
 
-                // If a fixture is specified, then create 
-                // journals for the fixture
-                if (!string.IsNullOrEmpty(fixtureName))
+                foreach (var fixtureType in assembly.GetTypes())
                 {
-                    var fixtureType = assembly.GetType(fixtureName);
-                    if (!ReadFixture(fixtureType, assData, testName))
+                    if (!ReadFixture(fixtureType, assData))
                     {
-                        Console.WriteLine(string.Format("Journals could not be created for {0}", _fixture));
-                        return false;
-                    }
-                }
-                // Read all fixtures in the assembly.
-                else
-                {
-                    foreach (var fixtureType in assembly.GetTypes())
-                    {
-                        if (!ReadFixture(fixtureType, assData, testName))
-                        {
-                            Console.WriteLine(string.Format("Journals could not be created for {0}", fixtureType.Name));
-                        } 
-                    }
+                        Console.WriteLine(string.Format("Journals could not be created for {0}", fixtureType.Name));
+                    } 
                 }
             }
             catch (Exception e)
@@ -200,11 +185,8 @@ namespace RevitTestFrameworkRunner
             return true;
         }
 
-        private static bool ReadFixture(Type fixtureType, IAssemblyData data, string testName = "")
+        private static bool ReadFixture(Type fixtureType, IAssemblyData data)
         {
-            var fixData = new FixtureData(fixtureType.Name);
-            data.Fixtures.Add(fixData);
-
             var fixtureAttribs = fixtureType.GetCustomAttributes(typeof (TestFixtureAttribute), true);
             if (!fixtureAttribs.Any())
             {
@@ -212,40 +194,23 @@ namespace RevitTestFrameworkRunner
                 return false;
             }
 
-            if (!string.IsNullOrEmpty(testName))
+            var fixData = new FixtureData(fixtureType.Name);
+            data.Fixtures.Add(fixData);
+
+            foreach (var test in fixtureType.GetMethods())
             {
-                var test = fixtureType.GetMethod(testName);
                 var testAttribs = test.GetCustomAttributes(typeof(TestAttribute), false);
                 if (!testAttribs.Any())
                 {
-                    Console.WriteLine("The specified test method does not have the Test attribute.");
-                    return false;
+                    // skip this method
+                    continue;
                 }
 
                 if (!ReadTest(fixtureType, test, fixData))
                 {
                     Console.WriteLine(string.Format("Journal could not be created for test:{0} in fixture:{1}", _test,
-                            _fixture));
-                    return false;
-                }
-            }
-            else
-            {
-                foreach (var test in fixtureType.GetMethods())
-                {
-                    var testAttribs = test.GetCustomAttributes(typeof(TestAttribute), false);
-                    if (!testAttribs.Any())
-                    {
-                        // skip this method
-                        continue;
-                    }
-
-                    if (!ReadTest(fixtureType, test, fixData))
-                    {
-                        Console.WriteLine(string.Format("Journal could not be created for test:{0} in fixture:{1}", _test,
-                            _fixture));
-                        continue;
-                    }
+                        _fixture));
+                    continue;
                 }
             }
 
@@ -299,7 +264,7 @@ namespace RevitTestFrameworkRunner
         public static void Refresh(ViewModel vm)
         {
             vm.Assemblies.Clear();
-            ReadAssembly(_testAssembly, vm.Assemblies, _fixture, _test);
+            ReadAssembly(_testAssembly, vm.Assemblies);
         }
 
         internal static void Cleanup()
