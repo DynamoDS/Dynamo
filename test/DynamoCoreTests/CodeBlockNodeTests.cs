@@ -368,54 +368,6 @@ b = c[w][x][y][z];";
             // The last line will display an output port as long as it defines variable.
             Assert.IsTrue(CodeBlockUtils.DoesStatementRequireOutputPort(svs, 2));
         }
-
-        [Test]
-        public void GetStatementFromOutputPortIndex00()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                CodeBlockUtils.GetStatementFromOutputPortIndex(null, 0);
-            });
-
-            // Empty list returns a null before port index (second parameter) is 
-            // validated to be within range, so 
-            var emptyList = new List<Statement>();
-            Assert.IsNull(CodeBlockUtils.GetStatementFromOutputPortIndex(emptyList, -1));
-        }
-
-
-        [Test]
-        public void GetStatementFromOutputPortIndex01()
-        {
-            // Create a statement of "Value = 1234".
-            var leftNode = new IdentifierNode("Value");
-            var rightNode = new IntNode(1234);
-            var binExprNode = new BinaryExpressionNode(
-                leftNode, rightNode, Operator.assign);
-
-            var statements = new List<Statement>()
-            {
-                Statement.CreateInstance(binExprNode)
-            };
-
-            Assert.Throws<IndexOutOfRangeException>(() =>
-            {
-                // Output port index cannot be less than zero.
-                CodeBlockUtils.GetStatementFromOutputPortIndex(statements, -1);
-            });
-
-            Assert.Throws<IndexOutOfRangeException>(() =>
-            {
-                // Output port index must be less than the number of statements.
-                CodeBlockUtils.GetStatementFromOutputPortIndex(statements, 1);
-            });
-
-            // Should retrieve the one and only Statement object in the list.
-            var targetStatement = statements[0];
-            Assert.AreEqual(targetStatement,
-                CodeBlockUtils.GetStatementFromOutputPortIndex(statements, 0));
-        }
-
         #endregion
     }
 }

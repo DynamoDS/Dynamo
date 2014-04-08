@@ -40,10 +40,10 @@ namespace Dynamo.Nodes
         //    return new PreviewUpdate(this) { WrappedNode = base.Build(preBuilt, outPort) };
         //}
 
-        protected override InputNode Compile(IEnumerable<string> portNames)
-        {
-            return new TransactionProcedureNode(this, InPortData.Select(x => x.NickName));
-        }
+        //protected override InputNode Compile(IEnumerable<string> portNames)
+        //{
+        //    return new TransactionProcedureNode(this, InPortData.Select(x => x.NickName));
+        //}
 
         private class TransactionProcedureNode : InputNode
         {

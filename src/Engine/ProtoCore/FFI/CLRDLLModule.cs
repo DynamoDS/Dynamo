@@ -768,17 +768,17 @@ namespace ProtoFFI
                     paramNode.ArgumentType = argType;
                 }
 
-                //if (parameter.IsOptional)
-                //{
-                //    var lhs = paramNode.NameNode;
+                if (parameter.IsOptional)
+                {
+                    var lhs = paramNode.NameNode;
 
-                //    var defaultValue = parameter.DefaultValue;
-                //    if (defaultValue != null)
-                //    {
-                //        var rhs = AstFactory.BuildPrimitiveNodeFromObject(defaultValue);
-                //        paramNode.NameNode = AstFactory.BuildBinaryExpression(lhs, rhs, ProtoCore.DSASM.Operator.assign);
-                //    }
-                //}
+                    var defaultValue = parameter.DefaultValue;
+                    if (defaultValue != null)
+                    {
+                        var rhs = AstFactory.BuildPrimitiveNodeFromObject(defaultValue);
+                        paramNode.NameNode = AstFactory.BuildBinaryExpression(lhs, rhs, ProtoCore.DSASM.Operator.assign);
+                    }
+                }
                 argumentSignature.AddArgument(paramNode);
             }
 

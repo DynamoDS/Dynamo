@@ -1,0 +1,62 @@
+<Workspace Version="0.6.3.26148" X="82.854975" Y="123.98701875" zoom="0.70823125" Description="" Category="Misc" Name="RemapVal" ID="5993a537-2542-4cad-9603-54ec0f1e2c83">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="32678678-589f-40d5-b656-3df85df371fa" nickname="Python Script With Variable Number of Inputs" x="185" y="11" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="5">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN0...INX variable(s).
+x = IN0
+in_min = IN1
+in_max = IN2
+
+out_min = IN3
+out_max = IN4
+
+##arduino map function
+y =  (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+
+OUT = y
+
+</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="2d392c8c-4780-4b43-9899-c74ee31cc912" nickname="Input" x="-7" y="23" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="value to map" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="2ed96083-b99c-45b4-bf3c-b754535f2a81" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="in min" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="46d1540b-3997-43aa-be66-224015f74838" nickname="Input" x="0" y="236" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="in max" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="e4818348-beab-4d14-a6d9-c36eee7beb70" nickname="Input" x="-4" y="325" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="out min" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="0a098560-63eb-46e2-a6cf-2fe45b3bdc65" nickname="Input" x="-2" y="419" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="out max" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="9428cb73-2899-4020-93bf-45d2a3640ea9" nickname="Output" x="537.5" y="31" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="remapped val" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="32678678-589f-40d5-b656-3df85df371fa" start_index="0" end="9428cb73-2899-4020-93bf-45d2a3640ea9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2d392c8c-4780-4b43-9899-c74ee31cc912" start_index="0" end="32678678-589f-40d5-b656-3df85df371fa" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2ed96083-b99c-45b4-bf3c-b754535f2a81" start_index="0" end="32678678-589f-40d5-b656-3df85df371fa" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="46d1540b-3997-43aa-be66-224015f74838" start_index="0" end="32678678-589f-40d5-b656-3df85df371fa" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e4818348-beab-4d14-a6d9-c36eee7beb70" start_index="0" end="32678678-589f-40d5-b656-3df85df371fa" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0a098560-63eb-46e2-a6cf-2fe45b3bdc65" start_index="0" end="32678678-589f-40d5-b656-3df85df371fa" end_index="4" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
