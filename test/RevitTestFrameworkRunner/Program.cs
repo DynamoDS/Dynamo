@@ -226,7 +226,7 @@ namespace RevitTestFrameworkRunner
                 return false;
             }
             
-            var modelPath = Path.Combine(_workingDirectory, ((TestModelAttribute)testModelAttribs[0]).Path);
+            var modelPath = Path.GetFullPath(Path.Combine(_workingDirectory, ((TestModelAttribute)testModelAttribs[0]).Path));
 
             var runDynamoAttribs = test.GetCustomAttributes(typeof(RunDynamoAttribute),false);
             var runDynamo = false;
@@ -265,6 +265,21 @@ namespace RevitTestFrameworkRunner
         {
             vm.Assemblies.Clear();
             ReadAssembly(_testAssembly, vm.Assemblies);
+        }
+
+        public static void RunAssembly(IAssemblyData ad)
+        {
+            
+        }
+
+        public static void RunFixture(IFixtureData fd)
+        {
+            
+        }
+
+        public static void RunTest(ITestData td)
+        {
+            
         }
 
         internal static void Cleanup()

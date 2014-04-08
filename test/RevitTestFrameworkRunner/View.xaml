@@ -4,12 +4,40 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:revitTestFrameworkRunner="clr-namespace:RevitTestFrameworkRunner"
-             mc:Ignorable="d" MinWidth="400" MinHeight="600">
+             mc:Ignorable="d" MinWidth="400" MinHeight="600" Width="700" Closing="View_Closing">
     <Window.Resources>
         <revitTestFrameworkRunner:AssemblyPathConverter x:Key="AssemblyPathConverter"></revitTestFrameworkRunner:AssemblyPathConverter>
         <revitTestFrameworkRunner:WorkingPathConverter x:Key="WorkingPathConverter"></revitTestFrameworkRunner:WorkingPathConverter>
         <revitTestFrameworkRunner:ResultsPathConverter x:Key="ResultsPathConverter"></revitTestFrameworkRunner:ResultsPathConverter>
+        
+        <HierarchicalDataTemplate x:Key="TestTemplate" DataType="{x:Type revitTestFrameworkRunner:TestData}">
+            <StackPanel Orientation="Horizontal" Tag="{Binding ElementName=TestDataTreeView, Path=DataContext}">
+                <TextBlock Text="{Binding Name}" VerticalAlignment="Center"></TextBlock>
+                <TextBlock Text="-->" VerticalAlignment="Center"></TextBlock>
+                <TextBlock Text="{Binding ModelPath}" VerticalAlignment="Center"></TextBlock>
+            </StackPanel>
+            
+        </HierarchicalDataTemplate>
+        
+        <HierarchicalDataTemplate x:Key="FixtureTemplate" 
+                                  ItemsSource="{Binding Tests}" 
+                                  DataType="{x:Type revitTestFrameworkRunner:FixtureData}"
+                                  ItemTemplate="{StaticResource TestTemplate}">
+            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Tag="{Binding ElementName=TestDataTreeView, Path=DataContext}">
+            </TextBlock>
+        </HierarchicalDataTemplate>
+
+        <HierarchicalDataTemplate x:Key="AssemblyTemplate" 
+                                  ItemsSource="{Binding Fixtures}" 
+                                  DataType="{x:Type revitTestFrameworkRunner:AssemblyData}"
+                                  ItemTemplate="{StaticResource FixtureTemplate}">
+            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" 
+                       Tag="{Binding ElementName=TestDataTreeView, Path=DataContext}">
+            </TextBlock>
+        </HierarchicalDataTemplate>
+
     </Window.Resources>
+    
     <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"></RowDefinition>
@@ -29,33 +57,23 @@
         <TextBox Margin="5" Grid.Row="0" Grid.Column="0" Text="{Binding AssemblyPath, Converter={StaticResource AssemblyPathConverter}}" ></TextBox>
         <TextBox Margin="5" Grid.Row="1" Grid.Column="0" Text="{Binding ResultsPath, Converter={StaticResource ResultsPathConverter}}"></TextBox>
         <TextBox Margin="5" Grid.Row="2" Grid.Column="0" Text="{Binding WorkingPath, Converter={StaticResource WorkingPathConverter}}"></TextBox>
-        
-        <TreeView Margin="5" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Assemblies}">
-            <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type revitTestFrameworkRunner:AssemblyData}">
-                    <TreeViewItem Header="{Binding Name}" BorderThickness="0">
-                        <TreeView ItemsSource="{Binding Fixtures}">
-                            <TreeView.Resources>
-                                <HierarchicalDataTemplate DataType="{x:Type revitTestFrameworkRunner:FixtureData}">
-                                    <TreeViewItem Header="{Binding Name}" BorderThickness="0">
-                                        <TreeView ItemsSource="{Binding Tests}">
-                                            <TreeView.Resources>
-                                                <HierarchicalDataTemplate DataType="{x:Type revitTestFrameworkRunner:TestData}">
-                                                    <TreeViewItem Header="{Binding Name}" BorderThickness="0">
-                                                        <StackPanel>
-                                                            <TextBlock Text="{Binding ModelPath}"></TextBlock>
-                                                        </StackPanel>
-                                                    </TreeViewItem>
-                                                </HierarchicalDataTemplate>
-                                            </TreeView.Resources>
-                                        </TreeView>
-                                    </TreeViewItem>
-                                </HierarchicalDataTemplate>
-                            </TreeView.Resources>
-                        </TreeView>
-                    </TreeViewItem>
-                </HierarchicalDataTemplate>
-            </TreeView.Resources>
+
+        <TreeView Margin="5" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" 
+                  ItemsSource="{Binding Assemblies}" 
+                  ItemTemplate="{StaticResource AssemblyTemplate}"
+                  VirtualizingStackPanel.IsVirtualizing="True"
+                  VirtualizingStackPanel.VirtualizationMode="Recycling" 
+                  Name="TestDataTreeView" 
+                  SelectedItemChanged="TestDataTreeView_OnSelectedItemChanged">
+            <TreeView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{Binding RunText}" 
+                              Command="{Binding RunCommand}"
+                              CommandParameter="{Binding SelectedItem}">
+                    </MenuItem>
+                </ContextMenu>
+            </TreeView.ContextMenu>
         </TreeView>
     </Grid>
+
 </Window>
