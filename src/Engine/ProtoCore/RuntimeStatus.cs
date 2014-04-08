@@ -122,7 +122,7 @@ namespace ProtoCore
             warnings.RemoveAll(w => w.ExpressionID == expressionID);
         }
 
-        public void ClearWarnignForGraphGuid(Guid guid)
+        public void ClearWarningsForGraph(Guid guid)
         {
             warnings.RemoveAll(w => w.GraphNodeGuid.Equals(guid));
         }
