@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -9,22 +11,23 @@ using Dynamo.Utilities;
 using NDesk.Options;
 using NUnit.Framework;
 
-namespace DynamoTestFrameworkRunner
+namespace RevitTestFrameworkRunner
 {
     class Program
     {
-        private static string _testAssembly = null;
-        private static string _test = null;
-        private static string _fixture = null;
-        private static bool _debug = false;
-        private static string _results = null;
-        private static string _modelPath;
-        private static bool _runDynamo = false;
-        private const string _pluginGuid = "487f9ff0-5b34-4e7e-97bf-70fbff69194f";
-        private const string _pluginClass = "Dynamo.Tests.RevitTestFramework";
-        private static string _workingDirectory;
-        private static List<string> _journalPaths = new List<string>();
+        internal static string _testAssembly = null;
+        internal static string _test = null;
+        internal static string _fixture = null;
+        internal static bool _debug = false;
+        internal static string _results = null;
+        internal static bool _runDynamo = false;
+        internal const string _pluginGuid = "487f9ff0-5b34-4e7e-97bf-70fbff69194f";
+        internal const string _pluginClass = "Dynamo.Tests.RevitTestFramework";
+        internal static string _workingDirectory;
+        internal static bool _gui;
+        internal static List<string> _journalPaths = new List<string>();
 
+        [STAThread]
         static void Main(string[] args)
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
@@ -38,19 +41,30 @@ namespace DynamoTestFrameworkRunner
                     return;
                 }
 
-                if (!CreateJournalsForAssembly(_testAssembly, _fixture, _test))
-                {
-                    return;
-                }
+                var vm = new ViewModel();
 
-                if (File.Exists(_results))
+                if (_gui)
                 {
-                    File.Delete(_results);
+                    // Show the user interface
+                    var view = new View(vm);
+                    view.ShowDialog();
                 }
-
-                if (!File.Exists(_modelPath))
+                else
                 {
-                    Console.WriteLine("The specified test model does not exist");
+                    if (!ReadAssembly(_testAssembly, vm.Assemblies, _fixture, _test))
+                    {
+                        return;
+                    }
+
+                    if (File.Exists(_results))
+                    {
+                        File.Delete(_results);
+                    }
+
+                    //if (!File.Exists(_modelPath))
+                    //{
+                    //    Console.WriteLine("The specified test model does not exist");
+                    //}
                 }
 
                 foreach (var path in _journalPaths)
@@ -87,11 +101,12 @@ namespace DynamoTestFrameworkRunner
 
             var p = new OptionSet()
             {
-                {"dir=","The path to the working directory.", v=> _workingDirectory = Path.GetFullPath(v)},
-                {"a=|assembly=", "The path to the test assembly.", v => _testAssembly = Path.GetFullPath(v)},
-                {"r=|results=", "The path to the results file.", v=>_results = Path.GetFullPath(v)},
+                {"dir:","The path to the working directory.", v=> _workingDirectory = Path.GetFullPath(v)},
+                {"a:|assembly:", "The path to the test assembly.", v => _testAssembly = Path.GetFullPath(v)},
+                {"r:|results:", "The path to the results file.", v=>_results = Path.GetFullPath(v)},
                 {"f:|fixture:", "The full name (with namespace) of the test fixture.", v => _fixture = v},
                 {"t:|testName:", "The name of a test to run", v => _test = v},
+                {"gui:", "Show the revit test runner gui.", v=>_gui = v != null},
                 {"d|debug", "Run in debug mode.", v=>_debug = v != null},
                 {"h|help", "Show this message and exit.", v=> showHelp = v != null}
             };
@@ -122,7 +137,7 @@ namespace DynamoTestFrameworkRunner
                 ShowHelp(p);
             }
 
-            if (!File.Exists(_testAssembly))
+            if (!string.IsNullOrEmpty(_testAssembly) && !File.Exists(_testAssembly))
             {
                 Console.Write("The specified test assembly does not exist.");
                 return false;
@@ -146,45 +161,32 @@ namespace DynamoTestFrameworkRunner
             p.WriteOptionDescriptions(Console.Out);
         }
 
-        private static bool CreateJournalsForAssembly(string assemblyPath, string fixtureName="", string testName="")
+        private static bool ReadAssembly(string assemblyPath, IList<IAssemblyData> data,  string fixtureName="", string testName="")
         {
             try
             {
                 var assembly = Assembly.LoadFrom(assemblyPath);
-                
+
+                var assData = new AssemblyData(assemblyPath, assembly.GetName().Name);
+                data.Add(assData);
+
                 // If a fixture is specified, then create 
                 // journals for the fixture
                 if (!string.IsNullOrEmpty(fixtureName))
                 {
                     var fixtureType = assembly.GetType(fixtureName);
-                    if (!CreateJournalsForFixture(fixtureType, testName))
+                    if (!ReadFixture(fixtureType, assData, testName))
                     {
                         Console.WriteLine(string.Format("Journals could not be created for {0}", _fixture));
                         return false;
                     }
                 }
-                // If no fixture is specified, but a test is specified, then
-                // attempt to create a journal for that test.
-                //else if (string.IsNullOrEmpty(fixtureName) && !string.IsNullOrEmpty(testName))
-                //{
-                //    // Attempt to find the test by method name alone
-                //    var test = assembly.GetTypes().SelectMany(t => t.GetMethods()).FirstOrDefault(x => x.DeclaringType.Name + "." + x.Name == testName);
-                //    if (test != null)
-                //    {
-                //        if (!CreateJournalsForFixture(test.DeclaringType, testName))
-                //        {
-                //            Console.WriteLine(string.Format("A journal could not be created for {0}", testName));
-                //            return false;
-                //        }
-                //    }
-                //}
-                // If no fixture is specified, then create
-                // journals for every fixture in the assembly
+                // Read all fixtures in the assembly.
                 else
                 {
                     foreach (var fixtureType in assembly.GetTypes())
                     {
-                        if (!CreateJournalsForFixture(fixtureType, testName))
+                        if (!ReadFixture(fixtureType, assData, testName))
                         {
                             Console.WriteLine(string.Format("Journals could not be created for {0}", fixtureType.Name));
                         } 
@@ -201,8 +203,11 @@ namespace DynamoTestFrameworkRunner
             return true;
         }
 
-        private static bool CreateJournalsForFixture(Type fixtureType, string testName="")
+        private static bool ReadFixture(Type fixtureType, IAssemblyData data, string testName = "")
         {
+            var fixData = new FixtureData(fixtureType.Name);
+            data.Fixtures.Add(fixData);
+
             var fixtureAttribs = fixtureType.GetCustomAttributes(typeof (TestFixtureAttribute), true);
             if (!fixtureAttribs.Any())
             {
@@ -220,16 +225,12 @@ namespace DynamoTestFrameworkRunner
                     return false;
                 }
 
-                var path = Path.Combine(_workingDirectory, testName + ".txt");
-
-                if (!CreateJournalForTestInFixture(path, fixtureType, test))
+                if (!ReadTest(fixtureType, test, fixData))
                 {
                     Console.WriteLine(string.Format("Journal could not be created for test:{0} in fixture:{1}", _test,
                             _fixture));
                     return false;
                 }
-
-                _journalPaths.Add(path);
             }
             else
             {
@@ -242,23 +243,19 @@ namespace DynamoTestFrameworkRunner
                         continue;
                     }
 
-                    var path = Path.Combine(_workingDirectory, string.Format("{0}.{1}{2}",fixtureType.Name, test.Name,".txt"));
-
-                    if (!CreateJournalForTestInFixture(path, fixtureType, test))
+                    if (!ReadTest(fixtureType, test, fixData))
                     {
                         Console.WriteLine(string.Format("Journal could not be created for test:{0} in fixture:{1}", _test,
                             _fixture));
                         continue;
                     }
-
-                    _journalPaths.Add(path);
                 }
             }
 
             return true;
         }
 
-        private static bool CreateJournalForTestInFixture(string path, Type fixtureType, MethodInfo test)
+        private static bool ReadTest(Type fixtureType, MethodInfo test, IFixtureData data)
         {
             var testModelAttribs =  test.GetCustomAttributes(typeof(TestModelAttribute), false);
             if (!testModelAttribs.Any())
@@ -266,35 +263,49 @@ namespace DynamoTestFrameworkRunner
                 Console.WriteLine("The specified test does not have the required TestModelAttribute.");
                 return false;
             }
-            _modelPath = Path.Combine(_workingDirectory, ((TestModelAttribute)testModelAttribs[0]).Path);
+            
+            var modelPath = Path.Combine(_workingDirectory, ((TestModelAttribute)testModelAttribs[0]).Path);
 
             var runDynamoAttribs = test.GetCustomAttributes(typeof(RunDynamoAttribute),false);
+            var runDynamo = false;
             if (runDynamoAttribs.Any())
             {
-                _runDynamo = ((RunDynamoAttribute)runDynamoAttribs[0]).RunDynamo;
+                runDynamo = ((RunDynamoAttribute)runDynamoAttribs[0]).RunDynamo;
             }
 
-            using (var tw = new StreamWriter(path, false))
-            {
-                var journal = string.Format(@"'" +
-                                        "Dim Jrn \n" +
-                                        "Set Jrn = CrsJournalScript \n" +
-                                        "Jrn.Command \"StartupPage\" , \"Open this project , ID_FILE_MRU_FIRST\" \n" +
-                                        "Jrn.Data \"MRUFileName\"  , \"{0}\" \n" +
-                                        "Jrn.RibbonEvent \"Execute external command:{1}:{2}\" \n" +
-                                        "Jrn.Data \"APIStringStringMapJournalData\", 6, \"testName\", \"{3}\", \"fixtureName\", \"{4}\", \"testAssembly\", \"{5}\", \"resultsPath\", \"{6}\", \"runDynamo\",\"{7}\", \"debug\",\"{8}\" \n" +
-                                        "Jrn.Command \"Internal\" , \"Flush undo and redo stacks , ID_FLUSH_UNDO\" \n" +
-                                        "Jrn.Command \"SystemMenu\" , \"Quit the application; prompts to save projects , ID_APP_EXIT\"", 
-                                        _modelPath, _pluginGuid, _pluginClass, _test, fixtureType.Name, _testAssembly, _results, _runDynamo, _debug);
-                
-                tw.Write(journal);
-                tw.Flush();
-            }
+            var testData = new TestData(test.Name, modelPath, runDynamo);
+            data.Tests.Add(testData);
 
             return true;
         }
 
-        private static void Cleanup()
+        private static void CreateJournal(string path, Type fixtureType, string modelPath)
+        {
+            using (var tw = new StreamWriter(path, false))
+            {
+                var journal = string.Format(@"'" +
+                                            "Dim Jrn \n" +
+                                            "Set Jrn = CrsJournalScript \n" +
+                                            "Jrn.Command \"StartupPage\" , \"Open this project , ID_FILE_MRU_FIRST\" \n" +
+                                            "Jrn.Data \"MRUFileName\"  , \"{0}\" \n" +
+                                            "Jrn.RibbonEvent \"Execute external command:{1}:{2}\" \n" +
+                                            "Jrn.Data \"APIStringStringMapJournalData\", 6, \"testName\", \"{3}\", \"fixtureName\", \"{4}\", \"testAssembly\", \"{5}\", \"resultsPath\", \"{6}\", \"runDynamo\",\"{7}\", \"debug\",\"{8}\" \n" +
+                                            "Jrn.Command \"Internal\" , \"Flush undo and redo stacks , ID_FLUSH_UNDO\" \n" +
+                                            "Jrn.Command \"SystemMenu\" , \"Quit the application; prompts to save projects , ID_APP_EXIT\"",
+                    modelPath, _pluginGuid, _pluginClass, _test, fixtureType.Name, _testAssembly, _results, _runDynamo, _debug);
+
+                tw.Write(journal);
+                tw.Flush();
+            }
+        }
+
+        public static void Refresh(ViewModel vm)
+        {
+            vm.Assemblies.Clear();
+            ReadAssembly(_testAssembly, vm.Assemblies, _fixture, _test);
+        }
+
+        internal static void Cleanup()
         {
             foreach (var path in _journalPaths)
             {
@@ -309,6 +320,46 @@ namespace DynamoTestFrameworkRunner
             {
                 File.Delete(journal);
             }
+        }
+    }
+
+    internal class AssemblyData : IAssemblyData
+    {
+        public string Path { get; set; }
+        public string Name { get; set; }
+        public IList<IFixtureData> Fixtures { get; set; }
+
+        public AssemblyData(string path, string name)
+        {
+            Fixtures = new List<IFixtureData>();
+            Path = path;
+            Name = name;
+        }
+    }
+
+    internal class FixtureData : IFixtureData
+    {
+        public string Name { get; set; }
+        public IList<ITestData> Tests { get; set; }
+
+        public FixtureData(string name)
+        {
+            Tests = new List<ITestData>();
+            Name = name;
+        }
+    }
+
+    internal class TestData : ITestData
+    {
+        public string Name { get; set; }
+        public bool RunDynamo { get; set; }
+        public string ModelPath { get; set; }
+
+        public TestData(string name, string modelPath, bool runDynamo)
+        {
+            Name = name;
+            ModelPath = modelPath;
+            RunDynamo = runDynamo;
         }
     }
 }

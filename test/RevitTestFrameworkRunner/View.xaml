@@ -1,0 +1,61 @@
+﻿<Window x:Class="RevitTestFrameworkRunner.View"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:revitTestFrameworkRunner="clr-namespace:RevitTestFrameworkRunner"
+             mc:Ignorable="d" MinWidth="400" MinHeight="600">
+    <Window.Resources>
+        <revitTestFrameworkRunner:AssemblyPathConverter x:Key="AssemblyPathConverter"></revitTestFrameworkRunner:AssemblyPathConverter>
+        <revitTestFrameworkRunner:WorkingPathConverter x:Key="WorkingPathConverter"></revitTestFrameworkRunner:WorkingPathConverter>
+        <revitTestFrameworkRunner:ResultsPathConverter x:Key="ResultsPathConverter"></revitTestFrameworkRunner:ResultsPathConverter>
+    </Window.Resources>
+    <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="80"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+        <Button Margin="5"  Grid.Column="1" Grid.Row="0" Content="..." Command="{Binding SetAssemblyPathCommand}"></Button>
+        <Button Margin="5" Grid.Column="1" Grid.Row="1" Content="..." Command="{Binding SetResultsPathCommand}"></Button>
+        <Button Margin="5" Grid.Column="1" Grid.Row="2" Content="..." Command="{Binding SetWorkingPathCommand}"></Button>
+        
+        <TextBox Margin="5" Grid.Row="0" Grid.Column="0" Text="{Binding AssemblyPath, Converter={StaticResource AssemblyPathConverter}}" ></TextBox>
+        <TextBox Margin="5" Grid.Row="1" Grid.Column="0" Text="{Binding ResultsPath, Converter={StaticResource ResultsPathConverter}}"></TextBox>
+        <TextBox Margin="5" Grid.Row="2" Grid.Column="0" Text="{Binding WorkingPath, Converter={StaticResource WorkingPathConverter}}"></TextBox>
+        
+        <TreeView Margin="5" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Assemblies}">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type revitTestFrameworkRunner:AssemblyData}">
+                    <TreeViewItem Header="{Binding Name}" BorderThickness="0">
+                        <TreeView ItemsSource="{Binding Fixtures}">
+                            <TreeView.Resources>
+                                <HierarchicalDataTemplate DataType="{x:Type revitTestFrameworkRunner:FixtureData}">
+                                    <TreeViewItem Header="{Binding Name}" BorderThickness="0">
+                                        <TreeView ItemsSource="{Binding Tests}">
+                                            <TreeView.Resources>
+                                                <HierarchicalDataTemplate DataType="{x:Type revitTestFrameworkRunner:TestData}">
+                                                    <TreeViewItem Header="{Binding Name}" BorderThickness="0">
+                                                        <StackPanel>
+                                                            <TextBlock Text="{Binding ModelPath}"></TextBlock>
+                                                        </StackPanel>
+                                                    </TreeViewItem>
+                                                </HierarchicalDataTemplate>
+                                            </TreeView.Resources>
+                                        </TreeView>
+                                    </TreeViewItem>
+                                </HierarchicalDataTemplate>
+                            </TreeView.Resources>
+                        </TreeView>
+                    </TreeViewItem>
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+    </Grid>
+</Window>
