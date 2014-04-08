@@ -36,7 +36,7 @@ namespace ProtoCore
             }
 
             public bool HasNestedData
-            {
+            {   
                 get { return NestedData != null; }
             }
 
@@ -309,7 +309,7 @@ namespace ProtoCore
 
         #endregion
 
-        /*
+        
         /// <summary>
         ///  This function handles generating a unique callsite ID and serializing the data associated with this callsite
         /// </summary>
@@ -319,7 +319,7 @@ namespace ProtoCore
         {
             invokeCount = 0;
 
-
+            /*
             if (core.EnableCallsiteExecutionState)
             {
                 // Get the uid of this function call
@@ -332,9 +332,9 @@ namespace ProtoCore
                     // Store the data associated with this callsite
                     runID = core.csExecutionState.StoreAndUpdateRunId(callsiteGUID, callsiteData);
                 }
-            }
+            }*/
         }
-        */
+        
         #region Serialization supporting methods
 
         /*
@@ -1040,7 +1040,7 @@ namespace ProtoCore
 
             // Update the CallsiteExecutionState with 
             // TODO: Replace this with the real data
-            //UpdateCallsiteExecutionState(SimulateGetData(), core);
+            UpdateCallsiteExecutionState(null, core);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
