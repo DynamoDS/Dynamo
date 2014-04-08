@@ -7,15 +7,14 @@ using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Revit.Elements;
 using Revit.GeometryConversion;
-using Revit.GeometryObjects;
 using Revit.Graphics;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Curve = Autodesk.Revit.DB.Curve;
 using CurveLoop = Autodesk.Revit.DB.CurveLoop;
-using Edge = Revit.GeometryObjects.Edge;
+using Edge =  Revit.GeometryObjects.Edge;
 using Element = Revit.Elements.Element;
-using Face = Revit.GeometryObjects.Face;
+using Face =  Revit.GeometryObjects.Face;
 using PlanarFace = Autodesk.Revit.DB.PlanarFace;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using Solid = Autodesk.Revit.DB.Solid;
@@ -716,7 +715,7 @@ namespace Revit.GeometryObjects
 
         #region Internal Static Constructors
 
-        internal static Revit.GeometryObjects.Solid FromExisting(Autodesk.Revit.DB.Solid solid)
+        internal static Solid FromExisting(Autodesk.Revit.DB.Solid solid)
         {
             return new Solid(solid);
         }

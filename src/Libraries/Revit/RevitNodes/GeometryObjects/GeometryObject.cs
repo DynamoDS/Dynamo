@@ -26,7 +26,7 @@ namespace Revit.GeometryObjects
         [IsVisibleInDynamoLibrary(false)]
         public override string ToString()
         {
-            return InternalGeometryObject.GetType().Name;
+            return GetType().FullName;
         }
 
         [IsVisibleInDynamoLibrary(false)]
