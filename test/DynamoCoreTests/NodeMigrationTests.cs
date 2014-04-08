@@ -19,21 +19,16 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestStringInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var stringInputNode = workspace.NodeFromWorkspace<StringInput>(
+            var cbn = workspace.NodeFromWorkspace<CodeBlockNodeModel>(
                 "dc27fc31-fdad-40b5-906e-bbba9caf43a6");
 
             Assert.AreEqual(2, workspace.Nodes.Count);
             Assert.AreEqual(1, workspace.Connectors.Count);
 
-            Assert.NotNull(stringInputNode); // Ensure the StringInput node is migrated.
+            Assert.NotNull(cbn); // Ensure the StringInput node is migrated.
+            Assert.AreEqual("\"First line\\nSecond line with\\ttab\\nThird line with \\\"quotes\\\"\";", cbn.Code);
 
             RunCurrentModel(); // Execute the opened file.
-            AssertPreviewValue("dc27fc31-fdad-40b5-906e-bbba9caf43a6",
-                "First line\nSecond line with\ttab\nThird line with \"quotes\"");
-
-            //In Dynamo 0.6 the length will be 58. in Dynamo 0.7, 
-            //the \r\n is changed to \n, so that the length is decreased by 1.
-            //there are two \n, so the total length is decreased by 2.
             AssertPreviewValue("f6d7a6c3-5df4-45c0-911b-04d39b4c1959", 56);
         }
 

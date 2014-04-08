@@ -1517,10 +1517,7 @@ namespace Dynamo.Nodes
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            string content = this.Value; 
-            content = content.Replace("\r\n", "\n");
-
-            var rhs = AstFactory.BuildStringNode(content);
+            var rhs = AstFactory.BuildStringNode(this.Value);
             var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
 
             return new[] { assignment };
