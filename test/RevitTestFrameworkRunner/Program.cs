@@ -21,7 +21,7 @@ namespace DynamoTestFrameworkRunner
         private static string _modelPath;
         private static bool _runDynamo = false;
         private const string _pluginGuid = "487f9ff0-5b34-4e7e-97bf-70fbff69194f";
-        private const string _pluginClass = "Dynamo.Tests.DynamoTestFramework";
+        private const string _pluginClass = "Dynamo.Tests.RevitTestFramework";
         private static string _workingDirectory;
         private static List<string> _journalPaths = new List<string>();
 
@@ -62,9 +62,14 @@ namespace DynamoTestFrameworkRunner
                         Arguments = path
                     };
 
+                    Console.WriteLine("Running {0}", path);
                     var process = new Process {StartInfo = startInfo};
                     process.Start();
-                    process.WaitForExit(120000);
+
+                    if (_debug)
+                        process.WaitForExit();
+                    else
+                        process.WaitForExit(120000);
                 }
 
                 Cleanup();

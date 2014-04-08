@@ -122,9 +122,9 @@
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\DynamoTestFramework\DynamoTestFramework.csproj">
+    <ProjectReference Include="..\..\..\DynamoTestFramework\RevitTestFramework.csproj">
       <Project>{745CCA0F-549E-4756-A31E-41BF7F905B8A}</Project>
-      <Name>DynamoTestFramework</Name>
+      <Name>RevitTestFramework</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
       <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>

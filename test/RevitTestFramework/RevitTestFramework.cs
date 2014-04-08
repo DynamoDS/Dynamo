@@ -5,28 +5,22 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Dynamo.Applications;
-using Dynamo.Controls;
 using Dynamo.NUnit.Tests;
-using Dynamo.Units;
-using Dynamo.Utilities;
 using NUnit.Core;
 using NUnit.Core.Filters;
 using RevitServices.Persistence;
-using RevitServices.Transactions;
 
 namespace Dynamo.Tests
 {
-    [Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
-    public class DynamoTestFramework : IExternalCommand
+    public class RevitTestFramework : IExternalCommand
     {
         #region private members
 
@@ -66,11 +60,6 @@ namespace Dynamo.Tests
         private string resultsPath = "";
 
         /// <summary>
-        /// Should Dynamo be run?
-        /// </summary>
-        private bool runDynamo;
-
-        /// <summary>
         /// Should we attach to the debugger?
         /// </summary>
         private bool isDebug;
@@ -108,14 +97,6 @@ namespace Dynamo.Tests
                     Debugger.Launch();
                 }
 
-                if (runDynamo)
-                {
-                    StartDynamo();
-                }
-
-                // Tests do not run from idle thread.
-                TransactionManager.Instance.DoAssertInIdleThread = false;
-
                 var fixtureResult = RunTests(canReadData);
 
                 CalculateCaseTotalsOnSuite(fixtureResult);
@@ -123,13 +104,6 @@ namespace Dynamo.Tests
                 CalculateTotalsOnResultsRoot(resultsRoot);
 
                 SaveResults();
-
-                // Automatic transaction strategy requires that we 
-                // close the transaction if it hasn't been closed by 
-                // by the end of an evaluation. It is possible to 
-                // run the test framework without running Dynamo, so
-                // we ensure that the transaction is closed here.
-                TransactionManager.Instance.ForceCloseTransaction();
             }
             catch (Exception ex)
             {
@@ -154,7 +128,7 @@ namespace Dynamo.Tests
             var builder = new TestSuiteBuilder();
             string testAssemblyLoc = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), testAssembly);
 
-            var package = new TestPackage("DynamoTestFramework", new List<string>() {testAssemblyLoc});
+            var package = new TestPackage("RevitTestFramework", new List<string>() {testAssemblyLoc});
             runner.Load(package);
             TestSuite suite = builder.Build(package);
 
@@ -242,17 +216,6 @@ namespace Dynamo.Tests
             {
                 resultsPath = dataMap["resultsPath"];
             }
-            if (dataMap.ContainsKey("runDynamo"))
-            {
-                try
-                {
-                    runDynamo = Convert.ToBoolean(dataMap["runDynamo"]);
-                }
-                catch
-                {
-                    runDynamo = false;
-                }
-            }
             if (dataMap.ContainsKey("debug"))
             {
                 try
@@ -266,29 +229,29 @@ namespace Dynamo.Tests
             }
         }
 
-        private void StartDynamo()
-        {
-            var fecLevel = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
-            fecLevel.OfClass(typeof(Level));
+        //private void StartDynamo()
+        //{
+        //    var fecLevel = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+        //    fecLevel.OfClass(typeof(Level));
 
-            DocumentManager.Instance.CurrentUIApplication = DocumentManager.Instance.CurrentUIApplication;
-            //DocumentManager.Instance.CurrentUIDocument = DocumentManager.Instance.CurrentUIDocument;
-            dynRevitSettings.DefaultLevel = null;
+        //    DocumentManager.Instance.CurrentUIApplication = DocumentManager.Instance.CurrentUIApplication;
+        //    //DocumentManager.Instance.CurrentUIDocument = DocumentManager.Instance.CurrentUIDocument;
+        //    dynRevitSettings.DefaultLevel = null;
 
-            BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
-            BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
-            BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
+        //    BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
+        //    BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
+        //    BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
-            //create dynamo
-            var r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
-            string context = r.Replace(DocumentManager.Instance.CurrentUIApplication.Application.VersionName, "");
+        //    //create dynamo
+        //    var r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
+        //    string context = r.Replace(DocumentManager.Instance.CurrentUIApplication.Application.VersionName, "");
 
-            // create the transaction manager object
-            TransactionManager.SetupManager(new AutomaticTransactionStrategy());
+        //    // create the transaction manager object
+        //    TransactionManager.SetupManager(new AutomaticTransactionStrategy());
 
-            var dynamoController = new DynamoController_Revit(DynamoRevit.Updater, typeof(DynamoRevitViewModel), context);
-            DynamoController.IsTestMode = true;
-        }
+        //    var dynamoController = new DynamoController_Revit(DynamoRevit.Updater, typeof(DynamoRevitViewModel), context);
+        //    DynamoController.IsTestMode = true;
+        //}
 
         private void CalculateTotalsOnResultsRoot(resultType result)
         {

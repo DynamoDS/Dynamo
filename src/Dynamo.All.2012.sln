@@ -57,7 +57,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoTestFx", "..\test\Engi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{24A1EF6B-5A24-4536-B8BD-C879ABA26389}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoTestFramework", "..\test\DynamoTestFramework\DynamoTestFramework.csproj", "{745CCA0F-549E-4756-A31E-41BF7F905B8A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitTestFramework", "..\test\DynamoTestFramework\RevitTestFramework.csproj", "{745CCA0F-549E-4756-A31E-41BF7F905B8A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{0E492D35-2310-4849-9694-A2A53C09F21B}"
 EndProject
@@ -103,7 +103,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations", "Migrations\Mi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevitVersionSelector", "DynamoRevitVersionSelector\DynamoRevitVersionSelector.csproj", "{53D05530-CF64-4883-8F86-B2B819934F83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoTestFrameworkRunner", "..\test\DynamoTestFrameworkRunner\DynamoTestFrameworkRunner.csproj", "{D21140F7-D29A-4265-A679-BA76770B7257}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitTestFrameworkRunner", "..\test\DynamoTestFrameworkRunner\RevitTestFrameworkRunner.csproj", "{D21140F7-D29A-4265-A679-BA76770B7257}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
