@@ -17,6 +17,8 @@ namespace Revit.GeometryObjects
         /// <returns></returns>
         public static GeometryObject Wrap(this Autodesk.Revit.DB.GeometryObject geom)
         {
+            if (geom == null) return null;
+
             dynamic dynGeom = geom;
             try
             {

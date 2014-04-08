@@ -1,5 +1,7 @@
-﻿using Autodesk.DesignScript.Geometry;
+﻿using System.Collections.Generic;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Revit.GeometryConversion;
 using Revit.GeometryObjects;
@@ -82,21 +84,32 @@ namespace Revit.GeometryObjects
         /// <returns></returns>
         public Autodesk.DesignScript.Geometry.Point PointAtParameter(double u, double v)
         {
-           
             return InternalFace.Evaluate(new UV(u, v)).ToPoint();
         }
 
         /// <summary>
-        /// Project a point onto a face
+        /// Project a Point onto a Face
         /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        public Autodesk.DesignScript.Geometry.Point Project(Autodesk.DesignScript.Geometry.Point point)
+        /// <param name="point">The point to project onto the Face</param>
+        /// <returns name="point">The nearest Point to the projected Point on the Face</returns>
+        /// <returns name="uv">The UV coordinates of the nearest Point on the Face</returns>
+        /// <returns name="dist">The distance from the Point to the Face</returns>
+        /// <returns name="edge">The edge if projected Point is near an Edge</returns>
+        /// <returns name="edgeParm">The parameter on the Edge if the point is near an Edge</returns>
+        [MultiReturn(new []{"point", "uv", "dist", "edge", "edgeParm"})]
+        public Dictionary<string, object> Project(Autodesk.DesignScript.Geometry.Point point)
         {
-            var result = InternalFace.Project(point.ToXyz());
             try
             {
-                return result.XYZPoint.ToPoint();
+                var result = InternalFace.Project(point.ToXyz());
+                return new Dictionary<string, object>()
+                {
+                    {"point", result.XYZPoint.ToPoint()},
+                    {"uv", result.UVPoint.ToProtoType()},
+                    {"dist", result.Distance},
+                    {"edge", result.EdgeObject.Wrap()},
+                    {"edgeParm", result.EdgeParameter }
+                };
             }
             catch
             {
