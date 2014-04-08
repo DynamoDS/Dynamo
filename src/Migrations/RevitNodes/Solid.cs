@@ -295,10 +295,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    public class ReplaceFacesOfSolid : MigrationNode
-    {
-    }
-
     public class BlendEdges : MigrationNode
     {
     }
@@ -307,20 +303,29 @@ namespace Dynamo.Nodes
     {
     }
 
+    public class ReplaceFacesOfSolid : MigrationNode
+    {
+        // PB: deprecated
+    }
+
     public class OnesidedEdgesAsCurveLoops : MigrationNode
     {
+        // PB: deprecated
     }
 
     public class PatchSolid : MigrationNode
     {
+        // PB: deprecated
     }
 
     public class SkinCurveLoops : MigrationNode
     {
+        // PB: deprecated
     }
 
     public class VolumeMeasure : MigrationNode
     {
+        // PB: deprecated
     }
 
 }
