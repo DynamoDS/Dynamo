@@ -244,18 +244,6 @@ namespace ProtoAssociative
             }
         }
 
-        private ProtoCore.AssociativeGraph.GraphNode GetNextGraphNode()
-        {
-            foreach (ProtoCore.AssociativeGraph.GraphNode node in codeBlock.instrStream.dependencyGraph.GraphList)
-            {
-                if (!node.isVisited)
-                {
-                    return node;
-                }
-            }
-            return null;
-        }
-        
         private bool IsDependentSubNode(GraphNode node, GraphNode subNode)
         {
             if (subNode.UID == node.UID
@@ -4739,7 +4727,6 @@ namespace ProtoAssociative
                 }
 
                 core.Executives[langblock.codeblock.language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode, propagateGraphNode);
-                graphNode.isLanguageBlock = true;
                 graphNode.languageBlockId = blockId;
 
                 setBlkId(blockId);
@@ -5565,7 +5552,6 @@ namespace ProtoAssociative
                     {
 
                         ProtoCore.AssociativeGraph.GraphNode graphNode = new ProtoCore.AssociativeGraph.GraphNode();
-                        graphNode.isParent = true;
                         graphNode.exprUID = bNode.exprUID;
                         graphNode.modBlkUID = bNode.modBlkUID;
                         graphNode.procIndex = globalProcIndex;
@@ -7970,7 +7956,6 @@ namespace ProtoAssociative
                     isGraphInScope = true;
                     EmitCompileLog("==============Start Node==============\n");
                     graphNode = new ProtoCore.AssociativeGraph.GraphNode();
-                    graphNode.isParent = true;
                     graphNode.AstID = bnode.ID;
                     graphNode.exprUID = bnode.exprUID;
                     graphNode.ssaExprID = bnode.ssaExprID;
