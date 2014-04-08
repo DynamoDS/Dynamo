@@ -752,38 +752,41 @@ namespace ProtoFFI
         public static ProtoCore.Type GetProtoCoreType(Type type)
         {
             ProtoCore.Type retype = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.kTypeVar);
-            GetProtoCoreType(type, ref retype);
+            ComputeDSType(type, ref retype);
             return retype;
         }
 
         /// <summary>
-        /// 
+        /// Gets the marshaled type for input System.Type as DS Pointer type
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="type">System.Type</param>
+        /// <returns>ProtoCore.Type</returns>
         public static ProtoCore.Type GetUserDefinedType(Type type)
         {
             ProtoCore.Type retype = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.kTypePointer);
-            GetProtoCoreType(type, ref retype);
+            ComputeDSType(type, ref retype);
             return retype;
         }
 
         /// <summary>
-        /// 
+        /// Computes an equivalent ProtoCore.Type for a given System.Type 
+        /// recursively.
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="protoCoreType"></param>
-        private static void GetProtoCoreType(Type type, ref ProtoCore.Type protoCoreType)
+        /// <param name="type">System.Type</param>
+        /// <param name="protoCoreType">ref ProtoCore.Type</param>
+        private static void ComputeDSType(Type type, ref ProtoCore.Type protoCoreType)
         {
             FFIObjectMarshler marshaler;
-            if (type.IsArray)
+            Type arrayType = ComputeArrayType(type);
+            if (arrayType != null)
             {
-                Type elemType = type.GetElementType();
-                GetProtoCoreType(elemType, ref protoCoreType);
+                Type elemType = arrayType.GetElementType();
+                //Get ProtoCoreType by importing elemType properly.
+                protoCoreType = CLRModuleType.GetProtoCoreType(elemType, null);
 
                 if (protoCoreType.rank != Constants.kArbitraryRank)
                 {
-                    protoCoreType.rank += type.GetArrayRank(); //set the rank.
+                    protoCoreType.rank += arrayType.GetArrayRank(); //set the rank.
                 }
             }
             else if (typeof(System.Collections.IDictionary).IsAssignableFrom(type))
@@ -836,10 +839,30 @@ namespace ProtoFFI
         }
 
         /// <summary>
-        /// 
+        /// Tries to compute an array type from a given system type if it was 
+        /// IEnumerable derived and a generic type.
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="collectionType">Input type</param>
+        /// <returns>An equivalent array type or null</returns>
+        private static Type ComputeArrayType(Type collectionType)
+        {
+            if (collectionType.IsArray)
+                return collectionType; //already an array type
+            if (typeof(IEnumerable).IsAssignableFrom(collectionType) && collectionType.IsGenericType)
+            {
+                Type[] args = collectionType.GetGenericArguments();
+                if (args == null || args.Length != 1)
+                    return null;
+                return args[0].MakeArrayType();
+            }
+            return null; //Can't be converted to array type
+        }
+
+        /// <summary>
+        /// Checks if the given System.Type is marshaled as native type in DS.
+        /// </summary>
+        /// <param name="type">System.Type</param>
+        /// <returns>True if marshaled as native DS type</returns>
         public static bool IsMarshaledAsNativeType(Type type)
         {
             if (type.IsPrimitive || type.IsArray || typeof(System.Collections.IDictionary).IsAssignableFrom(type) || type == typeof(string) || type == typeof(object) || type == typeof(void))
