@@ -17,7 +17,7 @@ namespace Revit.Interactivity
 
             ReferencePoint rp = null;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
 
             choices.Elements.Clear();
 
@@ -44,9 +44,7 @@ namespace Revit.Interactivity
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
-            CurveElement c = null;
-
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
 
             choices.Elements.Clear();
 
@@ -54,17 +52,15 @@ namespace Revit.Interactivity
             DynamoLogger.Instance.Log(message);
 
             Reference curveRef = doc.Selection.PickObject(ObjectType.Element);
-
-            c = DocumentManager.Instance.CurrentDBDocument.GetElement(curveRef) as CurveElement;
-
-            return c;
+            
+            return DocumentManager.Instance.CurrentDBDocument.GetElement(curveRef) as CurveElement;
         }
 
-        public static List<Element> RequestMultipleCurveElementsSelection(string message)
+        public static List<string> RequestMultipleCurveElementsSelection(string message)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
             choices.Elements.Clear();
 
             DynamoLogger.Instance.Log(message);
@@ -72,7 +68,7 @@ namespace Revit.Interactivity
             var ca = new ElementArray();
             ISelectionFilter selFilter = new CurveSelectionFilter();
             return doc.Selection.PickElementsByRectangle(//selFilter,
-                "Window select multiple curves.").ToList();
+                "Window select multiple curves.").Select(x => x.UniqueId).ToList();
 
         }
 
@@ -99,7 +95,7 @@ namespace Revit.Interactivity
 
             Face f = null;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
 
             choices.Elements.Clear();
 
@@ -143,7 +139,7 @@ namespace Revit.Interactivity
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
             choices.Elements.Clear();
 
             DynamoLogger.Instance.Log(message);
@@ -159,7 +155,7 @@ namespace Revit.Interactivity
 
             Form f = null;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
 
             choices.Elements.Clear();
 
@@ -182,7 +178,7 @@ namespace Revit.Interactivity
 
             DividedSurface f = null;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
 
             choices.Elements.Clear();
 
@@ -207,7 +203,7 @@ namespace Revit.Interactivity
             {
                 //FamilySymbol fs = null;
 
-                Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+                Selection choices = doc.Selection;
 
                 choices.Elements.Clear();
 
@@ -241,7 +237,7 @@ namespace Revit.Interactivity
 
             try
             {
-                Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+                Selection choices = doc.Selection;
 
                 choices.Elements.Clear();
 
@@ -270,7 +266,7 @@ namespace Revit.Interactivity
 
             Level l = null;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
 
             choices.Elements.Clear();
 
@@ -287,10 +283,10 @@ namespace Revit.Interactivity
             return l;
         }
 
-        public static Element RequestAnalysisResultInstanceSelection(string message)
+        public static string RequestAnalysisResultInstanceSelection(string message)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
-
+            
             try
             {
 
@@ -302,7 +298,7 @@ namespace Revit.Interactivity
                 {
                     sfm.GetRegisteredResults();
 
-                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+                    Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
@@ -315,7 +311,7 @@ namespace Revit.Interactivity
                     {
                         var analysisResult = doc.Document.GetElement(fsRef.ElementId);
 
-                        return analysisResult;
+                        return analysisResult.UniqueId;
                     }
                     return null;
                 }
@@ -328,37 +324,35 @@ namespace Revit.Interactivity
             }
         }
 
-        public static Element RequestModelElementSelection(string message)
+        public static string RequestModelElementSelection(string message)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
             Element selectedElement = null;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
-
+            Selection choices = doc.Selection;
             choices.Elements.Clear();
 
             DynamoLogger.Instance.Log(message);
 
             Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
-
             if (fsRef != null)
             {
                 selectedElement = doc.Document.GetElement(fsRef.ElementId);
                 if (selectedElement is FamilyInstance || selectedElement is HostObject ||
                         selectedElement is ImportInstance ||
                         selectedElement is CombinableElement)
-                    return selectedElement;
+                    return selectedElement.UniqueId;
             }
 
-            return selectedElement;
+            return selectedElement != null ? selectedElement.UniqueId : null;
         }
 
         public static Reference RequestReferenceXYZSelection(string message)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
             choices.Elements.Clear();
 
             DynamoLogger.Instance.Log(message);
@@ -368,11 +362,11 @@ namespace Revit.Interactivity
             return xyzRef;
         }
 
-        public static List<Element> RequestDividedSurfaceFamilyInstancesSelection(string message)
+        public static List<string> RequestDividedSurfaceFamilyInstancesSelection(string message)
         {
             var ds = RequestDividedSurfaceSelection(message);
             
-            var result = new List<Element>();
+            var result = new List<string>();
 
             var gn = new GridNode();
 
@@ -394,7 +388,7 @@ namespace Revit.Interactivity
                         if (fi != null)
                         {
                             //put the family instance into the tree
-                            result.Add(fi);
+                            result.Add(fi.UniqueId);
                         }
                     }
                     v = v + 1;

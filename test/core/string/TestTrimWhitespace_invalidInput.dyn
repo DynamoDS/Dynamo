@@ -1,0 +1,12 @@
+<Workspace Version="0.7.0.26857" X="73.7995972328644" Y="-88.1090258652767" zoom="0.931811528498331" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="6a6a3d81-57bc-44ae-af37-9dabcf25b8e4" nickname="String.TrimWhitespace" x="115.73032042896" y="339.109350016967" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.TrimWhitespace@string" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="d798548c-f401-4874-90cd-3ea14c819075" nickname="Code Block" x="-20.4861826931109" y="337.769697322981" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="3;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="6a233902-f291-4cd3-aa46-de4fa36ecac7" nickname="Watch" x="314.784473231674" y="339.276695912486" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6a6a3d81-57bc-44ae-af37-9dabcf25b8e4" start_index="0" end="6a233902-f291-4cd3-aa46-de4fa36ecac7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d798548c-f401-4874-90cd-3ea14c819075" start_index="0" end="6a6a3d81-57bc-44ae-af37-9dabcf25b8e4" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
