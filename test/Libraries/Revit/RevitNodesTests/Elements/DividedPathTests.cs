@@ -3,12 +3,11 @@ using Autodesk.DesignScript.Geometry;
 using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
-using ArgumentNullException = Autodesk.Revit.Exceptions.ArgumentNullException;
 
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    class DividedPathTests 
+    class DividedPathTests : RevitNodeTestBase
     {
         [SetUp]
         public void Setup()

@@ -7,7 +7,7 @@ namespace DSRevitNodesTests.Elements
 {
 
     [TestFixture]
-    public class FloorTypeTests
+    public class FloorTypeTests : RevitNodeTestBase
     {
 
         [Test]

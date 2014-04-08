@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
+using DSRevitNodesTests;
 using Dynamo.Nodes;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
@@ -9,7 +10,7 @@ using RevitServices.Persistence;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class SelectionTests
+    class SelectionTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]

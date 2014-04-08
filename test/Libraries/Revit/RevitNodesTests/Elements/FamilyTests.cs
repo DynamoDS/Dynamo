@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class FamilyTests 
+    public class FamilyTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\MassWithBoxAndCone.rfa")]

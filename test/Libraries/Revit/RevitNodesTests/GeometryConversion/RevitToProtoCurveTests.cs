@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace DSRevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    public class RevitToProtoCurveTests
+    public class RevitToProtoCurveTests : RevitNodeTestBase
     {
         [SetUp]
         public void Setup()

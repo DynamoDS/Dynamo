@@ -8,7 +8,7 @@ namespace DSRevitNodesTests.Elements
 {
 
     [TestFixture]
-    public class FreeFormTests
+    public class FreeFormTests : RevitNodeTestBase
     {
         [SetUp]
         public void Setup()

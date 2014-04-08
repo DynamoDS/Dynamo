@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class SketchPlaneTests
+    public class SketchPlaneTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

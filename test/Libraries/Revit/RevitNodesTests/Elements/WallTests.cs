@@ -8,7 +8,7 @@ using RevitServices.Persistence;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class WallTests
+    public class WallTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

@@ -10,7 +10,7 @@ using Solid = Revit.GeometryObjects.Solid;
 namespace DSRevitNodesTests.GeometryIntersection
 {
     [TestFixture]
-    public class FaceIntersectTests
+    public class FaceIntersectTests : RevitNodeTestBase
     {
         [SetUp]
         public void Setup()

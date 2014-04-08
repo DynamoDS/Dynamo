@@ -5,7 +5,7 @@ using RevitServices.Persistence;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class AbstractElementTests
+    public class AbstractElementTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]

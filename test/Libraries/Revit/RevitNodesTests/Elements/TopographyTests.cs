@@ -7,7 +7,7 @@ using Revit.Elements;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    class TopographyTests
+    class TopographyTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rvt")]

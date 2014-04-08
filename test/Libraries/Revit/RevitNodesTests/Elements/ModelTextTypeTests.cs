@@ -7,7 +7,7 @@ using RevitServices.Persistence;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class ModelTextTypeTests
+    public class ModelTextTypeTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

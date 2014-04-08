@@ -112,6 +112,7 @@
     <Compile Include="Interactivity\SelectionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtoGeometryTest.cs" />
+    <Compile Include="RevitNodeTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">

@@ -9,7 +9,7 @@ using Form = Revit.Elements.Form;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    public class DividedSurfaceTests 
+    public class DividedSurfaceTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\block.rfa")]

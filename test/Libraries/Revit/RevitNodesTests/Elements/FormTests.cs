@@ -10,7 +10,7 @@ using ModelCurve = Revit.Elements.ModelCurve;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class FormTests
+    public class FormTests : RevitNodeTestBase
     {
         [SetUp]
         public void Setup()

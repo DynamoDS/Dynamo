@@ -7,7 +7,7 @@ using RevitServices.Persistence;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class StructuralFramingTests
+    public class StructuralFramingTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class MaterialTests
+    public class MaterialTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

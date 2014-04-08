@@ -7,7 +7,7 @@ using RevitServices.Persistence;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class ElementSelectorTests 
+    public class ElementSelectorTests : RevitNodeTestBase
     {
 
         [Test]

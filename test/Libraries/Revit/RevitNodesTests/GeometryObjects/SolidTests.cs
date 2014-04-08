@@ -15,7 +15,7 @@ using Solid = Revit.GeometryObjects.Solid;
 namespace DSRevitNodesTests.GeometryObjects
 {
     [TestFixture]
-    public class SolidTests
+    public class SolidTests : RevitNodeTestBase
     {
         private string geomDir;
 
@@ -37,12 +37,14 @@ namespace DSRevitNodesTests.GeometryObjects
         public void Setup()
         {
             HostFactory.Instance.StartUp();
+            base.Setup();
         }
 
         [TearDown]
         public void TearDown()
         {
             HostFactory.Instance.ShutDown();
+            base.TearDown();
         }
 
         [Test]

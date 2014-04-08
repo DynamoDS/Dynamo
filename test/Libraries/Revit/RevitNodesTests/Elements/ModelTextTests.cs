@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Geometry;
-using Revit.AnalysisDisplay;
+﻿using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using NUnit.Framework;
 using RevitServices.Persistence;
@@ -11,18 +6,20 @@ using RevitServices.Persistence;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class ModelTextTests
+    public class ModelTextTests : RevitNodeTestBase
     {
         [SetUp]
         public void Setup()
         {
             HostFactory.Instance.StartUp();
+            base.Setup();
         }
 
         [TearDown]
         public void TearDown()
         {
             HostFactory.Instance.ShutDown();
+            base.TearDown();
         }
 
         [Test]

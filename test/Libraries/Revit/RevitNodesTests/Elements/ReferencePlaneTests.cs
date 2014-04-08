@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class ReferencePlaneTests
+    public class ReferencePlaneTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]

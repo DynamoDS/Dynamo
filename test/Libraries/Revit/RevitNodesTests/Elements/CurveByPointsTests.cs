@@ -8,7 +8,7 @@ using RevitServices.Persistence;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class CurveByPointsTests
+    public class CurveByPointsTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\empty.rfa")]
