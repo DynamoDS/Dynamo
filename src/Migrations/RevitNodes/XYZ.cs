@@ -282,58 +282,6 @@ namespace Dynamo.Nodes
 
     public class XyzScaleOffset : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
-        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
-        {
-            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
-            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
-
-            //create the node itself
-            XmlElement newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "",
-                "Equals", "Equals@var,var");
-
-            migratedData.AppendNode(newNode);
-            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
-
-
-
-
-            XmlElement asVectorNode1 = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "Point.AsVector", "Point.AsVector");
-            migratedData.AppendNode(asVectorNode1);
-            string asVectorNode1Id = MigrationManager.GetGuidFromXmlElement(asVectorNode1);
-
-            XmlElement asVectorNode2 = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "Point.AsVector", "Point.AsVector");
-            migratedData.AppendNode(asVectorNode2);
-            string asVectorNode2Id = MigrationManager.GetGuidFromXmlElement(asVectorNode2);
-
-
-
-
-
-            XmlElement lengthNode = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "Vector.Length", "Vector.Length");
-            migratedData.AppendNode(lengthNode);
-
-            XmlElement numberNode = MigrationManager.CreateCodeBlockNodeModelNode(data.Document, "0;");
-            migratedData.AppendNode(numberNode);
-
-            //create and reconnect the connecters
-            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
-            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
-
-            PortId newInPort0 = new PortId(asVectorNodeId, 0, PortType.INPUT);
-
-            data.ReconnectToPort(connector0, newInPort0);
-            data.CreateConnector(asVectorNode1, 0, lengthNode, 0);
-            data.CreateConnector(lengthNode, 0, newNode, 0);
-            data.CreateConnector(numberNode, 0, newNode, 1);
-
-            return migratedData;
-        }
     }
 
     public class XyzAdd : MigrationNode
