@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -20,7 +18,6 @@ namespace RevitTestFrameworkRunner
         internal static string _fixture = null;
         internal static bool _debug = false;
         internal static string _results = null;
-        internal static bool _runDynamo = false;
         internal const string _pluginGuid = "487f9ff0-5b34-4e7e-97bf-70fbff69194f";
         internal const string _pluginClass = "Dynamo.Tests.RevitTestFramework";
         internal static string _workingDirectory;
@@ -289,10 +286,10 @@ namespace RevitTestFrameworkRunner
                                             "Jrn.Command \"StartupPage\" , \"Open this project , ID_FILE_MRU_FIRST\" \n" +
                                             "Jrn.Data \"MRUFileName\"  , \"{0}\" \n" +
                                             "Jrn.RibbonEvent \"Execute external command:{1}:{2}\" \n" +
-                                            "Jrn.Data \"APIStringStringMapJournalData\", 6, \"testName\", \"{3}\", \"fixtureName\", \"{4}\", \"testAssembly\", \"{5}\", \"resultsPath\", \"{6}\", \"runDynamo\",\"{7}\", \"debug\",\"{8}\" \n" +
+                                            "Jrn.Data \"APIStringStringMapJournalData\", 5, \"testName\", \"{3}\", \"fixtureName\", \"{4}\", \"testAssembly\", \"{5}\", \"resultsPath\", \"{6}\", \"debug\",\"{7}\" \n" +
                                             "Jrn.Command \"Internal\" , \"Flush undo and redo stacks , ID_FLUSH_UNDO\" \n" +
                                             "Jrn.Command \"SystemMenu\" , \"Quit the application; prompts to save projects , ID_APP_EXIT\"",
-                    modelPath, _pluginGuid, _pluginClass, _test, fixtureType.Name, _testAssembly, _results, _runDynamo, _debug);
+                    modelPath, _pluginGuid, _pluginClass, _test, fixtureType.Name, _testAssembly, _results, _debug);
 
                 tw.Write(journal);
                 tw.Flush();
