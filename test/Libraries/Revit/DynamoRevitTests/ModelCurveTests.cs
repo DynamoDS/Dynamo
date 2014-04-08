@@ -13,6 +13,7 @@ namespace Dynamo.Tests
     public class ModelCurveTests : DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ModelCurve()
         {
             //var model = dynSettings.Controller.DynamoModel;

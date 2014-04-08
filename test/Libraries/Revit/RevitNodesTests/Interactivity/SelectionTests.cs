@@ -12,6 +12,7 @@ namespace Dynamo.Tests
     class SelectionTests
     {
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void SelectElementASTGeneration()
         {
             ReferencePoint refPoint;
@@ -49,6 +50,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void SelectElementsASTGeneration()
         {
             var refPoints = new List<ReferencePoint>();
@@ -78,6 +80,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void SelectReferenceASTGeneration()
         {
             Form extrude;
@@ -127,72 +130,84 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CanSelectAnalysisResults()
         {
             Assert.Inconclusive("Finish me!");
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CanSelectModelElement()
         {
             Assert.Inconclusive("Finish me!");
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CanSelectAFamilyInstance()
         {
             Assert.Inconclusive("Finish me!");
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CanSelectALevel()
         {
             Assert.Inconclusive("Finish me!");
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CanSelectCurveElement()
         {
             Assert.Inconclusive("Finish me!");
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CanSelectAReferencePoint()
         {
             Assert.Inconclusive("Finish me!");
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CanSelectAFace()
         {
             Assert.Inconclusive("Finish me!");
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CanSelectAnEdge()
         {
             Assert.Inconclusive("Finish me!");
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CanSelectAPointOnAFace()
         {
             Assert.Inconclusive("Finish me!");
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CanSelectAUVOnAFace()
         {
             Assert.Inconclusive("Finish me!");
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CanSelectDividedSurfaceFamilies()
         {
             Assert.Inconclusive("Finish me!");
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CanSelectMultipleModelElements()
         {
             Assert.Inconclusive("Finish me!");

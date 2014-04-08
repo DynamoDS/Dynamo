@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.Revit.Creation;
-using Revit;
+﻿using System.Linq;
+using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
 using RevitServices.Persistence;
-using RevitServices.Transactions;
 
 namespace DSRevitNodesTests.Elements
 {
@@ -16,6 +11,7 @@ namespace DSRevitNodesTests.Elements
     {
 
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void FamilyByElementId_ValidArgs()
         {
             // obtain the element id for the box family
@@ -33,6 +29,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void FamilyByUniqueId_ValidArgs()
         {
             // obtain the element id for the box family
@@ -53,6 +50,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void FamilySymbolByElementId_ValidArgs()
         {
             // obtain the element id for the box family
@@ -76,6 +74,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void FamilySymbolByUniqueId_ValidArgs()
         {
             // obtain the element id for the box family
@@ -99,6 +98,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\block.rfa")]
         public void FormByType_ValidArgs()
         {
             var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();

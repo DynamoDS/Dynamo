@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Revit;
-using Revit.Elements;
+using Dynamo.Tests;
 using Revit.Elements.Views;
-using Revit.GeometryObjects;
 using NUnit.Framework;
 using RevitServices.Persistence;
-using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodesTests
 {
@@ -16,6 +10,7 @@ namespace DSRevitNodesTests
     class DraftingViewTests
     {
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByName_ValidArgs()
         {
             var view = DraftingView.ByName("poodle");
@@ -25,6 +20,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByName_NullArgs()
         {
             Assert.Throws(typeof(ArgumentNullException), () => SectionView.ByBoundingBox(null));

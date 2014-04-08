@@ -70,7 +70,7 @@ namespace Revit.Elements
                 {
                     TransactionManager.Instance.EnsureInTransaction(Document);
 
-                    DocumentManager.Instance.CurrentDBDocument.Regenerate();
+                    DocumentManager.Regenerate();
                     var bb = this.InternalElement.get_BoundingBox(null);
 
                     TransactionManager.Instance.TransactionTaskDone();

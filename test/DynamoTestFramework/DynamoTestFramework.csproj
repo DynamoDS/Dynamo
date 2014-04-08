@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes.cs" />
     <Compile Include="DynamoTestFramework.cs" />
     <Compile Include="NUnitResultTypes.cs">
       <DependentUpon>NUnitResultTypes.xsd</DependentUpon>

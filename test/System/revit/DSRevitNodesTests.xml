@@ -142,7 +142,7 @@
 				<test name="CanConvertRevitToProtoType" modelPath=".\MassWithBoxAndCone.rfa" />
 				<test name="CanConvertProtoToRevitType" modelPath=".\MassWithBoxAndCone.rfa" />
 			</testFixture>
-			<testFixture name="SectionViewTests">
+      <testFixture name="SectionViewTests">
 				<test name="ByBoundingBox_ValidArgs" modelPath=".\Empty.rvt" />
 				<test name="ByBoundingBox_NullArgs" modelPath=".\Empty.rvt" />
 			</testFixture>

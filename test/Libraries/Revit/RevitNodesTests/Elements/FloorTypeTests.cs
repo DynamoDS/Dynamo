@@ -1,4 +1,5 @@
 ﻿using System;
+using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
 
@@ -10,6 +11,7 @@ namespace DSRevitNodesTests.Elements
     {
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByName_ValidArgs()
         {
             var floorTypeName = "Generic - 12\"";
@@ -19,12 +21,11 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByName_NullArgument()
         {
             Assert.Throws(typeof(ArgumentNullException), () => FloorType.ByName(null));
         }
-
     }
-
 }
 
