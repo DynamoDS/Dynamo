@@ -117,13 +117,46 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 2, 1);
-            migrationData.AppendNode(dummyNode);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            return migrationData;
+            //create the node itself
+            XmlElement distanceToPoint = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(distanceToPoint, "ProtoGeometry.dll",
+                "Geometry.DistanceTo",
+                "Geometry.DistanceTo@Autodesk.DesignScript.Geometry.Geometry");
+            migratedData.AppendNode(distanceToPoint);
+            string distanceToPointId = MigrationManager.GetGuidFromXmlElement(distanceToPoint);
+
+            XmlElement point1 = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", 
+                "ReferencePoint.Point", "ReferencePoint.Point");
+            migratedData.AppendNode(point1);
+            string point1Id = MigrationManager.GetGuidFromXmlElement(point1);
+
+            XmlElement point2 = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", 
+                "ReferencePoint.Point", "ReferencePoint.Point");
+            migratedData.AppendNode(point2);
+            string point2Id = MigrationManager.GetGuidFromXmlElement(point2);
+
+
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            PortId newInPort0 = new PortId(point1Id, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(point2Id, 0, PortType.INPUT);
+            data.ReconnectToPort(connector0, newInPort0);
+            data.ReconnectToPort(connector1, newInPort1);
+
+            data.CreateConnector(point1, 0, distanceToPoint, 0);
+            data.CreateConnector(point2, 0, distanceToPoint, 1);
+
+            return migratedData;  
         }
     }
 }

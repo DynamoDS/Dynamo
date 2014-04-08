@@ -58,6 +58,8 @@ namespace ProtoCore
             public const string kAmbigousMethodDispatch = "Candidate function could not be located on final replicated dispatch GUARD {FDD1F347-A9A6-43FB-A08E-A5E793EC3920}.";
             public const string kInvalidArguments = "Argument is invalid.";
             public const string kInvalidArgumentsInRangeExpression = "The value that used in range expression should be either interger or double.";
+            public const string kInvalidAmountInRangeExpression = "The amount in range expression should be an positive integer.";
+            public const string kNoStepSizeInAmountRangeExpression = "No step size is specified in amount range expression.";
             public const string kFileNotFound = "'{0}' doesn't exist.";
             public const string kPropertyNotFound = "Object does not have a property '{0}'.";
             public const string kPropertyOfClassNotFound = "Class '{0}' does not have a property '{1}'.";
@@ -74,6 +76,7 @@ namespace ProtoCore
             public int Line;
             public int Column;
             public int ExpressionID;
+            public Guid GraphNodeGuid;
             public string Filename;
         }
     }
@@ -119,6 +122,11 @@ namespace ProtoCore
         public void ClearWarningForExpression(int expressionID)
         {
             warnings.RemoveAll(w => w.ExpressionID == expressionID);
+        }
+
+        public void ClearWarningsForGraph(Guid guid)
+        {
+            warnings.RemoveAll(w => w.GraphNodeGuid.Equals(guid));
         }
 
         public RuntimeStatus(Core core, 
@@ -176,6 +184,7 @@ namespace ProtoCore
                 Column = col,
                 Line = line,
                 ExpressionID = core.RuntimeExpressionUID,
+                GraphNodeGuid = core.ExecutingGraphnode == null ? Guid.Empty : core.ExecutingGraphnode.guid,
                 Filename = filename
             };
             warnings.Add(entry);

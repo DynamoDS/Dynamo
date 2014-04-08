@@ -5,7 +5,6 @@ using System;
 using ProtoCore.DSASM;
 using ProtoCore.Lang.Replication;
 
-
 namespace ProtoCore.AssociativeEngine
 {
     public enum UpdateStatus
@@ -37,154 +36,32 @@ namespace ProtoCore.AssociativeEngine
         /// <param name="nodeList"></param>
         /// <summary>
         /// <returns></returns>
-        public static void MarkGraphNodesDirty(ProtoCore.Core core, List<ProtoCore.AST.AssociativeAST.AssociativeNode> nodeList)
+        public static void MarkGraphNodesDirty(ProtoCore.Core core, IEnumerable<ProtoCore.AST.AssociativeAST.AssociativeNode> nodeList)
         {
-            bool setEntryPoint = false;
-            if (null != nodeList)
-            {
-                foreach (var node in nodeList)
-                {
-                    ProtoCore.AST.AssociativeAST.BinaryExpressionNode bNode = node as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
-                    if (bNode != null)
-                    {
-                        foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
-                        {
-                            if (gnode.isActive)
-                            {
-                                if (gnode.exprUID == bNode.exprUID)
-                                {
-                                    if (!setEntryPoint)
-                                    {
-                                        setEntryPoint = true;
-                                        core.SetNewEntryPoint(gnode.updateBlock.startpc);
-                                    }
-                                    gnode.isDirty = true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+            if (nodeList == null)
+                return;
 
-        public static void MarkGraphNodesDirty(ProtoCore.Core core, List<ProtoCore.AST.AssociativeAST.FunctionDefinitionNode> fnodeList)
-        {
-            foreach (ProtoCore.AST.AssociativeAST.FunctionDefinitionNode fnode in fnodeList)
+            bool setEntryPoint = false;
+            foreach (var node in nodeList)
             {
-                int exprId = ProtoCore.DSASM.Constants.kInvalidIndex;
+                var bNode = node as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
+                if (bNode == null)
+                {
+                    continue;
+                }
+
                 foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
                 {
-                    if (gnode.isActive)
+                    if (gnode.isActive && gnode.exprUID == bNode.exprUID)
                     {
-                        if (null != gnode.firstProc)
+                        if (!setEntryPoint)
                         {
-                            if (fnode.Name == gnode.firstProc.name && fnode.Signature.Arguments.Count == gnode.firstProc.argInfoList.Count)
-                            {
-                                if (ProtoCore.DSASM.Constants.kInvalidIndex == exprId)
-                                {
-                                    exprId = gnode.exprUID;
-                                    core.SetNewEntryPoint(gnode.updateBlock.startpc);
-                                }
-                                gnode.isDirty = true;
-                            }
+                            setEntryPoint = true;
+                            core.SetNewEntryPoint(gnode.updateBlock.startpc);
                         }
-                        else if (ProtoCore.DSASM.Constants.kInvalidIndex != exprId)
-                        {
-                            if (gnode.exprUID == exprId)
-                            {
-                                gnode.isDirty = true;
-                                if (gnode.IsLastNodeInSSA)
-                                {
-                                    exprId = ProtoCore.DSASM.Constants.kInvalidIndex;
-                                }
-                            }
-                        }
+                        gnode.isDirty = true;
                     }
                 }
-            }
-        }
-    }
-
-    public class ArrayUpdate
-    {
-        /// <summary>
-        /// This function determines if the index into is part of a list of indices into
-        /// This is an array element update method and must reside in the array update class
-        /// </summary>
-        /// <param name="indexList"></param>
-        /// <param name="indexIntoList"></param>
-        /// <returns></returns>
-        public static bool IsIndexInElementUpdateList(int index, List<List<int>> indexIntoList)
-        {
-            //
-            //  proc IsIndexInElementUpdateList(int index, List<List<int>> indexIntoList)
-            //      foreach dimensionList in indexIntoList
-            //          if index is equal to dimensionList[0]
-            //              return true
-            //          end
-            //      end
-            //      return false
-            //  end
-            //
-
-            foreach (List<int> list in indexIntoList)
-            {
-                if (list.Count > 0 && list[0] == index)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static List<List<int>> UpdateIndexIntoList(int index, List<List<int>> indexIntoList)
-        {
-            //
-            // proc UpdateIndexIntoList(int index, List<List<int>> indexIntoList)
-            //    foreach dimensionList in indexIntoList
-            //        if index is equal to dimensionList[0]
-            //            return dimensionList.RemoveAt(0)
-            //        end
-            //    end
-            //    return false
-            // end
-            //
-
-
-            foreach (List<int> list in indexIntoList)
-            {
-                if (list.Count > 0 && list[0] == index)
-                {
-                    list.RemoveAt(0);
-                }
-            }
-            return indexIntoList;
-        }
-
-
-
-        //proc UpdateSymbolArrayIndex(Symbol symbol, List<int> indices)
-        //    if symbolIndexMap.DoesNotContain(symbol)
-        //        symbolIndexMap.Push(symbol, indices)
-        //    else
-        //        symbolIndexMap[symbol].Assign(indices)
-        //    end
-        //end
-        /// <summary>
-        ///  This updates the symbol indices map with the latest indices associated with a symbol
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <param name="indices"></param>
-        /// This method needs to be moved to the array update class
-        public static void UpdateSymbolArrayIndex(string symbol, List<int> indices, Dictionary<string, List<int>> symbolArrayIndexMap)
-        {
-            if (!symbolArrayIndexMap.ContainsKey(symbol))
-            {
-                symbolArrayIndexMap.Add(symbol, indices);
-            }
-            else
-            {
-                symbolArrayIndexMap[symbol] = indices;
             }
         }
     }
@@ -199,11 +76,10 @@ namespace ProtoCore.AssociativeGraph
 
         public UpdateBlock()
         {
-            startpc = ProtoCore.DSASM.Constants.kInvalidIndex;
-            endpc = ProtoCore.DSASM.Constants.kInvalidIndex;
+            startpc = Constants.kInvalidIndex;
+            endpc = Constants.kInvalidIndex;
         }
     }
-
 
     public class GraphNode
     {
@@ -216,7 +92,6 @@ namespace ProtoCore.AssociativeGraph
         public int modBlkUID { get; set; }
         public List<ProtoCore.AssociativeGraph.UpdateNode> dimensionNodeList { get; set; }
         public List<ProtoCore.AssociativeGraph.UpdateNodeRef> updateNodeRefList { get; set; }
-        public bool isParent { get; set; }
         public bool isDirty { get; set; }
         public bool isReturn { get; set; }
         public int procIndex { get; set; }      // Function that this graph resides in
@@ -228,13 +103,10 @@ namespace ProtoCore.AssociativeGraph
         public bool isLHSNode { get; set; }
         public ProtoCore.DSASM.ProcedureNode firstProc { get; set; }
         public int firstProcRefIndex { get; set; }
-        public bool isVisited { get; set; }
         public bool isCyclic { get; set; }
         public bool isInlineConditional { get; set; }
         public GraphNode cyclePoint { get; set; }
-        public int dependencyTestRecursiveDepth { get; set; }
         public bool isAutoGenerated { get; set; }
-        public bool isLanguageBlock { get; set; }
         public int languageBlockId { get; set; }
         public List<StackValue> updateDimensions { get; set; }
         public int counter { get; set; }
@@ -287,7 +159,6 @@ namespace ProtoCore.AssociativeGraph
             dimensionNodeList = new List<UpdateNode>();
             updateNodeRefList = new List<ProtoCore.AssociativeGraph.UpdateNodeRef>();
             isDirty = true;
-            isParent = false;
             isReturn = false;
             procIndex = ProtoCore.DSASM.Constants.kGlobalScope;
             classIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -298,14 +169,11 @@ namespace ProtoCore.AssociativeGraph
             isLHSNode = false;
             firstProc = null;
             firstProcRefIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
-            isVisited = false;
             isCyclic = false;
             isInlineConditional = false;
             counter = 0;
             updatedArguments = new List<UpdateNodeRef>();
-            dependencyTestRecursiveDepth = 0;
             isAutoGenerated = false;
-            isLanguageBlock = false;
             languageBlockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             updateDimensions = new List<StackValue>();
             propertyChanged = false;

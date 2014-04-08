@@ -244,18 +244,6 @@ namespace ProtoAssociative
             }
         }
 
-        private ProtoCore.AssociativeGraph.GraphNode GetNextGraphNode()
-        {
-            foreach (ProtoCore.AssociativeGraph.GraphNode node in codeBlock.instrStream.dependencyGraph.GraphList)
-            {
-                if (!node.isVisited)
-                {
-                    return node;
-                }
-            }
-            return null;
-        }
-        
         private bool IsDependentSubNode(GraphNode node, GraphNode subNode)
         {
             if (subNode.UID == node.UID
@@ -4545,6 +4533,7 @@ namespace ProtoAssociative
             var toNode = range.ToNode;
             var stepNode = range.StepNode;
             var stepOp = range.stepoperator;
+            var hasAmountOperator = range.HasRangeAmountOperator;
 
             bool isStepValid = true;
             string warningMsg = string.Empty;
@@ -4569,50 +4558,65 @@ namespace ProtoAssociative
                 {
                     case ProtoCore.DSASM.RangeStepOperator.stepsize:
 
-                        if (stepNode == null && end < current)
+                        if (!hasAmountOperator)
                         {
-                            step = -1;
-                        }
+                            if (stepNode == null && end < current)
+                            {
+                                step = -1;
+                            }
 
-                        if (step == 0)
-                        {
-                            isStepValid = false;
-                            warningMsg = WarningMessage.kRangeExpressionWithStepSizeZero;
+                            if (step == 0)
+                            {
+                                isStepValid = false;
+                                warningMsg = WarningMessage.kRangeExpressionWithStepSizeZero;
+                            }
+                            else if ((end > current && step < 0) || (end < current && step > 0))
+                            {
+                                isStepValid = false;
+                                warningMsg = WarningMessage.kRangeExpressionWithInvalidStepSize;
+                            }
                         }
-                        else if ((end > current && step < 0) || (end < current && step > 0))
-                        {
-                            isStepValid = false;
-                            warningMsg = WarningMessage.kRangeExpressionWithInvalidStepSize;
-                       }
 
                        break;
 
                     case ProtoCore.DSASM.RangeStepOperator.num:
 
-                        if (stepNode != null && stepNode is DoubleNode &&
-                            subPass == AssociativeSubCompilePass.kNone)
-                        {
-                            buildStatus.LogWarning(WarningID.kInvalidRangeExpression,
-                                                   WarningMessage.kRangeExpressionWithNonIntegerStepNumber,
-                                                   core.CurrentDSFileName,
-                                                   stepNode.line,
-                                                   stepNode.col);
-                        }
-                        else if (step <= 0)
-                        {
-                            isStepValid = false;
-                            warningMsg = WarningMessage.kRangeExpressionWithNegativeStepNumber;
-                        }
+                       if (hasAmountOperator)
+                       {
+                           isStepValid = false;
+                           warningMsg = WarningMessage.kRangeExpressionWithStepSizeZero;
+                       }
+                       else
+                       {
+                           if (stepNode != null && stepNode is DoubleNode &&
+                               subPass == AssociativeSubCompilePass.kNone)
+                           {
+                               buildStatus.LogWarning(WarningID.kInvalidRangeExpression,
+                                                      WarningMessage.kRangeExpressionWithNonIntegerStepNumber,
+                                                      core.CurrentDSFileName,
+                                                      stepNode.line,
+                                                      stepNode.col);
+                           }
+                           else if (step <= 0)
+                           {
+                               isStepValid = false;
+                               warningMsg = WarningMessage.kRangeExpressionWithNegativeStepNumber;
+                           }
+                       }
 
-                        break;
+                       break;
 
                     case ProtoCore.DSASM.RangeStepOperator.approxsize:
-                        if (step == 0)
+                        if (hasAmountOperator)
+                        {
+                            isStepValid = false;
+                            warningMsg = WarningMessage.kRangeExpressionConflictOperator;
+                        }
+                        else if (step == 0)
                         {
                             isStepValid = false;
                             warningMsg = WarningMessage.kRangeExpressionWithStepSizeZero;
                         }
-
                         break;
 
                     default:
@@ -4658,7 +4662,8 @@ namespace ProtoAssociative
                 toNode, 
                 stepNode ?? new NullNode(), 
                 op, 
-                AstFactory.BuildBooleanNode(stepNode != null)
+                AstFactory.BuildBooleanNode(stepNode != null),
+                AstFactory.BuildBooleanNode(hasAmountOperator),
             };
             var rangeExprFunc = AstFactory.BuildFunctionCall(Constants.kFunctionRangeExpression, 
                                                              arguments);
@@ -4739,7 +4744,6 @@ namespace ProtoAssociative
                 }
 
                 core.Executives[langblock.codeblock.language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode, propagateGraphNode);
-                graphNode.isLanguageBlock = true;
                 graphNode.languageBlockId = blockId;
 
                 setBlkId(blockId);
@@ -5565,7 +5569,6 @@ namespace ProtoAssociative
                     {
 
                         ProtoCore.AssociativeGraph.GraphNode graphNode = new ProtoCore.AssociativeGraph.GraphNode();
-                        graphNode.isParent = true;
                         graphNode.exprUID = bNode.exprUID;
                         graphNode.modBlkUID = bNode.modBlkUID;
                         graphNode.procIndex = globalProcIndex;
@@ -7970,7 +7973,6 @@ namespace ProtoAssociative
                     isGraphInScope = true;
                     EmitCompileLog("==============Start Node==============\n");
                     graphNode = new ProtoCore.AssociativeGraph.GraphNode();
-                    graphNode.isParent = true;
                     graphNode.AstID = bnode.ID;
                     graphNode.exprUID = bnode.exprUID;
                     graphNode.ssaExprID = bnode.ssaExprID;
