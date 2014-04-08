@@ -10,6 +10,7 @@ using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 using ProtoFFI;
 using System.Collections;
+using ProtoCore.RuntimeData;
 
 namespace ProtoCore.Lang
 {
@@ -112,6 +113,7 @@ namespace ProtoCore.Lang
                                                                 formalParameters[2],
                                                                 formalParameters[3],
                                                                 formalParameters[4],
+                                                                formalParameters[5],
                                                                 core);
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kAllFalse:
@@ -1197,11 +1199,31 @@ namespace ProtoCore.Lang
             return range;
         }
 
+        internal static StackValue[] GenerateRangeByAmount(decimal start, long amount, decimal stepsize, bool isIntRange)
+        {
+            if (amount == 0)
+            {
+                return new StackValue[] { };
+            }
+            else
+            {
+                isIntRange = isIntRange && (Math.Truncate(stepsize) == stepsize);
+                StackValue[] range = new StackValue[amount];
+                for (int i = 0; i < amount; ++i)
+                {
+                    range[i] = isIntRange ? StackValue.BuildInt((int)start) : StackValue.BuildDouble((double)start);
+                    start += stepsize;
+                }
+                return range;
+            }
+        }
+
         internal static StackValue RangeExpression(StackValue svStart,
                                                    StackValue svEnd,
                                                    StackValue svStep,
                                                    StackValue svOp,
                                                    StackValue svHasStep,
+                                                   StackValue svHasAmountOp,
                                                    ProtoCore.Core core)
         {
             if (!StackUtils.IsNumeric(svStart) || !StackUtils.IsNumeric(svEnd))
@@ -1210,15 +1232,33 @@ namespace ProtoCore.Lang
                 return StackValue.Null;
             }
 
-            bool hasStep = (svHasStep.optype == AddressType.Boolean && svHasStep.opdata != 0);
+            bool hasStep = StackUtils.IsTrue(svHasStep);
+            bool hasAmountOp = StackUtils.IsTrue(svHasAmountOp);
+
+            if (StackUtils.IsTrue(svHasAmountOp))
+            {
+                if (svEnd.optype != AddressType.Int)
+                {
+                    core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kInvalidAmountInRangeExpression);
+
+                    if (!StackUtils.IsNumeric(svEnd))
+                        return StackValue.Null;
+                }
+                else if (!hasStep)
+                {
+                    core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kNoStepSizeInAmountRangeExpression);
+                    return StackValue.Null;
+                }
+            }
+
             if (StackUtils.IsNull(svStep) && hasStep)
             {
-                core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, RuntimeData.WarningMessage.kInvalidArgumentsInRangeExpression);
+                core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
             else if (!StackUtils.IsNull(svStep) && !StackUtils.IsNumeric(svStep))
             {
-                core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, RuntimeData.WarningMessage.kInvalidArgumentsInRangeExpression);
+                core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
 
@@ -1227,59 +1267,73 @@ namespace ProtoCore.Lang
             bool isIntRange = svStart.optype == AddressType.Int && svEnd.optype == AddressType.Int;
 
             StackValue[] range = null;
-            switch (svOp.opdata)
+            if (hasAmountOp)
             {
-                case (int)ProtoCore.DSASM.RangeStepOperator.stepsize:
+                long amount = svEnd.AsInt().opdata;
+                if (amount < 0)
                 {
-                    decimal stepsize = (start > end) ? -1 : 1;
-                    if (hasStep)
-                    {
-                        stepsize = new decimal(svStep.opdata_d);
-                        isIntRange = isIntRange && (svStep.optype == AddressType.Int);
-                    }
-
-                    range = GenerateRangeByStepSize(start, end, stepsize, isIntRange);
-                    break;
+                   core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kInvalidAmountInRangeExpression);
+                   return StackValue.Null;
                 }
-                case (int)ProtoCore.DSASM.RangeStepOperator.num:
+                decimal stepsize = new decimal(svStep.opdata_d);
+                range = GenerateRangeByAmount(start, amount, stepsize, isIntRange);
+            }
+            else
+            {
+                switch (svOp.opdata)
                 {
-                    decimal stepnum = new decimal(Math.Round(svStep.opdata_d));
-                    if (stepnum > 0)
-                    {
-                        range = GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
-                    }
-                    break;
-                }
-                case (int)ProtoCore.DSASM.RangeStepOperator.approxsize:
-                {
-                    decimal astepsize = new decimal(svStep.opdata_d);
-                    if (astepsize != 0)
-                    {
-                        decimal dist = end - start;
-                        decimal stepnum = 1;
-                        if (dist != 0)
+                    case (int)ProtoCore.DSASM.RangeStepOperator.stepsize:
                         {
-                            decimal cstepnum = Math.Ceiling(dist / astepsize);
-                            decimal fstepnum = Math.Floor(dist / astepsize);
+                            decimal stepsize = (start > end) ? -1 : 1;
+                            if (hasStep)
+                            {
+                                stepsize = new decimal(svStep.opdata_d);
+                                isIntRange = isIntRange && (svStep.optype == AddressType.Int);
+                            }
 
-                            if (cstepnum == 0 || fstepnum == 0)
-                            {
-                                stepnum = 2;
-                            }
-                            else
-                            {
-                                decimal capprox = Math.Abs(dist / cstepnum - astepsize);
-                                decimal fapprox = Math.Abs(dist / fstepnum - astepsize);
-                                stepnum = capprox < fapprox ? cstepnum + 1 : fstepnum + 1;
-                            }
+                            range = GenerateRangeByStepSize(start, end, stepsize, isIntRange);
+                            break;
                         }
-                        range = GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
-                    }
-                    break;
-                }
-                default:
-                {
-                    break;
+                    case (int)ProtoCore.DSASM.RangeStepOperator.num:
+                        {
+                            decimal stepnum = new decimal(Math.Round(svStep.opdata_d));
+                            if (stepnum > 0)
+                            {
+                                range = GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
+                            }
+                            break;
+                        }
+                    case (int)ProtoCore.DSASM.RangeStepOperator.approxsize:
+                        {
+                            decimal astepsize = new decimal(svStep.opdata_d);
+                            if (astepsize != 0)
+                            {
+                                decimal dist = end - start;
+                                decimal stepnum = 1;
+                                if (dist != 0)
+                                {
+                                    decimal cstepnum = Math.Ceiling(dist / astepsize);
+                                    decimal fstepnum = Math.Floor(dist / astepsize);
+
+                                    if (cstepnum == 0 || fstepnum == 0)
+                                    {
+                                        stepnum = 2;
+                                    }
+                                    else
+                                    {
+                                        decimal capprox = Math.Abs(dist / cstepnum - astepsize);
+                                        decimal fapprox = Math.Abs(dist / fstepnum - astepsize);
+                                        stepnum = capprox < fapprox ? cstepnum + 1 : fstepnum + 1;
+                                    }
+                                }
+                                range = GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
+                            }
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
                 }
             }
             return range == null ? StackValue.Null : HeapUtils.StoreArray(range, null, core);

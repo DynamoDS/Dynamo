@@ -608,8 +608,11 @@ Imperative_rel<out node>
                                     (.  ProtoCore.AST.ImperativeAST.RangeExprNode rnode = new ProtoCore.AST.ImperativeAST.RangeExprNode(); 
                                         rnode.FromNode = node;
                                         NodeUtils.SetNodeStartLocation(rnode, rnode.FromNode);
+                                        bool hasAmountOperator = false;
                                     .)
     rangeop
+    [Imperative_rangeAmountOperator<out hasAmountOperator>]
+                                    (. rnode.HasRangeAmountOperator = hasAmountOperator; .)
     Imperative_rel<out node>                    (.
                                                     rnode.ToNode = node;
                                                     NodeUtils.SetNodeEndLocation(rnode, rnode.ToNode);
@@ -1400,6 +1403,15 @@ Imperative_PostFixOp<out UnaryOperator op>
         |
         "--"    (. op = UnaryOperator.Decrement; .)
     )
+.
+
+Imperative_rangeAmountOperator<out bool hasAmountOperator>
+=
+    (. hasAmountOperator = false; .)
+(
+    '#'
+    (. hasAmountOperator = true; .)
+)
 .
 
 Imperative_rangeStepOperator<out RangeStepOperator op>

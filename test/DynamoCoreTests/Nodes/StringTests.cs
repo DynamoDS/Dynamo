@@ -53,7 +53,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
             AssertPreviewValue("8c7c1a80-021b-4064-b9d1-873a0538bb0b",
-            "A String A String ");
+            "Don't feel like picking up my phone, so leave a message at the tone Don't feel like picking up my phone, so leave a message at the tone ");
 
         }
 
