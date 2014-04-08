@@ -9,6 +9,7 @@ using ProtoCore.Exceptions;
 using ProtoCore.DSASM;
 using System.Text;
 using ProtoCore.Utils;
+using ProtoCore.BuildData;
 
 namespace ProtoImperative
 {
@@ -2767,60 +2768,74 @@ namespace ProtoImperative
                 (range.ToNode is IntNode || range.ToNode is DoubleNode) &&
                 (range.StepNode == null || (range.StepNode != null && (range.StepNode is IntNode || range.StepNode is DoubleNode))))
             {
-                double current = (range.FromNode is IntNode) ? (range.FromNode as IntNode).Value :(range.FromNode as DoubleNode).Value;
+                double current = (range.FromNode is IntNode) ? (range.FromNode as IntNode).Value : (range.FromNode as DoubleNode).Value;
                 double end = (range.ToNode is IntNode) ? (range.ToNode as IntNode).Value : (range.ToNode as DoubleNode).Value;
                 ProtoCore.DSASM.RangeStepOperator stepoperator = range.stepoperator;
 
                 double step = 1;
                 if (range.StepNode != null)
                 {
-                    step = (range.StepNode is IntNode) ? (range.StepNode as IntNode).Value :(range.StepNode as DoubleNode).Value;
+                    step = (range.StepNode is IntNode) ? (range.StepNode as IntNode).Value : (range.StepNode as DoubleNode).Value;
                 }
+
+                bool hasAmountOp = range.HasRangeAmountOperator;
+                string warningMsg = String.Empty;
 
                 if (stepoperator == ProtoCore.DSASM.RangeStepOperator.stepsize)
                 {
-                    if (range.StepNode == null && end < current)
+                    if (!hasAmountOp)
                     {
-                        step = -1;
-                    }
+                        if (range.StepNode == null && end < current)
+                        {
+                            step = -1;
+                        }
 
-                    if (step == 0)
-                    {
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidRangeExpression, ProtoCore.BuildData.WarningMessage.kRangeExpressionWithStepSizeZero, core.CurrentDSFileName, range.StepNode.line, range.StepNode.col);
-                        EmitNullNode(new NullNode(), ref inferedType);
-                        return;
-                    }
-                    if ((end > current && step < 0) || (end < current && step > 0))
-                    {
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidRangeExpression, ProtoCore.BuildData.WarningMessage.kRangeExpressionWithInvalidStepSize, core.CurrentDSFileName, range.StepNode.line, range.StepNode.col);
-                        EmitNullNode(new NullNode(), ref inferedType);
-                        return;
+                        if (step == 0)
+                        {
+                            warningMsg = WarningMessage.kRangeExpressionWithStepSizeZero;
+                        }
+                        else if ((end > current && step < 0) || (end < current && step > 0))
+                        {
+                            warningMsg = WarningMessage.kRangeExpressionWithInvalidStepSize;
+                        }
                     }
                 }
                 else if (stepoperator == ProtoCore.DSASM.RangeStepOperator.num)
                 {
-                    if (range.StepNode != null && !(range.StepNode is IntNode))
+                    if (hasAmountOp)
                     {
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidRangeExpression, ProtoCore.BuildData.WarningMessage.kRangeExpressionWithNonIntegerStepNumber, core.CurrentDSFileName, range.StepNode.line, range.StepNode.col);
-                        EmitNullNode(new NullNode(), ref inferedType);
-                        return;
+                        warningMsg = WarningMessage.kRangeExpressionConflictOperator;
                     }
-
-                    if (step <= 0)
+                    else if (range.StepNode != null && !(range.StepNode is IntNode))
                     {
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidRangeExpression, ProtoCore.BuildData.WarningMessage.kRangeExpressionWithNegativeStepNumber, core.CurrentDSFileName, range.StepNode.line, range.StepNode.col);
-                        EmitNullNode(new NullNode(), ref inferedType);
-                        return;
+                        warningMsg = WarningMessage.kRangeExpressionWithNonIntegerStepNumber;
+                    }
+                    else if (step <= 0)
+                    {
+                        warningMsg = WarningMessage.kRangeExpressionWithNegativeStepNumber;
                     }
                 }
                 else if (stepoperator == ProtoCore.DSASM.RangeStepOperator.approxsize)
                 {
-                    if (step == 0)
+                    if (hasAmountOp)
                     {
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidRangeExpression, ProtoCore.BuildData.WarningMessage.kRangeExpressionWithStepSizeZero, core.CurrentDSFileName, range.StepNode.line, range.StepNode.col);
-                        EmitNullNode(new NullNode(), ref inferedType);
-                        return;
+                        warningMsg = WarningMessage.kRangeExpressionConflictOperator;
                     }
+                    else if (step == 0)
+                    {
+                        warningMsg = WarningMessage.kRangeExpressionWithStepSizeZero;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(warningMsg))
+                {
+                    buildStatus.LogWarning(WarningID.kInvalidRangeExpression,
+                                           warningMsg,
+                                           core.CurrentDSFileName,
+                                           range.StepNode.line,
+                                           range.StepNode.col);
+                    EmitNullNode(new NullNode(), ref inferedType);
+                    return;
                 }
             }
 
@@ -2860,7 +2875,7 @@ namespace ProtoImperative
             }
 
             var rangeExprFunc = nodeBuilder.BuildFunctionCall(Constants.kFunctionRangeExpression,
-                new List<ImperativeNode> { tmpFrom, tmpTo, tmpStep, op, tmpStepSkip });
+                new List<ImperativeNode> { tmpFrom, tmpTo, tmpStep, op, tmpStepSkip, new BooleanNode(range.HasRangeAmountOperator) });
 
             NodeUtils.CopyNodeLocation(rangeExprFunc, range);
             EmitFunctionCallNode(rangeExprFunc, ref inferedType, false, graphNode);

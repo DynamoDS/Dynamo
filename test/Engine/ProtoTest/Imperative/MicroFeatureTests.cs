@@ -429,6 +429,25 @@ namespace ProtoTest.Imperative
             Assert.IsTrue((Double)mirror.GetValue("f").Payload == 15);
         }
 
+        [Test]
+        public void RangeExpr06()
+        {
+            string code = @"
+x1; x2; x3; x4;
+[Imperative]
+{
+    x1 = 0..#(-1)..5;
+    x2 = 0..#0..5;
+    x3 = 0..#1..10;
+    x4 = 0..#5..10;
+}
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x1", null);
+            thisTest.Verify("x2", new object[] {});
+            thisTest.Verify("x3", new object[] {0});
+            thisTest.Verify("x4", new object[] {0, 10, 20, 30, 40});
+        }
 
         [Test]
         public void WhileStatement01()

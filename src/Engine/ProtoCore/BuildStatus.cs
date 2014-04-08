@@ -69,6 +69,8 @@ namespace ProtoCore
             public const string kRangeExpressionWithInvalidStepSize = "The step size of range expression is invalid.";
             public const string kRangeExpressionWithNonIntegerStepNumber = "The step number of range expression should be integer.";
             public const string kRangeExpressionWithNegativeStepNumber = "The step number of range expression should be greater than 0.";
+            public const string kRangeExpressionWithInvalidAmount = "The amount of step is invalid.";
+            public const string kRangeExpressionConflictOperator = "The amount operator cannot be used together with step operator.";
             public const string kTypeUndefined = "Type '{0}' is not defined.";
             public const string kMethodAlreadyDefined = "Method '{0}()' is already defined.";
             public const string kReturnTypeUndefined = "Return type '{0}' of method '{1}()' is not defined.";

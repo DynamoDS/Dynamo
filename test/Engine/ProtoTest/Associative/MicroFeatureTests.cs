@@ -1561,6 +1561,22 @@ c = f(a<1L>,b<2>);";
         }
 
         [Test]
+        public void RangeExpr06()
+        {
+            string code = @"
+x1 = 0..#(-1)..5;
+x2 = 0..#0..5;
+x3 = 0..#1..10;
+x4 = 0..#5..10;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x1", null);
+            thisTest.Verify("x2", new object[] { });
+            thisTest.Verify("x3", new object[] { 0 });
+            thisTest.Verify("x4", new object[] { 0, 10, 20, 30, 40 });
+        }
+
+        [Test]
         public void FunctionWithinConstr001()
         {
             String code =
