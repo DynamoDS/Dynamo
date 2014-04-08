@@ -262,17 +262,11 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(geometryScale);
             string geometryScaleId = MigrationManager.GetGuidFromXmlElement(geometryScale);
 
-            XmlElement pointSubtract = MigrationManager.CreateFunctionNode(
+            XmlElement vectorDiff = MigrationManager.CreateFunctionNode(
                 data.Document, "ProtoGeometry.dll",
-                "Point.Subtract", "Point.Subtract@Vector");
-            migrationData.AppendNode(pointSubtract);
-            string pointSubtractId = MigrationManager.GetGuidFromXmlElement(pointSubtract);
-
-            XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll",
-                "Point.AsVector", "Point.AsVector");
-            migrationData.AppendNode(pointAsVector);
-            string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
+                "Vector.ByTwoPoints", "Vector.ByTwoPoints@Point,Point");
+            migrationData.AppendNode(vectorDiff);
+            string vectorDiffId = MigrationManager.GetGuidFromXmlElement(vectorDiff);
 
             // Update connectors
             PortId oldInPort0 = new PortId(pointAddId, 0, PortType.INPUT);
@@ -283,16 +277,20 @@ namespace Dynamo.Nodes
             XmlElement connector2 = data.FindFirstConnector(oldInPort2);
 
             PortId geometryScaleInPort1 = new PortId(geometryScaleId, 1, PortType.INPUT);
-            PortId pointSubtractInPort0 = new PortId(pointSubtractId, 0, PortType.INPUT);
-            PortId pointAsVectorInPort0 = new PortId(pointAsVectorId, 0, PortType.INPUT);
+            PortId vectorDiffInPort0 = new PortId(vectorDiffId, 0, PortType.INPUT);
+            PortId vectorDiffInPort1 = new PortId(vectorDiffId, 1, PortType.INPUT);
 
-            data.ReconnectToPort(connector0, pointSubtractInPort0);
+            data.ReconnectToPort(connector0, vectorDiffInPort1);
             data.ReconnectToPort(connector1, geometryScaleInPort1);
-            data.ReconnectToPort(connector2, pointAsVectorInPort0);
-            data.CreateConnector(pointAsVector, 0, pointSubtract, 1);
-            data.CreateConnector(pointSubtract, 0, geometryScale, 0);
-            data.CreateConnector(geometryScale, 0, pointAdd, 0);
-            data.CreateConnector(pointAsVector, 0, pointAdd, 1);
+            data.ReconnectToPort(connector2, vectorDiffInPort0);
+            data.CreateConnector(vectorDiff, 0, geometryScale, 0);
+            data.CreateConnector(geometryScale, 0, pointAdd, 1);
+
+            if (connector2 != null)
+            {
+                string baseInputId = connector2.GetAttribute("start").ToString();
+                data.CreateConnectorFromId(baseInputId, 0, pointAddId, 0);
+            }
 
             return migrationData;
         }
@@ -379,33 +377,18 @@ namespace Dynamo.Nodes
 
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            var vectorAsPoint = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(vectorAsPoint, "ProtoGeometry.dll",
-                "Vector.AsPoint", "Vector.AsPoint");
-            migrationData.AppendNode(vectorAsPoint);
-            string vectorAsPointId = MigrationManager.GetGuidFromXmlElement(vectorAsPoint);
-
-            // Create new nodes
-            XmlElement vectorReverse = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll",
-                "Vector.Reverse", "Vector.Reverse");
-            migrationData.AppendNode(vectorReverse);
-            string vectorReverseId = MigrationManager.GetGuidFromXmlElement(vectorReverse);
-
-            XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll",
-                "Point.AsVectort", "Point.AsVector");
-            migrationData.AppendNode(pointAsVector);
-            string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
+            var geometryScale = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(geometryScale, "ProtoGeometry.dll",
+                "Geometry.Scale", "Geometry.Scale@double");
+            migrationData.AppendNode(geometryScale);
+            
+            // Create new node
+            XmlElement minusOne = MigrationManager.CreateCodeBlockNodeModelNode(
+                data.Document, "-1");
+            migrationData.AppendNode(minusOne);
 
             // Update connectors
-            PortId vectorAsPointInPort0 = new PortId(vectorAsPointId, 0, PortType.INPUT);
-            PortId pointAsVectorInPort0 = new PortId(pointAsVectorId, 0, PortType.INPUT);
-            XmlElement connector0 = data.FindFirstConnector(vectorAsPointInPort0);
-
-            data.ReconnectToPort(connector0, pointAsVectorInPort0);
-            data.CreateConnector(pointAsVector, 0, vectorReverse, 0);
-            data.CreateConnector(vectorReverse, 0, vectorAsPoint, 0);
+            data.CreateConnector(minusOne, 0, geometryScale, 1);
 
             return migrationData;
         }
