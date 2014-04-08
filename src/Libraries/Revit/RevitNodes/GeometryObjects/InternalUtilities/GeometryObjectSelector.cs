@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
@@ -10,7 +11,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace Revit.GeometryObjects
 {
     [IsVisibleInDynamoLibrary(false)]
-    public class GeometryObjectSelector
+    public static class GeometryObjectSelector
     {
         /// <summary>
         /// Return an AbstractGeometryObject given a string representation of the geometry's reference.
@@ -23,7 +24,7 @@ namespace Revit.GeometryObjects
 
             if (geob != null)
             {
-                return WrapGeometryObject(geob);
+                return GeometryObjectWrapper.Wrap(geob);
             }
 
             throw new Exception("Could not get a geometry object from the current document using the provided reference.");
@@ -61,67 +62,6 @@ namespace Revit.GeometryObjects
                         .GetGeometryObjectFromReference(geometryReference);
 
             return geob;
-        }
-
-        /// <summary>
-        /// If possible, wrap the geometry object in a DS type.
-        /// </summary>
-        /// <param name="geom"></param>
-        /// <returns></returns>
-        public static GeometryObject WrapGeometryObject(Autodesk.Revit.DB.GeometryObject geom)
-        {
-            dynamic dynGeom = geom;
-            return Convert(dynGeom);
-        }
-
-        private static Face Convert(Autodesk.Revit.DB.Face geom)
-        {
-            return Face.FromExisting(geom);
-        }
-
-        private static Autodesk.DesignScript.Geometry.Curve Convert(Autodesk.Revit.DB.Curve geom)
-        {
-            return geom.ToProtoType();
-        }
-
-        private static Edge Convert(Autodesk.Revit.DB.Edge geom)
-        {
-            return Edge.FromExisting(geom);
-        }
-
-        private static Point Convert(Autodesk.Revit.DB.Point geom)
-        {
-            return Point.ByCoordinates(geom.Coord.X, geom.Coord.Y, geom.Coord.Z);
-        }
-
-        private static PolyCurve Convert(PolyLine geom)
-        {
-            return PolyCurve.ByPoints(geom.GetCoordinates().Select(x=>Point.ByCoordinates(x.X,x.Y,x.Z)).ToArray(), true);
-        }
-
-        private static Revit.GeometryObjects.Solid Convert(Autodesk.Revit.DB.Solid geom)
-        {
-            return Solid.FromExisting(geom);
-        }
-
-        /*
-         * 
-         * Cannot introduce without extending Revit
-         * 
-        private static Autodesk.DesignScript.Geometry.Solid Convert(Autodesk.Revit.DB.Solid geom)
-        {
-            return Solid.FromExisting(geom);
-        }
-         */
-
-        private static PolyCurve Convert(Profile geom)
-        {
-            return geom.Curves.ToProtoTypes();
-        }
-
-        private static Autodesk.DesignScript.Geometry.Mesh Convert(Autodesk.Revit.DB.Mesh geom)
-        {
-            return geom.ToProtoType();
         }
     }
 }

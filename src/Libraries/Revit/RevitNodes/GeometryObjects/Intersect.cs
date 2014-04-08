@@ -5,10 +5,9 @@ using System.Reflection;
 using System.Text;
 using Autodesk.Revit.DB;
 using Revit.GeometryConversion;
-using Revit.GeometryObjects;
 using RevitServices.Persistence;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
-using Edge = Revit.GeometryObjects.Edge;
+using Edge =  Revit.GeometryObjects.Edge;
 using Face = Autodesk.DesignScript.Geometry.Face;
 using Line = Autodesk.DesignScript.Geometry.Line;
 using Point = Autodesk.DesignScript.Geometry.Point;
@@ -70,7 +69,7 @@ namespace Revit.GeometryObjects
         /// <param name="curve"></param>
         /// <param name="face"></param>
         /// <returns>A list of DSCurveFaceIntersectionResult</returns>
-        public static CurveFaceIntersectionResult[] CurveFace(Autodesk.DesignScript.Geometry.Curve curve, Revit.GeometryObjects.Face face)
+        public static CurveFaceIntersectionResult[] CurveFace(Autodesk.DesignScript.Geometry.Curve curve, Face face)
         {
             if (curve == null)
             {
@@ -126,7 +125,7 @@ namespace Revit.GeometryObjects
         /// <param name="face1"></param>
         /// <param name="face2"></param>
         /// <returns>A list of curves or an empty list if there is no intersection</returns>
-        public static Autodesk.DesignScript.Geometry.Curve[] FaceFace(Revit.GeometryObjects.Face face1, Revit.GeometryObjects.Face face2)
+        public static Autodesk.DesignScript.Geometry.Curve[] FaceFace(Face face1, Face face2)
         {
             if (face1 == null)
             {

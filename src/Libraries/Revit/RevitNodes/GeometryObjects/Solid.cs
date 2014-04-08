@@ -11,7 +11,6 @@ using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Curve = Autodesk.Revit.DB.Curve;
 using CurveLoop = Autodesk.Revit.DB.CurveLoop;
-using Element = Revit.Elements.Element;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace Revit.GeometryObjects
@@ -326,6 +325,15 @@ namespace Revit.GeometryObjects
             {
                 return this.InternalSolid.SurfaceArea;
             }
+        }
+
+        #endregion
+
+        #region Public methods
+
+        public override object[] Explode()
+        {
+            return Faces;
         }
 
         #endregion
@@ -696,7 +704,7 @@ namespace Revit.GeometryObjects
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        public static Solid FromElement(Element element)
+        public static Solid FromElement(Revit.Elements.Element element)
         {
             if (element == null)
             {
@@ -710,7 +718,7 @@ namespace Revit.GeometryObjects
 
         #region Internal Static Constructors
 
-        internal static Revit.GeometryObjects.Solid FromExisting(Autodesk.Revit.DB.Solid solid)
+        internal static Solid FromExisting(Autodesk.Revit.DB.Solid solid)
         {
             return new Solid(solid);
         }

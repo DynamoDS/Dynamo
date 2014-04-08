@@ -36,7 +36,7 @@ namespace Revit.Application
         {
             get
             {
-                return (View) ElementWrappingExtensions.ToDSType(InternalDocument.ActiveView, true);
+                return (View) ElementWrapper.ToDSType(InternalDocument.ActiveView, true);
             }
         }
 
