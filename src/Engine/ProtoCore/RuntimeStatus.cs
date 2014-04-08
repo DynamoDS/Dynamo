@@ -74,6 +74,7 @@ namespace ProtoCore
             public int Line;
             public int Column;
             public int ExpressionID;
+            public Guid GraphNodeGuid;
             public string Filename;
         }
     }
@@ -119,6 +120,11 @@ namespace ProtoCore
         public void ClearWarningForExpression(int expressionID)
         {
             warnings.RemoveAll(w => w.ExpressionID == expressionID);
+        }
+
+        public void ClearWarnignForGraphGuid(Guid guid)
+        {
+            warnings.RemoveAll(w => w.GraphNodeGuid.Equals(guid));
         }
 
         public RuntimeStatus(Core core, 
@@ -176,6 +182,7 @@ namespace ProtoCore
                 Column = col,
                 Line = line,
                 ExpressionID = core.RuntimeExpressionUID,
+                GraphNodeGuid = core.ExecutingGraphnode == null ? Guid.Empty : core.ExecutingGraphnode.guid,
                 Filename = filename
             };
             warnings.Add(entry);
