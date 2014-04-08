@@ -1,0 +1,129 @@
+<Workspace Version="0.6.3.18002" X="66.9388824302317" Y="59.22094741808" zoom="0.8131456821731" Description="" Category="Misc" Name="Parse Weather Data" ID="ef2af89d-0ece-4af2-a4b9-013b6bf0e474">
+  <Elements>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="6ce76526-8dee-4fcb-bfa6-80b5cbd37c29" nickname="Get from List" x="842.435866091908" y="57.3172291051809" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="6ea06bb2-d265-428f-b549-7d3be506c3b5" nickname="Get from List" x="855.020566758581" y="229.609081476062" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="423d61bf-6044-47ea-bf59-2d6e47df5ffc" nickname="Get from List" x="868.520264691693" y="386.991534089992" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="d2c2164d-a330-4b04-97ff-a88c25dde179" nickname="Number" x="716.416691000872" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="3b295748-b8a6-476a-9653-19b791dc10c0" nickname="Number" x="715.741967819169" y="201.230430956552" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="c83a4d6b-6253-4fc4-abf0-0ffb47beb730" nickname="Number" x="706.037674017621" y="374.082211393582" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="7f3ef9ae-622e-457a-aaf0-7a6751064d0c" nickname="Map" x="557.100135965075" y="157.71025510811" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.String2Num type="Dynamo.Nodes.String2Num" guid="cc47bbc7-a796-4eb7-81b3-768be5aa8e69" nickname="String to Number" x="446.174876513535" y="315.667923330612" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6bfd104d-2d48-4a09-8726-d6c20831b651" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="WeatherDataFilePath" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="0d919923-6c36-4272-a484-e1324aa17854" nickname="Input" x="-17.1522757159365" y="153.430455143187" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="dateTimeObject" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="97be364a-3f55-49ec-b4d6-768ba5812171" nickname="Output" x="1085.52026469169" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="GHI" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="7c9bcf39-b98d-44ee-943b-b8057e7b071f" nickname="Output" x="1085.52026469169" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="DNI" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="f446a631-e411-43df-b842-006f32dc6146" nickname="Output" x="1085.52026469169" y="300" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="DHI" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="2b8cbfd3-7c2e-4fbd-b34e-ab76c324b5a9" nickname="Python Script With Variable Number of Inputs" x="179.651332103744" y="242.612250196303" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+#import dateTime
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+sys.path.append(r'C:\Program Files (x86)\IronPython 2.7\Lib')
+from System import DateTime
+import csv
+
+#The input to this node will be stored in the IN0...INX variable(s).
+path = IN0
+dateobject = IN1
+
+
+monthform = 'MM'
+dayform = 'dd'
+hourform = 'HH'
+month = dateobject.ToString(monthform)
+day = dateobject.ToString(dayform)
+hour = dateobject.ToString(hourform)
+
+
+ifile  = open(path, "rb")
+
+input_file = csv.reader(ifile)
+rowlist = []
+rownum = 0
+for row in input_file:
+    # ignore the first header - this file has two for some reason
+    if rownum == 0:
+      timeZoneOffset = row[4]
+      timeZoneOffset = timeZoneOffset.split(':')[1]
+      timeZoneOffset = int(timeZoneOffset)
+      rownum += 1
+      continue
+
+     # Save header row.	
+    if rownum == 1:
+        header = row
+    else:
+        colnum = 0
+        dict = {}
+        for col in row:
+           
+           dict[header[colnum]] = col 
+           rowlist.append(dict)
+           colnum += 1
+   
+   #keep track of row we're at.         
+    rownum += 1
+
+
+ifile.close()
+
+skydata = 0
+
+localHour = str(int(hour) + timeZoneOffset).zfill(2)
+
+for row in rowlist:
+	if row[" Month"] == month and row[" Day"] == day and row[" Hour"] == localHour:
+		skydata = (row[' GlobHorizRad (Wh/m2)'],row[' DirNormRad (Wh/m2)'],row['DiffHorizRad (Wh/m2)'])
+
+#Assign your output to the OUT variable
+OUT = skydata</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="138b5c28-0ad6-4bc3-ac85-b78a41562623" nickname="Watch" x="417.991295849777" y="498.243891633708" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="fc55ed16-f9a3-40b0-8c15-ea2c70b34c84" nickname="Watch" x="261.302188442092" y="33.3667708104771" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6ce76526-8dee-4fcb-bfa6-80b5cbd37c29" start_index="0" end="97be364a-3f55-49ec-b4d6-768ba5812171" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6ea06bb2-d265-428f-b549-7d3be506c3b5" start_index="0" end="7c9bcf39-b98d-44ee-943b-b8057e7b071f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="423d61bf-6044-47ea-bf59-2d6e47df5ffc" start_index="0" end="f446a631-e411-43df-b842-006f32dc6146" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d2c2164d-a330-4b04-97ff-a88c25dde179" start_index="0" end="6ce76526-8dee-4fcb-bfa6-80b5cbd37c29" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3b295748-b8a6-476a-9653-19b791dc10c0" start_index="0" end="6ea06bb2-d265-428f-b549-7d3be506c3b5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c83a4d6b-6253-4fc4-abf0-0ffb47beb730" start_index="0" end="423d61bf-6044-47ea-bf59-2d6e47df5ffc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7f3ef9ae-622e-457a-aaf0-7a6751064d0c" start_index="0" end="6ce76526-8dee-4fcb-bfa6-80b5cbd37c29" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7f3ef9ae-622e-457a-aaf0-7a6751064d0c" start_index="0" end="6ea06bb2-d265-428f-b549-7d3be506c3b5" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7f3ef9ae-622e-457a-aaf0-7a6751064d0c" start_index="0" end="423d61bf-6044-47ea-bf59-2d6e47df5ffc" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cc47bbc7-a796-4eb7-81b3-768be5aa8e69" start_index="0" end="7f3ef9ae-622e-457a-aaf0-7a6751064d0c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6bfd104d-2d48-4a09-8726-d6c20831b651" start_index="0" end="2b8cbfd3-7c2e-4fbd-b34e-ab76c324b5a9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6bfd104d-2d48-4a09-8726-d6c20831b651" start_index="0" end="fc55ed16-f9a3-40b0-8c15-ea2c70b34c84" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0d919923-6c36-4272-a484-e1324aa17854" start_index="0" end="2b8cbfd3-7c2e-4fbd-b34e-ab76c324b5a9" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2b8cbfd3-7c2e-4fbd-b34e-ab76c324b5a9" start_index="0" end="7f3ef9ae-622e-457a-aaf0-7a6751064d0c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2b8cbfd3-7c2e-4fbd-b34e-ab76c324b5a9" start_index="0" end="138b5c28-0ad6-4bc3-ac85-b78a41562623" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

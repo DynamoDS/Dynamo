@@ -39,8 +39,8 @@ namespace DSCore.File
             {
                 for (int x = 0; x < numX; x++)
                 {
-                    int xParam = x * (int)(bmp.Width / numX);
-                    int yParam = y * (int)(bmp.Height / numY);
+                    int xParam = x * (bmp.Width / numX);
+                    int yParam = y * (bmp.Height / numY);
 
                     // Insert new color at the front of the list.
                     var c = bmp.GetPixel(xParam, yParam);

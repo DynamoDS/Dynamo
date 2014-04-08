@@ -60,6 +60,26 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\GregRevitAuth.dll</HintPath>
     </Reference>
+    <Reference Include="HelixToolkit.Wpf">
+      <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="JobMonitor">
+      <HintPath>..\..\extern\DynamoRaaS\JobMonitor.dll</HintPath>
+    </Reference>
+    <Reference Include="LibGNet">
+      <HintPath>..\..\bin\AnyCPU\Debug\dll\LibGNet.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\mathnet-numerics-build\lib\Net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics.IO">
+      <HintPath>..\..\extern\mathnet-numerics-build\lib\Net40\MathNet.Numerics.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="MIConvexHullPlugin">
+      <HintPath>..\..\extern\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>

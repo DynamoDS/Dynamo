@@ -1,8 +1,10 @@
-﻿using Autodesk.DesignScript.Interfaces;
+﻿using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using Revit.GeometryConversion;
 using Revit.GeometryObjects;
 using Revit.Graphics;
+using UV = Autodesk.Revit.DB.UV;
 
 namespace Revit.GeometryObjects
 {
@@ -102,6 +104,37 @@ namespace Revit.GeometryObjects
         public Autodesk.DesignScript.Geometry.Vector NormalAtParameter(double u, double v)
         {
             return InternalFace.ComputeNormal(new UV(u, v)).ToVector();
+        }
+
+        /// <summary>
+        /// Obtain the derivatives at a location on the Face as a CoordinateSystem.  The X and Y axis of the
+        /// CoordinateSystem are aligned with the U and V directions of the Face at that point and the Z axis
+        /// is normal to the Face.  The X and Y Axis is scaled to the magnitude of the derivatives.
+        /// </summary>
+        /// <param name="u">The U parameter</param>
+        /// <param name="v">The V parameter</param>
+        /// <returns>The CoordinateSystem</returns>
+        public Autodesk.DesignScript.Geometry.CoordinateSystem DerivativesAtParameter(double u, double v)
+        {
+            return InternalFace.ComputeDerivatives(new UV(u, v)).ToCoordinateSystem();
+        }
+
+        /// <summary>
+        /// Obtain the derivatives at a location on the Face as a CoordinateSystem.  The X and Y axis of the
+        /// CoordinateSystem are aligned with the U and V directions of the Face at that point and the Z axis
+        /// is normal to the Face.  The X and Y axis is normalized.
+        /// </summary>
+        /// <param name="u">The U parameter</param>
+        /// <param name="v">The V parameter</param>
+        /// <returns>The CoordinateSystem</returns>
+        public Autodesk.DesignScript.Geometry.CoordinateSystem CoordinateSystemAtParameter(double u, double v)
+        {
+            var t = InternalFace.ComputeDerivatives(new UV(u, v));
+            t.BasisX = t.BasisX.Normalize();
+            t.BasisZ = t.BasisZ.Normalize();
+            t.BasisY = t.BasisX.CrossProduct(t.BasisZ);
+
+            return t.ToCoordinateSystem();
         }
 
         internal static Face FromExisting(Autodesk.Revit.DB.Face f)
