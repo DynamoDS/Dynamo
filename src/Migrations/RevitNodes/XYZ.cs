@@ -242,14 +242,128 @@ namespace Dynamo.Nodes
 
     public class XyzScaleOffset : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var pointAdd = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(pointAdd, "ProtoGeometry.dll",
+                "Point.Add", "Point.Add@Vector");
+            migrationData.AppendNode(pointAdd);
+            string pointAddId = MigrationManager.GetGuidFromXmlElement(pointAdd);
+
+            // Create new nodes
+            XmlElement geometryScale = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll",
+                "Geometry.Scale", "Geometry.Scale@double");
+            migrationData.AppendNode(geometryScale);
+            string geometryScaleId = MigrationManager.GetGuidFromXmlElement(geometryScale);
+
+            XmlElement pointSubtract = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll",
+                "Point.Subtract", "Point.Subtract@Vector");
+            migrationData.AppendNode(pointSubtract);
+            string pointSubtractId = MigrationManager.GetGuidFromXmlElement(pointSubtract);
+
+            XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll",
+                "Point.AsVector", "Point.AsVector");
+            migrationData.AppendNode(pointAsVector);
+            string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(pointAddId, 0, PortType.INPUT);
+            PortId oldInPort1 = new PortId(pointAddId, 1, PortType.INPUT);
+            PortId oldInPort2 = new PortId(pointAddId, 2, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
+
+            PortId geometryScaleInPort1 = new PortId(geometryScaleId, 1, PortType.INPUT);
+            PortId pointSubtractInPort0 = new PortId(pointSubtractId, 0, PortType.INPUT);
+            PortId pointAsVectorInPort0 = new PortId(pointAsVectorId, 0, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, pointSubtractInPort0);
+            data.ReconnectToPort(connector1, geometryScaleInPort1);
+            data.ReconnectToPort(connector2, pointAsVectorInPort0);
+            data.CreateConnector(pointAsVector, 0, pointSubtract, 1);
+            data.CreateConnector(pointSubtract, 0, geometryScale, 0);
+            data.CreateConnector(geometryScale, 0, pointAdd, 0);
+            data.CreateConnector(pointAsVector, 0, pointAdd, 1);
+
+            return migrationData;
+        }
     }
 
     public class XyzAdd : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Point.Add", "Point.Add@Vector");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Create new node
+            XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll",
+                "Point.AsVector", "Point.AsVector");
+            migrationData.AppendNode(pointAsVector);
+            string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
+
+            // Update connectors
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            PortId pointAsVectorInPort0 = new PortId(pointAsVectorId, 0, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+            
+            data.ReconnectToPort(connector1, pointAsVectorInPort0);
+            data.CreateConnector(pointAsVector, 0, newNode, 1);
+
+            return migrationData;
+        }
     }
 
     public class XyzSubtract : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Point.Subtract", "Point.Subtract@Vector");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Create new node
+            XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll",
+                "Point.AsVector", "Point.AsVector");
+            migrationData.AppendNode(pointAsVector);
+            string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
+
+            // Update connectors
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            PortId pointAsVectorInPort0 = new PortId(pointAsVectorId, 0, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            data.ReconnectToPort(connector1, pointAsVectorInPort0);
+            data.CreateConnector(pointAsVector, 0, newNode, 1);
+
+            return migrationData;
+        }
     }
 
     public class XyzAverage : MigrationNode
@@ -258,6 +372,43 @@ namespace Dynamo.Nodes
 
     public class XyzNegate : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var vectorAsPoint = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(vectorAsPoint, "ProtoGeometry.dll",
+                "Vector.AsPoint", "Vector.AsPoint");
+            migrationData.AppendNode(vectorAsPoint);
+            string vectorAsPointId = MigrationManager.GetGuidFromXmlElement(vectorAsPoint);
+
+            // Create new nodes
+            XmlElement vectorReverse = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll",
+                "Vector.Reverse", "Vector.Reverse");
+            migrationData.AppendNode(vectorReverse);
+            string vectorReverseId = MigrationManager.GetGuidFromXmlElement(vectorReverse);
+
+            XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll",
+                "Point.AsVectort", "Point.AsVector");
+            migrationData.AppendNode(pointAsVector);
+            string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
+
+            // Update connectors
+            PortId vectorAsPointInPort0 = new PortId(vectorAsPointId, 0, PortType.INPUT);
+            PortId pointAsVectorInPort0 = new PortId(pointAsVectorId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(vectorAsPointInPort0);
+
+            data.ReconnectToPort(connector0, pointAsVectorInPort0);
+            data.CreateConnector(pointAsVector, 0, vectorReverse, 0);
+            data.CreateConnector(vectorReverse, 0, vectorAsPoint, 0);
+
+            return migrationData;
+        }
     }
 
     public class XyzCrossProduct : MigrationNode
