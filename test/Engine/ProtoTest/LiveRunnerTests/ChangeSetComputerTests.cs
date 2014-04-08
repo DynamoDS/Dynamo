@@ -1,0 +1,301 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using NUnit.Framework;
+using ProtoCore.DSASM.Mirror;
+using ProtoCore.Lang;
+using ProtoTest.TD;
+using ProtoScript.Runners;
+using ProtoTestFx.TD;
+using System.Linq;
+using ProtoCore.AST.AssociativeAST;
+using ProtoCore.DSASM;
+using ProtoCore.Mirror;
+using System.Collections;
+using ProtoCore;
+
+namespace ProtoTest.LiveRunner
+{
+    public class ChangeSetComputerTests
+    {
+        public TestFrameWork thisTest = new TestFrameWork();
+
+        ProtoCore.Core core = null;
+
+        [SetUp]
+        public void Setup()
+        {
+            var opts = new Options();
+            opts.ExecutionMode = ExecutionMode.Serial;
+            ProtoCore.Core core = new Core(opts);
+            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
+            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+        }
+
+        [TearDown]
+        public void CleanUp()
+        {
+            GraphToDSCompiler.GraphUtilities.Reset();
+        }
+
+        private Subtree CreateSubTreeFromCode(Guid guid, string code)
+        {
+            CodeBlockNode commentCode;
+            var cbn = GraphToDSCompiler.GraphUtilities.Parse(code, out commentCode) as CodeBlockNode;
+            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
+            return subtree;
+        }
+
+        private List<AssociativeNode> BuildASTList(List<string> codeList)
+        {
+            List<AssociativeNode> astList = new List<AssociativeNode>();
+            foreach (string code in codeList)
+            {
+                CodeBlockNode commentCode;
+                var cbn = GraphToDSCompiler.GraphUtilities.Parse(code, out commentCode) as CodeBlockNode;
+                astList.AddRange(cbn.Body);
+            }
+            return astList;
+        }
+
+
+        [Test]
+        public void TestAddedNodes01()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 1;"
+            };
+
+            Guid guid = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+
+            var syncData = new GraphSyncData(null, added, null);
+         
+            // Get astlist from ChangeSetComputer
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
+
+            // Get expected ASTList
+            // The list must be in the order that it is expected
+            List<string> expectedCode = new List<string>() 
+            {
+                "a = 1;"
+            };
+            List<AssociativeNode> expectedAstList = BuildASTList(expectedCode);
+
+            // Compare ASTs to be equal
+            for (int n = 0; n < astList.Count; ++n)
+            {
+                AssociativeNode node1 = astList[n];
+                AssociativeNode node2 = expectedAstList[n];
+                bool isEqual = node1.Equals(node2);
+                Assert.IsTrue(isEqual);
+            }
+        }
+
+        [Test]
+        public void TestAddedNodes02()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 1; b = a;"
+            };
+
+            Guid guid = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+
+            var syncData = new GraphSyncData(null, added, null);
+
+            // Get astlist from ChangeSetComputer
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
+
+            // Get expected ASTList
+            // The list must be in the order that it is expected
+            List<string> expectedCode = new List<string>() 
+            {
+                "a = 1;",
+                "b = a;"
+            };
+            List<AssociativeNode> expectedAstList = BuildASTList(expectedCode);
+
+            // Compare ASTs to be equal
+            for (int n = 0; n < astList.Count; ++n)
+            {
+                AssociativeNode node1 = astList[n];
+                AssociativeNode node2 = expectedAstList[n];
+                bool isEqual = node1.Equals(node2);
+                Assert.IsTrue(isEqual);
+            }
+        }
+
+        [Test]
+        public void TestAddedFunction01()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "def f(){return = 1;}"
+            };
+
+            Guid guid = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+
+            var syncData = new GraphSyncData(null, added, null);
+
+            // Get astlist from ChangeSetComputer
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
+
+            // Get expected ASTList
+            // The list must be in the order that it is expected
+            List<string> expectedCode = new List<string>() 
+            {
+                "def f(){return = 1;}"
+            };
+            List<AssociativeNode> expectedAstList = BuildASTList(expectedCode);
+
+            // Compare ASTs to be equal
+            for (int n = 0; n < astList.Count; ++n)
+            {
+                AssociativeNode node1 = astList[n];
+                AssociativeNode node2 = expectedAstList[n];
+                bool isEqual = node1.Equals(node2);
+                Assert.IsTrue(isEqual);
+            }
+        }
+
+        [Test]
+        public void TestAddedFunction02()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "def f(){return = 1;}",
+                "def g(){return = 1;}"
+            };
+
+            Guid guid = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+
+            var syncData = new GraphSyncData(null, added, null);
+
+            // Get astlist from ChangeSetComputer
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
+
+            // Get expected ASTList
+            // The list must be in the order that it is expected
+            List<string> expectedCode = new List<string>() 
+            {
+                "def f(){return = 1;}",
+                "def g(){return = 1;}"
+            };
+            List<AssociativeNode> expectedAstList = BuildASTList(expectedCode);
+
+            // Compare ASTs to be equal
+            for (int n = 0; n < astList.Count; ++n)
+            {
+                AssociativeNode node1 = astList[n];
+                AssociativeNode node2 = expectedAstList[n];
+                bool isEqual = node1.Equals(node2);
+                Assert.IsTrue(isEqual);
+            }
+        }
+
+        [Test]
+        public void TestModified01()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 1;",
+                "b = 1;"
+            };
+
+            // Add node
+            Guid guid = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+
+            // Get astlist from ChangeSetComputer
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
+
+            // Modify contents
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            syncData = new GraphSyncData(null, null, modified);
+
+            // Get astlist from ChangeSetComputer
+            astList = changeSetState.GetDeltaASTList(syncData);
+
+            // Get expected ASTList
+            // The list must be in the order that it is expected
+            List<string> expectedCode = new List<string>() 
+            {
+                "b = 1;"
+            };
+            List<AssociativeNode> expectedAstList = BuildASTList(expectedCode);
+
+            // Compare ASTs to be equal
+            for (int n = 0; n < astList.Count; ++n)
+            {
+                AssociativeNode node1 = astList[n];
+                AssociativeNode node2 = expectedAstList[n];
+                bool isEqual = node1.Equals(node2);
+                Assert.IsTrue(isEqual);
+            }
+        }
+
+        [Test]
+        public void TestModified02()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 1; b = 1;",
+                "c = 1;"
+            };
+
+            // Add nodes a = 1, b = 1
+            Guid guid = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+
+            // Get astlist from ChangeSetComputer
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
+
+            // Modify contents to c = 1
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            syncData = new GraphSyncData(null, null, modified);
+
+            // Get astlist from ChangeSetComputer
+            astList = changeSetState.GetDeltaASTList(syncData);
+
+            // Get expected ASTList
+            // The list must be in the order that it is expected
+            List<string> expectedCode = new List<string>() 
+            {
+                "c = 1;"
+            };
+            List<AssociativeNode> expectedAstList = BuildASTList(expectedCode);
+
+            // Compare ASTs to be equal
+            for (int n = 0; n < astList.Count; ++n)
+            {
+                AssociativeNode node1 = astList[n];
+                AssociativeNode node2 = expectedAstList[n];
+                bool isEqual = node1.Equals(node2);
+                Assert.IsTrue(isEqual);
+            }
+        }
+
+    }
+
+}

@@ -130,6 +130,7 @@
     <Compile Include="GraphCompiler\MicroFeatureTests.cs" />
     <Compile Include="Imperative\FromOldTestSuite.cs" />
     <Compile Include="Imperative\MicroFeatureTests.cs" />
+    <Compile Include="LiveRunnerTests\ChangeSetComputerTests.cs" />
     <Compile Include="LiveRunnerTests\MicroFeatureTests.cs" />
     <Compile Include="MinimalClassTests.cs" />
     <Compile Include="ModifierStack.cs" />
