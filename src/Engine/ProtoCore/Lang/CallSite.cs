@@ -260,17 +260,29 @@ namespace ProtoCore
             // Found preloaded trace data, reconstruct the instances from there.
             if (!string.IsNullOrEmpty(serializedTraceData))
             {
+                LoadSerializedDataIntoTraceCache(serializedTraceData);
                 
-                Byte[] data = Convert.FromBase64String(serializedTraceData);
-
-                IFormatter formatter = new SoapFormatter();
-                MemoryStream s = new MemoryStream(data);
-
-                TraceSerialiserHelper helper = (TraceSerialiserHelper) formatter.Deserialize(s);
-
-                this.traceData = helper.TraceData;
             }
         }
+
+        /// <summary>
+        /// Load the serialised data provided into this callsite's trace cache
+        /// </summary>
+        /// <param name="serializedTraceData">The data to load</param>
+        public void LoadSerializedDataIntoTraceCache(string serializedTraceData)
+        {
+            Validity.Assert(!String.IsNullOrEmpty(serializedTraceData));
+
+            Byte[] data = Convert.FromBase64String(serializedTraceData);
+
+            IFormatter formatter = new SoapFormatter();
+            MemoryStream s = new MemoryStream(data);
+
+            TraceSerialiserHelper helper = (TraceSerialiserHelper)formatter.Deserialize(s);
+
+            this.traceData = helper.TraceData;
+        }
+        
 
         public void UpdateCallSite(int classScope, string methodName)
         {
