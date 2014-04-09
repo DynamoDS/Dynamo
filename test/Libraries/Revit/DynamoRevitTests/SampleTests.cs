@@ -22,6 +22,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CreatePointEndSample()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -41,6 +42,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CreatePointSample()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -53,6 +55,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void RefGridSlidersSample()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -65,6 +68,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void RefGridSlidersEndSample()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -77,6 +81,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void DivideSelectedCurveEndSample()
         {
             //var model = dynSettings.Controller.DynamoModel;
@@ -99,6 +104,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void DivideSelectedCurveSample()
         {
             //var model = dynSettings.Controller.DynamoModel;
@@ -121,6 +127,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void FormFromCurveSelectionListSample()
         {
             //var model = dynSettings.Controller.DynamoModel;
@@ -147,6 +154,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void FormFromCurveSelectionSample()
         {
             //var model = dynSettings.Controller.DynamoModel;
@@ -171,6 +179,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void GraphFunctionAndConnectPointsSample()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -191,6 +200,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ScalableGraphFunctionSample()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -204,6 +214,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void GraphFunctionSample()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -220,6 +231,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@"..\..\doc\distrib\Samples\08 Get Set Family Params\inst param.rvt")]
         public void InstParamSample()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -232,6 +244,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@"..\..\doc\distrib\Samples\08 Get Set Family Params\inst param mass families.rvt")]
         public void InstParam2MassesSample()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -244,6 +257,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@"..\..\doc\distrib\Samples\08 Get Set Family Params\inst param mass families.rvt")]
         public void InstParam2MassesDrivingEachOtherSample()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -262,6 +276,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void Attractor_1()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -279,6 +294,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void Attractor_2()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -296,6 +312,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@"..\..\doc\distrib\Samples\11 Indexed Family Instances\IndexedFamilyInstances.rfa")]
         public void IndexedFamilyInstances()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -313,6 +330,7 @@ namespace Dynamo.Tests
         }
 
         [Ignore]
+        [TestModel(@".\empty.rfa")]
         public void AdaptiveComponentPlacement()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -330,6 +348,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@"..\..\doc\distrib\Samples\16 Tesselation\tesselation.rfa")]
         public void Tesselation_1()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -352,6 +371,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@"..\..\doc\distrib\Samples\16 Tesselation\tesselation.rfa")]
         public void Tesselation_2()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -370,6 +390,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@"..\..\doc\distrib\Samples\16 Tesselation\tesselation.rfa")]
         public void Tesselation_3()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -388,6 +409,7 @@ namespace Dynamo.Tests
         }
 
         [Ignore]
+        [TestModel(@"..\..\doc\distrib\Samples\16 Tesselation\tesselation.rfa")]
         public void Tesselation_4()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -406,6 +428,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void Transforms_TranslateAndRotatesequence()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -424,6 +447,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void Transforms_TranslateAndRotate()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -442,6 +466,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void Formulas_FormulaCurve()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -508,6 +533,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void Spreadsheets_CSVToStuff()
         {
             //var model = dynSettings.Controller.DynamoModel;
@@ -535,7 +561,9 @@ namespace Dynamo.Tests
             ////dynSettings.Controller.RunExpression(true);
             Assert.Inconclusive("Porting : StringFileName");
         }
+        
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void Rendering_hill_climbing_simple()
         {
             // referencing the samples directly from the samples folder
@@ -596,9 +624,11 @@ namespace Dynamo.Tests
 
 
         }
+        
         #region 14 Curves
 
         [Test]
+        [TestModel(@".\Samples\AllCurves.rfa")]
         public void AllCurveTestModelCurve()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -617,6 +647,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Samples\AllCurves.rfa")]
         public void AllCurveTest()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -635,6 +666,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Samples\AllCurves.rfa")]
         public void ArcAndLineFromRefPoints()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -653,6 +685,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Samples\AllCurves.rfa")]
         public void ArcAndLine()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -671,6 +704,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Samples\AllCurves.rfa")]
         public void ArcFromRefPoints()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -689,6 +723,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Samples\AllCurves.rfa")]
         public void Arc()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -707,6 +742,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Samples\AllCurves.rfa")]
         public void Circle()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -725,6 +761,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Samples\AllCurves.rfa")]
         public void Ellipse()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -747,6 +784,7 @@ namespace Dynamo.Tests
         #region 06 Python Node
 
         [Test]
+        [TestModel(@".\Samples\AllCurves.rfa")]
         public void ConnectTwoPointArraysWithoutPython()
         {
             var model = dynSettings.Controller.DynamoModel;

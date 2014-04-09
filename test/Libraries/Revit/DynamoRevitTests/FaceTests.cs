@@ -8,6 +8,7 @@ namespace Dynamo.Tests
     internal class FaceTests : DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\Face\GetSurfaceDomain.rvt")]
         public void GetSurfaceDomain()
         {
             var model = dynSettings.Controller.DynamoModel;

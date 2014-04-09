@@ -12,6 +12,7 @@ namespace Dynamo.Tests
     class FamilyTests:DynamoRevitUnitTestBase
     {   
         [Test]
+        [TestModel(@".\Family\GetCurvesFromFamilyInstance.rfa")]
         public void GetCurvesFromFamilyInstance()
         {
             //var model = dynSettings.Controller.DynamoModel;
@@ -44,6 +45,7 @@ namespace Dynamo.Tests
         }
         
         [Test]
+        [TestModel(@".\Family\GetFamilyInstancesByType.rv")]
         public void GetFamilyInstancesByType()
         {
             //var model = dynSettings.Controller.DynamoModel;
@@ -65,6 +67,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Family\GetFamilyInstanceLocation.rvt")]
         public void GetFamilyInstanceLocation()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -77,6 +80,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Family\AC_locationStandAlone.rfa")]
         public void CanLocateAdaptiveComponent()
         {
             //var model = dynSettings.Controller.DynamoModel;
@@ -101,6 +105,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Family\AC_locationInDividedSurface.rfa")]
         public void CanLocateAdaptiveComponentInDividedSurface()
         {
             //var model = dynSettings.Controller.DynamoModel;

@@ -8,6 +8,7 @@ namespace Dynamo.Tests
     class DividedCurveTests : DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\DividedCurve\DividedCurve.rfa")]
         public void DividedCurve()
         {
             var model = dynSettings.Controller.DynamoModel;
