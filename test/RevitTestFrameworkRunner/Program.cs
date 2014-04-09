@@ -33,8 +33,6 @@ namespace RevitTestFrameworkRunner
 
             try
             {
-                _workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
                 if (!ParseArguments(args))
                 {
                     return;
@@ -68,6 +66,11 @@ namespace RevitTestFrameworkRunner
                 }
                 else
                 {
+                    if (string.IsNullOrEmpty(_workingDirectory))
+                    {
+                        _workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    }
+
                     // In any case here, the test assembly cannot be null
                     if (string.IsNullOrEmpty(_testAssembly))
                     {
