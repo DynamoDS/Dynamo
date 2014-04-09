@@ -1,47 +1,38 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
-using System.Linq;
-using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
-using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
-    public abstract class FileReaderBase : NodeWithOneOutput
+    public abstract class FileReaderBase : NodeModel
     {
-        FileSystemEventHandler handler;
+        readonly FileSystemEventHandler handler;
 
-        string _path;
+        string path;
         protected string storedPath
         {
-            get { return _path; }
+            get { return path; }
             set
             {
-                if (value != null && !value.Equals(_path))
+                if (value != null && !value.Equals(path))
                 {
-                    if (_watch != null)
-                        _watch.FileChanged -= handler;
+                    if (watch != null)
+                        watch.FileChanged -= handler;
 
-                    _path = value;
-                    _watch = new FileWatch(_path);
-                    _watch.FileChanged += handler;
+                    path = value;
+                    watch = new FileWatch(path);
+                    watch.FileChanged += handler;
                 }
             }
         }
 
-        FileWatch _watch;
+        FileWatch watch;
 
-        public FileReaderBase()
+        protected FileReaderBase()
         {
             handler = watcher_FileChanged;
-
-            InPortData.Add(new PortData("path", "Path to the file", typeof(Value.String)));
-            
-
-            //NodeUI.RegisterInputsAndOutput();
+            InPortData.Add(new PortData("path", "Path to the file"));
         }
 
         void watcher_FileChanged(object sender, FileSystemEventArgs e)
@@ -62,8 +53,8 @@ namespace Dynamo.Nodes
     {
         public bool Changed { get; private set; }
 
-        private readonly FileSystemWatcher _watcher;
-        private readonly FileSystemEventHandler _handler;
+        private readonly FileSystemWatcher watcher;
+        private readonly FileSystemEventHandler handler;
 
         public event FileSystemEventHandler FileChanged;
 
@@ -78,14 +69,14 @@ namespace Dynamo.Nodes
 
             var name = Path.GetFileName(filePath);
 
-            _watcher = new FileSystemWatcher(dir, name)
+            watcher = new FileSystemWatcher(dir, name)
             {
                 NotifyFilter = NotifyFilters.LastWrite,
                 EnableRaisingEvents = true
             };
 
-            _handler = watcher_Changed;
-            _watcher.Changed += _handler;
+            handler = watcher_Changed;
+            watcher.Changed += handler;
         }
 
         void watcher_Changed(object sender, FileSystemEventArgs e)
@@ -104,8 +95,8 @@ namespace Dynamo.Nodes
 
         public void Dispose()
         {
-            _watcher.Changed -= _handler;
-            _watcher.Dispose();
+            watcher.Changed -= handler;
+            watcher.Dispose();
         }
 
         #endregion

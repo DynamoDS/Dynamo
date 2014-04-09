@@ -48,6 +48,7 @@
     <Compile Include="AbstractDisposeTracert.cs" />
     <Compile Include="ClassFunctionality.cs" />
     <Compile Include="DisposeTracer.cs" />
+    <Compile Include="DummyCollection.cs" />
     <Compile Include="DummyGeometry.cs" />
     <Compile Include="InheritenceTests.cs" />
     <Compile Include="ManagedElementExample.cs" />

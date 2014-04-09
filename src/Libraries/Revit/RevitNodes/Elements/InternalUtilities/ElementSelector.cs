@@ -1,12 +1,8 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Structure;
 using RevitServices.Elements;
 using RevitServices.Persistence;
 
@@ -98,7 +94,7 @@ namespace Revit.Elements
         /// <summary>
         /// Obtain an element from the current document given the element's unique id
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="uniqueId"></param>
         /// <returns></returns>
         private static Autodesk.Revit.DB.Element InternalGetElementByUniqueId(string uniqueId)
         {

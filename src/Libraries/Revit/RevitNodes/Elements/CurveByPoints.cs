@@ -23,6 +23,13 @@ namespace Revit.Elements
             TransactionManager.Instance.TransactionTaskDone();
         }
 
+        private void InternalSetIsReferenceLine(bool isReferenceLine)
+        {
+            TransactionManager.Instance.EnsureInTransaction(Document);
+            ((Autodesk.Revit.DB.CurveByPoints) InternalCurveElement).IsReferenceLine = isReferenceLine;
+            TransactionManager.Instance.TransactionTaskDone();
+        }
+
         #endregion
 
         #region private constructors
@@ -36,7 +43,7 @@ namespace Revit.Elements
             InternalSetCurveElement(curveByPoints);
         }
 
-        private CurveByPoints(IEnumerable<Autodesk.Revit.DB.ReferencePoint> refPoints)
+        private CurveByPoints(IEnumerable<Autodesk.Revit.DB.ReferencePoint> refPoints, bool isReferenceLine)
         {
             //Add all of the elements in the sequence to a ReferencePointArray.
             var refPtArr = new ReferencePointArray();
@@ -53,6 +60,7 @@ namespace Revit.Elements
             {
                 InternalSetCurveElement(cbp);
                 InternalSetReferencePoints(refPtArr);
+                cbp.IsReferenceLine = isReferenceLine;
                 return;
             }
 
@@ -60,7 +68,7 @@ namespace Revit.Elements
 
             cbp = DocumentManager.Instance.CurrentDBDocument.FamilyCreate.NewCurveByPoints(refPtArr);
 
-            cbp.IsReferenceLine = false;
+            cbp.IsReferenceLine = isReferenceLine;
 
             InternalSetCurveElement(cbp);
 
@@ -78,14 +86,14 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="curve"></param>
         /// <returns></returns>
-        public static CurveByPoints ByReferencePoints(ReferencePoint[] points)
+        public static CurveByPoints ByReferencePoints(ReferencePoint[] points, bool isReferenceLine = false)
         {
             if (points.Count() < 2)
             {
                 throw new Exception("Cannot create Curve By Points with less than two points.");
             }
 
-            return new CurveByPoints(points.Select(x=>x.InternalReferencePoint));
+            return new CurveByPoints(points.Select(x=>x.InternalReferencePoint), isReferenceLine);
         }
 
         /// <summary>

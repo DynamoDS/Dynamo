@@ -88,7 +88,7 @@
     <Compile Include="Elements\ModelText.cs" />
     <Compile Include="Elements\ModelTextType.cs" />
     <Compile Include="Elements\StructuralType.cs" />
-    <Compile Include="Elements\InternalUtilities\ElementWrappingExtensions.cs" />
+    <Compile Include="Elements\InternalUtilities\ElementWrapper.cs" />
     <Compile Include="Elements\Topography.cs" />
     <Compile Include="Elements\Views\PlanView.cs" />
     <Compile Include="Elements\Views\View.cs" />
@@ -108,9 +108,11 @@
     <Compile Include="GeometryConversion\ProtoToRevitCurve.cs" />
     <Compile Include="GeometryConversion\RevitToProtoCurve.cs" />
     <Compile Include="GeometryConversion\RevitToProtoMesh.cs" />
+    <Compile Include="GeometryConversion\GeometryObjectConverter.cs" />
+    <Compile Include="GeometryObjects\InternalUtilities\GeometryObjectWrapper.cs" />
     <Compile Include="GeometryObjects\Intersect.cs" />
     <Compile Include="GeometryObjects\PlanarFace.cs" />
-    <Compile Include="GeometryObjects\GeometryObjectSelector.cs" />
+    <Compile Include="GeometryObjects\InternalUtilities\GeometryObjectSelector.cs" />
     <Compile Include="Geometry\Domain.cs" />
     <Compile Include="References\Reference.cs" />
     <Compile Include="References\FaceReference.cs" />

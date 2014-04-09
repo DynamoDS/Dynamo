@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
+using Revit.Elements;
 using Revit.Interactivity;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -17,6 +18,7 @@ using Dynamo.UI;
 using ProtoCore.AST.AssociativeAST;
 using RevitServices.Persistence;
 using Dynamo.Revit.SyncedNodeExtensions;
+using Element = Revit.Elements.Element;
 
 namespace Dynamo.Nodes
 {
@@ -96,13 +98,13 @@ namespace Dynamo.Nodes
 
     public abstract class DSElementSelection : DSSelectionBase 
     {
-        private Element _selected;
-        protected Func<string, Element> _selectionAction;
+        private string _selected;
+        protected Func<string, string> _selectionAction;
 
         /// <summary>
         /// The Element which is selected.
         /// </summary>
-        public Element SelectedElement
+        public string SelectedElement
         {
             get { return _selected; }
             set
@@ -110,11 +112,11 @@ namespace Dynamo.Nodes
                 bool dirty;
                 if (_selected != null)
                 {
-                    if (value != null && value.Id.Equals(_selected.Id))
+                    if (value != null && value.Equals(_selected))
                         return;
 
                     dirty = true;
-                    this.UnregisterEvalOnModified(_selected.Id);
+                    this.UnregisterEvalOnModified(_selected);
                 }
                 else
                     dirty = value != null;
@@ -123,7 +125,7 @@ namespace Dynamo.Nodes
                 if (value != null)
                 {
                     this.RegisterEvalOnModified(
-                        value.Id,
+                        value,
                         delAction: delegate
                         {
                             _selected = null;
@@ -143,8 +145,8 @@ namespace Dynamo.Nodes
             get
             {
                 return _selected == null
-                                       ? "Nothing Selected"
-                                       : string.Format("Element Id:{0}",_selected.Id);
+                    ? "Nothing Selected"
+                    : string.Format("Element Id:{0}", _selected);
             }
             set
             {
@@ -160,9 +162,10 @@ namespace Dynamo.Nodes
                 return true;
             }
         }
+
         #region protected constructors
 
-        protected DSElementSelection(Func<string, Element> action, string message)
+        protected DSElementSelection(Func<string, string> action, string message)
         {
             _selectionAction = action;
             _selectionMessage = message;
@@ -255,16 +258,14 @@ namespace Dynamo.Nodes
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             // When there's no selection, this returns an invalid ID.
-            ElementId selectedElementId = ElementId.InvalidElementId;
-            if (SelectedElement != null)
-                selectedElementId = SelectedElement.Id;
+            string selectedElementId = SelectedElement ?? "";
 
             var node = AstFactory.BuildFunctionCall(
-                "Revit.Elements.ElementSelector",
-                "ByElementId",
+                new Func<string, bool, Element>(ElementSelector.ByUniqueId),
                 new List<AssociativeNode>
                 {
-                    AstFactory.BuildIntNode(selectedElementId.IntegerValue)
+                    AstFactory.BuildStringNode(selectedElementId),
+                    AstFactory.BuildBooleanNode(true)
                 });
 
             return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
@@ -275,50 +276,36 @@ namespace Dynamo.Nodes
             if (SelectedElement != null)
             {
                 XmlElement outEl = xmlDoc.CreateElement("instance");
-                outEl.SetAttribute("id", SelectedElement.UniqueId);
+                outEl.SetAttribute("id", SelectedElement);
                 nodeElement.AppendChild(outEl);
             }
         }
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                if (subNode.Name.Equals("instance"))
-                {
-                    Element saved = null;
-                    var id = subNode.Attributes[0].Value;
-                    try
-                    {
-                        saved = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(id); // FamilyInstance;
-                    }
-                    catch
-                    {
-                        DynamoLogger.Instance.Log(
-                            "Unable to find element with ID: " + id);
-                    }
-                    SelectedElement = saved;
-                }
-            }
+            SelectedElement = (from XmlNode subNode in nodeElement.ChildNodes
+                                where subNode.Name.Equals("instance")
+                                where subNode.Attributes != null
+                                select subNode.Attributes[0].Value).Last();
         }
     }
 
     public abstract class DSReferenceSelection : DSSelectionBase
     {
-        protected Reference _selected;
-        protected Func<string, Reference> _selectionAction;
+        protected Reference Selected;
+        protected Func<string, Reference> SelectionAction;
 
         /// <summary>
         /// The Element which is selected.
         /// </summary>
         public virtual Reference SelectedElement
         {
-            get { return _selected; }
+            get { return Selected; }
             set
             {
                 bool dirty = value != null;
 
-                _selected = value;
+                Selected = value;
 
                 if (dirty)
                     RequiresRecalc = true;
@@ -331,9 +318,9 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return _selected == null
+                return Selected == null
                                         ? "Nothing Selected"
-                                        : string.Format("Reference Id: {0}", _selected.ElementId);
+                                        : string.Format("Reference Id: {0}", Selected.ElementId);
             }
             set
             {
@@ -346,7 +333,7 @@ namespace Dynamo.Nodes
 
         protected DSReferenceSelection(Func<string, Reference> action, string message)
         {
-            _selectionAction = action;
+            SelectionAction = action;
             _selectionMessage = message;
 
             OutPortData.Add(new PortData("Reference", "The geometry reference.", typeof(object)));
@@ -420,7 +407,7 @@ namespace Dynamo.Nodes
             try
             {
                 //call the delegate associated with a selection type
-                SelectedElement = _selectionAction(_selectionMessage);
+                SelectedElement = SelectionAction(_selectionMessage);
                 RaisePropertyChanged("SelectionText");
                 RequiresRecalc = true;
             }
@@ -514,20 +501,20 @@ namespace Dynamo.Nodes
 
     public abstract class DSElementsSelection : DSSelectionBase
     {
-        private List<Element> _selected;
-        protected Func<string, List<Element>> _selectionAction;
+        private List<string> selected;
+        protected Func<string, List<string>> SelectionAction;
 
         /// <summary>
         /// The Element which is selected.
         /// </summary>
-        public List<Element> SelectedElement
+        public List<string> SelectedElement
         {
-            get { return _selected; }
+            get { return selected; }
             set
             {
                 bool dirty = value != null;
 
-                _selected = value;
+                selected = value;
 
                 if (dirty)
                     RequiresRecalc = true;
@@ -542,9 +529,9 @@ namespace Dynamo.Nodes
             {
                 var sb = new StringBuilder();
                 int count = 0;
-                while (count < Math.Min(_selected.Count, 10))
+                while (count < Math.Min(selected.Count, 10))
                 {
-                    sb.Append(_selected[count].Id.IntegerValue + ",");
+                    sb.Append(selected[count]+ ",");
                     count++;
                 }
                 if (sb.Length > 0)
@@ -563,10 +550,10 @@ namespace Dynamo.Nodes
 
         #region protected constructors
 
-        protected DSElementsSelection(Func<string, List<Element>> action, string message)
+        protected DSElementsSelection(Func<string, List<string>> action, string message)
         {
-            _selected = new List<Element>();
-            _selectionAction = action;
+            selected = new List<string>();
+            SelectionAction = action;
             _selectionMessage = message;
 
             OutPortData.Add(new PortData("Elements", "The selected elements.", typeof(object)));
@@ -642,7 +629,7 @@ namespace Dynamo.Nodes
             try
             {
                 //call the delegate associated with a selection type
-                SelectedElement = _selectionAction(_selectionMessage);
+                SelectedElement = SelectionAction(_selectionMessage);
                 RaisePropertyChanged("SelectionText");
                 RequiresRecalc = true;
             }
@@ -671,10 +658,10 @@ namespace Dynamo.Nodes
                 var newInputs = els.Select(el =>
                     AstFactory.BuildFunctionCall(
                     "ElementSelector",
-                    "ByElementId",
+                    "ByUniqueId",
                     new List<AssociativeNode>
                 {
-                    AstFactory.BuildIntNode(el.Id.IntegerValue),
+                    AstFactory.BuildStringNode(el),
                 }
                     )).ToList();
 
@@ -689,10 +676,10 @@ namespace Dynamo.Nodes
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (SelectedElement != null)
             {
-                foreach (Element selectedElement in _selected.Where(x => x != null))
+                foreach (string selectedElement in selected.Where(x => x != null))
                 {
                     XmlElement outEl = xmlDoc.CreateElement("instance");
-                    outEl.SetAttribute("id", selectedElement.UniqueId);
+                    outEl.SetAttribute("id", selectedElement);
                     nodeElement.AppendChild(outEl);
                 }
             }
@@ -700,26 +687,10 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                if (subNode.Name.Equals("instance"))
-                {
-                    Element saved = null;
-                    var id = subNode.Attributes[0].Value;
-                    try
-                    {
-                        saved = DocumentManager.Instance.CurrentUIDocument.Document.GetElement(id);
-                    }
-                    catch
-                    {
-                        DynamoLogger.Instance.Log(
-                            "Unable to find element with ID: " + id);
-                    }
-                    if (SelectedElement == null)
-                        SelectedElement = new List<Element>();
-                    SelectedElement.Add(saved);
-                }
-            }
+            SelectedElement.AddRange(
+                nodeElement.ChildNodes.Cast<XmlNode>()
+                    .Where(subNode => subNode.Name.Equals("instance") && subNode.Attributes != null)
+                    .Select(subNode => subNode.Attributes[0].Value));
         }
     }
 
@@ -926,12 +897,12 @@ namespace Dynamo.Nodes
 
         public override Reference SelectedElement
         {
-            get { return _selected; }
+            get { return Selected; }
             set
             {
                 bool dirty = value != null;
 
-                _selected = value;
+                Selected = value;
 
                 if (dirty)
                     RequiresRecalc = true;
@@ -1054,10 +1025,10 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class DSModelElementsSelection : DSElementsSelection
     {
-        private static string formatSelectionText(IEnumerable<Element> elements)
+        private static string formatSelectionText(IEnumerable<string> elements)
         {
             return elements.Any()
-                ? System.String.Join(" ", elements.Take(20).Select(x => x.Id.ToString())) + "..."
+                ? String.Join(" ", elements.Take(20)) + "..."
                 : "Nothing Selected";
         }
 
@@ -1065,9 +1036,10 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return _selectionText = (SelectedElement != null && SelectedElement.Count > 0)
-                                            ? "Element IDs:" + formatSelectionText(SelectedElement.Where(x => x != null && x.Id != null))
-                                            : "Nothing Selected";
+                return _selectionText = 
+                    (SelectedElement != null && SelectedElement.Count > 0)
+                        ? "Element IDs:" + formatSelectionText(SelectedElement.Where(x => x != null))
+                        : "Nothing Selected";
             }
             set
             {
@@ -1077,6 +1049,6 @@ namespace Dynamo.Nodes
         }
 
         public DSModelElementsSelection()
-            :base(SelectionHelper.RequestMultipleCurveElementsSelection, "Select elements."){}
+            : base(SelectionHelper.RequestMultipleCurveElementsSelection, "Select elements."){}
     }
 }

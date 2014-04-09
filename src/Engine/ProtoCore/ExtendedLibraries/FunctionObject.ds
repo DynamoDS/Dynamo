@@ -380,6 +380,7 @@ def SortByKey(list : var[]..[], keyProjector:_FunctionObject)
     }
 }
 
+/*
 def SortByComparsion(list : var[]..[], comparer:_FunctionObject)
 {
     return = [Imperative]
@@ -426,6 +427,7 @@ def SortByComparsion(list : var[]..[], comparer:_FunctionObject)
         return = Concat(Concat(SortByComparsion(_leftList, comparer), { list[_last] }), SortByComparsion(_rightList, comparer));
     }
 }
+*/
 
 def GroupByKey(list : var[]..[], keyProjector: _FunctionObject)
 {

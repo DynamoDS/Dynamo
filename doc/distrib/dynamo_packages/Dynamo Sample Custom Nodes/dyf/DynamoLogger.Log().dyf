@@ -1,0 +1,70 @@
+<Workspace Version="0.6.3.30451" X="-103.671908039937" Y="-95.64360013352" zoom="0.747692817123325" Description="Uses the DynamoLogger and FSchemeInterop Utils class to print to the console" Category="Debug" Name="DynamoLogger.Log()" ID="0f6367da-a34f-4965-a2b6-99a9af40e364">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="a387a63d-1441-4241-a692-9bdfed1cf458" nickname="Python Script" x="319.377546292943" y="218.278550919032" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+
+path = r'C:\Autodesk\Dynamo\Core'
+sys.path.append(path)
+clr.AddReference('DynamoPython')
+clr.AddReference('DynamoCore')
+clr.AddReference('FSchemeInterop')
+clr.AddReference('FScheme')
+clr.AddReference('System')
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(exec_path)
+import Dynamo
+clr.AddReference('FSharp.Core')
+import System
+#from DynamoPython import Converters
+#The input to this node will be stored in the IN variable.
+import DynamoPython
+import System.Reflection
+from Dynamo import DynamoLogger
+
+
+
+
+x = IN
+
+z=""
+
+def rec_increment(p,z):
+	
+	if len(p) == 0:
+		return
+	else:
+		r = list(p)
+		z += str( r.pop(0)) + '\n'
+		return rec_increment(r,z)
+
+#z = rec_increment(x,z)
+
+
+#y = ""
+#for item in x:
+#	y += (str(item)+"\n")
+#DynamoLogger.Instance.Log(Dynamo.FSchemeInterop.Utils.Print(x))
+
+DynamoLogger.Instance.Log(str(x))
+OUT = z</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="2a58bbcd-780e-46ae-be6b-68002b4978bb" nickname="Input" x="186.873887240356" y="156.209198813056" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="input" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="5ce26162-3540-40ce-a4c5-6bbb49897f50" nickname="Output" x="512.612759643917" y="162.396142433234" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="object" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="2a58bbcd-780e-46ae-be6b-68002b4978bb" start_index="0" end="a387a63d-1441-4241-a692-9bdfed1cf458" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2a58bbcd-780e-46ae-be6b-68002b4978bb" start_index="0" end="5ce26162-3540-40ce-a4c5-6bbb49897f50" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

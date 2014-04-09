@@ -1,0 +1,16 @@
+<Workspace Version="0.7.0.26857" X="15.320054477538" Y="-174.945130514381" zoom="0.954042924882813" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="a20ad56b-cd14-4aa3-b39c-d9bd0ac0e9f8" nickname="String.Insert" x="281.198723911855" y="307.156869343268" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.Insert@string,int,string" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="abc34ca9-d7ff-481c-8334-89621c6d9519" nickname="Code Block" x="68.0945237190882" y="265.518291327166" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;A string&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="af4f15ee-ca64-4e88-ace4-2f2a54df229a" nickname="Code Block" x="67.3585544814073" y="428.528061524639" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot; to insert.&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="5c7bf2f0-fe80-43c5-853b-5b9a40314dbe" nickname="Code Block" x="91.8054985153879" y="345.770733876534" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="20;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="2b1997c5-d72d-443f-9df8-29a33cc0fbd0" nickname="Watch" x="456.243258748181" y="308.205040210552" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a20ad56b-cd14-4aa3-b39c-d9bd0ac0e9f8" start_index="0" end="2b1997c5-d72d-443f-9df8-29a33cc0fbd0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="abc34ca9-d7ff-481c-8334-89621c6d9519" start_index="0" end="a20ad56b-cd14-4aa3-b39c-d9bd0ac0e9f8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="af4f15ee-ca64-4e88-ace4-2f2a54df229a" start_index="0" end="a20ad56b-cd14-4aa3-b39c-d9bd0ac0e9f8" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5c7bf2f0-fe80-43c5-853b-5b9a40314dbe" start_index="0" end="a20ad56b-cd14-4aa3-b39c-d9bd0ac0e9f8" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

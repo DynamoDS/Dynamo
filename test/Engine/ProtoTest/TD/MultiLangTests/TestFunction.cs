@@ -8696,5 +8696,33 @@ p = foo(x);
             thisTest.VerifyBuildWarningCount(0);
         }
 
+        [Test]
+        public void TestMultiOverLoadWithDefaultArg()
+        {
+            string code = @"
+class Bar
+{
+}
+
+class Foo
+{
+    def foo(x = 0, y = 0, z = 0)
+    {
+        return = 41;
+    }
+    
+    def foo(x : Bar)
+    {
+        return = 42;
+    }
+}
+
+b = Bar();
+f = Foo();
+r = f.foo(b); // shoudn't be resolved to foo(x = 0, y = 0, z = 0)
+";
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, "");
+            thisTest.Verify("r", 42);
+        }
     }
 }

@@ -570,17 +570,17 @@ namespace Dynamo.Nodes
                 : AstFactory.BuildIdentifier(InputSymbol);
         }
 
-        protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
-        {
-            Dictionary<int, INode> result;
-            if (!preBuilt.TryGetValue(this, out result))
-            {
-                result = new Dictionary<int, INode>();
-                result[outPort] = new SymbolNode(GUID.ToString());
-                preBuilt[this] = result;
-            }
-            return result[outPort];
-        }
+        //protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+        //{
+        //    Dictionary<int, INode> result;
+        //    if (!preBuilt.TryGetValue(this, out result))
+        //    {
+        //        result = new Dictionary<int, INode>();
+        //        result[outPort] = new SymbolNode(GUID.ToString());
+        //        preBuilt[this] = result;
+        //    }
+        //    return result[outPort];
+        //}
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {

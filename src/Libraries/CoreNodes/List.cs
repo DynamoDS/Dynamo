@@ -614,7 +614,7 @@ namespace DSCore
             }
 
             if (flatList.Count() < rowLength)
-                return ((IList)list);
+                return list;
 
             var finalList = new List<List<object>>();
             List<object> currList = null;
@@ -651,7 +651,6 @@ namespace DSCore
             return finalList;
         }
 
-        /*
 
         /// <summary>
         ///     Swaps rows and columns in a list of lists.
@@ -681,8 +680,7 @@ namespace DSCore
 
             return argList;
         }
-        
-        */
+
         
         /// <summary>
         ///     Creates a list containing the given item the given number of times.

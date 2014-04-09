@@ -645,7 +645,25 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\Apply.dyn");
             AssertPreviewValue("11b2c7b2-2854-4e46-a8fa-4d1d52ebf4b7", 20);
         }
+
+
+        [Test]
+        public void DefaultValueTest()
+        {
+            RunModel(@"core\dsevaluation\DefaultValue.dyn");
+            AssertPreviewValue("be9d1181-a83e-4f25-887f-6197aa8d581e", 5.0);
+        }
+
+        [Test]
+        public void BasicRuntimeWarning()
+        {
+            RunModel(@"core\dsevaluation\BasicRuntimeWarning.dyn");
+            var guid = System.Guid.Parse("0fc83562-2cfe-4a63-84f8-f6836cbaf9c5");
+            var node = Controller.DynamoViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            Assert.IsTrue(node.State == Models.ElementState.Warning);
+        }
     }
+
     [Category("DSCustomNode")]
     class CustomNodeEvaluation : DSEvaluationUnitTest
     {

@@ -16,30 +16,22 @@ namespace Dynamo.Nodes
     /// </summary>
     public abstract class ApiMethodNode : RevitTransactionNodeWithOneOutput
     {
-        protected Type base_type;
-        protected Type return_type;
-        protected MethodBase mi;
-        protected ParameterInfo[] pi;
-
-        ///<summary>
-        ///Default constructor
-        ///</summary>
-        public ApiMethodNode()
-        {
-
-        }
+        protected Type BaseType;
+        protected Type ReturnType;
+        protected MethodBase MethodBase;
+        protected ParameterInfo[] ParametersInfo;
 
         ///<summary>
         ///Auto-generated evaulate method for Dynamo node wrapping Autodesk.Revit.Creation.FamilyItemFactory.NewRadialDimension
         ///</summary>
         public override Value Evaluate(FSharpList<Value> args)
         {
-            foreach (var e in this.Elements)
-            {
-                this.DeleteElement(e);
-            }
+            //foreach (var e in Elements)
+            //{
+            //    this.DeleteElement(e);
+            //}
 
-            Value result = dynRevitUtils.InvokeAPIMethod(this, args, base_type, pi, mi, return_type);
+            Value result = dynRevitUtils.InvokeAPIMethod(this, args, BaseType, ParametersInfo, MethodBase, ReturnType);
 
             return result;
         }
@@ -49,27 +41,19 @@ namespace Dynamo.Nodes
     /// <summary>
     /// Base class for wrapped properties. Does not create a transaction.
     /// </summary>
-    public abstract class ApiPropertyNode : NodeWithOneOutput
+    public abstract class ApiPropertyNode : NodeModel
     {
-        protected Type base_type;
-        protected Type return_type;
-        protected PropertyInfo pi;
+        protected Type BaseType;
+        protected Type ReturnType;
+        protected PropertyInfo PropertyInfo;
 
-        ///<summary>
-        ///Default constructor
-        ///</summary>
-        public ApiPropertyNode()
-        {
-
-        }
-
-        ///<summary>
-        ///Auto-generated evaulate method for Dynamo node wrapping Autodesk.Revit.Creation.FamilyItemFactory.NewRadialDimension
-        ///</summary>
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            return dynRevitUtils.GetAPIPropertyValue(args, base_type, pi, return_type);
-        }
+        /////<summary>
+        /////Auto-generated evaulate method for Dynamo node wrapping Autodesk.Revit.Creation.FamilyItemFactory.NewRadialDimension
+        /////</summary>
+        //public override Value Evaluate(FSharpList<Value> args)
+        //{
+        //    return dynRevitUtils.GetAPIPropertyValue(args, base_type, pi, return_type);
+        //}
     }
 
     /// <summary>

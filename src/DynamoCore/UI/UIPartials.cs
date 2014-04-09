@@ -553,9 +553,10 @@ namespace Dynamo.Nodes
             _watchTree = new WatchTree();
 
             nodeUI.grid.Children.Add(_watchTree);
-            _watchTree.SetValue(Grid.RowProperty, 2);
+            _watchTree.SetValue(Grid.RowProperty, 3);
             _watchTree.SetValue(Grid.ColumnSpanProperty, 3);
-            _watchTree.Margin = new Thickness(5, 0, 5, 5);
+            _watchTree.SetValue(Canvas.ZIndexProperty, 50);
+            _watchTree.Margin = new Thickness(5, 4, 5, 5);
 
             if (Root == null)
                 Root = new WatchViewModel();

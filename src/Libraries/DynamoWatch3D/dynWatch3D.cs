@@ -21,7 +21,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Shows a dynamic preview of geometry.")]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
     [IsDesignScriptCompatible]
-    public class Watch3D : NodeWithOneOutput, IWatchViewModel
+    public class Watch3D : NodeModel, IWatchViewModel
     {
         private bool _requiresRedraw;
         private bool _isRendering;
@@ -64,14 +64,14 @@ namespace Dynamo.Nodes
             WatchIsResizable = true;
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var input = args[0];
+        //public override Value Evaluate(FSharpList<Value> args)
+        //{
+        //    var input = args[0];
 
-            _requiresRedraw = true;
+        //    _requiresRedraw = true;
 
-            return input;
-        }
+        //    return input;
+        //}
 
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {

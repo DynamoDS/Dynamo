@@ -131,7 +131,7 @@ namespace Dynamo.Nodes
     [NodeName("New Excel Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
     [NodeDescription("Create a new Excel Workbook object.  \n\nThis node requires Microsoft Excel to be installed.")]
-    public class NewExcelWorkbook : NodeWithOneOutput
+    public class NewExcelWorkbook : NodeModel
     {
 
         public NewExcelWorkbook()
@@ -140,13 +140,13 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
-        {
-            var workbook = ExcelInterop.App.Workbooks.Add();
-            workbook.BeforeClose += WorkbookOnBeforeClose;
+        //public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        //{
+        //    var workbook = ExcelInterop.App.Workbooks.Add();
+        //    workbook.BeforeClose += WorkbookOnBeforeClose;
 
-            return FScheme.Value.NewContainer(workbook);
-        }
+        //    return FScheme.Value.NewContainer(workbook);
+        //}
 
         private void WorkbookOnBeforeClose(ref bool cancel)
         {
@@ -173,28 +173,28 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
-        {
-            storedPath = ((FScheme.Value.String)args[0]).Item;
+        //public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        //{
+        //    storedPath = ((FScheme.Value.String)args[0]).Item;
 
-            var workbookOpen = 
-                ExcelInterop.App.Workbooks.Cast<Workbook>().FirstOrDefault(e => e.FullName == storedPath);
+        //    var workbookOpen = 
+        //        ExcelInterop.App.Workbooks.Cast<Workbook>().FirstOrDefault(e => e.FullName == storedPath);
 
-            if (workbookOpen != null)
-            {
-                workbookOpen.BeforeClose += WorkbookOnBeforeClose;
-                return FScheme.Value.NewContainer(workbookOpen);
-            }
+        //    if (workbookOpen != null)
+        //    {
+        //        workbookOpen.BeforeClose += WorkbookOnBeforeClose;
+        //        return FScheme.Value.NewContainer(workbookOpen);
+        //    }
 
-            if (File.Exists(storedPath))
-            {
-                var workbook = ExcelInterop.App.Workbooks.Open(storedPath, true, false);
-                workbook.BeforeClose += WorkbookOnBeforeClose;
-                return FScheme.Value.NewContainer(workbook);
-            }
+        //    if (File.Exists(storedPath))
+        //    {
+        //        var workbook = ExcelInterop.App.Workbooks.Open(storedPath, true, false);
+        //        workbook.BeforeClose += WorkbookOnBeforeClose;
+        //        return FScheme.Value.NewContainer(workbook);
+        //    }
 
-            return FScheme.Value.NewContainer(null);
-        }
+        //    return FScheme.Value.NewContainer(null);
+        //}
 
         private void WorkbookOnBeforeClose(ref bool cancel)
         {
@@ -212,7 +212,7 @@ namespace Dynamo.Nodes
     [NodeName("Get Worksheets From Excel Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
     [NodeDescription("Get the list of Worksheets from an Excel Workbook.  \n\nThis node requires Microsoft Excel to be installed.")]
-    public class GetWorksheetsFromExcelWorkbook : NodeWithOneOutput
+    public class GetWorksheetsFromExcelWorkbook : NodeModel
     {
 
         public GetWorksheetsFromExcelWorkbook()
@@ -222,13 +222,13 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
-        {
-            var workbook = (Workbook)((FScheme.Value.Container)args[0]).Item;
-            var l = workbook.Worksheets.Cast<Worksheet>().Select(FScheme.Value.NewContainer);
+        //public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        //{
+        //    var workbook = (Workbook)((FScheme.Value.Container)args[0]).Item;
+        //    var l = workbook.Worksheets.Cast<Worksheet>().Select(FScheme.Value.NewContainer);
 
-            return FScheme.Value.NewList(Utils.SequenceToFSharpList(l));
-        }
+        //    return FScheme.Value.NewList(Utils.SequenceToFSharpList(l));
+        //}
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
@@ -241,7 +241,7 @@ namespace Dynamo.Nodes
     [NodeName("Get Excel Worksheet By Name")]
     [NodeCategory("Input/Output.Office.Excel")]
     [NodeDescription("Gets the first Worksheet in an Excel Workbook with the given name.  \n\nThis node requires Microsoft Excel to be installed.")]
-    public class GetExcelWorksheetByName : NodeWithOneOutput
+    public class GetExcelWorksheetByName : NodeModel
     {
 
         public GetExcelWorksheetByName()
@@ -252,19 +252,19 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
-        {
-            var workbook = (Microsoft.Office.Interop.Excel.Workbook)((FScheme.Value.Container)args[0]).Item;
-            var name = ((FScheme.Value.String)args[1]).Item;
-            var sheet = workbook.Worksheets.Cast<Microsoft.Office.Interop.Excel.Worksheet>().FirstOrDefault(ws => ws.Name == name);
+        //public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        //{
+        //    var workbook = (Microsoft.Office.Interop.Excel.Workbook)((FScheme.Value.Container)args[0]).Item;
+        //    var name = ((FScheme.Value.String)args[1]).Item;
+        //    var sheet = workbook.Worksheets.Cast<Microsoft.Office.Interop.Excel.Worksheet>().FirstOrDefault(ws => ws.Name == name);
 
-            if (sheet == null)
-            {
-                throw new Exception("Could not find a worksheet in the workbook with that name.");
-            }
+        //    if (sheet == null)
+        //    {
+        //        throw new Exception("Could not find a worksheet in the workbook with that name.");
+        //    }
 
-            return FScheme.Value.NewContainer(sheet);
-        }
+        //    return FScheme.Value.NewContainer(sheet);
+        //}
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
@@ -277,7 +277,7 @@ namespace Dynamo.Nodes
     [NodeName("Get Data From Excel Worksheet")]
     [NodeCategory("Input/Output.Office.Excel")]
     [NodeDescription("Get the non-empty range of Cell data from an Excel Worksheet.  \n\nThis node requires Microsoft Excel to be installed.")]
-    public class GetDataFromExcelWorksheet : NodeWithOneOutput
+    public class GetDataFromExcelWorksheet : NodeModel
     {
 
         public GetDataFromExcelWorksheet()
@@ -287,39 +287,39 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
-        {
-            var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)((FScheme.Value.Container)args[0]).Item;
+        //public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        //{
+        //    var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)((FScheme.Value.Container)args[0]).Item;
 
-            var vals = worksheet.UsedRange.get_Value();
-            var rowData = new List<FScheme.Value>();
+        //    var vals = worksheet.UsedRange.get_Value();
+        //    var rowData = new List<FScheme.Value>();
 
-            // rowData can potentially return a single value rather than an array
-            if (!(vals is object[,]))
-            {
-                var row = new List<FScheme.Value>() { TryParseCell(vals) };
-                rowData.Add(FScheme.Value.NewList(Utils.SequenceToFSharpList(row)));
-                return FScheme.Value.NewList(Utils.SequenceToFSharpList(rowData));
-            }
+        //    // rowData can potentially return a single value rather than an array
+        //    if (!(vals is object[,]))
+        //    {
+        //        var row = new List<FScheme.Value>() { TryParseCell(vals) };
+        //        rowData.Add(FScheme.Value.NewList(Utils.SequenceToFSharpList(row)));
+        //        return FScheme.Value.NewList(Utils.SequenceToFSharpList(rowData));
+        //    }
 
-            int rows = vals.GetLength(0);
-            int cols = vals.GetLength(1);
+        //    int rows = vals.GetLength(0);
+        //    int cols = vals.GetLength(1);
 
-            // transform into 2d FScheme.Value array
-            for (int r = 1; r <= rows; r++)
-            {
-                var row = new List<FScheme.Value>();
+        //    // transform into 2d FScheme.Value array
+        //    for (int r = 1; r <= rows; r++)
+        //    {
+        //        var row = new List<FScheme.Value>();
 
-                for (int c = 1; c <= cols; c++)
-                {
-                    row.Add(TryParseCell(vals[r, c]));
-                }
+        //        for (int c = 1; c <= cols; c++)
+        //        {
+        //            row.Add(TryParseCell(vals[r, c]));
+        //        }
 
-                rowData.Add(FScheme.Value.NewList(Utils.SequenceToFSharpList(row)));
-            }
+        //        rowData.Add(FScheme.Value.NewList(Utils.SequenceToFSharpList(row)));
+        //    }
 
-            return FScheme.Value.NewList(Utils.SequenceToFSharpList(rowData));
-        }
+        //    return FScheme.Value.NewList(Utils.SequenceToFSharpList(rowData));
+        //}
 
         public static FScheme.Value TryParseCell(object element)
         {
@@ -345,7 +345,7 @@ namespace Dynamo.Nodes
     [NodeName("Write Data To Excel Worksheet")]
     [NodeCategory("Input/Output.Office.Excel")]
     [NodeDescription("Write data to a Cell of an Excel Worksheet.  \n\nThis node requires Microsoft Excel to be installed.")]
-    public class WriteDataToExcelWorksheet : NodeWithOneOutput
+    public class WriteDataToExcelWorksheet : NodeModel
     {
 
         public WriteDataToExcelWorksheet()
@@ -434,31 +434,31 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
-        {
-            var worksheet = (Worksheet)((FScheme.Value.Container)args[0]).Item;
+        //public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        //{
+        //    var worksheet = (Worksheet)((FScheme.Value.Container)args[0]).Item;
 
-            // clear existing elements for dynamic update
-            var usedRange = worksheet.UsedRange;
-            usedRange.Cells.ClearContents();
+        //    // clear existing elements for dynamic update
+        //    var usedRange = worksheet.UsedRange;
+        //    usedRange.Cells.ClearContents();
 
-            // excel does not use zero based indexing (ugh)
-            // I would like to hide this from the user, though.
-            var rowStart = Math.Max(1, (int) Math.Round(((FScheme.Value.Number) args[1]).Item) + 1);
-            var colStart = Math.Max(1, (int) Math.Round(((FScheme.Value.Number) args[2]).Item) + 1);
+        //    // excel does not use zero based indexing (ugh)
+        //    // I would like to hide this from the user, though.
+        //    var rowStart = Math.Max(1, (int) Math.Round(((FScheme.Value.Number) args[1]).Item) + 1);
+        //    var colStart = Math.Max(1, (int) Math.Round(((FScheme.Value.Number) args[2]).Item) + 1);
 
-            var data = ConvertTo2DList(args[3]);
-            object[,] rangeData;
-            int rowCount, colCount;
-            GetObjectList(data, out rangeData, out rowCount, out colCount);
+        //    var data = ConvertTo2DList(args[3]);
+        //    object[,] rangeData;
+        //    int rowCount, colCount;
+        //    GetObjectList(data, out rangeData, out rowCount, out colCount);
 
-            var c1 = (Excel.Range)worksheet.Cells[rowStart, colStart];
-            var c2 = (Excel.Range)worksheet.Cells[rowStart + rowCount - 1, colStart + colCount - 1];
-            var range = worksheet.get_Range(c1, c2);
-            range.Value = rangeData;
+        //    var c1 = (Excel.Range)worksheet.Cells[rowStart, colStart];
+        //    var c2 = (Excel.Range)worksheet.Cells[rowStart + rowCount - 1, colStart + colCount - 1];
+        //    var range = worksheet.get_Range(c1, c2);
+        //    range.Value = rangeData;
 
-            return FScheme.Value.NewContainer(worksheet);
-        }
+        //    return FScheme.Value.NewContainer(worksheet);
+        //}
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
@@ -471,7 +471,7 @@ namespace Dynamo.Nodes
     [NodeName("Add Excel Worksheet To Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
     [NodeDescription("Add a new Worksheet to a Workbook with a given name.  \n\nThis node requires Microsoft Excel to be installed.")]
-    public class AddExcelWorksheetToWorkbook : NodeWithOneOutput
+    public class AddExcelWorksheetToWorkbook : NodeModel
     {
 
         public AddExcelWorksheetToWorkbook()
@@ -484,16 +484,16 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
-        {
-            var wb = (Workbook)((FScheme.Value.Container)args[0]).Item;
-            var name = ((FScheme.Value.String)args[1]).Item;
+        //public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        //{
+        //    var wb = (Workbook)((FScheme.Value.Container)args[0]).Item;
+        //    var name = ((FScheme.Value.String)args[1]).Item;
 
-            var worksheet = wb.Worksheets.Add();
-            worksheet.Name = name;
+        //    var worksheet = wb.Worksheets.Add();
+        //    worksheet.Name = name;
 
-            return FScheme.Value.NewContainer(worksheet);
-        }
+        //    return FScheme.Value.NewContainer(worksheet);
+        //}
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
@@ -506,7 +506,7 @@ namespace Dynamo.Nodes
     [NodeName("Save Excel Workbook As")]
     [NodeCategory("Input/Output.Office.Excel")]
     [NodeDescription("Write an Excel Workbook to a file with the given filename.  \n\nThis node requires Microsoft Excel to be installed.")]
-    public class SaveAsExcelWorkbook : NodeWithOneOutput
+    public class SaveAsExcelWorkbook : NodeModel
     {
         public SaveAsExcelWorkbook()
         {
@@ -518,22 +518,22 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
-        {
-            var wb = (Microsoft.Office.Interop.Excel.Workbook)((FScheme.Value.Container)args[0]).Item;
-            var name = ((FScheme.Value.String)args[1]).Item;
+        //public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        //{
+        //    var wb = (Microsoft.Office.Interop.Excel.Workbook)((FScheme.Value.Container)args[0]).Item;
+        //    var name = ((FScheme.Value.String)args[1]).Item;
 
-            if (wb.FullName == name)
-            {
-                wb.Save();
-            }
-            else
-            {
-                wb.SaveAs(name);
-            }
+        //    if (wb.FullName == name)
+        //    {
+        //        wb.Save();
+        //    }
+        //    else
+        //    {
+        //        wb.SaveAs(name);
+        //    }
             
-            return FScheme.Value.NewContainer(wb);
-        }
+        //    return FScheme.Value.NewContainer(wb);
+        //}
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)

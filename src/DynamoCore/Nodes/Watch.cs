@@ -28,7 +28,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Visualize the output of node. ")]
     [NodeSearchTags("print", "output", "display")]
     [IsDesignScriptCompatible]
-    public partial class Watch : NodeWithOneOutput
+    public partial class Watch : NodeModel
     {
         #region private members
 
@@ -136,38 +136,7 @@ namespace Dynamo.Nodes
             if (Root != null)
                 Root.Children.Clear();
         }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            //string prefix = "";
-
-            //int count = 0;
-
-            //DispatchOnUIThread(
-            //    delegate
-            //    {
-            //        //unhook the binding
-            //        OnRequestBindingUnhook(EventArgs.Empty);
-
-            //        Root.Children.Clear();
-
-            //        foreach (Value e in args)
-            //        {
-            //            Root.Children.Add(Process(e, count.ToString(CultureInfo.InvariantCulture), Root.ShowRawData));
-            //            count++;
-            //        }
-
-            //        //rehook the binding
-            //        OnRequestBindingRehook(EventArgs.Empty);
-            //    }
-            //    );
-
-            ////return the content that has been gathered
-            //return args[0]; //watch should be a 'pass through' node
-
-            throw new NotImplementedException();
-        }
-
+        
         protected virtual void OnRequestBindingUnhook(EventArgs e)
         {
             if (RequestBindingUnhook != null)

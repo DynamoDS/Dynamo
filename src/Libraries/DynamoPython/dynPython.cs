@@ -21,7 +21,7 @@ namespace Dynamo.Nodes
     [NodeName("LEGACY Python Script")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING + ".Legacy")]
     [NodeDescription("Runs an embedded IronPython script")]
-    public class Python : NodeWithOneOutput
+    public class Python : NodeModel
     {
         private bool _dirty = true;
         private Value _lastEvalValue;
@@ -157,19 +157,19 @@ namespace Dynamo.Nodes
             return bindings;
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var bindings = new List<KeyValuePair<string, dynamic>>
-            {
-                new KeyValuePair<string, dynamic>("__persistent__", _stateDict)
-            };
-            Value result = PythonEngine.Evaluator(_dirty, _script, bindings, MakeBindings(args));
-            _lastEvalValue = result;
+        //public override Value Evaluate(FSharpList<Value> args)
+        //{
+        //    var bindings = new List<KeyValuePair<string, dynamic>>
+        //    {
+        //        new KeyValuePair<string, dynamic>("__persistent__", _stateDict)
+        //    };
+        //    Value result = PythonEngine.Evaluator(_dirty, _script, bindings, MakeBindings(args));
+        //    _lastEvalValue = result;
 
-            Draw();
+        //    Draw();
 
-            return result;
-        }
+        //    return result;
+        //}
 
         protected override bool UpdateValueCore(string name, string value)
         {
@@ -422,19 +422,19 @@ namespace Dynamo.Nodes
             return bindings;
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var bindings = new List<KeyValuePair<string, dynamic>>
-            {
-                new KeyValuePair<string, dynamic>("__persistent__", _stateDict)
-            };
-            Value result = PythonEngine.Evaluator(_dirty, _script, bindings, MakeBindings(args));
-            _lastEvalValue = result;
+        //public override Value Evaluate(FSharpList<Value> args)
+        //{
+        //    var bindings = new List<KeyValuePair<string, dynamic>>
+        //    {
+        //        new KeyValuePair<string, dynamic>("__persistent__", _stateDict)
+        //    };
+        //    Value result = PythonEngine.Evaluator(_dirty, _script, bindings, MakeBindings(args));
+        //    _lastEvalValue = result;
 
-            Draw();
+        //    Draw();
 
-            return result;
-        }
+        //    return result;
+        //}
 
         protected override bool UpdateValueCore(string name, string value)
         {
@@ -507,7 +507,7 @@ namespace Dynamo.Nodes
     [NodeName("LEGACY Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING + ".Legacy")]
     [NodeDescription("Runs a IronPython script from a string")]
-    public class PythonString : NodeWithOneOutput
+    public class PythonString : NodeModel
     {
 
         /// <summary>
@@ -541,17 +541,17 @@ namespace Dynamo.Nodes
             return bindings;
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var script = ((Value.String) args[0]).Item;
-            var inputs = makeBindings(args);
-            var bindings = new List<KeyValuePair<string, dynamic>>
-            {
-                new KeyValuePair<string, dynamic>("__persistent__", _stateDict)
-            };
-            var value = PythonEngine.Evaluator(RequiresRecalc, script, bindings, inputs);
-            return value;
-        }
+        //public override Value Evaluate(FSharpList<Value> args)
+        //{
+        //    var script = ((Value.String) args[0]).Item;
+        //    var inputs = makeBindings(args);
+        //    var bindings = new List<KeyValuePair<string, dynamic>>
+        //    {
+        //        new KeyValuePair<string, dynamic>("__persistent__", _stateDict)
+        //    };
+        //    var value = PythonEngine.Evaluator(RequiresRecalc, script, bindings, inputs);
+        //    return value;
+        //}
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)

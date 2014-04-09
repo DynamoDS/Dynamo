@@ -831,8 +831,5 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
-    <!-- Port Model -->
-    <clr:Double x:Key="port_height">20</clr:Double>
 
 </ResourceDictionary>

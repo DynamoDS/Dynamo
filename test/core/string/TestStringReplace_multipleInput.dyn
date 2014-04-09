@@ -1,0 +1,25 @@
+<Workspace Version="0.7.0.26857" X="34.0053356798774" Y="-159.731495534402" zoom="0.784369328044827" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="861b854d-5ac0-4c38-9c81-0b590a0b448c" nickname="Code Block" x="28.1461632465794" y="347.172219158411" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;I am going to meet Bryan and Dave.&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="36774b24-e6dd-41b1-889b-3847aa0ad6ee" nickname="Watch" x="40.1971494441116" y="601.653870380253" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="6b6593df-5c71-4472-a91b-7fc69feb14d4" nickname="String.Replace" x="217.590492083103" y="458.093474232076" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.Replace@string,string,string" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="f237f2b4-1a8a-4705-882f-ed2618176100" nickname="Code Block" x="11.375380208639" y="432.675677563159" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{&quot;Bryan&quot;,&quot;Dave&quot;};" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="912e9e59-cda6-421c-b85f-f4443120a605" nickname="Code Block" x="48.7422146867223" y="512.962325917016" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;him&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="75dc2bd5-319c-48c2-a00d-ccb8555726dc" nickname="Code Block" x="431.538504150531" y="432.675677563159" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;Bryan&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="d567bbab-1aa6-4ff0-b75d-c879e6d2cca0" nickname="Code Block" x="437.032598190999" y="512.962325917016" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;Dave&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="c6fa0c6b-b252-4eef-a753-6f2d70ec1f87" nickname="Code Block" x="417.71145636836" y="345.897309540907" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{&quot;My name is Bryan.&quot;,&quot;Bryan is my name.&quot;};" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="b61394da-efa0-4e7e-aec7-9f55a90e8449" nickname="Watch" x="497.332652293638" y="602.928779997758" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="e4a3d824-1202-4b2f-bd0f-27cc78496b83" nickname="String.Replace" x="607.155785204884" y="456.818564614571" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.Replace@string,string,string" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="861b854d-5ac0-4c38-9c81-0b590a0b448c" start_index="0" end="6b6593df-5c71-4472-a91b-7fc69feb14d4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6b6593df-5c71-4472-a91b-7fc69feb14d4" start_index="0" end="36774b24-e6dd-41b1-889b-3847aa0ad6ee" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f237f2b4-1a8a-4705-882f-ed2618176100" start_index="0" end="6b6593df-5c71-4472-a91b-7fc69feb14d4" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="912e9e59-cda6-421c-b85f-f4443120a605" start_index="0" end="6b6593df-5c71-4472-a91b-7fc69feb14d4" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="75dc2bd5-319c-48c2-a00d-ccb8555726dc" start_index="0" end="e4a3d824-1202-4b2f-bd0f-27cc78496b83" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d567bbab-1aa6-4ff0-b75d-c879e6d2cca0" start_index="0" end="e4a3d824-1202-4b2f-bd0f-27cc78496b83" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c6fa0c6b-b252-4eef-a753-6f2d70ec1f87" start_index="0" end="e4a3d824-1202-4b2f-bd0f-27cc78496b83" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e4a3d824-1202-4b2f-bd0f-27cc78496b83" start_index="0" end="b61394da-efa0-4e7e-aec7-9f55a90e8449" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
