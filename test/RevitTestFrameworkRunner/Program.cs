@@ -53,20 +53,34 @@ namespace RevitTestFrameworkRunner
                         return;
                     }
 
-                    if (File.Exists(_results))
+                    // If fixture name and test name are specified
+                    if (string.IsNullOrEmpty(_fixture) && string.IsNullOrEmpty(_test))
                     {
-                        File.Delete(_results);
+                        foreach (var ad in vm.Assemblies)
+                        {
+                            RunAssembly(ad);
+                        }
                     }
-
-                    //if (!File.Exists(_modelPath))
-                    //{
-                    //    Console.WriteLine("The specified test model does not exist");
-                    //}
-
-                    //foreach (var path in _journalPaths)
-                    //{
-                    //    CreateJournal(path);
-                    //}
+                    // If test is not specified but fixture is specified
+                    else if (string.IsNullOrEmpty(_test) && !string.IsNullOrEmpty(_fixture))
+                    {
+                        var fd = vm.Assemblies.SelectMany(x => x.Fixtures).FirstOrDefault(f => f.Name == _fixture);
+                        if (fd != null)
+                        {
+                            RunFixture(fd);
+                        }
+                    }
+                    // If test is specified
+                    else if (string.IsNullOrEmpty(_fixture) && !string.IsNullOrEmpty(_test))
+                    {
+                        var td =
+                            vm.Assemblies.SelectMany(a => a.Fixtures.SelectMany(f => f.Tests))
+                                .FirstOrDefault(t => t.Name == _test);
+                        if (td != null)
+                        {
+                            RunTest(td);
+                        }
+                    }
                 }
 
                 Cleanup();
@@ -255,6 +269,11 @@ namespace RevitTestFrameworkRunner
 
         public static void RunAssembly(IAssemblyData ad)
         {
+            if (File.Exists(_results))
+            {
+                File.Delete(_results);
+            }
+
             foreach (var fix in ad.Fixtures)
             {
                 RunFixture(fix);
@@ -263,6 +282,11 @@ namespace RevitTestFrameworkRunner
 
         public static void RunFixture(IFixtureData fd)
         {
+            if (File.Exists(_results))
+            {
+                File.Delete(_results);
+            }
+
             foreach (var td in fd.Tests)
             {
                 RunTest(td);
@@ -271,6 +295,11 @@ namespace RevitTestFrameworkRunner
 
         public static void RunTest(ITestData td)
         {
+            if (File.Exists(_results))
+            {
+                File.Delete(_results);
+            }
+
             var path = Path.Combine(_workingDirectory, td.Name + ".txt");
 
             CreateJournal(path, td.Name, td.Fixture.Name, td.Fixture.Assembly.Path, _results, td.ModelPath);
