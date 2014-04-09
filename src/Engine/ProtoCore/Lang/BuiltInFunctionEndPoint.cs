@@ -1237,12 +1237,10 @@ namespace ProtoCore.Lang
 
             if (StackUtils.IsTrue(svHasAmountOp))
             {
-                if (svEnd.optype != AddressType.Int)
+                if (!StackUtils.IsNumeric(svEnd))
                 {
                     core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kInvalidAmountInRangeExpression);
-
-                    if (!StackUtils.IsNumeric(svEnd))
-                        return StackValue.Null;
+                    return StackValue.Null;
                 }
                 else if (!hasStep)
                 {
