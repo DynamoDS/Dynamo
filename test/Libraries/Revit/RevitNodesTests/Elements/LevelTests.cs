@@ -1,22 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Geometry;
-using Revit;
+using Dynamo.Tests;
 using Revit.Elements;
-using Revit.GeometryObjects;
 using NUnit.Framework;
-using RevitServices.Persistence;
 
 namespace DSRevitNodesTests.Elements
 {
 
     [TestFixture]
-    public class LevelTests
+    public class LevelTests : RevitNodeTestBase
     {
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByElevationAndName_ValidArgs()
         {
             // construct the extrusion
@@ -31,6 +26,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByElevationAndName_NullArgument()
         {
             var elevation = 100;
@@ -39,6 +35,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByElevation_ValidArgs()
         {
             var elevation = 100;
@@ -50,6 +47,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByLevelAndOffset_ValidArgs()
         {
             var elevation = 100;
@@ -64,6 +62,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByLevelAndOffset_NullArgument()
         {
             var offset = 100;
@@ -71,6 +70,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByLevelOffsetAndName_ValidArgs()
         {
             var elevation = 100;
@@ -86,6 +86,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByLevelOffsetAndName_NullArgument()
         {
             var elevation = 100;

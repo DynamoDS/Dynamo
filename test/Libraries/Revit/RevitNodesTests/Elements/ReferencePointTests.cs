@@ -1,16 +1,16 @@
 ﻿using System.Linq;
 using Autodesk.DesignScript.Geometry;
-using Revit;
-using Revit.Application;
+using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    internal class ReferencePointTests 
+    internal class ReferencePointTests : RevitNodeTestBase
     {
         [Test]
+        [TestModelAttribute(@".\empty.rfa")]
         public void ByCoordinates_ValidInput()
         {
             var pt = ReferencePoint.ByCoordinates(0, -10, 23.1);
@@ -21,6 +21,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModelAttribute(@".\empty.rfa")]
         public void ByPoint_ValidInput()
         {
             var p = Point.ByCoordinates(0, -10, 23.1);
@@ -32,6 +33,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModelAttribute(@".\empty.rfa")]
         public void ByPointVectorDistance_ValidInput()
         {
             var p = Point.ByCoordinates(0, -10, 23.1);
@@ -45,6 +47,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModelAttribute(@".\empty.rfa")]
         public void ByLengthOnCurveReference_ValidInput()
         {
             var l = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(1, 0, 0));
@@ -58,6 +61,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModelAttribute(@".\empty.rfa")]
         public void ByParameterOnCurveReference_ValidInput()
         {
 
@@ -72,6 +76,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModelAttribute(@".\empty.rfa")]
         public void ByParametersOnFaceReference_ValidInput()
         {
             var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
@@ -87,6 +92,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModelAttribute(@".\empty.rfa")]
         public void ByPointVectorDistance_NullInput1()
         {
             var v = Vector.ByCoordinates(1, 0, 0);
@@ -94,6 +100,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModelAttribute(@".\empty.rfa")]
         public void ByPointVectorDistance_NullInput2()
         {
             var p = Point.ByCoordinates(0, -10, 23.1);
@@ -101,18 +108,21 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModelAttribute(@".\empty.rfa")]
         public void ByParametersOnFaceReference_NullInput()
         {
             Assert.Throws(typeof(System.ArgumentNullException), () => ReferencePoint.ByParametersOnFaceReference(null, 0.5, 0.5));
         }
 
         [Test]
+        [TestModelAttribute(@".\empty.rfa")]
         public void ByParameterOnCurveReference_NullInput()
         {
             Assert.Throws(typeof(System.ArgumentNullException), () => ReferencePoint.ByParameterOnCurveReference(null, 0.5));
         }
 
         [Test]
+        [TestModelAttribute(@".\empty.rfa")]
         public void ByLengthOnCurveReference_NullInput()
         {
             Assert.Throws(typeof(System.ArgumentNullException), () => ReferencePoint.ByLengthOnCurveReference(null, 0.5));

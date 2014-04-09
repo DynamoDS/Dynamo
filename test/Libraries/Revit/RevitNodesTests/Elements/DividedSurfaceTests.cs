@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Autodesk.Revit.DB;
-using Revit;
+using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
-using RevitServices.Persistence;
 using DividedSurface = Revit.Elements.DividedSurface;
 using Form = Revit.Elements.Form;
 
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    public class DividedSurfaceTests 
+    public class DividedSurfaceTests : RevitNodeTestBase
     {
         [Test]
+        [TestModel(@".\block.rfa")]
         public void ByFaceUVDivisions_ValidArgs()
         {
             var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
@@ -33,6 +30,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\block.rfa")]
         public void ByFaceUVDivisionsRotation_ValidArgs()
         {
             var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
@@ -50,6 +48,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\block.rfa")]
         public void ByFaceUVDivisionsRotation_InvalidDivisions()
         {
             var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
@@ -64,6 +63,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\block.rfa")]
         public void ByFaceUVDivisions_InvalidDivisions()
         {
             var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
@@ -78,12 +78,14 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\block.rfa")]
         public void ByFaceUVDivisions_NullArgument()
         {
             Assert.Throws(typeof(ArgumentNullException), () => DividedSurface.ByFaceAndUVDivisions(null, 5, 5));
         }
 
         [Test]
+        [TestModel(@".\block.rfa")]
         public void ByFaceUVDivisionsRotation_NullArgument()
         {
             Assert.Throws(typeof(ArgumentNullException), () => DividedSurface.ByFaceAndUVDivisions(null, 5, 5));

@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Geometry;
-using Revit;
+using Dynamo.Tests;
 using Revit.Elements;
-using Revit.GeometryObjects;
 using NUnit.Framework;
 using RevitServices.Persistence;
 
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class ModelTextTypeTests
+    public class ModelTextTypeTests : RevitNodeTestBase
     {
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByName_ValidArgs()
         {
             var name = "24\" Arial";
@@ -26,6 +22,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByName_BadArgs()
         {
             Assert.Throws(typeof(ArgumentNullException), () => ModelTextType.ByName(null));

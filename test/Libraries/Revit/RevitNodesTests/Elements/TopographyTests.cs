@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using Autodesk.DesignScript.Geometry;
+using Dynamo.Tests;
 using NUnit.Framework;
 using Revit.Elements;
 
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    class TopographyTests
+    class TopographyTests : RevitNodeTestBase
     {
         [Test]
+        [TestModel(@".\empty.rvt")]
         public void ByPoints_ValidArgs()
         {   
             var p1 = Point.ByCoordinates(0, 0, 0);
@@ -32,6 +34,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\empty.rvt")]
         public void ByPoints_InvalidArgs()
         {
             var p1 = Point.ByCoordinates(0, 0, 0);
@@ -44,6 +47,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\empty.rvt")]
         public void ByPoints_Mutation()
         {
             var p1 = Point.ByCoordinates(0, 0, 0);

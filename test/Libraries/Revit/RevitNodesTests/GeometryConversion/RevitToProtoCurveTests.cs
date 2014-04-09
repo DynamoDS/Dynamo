@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
 using Autodesk.DesignScript.Geometry;
-using Autodesk.Revit.DB;
+using Dynamo.Tests;
 using Revit.GeometryConversion;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.GeometryConversion
 {
     [TestFixture]
-    public class RevitToProtoCurveTests
+    public class RevitToProtoCurveTests : RevitNodeTestBase
     {
         [SetUp]
         public void Setup()
@@ -26,6 +24,7 @@ namespace DSRevitNodesTests.GeometryConversion
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void NurbSpline_Rational()
         {
             var pts = new List<Autodesk.Revit.DB.XYZ>()
@@ -70,6 +69,7 @@ namespace DSRevitNodesTests.GeometryConversion
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void HermiteSpline_Basic()
         {
             var pts = new List<Autodesk.Revit.DB.XYZ>()
@@ -115,6 +115,7 @@ namespace DSRevitNodesTests.GeometryConversion
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void Line_Basic()
         {
             var s = new Autodesk.Revit.DB.XYZ(5, 2, 3);
@@ -137,6 +138,7 @@ namespace DSRevitNodesTests.GeometryConversion
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void Arc_Basic()
         {
             var o = new Autodesk.Revit.DB.XYZ(5,2,3);
@@ -170,6 +172,7 @@ namespace DSRevitNodesTests.GeometryConversion
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void EllipseArc_Basic()
         {
             var c = new Autodesk.Revit.DB.XYZ(5, 2, 3);
@@ -210,6 +213,7 @@ namespace DSRevitNodesTests.GeometryConversion
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void Ellipse_Basic()
         {
             var c = new Autodesk.Revit.DB.XYZ(5, 2, 3);
@@ -249,6 +253,7 @@ namespace DSRevitNodesTests.GeometryConversion
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CylindricalHelix_Basic()
         {
             Assert.Inconclusive();

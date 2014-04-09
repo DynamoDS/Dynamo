@@ -1,17 +1,15 @@
 ﻿using System.IO;
-using System.Linq;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using NUnit.Framework;
-using ModelCurve = Autodesk.Revit.DB.ModelCurve;
-using XYZ = Autodesk.Revit.DB.XYZ;
+
 namespace Dynamo.Tests
 {
     [TestFixture]
     class SampleTests:DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CreatePointSequenceSample()
         {
             var model = dynSettings.Controller.DynamoModel;
