@@ -23,7 +23,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("Code Block")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Allows for code to be written")] //<--Change the descp :|
+    [NodeDescription("Allows for DesignScript codes to be authored directly")]
     [IsDesignScriptCompatible]
     public partial class CodeBlockNodeModel : NodeModel
     {
@@ -456,10 +456,9 @@ namespace Dynamo.Nodes
                         codeStatements.Add(tempStatement);
                     }
 
+                    previewVariable = null;
                     if (parsedNodes.Count > 0)
                         SetPreviewVariable(parsedNodes);
-                    else
-                        previewVariable = null;
                 }
 
                 if (errors != null && errors.Any())
@@ -506,14 +505,18 @@ namespace Dynamo.Nodes
                 var statement = parsedNodes[i] as BinaryExpressionNode;
                 if (null != statement)
                 {
-                    previewVariable = (statement.LeftNode as IdentifierNode).Value;
+                    var identifierNode = statement.LeftNode as IdentifierNode;
+                    if (identifierNode != null)
+                        previewVariable = identifierNode.ToString();
+
                     break;
                 }
             }
 
             if (!tempVariables.Contains(previewVariable))
             {
-                previewVariable = previewVariable + "_" + this.GUID.ToString().Replace("-", string.Empty);
+                var guid = this.GUID.ToString().Replace("-", string.Empty);
+                previewVariable = string.Format("{0}_{1}", previewVariable, guid);
             }
         }
 
@@ -1175,9 +1178,8 @@ namespace Dynamo.Nodes
         {
             if (identNode == null)
                 throw new ArgumentNullException();
-            Name = identNode.Value;
-            if (identNode.ArrayDimensions != null)
-                ; //  Implement!
+
+            Name = identNode.ToString();
             Row = identNode.line;
             StartColumn = identNode.col;
         }
