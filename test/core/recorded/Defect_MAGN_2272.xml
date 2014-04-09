@@ -1,0 +1,25 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="d480bc8e-4a77-44ea-ab07-52070ec6a5b6" NodeName="Code Block" X="322" Y="235" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="d480bc8e-4a77-44ea-ab07-52070ec6a5b6" Name="Code" Value="x=x+1;" />
+  <SelectInRegionCommand X="401" Y="345" Width="2" Height="2" IsCrossSelection="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="0d44d949-12b8-4c38-beb1-1f2588727231" NodeName="Code Block" X="32" Y="241" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="0d44d949-12b8-4c38-beb1-1f2588727231" Name="Code" Value="5" />
+  <SelectInRegionCommand X="122" Y="363" Width="1" Height="0" IsCrossSelection="false" />
+  <MakeConnectionCommand NodeId="0d44d949-12b8-4c38-beb1-1f2588727231" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="d480bc8e-4a77-44ea-ab07-52070ec6a5b6" PortIndex="0" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="FirstRun" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="0d44d949-12b8-4c38-beb1-1f2588727231" Name="Code" Value="6;" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="SecondRun" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="0d44d949-12b8-4c38-beb1-1f2588727231" Name="Code" Value="10;" />
+  <SelectInRegionCommand X="32" Y="393" Width="1" Height="0" IsCrossSelection="false" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="LastRun" PauseDurationInMs="20" />
+</Commands>
