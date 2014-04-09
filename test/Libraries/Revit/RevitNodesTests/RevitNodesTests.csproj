@@ -105,7 +105,6 @@
     <Compile Include="Elements\WallTypeTests.cs" />
     <Compile Include="GeometryConversion\ProtoToRevitCurveTests.cs" />
     <Compile Include="GeometryConversion\RevitToProtoCurveTests.cs" />
-    <Compile Include="GeometryIntersection\FaceIntersectTests.cs" />
     <Compile Include="GeometryConversion\BoundingBoxTests.cs" />
     <Compile Include="GeometryObjects\SolidTests.cs" />
     <Compile Include="GeometryTests.cs" />
