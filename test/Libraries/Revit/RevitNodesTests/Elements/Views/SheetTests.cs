@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Revit;
+using Dynamo.Tests;
 using Revit.Elements;
 using Revit.Elements.Views;
-using Revit.GeometryObjects;
 using NUnit.Framework;
 using RevitServices.Persistence;
 using Point = Autodesk.DesignScript.Geometry.Point;
@@ -16,6 +12,7 @@ namespace DSRevitNodesTests
     class SheetTests
     {
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByNameNumberTitleBlockAndViews_ValidArgs()
         {
             ElementBinder.IsEnabled = false;
@@ -43,6 +40,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByNameNumberTitleBlockAndViews_BadArgs()
         {
 
@@ -72,6 +70,7 @@ namespace DSRevitNodesTests
         }
         
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByNameNumberTitleBlockAndView_ValidArgs()
         {
             ElementBinder.IsEnabled = false;
@@ -95,6 +94,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByNameNumberTitleBlockAndView_BadArgs()
         {
             ElementBinder.IsEnabled = false;

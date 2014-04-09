@@ -2312,8 +2312,13 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		if (la.kind == 22) {
 			ProtoCore.AST.AssociativeAST.RangeExprNode rnode = new ProtoCore.AST.AssociativeAST.RangeExprNode(); 
 			rnode.FromNode = node; NodeUtils.CopyNodeLocation(rnode, node);
+			bool hasRangeAmountOperator = false;
 			
 			Get();
+			if (la.kind == 69) {
+				Associative_rangeAmountOperator(out hasRangeAmountOperator);
+			}
+			rnode.HasRangeAmountOperator = hasRangeAmountOperator; 
 			Associative_ArithmeticExpression(out node);
 			rnode.ToNode = node; 
 			if (la.kind == 22) {
@@ -2351,6 +2356,12 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			}
 			
 		}
+	}
+
+	void Associative_rangeAmountOperator(out bool hasRangeAmountOperator) {
+		hasRangeAmountOperator = false; 
+		Expect(69);
+		hasRangeAmountOperator = true; 
 	}
 
 	void Associative_rangeStepOperator(out RangeStepOperator op) {
@@ -3663,8 +3674,13 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			ProtoCore.AST.ImperativeAST.RangeExprNode rnode = new ProtoCore.AST.ImperativeAST.RangeExprNode(); 
 			rnode.FromNode = node;
 			NodeUtils.SetNodeStartLocation(rnode, rnode.FromNode);
+			bool hasAmountOperator = false;
 			
 			Get();
+			if (la.kind == 69) {
+				Imperative_rangeAmountOperator(out hasAmountOperator);
+			}
+			rnode.HasRangeAmountOperator = hasAmountOperator; 
 			Imperative_rel(out node);
 			rnode.ToNode = node;
 			NodeUtils.SetNodeEndLocation(rnode, rnode.ToNode);
@@ -3736,6 +3752,12 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			node = bNode;
 			
 		}
+	}
+
+	void Imperative_rangeAmountOperator(out bool hasAmountOperator) {
+		hasAmountOperator = false; 
+		Expect(69);
+		hasAmountOperator = true; 
 	}
 
 	void Imperative_rangeStepOperator(out RangeStepOperator op) {

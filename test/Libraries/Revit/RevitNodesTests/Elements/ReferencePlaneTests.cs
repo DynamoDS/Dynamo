@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
+using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class ReferencePlaneTests
+    public class ReferencePlaneTests : RevitNodeTestBase
     {
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByLine_ValidArgs()
         {
             var line = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(1, 0, 0));
@@ -25,6 +27,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByStartPointEndPoint_ValidArgs()
         {
             var refPlane = ReferencePlane.ByStartPointEndPoint(Point.ByCoordinates(1, 0, 0),
@@ -35,26 +38,29 @@ namespace DSRevitNodesTests.Elements
             Assert.NotNull(refPlane.PlaneReference);
         }
 
-
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByLine_NullInput()
         {
             Assert.Throws(typeof(System.ArgumentNullException), () => ReferencePlane.ByLine(null));
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByStartPointEndPoint_NullInputBoth()
         {
             Assert.Throws(typeof(System.ArgumentNullException), () => ReferencePlane.ByStartPointEndPoint(null, null));
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByStartPointEndPoint_NullInput2()
         {
             Assert.Throws(typeof(System.ArgumentNullException), () => ReferencePlane.ByStartPointEndPoint(Point.ByCoordinates(1, 1, 1), null));
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByStartPointEndPoint_NullInput1()
         {
             Assert.Throws(typeof(System.ArgumentNullException), () => ReferencePlane.ByStartPointEndPoint(Point.ByCoordinates(1, 1, 1), null));

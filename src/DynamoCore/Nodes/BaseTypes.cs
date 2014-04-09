@@ -1517,10 +1517,7 @@ namespace Dynamo.Nodes
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            string content = this.Value; 
-            content = content.Replace("\r\n", "\n");
-
-            var rhs = AstFactory.BuildStringNode(content);
+            var rhs = AstFactory.BuildStringNode(this.Value);
             var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
 
             return new[] { assignment };
@@ -1944,8 +1941,9 @@ namespace Dynamo.Nodes
                 var rangeExpr = new RangeExprNode
                 {
                     FromNode = _start.GetAstNode(idLookup),
-                    ToNode = _step.GetAstNode(idLookup),
+                    ToNode = _count.GetAstNode(idLookup),
                     StepNode = _step.GetAstNode(idLookup),
+                    HasRangeAmountOperator = true,
                     stepoperator = ProtoCore.DSASM.RangeStepOperator.stepsize
                 };
                 return rangeExpr;

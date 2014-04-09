@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Revit.Application;
-using Revit.Elements;
+﻿using Revit.Application;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class DocumentTests
+    public class DocumentTests : RevitNodeTestBase
     {
 
         [Test]

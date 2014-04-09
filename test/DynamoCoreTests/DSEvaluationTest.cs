@@ -653,6 +653,22 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\DefaultValue.dyn");
             AssertPreviewValue("be9d1181-a83e-4f25-887f-6197aa8d581e", 5.0);
         }
+
+        [Test]
+        public void BasicRuntimeWarning()
+        {
+            RunModel(@"core\dsevaluation\BasicRuntimeWarning.dyn");
+            var guid = System.Guid.Parse("0fc83562-2cfe-4a63-84f8-f6836cbaf9c5");
+            var node = Controller.DynamoViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            Assert.IsTrue(node.State == Models.ElementState.Warning);
+        }
+
+        [Test]
+        public void NumberSequence()
+        {
+            RunModel(@"core\dsevaluation\NumberSequence.dyn");
+            AssertPreviewValue("4d86876b-08a8-4166-b1f5-4194b8381dab", new object[] {0.0, 1.0, 2.0, 3.0, 4.0});
+        }
     }
 
     [Category("DSCustomNode")]

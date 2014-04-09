@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class FloorTests
+    public class FloorTests : RevitNodeTestBase
     {
         [Test]
         public void ByOutlineTypeAndLevel_ValidArgs()

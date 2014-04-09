@@ -11,6 +11,7 @@ using RevitServices.Persistence;
 using RevitServices.Threading;
 using RevitServices.Transactions;
 using Color = DSCore.Color;
+using Revit.GeometryObjects;
 
 namespace Revit.Elements
 {
@@ -70,7 +71,7 @@ namespace Revit.Elements
                 {
                     TransactionManager.Instance.EnsureInTransaction(Document);
 
-                    DocumentManager.Instance.CurrentDBDocument.Regenerate();
+                    DocumentManager.Regenerate();
                     var bb = this.InternalElement.get_BoundingBox(null);
 
                     TransactionManager.Instance.TransactionTaskDone();
@@ -300,6 +301,62 @@ namespace Revit.Elements
 
         #endregion
 
+
+        /// <summary>
+        /// Get all of the Geometry associated with this object
+        /// </summary>
+        public object[] Geometry()
+        {
+
+            Autodesk.Revit.DB.Element thisElement = InternalElement;
+
+            var instanceGeometryObjects = new List<Autodesk.Revit.DB.GeometryObject>();
+
+            var geoOptionsOne = new Autodesk.Revit.DB.Options();
+            geoOptionsOne.ComputeReferences = true;
+
+            var geomObj = thisElement.get_Geometry(geoOptionsOne);
+            var geomElement = geomObj as GeometryElement;
+
+            if ((thisElement is GenericForm) && (geomElement.Count() < 1))
+            {
+                GenericForm gF = (GenericForm)thisElement;
+                if (!gF.Combinations.IsEmpty)
+                {
+                    Autodesk.Revit.DB.Options geoOptionsTwo = new Autodesk.Revit.DB.Options();
+                    geoOptionsTwo.IncludeNonVisibleObjects = true;
+                    geoOptionsTwo.ComputeReferences = true;
+                    geomObj = thisElement.get_Geometry(geoOptionsTwo);
+                    geomElement = geomObj as GeometryElement;
+                }
+            }
+
+            foreach (Autodesk.Revit.DB.GeometryObject geob in geomElement)
+            {
+                GeometryInstance ginsta = geob as GeometryInstance;
+                if (ginsta != null)
+                {
+                    Autodesk.Revit.DB.GeometryElement instanceGeom = ginsta.GetInstanceGeometry();
+                    instanceGeometryObjects.Add(instanceGeom);
+                    foreach (Autodesk.Revit.DB.GeometryObject geobInst in instanceGeom)
+                    {
+                        instanceGeometryObjects.Add(geobInst);
+                    }
+                }
+                else
+                {
+                    instanceGeometryObjects.Add(geob);
+                }
+            }
+
+            return instanceGeometryObjects.Select(x =>
+            {
+                object w = x.Convert();
+                if (w != null) return w;
+                return x.Wrap();
+            }).ToArray();
+        }
+
         #region Internal Geometry Helpers
 
         protected IEnumerable<Autodesk.Revit.DB.Curve> GetCurves(Autodesk.Revit.DB.Options options)
@@ -327,9 +384,9 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="geomElem"></param>
         /// <param name="curves"></param>
-        private void GetCurves(IEnumerable<GeometryObject> geomElem, ref CurveArray curves)
+        private void GetCurves(IEnumerable<Autodesk.Revit.DB.GeometryObject> geomElem, ref CurveArray curves)
         {
-            foreach (GeometryObject geomObj in geomElem)
+            foreach (Autodesk.Revit.DB.GeometryObject geomObj in geomElem)
             {
                 var curve = geomObj as Autodesk.Revit.DB.Curve;
                 if (null != curve)
@@ -354,10 +411,10 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="geomElem"></param>
         /// <param name="faces"></param>
-        private void GetFaces(IEnumerable<GeometryObject> geomElement, ref FaceArray faces)
+        private void GetFaces(IEnumerable<Autodesk.Revit.DB.GeometryObject> geomElement, ref FaceArray faces)
         {
 
-                foreach (GeometryObject geob in geomElement)
+                foreach (Autodesk.Revit.DB.GeometryObject geob in geomElement)
                 {
                     if (geob is GeometryInstance)
                     {

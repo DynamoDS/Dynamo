@@ -281,7 +281,7 @@ namespace Revit.Elements.Views
                 return
                     InternalViewSheet.Views.Cast<Autodesk.Revit.DB.View>()
                         .ToList()
-                        .Select(x => (View) ElementWrappingExtensions.ToDSType(x, true))
+                        .Select(x => (View) ElementWrapper.ToDSType(x, true))
                         .ToArray();
             }
         }
