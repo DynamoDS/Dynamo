@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Geometry;
-using Revit;
+using Dynamo.Tests;
 using Revit.Elements;
-using Revit.GeometryObjects;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class MaterialTests
+    public class MaterialTests : RevitNodeTestBase
     {
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByName_ValidArgs()
         {
             var name = "Cherry";
@@ -23,12 +19,14 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByName_NullArgument()
         {
             Assert.Throws(typeof(ArgumentNullException), () => Material.ByName(null) );
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByName_NonexistentName()
         {
             Assert.Throws(typeof(Exception), () => Material.ByName("Mayo"));

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Tests;
 using Revit.Elements;
 using Revit.GeometryConversion;
 using NUnit.Framework;
@@ -14,7 +15,7 @@ using Solid = Revit.GeometryObjects.Solid;
 namespace DSRevitNodesTests.GeometryObjects
 {
     [TestFixture]
-    public class SolidTests
+    public class SolidTests : RevitNodeTestBase
     {
         private string geomDir;
 
@@ -36,15 +37,18 @@ namespace DSRevitNodesTests.GeometryObjects
         public void Setup()
         {
             HostFactory.Instance.StartUp();
+            base.Setup();
         }
 
         [TearDown]
         public void TearDown()
         {
             HostFactory.Instance.ShutDown();
+            base.TearDown();
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByExtrusion_ValidArgs()
         {
             var crvs = UnitRectangle();
@@ -59,6 +63,7 @@ namespace DSRevitNodesTests.GeometryObjects
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByRevolve_ValidArgs()
         {
             //create a unit rectangle in the world XY plane
@@ -87,6 +92,7 @@ namespace DSRevitNodesTests.GeometryObjects
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByRevolve_ValidArgs_NonVertical()
         {
             //create a unit rectangle in the world XY plane
@@ -117,6 +123,7 @@ namespace DSRevitNodesTests.GeometryObjects
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByBlend_ValidArgs()
         {
             var rect1 = UnitRectangle();
@@ -151,6 +158,7 @@ namespace DSRevitNodesTests.GeometryObjects
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void BySweptBlend_ValidArgs()
         {
             var package = new RenderPackage();
@@ -205,6 +213,7 @@ namespace DSRevitNodesTests.GeometryObjects
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void Cylinder_ValidArgs()
         {
             var cylinder = Solid.Cylinder(Point.ByCoordinates(0, 0, 0), 5, Vector.ByCoordinates(0,0,1), 10);
@@ -221,6 +230,7 @@ namespace DSRevitNodesTests.GeometryObjects
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void Sphere_ValidArgs()
         {
             var sphere = Solid.Sphere(Point.ByCoordinates(0, 5, 3), 10);
@@ -236,6 +246,7 @@ namespace DSRevitNodesTests.GeometryObjects
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void Torus_ValidArgs()
         {
             var axis = Vector.ByCoordinates(.5, .5, .5);
@@ -254,6 +265,7 @@ namespace DSRevitNodesTests.GeometryObjects
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void BoxByMinimumMaximum_ValidArgs()
         {
             var min = Point.ByCoordinates(-2, -1, 5);
@@ -272,6 +284,7 @@ namespace DSRevitNodesTests.GeometryObjects
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void BoxByCenterAndDimensions_ValidArgs()
         {
             var center = Point.ByCoordinates(-2, -1, 5);
@@ -289,6 +302,7 @@ namespace DSRevitNodesTests.GeometryObjects
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByBooleanUnion_ValidArgs()
         {
             var solidA = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
@@ -306,6 +320,7 @@ namespace DSRevitNodesTests.GeometryObjects
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByBooleanIntersect_ValidArgs()
         {
             var solidA = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
@@ -323,6 +338,7 @@ namespace DSRevitNodesTests.GeometryObjects
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ByBooleanDifference_ValidArgs()
         {
             var solidA = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
@@ -340,6 +356,7 @@ namespace DSRevitNodesTests.GeometryObjects
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void FromElement_ValidArgs()
         {
             var solidA = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);

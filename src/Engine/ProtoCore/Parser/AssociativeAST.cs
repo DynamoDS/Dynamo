@@ -1514,6 +1514,7 @@ namespace ProtoCore.AST.AssociativeAST
         public AssociativeNode ToNode { get; set; }
         public AssociativeNode StepNode { get; set; }
         public RangeStepOperator stepoperator { get; set; }
+        public bool HasRangeAmountOperator { get; set; }
 
         public RangeExprNode()
         {
@@ -1530,6 +1531,7 @@ namespace ProtoCore.AST.AssociativeAST
                 StepNode = NodeUtils.Clone(rhs.StepNode);
             }
             stepoperator = rhs.stepoperator;
+            HasRangeAmountOperator = rhs.HasRangeAmountOperator;
         }
 
         public override bool Equals(object other)
@@ -1541,7 +1543,8 @@ namespace ProtoCore.AST.AssociativeAST
             return FromNode.Equals(otherNode.FromNode) &&
                    ToNode.Equals(otherNode.ToNode) &&
                    stepoperator.Equals(otherNode.stepoperator) &&
-                   ((StepNode == otherNode.StepNode) || (StepNode != null && StepNode.Equals(otherNode.StepNode)));
+                   ((StepNode == otherNode.StepNode) || (StepNode != null && StepNode.Equals(otherNode.StepNode))) &&
+                   HasRangeAmountOperator == otherNode.HasRangeAmountOperator;
         }
 
         public override string ToString()
@@ -1554,6 +1557,8 @@ namespace ProtoCore.AST.AssociativeAST
 
             buf.Append(FromNode);
             buf.Append("..");
+            if (HasRangeAmountOperator)
+                buf.Append("#");
             buf.Append(ToNode);
 
             if (StepNode != null)

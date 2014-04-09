@@ -11,9 +11,12 @@ using View3D = Revit.Elements.Views.View3D;
 
 namespace Revit.Elements
 {
-    //[SupressImportIntoVM]
+    /// <summary>
+    /// Element wrapper supplies tools for wrapping Autodesk.Revit.DB.Element types
+    /// in their associated Revit.Elements.Element wrapper
+    /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public static class ElementWrappingExtensions
+    public static class ElementWrapper
     {
         /// <summary>
         /// If possible, wrap the element in a DS type
@@ -23,10 +26,9 @@ namespace Revit.Elements
         /// <returns></returns>
         public static Element ToDSType(this Autodesk.Revit.DB.Element ele, bool isRevitOwned)
         {
-
             // cast to dynamic to dispatch to the appropriate wrapping method
             dynamic dynamicElement = ele;
-            return ElementWrappingExtensions.Wrap(dynamicElement, isRevitOwned);
+            return ElementWrapper.Wrap(dynamicElement, isRevitOwned);
 
         }
 

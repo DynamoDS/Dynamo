@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Revit;
+using Dynamo.Tests;
 using Revit.Elements;
 using Revit.Elements.Views;
-using Revit.GeometryObjects;
 using NUnit.Framework;
-using RevitServices.Persistence;
-using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodesTests
 {
@@ -16,6 +10,7 @@ namespace DSRevitNodesTests
     class FloorPlanViewTests
     {
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByLevel_ValidArgs()
         {
             var elevation = 100;
@@ -28,6 +23,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByLevel_BadArgs()
         {
             Assert.Throws(typeof(ArgumentNullException), () => FloorPlanView.ByLevel(null));

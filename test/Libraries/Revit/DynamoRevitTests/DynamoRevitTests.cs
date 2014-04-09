@@ -29,8 +29,10 @@ namespace Dynamo.Tests
         //Called before each test method
         
         [SetUp]
-        public void SetupPaths()
+        public void Setup()
         {
+            StartDynamo();
+
             //it doesn't make sense to do these steps before every test
             //but when running from the revit plugin we are not loading the 
             //fixture, so the initfixture method is not called.

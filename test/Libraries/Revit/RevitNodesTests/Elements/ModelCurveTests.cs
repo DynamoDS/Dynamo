@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Geometry;
-using Revit;
+﻿using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
-using Revit.GeometryObjects;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class ModelCurveTests
+    public class ModelCurveTests : RevitNodeTestBase
     {
         [Test]
         public void ByCurve_ValidArgs()
