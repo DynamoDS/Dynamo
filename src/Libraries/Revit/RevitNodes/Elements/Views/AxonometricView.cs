@@ -132,7 +132,7 @@ namespace Revit.Elements.Views
         /// <param name="eyePoint">A Point representing the eye point.</param>
         /// <param name="target">A Point representing the target of view.</param>
         /// <param name="element">This argument cannot be null, and it has to be either a 
-        /// Revit.Elements.Element or Revit.GeometryObjects.BoundingBox.</param>
+        /// Revit.Elements.Element or  Revit.GeometryObjectsBoundingBox.</param>
         /// <param name="name">The name of the view.</param>
         /// <param name="isolateElement">If this argument is set to true, the element or 
         /// bounding box will be isolated in the current view by creating a minimum size
@@ -174,7 +174,7 @@ namespace Revit.Elements.Views
             }
 
             string message = string.Format("Argument is expected to be of type " +
-                "'Revit.Elements.AbstractElement' or 'Revit.GeometryObjects.BoundingBox', " +
+                "'Revit.Elements.AbstractElement' or ' Revit.GeometryObjectsBoundingBox', " +
                 "but found to be of type '{0}'", element.GetType());
 
             throw new ArgumentException(message, "element");

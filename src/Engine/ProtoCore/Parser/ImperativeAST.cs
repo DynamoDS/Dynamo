@@ -857,6 +857,7 @@ namespace ProtoCore.AST.ImperativeAST
         public ImperativeNode ToNode { get; set; }
         public ImperativeNode StepNode { get; set; }
         public ProtoCore.DSASM.RangeStepOperator stepoperator { get; set; }
+        public bool HasRangeAmountOperator { get; set; }
 
         public RangeExprNode()
         {
@@ -871,6 +872,7 @@ namespace ProtoCore.AST.ImperativeAST
                 StepNode = ProtoCore.Utils.NodeUtils.Clone(rhs.StepNode);
             }
             stepoperator = rhs.stepoperator;
+            HasRangeAmountOperator = rhs.HasRangeAmountOperator;
         }
 
         // Check if this can be unified associative range expr 
@@ -884,6 +886,8 @@ namespace ProtoCore.AST.ImperativeAST
 
             buf.Append(FromNode.ToString());
             buf.Append("..");
+            if (HasRangeAmountOperator)
+                buf.Append("#");
             buf.Append(ToNode.ToString());
 
             if (StepNode != null)

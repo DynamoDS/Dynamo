@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
+using Autodesk.Revit.DB;
 
 namespace Revit.GeometryObjects
 {
@@ -12,7 +13,7 @@ namespace Revit.GeometryObjects
     public abstract class GeometryObject : IGraphicItem
     {
         /// <summary>
-        /// A reference to the internal Geometry object
+        /// A reference to the internal GeometryObject
         /// </summary>
         protected abstract Autodesk.Revit.DB.GeometryObject InternalGeometryObject
         {
@@ -26,10 +27,17 @@ namespace Revit.GeometryObjects
         [IsVisibleInDynamoLibrary(false)]
         public override string ToString()
         {
-            return InternalGeometryObject.GetType().Name;
+            return GetType().FullName;
         }
 
         [IsVisibleInDynamoLibrary(false)]
         public abstract void Tessellate(IRenderPackage package, double tol, int gridLines);
+
+        /// <summary>
+        /// Obtain the geometric sub-components of this GeometryObject
+        /// </summary>
+        /// <returns></returns>
+        public abstract object[] Explode();
+
     }
 }

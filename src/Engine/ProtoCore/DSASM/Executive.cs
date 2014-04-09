@@ -2414,9 +2414,9 @@ namespace ProtoCore.DSASM
                         // UPDATED), then the outer imperative language block
                         // will be marked as dirty again and infinite loop 
                         // happens. 
-                        if (graphNode.isLanguageBlock && currentLangBlock != Constants.kInvalidIndex)
+                        if (graphNode.languageBlockId != Constants.kInvalidIndex && 
+                            currentLangBlock != Constants.kInvalidIndex)
                         {
-                            runtimeVerify(graphNode.languageBlockId != Constants.kInvalidIndex);
                             if (graphNode.languageBlockId == currentLangBlock
                                 || core.CompleteCodeBlockList[currentLangBlock].IsMyAncestorBlock(graphNode.languageBlockId))
                             {
@@ -2430,28 +2430,6 @@ namespace ProtoCore.DSASM
                             // We allow dependency check if the modified graphnode list belong to some other block
                             if (modifiedRef.block != currentLangBlock)
                             {
-                                if (core.Options.AssociativeToImperativePropagation)
-                                {
-                                    // Comment Jun: The return check is here to handle:
-                                    //  return = [Imperative]{return = 0}
-                                    if (!graphNode.isReturn && graphNode.isLanguageBlock)
-                                    {
-                                        Validity.Assert(null != graphNode.updateNodeRefList && graphNode.updateNodeRefList.Count > 0);
-                                        Validity.Assert(null != graphNode.updateNodeRefList[0].nodeList && graphNode.updateNodeRefList[0].nodeList.Count > 0);
-
-                                        /*
-                                        int updateNodeCodeBlockId = graphNode.updateNodeRefList[0].nodeList[0].symbol.codeBlockId;
-                                        int modifiedNodeCodeBlockId = modifiedRef.nodeList[0].symbol.codeBlockId; 
-                                        CodeBlock updateNodeCodeBlock = core.CompleteCodeBlockList[updateNodeCodeBlockId];
-                                        
-                                        if (updateNodeCodeBlockId == modifiedNodeCodeBlockId || updateNodeCodeBlock.IsMyAncestorBlock(modifiedNodeCodeBlockId))
-                                        {
-                                            continue;
-                                        }
-                                        */
-                                    }
-                                }
-
                                 // Check if the graphnode in the associative language depends on the current updated node
                                 ProtoCore.AssociativeGraph.GraphNode matchingNode = null;
                                 if (!graphNode.isReturn && graphNode.DependsOn(modifiedRef, ref matchingNode))

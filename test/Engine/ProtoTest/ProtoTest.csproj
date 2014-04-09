@@ -120,6 +120,7 @@
     <Compile Include="DSASM\ExecutionMirrorTests.cs" />
     <Compile Include="DSASM\StackOverflowTests.cs" />
     <Compile Include="EventTests\EventTest.cs" />
+    <Compile Include="FFITests\ArgumentMarshalingTests.cs" />
     <Compile Include="FFITests\ContextInjectionTests.cs" />
     <Compile Include="FFITests\CSFFIDataMarshalingTest.cs" />
     <Compile Include="FFITests\CSFFIDispose.cs" />

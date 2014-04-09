@@ -31,6 +31,15 @@ namespace Revit.GeometryObjects
             get { return InternalFace; }
         }
 
+        #region Public methods
+
+        public override object[] Explode()
+        {
+            return this.Edges;
+        }
+
+        #endregion
+
         #region Public properties
 
         public bool IsTwoSided
