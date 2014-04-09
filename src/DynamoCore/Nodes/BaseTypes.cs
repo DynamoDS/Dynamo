@@ -1655,6 +1655,8 @@ namespace Dynamo.Nodes
 
         #endregion
 
+        /* disable the migration path from number node to CBN.
+
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
@@ -1701,6 +1703,8 @@ namespace Dynamo.Nodes
             return migrationData;
         }
 
+        */
+        
         public static List<IDoubleSequence> ParseValue(string text, char[] seps, List<string> identifiers, ConversionDelegate convertToken)
         {
             var idSet = new HashSet<string>(identifiers);
