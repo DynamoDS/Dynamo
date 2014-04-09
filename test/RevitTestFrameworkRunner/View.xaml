@@ -40,9 +40,9 @@
     
     <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"></RowDefinition>
-                <RowDefinition Height="40"></RowDefinition>
-                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -53,10 +53,21 @@
         <Button Margin="5"  Grid.Column="1" Grid.Row="0" Content="..." Command="{Binding SetAssemblyPathCommand}"></Button>
         <Button Margin="5" Grid.Column="1" Grid.Row="1" Content="..." Command="{Binding SetResultsPathCommand}"></Button>
         <Button Margin="5" Grid.Column="1" Grid.Row="2" Content="..." Command="{Binding SetWorkingPathCommand}"></Button>
-        
-        <TextBox Margin="5" Grid.Row="0" Grid.Column="0" Text="{Binding AssemblyPath, Converter={StaticResource AssemblyPathConverter}}" ></TextBox>
-        <TextBox Margin="5" Grid.Row="1" Grid.Column="0" Text="{Binding ResultsPath, Converter={StaticResource ResultsPathConverter}}"></TextBox>
-        <TextBox Margin="5" Grid.Row="2" Grid.Column="0" Text="{Binding WorkingPath, Converter={StaticResource WorkingPathConverter}}"></TextBox>
+
+        <StackPanel Margin="5" Grid.Row="0" Grid.Column="0" >
+            <TextBlock Text="Test Assembly:"></TextBlock>
+            <TextBox Text="{Binding AssemblyPath, Converter={StaticResource AssemblyPathConverter}}" ></TextBox>
+        </StackPanel>
+
+        <StackPanel Margin="5" Grid.Row="1" Grid.Column="0">
+            <TextBlock Text="Results File Path:"></TextBlock>
+            <TextBox  Text="{Binding ResultsPath, Converter={StaticResource ResultsPathConverter}}"></TextBox>
+        </StackPanel>
+
+        <StackPanel Margin="5" Grid.Row="2" Grid.Column="0" >
+            <TextBlock Text="Working Directory:"></TextBlock>
+            <TextBox Text="{Binding WorkingPath, Converter={StaticResource WorkingPathConverter}}"></TextBox>
+        </StackPanel>
 
         <TreeView Margin="5" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" 
                   ItemsSource="{Binding Assemblies}" 
