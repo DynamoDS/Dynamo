@@ -1901,6 +1901,67 @@ namespace DynamoCoreUITests
             });
         }
 
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2378()
+        {
+            // this is using CBN. 
+            // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2378
+
+            RunCommandsFromFile("Defect_MAGN_2378.xml", false, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "WithWarning")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    NodeModel nodeModel = workspace.NodeFromWorkspace("f4a9a71a-168b-4985-a575-d16faa2de9ca");
+                    Assert.AreEqual(ElementState.Warning, nodeModel.State);
+
+                }
+                else if (commandTag == "WithoutWarning")
+                {
+                    NodeModel nodeModel = workspace.NodeFromWorkspace("f4a9a71a-168b-4985-a575-d16faa2de9ca");
+                    Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
+                }
+            });
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2378_AnotherScenario()
+        {
+            // this is using Point.Bycoordinates node.
+            // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2378
+
+            RunCommandsFromFile("Defect_MAGN_2378_Another.xml", false, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "WithWrongInput")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count);
+
+                    NodeModel nodeModel = workspace.NodeFromWorkspace("7fec1085-4818-41fa-adad-7b1dd71a5195");
+                    Assert.AreEqual(ElementState.Warning, nodeModel.State);
+
+                }
+                else if (commandTag == "WithCorrectInput")
+                {
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Connectors.Count);
+
+                    NodeModel nodeModel = workspace.NodeFromWorkspace("7fec1085-4818-41fa-adad-7b1dd71a5195");
+                    Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
+
+                    AssertPreviewValue("5778488b-4ab2-484a-b92e-79eb016cb776", 0);
+
+                }
+            });
+        }
 
        
         #endregion
