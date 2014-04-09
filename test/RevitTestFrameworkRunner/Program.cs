@@ -173,6 +173,7 @@ namespace RevitTestFrameworkRunner
             if (showHelp)
             {
                 ShowHelp(p);
+                return false;
             }
 
             if (!string.IsNullOrEmpty(_testAssembly) && !File.Exists(_testAssembly))
