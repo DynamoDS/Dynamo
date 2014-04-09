@@ -25,6 +25,16 @@ namespace RevitTestFrameworkRunner
         internal static bool _gui = true;
         internal static string _revitPath;
         internal static List<string> _journalPaths = new List<string>();
+        internal static int _runCount = 0;
+
+        public static event EventHandler TestRunsComplete;
+        private static void OnTestRunsComplete()
+        {
+            if (TestRunsComplete != null)
+            {
+                TestRunsComplete(null, EventArgs.Empty);
+            }
+        }
 
         [STAThread]
         static void Main(string[] args)
@@ -33,6 +43,8 @@ namespace RevitTestFrameworkRunner
 
             try
             {
+                TestRunsComplete += Program_TestRunsComplete;
+
                 if (!ParseArguments(args))
                 {
                     return;
@@ -87,6 +99,7 @@ namespace RevitTestFrameworkRunner
                     // If fixture name and test name are specified
                     if (string.IsNullOrEmpty(_fixture) && string.IsNullOrEmpty(_test))
                     {
+                        _runCount = vm.Assemblies.SelectMany(a => a.Fixtures.SelectMany(f => f.Tests)).Count();
                         foreach (var ad in vm.Assemblies)
                         {
                             RunAssembly(ad);
@@ -98,6 +111,7 @@ namespace RevitTestFrameworkRunner
                         var fd = vm.Assemblies.SelectMany(x => x.Fixtures).FirstOrDefault(f => f.Name == _fixture);
                         if (fd != null)
                         {
+                            _runCount = fd.Tests.Count;
                             RunFixture(fd);
                         }
                     }
@@ -109,6 +123,7 @@ namespace RevitTestFrameworkRunner
                                 .FirstOrDefault(t => t.Name == _test);
                         if (td != null)
                         {
+                            _runCount = 1;
                             RunTest(td);
                         }
                     }
@@ -119,6 +134,16 @@ namespace RevitTestFrameworkRunner
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+        }
+
+        static void Program_TestRunsComplete(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(_results) && 
+                File.Exists(_results) &&
+                _gui)
+            {
+                Process.Start(_results);
             }
         }
 
@@ -376,6 +401,12 @@ namespace RevitTestFrameworkRunner
                 process.WaitForExit();
             else
                 process.WaitForExit(120000);
+
+            _runCount --;
+            if (_runCount == 0)
+            {
+                OnTestRunsComplete();
+            }
         }
 
         internal static void Cleanup()
