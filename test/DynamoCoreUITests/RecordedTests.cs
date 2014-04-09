@@ -1869,7 +1869,7 @@ namespace DynamoCoreUITests
 
         [Test, RequiresSTA]
 
-        //Details for steps can be found ni defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2521
+        //Details for steps can be found in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2521
 
         public void Defect_MAGN_2521()
         {
@@ -1932,7 +1932,7 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void Defect_MAGN_2378_AnotherScenario()
         {
-            // this is using Point.Bycoordinates node.
+            // this is using Point.ByCoordinates node.
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2378
 
             RunCommandsFromFile("Defect_MAGN_2378_Another.xml", false, (commandTag) =>
