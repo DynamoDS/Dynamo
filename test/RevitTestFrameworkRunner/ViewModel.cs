@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
+using Autodesk.RevitAddIns;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 using System.Windows.Forms;
@@ -13,8 +13,11 @@ namespace RevitTestFrameworkRunner
     public class ViewModel : NotificationObject
     {
         private ObservableCollection<IAssemblyData> _assemblies;
+        private ObservableCollection<RevitProduct> _products;
+ 
         private string _runText = string.Empty;
         private object _selectedItem;
+        private int _selectedProductIndex;
 
         public DelegateCommand SetAssemblyPathCommand { get; set; }
         public DelegateCommand SetResultsPathCommand { get; set; }
@@ -30,6 +33,21 @@ namespace RevitTestFrameworkRunner
                 RaisePropertyChanged("SelectedItem");
                 RaisePropertyChanged("RunText");
                 RunCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public int SelectedProductIndex
+        {
+            get { return _selectedProductIndex; }
+            set
+            {
+                _selectedProductIndex = value;
+
+                Program._revitPath = _selectedProductIndex == -1 ? 
+                    string.Empty : 
+                    Path.Combine(Products[value].InstallLocation, "revit.exe");
+
+                RaisePropertyChanged("SelectedProductIndex");
             }
         }
 
@@ -71,6 +89,16 @@ namespace RevitTestFrameworkRunner
             }
         }
 
+        public ObservableCollection<RevitProduct> Products
+        {
+            get { return _products; }
+            set
+            {
+                _products = value;
+                RaisePropertyChanged("Products");
+            }
+        }
+
         public string ResultsPath
         {
             get { return Program._results; }
@@ -104,13 +132,40 @@ namespace RevitTestFrameworkRunner
             }
         }
 
+        public bool IsDebug
+        {
+            get { return Program._isDebug; }
+            set
+            {
+                Program._isDebug = value;
+                RaisePropertyChanged("IsDebug");
+            }
+        }
+
         internal ViewModel()
         {
             Assemblies = new ObservableCollection<IAssemblyData>();
+            Products = new ObservableCollection<RevitProduct>();
             SetAssemblyPathCommand = new DelegateCommand(SetAssemblyPath, CanSetAssemblyPath);
             SetResultsPathCommand = new DelegateCommand(SetResultsPath, CanSetResultsPath);
             SetWorkingPathCommand = new DelegateCommand(SetWorkingPath, CanSetWorkingPath);
             RunCommand = new DelegateCommand<object>(Run, CanRun);
+
+            Products.CollectionChanged += Products_CollectionChanged;
+        }
+
+        void Products_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            // When the products collection is changed, we want to set
+            // the selected product index to the first in the list
+            if (Products.Count > 0)
+            {
+                SelectedProductIndex = 0;
+            }
+            else
+            {
+                SelectedProductIndex = -1;
+            }
         }
 
         private bool CanRun(object parameter)
