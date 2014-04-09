@@ -1938,15 +1938,10 @@ namespace Dynamo.Nodes
 
             public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
             {
-                var start = _start.GetValue(null);
-                var count = _count.GetValue(null);
-                var step = _step.GetValue(null);
-
-                var end = count*step - step + start;
                 var rangeExpr = new RangeExprNode
                 {
                     FromNode = _start.GetAstNode(idLookup),
-                    ToNode = new DoubleNode(end),
+                    ToNode = _step.GetAstNode(idLookup),
                     StepNode = _step.GetAstNode(idLookup),
                     stepoperator = ProtoCore.DSASM.RangeStepOperator.stepsize
                 };
