@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
 using Microsoft.Practices.Prism.Commands;
@@ -59,6 +60,7 @@ namespace RevitTestFrameworkRunner
                 RaisePropertyChanged("RunText");
             }
         }
+        
         public ObservableCollection<IAssemblyData> Assemblies
         {
             get { return _assemblies; }
@@ -76,6 +78,7 @@ namespace RevitTestFrameworkRunner
             {
                 Program._results = value;
                 RaisePropertyChanged("ResultsPath");
+                RunCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -112,7 +115,7 @@ namespace RevitTestFrameworkRunner
 
         private bool CanRun(object parameter)
         {
-            return SelectedItem != null;
+            return SelectedItem != null && Uri.IsWellFormedUriString(Program._results, UriKind.Absolute);
         }
 
         private void Run(object parameter)

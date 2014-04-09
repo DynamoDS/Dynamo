@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Windows.Forms.PropertyGridInternal;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using NDesk.Options;
@@ -40,8 +42,26 @@ namespace RevitTestFrameworkRunner
 
                 var vm = new ViewModel();
 
+                
                 if (_gui)
                 {
+                    _workingDirectory = !string.IsNullOrEmpty(Properties.Settings.Default.workingDirectory) ?
+                    Properties.Settings.Default.workingDirectory :
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+                    _testAssembly = !string.IsNullOrEmpty(Properties.Settings.Default.assemblyPath) ?
+                    Properties.Settings.Default.assemblyPath :
+                    null;
+
+                    _results = !string.IsNullOrEmpty(Properties.Settings.Default.resultsPath) ?
+                    Properties.Settings.Default.resultsPath :
+                    null;
+
+                    if (!string.IsNullOrEmpty(_testAssembly) && File.Exists(_testAssembly))
+                    {
+                        Refresh(vm);
+                    }
+
                     // Show the user interface
                     var view = new View(vm);
                     view.ShowDialog();
@@ -96,6 +116,12 @@ namespace RevitTestFrameworkRunner
                 }
 
                 Cleanup();
+
+                Properties.Settings.Default.workingDirectory = _workingDirectory;
+                Properties.Settings.Default.assemblyPath = _testAssembly;
+                Properties.Settings.Default.resultsPath = _results;
+
+                Properties.Settings.Default.Save();
 
             }
             catch (Exception ex)
