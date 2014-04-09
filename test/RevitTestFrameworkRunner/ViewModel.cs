@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Autodesk.RevitAddIns;
 using Microsoft.Practices.Prism.Commands;
@@ -182,14 +183,19 @@ namespace RevitTestFrameworkRunner
 
             if (parameter is IAssemblyData)
             {
-                Program.RunAssembly(parameter as IAssemblyData);
+                var ad = parameter as IAssemblyData;
+                Program._runCount = ad.Fixtures.SelectMany(f => f.Tests).Count();
+                Program.RunAssembly(ad);
             }
             else if (parameter is IFixtureData)
             {
-                Program.RunFixture(parameter as IFixtureData);
+                var fd = parameter as IFixtureData;
+                Program._runCount = fd.Tests.Count;
+                Program.RunFixture(fd);
             }
             else if (parameter is ITestData)
             {
+                Program._runCount = 1;
                 Program.RunTest(parameter as ITestData);
             }
 
