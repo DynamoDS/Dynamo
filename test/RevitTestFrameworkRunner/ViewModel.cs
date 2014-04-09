@@ -117,6 +117,11 @@ namespace RevitTestFrameworkRunner
 
         private void Run(object parameter)
         {
+            if (File.Exists(Program._results))
+            {
+                File.Delete(Program._results);
+            }
+
             if (parameter is IAssemblyData)
             {
                 Program.RunAssembly(parameter as IAssemblyData);
