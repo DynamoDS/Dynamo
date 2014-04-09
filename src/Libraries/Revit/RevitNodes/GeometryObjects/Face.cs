@@ -184,6 +184,35 @@ namespace Revit.GeometryObjects
         }
 
         /// <summary>
+        /// Calculate the intersection of two Faces, returning a list of Curves
+        /// </summary>
+        /// <param name="face1"></param>
+        /// <param name="face2"></param>
+        /// <returns>A list of curves or an empty list if there is no intersection</returns>
+        public Autodesk.DesignScript.Geometry.Curve[] Intersect(Face face2)
+        {
+            var face1 = this;
+
+            if (face2 == null)
+            {
+                throw new System.ArgumentNullException("face2");
+            }
+
+            var revitFace1 = face1.InternalFace;
+            var revitFace2 = face2.InternalFace;
+
+            Autodesk.Revit.DB.Curve curve;
+            var rez = revitFace1.Intersect(revitFace2, out curve);
+
+            if (rez == FaceIntersectionFaceResult.Intersecting)
+            {
+                return new[] { curve.ToProtoType() };
+            }
+
+            return new Autodesk.DesignScript.Geometry.Curve[] { };
+        }
+
+        /// <summary>
         /// Evaluate the normal on a Face given it's parameters
         /// </summary>
         /// <param name="u"></param>
