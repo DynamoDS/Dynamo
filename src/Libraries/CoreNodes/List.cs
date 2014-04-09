@@ -660,25 +660,19 @@ namespace DSCore
         /// <search>transpose,flip,matrix,swap,rows,columns</search>
         public static IList Transpose(IList lists)
         {
-            if (lists.Count == 0)
+            if (lists.Count == 0 || !lists.Cast<object>().Any(x => x is IList))
                 return lists;
 
             var genList = lists.Cast<IList>();
+            var maxLength = genList.Max(subList => subList.Count); 
+            var retList = Enumerable.Repeat<IList>(new ArrayList {}, maxLength);
 
-            // ReSharper disable PossibleMultipleEnumeration
-            var argList =
-                genList.First().Cast<object>().Select(x => new ArrayList { x } as IList).ToList();
+            foreach (var list in genList)
+            {
+                retList = retList.Zip(list.Cast<object>(), (os, o) => { os.Add(o); return os; })
+            }
 
-            var query =
-                genList.Skip(1)
-                       .SelectMany(
-                           list => list.Cast<object>().Zip(argList, (o, objs) => new { o, objs }));
-            // ReSharper restore PossibleMultipleEnumeration
-
-            foreach (var pair in query)
-                pair.objs.Add(pair.o);
-
-            return argList;
+            return retList.ToList();
         }
 
         
