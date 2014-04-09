@@ -148,6 +148,7 @@ namespace ProtoCore
         /// 3. Call GetObjectData to serialise it onto a stream
         /// 4. Recreate using the special constructor
         /// </summary>
+        [Serializable]
         private class TraceSerialiserHelper : ISerializable
         {
             /// <summary>
