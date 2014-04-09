@@ -494,8 +494,9 @@ namespace Dynamo.Nodes
 
             //Make sure variables have not been declared in other Code block nodes.
             inputIdentifiers = unboundIdentifiers;
+
             //Set the input and output ports based on the statements
-            GeneratePorts(); 
+            CreateInputOutputPorts(); 
         }
 
         private void SetPreviewVariable(List<Node> parsedNodes)
@@ -517,9 +518,11 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        ///     Creates the inport and outport data based on the statements generated form the user code
+        /// Creates the inport and outport data based on 
+        /// the statements generated from the user code.
         /// </summary>
-        private void GeneratePorts()
+        /// 
+        private void CreateInputOutputPorts()
         {
             InPortData.Clear();
             OutPortData.Clear();
