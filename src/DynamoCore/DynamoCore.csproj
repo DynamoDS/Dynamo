@@ -745,13 +745,10 @@ IF NOT EXIST "$(OutputPath)\dll" "$(OutputPath)\InstallASMForDynamo.exe" /SILENT
 copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"
 </PostBuildEvent>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\ProtoGeometry\*" "$(OutputPath)"
-copy "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath).\License.rtf"
-copy "$(SolutionDir)..\extern\LibG\*" "$(OutputPath)\dll\"
-
-copy "$(SolutionDir)..\tools\install\extra\InstallASMForDynamo.exe" "$(OutputPath)\InstallASMForDynamo.exe"
-IF NOT EXIST "$(OutputPath)\dll" "$(OutputPath)\InstallASMForDynamo.exe" /SILENT /SUPPRESSMSGBOXES
-
-</PostBuildEvent>
+copy  /Y "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath).\License.rtf"
+copy  /Y "$(SolutionDir)..\extern\LibG\*" "$(OutputPath)\dll\"
+copy  /Y "$(SolutionDir)..\tools\install\extra\InstallASMForDynamo.exe" "$(OutputPath)\InstallASMForDynamo.exe"
+IF NOT EXIST "$(OutputPath)\dll" "$(OutputPath)\InstallASMForDynamo.exe" /SILENT /SUPPRESSMSGBOXES</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
