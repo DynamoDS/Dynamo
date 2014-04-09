@@ -46,6 +46,7 @@ namespace DynamoCoreUITests
         [TearDown]
         protected void Exit()
         {
+            commandCallback = null;
             if (this.Controller != null)
             {
                 this.Controller.ShutDown(true);
@@ -1863,6 +1864,40 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(callsiteGuidFirstCall, callsiteGuidSecondCall);
                 }
 
+            });
+        }
+
+        [Test, RequiresSTA]
+
+        //Details for steps can be found ni defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2521
+
+        public void Defect_MAGN_2521()
+        {
+            RunCommandsFromFile("Defect_MAGN_2521.xml", false, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "Point-10")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count);
+
+                    AssertPreviewValue("c0a70160-fb7e-4441-a06e-1e783d7c0d92", 10);
+                }
+                else if (commandTag == "Point-2")
+                {
+                    AssertPreviewValue("c0a70160-fb7e-4441-a06e-1e783d7c0d92", 2);
+                }
+                else if (commandTag == "Point-12")
+                {
+                    Assert.AreEqual(1, workspace.Connectors.Count);
+                    AssertPreviewValue("c0a70160-fb7e-4441-a06e-1e783d7c0d92", 12);
+                }
+                else if (commandTag == "Point--5")
+                {
+                    AssertPreviewValue("c0a70160-fb7e-4441-a06e-1e783d7c0d92", -5);
+                }
             });
         }
 
