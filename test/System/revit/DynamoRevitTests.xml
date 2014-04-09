@@ -2,22 +2,22 @@
 <tests pluginClass='Dynamo.Tests.DynamoTestFramework' pluginGUID='487f9ff0-5b34-4e7e-97bf-70fbff69194f'>
 	<testAssemblies>
 		<testAssembly name="DynamoRevitTester.dll">
-			<testFixture name="AdaptiveComponentTests">
+			<!--<testFixture name="AdaptiveComponentTests">
 				<test name="AdaptiveComponentByFace" runDynamo="True" modelPath=".\AdaptiveComponent\AdaptiveComponentByFace.rfa"/>
 				<test name="AdaptiveComponentByCurve" runDynamo="True" modelPath=".\AdaptiveComponent\AdaptiveComponentByCurve.rfa"/>
 				<test name="AdaptiveComponent" runDynamo="True" modelPath=".\AdaptiveComponent\AdaptiveComponent.rfa"/>
-			</testFixture>
-			<testFixture name="AnalysisDisplayTests">
+			</testFixture>-->
+			<!--<testFixture name="AnalysisDisplayTests">
 				<test name="AnalysisDisplayPoints" runDynamo="True" modelPath=".\AnalysisDisplay\AD_Points.rvt"/>
 				<test name="AnalysisDisplaySurface" runDynamo="True" modelPath=".\AnalysisDisplay\AD_Surface.rvt"/>
 				<test name="AnalysisDisplayVectors" runDynamo="True" modelPath=".\AnalysisDisplay\AD_Vector.rvt"/>
-			</testFixture>
-			<testFixture name="BugTests">
+			</testFixture>-->
+			<!--<testFixture name="BugTests">
 				<test name="MAGN_66" runDynamo="True" modelPath=".\Bugs\MAGN_66.rfa"/>
 				<test name="MAGN_102" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="MAGN_122" runDynamo="True" modelPath=".\Bugs\MAGN-122_wallsAndFloorsAndLevels.rvt"/>
 				<test name="MAGN_438" runDynamo="True" modelPath=".\Bugs\MAGN-438_structuralFraming_simple.rvt"/>
-			</testFixture>
+			</testFixture>-->
 			<testFixture name="CoreTests">
 				<test name="SanityCheck" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="CanChangeLacingAndHaveElementsUpdate" runDynamo="True" modelPath=".\empty.rfa"/>
