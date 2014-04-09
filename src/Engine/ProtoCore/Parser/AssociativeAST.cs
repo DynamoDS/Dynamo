@@ -254,7 +254,7 @@ namespace ProtoCore.AST.AssociativeAST
             var buf = new StringBuilder();
 
             if (ArrayDimensions != null)
-                buf.Append(ArrayDimensions);
+                buf.Append(ArrayDimensions.ToString());
 
             ReplicationGuides.ForEach(x => buf.Append("<" + x.ToString() + ">"));
 
@@ -1689,11 +1689,7 @@ namespace ProtoCore.AST.AssociativeAST
             var buf = new StringBuilder();
 
             if (null != Expr)
-            {
-                buf.Append("[");
-                buf.Append(Expr);
-                buf.Append("]");
-            }
+                buf.Append(string.Format("[{0}]", Expr.ToString()));
 
             if (null != Type)
                 buf.Append(Type);
