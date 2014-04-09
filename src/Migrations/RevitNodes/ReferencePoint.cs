@@ -90,9 +90,54 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll",
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "RevitNodes.dll",
                 "ReferencePoint.ByPointVectorDistance",
                 "ReferencePoint.ByPointVectorDistance@Point,Vector,double");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Create new nodes
+            XmlElement refptAsPoint = MigrationManager.CreateFunctionNode(
+                data.Document, "RevitNodes.dll",
+                "ReferencePoint.Point", "ReferencePoint.Point");
+            migrationData.AppendNode(refptAsPoint);
+            string refptAsPointId = MigrationManager.GetGuidFromXmlElement(refptAsPoint);
+
+            XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll",
+                "Point.AsVector", "Point.AsVector");
+            migrationData.AppendNode(pointAsVector);
+            string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
+
+            XmlElement vectorNormalized = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll",
+                "Vector.Normalized", "Vector.Normalized");
+            migrationData.AppendNode(vectorNormalized);
+            string vectorNormalizedId = MigrationManager.GetGuidFromXmlElement(vectorNormalized);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            PortId oldInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
+
+            PortId refptAsPointInPort0 = new PortId(refptAsPointId, 0, PortType.INPUT);
+            PortId pointAsVectorInPort0 = new PortId(pointAsVectorId, 0, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, refptAsPointInPort0);
+            data.ReconnectToPort(connector1, pointAsVectorInPort0);
+            data.CreateConnector(refptAsPoint, 0, newNode, 0);
+            data.CreateConnector(pointAsVector, 0, vectorNormalized, 0);
+            data.CreateConnector(vectorNormalized, 0, newNode, 1);
+
+            return migrationData;
         }
 
     }
