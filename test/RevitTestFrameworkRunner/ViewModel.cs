@@ -42,6 +42,11 @@ namespace RevitTestFrameworkRunner
             set
             {
                 _selectedProductIndex = value;
+
+                Program._revitPath = _selectedProductIndex == -1 ? 
+                    string.Empty : 
+                    Path.Combine(Products[value].InstallLocation, "revit.exe");
+
                 RaisePropertyChanged("SelectedProductIndex");
             }
         }

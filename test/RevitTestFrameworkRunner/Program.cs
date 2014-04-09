@@ -23,6 +23,7 @@ namespace RevitTestFrameworkRunner
         internal const string _pluginClass = "Dynamo.Tests.RevitTestFramework";
         internal static string _workingDirectory;
         internal static bool _gui = true;
+        internal static string _revitPath;
         internal static List<string> _journalPaths = new List<string>();
 
         [STAThread]
@@ -39,6 +40,10 @@ namespace RevitTestFrameworkRunner
 
                 var vm = new ViewModel();
 
+                if (!FindRevit(vm.Products))
+                {
+                    return;
+                }
                 
                 if (_gui)
                 {
@@ -51,12 +56,6 @@ namespace RevitTestFrameworkRunner
 
                     // Show the user interface
                     var view = new View(vm);
-
-                    if (!FindRevit(vm.Products))
-                    {
-                        return;
-                    }
-
                     view.ShowDialog();
 
                     SaveSettings();
@@ -364,7 +363,7 @@ namespace RevitTestFrameworkRunner
 
             var startInfo = new ProcessStartInfo()
             {
-                FileName = "Revit.exe",
+                FileName = _revitPath,
                 WorkingDirectory = _workingDirectory,
                 Arguments = path
             };
