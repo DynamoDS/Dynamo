@@ -4,8 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Windows.Forms.PropertyGridInternal;
+using Autodesk.RevitAddIns;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using NDesk.Options;
@@ -52,6 +51,12 @@ namespace RevitTestFrameworkRunner
 
                     // Show the user interface
                     var view = new View(vm);
+
+                    if (!FindRevit(vm.Products))
+                    {
+                        return;
+                    }
+
                     view.ShowDialog();
 
                     SaveSettings();
@@ -116,6 +121,19 @@ namespace RevitTestFrameworkRunner
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        private static bool FindRevit(IList<RevitProduct> productList)
+        {
+            var products = RevitProductUtility.GetAllInstalledRevitProducts();
+            if (!products.Any())
+            {
+                Console.WriteLine("No versions of revit could be found");
+                return false;
+            }
+
+            products.ForEach(productList.Add);
+            return true;
         }
 
         private static void SaveSettings()

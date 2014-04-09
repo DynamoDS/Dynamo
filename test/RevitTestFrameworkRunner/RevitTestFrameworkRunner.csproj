@@ -49,6 +49,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="RevitAddInUtility">
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2014\RevitAddInUtility.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
