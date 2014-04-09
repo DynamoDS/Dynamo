@@ -19,7 +19,6 @@ namespace ProtoTest.LiveRunner
     public class ChangeSetComputerTests
     {
         public TestFrameWork thisTest = new TestFrameWork();
-
         ProtoCore.Core core = null;
 
         [SetUp]
@@ -27,15 +26,7 @@ namespace ProtoTest.LiveRunner
         {
             var opts = new Options();
             opts.ExecutionMode = ExecutionMode.Serial;
-            ProtoCore.Core core = new Core(opts);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-        }
-
-        [TearDown]
-        public void CleanUp()
-        {
-            GraphToDSCompiler.GraphUtilities.Reset();
+            ProtoCore.Core core = thisTest.SetupTestCore();
         }
 
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
