@@ -1,5 +1,6 @@
 ﻿using System;
 using Autodesk.DesignScript.Geometry;
+using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
 
@@ -7,7 +8,7 @@ namespace DSRevitNodesTests.Elements
 {
 
     [TestFixture]
-    public class FreeFormTests
+    public class FreeFormTests : RevitNodeTestBase
     {
         [SetUp]
         public void Setup()
@@ -22,6 +23,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void BySolid_ValidArgs()
         {
             // construct a triangle
@@ -64,6 +66,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void BySolid_NullArgument()
         {
             Assert.Throws(typeof(ArgumentNullException), () => FreeForm.BySolid(null));

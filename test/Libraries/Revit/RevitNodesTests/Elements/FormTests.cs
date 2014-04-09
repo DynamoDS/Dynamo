@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Autodesk.DesignScript.Geometry;
+using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
 using RevitServices.Persistence;
@@ -9,7 +10,7 @@ using ModelCurve = Revit.Elements.ModelCurve;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class FormTests
+    public class FormTests : RevitNodeTestBase
     {
         [SetUp]
         public void Setup()
@@ -24,6 +25,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\modelLines.rfa")]
         public void ByLoftingCurveReferences_ValidArgs()
         {
             var eles =
@@ -41,6 +43,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\blockAlone.rfa")]
         public void FaceReferencesProperty_ValidObject()
         {
             var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
@@ -53,6 +56,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\blockAlone.rfa")]
         public void SolidsProperty_ValidObject()
         {
             var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();

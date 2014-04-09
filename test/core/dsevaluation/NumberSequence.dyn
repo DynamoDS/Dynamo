@@ -1,0 +1,12 @@
+<Workspace Version="0.7.0.20046" X="-298.305362722385" Y="-329.689307600719" zoom="2.37004060791358" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="3daeaf01-21f8-4ea9-a3fb-b341a4d55bd7" nickname="Number" x="148.503591746275" y="155.509226830946" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0..#5..1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="4d86876b-08a8-4166-b1f5-4194b8381dab" nickname="Watch" x="246.53640953663" y="200.496668800827" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="3daeaf01-21f8-4ea9-a3fb-b341a4d55bd7" start_index="0" end="4d86876b-08a8-4166-b1f5-4194b8381dab" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
