@@ -40,7 +40,7 @@ namespace IntegrationTests
 
             [Test]
             [Category("Trace")]
-            public void TestGuidIDStability()
+            public void TestGuidStability()
             {
 
                 //Test to ensure that the first time the code is executed the wasTraced attribute is marked as false
@@ -94,6 +94,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
                 Assert.AreEqual(guid, guid2);
             }
+
 
 
 
