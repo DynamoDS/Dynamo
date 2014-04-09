@@ -137,6 +137,8 @@ namespace RevitTestFrameworkRunner
             {
                 Program.RunTest(parameter as ITestData);
             }
+
+            Program.Cleanup();
         }
 
         private bool CanSetWorkingPath()

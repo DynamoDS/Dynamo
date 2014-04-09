@@ -299,6 +299,8 @@ namespace RevitTestFrameworkRunner
 
                 tw.Write(journal);
                 tw.Flush();
+
+                _journalPaths.Add(path);
             }
         }
 
@@ -356,6 +358,8 @@ namespace RevitTestFrameworkRunner
                     File.Delete(path);
                 }
             }
+
+            _journalPaths.Clear();
 
             var journals = Directory.GetFiles(_workingDirectory, "journal.*.txt");
             foreach (var journal in journals)
