@@ -62,9 +62,10 @@ namespace Dynamo.Nodes
             };
 
             nodeUi.grid.Children.Add(image);
-            image.SetValue(Grid.RowProperty, 2);
+            image.SetValue(Grid.RowProperty, 3);
             image.SetValue(Grid.ColumnProperty, 0);
             image.SetValue(Grid.ColumnSpanProperty, 3);
+            image.SetValue(Canvas.ZIndexProperty, 50);
         }
 
         private void SetImageSource(System.Drawing.Bitmap bmp)
