@@ -104,6 +104,16 @@ namespace RevitTestFrameworkRunner
             }
         }
 
+        public bool IsDebug
+        {
+            get { return Program._isDebug; }
+            set
+            {
+                Program._isDebug = value;
+                RaisePropertyChanged("IsDebug");
+            }
+        }
+        
         internal ViewModel()
         {
             Assemblies = new ObservableCollection<IAssemblyData>();

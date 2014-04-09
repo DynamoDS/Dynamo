@@ -43,6 +43,7 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -68,8 +69,11 @@
             <TextBlock Text="Working Directory:"></TextBlock>
             <TextBox Text="{Binding WorkingPath, Converter={StaticResource WorkingPathConverter}}"></TextBox>
         </StackPanel>
-
-        <TreeView Margin="5" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" 
+        
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Margin="5">
+            <CheckBox Content="Debug" IsChecked="{Binding IsDebug, Mode=TwoWay}"></CheckBox>
+        </StackPanel>
+        <TreeView Margin="5" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" 
                   ItemsSource="{Binding Assemblies}" 
                   ItemTemplate="{StaticResource AssemblyTemplate}"
                   VirtualizingStackPanel.IsVirtualizing="True"

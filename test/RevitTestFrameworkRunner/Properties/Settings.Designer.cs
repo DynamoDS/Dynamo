@@ -58,5 +58,17 @@ namespace RevitTestFrameworkRunner.Properties {
                 this["resultsPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool isDebug {
+            get {
+                return ((bool)(this["isDebug"]));
+            }
+            set {
+                this["isDebug"] = value;
+            }
+        }
     }
 }
