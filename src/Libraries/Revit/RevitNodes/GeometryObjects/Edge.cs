@@ -8,7 +8,12 @@ using Revit.GeometryConversion;
 
 namespace Revit.GeometryObjects
 {
-
+    /// <summary>
+    /// A Revit Edge
+    /// 
+    /// Note: This class is required as there is no known way to robustly convert
+    /// a Revit Face into its ProtoGeometry equivalent.
+    /// </summary>
     public class Edge : GeometryObject
     {
         internal Autodesk.Revit.DB.Edge InternalEdge
@@ -31,14 +36,10 @@ namespace Revit.GeometryObjects
             return new Edge(f);
         }
 
-        #region Public methods
-
         public override object[] Explode()
         {
             return new [] { this.Curve };
         }
-
-        #endregion
 
         /// <summary>
         /// Get the underlying curve representation of the Edge

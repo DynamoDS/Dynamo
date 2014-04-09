@@ -10,6 +10,12 @@ using UV = Autodesk.Revit.DB.UV;
 
 namespace Revit.GeometryObjects
 {
+    /// <summary>
+    /// A Revit Face
+    /// 
+    /// Note: This class is required as there is no known way to robustly convert
+    /// a Revit Face into its ProtoGeometry equivalent.
+    /// </summary>
     public class Face : GeometryObject
     {
 
@@ -115,6 +121,66 @@ namespace Revit.GeometryObjects
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Calculate the intersection of a Curve and a Revit Face
+        /// </summary>
+        /// <param name="curve"></param>
+        /// <returns name="point">The nearest Point to the projected Point on the Face</returns>
+        /// <returns name="uv">The UV coordinates of the nearest Point on the Face</returns>
+        /// <returns name="dist">The distance from the Point to the Face</returns>
+        /// <returns name="edge">The edge if projected Point is near an Edge</returns>
+        /// <returns name="edgeParm">The parameter on the Edge if the point is near an Edge</returns>
+        [MultiReturn(new[] { "xyz", "uv", "parm", "edge", "edgeParm" })]
+        public Dictionary<string, object> Intersect(Autodesk.DesignScript.Geometry.Curve curve)
+        {
+            if (curve == null)
+            {
+                throw new System.ArgumentNullException("curve");
+            }
+
+            var revitFace = this.InternalFace;
+            Autodesk.Revit.DB.IntersectionResultArray xsects = null;
+
+            var result = revitFace.Intersect(curve.ToRevitType(), out xsects);
+
+            var pts = new List<Autodesk.DesignScript.Geometry.Point>();
+            var uvs = new List<Autodesk.DesignScript.Geometry.UV>();
+            var parms = new List<double>();
+            var edges = new List<Edge>();
+            var edgeParms = new List<double>();
+
+            if (xsects != null)
+            {
+                foreach (IntersectionResult ir in xsects)
+                {
+                    try
+                    {
+                        edgeParms.Add(ir.EdgeParameter);
+                    }
+                    catch
+                    {
+                        edgeParms.Add(0);
+                    }
+
+                    edges.Add(ir.EdgeObject != null ? Edge.FromExisting(ir.EdgeObject) : null);
+
+                    parms.Add(ir.Parameter);
+
+                    uvs.Add(Autodesk.DesignScript.Geometry.UV.ByCoordinates(ir.UVPoint.U, ir.UVPoint.V));
+                    pts.Add(ir.XYZPoint.ToPoint());
+                }
+            }
+
+            return new Dictionary<string, object>()
+                {
+                    {"point", pts.ToArray() },
+                    {"uv", uvs.ToArray() },
+                    {"parm", parms.ToArray() },
+                    {"edge", edges.ToArray() },
+                    {"edgeParm", edgeParms.ToArray() }
+                };
         }
 
         /// <summary>
