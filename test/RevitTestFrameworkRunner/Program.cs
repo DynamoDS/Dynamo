@@ -62,25 +62,11 @@ namespace RevitTestFrameworkRunner
                     //{
                     //    Console.WriteLine("The specified test model does not exist");
                     //}
-                }
 
-                foreach (var path in _journalPaths)
-                {
-                    var startInfo = new ProcessStartInfo()
-                    {
-                        FileName = "Revit.exe",
-                        WorkingDirectory = _workingDirectory,
-                        Arguments = path
-                    };
-
-                    Console.WriteLine("Running {0}", path);
-                    var process = new Process {StartInfo = startInfo};
-                    process.Start();
-
-                    if (_debug)
-                        process.WaitForExit();
-                    else
-                        process.WaitForExit(120000);
+                    //foreach (var path in _journalPaths)
+                    //{
+                    //    CreateJournal(path);
+                    //}
                 }
 
                 Cleanup();
@@ -194,7 +180,7 @@ namespace RevitTestFrameworkRunner
                 return false;
             }
 
-            var fixData = new FixtureData(fixtureType.Name);
+            var fixData = new FixtureData(data, fixtureType.Name);
             data.Fixtures.Add(fixData);
 
             foreach (var test in fixtureType.GetMethods())
@@ -206,7 +192,7 @@ namespace RevitTestFrameworkRunner
                     continue;
                 }
 
-                if (!ReadTest(fixtureType, test, fixData))
+                if (!ReadTest(test, fixData))
                 {
                     Console.WriteLine(string.Format("Journal could not be created for test:{0} in fixture:{1}", _test,
                         _fixture));
@@ -217,7 +203,7 @@ namespace RevitTestFrameworkRunner
             return true;
         }
 
-        private static bool ReadTest(Type fixtureType, MethodInfo test, IFixtureData data)
+        private static bool ReadTest(MethodInfo test, IFixtureData data)
         {
             var testModelAttribs =  test.GetCustomAttributes(typeof(TestModelAttribute), false);
             if (!testModelAttribs.Any())
@@ -235,13 +221,13 @@ namespace RevitTestFrameworkRunner
                 runDynamo = ((RunDynamoAttribute)runDynamoAttribs[0]).RunDynamo;
             }
 
-            var testData = new TestData(test.Name, modelPath, runDynamo);
+            var testData = new TestData(data, test.Name, modelPath, runDynamo);
             data.Tests.Add(testData);
 
             return true;
         }
 
-        private static void CreateJournal(string path, Type fixtureType, string modelPath)
+        private static void CreateJournal(string path, string testName, string fixtureName, string assemblyPath, string resultsPath, string modelPath)
         {
             using (var tw = new StreamWriter(path, false))
             {
@@ -254,7 +240,7 @@ namespace RevitTestFrameworkRunner
                                             "Jrn.Data \"APIStringStringMapJournalData\", 5, \"testName\", \"{3}\", \"fixtureName\", \"{4}\", \"testAssembly\", \"{5}\", \"resultsPath\", \"{6}\", \"debug\",\"{7}\" \n" +
                                             "Jrn.Command \"Internal\" , \"Flush undo and redo stacks , ID_FLUSH_UNDO\" \n" +
                                             "Jrn.Command \"SystemMenu\" , \"Quit the application; prompts to save projects , ID_APP_EXIT\"",
-                    modelPath, _pluginGuid, _pluginClass, _test, fixtureType.Name, _testAssembly, _results, _debug);
+                    modelPath, _pluginGuid, _pluginClass, testName, fixtureName, assemblyPath, resultsPath, _debug);
 
                 tw.Write(journal);
                 tw.Flush();
@@ -269,17 +255,41 @@ namespace RevitTestFrameworkRunner
 
         public static void RunAssembly(IAssemblyData ad)
         {
-            
+            foreach (var fix in ad.Fixtures)
+            {
+                RunFixture(fix);
+            }
         }
 
         public static void RunFixture(IFixtureData fd)
         {
-            
+            foreach (var td in fd.Tests)
+            {
+                RunTest(td);
+            }
         }
 
         public static void RunTest(ITestData td)
         {
-            
+            var path = Path.Combine(_workingDirectory, td.Name + ".txt");
+
+            CreateJournal(path, td.Name, td.Fixture.Name, td.Fixture.Assembly.Path, _results, td.ModelPath);
+
+            var startInfo = new ProcessStartInfo()
+            {
+                FileName = "Revit.exe",
+                WorkingDirectory = _workingDirectory,
+                Arguments = path
+            };
+
+            Console.WriteLine("Running {0}", path);
+            var process = new Process { StartInfo = startInfo };
+            process.Start();
+
+            if (_debug)
+                process.WaitForExit();
+            else
+                process.WaitForExit(120000);
         }
 
         internal static void Cleanup()
@@ -318,9 +328,10 @@ namespace RevitTestFrameworkRunner
     {
         public string Name { get; set; }
         public IList<ITestData> Tests { get; set; }
-
-        public FixtureData(string name)
+        public IAssemblyData Assembly { get; set; }
+        public FixtureData(IAssemblyData assembly, string name)
         {
+            Assembly = assembly;
             Tests = new List<ITestData>();
             Name = name;
         }
@@ -331,9 +342,11 @@ namespace RevitTestFrameworkRunner
         public string Name { get; set; }
         public bool RunDynamo { get; set; }
         public string ModelPath { get; set; }
+        public IFixtureData Fixture { get; set; }
 
-        public TestData(string name, string modelPath, bool runDynamo)
+        public TestData(IFixtureData fixture, string name, string modelPath, bool runDynamo)
         {
+            Fixture = fixture;
             Name = name;
             ModelPath = modelPath;
             RunDynamo = runDynamo;
