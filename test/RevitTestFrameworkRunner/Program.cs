@@ -21,7 +21,7 @@ namespace RevitTestFrameworkRunner
         internal const string _pluginGuid = "487f9ff0-5b34-4e7e-97bf-70fbff69194f";
         internal const string _pluginClass = "Dynamo.Tests.RevitTestFramework";
         internal static string _workingDirectory;
-        internal static bool _gui;
+        internal static bool _gui = true;
         internal static List<string> _journalPaths = new List<string>();
 
         [STAThread]
@@ -48,6 +48,13 @@ namespace RevitTestFrameworkRunner
                 }
                 else
                 {
+                    // In any case here, the test assembly cannot be null
+                    if (string.IsNullOrEmpty(_testAssembly))
+                    {
+                        Console.WriteLine("You must specify at least a test assembly.");
+                        return;
+                    }
+
                     if (!ReadAssembly(_testAssembly, vm.Assemblies))
                     {
                         return;
