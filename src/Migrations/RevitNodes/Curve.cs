@@ -54,7 +54,6 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
- 
             // Swap input args
             var oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
             var connector0 = data.FindFirstConnector(oldInPort0);
@@ -112,7 +111,6 @@ namespace Dynamo.Nodes
             return migrationData;
         }
     }
-
 
     public class CurvesThroughPoints : MigrationNode
     {
