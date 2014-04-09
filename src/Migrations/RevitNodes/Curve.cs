@@ -54,59 +54,62 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            // Swap input args
             var oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
             var connector0 = data.FindFirstConnector(oldInPort0);
             var oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
             var connector1 = data.FindFirstConnector(oldInPort1);
 
-            data.ReconnectToPort(connector0, oldInPort1);
-            data.ReconnectToPort(connector1, oldInPort0);
+            data.ReconnectToPort(connector0, oldInPort0);
+            data.ReconnectToPort(connector1, oldInPort1);
 
-            // TODO: check for if the node is connected
-            // Get the original output ports connected to input
-            var ptInputNodeId = connector0.Attributes["start"].Value;
-            var ptInputIndex = int.Parse(connector0.Attributes["start_index"].Value);
+            if (connector0 != null)
+            {
+                // Get the original output ports connected to input
+                var ptInputNodeId = connector0.Attributes["start"].Value;
+                var ptInputIndex = int.Parse(connector0.Attributes["start_index"].Value);
 
-            var crvInputNodeId = connector1.Attributes["start"].Value;
-            var crvInputIndex = int.Parse(connector1.Attributes["start_index"].Value);
+                // make distance to node
+                var distTo = MigrationManager.CreateFunctionNode(
+                    data.Document, "ProtoGeometry.dll",
+                    "Geometry.DistanceTo",
+                    "Geometry.DistanceTo@Geometry");
+                migrationData.AppendNode(distTo);
+                var distToId = MigrationManager.GetGuidFromXmlElement(distTo);
 
-            // make parm at point node 
-            var parmAtPt = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll",
-                "Curve.ParameterAtPoint",
-                "Curve.ParameterAtPoint@Point");
-            migrationData.AppendNode(parmAtPt);
-            var parmAtPtId = MigrationManager.GetGuidFromXmlElement(parmAtPt);
+                data.CreateConnector(newNode, 0, distTo, 0);
+                data.CreateConnectorFromId(ptInputNodeId, ptInputIndex, distToId, 1);
 
+                var oldDOut = new PortId(newNodeId, 2, PortType.OUTPUT);
+                var newDOut = new PortId(distToId, 0, PortType.OUTPUT);
+                var oldDConnectors = data.FindConnectors(oldDOut);
+                oldDConnectors.ToList().ForEach(x => data.ReconnectToPort(x, newDOut));
+            }
 
-            // connect output of project to parm at pt
-            data.CreateConnectorFromId(crvInputNodeId, crvInputIndex, parmAtPtId, 0);
-            data.CreateConnector(newNode, 0, parmAtPt, 1);
-            
-            // make distance to node
-            var distTo = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll",
-                "Geometry.DistanceTo",
-                "Geometry.DistanceTo@Geometry");
-            migrationData.AppendNode(distTo);
-            var distToId = MigrationManager.GetGuidFromXmlElement(distTo);
+            if (connector1 != null)
+            {
+                var crvInputNodeId = connector1.Attributes["start"].Value;
+                var crvInputIndex = int.Parse(connector1.Attributes["start_index"].Value);
 
-            data.CreateConnector(newNode, 0, distTo, 0);
-            data.CreateConnectorFromId(ptInputNodeId, ptInputIndex, distToId, 1);
+                // make parm at point node 
+                var parmAtPt = MigrationManager.CreateFunctionNode(
+                    data.Document, "ProtoGeometry.dll",
+                    "Curve.ParameterAtPoint",
+                    "Curve.ParameterAtPoint@Point");
+                migrationData.AppendNode(parmAtPt);
+                var parmAtPtId = MigrationManager.GetGuidFromXmlElement(parmAtPt);
 
+                // connect output of project to parm at pt
+                data.CreateConnectorFromId(crvInputNodeId, crvInputIndex, parmAtPtId, 0);
+                data.CreateConnector(newNode, 0, parmAtPt, 1);
 
-            // reconnect remaining output ports to new nodes
-            var newDOut = new PortId(distToId, 0, PortType.OUTPUT);
-            var newTOut = new PortId(parmAtPtId, 0, PortType.OUTPUT);
-            var oldTOut = new PortId(newNodeId, 1, PortType.OUTPUT);
-            var oldDOut = new PortId(newNodeId, 2, PortType.OUTPUT);
+                // reconnect remaining output ports to new nodes
+                var newTOut = new PortId(parmAtPtId, 0, PortType.OUTPUT);
+                var oldTOut = new PortId(newNodeId, 1, PortType.OUTPUT);
 
-            var oldTConnectors = data.FindConnectors(oldTOut);
-            var oldDConnectors = data.FindConnectors(oldDOut);
+                var oldTConnectors = data.FindConnectors(oldTOut);
 
-            oldTConnectors.ToList().ForEach(x => data.ReconnectToPort(x, newTOut));
-            oldDConnectors.ToList().ForEach(x => data.ReconnectToPort(x, newDOut));
+                oldTConnectors.ToList().ForEach(x => data.ReconnectToPort(x, newTOut));
+            }
 
             return migrationData;
         }
