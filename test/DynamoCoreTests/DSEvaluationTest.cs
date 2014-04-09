@@ -662,6 +662,13 @@ namespace Dynamo.Tests
             var node = Controller.DynamoViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
             Assert.IsTrue(node.State == Models.ElementState.Warning);
         }
+
+        [Test]
+        public void NumberSequence()
+        {
+            RunModel(@"core\dsevaluation\NumberSequence.dyn");
+            AssertPreviewValue("4d86876b-08a8-4166-b1f5-4194b8381dab", new object[] {0.0, 1.0, 2.0, 3.0, 4.0});
+        }
     }
 
     [Category("DSCustomNode")]

@@ -74,6 +74,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CurveLoop()
         {
             var model = dynSettings.Controller.DynamoModel;

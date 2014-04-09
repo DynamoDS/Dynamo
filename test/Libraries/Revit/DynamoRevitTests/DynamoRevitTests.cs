@@ -29,8 +29,10 @@ namespace Dynamo.Tests
         //Called before each test method
         
         [SetUp]
-        public void SetupPaths()
+        public void Setup()
         {
+            StartDynamo();
+
             //it doesn't make sense to do these steps before every test
             //but when running from the revit plugin we are not loading the 
             //fixture, so the initfixture method is not called.
@@ -38,7 +40,7 @@ namespace Dynamo.Tests
             //get the test path
             var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
             string assDir = fi.DirectoryName;
-            string testsLoc = Path.Combine(assDir, @"..\..\..\test\revit\");
+            string testsLoc = Path.Combine(assDir, @"..\..\..\test\System\revit\");
             _testPath = Path.GetFullPath(testsLoc);
 
             //get the samples path
