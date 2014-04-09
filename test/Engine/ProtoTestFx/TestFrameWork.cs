@@ -36,7 +36,7 @@ namespace ProtoTestFx.TD
             runner = new ProtoScriptTestRunner();
         }
 
-        private ProtoCore.Core SetupTestCore()
+        public ProtoCore.Core SetupTestCore()
         {
             testCore = new ProtoCore.Core(new ProtoCore.Options());
             testCore.Configurations.Add(ConfigurationKeys.GeometryFactory, "DSGeometry.dll");

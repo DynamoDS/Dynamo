@@ -74,6 +74,124 @@ namespace ProtoScript.Runners
     }
 
     /// <summary>
+    /// This is the data returned by ChangeSetComputer and consumed by ChangeSetApplier
+    /// </summary>
+    public class ChangeSetData
+    {
+        public ChangeSetData(){}
+        public List<AssociativeNode> DeletedBinaryExprASTNodes;
+        public List<AssociativeNode> DeletedFunctionDefASTNodes; 
+        public List<AssociativeNode> RemovedBinaryNodesFromModification; 
+        public List<AssociativeNode> RemovedFunctionDefNodesFromModification;
+        public List<FunctionDefinitionNode> ModifiedFunctions; 
+    }
+
+    /// <summary>
+    /// ChangeSetApplier modifes the VM state given the changes computed from a ChangeSetComputer instance
+    /// </summary>
+    public class ChangeSetApplier
+    {
+        private ProtoCore.Core core = null;
+        public void Apply(ProtoCore.Core core, ChangeSetData changeSet)
+        {
+            Validity.Assert(null != changeSet);
+            this.core = core;
+            ApplyChangeSetDeleted(changeSet);
+            ApplyChangeSetModified(changeSet);
+        }
+
+        private void ApplyChangeSetDeleted(ChangeSetData changeSet)
+        {
+            MarkGraphNodesInactive(changeSet.DeletedBinaryExprASTNodes);
+            UndefineFunctions(changeSet.DeletedFunctionDefASTNodes);
+        }
+
+        private void ApplyChangeSetModified(ChangeSetData changeSet)
+        {
+            DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
+            UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
+            // Mark all graphnodes dependent on the modified functions as dirty
+            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, changeSet.ModifiedFunctions);
+        }
+
+        /// <summary>
+        /// Takes in a Subtree to delete or modify and marks the corresponding 
+        /// gragh nodes in DS inactive.
+        // 
+        /// This is equivalent to removing them from the VM
+        /// </summary>
+        /// <param name="subtree"></param>
+        /// <returns></returns>
+        private void MarkGraphNodesInactive(List<AssociativeNode> modifiedASTList)
+        {
+            if (null == modifiedASTList)
+            {
+                return;
+            }
+
+            foreach (var node in modifiedASTList)
+            {
+                BinaryExpressionNode bNode = node as BinaryExpressionNode;
+                if (bNode != null)
+                {
+                    // TODO: Aparajit - this can be made more efficient by maintaining a map in core of 
+                    // graphnode vs expression UID 
+                    foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
+                    {
+                        if (gnode.exprUID == bNode.exprUID)
+                        {
+                            gnode.isActive = false;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Deactivate a single graphnode regardless of its associated dependencies
+        /// </summary>
+        /// <param name="nodeList"></param>
+        private void DeactivateGraphnodes(List<AssociativeNode> nodeList)
+        {
+            if (null == nodeList)
+            {
+                return;
+            }
+
+            foreach (var node in nodeList)
+            {
+                BinaryExpressionNode bNode = node as BinaryExpressionNode;
+                if (bNode != null)
+                {
+                    foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
+                    {
+                        if (gnode.AstID == bNode.ID)
+                        {
+                            gnode.isActive = false;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// This method updates a redefined function
+        /// </summary>
+        /// <param name="subtree"></param>
+        /// <returns></returns>
+        private void UndefineFunctions(IEnumerable<AssociativeNode> functionDefintions)
+        {
+            foreach (var funcDef in functionDefintions)
+            {
+                core.SetFunctionInactive(funcDef as FunctionDefinitionNode);
+            }
+        }
+
+    }
+
+    /// <summary>
     /// ChangeSetComputer handles delta computation of AST's
     /// </summary>
     public class ChangeSetComputer
@@ -81,6 +199,8 @@ namespace ProtoScript.Runners
         private Dictionary<System.Guid, Subtree> currentSubTreeList = null;
         private ProtoCore.Core core = null;
         private Dictionary<Guid, List<ProtoCore.AST.Node>> astCache = null;
+
+        public ChangeSetData csData { get; private set; }
 
         public ChangeSetComputer(ProtoCore.Core core)
         {
@@ -94,14 +214,16 @@ namespace ProtoScript.Runners
         {
             var deltaAstList = new List<AssociativeNode>();
 
+            csData.DeletedBinaryExprASTNodes = new List<AssociativeNode>();
+            csData.DeletedFunctionDefASTNodes = new List<AssociativeNode>();
+
             if (deletedSubTrees != null)
             {
                 foreach (var st in deletedSubTrees)
                 {
                     if (st.AstNodes != null && st.AstNodes.Count > 0)
                     {
-                        var nullNodes = MarkGraphNodesInactive(st.AstNodes);
-                        deltaAstList.AddRange(nullNodes);
+                        csData.DeletedBinaryExprASTNodes.AddRange(st.AstNodes);
                     }
                     else
                     {
@@ -112,21 +234,25 @@ namespace ProtoScript.Runners
                         {
                             if (removeSubTree.AstNodes != null)
                             {
-                                var nullNodes = MarkGraphNodesInactive(removeSubTree.AstNodes);
-                                deltaAstList.AddRange(nullNodes);
+                                csData.DeletedBinaryExprASTNodes.AddRange(removeSubTree.AstNodes);
                             }
                         }
                     }
 
+                    // Cache removed function definitions
                     Subtree oldSubTree;
                     if (currentSubTreeList.TryGetValue(st.GUID, out oldSubTree))
                     {
                         if (oldSubTree.AstNodes != null)
                         {
-                            UndefineFunctions(oldSubTree.AstNodes.Where(n => n is FunctionDefinitionNode));
+                            csData.DeletedFunctionDefASTNodes.AddRange(oldSubTree.AstNodes.Where(n => n is FunctionDefinitionNode));
                         }
                         currentSubTreeList.Remove(st.GUID);
                     }
+
+                    // Build the nullify ASTs
+                    var nullNodes = BuildNullAssignments(csData.DeletedBinaryExprASTNodes);
+                    deltaAstList.AddRange(nullNodes);
 
                     foreach (AssociativeNode node in deltaAstList)
                     {
@@ -174,6 +300,10 @@ namespace ProtoScript.Runners
         private IEnumerable<AssociativeNode> GetDeltaAstListModified(IEnumerable<Subtree> modifiedSubTrees)
         {
             var deltaAstList = new List<AssociativeNode>();
+            csData.RemovedBinaryNodesFromModification = new List<AssociativeNode>();
+            csData.RemovedFunctionDefNodesFromModification = new List<AssociativeNode>();
+            csData.ModifiedFunctions = new List<FunctionDefinitionNode>();
+
             if (modifiedSubTrees == null)
             {
                 return deltaAstList;
@@ -206,12 +336,13 @@ namespace ProtoScript.Runners
                     if (st.ForceExecution)
                     {
                         removedNodes = oldSubTree.AstNodes;
+                        csData.RemovedBinaryNodesFromModification.AddRange(removedNodes);
                     }
                     else
                     {
                         removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+                        csData.RemovedBinaryNodesFromModification.AddRange(removedNodes);
                     }
-                    DeactivateGraphnodes(removedNodes);
 
                     // There is a bug in DeactivateGraphNodes(), otherwise we
                     // could remove all warnings generated from removedNodes in
@@ -222,7 +353,7 @@ namespace ProtoScript.Runners
 
                 // Handle modifed functions
                 var modifiedFunctions = st.AstNodes.Where(n => n is FunctionDefinitionNode);
-                UndefineFunctions(modifiedFunctions);
+                csData.RemovedFunctionDefNodesFromModification.AddRange(modifiedFunctions);
                 deltaAstList.AddRange(modifiedFunctions);
 
                 // Handle cached subtree
@@ -238,7 +369,8 @@ namespace ProtoScript.Runners
                     }
                     else
                     {
-                        UndefineFunctions(oldSubTree.AstNodes.Where(n => n is FunctionDefinitionNode));
+                       
+                        csData.RemovedFunctionDefNodesFromModification.AddRange(oldSubTree.AstNodes.Where(n => n is FunctionDefinitionNode));
 
                         // Update the current subtree list
                         List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
@@ -250,9 +382,6 @@ namespace ProtoScript.Runners
                         currentSubTreeList[st.GUID] = st;
                     }
                 }
-
-                // Mark all graphnodes dependent on the modified functions as dirty
-                ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, modifiedFunctions);
 
                 foreach (AssociativeNode node in deltaAstList)
                 {
@@ -270,7 +399,7 @@ namespace ProtoScript.Runners
         public List<AssociativeNode> GetDeltaASTList(GraphSyncData syncData)
         {
             UpdateAstCache(syncData);
-
+            csData = new ChangeSetData();
             List<AssociativeNode> finalDeltaAstList = new List<AssociativeNode>();
             finalDeltaAstList.AddRange(GetDeltaAstListDeleted(syncData.DeletedSubtrees));
             finalDeltaAstList.AddRange(GetDeltaAstListAdded(syncData.AddedSubtrees));
@@ -641,35 +770,21 @@ namespace ProtoScript.Runners
         }
 
 
-        #region ChangeSetApplier
-
         /// <summary>
-        /// Takes in a Subtree to delete or modify and marks the corresponding 
-        /// gragh nodes in DS inactive.
-        // 
-        /// This is equivalent to removing them from the VM
+        /// Creates a list of null assignment statements where the lhs is retrieved from an ast list
         /// </summary>
-        /// <param name="subtree"></param>
+        /// <param name="astList"></param>
         /// <returns></returns>
-        private List<AssociativeNode> MarkGraphNodesInactive(List<AssociativeNode> modifiedASTList)
+        private List<AssociativeNode> BuildNullAssignments(List<AssociativeNode> astList)
         {
             var astNodeList = new List<AssociativeNode>();
-            if (null != modifiedASTList)
+            if (null != astList)
             {
-                foreach (var node in modifiedASTList)
+                foreach (var node in astList)
                 {
                     BinaryExpressionNode bNode = node as BinaryExpressionNode;
                     if (bNode != null)
                     {
-                        // TODO: Aparajit - this can be made more efficient by maintaining a map in core of 
-                        // graphnode vs expression UID 
-                        foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
-                        {
-                            if (gnode.exprUID == bNode.exprUID)
-                            {
-                                gnode.isActive = false;
-                            }
-                        }
                         BinaryExpressionNode newBNode = new BinaryExpressionNode(bNode.LeftNode, new NullNode(), ProtoCore.DSASM.Operator.assign);
                         astNodeList.Add(newBNode);
                     }
@@ -677,49 +792,6 @@ namespace ProtoScript.Runners
             }
             return astNodeList;
         }
-
-        /// <summary>
-        /// Deactivate a single graphnode regardless of its associated dependencies
-        /// </summary>
-        /// <param name="nodeList"></param>
-        private void DeactivateGraphnodes(List<AssociativeNode> nodeList)
-        {
-            if (null != nodeList)
-            {
-                foreach (var node in nodeList)
-                {
-                    BinaryExpressionNode bNode = node as BinaryExpressionNode;
-                    if (bNode != null)
-                    {
-                        foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
-                        {
-                            if (gnode.AstID == bNode.ID)
-                            {
-                                gnode.isActive = false;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// This method updates a redefined function
-        /// </summary>
-        /// <param name="subtree"></param>
-        /// <returns></returns>
-        private void UndefineFunctions(IEnumerable<AssociativeNode> functionDefintions)
-        {
-            foreach (var funcDef in functionDefintions)
-            {
-                core.SetFunctionInactive(funcDef as FunctionDefinitionNode);
-            }
-        }
-
-        #endregion
-
-
     }
 
     public interface ILiveRunner
@@ -822,8 +894,10 @@ namespace ProtoScript.Runners
         private Thread workerThread;
 
         private bool terminating;
-        
+
         private ChangeSetComputer changeSetComputer;
+        private ChangeSetApplier changeSetApplier;
+
 
 
         public LiveRunner()
@@ -889,6 +963,7 @@ namespace ProtoScript.Runners
 
             terminating = false;
             changeSetComputer = new ChangeSetComputer(runnerCore);
+            changeSetApplier = new ChangeSetApplier();
         }
 
         private void InitOptions()
@@ -1485,7 +1560,12 @@ namespace ProtoScript.Runners
                 return;
             }
 
+            // Get AST list that need to be executed
             var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
+            
+            // Prior to execution, apply state modifications to the VM given the delta AST's
+            changeSetApplier.Apply(runnerCore, changeSetComputer.csData);
+
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
         }
 
