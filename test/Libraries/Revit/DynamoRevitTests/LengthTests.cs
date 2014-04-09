@@ -8,6 +8,7 @@ namespace Dynamo.Tests
     class LengthTests:DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void Length()
         {
             var model = dynSettings.Controller.DynamoModel;

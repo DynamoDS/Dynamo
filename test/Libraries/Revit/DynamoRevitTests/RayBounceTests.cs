@@ -11,6 +11,7 @@ namespace Dynamo.Tests
     class RayBounceTests:DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\RayBounce\RayBounce.rvt")]
         public void RayBounce()
         {
             var model = dynSettings.Controller.DynamoModel;

@@ -8,6 +8,7 @@ namespace Dynamo.Tests
     class MaterialTests : DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\Material\GetMaterialByName.rfa")]
         public void GetMaterialByName()
         {
             var model = dynSettings.Controller.DynamoModel;

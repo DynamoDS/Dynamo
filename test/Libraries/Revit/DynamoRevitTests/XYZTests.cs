@@ -15,6 +15,7 @@ namespace Dynamo.Tests
     public class XYZTests :DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void XYZFromReferencePoint()
         {
             //var model = dynSettings.Controller.DynamoModel;
@@ -46,6 +47,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void XYZByPolar()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -58,6 +60,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void XYZBySphericalCoordinates()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -70,6 +73,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void XYZToPolarCoordinates()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -82,6 +86,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void XYZToSphericalCoordinates()
         {
             var model = dynSettings.Controller.DynamoModel;

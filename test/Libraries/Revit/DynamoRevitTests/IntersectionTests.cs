@@ -8,6 +8,7 @@ namespace Dynamo.Tests
     class IntersectionTests:DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\Intersect\CurveCurveIntersection.rfa")]
         public void CurveCurveIntersection()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -20,6 +21,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Intersect\CurveFaceIntersection.rfa")]
         public void CurveFaceIntersection()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -32,6 +34,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Intersect\FaceFaceIntersection.rfa")]
         public void FaceFaceIntersection()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -44,6 +47,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Intersect\EdgePlaneIntersection.rfa")]
         public void EdgePlaneIntersection()
         {
             var model = dynSettings.Controller.DynamoModel;

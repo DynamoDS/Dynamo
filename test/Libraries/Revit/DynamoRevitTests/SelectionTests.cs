@@ -12,6 +12,7 @@ namespace Dynamo.Tests
     class SelectionTests: DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void FamilyTypeSelectorNode()
         {
             //var model = dynSettings.Controller.DynamoModel;
@@ -54,6 +55,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Selection\Selection.rfa")]
         public void AllSelectionNodes()
         {
             //var model = dynSettings.Controller.DynamoModel;
