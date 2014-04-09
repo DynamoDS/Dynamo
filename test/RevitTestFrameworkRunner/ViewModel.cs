@@ -115,7 +115,7 @@ namespace RevitTestFrameworkRunner
 
         private bool CanRun(object parameter)
         {
-            return SelectedItem != null && Uri.IsWellFormedUriString(Program._results, UriKind.Absolute);
+            return SelectedItem != null;
         }
 
         private void Run(object parameter)
