@@ -198,6 +198,9 @@ namespace ProtoCore
         private readonly FunctionTable globalFunctionTable;
         private readonly ExecutionMode executionMode;
 
+        /// <summary>
+        /// The method group name that is associated with this function
+        /// </summary>
         public String MethodName { get { return methodName; } }
 
         //TODO(Luke): This should be loaded from the attribute
