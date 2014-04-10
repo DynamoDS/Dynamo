@@ -549,8 +549,7 @@ namespace Dynamo.DSEngine
             "DSIronPython.dll",
             "FunctionObject.ds",
             "Optimize.ds",
-            "DynamoUnits.dll",
-            "SimplexNoise.dll"
+            "DynamoUnits.dll"
         };
 
         public class LibraryLoadedEventArgs : EventArgs

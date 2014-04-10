@@ -2,9 +2,6 @@
 using System.Collections;
 using System.Drawing;
 using Autodesk.DesignScript.Runtime;
-using System.IO;
-using System.Text;
-using System;
 
 namespace DSCore.File
 {
@@ -66,45 +63,6 @@ namespace DSCore.File
                 return string.Empty;
 
             return System.IO.File.ReadAllText(filePath);
-        }
-
-
-        /// <summary>
-        ///     Write a list of lists into a file using a comma-separated values 
-        ///     format. Outer list represents rows, inner lists represent column. 
-        /// </summary>
-        /// <param name="filePath">Path to write to</param>
-        /// <param name="data">List of lists to write into CSV</param>
-        /// <returns name="str">Contents of the text file.</returns>
-        /// <search>write,text,file</search>
-        public static bool ExportToCSV(string filePath, double[][] data)
-        {
-            try
-            {
-                System.IO.StreamWriter writer = new StreamWriter(filePath);
-
-                for (int i = 0; i < data.GetLength(0); i++)
-                {
-                    StringBuilder line = new StringBuilder();
-
-                    for (int j = 0; j < data[i].Length; j++)
-                    {
-                        line.Append(data[i][j]);
-                        line.Append(", ");
-                    }
-
-                    string lineOut = line.ToString();
-                    lineOut = lineOut.Substring(0, lineOut.LastIndexOf(','));
-                    writer.WriteLine(lineOut);
-                }
-                writer.Flush();
-                writer.Close();
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-            return true;
         }
     }
 }
