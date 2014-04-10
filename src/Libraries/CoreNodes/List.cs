@@ -665,15 +665,13 @@ namespace DSCore
 
             var genList = lists.Cast<IList>();
             var maxLength = genList.Max(subList => subList.Count); 
-            var retList = Enumerable.Range(0, maxLength).Select(i => new ArrayList{});
+            var emptyList = Enumerable.Range(0, maxLength).Select(i => new ArrayList{});
 
-            foreach (var list in genList)
-            {
-                retList = retList.Zip(list.Cast<object>(), (os, o) => { os.Add(o); return os; })
-                                 .Concat(retList.Skip(list.Count));
-            }
+            var ret = genList.Aggregate(emptyList, 
+                                       (accList, list) => accList.Zip(list.Cast<object>(), (os, o) => { os.Add(o); return os; })
+                                                                 .Concat(accList.Skip(list.Count)));
 
-            return retList.ToList();
+            return ret.ToList();
         }
 
         
