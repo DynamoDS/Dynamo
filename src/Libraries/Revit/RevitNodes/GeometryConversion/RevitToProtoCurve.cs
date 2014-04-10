@@ -31,7 +31,7 @@ namespace Revit.GeometryConversion
             foreach (var crv in crvs)
             {
                 dynamic dyCrv = crv;
-                protoCurves.AddRange(RevitToProtoCurve.Convert(dyCrv));
+                protoCurves.Add(RevitToProtoCurve.Convert(dyCrv));
             }
 
             return PolyCurve.ByJoinedCurves(protoCurves.ToArray());

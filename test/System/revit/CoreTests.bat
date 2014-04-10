@@ -1,1 +1,0 @@
-start python ..\..\src\DynamoTestFramework\RunRevitTests.py -i DynamoRevitTests.xml -r CoreTestResults.xml -f CoreTests

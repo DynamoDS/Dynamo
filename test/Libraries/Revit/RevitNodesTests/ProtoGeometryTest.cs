@@ -1,25 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Geometry;
+﻿using Autodesk.DesignScript.Geometry;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    class ProtoGeometryTest
+    class ProtoGeometryTest : RevitNodeTestBase
     {
         [SetUp]
         public void Setup()
         {
             HostFactory.Instance.StartUp();
+            base.Setup();
         }
 
         [TearDown]
         public void TearDown()
         {
             HostFactory.Instance.ShutDown();
+            base.TearDown();
         }
 
     }

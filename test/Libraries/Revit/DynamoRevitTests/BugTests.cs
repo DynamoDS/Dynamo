@@ -8,6 +8,7 @@ namespace Dynamo.Tests
     class BugTests:DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModelAttribute(@".\Bugs\MAGN_66.rfa")]
         public void MAGN_66()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-66
@@ -22,6 +23,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void MAGN_102()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-102
@@ -41,6 +43,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Bugs\MAGN-122_wallsAndFloorsAndLevels.rvt")]
         public void MAGN_122()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-122
@@ -59,6 +62,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Bugs\MAGN-438_structuralFraming_simple.rvt")]
         public void MAGN_438()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-438

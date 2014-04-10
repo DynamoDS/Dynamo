@@ -21,6 +21,8 @@ namespace Revit.GeometryConversion
         /// <returns>A Geometry type.  Null if there's no suitable conversion.</returns>
         public static Autodesk.DesignScript.Geometry.Geometry Convert(this Autodesk.Revit.DB.GeometryObject geom)
         {
+            if (geom == null) return null;
+
             dynamic dynGeom = geom;
             try
             {

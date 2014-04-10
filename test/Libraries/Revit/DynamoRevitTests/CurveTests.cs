@@ -1,13 +1,10 @@
 ﻿using System.IO;
 using System.Linq;
 using Autodesk.Revit.DB;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
 using RevitServices.Persistence;
 using CurveByPoints = Autodesk.Revit.DB.CurveByPoints;
-using ModelCurve = Autodesk.Revit.DB.ModelCurve;
-using Transaction = Autodesk.Revit.DB.Transaction;
 
 namespace Dynamo.Tests
 {
@@ -15,6 +12,7 @@ namespace Dynamo.Tests
     class CurveTests:DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CurveByPoints()
         {
             //var model = dynSettings.Controller.DynamoModel;
@@ -74,6 +72,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CurveLoop()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -86,6 +85,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CurvebyPointsArc()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -105,6 +105,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void OffsetCurve()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -117,6 +118,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ThickenCurve()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -129,6 +131,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CurveByPointsByLineNode()
         {
             ////this sample creates a geometric line
@@ -188,6 +191,7 @@ namespace Dynamo.Tests
          * */
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CurvebyPointsEllipse()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -208,6 +212,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Curve\GetCurveDomain.rfa")]
         public void GetCurveDomain()
         {
             var model = dynSettings.Controller.DynamoModel;

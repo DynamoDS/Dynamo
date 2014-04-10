@@ -15,6 +15,7 @@ namespace Dynamo.Tests
         /// <param name="dynamoFilePath">The path of the dynamo workspace.</param>
         /// <param name="revitFilePath">The path of the Revit rfa or rvt file.</param>
         [Test, TestCaseSource("SetupRevitRegressionTests")]
+        [TestModel(@".\empty.rfa")]
         public void Regressions(string dynamoFilePath, string revitFilePath)
         {
             //ensure that the incoming arguments are not empty or null

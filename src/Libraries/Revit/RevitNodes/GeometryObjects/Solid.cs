@@ -5,19 +5,13 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
-using Revit.Elements;
 using Revit.GeometryConversion;
 using Revit.Graphics;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Curve = Autodesk.Revit.DB.Curve;
 using CurveLoop = Autodesk.Revit.DB.CurveLoop;
-using Edge =  Revit.GeometryObjects.Edge;
-using Element = Revit.Elements.Element;
-using Face =  Revit.GeometryObjects.Face;
-using PlanarFace = Autodesk.Revit.DB.PlanarFace;
 using Point = Autodesk.DesignScript.Geometry.Point;
-using Solid = Autodesk.Revit.DB.Solid;
 
 namespace Revit.GeometryObjects
 {
@@ -185,7 +179,7 @@ namespace Revit.GeometryObjects
             // created during this same run, document regeneration will not have
             // occured.
             TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
-            DocumentManager.Instance.CurrentDBDocument.Regenerate();
+            DocumentManager.Regenerate();
             TransactionManager.Instance.TransactionTaskDone();
 
             var instanceSolids = new Dictionary<ElementId, List<Autodesk.Revit.DB.GeometryObject>>();;
@@ -710,7 +704,7 @@ namespace Revit.GeometryObjects
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        public static Solid FromElement(Element element)
+        public static Solid FromElement(Revit.Elements.Element element)
         {
             if (element == null)
             {

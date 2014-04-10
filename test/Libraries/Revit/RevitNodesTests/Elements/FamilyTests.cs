@@ -1,14 +1,15 @@
 ﻿using System;
-using Revit;
+using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class FamilyTests 
+    public class FamilyTests : RevitNodeTestBase
     {
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void ByName_ValidInput()
         {
             var fam = Family.ByName("Cone");
@@ -18,12 +19,14 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void ByName_NonexistentName()
         {
             Assert.Throws(typeof(Exception), () => Family.ByName("Turtle"));
         }
 
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void ByName_NullInput()
         {
             Assert.Throws(typeof(ArgumentNullException), () => Family.ByName(null));

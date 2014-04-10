@@ -190,6 +190,11 @@ namespace Revit.GeometryConversion
             return Vector.ByCoordinates(xyz.X, xyz.Y, xyz.Z);
         }
 
+        public static Autodesk.DesignScript.Geometry.UV ToProtoType(this Autodesk.Revit.DB.UV uv)
+        {
+            return Autodesk.DesignScript.Geometry.UV.ByCoordinates(uv.U, uv.V);
+        }
+
 
         /// <summary>
         /// Convert a Revit Plane to a DS Plane.

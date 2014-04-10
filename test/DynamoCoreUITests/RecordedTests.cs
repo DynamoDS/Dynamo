@@ -46,6 +46,7 @@ namespace DynamoCoreUITests
         [TearDown]
         protected void Exit()
         {
+            commandCallback = null;
             if (this.Controller != null)
             {
                 this.Controller.ShutDown(true);
@@ -1866,7 +1867,169 @@ namespace DynamoCoreUITests
             });
         }
 
+        [Test, RequiresSTA]
 
+        //Details for steps can be found in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2521
+
+        public void Defect_MAGN_2521()
+        {
+            RunCommandsFromFile("Defect_MAGN_2521.xml", false, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "Point-10")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count);
+
+                    AssertPreviewValue("c0a70160-fb7e-4441-a06e-1e783d7c0d92", 10);
+                }
+                else if (commandTag == "Point-2")
+                {
+                    AssertPreviewValue("c0a70160-fb7e-4441-a06e-1e783d7c0d92", 2);
+                }
+                else if (commandTag == "Point-12")
+                {
+                    Assert.AreEqual(1, workspace.Connectors.Count);
+                    AssertPreviewValue("c0a70160-fb7e-4441-a06e-1e783d7c0d92", 12);
+                }
+                else if (commandTag == "Point--5")
+                {
+                    AssertPreviewValue("c0a70160-fb7e-4441-a06e-1e783d7c0d92", -5);
+                }
+            });
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2378()
+        {
+            // this is using CBN. 
+            // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2378
+
+            RunCommandsFromFile("Defect_MAGN_2378.xml", false, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "WithWarning")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    NodeModel nodeModel = workspace.NodeFromWorkspace("f4a9a71a-168b-4985-a575-d16faa2de9ca");
+                    Assert.AreEqual(ElementState.Warning, nodeModel.State);
+
+                }
+                else if (commandTag == "WithoutWarning")
+                {
+                    NodeModel nodeModel = workspace.NodeFromWorkspace("f4a9a71a-168b-4985-a575-d16faa2de9ca");
+                    Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
+                }
+            });
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2378_AnotherScenario()
+        {
+            // this is using Point.ByCoordinates node.
+            // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2378
+
+            RunCommandsFromFile("Defect_MAGN_2378_Another.xml", false, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "WithWrongInput")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count);
+
+                    NodeModel nodeModel = workspace.NodeFromWorkspace("7fec1085-4818-41fa-adad-7b1dd71a5195");
+                    Assert.AreEqual(ElementState.Warning, nodeModel.State);
+
+                }
+                else if (commandTag == "WithCorrectInput")
+                {
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Connectors.Count);
+
+                    NodeModel nodeModel = workspace.NodeFromWorkspace("7fec1085-4818-41fa-adad-7b1dd71a5195");
+                    Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
+
+                    AssertPreviewValue("5778488b-4ab2-484a-b92e-79eb016cb776", 0);
+
+                }
+            });
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2100()
+        {
+            // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2100
+
+            RunCommandsFromFile("Defect_MAGN_2100.xml", false, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count);
+
+                    AssertPreviewValue("3f309016-7b00-4487-9b68-f0640e892d39", 10);
+
+                }
+                
+            });
+
+            NodeModel nodeModel = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace(
+                "3f309016-7b00-4487-9b68-f0640e892d39");
+
+            Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
+
+            Assert.IsNotNull(nodeModel.OldValue.Data);
+
+            AssertPreviewValue("3f309016-7b00-4487-9b68-f0640e892d39", 11);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2272()
+        {
+            // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2272
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2545
+
+            RunCommandsFromFile("Defect_MAGN_2272.xml", false, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count);
+
+                    AssertPreviewValue("d480bc8e-4a77-44ea-ab07-52070ec6a5b6", 6);
+
+                }
+                else if (commandTag == "SecondRun")
+                {
+
+                    AssertPreviewValue("d480bc8e-4a77-44ea-ab07-52070ec6a5b6", 7);
+
+                }
+                else if (commandTag == "LastRun")
+                {
+                    AssertPreviewValue("d480bc8e-4a77-44ea-ab07-52070ec6a5b6", 11);
+
+                }
+
+            });
+
+
+        }
        
         #endregion
 

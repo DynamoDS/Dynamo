@@ -8,6 +8,7 @@ namespace Dynamo.Tests
     class TopographyTests : DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\empty.rvt")]
         public void TopographyFromPoints()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -20,6 +21,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\Topography\topography.rvt")]
         public void PointsFromTopography()
         {
             var model = dynSettings.Controller.DynamoModel;

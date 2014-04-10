@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Geometry;
-using Revit.AnalysisDisplay;
+﻿using Autodesk.DesignScript.Geometry;
+using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
 using RevitServices.Persistence;
@@ -11,9 +7,10 @@ using RevitServices.Persistence;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class StructuralFramingTests
+    public class StructuralFramingTests : RevitNodeTestBase
     {
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByCurveLevelUpVectorAndType_ValidArgs()
         {
             var start = Point.ByCoordinates(1, 2, 3);
@@ -35,6 +32,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\Empty.rvt")]
         public void ByCurveLevelUpVectorAndType_BadArgs()
         {
             var start = Point.ByCoordinates(1, 2, 3);

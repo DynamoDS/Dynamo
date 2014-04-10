@@ -19,6 +19,7 @@ namespace Dynamo.Tests
         /// Sanity Check graph should always throw an error.
         /// </summary>
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void SanityCheck()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -31,6 +32,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CanChangeLacingAndHaveElementsUpdate()
         {
             //var model = dynSettings.Controller.DynamoModel;
@@ -131,6 +133,7 @@ namespace Dynamo.Tests
         }
         */
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void SwitchDocuments()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -175,6 +178,7 @@ namespace Dynamo.Tests
         }
 
         [Test, TestCaseSource("SetupCopyPastes")]
+        [TestModel(@".\empty.rfa")]
         public void CanCopyAndPasteAllNodesOnRevit(string typeName)
         {
             var model = dynSettings.Controller.DynamoModel;

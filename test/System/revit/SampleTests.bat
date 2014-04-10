@@ -1,1 +1,0 @@
-python ..\..\DynamoTestFramework\RunRevitTests.py -i DynamoRevitTests.xml -r SampleTestResults.xml -f SampleTests
