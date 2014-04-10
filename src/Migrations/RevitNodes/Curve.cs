@@ -22,7 +22,7 @@ namespace Dynamo.Nodes
 
             // Create new node
             XmlElement identityCoordinateSystem = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "CoordinateSystem.Identity",
                 "CoordinateSystem.Identity");
             migrationData.AppendNode(identityCoordinateSystem);

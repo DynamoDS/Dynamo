@@ -42,20 +42,20 @@ namespace Dynamo.Nodes
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Create new nodes
+            XmlElement one = MigrationManager.CreateCodeBlockNodeModelNode(
+                data.Document, oldNode, 0, "1");
+            migrationData.AppendNode(one);
+            string oneId = MigrationManager.GetGuidFromXmlElement(one);
+
             XmlElement level = MigrationManager.CreateFunctionNode(
-                data.Document, "RevitNodes.dll",
+                data.Document, oldNode, 1, "RevitNodes.dll",
                 "Level.ByElevation", "Level.ByElevation@double");
             migrationData.AppendNode(level);
             string levelId = MigrationManager.GetGuidFromXmlElement(level);
 
-            XmlElement one = MigrationManager.CreateCodeBlockNodeModelNode(
-                data.Document, "1");
-            migrationData.AppendNode(one);
-            string oneId = MigrationManager.GetGuidFromXmlElement(one);
-
             // Assume that structural framing created by 0.6.3 is always Beam
             XmlElement beam = MigrationManager.CreateFunctionNode(
-                data.Document, "RevitNodes.dll",
+                data.Document, oldNode, 2, "RevitNodes.dll",
                 "StructuralType.Beam", "StructuralType.Beam");
             migrationData.AppendNode(beam);
             string beamId = MigrationManager.GetGuidFromXmlElement(beam);

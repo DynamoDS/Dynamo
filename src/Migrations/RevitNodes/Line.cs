@@ -53,7 +53,7 @@ namespace Dynamo.Nodes
             {
                 // Create new node only when the old node is connected to a normal vector
                 XmlElement translateNode = MigrationManager.CreateFunctionNode(
-                    data.Document, "ProtoGeometry.dll", "Geometry.Translate",
+                    data.Document, oldNode, 0, "ProtoGeometry.dll", "Geometry.Translate",
                     "Geometry.Translate@Autodesk.DesignScript.Geometry.Vector");
                 migrationData.AppendNode(translateNode);
                 string translateNodeId = MigrationManager.GetGuidFromXmlElement(translateNode);

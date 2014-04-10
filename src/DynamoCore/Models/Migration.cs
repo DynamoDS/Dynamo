@@ -65,6 +65,10 @@ namespace Dynamo.Models
 
         private static int IdentifierIndex = 0;
 
+        private static int NewNodeOffsetX = -150;
+
+        private static int NewNodeOffsetY = 80;
+
         public static int GetNextIdentifierIndex()
         {
             return IdentifierIndex++;
@@ -448,8 +452,8 @@ namespace Dynamo.Models
         /// <returns>Returns the XmlElement that represents a DSFunction node 
         /// with its basic function information with default attributes.</returns>
         /// 
-        public static XmlElement CreateFunctionNode(XmlDocument document,
-            string assembly, string nickname, string signature)
+        public static XmlElement CreateFunctionNode(XmlDocument document, XmlElement oldNode,
+            int nodeIndex, string assembly, string nickname, string signature)
         {
             XmlElement element = document.CreateElement("Dynamo.Nodes.DSFunction");
             element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
@@ -461,14 +465,20 @@ namespace Dynamo.Models
             element.SetAttribute("isVisible", "true");
             element.SetAttribute("isUpstreamVisible", "true");
             element.SetAttribute("lacing", "Disabled");
-            element.SetAttribute("x", "0.0");
-            element.SetAttribute("y", "0.0");
             element.SetAttribute("guid", Guid.NewGuid().ToString());
+
+            element.SetAttribute("x",
+                (Convert.ToDouble(oldNode.GetAttribute("x"))
+                + NewNodeOffsetX).ToString());
+            element.SetAttribute("y",
+                (Convert.ToDouble(oldNode.GetAttribute("y"))
+                + nodeIndex * NewNodeOffsetY).ToString());
+            
             return element;
         }
 
-        public static XmlElement CreateVarArgFunctionNode(XmlDocument document,
-            string assembly, string nickname, string signature, string inputcount)
+        public static XmlElement CreateVarArgFunctionNode(XmlDocument document, XmlElement oldNode,
+            int nodeIndex, string assembly, string nickname, string signature, string inputcount)
         {
             XmlElement element = document.CreateElement("Dynamo.Nodes.DSVarArgFunction");
             element.SetAttribute("type", "Dynamo.Nodes.DSVarArgFunction");
@@ -481,13 +491,20 @@ namespace Dynamo.Models
             element.SetAttribute("isVisible", "true");
             element.SetAttribute("isUpstreamVisible", "true");
             element.SetAttribute("lacing", "Disabled");
-            element.SetAttribute("x", "0.0");
-            element.SetAttribute("y", "0.0");
             element.SetAttribute("guid", Guid.NewGuid().ToString());
+
+            element.SetAttribute("x",
+                (Convert.ToDouble(oldNode.GetAttribute("x"))
+                + NewNodeOffsetX).ToString());
+            element.SetAttribute("y",
+                (Convert.ToDouble(oldNode.GetAttribute("y"))
+                + nodeIndex * NewNodeOffsetY).ToString());
+            
             return element;
         }
 
-        public static XmlElement CreateCodeBlockNodeModelNode(XmlDocument document, string codeTest)
+        public static XmlElement CreateCodeBlockNodeModelNode(XmlDocument document, XmlElement oldNode,
+            int nodeIndex, string codeTest)
         {
             XmlElement element = document.CreateElement("Dynamo.Nodes.CodeBlockNodeModel");
             element.SetAttribute("type", "Dynamo.Nodes.CodeBlockNodeModel");
@@ -500,13 +517,20 @@ namespace Dynamo.Models
             element.SetAttribute("isVisible", "true");
             element.SetAttribute("isUpstreamVisible", "true");
             element.SetAttribute("lacing", "Disabled");
-            element.SetAttribute("x", "0.0");
-            element.SetAttribute("y", "0.0");
             element.SetAttribute("guid", Guid.NewGuid().ToString());
+
+            element.SetAttribute("x",
+                (Convert.ToDouble(oldNode.GetAttribute("x"))
+                + NewNodeOffsetX).ToString());
+            element.SetAttribute("y",
+                (Convert.ToDouble(oldNode.GetAttribute("y"))
+                + nodeIndex * NewNodeOffsetY).ToString());
+
             return element;
         }
 
-        public static XmlElement CreateNode(XmlDocument document, string name, string nickname)
+        public static XmlElement CreateNode(XmlDocument document, XmlElement oldNode,
+            int nodeIndex, string name, string nickname)
         {
             XmlElement element = document.CreateElement(name);
             element.SetAttribute("type", name);
@@ -516,9 +540,15 @@ namespace Dynamo.Models
             element.SetAttribute("isVisible", "true");
             element.SetAttribute("isUpstreamVisible", "true");
             element.SetAttribute("lacing", "Disabled");
-            element.SetAttribute("x", "0.0");
-            element.SetAttribute("y", "0.0");
             element.SetAttribute("guid", Guid.NewGuid().ToString());
+
+            element.SetAttribute("x",
+                (Convert.ToDouble(oldNode.GetAttribute("x"))
+                + NewNodeOffsetX).ToString());
+            element.SetAttribute("y",
+                (Convert.ToDouble(oldNode.GetAttribute("y"))
+                + nodeIndex * NewNodeOffsetY).ToString());
+
             return element;
         }
 

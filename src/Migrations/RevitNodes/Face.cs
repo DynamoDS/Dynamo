@@ -22,7 +22,7 @@ namespace Dynamo.Nodes
 
             // Create new nodes
             XmlElement polySurface = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "PolySurface.BySolid", "PolySurface.BySolid@Geometry.Solid");
             migrationData.AppendNode(polySurface);
             string polySurfaceId = MigrationManager.GetGuidFromXmlElement(polySurface);
@@ -93,12 +93,12 @@ namespace Dynamo.Nodes
             {
                 // Create new nodes only when the old node is connected to a UV node
                 XmlElement nodeU = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "UV.U", "UV.U");
+                data.Document, oldNode, 0, "ProtoGeometry.dll", "UV.U", "UV.U");
                 migrationData.AppendNode(nodeU);
                 string nodeUId = MigrationManager.GetGuidFromXmlElement(nodeU);
 
                 XmlElement nodeV = MigrationManager.CreateFunctionNode(
-                    data.Document, "ProtoGeometry.dll", "UV.V", "UV.V");
+                    data.Document, oldNode, 1, "ProtoGeometry.dll", "UV.V", "UV.V");
                 migrationData.AppendNode(nodeV);
                 string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
 
@@ -145,12 +145,12 @@ namespace Dynamo.Nodes
             {
                 // Create new nodes only when the old node is connected to a UV node
                 XmlElement nodeU = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "UV.U", "UV.U");
+                data.Document, oldNode, 0, "ProtoGeometry.dll", "UV.U", "UV.U");
                 migrationData.AppendNode(nodeU);
                 string nodeUId = MigrationManager.GetGuidFromXmlElement(nodeU);
 
                 XmlElement nodeV = MigrationManager.CreateFunctionNode(
-                    data.Document, "ProtoGeometry.dll", "UV.V", "UV.V");
+                    data.Document, oldNode, 1, "ProtoGeometry.dll", "UV.V", "UV.V");
                 migrationData.AppendNode(nodeV);
                 string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
 

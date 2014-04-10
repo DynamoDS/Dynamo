@@ -45,12 +45,12 @@ namespace Dynamo.Nodes
             string dsReferencePointId = MigrationManager.GetGuidFromXmlElement(dsReferencePoint);
 
             XmlElement uvU = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "UV.U", "UV.U");
+                data.Document, oldNode, 0, "ProtoGeometry.dll", "UV.U", "UV.U");
             migratedData.AppendNode(uvU);
             string uvUId = MigrationManager.GetGuidFromXmlElement(uvU);
 
             XmlElement uvV = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "UV.V", "UV.V");
+                data.Document, oldNode, 1, "ProtoGeometry.dll", "UV.V", "UV.V");
             migratedData.AppendNode(uvV);
             string uvVId = MigrationManager.GetGuidFromXmlElement(uvV);
 
@@ -103,19 +103,19 @@ namespace Dynamo.Nodes
 
             // Create new nodes
             XmlElement refptAsPoint = MigrationManager.CreateFunctionNode(
-                data.Document, "RevitNodes.dll",
+                data.Document, oldNode, 0, "RevitNodes.dll",
                 "ReferencePoint.Point", "ReferencePoint.Point");
             migrationData.AppendNode(refptAsPoint);
             string refptAsPointId = MigrationManager.GetGuidFromXmlElement(refptAsPoint);
 
             XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll",
+                data.Document, oldNode, 1, "ProtoGeometry.dll",
                 "Point.AsVector", "Point.AsVector");
             migrationData.AppendNode(pointAsVector);
             string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
 
             XmlElement vectorNormalized = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll",
+                data.Document, oldNode, 2, "ProtoGeometry.dll",
                 "Vector.Normalized", "Vector.Normalized");
             migrationData.AppendNode(vectorNormalized);
             string vectorNormalizedId = MigrationManager.GetGuidFromXmlElement(vectorNormalized);
@@ -164,7 +164,7 @@ namespace Dynamo.Nodes
 
             // Create new adapter node
             XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeModelNode(
-                data.Document,
+                data.Document, oldNode, 0,
                 "// Convert ModelCurve into CurveReference\n" +
                 "curve.CurveReference;\n\n" +
                 "// Convert normalized length into actual length\n" +
@@ -218,13 +218,13 @@ namespace Dynamo.Nodes
             string distanceToPointId = MigrationManager.GetGuidFromXmlElement(distanceToPoint);
 
             XmlElement point1 = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", 
+                data.Document, oldNode, 0, "ProtoGeometry.dll", 
                 "ReferencePoint.Point", "ReferencePoint.Point");
             migratedData.AppendNode(point1);
             string point1Id = MigrationManager.GetGuidFromXmlElement(point1);
 
             XmlElement point2 = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", 
+                data.Document, oldNode, 1, "ProtoGeometry.dll", 
                 "ReferencePoint.Point", "ReferencePoint.Point");
             migratedData.AppendNode(point2);
             string point2Id = MigrationManager.GetGuidFromXmlElement(point2);
