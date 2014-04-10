@@ -233,7 +233,7 @@ namespace DSOffice
         /// <summary>
         /// return data from given worksheet (GetDataFromExcelWorksheet node)
         /// </summary>
-        public object[][] Data 
+        internal object[][] Data 
         { 
             get
             {
@@ -259,7 +259,7 @@ namespace DSOffice
         /// </summary>
         /// <param name="wbook"></param>
         /// <param name="sheetName"></param>
-        public WorkSheet (WorkBook wbook, string sheetName)
+        internal WorkSheet(WorkBook wbook, string sheetName)
         {
             wb = wbook;
             ws = (Worksheet)wb.Add();
@@ -281,7 +281,7 @@ namespace DSOffice
         /// <param name="startCol"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        public WorkSheet WriteData(int startRow, int startColumn, object[][] data)
+        internal WorkSheet WriteData(int startRow, int startColumn, object[][] data)
         {
             startRow = Math.Max(0, startRow);
             startColumn = Math.Max(0, startColumn);
@@ -310,12 +310,12 @@ namespace DSOffice
         /// <summary>
         /// 
         /// </summary>
-        public string Name { get; set; }
+        internal string Name { get; set; }
 
         /// <summary>
         /// (GetWorksheetsFromExcelWorkbook node)
         /// </summary>
-        public WorkSheet[] WorkSheets 
+        internal WorkSheet[] WorkSheets 
         {
             get
             {
@@ -339,7 +339,7 @@ namespace DSOffice
         /// <summary>
         /// Creates a new Workbook with filepath as input
         /// </summary>
-        public WorkBook(string filePath)
+        internal WorkBook(string filePath)
         {
             wb = ExcelInterop.App.Workbooks.Add();
             Name = filePath;
@@ -355,7 +355,7 @@ namespace DSOffice
         /// </summary>
         /// <param name="wbook"></param>
         /// <param name="filename"></param>
-        public WorkBook(WorkBook wbook, string filename)
+        internal WorkBook(WorkBook wbook, string filename)
         {
             Name = filename;
             wb = wbook.wb;
@@ -385,7 +385,7 @@ namespace DSOffice
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static WorkBook ReadExcelFile(string path)
+        internal static WorkBook ReadExcelFile(string path)
         {
             var workbookOpen = ExcelInterop.App.Workbooks.Cast<Workbook>()
                 .FirstOrDefault(e => e.FullName == path);
@@ -404,7 +404,7 @@ namespace DSOffice
         /// </summary>
         /// <param name="sheetName"></param>
         /// <returns></returns>
-        public WorkSheet GetWorksheetByName(string sheetName)
+        internal WorkSheet GetWorksheetByName(string sheetName)
         {
             var ws = wb.Worksheets.Cast<Worksheet>().FirstOrDefault(sheet => sheet.Name == sheetName);
 
