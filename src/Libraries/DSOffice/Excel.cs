@@ -298,11 +298,6 @@ namespace DSOffice
             return this;
         }
 
-        //public override string ToString()
-        //{
-        //    return Data.ToString();
-        //}     
-
     }
 
     internal class WorkBook
@@ -396,7 +391,7 @@ namespace DSOffice
             if (File.Exists(path))
                 return new WorkBook(ExcelInterop.App.Workbooks.Open(path, true, false), path);
 
-            throw new ArgumentException("File path not found.", "path");
+            throw new FileNotFoundException("File path not found.", path);
         }
 
         /// <summary>
