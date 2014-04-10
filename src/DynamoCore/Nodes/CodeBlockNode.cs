@@ -500,24 +500,45 @@ namespace Dynamo.Nodes
 
         private void SetPreviewVariable(List<Node> parsedNodes)
         {
+            IdentifierNode identifierNode = null;
             for (int i = parsedNodes.Count - 1; i >= 0; i--)
             {
                 var statement = parsedNodes[i] as BinaryExpressionNode;
-                if (null != statement)
-                {
-                    var identifierNode = statement.LeftNode as IdentifierNode;
-                    if (identifierNode != null)
-                        previewVariable = identifierNode.ToString();
+                if (null == statement)
+                    continue;
 
-                    break;
+                identifierNode = statement.LeftNode as IdentifierNode;
+                if (identifierNode != null) // Found the identifier...
+                {
+                    // ... that is not a temporary variable, take it!
+                    if (!tempVariables.Contains(identifierNode.Value))
+                        break;
                 }
             }
 
-            if (!tempVariables.Contains(previewVariable))
-            {
-                var guid = this.GUID.ToString().Replace("-", string.Empty);
-                previewVariable = string.Format("{0}_{1}", previewVariable, guid);
-            }
+            if (identifierNode == null)
+                return;
+
+            var duplicatedNode = new IdentifierNode(identifierNode);
+            MapIdentifiers(duplicatedNode);
+
+            // Of course, if we just needed "duplicatedNode.Value" we would not 
+            // have to clone the original "IdentifierNode". In addition to 
+            // renaming the variable, we also need to keep the array indexer 
+            // (e.g. the "previewVariable" should be "arr[2][3]" instead of just
+            // "arr") to obtain the correct value for that particular array 
+            // element. The best way to keep these array indexers, naturally, is
+            // to use "IdentifierNode.ToString" method, as in:
+            // 
+            //      previewVariable = duplicatedNode.ToString();
+            // 
+            // But the problem now is, "ILiveRunner.InspectNodeValue" method can 
+            // only return a valid RuntimeMirror if "previewVariable" contains 
+            // variable name (i.e. "arr") and nothing else (e.g. "arr[2][3]").
+            // For now, simply set the "previewVariable" to just the array name,
+            // instead of the full expression with array indexers.
+            // 
+            previewVariable = duplicatedNode.Value;
         }
 
         /// <summary>
@@ -852,7 +873,7 @@ namespace Dynamo.Nodes
                     && !tempVariables.Contains(ident)
                     && !identNode.Equals(AstIdentifierForPreview))
                 {
-                    identNode.Name = identNode.Value = ident + "_" + this.GUID.ToString().Replace("-", string.Empty);
+                    identNode.Name = identNode.Value = LocalizeIdentifier(ident);
                 }
 
                 MapIdentifiers(identNode.ArrayDimensions);
@@ -916,6 +937,13 @@ namespace Dynamo.Nodes
             {
             }
         }
+
+        private string LocalizeIdentifier(string identifierName)
+        {
+            var guid = this.GUID.ToString().Replace("-", string.Empty);
+            return string.Format("{0}_{1}", identifierName, guid);
+        }
+
         #endregion
     }
 
