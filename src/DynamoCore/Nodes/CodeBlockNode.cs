@@ -422,66 +422,64 @@ namespace Dynamo.Nodes
 
         private void ProcessCode(ref string errorMessage, ref string warningMessage)
         {
-            //Format user test
             code = FormatUserText(code);
-
-            //New code => Revamp everything
             codeStatements.Clear();
 
             if (string.IsNullOrEmpty(Code))
-            {
                 previewVariable = null;
-            }
 
-            //Parse the text and assign each AST node to a statement instance
+            // Parse the text and assign each AST node to a statement instance
             codeToParse = code;
-            List<string> unboundIdentifiers = new List<string>();
-            List<ProtoCore.AST.Node> parsedNodes;
-            IEnumerable<ProtoCore.BuildData.ErrorEntry> errors;
-            IEnumerable<ProtoCore.BuildData.WarningEntry> warnings;
 
             try
             {
-                if (GraphToDSCompiler.GraphUtilities.Parse(this.GUID, ref codeToParse, out parsedNodes, out errors,
-                    out  warnings, unboundIdentifiers, out tempVariables) && parsedNodes != null)
+                ParseParam parseParam = new ParseParam(this.GUID, codeToParse);
+                if (GraphToDSCompiler.GraphUtilities.Parse(parseParam))
                 {
-                    //Create an instance of statement for each code statement written by the user
-                    for (int i = 0; i < parsedNodes.Count; i++)
+                    if (parseParam.ParsedNodes != null)
                     {
-                        var parsedNode = parsedNodes[i];
-                        Statement tempStatement;
+                        codeToParse = parseParam.ProcessedCode;
 
-                        //Create and save a statement variable from the astnodes generated
-                        tempStatement = Statement.CreateInstance(parsedNode);
-                        codeStatements.Add(tempStatement);
+                        // Create an instance of statement for each code statement written by the user
+                        foreach (var parsedNode in parseParam.ParsedNodes)
+                        {
+                            // Create a statement variable from the generated nodes
+                            codeStatements.Add(Statement.CreateInstance(parsedNode));
+                        }
+
+                        SetPreviewVariable(parseParam.ParsedNodes);
                     }
-
-                    previewVariable = null;
-                    if (parsedNodes.Count > 0)
-                        SetPreviewVariable(parsedNodes);
                 }
 
-                if (errors != null && errors.Any())
+                if (parseParam.Errors != null && parseParam.Errors.Any())
                 {
-                    errorMessage = string.Join("\n", errors.Select(m => m.Message));
+                    errorMessage = string.Join("\n", parseParam.Errors.Select(m => m.Message));
                     ProcessError();
                     return;
                 }
 
-                if (warnings != null)
+                if (parseParam.Warnings != null)
                 {
                     // Unbound identifiers in CBN will have input slots.
                     // 
                     // To check function redefinition, we need to check other
                     // CBN to find out if it has been defined yet. Now just
                     // skip this warning.
-                    warnings = warnings.Where(w => w.ID != WarningID.kIdUnboundIdentifier
-                                                && w.ID != WarningID.kFunctionAlreadyDefined);
+                    var warnings = parseParam.Warnings.Where((w) =>
+                    {
+                        return w.ID != WarningID.kIdUnboundIdentifier
+                            && w.ID != WarningID.kFunctionAlreadyDefined;
+                    });
+
                     if (warnings.Any())
                     {
                         warningMessage = string.Join("\n", warnings.Select(m => m.Message));
                     }
                 }
+
+                // Make sure variables have not been declared in other Code block nodes.
+                if (parseParam.UnboundIdentifiers != null)
+                    inputIdentifiers = new List<string>(parseParam.UnboundIdentifiers);
             }
             catch (Exception e)
             {
@@ -491,19 +489,20 @@ namespace Dynamo.Nodes
                 return;
             }
 
-            //Make sure variables have not been declared in other Code block nodes.
-            inputIdentifiers = unboundIdentifiers;
-
-            //Set the input and output ports based on the statements
-            CreateInputOutputPorts(); 
+            // Set the input and output ports based on the statements
+            CreateInputOutputPorts();
         }
 
-        private void SetPreviewVariable(List<Node> parsedNodes)
+        private void SetPreviewVariable(IEnumerable<Node> parsedNodes)
         {
+            this.previewVariable = null;
+            if (parsedNodes == null || (!parsedNodes.Any()))
+                return;
+
             IdentifierNode identifierNode = null;
-            for (int i = parsedNodes.Count - 1; i >= 0; i--)
+            foreach(var parsedNode in parsedNodes.Reverse())
             {
-                var statement = parsedNodes[i] as BinaryExpressionNode;
+                var statement = parsedNode as BinaryExpressionNode;
                 if (null == statement)
                     continue;
 

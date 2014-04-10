@@ -105,6 +105,102 @@ namespace GraphToDSCompiler
 
         #endregion
     }
+
+    public class ParseParam
+    {
+        private List<string> temporaries = null;
+        private List<string> unboundIdentifiers = null;
+        private List<ProtoCore.AST.Node> parsedNodes = null;
+        private List<ProtoCore.BuildData.ErrorEntry> errors = null;
+        private List<ProtoCore.BuildData.WarningEntry> warnings = null;
+
+        public ParseParam(System.Guid postfixGuid, System.String code)
+        {
+            this.PostfixGuid = postfixGuid;
+            this.OriginalCode = code;
+        }
+
+        internal void AppendTemporaryVariable(string variable)
+        {
+            if (this.temporaries == null)
+                this.temporaries = new List<string>();
+
+            this.temporaries.Add(variable);
+        }
+
+        internal void AppendUnboundIdentifier(string identifier)
+        {
+            if (this.unboundIdentifiers == null)
+                this.unboundIdentifiers = new List<string>();
+
+            if (!this.unboundIdentifiers.Contains(identifier))
+                this.unboundIdentifiers.Add(identifier);
+        }
+
+        internal void AppendParsedNodes(IEnumerable<ProtoCore.AST.Node> parsedNodes)
+        {
+            if (this.parsedNodes == null)
+                this.parsedNodes = new List<ProtoCore.AST.Node>();
+
+            this.parsedNodes.AddRange(parsedNodes);
+        }
+
+        internal void AppendErrors(IEnumerable<ProtoCore.BuildData.ErrorEntry> errors)
+        {
+            if (errors == null || (errors.Count() <= 0))
+                return;
+
+            if (this.errors == null)
+                this.errors = new List<ProtoCore.BuildData.ErrorEntry>();
+
+            this.errors.AddRange(errors);
+        }
+
+        internal void AppendWarnings(IEnumerable<ProtoCore.BuildData.WarningEntry> warnings)
+        {
+            if (warnings == null || (warnings.Count() <= 0))
+                return;
+
+            if (this.warnings == null)
+                this.warnings = new List<ProtoCore.BuildData.WarningEntry>();
+
+            this.warnings.AddRange(warnings);
+        }
+
+        #region Public Class Properties
+
+        public System.Guid PostfixGuid { get; private set; }
+        public System.String OriginalCode { get; private set; }
+        public System.String ProcessedCode { get; internal set; }
+
+        public IEnumerable<System.String> Temporaries
+        {
+            get { return this.temporaries; }
+        }
+
+        public IEnumerable<System.String> UnboundIdentifiers
+        {
+            get { return unboundIdentifiers; }
+        }
+
+        public IEnumerable<ProtoCore.AST.Node> ParsedNodes
+        {
+            get { return this.parsedNodes; }
+        }
+
+        public IEnumerable<ProtoCore.BuildData.ErrorEntry> Errors
+        {
+            get { return this.errors; }
+        }
+
+        public IEnumerable<ProtoCore.BuildData.WarningEntry> Warnings
+        {
+            get { return this.warnings; }
+        }
+
+        #endregion
+    }
+
     public class GraphUtilities
     {
         // TODO Jun: is it better to have GraphUtils as a singleton rather than checking for core? 
@@ -1295,80 +1391,68 @@ namespace GraphToDSCompiler
             return p.root;
         }
 
-        public static bool Parse(Guid nodeGUID, ref string code, 
-                                 out List<ProtoCore.AST.Node> parsedNodes, 
-                                 out IEnumerable<ProtoCore.BuildData.ErrorEntry> errors,
-                                 out IEnumerable<ProtoCore.BuildData.WarningEntry> warnings, 
-                                 List<String> unboundIdentifiers, 
-                                 out List<String> tempIdentifiers)
+        public static bool Parse(ParseParam parseParams)
         {
-            tempIdentifiers = new List<string>();
+            // TODO: Use the compile expression to format the code by adding 
+            // the required %t temp vars needed for non assignment statements
+            var compiledExpressions = new List<String>();
+            CompileExpression(parseParams.OriginalCode, out compiledExpressions);
 
-            List<String> compiledCode = new List<String>();
-            parsedNodes = null;
-            //-----------------------------------------------------------------------------------
-            //--------------------------------Correct the code-----------------------------------
-            //-----------------------------------------------------------------------------------
-            // Use the compile expression to format the code by adding the required %t temp vars
-            // needed for non assignment statements
-            CompileExpression(code, out compiledCode);
+            var postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
 
-            string codeToParse = "";
-            for (int i = 0; i < compiledCode.Count; i++)
+            int index = 0;
+            StringBuilder codeToParse = new StringBuilder();
+            foreach (var expression in compiledExpressions)
             {
-                string tempVariableName = string.Format("temp_{0}_", i) + nodeGUID.ToString().Replace("-", "_");
-                tempIdentifiers.Add(tempVariableName);
+                var updatedExpression = expression;
+                if (expression.IndexOf("%t") != -1)
+                {
+                    string name = string.Format("temp_{0}_{1}", index++, postfixGuid);
+                    parseParams.AppendTemporaryVariable(name);
+                    updatedExpression = updatedExpression.Replace("%t", name);
+                }
 
-                string singleExpression = compiledCode[i];
-                singleExpression = singleExpression.Replace("%t", tempVariableName);
-                codeToParse += singleExpression;
+                codeToParse.Append(updatedExpression);
             }
 
-            code = codeToParse;
+            parseParams.ProcessedCode = codeToParse.ToString();
 
-            //Catch the errors thrown by compile expression, namely function modiferstack and class decl found
+            // Catch the errors thrown by compile expression, 
+            // namely function modiferstack and class decl found
             if (core.BuildStatus.ErrorCount > 0)
             {
-                errors = core.BuildStatus.Errors;
-                warnings = core.BuildStatus.Warnings;
-                parsedNodes = null;
+                parseParams.AppendErrors(core.BuildStatus.Errors);
+                parseParams.AppendWarnings(core.BuildStatus.Warnings);
                 return false;
             }
 
-            // Parse and compile the code to get the result AST nodes as well as 
-            // any errors or warnings that were caught by the comiler
+            // Parse and compile the code to get the result AST nodes as well 
+            // as any errors or warnings that were caught by the compiler
             ProtoCore.BuildStatus buildStatus;
-            var tempUnboundIdentifiers = new Dictionary<int, List<VariableLine>>();
+            var unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
             List<ProtoCore.AST.Node> nodeList = new List<ProtoCore.AST.Node>();
 
-            ParseCodeBlockNodeStatements(codeToParse, out tempUnboundIdentifiers, out nodeList, out buildStatus);
-            errors = buildStatus.Errors;
-            warnings = buildStatus.Warnings;
+            ParseCodeBlockNodeStatements(parseParams.ProcessedCode,
+                out unboundIdentifiers, out nodeList, out buildStatus);
 
-            //Get the unboundIdentifiers from the warnings
-            foreach (KeyValuePair<int, List<VariableLine>> kvp in tempUnboundIdentifiers)
+            parseParams.AppendErrors(buildStatus.Errors);
+            parseParams.AppendWarnings(buildStatus.Warnings);
+
+            // Get the unboundIdentifiers from the warnings
+            foreach (KeyValuePair<int, List<VariableLine>> kvp in unboundIdentifiers)
             {
                 foreach (VariableLine vl in kvp.Value)
-                {
-                    if (!unboundIdentifiers.Contains(vl.variable))
-                    {
-                        unboundIdentifiers.Add(vl.variable);
-                    }
-                }
+                    parseParams.AppendUnboundIdentifier(vl.variable);
             }
 
-            // Assign the 'out' variables
-            // Use the parse function to get the parsed nodes to return to the 
-            // user
             if (nodeList != null)
             {
-                parsedNodes = new List<ProtoCore.AST.Node>();
-                ProtoCore.AST.AssociativeAST.CodeBlockNode cNode;
-                parsedNodes = ParserUtils.GetAstNodes(Parse(codeToParse, out cNode));
-            }
-            else
-            {
-                parsedNodes = null;
+                // TODO: Why don't we use the "nodeList" as it is?
+                // Can we not avoid another "Parse" method call here?
+                // 
+                ProtoCore.AST.AssociativeAST.CodeBlockNode cNode = null;
+                var codeBlockNode = Parse(parseParams.ProcessedCode, out cNode);
+                parseParams.AppendParsedNodes(ParserUtils.GetAstNodes(codeBlockNode));
             }
 
             return true;
