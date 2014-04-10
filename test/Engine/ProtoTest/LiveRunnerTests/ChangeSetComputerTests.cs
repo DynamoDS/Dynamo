@@ -26,7 +26,7 @@ namespace ProtoTest.LiveRunner
         {
             var opts = new Options();
             opts.ExecutionMode = ExecutionMode.Serial;
-            ProtoCore.Core core = thisTest.SetupTestCore();
+            core = thisTest.SetupTestCore();
         }
 
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
