@@ -2728,7 +2728,7 @@ z=Point.ByCoordinates(y,a,a);
             astLiveRunner.ResetVMAndResyncGraph(new List<string> { "FunctionObject.ds" });
             string code = @"
  def foo(x,y ) { return = x + y; }
- f = _SingleFunctionObject(foo, 2, {1}, {null, 42}); r = Apply(f, 3);
+ f = _SingleFunctionObject(foo, 2, {1}, {null, 42}, true); r = Apply(f, 3);
  ";
 
             Guid guid = System.Guid.NewGuid();

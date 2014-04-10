@@ -804,6 +804,15 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        ///     Return if all input ports of the node have connections.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasUnconnectedInput()
+        {
+            return !Enumerable.Range(0, InPortData.Count).All(HasInput);
+        }
+
+        /// <summary>
         ///     Checks if there is a connected input for a certain port. This does
         ///     not count default values as an input.
         /// </summary>
