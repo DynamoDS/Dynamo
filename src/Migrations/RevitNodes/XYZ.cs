@@ -297,17 +297,17 @@ namespace Dynamo.Nodes
             string pointAddId = MigrationManager.GetGuidFromXmlElement(pointAdd);
 
             // Create new nodes
-            XmlElement geometryScale = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0, "ProtoGeometry.dll",
-                "Geometry.Scale", "Geometry.Scale@double");
-            migrationData.AppendNode(geometryScale);
-            string geometryScaleId = MigrationManager.GetGuidFromXmlElement(geometryScale);
-
             XmlElement vectorDiff = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1, "ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "Vector.ByTwoPoints", "Vector.ByTwoPoints@Point,Point");
             migrationData.AppendNode(vectorDiff);
             string vectorDiffId = MigrationManager.GetGuidFromXmlElement(vectorDiff);
+
+            XmlElement geometryScale = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 1, "ProtoGeometry.dll",
+                "Geometry.Scale", "Geometry.Scale@double");
+            migrationData.AppendNode(geometryScale);
+            string geometryScaleId = MigrationManager.GetGuidFromXmlElement(geometryScale);
 
             // Update connectors
             PortId oldInPort0 = new PortId(pointAddId, 0, PortType.INPUT);

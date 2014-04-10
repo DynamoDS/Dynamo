@@ -67,7 +67,7 @@ namespace Dynamo.Models
 
         private static int NewNodeOffsetX = -150;
 
-        private static int NewNodeOffsetY = 80;
+        private static int NewNodeOffsetY = 100;
 
         public static int GetNextIdentifierIndex()
         {
