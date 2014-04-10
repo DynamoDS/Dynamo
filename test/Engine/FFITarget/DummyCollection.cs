@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Runtime;
 
 namespace FFITarget
 {
@@ -13,7 +14,22 @@ namespace FFITarget
             return data.ToList();
         }
 
+        public static IEnumerable<int> ReturnIEnumerableOfInt(IEnumerable<int> data)
+        {
+            return data;
+        }
+
+        public static IEnumerable<IList> ReturnIEnumerablOfIList(IEnumerable<IList> data)
+        {
+            return data;
+        }
+
         public static IList AcceptIEnumerablOfIList(IEnumerable<IList> data)
+        {
+            return data.ToList();
+        }
+
+        public static IList<IList<int>> ReturnIListOfIListInt(IEnumerable<IList<int>> data)
         {
             return data.ToList();
         }
@@ -23,7 +39,17 @@ namespace FFITarget
             return data.ToList();
         }
 
+        public static List<List<int>> ReturnListOfList(List<List<int>> data)
+        {
+            return data;
+        }
+
         public static IList AcceptListOfList(List<List<int>> data)
+        {
+            return data;
+        }
+
+        public static List<List<List<int>>> Return3DList(List<List<List<int>>> data)
         {
             return data;
         }
@@ -45,6 +71,16 @@ namespace FFITarget
             return points;
         }
 
+        public static object AcceptObjectAsVar(object value)
+        {
+            return value;
+        }
+
+        public static object ObjectAsArbitraryDimensionArrayImport([ArbitraryDimensionArrayImport] object value)
+        {
+            return value;
+        }
+
         public static IDictionary ReturnIDictionary()
         {
             IDictionary dictionary = new Dictionary<string, int>();
@@ -53,6 +89,11 @@ namespace FFITarget
             dictionary.Add("C", 3);
             dictionary.Add("D", 4);
             return dictionary;
+        }
+
+        public static object ReturnDictionaryAsObject()
+        {
+            return ReturnIDictionary();
         }
 
         public static IDictionary AcceptDictionary(Dictionary<string, int> dictionary)
