@@ -507,7 +507,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(listTestFolder, "testTransposeList_singleInput.dyn");
             RunModel(testFilePath);
 
-            AssertPreviewValue("d37a5827-d7d3-41d4-bd68-8ab6666aed39", 20);
+            AssertPreviewValue("d37a5827-d7d3-41d4-bd68-8ab6666aed39", new object[] {20});
         }
 
         [Test]
@@ -544,6 +544,32 @@ namespace Dynamo.Tests
                     new object[] { 23, 33 },
                     new object[] { 24 }
                 });
+        }
+
+        [Test]
+        public void TestTranspose()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(listTestFolder, "transpose.dyn");
+            RunModel(testFilePath);
+
+            AssertPreviewValue("b51e05aa-e37b-46f0-9bc1-9c5042b3f07e",
+                new object[] { new object[] {1,3 }, new object[] {2, 4}, });
+
+            AssertPreviewValue("919d4d0d-f4e3-4a3c-87c8-dd4466a8ca87",
+                new object[] { new object[] {1,4,6}, new object[] {2, 5,7}, new object[] {3, 8}, new object[] {9}});
+
+            AssertPreviewValue("bcf696d1-43e7-4633-8eb9-d5cb64dde939",
+                new object[] { new object[] { new object[] { 1 }, 3 }, new object[] { 2, 4 } });
+
+            AssertPreviewValue("83892f27-5d86-447f-a96c-121cac42a54b",
+                new object[] { });
+
+            AssertPreviewValue("35a16bab-e7dd-4e04-9724-0344152ab0f3",
+                new object[] { 1, 2});
+
+            AssertPreviewValue("f619b5c1-debc-48b4-a396-577545388bc1",
+                new object[] { 1});
         }
         #endregion
 
