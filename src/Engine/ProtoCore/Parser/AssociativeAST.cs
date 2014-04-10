@@ -656,10 +656,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override int GetHashCode()
         {
-            var valueHashCode =
-                (this is NullNode ? 0 : base.GetHashCode());
-
-            return valueHashCode;
+            return 0;
         }
 
         public override string ToString()
@@ -2127,10 +2124,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override int GetHashCode()
         {
-            var breakNodeHashCode =
-                (this is BreakNode ? 0 : base.GetHashCode());
-
-            return breakNodeHashCode;
+            return 0;
         }
     }
 
@@ -2148,10 +2142,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override int GetHashCode()
         {
-            var continueNodeHashCode =
-                (this is ContinueNode ? 0 : base.GetHashCode());
-
-            return continueNodeHashCode;
+            return 0;
         }
     }
 
@@ -2274,10 +2265,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override int GetHashCode()
         {
-            var thisPointerNodeHashCode =
-                (this is ThisPointerNode ? 0 : base.GetHashCode());
-
-            return thisPointerNodeHashCode;
+            return 0;
         }
     }
 
