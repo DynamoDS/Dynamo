@@ -1768,7 +1768,7 @@ namespace DynamoCoreUITests
                 }
             });
         }
-
+        
 
         [Test, RequiresSTA]
         public void TestCallsiteMapModifyFunctionParamValue()
@@ -1866,8 +1866,47 @@ namespace DynamoCoreUITests
             });
         }
 
+        [Test, RequiresSTA]
+        public void Deffect_1412CreateList()
+        {
+            // This is a UI test to test for interaction crashes the application
 
-       
+            RunCommandsFromFile("Deffect_1412CreateList.xml");
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+        }
+        [Test, RequiresSTA]
+        public void Deffect_1344PythonEditor()
+        {
+            // This is a UI test to test for interaction crashes the application
+
+            RunCommandsFromFile("Deffect_1344PythonEditor.xml");
+            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+        }
+        [Test, RequiresSTA]
+        public void Deffect_2208Delete_CBN()
+        {
+            // This is a UI test to test for interaction crashes the application
+
+            RunCommandsFromFile("Defect_MAGN_2208.xml");
+            Assert.AreEqual(0, workspace.Nodes.Count);
+        }
+        [Test, RequiresSTA]
+        public void Deffect_2201Watch_CBN()
+        {
+            RunCommandsFromFile("Defect_MAGN_2201.xml");
+            Assert.AreEqual(3, workspace.Nodes.Count);
+        }
+        [Test, RequiresSTA]
+        public void Deffect_747MultiReference()
+        {
+            RunCommandsFromFile("defect_MAGN_747.xml", true);
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            AssertPreviewValue("a76409a1-1280-428c-9cf7-16580c48ff96",1);
+            
+        }
+
         #endregion
 
         #region Tests moved from FScheme

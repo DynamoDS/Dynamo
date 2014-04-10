@@ -1,0 +1,19 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand NodeId="ec02958e-59de-476b-a189-9a5f8b25785e" NodeName="Python Script" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="bf85cc7b-eea9-4177-873f-9a1e98f33a38" NodeName="Code Block" X="184" Y="253" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="bf85cc7b-eea9-4177-873f-9a1e98f33a38" Name="Code" Value="1" />
+  <MakeConnectionCommand NodeId="bf85cc7b-eea9-4177-873f-9a1e98f33a38" PortIndex="0" Type="1" ConnectionMode="0" />
+  <ModelEventCommand ModelGuid="ec02958e-59de-476b-a189-9a5f8b25785e" EventName="AddInPort" />
+  <MakeConnectionCommand NodeId="ec02958e-59de-476b-a189-9a5f8b25785e" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="c61854a1-877c-4ad9-95d9-2b9ad85e835d" NodeName="Code Block" X="144" Y="335" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="c61854a1-877c-4ad9-95d9-2b9ad85e835d" Name="Code" Value="2" />
+  <MakeConnectionCommand NodeId="c61854a1-877c-4ad9-95d9-2b9ad85e835d" PortIndex="0" Type="1" ConnectionMode="0" />
+  <ModelEventCommand ModelGuid="ec02958e-59de-476b-a189-9a5f8b25785e" EventName="AddInPort" />
+  <MakeConnectionCommand NodeId="ec02958e-59de-476b-a189-9a5f8b25785e" PortIndex="1" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="ec02958e-59de-476b-a189-9a5f8b25785e" Name="ScriptContent" Value="import clr&#xA;clr.AddReference('ProtoGeometry')&#xA;from Autodesk.DesignScript.Geometry import *&#xA;#The inputs to this node will be stored as a list in the IN variable.&#xA;dataEnteringNode = IN&#xA;a=IN&#xA;#Assign your output to the OUT variable&#xA;OUT = a" />
+</Commands>
