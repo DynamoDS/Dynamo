@@ -4744,6 +4744,7 @@ namespace ProtoAssociative
                 }
 
                 core.Executives[langblock.codeblock.language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode, propagateGraphNode);
+                graphNode.isLanguageBlock = true;
                 graphNode.languageBlockId = blockId;
 
                 setBlkId(blockId);
