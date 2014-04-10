@@ -2030,6 +2030,58 @@ namespace DynamoCoreUITests
 
 
         }
+
+        [Test, RequiresSTA, Category("Failing")]
+        public void Defect_MAGN_2528()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-904
+            RunCommandsFromFile("Defect_MAGN_2528.xml", true);
+
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            //Check the CBN for error
+            var cbn = GetNode("10f928da-a6ef-4235-b84b-883f66e26017") as CodeBlockNodeModel;
+            Assert.AreEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(0, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.InPorts.Count);
+        }
+
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2453()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2453
+
+            RunCommandsFromFile("Defect_MAGN_2453.xml", true, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    AssertPreviewValue("ab11bb36-b428-4297-ac25-7afeeefff487", new int[] { 0, 2 });
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("ab11bb36-b428-4297-ac25-7afeeefff487", new int[] { 0, 2, 4 });
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    AssertPreviewValue("ab11bb36-b428-4297-ac25-7afeeefff487", new int[] { 2, 3, 4 });
+                }
+                else if (commandTag == "LastRun")
+                {
+                    AssertPreviewValue("ab11bb36-b428-4297-ac25-7afeeefff487", new int[] { 4, 5, 6 });
+                }
+
+            });
+
+
+        }
        
         #endregion
 
