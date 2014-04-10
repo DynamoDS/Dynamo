@@ -8,6 +8,7 @@ namespace Dynamo.Tests
     internal class UVTests : DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void UVRandom()
         {
             var model = dynSettings.Controller.DynamoModel;

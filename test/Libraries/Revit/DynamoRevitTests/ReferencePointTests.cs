@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
 using Autodesk.Revit.DB;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -14,6 +11,7 @@ namespace Dynamo.Tests
     public class ReferencePointTests : DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void CanCreateAndDeleteAReferencePoint()
         {
             using (var trans = new Transaction(DocumentManager.Instance.CurrentDBDocument, "CreateAndDeleteAreReferencePoint"))
@@ -38,6 +36,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void ReferencePoint()
         {
             var model = dynSettings.Controller.DynamoModel;

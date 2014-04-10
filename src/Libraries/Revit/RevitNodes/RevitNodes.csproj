@@ -110,7 +110,6 @@
     <Compile Include="GeometryConversion\RevitToProtoMesh.cs" />
     <Compile Include="GeometryConversion\GeometryObjectConverter.cs" />
     <Compile Include="GeometryObjects\InternalUtilities\GeometryObjectWrapper.cs" />
-    <Compile Include="GeometryObjects\Intersect.cs" />
     <Compile Include="GeometryObjects\PlanarFace.cs" />
     <Compile Include="GeometryObjects\InternalUtilities\GeometryObjectSelector.cs" />
     <Compile Include="Geometry\Domain.cs" />

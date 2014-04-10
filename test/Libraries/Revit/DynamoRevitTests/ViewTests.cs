@@ -9,6 +9,7 @@ namespace Dynamo.Tests
     {
 
         [Test]
+        [TestModel(@".\View\AxonometricView.rfa")]
         public void AxonometricView()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -21,6 +22,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\View\OverrideElementColorInView.rvt")]
         public void OverrideElementColorInView()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -33,6 +35,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\View\PerspectiveView.rfa")]
         public void PerspectiveView()
         {
             var model = dynSettings.Controller.DynamoModel;
