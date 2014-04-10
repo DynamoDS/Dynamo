@@ -15,6 +15,8 @@ namespace DSCore.File
         /// <returns></returns>
         public static Bitmap LoadImageFromPath(string path)
         {
+            if (!System.IO.File.Exists(path)) return null;
+
             var bmp = new Bitmap(path);
             return bmp;
         }
