@@ -628,6 +628,11 @@ namespace ProtoScript.Runners
                 }
                 return false;
             }
+
+            public override int GetHashCode()
+            {
+                return Location == null ? 0 : Location.GetHashCode();
+            }
         }
 
         public class RunnerNotInitied : Exception
