@@ -1,6 +1,4 @@
 ﻿using System.IO;
-using System.Linq;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
@@ -10,6 +8,7 @@ namespace Dynamo.Tests
     class AdaptiveComponentTests:DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\AdaptiveComponent\AdaptiveComponentByFace.rfa")]
         public void AdaptiveComponentByFace()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -22,6 +21,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\AdaptiveComponent\AdaptiveComponentByCurve.rfa")]
         public void AdaptiveComponentByCurve()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -34,6 +34,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [TestModel(@".\AdaptiveComponent\AdaptiveComponent.rfa")]
         public void AdaptiveComponent()
         {
             //var model = dynSettings.Controller.DynamoModel;

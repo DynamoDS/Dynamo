@@ -36,7 +36,7 @@ namespace ProtoTestFx.TD
             runner = new ProtoScriptTestRunner();
         }
 
-        private ProtoCore.Core SetupTestCore()
+        public ProtoCore.Core SetupTestCore()
         {
             testCore = new ProtoCore.Core(new ProtoCore.Options());
             testCore.Configurations.Add(ConfigurationKeys.GeometryFactory, "DSGeometry.dll");
@@ -539,7 +539,9 @@ namespace ProtoTestFx.TD
 
         public void Verify(string dsVariable, object expectedValue, int startBlock = 0)
         {
-            Verify(testMirror, dsVariable, expectedValue, startBlock);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            AssertValue(mirror.GetData(), expectedValue);
+            //Verify(testMirror, dsVariable, expectedValue, startBlock);
         }
 
         public static void VerifyBuildWarning(ProtoCore.BuildData.WarningID id)
@@ -643,6 +645,12 @@ namespace ProtoTestFx.TD
                 Assert.AreEqual(value, data.Data);
         }
 
+        public IList<MethodMirror> GetMethods(string className, string methodName)
+        {
+            ClassMirror classMirror = new ClassMirror(className, testCore);
+            return classMirror.GetOverloads(methodName);
+        }
+
         private static void AssertCollection(MirrorData data, IEnumerable collection)
         {
             Assert.IsTrue(data.IsCollection);
@@ -652,6 +660,11 @@ namespace ProtoTestFx.TD
             {
                 AssertValue(elements[i++], item);
             }
-        }    
+        }
+
+        public void CleanUp()
+        {
+            testCore.Cleanup();
+        }
     }
 }

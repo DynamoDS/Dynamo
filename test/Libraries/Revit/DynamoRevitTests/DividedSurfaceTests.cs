@@ -13,6 +13,7 @@ namespace Dynamo.Tests
     class DividedSurfaceTests:DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\DividedSurface\DividedSurface.rfa")]
         public void DividedSurface()
         {
             //var model = dynSettings.Controller.DynamoModel;

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using Dynamo.Controls;
@@ -48,7 +47,6 @@ namespace Dynamo.Nodes
             {
                 MaxWidth = 400,
                 MaxHeight = 400,
-                Margin = new Thickness(5),
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
                 Name = "image1",
                 VerticalAlignment = System.Windows.VerticalAlignment.Center
@@ -61,10 +59,7 @@ namespace Dynamo.Nodes
                 nodeUi.Dispatcher.Invoke(new Action<Bitmap>(SetImageSource), new object[] { im });
             };
 
-            nodeUi.grid.Children.Add(image);
-            image.SetValue(Grid.RowProperty, 2);
-            image.SetValue(Grid.ColumnProperty, 0);
-            image.SetValue(Grid.ColumnSpanProperty, 3);
+            nodeUi.PresentationGrid.Children.Add(image);
         }
 
         private void SetImageSource(System.Drawing.Bitmap bmp)

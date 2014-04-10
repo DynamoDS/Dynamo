@@ -1945,8 +1945,9 @@ namespace Dynamo.Nodes
                 var rangeExpr = new RangeExprNode
                 {
                     FromNode = _start.GetAstNode(idLookup),
-                    ToNode = _step.GetAstNode(idLookup),
+                    ToNode = _count.GetAstNode(idLookup),
                     StepNode = _step.GetAstNode(idLookup),
+                    HasRangeAmountOperator = true,
                     stepoperator = ProtoCore.DSASM.RangeStepOperator.stepsize
                 };
                 return rangeExpr;

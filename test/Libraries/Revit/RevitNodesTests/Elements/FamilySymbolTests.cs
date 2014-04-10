@@ -1,14 +1,15 @@
 ﻿using System;
-using Revit;
+using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    public class FamilySymbolTests 
+    public class FamilySymbolTests : RevitNodeTestBase
     {
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void ByName_GoodArgs()
         {
             var famSym = FamilySymbol.ByName("Box");
@@ -18,6 +19,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void ByName_BadArgs()
         {
             Assert.Throws(typeof(Exception), () => FamilySymbol.ByName("Turtle.BoxTurtle") );
@@ -25,6 +27,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void ByFamilyAndName_GoodArgs()
         {
             var fam = Family.ByName("Box");
@@ -35,6 +38,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void ByFamilyAndName_BadArgs()
         {
             var fam = Family.ByName("Box");

@@ -1,16 +1,15 @@
 ﻿using Autodesk.DesignScript.Geometry;
-using Autodesk.Revit.Exceptions;
-using Revit;
+using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    public class FamilyInstanceTests 
+    public class FamilyInstanceTests : RevitNodeTestBase
     {
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void ByCoordinates_ValidInput()
         {
             var famSym = FamilySymbol.ByName("Box");
@@ -25,6 +24,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void ByPoint_ValidInput()
         {
             var famSym = FamilySymbol.ByName("Box");
@@ -40,6 +40,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void ByPoint_NullFamilySymbol()
         {
             var pt = Point.ByCoordinates(0, 1, 2);
@@ -47,6 +48,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void ByPoint_NullPoint()
         {
             var famSym = FamilySymbol.ByName("Box");
@@ -54,6 +56,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
+        [TestModel(@".\MassWithBoxAndCone.rfa")]
         public void ByCoordinates_NullFamilySymbol()
         {
             var pt = Point.ByCoordinates(0, 1, 2);

@@ -1,18 +1,21 @@
-﻿using NUnit.Framework;
+﻿using Dynamo.Tests;
+using NUnit.Framework;
 using RevitServices.Persistence;
 
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class AbstractElementTests
+    public class AbstractElementTests : RevitNodeTestBase
     {
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void GetParameterByName_ValidArgs()
         {
             Assert.Inconclusive("Finish me.");
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void SetParameterByName_ValidArgs()
         {
             ElementBinder.IsEnabled = false;
@@ -28,6 +31,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void SetParametersByName_InvalidArgs()
         {
             ElementBinder.IsEnabled = false;
@@ -45,6 +49,7 @@ namespace DSRevitNodesTests.Elements
         }
 
         [Test]
+        [TestModel(@".\empty.rfa")]
         public void OverrideColorInView_ValidArgs()
         {
             Assert.Inconclusive("Finish me.");

@@ -12,6 +12,7 @@ namespace Dynamo.Tests
     class LevelTests:DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\Level\Level.rvt")]
         public void Level()
         {
             //var model = dynSettings.Controller.DynamoModel;
