@@ -380,17 +380,37 @@ namespace Dynamo.Nodes
 
     public class BasisX : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "CoordinateSystem.XAxis", "CoordinateSystem.XAxis");
+        }
     }
 
     public class BasisY : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "CoordinateSystem.YAxis", "CoordinateSystem.YAxis");
+        }
     }
 
     public class BasisZ : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "CoordinateSystem.ZAxis", "CoordinateSystem.ZAxis");
+        }
     }
 
     public class Origin : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "CoordinateSystem.Origin", "CoordinateSystem.Origin");
+        }
     }
 }

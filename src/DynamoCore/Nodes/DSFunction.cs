@@ -666,11 +666,6 @@ namespace Dynamo.Nodes
             helper.SetAttribute("name", Definition.MangledName);
         }
 
-        private bool HasUnconnectedInput()
-        {
-            return !Enumerable.Range(0, InPortData.Count).All(HasInput);
-        }
-
         private List<AssociativeNode> GetConnectedInputs()
         {
             return Enumerable.Range(0, InPortData.Count)
@@ -690,7 +685,8 @@ namespace Dynamo.Nodes
                 functionNode,
                 paramNumNode,
                 positionNode,
-                arguments
+                arguments,
+                AstFactory.BuildBooleanNode(true)
             };
 
             return AstFactory.BuildFunctionCall("_SingleFunctionObject", inputParams);

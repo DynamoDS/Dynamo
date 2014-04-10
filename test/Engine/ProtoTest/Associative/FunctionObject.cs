@@ -22,7 +22,7 @@ import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 
 // fo = add(?, 42);
-fo = _SingleFunctionObject(add, 2, {1}, {null, 42});
+fo = _SingleFunctionObject(add, 2, {1}, {null, 42}, true);
 r = Apply(fo, 3);
 ";
             thisTest.RunScriptSource(code);
@@ -38,7 +38,7 @@ import (""FunctionObject.ds"");
 def add(x,y,z) { return = x + y + z;}
 
 // foo1 = add(?, 42, ?);
-fo1 = _SingleFunctionObject(add, 3, {1}, {null, 42, null});
+fo1 = _SingleFunctionObject(add, 3, {1}, {null, 42, null}, true);
 
 // foo2 = add(100, 42, ?);
 fo2 = Apply(fo1, 100);
@@ -58,7 +58,7 @@ import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 
 // fo = add(?, {100, 200});
-fo = _SingleFunctionObject(add, 2, {1}, {null, {100, 200}});
+fo = _SingleFunctionObject(add, 2, {1}, {null, {100, 200}}, true);
 r = Apply(fo, {1, 2});
 ";
             thisTest.RunScriptSource(code);
@@ -74,7 +74,7 @@ import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 
 // fo = add(?, {100, 200});
-fo = _SingleFunctionObject(add, 2, {1}, {null, {100, 200}});
+fo = _SingleFunctionObject(add, 2, {1}, {null, {100, 200}}, true);
 r = Apply(fo, 1);
 ";
             thisTest.RunScriptSource(code);
@@ -90,7 +90,7 @@ import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 
 // fo = add(?, {100, 200});
-fo = _SingleFunctionObject(add, 2, {1}, {null, {100, 200}});
+fo = _SingleFunctionObject(add, 2, {1}, {null, {100, 200}}, true);
 r = Apply(fo, {1});
 ";
             thisTest.RunScriptSource(code);
@@ -108,7 +108,7 @@ def add(x,y) { return = x + y;}
 
 def getFunctionObject()
 {
-    return = _SingleFunctionObject(add, 2, {1}, {null, 100});
+    return = _SingleFunctionObject(add, 2, {1}, {null, 100}, true);
 }
 
 fo = getFunctionObject();
@@ -131,7 +131,7 @@ def add(x,y) { return = x + y;}
 def mul(x,y) { return = x * y;}
 def getFunctionObject(f:function)
 {
-    return = _SingleFunctionObject(f, 2, {1}, {null, 100});
+    return = _SingleFunctionObject(f, 2, {1}, {null, 100}, true);
 }
 
 fo1 = getFunctionObject(add);
@@ -155,7 +155,7 @@ def add(x,y) { return = x + y;}
 def mul(x,y) { return = x * y;}
 def getFunctionObject(f:function)
 {
-    return = _SingleFunctionObject(f, 2, {1}, {null, 100});
+    return = _SingleFunctionObject(f, 2, {1}, {null, 100}, true);
 }
 
 fo = getFunctionObject({add, mul});
@@ -174,8 +174,8 @@ import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 def mul(x, y) { return = x * y;}
 
-fo1 = _SingleFunctionObject(add, 2, {1}, {null, 100});
-fo2 = _SingleFunctionObject(mul, 2, {0}, {3, null});
+fo1 = _SingleFunctionObject(add, 2, {1}, {null, 100}, true);
+fo2 = _SingleFunctionObject(mul, 2, {0}, {3, null}, true);
 fo3 = _ComposedFunctionObject({fo1, fo2});
 
 // r = 2 * 3 + 100
@@ -194,7 +194,7 @@ import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 def mul(x, y) { return = x * y;}
 
-fo1 = _SingleFunctionObject(add, 2, {1}, {null, 100});
+fo1 = _SingleFunctionObject(add, 2, {1}, {null, 100}, true);
 fo2 = _ComposedFunctionObject({fo1, fo1});
 
 // r = 42 + 100 + 100
@@ -214,19 +214,19 @@ def add(x, y) { return = x + y; }
 
 def mul(x, y) { return = x * y; }
 
-fo1 = _SingleFunctionObject(add, 2, { 1 }, { null, 3});
-fo2 = _SingleFunctionObject(mul, 2, { 0 }, { 5, null });
+fo1 = _SingleFunctionObject(add, 2, { 1 }, { null, 3}, true);
+fo2 = _SingleFunctionObject(mul, 2, { 0 }, { 5, null }, true);
 
 r1 = Apply(fo1, 7);     // 3 + 7
 r2 = Apply(fo2, 11);    // 5 * 11
 
-comp1 = Compose({ fo1, fo2 }); 
+comp1 = __Compose({ fo1, fo2 }); 
 r3 = Apply(comp1, 11);  // (5 * 11) + 3
 
-comp2 = Compose({ fo2, fo1 });
+comp2 = __Compose({ fo2, fo1 });
 r4 = Apply(comp2, 7);         // 5 * (3 + 7)
 
-comp3 = Compose({ comp1, fo1, fo2 });
+comp3 = __Compose({ comp1, fo1, fo2 });
 r5 = Apply(comp3, 9);
 ";
             thisTest.RunScriptSource(code);
@@ -251,7 +251,7 @@ class Foo
     }
 }
 
-fo = _SingleFunctionObject(Foo.foo, 2, { 1 }, { null, 100 });
+fo = _SingleFunctionObject(Foo.foo, 2, { 1 }, { null, 100 }, true);
 r = Apply(fo, 3);
 ";
             thisTest.RunScriptSource(code);
@@ -273,7 +273,7 @@ class Foo
     }
 }
 
-c = _SingleFunctionObject(Foo.Foo, 2, { 1 }, { null, 100 });
+c = _SingleFunctionObject(Foo.Foo, 2, { 1 }, { null, 100 }, true);
 f = Apply(c, 3);
 r = f.i;
 ";
@@ -308,21 +308,21 @@ def getCoordinateValue(p : Point)
     return = p.x + p.y + p.z;
 }
 
-getPointKey = _SingleFunctionObject(getCoordinateValue, 1, { }, { });
+getPointKey = _SingleFunctionObject(getCoordinateValue, 1, { }, { }, true);
 r1 = SortByKey(null, getPointKey);
 r2 = SortByKey({ }, getPointKey);
 
 r3 = SortByKey({ p1 }, getPointKey);
-t1 = Map(r3, getPointKey);
+t1 = __Map(r3, getPointKey);
 
 r4 = SortByKey({ p1, p1, p1 }, getPointKey);
-t2 = Map(r4, getPointKey);
+t2 = __Map(r4, getPointKey);
 
 r5 = SortByKey({ p1, p2, p3 }, getPointKey);
-t3 = Map(r5, getPointKey);
+t3 = __Map(r5, getPointKey);
 
 r6 = SortByKey({ p2, p1 }, getPointKey);
-t4 = Map(r6, getPointKey);
+t4 = __Map(r6, getPointKey);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t1", new object[]{6});
@@ -395,7 +395,7 @@ def comparePoint(p1 : Point, p2: Point)
     }
 }
 
-pointComparer = _SingleFunctionObject(comparePoint, 2, { }, { });
+pointComparer = _SingleFunctionObject(comparePoint, 2, { }, { }, true);
 
 r = SortByComparsion({ p1, p2, p3, p4 }, pointComparer);
 r1 = r.x;
@@ -435,10 +435,10 @@ def getCoordinateValue(p : Point)
     return = p.x + p.y + p.z;
 }
 
-getPointKey = _SingleFunctionObject(getCoordinateValue, 1, { }, { });
+getPointKey = _SingleFunctionObject(getCoordinateValue, 1, { }, { }, true);
 r = GroupByKey({ p1, p2, p3 }, getPointKey);
-t1 = Map(r[0], getPointKey);
-t2 = Map(r[1], getPointKey);
+t1 = __Map(r[0], getPointKey);
+t2 = __Map(r[1], getPointKey);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("t1", new object[] { 6, 6});
@@ -456,13 +456,11 @@ def odd(x)
     return = x % 2 == 1;
 }
 
-pred = _SingleFunctionObject(odd, 1, { }, { });
-r1 = Filter(1..10, pred);
-r2 = FilterOut(1..10, pred);
+pred = _SingleFunctionObject(odd, 1, { }, { }, true);
+r1 = __Filter(1..10, pred);
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", new object[] { 1, 3, 5, 7, 9 });
-            thisTest.Verify("r2", new object[] { 2, 4, 6, 8, 10 });
+            thisTest.Verify("r1", new object[] { new object[] { 1, 3, 5, 7, 9 }, new object[] { 2, 4, 6, 8, 10 } });
         }
 
         [Test]
@@ -481,8 +479,8 @@ def sum(x, y)
     return = x + y;
 }
 
-acc1 = _SingleFunctionObject(mul, 2, { }, { });
-acc2 = _SingleFunctionObject(sum, 2, { }, { });
+acc1 = _SingleFunctionObject(mul, 2, { }, { }, true);
+acc2 = _SingleFunctionObject(sum, 2, { }, { }, true);
 v1 = Reduce(1..10, 1, acc1);
 v2 = Reduce(1..10, 0, acc2);
 ";
