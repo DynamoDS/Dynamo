@@ -2031,7 +2031,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
         public void Defect_MAGN_2528()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-904
