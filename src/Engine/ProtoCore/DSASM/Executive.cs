@@ -2414,7 +2414,7 @@ namespace ProtoCore.DSASM
                         // UPDATED), then the outer imperative language block
                         // will be marked as dirty again and infinite loop 
                         // happens. 
-                        if (graphNode.languageBlockId != Constants.kInvalidIndex && 
+                        if (graphNode.languageBlockId > 0 && 
                             currentLangBlock != Constants.kInvalidIndex)
                         {
                             if (graphNode.languageBlockId == currentLangBlock
