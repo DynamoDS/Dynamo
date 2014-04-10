@@ -2364,7 +2364,8 @@ namespace ProtoCore.AST.AssociativeAST
                 functionNode,
                 paramNumNode,
                 positionNode,
-                arguments
+                arguments,
+                AstFactory.BuildBooleanNode(true)
             };
 
             return BuildFunctionCall("_SingleFunctionObject", inputParams);
