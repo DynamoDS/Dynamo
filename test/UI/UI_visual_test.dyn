@@ -1,9 +1,9 @@
-<Workspace Version="0.7.0.14753" X="144.443138514211" Y="265.512879623697" zoom="0.535982888164097" Description="" Category="" Name="Home">
+<Workspace Version="0.7.0.14753" X="195.296559781974" Y="246.525979192476" zoom="0.517379337959605" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="b0957d5f-d7f5-4d7f-910b-8bb4f58312d0" nickname="Watch" x="1321.85299199312" y="-329.875713116031" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="2bff76de-5e6e-4c4b-b98d-a8d47e4be4b8" nickname="Watch 3D" x="839.620368505786" y="228.443340170287" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <view width="481" height="226">
-        <camera pos_x="4.90963537449609" pos_y="4.31367246789681" pos_z="5.78963675312521" look_x="-4.04745058649785" look_y="-2.93505290391026" look_z="-6.60871033827761" />
+        <camera pos_x="5.42723435617522" pos_y="4.68901501051024" pos_z="6.63477659318058" look_x="-4.56504956817698" look_y="-3.3103954465237" look_z="-7.45385017833297" />
       </view>
     </Dynamo.Nodes.Watch3D>
     <Dynamo.Nodes.WatchImageCore type="Dynamo.Nodes.WatchImageCore" guid="732714c2-e7b7-4509-851a-1a87a0ed01e2" nickname="Watch Image" x="557.486562733262" y="719.464862525226" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
