@@ -2606,5 +2606,18 @@ namespace Dynamo.Tests
 
         #endregion
 
+        #region Test Create List
+        [Test]
+        public void TestCreateList()
+        {
+            // Test partially applied Create List node.
+
+            var model = dynSettings.Controller.DynamoModel;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\createList.dyn");
+            RunModel(openPath);
+
+            AssertPreviewValue("0f306478-5a96-4276-baac-0d08e12fe872", new object[] { 1.0, 2.0, 3.0, 4.0 }); 
+        }
+        #endregion
     }
 }
