@@ -32,7 +32,8 @@
               Background="Transparent"
               IsHitTestVisible="True"
               Margin="{Binding Path=MarginThickness}"
-              Height="{Binding Path=Height}" Width="Auto">
+              Height="{Binding Path=Height}" 
+              Width="Auto" MinWidth="26">
 
             <interactivity:Interaction.Triggers>
                 <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
