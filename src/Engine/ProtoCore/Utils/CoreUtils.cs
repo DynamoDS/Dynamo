@@ -851,6 +851,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static string GetIdentifierStringUntilFirstParenthesis(ProtoCore.AST.AssociativeAST.IdentifierListNode identList)
         {
+            Validity.Assert(null != identList);
             string identListString = identList.ToString();
             int removeIndex = identListString.IndexOf('(');
             if (removeIndex > 0)

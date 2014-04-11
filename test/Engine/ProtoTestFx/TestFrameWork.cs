@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Lang;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
@@ -286,6 +287,41 @@ namespace ProtoTestFx.TD
             Obj dsObj = mirror.GetDebugValue(variable);
             Assert.IsTrue(mirror.EqualDotNetObject(dsObj, expectedValue), mErrorMessage);
         }
+
+        /// <summary>
+        /// Build a Core with default options and contains no function or class entries
+        /// </summary>
+        /// <returns></returns>
+        public static ProtoCore.Core BuildEmptyCore()
+        {
+            ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
+            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
+            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
+            core.IsParsingCodeBlockNode = true;
+            core.IsParsingPreloadedAssembly = false;
+            return core;
+        }
+
+        public static List<AssociativeNode> BuildASTList(string code)
+        {
+            ProtoCore.Core core = BuildEmptyCore();
+            List<AssociativeNode> astList = new List<AssociativeNode>();
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(core, code) as CodeBlockNode;
+            astList.AddRange(cbn.Body);
+            return astList;
+        }
+
+        public static List<AssociativeNode> BuildASTList(List<string> codeList)
+        {
+            List<AssociativeNode> astList = new List<AssociativeNode>();
+            foreach (string code in codeList)
+            {
+                astList.AddRange(BuildASTList(code));
+            }
+            return astList;
+        }
+
 
         private static string BuildIndicesString(List<int> indices)
         {

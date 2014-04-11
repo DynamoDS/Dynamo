@@ -253,5 +253,53 @@ namespace ProtoCore.Utils
                 comment = stmnt;
             return comment;
         }
+
+        /// <summary>
+        /// Parses designscript sourcecode and ouputs a Parser instance
+        /// Used internally by ParserUtils
+        /// </summary>
+        /// <param name="statement"></param>
+        private static ProtoCore.DesignScriptParser.Parser ParseInternal(Core core, string statement)
+        {
+            Validity.Assert(core != null);
+            Validity.Assert(statement != null);
+
+            System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(statement));
+            ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
+            ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);
+
+            p.Parse();
+            return p;
+        }
+
+        /// <summary>
+        /// Parses designscript sourcecode and outputs comment nodes and returns ProtoAST CodeBlock
+        /// </summary>
+        /// <param name="statement"></param>
+        public static ProtoCore.AST.Node Parse(Core core, string statement, out ProtoCore.AST.AssociativeAST.CodeBlockNode commentNode)
+        {
+            commentNode = null;
+
+            ProtoCore.DesignScriptParser.Parser p = ProtoCore.Utils.ParserUtils.ParseInternal(core, statement);
+            Validity.Assert(null != p);
+            commentNode = p.commentNode;
+
+            return p.root;
+        }
+
+        /// <summary>
+        /// Parses designscript sourcecode and returns a ProtoAST CodeBlock
+        /// </summary>
+        /// <param name="statement"></param>
+        public static ProtoCore.AST.Node Parse(Core core, string statement)
+        {
+            Validity.Assert(core != null);
+            Validity.Assert(statement != null);
+
+            ProtoCore.DesignScriptParser.Parser p = ProtoCore.Utils.ParserUtils.ParseInternal(core, statement);
+            Validity.Assert(null != p);
+
+            return p.root;
+        }
     }
 }
