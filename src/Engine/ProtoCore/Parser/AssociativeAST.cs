@@ -144,9 +144,9 @@ namespace ProtoCore.AST.AssociativeAST
         public override int GetHashCode()
         {
             var ArrayDimensionsHashCode =
-                (ArrayDimensions == null ? 0 : ArrayDimensions.GetHashCode());
+                (ArrayDimensions == null ? base.GetHashCode() : ArrayDimensions.GetHashCode());
             var ArrayHashCode =
-                (Array == null ? 0 : Array.GetHashCode());
+                (Array == null ? base.GetHashCode() : Array.GetHashCode());
 
             return ArrayDimensionsHashCode ^ ArrayHashCode;
         }
@@ -202,7 +202,7 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var IsLongestHashCode = IsLongest? 1 : 0;
             var RepGuideHashCode =
-                (RepGuide == null ? 0 : RepGuide.GetHashCode());
+                (RepGuide == null ? base.GetHashCode() : RepGuide.GetHashCode());
 
             return IsLongestHashCode ^ RepGuideHashCode;
         }
@@ -284,9 +284,9 @@ namespace ProtoCore.AST.AssociativeAST
         public override int GetHashCode()
         {
             var ArrayDimensionsHashCode =
-                (ArrayDimensions == null ? 0 : ArrayDimensions.GetHashCode());
+                (ArrayDimensions == null ? base.GetHashCode() : ArrayDimensions.GetHashCode());
             var ReplicationGuidesHashCode =
-                (ReplicationGuides == null ? 0 : ReplicationGuides.GetHashCode());
+                (ReplicationGuides == null ? base.GetHashCode() : ReplicationGuides.GetHashCode());
 
             return ArrayDimensionsHashCode ^ ReplicationGuidesHashCode;
         }
@@ -565,7 +565,7 @@ namespace ProtoCore.AST.AssociativeAST
         public override int GetHashCode()
         {
             var valueHashCode =
-                (Value? 1 : 0);
+                (Value ? 10357 : 10463);
 
             return valueHashCode;
         }

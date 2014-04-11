@@ -631,7 +631,7 @@ namespace ProtoScript.Runners
 
             public override int GetHashCode()
             {
-                return Location == null ? 0 : Location.GetHashCode();
+                return Location == null ? 10589 : Location.GetHashCode();
             }
         }
 
