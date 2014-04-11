@@ -692,6 +692,14 @@ namespace Dynamo.Units
             }
             return Math.Abs(length.Value - _value) < SIUnit.Epsilon;
         }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public override int GetHashCode()
+        {
+            var volumeHashCode = Convert.ToInt32(_value);
+
+            return volumeHashCode;
+        }
     }
 
     /// <summary>
@@ -919,6 +927,14 @@ namespace Dynamo.Units
             }
             return Math.Abs(area.Value - _value) < SIUnit.Epsilon;
         }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public override int GetHashCode()
+        {
+            var volumeHashCode = Convert.ToInt32(_value);
+
+            return volumeHashCode;
+        }
     }
 
     /// <summary>
@@ -1136,6 +1152,14 @@ namespace Dynamo.Units
                 return false;
             }
             return Math.Abs(volume.Value - _value) < SIUnit.Epsilon;
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public override int GetHashCode()
+        {
+            var volumeHashCode = Convert.ToInt32(_value);
+
+            return volumeHashCode;
         }
     }
 
