@@ -2193,7 +2193,7 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
           
             XmlElement numberNode = MigrationManager.CreateNode(data.Document, 
-                "Dynamo.Nodes.DoubleInput", "Number");
+                oldNode, 0, "Dynamo.Nodes.DoubleInput", "Number");
 
             // Get attributes from old child node
             XmlElement newChild = data.Document.CreateElement("System.Double");
