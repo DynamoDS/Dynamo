@@ -273,16 +273,16 @@ limitations under the License.
       <DependentUpon>DynamoView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Views\dynNodeView.xaml.cs">
-      <DependentUpon>dynNodeView.xaml</DependentUpon>
+    <Compile Include="UI\Views\NodeView.xaml.cs">
+      <DependentUpon>NodeView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Views\dynNoteView.xaml.cs">
-      <DependentUpon>dynNoteView.xaml</DependentUpon>
+    <Compile Include="UI\Views\NoteView.xaml.cs">
+      <DependentUpon>NoteView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Views\dynWorkspaceView.xaml.cs">
-      <DependentUpon>dynWorkspaceView.xaml</DependentUpon>
+    <Compile Include="UI\Views\WorkspaceView.xaml.cs">
+      <DependentUpon>WorkspaceView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Views\SearchView.xaml.cs">
@@ -567,13 +567,14 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\dynNodeView.xaml">
+    <Page Include="UI\Views\NodeView.xaml">
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\Views\dynNoteView.xaml">
+    <Page Include="UI\Views\NoteView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\dynWorkspaceView.xaml">
+    <Page Include="UI\Views\WorkspaceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
