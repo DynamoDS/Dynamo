@@ -2030,7 +2030,188 @@ namespace DynamoCoreUITests
 
 
         }
-       
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2528()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2528
+            RunCommandsFromFile("Defect_MAGN_2528.xml", true);
+
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            //Check the CBN for error
+            var cbn = GetNode("10f928da-a6ef-4235-b84b-883f66e26017") as CodeBlockNodeModel;
+            Assert.AreEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(0, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.InPorts.Count);
+        }
+
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2453()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2453
+
+            RunCommandsFromFile("Defect_MAGN_2453.xml", true, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    AssertPreviewValue("ab11bb36-b428-4297-ac25-7afeeefff487", new int[] { 0, 2 });
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("ab11bb36-b428-4297-ac25-7afeeefff487", new int[] { 0, 2, 4 });
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    AssertPreviewValue("ab11bb36-b428-4297-ac25-7afeeefff487", new int[] { 2, 3, 4 });
+                }
+                else if (commandTag == "LastRun")
+                {
+                    AssertPreviewValue("ab11bb36-b428-4297-ac25-7afeeefff487", new int[] { 4, 5, 6 });
+                }
+
+            });
+
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2593()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2593
+
+            RunCommandsFromFile("Defect_MAGN_2593.xml", true, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count);
+
+                    AssertPreviewValue("2be171fb-2f81-4244-88ec-a8827a77e150", new int[] { 5 });
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count);
+
+                    AssertPreviewValue("2be171fb-2f81-4244-88ec-a8827a77e150", 
+                        new int[] { 5, 5, 5 });
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(5, workspace.Connectors.Count);
+
+                    AssertPreviewValue("2be171fb-2f81-4244-88ec-a8827a77e150", 
+                        new int[] { 5, 5, 5, 6, 7 });
+                }
+                else if (commandTag == "FourthRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Connectors.Count);
+
+                    AssertPreviewValue("2be171fb-2f81-4244-88ec-a8827a77e150", 
+                        new int[] { 5, 5, 5, 6 });
+                }
+
+                else if (commandTag == "LastRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count);
+
+                    AssertPreviewValue("2be171fb-2f81-4244-88ec-a8827a77e150", 
+                        new int[] { 5, 5, 5 });
+                }
+
+            });
+
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_3113()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3113
+
+            RunCommandsFromFile("Defect_MAGN_3113.xml", true);
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            // check for number of Nodes and Connectors
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count);
+
+            // Only in the UI it is showing {6, null}, but still this test make sense to add for 
+            // tracking regression, if we get different output after undo/redo.
+            AssertPreviewValue("d54551b2-5775-4b1e-a064-f8b9e0f2b3a0", new int[] { 6 });
+
+        }
+
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2373()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2373
+
+            RunCommandsFromFile("Defect_MAGN_2373.xml", false, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(10, workspace.Nodes.Count);
+                    Assert.AreEqual(13, workspace.Connectors.Count);
+
+                    AssertPreviewValue("6e2b9ef1-7749-40ec-9319-b43832c1891f",
+                        new int[][] {new int[] { 2, 8, 9, 3 } });
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("6e2b9ef1-7749-40ec-9319-b43832c1891f",
+                        new int[][] { new int[] { 2, 8, 3, 9 } });
+                }
+                else if (commandTag == "LastRun")
+                {
+                    AssertPreviewValue("6e2b9ef1-7749-40ec-9319-b43832c1891f",
+                        new int[][] { new int[] { 8, 2, 3, 9 } });
+                }
+
+            });
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2563()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-23563
+
+            RunCommandsFromFile("Defect_MAGN_2563.xml", true);
+
+            Assert.AreEqual(1, Controller.DynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, Controller.DynamoModel.CurrentWorkspace.Connectors.Count);
+
+
+            NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                ("aeed3ffe-7294-43a9-8a05-83b5ff05f527");
+
+            Assert.AreEqual(ElementState.Warning, node.State);
+        }
+
         #endregion
 
         #region Tests moved from FScheme

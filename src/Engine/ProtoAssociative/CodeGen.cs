@@ -2270,7 +2270,7 @@ namespace ProtoAssociative
                 IdentifierListNode identList = node as IdentifierListNode;
 
                 //Check if the LeftNode for given IdentifierList represents a class.
-                string[] classNames = this.core.ClassTable.GetAllMatchingClasses(identList.LeftNode.ToString());
+                string[] classNames = ProtoCore.Utils.CoreUtils.GetResolvedClassName(core.ClassTable, identList);
                 if (classNames.Length > 1)
                 {
                     string message = string.Format(WarningMessage.kMultipleSymbolFound, identList.LeftNode.ToString(), classNames[0]);
@@ -4744,6 +4744,7 @@ namespace ProtoAssociative
                 }
 
                 core.Executives[langblock.codeblock.language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode, propagateGraphNode);
+                graphNode.isLanguageBlock = true;
                 graphNode.languageBlockId = blockId;
 
                 setBlkId(blockId);

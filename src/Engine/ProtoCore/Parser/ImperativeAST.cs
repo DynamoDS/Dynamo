@@ -20,6 +20,11 @@ namespace ProtoCore.AST.ImperativeAST
         {
             return base.Equals(other);
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     public class LanguageBlockNode : ImperativeNode

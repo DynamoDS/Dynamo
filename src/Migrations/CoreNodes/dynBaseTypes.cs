@@ -1665,6 +1665,11 @@ namespace Dynamo.Nodes
 
     public class ApplyList : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "", "ApplyList", "ApplyList@_FunctionObject,var[]..[]");
+        }
     }
 
     public class Apply1 : MigrationNode
@@ -2177,6 +2182,34 @@ namespace Dynamo.Nodes
 
     public class AngleInput : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                "Math.DegreesToRadians", "Math.DegreesToRadians@double");
+            migrationData.AppendNode(newNode);
+          
+            XmlElement numberNode = MigrationManager.CreateNode(data.Document, 
+                "Dynamo.Nodes.DoubleInput", "Number");
+
+            // Get attributes from old child node
+            XmlElement newChild = data.Document.CreateElement("System.Double");
+
+            foreach (XmlNode attr in oldNode.FirstChild.Attributes)
+            {
+                if (attr.Name.Equals("value"))
+                    newChild.SetAttribute("value", attr.Value);
+            }
+
+            numberNode.AppendChild(newChild);
+            migrationData.AppendNode(numberNode);
+
+            data.CreateConnector(numberNode, 0, newNode, 0);
+            return migrationData;
+        }
     }
 
     public class DoubleSliderInput : MigrationNode
@@ -2358,7 +2391,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.FromObject", "String.FromObject@var");
+            return MigrateToDsFunction(data, "", "ToString", "ToString@var[]..[]");
         }
     }
 

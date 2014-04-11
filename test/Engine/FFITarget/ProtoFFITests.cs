@@ -119,6 +119,12 @@ namespace FFITarget
         {
             return true;
         }
+
+        public override int GetHashCode()
+        {
+            return 10061;
+        }
+
         public object FuncReturningVariousObjectTypes(int x)
         {
             switch (x)
@@ -671,6 +677,10 @@ namespace FFITarget
         {
             return true;
         }
+        public override int GetHashCode()
+        {
+            return 10093;
+        }
     }
     public class Derived1 : Base
     {
@@ -730,6 +740,11 @@ namespace FFITarget
             if (null == db)
                 return false;
             return mValue == db.mValue;
+        }
+
+        public override int GetHashCode()
+        {
+            return mValue;
         }
     }
     public class DummyDispose : DummyBase

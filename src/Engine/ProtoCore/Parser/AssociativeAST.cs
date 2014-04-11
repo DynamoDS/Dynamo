@@ -63,6 +63,14 @@ namespace ProtoCore.AST.AssociativeAST
             return null != otherNode && Attributes.SequenceEqual(otherNode.Attributes);
         }
 
+        public override int GetHashCode()
+        {
+            var AttributesHashCode =
+                (Attributes == null ? base.GetHashCode() : Attributes.GetHashCode());
+
+            return AttributesHashCode;
+        }
+
         public override string ToString()
         {
             var buf = new StringBuilder();
@@ -108,6 +116,11 @@ namespace ProtoCore.AST.AssociativeAST
             var otherNode = other as MergeNode;
             return null != otherNode && MergedNodes.SequenceEqual(otherNode.MergedNodes);
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     /// <summary>
@@ -126,6 +139,16 @@ namespace ProtoCore.AST.AssociativeAST
 
             return EqualityComparer<ArrayNode>.Default.Equals(ArrayDimensions, otherNode.ArrayDimensions) &&
                    EqualityComparer<AssociativeNode>.Default.Equals(Array, otherNode.Array);
+        }
+
+        public override int GetHashCode()
+        {
+            var ArrayDimensionsHashCode =
+                (ArrayDimensions == null ? base.GetHashCode() : ArrayDimensions.GetHashCode());
+            var ArrayHashCode =
+                (Array == null ? base.GetHashCode() : Array.GetHashCode());
+
+            return ArrayDimensionsHashCode ^ ArrayHashCode;
         }
 
         public override string ToString()
@@ -173,6 +196,15 @@ namespace ProtoCore.AST.AssociativeAST
 
             return  IsLongest == otherNode.IsLongest
                     && EqualityComparer<AssociativeNode>.Default.Equals(RepGuide, otherNode.RepGuide);
+        }
+
+        public override int GetHashCode()
+        {
+            var IsLongestHashCode = IsLongest? 1 : 0;
+            var RepGuideHashCode =
+                (RepGuide == null ? base.GetHashCode() : RepGuide.GetHashCode());
+
+            return IsLongestHashCode ^ RepGuideHashCode;
         }
 
         public override string ToString()
@@ -249,6 +281,16 @@ namespace ProtoCore.AST.AssociativeAST
             return arrayDimEqual && repGuidesEqual;
         }
 
+        public override int GetHashCode()
+        {
+            var ArrayDimensionsHashCode =
+                (ArrayDimensions == null ? base.GetHashCode() : ArrayDimensions.GetHashCode());
+            var ReplicationGuidesHashCode =
+                (ReplicationGuides == null ? base.GetHashCode() : ReplicationGuides.GetHashCode());
+
+            return ArrayDimensionsHashCode ^ ReplicationGuidesHashCode;
+        }
+
         public override string ToString()
         {
             var buf = new StringBuilder();
@@ -285,6 +327,14 @@ namespace ProtoCore.AST.AssociativeAST
 
             return otherNode != null
                 && EqualityComparer<AssociativeNode>.Default.Equals(Expression, otherNode.Expression);
+        }
+
+        public override int GetHashCode()
+        {
+            var ExpressionHashCode =
+                (Expression == null ? base.GetHashCode() : Expression.GetHashCode());
+
+            return ExpressionHashCode;
         }
 
         public override string ToString()
@@ -336,6 +386,11 @@ namespace ProtoCore.AST.AssociativeAST
             return EqualityComparer<string>.Default.Equals(Value, otherNode.Value) && 
                    datatype.Equals(otherNode.datatype) && 
                    base.Equals(otherNode);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
 
         public override string ToString()
@@ -398,6 +453,17 @@ namespace ProtoCore.AST.AssociativeAST
                    Optr.Equals(otherNode.Optr);
         }
 
+        public override int GetHashCode()
+        {
+            var LeftNodeHashCode =
+                (LeftNode == null ? base.GetHashCode() : LeftNode.GetHashCode());
+            var RightNodeHashCode =
+                (RightNode == null ? base.GetHashCode() : RightNode.GetHashCode());
+            var OptrHashCode = Optr.GetHashCode();
+
+            return LeftNodeHashCode ^ RightNodeHashCode ^ OptrHashCode;
+        }
+
         public override string ToString()
         {
             return LeftNode + "." + RightNode;
@@ -422,6 +488,12 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var otherNode = other as IntNode;
             return null != otherNode && Value.Equals(otherNode.Value);
+        }
+
+        public override int GetHashCode()
+        {
+            var valueHashCode = Convert.ToInt32(Value);
+            return valueHashCode;
         }
 
         public override string ToString()
@@ -454,6 +526,12 @@ namespace ProtoCore.AST.AssociativeAST
             return Value.Equals(otherNode.Value);
         }
 
+        public override int GetHashCode()
+        {
+            var valueHashCode = Convert.ToInt32(Value);
+            return valueHashCode;
+        }
+
         public override string ToString()
         {
             return Value.ToString();
@@ -484,6 +562,14 @@ namespace ProtoCore.AST.AssociativeAST
             return Value == otherNode.Value;
         }
 
+        public override int GetHashCode()
+        {
+            var valueHashCode =
+                (Value ? 10357 : 10463);
+
+            return valueHashCode;
+        }
+
         public override string ToString()
         {
             return Value.ToString();
@@ -509,6 +595,14 @@ namespace ProtoCore.AST.AssociativeAST
                 return false;
 
             return EqualityComparer<string>.Default.Equals(value, otherNode.value);
+        }
+
+        public override int GetHashCode()
+        {
+            var valueHashCode =
+                (value == null ? base.GetHashCode() : value.GetHashCode());
+
+            return valueHashCode;
         }
 
         public override string ToString()
@@ -539,6 +633,14 @@ namespace ProtoCore.AST.AssociativeAST
             return value.Equals(otherNode.value);
         }
 
+        public override int GetHashCode()
+        {
+            var valueHashCode =
+                (value == null ? base.GetHashCode() : value.GetHashCode());
+
+            return valueHashCode;
+        }
+
         public override string ToString()
         {
             return "\"" + value + "\"";
@@ -550,6 +652,11 @@ namespace ProtoCore.AST.AssociativeAST
         public override bool Equals(object other)
         {
             return other is NullNode;
+        }
+
+        public override int GetHashCode()
+        {
+            return 10099;
         }
 
         public override string ToString()
@@ -573,6 +680,11 @@ namespace ProtoCore.AST.AssociativeAST
                 return false;
 
             return null != ReturnExpr && ReturnExpr.Equals(otherNode.ReturnExpr);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
 
         public override string ToString()
@@ -618,6 +730,17 @@ namespace ProtoCore.AST.AssociativeAST
                    EqualityComparer<AssociativeNode>.Default.Equals(Function, otherNode.Function) &&
                    FormalArguments.SequenceEqual(otherNode.FormalArguments) &&
                    base.Equals(otherNode);
+        }
+
+        public override int GetHashCode()
+        {
+            var dynamicTableIndexHashCode = Convert.ToInt32(DynamicTableIndex);
+            var functionHashCode =
+                (Function == null ? base.GetHashCode() : Function.GetHashCode());
+            var formalArgumentsHashCode =
+                (FormalArguments == null ? base.GetHashCode() : FormalArguments.GetHashCode());
+
+            return dynamicTableIndexHashCode ^ functionHashCode ^ formalArgumentsHashCode;
         }
 
         public override string ToString()
@@ -736,6 +859,18 @@ namespace ProtoCore.AST.AssociativeAST
                    FunctionCall.Equals(otherNode.FunctionCall);
         }
 
+        public override int GetHashCode()
+        {
+            var lhsNameHashCode =
+                (lhsName == null ? base.GetHashCode() : lhsName.GetHashCode());
+            var dotCallHashCode =
+                (DotCall == null ? base.GetHashCode() : DotCall.GetHashCode());
+            var functionCallHashCode =
+                (FunctionCall == null ? base.GetHashCode() : FunctionCall.GetHashCode());
+
+            return lhsNameHashCode ^ dotCallHashCode ^ functionCallHashCode;
+        }
+
         public override string ToString()
         {
             var buf = new StringBuilder();
@@ -813,6 +948,20 @@ namespace ProtoCore.AST.AssociativeAST
                    IsStatic == otherNode.IsStatic && 
                    Attributes.SequenceEqual(otherNode.Attributes);
         }
+
+        public override int GetHashCode()
+        {
+            var memregionHashCode = memregion.GetHashCode();
+            var argumentTypeHashCode = ArgumentType.GetHashCode();
+            var nameNodeHashCode =
+                (NameNode == null ? base.GetHashCode() : NameNode.GetHashCode());
+            var isStaticHashCode = IsStatic? 1 : 0;
+            var attributesHashCode =
+                (Attributes == null ? base.GetHashCode() : Attributes.GetHashCode());
+
+            return memregionHashCode ^ argumentTypeHashCode ^ 
+                nameNodeHashCode ^ isStaticHashCode ^ attributesHashCode;
+        }
     }
 
     public class ArgumentSignatureNode : AssociativeNode
@@ -855,6 +1004,14 @@ namespace ProtoCore.AST.AssociativeAST
             var otherNode = other as ArgumentSignatureNode;
             return null != otherNode && Arguments.SequenceEqual(otherNode.Arguments);
         }
+
+        public override int GetHashCode()
+        {
+            var argumentsHashCode =
+                (Arguments == null ? base.GetHashCode() : Arguments.GetHashCode());
+
+            return argumentsHashCode;
+        }
     }
 
     public class CodeBlockNode : AssociativeNode
@@ -879,6 +1036,14 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var otherNode = other as CodeBlockNode;
             return null != otherNode && Body.SequenceEqual(otherNode.Body);
+        }
+
+        public override int GetHashCode()
+        {
+            var bodyHashCode =
+                (Body == null ? base.GetHashCode() : Body.GetHashCode());
+
+            return bodyHashCode;
         }
     }
 
@@ -977,6 +1142,23 @@ namespace ProtoCore.AST.AssociativeAST
                    superClass.SequenceEqual(otherNode.superClass) &&
                    varlist.SequenceEqual(otherNode.varlist) &&
                    funclist.SequenceEqual(otherNode.funclist);
+        }
+
+        public override int GetHashCode()
+        {
+            var classNameHashCode =
+                (className == null ? base.GetHashCode() : className.GetHashCode());
+            var superClassHashCode =
+                (superClass == null ? base.GetHashCode() : superClass.GetHashCode());
+            var varlistHashCode =
+                (varlist == null ? base.GetHashCode() : varlist.GetHashCode());
+            var attributesHashCode =
+                (Attributes == null ? base.GetHashCode() : Attributes.GetHashCode());
+            var funclistHashCode =
+                (funclist == null ? base.GetHashCode() : funclist.GetHashCode());
+
+            return classNameHashCode ^ superClassHashCode ^ 
+                varlistHashCode ^ attributesHashCode ^ funclistHashCode;
         }
     }
 
@@ -1094,6 +1276,21 @@ namespace ProtoCore.AST.AssociativeAST
                    EqualityComparer<CodeBlockNode>.Default.Equals(FunctionBody, otherNode.FunctionBody) &&
                    Attributes.SequenceEqual(otherNode.Attributes); 
         }
+
+        public override int GetHashCode()
+        {
+            var localVarsHashCode = Convert.ToInt32(localVars);
+            var signatureHashCode =
+                (Signature == null ? base.GetHashCode() : Signature.GetHashCode());
+            var returnTypeHashCode = ReturnType.GetHashCode();
+            var functionBodyHashCode =
+                (FunctionBody == null ? base.GetHashCode() : FunctionBody.GetHashCode());
+            var attributesHashCode =
+                (Attributes == null ? base.GetHashCode() : Attributes.GetHashCode());
+
+            return localVarsHashCode ^ signatureHashCode ^
+                returnTypeHashCode ^ functionBodyHashCode ^ attributesHashCode;
+        }
     }
 
     public class FunctionDefinitionNode : AssociativeNode
@@ -1168,6 +1365,18 @@ namespace ProtoCore.AST.AssociativeAST
                    Attributes.SequenceEqual(otherNode.Attributes);
         }
 
+        public override int GetHashCode()
+        {
+            var signatureHashCode =
+                (Signature == null ? base.GetHashCode() : Signature.GetHashCode());
+            var returnTypeHashCode = ReturnType.GetHashCode();
+            var attributesHashCode =
+                (Attributes == null ? base.GetHashCode() : Attributes.GetHashCode());
+
+            return  signatureHashCode ^
+                returnTypeHashCode ^ attributesHashCode;
+        }
+
         public override string ToString()
         {
             var buf = new StringBuilder();
@@ -1221,6 +1430,18 @@ namespace ProtoCore.AST.AssociativeAST
                    IfBody.SequenceEqual(otherNode.IfBody) &&
                    ElseBody.SequenceEqual(otherNode.ElseBody);
         }
+
+        public override int GetHashCode()
+        {
+            var ifExprNodeHashCode =
+                (ifExprNode == null ? base.GetHashCode() : ifExprNode.GetHashCode());
+            var ifBodyHashCode =
+                (IfBody == null ? base.GetHashCode() : IfBody.GetHashCode());
+            var elseBodyHashCode =
+                (ElseBody == null ? base.GetHashCode() : ElseBody.GetHashCode());
+
+            return ifExprNodeHashCode ^ ifBodyHashCode ^ elseBodyHashCode;
+        }
     }
 
     public class InlineConditionalNode : AssociativeNode
@@ -1255,6 +1476,18 @@ namespace ProtoCore.AST.AssociativeAST
             return ConditionExpression.Equals(otherNode.ConditionExpression) &&
                    TrueExpression.Equals(otherNode.TrueExpression) &&
                    FalseExpression.Equals(otherNode.FalseExpression);
+        }
+
+        public override int GetHashCode()
+        {
+            var conditionExpressionHashCode =
+                (ConditionExpression == null ? base.GetHashCode() : ConditionExpression.GetHashCode());
+            var trueExpressionHashCode =
+                (TrueExpression == null ? base.GetHashCode() : TrueExpression.GetHashCode());
+            var falseExpressionHashCode =
+                (FalseExpression == null ? base.GetHashCode() : FalseExpression.GetHashCode());
+
+            return conditionExpressionHashCode ^ trueExpressionHashCode ^ falseExpressionHashCode;
         }
 
         public override string ToString()
@@ -1339,6 +1572,17 @@ namespace ProtoCore.AST.AssociativeAST
                    RightNode.Equals(otherNode.RightNode);
         }
 
+        public override int GetHashCode()
+        {
+            var leftNodeHashCode =
+                (LeftNode == null ? base.GetHashCode() : LeftNode.GetHashCode());
+            var optrHashCode = Optr.GetHashCode();
+            var rightNodeHashCode =
+                (RightNode == null ? base.GetHashCode() : RightNode.GetHashCode());
+
+            return leftNodeHashCode ^ optrHashCode ^ rightNodeHashCode;
+        }
+
         public override string ToString()
         {
             var buf = new StringBuilder();
@@ -1382,6 +1626,15 @@ namespace ProtoCore.AST.AssociativeAST
 
             return Operator.Equals(otherNode.Operator) &&
                    Expression.Equals(otherNode.Expression);
+        }
+
+        public override int GetHashCode()
+        {
+            var operatorHashCode = Operator.GetHashCode();
+            var expressionHashCode =
+                (Expression == null ? base.GetHashCode() : Expression.GetHashCode());
+
+            return operatorHashCode ^ expressionHashCode;
         }
     }
 
@@ -1495,6 +1748,16 @@ namespace ProtoCore.AST.AssociativeAST
                    ElementNodes.SequenceEqual(otherNode.ElementNodes);
         }
 
+        public override int GetHashCode()
+        {
+            var returnNodeHashCode =
+                (ReturnNode == null ? base.GetHashCode() : ReturnNode.GetHashCode());
+            var elementNodesHashCode =
+                (ElementNodes == null ? base.GetHashCode() : ElementNodes.GetHashCode());
+
+            return returnNodeHashCode ^ elementNodesHashCode;
+        }
+
         public override string ToString()
         {
             var buf = new StringBuilder();
@@ -1545,6 +1808,21 @@ namespace ProtoCore.AST.AssociativeAST
                    stepoperator.Equals(otherNode.stepoperator) &&
                    ((StepNode == otherNode.StepNode) || (StepNode != null && StepNode.Equals(otherNode.StepNode))) &&
                    HasRangeAmountOperator == otherNode.HasRangeAmountOperator;
+        }
+
+        public override int GetHashCode()
+        {
+            var fromNodeHashCode =
+                (FromNode == null ? base.GetHashCode() : FromNode.GetHashCode());
+            var toNodeHashCode =
+                (ToNode == null ? base.GetHashCode() : ToNode.GetHashCode());
+            //var stepoperatorHashCode = stepoperator.GetHashCode());
+            var stepNodeHashCode =
+                (StepNode == null ? base.GetHashCode() : StepNode.GetHashCode());
+            var hasRangeAmountOperatorHashCode = HasRangeAmountOperator ? 1 : 0;
+
+            return fromNodeHashCode ^ toNodeHashCode ^ 
+                stepNodeHashCode ^ hasRangeAmountOperatorHashCode;
         }
 
         public override string ToString()
@@ -1605,6 +1883,14 @@ namespace ProtoCore.AST.AssociativeAST
             return null != otherNode && list.SequenceEqual(otherNode.list);
         }
 
+        public override int GetHashCode()
+        {
+            var listHashCode =
+                (list == null ? base.GetHashCode() : list.GetHashCode());
+
+            return listHashCode;
+        }
+
         public override string ToString()
         {
             var buf = new StringBuilder();
@@ -1641,6 +1927,18 @@ namespace ProtoCore.AST.AssociativeAST
             return loopVar.Equals(otherNode.loopVar) &&
                    expression.Equals(otherNode.expression) &&
                    body.SequenceEqual(otherNode.body);
+        }
+
+        public override int GetHashCode()
+        {
+            var loopVarHashCode =
+                (loopVar == null ? base.GetHashCode() : loopVar.GetHashCode());
+            var expressionHashCode =
+                (expression == null ? base.GetHashCode() : expression.GetHashCode());
+            var bodyHashCode =
+                (body == null ? base.GetHashCode() : body.GetHashCode());
+
+            return loopVarHashCode ^ expressionHashCode ^ bodyHashCode;
         }
     }
 
@@ -1687,6 +1985,16 @@ namespace ProtoCore.AST.AssociativeAST
 
             return EqualityComparer<AssociativeNode>.Default.Equals(Expr, otherNode.Expr) &&
                    EqualityComparer<AssociativeNode>.Default.Equals(Type, otherNode.Type);
+        }
+
+        public override int GetHashCode()
+        {
+            var exprHashCode =
+                (Expr == null ? base.GetHashCode() : Expr.GetHashCode());
+            var typeHashCode =
+                (Type == null ? base.GetHashCode() : Type.GetHashCode());
+
+            return exprHashCode ^ typeHashCode;
         }
 
         public override string ToString()
@@ -1756,6 +2064,21 @@ namespace ProtoCore.AST.AssociativeAST
                    modulePathFileName.Equals(otherNode.modulePathFileName);
         }
 
+        public override int GetHashCode()
+        {
+            var codeNodeHashCode =
+                (CodeNode == null ? base.GetHashCode() : CodeNode.GetHashCode());
+            var identifiersHashCode =
+                (Identifiers == null ? base.GetHashCode() : Identifiers.GetHashCode());
+            var moduleNameHashCode =
+                (ModuleName == null ? base.GetHashCode() : ModuleName.GetHashCode());
+            var modulePathFileNameHashCode =
+                (modulePathFileName == null ? base.GetHashCode() : modulePathFileName.GetHashCode());
+
+            return codeNodeHashCode ^ identifiersHashCode ^
+                moduleNameHashCode ^ modulePathFileNameHashCode;
+        }
+
         public override string ToString()
         {
             return Keyword.Import + "(\"" + ModuleName + "\")" + Constants.termline;
@@ -1776,6 +2099,15 @@ namespace ProtoCore.AST.AssociativeAST
             return Operator.Equals(otherNode.Operator) &&
                    Identifier.Equals(otherNode.Identifier);
         }
+
+        public override int GetHashCode()
+        {
+            var operatorHashCode = Operator.GetHashCode();
+            var identifierHashCode =
+                (Identifier == null ? base.GetHashCode() : Identifier.GetHashCode());
+
+            return operatorHashCode ^ identifierHashCode;
+        }
     }
 
     public class BreakNode : AssociativeNode
@@ -1789,6 +2121,11 @@ namespace ProtoCore.AST.AssociativeAST
         {
             return other is BreakNode;
         }
+
+        public override int GetHashCode()
+        {
+            return 10007;
+        }
     }
 
     public class ContinueNode : AssociativeNode
@@ -1801,6 +2138,11 @@ namespace ProtoCore.AST.AssociativeAST
         public override bool Equals(object other)
         {
             return other is ContinueNode;
+        }
+
+        public override int GetHashCode()
+        {
+            return 10009;
         }
     }
 
@@ -1834,6 +2176,13 @@ namespace ProtoCore.AST.AssociativeAST
                 return false;
 
             return block == otherNode.block;
+        }
+
+        public override int GetHashCode()
+        {
+            var blockHashCode = Convert.ToInt32(block);
+
+            return blockHashCode;
         }
     }
 
@@ -1869,6 +2218,25 @@ namespace ProtoCore.AST.AssociativeAST
                    rightNodeArgNum.Equals(otherNode.rightNodeArgNum); 
         }
 
+        public override int GetHashCode()
+        {
+            var leftNodeHashCode =
+                (leftNode == null ? base.GetHashCode() : leftNode.GetHashCode());
+            var rightNodeHashCode =
+                (rightNode == null ? base.GetHashCode() : rightNode.GetHashCode());
+            var rightNodeDimExprListHashCode =
+                (rightNodeDimExprList == null ? base.GetHashCode() : rightNodeDimExprList.GetHashCode());
+            var rightNodeDimHashCode =
+                (rightNodeDim == null ? base.GetHashCode() : rightNodeDim.GetHashCode());
+            var rightNodeArgListHashCode =
+                (rightNodeArgList == null ? base.GetHashCode() : rightNodeArgList.GetHashCode());
+            var rightNodeArgNumHashCode =
+                (rightNodeArgNum == null ? base.GetHashCode() : rightNodeArgNum.GetHashCode());
+
+            return leftNodeHashCode ^ rightNodeHashCode ^ rightNodeDimExprListHashCode 
+                ^ rightNodeDimHashCode ^ rightNodeArgListHashCode ^ rightNodeArgNumHashCode;
+        }
+
         public override string ToString()
         {
             return Keyword.Null;
@@ -1894,6 +2262,11 @@ namespace ProtoCore.AST.AssociativeAST
         {
             return other is ThisPointerNode;
         }
+
+        public override int GetHashCode()
+        {
+            return 10037;
+        }
     }
 
     public class ThrowNode : AssociativeNode
@@ -1908,6 +2281,14 @@ namespace ProtoCore.AST.AssociativeAST
                
             return expression.Equals(otherNode.expression);
         }
+
+        public override int GetHashCode()
+        {
+            var expressionHashCode =
+                (expression == null ? base.GetHashCode() : expression.GetHashCode());
+
+            return expressionHashCode;
+        }
     }
 
     public class TryBlockNode : AssociativeNode
@@ -1921,6 +2302,14 @@ namespace ProtoCore.AST.AssociativeAST
                 return false;
 
             return body.SequenceEqual(otherNode.body);
+        }
+
+        public override int GetHashCode()
+        {
+            var bodyHashCode =
+                (body == null ? base.GetHashCode() : body.GetHashCode());
+
+            return bodyHashCode;
         }
     }
 
@@ -1938,6 +2327,15 @@ namespace ProtoCore.AST.AssociativeAST
             return var.Equals(otherNode.var) &&
                    type.Equals(otherNode.type);
         }
+
+        public override int GetHashCode()
+        {
+            var varHashCode =
+                (var == null ? base.GetHashCode() : var.GetHashCode());
+            var typeHashCode = type.GetHashCode();
+
+            return varHashCode ^ typeHashCode;
+        }
     }
 
     public class CatchBlockNode : AssociativeNode
@@ -1952,6 +2350,16 @@ namespace ProtoCore.AST.AssociativeAST
                 return false;
 
             return catchFilter.Equals(otherNode.catchFilter) && body.SequenceEqual(otherNode.body);
+        }
+
+        public override int GetHashCode()
+        {
+            var catchFilterHashCode =
+                (catchFilter == null ? base.GetHashCode() : catchFilter.GetHashCode());
+            var bodyHashCode =
+                (body == null ? base.GetHashCode() : body.GetHashCode());
+
+            return catchFilterHashCode ^ bodyHashCode;
         }
     }
 
@@ -1972,6 +2380,16 @@ namespace ProtoCore.AST.AssociativeAST
                 return false;
 
             return tryBlock.Equals(otherNode.tryBlock) && catchBlocks.SequenceEqual(otherNode.catchBlocks);
+        }
+
+        public override int GetHashCode()
+        {
+            var tryBlockHashCode =
+                (tryBlock == null ? base.GetHashCode() : tryBlock.GetHashCode());
+            var catchBlocksHashCode =
+                (catchBlocks == null ? base.GetHashCode() : catchBlocks.GetHashCode());
+
+            return tryBlockHashCode ^ catchBlocksHashCode;
         }
     }
 
@@ -2364,7 +2782,8 @@ namespace ProtoCore.AST.AssociativeAST
                 functionNode,
                 paramNumNode,
                 positionNode,
-                arguments
+                arguments,
+                AstFactory.BuildBooleanNode(true)
             };
 
             return BuildFunctionCall("_SingleFunctionObject", inputParams);
