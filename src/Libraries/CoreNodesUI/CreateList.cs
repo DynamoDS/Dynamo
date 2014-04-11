@@ -42,12 +42,46 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            return new[]
+            if (HasUnconnectedInput())
             {
-                AstFactory.BuildAssignment(
-                    GetAstIdentifierForOutputIndex(0),
-                    AstFactory.BuildExprList(inputAstNodes))
-            };
+                var connectedInput = Enumerable.Range(0, InPortData.Count)
+                                               .Where(HasConnectedInput)
+                                               .Select(x => new IntNode(x) as AssociativeNode)
+                                               .ToList();
+
+                var paramNumNode = new IntNode(InPortData.Count);
+                var positionNode = AstFactory.BuildExprList(connectedInput);
+                var arguments = AstFactory.BuildExprList(inputAstNodes);
+                var functionNode = new IdentifierListNode
+                {
+                    LeftNode = new IdentifierNode("DSCore.List"),
+                    RightNode = new IdentifierNode("__Create")
+                };
+                var inputParams = new List<AssociativeNode>
+                {
+                    functionNode,
+                    paramNumNode,
+                    positionNode,
+                    arguments,
+                    AstFactory.BuildBooleanNode(false)
+                };
+
+                return new[]
+                {
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),
+                        AstFactory.BuildFunctionCall("_SingleFunctionObject", inputParams))
+                };
+            }
+            else
+            {
+                return new[]
+                {
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),
+                        AstFactory.BuildExprList(inputAstNodes))
+                };
+            }
         }
     }
 }
