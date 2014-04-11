@@ -9,6 +9,8 @@ using NUnit.Framework;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using System.Collections;
+using Dynamo.Models;
+using Dynamo.Nodes;
 
 namespace Dynamo.Tests
 {
@@ -696,6 +698,39 @@ namespace Dynamo.Tests
             AssertPreviewValue("0ffe94bd-f926-4e81-83f7-7975e67a3713",
                 new int[] { 2, 4, 6, 8, 10, 12, 14, 16 });
         }
+
+        [Test]
+        public void Defect_MAGN_2375()
+        {
+            // Details are available in http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2375
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\dsevaluation\Defect_MAGN_2375.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
+
+            model.AddToSelection(Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                ("5a7f7549-fbef-4c3f-8578-c67471eaa87f"));
+
+            model.Copy(null);
+
+            model.Paste(null);
+
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+
+            //run the graph after copy paste
+            dynSettings.Controller.RunExpression(true);
+
+            var nodes = Controller.DynamoModel.Nodes.OfType<DSVarArgFunction>();
+            foreach (var item in nodes)
+            {
+                AssertPreviewValue(item.GUID.ToString(), new string[] { "Dynamo", "DS" });   
+            }
+        }
+
 
     }
 
