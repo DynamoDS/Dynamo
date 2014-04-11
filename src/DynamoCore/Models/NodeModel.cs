@@ -1591,9 +1591,9 @@ namespace Dynamo.Models
             }
         }
 
-        private static void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag, double size)
+        private void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag, double size)
         {
-            graphicItem.Tessellate(package, -1.0, 32);
+            graphicItem.Tessellate(package, -1.0, dynSettings.Controller.VisualizationManager.MaxGridLines);
             package.Tag = tag;
         }
 
