@@ -122,7 +122,7 @@ namespace FFITarget
 
         public override int GetHashCode()
         {
-            return 0;
+            return 10061;
         }
 
         public object FuncReturningVariousObjectTypes(int x)
@@ -679,7 +679,7 @@ namespace FFITarget
         }
         public override int GetHashCode()
         {
-            return 0;
+            return 10093;
         }
     }
     public class Derived1 : Base

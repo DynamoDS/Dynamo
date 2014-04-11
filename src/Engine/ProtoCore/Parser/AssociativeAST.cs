@@ -656,7 +656,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override int GetHashCode()
         {
-            return 0;
+            return 10099;
         }
 
         public override string ToString()
@@ -2124,7 +2124,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override int GetHashCode()
         {
-            return 0;
+            return 10007;
         }
     }
 
@@ -2142,7 +2142,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override int GetHashCode()
         {
-            return 0;
+            return 10009;
         }
     }
 
@@ -2265,7 +2265,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override int GetHashCode()
         {
-            return 0;
+            return 10037;
         }
     }
 
