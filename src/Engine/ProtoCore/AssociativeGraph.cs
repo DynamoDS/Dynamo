@@ -65,10 +65,16 @@ namespace ProtoCore.AssociativeEngine
             }
         }
 
-        public static void MarkGraphNodesDirty(ProtoCore.Core core, List<ProtoCore.AST.AssociativeAST.FunctionDefinitionNode> fnodeList)
+        public static void MarkGraphNodesDirtyFromFunctionRedef(ProtoCore.Core core, List<ProtoCore.AST.AssociativeAST.AssociativeNode> fnodeList)
         {
-            foreach (ProtoCore.AST.AssociativeAST.FunctionDefinitionNode fnode in fnodeList)
+            foreach (ProtoCore.AST.AssociativeAST.AssociativeNode node in fnodeList)
             {
+                ProtoCore.AST.AssociativeAST.FunctionDefinitionNode fnode = node as ProtoCore.AST.AssociativeAST.FunctionDefinitionNode;
+                if (null == fnode)
+                {
+                    continue;
+                }
+
                 int exprId = ProtoCore.DSASM.Constants.kInvalidIndex;
                 foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
                 {

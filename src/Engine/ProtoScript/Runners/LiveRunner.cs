@@ -83,7 +83,7 @@ namespace ProtoScript.Runners
         public List<AssociativeNode> DeletedFunctionDefASTNodes; 
         public List<AssociativeNode> RemovedBinaryNodesFromModification; 
         public List<AssociativeNode> RemovedFunctionDefNodesFromModification;
-        public List<FunctionDefinitionNode> ModifiedFunctions; 
+        public List<AssociativeNode> ModifiedFunctions; 
     }
 
     /// <summary>
@@ -111,7 +111,7 @@ namespace ProtoScript.Runners
             DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
             UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
             // Mark all graphnodes dependent on the modified functions as dirty
-            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, changeSet.ModifiedFunctions);
+            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(core, changeSet.ModifiedFunctions);
         }
 
         /// <summary>
@@ -302,7 +302,7 @@ namespace ProtoScript.Runners
             var deltaAstList = new List<AssociativeNode>();
             csData.RemovedBinaryNodesFromModification = new List<AssociativeNode>();
             csData.RemovedFunctionDefNodesFromModification = new List<AssociativeNode>();
-            csData.ModifiedFunctions = new List<FunctionDefinitionNode>();
+            csData.ModifiedFunctions = new List<AssociativeNode>();
 
             if (modifiedSubTrees == null)
             {
@@ -353,7 +353,7 @@ namespace ProtoScript.Runners
 
                 // Handle modifed functions
                 var modifiedFunctions = st.AstNodes.Where(n => n is FunctionDefinitionNode);
-                csData.RemovedFunctionDefNodesFromModification.AddRange(modifiedFunctions);
+                csData.ModifiedFunctions.AddRange(modifiedFunctions);
                 deltaAstList.AddRange(modifiedFunctions);
 
                 // Handle cached subtree
