@@ -2161,6 +2161,40 @@ namespace DynamoCoreUITests
 
         }
 
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2373()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2373
+
+            RunCommandsFromFile("Defect_MAGN_2373.xml", false, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(10, workspace.Nodes.Count);
+                    Assert.AreEqual(13, workspace.Connectors.Count);
+
+                    AssertPreviewValue("6e2b9ef1-7749-40ec-9319-b43832c1891f",
+                        new int[][] {new int[] { 2, 8, 9, 3 } });
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("6e2b9ef1-7749-40ec-9319-b43832c1891f",
+                        new int[][] { new int[] { 2, 8, 3, 9 } });
+                }
+                else if (commandTag == "LastRun")
+                {
+                    AssertPreviewValue("6e2b9ef1-7749-40ec-9319-b43832c1891f",
+                        new int[][] { new int[] { 8, 2, 3, 9 } });
+                }
+
+            });
+
+        }
+
         #endregion
 
         #region Tests moved from FScheme
