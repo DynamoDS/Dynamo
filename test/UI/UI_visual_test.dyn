@@ -1,0 +1,117 @@
+<Workspace Version="0.7.0.14753" X="195.296559781974" Y="246.525979192476" zoom="0.517379337959605" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="b0957d5f-d7f5-4d7f-910b-8bb4f58312d0" nickname="Watch" x="1321.85299199312" y="-329.875713116031" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="2bff76de-5e6e-4c4b-b98d-a8d47e4be4b8" nickname="Watch 3D" x="839.620368505786" y="228.443340170287" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="481" height="226">
+        <camera pos_x="5.42723435617522" pos_y="4.68901501051024" pos_z="6.63477659318058" look_x="-4.56504956817698" look_y="-3.3103954465237" look_z="-7.45385017833297" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+    <Dynamo.Nodes.WatchImageCore type="Dynamo.Nodes.WatchImageCore" guid="732714c2-e7b7-4509-851a-1a87a0ed01e2" nickname="Watch Image" x="557.486562733262" y="719.464862525226" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="5e37f27c-b8b6-46a8-bea1-1bc585f78fd5" nickname="File Path" x="44.9702622009467" y="717.929469084625" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>C:\Users\Ian\Documents\Dynamo\test\UI\Bricks.PNG</System.String>
+    </DSCore.File.Filename>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="cfad5cb0-f8c5-4433-9738-84b8b98a9fda" nickname="FileReader.LoadImageFromPath" x="305.524505835319" y="720.115700790808" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.File.FileReader.LoadImageFromPath@string" />
+    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="d2186432-5557-47c6-b73b-57c64377897f" nickname="Watch 3D" x="835.371112872916" y="474.250487828384" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="137" height="170">
+        <camera pos_x="12.9725703435475" pos_y="13.6758397607305" pos_z="6.35565021874153" look_x="-12.9725703435475" look_y="-13.6758397607305" look_z="-6.35665021874152" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="322e8fea-9f00-4bc3-abab-736ba2e185eb" nickname="Number" x="1197.4653167841" y="-324.382299849771" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0..100" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="38b70678-d2d8-4d38-bd8f-ee95947099af" nickname="Double Slider" x="-22.2897325775684" y="393.578688055181" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>49.6081063361343</System.Double>
+      <Range min="0" max="100" />
+    </Dynamo.Nodes.DoubleSlider>
+    <Dynamo.Nodes.IntegerSlider type="Dynamo.Nodes.IntegerSlider" guid="f6e7a97e-8598-4d82-97e9-450e2cc9d29a" nickname="Integer Slider" x="53.1925426841223" y="464.780459864483" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Int32>14</System.Int32>
+      <Range min="0" max="25" />
+    </Dynamo.Nodes.IntegerSlider>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="7a0b6601-5fd8-4a95-83be-cbac4024ba46" nickname="String" x="344.089639459606" y="-66.5907640323177" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="This is a long string with some carriage returns...&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;And some special characters...&#xD;&#xA;§¾¶©ﺊﷺ" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="090166cc-11b5-4a69-b9d6-b84155fc97bd" nickname="Watch" x="593.409476877082" y="-65.2364133141919" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <DSCoreNodesUI.CreateList type="DSCoreNodesUI.CreateList" guid="74ff0b7d-aad4-47bd-96cc-dda51c22b5d4" nickname="Create List" x="1084.87236346441" y="629.372743122737" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="13" />
+    <DSCoreNodesUI.BoolSelector type="DSCoreNodesUI.BoolSelector" guid="9bbda93b-136c-445e-a79a-f254588b1716" nickname="Boolean" x="-3.98737050935438" y="122.229391897774" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean>False</System.Boolean>
+    </DSCoreNodesUI.BoolSelector>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="7e21f971-9855-40a3-a88d-572b6d31619c" nickname="Watch" x="161.968113247498" y="121.18673344025" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="34e2983b-71a4-431e-aaf3-ce54869e6608" nickname="Watch" x="161.413770491859" y="210.865406490968" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <DSCoreNodesUI.BoolSelector type="DSCoreNodesUI.BoolSelector" guid="a8821a45-8bde-40aa-bcf4-15da4e0ef341" nickname="Boolean" x="-4.54171326499392" y="211.908064948492" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean>True</System.Boolean>
+    </DSCoreNodesUI.BoolSelector>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="bbe182e0-2c06-498c-b3dd-6a6069d5431a" nickname="Length.Length" x="8.23735239336133" y="-320.897944614201" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DynamoUnits.dll" function="Dynamo.Units.Length.Length@double" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="b61b99d4-414d-4a3b-9010-42965e3ed61f" nickname="Volume.Volume" x="8.11656375798441" y="-226.676934283258" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DynamoUnits.dll" function="Dynamo.Units.Volume.Volume@double" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="3c0d17c7-5f2d-4dac-ad5e-0f739244d322" nickname="Area.Area" x="10.4324902776142" y="-414.639422984446" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DynamoUnits.dll" function="Dynamo.Units.Area.Area@double" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="5ea15ff3-5d7d-445c-b360-c6b82cec9fd8" nickname="Code Block" x="344.095620890887" y="226.943721883503" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Point.ByCoordinates((0..3)&lt;1&gt;,(0..3)&lt;2&gt;,(0..3)&lt;3&gt;);" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="dc131baa-444b-4dd0-a024-d36af8cc494b" nickname="NurbsCurve.ByPoints" x="1250.62942446155" y="504.744598699766" isVisible="true" isUpstreamVisible="false" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[]" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="1e5d8058-899c-4c4c-a658-333727feff91" nickname="Watch" x="1436.21049157029" y="496.733973228221" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="f742ede0-1283-46ef-afba-0db3b557fb9c" nickname="Watch 3D" x="2004.22924464959" y="493.138935328672" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="210" height="268">
+        <camera pos_x="6.54118539194939" pos_y="6.37429915495509" pos_z="5.44504822799874" look_x="-6.12051092496774" look_y="-6.12051092496774" look_z="-6.12051092496774" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="8b338a36-5e70-4b50-892b-fcb333047ab2" nickname="Code Block" x="1743.92322336069" y="127.677562880447" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a = foo;&#xA;b = AReallyLongPortNameThatShouldBeShortened;&#xA;foo = 42;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="1a6b0e39-302c-4669-9edb-d0805b670cd7" nickname="Watch" x="2352.79579779304" y="250.570491522002" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="fe28edc2-a8ff-41fb-b2a2-8611dabbb35d" nickname="Number" x="1617.03576081489" y="114.143622718922" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="21" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="ec631968-3729-4344-a999-242f12afdc67" nickname="String" x="1621.45335843683" y="202.110063066142" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="hello" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="1ff8cdd3-db8b-4805-9a6a-d36af83577d8" nickname="Watch" x="2353.81839746133" y="162.105260584039" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="5fc61c0b-33df-4365-bbb6-557559bbafbc" nickname="Watch" x="2354.33347750983" y="72.3450624276283" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="04beab73-cc5b-4251-9834-d4d91030b061" nickname="Code Block" x="1703.62575043959" y="-62.5190126538548" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="error=;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="07b71bbb-3bc5-4ef0-b040-c9652aeffa68" nickname="Code Block" x="1862.64115699561" y="-61.298115636229" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Point.ByBlah(0,0,0);" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="1514d180-9b2c-44bf-b3e1-08fbbe50ef95" nickname="Watch" x="184.650990036391" y="-418.505269356895" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="21fd84c1-63ab-44a7-b181-120b4158954a" nickname="Watch" x="187.758850216477" y="-322.103611464944" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="cb85ef7c-0e87-4f1e-851d-ca4b6ae4eb13" nickname="Watch" x="187.269722670633" y="-226.829759335838" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="2b12ea99-2be8-47dc-9121-41c777d89476" nickname="Number" x="-143.561037592503" y="-417.904264456504" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="42" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="bc8e4530-6dee-4f11-b2d9-3775a4983756" nickname="CoordinateSystem.Identity" x="1432.28292903265" y="1150.85764977186" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.CoordinateSystem.Identity" />
+    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="8ca0bab5-5533-44df-b0f3-b5f6c279f2b1" nickname="Watch 3D" x="1646.81624316337" y="1149.67165209986" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="210" height="268">
+        <camera pos_x="4.54986121872342" pos_y="1.83953213925931" pos_z="1.94193434346949" look_x="-4.51335617191513" look_y="-1.72091023480306" look_z="-2.4420206028039" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5e37f27c-b8b6-46a8-bea1-1bc585f78fd5" start_index="0" end="cfad5cb0-f8c5-4433-9738-84b8b98a9fda" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cfad5cb0-f8c5-4433-9738-84b8b98a9fda" start_index="0" end="732714c2-e7b7-4509-851a-1a87a0ed01e2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="322e8fea-9f00-4bc3-abab-736ba2e185eb" start_index="0" end="b0957d5f-d7f5-4d7f-910b-8bb4f58312d0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7a0b6601-5fd8-4a95-83be-cbac4024ba46" start_index="0" end="090166cc-11b5-4a69-b9d6-b84155fc97bd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9bbda93b-136c-445e-a79a-f254588b1716" start_index="0" end="7e21f971-9855-40a3-a88d-572b6d31619c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a8821a45-8bde-40aa-bcf4-15da4e0ef341" start_index="0" end="34e2983b-71a4-431e-aaf3-ce54869e6608" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bbe182e0-2c06-498c-b3dd-6a6069d5431a" start_index="0" end="21fd84c1-63ab-44a7-b181-120b4158954a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b61b99d4-414d-4a3b-9010-42965e3ed61f" start_index="0" end="cb85ef7c-0e87-4f1e-851d-ca4b6ae4eb13" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3c0d17c7-5f2d-4dac-ad5e-0f739244d322" start_index="0" end="1514d180-9b2c-44bf-b3e1-08fbbe50ef95" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5ea15ff3-5d7d-445c-b360-c6b82cec9fd8" start_index="0" end="2bff76de-5e6e-4c4b-b98d-a8d47e4be4b8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5ea15ff3-5d7d-445c-b360-c6b82cec9fd8" start_index="0" end="d2186432-5557-47c6-b73b-57c64377897f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5ea15ff3-5d7d-445c-b360-c6b82cec9fd8" start_index="0" end="dc131baa-444b-4dd0-a024-d36af8cc494b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dc131baa-444b-4dd0-a024-d36af8cc494b" start_index="0" end="1e5d8058-899c-4c4c-a658-333727feff91" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1e5d8058-899c-4c4c-a658-333727feff91" start_index="0" end="f742ede0-1283-46ef-afba-0db3b557fb9c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8b338a36-5e70-4b50-892b-fcb333047ab2" start_index="0" end="5fc61c0b-33df-4365-bbb6-557559bbafbc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8b338a36-5e70-4b50-892b-fcb333047ab2" start_index="1" end="1ff8cdd3-db8b-4805-9a6a-d36af83577d8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8b338a36-5e70-4b50-892b-fcb333047ab2" start_index="2" end="1a6b0e39-302c-4669-9edb-d0805b670cd7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fe28edc2-a8ff-41fb-b2a2-8611dabbb35d" start_index="0" end="8b338a36-5e70-4b50-892b-fcb333047ab2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ec631968-3729-4344-a999-242f12afdc67" start_index="0" end="8b338a36-5e70-4b50-892b-fcb333047ab2" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2b12ea99-2be8-47dc-9121-41c777d89476" start_index="0" end="3c0d17c7-5f2d-4dac-ad5e-0f739244d322" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2b12ea99-2be8-47dc-9121-41c777d89476" start_index="0" end="bbe182e0-2c06-498c-b3dd-6a6069d5431a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2b12ea99-2be8-47dc-9121-41c777d89476" start_index="0" end="b61b99d4-414d-4a3b-9010-42965e3ed61f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bc8e4530-6dee-4f11-b2d9-3775a4983756" start_index="0" end="8ca0bab5-5533-44df-b0f3-b5f6c279f2b1" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Watch nodes should be resizable without affecting sizing of other UI elements on the node." x="842.452510234282" y="164.053708877249" />
+    <Dynamo.Models.NoteModel text="Special characters in a string should display the same in the watch window." x="345.447330994341" y="-133.376097496294" />
+    <Dynamo.Models.NoteModel text="Images should load in the presentation grid on the node." x="560.179702962573" y="668.607430137008" />
+    <Dynamo.Models.NoteModel text="•Double and Integer sliders should show the correct numerical precision. &#xD;&#xA;•Integer sliders should show ticks." x="15.935578035619" y="326.475148031688" />
+    <Dynamo.Models.NoteModel text="Watch nodes should show lists as unfolded by default, and should not get excessively long or wide." x="1189.99583085298" y="-387.329707736046" />
+    <Dynamo.Models.NoteModel text="Boolean nodes should toggle correctly and their watch values should read &quot;True&quot; and &quot;False&quot;" x="-7.70260168080023" y="60.687853418276" />
+    <Dynamo.Models.NoteModel text="This node should error and turn red." x="1639.43599292241" y="-136.5653544806" />
+    <Dynamo.Models.NoteModel text="This node should error and turn yellow." x="1866.99657073334" y="-135.695361652114" />
+    <Dynamo.Models.NoteModel text="•Long port names should have ellipsis.&#xD;&#xA;•Input and output port collections should be aligned." x="1877.8947914647" y="65.2694261595882" />
+    <Dynamo.Models.NoteModel text="Unit types should show their suffix in watch windows when the watch window's &quot;Show Raw Data&quot; is turned off." x="-18.2959033294953" y="-494.184612038582" />
+    <Dynamo.Models.NoteModel text="A coodinate system should draw as red, green, and blue axes." x="1474.88497421346" y="1086.74780197369" />
+  </Notes>
+</Workspace>

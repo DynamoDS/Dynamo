@@ -31,5 +31,17 @@ namespace FFITarget
 
         }
     }
+
+    namespace B
+    {
+        public class NamespaceResolutionTargetTest
+        {
+            public NamespaceResolutionTargetTest()
+            {
+                Prop = 1;
+            }
+            public int Prop { get; set; }
+        }
+    }
 }
 

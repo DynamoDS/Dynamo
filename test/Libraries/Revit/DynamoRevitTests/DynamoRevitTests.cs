@@ -40,7 +40,7 @@ namespace Dynamo.Tests
             //get the test path
             var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
             string assDir = fi.DirectoryName;
-            string testsLoc = Path.Combine(assDir, @"..\..\..\test\revit\");
+            string testsLoc = Path.Combine(assDir, @"..\..\..\test\System\revit\");
             _testPath = Path.GetFullPath(testsLoc);
 
             //get the samples path

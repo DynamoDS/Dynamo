@@ -32,7 +32,8 @@
               Background="Transparent"
               IsHitTestVisible="True"
               Margin="{Binding Path=MarginThickness}"
-              Height="{Binding Path=Height}">
+              Height="{Binding Path=Height}" 
+              Width="Auto" MinWidth="26">
 
             <interactivity:Interaction.Triggers>
                 <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
@@ -49,10 +50,10 @@
                 </ContextMenu>
             </Grid.ContextMenu>
 
-            <Grid.Width>
+            <!--<Grid.Width>
                 <Binding Path="ActualWidth"
                          RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}" />
-            </Grid.Width>
+            </Grid.Width>-->
 
             <!--
                 We could have changed the Grid opacity directly here but didn't.

@@ -4,8 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Windows.Forms.PropertyGridInternal;
+using Autodesk.RevitAddIns;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using NDesk.Options;
@@ -18,13 +17,24 @@ namespace RevitTestFrameworkRunner
         internal static string _testAssembly = null;
         internal static string _test = null;
         internal static string _fixture = null;
-        internal static bool _debug = false;
+        internal static bool _isDebug = false;
         internal static string _results = null;
         internal const string _pluginGuid = "487f9ff0-5b34-4e7e-97bf-70fbff69194f";
         internal const string _pluginClass = "Dynamo.Tests.RevitTestFramework";
         internal static string _workingDirectory;
         internal static bool _gui = true;
+        internal static string _revitPath;
         internal static List<string> _journalPaths = new List<string>();
+        internal static int _runCount = 0;
+
+        public static event EventHandler TestRunsComplete;
+        private static void OnTestRunsComplete()
+        {
+            if (TestRunsComplete != null)
+            {
+                TestRunsComplete(null, EventArgs.Empty);
+            }
+        }
 
         [STAThread]
         static void Main(string[] args)
@@ -33,6 +43,8 @@ namespace RevitTestFrameworkRunner
 
             try
             {
+                TestRunsComplete += Program_TestRunsComplete;
+
                 if (!ParseArguments(args))
                 {
                     return;
@@ -40,20 +52,14 @@ namespace RevitTestFrameworkRunner
 
                 var vm = new ViewModel();
 
+                if (!FindRevit(vm.Products))
+                {
+                    return;
+                }
                 
                 if (_gui)
                 {
-                    _workingDirectory = !string.IsNullOrEmpty(Properties.Settings.Default.workingDirectory) ?
-                    Properties.Settings.Default.workingDirectory :
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-                    _testAssembly = !string.IsNullOrEmpty(Properties.Settings.Default.assemblyPath) ?
-                    Properties.Settings.Default.assemblyPath :
-                    null;
-
-                    _results = !string.IsNullOrEmpty(Properties.Settings.Default.resultsPath) ?
-                    Properties.Settings.Default.resultsPath :
-                    null;
+                    LoadSettings();
 
                     if (!string.IsNullOrEmpty(_testAssembly) && File.Exists(_testAssembly))
                     {
@@ -63,6 +69,8 @@ namespace RevitTestFrameworkRunner
                     // Show the user interface
                     var view = new View(vm);
                     view.ShowDialog();
+
+                    SaveSettings();
                 }
                 else
                 {
@@ -91,6 +99,7 @@ namespace RevitTestFrameworkRunner
                     // If fixture name and test name are specified
                     if (string.IsNullOrEmpty(_fixture) && string.IsNullOrEmpty(_test))
                     {
+                        _runCount = vm.Assemblies.SelectMany(a => a.Fixtures.SelectMany(f => f.Tests)).Count();
                         foreach (var ad in vm.Assemblies)
                         {
                             RunAssembly(ad);
@@ -102,6 +111,7 @@ namespace RevitTestFrameworkRunner
                         var fd = vm.Assemblies.SelectMany(x => x.Fixtures).FirstOrDefault(f => f.Name == _fixture);
                         if (fd != null)
                         {
+                            _runCount = fd.Tests.Count;
                             RunFixture(fd);
                         }
                     }
@@ -113,24 +123,67 @@ namespace RevitTestFrameworkRunner
                                 .FirstOrDefault(t => t.Name == _test);
                         if (td != null)
                         {
+                            _runCount = 1;
                             RunTest(td);
                         }
                     }
                 }
 
                 Cleanup();
-
-                Properties.Settings.Default.workingDirectory = _workingDirectory;
-                Properties.Settings.Default.assemblyPath = _testAssembly;
-                Properties.Settings.Default.resultsPath = _results;
-
-                Properties.Settings.Default.Save();
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        static void Program_TestRunsComplete(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(_results) && 
+                File.Exists(_results) &&
+                _gui)
+            {
+                Process.Start(_results);
+            }
+        }
+
+        private static bool FindRevit(IList<RevitProduct> productList)
+        {
+            var products = RevitProductUtility.GetAllInstalledRevitProducts();
+            if (!products.Any())
+            {
+                Console.WriteLine("No versions of revit could be found");
+                return false;
+            }
+
+            products.ForEach(productList.Add);
+            return true;
+        }
+
+        private static void SaveSettings()
+        {
+            Properties.Settings.Default.workingDirectory = _workingDirectory;
+            Properties.Settings.Default.assemblyPath = _testAssembly;
+            Properties.Settings.Default.resultsPath = _results;
+            Properties.Settings.Default.isDebug = _isDebug;
+            Properties.Settings.Default.Save();
+        }
+
+        private static void LoadSettings()
+        {
+            _workingDirectory = !string.IsNullOrEmpty(Properties.Settings.Default.workingDirectory)
+                ? Properties.Settings.Default.workingDirectory
+                : Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            _testAssembly = !string.IsNullOrEmpty(Properties.Settings.Default.assemblyPath)
+                ? Properties.Settings.Default.assemblyPath
+                : null;
+
+            _results = !string.IsNullOrEmpty(Properties.Settings.Default.resultsPath)
+                ? Properties.Settings.Default.resultsPath
+                : null;
+
+            _isDebug = Properties.Settings.Default.isDebug;
         }
 
         private static bool ParseArguments(IEnumerable<string> args)
@@ -145,7 +198,7 @@ namespace RevitTestFrameworkRunner
                 {"f:|fixture:", "The full name (with namespace) of the test fixture.", v => _fixture = v},
                 {"t:|testName:", "The name of a test to run", v => _test = v},
                 {"gui:", "Show the revit test runner gui.", v=>_gui = v != null},
-                {"d|debug", "Run in debug mode.", v=>_debug = v != null},
+                {"d|debug", "Run in debug mode.", v=>_isDebug = v != null},
                 {"h|help", "Show this message and exit.", v=> showHelp = v != null}
             };
 
@@ -173,6 +226,7 @@ namespace RevitTestFrameworkRunner
             if (showHelp)
             {
                 ShowHelp(p);
+                return false;
             }
 
             if (!string.IsNullOrEmpty(_testAssembly) && !File.Exists(_testAssembly))
@@ -295,10 +349,12 @@ namespace RevitTestFrameworkRunner
                                             "Jrn.Data \"APIStringStringMapJournalData\", 5, \"testName\", \"{3}\", \"fixtureName\", \"{4}\", \"testAssembly\", \"{5}\", \"resultsPath\", \"{6}\", \"debug\",\"{7}\" \n" +
                                             "Jrn.Command \"Internal\" , \"Flush undo and redo stacks , ID_FLUSH_UNDO\" \n" +
                                             "Jrn.Command \"SystemMenu\" , \"Quit the application; prompts to save projects , ID_APP_EXIT\"",
-                    modelPath, _pluginGuid, _pluginClass, testName, fixtureName, assemblyPath, resultsPath, _debug);
+                    modelPath, _pluginGuid, _pluginClass, testName, fixtureName, assemblyPath, resultsPath, _isDebug);
 
                 tw.Write(journal);
                 tw.Flush();
+
+                _journalPaths.Add(path);
             }
         }
 
@@ -332,7 +388,7 @@ namespace RevitTestFrameworkRunner
 
             var startInfo = new ProcessStartInfo()
             {
-                FileName = "Revit.exe",
+                FileName = _revitPath,
                 WorkingDirectory = _workingDirectory,
                 Arguments = path
             };
@@ -341,10 +397,16 @@ namespace RevitTestFrameworkRunner
             var process = new Process { StartInfo = startInfo };
             process.Start();
 
-            if (_debug)
+            if (_isDebug)
                 process.WaitForExit();
             else
                 process.WaitForExit(120000);
+
+            _runCount --;
+            if (_runCount == 0)
+            {
+                OnTestRunsComplete();
+            }
         }
 
         internal static void Cleanup()
@@ -356,6 +418,8 @@ namespace RevitTestFrameworkRunner
                     File.Delete(path);
                 }
             }
+
+            _journalPaths.Clear();
 
             var journals = Directory.GetFiles(_workingDirectory, "journal.*.txt");
             foreach (var journal in journals)

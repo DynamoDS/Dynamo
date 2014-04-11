@@ -1064,6 +1064,17 @@ namespace ProtoFFITests
         }
 
         [Test]
+        public void TestNamespacePartialResolution03()
+        {
+            var mirror = thisTest.RunScriptSource(
+            @"                import(""FFITarget.dll"");
+                p = B.NamespaceResolutionTargetTest();                x = p.Prop;            "
+            );
+
+            Assert.IsTrue((Int64)mirror.GetFirstValue("x").Payload == 1);
+        }
+
+        [Test]
         public void TestNamespaceClassResolution()
         {
             string code =

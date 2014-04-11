@@ -8,6 +8,7 @@ namespace Dynamo.Tests
     class ModelTextTests:DynamoRevitUnitTestBase
     {
         [Test]
+        [TestModel(@".\ModelText\ModelText.rfa")]
         public void ModelText()
         {
             var model = dynSettings.Controller.DynamoModel;

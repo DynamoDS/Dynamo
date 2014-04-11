@@ -797,10 +797,11 @@ namespace ProtoCore.Lang
                     ret = ArrayUtilsForBuiltIns.Evaluate(
                         formalParameters[0], 
                         formalParameters[1], 
+                        formalParameters[2],
                         interpreter, 
                         stackFrame);
                     break;
-                default:
+               default:
                     throw new ProtoCore.Exceptions.CompilerInternalException("Unknown built-in method. {AAFAE85A-2AEB-4E8C-90D1-BCC83F27C852}");
             }
 
@@ -1237,12 +1238,10 @@ namespace ProtoCore.Lang
 
             if (StackUtils.IsTrue(svHasAmountOp))
             {
-                if (svEnd.optype != AddressType.Int)
+                if (!StackUtils.IsNumeric(svEnd))
                 {
                     core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kInvalidAmountInRangeExpression);
-
-                    if (!StackUtils.IsNumeric(svEnd))
-                        return StackValue.Null;
+                    return StackValue.Null;
                 }
                 else if (!hasStep)
                 {
@@ -2438,11 +2437,21 @@ namespace ProtoCore.Lang
             return runtime.runtime.rmem.BuildArray(svList.ToArray());
         }
 
-        internal static StackValue Evaluate(StackValue function, StackValue parameters, Interpreter runtime, StackFrame stackFrame)
+        internal static StackValue Evaluate(StackValue function, StackValue parameters, StackValue unpackParams, Interpreter runtime, StackFrame stackFrame)
         {
-            var args = runtime.runtime.rmem.GetArrayElements(parameters);
             var evaluator = new FunctionPointerEvaluator(function, runtime);
-            StackValue ret = evaluator.Evaluate(args.ToList(), stackFrame);
+
+            StackValue ret;
+            if (StackUtils.IsTrue(unpackParams))
+            {
+                var args = runtime.runtime.rmem.GetArrayElements(parameters);
+                ret = evaluator.Evaluate(args.ToList(), stackFrame);
+            }
+            else
+            {
+                ret = evaluator.Evaluate(new List<StackValue> { parameters}, stackFrame);
+            }
+
             return ret;
         }
     }
