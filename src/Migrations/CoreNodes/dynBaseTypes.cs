@@ -393,13 +393,10 @@ namespace Dynamo.Nodes
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
-            int start = MigrationManager.GetNextIdentifierIndex();
-            int end = MigrationManager.GetNextIdentifierIndex();
-            int step = MigrationManager.GetNextIdentifierIndex();
-            string content = "start" + start + ".." + "end" + end + ".." + "step" + step + ";";
+            XmlElement newNode = MigrationManager.CloneAndChangeType(
+                oldNode, "DSCoreNodesUI.NumberRange");
+            newNode.SetAttribute("nickname", "Number Range");
 
-            XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
-            newNode.SetAttribute("CodeText", content);
             migrationData.AppendNode(newNode);
             return migrationData;
         }
@@ -413,14 +410,10 @@ namespace Dynamo.Nodes
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
-            int start = MigrationManager.GetNextIdentifierIndex();
-            int amount = MigrationManager.GetNextIdentifierIndex();
-            int step = MigrationManager.GetNextIdentifierIndex();
-            string content = string.Format("start{0}.. amount{1}*step{2}-" + 
-                "step{2}+start{0}..step{2};", start, amount, step);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(
+                oldNode, "DSCoreNodesUI.NumberSequence");
+            newNode.SetAttribute("nickname", "Number Sequence");
 
-            XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
-            newNode.SetAttribute("CodeText", content);
             migrationData.AppendNode(newNode);
             return migrationData;
         }
