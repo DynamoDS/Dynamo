@@ -2195,6 +2195,23 @@ namespace DynamoCoreUITests
 
         }
 
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2563()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-23563
+
+            RunCommandsFromFile("Defect_MAGN_2563.xml", true);
+
+            Assert.AreEqual(1, Controller.DynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, Controller.DynamoModel.CurrentWorkspace.Connectors.Count);
+
+
+            NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                ("aeed3ffe-7294-43a9-8a05-83b5ff05f527");
+
+            Assert.AreEqual(ElementState.Warning, node.State);
+        }
+
         #endregion
 
         #region Tests moved from FScheme
