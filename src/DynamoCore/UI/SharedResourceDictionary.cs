@@ -81,14 +81,7 @@ namespace Dynamo.UI
             {
                 if (_dynamoModernDictionary == null)
                 {
-                    //System.Uri resourceLocater =
-                    //    new System.Uri("pack://siteoforigin:,,,/UI/Themes/Modern/DynamoModern.xaml",
-                    //                    System.UriKind.Relative);
-
                     var resourceLocater =new Uri(Path.Combine(ThemesDirectory, "DynamoModern.xaml"));
-
-                    //_dynamoModernDictionary =
-                    //    (ResourceDictionary)Application.LoadComponent(resourceLocater);
                     _dynamoModernDictionary = new ResourceDictionary(){Source = resourceLocater};
                 }
 
@@ -102,13 +95,7 @@ namespace Dynamo.UI
             {
                 if (_dataTemplatesDictionary == null)
                 {
-                    //System.Uri resourceLocater =
-                    //    new System.Uri("pack://siteoforigin:,,,/UI/Themes/Modern/DataTemplates.xaml",
-                    //                    System.UriKind.Relative);
-
                     var resourceLocater = new Uri(Path.Combine(ThemesDirectory, "DataTemplates.xaml"));
-                    //_dataTemplatesDictionary =
-                    //    (ResourceDictionary)Application.LoadComponent(resourceLocater);
                     _dataTemplatesDictionary = new ResourceDictionary() { Source = resourceLocater };
                 }
 
@@ -122,13 +109,7 @@ namespace Dynamo.UI
             {
                 if (_dynamoColorsAndBrushesDictionary == null)
                 {
-                    //System.Uri resourceLocater =
-                    //    new System.Uri("pack://siteoforigin:,,,/UI/Themes/Modern/DynamoColorsAndBrushes.xaml",
-                    //                    System.UriKind.Relative);
                     var resourceLocater = new Uri(Path.Combine(ThemesDirectory, "DynamoColorsAndBrushes.xaml"));
-
-                    //_dynamoColorsAndBrushesDictionary =
-                    //    (ResourceDictionary)Application.LoadComponent(resourceLocater);
                     _dynamoColorsAndBrushesDictionary = new ResourceDictionary() { Source = resourceLocater };
                 }
 
@@ -142,13 +123,7 @@ namespace Dynamo.UI
             {
                 if (_dynamoConvertersDictionary == null)
                 {
-                    //System.Uri resourceLocater =
-                    //    new System.Uri("pack://siteoforigin:,,,/UI/Themes/Modern/DynamoConverters.xaml",
-                    //                    System.UriKind.Relative);
-
                     var resourceLocater = new Uri(Path.Combine(ThemesDirectory, "DynamoConverters.xaml"));
-                    //_dynamoConvertersDictionary =
-                    //    (ResourceDictionary)Application.LoadComponent(resourceLocater);
                     _dynamoConvertersDictionary = new ResourceDictionary() { Source = resourceLocater };
                 }
 
@@ -162,13 +137,7 @@ namespace Dynamo.UI
             {
                 if (_dynamoTextDictionary == null)
                 {
-                    //System.Uri resourceLocater =
-                    //    new System.Uri("pack://siteoforigin:,,,/UI/Themes/Modern/DynamoText.xaml",
-                    //                    System.UriKind.Relative);
-
                     var resourceLocater = new Uri(Path.Combine(ThemesDirectory, "DynamoText.xaml"));
-                    //_dynamoTextDictionary =
-                    //    (ResourceDictionary)Application.LoadComponent(resourceLocater);
                     _dynamoTextDictionary = new ResourceDictionary() { Source = resourceLocater };
                 }
 
@@ -182,13 +151,7 @@ namespace Dynamo.UI
             {
                 if (_menuStyleDictionary == null)
                 {
-                    //System.Uri resourceLocater =
-                    //    new System.Uri("pack://siteoforigin:,,,/UI/Themes/Modern/MenuStyleDictionary.xaml",
-                    //                    System.UriKind.Relative);
-
                     var resourceLocater = new Uri(Path.Combine(ThemesDirectory, "MenuStyleDictionary.xaml"));
-                    //_menuStyleDictionary =
-                    //    (ResourceDictionary)Application.LoadComponent(resourceLocater);
                     _menuStyleDictionary = new ResourceDictionary() { Source = resourceLocater };
                 }
 
@@ -202,13 +165,7 @@ namespace Dynamo.UI
             {
                 if (_toolbarStyleDictionary == null)
                 {
-                    //System.Uri resourceLocater =
-                    //    new System.Uri("pack://siteoforigin:,,,/UI/Themes/Modern/ToolbarStyleDictionary.xaml",
-                    //                    System.UriKind.Relative);
-
                     var resourceLocater = new Uri(Path.Combine(ThemesDirectory, "ToolbarStyleDictionary.xaml"));
-                    //_toolbarStyleDictionary =
-                    //    (ResourceDictionary)Application.LoadComponent(resourceLocater);
                     _toolbarStyleDictionary = new ResourceDictionary() { Source = resourceLocater };
                 }
 
@@ -222,13 +179,7 @@ namespace Dynamo.UI
             {
                 if (_connectorsDictionary == null)
                 {
-                    //System.Uri resourceLocater =
-                    //    new System.Uri("pack://siteoforigin:,,,/UI/Themes/Modern/Connectors.xaml",
-                    //                    System.UriKind.Relative);
-
                     var resourceLocater = new Uri(Path.Combine(ThemesDirectory, "Connectors.xaml"));
-                    //_connectorsDictionary =
-                    //    (ResourceDictionary)Application.LoadComponent(resourceLocater);
                     _connectorsDictionary = new ResourceDictionary() { Source = resourceLocater };
                 }
 
@@ -242,13 +193,7 @@ namespace Dynamo.UI
             {
                 if (_portsDictionary == null)
                 {
-                    //System.Uri resourceLocater =
-                    //    new System.Uri("pack://siteoforigin:,,,/UI/Themes/Modern/Ports.xaml",
-                    //                    System.UriKind.Relative);
-
                     var resourceLocater = new Uri(Path.Combine(ThemesDirectory, "Ports.xaml"));
-                    //_portsDictionary =
-                    //    (ResourceDictionary)Application.LoadComponent(resourceLocater);
                     _portsDictionary = new ResourceDictionary() { Source = resourceLocater };
                 }
 

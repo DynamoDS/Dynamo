@@ -3,7 +3,8 @@
                       xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCore"
                       xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCore"
                       xmlns:interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-                      xmlns:views="clr-namespace:Dynamo.UI.Views;assembly=DynamoCore">
+                      xmlns:views="clr-namespace:Dynamo.UI.Views;assembly=DynamoCore"
+                      xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCore">
 
     <!-- Templates
         
@@ -23,8 +24,8 @@
     <!-- Add your resources here -->
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://siteoforigin:,,,../UI/Themes/Modern/DynamoConverters.xaml" />
-        <ResourceDictionary Source="pack://siteoforigin:,,,../UI/Themes/Modern/DynamoModern.xaml" />
+        <ui:SharedResourceDictionary Source="pack://siteoforigin:,,,../UI/Themes/Modern/DynamoConverters.xaml" />
+        <ui:SharedResourceDictionary Source="pack://siteoforigin:,,,../UI/Themes/Modern/DynamoModern.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <DataTemplate DataType="{x:Type viewModels:PortViewModel}">

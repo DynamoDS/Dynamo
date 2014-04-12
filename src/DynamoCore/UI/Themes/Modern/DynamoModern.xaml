@@ -2,10 +2,11 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:clr="clr-namespace:System;assembly=mscorlib" 
                     xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCore" 
-                    xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCore">
-
+                    xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCore" 
+                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCore">
+                    
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://siteoforigin:,,,/UI/Themes/Modern/DynamoConverters.xaml" />
+        <ui:SharedResourceDictionary Source="pack://siteoforigin:,,,/UI/Themes/Modern/DynamoConverters.xaml" />
     </ResourceDictionary.MergedDictionaries>
     
     <!--Control colors.-->
