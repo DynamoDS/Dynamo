@@ -61,14 +61,14 @@
     <!-- Embedded Font -->
     <!-- Open Sans (under Apache License, version 2.0)
          Link: http://www.google.com/fonts/specimen/Open+Sans -->
-    <FontFamily x:Key="OpenSansRegular">pack://application:,,,/DynamoCore;component/UI/Fonts/#Open Sans</FontFamily>
-    <FontFamily x:Key="OpenSansItalic">pack://application:,,,/DynamoCore;component/UI/Fonts/#Open Sans Italic</FontFamily>
-    <FontFamily x:Key="OpenSansLight">pack://application:,,,/DynamoCore;component/UI/Fonts/#Open Sans Light</FontFamily>
-    <FontFamily x:Key="OpenSansSemibold">pack://application:,,,/DynamoCore;component/UI/Fonts/#Open Sans Semibold</FontFamily>
-    <FontFamily x:Key="OpenSansBold">pack://application:,,,/DynamoCore;component/UI/Fonts/#Open Sans Bold</FontFamily>
-    <FontFamily x:Key="OpenSansLightItalic">pack://application:,,,/DynamoCore;component/UI/Fonts/#Open Sans Light Italic</FontFamily>
-    <FontFamily x:Key="OpenSansSemiboldItalic">pack://application:,,,/DynamoCore;component/UI/Fonts/#Open Sans Semibold Italic</FontFamily>
-    <FontFamily x:Key="OpenSansBoldItalic">pack://application:,,,/DynamoCore;component/UI/Fonts/#Open Sans Bold Italic</FontFamily>
+    <FontFamily x:Key="OpenSansRegular">../../Fonts/#Open Sans</FontFamily>
+    <FontFamily x:Key="OpenSansItalic">../../Fonts/#Open Sans Italic</FontFamily>
+    <FontFamily x:Key="OpenSansLight">../../Fonts/#Open Sans Light</FontFamily>
+    <FontFamily x:Key="OpenSansSemibold">../../Fonts/#Open Sans Semibold</FontFamily>
+    <FontFamily x:Key="OpenSansBold">../../Fonts/#Open Sans Bold</FontFamily>
+    <FontFamily x:Key="OpenSansLightItalic">../../Fonts/#Open Sans Light Italic</FontFamily>
+    <FontFamily x:Key="OpenSansSemiboldItalic">../../Fonts/#Open Sans Semibold Italic</FontFamily>
+    <FontFamily x:Key="OpenSansBoldItalic">../../Fonts/#Open Sans Bold Italic</FontFamily>
 
     <!-- Window Common Styling -->
     <Style x:Key="DynamoWindowStyle"  TargetType="{x:Type Window}">
