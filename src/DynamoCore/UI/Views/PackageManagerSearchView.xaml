@@ -6,9 +6,9 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
+                <ResourceDictionary Source="pack://siteoforigin:,,,../UI/Themes/Modern/DynamoModern.xaml" />
+                <ResourceDictionary Source="pack://siteoforigin:,,,../UI/Themes/Modern/DynamoConverters.xaml"/>
+                <ResourceDictionary Source="pack://siteoforigin:,,,../UI/Themes/Modern/DynamoColorsAndBrushes.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>

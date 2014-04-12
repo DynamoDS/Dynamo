@@ -17,8 +17,8 @@
         <Border.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <ResourceDictionary Source="/DynamoCore;component/UI/Themes/ToolbarStyleDictionary.xaml" />
-                    <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
+                    <ui:SharedResourceDictionary Source="pack://siteoforigin:,,,../UI/Themes/Modern/ToolbarStyleDictionary.xaml" />
+                    <ui:SharedResourceDictionary Source="pack://siteoforigin:,,,../UI/Themes/Modern/DynamoConverters.xaml"/>
                 </ResourceDictionary.MergedDictionaries>
             </ResourceDictionary>
         </Border.Resources>

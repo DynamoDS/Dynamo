@@ -7,7 +7,7 @@
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner">
     <Window.Resources>
-        <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
+        <ResourceDictionary Source="/UI\Themes\Modern\DynamoModern.xaml" />
     </Window.Resources>
     <Grid Width="544"
           Height="auto"
