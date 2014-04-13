@@ -30,8 +30,8 @@ namespace Dynamo.Tests
             // check an input value
             var node1 = model.CurrentWorkspace.NodeFromWorkspace("51ed7fed-99fa-46c3-a03c-2c076f2d0538");
             Assert.NotNull(node1);
-            Assert.IsAssignableFrom(typeof(CodeBlockNodeModel), node1);
-            Assert.AreEqual("2;", ((CodeBlockNodeModel)node1).Code);
+            Assert.IsAssignableFrom(typeof(DoubleInput), node1);
+            Assert.AreEqual("2", ((DoubleInput)node1).Value);
             
             // run the expression
             //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
@@ -333,7 +333,7 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             AssertPreviewValue("a6e316b4-7054-42cd-a901-7bc6d4045c23",
-                "A node\twith tabs, and\ncarriage returns,\nand !@#$%^&* characters, and also something \"in quotes\".");
+                "A node\twith tabs, and\r\ncarriage returns,\r\nand !@#$%^&* characters, and also something \"in quotes\".");
         }
 
         [Test]
