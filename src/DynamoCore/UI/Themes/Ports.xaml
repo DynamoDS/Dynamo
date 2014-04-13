@@ -33,8 +33,8 @@
               Background="Transparent"
               IsHitTestVisible="True"
               Margin="{Binding Path=MarginThickness}"
-              Height="{Binding Path=Height}" 
-              Width="Auto" MinWidth="26">
+              Height="{Binding Path=Height}"
+              MinWidth="26">
 
             <interactivity:Interaction.Triggers>
                 <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
@@ -51,10 +51,10 @@
                 </ContextMenu>
             </Grid.ContextMenu>
 
-            <!--<Grid.Width>
+            <Grid.Width>
                 <Binding Path="ActualWidth"
                          RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}" />
-            </Grid.Width>-->
+            </Grid.Width>
 
             <Grid.ToolTip>
                 <dynui:DynamoToolTip AttachmentSide="{Binding Path=PortType, Converter={StaticResource PortToAttachmentConverter}}"

@@ -29,7 +29,7 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="Auto"
+            <ColumnDefinition Width="*"
                               MinWidth="40"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
@@ -268,14 +268,16 @@
                    FontWeight="Bold"
                    Canvas.ZIndex="30" />
 
-        <Grid x:FieldModifier="public" 
-              Grid.Row="3" 
-              Grid.Column="0" 
-              Grid.ColumnSpan="3" Margin="5"  
-              Name="PresentationGrid" ZIndex="50">
+        <Grid x:FieldModifier="public"
+              Grid.Row="3"
+              Grid.Column="0"
+              Grid.ColumnSpan="3"
+              Margin="5"
+              Name="PresentationGrid"
+              ZIndex="50">
             <!--DO NOT ERASE THIS GRID TO BE USED FOR PRESENTING IMAGES, 3D VIEWS, ETC.-->
         </Grid>
-        
+
         <Rectangle Name="nodeBorder"
                    Grid.Row="1"
                    Grid.ColumnSpan="3"
