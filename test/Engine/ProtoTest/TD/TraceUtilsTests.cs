@@ -1,12 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using NUnit.Framework;
 using ProtoCore.Lang;
 
 namespace ProtoTest.TD
 {
+    internal class SerializableString : ISerializable
+    {
+        public String Payload { get; set; }
+
+        public SerializableString(String str)
+        {
+            this.Payload = str;
+
+        }
+
+        public SerializableString(SerializationInfo info, StreamingContext context)
+        {
+            Payload = info.GetString("Payload");
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Payload", Payload);
+        }
+    }
+
+
     public class TraceUtilsTests
     {
         [Test]
@@ -14,21 +37,25 @@ namespace ProtoTest.TD
         public static void SetGetTest()
         {
 
+
             List<String> keys = TraceUtils.TEMP_GetTraceKeys();
 
-            String testStr1 = "{0955D962-2936-4FB2-AAB3-635C6FF6E0AD}";
-            String testStr2 = "{2D7FE0ED-56F3-47A4-9BAA-8DF570170D97}";
+            SerializableString testStr1 = new 
+                SerializableString("{0955D962-2936-4FB2-AAB3-635C6FF6E0AD}");
+
+            SerializableString testStr2 = new 
+                SerializableString("{2D7FE0ED-56F3-47A4-9BAA-8DF570170D97}");
 
 
-             Dictionary<String,Object> data = new Dictionary<string, object>();
+            Dictionary<String, ISerializable> data = new Dictionary<string, ISerializable>();
             data.Add(keys[0], testStr1);
 
             TraceUtils.SetObjectToTLS(data);
 
             //Set complete, readback test
 
-            Dictionary<String, Object> readback = TraceUtils.GetObjectFromTLS();
-            Assert.IsTrue((String)readback[keys[0]] == testStr1);
+            Dictionary<String, ISerializable> readback = TraceUtils.GetObjectFromTLS();
+            Assert.IsTrue(((SerializableString)readback[keys[0]]).Payload == testStr1.Payload);
         }
 
 
@@ -39,14 +66,17 @@ namespace ProtoTest.TD
 
             List<String> keys = TraceUtils.TEMP_GetTraceKeys();
 
-            String testStr1 = "{0955D962-2936-4FB2-AAB3-635C6FF6E0AD}";
-            String testStr2 = "{2D7FE0ED-56F3-47A4-9BAA-8DF570170D97}";
+            SerializableString testStr1 = new
+                SerializableString("{0955D962-2936-4FB2-AAB3-635C6FF6E0AD}");
+
+            SerializableString testStr2 = new
+                SerializableString("{2D7FE0ED-56F3-47A4-9BAA-8DF570170D97}");
 
 
-            Dictionary<String, Object> data = new Dictionary<string, object>();
+            var data = new Dictionary<string, ISerializable>();
             data.Add(keys[0], testStr1);
 
-            Dictionary<String, Object> data2 = new Dictionary<string, object>();
+            var data2 = new Dictionary<string, ISerializable>();
             data2.Add(keys[0], testStr2);
 
 
@@ -54,8 +84,8 @@ namespace ProtoTest.TD
 
             //Set complete, readback test
 
-            Dictionary<String, Object> readback = TraceUtils.GetObjectFromTLS();
-            Assert.IsTrue((String)readback[keys[0]] == testStr1);
+            var readback = TraceUtils.GetObjectFromTLS();
+            Assert.IsTrue(((SerializableString)readback[keys[0]]).Payload == testStr1.Payload);
 
 
 
@@ -64,7 +94,7 @@ namespace ProtoTest.TD
             //Set complete, readback test
 
             readback = TraceUtils.GetObjectFromTLS();
-            Assert.IsTrue((String)readback[keys[0]] == testStr2);
+            Assert.IsTrue(((SerializableString)readback[keys[0]]).Payload == testStr2.Payload);
         }
 
 
@@ -75,10 +105,11 @@ namespace ProtoTest.TD
 
             List<String> keys = TraceUtils.TEMP_GetTraceKeys();
 
-            String testStr1 = "{0955D962-2936-4FB2-AAB3-635C6FF6E0AD}";
+            SerializableString testStr1 = new
+                SerializableString("{0955D962-2936-4FB2-AAB3-635C6FF6E0AD}");
 
 
-            Dictionary<String, Object> data = new Dictionary<string, object>();
+            Dictionary<String, ISerializable> data = new Dictionary<string, ISerializable>();
             data.Add(keys[0], testStr1);
 
 
@@ -86,8 +117,8 @@ namespace ProtoTest.TD
 
             //Set complete, readback test
 
-            Dictionary<String, Object> readback = TraceUtils.GetObjectFromTLS();
-            Assert.IsTrue((String)readback[keys[0]] == testStr1);
+            var readback = TraceUtils.GetObjectFromTLS();
+            Assert.IsTrue(((SerializableString)readback[keys[0]]).Payload == testStr1.Payload);
 
 
             data[keys[0]] = null;
@@ -97,7 +128,7 @@ namespace ProtoTest.TD
             //Set complete, readback test
 
             readback = TraceUtils.GetObjectFromTLS();
-            Assert.IsTrue((String)readback[keys[0]] == null);
+            Assert.IsTrue((ISerializable)readback[keys[0]] == null);
         }
 
 
