@@ -12,7 +12,7 @@ using Dynamo.Utilities;
 using Dynamo.DSEngine;
 using ProtoCore.Mirror;
 using ProtoCore.DSASM;
-
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Tests
 {
@@ -220,6 +220,22 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        public void Defect_MAGN_1045()
+        {
+            // Create the initial code block node.
+            var codeBlockNode = CreateCodeBlockNode();
+
+            // Before code changes, there should be no in/out ports.
+            Assert.AreEqual(0, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(0, codeBlockNode.OutPortData.Count);
+
+            // After code changes, there should be two output ports.
+            UpdateCodeBlockNodeContent(codeBlockNode, "a = 1..6;\na[2]=a[2] + 1;");
+            Assert.AreEqual(0, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(2, codeBlockNode.OutPortData.Count);
+        }
+
+        [Test]
         public void Defect_MAGN_784()
         {
             var model = Controller.DynamoModel;
@@ -368,6 +384,27 @@ b = c[w][x][y][z];";
             // The last line will display an output port as long as it defines variable.
             Assert.IsTrue(CodeBlockUtils.DoesStatementRequireOutputPort(svs, 2));
         }
+
         #endregion
+
+        private CodeBlockNodeModel CreateCodeBlockNode()
+        {
+            var nodeGuid = Guid.NewGuid();
+            var command = new DynCmd.CreateNodeCommand(
+                nodeGuid, "Code Block", 0, 0, true, false);
+
+            Controller.DynamoViewModel.ExecuteCommand(command);
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var cbn = workspace.NodeFromWorkspace<CodeBlockNodeModel>(nodeGuid);
+
+            Assert.IsNotNull(cbn);
+            return cbn;
+        }
+
+        private void UpdateCodeBlockNodeContent(CodeBlockNodeModel cbn, string value)
+        {
+            var command = new DynCmd.UpdateModelValueCommand(cbn.GUID, "Code", value);
+            Controller.DynamoViewModel.ExecuteCommand(command);
+        }
     }
 }
