@@ -52,7 +52,7 @@ limitations under the License.
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.framework">
-      <HintPath>..\..\extern\NUnit\nunit.framework.dll</HintPath>
+      <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPI">
       <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
