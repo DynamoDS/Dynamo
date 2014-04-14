@@ -130,7 +130,7 @@ begin
     end
   else
     begin
-    MsgBox('Dynamo requires an installation of Revit 2013, Revit 2014, or FormIt in order to proceed!', mbCriticalError, MB_OK);
+    MsgBox('Dynamo requires an installation of Revit 2013, Revit 2014, or Vasari Beta 3 in order to proceed!', mbCriticalError, MB_OK);
     result := false;
     end;
 end;
