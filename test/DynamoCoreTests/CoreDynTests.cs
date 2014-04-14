@@ -595,5 +595,28 @@ namespace Dynamo.Tests
             AssertPreviewValue("1f62b414-7118-4606-9924-32a4b09c32a9", new[] {1, -2, -5, -8, -11});
             AssertPreviewValue("2bed6a11-aceb-469b-ba59-79a1ac7b7396", null);
         }
+
+        [Test]
+        public void TestNumber_RangeExpr02()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\number");
+
+            RunModel(Path.Combine(exPath, @"TestNumber_RangeExpr02.dyn"));
+
+            AssertPreviewValue("d358da0e-9cfa-4562-b110-726133cc1be4", new[] { 5, 4, 3, 2, 1 });
+            AssertPreviewValue("d3885e46-af86-4296-b76e-f736fb0613f4", new[] { 5, 4, 3, 2, 1 });
+            AssertPreviewValue("efc44473-0708-4bc6-a0ea-e9e6eeed097b", null);
+            AssertPreviewValue("34e34e69-1d42-45d7-8970-d3fc9ebf0ed7", new[] { 1, 2, 3, 4, 5 });
+            AssertPreviewValue("7f62e8ca-d248-40bb-9139-7f421c4b44e6", new[] { 1, 2, 3, 4, 5 });
+            AssertPreviewValue("5b3926a5-b920-4524-9031-f2c711523275", null);
+
+            AssertPreviewValue("580f2bef-9ecb-45ae-b2cb-2701a125f546", new[] { 5, 4, 3, 2, 1 });
+            AssertPreviewValue("5a766000-00ae-49a4-a1ad-0a528e7ddd8f", null);
+            AssertPreviewValue("b827d3ef-9f50-4333-97de-380873017ffa", new[] { 5, 4, 3, 2, 1 });
+            AssertPreviewValue("621ca605-c0b8-4350-99b0-01e48b56931b", new[] { 1, 2, 3, 4, 5 });
+            AssertPreviewValue("18f6fa4f-beaa-4904-a78c-30411a6f8391", new[] { 1, 2, 3, 4, 5 });
+            AssertPreviewValue("87eaf2fe-6a70-4f21-bf17-e33c286809d4", null);
+        }
     }
 }
