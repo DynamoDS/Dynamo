@@ -2368,6 +2368,51 @@ namespace DynamoCoreUITests
 
         }
 
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2290()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2290
+
+            RunCommandsFromFile("Defect_MAGN_2290.xml", true, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count);
+
+                    AssertPreviewValue("826ba392-b385-4960-89cc-c076c3abffb0", 
+                        new int[] { 0, 1, 2, 3 });
+
+                    AssertPreviewValue("8765fc5f-4edd-482c-8541-9acb6e39352c",
+                        new int[] { 0, 1, 2, 3 });
+
+                }
+                else if (commandTag == "LastRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count);
+
+                    NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                        ("826ba392-b385-4960-89cc-c076c3abffb0");
+                    Assert.AreNotEqual(ElementState.Warning, node.State);
+                    AssertPreviewValue("826ba392-b385-4960-89cc-c076c3abffb0", new int[] { 0, 3 });
+
+                    NodeModel node1 = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                        ("8765fc5f-4edd-482c-8541-9acb6e39352c");
+                    Assert.AreNotEqual(ElementState.Warning, node1.State);
+                    AssertPreviewValue("8765fc5f-4edd-482c-8541-9acb6e39352c",
+                        new int[] { 0, 1, 2, 3 });
+
+                }
+
+            });
+
+        }
+
 
         #endregion
 
