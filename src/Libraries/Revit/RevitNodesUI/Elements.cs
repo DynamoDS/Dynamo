@@ -5,7 +5,7 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 
-namespace Revit.Elements
+namespace DSRevitNodesUI
 {
     public abstract class ElementsQueryBase : NodeModel
     {
