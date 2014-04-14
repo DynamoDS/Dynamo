@@ -24,7 +24,7 @@ namespace Dynamo.ViewModels
     {
         #region delegates
         public delegate void SetToolTipDelegate(string message);
-        public delegate void NodeHelpEventHandler(object sender, NodeHelpEventArgs e);
+        public delegate void NodeDialogEventHandler(object sender, NodeDialogEventArgs e);
         #endregion
 
         #region private members
@@ -262,8 +262,8 @@ namespace Dynamo.ViewModels
         #endregion
 
         #region events
-        public event NodeHelpEventHandler RequestShowNodeHelp;
-        public virtual void OnRequestShowNodeHelp(Object sender, NodeHelpEventArgs e)
+        public event NodeDialogEventHandler RequestShowNodeHelp;
+        public virtual void OnRequestShowNodeHelp(Object sender, NodeDialogEventArgs e)
         {
             if (RequestShowNodeHelp != null)
             {
@@ -271,8 +271,8 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public event EventHandler RequestShowNodeRename;
-        public virtual void OnRequestShowNodeRename(Object sender, EventArgs e)
+        public event NodeDialogEventHandler RequestShowNodeRename;
+        public virtual void OnRequestShowNodeRename(Object sender, NodeDialogEventArgs e)
         {
             if (RequestShowNodeRename != null)
             {
@@ -599,7 +599,7 @@ namespace Dynamo.ViewModels
             //var helpDialog = new NodeHelpPrompt(this.NodeModel);
             //helpDialog.Show();
 
-            OnRequestShowNodeHelp(this, new NodeHelpEventArgs(NodeModel));
+            OnRequestShowNodeHelp(this, new NodeDialogEventArgs(NodeModel));
         }
 
         private bool CanShowHelp(object parameter)
@@ -609,7 +609,7 @@ namespace Dynamo.ViewModels
 
         private void ShowRename(object parameter)
         {
-            OnRequestShowNodeRename(this, EventArgs.Empty);
+            OnRequestShowNodeRename(this, new NodeDialogEventArgs(NodeModel));
         }
 
         private bool CanShowRename(object parameter)
@@ -940,11 +940,11 @@ namespace Dynamo.ViewModels
         #endregion
     }
 
-    public class NodeHelpEventArgs : EventArgs
+    public class NodeDialogEventArgs : EventArgs
     {
         public NodeModel Model { get; set; }
         public bool Handled { get; set; }
-        public NodeHelpEventArgs(NodeModel model)
+        public NodeDialogEventArgs(NodeModel model)
         {
             Model = model;
             Handled = false;
