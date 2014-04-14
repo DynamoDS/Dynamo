@@ -618,6 +618,15 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            var rowColumn = parameter as string;
+            if (rowColumn == null || (!rowColumn.Equals("Row") && (!rowColumn.Equals("Column"))))
+            {
+                var message = "'AttachmentToRowColumnConverter' expects a " + 
+                    "'ConverterParameter' value to be either 'Row' or 'Column'";
+
+                throw new ArgumentException(message);
+            }
+
             int row = 1, column = 2;
             DynamoToolTip tooltip = value as DynamoToolTip;
             switch (tooltip.AttachmentSide)
@@ -640,7 +649,7 @@ namespace Dynamo.Controls
                     break;
             }
 
-            bool isRow = ((parameter as string).Equals("Row"));
+            bool isRow = rowColumn.Equals("Row");
             return isRow ? row : column;
         }
 

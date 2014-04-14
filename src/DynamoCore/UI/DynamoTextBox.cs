@@ -340,6 +340,15 @@ namespace Dynamo.Nodes
 
 namespace Dynamo.UI.Controls
 {
+    /// <summary>
+    /// This is a class designed to be used as a tool-tip for Library View, 
+    /// Input/Output ports, and Node Caption. It replaces the default look 
+    /// of the system tool-tip where it has a triangular side that points 
+    /// to the corresponding "target" element. This tool-tip also aligns itself 
+    /// to the center of its target, both vertically and horizontally depending 
+    /// on its attachment side.
+    /// </summary>
+    /// 
     public class DynamoToolTip : ToolTip
     {
         public static readonly DependencyProperty AttachmentSideProperty =
@@ -361,7 +370,7 @@ namespace Dynamo.UI.Controls
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
         {
             double x = 0, y = 0;
-            double gap = 3.0;
+            double gap = Configurations.ToolTipTargetGapInPixels;
             PopupPrimaryAxis primaryAxis = PopupPrimaryAxis.None;
 
             switch (this.AttachmentSide)
