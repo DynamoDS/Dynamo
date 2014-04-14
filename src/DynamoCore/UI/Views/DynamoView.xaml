@@ -36,10 +36,10 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="pack://siteoforigin:,,,/UI/Themes/Modern/DynamoModern.xaml"/>
-                <ui:SharedResourceDictionary Source="pack://siteoforigin:,,,/UI/Themes/Modern/DynamoConverters.xaml"/>
-                <ui:SharedResourceDictionary Source="pack://siteoforigin:,,,/UI/Themes/Modern/DynamoColorsAndBrushes.xaml" />
-                <ui:SharedResourceDictionary Source="pack://siteoforigin:,,,/UI/Themes/Modern/MenuStyleDictionary.xaml" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}"/>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>

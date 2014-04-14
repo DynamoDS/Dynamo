@@ -15,9 +15,9 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="pack://siteoforigin:,,,/UI/Themes/Modern/DynamoColorsAndBrushes.xaml" />
-                <ui:SharedResourceDictionary Source="pack://siteoforigin:,,,/UI/Themes/Modern/DynamoConverters.xaml" />
-                <ui:SharedResourceDictionary Source="pack://siteoforigin:,,,/UI/Themes/Modern/DynamoModern.xaml" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="BorderlessButton" TargetType="{x:Type Button}">
                 <Setter Property="Padding" Value="1"/>

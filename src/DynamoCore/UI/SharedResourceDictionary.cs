@@ -75,129 +75,119 @@ namespace Dynamo.UI
             }
         }
 
+        public static Uri DynamoModernDictionaryUri
+        {
+            get {return new Uri(Path.Combine(ThemesDirectory, "DynamoModern.xaml")); }
+        }
+
+        public static Uri DataTemplatesDictionaryUri
+        {
+            get { return new Uri(Path.Combine(ThemesDirectory, "DataTemplates.xaml")); }
+        }
+
+        public static Uri DynamoColorsAndBrushesDictionaryUri
+        {
+            get { return new Uri(Path.Combine(ThemesDirectory, "DynamoColorsAndBrushes.xaml")); }
+        }
+
+        public static Uri DynamoConvertersDictionaryUri
+        {
+            get { return new Uri(Path.Combine(ThemesDirectory, "DynamoConverters.xaml")); }
+        }
+
+        public static Uri DynamoTextDictionaryUri
+        {
+            get { return new Uri(Path.Combine(ThemesDirectory, "DynamoText.xaml")); }
+        }
+
+        public static Uri MenuStyleDictionaryUri
+        {
+            get { return new Uri(Path.Combine(ThemesDirectory, "MenuStyleDictionary.xaml")); }
+        }
+
+        public static Uri ToolbarStyleDictionaryUri
+        {
+            get { return new Uri(Path.Combine(ThemesDirectory, "ToolbarStyleDictionary.xaml")); }
+        }
+
+        public static Uri ConnectorsDictionaryUri
+        {
+            get { return new Uri(Path.Combine(ThemesDirectory, "Connectors.xaml")); }
+        }
+
+        public static Uri PortsDictionaryUri
+        {
+            get { return new Uri(Path.Combine(ThemesDirectory, "Ports.xaml")); }
+        }
+
         public static ResourceDictionary DynamoModernDictionary
         {
-            get
-            {
-                if (_dynamoModernDictionary == null)
-                {
-                    var resourceLocater =new Uri(Path.Combine(ThemesDirectory, "DynamoModern.xaml"));
-                    _dynamoModernDictionary = new ResourceDictionary(){Source = resourceLocater};
-                }
-
-                return _dynamoModernDictionary;
+            get {
+                return _dynamoModernDictionary ??
+                       (_dynamoModernDictionary = new ResourceDictionary() {Source = DynamoModernDictionaryUri});
             }
         }
 
         public static ResourceDictionary DataTemplatesDictionary
         {
-            get
-            {
-                if (_dataTemplatesDictionary == null)
-                {
-                    var resourceLocater = new Uri(Path.Combine(ThemesDirectory, "DataTemplates.xaml"));
-                    _dataTemplatesDictionary = new ResourceDictionary() { Source = resourceLocater };
-                }
-
-                return _dataTemplatesDictionary;
+            get {
+                return _dataTemplatesDictionary ??
+                       (_dataTemplatesDictionary = new ResourceDictionary() {Source = DataTemplatesDictionaryUri});
             }
         }
 
         public static ResourceDictionary DynamoColorsAndBrushesDictionary
         {
-            get
-            {
-                if (_dynamoColorsAndBrushesDictionary == null)
-                {
-                    var resourceLocater = new Uri(Path.Combine(ThemesDirectory, "DynamoColorsAndBrushes.xaml"));
-                    _dynamoColorsAndBrushesDictionary = new ResourceDictionary() { Source = resourceLocater };
-                }
-
-                return _dynamoColorsAndBrushesDictionary;
+            get {
+                return _dynamoColorsAndBrushesDictionary ??
+                       (_dynamoColorsAndBrushesDictionary = new ResourceDictionary() { Source = DynamoColorsAndBrushesDictionaryUri });
             }
         }
 
         public static ResourceDictionary DynamoConvertersDictionary
         {
-            get
-            {
-                if (_dynamoConvertersDictionary == null)
-                {
-                    var resourceLocater = new Uri(Path.Combine(ThemesDirectory, "DynamoConverters.xaml"));
-                    _dynamoConvertersDictionary = new ResourceDictionary() { Source = resourceLocater };
-                }
-
-                return _dynamoConvertersDictionary;
+            get {
+                return _dynamoConvertersDictionary ??
+                       (_dynamoConvertersDictionary = new ResourceDictionary() {Source = DynamoConvertersDictionaryUri});
             }
         }
 
         public static ResourceDictionary DynamoTextDictionary
         {
-            get
-            {
-                if (_dynamoTextDictionary == null)
-                {
-                    var resourceLocater = new Uri(Path.Combine(ThemesDirectory, "DynamoText.xaml"));
-                    _dynamoTextDictionary = new ResourceDictionary() { Source = resourceLocater };
-                }
-
-                return _dynamoTextDictionary;
+            get {
+                return _dynamoTextDictionary ??
+                       (_dynamoTextDictionary = new ResourceDictionary() {Source = DynamoTextDictionaryUri});
             }
         }
 
         public static ResourceDictionary MenuStyleDictionary
         {
-            get
-            {
-                if (_menuStyleDictionary == null)
-                {
-                    var resourceLocater = new Uri(Path.Combine(ThemesDirectory, "MenuStyleDictionary.xaml"));
-                    _menuStyleDictionary = new ResourceDictionary() { Source = resourceLocater };
-                }
-
-                return _menuStyleDictionary;
+            get {
+                return _menuStyleDictionary ??
+                       (_menuStyleDictionary = new ResourceDictionary() {Source = MenuStyleDictionaryUri});
             }
         }
 
         public static ResourceDictionary ToolbarStyleDictionary
         {
-            get
-            {
-                if (_toolbarStyleDictionary == null)
-                {
-                    var resourceLocater = new Uri(Path.Combine(ThemesDirectory, "ToolbarStyleDictionary.xaml"));
-                    _toolbarStyleDictionary = new ResourceDictionary() { Source = resourceLocater };
-                }
-
-                return _toolbarStyleDictionary;
+            get {
+                return _toolbarStyleDictionary ??
+                       (_toolbarStyleDictionary = new ResourceDictionary() { Source = ToolbarStyleDictionaryUri });
             }
         }
 
         public static ResourceDictionary ConnectorsDictionary
         {
-            get
-            {
-                if (_connectorsDictionary == null)
-                {
-                    var resourceLocater = new Uri(Path.Combine(ThemesDirectory, "Connectors.xaml"));
-                    _connectorsDictionary = new ResourceDictionary() { Source = resourceLocater };
-                }
-
-                return _connectorsDictionary;
+            get {
+                return _connectorsDictionary ??
+                       (_connectorsDictionary = new ResourceDictionary() {Source = ConnectorsDictionaryUri});
             }
         }
 
         public static ResourceDictionary PortsDictionary
         {
-            get
-            {
-                if (_portsDictionary == null)
-                {
-                    var resourceLocater = new Uri(Path.Combine(ThemesDirectory, "Ports.xaml"));
-                    _portsDictionary = new ResourceDictionary() { Source = resourceLocater };
-                }
-
-                return _portsDictionary;
+            get {
+                return _portsDictionary ?? (_portsDictionary = new ResourceDictionary() {Source = PortsDictionaryUri});
             }
         }
     }

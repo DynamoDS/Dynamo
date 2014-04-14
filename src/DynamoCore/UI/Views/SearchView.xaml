@@ -7,6 +7,7 @@
              xmlns:searchElements="clr-namespace:Dynamo.Search.SearchElements"
              xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:clr="clr-namespace:System;assembly=mscorlib"
              xmlns:dynamo="clr-namespace:Dynamo"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d" 
              Visibility="Visible" 
              d:DesignWidth="300" 
@@ -19,9 +20,9 @@
         <ResourceDictionary>
             <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://siteoforigin:,,,../UI/Themes/Modern/DynamoModern.xaml" />
-                <ResourceDictionary Source="pack://siteoforigin:,,,../UI/Themes/Modern/DynamoConverters.xaml"/>
-                <ResourceDictionary Source="pack://siteoforigin:,,,../UI/Themes/Modern/DynamoColorsAndBrushes.xaml" />
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>    

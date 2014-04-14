@@ -6,7 +6,7 @@
                       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCore">
 
     <ResourceDictionary.MergedDictionaries>
-        <ui:SharedResourceDictionary Source="pack://siteoforigin:,,,../UI/Themes/Modern/DynamoConverters.xaml" />
+        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
     
     <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
