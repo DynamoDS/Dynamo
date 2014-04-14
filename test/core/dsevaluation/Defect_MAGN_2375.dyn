@@ -1,0 +1,14 @@
+<Workspace Version="0.7.0.26875" X="118.219474012808" Y="-195.034458701909" zoom="1.13758205229474" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSVarArgFunction type="Dynamo.Nodes.DSVarArgFunction" guid="5a7f7549-fbef-4c3f-8578-c67471eaa87f" nickname="String.Split" x="173.541575183494" y="258.073988325851" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2" assembly="DSCoreNodes.dll" function="DSCore.String.Split@string,string[]" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="cbbac593-6132-4db7-b18b-c762b1470933" nickname="Code Block" x="20.0291738943553" y="340.942610679582" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;.&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="b6999e96-7e63-419e-bfaa-db033ba005cc" nickname="String" x="-21.9198177759951" y="243.258764427899" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="Dynamo.DS" />
+    </Dynamo.Nodes.StringInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="cbbac593-6132-4db7-b18b-c762b1470933" start_index="0" end="5a7f7549-fbef-4c3f-8578-c67471eaa87f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b6999e96-7e63-419e-bfaa-db033ba005cc" start_index="0" end="5a7f7549-fbef-4c3f-8578-c67471eaa87f" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
