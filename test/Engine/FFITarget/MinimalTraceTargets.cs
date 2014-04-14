@@ -117,6 +117,7 @@ namespace FFITarget
     }
 
 
+    [Serializable]
     internal class IDHolder : ISerializable
     {
         public int ID = int.MinValue;
@@ -138,6 +139,7 @@ namespace FFITarget
     }
 
 
+    [Serializable]
     internal class DummyDataHolder : ISerializable
     {
         public void GetObjectData(SerializationInfo info, StreamingContext context)

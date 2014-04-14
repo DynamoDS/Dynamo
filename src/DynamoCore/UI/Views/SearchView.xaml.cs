@@ -243,32 +243,6 @@ namespace Dynamo.Search
             this.Cursor = null;
         }
 
-        private void LibraryItem_OnMouseEnter(object sender, MouseEventArgs e)
-        {
-            TreeViewItem treeViewItem = sender as TreeViewItem;
-            NodeSearchElement nodeSearchElement = treeViewItem.Header as NodeSearchElement;
-            if (nodeSearchElement == null)
-                return;
-
-            Point pointToScreen_TopLeft = treeViewItem.PointToScreen(new Point(0, 0));
-            Point topLeft = this.PointFromScreen(pointToScreen_TopLeft);
-            Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + treeViewItem.ActualWidth, pointToScreen_TopLeft.Y + treeViewItem.ActualHeight);
-            Point botRight = this.PointFromScreen(pointToScreen_BotRight);
-            string infoBubbleContent = nodeSearchElement.Description;
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.LibraryItemPreview, topLeft,
-                botRight, infoBubbleContent, InfoBubbleViewModel.Direction.Left);
-            DynamoCommands.ShowLibItemInfoBubbleCommand.Execute(data);
-        }
-
-        private void LibraryItem_OnMouseLeave(object sender, MouseEventArgs e)
-        {
-            TreeViewItem treeViewItem = sender as TreeViewItem;
-            NodeSearchElement nodeSearchElement = treeViewItem.Header as NodeSearchElement;
-            if (nodeSearchElement == null)
-                return;
-            DynamoCommands.HideLibItemInfoBubbleCommand.Execute(null);
-        }
-
         private void SearchTextBoxGrid_MouseEnter(object sender, MouseEventArgs e)
         {
             var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_hover.png");

@@ -36,10 +36,10 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
-                <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
-                <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
-                <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/MenuStyleDictionary.xaml" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}"/>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -329,6 +329,13 @@
                             <MenuItem Focusable="False" Header="0.00" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f2, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f2"/>
                             <MenuItem Focusable="False" Header="0.000" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f3, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f3"/>
                             <MenuItem Focusable="False" Header="0.0000" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f4, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f4"/>
+                        </MenuItem>
+                        <MenuItem Focusable="False" Header="Render Precision">
+                            <StackPanel Orientation="Horizontal" Width="Auto">
+                                <TextBlock Text="Low" Margin="0,0,10,0"></TextBlock>
+                                <Slider Width ="100" Minimum="12" Maximum="512" Value="{Binding MaxGridLines, Mode=TwoWay}"></Slider>
+                                <TextBlock Text="High" Margin="10,0,0,0"></TextBlock>
+                            </StackPanel>
                         </MenuItem>
                     </MenuItem>
                     

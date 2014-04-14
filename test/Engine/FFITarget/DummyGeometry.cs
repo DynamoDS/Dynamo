@@ -43,6 +43,15 @@ namespace FFITarget
         {
             return ByCoordinates(points.Average(p => p.X), points.Average(p => p.Y), points.Average(p => p.Z));
         }
+
+        public override bool Equals(object obj)
+        {
+            DummyPoint other = obj as DummyPoint;
+            if (null == other)
+                return false;
+
+            return this.DirectionTo(other).GetLengthSquare() < 0.00001;
+        }
     }
 
     public class DummyVector
@@ -61,6 +70,11 @@ namespace FFITarget
             };
 
             return ret;
+        }
+
+        public double GetLengthSquare()
+        {
+            return X * X + Y * Y + Z * Z;
         }
     }
 

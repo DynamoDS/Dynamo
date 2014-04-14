@@ -8,6 +8,7 @@ using System.Windows.Shapes;
 using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -21,10 +22,8 @@ namespace Dynamo.Nodes
     [NodeDescription("Shows a dynamic preview of geometry.")]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
     [IsDesignScriptCompatible]
-    public class Watch3D : NodeModel, IWatchViewModel
+    public class Watch3D : NodeModel, IWatchViewModel, IWpfNode
     {
-        private bool _requiresRedraw;
-        private bool _isRendering;
         private bool _canNavigateBackground = true;
         private double _watchWidth = 200;
         private double _watchHeight = 200;
@@ -64,24 +63,12 @@ namespace Dynamo.Nodes
             WatchIsResizable = true;
         }
 
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    var input = args[0];
-
-        //    _requiresRedraw = true;
-
-        //    return input;
-        //}
-
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             var mi = new MenuItem { Header = "Zoom to Fit" };
             mi.Click += mi_Click;
 
             nodeUI.MainContextMenu.Items.Add(mi);
-
-            //take out the left and right margins and make this so it's not so wide
-            //NodeUI.inputGrid.Margin = new Thickness(10, 10, 10, 10);
 
             //add a 3D viewport to the input grid
             //http://helixtoolkit.codeplex.com/wikipage?title=HelixViewport3D&referringTitle=Documentation
@@ -109,28 +96,8 @@ namespace Dynamo.Nodes
             var backgroundBrush = new SolidColorBrush(Color.FromRgb(240, 240, 240));
             backgroundRect.Fill = backgroundBrush;
 
-            nodeUI.grid.Children.Add(backgroundRect);
-            nodeUI.grid.Children.Add(View);
-            backgroundRect.SetValue(Grid.RowProperty, 2);
-            backgroundRect.SetValue(Grid.ColumnSpanProperty, 3);
-            View.SetValue(Grid.RowProperty, 2);
-            View.SetValue(Grid.ColumnSpanProperty, 3);
-            View.Margin = new Thickness(5, 0, 5, 5);
-            backgroundRect.Margin = new Thickness(5, 0, 5, 5);
-            CompositionTarget.Rendering += CompositionTarget_Rendering;
-        }
-
-        void CompositionTarget_Rendering(object sender, EventArgs e)
-        {
-            if (_isRendering)
-                return;
-
-            if (!_requiresRedraw)
-                return;
-
-            _isRendering = true;
-            _requiresRedraw = false;
-            _isRendering = false;
+            nodeUI.PresentationGrid.Children.Add(backgroundRect);
+            nodeUI.PresentationGrid.Children.Add(View);
         }
 
         void mi_Click(object sender, RoutedEventArgs e)

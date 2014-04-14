@@ -357,7 +357,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(listTestFolder, "testPlatten_singleInput.dyn");
             RunModel(testFilePath);
 
-            AssertPreviewValue("4cc4e5f0-4338-43bb-911e-d7c10ea2b53c", new int[] { 20 });
+            AssertPreviewValue("a5cd432d-28d7-4978-901e-c529f8e65dd4", new int[] { 20 });
         }
 
         [Test]
@@ -392,7 +392,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(listTestFolder, "testPlattenCompletely_singleInput.dyn");
             RunModel(testFilePath);
 
-            AssertPreviewValue("641db696-5626-4af0-b07e-6335c6dc4bc9", new int[] { 20 });
+            AssertPreviewValue("6595fa34-fc78-4995-8efb-9fd7e73cbd8a", new int[] { 20 });
         }
 
         [Test]
@@ -507,7 +507,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(listTestFolder, "testTransposeList_singleInput.dyn");
             RunModel(testFilePath);
 
-            AssertPreviewValue("d37a5827-d7d3-41d4-bd68-8ab6666aed39", 20);
+            AssertPreviewValue("d37a5827-d7d3-41d4-bd68-8ab6666aed39", new object[] {20});
         }
 
         [Test]
@@ -544,6 +544,32 @@ namespace Dynamo.Tests
                     new object[] { 23, 33 },
                     new object[] { 24 }
                 });
+        }
+
+        [Test]
+        public void TestTranspose()
+        {
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(listTestFolder, "transpose.dyn");
+            RunModel(testFilePath);
+
+            AssertPreviewValue("b51e05aa-e37b-46f0-9bc1-9c5042b3f07e",
+                new object[] { new object[] {1,3 }, new object[] {2, 4}, });
+
+            AssertPreviewValue("919d4d0d-f4e3-4a3c-87c8-dd4466a8ca87",
+                new object[] { new object[] {1,4,6}, new object[] {2, 5,7}, new object[] {3, 8}, new object[] {9}});
+
+            AssertPreviewValue("bcf696d1-43e7-4633-8eb9-d5cb64dde939",
+                new object[] { new object[] { new object[] { 1 }, 3 }, new object[] { 2, 4 } });
+
+            AssertPreviewValue("83892f27-5d86-447f-a96c-121cac42a54b",
+                new object[] { });
+
+            AssertPreviewValue("35a16bab-e7dd-4e04-9724-0344152ab0f3",
+                new object[] { 1, 2});
+
+            AssertPreviewValue("f619b5c1-debc-48b4-a396-577545388bc1",
+                new object[] { 1});
         }
         #endregion
 
@@ -2606,5 +2632,18 @@ namespace Dynamo.Tests
 
         #endregion
 
+        #region Test Create List
+        [Test]
+        public void TestCreateList()
+        {
+            // Test partially applied Create List node.
+
+            var model = dynSettings.Controller.DynamoModel;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\createList.dyn");
+            RunModel(openPath);
+
+            AssertPreviewValue("0f306478-5a96-4276-baac-0d08e12fe872", new object[] { 1.0, 2.0, 3.0, 4.0 }); 
+        }
+        #endregion
     }
 }

@@ -835,5 +835,93 @@ namespace ProtoCore.Utils
             }
             return functionDescription.GetHashCode();
         }
+
+        /// <summary>
+        /// Retrieves the string format of the identifier list from left to right, leaving out any symbols after the last identifier.
+        /// Given: A.B()
+        ///     Return: "A.B"
+        /// Given: A.B.C()[0]
+        ///     Return: "A.B.C"
+        /// Given: A.B().C
+        ///     Return: "A.B"
+        /// Given: A.B[0].C
+        ///     Return: "A.B[0].C"
+        /// </summary>
+        /// <param name="identList"></param>
+        /// <returns></returns>
+        public static string GetIdentifierStringUntilFirstParenthesis(ProtoCore.AST.AssociativeAST.IdentifierListNode identList)
+        {
+            Validity.Assert(null != identList);
+            string identListString = identList.ToString();
+            int removeIndex = identListString.IndexOf('(');
+            if (removeIndex > 0)
+            {
+                identListString = identListString.Remove(removeIndex);
+            }
+            return identListString;
+        }
+
+        /// <summary>
+        /// Traverses the identifierlist argument until class name resolution succeeds or fails.
+        /// </summary>
+        /// <param name="classTable"></param>
+        /// <param name="identList"></param>
+        /// <returns></returns>
+        public static string[] GetResolvedClassName(ProtoCore.DSASM.ClassTable classTable, ProtoCore.AST.AssociativeAST.IdentifierListNode identList)
+        {
+            string identString = GetIdentifierStringUntilFirstParenthesis(identList);
+            string[] classNames = classTable.GetAllMatchingClasses(ProtoCore.Utils.CoreUtils.GetIdentifierStringUntilFirstParenthesis(identList));
+
+            // Failed to find the first time
+            // Attempt to remove identifiers in the identifierlist until we find a class or not
+            while (0 == classNames.Length)
+            {
+                // Move to the left node
+                AssociativeNode leftNode = identList.LeftNode;
+                if (leftNode is IdentifierListNode)
+                {
+                    identList = leftNode as IdentifierListNode;
+                    string identListString = identList.ToString();
+                    classNames = classTable.GetAllMatchingClasses(ProtoCore.Utils.CoreUtils.GetIdentifierStringUntilFirstParenthesis(identList));
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return classNames;
+        }
+
+        /// <summary>
+        /// Parses designscript code and outputs ProtoAST
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public static List<AssociativeNode> BuildASTList(ProtoCore.Core core, string code)
+        {
+            Validity.Assert(null != core);
+            List<AssociativeNode> astList = new List<AssociativeNode>();
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(core, code) as CodeBlockNode;
+            astList.AddRange(cbn.Body);
+            return astList;
+        }
+
+
+        /// <summary>
+        /// Parses designscript code and outputs ProtoAST
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public static List<AssociativeNode> BuildASTList(ProtoCore.Core core, List<string> codeList)
+        {
+            List<AssociativeNode> astList = new List<AssociativeNode>();
+            foreach (string code in codeList)
+            {
+                astList.AddRange(BuildASTList(core, code));
+            }
+            return astList;
+        }
     }
 }

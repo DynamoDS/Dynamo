@@ -183,5 +183,31 @@ namespace RevitServicesTests
 
         }
 
+        [Test]
+        public void RawTraceInteractionTest()
+        {
+            var elementId = new SerializableId
+            {
+                IntID = 42,
+                StringID = "{BE507CAC-7F23-43D6-A2B4-13F6AF09046F}"
+            };
+
+            //Raw write
+            ElementBinder.SetRawDataForTrace(elementId);
+            elementId = null;
+
+            //Readback
+            elementId = (SerializableId)ElementBinder.GetRawDataFromTrace();
+            Assert.IsTrue(elementId.IntID == 42);
+            Assert.IsTrue(elementId.StringID == "{BE507CAC-7F23-43D6-A2B4-13F6AF09046F}");
+
+
+
+
+
+        }
+
+
+
     }
 }

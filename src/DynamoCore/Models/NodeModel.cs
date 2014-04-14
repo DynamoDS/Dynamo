@@ -106,15 +106,12 @@ namespace Dynamo.Models
             }
         }
 
-        public bool HasRenderPackages
-        {
-            get
-            {
-                lock (RenderPackagesMutex)
-                {
-                    return RenderPackages.Any();
-                }
-            }
+        public bool HasRenderPackages { get; set; //{
+            //    lock (RenderPackagesMutex)
+            //    {
+            //        return RenderPackages.Any();
+            //    }
+            //}
         }
 
         #endregion
@@ -801,6 +798,15 @@ namespace Dynamo.Models
         public bool HasInput(int data)
         {
             return HasConnectedInput(data) || (InPorts.Count > data && InPorts[data].UsingDefaultValue);
+        }
+
+        /// <summary>
+        ///     Return if all input ports of the node have connections.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasUnconnectedInput()
+        {
+            return !Enumerable.Range(0, InPortData.Count).All(HasInput);
         }
 
         /// <summary>
@@ -1521,7 +1527,8 @@ namespace Dynamo.Models
             //dispose of the current render package
             lock (RenderPackagesMutex)
             {
-                RenderPackages.Clear(); 
+                RenderPackages.Clear();
+                HasRenderPackages = false;
 
                 if (State == ElementState.Error || !IsVisible)
                 {
@@ -1569,6 +1576,9 @@ namespace Dynamo.Models
                         count++;
                     }
                 }
+
+                if (RenderPackages.Any())
+                    HasRenderPackages = true;
             }
         }
 
@@ -1577,12 +1587,13 @@ namespace Dynamo.Models
             lock (RenderPackagesMutex)
             {
                 RenderPackages.Clear();
+                HasRenderPackages = false;
             }
         }
 
-        private static void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag, double size)
+        private void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag, double size)
         {
-            graphicItem.Tessellate(package, -1.0, 32);
+            graphicItem.Tessellate(package, -1.0, dynSettings.Controller.VisualizationManager.MaxGridLines);
             package.Tag = tag;
         }
 

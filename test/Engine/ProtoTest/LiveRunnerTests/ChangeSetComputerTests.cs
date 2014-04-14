@@ -26,7 +26,7 @@ namespace ProtoTest.LiveRunner
         {
             var opts = new Options();
             opts.ExecutionMode = ExecutionMode.Serial;
-            ProtoCore.Core core = thisTest.SetupTestCore();
+            core = thisTest.SetupEmptyTestCore();
         }
 
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
@@ -36,19 +36,6 @@ namespace ProtoTest.LiveRunner
             var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
             return subtree;
         }
-
-        private List<AssociativeNode> BuildASTList(List<string> codeList)
-        {
-            List<AssociativeNode> astList = new List<AssociativeNode>();
-            foreach (string code in codeList)
-            {
-                CodeBlockNode commentCode;
-                var cbn = GraphToDSCompiler.GraphUtilities.Parse(code, out commentCode) as CodeBlockNode;
-                astList.AddRange(cbn.Body);
-            }
-            return astList;
-        }
-
 
         [Test]
         public void TestAddedNodes01()
@@ -74,7 +61,7 @@ namespace ProtoTest.LiveRunner
             {
                 "a = 1;"
             };
-            List<AssociativeNode> expectedAstList = BuildASTList(expectedCode);
+            List<AssociativeNode> expectedAstList = ProtoCore.Utils.CoreUtils.BuildASTList(core, expectedCode);
 
             // Compare ASTs to be equal
             for (int n = 0; n < astList.Count; ++n)
@@ -111,7 +98,7 @@ namespace ProtoTest.LiveRunner
                 "a = 1;",
                 "b = a;"
             };
-            List<AssociativeNode> expectedAstList = BuildASTList(expectedCode);
+            List<AssociativeNode> expectedAstList = ProtoCore.Utils.CoreUtils.BuildASTList(core, expectedCode);
 
             // Compare ASTs to be equal
             for (int n = 0; n < astList.Count; ++n)
@@ -147,7 +134,7 @@ namespace ProtoTest.LiveRunner
             {
                 "def f(){return = 1;}"
             };
-            List<AssociativeNode> expectedAstList = BuildASTList(expectedCode);
+            List<AssociativeNode> expectedAstList = ProtoCore.Utils.CoreUtils.BuildASTList(core, expectedCode);
 
             // Compare ASTs to be equal
             for (int n = 0; n < astList.Count; ++n)
@@ -185,7 +172,7 @@ namespace ProtoTest.LiveRunner
                 "def f(){return = 1;}",
                 "def g(){return = 1;}"
             };
-            List<AssociativeNode> expectedAstList = BuildASTList(expectedCode);
+            List<AssociativeNode> expectedAstList = ProtoCore.Utils.CoreUtils.BuildASTList(core, expectedCode);
 
             // Compare ASTs to be equal
             for (int n = 0; n < astList.Count; ++n)
@@ -230,7 +217,7 @@ namespace ProtoTest.LiveRunner
             {
                 "b = 1;"
             };
-            List<AssociativeNode> expectedAstList = BuildASTList(expectedCode);
+            List<AssociativeNode> expectedAstList = ProtoCore.Utils.CoreUtils.BuildASTList(core, expectedCode);
 
             // Compare ASTs to be equal
             for (int n = 0; n < astList.Count; ++n)
@@ -275,7 +262,7 @@ namespace ProtoTest.LiveRunner
             {
                 "c = 1;"
             };
-            List<AssociativeNode> expectedAstList = BuildASTList(expectedCode);
+            List<AssociativeNode> expectedAstList = ProtoCore.Utils.CoreUtils.BuildASTList(core, expectedCode);
 
             // Compare ASTs to be equal
             for (int n = 0; n < astList.Count; ++n)

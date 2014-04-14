@@ -5,8 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:search="clr-namespace:Dynamo.Nodes.Search"
              xmlns:searchElements="clr-namespace:Dynamo.Search.SearchElements"
+             xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:clr="clr-namespace:System;assembly=mscorlib"
              xmlns:dynamo="clr-namespace:Dynamo"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d" 
              Visibility="Visible" 
              d:DesignWidth="300" 
@@ -18,10 +20,11 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>    
@@ -348,6 +351,7 @@
                     <Setter Property="Foreground" Value="#DDD"/>
                     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="{Binding Path=SearchScrollBarVisibility, Converter={StaticResource BoolToScrollBarVisibilityConverter}}"/>
                     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="{Binding Path=SearchScrollBarVisibility, Converter={StaticResource BoolToScrollBarVisibilityConverter}}"/>
+                    <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ScrollViewer}}, Path=ActualWidth}" />
                     <Setter Property="VerticalContentAlignment" Value="Center"/>
 
                     <Setter Property="Template">
@@ -544,8 +548,23 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-                    <EventSetter Event="MouseEnter" Handler="LibraryItem_OnMouseEnter"/>
-                    <EventSetter Event="MouseLeave" Handler="LibraryItem_OnMouseLeave"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Converter={StaticResource BrowserItemToBooleanConverter}}"
+                                     Value="True">
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <dynui:DynamoToolTip AttachmentSide="Right"
+                                                         Style="{DynamicResource ResourceKey=SLightToolTip}">
+                                        <Grid>
+                                            <TextBlock TextWrapping="Wrap"
+                                                       MaxWidth="320"
+                                                       Text="{Binding Path=Description}"></TextBlock>
+                                        </Grid>
+                                    </dynui:DynamoToolTip>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
                 </Style>
 
                 <DataTemplate x:Key="ContextMenuStyle">

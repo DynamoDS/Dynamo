@@ -12,11 +12,13 @@ class _SingleFunctionObject extends _FunctionObject
     __argumtNumber : int;
     __params : var[]..[];
     __hasParamAt : bool[];
+    __unpackParams: bool;
     
     constructor _SingleFunctionObject(fptr : function, 
                                       argNumber: int, 
                                       paramPositions : int[], 
-                                      params : var[]..[])
+                                      params : var[]..[],
+                                      unpackParams: bool)
     {
         __functionPointers = fptr;
         __argumtNumber = argNumber;
@@ -25,6 +27,7 @@ class _SingleFunctionObject extends _FunctionObject
         __hasParamAt[paramPositions] = true;
         
         __params = params;
+        __unpackParams = unpackParams;
     }
     
     private def GetNextEmptyParamPos(hasParamAt : bool[])
@@ -41,9 +44,10 @@ class _SingleFunctionObject extends _FunctionObject
     }
     
     private def DoEvaluationImp(fptr : function, 
-                              params : var[]..[])
+                              params : var[]..[], 
+                              unpackParams: bool)
     {
-        return = Evaluate(fptr, params);
+        return = Evaluate(fptr, params, unpackParams);
     }
     
     def DoEvaluation(param: var[]..[])
@@ -67,7 +71,7 @@ class _SingleFunctionObject extends _FunctionObject
                 _nextParamPosition = GetNextEmptyParamPos(_hasParamAt);
                 if (_nextParamPosition < 0)
                 {
-                    return = DoEvaluationImp(__functionPointers, _params);
+                    return = DoEvaluationImp(__functionPointers, _params, __unpackParams);
                 }
                 else
                 {
@@ -84,7 +88,8 @@ class _SingleFunctionObject extends _FunctionObject
                                                 __functionPointers,
                                                 __argumtNumber,
                                                 _paramPositions,
-                                                _params);
+                                                _params,
+                                                __unpackParams);
                 }
             }
         }  

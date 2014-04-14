@@ -22,7 +22,7 @@ namespace Dynamo.Nodes
 
             // Create new node
             XmlElement identityCoordinateSystem = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "CoordinateSystem.Identity",
                 "CoordinateSystem.Identity");
             migrationData.AppendNode(identityCoordinateSystem);
@@ -70,7 +70,7 @@ namespace Dynamo.Nodes
 
                 // make distance to node
                 var distTo = MigrationManager.CreateFunctionNode(
-                    data.Document, "ProtoGeometry.dll",
+                    data.Document, oldNode, 0, "ProtoGeometry.dll",
                     "Geometry.DistanceTo",
                     "Geometry.DistanceTo@Geometry");
                 migrationData.AppendNode(distTo);
@@ -92,7 +92,7 @@ namespace Dynamo.Nodes
 
                 // make parm at point node 
                 var parmAtPt = MigrationManager.CreateFunctionNode(
-                    data.Document, "ProtoGeometry.dll",
+                    data.Document, oldNode, 0, "ProtoGeometry.dll",
                     "Curve.ParameterAtPoint",
                     "Curve.ParameterAtPoint@Point");
                 migrationData.AppendNode(parmAtPt);

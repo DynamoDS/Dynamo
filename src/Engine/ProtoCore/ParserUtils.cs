@@ -253,5 +253,57 @@ namespace ProtoCore.Utils
                 comment = stmnt;
             return comment;
         }
+
+        /// <summary>
+        /// Parses designscript sourcecode and ouputs a Parser instance
+        /// Used internally by ParserUtils
+        /// </summary>
+        /// <param name="statement"></param>
+        private static ProtoCore.DesignScriptParser.Parser ParseInternal(Core core, string statement)
+        {
+            Validity.Assert(core != null);
+            Validity.Assert(statement != null);
+
+            System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(statement));
+            ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
+            ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);
+
+            p.Parse();
+            return p;
+        }
+
+        /// <summary>
+        /// Parses designscript code and outputs comment nodes and returns CodeBlockNode
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="code"> Source code to parse </param>
+        /// <param name="commentNode"> Comments in the code are preserved and stored in commentNode</param>
+        
+        
+        public static ProtoCore.AST.Node Parse(Core core, string code, out ProtoCore.AST.AssociativeAST.CodeBlockNode commentNode)
+        {
+            commentNode = null;
+
+            ProtoCore.DesignScriptParser.Parser p = ProtoCore.Utils.ParserUtils.ParseInternal(core, code);
+            Validity.Assert(null != p);
+            commentNode = p.commentNode;
+
+            return p.root;
+        }
+
+        /// <summary>
+        /// Parses designscript code and returns a ProtoAST CodeBlockNode
+        /// </summary>
+        /// <param name="code"> Source code to parse </param>
+        public static ProtoCore.AST.Node Parse(Core core, string code)
+        {
+            Validity.Assert(core != null);
+            Validity.Assert(code != null);
+
+            ProtoCore.DesignScriptParser.Parser p = ProtoCore.Utils.ParserUtils.ParseInternal(core, code);
+            Validity.Assert(null != p);
+
+            return p.root;
+        }
     }
 }

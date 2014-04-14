@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using Dynamo.Controls;
@@ -48,7 +47,6 @@ namespace Dynamo.Nodes
             {
                 MaxWidth = 400,
                 MaxHeight = 400,
-                Margin = new Thickness(5),
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
                 Name = "image1",
                 VerticalAlignment = System.Windows.VerticalAlignment.Center
@@ -61,14 +59,14 @@ namespace Dynamo.Nodes
                 nodeUi.Dispatcher.Invoke(new Action<Bitmap>(SetImageSource), new object[] { im });
             };
 
-            nodeUi.grid.Children.Add(image);
-            image.SetValue(Grid.RowProperty, 2);
-            image.SetValue(Grid.ColumnProperty, 0);
-            image.SetValue(Grid.ColumnSpanProperty, 3);
+            nodeUi.PresentationGrid.Children.Add(image);
         }
 
         private void SetImageSource(System.Drawing.Bitmap bmp)
         {
+            if (bmp == null)
+                return;
+
             // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
             // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
             // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
