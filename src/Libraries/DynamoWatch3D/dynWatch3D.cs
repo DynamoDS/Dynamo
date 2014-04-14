@@ -24,8 +24,6 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class Watch3D : NodeModel, IWatchViewModel, IWpfNode
     {
-        private bool _requiresRedraw;
-        private bool _isRendering;
         private bool _canNavigateBackground = true;
         private double _watchWidth = 200;
         private double _watchHeight = 200;
@@ -100,21 +98,6 @@ namespace Dynamo.Nodes
 
             nodeUI.PresentationGrid.Children.Add(backgroundRect);
             nodeUI.PresentationGrid.Children.Add(View);
-
-            CompositionTarget.Rendering += CompositionTarget_Rendering;
-        }
-
-        void CompositionTarget_Rendering(object sender, EventArgs e)
-        {
-            if (_isRendering)
-                return;
-
-            if (!_requiresRedraw)
-                return;
-
-            _isRendering = true;
-            _requiresRedraw = false;
-            _isRendering = false;
         }
 
         void mi_Click(object sender, RoutedEventArgs e)

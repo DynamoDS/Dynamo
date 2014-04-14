@@ -19,17 +19,17 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestStringInput.dyn"));
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var cbn = workspace.NodeFromWorkspace<CodeBlockNodeModel>(
+            var strNode = workspace.NodeFromWorkspace<StringInput>(
                 "dc27fc31-fdad-40b5-906e-bbba9caf43a6");
 
             Assert.AreEqual(2, workspace.Nodes.Count);
             Assert.AreEqual(1, workspace.Connectors.Count);
 
-            Assert.NotNull(cbn); // Ensure the StringInput node is migrated.
-            Assert.AreEqual("\"First line\\nSecond line with\\ttab\\nThird line with \\\"quotes\\\"\";", cbn.Code);
+            Assert.NotNull(strNode); // Ensure the StringInput node is migrated.
+            Assert.AreEqual("First line\r\nSecond line with\ttab\r\nThird line with \"quotes\"", strNode.Value);
 
             RunCurrentModel(); // Execute the opened file.
-            AssertPreviewValue("f6d7a6c3-5df4-45c0-911b-04d39b4c1959", 56);
+            AssertPreviewValue("f6d7a6c3-5df4-45c0-911b-04d39b4c1959", 58);
         }
 
         [Test]
@@ -988,7 +988,9 @@ namespace Dynamo.Tests
             Assert.NotNull(listn6);
 
             RunCurrentModel();
-            AssertPreviewValue("db161881-4239-408c-9ab2-d507fcb4d25f", null);
+
+            //does not check the _singleFunction value for "db161881-4239-408c-9ab2-d507fcb4d25f"
+
             AssertPreviewValue("f336c24a-3617-4da4-ace2-d0bd5fe02ebc", 
                 new object[] {1, -1.5, -1.5});
             AssertPreviewValue("ec723754-21fe-48bc-98ca-d8231e6879af", 
@@ -1621,23 +1623,31 @@ namespace Dynamo.Tests
             Assert.AreEqual(16, workspace.Connectors.Count);
 
             // All 8 NumberInput nodes should have been migrated into code blocks.
-            var cbn5 = GetCodeBlockNode("ddf4b266-29b6-4609-b1fe-dba814d4babd");
-            var cbn10 = GetCodeBlockNode("27d6c83d-602c-4d44-a9b6-ab229cb2143d");
-            var cbn50 = GetCodeBlockNode("ffd50d99-b51d-4104-9e19-041219ca5740");
-            var cbnRange = GetCodeBlockNode("eb6aa95d-8be4-4ca7-95a6-e696904a71fa");
-            var cbnStep = GetCodeBlockNode("5fde015f-8a95-4b46-ba64-29de06850938");
-            var cbnCount = GetCodeBlockNode("ace69b4e-5092-42cf-9fba-9aee6729509d");
-            var cbnApprox = GetCodeBlockNode("30e9b7fd-fc09-4243-a34a-146ad841868a");
-            var cbnIncr = GetCodeBlockNode("bede0d80-6382-4430-9403-a14c3916e041");
+            var number5 = workspace.NodeFromWorkspace<DoubleInput>(
+                "ddf4b266-29b6-4609-b1fe-dba814d4babd");
+            var number10 = workspace.NodeFromWorkspace<DoubleInput>(
+                "27d6c83d-602c-4d44-a9b6-ab229cb2143d");
+            var number50 = workspace.NodeFromWorkspace<DoubleInput>(
+                "ffd50d99-b51d-4104-9e19-041219ca5740");
+            var numberRange = workspace.NodeFromWorkspace<DoubleInput>(
+                "eb6aa95d-8be4-4ca7-95a6-e696904a71fa");
+            var numberStep = workspace.NodeFromWorkspace<DoubleInput>(
+                "5fde015f-8a95-4b46-ba64-29de06850938");
+            var numberCount = workspace.NodeFromWorkspace<DoubleInput>(
+                "ace69b4e-5092-42cf-9fba-9aee6729509d");
+            var numberApprox = workspace.NodeFromWorkspace<DoubleInput>(
+                "30e9b7fd-fc09-4243-a34a-146ad841868a");
+            var numberIncr = workspace.NodeFromWorkspace<DoubleInput>(
+                "bede0d80-6382-4430-9403-a14c3916e041");
 
-            Assert.NotNull(cbn5);
-            Assert.NotNull(cbn10);
-            Assert.NotNull(cbn50);
-            Assert.NotNull(cbnRange);
-            Assert.NotNull(cbnStep);
-            Assert.NotNull(cbnCount);
-            Assert.NotNull(cbnApprox);
-            Assert.NotNull(cbnIncr);
+            Assert.NotNull(number5);
+            Assert.NotNull(number10);
+            Assert.NotNull(number50);
+            Assert.NotNull(numberRange);
+            Assert.NotNull(numberStep);
+            Assert.NotNull(numberCount);
+            Assert.NotNull(numberApprox);
+            Assert.NotNull(numberIncr);
 
             RunCurrentModel(); // Execute the migrated graph.
 

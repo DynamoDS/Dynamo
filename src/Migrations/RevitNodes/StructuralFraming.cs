@@ -29,40 +29,52 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            //create the node itself
-            XmlElement dsRevitNode = MigrationManager.CreateFunctionNode(
-                data.Document, "RevitNodes.dll",
+            // Create DSFunction node
+            XmlElement newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "RevitNodes.dll",
                 "StructuralFraming.ByCurveLevelUpVectorAndType",
                 "StructuralFraming.ByCurveLevelUpVectorAndType@Curve,Level,Vector,StructuralType,FamilySymbol");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            migratedData.AppendNode(dsRevitNode);
-            string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
+            // Create new nodes
+            XmlElement one = MigrationManager.CreateCodeBlockNodeModelNode(
+                data.Document, oldNode, 0, "1");
+            migrationData.AppendNode(one);
+            string oneId = MigrationManager.GetGuidFromXmlElement(one);
 
-            //create and reconnect the connecters
+            XmlElement level = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 1, "RevitNodes.dll",
+                "Level.ByElevation", "Level.ByElevation@double");
+            migrationData.AppendNode(level);
+            string levelId = MigrationManager.GetGuidFromXmlElement(level);
+
+            // Assume that structural framing created by 0.6.3 is always Beam
+            XmlElement beam = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 2, "RevitNodes.dll",
+                "StructuralType.Beam", "StructuralType.Beam");
+            migrationData.AppendNode(beam);
+            string beamId = MigrationManager.GetGuidFromXmlElement(beam);
+
+            // Update connectors
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
-            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
-
             PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId newInPort4 = new PortId(newNodeId, 4, PortType.INPUT);
 
-            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
-            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
-
-            PortId newInPort0 = new PortId(dsRevitNodeId, 0, PortType.INPUT);
-            //PortId newInPort1 = new PortId(dsRevitNodeId, 1, PortType.INPUT);
-            PortId newInPort2 = new PortId(dsRevitNodeId, 2, PortType.INPUT);
-            PortId newInPort3 = new PortId(dsRevitNodeId, 3, PortType.INPUT);
-            //PortId newInPort4 = new PortId(dsRevitNodeId, 4, PortType.INPUT);
-
-            data.ReconnectToPort(connector0, newInPort3);
+            data.CreateConnector(one, 0, level, 0);
+            data.CreateConnector(level, 0, newNode, 1);
+            data.CreateConnector(beam, 0, newNode, 3);
+            data.ReconnectToPort(connector0, newInPort4);
             data.ReconnectToPort(connector1, newInPort0);
-            data.ReconnectToPort(connector2, newInPort2);
 
-            return migratedData;
+            return migrationData;
         }
     }
 }

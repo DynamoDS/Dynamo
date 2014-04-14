@@ -516,6 +516,16 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public int MaxGridLines
+        {
+            get { return Controller.VisualizationManager.MaxGridLines; }
+            set
+            {
+                Controller.VisualizationManager.MaxGridLines = value;
+                Controller.OnRequestsRedraw(this, EventArgs.Empty);
+            }
+        }
+
         #endregion
 
         public DynamoViewModel(DynamoController controller, string commandFilePath)
