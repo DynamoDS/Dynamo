@@ -851,6 +851,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static string GetIdentifierStringUntilFirstParenthesis(ProtoCore.AST.AssociativeAST.IdentifierListNode identList)
         {
+            Validity.Assert(null != identList);
             string identListString = identList.ToString();
             int removeIndex = identListString.IndexOf('(');
             if (removeIndex > 0)
@@ -889,6 +890,38 @@ namespace ProtoCore.Utils
                 }
             }
             return classNames;
+        }
+
+        /// <summary>
+        /// Parses designscript code and outputs ProtoAST
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public static List<AssociativeNode> BuildASTList(ProtoCore.Core core, string code)
+        {
+            Validity.Assert(null != core);
+            List<AssociativeNode> astList = new List<AssociativeNode>();
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(core, code) as CodeBlockNode;
+            astList.AddRange(cbn.Body);
+            return astList;
+        }
+
+
+        /// <summary>
+        /// Parses designscript code and outputs ProtoAST
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public static List<AssociativeNode> BuildASTList(ProtoCore.Core core, List<string> codeList)
+        {
+            List<AssociativeNode> astList = new List<AssociativeNode>();
+            foreach (string code in codeList)
+            {
+                astList.AddRange(BuildASTList(core, code));
+            }
+            return astList;
         }
     }
 }

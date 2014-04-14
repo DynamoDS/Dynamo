@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 
@@ -35,14 +36,14 @@ namespace ProtoCore.Lang
         /// Get a map of TraceID -> Objects
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<String, Object> GetObjectFromTLS()
+        public static Dictionary<String, ISerializable> GetObjectFromTLS()
         {
-            Dictionary<String, Object> objs = new Dictionary<String, Object>();
+            Dictionary<String, ISerializable> objs = new Dictionary<String, ISerializable>();
 
             foreach (String key in TEMP_GetTraceKeys())
             {
                 objs.Add(key, 
-                    Thread.GetData(Thread.GetNamedDataSlot(key)));
+                    (ISerializable)Thread.GetData(Thread.GetNamedDataSlot(key)));
             }
 
             return objs;
@@ -52,7 +53,7 @@ namespace ProtoCore.Lang
         /// Set the data associated with trace
         /// </summary>
         /// <param name="objs"></param>
-        public static void SetObjectToTLS(Dictionary<String, Object> objs)
+        public static void SetObjectToTLS(Dictionary<String, ISerializable> objs)
         {
             foreach (String k in objs.Keys)
             {
@@ -70,7 +71,7 @@ namespace ProtoCore.Lang
         /// <param name="key"></param>
         public static void ClearTLSKey(string key)
         {
-            Dictionary<String, Object> objs = new Dictionary<string, object>();
+            Dictionary<String, ISerializable> objs = new Dictionary<string, ISerializable>();
             objs.Add(key, null);
             SetObjectToTLS(objs);
             
@@ -82,7 +83,7 @@ namespace ProtoCore.Lang
         /// </summary>
         public static void ClearAllKnownTLSKeys()
         {
-            Dictionary<String, Object> objs = new Dictionary<string, object>();
+            Dictionary<String, ISerializable> objs = new Dictionary<string, ISerializable>();
 
             foreach (String key in TEMP_GetTraceKeys())
             {

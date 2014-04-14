@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Lang;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
@@ -78,6 +79,22 @@ namespace ProtoTestFx.TD
             return testCore;
         }
 
+        /// <summary>
+        /// Build a Core with default options and contains no function or class entries
+        /// </summary>
+        /// <returns></returns>
+        public ProtoCore.Core SetupEmptyTestCore()
+        {
+            ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
+            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
+            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
+            core.IsParsingCodeBlockNode = true;
+            core.IsParsingPreloadedAssembly = false;
+            return core;
+        }
+
+       
         public ExecutionMirror RunScriptFile(string directory, string filename)
         {
             string currentFile = filename;
