@@ -149,6 +149,7 @@ namespace Dynamo.UI
         public static double NodeTooltipArrowWidth_SideConnecting = 6;
         public static double NodeTooltipArrowHeight_SideConnecting = 12;
 
+        public static double ToolTipTargetGapInPixels = 3.0;
         #endregion
 
         #region Library Item Tooltip
