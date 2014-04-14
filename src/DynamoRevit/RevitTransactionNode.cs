@@ -14,7 +14,6 @@ using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Threading;
 using RevitServices.Transactions;
-using ChangeType = RevitServices.Elements.ChangeType;
 using Value = Dynamo.FScheme.Value;
 using RevThread = RevitServices.Threading;
 
@@ -205,7 +204,7 @@ namespace Dynamo.Revit
 
         public abstract Value Evaluate(FSharpList<Value> args);
     }
-
+    /*
     namespace SyncedNodeExtensions
     {
         public static class ElementSync
@@ -214,45 +213,32 @@ namespace Dynamo.Revit
             /// Registers the given element id with the DMU such that any change in the element will
             /// trigger a workspace modification event (dynamic running and saving).
             /// </summary>
-            public static void RegisterEvalOnModified(this NodeModel node, string id, Action modAction=null, Action delAction=null)
+            public static void RegisterEvalOnModified(this NodeModel node, Document doc, ElementId id, Action modAction=null, Action delAction=null)
             {
                 var u = dynRevitSettings.Controller.Updater;
-                u.RegisterChangeHook(
-                   id,
-                   ChangeType.Modify,
-                   ReEvalOnModified(node, modAction)
-                );
-                u.RegisterChangeHook(
-                   id,
-                   ChangeType.Delete,
-                   UnRegOnDelete(delAction)
-                );
+                u.RegisterModifyCallback(doc.GetElement(id).UniqueId, ReEvalOnModified(node, modAction));
+                u.RegisterDeleteCallback(id, UnRegOnDelete(delAction));
             }
 
             /// <summary>
             /// Unregisters the given element id with the DMU. Should not be called unless it has already
             /// been registered with RegisterEvalOnModified
             /// </summary>
-            public static void UnregisterEvalOnModified(this NodeModel node, string id)
+            public static void UnregisterEvalOnModified(this NodeModel node, Document doc, ElementId id)
             {
                 var u = dynRevitSettings.Controller.Updater;
-                u.UnRegisterChangeHook(
-                   id, ChangeType.Modify
-                );
-                u.UnRegisterChangeHook(
-                   id, ChangeType.Delete
-                );
+                u.UnRegisterModifyCallback(doc.GetElement(id).UniqueId);
+                u.UnRegisterDeleteCallback(id);
             }
 
-            static ElementUpdateDelegate UnRegOnDelete(Action deleteAction)
+            static ElementDeleteDelegate UnRegOnDelete(Action deleteAction)
             {
-                return delegate(IEnumerable<string> deleted)
+                return delegate(Document doc, IEnumerable<ElementId> deleted)
                 {
                     foreach (var d in deleted)
                     {
                         var u = dynRevitSettings.Controller.Updater;
-                        u.UnRegisterChangeHook(d, ChangeType.Delete);
-                        u.UnRegisterChangeHook(d, ChangeType.Modify);
+                        u.UnRegisterDeleteCallback(d);
                     }
                     if (deleteAction != null)
                         deleteAction();
@@ -273,4 +259,5 @@ namespace Dynamo.Revit
             }
         }
     }
+     */
 }

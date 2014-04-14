@@ -8,14 +8,13 @@ using System.Windows.Media;
 using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Revit.SyncedNodeExtensions; //Gives the RegisterEval... methods
 using Dynamo.Utilities;
 using TextBox = System.Windows.Controls.TextBox;
 using RevThread = RevitServices.Threading;
 
 namespace Dynamo.Nodes
 {
-    [IsInteractive(true)]
+    /*[IsInteractive(true)]
     public abstract class SelectionBase : NodeModel
     {
         #region private members
@@ -47,7 +46,7 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectButtonContent");
             }
         }
-
+    
         /// <summary>
         /// The Element which is selected. Setting this property will automatically register the Element
         /// for proper updating, and will update this node's IsDirty value.
@@ -227,5 +226,5 @@ namespace Dynamo.Nodes
                                where xmlAttributeCollection != null
                                select xmlAttributeCollection[0].Value).Last();
         }
-    }
+    }*/
 }

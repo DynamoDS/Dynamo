@@ -26,16 +26,19 @@ namespace RevitServices.Elements
     {
         //TODO: To handle multiple documents, should store unique ids as opposed to ElementIds.
 
-        private readonly Dictionary<string, ElementUpdateDelegate> deletedCallbacks = new Dictionary<string, ElementUpdateDelegate>();
-        private readonly Dictionary<string, ElementUpdateDelegate> modifiedCallbacks = new Dictionary<string, ElementUpdateDelegate>();
-
         private readonly ControlledApplication application;
 
         public event ElementUpdateDelegate ElementsAdded;
         public event ElementUpdateDelegate ElementsModified;
-        public event ElementUpdateDelegate ElementsDeleted;
+        public event ElementDeleteDelegate ElementsDeleted;
 
         #region Event Invokers
+
+        protected virtual void OnElementsAdded(IEnumerable<string> updated)
+        {
+            var handler = ElementsAdded;
+            if (handler != null) handler(updated);
+        }
 
         protected virtual void OnElementsModified(IEnumerable<string> updated)
         {
@@ -43,16 +46,10 @@ namespace RevitServices.Elements
             if (handler != null) handler(updated);
         }
 
-        protected virtual void OnElementsDeleted(IEnumerable<string> updated)
+        protected virtual void OnElementsDeleted(Document document, IEnumerable<ElementId> deleted)
         {
             var handler = ElementsDeleted;
-            if (handler != null) handler(updated);
-        }
-
-        protected virtual void OnElementsAdded(IEnumerable<string> updated)
-        {
-            var handler = ElementsAdded;
-            if (handler != null) handler(updated);
+            if (handler != null) handler(document, deleted);
         }
 
         #endregion
@@ -81,109 +78,28 @@ namespace RevitServices.Elements
         /// <summary>
         /// Forces all deletion callbacks to be called for given sequence of elements.
         /// </summary>
+        /// <param name="doc">Document to perform the Rollback on.</param>
         /// <param name="deleted">Sequence of elements to have registered deletion callbacks invoked.</param>
-        public void RollBack(ICollection<string> deleted)
+        public void RollBack(Document doc, ICollection<ElementId> deleted)
         {
             var empty = new List<string>();
-            ProcessUpdates(empty, deleted, empty);
+            ProcessUpdates(doc, empty, deleted, empty);
         }
 
-        private void ProcessUpdates(ICollection<string> modified, ICollection<string> deleted, IEnumerable<string> added)
+        private void ProcessUpdates(Document doc, IEnumerable<string> modified, IEnumerable<ElementId> deleted, IEnumerable<string> added)
         {
-            #region Modified
-
-            var dict = new Dictionary<ElementUpdateDelegate, HashSet<string>>();
-            foreach (var modifiedElementID in modified)
-            {
-                if (!modifiedCallbacks.ContainsKey(modifiedElementID))
-                    continue;
-
-                var k = modifiedCallbacks[modifiedElementID];
-                if (!dict.ContainsKey(k))
-                    dict[k] = new HashSet<string>();
-                dict[k].Add(modifiedElementID);
-            }
-
-            foreach (var pair in dict)
-                pair.Key(pair.Value);
-
             OnElementsModified(modified.Distinct());
-
-            #endregion
-
-            #region Deleted
-
-            dict.Clear();
-            foreach (var deletedElementID in deleted)
-            {
-                if (!deletedCallbacks.ContainsKey(deletedElementID))
-                    continue;
-
-                var k = deletedCallbacks[deletedElementID];
-                if (!dict.ContainsKey(k))
-                    dict[k] = new HashSet<string>();
-                dict[k].Add(deletedElementID);
-            }
-
-            foreach (var pair in dict)
-                pair.Key(pair.Value);
-
-            OnElementsDeleted(deleted.Distinct());
-
-            #endregion
-
-            #region Added
-
+            OnElementsDeleted(doc, deleted.Distinct());
             OnElementsAdded(added.Distinct());
-
-            #endregion
         }
 
         void Application_DocumentChanged(object sender, DocumentChangedEventArgs args)
         {
             var doc = args.GetDocument();
-            ProcessUpdates(
-                args.GetModifiedElementIds().Select(x => doc.GetElement(x).UniqueId).ToList(),
-                args.GetDeletedElementIds().Select(x => doc.GetElement(x).UniqueId).ToList(),
-                args.GetAddedElementIds().Select(x => doc.GetElement(x).UniqueId).ToList());
-        }
-
-        /// <summary>
-        /// Watches for changes of the given type to the Element with the given ID. When changed, executes
-        /// the given Delegate.
-        /// </summary>
-        /// <param name="e">ID of the Element being watched.</param>
-        /// <param name="type">Type of change to watch for.</param>
-        /// <param name="d">Delegate to be called when changed.</param>
-        public void RegisterChangeHook(string e, ChangeType type, ElementUpdateDelegate d)
-        {
-            switch (type)
-            {
-                case ChangeType.Delete:
-                    deletedCallbacks[e] = d;
-                    break;
-                case ChangeType.Modify:
-                    modifiedCallbacks[e] = d;
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Unregisters an element that has been registered via RegisterChangeHook()
-        /// </summary>
-        /// <param name="e">ID of the Element to unregister.</param>
-        /// <param name="type">Type of change to unsubscribe from.</param>
-        public void UnRegisterChangeHook(string e, ChangeType type)
-        {
-            switch (type)
-            {
-                case ChangeType.Delete:
-                    deletedCallbacks.Remove(e);
-                    break;
-                case ChangeType.Modify:
-                    modifiedCallbacks.Remove(e);
-                    break;
-            }
+            var added = args.GetAddedElementIds().Select(x => doc.GetElement(x).UniqueId);
+            var modified = args.GetModifiedElementIds().Select(x => doc.GetElement(x).UniqueId).ToList();
+            var deleted = args.GetDeletedElementIds();
+            ProcessUpdates(doc, modified, deleted, added);
         }
 
         /// <summary>
@@ -192,8 +108,6 @@ namespace RevitServices.Elements
         /// </summary>
         public void UnRegisterAllChangeHooks()
         {
-            deletedCallbacks.Clear();
-            modifiedCallbacks.Clear();
             ElementsAdded = null;
             ElementsModified = null;
             ElementsDeleted = null;
@@ -206,9 +120,10 @@ namespace RevitServices.Elements
     /// <param name="updated">All modified elements that have been registered with this callback.</param>
     public delegate void ElementUpdateDelegate(IEnumerable<string> updated);
 
-    public enum ChangeType
-    {
-        Delete,
-        Modify
-    };
+    /// <summary>
+    ///     Callback for when Elements have been deleted.
+    /// </summary>
+    /// <param name="document">Document from which deleted elements originated.</param>
+    /// <param name="deleted">The deleted ElementIds.</param>
+    public delegate void ElementDeleteDelegate(Document document, IEnumerable<ElementId> deleted);
 }
