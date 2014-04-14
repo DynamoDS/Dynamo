@@ -311,7 +311,7 @@ namespace Dynamo.Tests
             Assert.AreEqual("DSCoreNodesUI.DummyNode", dummy.Name);
             Assert.AreEqual("DSCoreNodesUI.DummyNode", attribs["type"].Value);
             Assert.AreEqual("OldNamespace.OldClass", attribs["legacyNodeName"].Value);
-            Assert.AreEqual("Obsolete", attribs["nodeNature"].Value);
+            Assert.AreEqual("Deprecated", attribs["nodeNature"].Value);
             Assert.AreEqual("6", attribs["inputCount"].Value);
             Assert.AreEqual("8", attribs["outputCount"].Value);
         }

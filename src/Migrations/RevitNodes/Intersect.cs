@@ -53,7 +53,7 @@ namespace Dynamo.Nodes
 
                 // make parm at point node 
                 var parmAtPt = MigrationManager.CreateFunctionNode(
-                    data.Document, "ProtoGeometry.dll",
+                    data.Document, oldNode, 0, "ProtoGeometry.dll",
                     "Curve.ParameterAtPoint",
                     "Curve.ParameterAtPoint@Point");
                 migrationData.AppendNode(parmAtPt);
@@ -80,7 +80,7 @@ namespace Dynamo.Nodes
 
                 // make parm at point node 
                 var parmAtPt = MigrationManager.CreateFunctionNode(
-                    data.Document, "ProtoGeometry.dll",
+                    data.Document, oldNode, 0, "ProtoGeometry.dll",
                     "Curve.ParameterAtPoint",
                     "Curve.ParameterAtPoint@Point");
                 migrationData.AppendNode(parmAtPt);

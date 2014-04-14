@@ -37,18 +37,18 @@ namespace Dynamo.Nodes
 
             // Create new nodes
             XmlElement zAxisNode = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "Vector.ZAxis", "Vector.ZAxis");
+                data.Document, oldNode, 0, "ProtoGeometry.dll", "Vector.ZAxis", "Vector.ZAxis");
             migrationData.AppendNode(zAxisNode);
             string zAxisNodeId = MigrationManager.GetGuidFromXmlElement(zAxisNode);
 
             XmlElement toDegreeNodeStart = MigrationManager.CreateFunctionNode(
-                data.Document, "DSCoreNodes.dll", 
+                data.Document, oldNode, 1, "DSCoreNodes.dll", 
                 "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(toDegreeNodeStart);
             string toDegreeNodeStartId = MigrationManager.GetGuidFromXmlElement(toDegreeNodeStart);
 
             XmlElement toDegreeNodeEnd = MigrationManager.CreateFunctionNode(
-                data.Document, "DSCoreNodes.dll",
+                data.Document, oldNode, 2, "DSCoreNodes.dll",
                 "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(toDegreeNodeEnd);
             string toDegreeNodeEndId = MigrationManager.GetGuidFromXmlElement(toDegreeNodeEnd);
