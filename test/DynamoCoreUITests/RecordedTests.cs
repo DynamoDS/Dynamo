@@ -2212,6 +2212,80 @@ namespace DynamoCoreUITests
             Assert.AreEqual(ElementState.Warning, node.State);
         }
 
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2247()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2247
+
+            RunCommandsFromFile("Defect_MAGN_2247.xml", false, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(5, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Connectors.Count);
+
+                    AssertPreviewValue("3f1e91ab-8b71-4626-b632-a18df1be036c", 23);
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(5, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count);
+
+                    AssertPreviewValue("3f1e91ab-8b71-4626-b632-a18df1be036c", 17);
+                }
+                else if (commandTag == "LastRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(5, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Connectors.Count);
+
+                    AssertPreviewValue("3f1e91ab-8b71-4626-b632-a18df1be036c", 21);
+                }
+
+            });
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2311()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2311
+
+            RunCommandsFromFile("Defect_MAGN_2311.xml", false, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count);
+
+                    NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                        ("d00ce832-8109-42d5-bcde-e7179a7bc5b6");
+
+                    Assert.AreEqual(ElementState.Warning, node.State);
+                }
+                else if (commandTag == "LastRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count);
+
+                    NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                        ("d00ce832-8109-42d5-bcde-e7179a7bc5b6");
+
+                    Assert.AreEqual(ElementState.Warning, node.State);
+                }
+
+            });
+
+        }
+
         #endregion
 
         #region Tests moved from FScheme
