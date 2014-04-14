@@ -29,7 +29,8 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="Auto" MinWidth="40"></ColumnDefinition>
+            <ColumnDefinition Width="*"
+                              MinWidth="40"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
@@ -140,10 +141,10 @@
                    Canvas.ZIndex="10">
             <Rectangle.Fill>
                 <Binding Path="State"
-                     UpdateSourceTrigger="PropertyChanged"
-                     Mode="OneWay"
-                     ConverterParameter="BodyBackground"
-                     Converter="{StaticResource StateToColorConverter}">
+                         UpdateSourceTrigger="PropertyChanged"
+                         Mode="OneWay"
+                         ConverterParameter="BodyBackground"
+                         Converter="{StaticResource StateToColorConverter}">
                 </Binding>
             </Rectangle.Fill>
         </Rectangle>
@@ -213,17 +214,17 @@
                    Background="Transparent"
                    Canvas.ZIndex="20">
             <ItemsControl ItemsSource="{Binding Path=InPorts}"
-                            HorizontalContentAlignment="Stretch">
+                          HorizontalContentAlignment="Stretch">
                 <ItemsControl.ItemContainerStyle>
                     <Style TargetType="{x:Type ContentPresenter}">
                         <Setter Property="HorizontalAlignment"
                                 Value="Left" />
                         <EventSetter Event="MouseEnter"
-                                        Handler="InputPort_OnMouseEnter" />
+                                     Handler="InputPort_OnMouseEnter" />
                         <EventSetter Event="MouseLeave"
-                                        Handler="InputPort_OnMouseLeave" />
+                                     Handler="InputPort_OnMouseLeave" />
                         <EventSetter Event="PreviewMouseDown"
-                                        Handler="InputPort_OnPreviewMouseDown" />
+                                     Handler="InputPort_OnPreviewMouseDown" />
                     </Style>
                 </ItemsControl.ItemContainerStyle>
             </ItemsControl>
@@ -242,13 +243,13 @@
                 <ItemsControl.ItemContainerStyle>
                     <Style TargetType="{x:Type ContentPresenter}">
                         <Setter Property="HorizontalAlignment"
-                                    Value="Right" />
+                                Value="Right" />
                         <EventSetter Event="MouseEnter"
-                                         Handler="OutputPort_OnMouseEnter" />
+                                     Handler="OutputPort_OnMouseEnter" />
                         <EventSetter Event="MouseLeave"
-                                         Handler="OutputPort_OnMouseLeave" />
+                                     Handler="OutputPort_OnMouseLeave" />
                         <EventSetter Event="PreviewMouseDown"
-                                         Handler="OutputPort_OnPreviewMouseDown" />
+                                     Handler="OutputPort_OnPreviewMouseDown" />
                     </Style>
                 </ItemsControl.ItemContainerStyle>
             </ItemsControl>
@@ -257,17 +258,17 @@
         <!-- INPUT GRID -->
 
         <Grid Name="inputGrid"
-                  Grid.Column="1"
-                  Grid.Row="2"
-                  x:FieldModifier="public"
-                  VerticalAlignment="Stretch"
-                  HorizontalAlignment="Stretch"
-                  Height="Auto"
-                  Width="Auto"
-                  Background="Transparent"
-                  Margin="5,0,5,0"
-                  Canvas.ZIndex="20"
-                  IsEnabled="{Binding Path=IsInteractionEnabled}">
+              Grid.Column="1"
+              Grid.Row="2"
+              x:FieldModifier="public"
+              VerticalAlignment="Stretch"
+              HorizontalAlignment="Stretch"
+              Height="Auto"
+              Width="Auto"
+              Background="Transparent"
+              Margin="5,0,5,0"
+              Canvas.ZIndex="20"
+              IsEnabled="{Binding Path=IsInteractionEnabled}">
         </Grid>
 
         <TextBlock Name="lacingOptionTextBlock"
@@ -286,14 +287,16 @@
                    FontWeight="Bold"
                    Canvas.ZIndex="30" />
 
-        <Grid x:FieldModifier="public" 
-              Grid.Row="3" 
-              Grid.Column="0" 
-              Grid.ColumnSpan="3" Margin="5"  
-              Name="PresentationGrid" ZIndex="50">
+        <Grid x:FieldModifier="public"
+              Grid.Row="3"
+              Grid.Column="0"
+              Grid.ColumnSpan="3"
+              Margin="5"
+              Name="PresentationGrid"
+              ZIndex="50">
             <!--DO NOT ERASE THIS GRID TO BE USED FOR PRESENTING IMAGES, 3D VIEWS, ETC.-->
         </Grid>
-        
+
         <Rectangle Name="nodeBorder"
                    Grid.Row="1"
                    Grid.ColumnSpan="3"

@@ -2,7 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
 using ProtoCore.BuildData;
 using ProtoCore.DSASM;
@@ -33,7 +36,7 @@ namespace ProtoCore
             }
 
             public bool HasNestedData
-            {
+            {   
                 get { return NestedData != null; }
             }
 
@@ -42,46 +45,73 @@ namespace ProtoCore
                 get { return Data != null;  }
             }
 
-            /// <summary>
-            /// Constructs an instance of SingleRunTraceData object from the 
-            /// given Base64 encoded input string.
-            /// </summary>
-            /// <param name="serializedTraceData">This parameter is a Base64 
-            /// encoded string that carries the information obtained from a 
-            /// prior call to SingleRunTraceData.GetTraceDataToSave method.
-            /// </param>
-            /// 
-            internal SingleRunTraceData(string serializedTraceData)
-                : this()
+
+            internal static SingleRunTraceData DeserialseFromData(SerializationInfo info, StreamingContext context, int objectID, string marker)
             {
-                // TODO(Luke): Deserialize object from encoded string.
-                throw new NotImplementedException();
+                SingleRunTraceData srtd = new SingleRunTraceData();
+
+                bool hasData = info.GetBoolean(marker + objectID + "_HasData");
+
+                if (hasData)
+                {
+                    Byte[] data = Convert.FromBase64String(info.GetString(marker + objectID + "_Data"));
+
+
+                    IFormatter formatter = new SoapFormatter();
+                    MemoryStream s = new MemoryStream(data);
+
+                    srtd.Data = (ISerializable) formatter.Deserialize(s);
+                }
+
+                bool hasNestedData = info.GetBoolean(marker + objectID + "_HasNestedData");
+
+                if (hasNestedData)
+                {
+                    
+                    int nestedDataCount = info.GetInt32(marker + objectID + "_NestedDataCount");
+
+                    if (nestedDataCount > 0)
+                        srtd.NestedData = new List<SingleRunTraceData>();
+
+                    for (int i = 0; i < nestedDataCount; i++)
+                    {
+                        srtd.NestedData.Add(
+                            DeserialseFromData(info, context, i, marker + objectID + "-")
+                            );
+                    }
+
+                }
+
+                return srtd;
             }
 
-            /// <summary>
-            /// Call this method to obtain the Base64 encoded string that 
-            /// represent this instance of SingleRunTraceData, and all its 
-            /// nested SingleRunTraceData objects.
-            /// </summary>
-            /// <returns>Returns the Base64 encoded string that represents this 
-            /// instance of SingleRunTraceData object. This string carries all 
-            /// the necessary information required to completely reconstruct a 
-            /// new instance of SingleRunTraceData (and all its nested trace 
-            /// data objects) at a later time.</returns>
-            /// 
-            internal string GetTraceDataToSave()
+            internal void GetObjectData(SerializationInfo info, StreamingContext context, int objectID, string marker)
             {
-                if (this.Data != null)
+                info.AddValue(marker + objectID + "_HasData", HasData);
+
+                if (HasData)
                 {
-                    // TODO(Luke): Serialize "this.Data" here...
+                    //Serialise the object
+                    using (MemoryStream s = new MemoryStream())
+                    {
+                        IFormatter formatter = new SoapFormatter();
+                        formatter.Serialize(s, Data);
+                        info.AddValue(marker + objectID + "_Data", Convert.ToBase64String(s.ToArray()));
+                    }
                 }
 
-                if (this.NestedData != null && (this.NestedData.Count > 0))
+                info.AddValue(marker + objectID + "_HasNestedData", HasNestedData);
+
+                if (HasNestedData)
                 {
-                    // TODO(Luke): Serialize nested trace data here...
+                    //Recursive Serialise
+                    info.AddValue(marker + objectID + "_NestedDataCount", NestedData.Count);
+
+                    for (int i = 0; i < NestedData.Count; i++)
+                        NestedData[i].GetObjectData(info, context, i, marker + objectID + "-");
                 }
 
-                throw new NotImplementedException();
+
             }
 
             /// <summary>
@@ -89,7 +119,7 @@ namespace ProtoCore
             /// null if no data
             /// </summary>
             /// <returns></returns>
-            public Object GetLeftMostData()
+            public ISerializable GetLeftMostData()
             {
                 if (HasData)
                     return Data;
@@ -106,15 +136,73 @@ namespace ProtoCore
             }
 
             public List<SingleRunTraceData> NestedData;
-            public Object Data;
+            public ISerializable Data;
         }
 
+        /// <summary>
+        /// Helper class that complies with the standard serialization contract that
+        /// can be used for loading and saving the trace data
+        /// Normal usage patten is:
+        /// 1. Instantiate
+        /// 2. Push Trace data from callsite
+        /// 3. Call GetObjectData to serialise it onto a stream
+        /// 4. Recreate using the special constructor
+        /// </summary>
+        [Serializable]
+        private class TraceSerialiserHelper : ISerializable
+        {
+            /// <summary>
+            /// Empty defaul
+            /// </summary>
+            public TraceSerialiserHelper()
+            {
+                
+            }
+
+            /// <summary>
+            /// Load the data out of the serialisation entries
+            /// </summary>
+            public TraceSerialiserHelper(SerializationInfo info, StreamingContext context)
+            {
+                TraceData = new List<SingleRunTraceData>();
+
+                int noElements = info.GetInt32("NumberOfElements");
+                for (int i = 0; i < noElements; i++)
+                {
+                    SingleRunTraceData srtd = SingleRunTraceData.DeserialseFromData(
+                        info, context, i, "Base-");
+                    TraceData.Add(srtd);
+                }
+
+            }
+
+            /// <summary>
+            /// Save the data into the standard serialisation pattern
+            /// </summary>
+            public void GetObjectData(SerializationInfo info, StreamingContext context)
+            {
+                info.AddValue("NumberOfElements", TraceData.Count);
+                for (int i = 0; i < TraceData.Count; i++)
+                {
+                    TraceData[i].GetObjectData(info, context, i, "Base-");
+                }
+
+            }
+
+            public List<SingleRunTraceData> TraceData { get; set; }
+
+        }
 
         private int runID;
         private int classScope;
         private string methodName;
         private readonly FunctionTable globalFunctionTable;
         private readonly ExecutionMode executionMode;
+
+        /// <summary>
+        /// The method group name that is associated with this function
+        /// </summary>
+        public String MethodName { get { return methodName; } }
 
         //TODO(Luke): This should be loaded from the attribute
         private string TRACE_KEY = TraceUtils.__TEMP_REVIT_TRACE_ID;
@@ -172,21 +260,35 @@ namespace ProtoCore
             // Found preloaded trace data, reconstruct the instances from there.
             if (!string.IsNullOrEmpty(serializedTraceData))
             {
-                // TODO(Luke): Decode the (nested) serialized information 
-                // to reconstruct all immediate and nested trace data.
-                // 
-                // this.traceData.Add(...);
-                // 
-                throw new NotImplementedException();
+                LoadSerializedDataIntoTraceCache(serializedTraceData);
+                
             }
         }
+
+        /// <summary>
+        /// Load the serialised data provided into this callsite's trace cache
+        /// </summary>
+        /// <param name="serializedTraceData">The data to load</param>
+        public void LoadSerializedDataIntoTraceCache(string serializedTraceData)
+        {
+            Validity.Assert(!String.IsNullOrEmpty(serializedTraceData));
+
+            Byte[] data = Convert.FromBase64String(serializedTraceData);
+
+            IFormatter formatter = new SoapFormatter();
+            MemoryStream s = new MemoryStream(data);
+
+            TraceSerialiserHelper helper = (TraceSerialiserHelper)formatter.Deserialize(s);
+
+            this.traceData = helper.TraceData;
+        }
+        
 
         public void UpdateCallSite(int classScope, string methodName)
         {
             this.classScope = classScope;
             this.methodName = methodName;
         }
-
 
         #region Support Methods
 
@@ -235,7 +337,7 @@ namespace ProtoCore
         {
             invokeCount = 0;
 
-
+            /*
             if (core.EnableCallsiteExecutionState)
             {
                 // Get the uid of this function call
@@ -248,11 +350,12 @@ namespace ProtoCore
                     // Store the data associated with this callsite
                     runID = core.csExecutionState.StoreAndUpdateRunId(callsiteGUID, callsiteData);
                 }
-            }
+            }*/
         }
-
+        
         #region Serialization supporting methods
 
+        /*
         /// <summary>
         ///  This function handles generating a unique callsite ID and serializing the data associated with this callsite
         /// </summary>
@@ -263,26 +366,30 @@ namespace ProtoCore
             Object callsiteData = ProtoCore.TLSUtils.GetTLSData();
             return callsiteData;
         }
+        */
 
         /// <summary>
         /// Call this method to obtain the Base64 encoded string that 
-        /// represent this instance of CallSite object and all its nested 
-        /// trace data objects.
+        /// represent this instance of CallSite;s trace data
         /// </summary>
-        /// <returns>Returns the Base64 encoded string that represents this 
-        /// instance of CallSite object. This string carries all the necessary 
-        /// information required to completely reconstruct a new instance of 
-        /// CallSite and its nested trace data objects at a later time.</returns>
+        /// <returns>Returns the Base64 encoded string that represents the
+        /// trace data of this callsite
+        /// </returns>
         /// 
         public string GetTraceDataToSave()
         {
-            foreach (SingleRunTraceData data in this.traceData)
+            TraceSerialiserHelper helper = new TraceSerialiserHelper();
+            helper.TraceData = this.traceData;
+
+            using (MemoryStream memoryStream = new MemoryStream())
             {
-                // TODO(Luke): Do your magic here and return the trace data 
-                // (and all its nested data) in a single Base64 encoded string.
+
+                IFormatter formatter = new SoapFormatter();
+                formatter.Serialize(memoryStream, helper);
+
+                return Convert.ToBase64String(memoryStream.ToArray());
             }
 
-            throw new NotImplementedException();
         }
 
         #endregion
@@ -951,7 +1058,7 @@ namespace ProtoCore
 
             // Update the CallsiteExecutionState with 
             // TODO: Replace this with the real data
-            UpdateCallsiteExecutionState(SimulateGetData(), core);
+            UpdateCallsiteExecutionState(null, core);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -1512,13 +1619,13 @@ namespace ProtoCore
 
             //TraceCache -> TLS
             //Extract left most high-D pack
-            Object traceD = previousTraceData.GetLeftMostData();
+            ISerializable traceD = previousTraceData.GetLeftMostData();
 
             if (traceD != null)
             {
                 //There was data associated with the previous execution, push this into the TLS
 
-                Dictionary<string, object> dataDict = new Dictionary<string, object>();
+                Dictionary<string, ISerializable> dataDict = new Dictionary<string, ISerializable>();
                 dataDict.Add(TRACE_KEY, traceD);
 
                 TraceUtils.SetObjectToTLS(dataDict);
@@ -1540,11 +1647,11 @@ namespace ProtoCore
             }
 
             //TLS -> TraceCache
-            Dictionary<String, Object> traceRet = TraceUtils.GetObjectFromTLS();
+            Dictionary<String, ISerializable> traceRet = TraceUtils.GetObjectFromTLS();
 
             if (traceRet.ContainsKey(TRACE_KEY))
             {
-                Object val = traceRet[TRACE_KEY];
+                var val = traceRet[TRACE_KEY];
                 newTraceData.Data = val;
             }
 

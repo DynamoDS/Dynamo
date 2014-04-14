@@ -7,6 +7,7 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
 using String = System.String;
+using System;
 
 
 namespace Dynamo.Tests
@@ -385,6 +386,48 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("4744f516-c6b5-421c-b7f1-1731610667bb", 25);
         }
+
+        [Test]
+        public void TestExportToCSVFile()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\files");
+
+            string openPath = Path.Combine(examplePath, "TestExportToCSVFile.dyn");
+            model.Open(openPath);
+
+            //set the path to the csv file
+            var pathNode = (DSCore.File.Filename)model.Nodes.First(x => x is DSCore.File.Filename);
+            pathNode.Value = Path.Combine(examplePath, "TestExportToCSV.txt");
+
+            //clean up the text file
+            File.WriteAllText(pathNode.Value, String.Empty);
+
+            RunCurrentModel();
+
+            AssertPreviewValue("6cf3efb3-127f-4bbd-9008-25cc1ba15bd8", true);
+
+            StreamReader sr = new StreamReader(pathNode.Value);
+            String line = sr.ReadToEnd();
+
+            StringAssert.AreEqualIgnoringCase("1, 2, 3, 4, 5\r\n-2, 2.6, 9\r\n0\r\n", line);
+        }
+
+        [Test]
+        public void TestExportToCSVFile_Negativ()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\files");
+
+            string openPath = Path.Combine(examplePath, "TestExportToCSVFile_Negative.dyn");
+            model.Open(openPath);
+
+            RunCurrentModel();
+
+            AssertPreviewValue("906cfd65-37fc-4f54-ac21-3d59a32feb5a", false);
+        }
+
+
 
         [Test]
         public void UsingDefaultValue()

@@ -12,9 +12,28 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
 
+            // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 2, 1);
-            migrationData.AppendNode(dummyNode);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "PolySurface.LocateSurfacesByLine", "PolySurface.LocateSurfacesByLine@Line");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Create new nodes
+            XmlElement polySurface = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
+                "PolySurface.BySolid", "PolySurface.BySolid@Geometry.Solid");
+            migrationData.AppendNode(polySurface);
+            string polySurfaceId = MigrationManager.GetGuidFromXmlElement(polySurface);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            PortId polySurfaceInPort0 = new PortId(polySurfaceId, 0, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, polySurfaceInPort0);
+            data.CreateConnector(polySurface, 0, newNode, 0);
 
             return migrationData;
         }
@@ -74,12 +93,12 @@ namespace Dynamo.Nodes
             {
                 // Create new nodes only when the old node is connected to a UV node
                 XmlElement nodeU = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "UV.U", "UV.U");
+                data.Document, oldNode, 0, "ProtoGeometry.dll", "UV.U", "UV.U");
                 migrationData.AppendNode(nodeU);
                 string nodeUId = MigrationManager.GetGuidFromXmlElement(nodeU);
 
                 XmlElement nodeV = MigrationManager.CreateFunctionNode(
-                    data.Document, "ProtoGeometry.dll", "UV.V", "UV.V");
+                    data.Document, oldNode, 1, "ProtoGeometry.dll", "UV.V", "UV.V");
                 migrationData.AppendNode(nodeV);
                 string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
 
@@ -126,12 +145,12 @@ namespace Dynamo.Nodes
             {
                 // Create new nodes only when the old node is connected to a UV node
                 XmlElement nodeU = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "UV.U", "UV.U");
+                data.Document, oldNode, 0, "ProtoGeometry.dll", "UV.U", "UV.U");
                 migrationData.AppendNode(nodeU);
                 string nodeUId = MigrationManager.GetGuidFromXmlElement(nodeU);
 
                 XmlElement nodeV = MigrationManager.CreateFunctionNode(
-                    data.Document, "ProtoGeometry.dll", "UV.V", "UV.V");
+                    data.Document, oldNode, 1, "ProtoGeometry.dll", "UV.V", "UV.V");
                 migrationData.AppendNode(nodeV);
                 string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
 

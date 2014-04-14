@@ -1086,7 +1086,7 @@ namespace Dynamo.Nodes
             }
 
             XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeModelNode(
-                data.Document, rangesString);
+                data.Document, oldNode, 0, rangesString);
             migrationData.AppendNode(codeBlockNode);
             string codeBlockNodeId = MigrationManager.GetGuidFromXmlElement(codeBlockNode);
 
@@ -1152,7 +1152,7 @@ namespace Dynamo.Nodes
             string composeNodeId = MigrationManager.GetGuidFromXmlElement(composeNode);
 
             XmlElement createListNode = MigrationManager.CreateNode(data.Document,
-                "DSCoreNodesUI.CreateList", "Create List");
+                oldNode, 0, "DSCoreNodesUI.CreateList", "Create List");
             migratedData.AppendNode(createListNode);
             createListNode.SetAttribute("inputcount", "2");
             string createListNodeId = MigrationManager.GetGuidFromXmlElement(createListNode);
@@ -1260,7 +1260,7 @@ namespace Dynamo.Nodes
             int numberOfArgs = oldNode.ChildNodes.Count;
             string numberOfArgsString = numberOfArgs.ToString();
             XmlElement createListNode = MigrationManager.CreateNode(data.Document,
-                "DSCoreNodesUI.CreateList", "Create List");
+                oldNode, 0, "DSCoreNodesUI.CreateList", "Create List");
             migratedData.AppendNode(createListNode);
             createListNode.SetAttribute("inputcount", numberOfArgsString);
             string createListNodeId = MigrationManager.GetGuidFromXmlElement(createListNode);

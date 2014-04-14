@@ -43,7 +43,12 @@ namespace DSCoreNodesUI
             rbFalse.Content = "false";
             rbFalse.Padding = new Thickness(5, 0, 0, 0);
 
-            var wp = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Center };
+            var wp = new WrapPanel
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
             wp.Children.Add(rbTrue);
             wp.Children.Add(rbFalse);
             nodeUI.inputGrid.Children.Add(wp);
