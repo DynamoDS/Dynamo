@@ -54,7 +54,11 @@
         OuterBorderSelection="{StaticResource outerBorderSelection}">
     </controls:StateToColorConverter>
 
+    <controls:AttachmentToPathConverter x:Key="AttachmentToPathConverter" />
+    <controls:AttachmentToRowColumnConverter x:Key="AttachmentToRowColumnConverter" />
+    <controls:PortToAttachmentConverter x:Key="PortToAttachmentConverter"/>
     <controls:PortNameConverter x:Key="PortNameConverter"/>
+    <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
     <controls:FilePathDisplayConverter x:Key="FilePathDisplayConverter"/>
     <controls:PathToFileNameConverter x:Key="PathToFileNameConverter"/>
     <controls:PathToSaveStateConverter x:Key="PathToSaveStateConverter" />
