@@ -9,6 +9,8 @@ using NUnit.Framework;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using System.Collections;
+using Dynamo.Models;
+using Dynamo.Nodes;
 
 namespace Dynamo.Tests
 {
@@ -186,7 +188,8 @@ namespace Dynamo.Tests
             // 
             // d == {0, 100, 4, 6, 8, 10}
             RunModel(@"core\dsevaluation\regress616.dyn");
-            AssertPreviewValue("f83a463d-1ca4-4586-a544-5df47697e483", new int[] { 0, 100, 4, 6, 8, 10 });
+            AssertPreviewValue("f83a463d-1ca4-4586-a544-5df47697e483", 
+                new int[] { 0, 100, 4, 6, 8, 10 });
         }
 
         [Test]
@@ -202,7 +205,8 @@ namespace Dynamo.Tests
             // 
             // x + f;
             RunModel(@"core\dsevaluation\regress618.dyn");
-            AssertPreviewValue("60e002e2-e723-4e39-b059-d761596f24da", new int[] { 0, 1, 100, 3, 4, 5, 6, 7, 8, 9, 10 });
+            AssertPreviewValue("60e002e2-e723-4e39-b059-d761596f24da", 
+                new int[] { 0, 1, 100, 3, 4, 5, 6, 7, 8, 9, 10 });
         }
 
         [Test]
@@ -401,40 +405,39 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void CBN_Geometry_RangeExpression_609()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-609
             RunModel(@"core\dsevaluation\CBN_Geometry_RangeExpression_609.dyn");
-            AssertValue("b", new int[] {1,2});
+            //AssertValue("b", new int[] {1,2});
+            AssertPreviewValue("056d9dc6-2905-4575-803c-f023005b8e6a", new int[] { 1, 2 });
 
         }
         [Test]
-        [Category("Failing")]
         public void CBN_Geometry_Expression_609_2()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-609
             RunModel(@"core\dsevaluation\CBN_Geometry_Expression_609_2.dyn");
-            AssertValue("b", 3);
+            //AssertValue("b", 3);
+            AssertPreviewValue("056d9dc6-2905-4575-803c-f023005b8e6a", 3);
 
         }
         [Test]
-        [Category("Failing")]
         public void CBN_Geometry_Conditional_609_3()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-609
             RunModel(@"core\dsevaluation\CBN_Geometry_Conditional_609_3.dyn");
-            AssertValue("b", 3.00);
+            //AssertValue("b", 3.00);
+            AssertPreviewValue("056d9dc6-2905-4575-803c-f023005b8e6a", 3.00);
 
         }
         [Test]
-        [Category("Failing")]
         public void CBN_Geometry_Array_609_4()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-609
             RunModel(@"core\dsevaluation\CBN_Geometry_Array_609_4.dyn");
-            AssertValue("b", new double[] {1.0,2.0});
-
+            //AssertValue("b", new double[] {1.0,2.0});
+            AssertPreviewValue("056d9dc6-2905-4575-803c-f023005b8e6a", new double[] { 1.0, 2.0 });
         }
         [Test]
         public void CBN_Double_Array_330()
@@ -471,7 +474,9 @@ namespace Dynamo.Tests
 
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-592
             RunModel(@"core\dsevaluation\CBN_nestedrange592.dyn");
-            AssertPreviewValue("ae1def01-2d92-43ab-9c64-68b36ee4d4aa", new int[][] {new int[]{1,2,3,4,5,6,7,8,9,10,11},new int[]{2,4,6,8,10,12},new int[] {3,6,9,12}});
+            AssertPreviewValue("ae1def01-2d92-43ab-9c64-68b36ee4d4aa", 
+                new int[][] { new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, 
+                    new int[] { 2, 4, 6, 8, 10, 12 }, new int[] { 3, 6, 9, 12 } });
 
         }
         [Test]
@@ -480,7 +485,10 @@ namespace Dynamo.Tests
 
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-592
             RunModel(@"core\dsevaluation\CBN_nestedrange592_2.dyn");
-            AssertPreviewValue("ae1def01-2d92-43ab-9c64-68b36ee4d4aa", new int[][] { new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, new int[] { 2, 3, 4, 5, 6, 7,8,9,10 }, new int[] { 3, 4,5,6,7,8,9,10 } });
+            AssertPreviewValue("ae1def01-2d92-43ab-9c64-68b36ee4d4aa", 
+                new int[][] { new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 
+                    new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 
+                    new int[] { 3, 4, 5, 6, 7, 8, 9, 10 } });
         }
         [Test]
         public void CBN_Dynamic_Array_433()
@@ -502,7 +510,8 @@ namespace Dynamo.Tests
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-629
             RunModel(@"core\dsevaluation\CBN_Array_Range_629.dyn");
-            AssertPreviewValue("f5b252f3-67b9-4287-a003-eb8d3b8f9cb2", new int[][] { new int[] { 1, 2 } });
+            AssertPreviewValue("f5b252f3-67b9-4287-a003-eb8d3b8f9cb2", 
+                new int[][] { new int[] { 1, 2 } });
         }
         [Test]
         public void CBN_Array_Range_629_2()
@@ -542,11 +551,15 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void Defect_MAGN_844()
         {
+            // CBN: a = 1;
+            // CBN b = a; 
+
             RunModel(@"core\dsevaluation\Defect_MAGN_844.dyn");
-            AssertPreviewValue("8de1b8aa-c6c3-4360-9619-fe9d01a804f8", 1);
+
+            // Change in implementation for Local variable this test case needs update in final value.
+            AssertPreviewValue("8de1b8aa-c6c3-4360-9619-fe9d01a804f8", null);
 
         }
 
@@ -667,8 +680,71 @@ namespace Dynamo.Tests
         public void NumberSequence()
         {
             RunModel(@"core\dsevaluation\NumberSequence.dyn");
-            AssertPreviewValue("4d86876b-08a8-4166-b1f5-4194b8381dab", new object[] {0.0, 1.0, 2.0, 3.0, 4.0});
+            AssertPreviewValue("4d86876b-08a8-4166-b1f5-4194b8381dab", 
+                new object[] {0.0, 1.0, 2.0, 3.0, 4.0});
         }
+
+        [Test]
+        public void Defect_MAGN_2479()
+        {
+            // Details are available in http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2479
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\dsevaluation\Defect_MAGN_2479.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            AssertPreviewValue("0ffe94bd-f926-4e81-83f7-7975e67a3713",
+                new int[] { 2, 4, 6, 8, 10, 12, 14, 16 });
+        }
+
+        [Test]
+        public void Defect_MAGN_2375()
+        {
+            // Details are available in http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2375
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\dsevaluation\Defect_MAGN_2375.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
+
+            model.AddToSelection(Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                ("5a7f7549-fbef-4c3f-8578-c67471eaa87f"));
+
+            model.Copy(null);
+
+            model.Paste(null);
+
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+
+            //run the graph after copy paste
+            dynSettings.Controller.RunExpression(true);
+
+            var nodes = Controller.DynamoModel.Nodes.OfType<DSVarArgFunction>();
+            foreach (var item in nodes)
+            {
+                AssertPreviewValue(item.GUID.ToString(), new string[] { "Dynamo", "DS" });   
+            }
+        }
+
+        [Test]
+         public void CBN_Geometry()
+         {
+             RunModel(@"core\dsevaluation\CBN_Geometry.dyn");
+             AssertPreviewValue("03c7ed31-182b-4539-934e-710b3fabe5ad", 5.0);
+         }
+         [Test]
+         public void CBN_Range_1300()
+         {
+             RunModel(@"core\dsevaluation\CBN_Range_1300.dyn");
+             AssertPreviewValue("c5866d0f-3d76-4093-a62d-15bea73f7bee", new double[]{1.0,2.8,4.6,6.4,8.2,10.0});
+         }
+
+
     }
 
     [Category("DSCustomNode")]
@@ -693,7 +769,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, model.CurrentWorkspace.Connectors.Count);
             Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
 
-            AssertPreviewValue("f9c6aa7f-3fb4-40df-b4c5-6694e8c437cd", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+            AssertPreviewValue("f9c6aa7f-3fb4-40df-b4c5-6694e8c437cd", 
+                new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
         }
         [Test]
         public void CustomNodeWithInput02()
@@ -778,5 +855,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("7be13594-8d09-4377-98aa-d3cf1c716288", true);
             
         }
+
+
     }
 }

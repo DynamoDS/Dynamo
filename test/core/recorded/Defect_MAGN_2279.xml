@@ -1,0 +1,24 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="8a726a01-a820-4227-871c-08255b0a283d" NodeName="Code Block" X="148" Y="209" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="8a726a01-a820-4227-871c-08255b0a283d" Name="Code" Value="{0..3,0..3};" />
+  <CreateNodeCommand NodeId="55b87e32-7279-49bf-982c-91d06b349439" NodeName="Code Block" X="289" Y="201" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="55b87e32-7279-49bf-982c-91d06b349439" Name="Code" Value="p1[0];&#xD;&#xA;p1[1];" />
+  <MakeConnectionCommand NodeId="8a726a01-a820-4227-871c-08255b0a283d" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="55b87e32-7279-49bf-982c-91d06b349439" PortIndex="0" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="FirstRun" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="bc2c4de8-43a1-4b36-b0d6-309423664089" NodeName="Code Block" X="305" Y="395" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="bc2c4de8-43a1-4b36-b0d6-309423664089" Name="Code" Value="p1[0];&#xD;&#xA;p1[1];" />
+  <MakeConnectionCommand NodeId="8a726a01-a820-4227-871c-08255b0a283d" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="bc2c4de8-43a1-4b36-b0d6-309423664089" PortIndex="0" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="SecondRun" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="bc2c4de8-43a1-4b36-b0d6-309423664089" Name="Code" Value="p2[0];&#xA;p2[1];" />
+  <PausePlaybackCommand Tag="LastRun" PauseDurationInMs="20" />
+</Commands>

@@ -114,6 +114,8 @@ namespace Dynamo
         //    set { octree = value; }
         //}
 
+        public int MaxGridLines { get; set; }
+
         #endregion
 
         #region events
@@ -137,6 +139,8 @@ namespace Dynamo
 
         public VisualizationManager(DynamoController controller)
         {
+            MaxGridLines = 12;
+
             _controller = controller;
             //octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
 

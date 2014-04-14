@@ -2,6 +2,7 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:controls="clr-namespace:Dynamo.Views"
                       xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
+                      xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
                       xmlns:interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                       xmlns:views="clr-namespace:Dynamo.UI.Views">
 
@@ -32,8 +33,8 @@
               Background="Transparent"
               IsHitTestVisible="True"
               Margin="{Binding Path=MarginThickness}"
-              Height="{Binding Path=Height}" 
-              Width="Auto" MinWidth="26">
+              Height="{Binding Path=Height}"
+              MinWidth="26">
 
             <interactivity:Interaction.Triggers>
                 <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
@@ -50,10 +51,19 @@
                 </ContextMenu>
             </Grid.ContextMenu>
 
-            <!--<Grid.Width>
+            <Grid.Width>
                 <Binding Path="ActualWidth"
                          RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}" />
-            </Grid.Width>-->
+            </Grid.Width>
+
+            <Grid.ToolTip>
+                <dynui:DynamoToolTip AttachmentSide="{Binding Path=PortType, Converter={StaticResource PortToAttachmentConverter}}"
+                         Style="{DynamicResource ResourceKey=SLightToolTip}">
+                    <Grid>
+                        <TextBlock Text="{Binding Path=ToolTipContent}"></TextBlock>
+                    </Grid>
+                </dynui:DynamoToolTip>
+            </Grid.ToolTip>
 
             <!--
                 We could have changed the Grid opacity directly here but didn't.

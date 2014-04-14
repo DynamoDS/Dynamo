@@ -551,12 +551,7 @@ namespace Dynamo.Nodes
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             _watchTree = new WatchTree();
-
-            nodeUI.grid.Children.Add(_watchTree);
-            _watchTree.SetValue(Grid.RowProperty, 3);
-            _watchTree.SetValue(Grid.ColumnSpanProperty, 3);
-            _watchTree.SetValue(Canvas.ZIndexProperty, 50);
-            _watchTree.Margin = new Thickness(5, 4, 5, 5);
+            nodeUI.PresentationGrid.Children.Add(_watchTree);
 
             if (Root == null)
                 Root = new WatchViewModel();

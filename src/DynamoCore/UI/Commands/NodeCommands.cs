@@ -150,36 +150,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public DelegateCommand ShowTooltipCommand
-        {
-            get
-            {
-                if (_showTooltipCommand == null)
-                    _showTooltipCommand = new DelegateCommand(ShowTooltip, CanShowTooltip);
-                return _showTooltipCommand;
-            }
-        }
-
-        public DelegateCommand HideTooltipCommand
-        {
-            get
-            {
-                if (_hideTooltipCommand == null)
-                    _hideTooltipCommand = new DelegateCommand(HideTooltip, CanHideTooltip);
-                return _hideTooltipCommand;
-            }
-        }
-
-        public DelegateCommand FadeOutTooltipCommand
-        {
-            get
-            {
-                if (_fadeOutTooltipCommand == null)
-                    _fadeOutTooltipCommand = new DelegateCommand(FadeOutTooltip, CanFadeOutTooltip);
-                return _fadeOutTooltipCommand;
-            }
-        }
-
         public DelegateCommand ShowPreviewCommand
         {
             get

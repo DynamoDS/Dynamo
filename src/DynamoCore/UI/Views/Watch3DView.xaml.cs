@@ -394,6 +394,8 @@ namespace Dynamo.Controls
                 Text = text;
 
                 sw.Stop();
+                
+                GC.Collect();
 
                 Debug.WriteLine(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
             }

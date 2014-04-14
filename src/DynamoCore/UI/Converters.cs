@@ -17,6 +17,9 @@ using Dynamo.PackageManager;
 using System.Windows.Controls;
 using Dynamo.Core;
 using ProtoCore.AST.ImperativeAST;
+using System.Windows.Controls.Primitives;
+using Dynamo.UI.Controls;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Controls
 {
@@ -224,6 +227,23 @@ namespace Dynamo.Controls
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
+        }
+    }
+
+    public class PortToAttachmentConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            PortType portType = ((PortType)value);
+            if (((PortType)value) == PortType.INPUT)
+                return DynamoToolTip.Side.Left;
+
+            return DynamoToolTip.Side.Right;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -554,6 +574,104 @@ namespace Dynamo.Controls
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return null;
+        }
+    }
+
+    public class AttachmentToPathConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var result = "0,0 6,5 0,10"; // Default, catch-all.
+            DynamoToolTip tooltip = value as DynamoToolTip;
+            switch (tooltip.AttachmentSide)
+            {
+                case DynamoToolTip.Side.Left:
+                    result = "0,0 6,5 0,10";
+                    break;
+                case DynamoToolTip.Side.Right:
+                    result = "6,0 0,5, 6,10";
+                    break;
+                case DynamoToolTip.Side.Top:
+                    result = "0,0 5,6, 10,0";
+                    break;
+                case DynamoToolTip.Side.Bottom:
+                    result = "0,6 5,0 10,6";
+                    break;
+            }
+
+            if (parameter != null && ((parameter as string).Equals("Start")))
+            {
+                var index = result.IndexOf(' ');
+                result = result.Substring(0, index);
+            }
+
+            return result;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class AttachmentToRowColumnConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var rowColumn = parameter as string;
+            if (rowColumn == null || (!rowColumn.Equals("Row") && (!rowColumn.Equals("Column"))))
+            {
+                var message = "'AttachmentToRowColumnConverter' expects a " + 
+                    "'ConverterParameter' value to be either 'Row' or 'Column'";
+
+                throw new ArgumentException(message);
+            }
+
+            int row = 1, column = 2;
+            DynamoToolTip tooltip = value as DynamoToolTip;
+            switch (tooltip.AttachmentSide)
+            {
+                case DynamoToolTip.Side.Left:
+                    row = 1;
+                    column = 2;
+                    break;
+                case DynamoToolTip.Side.Right:
+                    row = 1;
+                    column = 0;
+                    break;
+                case DynamoToolTip.Side.Top:
+                    row = 2;
+                    column = 1;
+                    break;
+                case DynamoToolTip.Side.Bottom:
+                    row = 0;
+                    column = 1;
+                    break;
+            }
+
+            bool isRow = rowColumn.Equals("Row");
+            return isRow ? row : column;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class BrowserItemToBooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is NodeSearchElement)
+                return true;
+
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 
