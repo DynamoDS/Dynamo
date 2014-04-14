@@ -1763,7 +1763,14 @@ namespace Dynamo.Nodes
 
                                 return new Range(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken, convertToken);
                             }
-                            return new Range(startToken, new DoubleToken(1), endToken, convertToken) as IDoubleSequence;
+
+                            double identifierValue0, identifierValue1;
+                            var canBeParsed0 = System.Double.TryParse(rangeIdentifiers[0], out identifierValue0);
+                            var canBeParsed1 = System.Double.TryParse(rangeIdentifiers[1], out identifierValue1);
+                            var parsed = canBeParsed0 && canBeParsed1 ? identifierValue0 < identifierValue1 : true;
+                            return parsed ?
+                                new Range(startToken, new DoubleToken(1), endToken, convertToken) as IDoubleSequence :
+                                new Range(startToken, new DoubleToken(-1), endToken, convertToken) as IDoubleSequence;
                         }
 
                     }
