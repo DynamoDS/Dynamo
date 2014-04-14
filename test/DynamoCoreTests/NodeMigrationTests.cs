@@ -1622,7 +1622,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, workspace.Nodes.Count);
             Assert.AreEqual(16, workspace.Connectors.Count);
 
-            // All 8 NumberInput nodes should have been migrated into code blocks.
             var number5 = workspace.NodeFromWorkspace<DoubleInput>(
                 "ddf4b266-29b6-4609-b1fe-dba814d4babd");
             var number10 = workspace.NodeFromWorkspace<DoubleInput>(
