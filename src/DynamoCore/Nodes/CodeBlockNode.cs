@@ -840,7 +840,8 @@ namespace Dynamo.Nodes
         {
             FontFamily textFontFamily = new FontFamily(
                 new Uri("/DynamoCore;component/"),
-                ResourceNames.FontResourceUri);
+                ResourceNames.
+                FontResourceUri);
 
             FormattedText newText = new FormattedText(str,
                     CultureInfo.CurrentCulture,

@@ -1,12 +1,13 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:clr="clr-namespace:System;assembly=mscorlib"
-                    xmlns:controls="clr-namespace:Dynamo.Views"
-                    xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
-                    xmlns:nodes="clr-namespace:Dynamo.Nodes">
+                    xmlns:clr="clr-namespace:System;assembly=mscorlib" 
+                    xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCore" 
+                    xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCore" 
+                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCore"
+                    xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCore">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml" />
+        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
 
     <!--Control colors.-->
@@ -74,14 +75,14 @@
     <!-- Embedded Font -->
     <!-- Open Sans (under Apache License, version 2.0)
          Link: http://www.google.com/fonts/specimen/Open+Sans -->
-    <FontFamily x:Key="OpenSansRegular">/DynamoCore;component/UI/Fonts/#Open Sans</FontFamily>
-    <FontFamily x:Key="OpenSansItalic">/DynamoCore;component/UI/Fonts/#Open Sans Italic</FontFamily>
-    <FontFamily x:Key="OpenSansLight">/DynamoCore;component/UI/Fonts/#Open Sans Light</FontFamily>
-    <FontFamily x:Key="OpenSansSemibold">/DynamoCore;component/UI/Fonts/#Open Sans Semibold</FontFamily>
-    <FontFamily x:Key="OpenSansBold">/DynamoCore;component/UI/Fonts/#Open Sans Bold</FontFamily>
-    <FontFamily x:Key="OpenSansLightItalic">/DynamoCore;component/UI/Fonts/#Open Sans Light Italic</FontFamily>
-    <FontFamily x:Key="OpenSansSemiboldItalic">/DynamoCore;component/UI/Fonts/#Open Sans Semibold Italic</FontFamily>
-    <FontFamily x:Key="OpenSansBoldItalic">/DynamoCore;component/UI/Fonts/#Open Sans Bold Italic</FontFamily>
+    <FontFamily x:Key="OpenSansRegular">../../Fonts/#Open Sans</FontFamily>
+    <FontFamily x:Key="OpenSansItalic">../../Fonts/#Open Sans Italic</FontFamily>
+    <FontFamily x:Key="OpenSansLight">../../Fonts/#Open Sans Light</FontFamily>
+    <FontFamily x:Key="OpenSansSemibold">../../Fonts/#Open Sans Semibold</FontFamily>
+    <FontFamily x:Key="OpenSansBold">../../Fonts/#Open Sans Bold</FontFamily>
+    <FontFamily x:Key="OpenSansLightItalic">../../Fonts/#Open Sans Light Italic</FontFamily>
+    <FontFamily x:Key="OpenSansSemiboldItalic">../../Fonts/#Open Sans Semibold Italic</FontFamily>
+    <FontFamily x:Key="OpenSansBoldItalic">../../Fonts/#Open Sans Bold Italic</FontFamily>
 
     <!-- Window Common Styling -->
     <Style x:Key="DynamoWindowStyle"
@@ -95,8 +96,9 @@
     </Style>
 
     <Image x:Key="ComboDownIcon_normal"
-           Source="/DynamoCore;component/UI/Images/tick_selected.png" />
-    <ControlTemplate x:Key="ComboBoxToggleButton"
+           Source="pack://application:,,,/DynamoCore;component/UI/Images/tick_selected.png" />
+    
+    <ControlTemplate x:Key="ComboBoxToggleButton" 
                      TargetType="ToggleButton">
         <Grid>
             <Border x:Name="Border"
@@ -725,7 +727,7 @@
                                        VerticalAlignment="Center"
                                        HorizontalAlignment="Center"
                                        Visibility="Hidden"
-                                       Source="/DynamoCore;component/UI/Images/tick_selected.png" />
+                                       Source="pack://application:,,,/DynamoCore;component/UI/Images/tick_selected.png" />
                             </Border>
                         </BulletDecorator.Bullet>
 

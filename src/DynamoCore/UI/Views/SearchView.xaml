@@ -8,6 +8,7 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:clr="clr-namespace:System;assembly=mscorlib"
              xmlns:dynamo="clr-namespace:Dynamo"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d" 
              Visibility="Visible" 
              d:DesignWidth="300" 
@@ -21,9 +22,9 @@
             <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>    
