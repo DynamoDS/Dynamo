@@ -24,7 +24,7 @@ namespace ProtoTest.UtilsTests
 
         private bool Test_GetIdentifierStringUntilFirstParenthesis(string input, string expected)
         {
-            List<AssociativeNode> astList = TestFrameWork.BuildASTList(input);
+            List<AssociativeNode> astList = ProtoCore.Utils.CoreUtils.BuildASTList(core, input);
             IdentifierListNode identList = (astList[0] as BinaryExpressionNode).RightNode as IdentifierListNode;
 
             // Verify expected string
