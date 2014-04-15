@@ -322,7 +322,8 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                _model.CurrentWorkspace = _model.Workspaces[value];
+                if (_model.Workspaces.IndexOf(_model.CurrentWorkspace) != value)
+                    this.ExecuteCommand(new SwitchTabCommand(value));
             }
         }
 

@@ -262,11 +262,18 @@ namespace Dynamo.Models
             get { return _cspace; }
             internal set
             {
-                if (_cspace != null)
-                    _cspace.IsCurrentSpace = false;
-                _cspace = value;
-                _cspace.IsCurrentSpace = true;
-                RaisePropertyChanged("CurrentWorkspace");
+                if (_cspace != value) // There's actually a change.
+                {
+                    if (_cspace != null)
+                        _cspace.IsCurrentSpace = false;
+
+                    _cspace = value;
+
+                    if (_cspace != null)
+                        _cspace.IsCurrentSpace = true;
+
+                    RaisePropertyChanged("CurrentWorkspace");
+                }
             }
         }
 
