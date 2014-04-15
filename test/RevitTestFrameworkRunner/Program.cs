@@ -26,7 +26,7 @@ namespace RevitTestFrameworkRunner
         internal static string _revitPath;
         internal static List<string> _journalPaths = new List<string>();
         internal static int _runCount = 0;
-
+        internal static int _timeout = 120000;
         public static event EventHandler TestRunsComplete;
         private static void OnTestRunsComplete()
         {
@@ -166,6 +166,7 @@ namespace RevitTestFrameworkRunner
             Properties.Settings.Default.assemblyPath = _testAssembly;
             Properties.Settings.Default.resultsPath = _results;
             Properties.Settings.Default.isDebug = _isDebug;
+            Properties.Settings.Default.timeout = _timeout;
             Properties.Settings.Default.Save();
         }
 
@@ -182,6 +183,8 @@ namespace RevitTestFrameworkRunner
             _results = !string.IsNullOrEmpty(Properties.Settings.Default.resultsPath)
                 ? Properties.Settings.Default.resultsPath
                 : null;
+
+            _timeout = Properties.Settings.Default.timeout;
 
             _isDebug = Properties.Settings.Default.isDebug;
         }

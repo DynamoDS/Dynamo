@@ -42,4 +42,28 @@ namespace RevitTestFrameworkRunner
             return null;
         }
     }
+
+    public class StringToIntConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType,
+            object parameter, CultureInfo culture)
+        {
+            // Do the conversion from string to int
+            int converted = 0;
+            try
+            {
+                converted = Int32.Parse(value.ToString());
+            }
+            catch { }
+
+            return converted;
+        }
+
+        public object ConvertBack(object value, Type targetType,
+            object parameter, CultureInfo culture)
+        {
+            // Do the conversion from int to string
+            return value.ToString();
+        }
+    }
 }

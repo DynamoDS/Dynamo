@@ -10,6 +10,7 @@
         <revitTestFrameworkRunner:AssemblyPathConverter x:Key="AssemblyPathConverter"></revitTestFrameworkRunner:AssemblyPathConverter>
         <revitTestFrameworkRunner:WorkingPathConverter x:Key="WorkingPathConverter"></revitTestFrameworkRunner:WorkingPathConverter>
         <revitTestFrameworkRunner:ResultsPathConverter x:Key="ResultsPathConverter"></revitTestFrameworkRunner:ResultsPathConverter>
+        <revitTestFrameworkRunner:StringToIntConverter x:Key="StringToIntConverter"></revitTestFrameworkRunner:StringToIntConverter>
         
         <HierarchicalDataTemplate x:Key="TestTemplate" DataType="{x:Type revitTestFrameworkRunner:TestData}">
             <StackPanel Orientation="Horizontal" Tag="{Binding ElementName=TestDataTreeView, Path=DataContext}">
@@ -82,6 +83,8 @@
         
         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Margin="5">
             <CheckBox Content="Debug" IsChecked="{Binding IsDebug, Mode=TwoWay}"></CheckBox>
+            <TextBlock Margin="20,0,0,0" Text="Timeout"></TextBlock>
+            <TextBox Width ="100" Margin="5,0,0,0" Text="{Binding Timeout, Mode=TwoWay, Converter={StaticResource StringToIntConverter}}"></TextBox>
         </StackPanel>
         
         <TreeView Margin="5" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" 

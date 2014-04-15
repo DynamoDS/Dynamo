@@ -1,7 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Data;
 using Autodesk.RevitAddIns;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
@@ -141,6 +144,12 @@ namespace RevitTestFrameworkRunner
                 Program._isDebug = value;
                 RaisePropertyChanged("IsDebug");
             }
+        }
+
+        public int Timeout
+        {
+            get { return Program._timeout; }
+            set { Program._timeout = value; }
         }
 
         internal ViewModel()
