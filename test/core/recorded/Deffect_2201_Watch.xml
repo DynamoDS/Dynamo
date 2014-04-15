@@ -1,0 +1,22 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="8f03d42a-8060-4bb5-9280-6e233dab987d" NodeName="Code Block" X="222" Y="322" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="8f03d42a-8060-4bb5-9280-6e233dab987d" Name="Code" Value="1..5" />
+  <CreateNodeCommand NodeId="341aa5b5-abb8-4adb-9564-217a0359c684" NodeName="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="341aa5b5-abb8-4adb-9564-217a0359c684" Modifiers="0" />
+  <DragSelectionCommand X="306" Y="245" DragOperation="0" />
+  <DragSelectionCommand X="354" Y="351" DragOperation="1" />
+  <MakeConnectionCommand NodeId="8f03d42a-8060-4bb5-9280-6e233dab987d" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="341aa5b5-abb8-4adb-9564-217a0359c684" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="8f03d42a-8060-4bb5-9280-6e233dab987d" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="341aa5b5-abb8-4adb-9564-217a0359c684" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="8f03d42a-8060-4bb5-9280-6e233dab987d" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="341aa5b5-abb8-4adb-9564-217a0359c684" PortIndex="2" Type="0" ConnectionMode="1" />
+  <CreateNodeCommand NodeId="47923ddd-d71c-42ba-ba84-bbb99658e18d" NodeName="Watch" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="47923ddd-d71c-42ba-ba84-bbb99658e18d" Modifiers="0" />
+  <DragSelectionCommand X="312" Y="269" DragOperation="0" />
+  <DragSelectionCommand X="549" Y="370" DragOperation="1" />
+  <MakeConnectionCommand NodeId="341aa5b5-abb8-4adb-9564-217a0359c684" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="47923ddd-d71c-42ba-ba84-bbb99658e18d" PortIndex="0" Type="0" ConnectionMode="1" />
+</Commands>

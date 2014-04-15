@@ -19,14 +19,14 @@ namespace DSCore
         /// <search>greater,larger,bigger</search>
         public static bool GreaterThan(object a, object b)
         {
-            if (a is double)
+            if (a is double || a is float)
             {
                 if (b is int)
                     return (double)a > (int)b;
             }
             else if (a is int)
             {
-                if (b is double)
+                if (b is double || b is float)
                     return (int)a > (double)b;
             }
             return ((IComparable)a).CompareTo(b) > 0;
@@ -41,14 +41,14 @@ namespace DSCore
         /// <search>greater,larger,bigger,equal</search>
         public static bool GreaterThanOrEqual(object a, object b)
         {
-            if (a is double)
+            if (a is double || a is float)
             {
                 if (b is int)
                     return (double)a >= (int)b;
             }
             else if (a is int)
             {
-                if (b is double)
+                if (b is double || b is float)
                     return (int)a >= (double)b;
             }
             return ((IComparable)a).CompareTo(b) >= 0;
@@ -63,14 +63,14 @@ namespace DSCore
         /// <search>less,smaller</search>
         public static bool LessThan(object a, object b)
         {
-            if (a is double)
+            if (a is double || a is float)
             {
                 if (b is int)
                     return (double)a < (int)b;
             }
             else if (a is int)
             {
-                if (b is double)
+                if (b is double || b is float)
                     return (int)a < (double)b;
             }
             return ((IComparable)a).CompareTo(b) < 0;
@@ -85,14 +85,14 @@ namespace DSCore
         /// <search>less,smaller,equal</search>
         public static bool LessThanOrEqual(object a, object b)
         {
-            if (a is double)
+            if (a is double || a is float)
             {
                 if (b is int)
                     return (double)a <= (int)b;
             }
             else if (a is int)
             {
-                if (b is double)
+                if (b is double || b is float)
                     return (int)a <= (double)b;
             }
             return ((IComparable)a).CompareTo(b) <= 0;

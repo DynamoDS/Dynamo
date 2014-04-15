@@ -82,6 +82,7 @@
     <Compile Include="Elements\AbstractFamilyInstance.cs" />
     <Compile Include="Elements\CurveByPoints.cs" />
     <Compile Include="Elements\CurveElement.cs" />
+    <Compile Include="Elements\InternalUtilities\ElementQueries.cs" />
     <Compile Include="Elements\UnknownElement.cs" />
     <Compile Include="Elements\FloorType.cs" />
     <Compile Include="Elements\ImportInstance.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Elements\Views\Packing\RectanglePacker.cs" />
     <Compile Include="GeometryConversion\ProtoToRevitCurve.cs" />
     <Compile Include="GeometryConversion\RevitToProtoCurve.cs" />
+    <Compile Include="GeometryConversion\RevitToProtoFace.cs" />
     <Compile Include="GeometryConversion\RevitToProtoMesh.cs" />
     <Compile Include="GeometryConversion\GeometryObjectConverter.cs" />
     <Compile Include="GeometryObjects\InternalUtilities\GeometryObjectWrapper.cs" />

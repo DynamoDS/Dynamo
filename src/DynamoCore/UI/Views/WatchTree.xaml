@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dynamo.Controls" xmlns:nodes="clr-namespace:Dynamo.Nodes"
              xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d" 
              d:DesignHeight="161" d:DesignWidth="410" 
              HorizontalAlignment="Stretch" 
@@ -14,9 +15,9 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="BorderlessButton" TargetType="{x:Type Button}">
                 <Setter Property="Padding" Value="1"/>

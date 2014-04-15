@@ -1374,21 +1374,7 @@ namespace GraphToDSCompiler
         {
             commentNode = null;
             BuildCore(true);
-
-            Validity.Assert(core != null);
-            Validity.Assert(statement != null);
-
-            if (string.IsNullOrEmpty(statement))
-                return null;
-
-            System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(statement));
-            ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
-            ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);
-
-            p.Parse();
-            commentNode = p.commentNode;
-
-            return p.root;
+            return ProtoCore.Utils.ParserUtils.Parse(core, statement, out commentNode);
         }
 
         public static bool Parse(ParseParam parseParams)
