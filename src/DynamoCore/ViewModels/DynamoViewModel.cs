@@ -22,6 +22,7 @@ using Dynamo.Services;
 
 namespace Dynamo.ViewModels
 {
+    public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
 
     public delegate void WorkspaceSaveEventHandler(object sender, WorkspaceSaveEventArgs e);
 
@@ -116,6 +117,15 @@ namespace Dynamo.ViewModels
             if (RequestAboutWindow != null)
             {
                 RequestAboutWindow(vm);
+            }
+        }
+
+        public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
+        public void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
+        {
+            if (RequestsFunctionNamePrompt != null)
+            {
+                RequestsFunctionNamePrompt(this, e);
             }
         }
 
@@ -557,7 +567,7 @@ namespace Dynamo.ViewModels
             PostUiActivationCommand = new DelegateCommand(_model.PostUIActivation, _model.CanDoPostUIActivation);
             AddNoteCommand = new DelegateCommand(_model.AddNote, _model.CanAddNote);
             AddToSelectionCommand = new DelegateCommand(_model.AddToSelection, _model.CanAddToSelection);
-            ShowNewFunctionDialogCommand = new DelegateCommand(_model.ShowNewFunctionDialogAndMakeFunction, _model.CanShowNewFunctionDialogCommand);
+            ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialogAndMakeFunction, CanShowNewFunctionDialogCommand);
             SaveRecordedCommand = new DelegateCommand(SaveRecordedCommands, CanSaveRecordedCommands);
             InsertPausePlaybackCommand = new DelegateCommand(ExecInsertPausePlaybackCommand, CanInsertPausePlaybackCommand);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
@@ -938,6 +948,29 @@ namespace Dynamo.ViewModels
 
             var dvm = dynSettings.Controller.DynamoViewModel;
             dvm.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new ModelEventArgs(e));
+        }
+
+        /// <summary>
+        /// Present the new function dialogue and create a custom function.
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void ShowNewFunctionDialogAndMakeFunction(object parameter)
+        {
+            //trigger the event to request the display
+            //of the function name dialogue
+            var args = new FunctionNamePromptEventArgs();
+            OnRequestsFunctionNamePrompt(this, args);
+
+            if (args.Success)
+            {
+                this._model.NewCustomNodeWorkspace(Guid.NewGuid(),
+                    args.Name, args.Category, args.Description, true);
+            }
+        }
+
+        private bool CanShowNewFunctionDialogCommand(object parameter)
+        {
+            return true;
         }
 
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)

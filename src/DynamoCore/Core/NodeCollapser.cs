@@ -26,7 +26,7 @@ namespace Dynamo.Utilities
             if (args == null || !args.Success)
             {
                 args = new FunctionNamePromptEventArgs();
-                dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(null, args);
+                dynSettings.Controller.DynamoViewModel.OnRequestsFunctionNamePrompt(null, args);
 
                 //if (!dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newNodeName, ref newNodeCategory))
                 if (!args.Success)
