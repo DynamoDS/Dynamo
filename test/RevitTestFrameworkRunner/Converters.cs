@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
@@ -101,6 +102,22 @@ namespace RevitTestFrameworkRunner
 
         public object ConvertBack(object value, Type targetType,
             object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class EmptyStringToCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!string.IsNullOrEmpty(value.ToString()))
+                return Visibility.Visible;
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return null;
         }
