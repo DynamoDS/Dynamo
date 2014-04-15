@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -476,8 +478,12 @@ namespace RevitTestFrameworkRunner
                 if (ourTest.Item == null) return;
                 var failure = ourTest.Item as failureType;
                 if (failure == null) return;
-                td.StackTrace = failure.stacktrace;
-                td.Message = failure.message;
+                td.ResultData.Add(
+                    new ResultData()
+                    {
+                        StackTrace = failure.stacktrace,
+                        Message = failure.message
+                    });
             }
         }
 
@@ -552,19 +558,54 @@ namespace RevitTestFrameworkRunner
     internal class TestData : NotificationObject, ITestData
     {
         private TestStatus _testStatus;
-        private string _message ="";
-        private string _stackTrace = "";
-
+        private IList<IResultData> _resultData;
         public string Name { get; set; }
         public bool RunDynamo { get; set; }
         public string ModelPath { get; set; }
-        
+
+        public TestStatus TestStatus
+        {
+            get { return _testStatus; }
+            set
+            {
+                _testStatus = value; 
+                RaisePropertyChanged("TestStatus");
+            }
+        }
+
+        public ObservableCollection<IResultData> ResultData { get; set; }
+
+        public IFixtureData Fixture { get; set; }
+
+        public TestData(IFixtureData fixture, string name, string modelPath, bool runDynamo)
+        {
+            Fixture = fixture;
+            Name = name;
+            ModelPath = modelPath;
+            RunDynamo = runDynamo;
+            _testStatus = TestStatus.None;
+            ResultData = new ObservableCollection<IResultData>();
+
+            ResultData.CollectionChanged+= ResultDataOnCollectionChanged;
+        }
+
+        private void ResultDataOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RaisePropertyChanged("ResultData");
+        }
+    }
+
+    internal class ResultData : NotificationObject, IResultData
+    {
+        private string _message = "";
+        private string _stackTrace = "";
+
         public string Message
         {
             get { return _message; }
             set
             {
-                _message = value; 
+                _message = value;
                 RaisePropertyChanged("Message");
             }
         }
@@ -578,26 +619,7 @@ namespace RevitTestFrameworkRunner
                 RaisePropertyChanged("StackTrace");
             }
         }
-
-        public TestStatus TestStatus
-        {
-            get { return _testStatus; }
-            set
-            {
-                _testStatus = value; 
-                RaisePropertyChanged("TestStatus");
-            }
-        }
-
-        public IFixtureData Fixture { get; set; }
-
-        public TestData(IFixtureData fixture, string name, string modelPath, bool runDynamo)
-        {
-            Fixture = fixture;
-            Name = name;
-            ModelPath = modelPath;
-            RunDynamo = runDynamo;
-            _testStatus = TestStatus.None;
-        }
     }
+
+
 }

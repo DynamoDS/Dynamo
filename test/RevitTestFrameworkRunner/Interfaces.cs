@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows.Controls.Primitives;
 
 namespace RevitTestFrameworkRunner
 {
@@ -25,6 +27,11 @@ namespace RevitTestFrameworkRunner
         bool RunDynamo { get; set; }
         string ModelPath { get; set; }
         TestStatus TestStatus { get; set; }
+        ObservableCollection<IResultData> ResultData { get; set; }
+    }
+
+    public interface IResultData
+    {
         string Message { get; set; }
         string StackTrace { get; set; }
     }

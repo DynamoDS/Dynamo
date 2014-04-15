@@ -12,15 +12,23 @@
         <revitTestFrameworkRunner:StringToIntConverter x:Key="StringToIntConverter"></revitTestFrameworkRunner:StringToIntConverter>
         <revitTestFrameworkRunner:TestStatusToColorConverter x:Key="TestStatusToColorConverter"></revitTestFrameworkRunner:TestStatusToColorConverter>
         <revitTestFrameworkRunner:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter"></revitTestFrameworkRunner:EmptyStringToCollapsedConverter>
-        
-        <HierarchicalDataTemplate x:Key="TestTemplate" DataType="{x:Type revitTestFrameworkRunner:TestData}">
+
+        <HierarchicalDataTemplate x:Key="ResultTemplate" 
+                                  DataType="{x:Type revitTestFrameworkRunner:ResultData}">
             <StackPanel Orientation="Vertical" Tag="{Binding ElementName=TestDataTreeView, Path=DataContext}">
-                <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" Background="{Binding TestStatus, Converter={StaticResource TestStatusToColorConverter}, Mode= OneWay}"></TextBlock>
-                <TextBlock Text="{Binding ModelPath}" HorizontalAlignment="Left"></TextBlock>
-                <TextBlock Text="{Binding Message}" HorizontalAlignment="Left" Visibility="{Binding Message, Converter={StaticResource EmptyStringToCollapsedConverter}}"></TextBlock>
-                <TextBlock Text="{Binding StackTrace}" HorizontalAlignment="Left" Visibility="{Binding Message, Converter={StaticResource EmptyStringToCollapsedConverter}}"></TextBlock>
+                <TextBlock Text="{Binding Message}" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="{Binding StackTrace}" HorizontalAlignment="Left"></TextBlock>
             </StackPanel>
-            
+        </HierarchicalDataTemplate>
+        
+        <HierarchicalDataTemplate x:Key="TestTemplate" 
+                                  DataType="{x:Type revitTestFrameworkRunner:TestData}"
+                                  ItemsSource="{Binding ResultData}"
+                                  ItemTemplate="{StaticResource ResultTemplate}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" Background="{Binding TestStatus, Converter={StaticResource TestStatusToColorConverter}, Mode= OneWay}"></TextBlock>
+                <!--<TextBlock Text="{Binding ModelPath}" HorizontalAlignment="Left"></TextBlock>-->
+            </StackPanel>
         </HierarchicalDataTemplate>
         
         <HierarchicalDataTemplate x:Key="FixtureTemplate" 
