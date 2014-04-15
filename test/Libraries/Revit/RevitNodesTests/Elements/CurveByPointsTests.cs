@@ -45,7 +45,7 @@ namespace DSRevitNodesTests.Elements
 
             //ensure that the call to create a curve by points with 
             //duplicate points is handled and a system exception is thrown
-            Assert.Throws<Exception>(
+            Assert.Throws<Autodesk.Revit.Exceptions.ArgumentException>(
                 () => CurveByPoints.ByReferencePoints(new List<ReferencePoint> {p1, p2, p2}.ToArray()));
         }
 
