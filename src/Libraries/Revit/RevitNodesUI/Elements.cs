@@ -9,6 +9,22 @@ namespace DSRevitNodesUI
 {
     public abstract class ElementsQueryBase : NodeModel
     {
+        protected ElementsQueryBase()
+        {
+            var u = dynRevitSettings.Controller.Updater;
+            u.ElementsModified += Updater_ElementsModified;
+            u.ElementsDeleted += Updater_ElementsDeleted;
+        }
+
+        public override void Destroy()
+        {
+            base.Destroy();
+
+            var u = dynRevitSettings.Controller.Updater;
+            u.ElementsModified -= Updater_ElementsModified;
+            u.ElementsDeleted -= Updater_ElementsDeleted;
+        }
+
         protected void Updater_ElementsModified(IEnumerable<string> updated)
         {
             RequiresRecalc = true;
@@ -30,9 +46,6 @@ namespace DSRevitNodesUI
         {
             InPortData.Add(new PortData("Family Type", "The Family Type.", typeof(object)));
             OutPortData.Add(new PortData("Elements", "The list of elements matching the query.", typeof(object)));
-
-            dynRevitSettings.Controller.Updater.ElementsModified += Updater_ElementsModified;
-            dynRevitSettings.Controller.Updater.ElementsDeleted += Updater_ElementsDeleted;
 
             RegisterAllPorts();
         }
@@ -58,10 +71,7 @@ namespace DSRevitNodesUI
         {
             InPortData.Add(new PortData("Category", "The Category", typeof(object)));
             OutPortData.Add(new PortData("Elements", "The list of elements matching the query.", typeof(object)));
-
-            dynRevitSettings.Controller.Updater.ElementsModified += Updater_ElementsModified;
-            dynRevitSettings.Controller.Updater.ElementsDeleted += Updater_ElementsDeleted;
-
+            
             RegisterAllPorts();
         }
 
