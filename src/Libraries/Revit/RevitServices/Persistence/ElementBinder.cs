@@ -192,6 +192,24 @@ namespace RevitServices.Persistence
         }
 
 
+        /// <summary>
+        /// Raw method for setting data into the trace cache, the user of this method is reponsible for handling
+        /// the interpretation of the data
+        /// </summary>
+        /// <param name="data"></param>
+        public static void SetRawDataForTrace(ISerializable data)
+        {
+            TraceUtils.SetTraceData(REVIT_TRACE_ID, data);
+        }
+
+        /// <summary>
+        /// Raw method for getting data from the trace cache, the user is responsible for handling the interpretation
+        /// of the data
+        /// </summary>
+        public static ISerializable GetRawDataFromTrace()
+        {
+            return TraceUtils.GetTraceData(REVIT_TRACE_ID);
+        }
 
 
     }

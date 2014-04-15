@@ -64,6 +64,9 @@ Source: Extra\DynamoAddinsBackup.bat; DestDir: {app}; Flags: ignoreversion overw
 Source: temp\bin\LibG\*; DestDir: {app}\dll; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\InstallASMForDynamo.exe; DestDir:{app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 
+;UI
+Source: temp\bin\UI\*; DestDir: {app}\UI; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+
 ;Samples
 Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
@@ -130,7 +133,7 @@ begin
     end
   else
     begin
-    MsgBox('Dynamo requires an installation of Revit 2013, Revit 2014, or FormIt in order to proceed!', mbCriticalError, MB_OK);
+    MsgBox('Dynamo requires an installation of Revit 2013, Revit 2014, or Vasari Beta 3 in order to proceed!', mbCriticalError, MB_OK);
     result := false;
     end;
 end;

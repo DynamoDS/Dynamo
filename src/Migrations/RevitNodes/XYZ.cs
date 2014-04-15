@@ -805,10 +805,10 @@ namespace Dynamo.Nodes
             string codeBlockNodeId = MigrationManager.GetGuidFromXmlElement(codeBlockNode);
 
             codeBlockNode.SetAttribute("CodeText",
-                "Flatten(Point.ByCoordinates(X<1>,Y<2>,Z<3>));\n" +
-                "X = xstart..#xcount..xspace;\n" +
-                "Y = ystart..#ycount..yspace;\n" +
-                "Z = zstart..#zcount..zspace;");
+                "Flatten(Point.ByCoordinates(\n" +
+                "(xstart..#xcount..xspace)<1>,\n" +
+                "(ystart..#ycount..yspace)<2>,\n" +
+                "(zstart..#zcount..zspace)<3>));");
 
             codeBlockNode.SetAttribute("nickname", "XYZ Grid");
 
@@ -824,9 +824,6 @@ namespace Dynamo.Nodes
             PortId inPort6 = new PortId(codeBlockNodeId, 6, PortType.INPUT);
             PortId inPort7 = new PortId(codeBlockNodeId, 7, PortType.INPUT);
             PortId inPort8 = new PortId(codeBlockNodeId, 8, PortType.INPUT);
-            PortId inPort9 = new PortId(codeBlockNodeId, 9, PortType.INPUT);
-            PortId inPort10 = new PortId(codeBlockNodeId, 10, PortType.INPUT);
-            PortId inPort11 = new PortId(codeBlockNodeId, 11, PortType.INPUT);
             XmlElement connector0 = data.FindFirstConnector(inPort0);
             XmlElement connector1 = data.FindFirstConnector(inPort1);
             XmlElement connector2 = data.FindFirstConnector(inPort2);
@@ -837,15 +834,15 @@ namespace Dynamo.Nodes
             XmlElement connector7 = data.FindFirstConnector(inPort7);
             XmlElement connector8 = data.FindFirstConnector(inPort8);
 
-            data.ReconnectToPort(connector0, inPort4);
-            data.ReconnectToPort(connector1, inPort7);
-            data.ReconnectToPort(connector2, inPort10);
-            data.ReconnectToPort(connector3, inPort3);
-            data.ReconnectToPort(connector4, inPort6);
-            data.ReconnectToPort(connector5, inPort9);
-            data.ReconnectToPort(connector6, inPort5);
-            data.ReconnectToPort(connector7, inPort8);
-            data.ReconnectToPort(connector8, inPort11);
+            data.ReconnectToPort(connector0, inPort1);
+            data.ReconnectToPort(connector1, inPort4);
+            data.ReconnectToPort(connector2, inPort7);
+            data.ReconnectToPort(connector3, inPort0);
+            data.ReconnectToPort(connector4, inPort3);
+            data.ReconnectToPort(connector5, inPort6);
+            data.ReconnectToPort(connector6, inPort2);
+            data.ReconnectToPort(connector7, inPort5);
+            data.ReconnectToPort(connector8, inPort8);
 
             return migrationData;
         }

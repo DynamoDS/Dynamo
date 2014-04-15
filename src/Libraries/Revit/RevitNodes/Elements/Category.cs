@@ -20,6 +20,11 @@ namespace Revit.Elements
 
         #endregion
 
+        internal Autodesk.Revit.DB.Category InternalCategory
+        {
+            get { return internal_category; }
+        }
+
         #region public static constructors
 
         public static Category ByName(string name)

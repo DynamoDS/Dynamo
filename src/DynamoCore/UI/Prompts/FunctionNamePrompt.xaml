@@ -1,15 +1,16 @@
 ﻿<Window x:Class="Dynamo.Nodes.FunctionNamePrompt"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:Dynamo.UI"
         Title="Custom Node Properties" Height="410" Width="400" WindowStartupLocation="CenterOwner"
         Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                    <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
-                    <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
-                    <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>

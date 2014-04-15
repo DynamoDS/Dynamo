@@ -3,16 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:packagemanager="clr-namespace:Dynamo.PackageManager.UI" xmlns:local="clr-namespace:Dynamo.PackageManager"        
+        xmlns:packagemanager="clr-namespace:Dynamo.PackageManager.UI" xmlns:local="clr-namespace:Dynamo.PackageManager"
+        xmlns:ui="clr-namespace:Dynamo.UI"
         mc:Ignorable="d" 
              Height="590" Width="700" ResizeMode="CanResizeWithGrip" Name="PublishInfoControl" Title="Publish a Dynamo Package" Visibility="Visible">
     
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>

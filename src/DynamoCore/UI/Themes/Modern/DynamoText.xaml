@@ -1,0 +1,5 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:clr="clr-namespace:System;assembly=mscorlib">
+    <clr:String x:Key="dyn_text_name">Dynamo</clr:String>
+</ResourceDictionary>

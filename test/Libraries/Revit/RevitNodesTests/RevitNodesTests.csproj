@@ -108,7 +108,6 @@
     <Compile Include="GeometryConversion\BoundingBoxTests.cs" />
     <Compile Include="GeometryObjects\SolidTests.cs" />
     <Compile Include="GeometryTests.cs" />
-    <Compile Include="Interactivity\SelectionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtoGeometryTest.cs" />
     <Compile Include="RevitNodeTestBase.cs" />

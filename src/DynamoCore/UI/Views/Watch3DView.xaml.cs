@@ -281,128 +281,121 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void RenderDrawables(VisualizationEventArgs e)
         {
-            try
+            //check the id, if the id is meant for another watch,
+            //then ignore it
+            if (e.Id != _id)
             {
-                //check the id, if the id is meant for another watch,
-                //then ignore it
-                if (e.Id != _id)
-                {
-                    return;
-                }
-
-                var sw = new Stopwatch();
-                sw.Start();
-
-                Points = null;
-                Lines = null;
-                Mesh = null;
-                XAxes = null;
-                YAxes = null;
-                ZAxes = null;
-                PointsSelected = null;
-                LinesSelected = null;
-                MeshSelected = null;
-                Text = null;
-                MeshCount = 0;
-
-                //separate the selected packages
-                var packages = e.Packages.Where(x => x.Selected == false).ToArray();
-                var selPackages = e.Packages.Where(x => x.Selected).ToArray();
-
-                //pre-size the points collections
-                var pointsCount = packages.Select(x => x.PointVertices.Count/3).Sum();
-                var selPointsCount = selPackages.Select(x => x.PointVertices.Count / 3).Sum();
-                var points = new Point3DCollection(pointsCount);
-                var pointsSelected = new Point3DCollection(selPointsCount);
-
-                //pre-size the lines collections
-                //these sizes are conservative as the axis lines will be
-                //taken from the linestripvertex collections as well.
-                var lineCount = packages.Select(x => x.LineStripVertices.Count/3).Sum();
-                var lineSelCount = selPackages.Select(x => x.LineStripVertices.Count / 3).Sum();
-                var lines = new Point3DCollection(lineCount);
-                var linesSelected = new Point3DCollection(lineSelCount);
-                var redLines = new Point3DCollection(lineCount);
-                var greenLines = new Point3DCollection(lineCount);
-                var blueLines = new Point3DCollection(lineCount);
-
-                //pre-size the text collection
-                var textCount = e.Packages.Count(x => x.DisplayLabels);
-                var text = new List<BillboardTextItem>(textCount);
-
-                //http://blogs.msdn.com/b/timothyc/archive/2006/08/31/734308.aspx
-                //presize the mesh collections
-                var meshVertCount = packages.Select(x => x.TriangleVertices.Count / 3).Sum();
-                var meshVertSelCount = selPackages.Select(x => x.TriangleVertices.Count / 3).Sum();
-
-                var mesh = new MeshGeometry3D();
-                var meshSel = new MeshGeometry3D();
-                var verts = new Point3DCollection(meshVertCount);
-                var vertsSel = new Point3DCollection(meshVertSelCount);
-                var norms = new Vector3DCollection(meshVertCount);
-                var normsSel = new Vector3DCollection(meshVertSelCount);
-                var tris = new Int32Collection(meshVertCount);
-                var trisSel = new Int32Collection(meshVertSelCount);
-                
-                foreach (var package in packages)
-                {
-                    ConvertPoints(package, points, text);
-                    ConvertLines(package, lines, redLines, greenLines, blueLines, text);
-                    ConvertMeshes(package, verts, norms, tris);
-                }
-
-                foreach (var package in selPackages)
-                {
-                    ConvertPoints(package, pointsSelected, text);
-                    ConvertLines(package, linesSelected, redLines, greenLines, blueLines, text);
-                    ConvertMeshes(package, vertsSel, normsSel, trisSel);
-                }
-
-                points.Freeze();
-                pointsSelected.Freeze();
-                Points = points;
-                PointsSelected = pointsSelected;
-
-                lines.Freeze();
-                linesSelected.Freeze();
-                redLines.Freeze();
-                greenLines.Freeze();
-                blueLines.Freeze();
-                Lines = lines;
-                LinesSelected = linesSelected;
-                XAxes = redLines;
-                YAxes = greenLines;
-                ZAxes = blueLines;
-
-                verts.Freeze();
-                norms.Freeze();
-                tris.Freeze();
-                vertsSel.Freeze();
-                normsSel.Freeze();
-                trisSel.Freeze();
-
-                mesh.Positions = verts;
-                mesh.Normals = norms;
-                mesh.TriangleIndices = tris;
-                meshSel.Positions = vertsSel;
-                meshSel.Normals = normsSel;
-                meshSel.TriangleIndices = trisSel;
-
-                Mesh = mesh;
-                MeshSelected = meshSel;
-
-                Text = text;
-
-                sw.Stop();
-                
-                GC.Collect();
-
-                Debug.WriteLine(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
+                return;
             }
-            catch (InvalidOperationException exp)
+
+            var sw = new Stopwatch();
+            sw.Start();
+
+            Points = null;
+            Lines = null;
+            Mesh = null;
+            XAxes = null;
+            YAxes = null;
+            ZAxes = null;
+            PointsSelected = null;
+            LinesSelected = null;
+            MeshSelected = null;
+            Text = null;
+            MeshCount = 0;
+
+            //separate the selected packages
+            var packages = e.Packages.Where(x => x.Selected == false).ToArray();
+            var selPackages = e.Packages.Where(x => x.Selected).ToArray();
+
+            //pre-size the points collections
+            var pointsCount = packages.Select(x => x.PointVertices.Count/3).Sum();
+            var selPointsCount = selPackages.Select(x => x.PointVertices.Count / 3).Sum();
+            var points = new Point3DCollection(pointsCount);
+            var pointsSelected = new Point3DCollection(selPointsCount);
+
+            //pre-size the lines collections
+            //these sizes are conservative as the axis lines will be
+            //taken from the linestripvertex collections as well.
+            var lineCount = packages.Select(x => x.LineStripVertices.Count/3).Sum();
+            var lineSelCount = selPackages.Select(x => x.LineStripVertices.Count / 3).Sum();
+            var lines = new Point3DCollection(lineCount);
+            var linesSelected = new Point3DCollection(lineSelCount);
+            var redLines = new Point3DCollection(lineCount);
+            var greenLines = new Point3DCollection(lineCount);
+            var blueLines = new Point3DCollection(lineCount);
+
+            //pre-size the text collection
+            var textCount = e.Packages.Count(x => x.DisplayLabels);
+            var text = new List<BillboardTextItem>(textCount);
+
+            //http://blogs.msdn.com/b/timothyc/archive/2006/08/31/734308.aspx
+            //presize the mesh collections
+            var meshVertCount = packages.Select(x => x.TriangleVertices.Count / 3).Sum();
+            var meshVertSelCount = selPackages.Select(x => x.TriangleVertices.Count / 3).Sum();
+
+            var mesh = new MeshGeometry3D();
+            var meshSel = new MeshGeometry3D();
+            var verts = new Point3DCollection(meshVertCount);
+            var vertsSel = new Point3DCollection(meshVertSelCount);
+            var norms = new Vector3DCollection(meshVertCount);
+            var normsSel = new Vector3DCollection(meshVertSelCount);
+            var tris = new Int32Collection(meshVertCount);
+            var trisSel = new Int32Collection(meshVertSelCount);
+                
+            foreach (var package in packages)
             {
-                Debug.WriteLine("WARNING: Exception occured in rendering " + exp.ToString());
+                ConvertPoints(package, points, text);
+                ConvertLines(package, lines, redLines, greenLines, blueLines, text);
+                ConvertMeshes(package, verts, norms, tris);
             }
+
+            foreach (var package in selPackages)
+            {
+                ConvertPoints(package, pointsSelected, text);
+                ConvertLines(package, linesSelected, redLines, greenLines, blueLines, text);
+                ConvertMeshes(package, vertsSel, normsSel, trisSel);
+            }
+
+            points.Freeze();
+            pointsSelected.Freeze();
+            Points = points;
+            PointsSelected = pointsSelected;
+
+            lines.Freeze();
+            linesSelected.Freeze();
+            redLines.Freeze();
+            greenLines.Freeze();
+            blueLines.Freeze();
+            Lines = lines;
+            LinesSelected = linesSelected;
+            XAxes = redLines;
+            YAxes = greenLines;
+            ZAxes = blueLines;
+
+            verts.Freeze();
+            norms.Freeze();
+            tris.Freeze();
+            vertsSel.Freeze();
+            normsSel.Freeze();
+            trisSel.Freeze();
+
+            mesh.Positions = verts;
+            mesh.Normals = norms;
+            mesh.TriangleIndices = tris;
+            meshSel.Positions = vertsSel;
+            meshSel.Normals = normsSel;
+            meshSel.TriangleIndices = trisSel;
+
+            Mesh = mesh;
+            MeshSelected = meshSel;
+
+            Text = text;
+
+            sw.Stop();
+                
+            GC.Collect();
+
+            Debug.WriteLine(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
         }
 
         private void ConvertPoints(RenderPackage p,

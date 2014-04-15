@@ -102,6 +102,9 @@ namespace DSCore
             var result = new List<object>();
             int len = list.Count;
 
+            if (offset <= 0)
+                throw new ArgumentException("Must be greater than zero.", "offset");
+
             for (int start = 0; start < len; start += offset)
             {
                 var row = new List<object>();
