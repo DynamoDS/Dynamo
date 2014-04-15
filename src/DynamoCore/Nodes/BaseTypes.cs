@@ -1074,6 +1074,7 @@ namespace Dynamo.Nodes
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
                 "List.Sublists", "List.Sublists@var[]..[],var[]..[],int");
+            newNode.SetAttribute("lacing","shortest");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -1763,6 +1764,21 @@ namespace Dynamo.Nodes
 
                                 return new Range(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken, convertToken);
                             }
+
+                            double identifierValue0, identifierValue1;
+                            var canBeParsed0 = System.Double.TryParse(rangeIdentifiers[0], out identifierValue0);
+                            var canBeParsed1 = System.Double.TryParse(rangeIdentifiers[1], out identifierValue1);
+
+                            //both of the value can be parsed as double
+                            if (canBeParsed0 && canBeParsed1)
+                            {
+                                if (identifierValue0 < identifierValue1) 
+                                    return new Range(startToken, new DoubleToken(1), endToken, convertToken) as IDoubleSequence;
+                                else
+                                    return new Range(startToken, new DoubleToken(-1), endToken, convertToken) as IDoubleSequence;                              
+                            }
+
+                            //the input cannot be parsed as double, return a default function and let it handle the error
                             return new Range(startToken, new DoubleToken(1), endToken, convertToken) as IDoubleSequence;
                         }
 

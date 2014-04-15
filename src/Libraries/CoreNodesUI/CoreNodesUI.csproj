@@ -67,6 +67,7 @@
     <Compile Include="Logic\AndOr.cs" />
     <Compile Include="Input\Sliders.cs" />
     <Compile Include="Logic\If.cs" />
+    <Compile Include="NumberRange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
