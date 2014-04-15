@@ -4,9 +4,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Serialization;
 using Autodesk.RevitAddIns;
+using Dynamo.NUnit.Tests;
 using Dynamo.Tests;
 using Dynamo.Utilities;
+using Microsoft.Practices.Prism.ViewModel;
 using NDesk.Options;
 using NUnit.Framework;
 
@@ -400,6 +403,8 @@ namespace RevitTestFrameworkRunner
             var process = new Process { StartInfo = startInfo };
             process.Start();
 
+            var timedOut = false;
+
             if (_isDebug)
             {
                 process.WaitForExit();
@@ -410,13 +415,63 @@ namespace RevitTestFrameworkRunner
                 {
                     process.Kill();
                     System.Threading.Thread.Sleep(10000);
+                    td.TestStatus = TestStatus.TimedOut;
+                    timedOut = true;
                 }
             }
+
+            if(!timedOut)
+                GetTestResultStatus(td);
 
             _runCount --;
             if (_runCount == 0)
             {
                 OnTestRunsComplete();
+            }
+        }
+
+        private static void GetTestResultStatus(ITestData td)
+        {
+            //set the test status
+            var results = LoadResults(_results);
+            if (results != null)
+            {
+                //find our results in the results
+                var mainSuite = results.testsuite;
+                var ourSuite =
+                    results.testsuite.results.Items
+                        .Cast<testsuiteType>()
+                        .FirstOrDefault(s => s.name == td.Fixture.Name);
+                var ourTest = ourSuite.results.Items
+                    .Cast<testcaseType>().FirstOrDefault(t => t.name == td.Name);
+
+                switch (ourTest.result)
+                {
+                    case "Cancelled":
+                        td.TestStatus = TestStatus.Cancelled;
+                        break;
+                    case "Error":
+                        td.TestStatus = TestStatus.Error;
+                        break;
+                    case "Failure":
+                        td.TestStatus = TestStatus.Failure;
+                        break;
+                    case "Ignored":
+                        td.TestStatus = TestStatus.Ignored;
+                        break;
+                    case "Inconclusive":
+                        td.TestStatus = TestStatus.Inconclusive;
+                        break;
+                    case "NotRunnable":
+                        td.TestStatus = TestStatus.NotRunnable;
+                        break;
+                    case "Skipped":
+                        td.TestStatus = TestStatus.Skipped;
+                        break;
+                    case "Success":
+                        td.TestStatus = TestStatus.Success;
+                        break;
+                }
             }
         }
 
@@ -444,6 +499,20 @@ namespace RevitTestFrameworkRunner
             {
                 Console.WriteLine("One or more journal files could not be deleted.");
             }
+        }
+
+        private static resultType LoadResults(string resultsPath)
+        {
+            resultType results = null;
+
+            //write to the file
+            var x = new XmlSerializer(typeof(resultType));
+            using (var reader = new StreamReader(resultsPath))
+            {
+                results = (resultType)x.Deserialize(reader);
+            }
+
+            return results;
         }
     }
 
@@ -474,11 +543,24 @@ namespace RevitTestFrameworkRunner
         }
     }
 
-    internal class TestData : ITestData
+    internal class TestData : NotificationObject, ITestData
     {
+        private TestStatus _testStatus;
+
         public string Name { get; set; }
         public bool RunDynamo { get; set; }
         public string ModelPath { get; set; }
+
+        public TestStatus TestStatus
+        {
+            get { return _testStatus; }
+            set
+            {
+                _testStatus = value; 
+                RaisePropertyChanged("TestStatus");
+            }
+        }
+
         public IFixtureData Fixture { get; set; }
 
         public TestData(IFixtureData fixture, string name, string modelPath, bool runDynamo)
@@ -487,6 +569,7 @@ namespace RevitTestFrameworkRunner
             Name = name;
             ModelPath = modelPath;
             RunDynamo = runDynamo;
+            _testStatus = TestStatus.None;
         }
     }
 }

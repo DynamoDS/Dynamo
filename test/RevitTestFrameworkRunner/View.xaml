@@ -11,9 +11,10 @@
         <revitTestFrameworkRunner:WorkingPathConverter x:Key="WorkingPathConverter"></revitTestFrameworkRunner:WorkingPathConverter>
         <revitTestFrameworkRunner:ResultsPathConverter x:Key="ResultsPathConverter"></revitTestFrameworkRunner:ResultsPathConverter>
         <revitTestFrameworkRunner:StringToIntConverter x:Key="StringToIntConverter"></revitTestFrameworkRunner:StringToIntConverter>
+        <revitTestFrameworkRunner:TestStatusToColorConverter x:Key="TestStatusToColorConverter"></revitTestFrameworkRunner:TestStatusToColorConverter>
         
         <HierarchicalDataTemplate x:Key="TestTemplate" DataType="{x:Type revitTestFrameworkRunner:TestData}">
-            <StackPanel Orientation="Horizontal" Tag="{Binding ElementName=TestDataTreeView, Path=DataContext}">
+            <StackPanel Orientation="Horizontal" Tag="{Binding ElementName=TestDataTreeView, Path=DataContext}" Background="{Binding TestStatus, Converter={StaticResource TestStatusToColorConverter}, Mode= OneWay}">
                 <TextBlock Text="{Binding Name}" VerticalAlignment="Center"></TextBlock>
                 <TextBlock Text="-->" VerticalAlignment="Center"></TextBlock>
                 <TextBlock Text="{Binding ModelPath}" VerticalAlignment="Center"></TextBlock>
