@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
+using Revit.Elements.InternalUtilities;
 
 namespace DSRevitNodesUI
 {
@@ -44,20 +46,20 @@ namespace DSRevitNodesUI
     {
         public ElementsOfFamilyType()
         {
-            InPortData.Add(new PortData("Family Type", "The Family Type.", typeof(object)));
-            OutPortData.Add(new PortData("Elements", "The list of elements matching the query.", typeof(object)));
+            InPortData.Add(new PortData("Family Type", "The Family Type."));
+            OutPortData.Add(new PortData("Elements", "The list of elements matching the query."));
 
             RegisterAllPorts();
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var functionCall = AstFactory.BuildFunctionCall("ElementQueries", "OfFamilyType", inputAstNodes);
+            var func =
+                new Func<Revit.Elements.FamilySymbol, IList<Revit.Elements.Element>>(
+                    ElementQueries.OfFamilyType);
 
-            return new[]
-            {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall)
-            };
+            var functionCall = AstFactory.BuildFunctionCall(func, inputAstNodes);
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
     }
 
@@ -69,20 +71,41 @@ namespace DSRevitNodesUI
     {
         public ElementsOfCategory()
         {
-            InPortData.Add(new PortData("Category", "The Category", typeof(object)));
-            OutPortData.Add(new PortData("Elements", "The list of elements matching the query.", typeof(object)));
+            InPortData.Add(new PortData("Category", "The Category"));
+            OutPortData.Add(new PortData("Elements", "The list of elements matching the query."));
             
             RegisterAllPorts();
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var functionCall = AstFactory.BuildFunctionCall("ElementQueries", "OfCategory", inputAstNodes);
+            var func =
+                new Func<Revit.Elements.Category, IList<Revit.Elements.Element>>(ElementQueries.OfCategory);
 
-            return new[]
-            {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall)
-            };
+            var functionCall = AstFactory.BuildFunctionCall(func, inputAstNodes);
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+        }
+    }
+
+    [NodeName("All Elements at Level")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("Get all the elements oatthe specified Level from the model.")]
+    [IsDesignScriptCompatible]
+    public class ElementsAtLevel : ElementsQueryBase
+    {
+        public ElementsAtLevel()
+        {
+            InPortData.Add(new PortData("Level", "A Level"));
+            OutPortData.Add(new PortData("Elements", "Elements at the given level."));
+            
+            RegisterAllPorts();
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            var func = new Func<Revit.Elements.Level, IList<Revit.Elements.Element>>(ElementQueries.AtLevel);
+            var functionCall = AstFactory.BuildFunctionCall(func, inputAstNodes);
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
     }
 }
