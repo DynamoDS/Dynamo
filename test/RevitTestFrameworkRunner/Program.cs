@@ -142,12 +142,12 @@ namespace RevitTestFrameworkRunner
 
         static void Program_TestRunsComplete(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(_results) && 
-                File.Exists(_results) &&
-                _gui)
-            {
-                Process.Start(_results);
-            }
+            //if (!string.IsNullOrEmpty(_results) && 
+            //    File.Exists(_results) &&
+            //    _gui)
+            //{
+            //    Process.Start(_results);
+            //}
         }
 
         private static bool FindRevit(IList<RevitProduct> productList)
@@ -575,7 +575,7 @@ namespace RevitTestFrameworkRunner
             set
             {
                 _stackTrace = value;
-                RaisePropertyChanged("Message");
+                RaisePropertyChanged("StackTrace");
             }
         }
 

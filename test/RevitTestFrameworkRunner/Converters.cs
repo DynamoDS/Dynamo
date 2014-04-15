@@ -78,7 +78,7 @@ namespace RevitTestFrameworkRunner
             switch (status)
             {
                 case TestStatus.None:
-                    return new SolidColorBrush(Colors.White);
+                    return Brushes.Transparent;
                 case TestStatus.Cancelled:
                     return  new SolidColorBrush(Colors.LightGray);
                 case TestStatus.Error:
@@ -86,17 +86,17 @@ namespace RevitTestFrameworkRunner
                 case TestStatus.Failure:
                     return new SolidColorBrush(Colors.OrangeRed);
                 case TestStatus.Ignored:
-                    return new SolidColorBrush(Colors.White);
+                    return Brushes.Transparent;
                 case TestStatus.Inconclusive:
                     return new SolidColorBrush(Colors.DarkRed);
                 case TestStatus.NotRunnable:
                     return new SolidColorBrush(Colors.DarkGray);
                 case TestStatus.Skipped:
-                    return new SolidColorBrush(Colors.White);
+                    return Brushes.Transparent;
                 case TestStatus.Success:
                     return new SolidColorBrush(Colors.GreenYellow);
                 default:
-                    return new SolidColorBrush(Colors.White);
+                    return Brushes.Transparent;
             }
         }
 

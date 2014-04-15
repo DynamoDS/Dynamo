@@ -14,8 +14,8 @@
         <revitTestFrameworkRunner:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter"></revitTestFrameworkRunner:EmptyStringToCollapsedConverter>
         
         <HierarchicalDataTemplate x:Key="TestTemplate" DataType="{x:Type revitTestFrameworkRunner:TestData}">
-            <StackPanel Orientation="Vertical" Tag="{Binding ElementName=TestDataTreeView, Path=DataContext}" Background="{Binding TestStatus, Converter={StaticResource TestStatusToColorConverter}, Mode= OneWay}">
-                <TextBlock Text="{Binding Name}" HorizontalAlignment="Left"></TextBlock>
+            <StackPanel Orientation="Vertical" Tag="{Binding ElementName=TestDataTreeView, Path=DataContext}">
+                <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" Background="{Binding TestStatus, Converter={StaticResource TestStatusToColorConverter}, Mode= OneWay}"></TextBlock>
                 <TextBlock Text="{Binding ModelPath}" HorizontalAlignment="Left"></TextBlock>
                 <TextBlock Text="{Binding Message}" HorizontalAlignment="Left" Visibility="{Binding Message, Converter={StaticResource EmptyStringToCollapsedConverter}}"></TextBlock>
                 <TextBlock Text="{Binding StackTrace}" HorizontalAlignment="Left" Visibility="{Binding Message, Converter={StaticResource EmptyStringToCollapsedConverter}}"></TextBlock>
