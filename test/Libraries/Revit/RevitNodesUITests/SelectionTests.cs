@@ -31,7 +31,7 @@ namespace Dynamo.Tests
                 trans.Commit();
             }
 
-            var sel = new DSModelElementSelection { SelectedElement = refPoint.UniqueId };
+            var sel = new DSModelElementSelection { SelectedElement = refPoint.Id };
 
             var buildOutput = sel.BuildOutputAst(new List<AssociativeNode>());
 

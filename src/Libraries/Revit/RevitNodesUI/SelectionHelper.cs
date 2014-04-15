@@ -283,7 +283,7 @@ namespace Revit.Interactivity
             return l;
         }
 
-        public static string RequestAnalysisResultInstanceSelection(string message)
+        public static ElementId RequestAnalysisResultInstanceSelection(string message)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
             
@@ -311,7 +311,7 @@ namespace Revit.Interactivity
                     {
                         var analysisResult = doc.Document.GetElement(fsRef.ElementId);
 
-                        return analysisResult.UniqueId;
+                        return analysisResult.Id;
                     }
                     return null;
                 }
@@ -324,7 +324,7 @@ namespace Revit.Interactivity
             }
         }
 
-        public static string RequestModelElementSelection(string message)
+        public static ElementId RequestModelElementSelection(string message)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -342,10 +342,10 @@ namespace Revit.Interactivity
                 if (selectedElement is FamilyInstance || selectedElement is HostObject ||
                         selectedElement is ImportInstance ||
                         selectedElement is CombinableElement)
-                    return selectedElement.UniqueId;
+                    return selectedElement.Id;
             }
 
-            return selectedElement != null ? selectedElement.UniqueId : null;
+            return selectedElement != null ? selectedElement.Id : null;
         }
 
         public static Reference RequestReferenceXYZSelection(string message)

@@ -82,6 +82,7 @@
     <Compile Include="Elements\AbstractFamilyInstance.cs" />
     <Compile Include="Elements\CurveByPoints.cs" />
     <Compile Include="Elements\CurveElement.cs" />
+    <Compile Include="Elements\InternalUtilities\ElementQueries.cs" />
     <Compile Include="Elements\UnknownElement.cs" />
     <Compile Include="Elements\FloorType.cs" />
     <Compile Include="Elements\ImportInstance.cs" />

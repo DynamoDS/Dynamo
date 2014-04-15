@@ -398,9 +398,17 @@ namespace RevitTestFrameworkRunner
             process.Start();
 
             if (_isDebug)
+            {
                 process.WaitForExit();
+            }  
             else
-                process.WaitForExit(120000);
+            {
+                if (!process.WaitForExit(120000))
+                {
+                    process.Kill();
+                    System.Threading.Thread.Sleep(10000);
+                }
+            }
 
             _runCount --;
             if (_runCount == 0)
@@ -411,20 +419,27 @@ namespace RevitTestFrameworkRunner
 
         internal static void Cleanup()
         {
-            foreach (var path in _journalPaths)
+            try
             {
-                if (File.Exists(path))
+                foreach (var path in _journalPaths)
                 {
-                    File.Delete(path);
+                    if (File.Exists(path))
+                    {
+                        File.Delete(path);
+                    }
+                }
+
+                _journalPaths.Clear();
+
+                var journals = Directory.GetFiles(_workingDirectory, "journal.*.txt");
+                foreach (var journal in journals)
+                {
+                    File.Delete(journal);
                 }
             }
-
-            _journalPaths.Clear();
-
-            var journals = Directory.GetFiles(_workingDirectory, "journal.*.txt");
-            foreach (var journal in journals)
+            catch (IOException ex)
             {
-                File.Delete(journal);
+                Console.WriteLine("One or more journal files could not be deleted.");
             }
         }
     }

@@ -20,7 +20,7 @@ namespace Dynamo.Nodes
         public UnresolvedFunctionException(string functionName)
             : base("Cannot find function: " + functionName)
         {
-            this.FunctionName = functionName;
+            FunctionName = functionName;
         }
 
         public string FunctionName { get; private set; }
@@ -123,7 +123,7 @@ namespace Dynamo.Nodes
             else
             {
                 string displayReturnType = IsConstructor() ? Definition.UnqualifedClassName : Definition.ReturnType;
-                OutPortData.Add(new PortData("", displayReturnType));
+                OutPortData.Add(new PortData(displayReturnType, displayReturnType));
             }
 
             RegisterAllPorts();
@@ -145,8 +145,8 @@ namespace Dynamo.Nodes
             if (context == SaveContext.File)
             {
                 // We only make relative paths in a file saving operation.
-                var docPath = Nodes.Utilities.GetDocumentXmlPath(xmlDoc);
-                asmPath = Nodes.Utilities.MakeRelativePath(docPath, asmPath);
+                var docPath = Utilities.GetDocumentXmlPath(xmlDoc);
+                asmPath = Utilities.MakeRelativePath(docPath, asmPath);
             }
 
             nodeElement.SetAttribute("assembly", asmPath);
@@ -192,8 +192,8 @@ namespace Dynamo.Nodes
             if (!string.IsNullOrEmpty(assembly))
             {
                 var document = nodeElement.OwnerDocument;
-                var docPath = Nodes.Utilities.GetDocumentXmlPath(document);
-                assembly = Nodes.Utilities.MakeAbsolutePath(docPath, assembly);
+                var docPath = Utilities.GetDocumentXmlPath(document);
+                assembly = Utilities.MakeAbsolutePath(docPath, assembly);
 
                 engine.ImportLibrary(assembly);
                 Definition = engine.GetFunctionDescriptor(assembly, function);
@@ -580,8 +580,8 @@ namespace Dynamo.Nodes
             if (context == SaveContext.File)
             {
                 // We only make relative paths in a file saving operation.
-                var docPath = Nodes.Utilities.GetDocumentXmlPath(xmlDoc);
-                asmPath = Nodes.Utilities.MakeRelativePath(docPath, asmPath);
+                var docPath = Utilities.GetDocumentXmlPath(xmlDoc);
+                asmPath = Utilities.MakeRelativePath(docPath, asmPath);
             }
 
             base.SaveNode(xmlDoc, nodeElement, context);
@@ -635,8 +635,8 @@ namespace Dynamo.Nodes
             if (!string.IsNullOrEmpty(assembly))
             {
                 var document = nodeElement.OwnerDocument;
-                var docPath = Nodes.Utilities.GetDocumentXmlPath(document);
-                assembly = Nodes.Utilities.MakeAbsolutePath(docPath, assembly);
+                var docPath = Utilities.GetDocumentXmlPath(document);
+                assembly = Utilities.MakeAbsolutePath(docPath, assembly);
 
                 engine.ImportLibrary(assembly);
                 Definition = engine.GetFunctionDescriptor(assembly, function);

@@ -6,12 +6,35 @@ using System.Linq;
 using System.Text;
 using Dynamo.Nodes;
 using NUnit.Framework;
+using DSCoreNodesUI;
 
 namespace Dynamo.Tests
 {
     public class NodeMigrationTests : Dynamo.Tests.DSEvaluationUnitTest
     {
         #region Dynamo Core Node Migration Tests
+
+        [Test]
+        public void TestOverall00()
+        {
+            //currently, the color range node is excluded in the test.
+            OpenModel(GetDynPath("TestOverall00.dyn"));
+            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();   
+
+            int noOfNdoes = nodes.Count(); 
+            Assert.AreEqual(0, noOfNdoes);
+        }
+
+        [Test]
+        public void TestOverall01()
+        {
+            //currently, the color range node is excluded in the test.
+            OpenModel(GetDynPath("TestOverall01.dyn"));
+            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
+
+            int noOfNdoes = nodes.Count();
+            Assert.AreEqual(0, noOfNdoes);
+        }
 
         [Test]
         public void TestStringInput()

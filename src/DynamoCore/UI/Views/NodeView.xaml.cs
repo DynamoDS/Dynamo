@@ -155,8 +155,12 @@ namespace Dynamo.Controls
             }
         }
 
-        void ViewModel_RequestShowNodeRename(object sender, EventArgs e)
+        void ViewModel_RequestShowNodeRename(object sender, NodeDialogEventArgs e)
         {
+            if (e.Handled) return;
+
+            e.Handled = true;
+
             var editWindow = new EditWindow
             {
                 DataContext = ViewModel,
@@ -176,7 +180,7 @@ namespace Dynamo.Controls
             editWindow.ShowDialog();
         }
 
-        void ViewModel_RequestShowNodeHelp(object sender, NodeHelpEventArgs e)
+        void ViewModel_RequestShowNodeHelp(object sender, NodeDialogEventArgs e)
         {
             if (e.Handled) return;
 

@@ -23,7 +23,6 @@ using Greg;
 using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
-using ChangeType = RevitServices.Elements.ChangeType;
 using CurveLoop = Autodesk.Revit.DB.CurveLoop;
 using ReferencePlane = Autodesk.Revit.DB.ReferencePlane;
 using RevThread = RevitServices.Threading;
@@ -184,8 +183,8 @@ namespace Dynamo
                 || !VisualizationManager.DrawToAlternateContext)
                 return;
 
-            IEnumerable<FScheme.Value> values = dynSettings.Controller.DynamoModel.Nodes.Where(
-                x => !(x is SelectionBase)).Where(x => x.IsVisible).Where(x => x.OldValue != null)
+            IEnumerable<FScheme.Value> values = dynSettings.Controller.DynamoModel.Nodes
+                .Where(x => x.IsVisible).Where(x => x.OldValue != null)
                 //.Where(x => x.OldValue is Value.Container || x.OldValue is Value.List)
                 .Select(x => x.OldValue.Data as FScheme.Value);
 
@@ -819,7 +818,7 @@ namespace Dynamo
         private readonly Dictionary<ElementUpdateDelegate, HashSet<string>> transDelElements =
             new Dictionary<ElementUpdateDelegate, HashSet<string>>();
 
-        private readonly List<string> transElements = new List<string>();
+        private readonly List<ElementId> transElements = new List<ElementId>();
 
         internal void RegisterSuccessfulDeleteHook(string id, ElementUpdateDelegate updateDelegate)
         {
@@ -838,23 +837,6 @@ namespace Dynamo
                 kvp.Key(kvp.Value);
         }
 
-        internal void RegisterDMUHooks(string id, ElementUpdateDelegate updateDelegate)
-        {
-            ElementUpdateDelegate del = delegate(IEnumerable<string> deleted)
-            {
-                var delIds = deleted as IList<string> ?? deleted.ToList();
-                foreach (var invId in delIds)
-                {
-                    Updater.UnRegisterChangeHook(invId, ChangeType.Modify);
-                    Updater.UnRegisterChangeHook(invId, ChangeType.Delete);
-                }
-                updateDelegate(delIds);
-            };
-
-            Updater.RegisterChangeHook(id, ChangeType.Delete, del);
-            transElements.Add(id);
-        }
-
         #endregion
 
         #region Revit Transaction Management
@@ -865,7 +847,7 @@ namespace Dynamo
 
         private void TransactionManager_TransactionCancelled()
         {
-            Updater.RollBack(transElements);
+            Updater.RollBack(DocumentManager.Instance.CurrentDBDocument, transElements);
             transElements.Clear();
             transDelElements.Clear();
         }
