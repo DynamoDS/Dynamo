@@ -239,6 +239,11 @@ namespace Dynamo.ViewModels
             CurrentSpace.HasUnsavedChanges = true;
         }
 
+        private void CreateCustomNodeImpl(CreateCustomNodeCommand command)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }
