@@ -132,11 +132,11 @@ namespace ProtoCore.DSASM
 
         public StackFrame(int globalOffset)
         {
-            StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(ProtoCore.DSASM.Constants.kInvalidPointer);
-            int ci = ProtoCore.DSASM.Constants.kInvalidIndex;
-            int fi = ProtoCore.DSASM.Constants.kInvalidIndex;
-            int returnAddr = ProtoCore.DSASM.Constants.kInvalidIndex;
-            int blockDecl = ProtoCore.DSASM.Constants.kInvalidIndex;
+            StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(Constants.kInvalidPointer);
+            int ci = Constants.kInvalidIndex;
+            int fi = Constants.kInvalidIndex;
+            int returnAddr = Constants.kInvalidIndex;
+            int blockDecl = Constants.kInvalidIndex;
             int blockCaller = 0;
 
             StackFrameType callerType = StackFrameType.kTypeLanguage;
@@ -151,6 +151,36 @@ namespace ProtoCore.DSASM
         {
             Validity.Assert(null != Frame);
             return Frame[(int)index];
+        }
+
+        public int GetReturnAddress()
+        {
+            var stackValue = this.GetAt(DSASM.StackFrame.AbsoluteIndex.kReturnAddress);
+            return (int)stackValue.opdata;
+        }
+
+        public int GetFunctionBlock()
+        {
+            var stackValue = this.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock);
+            return (int)stackValue.opdata;
+        }
+
+        public int GetFunctionCallerBlock()
+        {
+            var stackValue = this.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionCallerBlock);
+            return (int)stackValue.opdata;
+        }
+
+        public StackFrameType GetStackFrameType()
+        {
+            var stackValue = this.GetAt(DSASM.StackFrame.AbsoluteIndex.kStackFrameType);
+            return (StackFrameType)stackValue.opdata;
+        }
+
+        public int GetCallerClassIndex()
+        {
+            var stackValue = this.GetAt(DSASM.StackFrame.AbsoluteIndex.kClass);
+            return (int)stackValue.opdata;
         }
 
         public List<StackValue> GetRegisters()

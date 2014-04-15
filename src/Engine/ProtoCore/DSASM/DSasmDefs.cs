@@ -508,7 +508,6 @@ namespace ProtoCore.DSASM
         public const string kFunctionRangeExpression = "%generate_range";
         public const string kDotMethodName = "%dot";
         public const string kDotArgMethodName = "%dotarg";
-        public const string kDotDynamicResolve = "%dotDynamicResolve";
         public const string kInlineConditionalMethodName = "%inlineconditional";
         public const string kInlineCondition = "%InlineCondition";
         public const string kGetTypeMethodName = "%get_type";
