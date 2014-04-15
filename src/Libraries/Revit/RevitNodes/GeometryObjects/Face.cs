@@ -108,12 +108,14 @@ namespace Revit.GeometryObjects
             try
             {
                 var result = InternalFace.Project(point.ToXyz());
+                if (result == null) return null;
+
                 return new Dictionary<string, object>()
                 {
-                    {"point", result.XYZPoint.ToPoint()},
-                    {"uv", result.UVPoint.ToProtoType()},
+                    {"point", result.XYZPoint != null ? result.XYZPoint.ToPoint(): null},
+                    {"uv", result.UVPoint != null ? result.UVPoint.ToProtoType() : null},
                     {"dist", result.Distance},
-                    {"edge", result.EdgeObject.Wrap()},
+                    {"edge", result.EdgeObject != null ? result.EdgeObject.Wrap() : null},
                     {"edgeParm", result.EdgeParameter }
                 };
             }
