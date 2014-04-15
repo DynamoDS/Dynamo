@@ -157,6 +157,9 @@ namespace Dynamo.ViewModels
                     case "CreateCustomNodeCommand":
                         command = CreateCustomNodeCommand.DeserializeCore(element);
                         break;
+                    case "SwitchTabCommand":
+                        command = SwitchTabCommand.DeserializeCore(element);
+                        break;
                 }
 
                 if (null != command)
@@ -989,6 +992,45 @@ namespace Dynamo.ViewModels
                 helper.SetAttribute("Category", this.Category);
                 helper.SetAttribute("Description", this.Description);
                 helper.SetAttribute("MakeCurrent", this.MakeCurrent);
+            }
+
+            #endregion
+        }
+
+        public class SwitchTabCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            internal SwitchTabCommand(int tabIndex)
+            {
+                this.TabIndex = tabIndex;
+            }
+
+            internal static SwitchTabCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                return new SwitchTabCommand(helper.ReadInteger("TabIndex"));
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal int TabIndex { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                dynamoViewModel.SwitchTabImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("TabIndex", this.TabIndex);
             }
 
             #endregion

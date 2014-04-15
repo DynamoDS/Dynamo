@@ -245,6 +245,15 @@ namespace Dynamo.ViewModels
                 command.Name, command.Category, command.Description, true);
         }
 
+        private void SwitchTabImpl(SwitchTabCommand command)
+        {
+            // We don't attempt to null-check here, we need it to fail fast.
+            _model.CurrentWorkspace = _model.Workspaces[command.TabIndex];
+
+            if (command.IsInPlaybackMode)
+                RaisePropertyChanged("CurrentWorkspaceIndex");
+        }
+
         #endregion
     }
 }

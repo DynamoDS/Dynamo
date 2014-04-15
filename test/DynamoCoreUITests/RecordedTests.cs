@@ -276,6 +276,14 @@ namespace DynamoCoreUITests
             Assert.AreEqual(cmdOne.MakeCurrent, cmdTwo.MakeCurrent);
         }
 
+        [Test, RequiresSTA]
+        public void TestSwitchTabCommand()
+        {
+            var cmdOne = new DynamoViewModel.SwitchTabCommand(randomizer.Next());
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+            Assert.AreEqual(cmdOne.TabIndex, cmdTwo.TabIndex);
+        }
+
         #endregion
 
         #region General Node Operations Test Cases
