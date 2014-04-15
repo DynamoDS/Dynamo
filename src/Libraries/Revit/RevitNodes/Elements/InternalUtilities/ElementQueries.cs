@@ -26,10 +26,23 @@ namespace Revit.Elements.InternalUtilities
         {
             var catFilter = new ElementCategoryFilter(category.InternalCategory.Id);
             var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
-            var instances = fec.WherePasses(catFilter)
-                .ToElementIds()
-                .Select(id => ElementSelector.ByElementId(id.IntegerValue))
-                .ToList();
+            var instances = 
+                fec.WherePasses(catFilter)
+                    .ToElementIds()
+                    .Select(id => ElementSelector.ByElementId(id.IntegerValue))
+                    .ToList();
+            return instances;
+        }
+
+        public static IList<Element> AtLevel(Level arg)
+        {
+            var levFilter = new ElementLevelFilter(arg.InternalLevel.Id);
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            var instances =
+                fec.WherePasses(levFilter)
+                    .ToElementIds()
+                    .Select(id => ElementSelector.ByElementId(id.IntegerValue))
+                    .ToList();
             return instances;
         }
     }
