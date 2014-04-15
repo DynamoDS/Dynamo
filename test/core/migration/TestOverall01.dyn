@@ -1,0 +1,231 @@
+<Workspace Version="0.6.2.29585" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Apply1 type="Dynamo.Nodes.Apply1" guid="a42d5962-7261-45f4-9873-ac6faffde934" nickname="Apply Function" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.ApplyList type="Dynamo.Nodes.ApplyList" guid="ab126860-7f71-4cc6-a7cb-d203ee0b83ad" nickname="Apply Function to List" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Breakpoint type="Dynamo.Nodes.Breakpoint" guid="6889c934-32de-4711-a86f-f361b2fe37bd" nickname="Debug Breakpoint" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Begin type="Dynamo.Nodes.Begin" guid="bc267aac-f6f9-43b1-86a7-4cc9236dd0a2" nickname="Perform All" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="expr1" />
+      <Input name="expr2" />
+    </Dynamo.Nodes.Begin>
+    <Dynamo.Nodes.ComposeFunctions type="Dynamo.Nodes.ComposeFunctions" guid="4ad9c9a9-a3c2-43b4-9c5a-fa652f3e8c0c" nickname="Compose Functions" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Thunk type="Dynamo.Nodes.Thunk" guid="c6ace7c3-92f5-4d82-a81d-693442ea0830" nickname="Create Thunk" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Future type="Dynamo.Nodes.Future" guid="d364861f-b244-44db-9f3d-7f018dde0ac5" nickname="Future" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Now type="Dynamo.Nodes.Now" guid="fd2afb6a-881a-41ed-803a-b4a8d875db90" nickname="Now" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.AngleInput type="Dynamo.Nodes.AngleInput" guid="8dab0dd2-d7fc-43a0-a71d-8d5b4d218c47" nickname="Angle" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.AngleInput>
+    <Dynamo.Nodes.BoolSelector type="Dynamo.Nodes.BoolSelector" guid="b94bdf53-f051-4eda-a8a9-e49ed890492e" nickname="Boolean" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean value="False" />
+    </Dynamo.Nodes.BoolSelector>
+    <Dynamo.Nodes.StringDirectory type="Dynamo.Nodes.StringDirectory" guid="4c110ced-5e1f-4b51-baa4-320920f3ed8e" nickname="Directory" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="No file selected." />
+    </Dynamo.Nodes.StringDirectory>
+    <Dynamo.Nodes.StringFilename type="Dynamo.Nodes.StringFilename" guid="b8e16e10-4424-4361-85af-a8f9419880bf" nickname="File Path" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="No file selected." />
+    </Dynamo.Nodes.StringFilename>
+    <Dynamo.Nodes.Identity type="Dynamo.Nodes.Identity" guid="49d02239-9943-4c92-9dff-1522f95c4117" nickname="Identity" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.IntegerSliderInput type="Dynamo.Nodes.IntegerSliderInput" guid="8f4edfe4-f886-46c0-b4d5-69b924471a39" nickname="Integer Slider" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Int32 value="50" min="0" max="100" />
+    </Dynamo.Nodes.IntegerSliderInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="fe6a399a-c2f8-44e5-aa1b-74260f6fbc53" nickname="Number" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleSliderInput type="Dynamo.Nodes.DoubleSliderInput" guid="8eaa88fa-36ab-4661-afdb-a916e613ec8d" nickname="Number Slider" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="50" min="0" max="100" />
+    </Dynamo.Nodes.DoubleSliderInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="339f3bc1-d50c-44a2-8614-4c007897360f" nickname="String" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Sublists type="Dynamo.Nodes.Sublists" guid="9b4d0e89-730f-42b1-8a1d-c277c6c236d7" nickname="Build Sublists" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.String value="" />
+    </Dynamo.Nodes.Sublists>
+    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="f2d0060a-868e-44de-b0a6-7b9677815a3e" nickname="Empty List" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="a8d07fbc-2ba8-47f1-80b5-d53a514e2aea" nickname="List" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.NumberRange type="Dynamo.Nodes.NumberRange" guid="3665bb82-b60e-4325-9642-4f47ecbaa3a0" nickname="Number Range" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.NumberSeq type="Dynamo.Nodes.NumberSeq" guid="c682e97f-ea6b-4f5b-b99b-b34eb8b12067" nickname="Number Sequence" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Repeat type="Dynamo.Nodes.Repeat" guid="9efa1196-ced5-45f1-9e55-5c12509bb011" nickname="Repeat" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.List type="Dynamo.Nodes.List" guid="ce4df41a-ec20-4b9c-bfcf-5db67acb53c8" nickname="Add to List" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DiagonalLeftList type="Dynamo.Nodes.DiagonalLeftList" guid="0b0e5269-0753-4692-af66-75cf23cd6770" nickname="Diagonal Left List" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DiagonalRightList type="Dynamo.Nodes.DiagonalRightList" guid="a67a5f45-1e79-4619-aeee-36571dc872e4" nickname="Diagonal Right List" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.RemoveEveryNth type="Dynamo.Nodes.RemoveEveryNth" guid="1e86cb04-48b5-4b83-a92f-d598dfc80712" nickname="Drop Every Nth" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.RemoveEveryNth>
+    <Dynamo.Nodes.DropList type="Dynamo.Nodes.DropList" guid="3f55cf43-9e6a-4fd6-b3a4-d400c8666433" nickname="Drop from List" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FlattenListAmt type="Dynamo.Nodes.FlattenListAmt" guid="acf8c401-ea56-44aa-beb5-9f91a784ee05" nickname="Flatten" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FlattenList type="Dynamo.Nodes.FlattenList" guid="ca401f56-0839-4f20-8f23-07710b7ca24a" nickname="Flatten Completely" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Append type="Dynamo.Nodes.Append" guid="7e275178-76aa-4e3c-8ba1-3048cea16a65" nickname="Join Lists" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Slice type="Dynamo.Nodes.Slice" guid="0571ac59-67f9-4771-9733-a1f7f35897fc" nickname="Partition List" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.RemoveFromList type="Dynamo.Nodes.RemoveFromList" guid="b07e235d-f2a5-4904-ac78-e5dfa4a6e446" nickname="Remove From List" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Reverse type="Dynamo.Nodes.Reverse" guid="d8818e06-0017-4c46-996f-19b3d54a2d26" nickname="Reverse" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.ShiftList type="Dynamo.Nodes.ShiftList" guid="89a0d78a-11e7-412a-b8b9-d5877c5e5c84" nickname="Shift List Indices" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.SliceList type="Dynamo.Nodes.SliceList" guid="414ad5e5-783a-491a-9d72-88145efe9c29" nickname="Slice List" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Sort type="Dynamo.Nodes.Sort" guid="e7c16bde-3665-45cf-8e83-db2c91254361" nickname="Sort" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.SortBy type="Dynamo.Nodes.SortBy" guid="c05ca326-9c70-4f13-9dc7-5ade7e92a4e2" nickname="Sort by Key" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="0" default="True" />
+    </Dynamo.Nodes.SortBy>
+    <Dynamo.Nodes.DeCons type="Dynamo.Nodes.DeCons" guid="37c57319-5ab7-435f-9f04-17d595d0f08a" nickname="Split List" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.SortWith type="Dynamo.Nodes.SortWith" guid="bbf77ad5-40bc-48c2-8aca-b0a978f23e15" nickname="Sort with Comparator" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.TakeEveryNth type="Dynamo.Nodes.TakeEveryNth" guid="d1cf4a85-0f91-4e8f-84b4-595714b8ecdf" nickname="Take Every Nth" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.TakeEveryNth>
+    <Dynamo.Nodes.Transpose type="Dynamo.Nodes.Transpose" guid="2320cd38-0c35-4898-8589-7c9f8614b2f2" nickname="Transpose Lists" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.TakeList type="Dynamo.Nodes.TakeList" guid="659edfb9-4781-4df8-81b1-8355e4e4ce0f" nickname="Take from List" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Average type="Dynamo.Nodes.Average" guid="5f137538-870b-4707-aa93-2daf07da13aa" nickname="Average" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="2fd585aa-3817-4f0d-bdd8-a8fa358e6ca7" nickname="First of List" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="a08d9d40-0e7d-4656-b3c1-7c20c71d9d52" nickname="Get from List" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.IsEmpty type="Dynamo.Nodes.IsEmpty" guid="a5609341-7434-41d2-b514-7ca7d4261860" nickname="Is Empty List?" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="5bc57666-f12b-4062-ba00-7378e0d9371f" nickname="List Length" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.ListMax type="Dynamo.Nodes.ListMax" guid="3fd8ecd7-d72b-4881-a491-ac0e786a3ba5" nickname="List Maximum" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="0" default="True" />
+    </Dynamo.Nodes.ListMax>
+    <Dynamo.Nodes.ListMin type="Dynamo.Nodes.ListMin" guid="3cb88a76-fbab-4b1b-a708-657258dbf572" nickname="List Minimum" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="0" default="True" />
+    </Dynamo.Nodes.ListMin>
+    <Dynamo.Nodes.Rest type="Dynamo.Nodes.Rest" guid="5a9da9ef-7104-4ba2-8e6e-365f98480aa6" nickname="Rest of List" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Smooth type="Dynamo.Nodes.Smooth" guid="e33a83eb-0f80-4b73-bc54-dcea31495a15" nickname="Smooth" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.AndMap type="Dynamo.Nodes.AndMap" guid="38bc62d6-edfc-4e81-94bd-f191eaf4bfa0" nickname="True For All" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.OrMap type="Dynamo.Nodes.OrMap" guid="350cff57-c7c8-46b7-82c8-5f537a6c5e1c" nickname="True For Any" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="df427f17-2660-4134-add0-77bba26213a1" nickname="Python Script" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+dataEnteringNode = IN
+
+#Assign your output to the OUT variable
+OUT = 0</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.PythonString type="Dynamo.Nodes.PythonString" guid="03313df1-fe48-413d-aa97-62c32f037de8" nickname="Python Script From String" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="c47398af-985d-4f44-b9c7-ed4fe7a2866f" nickname="Python Script With Variable Number of Inputs" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="1">
+      <Script># Default imports
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN0...INX variable(s).
+dataEnteringNode = IN0
+
+#Assign your output to the OUT variable
+OUT = 0</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.ConcatStrings type="Dynamo.Nodes.ConcatStrings" guid="c36e0e17-9d49-4510-8450-8060665ab9e6" nickname="Concat Strings" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.JoinStrings type="Dynamo.Nodes.JoinStrings" guid="2acbc7c0-7bf2-4df0-88d7-cbc62b9935a9" nickname="Join Strings" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.JoinStrings>
+    <Dynamo.Nodes.Num2String type="Dynamo.Nodes.Num2String" guid="4ff22444-58ae-4980-a4c7-df9ae878db64" nickname="Number to String" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.SplitString type="Dynamo.Nodes.SplitString" guid="ba3d40b0-b843-40a0-9001-807424248452" nickname="Split String" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.SplitString>
+    <Dynamo.Nodes.StringCase type="Dynamo.Nodes.StringCase" guid="d9df658e-8448-4a4d-a60e-921fac65d2c6" nickname="String Case" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.StringLen type="Dynamo.Nodes.StringLen" guid="2f473299-de84-42ea-b9d3-8ff5e068ac50" nickname="String Length" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.String2Num type="Dynamo.Nodes.String2Num" guid="37bec7e0-7e50-4ccf-b634-c7c59cc17159" nickname="String to Number" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Substring type="Dynamo.Nodes.Substring" guid="f94bf1b8-6e1a-4bbc-9fbe-2f0212e4294d" nickname="Substring" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.ToString type="Dynamo.Nodes.ToString" guid="fc80057b-19c8-44ae-98ee-e110ef451111" nickname="To String" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.MakeDateTime type="Dynamo.Nodes.MakeDateTime" guid="29594d53-b298-4627-89b2-4777fbf96cc6" nickname="DateTime" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+      <PortInfo index="3" default="True" />
+      <PortInfo index="4" default="True" />
+      <PortInfo index="5" default="True" />
+    </Dynamo.Nodes.MakeDateTime>
+    <Dynamo.Nodes.ExecuteInterval type="Dynamo.Nodes.ExecuteInterval" guid="1f6ac98a-2621-4fd1-bb03-b1e3a21b4e61" nickname="Execution Interval" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Pause type="Dynamo.Nodes.Pause" guid="c272e208-afbb-46a2-8f40-f6e76089b373" nickname="Pause" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="30d26edb-5d91-4b30-98ed-9775dd306710" nickname="Watch" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="40a8dbfe-27d0-4f59-bb50-688c7455f622" nickname="Watch 3D" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="210" height="257">
+        <camera pos_x="20.6975697527233" pos_y="20.6975697527233" pos_z="20.6965697527233" look_x="-20.6975697527233" look_y="-20.6975697527233" look_z="-20.6975697527233" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+    <Dynamo.Nodes.Equal type="Dynamo.Nodes.Equal" guid="7d37138e-c9e2-430f-bc33-7d6cf8f9488c" nickname="Equal" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GreaterThan type="Dynamo.Nodes.GreaterThan" guid="103de142-56fe-4eb7-b574-c84e80d335e0" nickname="Greater Than" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GreaterThanEquals type="Dynamo.Nodes.GreaterThanEquals" guid="87499ee3-6165-411f-a1b9-0eb4cdb621ea" nickname="Greater Than Or Equal" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.LessThan type="Dynamo.Nodes.LessThan" guid="3e0ee0cf-59cc-467c-9ef0-3e32b0e032b3" nickname="Less Than" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.LessThanEquals type="Dynamo.Nodes.LessThanEquals" guid="ed20bded-ea63-4628-8758-51da6b654912" nickname="Less Than Or Equal" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.And type="Dynamo.Nodes.And" guid="407c79d5-5803-4749-bec5-b66bab9bdc17" nickname="And" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="269c5bb3-6bac-4538-85a1-164d813601e4" nickname="If" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Not type="Dynamo.Nodes.Not" guid="92ca787f-406b-4f89-a9b9-dd5ad77bfda5" nickname="Not" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Or type="Dynamo.Nodes.Or" guid="7ad5a57e-b67f-4251-9bc7-6af02dd38f19" nickname="Or" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Xor type="Dynamo.Nodes.Xor" guid="8490a9c6-4422-4264-be99-b2ff648aacc5" nickname="Xor" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Addition type="Dynamo.Nodes.Addition" guid="2357d804-49ce-4e7b-a7ae-efbb585601f6" nickname="Add" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Division type="Dynamo.Nodes.Division" guid="9302e049-d186-4071-b160-bf98c4c06dd5" nickname="Divide" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="359e88cb-8c06-4181-8942-423fde8447d1" nickname="Formula" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>
+      </FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Modulo type="Dynamo.Nodes.Modulo" guid="f3432a6b-492b-41d5-a900-b5c11750d7a3" nickname="Modulo" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Multiplication type="Dynamo.Nodes.Multiplication" guid="5e199b78-2546-4609-8883-4f2678ea83f8" nickname="Multiply" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Pow type="Dynamo.Nodes.Pow" guid="a6982fe4-6f42-4bc0-8c7d-4f938be2139e" nickname="Power" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Subtraction type="Dynamo.Nodes.Subtraction" guid="c83f0890-8ea0-4f2f-b3a2-ed9334958d86" nickname="Subtract" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.PiTimes2 type="Dynamo.Nodes.PiTimes2" guid="fca52b5c-3912-436b-85d9-24f562cbfea2" nickname="2*Pi" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.EConstant type="Dynamo.Nodes.EConstant" guid="94e4de4a-6b34-4937-a667-0ffda9d1efda" nickname="e" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Pi type="Dynamo.Nodes.Pi" guid="4fe397c3-ed07-4caa-be09-7ebc93ac8fbe" nickname="Pi" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.NewtonRootFind1DNoDeriv type="Dynamo.Nodes.NewtonRootFind1DNoDeriv" guid="aff9bfb2-e387-4366-9e6c-16293256a319" nickname="Find Root" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.NewtonRootFind1DNoDeriv>
+    <Dynamo.Nodes.NewtonRootFind1DWithDeriv type="Dynamo.Nodes.NewtonRootFind1DWithDeriv" guid="3e4534e3-d1ca-4ee3-8b8f-56ef14d05c36" nickname="Find Root With Derivative" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="3" default="True" />
+    </Dynamo.Nodes.NewtonRootFind1DWithDeriv>
+    <Dynamo.Nodes.Random type="Dynamo.Nodes.Random" guid="9cf26822-092b-47c3-ac69-65e2ba6556b6" nickname="Random Number" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.RandomSeed type="Dynamo.Nodes.RandomSeed" guid="250ff8b8-e530-4601-83f9-bab83763deeb" nickname="Random Number By Seed" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.RandomList type="Dynamo.Nodes.RandomList" guid="22777f8a-4608-43d3-8b15-5ae498daa249" nickname="Random Number List" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Ceiling type="Dynamo.Nodes.Ceiling" guid="a3019467-440e-459f-b2e8-57ebb79091f3" nickname="Ceiling" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Floor type="Dynamo.Nodes.Floor" guid="e830f432-fea9-4f88-85ef-865f14f684ed" nickname="Floor" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Round type="Dynamo.Nodes.Round" guid="6d334360-732f-4ea4-8233-55c8e3ec174b" nickname="Round" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Cos type="Dynamo.Nodes.Cos" guid="af1efcf5-55b3-4620-849a-56c4262023f9" nickname="Cosine" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Acos type="Dynamo.Nodes.Acos" guid="970e427b-e604-4b14-9682-85dbded8ffa5" nickname="Inverse Cosine" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Asin type="Dynamo.Nodes.Asin" guid="ea8594a7-7490-463b-87d9-f46df2676ae4" nickname="Inverse Sine" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Atan type="Dynamo.Nodes.Atan" guid="d926205e-633b-43b9-a2f0-51ce1c760643" nickname="Inverse Tangent" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Sin type="Dynamo.Nodes.Sin" guid="5743ce53-e758-4ab7-ac47-b6f4372c32de" nickname="Sine" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Tan type="Dynamo.Nodes.Tan" guid="840dffb6-d08a-49f0-bddb-3fc08730896e" nickname="Tangent" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Color type="Dynamo.Nodes.Color" guid="4ae65f0b-22c7-4a4c-b567-9c9258b4641d" nickname="Color" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+      <PortInfo index="3" default="True" />
+    </Dynamo.Nodes.Color>
+    <Dynamo.Nodes.ColorBrightness type="Dynamo.Nodes.ColorBrightness" guid="243f14f6-ed94-48ac-9942-f92e2841d586" nickname="Color Brightness" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.ColorComponents type="Dynamo.Nodes.ColorComponents" guid="15e67c6a-087e-4302-8523-8cc1366c106a" nickname="Color Components" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.ColorHue type="Dynamo.Nodes.ColorHue" guid="57089483-2fb2-4330-bdca-153ed48b5b2c" nickname="Color Hue" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.ColorSaturation type="Dynamo.Nodes.ColorSaturation" guid="0a2785e3-33fe-47ec-9ed2-b6399550d1f0" nickname="Color Saturation" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.ImageFileReader type="Dynamo.Nodes.ImageFileReader" guid="1dae1492-a11b-4b5c-b98d-aa5a873584c4" nickname="Read Image File" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FileReader type="Dynamo.Nodes.FileReader" guid="a6e31cc6-f430-405f-a687-ba89111a7e37" nickname="Read Text File" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FileWatcherReset type="Dynamo.Nodes.FileWatcherReset" guid="4b71ebaf-541f-4f9c-9090-2eeea392c9cf" nickname="Reset File Watch" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FileWatcher type="Dynamo.Nodes.FileWatcher" guid="f23ff269-a831-4b66-9b0a-87e94c3d6b00" nickname="Watch File" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FileWatcherChanged type="Dynamo.Nodes.FileWatcherChanged" guid="62714384-c076-448e-9b38-a11f7e8b0bf0" nickname="Watched File Changed?" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FileWatcherWait type="Dynamo.Nodes.FileWatcherWait" guid="c090e2e8-b8f3-4eba-9996-1fb88dd75ad6" nickname="Watched File Wait" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.ListToCsv type="Dynamo.Nodes.ListToCsv" guid="8b750200-2ea2-42b8-9181-4205c391446b" nickname="Write CSV File" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FileWriter type="Dynamo.Nodes.FileWriter" guid="4f58f81b-7db9-46b8-ba92-c203bc94df92" nickname="Write File" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.ImageFileWriter type="Dynamo.Nodes.ImageFileWriter" guid="5f6c4a8a-73a1-4675-ba92-634fe6b7cb00" nickname="Write Image File" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.AddExcelWorksheetToWorkbook type="Dynamo.Nodes.AddExcelWorksheetToWorkbook" guid="a8665b5f-e9e7-43ce-99a4-dca29255f20c" nickname="Add Excel Worksheet To Workbook" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetDataFromExcelWorksheet type="Dynamo.Nodes.GetDataFromExcelWorksheet" guid="a2e9d3d1-0456-4709-9e35-cd050458a8ac" nickname="Get Data From Excel Worksheet" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetExcelWorksheetByName type="Dynamo.Nodes.GetExcelWorksheetByName" guid="7e2e9830-bc5f-4ac3-b697-92ec3e42edc7" nickname="Get Excel Worksheet By Name" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetWorksheetsFromExcelWorkbook type="Dynamo.Nodes.GetWorksheetsFromExcelWorkbook" guid="f0383793-1937-46d2-a05e-3bd367b5604d" nickname="Get Worksheets From Excel Workbook" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.NewExcelWorkbook type="Dynamo.Nodes.NewExcelWorkbook" guid="93e1fe06-348d-434a-87c4-3ecd56a77356" nickname="New Excel Workbook" x="307" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.ReadExcelFile type="Dynamo.Nodes.ReadExcelFile" guid="6bd0384e-eb9e-41b0-9cad-73d6f1728ba3" nickname="Open Excel Workbook" x="331" y="297.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.SaveAsExcelWorkbook type="Dynamo.Nodes.SaveAsExcelWorkbook" guid="8c73264a-65c0-4419-b56a-8f6e1eba05fd" nickname="Save Excel Workbook As" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.WriteDataToExcelWorksheet type="Dynamo.Nodes.WriteDataToExcelWorksheet" guid="4cc5a955-3a9e-4c61-b208-1ad1a6c544d1" nickname="Write Data To Excel Worksheet" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.WriteDataToExcelWorksheet>
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>
