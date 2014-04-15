@@ -9,7 +9,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    class AxonometricViewTests
+    class AxonometricViewTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

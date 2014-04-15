@@ -68,17 +68,11 @@ namespace Revit.Elements
         {
             get
             {
-                return IdlePromise.ExecuteOnIdleSync(() =>
-                {
-                    TransactionManager.Instance.EnsureInTransaction(Document);
-
-                    DocumentManager.Regenerate();
-                    var bb = this.InternalElement.get_BoundingBox(null);
-
-                    TransactionManager.Instance.TransactionTaskDone();
-
-                    return bb.ToProtoType();
-                });
+                TransactionManager.Instance.EnsureInTransaction(Document);
+                DocumentManager.Regenerate();
+                var bb = this.InternalElement.get_BoundingBox(null);
+                TransactionManager.Instance.TransactionTaskDone();
+                return bb.ToProtoType();
             }
         }
 
