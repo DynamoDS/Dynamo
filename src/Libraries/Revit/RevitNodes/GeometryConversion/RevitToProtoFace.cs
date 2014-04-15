@@ -34,56 +34,63 @@ namespace Revit.GeometryConversion
 
         private static Autodesk.DesignScript.Geometry.Surface Convert(Autodesk.Revit.DB.PlanarFace face)
         {
-            // get underlying planar representation
-            var o = face.Origin.ToPoint();
-            var n = face.Normal.ToVector();
+            var edgeLoops = EdgeLoopPolyCurves(face).ToList();
+            var untrimmedSrf = GetUnderlyingSurface(face, edgeLoops);
+            return untrimmedSrf.TrimWithEdgeLoops(face, edgeLoops);
+        }
+
+        private static Autodesk.DesignScript.Geometry.Surface GetUnderlyingSurface(Autodesk.Revit.DB.PlanarFace face, 
+            IEnumerable<PolyCurve> edgeLoops )
+        {
+            edgeLoops = edgeLoops.ToList();
+
             var x = face.get_Vector(0).ToVector();
             var y = face.get_Vector(1).ToVector();
 
-            var pl = Autodesk.DesignScript.Geometry.Plane.ByOriginNormal(o, n);
-           
-            // get trimming curves as polycurves
-            EdgeArrayArray eaa = face.EdgeLoops;
-            var pcLoops = new List<PolyCurve>();
-
-            foreach (var ea in eaa.Cast<EdgeArray>())
-            {
-                var edges = ea.Cast<Autodesk.Revit.DB.Edge>();
-                var pcrvs = edges.Select(t => t.AsCurveFollowingFace(face).ToProtoType()).ToArray();
-                pcLoops.Add(PolyCurve.ByJoinedCurves(pcrvs));
-            }
-
-            // Construct rectangular planar surface guaranteed to be larger than the 
-            // largest polycurve
-            var or = pcLoops.First().StartPoint; // don't use origin provided by revit, could be anywhere
-            var maxLength = pcLoops.Max(pc => pc.Length);
+            // Construct planar surface larger than the biggest edge loop
+            var or = edgeLoops.First().StartPoint; // don't use origin provided by revit, could be anywhere
+            var maxLength = edgeLoops.Max(pc => pc.Length);
             var bigx = x.Scale(maxLength * 2);
             var bigy = y.Scale(maxLength * 2);
 
-            var underlyingPlane = Surface.ByPerimeterPoints(new[] { or.Subtract(bigx).Subtract(bigy), 
+            return Surface.ByPerimeterPoints(new[] { or.Subtract(bigx).Subtract(bigy), 
                                                                     or.Add(bigx).Subtract(bigy), 
                                                                     or.Add(bigx).Add(bigy),
                                                                     or.Subtract(bigx).Add(bigy) });
-            var cutPlane = underlyingPlane;
+        }
+
+        private static Surface TrimWithEdgeLoops(this Surface surface, Autodesk.Revit.DB.Face face,
+            IEnumerable<PolyCurve> loops)
+        {
+            var cutSurface = surface;
 
             // now trim underlyingPlane using the pcLoops
-            foreach (var pc in pcLoops)
+            foreach (var pc in loops)
             {
-                var subSurfaces = cutPlane.Split(pc).Cast<Surface>();
+                var subSurfaces = cutSurface.Split(pc).Cast<Surface>();
 
                 foreach (var srf in subSurfaces)
                 {
                     if (IsValidTrim(pc, srf, face))
                     {
-                        cutPlane = srf;
+                        cutSurface = srf;
                         break;
                     }
                 }
             }
 
-            return cutPlane;
+            return cutSurface;
         }
 
+        private static IEnumerable<PolyCurve> EdgeLoopPolyCurves(Autodesk.Revit.DB.Face face)
+        {
+            foreach (var ea in face.EdgeLoops.Cast<EdgeArray>())
+            {
+                var edges = ea.Cast<Autodesk.Revit.DB.Edge>();
+                var pcrvs = edges.Select(t => t.AsCurveFollowingFace(face).ToProtoType()).ToArray();
+                yield return PolyCurve.ByJoinedCurves(pcrvs);
+            }
+        }
 
         private static bool IsValidTrim(PolyCurve pc, Surface srf, Autodesk.Revit.DB.Face face)
         {
