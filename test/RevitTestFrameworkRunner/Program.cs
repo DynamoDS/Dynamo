@@ -472,6 +472,12 @@ namespace RevitTestFrameworkRunner
                         td.TestStatus = TestStatus.Success;
                         break;
                 }
+
+                if (ourTest.Item == null) return;
+                var failure = ourTest.Item as failureType;
+                if (failure == null) return;
+                td.StackTrace = failure.stacktrace;
+                td.Message = failure.message;
             }
         }
 
@@ -546,10 +552,32 @@ namespace RevitTestFrameworkRunner
     internal class TestData : NotificationObject, ITestData
     {
         private TestStatus _testStatus;
+        private string _message ="";
+        private string _stackTrace = "";
 
         public string Name { get; set; }
         public bool RunDynamo { get; set; }
         public string ModelPath { get; set; }
+        
+        public string Message
+        {
+            get { return _message; }
+            set
+            {
+                _message = value; 
+                RaisePropertyChanged("Message");
+            }
+        }
+
+        public string StackTrace
+        {
+            get { return _stackTrace; }
+            set
+            {
+                _stackTrace = value;
+                RaisePropertyChanged("Message");
+            }
+        }
 
         public TestStatus TestStatus
         {

@@ -25,5 +25,7 @@ namespace RevitTestFrameworkRunner
         bool RunDynamo { get; set; }
         string ModelPath { get; set; }
         TestStatus TestStatus { get; set; }
+        string Message { get; set; }
+        string StackTrace { get; set; }
     }
 }

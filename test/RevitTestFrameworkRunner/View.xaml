@@ -14,10 +14,11 @@
         <revitTestFrameworkRunner:TestStatusToColorConverter x:Key="TestStatusToColorConverter"></revitTestFrameworkRunner:TestStatusToColorConverter>
         
         <HierarchicalDataTemplate x:Key="TestTemplate" DataType="{x:Type revitTestFrameworkRunner:TestData}">
-            <StackPanel Orientation="Horizontal" Tag="{Binding ElementName=TestDataTreeView, Path=DataContext}" Background="{Binding TestStatus, Converter={StaticResource TestStatusToColorConverter}, Mode= OneWay}">
+            <StackPanel Orientation="Vertical" Tag="{Binding ElementName=TestDataTreeView, Path=DataContext}" Background="{Binding TestStatus, Converter={StaticResource TestStatusToColorConverter}, Mode= OneWay}">
                 <TextBlock Text="{Binding Name}" VerticalAlignment="Center"></TextBlock>
-                <TextBlock Text="-->" VerticalAlignment="Center"></TextBlock>
                 <TextBlock Text="{Binding ModelPath}" VerticalAlignment="Center"></TextBlock>
+                <TextBlock Text="{Binding Message}"></TextBlock>
+                <TextBlock Text="{Binding StackTrace}"></TextBlock>
             </StackPanel>
             
         </HierarchicalDataTemplate>
