@@ -299,6 +299,11 @@ namespace Revit.Elements
             param.Set(value);
         }
 
+        private void SetParameterValue(Autodesk.Revit.DB.Parameter param, bool value)
+        {
+            param.Set(value == false ? 0 : 1);
+        }
+
         #endregion
 
 
