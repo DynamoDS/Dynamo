@@ -1,4 +1,5 @@
 ﻿using System;
+using Autodesk.DesignScript.Geometry;
 using Dynamo.Tests;
 using Revit.Elements;
 using Revit.Elements.Views;
@@ -11,6 +12,20 @@ namespace DSRevitNodesTests
     [TestFixture]
     class AxonometricViewTests : RevitNodeTestBase
     {
+        [SetUp]
+        public void Setup()
+        {
+            HostFactory.Instance.StartUp();
+            base.Setup();
+        }
+
+        [TearDown]
+        public void Teardown()
+        {
+            HostFactory.Instance.ShutDown();
+            base.TearDown();
+        }
+
         [Test]
         [TestModel(@".\Empty.rvt")]
         public void ByEyePointAndTarget_ValidBoundingBox()
