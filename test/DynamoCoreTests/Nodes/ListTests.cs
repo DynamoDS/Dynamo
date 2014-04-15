@@ -1401,7 +1401,7 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            var numberRange = model.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>("4e781f03-5b48-4d58-a511-8c732665e961");
+            var numberRange = model.CurrentWorkspace.NodeFromWorkspace<DSCoreNodesUI.NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
 
             var actual = numberRange.GetValue(0).GetElements();
             var innerList1 = actual[0].GetElements();
