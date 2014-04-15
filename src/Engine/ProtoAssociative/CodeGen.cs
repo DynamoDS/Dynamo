@@ -881,39 +881,36 @@ namespace ProtoAssociative
             {
                 isUnresolvedDot = true;
             }
-            else if (firstArgument is IdentifierNode || firstArgument is ThisPointerNode)
+            else if (firstArgument is IdentifierNode)
             {
                 // Check if the lhs identifer is a class name
                 string lhsName = "";
                 int ci = Constants.kInvalidIndex;
 
-                if (firstArgument is IdentifierNode)
+                lhsName = (firstArgument as IdentifierNode).Name;
+                ci = core.ClassTable.IndexOf(lhsName);
+                classIndex = ci;
+                className = lhsName;
+
+                // As a class name can be used as property name, we need to
+                // check if this identifier is a property or a class name.
+                //
+                if (ci != Constants.kInvalidIndex && globalClassIndex != Constants.kInvalidIndex)
                 {
-                    lhsName = (firstArgument as IdentifierNode).Name;
-                    ci = core.ClassTable.IndexOf(lhsName);
-                    classIndex = ci;
-                    className = lhsName;
+                    ProtoCore.DSASM.SymbolNode symbolnode;
+                    bool isAccessbile = false;
+                    bool hasAllocated = VerifyAllocation(lhsName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessbile);
 
-                    // As a class name can be used as property name, we need to
-                    // check if this identifier is a property or a class name.
-                    //
-                    if (ci != Constants.kInvalidIndex && globalClassIndex != Constants.kInvalidIndex)
+                    // Well, found a property whose name is class name. Now
+                    // we need to check if the RHS function call is 
+                    // constructor or not.  
+                    if (hasAllocated && isAccessbile && symbolnode.functionIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
                     {
-                        ProtoCore.DSASM.SymbolNode symbolnode;
-                        bool isAccessbile = false;
-                        bool hasAllocated = VerifyAllocation(lhsName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessbile);
-
-                        // Well, found a property whose name is class name. Now
-                        // we need to check if the RHS function call is 
-                        // constructor or not.  
-                        if (hasAllocated && isAccessbile && symbolnode.functionIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
+                        var procnode = GetProcedureFromInstance(ci, dotCall.FunctionCall);
+                        if (procnode != null && !procnode.isConstructor)
                         {
-                            var procnode = GetProcedureFromInstance(ci, dotCall.FunctionCall);
-                            if (procnode != null && !procnode.isConstructor)
-                            {
-                                ci = Constants.kInvalidIndex;
-                                lhsName = "";
-                            }
+                            ci = Constants.kInvalidIndex;
+                            lhsName = "";
                         }
                     }
                 }
@@ -999,7 +996,6 @@ namespace ProtoAssociative
                     }
                 }
 
-
                 if (dotCall.DotCall.FormalArguments.Count == Constants.kDotCallArgCount)
                 {
                     if (firstArgument is IdentifierNode)
@@ -1032,8 +1028,8 @@ namespace ProtoAssociative
                                 }
                                 else
                                 {
-                                   isAccessible = procCallNode.access == AccessSpecifier.kPublic
-                                        || (procCallNode.access == AccessSpecifier.kPrivate && procCallNode.classScope == globalClassIndex);
+                                    isAccessible = procCallNode.access == AccessSpecifier.kPublic
+                                         || (procCallNode.access == AccessSpecifier.kPrivate && procCallNode.classScope == globalClassIndex);
 
                                     if (!isAccessible)
                                     {
@@ -1057,19 +1053,6 @@ namespace ProtoAssociative
                         else
                         {
                             isUnresolvedDot = true;
-                        }
-                    }
-                    else if (firstArgument is ThisPointerNode)
-                    {
-                        if (globalClassIndex != Constants.kInvalidIndex) 
-                        {
-                            procCallNode = GetProcedureFromInstance(globalClassIndex, dotCall.FunctionCall);
-                            if (null != procCallNode && procCallNode.isConstructor)
-                            {
-                                dotCall.DotCall.FormalArguments[0] = new IntNode(globalClassIndex);
-                                firstArgument = dotCall.DotCall.FormalArguments[0];
-                                inferedType.UID = dotCallType.UID = ci;
-                            }
                         }
                     }
                 }
