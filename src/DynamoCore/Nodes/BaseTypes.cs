@@ -1074,6 +1074,7 @@ namespace Dynamo.Nodes
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
                 "List.Sublists", "List.Sublists@var[]..[],var[]..[],int");
+            newNode.SetAttribute("lacing","shortest");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
