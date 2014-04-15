@@ -787,7 +787,13 @@ namespace ProtoAssociative
             return procNode;
         }
 
-        private void EmitFunctionCall(int depth, int type, List<ProtoCore.Type> arglist, ProtoCore.DSASM.ProcedureNode procNode, ProtoCore.AST.AssociativeAST.FunctionCallNode funcCall, bool getter = false, ProtoCore.AST.AssociativeAST.BinaryExpressionNode bnode = null)
+        private void EmitFunctionCall(int depth, 
+                                      int type,
+                                      List<ProtoCore.Type> arglist, 
+                                      ProcedureNode procNode, 
+                                      FunctionCallNode funcCall, 
+                                      bool isGetter = false, 
+                                      BinaryExpressionNode parentExpression = null)
         {
             int blockId = procNode.runtimeIndex;
 
@@ -803,12 +809,16 @@ namespace ProtoAssociative
             int dimensions = 0;
             EmitPushVarData(blockId, dimensions);
 
-
             // The function call
             EmitInstrConsole(ProtoCore.DSASM.kw.callr, procNode.name);
-            if(getter)
-                EmitCall(procNode.procId, type, depth, ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, 
-                    ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, procNode.pc);
+
+            if (isGetter)
+            {
+                EmitCall(procNode.procId, type, depth,
+                         Constants.kInvalidIndex, Constants.kInvalidIndex,
+                         Constants.kInvalidIndex, Constants.kInvalidIndex, 
+                         procNode.pc);
+            }
             // Break at function call inside dynamic lang block created for a 'true' or 'false' expression inside an inline conditional
             else if (core.DebugProps.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
             {
@@ -819,10 +829,14 @@ namespace ProtoAssociative
 
                 EmitCall(procNode.procId, type, depth, startInclusive.LineNo, startInclusive.CharNo, endExclusive.LineNo, endExclusive.CharNo, procNode.pc);
             }
-            else if(bnode != null)
-                EmitCall(procNode.procId, type, depth, bnode.line, bnode.col, bnode.endLine, bnode.endCol, procNode.pc);
+            else if (parentExpression != null)
+            {
+                EmitCall(procNode.procId, type, depth, parentExpression.line, parentExpression.col, parentExpression.endLine, parentExpression.endCol, procNode.pc);
+            }
             else
+            {
                 EmitCall(procNode.procId, type, depth, funcCall.line, funcCall.col, funcCall.endLine, funcCall.endCol, procNode.pc);
+            }
 
             // The function return value
             EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regRX);
@@ -1057,64 +1071,6 @@ namespace ProtoAssociative
                                 inferedType.UID = dotCallType.UID = ci;
                             }
                         }
-                    }
-                }
-            }
-            else if (funcCall.FormalArguments[0] is IntNode)
-            {
-                inferedType.UID = dotCallType.UID = (int)(funcCall.FormalArguments[0] as IntNode).Value;
-                classIndex = inferedType.UID;
-                procCallNode = GetProcedureFromInstance(dotCallType.UID, dotCall.FunctionCall, graphNode);
-
-                if (null != procCallNode)
-                {
-                    // It's a static call if its not a constructor
-                    isConstructor = procCallNode.isConstructor;
-                    isStaticCall = !procCallNode.isConstructor;
-
-                    // If this is a static call and the first method found was not static
-                    // Look further
-                    if (isStaticCall && !procCallNode.isStatic)
-                    {
-                        ProtoCore.DSASM.ProcedureNode staticProcCallNode = core.ClassTable.ClassNodes[inferedType.UID].GetFirstStaticMemberFunction(procName);
-                        if (null != staticProcCallNode)
-                        {
-                            procCallNode = staticProcCallNode;
-                        }
-                    }
-
-                    isStaticCallAllowed = procCallNode.isStatic && isStaticCall;
-                    className = core.ClassTable.ClassNodes[dotCallType.UID].name;
-
-                    if (isStaticCall && !isStaticCallAllowed)
-                    {
-                        if (subPass != ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
-                        {
-                            string property;
-                            className = core.ClassTable.ClassNodes[dotCallType.UID].name;
-                            ProtoCore.DSASM.ProcedureNode staticProcCallNode = core.ClassTable.ClassNodes[inferedType.UID].GetFirstStaticMemberFunction(procName);
-
-                            if (null != staticProcCallNode)
-                            {
-                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodHasInvalidArguments, procName);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, dotCall.line, dotCall.col);
-                            }
-                            else if (CoreUtils.TryGetPropertyName(procName, out property))
-                            {
-                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kCallingNonStaticProperty, property, className);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, dotCall.line, dotCall.col);
-                            }
-                            else
-                            {
-                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kCallingNonStaticMethod, procName, className);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, dotCall.line, dotCall.col);
-                            }
-                        }
-                        isUnresolvedMethod = true;
-                    }
-                    else
-                    {
-                        inferedType = procCallNode.returntype;
                     }
                 }
             }
@@ -6243,64 +6199,57 @@ namespace ProtoAssociative
             bool arrayIndexing = IsAssociativeArrayIndexing;
             IsAssociativeArrayIndexing = false;
 
-
             // Handle static calls to reflect the original call
-            //if (core.Options.GenerateSSA)
+            BuildRealDependencyForIdentList(graphNode);
+
+            if (node is FunctionDotCallNode)
             {
-                BuildRealDependencyForIdentList(graphNode);
-
-                if (node is FunctionDotCallNode)
+                if ((node as FunctionDotCallNode).isLastSSAIdentListFactor)
                 {
-                    if ((node as FunctionDotCallNode).isLastSSAIdentListFactor)
-                    {
-                        Validity.Assert(null != ssaPointerList);
-                        ssaPointerList.Clear();
-                    }
+                    Validity.Assert(null != ssaPointerList);
+                    ssaPointerList.Clear();
                 }
+            }
 
-                //if (resolveStatic)
+            if (node is FunctionDotCallNode)
+            {
+                FunctionDotCallNode dotcall = node as FunctionDotCallNode;
+                Validity.Assert(null != dotcall.DotCall);
+                if (null != dotcall.StaticLHSIdent)
                 {
-                    if (node is FunctionDotCallNode)
+                    string identName = dotcall.StaticLHSIdent.Name;
+                    string fullClassName;
+                    bool isClassName = core.ClassTable.TryGetFullyQualifiedName(identName, out fullClassName);
+                    if (isClassName)
                     {
-                        FunctionDotCallNode dotcall = node as FunctionDotCallNode;
-                        Validity.Assert(null != dotcall.DotCall);
-                        if (null != dotcall.StaticLHSIdent)
+                        ProtoCore.DSASM.SymbolNode symbolnode = null;
+                        bool isAccessible = false;
+                        bool isLHSAllocatedVariable = VerifyAllocation(identName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+
+                        bool isRHSConstructor = false;
+                        int classIndex = core.ClassTable.IndexOf(identName);
+                        if (classIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
                         {
-                            string identName = dotcall.StaticLHSIdent.Name;
-                            string fullClassName;
-                            bool isClassName = core.ClassTable.TryGetFullyQualifiedName(identName, out fullClassName);
-                            if (isClassName)
+
+                            string functionName = dotcall.FunctionCall.Function.Name;
+                            ProcedureNode callNode = core.ClassTable.ClassNodes[classIndex].GetFirstMemberFunction(functionName);
+                            if (null != callNode)
                             {
-                                ProtoCore.DSASM.SymbolNode symbolnode = null;
-                                bool isAccessible = false;
-                                bool isLHSAllocatedVariable = VerifyAllocation(identName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-
-                                bool isRHSConstructor = false;
-                                int classIndex = core.ClassTable.IndexOf(identName);
-                                if (classIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
-                                {
-
-                                    string functionName = dotcall.FunctionCall.Function.Name;
-                                    ProcedureNode callNode = core.ClassTable.ClassNodes[classIndex].GetFirstMemberFunction(functionName);
-                                    if (null != callNode)
-                                    {
-                                        isRHSConstructor = callNode.isConstructor;
-                                    }
-                                }
-
-                                bool isFunctionCallOnAllocatedClassName = isLHSAllocatedVariable && !isRHSConstructor;
-                                if (!isFunctionCallOnAllocatedClassName || isRHSConstructor)
-                                {
-                                    ssaPointerList.Clear();
-
-                                    dotcall.DotCall.FormalArguments[0] = dotcall.StaticLHSIdent;
-
-                                    staticClass = null;
-                                    resolveStatic = false;
-
-                                    ssaPointerList.Clear();
-                                }
+                                isRHSConstructor = callNode.isConstructor;
                             }
+                        }
+
+                        bool isFunctionCallOnAllocatedClassName = isLHSAllocatedVariable && !isRHSConstructor;
+                        if (!isFunctionCallOnAllocatedClassName || isRHSConstructor)
+                        {
+                            ssaPointerList.Clear();
+
+                            dotcall.DotCall.FormalArguments[0] = dotcall.StaticLHSIdent;
+
+                            staticClass = null;
+                            resolveStatic = false;
+
+                            ssaPointerList.Clear();
                         }
                     }
                 }
