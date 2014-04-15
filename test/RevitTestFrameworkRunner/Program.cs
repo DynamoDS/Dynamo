@@ -398,9 +398,14 @@ namespace RevitTestFrameworkRunner
             process.Start();
 
             if (_isDebug)
+            {
                 process.WaitForExit();
+            }  
             else
+            {
                 process.WaitForExit(120000);
+            }
+            process.Kill();
 
             _runCount --;
             if (_runCount == 0)
