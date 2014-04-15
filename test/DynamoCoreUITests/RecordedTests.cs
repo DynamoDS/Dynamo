@@ -256,6 +256,26 @@ namespace DynamoCoreUITests
             Assert.AreEqual(cmdOne.Value, cmdTwo.Value);
         }
 
+        [Test, RequiresSTA]
+        public void TestCreateCustomNodeCommand()
+        {
+            Guid modelGuid = Guid.NewGuid();
+            string name = randomizer.Next().ToString();
+            string category = randomizer.Next().ToString();
+            string description = randomizer.Next().ToString();
+            bool makeCurrent = randomizer.Next(2) == 0;
+
+            var cmdOne = new DynamoViewModel.CreateCustomNodeCommand(
+                modelGuid, name, category, description, makeCurrent);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+
+            Assert.AreEqual(cmdOne.NodeId, cmdTwo.NodeId);
+            Assert.AreEqual(cmdOne.Name, cmdTwo.Name);
+            Assert.AreEqual(cmdOne.Category, cmdTwo.Category);
+            Assert.AreEqual(cmdOne.Description, cmdTwo.Description);
+            Assert.AreEqual(cmdOne.MakeCurrent, cmdTwo.MakeCurrent);
+        }
+
         #endregion
 
         #region General Node Operations Test Cases

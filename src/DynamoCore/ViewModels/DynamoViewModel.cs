@@ -963,8 +963,8 @@ namespace Dynamo.ViewModels
 
             if (args.Success)
             {
-                this._model.NewCustomNodeWorkspace(Guid.NewGuid(),
-                    args.Name, args.Category, args.Description, true);
+                this.ExecuteCommand(new CreateCustomNodeCommand(Guid.NewGuid(),
+                    args.Name, args.Category, args.Description, true));
             }
         }
 

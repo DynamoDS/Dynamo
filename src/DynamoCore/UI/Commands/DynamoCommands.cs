@@ -241,7 +241,8 @@ namespace Dynamo.ViewModels
 
         private void CreateCustomNodeImpl(CreateCustomNodeCommand command)
         {
-            throw new NotImplementedException();
+            this._model.NewCustomNodeWorkspace(command.NodeId,
+                command.Name, command.Category, command.Description, true);
         }
 
         #endregion
