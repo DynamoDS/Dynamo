@@ -250,7 +250,7 @@ namespace RevitTestFrameworkRunner
             var files = new OpenFileDialog
             {
                 InitialDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                Filter = "assembly files (*.dll, *.exe) | *.dll ; *.exe",
+                Filter = "assembly files (*.dll)|*.dll| executable files (*.exe)|*.exe",
                 RestoreDirectory = true,
                 DefaultExt = ".dll"
             };
