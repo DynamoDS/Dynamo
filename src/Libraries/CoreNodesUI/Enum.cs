@@ -72,24 +72,19 @@ namespace DSCoreNodesUI
     }
     */
 
-    public abstract class EnumAsInt : EnumBase
+    public abstract class EnumAsInt<T> : EnumBase<T>
     {
-        protected EnumAsInt(Type t):base(t){}
-
-        public override System.Collections.Generic.IEnumerable<ProtoCore.AST.AssociativeAST.AssociativeNode> BuildOutputAst(System.Collections.Generic.List<ProtoCore.AST.AssociativeAST.AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildIntNode(SelectedIndex);
             var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
 
             return new[] { assignment };
         }
-
     }
 
-    public abstract class EnumAsString : EnumBase
+    public abstract class EnumAsString<T> : EnumBase<T>
     {
-        protected EnumAsString(Type t):base(t){}
-
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildStringNode(Items[SelectedIndex].Item.ToString());
@@ -99,28 +94,19 @@ namespace DSCoreNodesUI
         }
     }
 
-    public abstract class EnumBase : DSDropDownBase
+    public abstract class EnumBase<T> : DSDropDownBase
     {
-        protected Type enum_internal;
-
-        protected EnumBase(Type t): base(t.ToString())
-        {
-            enum_internal = t;
-            PopulateItems();
-        }
+        protected EnumBase() : base(typeof(T).ToString()) { }
 
         protected override void PopulateItems()
         {
-            if (enum_internal == null)
-                return;
-
             Items.Clear();
-            foreach (var constant in System.Enum.GetValues(enum_internal))
+            foreach (var constant in Enum.GetValues(typeof(T)))
             {
                 Items.Add(new DynamoDropDownItem(constant.ToString(), constant));
             }
 
-            Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection();
         }
     }
 
@@ -128,23 +114,19 @@ namespace DSCoreNodesUI
     /// The drop down node base class which lists all loaded types which are children
     /// of the provided type.
     /// </summary>
-    public abstract class AllChildrenOfType : DSDropDownBase
+    public abstract class AllChildrenOfType<T> : DSDropDownBase
     {
-        private Type internal_type;
-
-        protected AllChildrenOfType(Type t):base("Types")
+        protected AllChildrenOfType() : base("Types")
         {
-            internal_type = t;
-            OutPortData.Add(new PortData("", string.Format("All types which inherit from {0}.", t.ToString()), typeof(object)));
+            OutPortData.Add(new PortData("", string.Format("All types which inherit from {0}.", typeof(T))));
             RegisterAllPorts();
-            PopulateItems();
         }
 
         protected override void PopulateItems()
         {
             Items.Clear();
 
-            var childTypes = internal_type.Assembly.GetTypes().Where(type => type.IsSubclassOf(internal_type));
+            var childTypes = typeof(T).Assembly.GetTypes().Where(type => type.IsSubclassOf(typeof(T)));
 
             foreach (var childType in childTypes)
             {
@@ -153,7 +135,7 @@ namespace DSCoreNodesUI
                 Items.Add(new DynamoDropDownItem(simpleName, childType));
             }
 
-            Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection();
         }
     }
 }
