@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using Dynamo.Nodes;
 using NUnit.Framework;
-//using DSCoreNodesUI;
+using DSCoreNodesUI;
 
 namespace Dynamo.Tests
 {
@@ -19,7 +19,7 @@ namespace Dynamo.Tests
         {
             //currently, the color range node is excluded in the test.
             OpenModel(GetDynPath("TestOverall00.dyn"));
-            var nodes = Controller.DynamoModel.Nodes.OfType<DSCoreNodesUI.DummyNode>();   
+            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();   
 
             int noOfNdoes = nodes.Count(); 
             Assert.AreEqual(0, noOfNdoes);
@@ -30,7 +30,7 @@ namespace Dynamo.Tests
         {
             //currently, the color range node is excluded in the test.
             OpenModel(GetDynPath("TestOverall01.dyn"));
-            var nodes = Controller.DynamoModel.Nodes.OfType<DSCoreNodesUI.DummyNode>();
+            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
             int noOfNdoes = nodes.Count();
             Assert.AreEqual(0, noOfNdoes);
