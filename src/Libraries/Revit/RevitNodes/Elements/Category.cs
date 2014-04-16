@@ -7,7 +7,7 @@ namespace Revit.Elements
     {
         #region private members
 
-        private Autodesk.Revit.DB.Category internal_category;
+        private readonly Autodesk.Revit.DB.Category internalCategory;
 
         #endregion
 
@@ -15,14 +15,14 @@ namespace Revit.Elements
 
         public string Name
         {
-            get { return internal_category.Name; }
+            get { return internalCategory.Name; }
         }
 
         #endregion
 
         internal Autodesk.Revit.DB.Category InternalCategory
         {
-            get { return internal_category; }
+            get { return internalCategory; }
         }
 
         #region public static constructors
@@ -42,14 +42,14 @@ namespace Revit.Elements
 
         private Category(Autodesk.Revit.DB.Category category)
         {
-            internal_category = category;
+            internalCategory = category;
         }
 
         #endregion
 
         public override string ToString()
         {
-            return internal_category.Name;
+            return internalCategory.Name;
         }
     }
 }

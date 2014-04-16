@@ -348,7 +348,7 @@ namespace Dynamo.Nodes
                 CanEditName = false
             };
 
-            dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(this, args);
+            dynSettings.Controller.DynamoViewModel.OnRequestsFunctionNamePrompt(this, args);
 
             if (args.Success)
             {
@@ -362,7 +362,8 @@ namespace Dynamo.Nodes
                 workspace.Description = args.Description;
                 workspace.Category = args.Category;
 
-                workspace.Save();
+                if (workspace.FileName != null)
+                    workspace.Save();
             }
         }
 

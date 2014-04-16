@@ -12,6 +12,7 @@ using RevitServices.Threading;
 using RevitServices.Transactions;
 using Color = DSCore.Color;
 using Revit.GeometryObjects;
+using ArgumentException = Autodesk.Revit.Exceptions.ArgumentException;
 
 namespace Revit.Elements
 {
@@ -67,17 +68,11 @@ namespace Revit.Elements
         {
             get
             {
-                return IdlePromise.ExecuteOnIdleSync(() =>
-                {
-                    TransactionManager.Instance.EnsureInTransaction(Document);
-
-                    DocumentManager.Regenerate();
-                    var bb = this.InternalElement.get_BoundingBox(null);
-
-                    TransactionManager.Instance.TransactionTaskDone();
-
-                    return bb.ToProtoType();
-                });
+                TransactionManager.Instance.EnsureInTransaction(Document);
+                DocumentManager.Regenerate();
+                var bb = this.InternalElement.get_BoundingBox(null);
+                TransactionManager.Instance.TransactionTaskDone();
+                return bb.ToProtoType();
             }
         }
 
@@ -199,14 +194,7 @@ namespace Revit.Elements
             TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
 
             var dynval = value as dynamic;
-            try
-            {
-                SetParameterValue(param, dynval);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            SetParameterValue(param, dynval);
             
             TransactionManager.Instance.TransactionTaskDone();
         }
@@ -286,17 +274,34 @@ namespace Revit.Elements
 
         private void SetParameterValue(Autodesk.Revit.DB.Parameter param, double value)
         {
+            if(param.StorageType != StorageType.Double)
+                throw new Exception("The parameter's storage type is not a number.");
+
             param.Set(value);
         }
 
         private void SetParameterValue(Autodesk.Revit.DB.Parameter param, int value)
         {
+            if (param.StorageType != StorageType.Integer)
+                throw new Exception("The parameter's storage type is not an integer.");
+
             param.Set(value);
         }
 
         private void SetParameterValue(Autodesk.Revit.DB.Parameter param, string value)
         {
+            if (param.StorageType != StorageType.String)
+                throw new Exception("The parameter's storage type is not a string.");
+
             param.Set(value);
+        }
+
+        private void SetParameterValue(Autodesk.Revit.DB.Parameter param, bool value)
+        {
+            if (param.StorageType != StorageType.Integer)
+                throw new Exception("The parameter's storage type is not an integer.");
+
+            param.Set(value == false ? 0 : 1);
         }
 
         #endregion

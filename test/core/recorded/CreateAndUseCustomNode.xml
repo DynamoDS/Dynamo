@@ -1,0 +1,42 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="25">
+  <CreateCustomNodeCommand NodeId="410b62bb-a791-4b84-84b8-127802aa7f88" Name="MyCustomNode" Category="My Category" Description="Description of my custom node" MakeCurrent="true" />
+  <CreateNodeCommand NodeId="93fac143-92c8-4b67-aec9-24a7a90056c2" NodeName="Input" X="150" Y="200" DefaultPosition="false" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="8aa9cbd4-1b99-4f62-aa9f-223665930782" NodeName="Input" X="150" Y="300" DefaultPosition="false" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="06f1687f-857c-4924-894c-30d71e6a204a" NodeName="Input" X="150" Y="400" DefaultPosition="false" TransformCoordinates="true" />
+  <UpdateModelValueCommand ModelGuid="93fac143-92c8-4b67-aec9-24a7a90056c2" Name="InputSymbol" Value="one" />
+  <UpdateModelValueCommand ModelGuid="8aa9cbd4-1b99-4f62-aa9f-223665930782" Name="InputSymbol" Value="two" />
+  <UpdateModelValueCommand ModelGuid="06f1687f-857c-4924-894c-30d71e6a204a" Name="InputSymbol" Value="three" />
+  <CreateNodeCommand NodeId="7cf88dae-272d-4b19-b80f-765574951129" NodeName="+@," X="300" Y="250" DefaultPosition="false" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="e1cf96d4-f7e5-452f-b1ef-38758930d2ab" NodeName="*@," X="450" Y="350" DefaultPosition="false" TransformCoordinates="true" />
+  <MakeConnectionCommand NodeId="93fac143-92c8-4b67-aec9-24a7a90056c2" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="7cf88dae-272d-4b19-b80f-765574951129" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="8aa9cbd4-1b99-4f62-aa9f-223665930782" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="7cf88dae-272d-4b19-b80f-765574951129" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="06f1687f-857c-4924-894c-30d71e6a204a" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="e1cf96d4-f7e5-452f-b1ef-38758930d2ab" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="7cf88dae-272d-4b19-b80f-765574951129" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="e1cf96d4-f7e5-452f-b1ef-38758930d2ab" PortIndex="0" Type="0" ConnectionMode="1" />
+  <CreateNodeCommand NodeId="7cb701cb-2615-4b5f-a519-7602d7ea5373" NodeName="Output" X="650" Y="350" DefaultPosition="false" TransformCoordinates="true" />
+  <UpdateModelValueCommand ModelGuid="7cb701cb-2615-4b5f-a519-7602d7ea5373" Name="Symbol" Value="result" />
+  <MakeConnectionCommand NodeId="e1cf96d4-f7e5-452f-b1ef-38758930d2ab" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="7cb701cb-2615-4b5f-a519-7602d7ea5373" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SwitchTabCommand TabIndex="0" />
+  <CreateNodeCommand NodeId="05f3fff2-577b-4f24-b30f-94e99c333ec5" NodeName="Number" X="150" Y="200" DefaultPosition="false" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="3db332b1-7e74-48e2-b380-c78c5776e84e" NodeName="Number" X="150" Y="300" DefaultPosition="false" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="d9b5c0c6-9a9b-4e8e-9312-df177ee355e8" NodeName="Number" X="150" Y="400" DefaultPosition="false" TransformCoordinates="true" />
+  <UpdateModelValueCommand ModelGuid="05f3fff2-577b-4f24-b30f-94e99c333ec5" Name="Value" Value="2" />
+  <UpdateModelValueCommand ModelGuid="3db332b1-7e74-48e2-b380-c78c5776e84e" Name="Value" Value="4" />
+  <UpdateModelValueCommand ModelGuid="d9b5c0c6-9a9b-4e8e-9312-df177ee355e8" Name="Value" Value="6" />
+  <CreateNodeCommand NodeId="345cd2d4-5f3b-4eb0-9d5f-5dd90c5a7493" NodeName="410b62bb-a791-4b84-84b8-127802aa7f88" X="300" Y="300" DefaultPosition="false" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="d232d91a-483f-4ab0-8c55-bb8bc710be59" NodeName="Watch" X="500" Y="300" DefaultPosition="false" TransformCoordinates="true" />
+  <MakeConnectionCommand NodeId="05f3fff2-577b-4f24-b30f-94e99c333ec5" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="345cd2d4-5f3b-4eb0-9d5f-5dd90c5a7493" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="3db332b1-7e74-48e2-b380-c78c5776e84e" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="345cd2d4-5f3b-4eb0-9d5f-5dd90c5a7493" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="d9b5c0c6-9a9b-4e8e-9312-df177ee355e8" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="345cd2d4-5f3b-4eb0-9d5f-5dd90c5a7493" PortIndex="2" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="345cd2d4-5f3b-4eb0-9d5f-5dd90c5a7493" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="d232d91a-483f-4ab0-8c55-bb8bc710be59" PortIndex="0" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="WaitForRunToComplete" PauseDurationInMs="200" />
+</Commands>

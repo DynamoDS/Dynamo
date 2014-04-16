@@ -1,7 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Data;
+using System.Windows.Threading;
 using Autodesk.RevitAddIns;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
@@ -143,6 +148,12 @@ namespace RevitTestFrameworkRunner
             }
         }
 
+        public int Timeout
+        {
+            get { return Program._timeout; }
+            set { Program._timeout = value; }
+        }
+
         internal ViewModel()
         {
             Assemblies = new ObservableCollection<IAssemblyData>();
@@ -181,22 +192,30 @@ namespace RevitTestFrameworkRunner
                 File.Delete(Program._results);
             }
 
-            if (parameter is IAssemblyData)
+            var worker = new BackgroundWorker();
+
+            worker.DoWork += TestThread;
+            worker.RunWorkerAsync(parameter);   
+        }
+
+        private void TestThread(object sender, DoWorkEventArgs e)
+        {
+            if (e.Argument is IAssemblyData)
             {
-                var ad = parameter as IAssemblyData;
+                var ad = e.Argument as IAssemblyData;
                 Program._runCount = ad.Fixtures.SelectMany(f => f.Tests).Count();
                 Program.RunAssembly(ad);
             }
-            else if (parameter is IFixtureData)
+            else if (e.Argument is IFixtureData)
             {
-                var fd = parameter as IFixtureData;
+                var fd = e.Argument as IFixtureData;
                 Program._runCount = fd.Tests.Count;
                 Program.RunFixture(fd);
             }
-            else if (parameter is ITestData)
+            else if (e.Argument is ITestData)
             {
                 Program._runCount = 1;
-                Program.RunTest(parameter as ITestData);
+                Program.RunTest(e.Argument as ITestData);
             }
 
             Program.Cleanup();

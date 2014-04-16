@@ -14,5 +14,8 @@
     <Setting Name="isDebug" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="timeout" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">120000</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

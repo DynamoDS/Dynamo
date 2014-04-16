@@ -66,10 +66,6 @@
     <Reference Include="JobMonitor">
       <HintPath>..\..\extern\DynamoRaaS\JobMonitor.dll</HintPath>
     </Reference>
-    <Reference Include="LibGNet">
-      <HintPath>..\..\bin\AnyCPU\Debug\dll\LibGNet.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="MathNet.Numerics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\mathnet-numerics-build\lib\Net40\MathNet.Numerics.dll</HintPath>

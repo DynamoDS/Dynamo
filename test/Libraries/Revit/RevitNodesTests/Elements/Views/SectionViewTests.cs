@@ -1,4 +1,5 @@
 ﻿using System;
+using Autodesk.DesignScript.Geometry;
 using Revit.Elements;
 using Revit.Elements.Views;
 using NUnit.Framework;
@@ -9,8 +10,22 @@ using Dynamo.Tests;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    class SectionViewTests
+    class SectionViewTests : RevitNodeTestBase
     {
+        [SetUp]
+        public void Setup()
+        {
+            HostFactory.Instance.StartUp();
+            base.Setup();
+        }
+
+        [TearDown]
+        public void Teardown()
+        {
+            HostFactory.Instance.ShutDown();
+            base.TearDown();
+        }
+
         [Test]
         [TestModel(@".\Empty.rvt")]
         public void ByBoundingBox_ValidArgs()

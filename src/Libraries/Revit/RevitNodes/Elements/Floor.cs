@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
-using Revit.Elements;
 using Revit.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
@@ -48,7 +46,7 @@ namespace Revit.Elements
         /// <summary>
         /// Private constructor
         /// </summary>
-        private Floor(Autodesk.Revit.DB.CurveArray curveArray, Autodesk.Revit.DB.FloorType floorType, Autodesk.Revit.DB.Level level)
+        private Floor(CurveArray curveArray, Autodesk.Revit.DB.FloorType floorType, Autodesk.Revit.DB.Level level)
         {
             TransactionManager.Instance.EnsureInTransaction(Document);
 
@@ -59,7 +57,7 @@ namespace Revit.Elements
 
             TransactionManager.Instance.TransactionTaskDone();
 
-            ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElement);
+            ElementBinder.CleanupAndSetElementForTrace(Document, InternalFloor);
         }
 
         #endregion
@@ -73,9 +71,9 @@ namespace Revit.Elements
         /// <param name="floor"></param>
         private void InternalSetFloor(Autodesk.Revit.DB.Floor floor)
         {
-            this.InternalFloor = floor;
-            this.InternalElementId = floor.Id;
-            this.InternalUniqueId = floor.UniqueId;
+            InternalFloor = floor;
+            InternalElementId = floor.Id;
+            InternalUniqueId = floor.UniqueId;
         }
 
         #endregion
@@ -86,9 +84,10 @@ namespace Revit.Elements
         /// Create a Revit Floor given it's curve outline and Level
         /// </summary>
         /// <param name="outline"></param>
+        /// <param name="floorType"></param>
         /// <param name="level"></param>
         /// <returns>The floor</returns>
-        public static Floor ByOutlineTypeAndLevel( Autodesk.DesignScript.Geometry.Curve[] outline, FloorType floorType, Level level)
+        public static Floor ByOutlineTypeAndLevel(Curve[] outline, FloorType floorType, Level level)
         {
             if (outline == null)
             {
@@ -115,6 +114,7 @@ namespace Revit.Elements
 
             return new Floor(ca, floorType.InternalFloorType, level.InternalLevel );
         }
+
         #endregion
 
         #region Internal static constructors
@@ -122,7 +122,7 @@ namespace Revit.Elements
         /// <summary>
         /// Create a Floor from a user selected Element.
         /// </summary>
-        /// <param name="pt"></param>
+        /// <param name="floor"></param>
         /// <param name="isRevitOwned"></param>
         /// <returns></returns>
         internal static Floor FromExisting(Autodesk.Revit.DB.Floor floor, bool isRevitOwned)

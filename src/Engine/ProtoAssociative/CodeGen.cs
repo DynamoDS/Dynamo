@@ -787,7 +787,13 @@ namespace ProtoAssociative
             return procNode;
         }
 
-        private void EmitFunctionCall(int depth, int type, List<ProtoCore.Type> arglist, ProtoCore.DSASM.ProcedureNode procNode, ProtoCore.AST.AssociativeAST.FunctionCallNode funcCall, bool getter = false, ProtoCore.AST.AssociativeAST.BinaryExpressionNode bnode = null)
+        private void EmitFunctionCall(int depth, 
+                                      int type,
+                                      List<ProtoCore.Type> arglist, 
+                                      ProcedureNode procNode, 
+                                      FunctionCallNode funcCall, 
+                                      bool isGetter = false, 
+                                      BinaryExpressionNode parentExpression = null)
         {
             int blockId = procNode.runtimeIndex;
 
@@ -803,12 +809,16 @@ namespace ProtoAssociative
             int dimensions = 0;
             EmitPushVarData(blockId, dimensions);
 
-
             // The function call
             EmitInstrConsole(ProtoCore.DSASM.kw.callr, procNode.name);
-            if(getter)
-                EmitCall(procNode.procId, type, depth, ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, 
-                    ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, procNode.pc);
+
+            if (isGetter)
+            {
+                EmitCall(procNode.procId, type, depth,
+                         Constants.kInvalidIndex, Constants.kInvalidIndex,
+                         Constants.kInvalidIndex, Constants.kInvalidIndex, 
+                         procNode.pc);
+            }
             // Break at function call inside dynamic lang block created for a 'true' or 'false' expression inside an inline conditional
             else if (core.DebugProps.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
             {
@@ -819,10 +829,14 @@ namespace ProtoAssociative
 
                 EmitCall(procNode.procId, type, depth, startInclusive.LineNo, startInclusive.CharNo, endExclusive.LineNo, endExclusive.CharNo, procNode.pc);
             }
-            else if(bnode != null)
-                EmitCall(procNode.procId, type, depth, bnode.line, bnode.col, bnode.endLine, bnode.endCol, procNode.pc);
+            else if (parentExpression != null)
+            {
+                EmitCall(procNode.procId, type, depth, parentExpression.line, parentExpression.col, parentExpression.endLine, parentExpression.endCol, procNode.pc);
+            }
             else
+            {
                 EmitCall(procNode.procId, type, depth, funcCall.line, funcCall.col, funcCall.endLine, funcCall.endCol, procNode.pc);
+            }
 
             // The function return value
             EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regRX);
@@ -830,6 +844,257 @@ namespace ProtoAssociative
             EmitPush(opReturn);
         }
         
+        
+        private void TraverseDotCallArguments(FunctionCallNode funcCall, 
+                                              FunctionDotCallNode dotCall,
+                                              ProcedureNode procCallNode,
+                                              List<ProtoCore.Type> arglist,
+                                              string procName,
+                                              int classIndex,
+                                              string className,
+                                              bool isStaticCall,
+                                              bool isStaticCallAllowed,
+                                              bool isConstructor,
+                                              GraphNode graphNode,
+                                              AssociativeSubCompilePass subPass,
+                                              BinaryExpressionNode bnode)
+        {
+            // Update graph dependencies
+            if (subPass != AssociativeSubCompilePass.kUnboundIdentifier && graphNode != null)
+            {
+                if (isStaticCall && isStaticCallAllowed)
+                {
+                    Validity.Assert(classIndex != Constants.kInvalidIndex);
+                    Validity.Assert(!string.IsNullOrEmpty(className));
+
+                    SymbolNode classSymbol = new SymbolNode();
+                    classSymbol.name = className;
+                    classSymbol.classScope = classIndex;
+
+                    GraphNode dependentNode = new GraphNode();
+                    dependentNode.PushSymbolReference(classSymbol, UpdateNodeType.kSymbol);
+                    graphNode.PushDependent(dependentNode);
+                }
+
+                if (!isConstructor && graphNode.dependentList.Count > 0)
+                {
+                    UpdateNode updateNode = new UpdateNode();
+
+                    string propertyName;
+                    if (CoreUtils.TryGetPropertyName(procName, out propertyName))
+                    {
+                        var dummySymbol = new SymbolNode();
+                        dummySymbol.name = propertyName;
+
+                        updateNode.nodeType = UpdateNodeType.kSymbol;
+                        updateNode.symbol = dummySymbol;
+                    }
+                    else
+                    {
+                        var dummyProcNode = new ProcedureNode();
+                        dummyProcNode.name = procName;
+
+                        updateNode.nodeType = UpdateNodeType.kMethod;
+                        updateNode.procNode = dummyProcNode;
+                    }
+
+                    graphNode.dependentList[0].updateNodeRefList[0].nodeList.Add(updateNode);
+                }
+            }
+
+            int funtionArgCount = 0;
+            for (int n = 0; n < funcCall.FormalArguments.Count; ++n)
+            {
+                AssociativeNode paramNode = funcCall.FormalArguments[n];
+                ProtoCore.Type paramType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
+
+                emitReplicationGuide = false;
+
+                // If it's a binary node then continue type check, otherwise 
+                // disable type check and just take the type of paramNode itself
+                enforceTypeCheck = !(paramNode is BinaryExpressionNode);
+
+                if (ProtoCore.DSASM.Constants.kDotArgIndexPtr == n)
+                {
+                    // Traversing the first arg (the LHS pointer/Static instanct/Constructor
+                    
+                    // Replication guides only allowed on method, e.g.,
+                    // 
+                    //    x = p<1>.f({1,2}<2>); 
+                    //
+                    // But not on getter, e.g.,
+                    // 
+                    //    c = a<1>.x<2>; 
+                    if (!CoreUtils.IsGetterSetter(procName) && !isConstructor)
+                    {
+                        emitReplicationGuide = true;
+                    }
+
+                    DfsTraverse(paramNode, ref paramType, false, graphNode, subPass, bnode);
+                }
+                else if (ProtoCore.DSASM.Constants.kDotArgIndexArrayArgs == n)
+                {
+                    // Traversing the actual arguments passed into the function 
+                    // (not the dot function)
+                    int defaultAdded = 0;
+
+                    // If its null this is the second call in a chained dot
+                    if (null != procCallNode)
+                    {
+                        // Check how many args were passed in.... against what is expected
+                        defaultAdded = procCallNode.argInfoList.Count - dotCall.FunctionCall.FormalArguments.Count;
+                    }
+
+                    // Enable graphnode dependencies if its a setter method
+                    bool allowDependentState = null != graphNode ? graphNode.allowDependents : false;
+                    if (CoreUtils.IsSetter(procName))
+                    {
+                        // If the arguments are not temporaries
+                        ExprListNode exprList = paramNode as ExprListNode;
+                        Validity.Assert(1 == exprList.list.Count);
+
+                        string varname = string.Empty;
+                        if (exprList.list[0] is IdentifierNode)
+                        {
+                            varname = (exprList.list[0] as IdentifierNode).Name;
+
+                            if (!CoreUtils.IsAutoGeneratedVar(varname))
+                            {
+                                graphNode.allowDependents = true;
+                            }
+                            else if (CoreUtils.IsSSATemp(varname) && core.Options.GenerateSSA)
+                            {
+                                graphNode.allowDependents = true;
+                            }
+                        }
+                        else
+                        {
+                            graphNode.allowDependents = true;
+                        }
+
+                    }
+
+                    emitReplicationGuide = true;
+
+                    if (defaultAdded > 0)
+                    {
+                        ExprListNode exprList = paramNode as ExprListNode;
+
+                        if (subPass != AssociativeSubCompilePass.kUnboundIdentifier)
+                        {
+                            for (int i = 0; i < defaultAdded; i++)
+                            {
+                                exprList.list.Add(new DefaultArgNode());
+                            }
+
+                        }
+                        DfsTraverse(paramNode, ref paramType, false, graphNode, subPass);
+                        funtionArgCount = exprList.list.Count;
+                    }
+                    else
+                    {
+                        ExprListNode exprList = paramNode as ExprListNode;
+
+                        // Comment Jun: This is a getter/setter or a an auto-generated thisarg function...
+                        // ...add the dynamic sv that will be resolved as a pointer at runtime
+                        if (!isStaticCall && !isConstructor)
+                        {
+                            // TODO Jun: pls get rid of subPass checking outside the core travesal
+                            if (AssociativeSubCompilePass.kNone == subPass)
+                            {
+                                exprList.list.Insert(0, new DynamicNode());
+                            }
+                        }
+
+                        if (exprList.list.Count > 0)
+                        {
+                            foreach (AssociativeNode exprListNode in exprList.list)
+                            {
+                                bool repGuideState = emitReplicationGuide;
+                                if (subPass != AssociativeSubCompilePass.kUnboundIdentifier)
+                                {
+                                    if (exprListNode is ExprListNode || exprListNode is GroupExpressionNode)
+                                    {
+                                        if (core.Options.TempReplicationGuideEmptyFlag)
+                                        {
+                                            // Emit the replication guide for the exprlist
+                                            var repGuideList = GetReplicationGuides(exprListNode);
+                                            if (repGuideList != null)
+                                            {
+                                                EmitReplicationGuides(repGuideList, true);
+                                                EmitInstrConsole(ProtoCore.DSASM.kw.popg);
+                                                EmitPopGuide();
+                                            }
+
+                                            emitReplicationGuide = false;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    emitReplicationGuide = false;
+                                }
+
+                                DfsTraverse(exprListNode, ref paramType, false, graphNode, subPass, bnode);
+                                emitReplicationGuide = repGuideState;
+                            }
+
+                            if (subPass != AssociativeSubCompilePass.kUnboundIdentifier)
+                            {
+                                EmitInstrConsole(ProtoCore.DSASM.kw.alloca, exprList.list.Count.ToString());
+                                EmitPopArray(exprList.list.Count);
+
+                                if (exprList.ArrayDimensions != null)
+                                {
+                                    int dimensions = DfsEmitArrayIndexHeap(exprList.ArrayDimensions, graphNode);
+                                    EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, dimensions.ToString() + "[dim]");
+                                    EmitPushArrayIndex(dimensions);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (exprList != null)
+                            {
+                                bool emitReplicationGuideState = emitReplicationGuide;
+                                emitReplicationGuide = false;
+                                DfsTraverse(paramNode, ref paramType, false, graphNode, subPass);
+                                emitReplicationGuide = emitReplicationGuideState;
+                            }
+                            else
+                            {
+                                DfsTraverse(paramNode, ref paramType, false, graphNode, subPass);
+                            }
+                        }
+
+                        funtionArgCount = exprList.list.Count;
+                    }
+
+                    emitReplicationGuide = false;
+
+                    // Restore the state only if it is a setter method
+                    if (ProtoCore.Utils.CoreUtils.IsSetter(procName))
+                    {
+                        graphNode.allowDependents = allowDependentState;
+                    }
+                }
+                else if (ProtoCore.DSASM.Constants.kDotArgIndexArgCount == n)
+                {
+                    IntNode argNumNode = new IntNode(funtionArgCount);
+                    DfsTraverse(argNumNode, ref paramType, false, graphNode, subPass);
+                }
+                else
+                {
+                    DfsTraverse(paramNode, ref paramType, false, graphNode, subPass);
+                }
+
+                emitReplicationGuide = false;
+                enforceTypeCheck = true;
+
+                arglist.Add(paramType);
+            } 
+        }
+
         public ProcedureNode TraverseDotFunctionCall(
                                 ProtoCore.AST.Node node, 
                                 ProtoCore.AST.Node parentNode, 
@@ -842,7 +1107,6 @@ namespace ProtoAssociative
         {
             ProcedureNode procCallNode = null;
             ProcedureNode procDotCallNode = null;
-            List<ProtoCore.Type> arglist = new List<ProtoCore.Type>();
 
             ProtoCore.Type dotCallType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0); ;
 
@@ -850,7 +1114,6 @@ namespace ProtoAssociative
             bool isStaticCall = false;
             bool isStaticCallAllowed = false;
             bool isUnresolvedDot = false;
-            bool isUnresolvedMethod = false;
 
             int classIndex = Constants.kInvalidIndex;
             string className = string.Empty;
@@ -867,39 +1130,36 @@ namespace ProtoAssociative
             {
                 isUnresolvedDot = true;
             }
-            else if (firstArgument is IdentifierNode || firstArgument is ThisPointerNode)
+            else if (firstArgument is IdentifierNode)
             {
                 // Check if the lhs identifer is a class name
                 string lhsName = "";
                 int ci = Constants.kInvalidIndex;
 
-                if (firstArgument is IdentifierNode)
+                lhsName = (firstArgument as IdentifierNode).Name;
+                ci = core.ClassTable.IndexOf(lhsName);
+                classIndex = ci;
+                className = lhsName;
+
+                // As a class name can be used as property name, we need to
+                // check if this identifier is a property or a class name.
+                //
+                if (ci != Constants.kInvalidIndex && globalClassIndex != Constants.kInvalidIndex)
                 {
-                    lhsName = (firstArgument as IdentifierNode).Name;
-                    ci = core.ClassTable.IndexOf(lhsName);
-                    classIndex = ci;
-                    className = lhsName;
+                    ProtoCore.DSASM.SymbolNode symbolnode;
+                    bool isAccessbile = false;
+                    bool hasAllocated = VerifyAllocation(lhsName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessbile);
 
-                    // As a class name can be used as property name, we need to
-                    // check if this identifier is a property or a class name.
-                    //
-                    if (ci != Constants.kInvalidIndex && globalClassIndex != Constants.kInvalidIndex)
+                    // Well, found a property whose name is class name. Now
+                    // we need to check if the RHS function call is 
+                    // constructor or not.  
+                    if (hasAllocated && isAccessbile && symbolnode.functionIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
                     {
-                        ProtoCore.DSASM.SymbolNode symbolnode;
-                        bool isAccessbile = false;
-                        bool hasAllocated = VerifyAllocation(lhsName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessbile);
-
-                        // Well, found a property whose name is class name. Now
-                        // we need to check if the RHS function call is 
-                        // constructor or not.  
-                        if (hasAllocated && isAccessbile && symbolnode.functionIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
+                        var procnode = GetProcedureFromInstance(ci, dotCall.FunctionCall);
+                        if (procnode != null && !procnode.isConstructor)
                         {
-                            var procnode = GetProcedureFromInstance(ci, dotCall.FunctionCall);
-                            if (procnode != null && !procnode.isConstructor)
-                            {
-                                ci = Constants.kInvalidIndex;
-                                lhsName = "";
-                            }
+                            ci = Constants.kInvalidIndex;
+                            lhsName = "";
                         }
                     }
                 }
@@ -985,7 +1245,6 @@ namespace ProtoAssociative
                     }
                 }
 
-
                 if (dotCall.DotCall.FormalArguments.Count == Constants.kDotCallArgCount)
                 {
                     if (firstArgument is IdentifierNode)
@@ -1013,13 +1272,17 @@ namespace ProtoAssociative
                                         buildStatus.LogWarning(WarningID.kCallingConstructorOnInstance, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
                                     }
 
-                                    isUnresolvedDot = true;
-                                    isUnresolvedMethod = true;
+                                    if (subPass == AssociativeSubCompilePass.kNone)
+                                    {
+                                        EmitNullNode(new NullNode(), ref inferedType);
+                                    }
+
+                                    return null;
                                 }
                                 else
                                 {
-                                   isAccessible = procCallNode.access == AccessSpecifier.kPublic
-                                        || (procCallNode.access == AccessSpecifier.kPrivate && procCallNode.classScope == globalClassIndex);
+                                    isAccessible = procCallNode.access == AccessSpecifier.kPublic
+                                         || (procCallNode.access == AccessSpecifier.kPrivate && procCallNode.classScope == globalClassIndex);
 
                                     if (!isAccessible)
                                     {
@@ -1045,403 +1308,30 @@ namespace ProtoAssociative
                             isUnresolvedDot = true;
                         }
                     }
-                    else if (firstArgument is ThisPointerNode)
-                    {
-                        if (globalClassIndex != Constants.kInvalidIndex) 
-                        {
-                            procCallNode = GetProcedureFromInstance(globalClassIndex, dotCall.FunctionCall);
-                            if (null != procCallNode && procCallNode.isConstructor)
-                            {
-                                dotCall.DotCall.FormalArguments[0] = new IntNode(globalClassIndex);
-                                firstArgument = dotCall.DotCall.FormalArguments[0];
-                                inferedType.UID = dotCallType.UID = ci;
-                            }
-                        }
-                    }
-                }
-            }
-            else if (funcCall.FormalArguments[0] is IntNode)
-            {
-                inferedType.UID = dotCallType.UID = (int)(funcCall.FormalArguments[0] as IntNode).Value;
-                classIndex = inferedType.UID;
-                procCallNode = GetProcedureFromInstance(dotCallType.UID, dotCall.FunctionCall, graphNode);
-
-                if (null != procCallNode)
-                {
-                    // It's a static call if its not a constructor
-                    isConstructor = procCallNode.isConstructor;
-                    isStaticCall = !procCallNode.isConstructor;
-
-                    // If this is a static call and the first method found was not static
-                    // Look further
-                    if (isStaticCall && !procCallNode.isStatic)
-                    {
-                        ProtoCore.DSASM.ProcedureNode staticProcCallNode = core.ClassTable.ClassNodes[inferedType.UID].GetFirstStaticMemberFunction(procName);
-                        if (null != staticProcCallNode)
-                        {
-                            procCallNode = staticProcCallNode;
-                        }
-                    }
-
-                    isStaticCallAllowed = procCallNode.isStatic && isStaticCall;
-                    className = core.ClassTable.ClassNodes[dotCallType.UID].name;
-
-                    if (isStaticCall && !isStaticCallAllowed)
-                    {
-                        if (subPass != ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
-                        {
-                            string property;
-                            className = core.ClassTable.ClassNodes[dotCallType.UID].name;
-                            ProtoCore.DSASM.ProcedureNode staticProcCallNode = core.ClassTable.ClassNodes[inferedType.UID].GetFirstStaticMemberFunction(procName);
-
-                            if (null != staticProcCallNode)
-                            {
-                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodHasInvalidArguments, procName);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, dotCall.line, dotCall.col);
-                            }
-                            else if (CoreUtils.TryGetPropertyName(procName, out property))
-                            {
-                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kCallingNonStaticProperty, property, className);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, dotCall.line, dotCall.col);
-                            }
-                            else
-                            {
-                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kCallingNonStaticMethod, procName, className);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, dotCall.line, dotCall.col);
-                            }
-                        }
-                        isUnresolvedMethod = true;
-                    }
-                    else
-                    {
-                        inferedType = procCallNode.returntype;
-                    }
                 }
             }
 
             // Its an accceptable method at this point
-            if (!isUnresolvedMethod)
-            {
-                int funtionArgCount = 0;
+            List<ProtoCore.Type> arglist = new List<ProtoCore.Type>();
+            TraverseDotCallArguments(funcCall, 
+                                     dotCall,
+                                     procCallNode, 
+                                     arglist,
+                                     procName, 
+                                     classIndex, 
+                                     className, 
+                                     isStaticCall, 
+                                     isStaticCallAllowed, 
+                                     isConstructor,
+                                     graphNode, 
+                                     subPass, 
+                                     bnode);
 
-                //foreach (AssociativeNode paramNode in funcCall.FormalArguments)
-                for (int n = 0; n < funcCall.FormalArguments.Count; ++n)    
-                {
-                    AssociativeNode paramNode = funcCall.FormalArguments[n];
-                    ProtoCore.Type paramType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
-
-                    emitReplicationGuide = false;
-
-                    // If it's a binary node then continue type check, otherwise disable type check and just take the type of paramNode itself
-                    // f(1+2.0) -> type check enabled - param is typed as double
-                    // f(2) -> type check disabled - param is typed as int
-                    enforceTypeCheck = !(paramNode is BinaryExpressionNode);
-
-
-                    // TODO Jun: Cleansify me
-                    // What im doing is just taking the second parameter of the dot op (The method call)
-                    // ...and adding it to the graph node dependencies
-                    if (ProtoCore.DSASM.Constants.kDotArgIndexDynTableIndex == n)
-                    {
-                        if (subPass != ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
-                        {
-                            if (!isConstructor)
-                            {
-                                if (null != procCallNode)
-                                {
-                                    if (graphNode.dependentList.Count > 0)
-                                    {
-                                        ProtoCore.AssociativeGraph.UpdateNodeRef nodeRef = new ProtoCore.AssociativeGraph.UpdateNodeRef();
-                                        ProtoCore.AssociativeGraph.UpdateNode updateNode = new ProtoCore.AssociativeGraph.UpdateNode();
-                                        ProtoCore.DSASM.ProcedureNode procNodeDummy = new ProtoCore.DSASM.ProcedureNode();
-                                        if (procCallNode.isAutoGenerated)
-                                        {
-                                            ProtoCore.DSASM.SymbolNode sym = new ProtoCore.DSASM.SymbolNode();
-                                            sym.name = procName.Remove(0, ProtoCore.DSASM.Constants.kSetterPrefix.Length);
-                                            updateNode.nodeType = ProtoCore.AssociativeGraph.UpdateNodeType.kSymbol;
-                                            updateNode.symbol = sym;
-                                        }
-                                        else
-                                        {
-                                            procNodeDummy.name = procName;
-                                            updateNode.nodeType = ProtoCore.AssociativeGraph.UpdateNodeType.kMethod;
-                                            updateNode.procNode = procNodeDummy;
-                                        }
-                                        graphNode.dependentList[0].updateNodeRefList[0].nodeList.Add(updateNode);
-                                    }
-                                }
-                                else
-                                {
-                                    // comment Jun:
-                                    // This is dotarg whos first argument is also a dotarg
-                                    // dotarg(dorarg...)...)
-                                    if (graphNode.dependentList.Count > 0)
-                                    {
-                                        if (ProtoCore.Utils.CoreUtils.IsGetterSetter(procName))
-                                        {
-                                            ProtoCore.AssociativeGraph.UpdateNode updateNode = new ProtoCore.AssociativeGraph.UpdateNode();
-                                            ProtoCore.DSASM.SymbolNode sym = new ProtoCore.DSASM.SymbolNode();
-                                            sym.name = procName.Remove(0, ProtoCore.DSASM.Constants.kSetterPrefix.Length);
-                                            updateNode.nodeType = ProtoCore.AssociativeGraph.UpdateNodeType.kSymbol;
-                                            updateNode.symbol = sym;
-
-                                            graphNode.dependentList[0].updateNodeRefList[0].nodeList.Add(updateNode);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-
-                    // Traversing the first arg (the LHS pointer/Static instanct/Constructor
-                    if (ProtoCore.DSASM.Constants.kDotArgIndexPtr == n)
-                    {
-                        // Comment Jun: 
-                        //      Allow guides only on 'this' pointers for non getter/setter methods
-                        //      No guides for 'this' pointers in constructors calls (There is no this pointer yet)
-                        //      
-                        /*
-                            class C
-                            {
-                                def f(a : int)
-                                {
-                                    return = 10;
-                                }
-                            }
-                            p = {C.C(), C.C()};
-                            x = p<1>.f({1,2}<2>); // guides allowed on the pointer 'p'
-                      
-                         
-                         
-                         
-                         
-                            class A
-                            {
-                                x : var[];
-                                constructor A()
-                                {
-                                    x = {1,2};
-                                }
-                            }
-                            a = A.A();
-                            b = A.A();
-                            c = a<1>.x<2>; // guides not allowed on getter
-                         
-                         */
-                        if (!ProtoCore.Utils.CoreUtils.IsGetterSetter(procName) && !isConstructor)
-                        {
-                            emitReplicationGuide = true;
-                        }
-
-                        DfsTraverse(paramNode, ref paramType, false, graphNode, subPass, bnode);
-                        if (subPass != ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
-                        {
-                            if (isStaticCall && isStaticCallAllowed)
-                            {
-                                Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != classIndex);
-                                Validity.Assert(string.Empty != className);
-                                SymbolNode classSymbol = new SymbolNode();
-                                classSymbol.name = className;
-                                classSymbol.classScope = classIndex;
-
-                                ProtoCore.AssociativeGraph.GraphNode dependentNode = new ProtoCore.AssociativeGraph.GraphNode();
-                                dependentNode.PushSymbolReference(classSymbol, ProtoCore.AssociativeGraph.UpdateNodeType.kSymbol);
-                                graphNode.PushDependent(dependentNode);
-                            }
-                        }
-                    }
-
-
-                    // Traversing the actual arguments passed into the function (not the dot function)
-                    else if (ProtoCore.DSASM.Constants.kDotArgIndexArrayArgs == n)
-                    {
-                        int defaultAdded = 0;
-
-
-                        // If its null this is the second call in a chained dot
-                        if (null != procCallNode)
-                        {
-                            // Check how many args were passed in.... against what is expected
-                            defaultAdded = procCallNode.argInfoList.Count - dotCall.FunctionCall.FormalArguments.Count;
-                        }
-
-
-                        // Enable graphnode dependencies if its a setter method
-                        bool allowDependentState = null != graphNode ? graphNode.allowDependents : false;
-                        if (ProtoCore.Utils.CoreUtils.IsSetter(procName))
-                        {
-                            // If the arguments are not temporaries
-                            ProtoCore.AST.AssociativeAST.ExprListNode exprList = paramNode as ExprListNode;
-                            Validity.Assert(1 == exprList.list.Count);
-
-                            string varname = string.Empty;
-                            if (exprList.list[0] is IdentifierNode)
-                            {
-                                varname = (exprList.list[0] as IdentifierNode).Name;
-
-                                // TODO Jun: deprecate SSA flag and do full SSA
-                                if (core.Options.GenerateSSA)
-                                {
-                                    // Only allow the acutal function variables and SSA temp vars
-                                    // TODO Jun: determine what temp could be passed in that is autodegenerated and non-SSA
-                                    if (!ProtoCore.Utils.CoreUtils.IsAutoGeneratedVar(varname)
-                                        || ProtoCore.Utils.CoreUtils.IsSSATemp(varname))
-                                    {
-                                        graphNode.allowDependents = true;
-                                    }
-                                }
-                                else
-                                {
-                                    if (!ProtoCore.Utils.CoreUtils.IsAutoGeneratedVar(varname))
-                                    {
-                                        graphNode.allowDependents = true;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                graphNode.allowDependents = true;
-                            }
-
-                        }
-
-                        emitReplicationGuide = true; 
-
-                        if (defaultAdded > 0)
-                        {
-                            ProtoCore.AST.AssociativeAST.ExprListNode exprList = paramNode as ExprListNode;
-
-                            if (subPass != AssociativeSubCompilePass.kUnboundIdentifier)
-                            {
-                                for (int i = 0; i < defaultAdded; i++)
-                                {
-                                    exprList.list.Add(new DefaultArgNode());
-                                }
-
-                            }
-                            DfsTraverse(paramNode, ref paramType, false, graphNode, subPass);
-                            funtionArgCount = exprList.list.Count;
-                        }
-                        else
-                        {
-                            Validity.Assert(paramNode is ProtoCore.AST.AssociativeAST.ExprListNode);
-                            ProtoCore.AST.AssociativeAST.ExprListNode exprList = paramNode as ProtoCore.AST.AssociativeAST.ExprListNode;
-
-
-                            // Comment Jun: This is a getter/setter or a an auto-generated thisarg function...
-                            // ...add the dynamic sv that will be resolved as a pointer at runtime
-                            if (!isStaticCall && !isConstructor)
-                            {
-                                //if (null != procCallNode && ProtoCore.Utils.CoreUtils.IsGetterSetter(procCallNode.name) && AssociativeSubCompilePass.kNone == subPass)
-                                // TODO Jun: pls get rid of subPass checking outside the core travesal
-                                if (ProtoCore.DSASM.AssociativeSubCompilePass.kNone == subPass)
-                                {
-                                    exprList.list.Insert(0, new DynamicNode());
-                                }
-                            }
-
-                            if (exprList.list.Count > 0)
-                            {
-                                foreach (ProtoCore.AST.AssociativeAST.AssociativeNode exprListNode in exprList.list)
-                                {
-                                    bool repGuideState = emitReplicationGuide;
-                                    if (subPass != ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
-                                    {
-                                        if (exprListNode is ProtoCore.AST.AssociativeAST.ExprListNode
-                                            || exprListNode is ProtoCore.AST.AssociativeAST.GroupExpressionNode)
-                                        {
-                                            if (core.Options.TempReplicationGuideEmptyFlag)
-                                            {
-                                                // Emit the replication guide for the exprlist
-                                                List<ProtoCore.AST.AssociativeAST.AssociativeNode> repGuideList = GetReplicationGuides(exprListNode);
-                                                EmitReplicationGuides(repGuideList, true);
-
-                                                emitReplicationGuide = false;
-
-                                                // Pop off the guide if the current element was an array
-                                                if (null != repGuideList)
-                                                {
-                                                    EmitInstrConsole(ProtoCore.DSASM.kw.popg);
-                                                    EmitPopGuide();
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        emitReplicationGuide = false;
-                                    }
-
-                                    DfsTraverse(exprListNode, ref paramType, false, graphNode, subPass, bnode);
-                                    emitReplicationGuide = repGuideState;
-                                }
-
-                                if (subPass != ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
-                                {
-
-                                    EmitInstrConsole(ProtoCore.DSASM.kw.alloca, exprList.list.Count.ToString());
-                                    EmitPopArray(exprList.list.Count);
-
-                                    if (exprList.ArrayDimensions != null)
-                                    {
-                                        int dimensions = DfsEmitArrayIndexHeap(exprList.ArrayDimensions, graphNode);
-                                        EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, dimensions.ToString() + "[dim]");
-                                        EmitPushArrayIndex(dimensions);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (exprList != null)
-                                {
-                                    bool emitReplicationGuideState = emitReplicationGuide;
-                                    emitReplicationGuide = false;
-                                    DfsTraverse(paramNode, ref paramType, false, graphNode, subPass);
-                                    emitReplicationGuide = emitReplicationGuideState;
-                                }
-                                else
-                                {
-                                    DfsTraverse(paramNode, ref paramType, false, graphNode, subPass);
-                                }
-                            }
-
-                            funtionArgCount = exprList.list.Count;
-                        }
-
-                        emitReplicationGuide = false;
-
-                        // Restore the state only if it is a setter method
-                        if (ProtoCore.Utils.CoreUtils.IsSetter(procName))
-                        {
-                            graphNode.allowDependents = allowDependentState;
-                        }
-                    }
-                    else if (ProtoCore.DSASM.Constants.kDotArgIndexArgCount == n)
-                    {
-                        IntNode argNumNode = new IntNode(funtionArgCount);
-                        DfsTraverse(argNumNode, ref paramType, false, graphNode, subPass); 
-                    }
-                    else
-                    {
-                        DfsTraverse(paramNode, ref paramType, false, graphNode, subPass);
-                    }
-
-                    emitReplicationGuide = false;
-                    enforceTypeCheck = true;
-
-                    arglist.Add(paramType);
-                }
-            }
-
-
-            if (subPass == ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
+            if (subPass == AssociativeSubCompilePass.kUnboundIdentifier)
             {
                 return null;
             }
 
-
-            // Comment Jun: Append the lhs pointer as an argument to the overloaded function
             if (!isConstructor && !isStaticCall)
             {
                 Validity.Assert(dotCall.DotCall.FormalArguments[ProtoCore.DSASM.Constants.kDotArgIndexArrayArgs] is ExprListNode);
@@ -1449,15 +1339,8 @@ namespace ProtoAssociative
                 functionArgs.list.Insert(0, dotCall.DotCall.FormalArguments[ProtoCore.DSASM.Constants.kDotArgIndexPtr]);
             }
 
-            if (isUnresolvedMethod)
-            {
-                EmitNullNode(new NullNode(), ref inferedType);
-                return null;
-            }
-
             procDotCallNode = core.GetFirstVisibleProcedure(ProtoCore.DSASM.Constants.kDotArgMethodName, arglist, codeBlock);
            
-
             // From here on, handle the actual procedure call 
             int type = ProtoCore.DSASM.Constants.kInvalidIndex;
 
@@ -1479,28 +1362,26 @@ namespace ProtoAssociative
             }
 
             // If lefttype is a valid class then check if calling a constructor
-            if ((int)ProtoCore.PrimitiveType.kInvalidType != inferedType.UID
-                && (int)ProtoCore.PrimitiveType.kTypeVoid != inferedType.UID
-                && procName != ProtoCore.DSASM.Constants.kFunctionPointerCall)
+            if ((int)PrimitiveType.kInvalidType != inferedType.UID
+                && (int)PrimitiveType.kTypeVoid != inferedType.UID
+                && procName != Constants.kFunctionPointerCall)
             {
-                bool isStaticOrConstructor = refClassIndex != ProtoCore.DSASM.Constants.kInvalidIndex;
-                //procCallNode = core.classTable.list[inferedType.UID].GetMemberFunction(procName, arglist, globalClassIndex, out isAccessible, out realType, isStaticOrConstructor);
                 procCallNode = core.ClassTable.ClassNodes[inferedType.UID].GetFirstMemberFunction(procName);
             }
 
             // Try function pointer firstly
-            if ((procCallNode == null) && (procName != ProtoCore.DSASM.Constants.kFunctionPointerCall))
+            if ((procCallNode == null) && (procName != Constants.kFunctionPointerCall))
             {
                 bool isAccessibleFp;
                 ProtoCore.DSASM.SymbolNode symbolnode = null;
                 bool isAllocated = VerifyAllocation(procName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessibleFp);
                 if (isAllocated) // not checking the type against function pointer, as the type could be var
                 {
-                    procName = ProtoCore.DSASM.Constants.kFunctionPointerCall;
+                    procName = Constants.kFunctionPointerCall;
                     // The graph node always depends on this function pointer
                     if (null != graphNode)
                     {
-                        ProtoCore.AssociativeGraph.GraphNode dependentNode = new ProtoCore.AssociativeGraph.GraphNode();
+                        GraphNode dependentNode = new GraphNode();
                         dependentNode.PushSymbolReference(symbolnode);
                         graphNode.PushDependent(dependentNode);
                     }
@@ -1512,12 +1393,12 @@ namespace ProtoAssociative
             // member function firstly, there is no way to call a global function
             // For member function, we can use this.foo() to distinguish it from 
             // global function. 
-            if ((procCallNode == null) && (procName != ProtoCore.DSASM.Constants.kFunctionPointerCall))
+            if ((procCallNode == null) && (procName != Constants.kFunctionPointerCall))
             {
                 procCallNode = core.GetFirstVisibleProcedure(procName, arglist, codeBlock);
                 if (null != procCallNode)
                 {
-                    type = ProtoCore.DSASM.Constants.kGlobalScope;
+                    type = Constants.kGlobalScope;
                     if (core.TypeSystem.IsHigherRank(procCallNode.returntype.UID, inferedType.UID))
                     {
                         inferedType = procCallNode.returntype;
@@ -1526,26 +1407,26 @@ namespace ProtoAssociative
             }
 
             // Try member functions in global class scope
-            if ((procCallNode == null) && (procName != ProtoCore.DSASM.Constants.kFunctionPointerCall) && (parentNode == null))
+            if ((procCallNode == null) && (procName != Constants.kFunctionPointerCall) && (parentNode == null))
             {
-                if (globalClassIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
+                if (globalClassIndex != Constants.kInvalidIndex)
                 {
                     int realType;
                     bool isAccessible;
-                    bool isStaticOrConstructor = refClassIndex != ProtoCore.DSASM.Constants.kInvalidIndex;
-                    ProtoCore.DSASM.ProcedureNode memProcNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(procName, arglist, globalClassIndex, out isAccessible, out realType, isStaticOrConstructor);
+                    bool isStaticOrConstructor = refClassIndex != Constants.kInvalidIndex;
+                    ProcedureNode memProcNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(procName, arglist, globalClassIndex, out isAccessible, out realType, isStaticOrConstructor);
 
                     if (memProcNode != null)
                     {
-                        Validity.Assert(realType != ProtoCore.DSASM.Constants.kInvalidIndex);
+                        Validity.Assert(realType != Constants.kInvalidIndex);
                         procCallNode = memProcNode;
                         inferedType = procCallNode.returntype;
                         type = realType;
 
                         if (!isAccessible)
                         {
-                            string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodIsInaccessible, procName);
-                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
+                            string message = String.Format(WarningMessage.kMethodIsInaccessible, procName);
+                            buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
 
                             inferedType.UID = (int)PrimitiveType.kTypeNull;
                             EmitPushNull();
@@ -1558,10 +1439,10 @@ namespace ProtoAssociative
             if (isUnresolvedDot)
             {
                 // Get the dot call procedure
-                ProtoCore.DSASM.ProcedureNode procNode = procDotCallNode;
+                ProcedureNode procNode = procDotCallNode;
                 if (!isConstructor && !isStaticCall)
                 {
-                    procNode = core.GetFirstVisibleProcedure(ProtoCore.DSASM.Constants.kDotMethodName, null, codeBlock);
+                    procNode = core.GetFirstVisibleProcedure(Constants.kDotMethodName, null, codeBlock);
                 }
 
                 if(CoreUtils.IsGetter(procName))
@@ -1582,17 +1463,17 @@ namespace ProtoAssociative
             if (null != procCallNode)
             {
                 if (procCallNode.isConstructor &&
-                        (globalClassIndex != ProtoCore.DSASM.Constants.kInvalidIndex) &&
-                        (globalProcIndex != ProtoCore.DSASM.Constants.kInvalidIndex) &&
-                        (globalClassIndex == inferedType.UID))
+                    (globalClassIndex != Constants.kInvalidIndex) &&
+                    (globalProcIndex != Constants.kInvalidIndex) &&
+                    (globalClassIndex == inferedType.UID))
                 {
-                    ProtoCore.DSASM.ProcedureNode contextProcNode = core.ClassTable.ClassNodes[globalClassIndex].vtable.procList[globalProcIndex];
+                    ProcedureNode contextProcNode = core.ClassTable.ClassNodes[globalClassIndex].vtable.procList[globalProcIndex];
                     if (contextProcNode.isConstructor &&
                         string.Equals(contextProcNode.name, procCallNode.name) &&
                         contextProcNode.runtimeIndex == procCallNode.runtimeIndex)
                     {
-                        string message = String.Format(ProtoCore.BuildData.WarningMessage.kCallingConstructorInConstructor, procName);
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingConstructorInConstructor, message, core.CurrentDSFileName, node.line, node.col);
+                        string message = String.Format(WarningMessage.kCallingConstructorInConstructor, procName);
+                        buildStatus.LogWarning(WarningID.kCallingConstructorInConstructor, message, core.CurrentDSFileName, node.line, node.col);
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
                         EmitPushNull();
                         return procCallNode;
@@ -1607,12 +1488,11 @@ namespace ProtoAssociative
                     inferedType.rank++;
                 }
 
-
                 // Get the dot call procedure
                 ProtoCore.DSASM.ProcedureNode procNode = procDotCallNode;
                 if (!isConstructor && !isStaticCall)
                 {
-                    procNode = core.GetFirstVisibleProcedure(ProtoCore.DSASM.Constants.kDotMethodName, null, codeBlock);
+                    procNode = core.GetFirstVisibleProcedure(Constants.kDotMethodName, null, codeBlock);
                 }
 
                 if (CoreUtils.IsSetter(procName))
@@ -1641,7 +1521,7 @@ namespace ProtoAssociative
                         // Get the lhs symbol list
                         ProtoCore.Type ltype = new ProtoCore.Type();
                         ltype.UID = globalClassIndex;
-                        ProtoCore.AssociativeGraph.UpdateNodeRef argNodeRef = new ProtoCore.AssociativeGraph.UpdateNodeRef();
+                        UpdateNodeRef argNodeRef = new UpdateNodeRef();
                         DFSGetSymbolList(paramNode, ref ltype, argNodeRef);
 
                         if (null != graphNode)
@@ -1652,7 +1532,6 @@ namespace ProtoAssociative
                             }
                         }
                     }
-
 
                     graphNode.firstProc = procCallNode;
                 }
@@ -1705,9 +1584,9 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    if (procName == ProtoCore.DSASM.Constants.kFunctionPointerCall && depth == 0)
+                    if (procName == Constants.kFunctionPointerCall && depth == 0)
                     {
-                        ProtoCore.DSASM.DynamicFunctionNode dynamicFunctionNode = new ProtoCore.DSASM.DynamicFunctionNode(procName, arglist, lefttype);
+                        DynamicFunctionNode dynamicFunctionNode = new DynamicFunctionNode(procName, arglist, lefttype);
                         core.DynamicFunctionTable.functionTable.Add(dynamicFunctionNode);
 
                         var iNode = nodeBuilder.BuildIdentfier(funcCall.Function.Name);
@@ -1715,7 +1594,7 @@ namespace ProtoAssociative
                     }
                     else
                     {
-                        ProtoCore.DSASM.DynamicFunctionNode dynamicFunctionNode = new ProtoCore.DSASM.DynamicFunctionNode(funcCall.Function.Name, arglist, lefttype);
+                        DynamicFunctionNode dynamicFunctionNode = new DynamicFunctionNode(funcCall.Function.Name, arglist, lefttype);
                         core.DynamicFunctionTable.functionTable.Add(dynamicFunctionNode);
                     }
                     // The function call
@@ -6243,64 +6122,57 @@ namespace ProtoAssociative
             bool arrayIndexing = IsAssociativeArrayIndexing;
             IsAssociativeArrayIndexing = false;
 
-
             // Handle static calls to reflect the original call
-            //if (core.Options.GenerateSSA)
+            BuildRealDependencyForIdentList(graphNode);
+
+            if (node is FunctionDotCallNode)
             {
-                BuildRealDependencyForIdentList(graphNode);
-
-                if (node is FunctionDotCallNode)
+                if ((node as FunctionDotCallNode).isLastSSAIdentListFactor)
                 {
-                    if ((node as FunctionDotCallNode).isLastSSAIdentListFactor)
-                    {
-                        Validity.Assert(null != ssaPointerList);
-                        ssaPointerList.Clear();
-                    }
+                    Validity.Assert(null != ssaPointerList);
+                    ssaPointerList.Clear();
                 }
+            }
 
-                //if (resolveStatic)
+            if (node is FunctionDotCallNode)
+            {
+                FunctionDotCallNode dotcall = node as FunctionDotCallNode;
+                Validity.Assert(null != dotcall.DotCall);
+                if (null != dotcall.StaticLHSIdent)
                 {
-                    if (node is FunctionDotCallNode)
+                    string identName = dotcall.StaticLHSIdent.Name;
+                    string fullClassName;
+                    bool isClassName = core.ClassTable.TryGetFullyQualifiedName(identName, out fullClassName);
+                    if (isClassName)
                     {
-                        FunctionDotCallNode dotcall = node as FunctionDotCallNode;
-                        Validity.Assert(null != dotcall.DotCall);
-                        if (null != dotcall.StaticLHSIdent)
+                        ProtoCore.DSASM.SymbolNode symbolnode = null;
+                        bool isAccessible = false;
+                        bool isLHSAllocatedVariable = VerifyAllocation(identName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+
+                        bool isRHSConstructor = false;
+                        int classIndex = core.ClassTable.IndexOf(identName);
+                        if (classIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
                         {
-                            string identName = dotcall.StaticLHSIdent.Name;
-                            string fullClassName;
-                            bool isClassName = core.ClassTable.TryGetFullyQualifiedName(identName, out fullClassName);
-                            if (isClassName)
+
+                            string functionName = dotcall.FunctionCall.Function.Name;
+                            ProcedureNode callNode = core.ClassTable.ClassNodes[classIndex].GetFirstMemberFunction(functionName);
+                            if (null != callNode)
                             {
-                                ProtoCore.DSASM.SymbolNode symbolnode = null;
-                                bool isAccessible = false;
-                                bool isLHSAllocatedVariable = VerifyAllocation(identName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-
-                                bool isRHSConstructor = false;
-                                int classIndex = core.ClassTable.IndexOf(identName);
-                                if (classIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
-                                {
-
-                                    string functionName = dotcall.FunctionCall.Function.Name;
-                                    ProcedureNode callNode = core.ClassTable.ClassNodes[classIndex].GetFirstMemberFunction(functionName);
-                                    if (null != callNode)
-                                    {
-                                        isRHSConstructor = callNode.isConstructor;
-                                    }
-                                }
-
-                                bool isFunctionCallOnAllocatedClassName = isLHSAllocatedVariable && !isRHSConstructor;
-                                if (!isFunctionCallOnAllocatedClassName || isRHSConstructor)
-                                {
-                                    ssaPointerList.Clear();
-
-                                    dotcall.DotCall.FormalArguments[0] = dotcall.StaticLHSIdent;
-
-                                    staticClass = null;
-                                    resolveStatic = false;
-
-                                    ssaPointerList.Clear();
-                                }
+                                isRHSConstructor = callNode.isConstructor;
                             }
+                        }
+
+                        bool isFunctionCallOnAllocatedClassName = isLHSAllocatedVariable && !isRHSConstructor;
+                        if (!isFunctionCallOnAllocatedClassName || isRHSConstructor)
+                        {
+                            ssaPointerList.Clear();
+
+                            dotcall.DotCall.FormalArguments[0] = dotcall.StaticLHSIdent;
+
+                            staticClass = null;
+                            resolveStatic = false;
+
+                            ssaPointerList.Clear();
                         }
                     }
                 }

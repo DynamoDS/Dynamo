@@ -27,7 +27,6 @@ using Dynamo.DSEngine;
 namespace Dynamo.Models
 {
      
-    public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
     public delegate void CleanupHandler(object sender, EventArgs e);
     public delegate void NodeHandler(NodeModel node);
     public delegate void ConnectorHandler(ConnectorModel connector);
@@ -163,15 +162,6 @@ namespace Dynamo.Models
                 RequestLayoutUpdate(this, e);
         }
 
-        public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
-        public virtual void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
-        {
-            if (RequestsFunctionNamePrompt != null)
-            {
-                RequestsFunctionNamePrompt(this, e);
-            }
-        }
-
         public event EventHandler WorkspaceOpening;
         public virtual void OnWorkspaceOpening(object sender, EventArgs e)
         {
@@ -272,11 +262,18 @@ namespace Dynamo.Models
             get { return _cspace; }
             internal set
             {
-                if (_cspace != null)
-                    _cspace.IsCurrentSpace = false;
-                _cspace = value;
-                _cspace.IsCurrentSpace = true;
-                RaisePropertyChanged("CurrentWorkspace");
+                if (_cspace != value) // There's actually a change.
+                {
+                    if (_cspace != null)
+                        _cspace.IsCurrentSpace = false;
+
+                    _cspace = value;
+
+                    if (_cspace != null)
+                        _cspace.IsCurrentSpace = true;
+
+                    RaisePropertyChanged("CurrentWorkspace");
+                }
             }
         }
 
@@ -1315,28 +1312,6 @@ namespace Dynamo.Models
                 return false;
             }
 
-            return true;
-        }
-
-        /// <summary>
-        /// Present the new function dialogue and create a custom function.
-        /// </summary>
-        /// <param name="parameter"></param>
-        public void ShowNewFunctionDialogAndMakeFunction(object parameter)
-        {
-            //trigger the event to request the display
-            //of the function name dialogue
-            var args = new FunctionNamePromptEventArgs();
-            OnRequestsFunctionNamePrompt(this, args);
-
-            if (args.Success)
-            {
-                NewCustomNodeWorkspace(Guid.NewGuid(), args.Name, args.Category, args.Description, true);
-            }
-        }
-
-        internal bool CanShowNewFunctionDialogCommand(object parameter)
-        {
             return true;
         }
 
