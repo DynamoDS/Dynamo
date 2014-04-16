@@ -425,6 +425,7 @@ namespace RevitTestFrameworkRunner
                     System.Threading.Thread.Sleep(10000);
                     td.TestStatus = TestStatus.TimedOut;
                     timedOut = true;
+                    Console.WriteLine("Test timed out.");
                 }
             }
 
