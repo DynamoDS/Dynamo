@@ -341,7 +341,7 @@ namespace DynamoCoreUITests
         protected ModelBase GetNode(string guid)
         {
             Guid id = Guid.Parse(guid);
-            return workspace.GetModelInternal(id);
+            return Controller.DynamoModel.CurrentWorkspace.GetModelInternal(id);
         }
 
         protected void RunCommandsFromFile(string commandFileName,
@@ -2038,6 +2038,49 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        public void Defect_MAGN_2102()
+        {
+            // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2102
+            
+            RunCommandsFromFile("Defect_MAGN_2102.xml", false, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "Start")
+                {
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+
+                    var node1 = GetNode("37da4958-1b88-408b-b09d-3deba0ba3835");
+                    var node2 = GetNode("b12ce9c8-8c23-43c4-987d-759c6f623998");
+
+                    Assert.NotNull(node1 as DSCoreNodesUI.DummyNode);
+                    Assert.NotNull(node2 as DSCoreNodesUI.DummyNode);
+                }
+                else if (commandTag == "Delete1")
+                {
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                }
+                else if (commandTag == "UndoDelete1")
+                {
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                }
+                else if (commandTag == "RedoDelete1")
+                {
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                }
+                else if (commandTag == "Delete2")
+                {
+                    Assert.AreEqual(0, workspace.Nodes.Count);
+                }
+                else if (commandTag == "UndoDelete2")
+                {
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                }
+            });
+        }
+
+        [Test, RequiresSTA]
         public void Defect_MAGN_2272()
         {
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2272
@@ -2240,7 +2283,7 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void Defect_MAGN_2563()
         {
-            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-23563
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2563
 
             RunCommandsFromFile("Defect_MAGN_2563.xml", true);
 
