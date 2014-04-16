@@ -31,11 +31,15 @@ namespace Revit.GeometryConversion
                 ptsRight.Add(pt.Add(revoffsetDir));
             }
 
-            return (face.MostPointsAreInside(ptsLeft, tol, thresh) && srf.MostPointsAreInside(ptsLeft, tol, thresh))
-                   || (face.MostPointsAreInside(ptsRight, tol, thresh) && srf.MostPointsAreInside(ptsRight, tol, thresh));
+            var leftPointsInFace = face.MostPointsAreInside(ptsLeft, tol, thresh);
+            var leftPointsInSurface = srf.MostPointsAreInside(ptsLeft, tol, thresh);
+            var rightPointsInFace = face.MostPointsAreInside(ptsRight, tol, thresh);
+            var rightPointsInSurface = srf.MostPointsAreInside(ptsRight, tol, thresh);
+
+            return (leftPointsInFace && leftPointsInSurface) || (rightPointsInFace && rightPointsInSurface);
         }
 
-        public static bool MostPointsAreInside(this Face face, IEnumerable<Point> pts, double tolerance = 1e-5, double threshold = 0.8)
+        public static bool MostPointsAreInside(this Face face, IEnumerable<Point> pts, double tolerance = 1e-4, double threshold = 0.8)
         {
             var numInside = pts.Aggregate(0, (a, x) =>
             {
@@ -46,7 +50,7 @@ namespace Revit.GeometryConversion
             return ((double)numInside) / pts.Count() > threshold - 1e-6;
         }
 
-        public static bool MostPointsAreInside(this Surface surface, IEnumerable<Point> pts, double tolerance = 1e-5, double threshold = 0.8)
+        public static bool MostPointsAreInside(this Surface surface, IEnumerable<Point> pts, double tolerance = 1e-4, double threshold = 0.8)
         {
             var numInside = pts.Aggregate(0, (a, x) => a + (surface.DistanceTo(x) < tolerance ? 1 : 0));
             return ((double)numInside) / pts.Count() > threshold - 1e-6;

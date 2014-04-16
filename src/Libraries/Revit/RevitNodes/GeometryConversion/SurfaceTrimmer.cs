@@ -11,7 +11,7 @@ namespace Revit.GeometryConversion
     [IsVisibleInDynamoLibrary(false)]
     public static class SurfaceTrimmer
     {
-        public static Surface TrimWithEdgeLoops(this Surface surface, Autodesk.Revit.DB.Face face,
+        public static Surface TrimWithEdgeLoops(Surface surface, Autodesk.Revit.DB.Face face,
             IEnumerable<PolyCurve> loops)
         {
             var cutSurface = surface;

@@ -12,20 +12,27 @@ using Autodesk.Revit.DB;
 
 namespace Revit.GeometryConversion
 {
-    [IsVisibleInDynamoLibrary(false)]
     public static class RevitToProtoFace
     {
-        public static Surface ToProtoType(this Autodesk.Revit.DB.Face face)
+        // PB: should be phased out eventually
+        public static Surface ToSurface(this Revit.GeometryObjects.Face revitFace)
+        {
+            if (revitFace == null) return null;
+
+            return revitFace.InternalFace.ToSurface();
+        }
+
+        public static Surface ToSurface(this Autodesk.Revit.DB.Face face)
         {
             if (face == null) return null;
 
             dynamic dyFace = face;
-            var edgeLoops = EdgeLoopPolyCurves(face);
-            var untrimmedSrf = SurfaceExtractor.ExtractSurface(dyFace, edgeLoops);
-            return untrimmedSrf != null ? untrimmedSrf.TrimWithEdgeLoops(face, edgeLoops) : null;
+            var edgeLoops = EdgeLoopsAsPolyCurves(dyFace);
+            Surface untrimmedSrf = SurfaceExtractor.ExtractSurface(dyFace, edgeLoops);
+            return untrimmedSrf != null ? SurfaceTrimmer.TrimWithEdgeLoops(untrimmedSrf, dyFace, edgeLoops) : null;
         }
 
-        private static List<PolyCurve> EdgeLoopPolyCurves(Autodesk.Revit.DB.Face face)
+        private static List<PolyCurve> EdgeLoopsAsPolyCurves(Autodesk.Revit.DB.Face face)
         {
             return face.EdgeLoops.Cast<EdgeArray>()
                 .Select(x => x.Cast<Autodesk.Revit.DB.Edge>())
@@ -33,5 +40,6 @@ namespace Revit.GeometryConversion
                 .Select(PolyCurve.ByJoinedCurves)
                 .ToList();
         }
+
     }
 }
