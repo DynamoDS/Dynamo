@@ -108,6 +108,7 @@ namespace Revit.Elements
         {
             get
             {
+                DocumentManager.Regenerate();
                 return this.InternalGrid.Curve.ToProtoType();
             }
         }
