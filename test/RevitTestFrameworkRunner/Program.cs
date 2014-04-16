@@ -421,7 +421,7 @@ namespace RevitTestFrameworkRunner
                 }
             }
 
-            if(!timedOut)
+            if(!timedOut && _gui)
                 GetTestResultStatus(td);
 
             _runCount --;
