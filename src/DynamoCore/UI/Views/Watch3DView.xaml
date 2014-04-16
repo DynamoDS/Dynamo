@@ -48,18 +48,32 @@
                     <ModelVisual3D.Content>
                         <GeometryModel3D Geometry="{Binding Mesh}">
                             <GeometryModel3D.Material>
-                                <DiffuseMaterial>
-                                    <DiffuseMaterial.Brush>
-                                        <SolidColorBrush Color="WhiteSmoke" Opacity="1"/>
-                                    </DiffuseMaterial.Brush>
-                                </DiffuseMaterial>
+                                <MaterialGroup>
+                                    <DiffuseMaterial>
+                                        <DiffuseMaterial.Brush>
+                                            <SolidColorBrush Color="WhiteSmoke" Opacity="1"/>
+                                        </DiffuseMaterial.Brush>
+                                    </DiffuseMaterial>
+                                    <SpecularMaterial SpecularPower="85">
+                                        <SpecularMaterial.Brush>
+                                            <SolidColorBrush Color="White" Opacity="1"/>
+                                        </SpecularMaterial.Brush>
+                                    </SpecularMaterial>
+                                </MaterialGroup>
                             </GeometryModel3D.Material>
                             <GeometryModel3D.BackMaterial>
-                                <DiffuseMaterial>
-                                    <DiffuseMaterial.Brush>
-                                        <SolidColorBrush Color="WhiteSmoke" Opacity="1"/>
-                                    </DiffuseMaterial.Brush>
-                                </DiffuseMaterial>
+                                <MaterialGroup>
+                                    <DiffuseMaterial>
+                                        <DiffuseMaterial.Brush>
+                                            <SolidColorBrush Color="WhiteSmoke" Opacity="1"/>
+                                        </DiffuseMaterial.Brush>
+                                    </DiffuseMaterial>
+                                    <SpecularMaterial SpecularPower="85">
+                                        <SpecularMaterial.Brush>
+                                            <SolidColorBrush Color="White" Opacity="1"/>
+                                        </SpecularMaterial.Brush>
+                                    </SpecularMaterial>
+                                </MaterialGroup>
                             </GeometryModel3D.BackMaterial>
                         </GeometryModel3D>
                     </ModelVisual3D.Content>
@@ -68,18 +82,32 @@
                     <ModelVisual3D.Content>
                         <GeometryModel3D Geometry="{Binding MeshSelected}">
                             <GeometryModel3D.Material>
-                                <DiffuseMaterial>
-                                    <DiffuseMaterial.Brush>
-                                        <SolidColorBrush Color="Cyan" Opacity="1"/>
-                                    </DiffuseMaterial.Brush>
-                                </DiffuseMaterial>
+                                <MaterialGroup>
+                                    <DiffuseMaterial>
+                                        <DiffuseMaterial.Brush>
+                                            <SolidColorBrush Color="Cyan" Opacity="1"/>
+                                        </DiffuseMaterial.Brush>
+                                    </DiffuseMaterial>
+                                    <SpecularMaterial SpecularPower="85">
+                                        <SpecularMaterial.Brush>
+                                            <SolidColorBrush Color="white" Opacity="1"/>
+                                        </SpecularMaterial.Brush>
+                                    </SpecularMaterial>
+                                </MaterialGroup>
                             </GeometryModel3D.Material>
                             <GeometryModel3D.BackMaterial>
-                                <DiffuseMaterial>
-                                    <DiffuseMaterial.Brush>
-                                        <SolidColorBrush Color="Cyan" Opacity="1"/>
-                                    </DiffuseMaterial.Brush>
-                                </DiffuseMaterial>
+                                <MaterialGroup>
+                                    <DiffuseMaterial>
+                                        <DiffuseMaterial.Brush>
+                                            <SolidColorBrush Color="Cyan" Opacity="1"/>
+                                        </DiffuseMaterial.Brush>
+                                    </DiffuseMaterial>
+                                    <SpecularMaterial SpecularPower="85">
+                                        <SpecularMaterial.Brush>
+                                            <SolidColorBrush Color="white" Opacity="1"/>
+                                        </SpecularMaterial.Brush>
+                                    </SpecularMaterial>
+                                </MaterialGroup>
                             </GeometryModel3D.BackMaterial>
                         </GeometryModel3D>
                     </ModelVisual3D.Content>
