@@ -106,6 +106,9 @@
     <Compile Include="Elements\Views\SectionView.cs" />
     <Compile Include="Elements\Views\Packing\OutOfSpaceException.cs" />
     <Compile Include="Elements\Views\Packing\RectanglePacker.cs" />
+    <Compile Include="GeometryConversion\SurfaceExtractor.cs" />
+    <Compile Include="GeometryConversion\SurfaceTrimmer.cs" />
+    <Compile Include="GeometryConversion\TrimValidator.cs" />
     <Compile Include="GeometryConversion\ProtoToRevitCurve.cs" />
     <Compile Include="GeometryConversion\RevitToProtoCurve.cs" />
     <Compile Include="GeometryConversion\RevitToProtoFace.cs" />

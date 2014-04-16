@@ -204,7 +204,7 @@ namespace Revit.Elements
 
             var start = line.StartPoint.ToXyz();
             var end = line.EndPoint.ToXyz();
-            var norm = (end - start).GetParallel();
+            var norm = (end - start).GetPerpendicular();
 
             return new ReferencePlane(  start, 
                                         end,
@@ -232,7 +232,7 @@ namespace Revit.Elements
 
             return new ReferencePlane(  start.ToXyz(), 
                                         end.ToXyz(),
-                                        (end.ToXyz() - start.ToXyz()).GetParallel(),
+                                        (end.ToXyz() - start.ToXyz()).GetPerpendicular(),
                                         Document.ActiveView);
         }
 
