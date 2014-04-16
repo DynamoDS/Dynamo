@@ -70,5 +70,17 @@ namespace RevitTestFrameworkRunner.Properties {
                 this["isDebug"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("120000")]
+        public int timeout {
+            get {
+                return ((int)(this["timeout"]));
+            }
+            set {
+                this["timeout"] = value;
+            }
+        }
     }
 }

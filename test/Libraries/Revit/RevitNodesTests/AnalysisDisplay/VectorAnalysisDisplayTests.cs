@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace DSRevitNodesTests.AnalysisDisplay
 {
     [TestFixture]
-    public class VectorAnalysisDisplayTests
+    public class VectorAnalysisDisplayTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\Empty.rvt")]

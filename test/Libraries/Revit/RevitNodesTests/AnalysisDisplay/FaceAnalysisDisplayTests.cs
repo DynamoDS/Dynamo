@@ -8,13 +8,12 @@ using NUnit.Framework;
 namespace DSRevitNodesTests.AnalysisDisplay
 {
     [TestFixture]
-    public class FaceAnalysisDisplayTests
+    public class FaceAnalysisDisplayTests : RevitNodeTestBase
     {
         [Test]
         [TestModel(@".\ColumnFamilyInstance.rvt")]
         public void ByViewFacePointsAndValues_ValidArgs()
         {
-
             var fams = ElementSelector.ByType<Autodesk.Revit.DB.FamilyInstance>(true);
             var famInst = fams.First() as Revit.Elements.FamilyInstance;
 
@@ -45,10 +44,10 @@ namespace DSRevitNodesTests.AnalysisDisplay
         [TestModel(@".\ColumnFamilyInstance.rvt")]
         public void ByViewFacePointsAndValues_BadArgs()
         {
-            // get the face from the document
-            var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
-            var form = ele as Form;
-            var faceRef = form.FaceReferences.First();
+            var fams = ElementSelector.ByType<Autodesk.Revit.DB.FamilyInstance>(true);
+            var famInst = fams.First() as Revit.Elements.FamilyInstance;
+
+            var faceRef = famInst.FaceReferences.First();
 
             var samplePoints = new[]
             {

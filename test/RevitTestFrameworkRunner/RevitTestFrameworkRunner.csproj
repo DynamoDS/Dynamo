@@ -66,6 +66,9 @@
   <ItemGroup>
     <Compile Include="Converters.cs" />
     <Compile Include="Interfaces.cs" />
+    <Compile Include="NUnitResultTypes.cs">
+      <DependentUpon>NUnitResultTypes.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -81,6 +84,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="NUnitResultTypes.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

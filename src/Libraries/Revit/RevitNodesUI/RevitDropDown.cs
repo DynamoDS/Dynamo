@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 using DSCoreNodesUI;
@@ -7,6 +8,7 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using RevitServices.Persistence;
+using Category = Revit.Elements.Category;
 
 namespace DSRevitNodesUI
 {
@@ -180,22 +182,17 @@ namespace DSRevitNodesUI
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All built-in categories.")]
     [IsDesignScriptCompatible]
-    public class Categories : EnumBase
+    public class Categories : EnumBase<BuiltInCategory>
     {
-        public Categories():base(typeof(BuiltInCategory)){}
-
         protected override void PopulateItems()
         {
-            if (enum_internal == null)
-                return;
-
             Items.Clear();
-            foreach (var constant in System.Enum.GetValues(enum_internal))
+            foreach (var constant in Enum.GetValues(typeof(BuiltInCategory)))
             {
                 Items.Add(new DynamoDropDownItem(constant.ToString().Substring(4), constant));
             }
 
-            Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection();
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -205,9 +202,8 @@ namespace DSRevitNodesUI
                 AstFactory.BuildStringNode(((BuiltInCategory) Items[SelectedIndex].Item).ToString())
             };
 
-            var functionCall = AstFactory.BuildFunctionCall("Revit.Elements.Category",
-                                                            "ByName",
-                                                            args);
+            var func = new Func<string, Category>(Revit.Elements.Category.ByName);
+            var functionCall = AstFactory.BuildFunctionCall(func, args);
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
@@ -331,4 +327,9 @@ namespace DSRevitNodesUI
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
     }
+
+    [NodeName("Spacing Rule Layout")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_DIVIDE)]
+    [NodeDescription("A spacing rule layout for calculating divided paths.")]
+    public class SpacingRuleLayouts : EnumAsInt<SpacingRuleLayout> { }
 }

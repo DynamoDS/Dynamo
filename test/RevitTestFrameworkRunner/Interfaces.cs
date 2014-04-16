@@ -1,7 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows.Controls.Primitives;
 
 namespace RevitTestFrameworkRunner
 {
+    public enum TestStatus{None,Cancelled, Error, Failure, Ignored, Inconclusive, NotRunnable, Skipped, Success,TimedOut}
+
     public interface IAssemblyData
     {
         string Path { get; set; }
@@ -22,5 +26,13 @@ namespace RevitTestFrameworkRunner
         string Name { get; set; }
         bool RunDynamo { get; set; }
         string ModelPath { get; set; }
+        TestStatus TestStatus { get; set; }
+        ObservableCollection<IResultData> ResultData { get; set; }
+    }
+
+    public interface IResultData
+    {
+        string Message { get; set; }
+        string StackTrace { get; set; }
     }
 }
