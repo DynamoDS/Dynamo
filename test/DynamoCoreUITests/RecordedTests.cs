@@ -334,6 +334,26 @@ namespace DynamoCoreUITests
 
             
         }
+
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_2563()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-23563
+
+            RunCommandsFromFile("Defect_MAGN_2563.xml", true);
+
+            Assert.AreEqual(1, Controller.DynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, Controller.DynamoModel.CurrentWorkspace.Connectors.Count);
+
+
+            NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                ("aeed3ffe-7294-43a9-8a05-83b5ff05f527");
+
+            Assert.AreEqual(ElementState.Warning, node.State);
+        }
+        
+        
         #endregion
 
         #region Private Helper Methods
@@ -1860,6 +1880,265 @@ namespace DynamoCoreUITests
              
          }
 
+         
+         [Test, RequiresSTA]
+         public void Deffect_1107FunctionDef()
+         {
+             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1107
+
+             RunCommandsFromFile("Defect_1107Function_Def.xml", true);
+             Assert.AreEqual(2, workspace.Nodes.Count);
+             AssertPreviewValue("ffb38231-05ee-4f8f-ad8a-2cd44c62f343", 1);
+
+         }
+         [Test, RequiresSTA]
+         public void Deffect_1331DeleteUndo()
+         {
+             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1331
+
+             RunCommandsFromFile("Deffect_1331DeleteUndo.xml", true, (commandTag) =>
+             {
+                 var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                 if (commandTag == "FirstRun")
+                 {
+                     // Initial state : CBN :  a=1, CBN: b=a , connect them
+                     Assert.AreEqual(2, workspace.Nodes.Count);
+                     Assert.AreEqual(1, workspace.Connectors.Count);
+
+                     AssertPreviewValue("f7c03bad-4d2b-44e9-b485-464d1cb55035", 1);
+                 }
+                 else if (commandTag == "SecondRun")
+                 {
+                     // After delete
+                     Assert.AreEqual(1, workspace.Nodes.Count);
+                     Assert.AreEqual(1, workspace.Connectors.Count);
+
+                     AssertPreviewValue("f7c03bad-4d2b-44e9-b485-464d1cb55035",
+                         null);
+                 }
+                 else if (commandTag == "ThirdRun")
+                 {
+                     // After undo 
+                     Assert.AreEqual(2, workspace.Nodes.Count);
+                     Assert.AreEqual(1, workspace.Connectors.Count);
+
+                     AssertPreviewValue("f7c03bad-4d2b-44e9-b485-464d1cb55035",
+                         1);
+                 }
+
+             });
+
+
+         }
+         [Test, RequiresSTA]
+         public void Deffect_1313DoubleSlider()
+         {
+             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1313
+
+             RunCommandsFromFile("Deffect_1313_DoubleSlider.xml", true, (commandTag) =>
+             {
+                 var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                 if (commandTag == "FirstRun")
+                 {
+                     // Initial state : create double slider node
+                     Assert.AreEqual(1, workspace.Nodes.Count);
+
+
+                     AssertPreviewValue("b996cba2-e2a8-4b21-b1d6-0955420c0b48", 50);
+                 }
+
+                 else if (commandTag == "SecondRun")
+                 {
+                     // Modify by changing the value in text box 
+                     Assert.AreEqual(1, workspace.Nodes.Count);
+
+                     AssertPreviewValue("b996cba2-e2a8-4b21-b1d6-0955420c0b48",
+                         30);
+                 }
+
+             });
+
+
+         }
+         [Test, RequiresSTA]
+         public void Deffect_1301Classloading()
+         {
+             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1301
+             RunCommandsFromFile("Defect_MAGN_1301.xml", false);
+             Assert.AreEqual(3, workspace.Nodes.Count);
+             AssertPreviewValue("589f6fef-135a-4d43-8e95-b56240135c15", 0.999848);
+             Assert.AreEqual(1, workspace.Connectors.Count);
+         }
+         [Test, RequiresSTA]
+         public void Deffect_1311Python()
+         {
+             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1301
+             RunCommandsFromFile("Defect_MAGN_1311.xml", false);
+             Assert.AreEqual(2, workspace.Nodes.Count);
+             AssertPreviewValue("9f367153-89e7-4785-af78-a1bcc41ec394", new int[] { 1 });
+             Assert.AreEqual(1, workspace.Connectors.Count);
+         }
+         [Test, RequiresSTA]
+         public void Deffect_1963_PythonUndo()
+         {
+             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1963
+             RunCommandsFromFile("Deffect_1963_PythonUndo.xml", false);
+             Assert.AreEqual(2, workspace.Nodes.Count);
+             AssertPreviewValue("93eaf7f1-0328-450b-8d40-61cf9a73f047", new int[] { 1 });
+             Assert.AreEqual(1, workspace.Connectors.Count);
+         }
+         [Test, RequiresSTA]
+         public void Deffect_1387_AutoRun()
+         {
+             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1387
+             RunCommandsFromFile("Defect-MAGN-1387.xml",true);
+             Assert.AreEqual(2, workspace.Nodes.Count);
+             AssertPreviewValue("2ec192a3-cef5-4233-bfc3-14d12a7ba880", 1);
+             Assert.AreEqual(1, workspace.Connectors.Count);
+         }
+         [Test, RequiresSTA]
+         public void Deffect_1133_error()
+         {
+             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1133
+             RunCommandsFromFile("Deffect_magn_1133.xml", true);
+             Assert.AreEqual(1, workspace.Nodes.Count);
+             AssertPreviewValue("d2532d39-8170-4ffe-a475-ba563e1aca36", null);
+         }
+         [Test, RequiresSTA]
+         public void Deffect_2214_Multireference()
+         {
+             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2214
+             RunCommandsFromFile("Deffect_MAGN_2214.xml", true);
+             Assert.AreEqual(1, workspace.Nodes.Count);
+             AssertPreviewValue("a7a3d920-d3cf-4ad6-879d-d9c2ee7c3d53", 1);
+         }
+         [Test, RequiresSTA]
+         public void Deffect_2084_Boolean()
+         {
+
+             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2084
+             RunCommandsFromFile("Deffect_Magn_2084.xml", true);
+             Assert.AreEqual(1, workspace.Nodes.Count);
+             AssertPreviewValue("b00822cd-2bd7-456a-b12f-f864439dd53e", false);
+         }
+         [Test, RequiresSTA]
+         public void Deffect_1300_Range()
+         {
+             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1300
+
+             RunCommandsFromFile("Defect_1300_Range.xml", false);
+             Assert.AreEqual(1, workspace.Nodes.Count);
+             AssertPreviewValue("de3311d2-b330-457c-8db3-4cf32808cda3", new double[] { 0.000000, 2.000000, 10.392305, 16.000000, 10.392305, 2.000000, 0.000000, -2.000000, -10.392305, -16.000000, -10.392305, -2.000000, 0.000000 });
+
+         }
+         [Test, RequiresSTA]
+         public void Defect_1339_Garbage()
+         {
+             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1339
+
+             RunCommandsFromFile("Defect_1339_Garbage.xml", true, (commandTag) =>
+             {
+                 var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                 if (commandTag == "FirstRun")
+                 {
+
+                     Assert.AreEqual(1, workspace.Nodes.Count);
+
+
+                     AssertPreviewValue("a56e0e42-58bd-412a-b890-ab290648c5af", 6);
+                 }
+
+                 else if (commandTag == "SecondRun")
+                 {
+
+                     Assert.AreEqual(1, workspace.Nodes.Count);
+
+                     AssertPreviewValue("a56e0e42-58bd-412a-b890-ab290648c5af",
+                         11);
+                 }
+
+             });
+
+         }
+         [Test, RequiresSTA]
+         public void Deffect_773_SingleToArray()
+         {
+             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1339
+
+             RunCommandsFromFile("Deffect_773_SingleToArray.xml", true, (commandTag) =>
+             {
+                 var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                 if (commandTag == "FirstRun")
+                 {
+
+                     NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                         ("b083bbca-31df-45b8-bb5c-13007e2fcc26");
+                     Assert.NotNull(node);
+                 }
+
+                 else if (commandTag == "SecondRun")
+                 {
+                     NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+     ("b083bbca-31df-45b8-bb5c-13007e2fcc26");
+                     Assert.NotNull(node);
+
+                 }
+
+             });
+
+         }
+
+         [Test, RequiresSTA]
+         public void Defect_1957_Geometry()
+         {
+             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1957
+
+             RunCommandsFromFile("Defect_1957_Geometry.xml", true);
+             Assert.AreEqual(3, workspace.Nodes.Count);
+             AssertPreviewValue("0309bfd1-b88b-4df7-b465-73383c84c48b", new double[] { 1.00, 1.00, 1.00 });
+
+         }
+         [Test, RequiresSTA]
+         public void Defect_2281_VM()
+         {
+             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1957
+             // failing due floating point error 
+
+             RunCommandsFromFile("Defect_2281_VM.xml", true);
+             Assert.AreEqual(3, workspace.Nodes.Count);
+             AssertPreviewValue("b20ca2ef-61e2-4e8a-87eb-ff99d08f2d3e", new double[] { 2.00, 2.00, 2.00 });
+
+
+
+         }
+         [Test, RequiresSTA]
+         public void Defect_1378_Error()
+         {
+             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1378
+
+             RunCommandsFromFile("Defect_1378_Error.xml", true);
+             Assert.AreEqual(2, workspace.Nodes.Count);
+             AssertPreviewValue("b6027239-7baf-44ab-8dc1-4c42f615f7a6", null);
+             NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                         ("b6027239-7baf-44ab-8dc1-4c42f615f7a6");
+             Assert.AreEqual(ElementState.Warning, node.State);
+         }
+         [Test, RequiresSTA]
+         public void Defect_1135_warning()
+         {
+             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1135
+
+             RunCommandsFromFile("Defect_1135_warning.xml", true);
+             Assert.AreEqual(1, workspace.Nodes.Count);
+             AssertPreviewValue("66ab2177-e4da-4e96-b797-f5e2619b4f54", null);
+             NodeModel node = Controller.DynamoModel.CurrentWorkspace.NodeFromWorkspace
+                         ("66ab2177-e4da-4e96-b797-f5e2619b4f54");
+             Assert.AreEqual(ElementState.Warning, node.State);
+         }
 
         [Test, RequiresSTA]
         public void TestCallsiteMapModifyInputConnection()
@@ -2455,6 +2734,7 @@ namespace DynamoCoreUITests
 
         }
 
+        
 
         #endregion
 

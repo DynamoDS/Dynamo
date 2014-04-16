@@ -1,0 +1,5 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand NodeId="b00822cd-2bd7-456a-b12f-f864439dd53e" NodeName="Boolean" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="Tag-f2b734a8" PauseDurationInMs="20" />
+</Commands>
