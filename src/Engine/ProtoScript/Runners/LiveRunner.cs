@@ -6,6 +6,7 @@ using GraphToDSCompiler;
 using ProtoCore.DSASM.Mirror;
 using System.Diagnostics;
 using ProtoCore.Utils;
+using ProtoCore;
 using System.ComponentModel;
 using System.Threading;
 using ProtoFFI;
@@ -1567,6 +1568,15 @@ namespace ProtoScript.Runners
             changeSetApplier.Apply(runnerCore, changeSetComputer.csData);
 
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
+
+
+#if DEBUG
+            // Check the integrity of the heap memory layout
+            if (!ProtoCore.Utils.HeapUtils.VerifyHeapNonCyclic(runnerCore))
+            {
+                throw new ProtoCore.Exceptions.HeapCorruptionException("Heap contains cyclic pointers.");
+            }
+#endif
         }
 
 
