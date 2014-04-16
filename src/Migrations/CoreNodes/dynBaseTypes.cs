@@ -411,7 +411,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement newNode = MigrationManager.CloneAndChangeType(
-                oldNode, "DSCoreNodesUI.NumberSequence");
+                oldNode, "DSCoreNodesUI.NumberSeq");
             newNode.SetAttribute("nickname", "Number Sequence");
 
             migrationData.AppendNode(newNode);
