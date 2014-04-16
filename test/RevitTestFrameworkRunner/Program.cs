@@ -102,23 +102,23 @@ namespace RevitTestFrameworkRunner
                         File.Delete(_results);
                     }
 
-                    // If fixture name and test name are specified
+                    Console.WriteLine("Assembly : {0}", _testAssembly);
+                    Console.WriteLine("Fixture : {0}", _fixture);
+                    Console.WriteLine("Test : {0}", _test);
+                    Console.WriteLine("Results Path : {0}", _results);
+                    Console.WriteLine("Timeout : {0}", _timeout);
+                    Console.WriteLine("Debug : {0}", _isDebug ? "True" : "False");
+                    Console.WriteLine("Working Directory : {0}", _workingDirectory);
+                    Console.WriteLine("GUI : {0}", _gui ? "True" : "False");
+
                     if (string.IsNullOrEmpty(_fixture) && string.IsNullOrEmpty(_test))
                     {
-                        Console.WriteLine("Assembly : {0}", _testAssembly);
-                        Console.WriteLine("Results Path : {0}", _results);
-                        Console.WriteLine("Timeout : {0}", _timeout);
-                        Console.WriteLine("Debug : {0}", _isDebug ? "True" : "False");
-                        Console.WriteLine("Working Directory : {0}", _workingDirectory);
-                        Console.WriteLine("GUI : {0}", _gui ? "True" : "False");
-
                         _runCount = vm.Assemblies.SelectMany(a => a.Fixtures.SelectMany(f => f.Tests)).Count();
                         foreach (var ad in vm.Assemblies)
                         {
                             RunAssembly(ad);
                         }
                     }
-                    // If test is not specified but fixture is specified
                     else if (string.IsNullOrEmpty(_test) && !string.IsNullOrEmpty(_fixture))
                     {
                         var fd = vm.Assemblies.SelectMany(x => x.Fixtures).FirstOrDefault(f => f.Name == _fixture);
@@ -128,7 +128,6 @@ namespace RevitTestFrameworkRunner
                             RunFixture(fd);
                         }
                     }
-                    // If test is specified
                     else if (string.IsNullOrEmpty(_fixture) && !string.IsNullOrEmpty(_test))
                     {
                         var td =
