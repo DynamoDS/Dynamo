@@ -256,6 +256,34 @@ namespace DynamoCoreUITests
             Assert.AreEqual(cmdOne.Value, cmdTwo.Value);
         }
 
+        [Test, RequiresSTA]
+        public void TestCreateCustomNodeCommand()
+        {
+            Guid modelGuid = Guid.NewGuid();
+            string name = randomizer.Next().ToString();
+            string category = randomizer.Next().ToString();
+            string description = randomizer.Next().ToString();
+            bool makeCurrent = randomizer.Next(2) == 0;
+
+            var cmdOne = new DynamoViewModel.CreateCustomNodeCommand(
+                modelGuid, name, category, description, makeCurrent);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+
+            Assert.AreEqual(cmdOne.NodeId, cmdTwo.NodeId);
+            Assert.AreEqual(cmdOne.Name, cmdTwo.Name);
+            Assert.AreEqual(cmdOne.Category, cmdTwo.Category);
+            Assert.AreEqual(cmdOne.Description, cmdTwo.Description);
+            Assert.AreEqual(cmdOne.MakeCurrent, cmdTwo.MakeCurrent);
+        }
+
+        [Test, RequiresSTA]
+        public void TestSwitchTabCommand()
+        {
+            var cmdOne = new DynamoViewModel.SwitchTabCommand(randomizer.Next());
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+            Assert.AreEqual(cmdOne.TabIndex, cmdTwo.TabIndex);
+        }
+
         #endregion
 
         #region General Node Operations Test Cases
@@ -321,19 +349,29 @@ namespace DynamoCoreUITests
             Assert.AreEqual("# Modification 3", python.Script);
             Assert.AreEqual("# Modification 4", pvarin.Script);
         }
+
         [Test, Category("Failing")]
-        public void CustomNodeCreate()
+        public void CreateAndUseCustomNode()
         {
-            RunCommandsFromFile("CustomNodeCreate.xml");
-            Assert.AreEqual(0, workspace.Connectors.Count);
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            RunCommandsFromFile("CreateAndUseCustomNode.xml");
+            var workspaces = this.Controller.DynamoModel.Workspaces;
+            Assert.IsNotNull(workspaces);
+            Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
 
+            // 1 custom node + 3 number nodes + 1 watch node
+            Assert.AreEqual(4, workspace.Connectors.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count);
 
-            AssertPreviewValue("99a7b5ef-268f-44c2-94ce-84cf43054bb8", 1);
-            AssertPreviewValue("26e3e31a-c9d5-4b3b-b409-005b3595e5df", 1);
+            var customWorkspace = workspaces[1];
+            Assert.IsNotNull(customWorkspace);
 
-            
+            // 3 inputs + 1 output + 1 addition + 1 multiplication
+            Assert.AreEqual(5, customWorkspace.Connectors.Count);
+            Assert.AreEqual(6, customWorkspace.Nodes.Count);
+
+            AssertPreviewValue("345cd2d4-5f3b-4eb0-9d5f-5dd90c5a7493", 36.0);
         }
+
         #endregion
 
         #region Private Helper Methods

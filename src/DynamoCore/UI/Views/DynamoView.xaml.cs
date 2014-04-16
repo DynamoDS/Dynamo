@@ -209,7 +209,7 @@ namespace Dynamo.Controls
             _vm.RequestPackageManagerSearchDialog += _vm_RequestShowPackageManagerSearch;
 
             //FUNCTION NAME PROMPT
-            _vm.Model.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
+            _vm.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
 
             _vm.RequestClose += _vm_RequestClose;
             _vm.RequestSaveImage += _vm_RequestSaveImage;
