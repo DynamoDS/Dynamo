@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Xml.Serialization;
 using Autodesk.RevitAddIns;
 using Dynamo.NUnit.Tests;
@@ -104,6 +105,13 @@ namespace RevitTestFrameworkRunner
                     // If fixture name and test name are specified
                     if (string.IsNullOrEmpty(_fixture) && string.IsNullOrEmpty(_test))
                     {
+                        Console.WriteLine("Assembly : {0}", _testAssembly);
+                        Console.WriteLine("Results Path : {0}", _results);
+                        Console.WriteLine("Timeout : {0}", _timeout);
+                        Console.WriteLine("Debug : {0}", _isDebug ? "True" : "False");
+                        Console.WriteLine("Working Directory : {0}", _workingDirectory);
+                        Console.WriteLine("GUI : {0}", _gui ? "True" : "False");
+
                         _runCount = vm.Assemblies.SelectMany(a => a.Fixtures.SelectMany(f => f.Tests)).Count();
                         foreach (var ad in vm.Assemblies)
                         {
@@ -324,7 +332,7 @@ namespace RevitTestFrameworkRunner
             var testModelAttribs =  test.GetCustomAttributes(typeof(TestModelAttribute), false);
             if (!testModelAttribs.Any())
             {
-                Console.WriteLine("The specified test does not have the required TestModelAttribute.");
+                //Console.WriteLine("The specified test does not have the required TestModelAttribute.");
                 return false;
             }
             
@@ -412,7 +420,7 @@ namespace RevitTestFrameworkRunner
             }  
             else
             {
-                if (!process.WaitForExit(120000))
+                if (!process.WaitForExit(_timeout))
                 {
                     process.Kill();
                     System.Threading.Thread.Sleep(10000);
