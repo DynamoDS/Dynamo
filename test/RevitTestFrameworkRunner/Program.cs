@@ -80,6 +80,11 @@ namespace RevitTestFrameworkRunner
                 }
                 else
                 {
+                    if (string.IsNullOrEmpty(_revitPath))
+                    {
+                        _revitPath = Path.Combine(vm.Products.First().InstallLocation, "revit.exe");
+                    }
+
                     if (string.IsNullOrEmpty(_workingDirectory))
                     {
                         _workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -110,6 +115,7 @@ namespace RevitTestFrameworkRunner
                     Console.WriteLine("Debug : {0}", _isDebug ? "True" : "False");
                     Console.WriteLine("Working Directory : {0}", _workingDirectory);
                     Console.WriteLine("GUI : {0}", _gui ? "True" : "False");
+                    Console.WriteLine("Revit : {0}", _revitPath);
 
                     if (string.IsNullOrEmpty(_fixture) && string.IsNullOrEmpty(_test))
                     {
