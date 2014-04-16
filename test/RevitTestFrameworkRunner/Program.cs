@@ -426,13 +426,24 @@ namespace RevitTestFrameworkRunner
             }  
             else
             {
-                if (!process.WaitForExit(_timeout))
+                var time = 0;
+                while(!process.WaitForExit(1000))
+                //if (!process.WaitForExit(_timeout))
                 {
-                    process.Kill();
-                    System.Threading.Thread.Sleep(10000);
-                    td.TestStatus = TestStatus.TimedOut;
-                    timedOut = true;
-                    Console.WriteLine("Test timed out.");
+                    Console.Write(".");
+                    time += 1000;
+                    if (time > _timeout)
+                    {
+                        Console.WriteLine("Test timed out.");
+                        td.TestStatus = TestStatus.TimedOut;
+                        timedOut = true;
+                        break;
+                    }
+                }
+                if (timedOut)
+                {
+                    if(!process.HasExited)
+                        process.Kill();
                 }
             }
 
