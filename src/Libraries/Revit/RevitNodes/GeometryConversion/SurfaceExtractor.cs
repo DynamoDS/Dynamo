@@ -112,22 +112,26 @@ namespace Revit.GeometryConversion
 
         public static Surface ExtractSurface(Autodesk.Revit.DB.HermiteFace face, IEnumerable<PolyCurve> edgeLoops)
         {
-            var pts = face.Points;
-            var parms = new List<Autodesk.DesignScript.Geometry.UV>();
-            var vecs = new List<Tuple<Vector,Vector>>();
+            // The number of interpolating points in the u direction is given by get_Params
+            var numU = face.get_Params(0).Size;
+            var numV = face.get_Params(1).Size;
 
-            for (var i = 0; i < pts.Count; i++)
+            // extract the points
+            var ptArr = new Autodesk.DesignScript.Geometry.Point[numV][];
+
+            var count = 0;
+            for (var i = 0; i < numV; i++)
             {
-                var v = face.get_Params(i).Cast<double>().ToList();
-                var tan = face.get_Tangents(i);
+                ptArr[i] = new Autodesk.DesignScript.Geometry.Point[numU];
 
-                parms.Add(Autodesk.DesignScript.Geometry.UV.ByCoordinates(v[0], v[1]));
-                vecs.Add(new Tuple<Vector, Vector>( tan[0].ToVector(), tan[1].ToVector() ));
+                for (var j = 0; j < numU; j++)
+                {
+                    ptArr[i][j] = face.Points[count++].ToPoint();
+                }
             }
 
-
-            // TODO: still haven't figured this out
-            return null;
+            // TODO: we need to extend this method to also support tangents
+            return NurbsSurface.ByPoints(ptArr, 3, 3);
         }
 
         public static Surface ExtractSurface(Autodesk.Revit.DB.RevolvedFace face, IEnumerable<PolyCurve> edgeLoops)
@@ -138,8 +142,7 @@ namespace Revit.GeometryConversion
             var x = face.get_Radius(0);
             var y = face.get_Radius(1);
 
-            // PB: This needs to take into account the actual coordinate system of the face, need another constructor to
-            //     do that
+            // TODO: This needs to take into account the actual coordinate system of the face, need another constructor to do that
             return Surface.ByRevolve(crv, o, axis, 0, 360);
         }
 
