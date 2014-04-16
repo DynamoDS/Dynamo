@@ -274,7 +274,7 @@ namespace RevitTestFrameworkRunner
                 {
                     if (!ReadFixture(fixtureType, assData))
                     {
-                        Console.WriteLine(string.Format("Journals could not be created for {0}", fixtureType.Name));
+                        //Console.WriteLine(string.Format("Journals could not be created for {0}", fixtureType.Name));
                     } 
                 }
             }
@@ -293,7 +293,7 @@ namespace RevitTestFrameworkRunner
             var fixtureAttribs = fixtureType.GetCustomAttributes(typeof (TestFixtureAttribute), true);
             if (!fixtureAttribs.Any())
             {
-                Console.WriteLine("Specified fixture does not have the required TestFixture attribute.");
+                //Console.WriteLine("Specified fixture does not have the required TestFixture attribute.");
                 return false;
             }
 
@@ -311,8 +311,7 @@ namespace RevitTestFrameworkRunner
 
                 if (!ReadTest(test, fixData))
                 {
-                    Console.WriteLine(string.Format("Journal could not be created for test:{0} in fixture:{1}", _test,
-                        _fixture));
+                    //Console.WriteLine(string.Format("Journal could not be created for test:{0} in fixture:{1}", _test,_fixture));
                     continue;
                 }
             }
