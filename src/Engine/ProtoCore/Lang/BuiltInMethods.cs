@@ -20,7 +20,6 @@ namespace ProtoCore.Lang
             kCountFalse,
             kDifference,
             kDot,
-            kDotDynamic,
             kEquals,
             kGetElapsedTime,
             kGetType,
@@ -82,7 +81,6 @@ namespace ProtoCore.Lang
             "CountFalse",               // kCountFalse
             "SetDifference",            // kDifference
             "%dot",                     // kDot
-            "%dotDynamicResolve",       // kDotDynamic
             "Equals",                   // kEquals
             "GetElapsedTime",           // kGetElapsedTime
             "%get_type",                // kGetType
@@ -766,18 +764,6 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("lhsPtr", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.kDot
-                },
-
-                new BuiltInMethod
-                {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
-                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                    {
-                        new KeyValuePair<string, ProtoCore.Type>("lhsPtr", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>("functionIndex", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, Constants.kArbitraryRank))
-                    },
-                    ID = BuiltInMethods.MethodID.kDotDynamic
-
                 },
 
                 new BuiltInMethod
