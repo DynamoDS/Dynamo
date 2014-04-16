@@ -410,7 +410,8 @@ namespace RevitTestFrameworkRunner
             {
                 FileName = _revitPath,
                 WorkingDirectory = _workingDirectory,
-                Arguments = path
+                Arguments = path,
+                UseShellExecute = false
             };
 
             Console.WriteLine("Running {0}", path);
