@@ -1,0 +1,13 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="8c8e82b7-1d5c-42c6-8fbf-bcc345f3a8d3" NodeName="Code Block" X="239" Y="257" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="8c8e82b7-1d5c-42c6-8fbf-bcc345f3a8d3" Name="Code" Value="def foo(i:double)&#xD;&#xA;{&#xD;&#xA;g=g+1;&#xD;&#xA;return=1;&#xD;&#xA;&#xD;&#xA;};" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="ffb38231-05ee-4f8f-ad8a-2cd44c62f343" NodeName="Code Block" X="461" Y="337" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="ffb38231-05ee-4f8f-ad8a-2cd44c62f343" Name="Code" Value="a=foo(1)" />
+  <SelectInRegionCommand X="530" Y="483" Width="1" Height="0" IsCrossSelection="true" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+</Commands>

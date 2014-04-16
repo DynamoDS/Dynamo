@@ -1,0 +1,14 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand NodeId="589f6fef-135a-4d43-8e95-b56240135c15" NodeName="DSCore.Math.Cos@double" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="464c0433-6452-48a6-8334-cdf0ed1bcceb" NodeName="Code Block" X="143" Y="247" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="464c0433-6452-48a6-8334-cdf0ed1bcceb" Name="Code" Value="1" />
+  <MakeConnectionCommand NodeId="464c0433-6452-48a6-8334-cdf0ed1bcceb" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="589f6fef-135a-4d43-8e95-b56240135c15" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="17fd103b-e693-4947-8b92-9e1c9f6b3db1" NodeName="Code Block" X="316" Y="357" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="17fd103b-e693-4947-8b92-9e1c9f6b3db1" Name="Code" Value="a=Math.Cos(1);" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+</Commands>

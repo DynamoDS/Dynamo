@@ -1,0 +1,13 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="de3311d2-b330-457c-8db3-4cf32808cda3" NodeName="Code Block" X="255" Y="272" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="de3311d2-b330-457c-8db3-4cf32808cda3" Name="Code" Value="t = 0..360;&#xD;&#xA;x = 16 * Math.Sin(t) *Math.Sin(t) * Math.Sin(t);" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <PausePlaybackCommand Tag="Tag-04bf2d42" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="de3311d2-b330-457c-8db3-4cf32808cda3" Name="Code" Value="t = 0..360..30;&#xA;x = 16 * Math.Sin(t) *Math.Sin(t) * Math.Sin(t);" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+</Commands>

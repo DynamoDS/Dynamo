@@ -1,0 +1,8 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand NodeId="b996cba2-e2a8-4b21-b1d6-0955420c0b48" NodeName="Double Slider" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="Tag-57840d0b" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="b996cba2-e2a8-4b21-b1d6-0955420c0b48" Name="Value" Value="30" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+</Commands>
