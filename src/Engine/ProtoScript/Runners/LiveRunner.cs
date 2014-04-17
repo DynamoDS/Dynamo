@@ -1569,13 +1569,8 @@ namespace ProtoScript.Runners
 
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
 
-
-#if DEBUG
-            // Check the integrity of the heap memory layout
-            if (ProtoCore.Utils.HeapUtils.IsHeapCyclic(runnerCore))
-            {
-                throw new ProtoCore.Exceptions.HeapCorruptionException("Heap contains cyclic pointers.");
-            }
+#if DEBUG // Debug preproc the function here as we dont want it to perform additional calls on release
+            ProtoCore.Utils.HeapUtils.VerifyHeap(runnerCore);
 #endif
         }
 

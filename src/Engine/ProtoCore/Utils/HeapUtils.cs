@@ -31,6 +31,7 @@ namespace ProtoCore.Utils
 
         /// <summary>
         /// Checks if the heap contains at least 1 pointer element that points to itself
+        /// This function is used as a diagnostic tool for detecting heap cycles and should never return true
         /// </summary>
         /// <param name="core"></param>
         /// <returns> Returns true if the heap contains at least one cycle</returns>
@@ -74,6 +75,20 @@ namespace ProtoCore.Utils
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Verify the heap integrity by performing tests on the current state of the heap
+        /// Throws an exception if the heap is corrupted
+        /// </summary>
+        /// <param name="core"></param>
+        public static void VerifyHeap(Core core)
+        {
+            // Check the integrity of the heap memory layout
+            if (ProtoCore.Utils.HeapUtils.IsHeapCyclic(core))
+            {
+                throw new ProtoCore.Exceptions.HeapCorruptionException("Heap contains cyclic pointers.");
+            }
         }
     }
 }
