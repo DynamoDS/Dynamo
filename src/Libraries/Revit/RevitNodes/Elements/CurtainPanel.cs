@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
@@ -34,13 +35,40 @@ namespace Revit.Elements
 
             var host = elementAsPanel.Host;
 
-            var hostingGrid = CurtainGrid.ByElement(UnknownElement.FromExisting(host));
+            CurtainGrid hostingGrid = null;
+            Autodesk.Revit.DB.CurtainGrid grid = null;
+            if (host is Autodesk.Revit.DB.Wall)
+            {
+               hostingGrid = CurtainGrid.ByElement(UnknownElement.FromExisting(host));
+            }
+            else
+            {
+               var gridSet = CurtainGrid.AllCurtainGrids(host);
+               var enumGrid = gridSet.GetEnumerator();
+               bool found = false;
+               for (; enumGrid.MoveNext();)
+               {
+                  grid = (Autodesk.Revit.DB.CurtainGrid)enumGrid.Current;
+                  if (grid.GetPanelIds().Contains(elementAsPanel.Id))
+                  {
+                     found = true;
+                     break;
+                  }
+               }
+               if (!found)
+                  throw new Exception("Could not find cell for panel");
+            }
 
             ElementId uGridId = ElementId.InvalidElementId;
             ElementId vGridId = ElementId.InvalidElementId;
             elementAsPanel.GetRefGridLines(ref uGridId, ref vGridId);
 
-            CurtainCell cell = hostingGrid.InternalCurtainGrid.GetCell(uGridId, vGridId);
+            if (grid == null && hostingGrid == null)
+               throw new Exception("Could not find cell for panel");
+
+            CurtainCell cell = hostingGrid != null
+               ? hostingGrid.InternalCurtainGrid.GetCell(uGridId, vGridId)
+               : grid.GetCell(uGridId, vGridId);
 
             TransactionManager.Instance.TransactionTaskDone();
 
@@ -282,9 +310,13 @@ namespace Revit.Elements
          return new CurtainPanel(elementAsPanel);
       }
 
-      public static CurtainPanel[] ByElement(Element holderElement)
+      /// <summary>
+      ///get all panels of curtain wall, system or slope galzing roof
+      /// </summary>
+      /// <param name="hostingElement"></param>
+      public static CurtainPanel[] ByElement(Element hostingElement)
       {
-         CurtainGridSet thisSet = CurtainGrid.AllCurtainGrids(holderElement.InternalElement);
+         CurtainGridSet thisSet = CurtainGrid.AllCurtainGrids(hostingElement.InternalElement);
          var result = new List<CurtainPanel>();
 
          var enumGrid = thisSet.GetEnumerator();

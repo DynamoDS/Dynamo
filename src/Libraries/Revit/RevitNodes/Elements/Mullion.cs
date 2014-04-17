@@ -59,9 +59,13 @@ namespace Revit.Elements
          return new Mullion(elementAsMullion);
       }
 
-      public static Mullion[] ByElement(Element holderElement)
+      /// <summary>
+      ///get all mullions of curtain wall, system or slope galzing roof
+      /// </summary>
+      /// <param name="hostingElement"></param>
+      public static Mullion[] ByElement(Element hostingElement)
       {
-         CurtainGridSet thisSet = CurtainGrid.AllCurtainGrids(holderElement.InternalElement);
+         CurtainGridSet thisSet = CurtainGrid.AllCurtainGrids(hostingElement.InternalElement);
          var result = new List<Mullion>();
 
          var enumGrid = thisSet.GetEnumerator();
