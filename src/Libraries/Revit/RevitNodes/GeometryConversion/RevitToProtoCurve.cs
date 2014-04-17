@@ -22,18 +22,29 @@ namespace Revit.GeometryConversion
         public static Autodesk.DesignScript.Geometry.Curve ToProtoType(this Autodesk.Revit.DB.Curve crv)
         {
             dynamic dyCrv = crv;
-            return RevitToProtoCurve.Convert(dyCrv);
+            Autodesk.DesignScript.Geometry.Curve unboundCurve = RevitToProtoCurve.Convert(dyCrv);
+
+            if (crv.IsBound)
+            {
+                var s = crv.ComputeNormalizedParameter(crv.get_EndParameter(0));
+                var e = crv.ComputeNormalizedParameter(crv.get_EndParameter(1));
+                var boundCurve = unboundCurve.ParameterTrim(s, e);
+
+                if (crv.GetEndPoint(0).ToPoint().DistanceTo(boundCurve.StartPoint) > 1e-6 ||
+                    crv.GetEndPoint(1).ToPoint().DistanceTo(boundCurve.EndPoint) > 1e-6)
+                {
+                    throw new Exception("Bounding of curves failed");
+                }
+
+                return boundCurve;
+            }
+
+            return unboundCurve;
         }
 
         public static PolyCurve ToProtoTypes(this Autodesk.Revit.DB.CurveArray crvs)
         {
-            var protoCurves = new List<Curve>();
-            foreach (var crv in crvs)
-            {
-                dynamic dyCrv = crv;
-                protoCurves.Add(RevitToProtoCurve.Convert(dyCrv));
-            }
-
+            var protoCurves = crvs.Cast<Autodesk.Revit.DB.Curve>().Select(x => x.ToProtoType());
             return PolyCurve.ByJoinedCurves(protoCurves.ToArray());
         }
 
