@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Autodesk.Revit.DB;
 using DSNodeServices;
@@ -40,6 +41,73 @@ namespace RevitServices.Persistence
         }
     }
 
+
+    //@TODO: This could be used to hold all the serializableIds
+    [Serializable]
+    public class MultipleSerializableId : ISerializable
+    {
+
+
+        public List<String> StringIDs { get; set; }
+        public List<int> IDs { get; set; }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            Validity.Assert(StringIDs.Count == IDs.Count);
+
+            int numberOfElements = StringIDs.Count;
+
+            info.AddValue("numberOfElements", numberOfElements);
+
+            for (int i = 0; i < numberOfElements; i++)
+            {
+                info.AddValue("stringID-" + i, StringIDs[i], typeof(string));
+                info.AddValue("intID-" + i, IDs[i], typeof(int));
+            }
+
+        }
+
+        public MultipleSerializableId()
+        {
+            StringIDs = new List<string>();
+            IDs = new List<int>();
+
+        }
+
+        public MultipleSerializableId(IEnumerable<Element> elements)
+        {
+            foreach (Element element in elements)
+            {
+                StringIDs.Add(element.UniqueId);
+                IDs.Add(element.Id.IntegerValue);
+            }
+            
+        }
+
+
+        /// <summary>
+        /// Ctor used by the serialisation engine
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        public MultipleSerializableId(SerializationInfo info, StreamingContext context)
+        {
+            int numberOfElements = info.GetInt32("numberOfElements");
+
+            for (int i = 0; i < numberOfElements; i++)
+            {
+                string stringID = (string) info.GetValue("stringID-" + i, typeof (string));
+                int intID = (int) info.GetValue("intID-" + i, typeof (int));
+
+                StringIDs.Add(stringID);
+                IDs.Add(intID);
+            }
+
+        }
+        
+    }
+
+
     /// <summary>
     /// Class for handling unique ids in a typesafe ammner
     /// </summary>
@@ -60,7 +128,9 @@ namespace RevitServices.Persistence
     }
 
 
-
+    /// <summary>
+    /// Tools to handle the binding and interaction 
+    /// </summary>
     public class ElementBinder
     {
         private const string REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
@@ -105,6 +175,44 @@ namespace RevitServices.Persistence
         }
 
         /// <summary>
+        /// Get the collection of ElementIDs from Trace
+        /// </summary>
+        /// <param name="document"></param>
+        /// <returns></returns>
+        public static List<ElementUUID> GetElementUUIDsFromTrace(Document document)
+        {
+            //Get the element ID that was cached in the callsite
+            ISerializable traceData = TraceUtils.GetTraceData(REVIT_TRACE_ID);
+
+            var multi = traceData as MultipleSerializableId;
+
+            if (multi != null)
+            {
+                List<ElementUUID> uuids = new List<ElementUUID>();
+                foreach (var uuid in multi.StringIDs)
+                    uuids.Add(new ElementUUID(uuid));
+
+                return uuids;
+            }
+
+            var single = traceData as SerializableId;
+            if (single != null)
+            {
+                var traceDataUuid = single.StringID;
+                List<ElementUUID> uuids = new List<ElementUUID>()
+                    {
+                        new ElementUUID(traceDataUuid)
+                    };
+                return uuids;
+            }
+
+            //No usable data was found
+            return null;
+
+        }
+
+
+        /// <summary>
         /// Get the elementId associated with a UUID, possibly expensive
         /// </summary>
         /// <param name="document"></param>
@@ -124,6 +232,19 @@ namespace RevitServices.Persistence
         public static void SetElementForTrace(Element element)
         {
             SetElementForTrace(element.Id, new ElementUUID(element.UniqueId));
+        }
+
+        /// <summary>
+        /// Set a list of elements for trace
+        /// </summary>
+        /// <param name="elements"></param>
+        public static void SetElementsForTrace(List<Element> elements)
+        {
+            if (IsEnabled)
+            {
+                MultipleSerializableId ids = new MultipleSerializableId(elements);
+                TraceUtils.SetTraceData(REVIT_TRACE_ID, ids);
+            }
         }
 
         /// <summary>
@@ -170,6 +291,9 @@ namespace RevitServices.Persistence
                 return null;
         }
 
+
+
+
         /// <summary>
         /// Delete a possibly outdated Revit Element and set new element for trace.  
         /// This method should be called if the element could not be mutated on a 
@@ -190,6 +314,8 @@ namespace RevitServices.Persistence
 
             SetElementForTrace(newElement);
         }
+
+
 
 
         /// <summary>
