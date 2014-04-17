@@ -2514,15 +2514,7 @@ namespace ProtoCore
 
         public AssociativeGraph.GraphNode GetExecutingGraphNode()
         {
-            foreach (var prop in this.InterpreterProps)
-            {
-                if (prop.executingGraphNode != null)
-                {
-                    return prop.executingGraphNode;
-                }
-            }
-
-            return null;
+            return this.ExecutingGraphnode;
         }
 
         public bool IsEvalutingPropertyChanged()

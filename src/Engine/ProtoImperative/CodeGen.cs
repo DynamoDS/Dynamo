@@ -1407,7 +1407,7 @@ namespace ProtoImperative
                 }
 
                 // Get the exisitng procedure that was added on the previous pass
-                globalProcIndex = codeBlock.procedureTable.IndexOfExact(funcDef.Name, argList);
+                globalProcIndex = codeBlock.procedureTable.IndexOfExact(funcDef.Name, argList, false);
                 localProcedure = codeBlock.procedureTable.procList[globalProcIndex];
 
 
