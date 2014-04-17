@@ -50,6 +50,7 @@ namespace DSCoreNodesUI
         {
             OutPortData.Add(new PortData(outputName, string.Format("The selected {0}", outputName), typeof(object)));
             RegisterAllPorts();
+            PopulateItems();
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
