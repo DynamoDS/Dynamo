@@ -965,7 +965,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="startPort">The identity of the start port.</param>
         /// <param name="endPort">The identity of the end port.</param>
-        /// <returns>Returns the matching connector if one is found, or null 
+        /// <returns>Returns the notmatching connector if one is found, or null 
         /// otherwise.</returns>
         /// 
         public XmlElement FindConnector(PortId startPort, PortId endPort)

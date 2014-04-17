@@ -200,6 +200,16 @@ namespace Revit.Elements
             return Topography.FromExisting(topoSurface, isRevitOwned);
         }
 
+        public static CurtainPanel Wrap(Autodesk.Revit.DB.Panel ele, bool isRevitOwned)
+        {
+           return CurtainPanel.FromExisting(ele, isRevitOwned);
+        }
+
+        public static Mullion Wrap(Autodesk.Revit.DB.Mullion ele, bool isRevitOwned)
+        {
+           return Mullion.FromExisting(ele, isRevitOwned);
+        }
+
         #endregion
 
     }

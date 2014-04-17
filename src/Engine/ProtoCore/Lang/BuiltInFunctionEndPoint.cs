@@ -11,6 +11,7 @@ using Autodesk.DesignScript.Interfaces;
 using ProtoFFI;
 using System.Collections;
 using ProtoCore.RuntimeData;
+using ProtoCore.Runtime;
 
 namespace ProtoCore.Lang
 {
@@ -349,333 +350,9 @@ namespace ProtoCore.Lang
                         break;
                     }
 
-
-                case ProtoCore.Lang.BuiltInMethods.MethodID.kDotDynamic:
-                    {
-                        StackValue svThisPtr = formalParameters[0];
-                        bool isPointer = svThisPtr.optype == AddressType.Pointer || svThisPtr.optype == AddressType.ArrayPointer;
-                        if (!isPointer)
-                        {
-                            core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kDereferencingNonPointer, ProtoCore.RuntimeData.WarningMessage.kDeferencingNonPointer);
-                            return StackValue.Null;
-                        }
-
-                        int thisPtrType = (int)svThisPtr.metaData.type;
-
-                        StackValue svDynamicFunctionIndex = formalParameters[1];
-
-                        ProtoCore.DSASM.DynamicFunctionNode dynamicFunctionNode = core.DynamicFunctionTable.functionTable[(int)svDynamicFunctionIndex.opdata];
-
-
-
-                        // Find the first visible method in the class and its heirarchy
-                        // The callsite will handle the overload
-                        int fi = interpreter.runtime.exe.classTable.ClassNodes[thisPtrType].vtable.IndexOfFirst(dynamicFunctionNode.functionName);
-
-
-                        ProtoCore.DSASM.ClassNode cNode = interpreter.runtime.exe.classTable.ClassNodes[thisPtrType];
-                        ProtoCore.DSASM.ProcedureNode fNode = cNode.vtable.procList[fi];
-
-                        string className = cNode.name;
-                        string functionName = fNode.name;
-
-                        string mangledName = ProtoCore.Utils.CoreUtils.GetMangledFunctionName(className, functionName);
-
-                        ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, ProtoCore.DSASM.Constants.kGlobalScope, mangledName);
-                        Validity.Assert(null != callsite);
-
-                        //
-                        // Build the stackframe
-                        int classScopeCaller = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kClass).opdata;
-                        int returnAddr = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kReturnAddress).opdata;
-                        int blockDecl = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock).opdata;
-                        int blockCaller = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionCallerBlock).opdata;
-                        int framePointer = core.Rmem.FramePointer;
-
-                        // Comment Jun: the caller type is the current type in the stackframe
-                        StackFrameType callerType = (StackFrameType)stackFrame.GetAt(StackFrame.AbsoluteIndex.kStackFrameType).opdata;
-
-
-                        StackFrameType type = StackFrameType.kTypeFunction;
-                        int depth = 0;
-                        List<StackValue> registers = new List<StackValue>();
-                        interpreter.runtime.SaveRegisters(registers);
-                        ProtoCore.DSASM.StackFrame newStackFrame = new StackFrame(svThisPtr, classScopeCaller, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth,
-                            framePointer, registers, null);
-
-                        // Build the function arguments
-                        List<StackValue> arguments = new List<StackValue>();
-                        arguments.Add(svThisPtr);
-
-                        // Comment Jun: 
-                        // Any replication guides pushed in a dotarg->dot call must be retrieved here from the core
-                        var replicationGuides = interpreter.runtime.GetCachedReplicationGuides(core, arguments.Count);
-                        StackValue sv = callsite.JILDispatch(arguments, replicationGuides, newStackFrame, core, new Runtime.Context());
-
-                        ret = sv;
-
-                        break;
-
-                    }
-
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kDot:
-                    {
-                        // Pop off the list of rhs data from the stack (They were pushed in by the dotarg)
-                        // Call the method
-
-
-                        // Comment Jun: We dont need the first arg as this was not replicated, and is still an array.
-                        //  Get the first non-array value of the first arg and taht will be the pointer
-                        StackValue lhsObject = formalParameters[0];
-                        StackValue svThisPtr = lhsObject;
-                        if (StackUtils.IsArray(svThisPtr))
-                        {
-                            ProtoCore.Utils.ArrayUtils.GetFirstNonArrayStackValue(formalParameters[0], ref svThisPtr, core);
-                        }
-
-                        bool isLHSPointer = svThisPtr.optype == AddressType.Pointer || svThisPtr.optype == AddressType.ArrayPointer;
-                        if (!isLHSPointer)
-                        {
-                            core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kDereferencingNonPointer, ProtoCore.RuntimeData.WarningMessage.kDeferencingNonPointer);
-                            return StackValue.Null;
-                        }
-
-                        int stackPtr = interpreter.runtime.rmem.Stack.Count - 1;
-
-                        // TODO Jun: Consider having a DynamicFunction AddressType
-                        StackValue svMethodDynamictableIndex = interpreter.runtime.rmem.Stack[stackPtr - 4];
-                        Validity.Assert(svMethodDynamictableIndex.optype == AddressType.Int);
-
-                        StackValue svArrayPtrDimesions = interpreter.runtime.rmem.Stack[stackPtr - 3];
-                        Validity.Assert(svArrayPtrDimesions.optype == AddressType.ArrayPointer);
-
-                        StackValue svDimensionCount = interpreter.runtime.rmem.Stack[stackPtr - 2];
-                        Validity.Assert(svDimensionCount.optype == AddressType.Int);
-
-                        StackValue svArrayPtrFunctionArgs = interpreter.runtime.rmem.Stack[stackPtr - 1];
-                        Validity.Assert(svArrayPtrFunctionArgs.optype == AddressType.ArrayPointer);
-
-                        StackValue svFunctionArgCount = interpreter.runtime.rmem.Stack[stackPtr];
-                        Validity.Assert(svFunctionArgCount.optype == AddressType.Int);
-                        int functionArgs = (int)svFunctionArgCount.opdata;
-
-                        ProtoCore.DSASM.DynamicFunctionNode dynamicFunctionNode = core.DynamicFunctionTable.functionTable[(int)svMethodDynamictableIndex.opdata];
-
-
-                        // Build the function arguments
-                        List<StackValue> arguments = new List<StackValue>();
-
-
-                        HeapElement heapElem = interpreter.runtime.rmem.Heap.Heaplist[(int)svArrayPtrFunctionArgs.opdata];
-                        for (int n = 0; n < heapElem.VisibleSize; ++n)
-                        {
-                            StackValue arg = heapElem.Stack[n];
-                            arguments.Add(arg);
-                        }
-
-                        if (arguments.Count > 0)
-                        {
-                            //=============================================
-                            // Comment Jun
-                            //
-                            //  Handle the following:
-                            //      1. getter and setter this pointers
-                            //      2 this pointerized member functions
-                            //
-                            //=============================================
-                            bool isReplicatingCall = AddressType.Dynamic == arguments[0].optype && AddressType.ArrayPointer == formalParameters[0].optype;
-                            if (isReplicatingCall)
-                            {
-                                arguments[0] = formalParameters[0];
-                            }
-                            else if (AddressType.DefaultArg != arguments[0].optype)
-                            {
-                                arguments.RemoveAt(0);
-                            }
-                        }
-
-                        int thisPtrType = (int)svThisPtr.metaData.type;
-
-                        // Find the first visible method in the class and its heirarchy
-                        // The callsite will handle the overload
-                        int fi = interpreter.runtime.exe.classTable.ClassNodes[thisPtrType].vtable.IndexOfFirst(dynamicFunctionNode.functionName);
-
-                        ClassNode cnode = interpreter.runtime.exe.classTable.ClassNodes[thisPtrType];
-                        if (ProtoCore.DSASM.Constants.kInvalidIndex == fi)
-                        {
-                            while (cnode.baseList.Count > 0)
-                            {
-                                // TODO Jun: Support mutiple inheritance 
-                                int baseCI = cnode.baseList[0];
-                                cnode = interpreter.runtime.exe.classTable.ClassNodes[baseCI];
-                                fi = cnode.vtable.IndexOfFirst(dynamicFunctionNode.functionName);
-                                if (ProtoCore.DSASM.Constants.kInvalidIndex != fi)
-                                {
-                                    break;
-                                }
-                            }
-                        }
-
-                        // If the function still isnt found, then it may be a function pointer
-                        ProtoCore.DSASM.ProcedureNode procPointedTo = null;
-                        string dynamicFunctionName = string.Empty;
-                        if (ProtoCore.DSASM.Constants.kInvalidIndex == fi)
-                        {
-                            int memvarIndex = interpreter.runtime.exe.classTable.ClassNodes[thisPtrType].GetFirstVisibleSymbolNoAccessCheck(dynamicFunctionNode.functionName);
-
-                            int thisPtr = (int)svThisPtr.opdata;
-                            if (ProtoCore.DSASM.Constants.kInvalidIndex != memvarIndex)
-                            {
-                                StackValue svMemberPtr = interpreter.runtime.rmem.Heap.Heaplist[thisPtr].Stack[memvarIndex];
-                                if (svMemberPtr.optype == AddressType.Pointer)
-                                {
-                                    StackValue svFunctionPtr = interpreter.runtime.rmem.Heap.Heaplist[(int)svMemberPtr.opdata].Stack[0];
-                                    if (AddressType.FunctionPointer == svFunctionPtr.optype)
-                                    {
-                                        // It is a function pointer
-                                        // Functions pointed to are all in the global scope
-                                        thisPtrType = ProtoCore.DSASM.Constants.kGlobalScope;
-                                        fi = (int)svFunctionPtr.opdata;
-                                        procPointedTo = interpreter.runtime.exe.procedureTable[0].procList[fi];
-                                        dynamicFunctionName = procPointedTo.name;
-                                    }
-                                }
-                            }
-                        }
-
-                        //
-                        // Build the stackframe
-                        int classScopeCaller = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kClass).opdata;
-                        int returnAddr = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kReturnAddress).opdata;
-                        int blockDecl = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionBlock).opdata;
-                        int blockCaller = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionCallerBlock).opdata;
-                        int framePointer = core.Rmem.FramePointer;
-
-
-                        // Comment Jun: the caller type is the current type in the stackframe
-                        StackFrameType callerType = (StackFrameType)stackFrame.GetAt(StackFrame.AbsoluteIndex.kStackFrameType).opdata;
-
-                        StackFrameType type = StackFrameType.kTypeFunction;
-                        int depth = 0;
-                        ProtoCore.DSASM.StackFrame newStackFrame = new StackFrame(svThisPtr, classScopeCaller, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth,
-                            framePointer, stackFrame.GetRegisters(), null);
-
-                        // Comment Jun: 
-                        // Any replication guides pushed in a dotarg->dot call must be retrieved here from the core
-                        var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
-                        bool doesDotCallFunctionHaveArgs = functionArgs > ProtoCore.DSASM.Constants.kThisFunctionAdditionalArgs;
-                        if (doesDotCallFunctionHaveArgs)// || !core.Options.EnableThisPointerFunctionOverload)
-                        {
-                            replicationGuides = interpreter.runtime.GetCachedReplicationGuides(core, arguments.Count);
-                        }
-                        string functionName = dynamicFunctionName;
-                        if (string.Empty == functionName)
-                        {
-                            functionName = dynamicFunctionNode.functionName;
-                        }
-
-                        ProcedureNode fNode = null;
-                        if (procPointedTo != null)
-                        {
-                            fNode = procPointedTo;
-                        }
-                        else
-                        {
-                            if (fi >= 0)
-                            {
-                                fNode = cnode.vtable.procList[fi];
-                            }
-                        }
-
-                        ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, thisPtrType, functionName);
-                        Validity.Assert(null != callsite);
-
-                        ProtoCore.DSASM.Executive exec = core.CurrentExecutive.CurrentDSASMExec;
-                        // TODO: Disabling support for stepping into replicated function calls temporarily - pratapa
-                        if (core.Options.IDEDebugMode && core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
-                        {
-                            if (fNode != null)
-                            {
-                                //ProtoCore.DSASM.Executive exec = interpreter.runtime;
-                                bool isBaseCall = false;
-                                bool isMember = true;
-                                core.DebugProps.SetUpCallrForDebug(core, exec, fNode, returnAddr - 1, isBaseCall, callsite, arguments, replicationGuides,
-                                        newStackFrame, null, false, isMember, svThisPtr);
-                            }
-                        }
-
-                        StackValue sv = StackValue.Null;
-#if __DEBUG_REPLICATE
-
-                // TODO: This if block is currently executed only for a replicating function call in Debug Mode (including each of its continuations) 
-                // This condition will no longer be required once the same Dispatch function can decide whether to perform a fast dispatch (parallel mode)
-                // OR a Serial/Debug mode dispatch, in which case this same block should work for Serial mode execution w/o the Debug mode check - pratapa
-                if (core.Options.IDEDebugMode)
-                {
-                    DebugFrame debugFrame = core.DebugProps.DebugStackFrame.Peek();
-
-                    //if (debugFrame.IsReplicating || core.ContinuationStruct.IsContinuation)
-                    if (debugFrame.IsReplicating)
-                    {
-                        FunctionEndPoint fep = null;
-                        ContinuationStructure cs = core.ContinuationStruct;
-
-                        if (core.Options.ExecutionMode == ProtoCore.ExecutionMode.Serial || core.Options.IDEDebugMode)
-                        {
-                            // This needs to be done only for the initial argument arrays (ie before the first replicating call) - pratapa
-                            if (core.ContinuationStruct.IsFirstCall)
-                            {
-                                core.ContinuationStruct.InitialDepth = depth;
-                                core.ContinuationStruct.InitialPC = returnAddr - 1;
-                                core.ContinuationStruct.InitialArguments = arguments;
-                                core.ContinuationStruct.InitialDotCallDimensions = new List<StackValue>();
-
-                                for (int i = 0; i < arguments.Count; ++i)
-                                {
-                                    GCUtils.GCRetain(arguments[i], core);
-                                }
-
-                                core.ContinuationStruct.NextDispatchArgs.Add(StackValue.BuildInt(1));
-                            }
-
-                            // The Resolve function is currently hard-coded as a place holder to test debugging replication - pratapa
-                            fep = callsite.ResolveForReplication(new ProtoCore.Runtime.Context(), arguments, replicationGuides, newStackFrame, core, cs);
-                            sv = StackValue.BuildNode(AddressType.ExplicitCall, fep.procedureNode.pc);
-
-                            core.ContinuationStruct = cs;
-                            core.ContinuationStruct.IsFirstCall = true;
-                        }
-                    }
-                    else
-                        sv = callsite.JILDispatchViaNewInterpreter(arguments, replicationGuides, newStackFrame, core);
-                }
-                
-                else
-#endif
-                        sv = callsite.JILDispatchViaNewInterpreter(c, arguments, replicationGuides, newStackFrame, core);
-
-                        ret = sv;
-#if __DEBUG_REPLICATE
-                if (sv.optype != AddressType.ExplicitCall)
-#endif
-                        {
-                            // Restore debug properties after returning from a CALL/CALLR
-                            if (core.Options.IDEDebugMode && core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
-                            {
-                                if (fNode != null)
-                                {
-                                    core.DebugProps.RestoreCallrForNoBreak(core, fNode);
-                                }
-                            }
-
-                            interpreter.runtime.GCRelease(lhsObject);
-
-                            ret = sv;
-                            interpreter.runtime.DecRefCounter(ret);
-                        }
-
-                        break;
-                    }
+                    ret = DotMethod(formalParameters[0], stackFrame, interpreter.runtime, c);
+                    break;
 
                 case BuiltInMethods.MethodID.kGetType:
                     AddressType objType = formalParameters[0].optype;
@@ -821,55 +498,181 @@ namespace ProtoCore.Lang
 
         }
 
-        // TODO(QA) Pending removal
-        //[Obsolete]
-        //    public override Obj Execute(Context c, List<Obj> formalParameters, List<DSASM.Operand> activationRecord, Core core)
-        //    {
+        private StackValue DotMethod(StackValue lhs, StackFrame stackFrame, DSASM.Executive runtime, Context context)
+        {
+            var core = runtime.Core;
+            var rmem = runtime.rmem;
 
-        //        Obj returnObj = new Obj();
+            StackValue thisObject = lhs;
+            if (StackUtils.IsArray(thisObject))
+            {
+                ArrayUtils.GetFirstNonArrayStackValue(lhs, ref thisObject, core);
+            }
 
+            if (thisObject.optype != AddressType.Pointer && thisObject.optype != AddressType.ArrayPointer)
+            {
+                core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, WarningMessage.kDeferencingNonPointer);
+                return StackValue.Null;
+            }
 
+            int stackPtr = rmem.Stack.Count - 1;
 
-        //        switch (buildInMethodId)
-        //        {
-        //            case ProtoCore.Lang.BuiltInMethods.BuiltInMethodID.kCount:
-        //                {
-        //                    StackValue sv = formalParameters[0].DsasmValue;
-        //                    StackValue returned = Execute(c, new List<StackValue> { sv }, activationRecord, core);
-        //                    returnObj = ProtoCore.DSASM.Mirror.ExecutionMirror.Unpack(returned, core);
-        //                    break;
-        //                }
-        //            case ProtoCore.Lang.BuiltInMethods.BuiltInMethodID.kRank:
-        //                {
-        //                    StackValue sv = formalParameters[0].DsasmValue;
-        //                    StackValue returned = Execute(c, new List<StackValue> { sv }, activationRecord, core);
-        //                    returnObj = ProtoCore.DSASM.Mirror.ExecutionMirror.Unpack(returned, core);
-        //                    break;
-        //                }
-        //            case ProtoCore.Lang.BuiltInMethods.BuiltInMethodID.kFlatten:
-        //                {
-        //                    StackValue sv = formalParameters[0].DsasmValue;
-        //                    StackValue returned = Execute(c, new List<StackValue> { sv }, activationRecord, core);
-        //                    returnObj = ProtoCore.DSASM.Mirror.ExecutionMirror.Unpack(returned, core);
-        //                    break;
-        //                }
-        //            case ProtoCore.Lang.BuiltInMethods.BuiltInMethodID.kCancat:
-        //                {
-        //                    StackValue sv0 = formalParameters[0].DsasmValue;
-        //                    StackValue sv1 = formalParameters[1].DsasmValue;
+            // TODO Jun: Consider having a DynamicFunction AddressType
+            StackValue dynamicTableIndex = rmem.Stack[stackPtr - 4];
+            Validity.Assert(dynamicTableIndex.optype == AddressType.Int);
 
-        //                    StackValue returned = Execute(c, new List<StackValue> { sv0, sv1 }, activationRecord, core);
-        //                    returnObj = ProtoCore.DSASM.Mirror.ExecutionMirror.Unpack(returned, core);
-        //                    break;
+            StackValue dimensions = rmem.Stack[stackPtr - 3];
+            Validity.Assert(dimensions.optype == AddressType.ArrayPointer);
 
-        //                }
-        //        }
+            StackValue dimensionCount = rmem.Stack[stackPtr - 2];
+            Validity.Assert(dimensionCount.optype == AddressType.Int);
 
+            StackValue functionArguments = rmem.Stack[stackPtr - 1];
+            Validity.Assert(functionArguments.optype == AddressType.ArrayPointer);
 
+            StackValue argumentCount = rmem.Stack[stackPtr];
+            Validity.Assert(argumentCount.optype == AddressType.Int);
+            int functionArgs = (int)argumentCount.opdata;
 
-        //        return returnObj;
-        //    }
-        //
+            // Build the function arguments
+            var arguments = new List<StackValue>();
+            HeapElement heapElem = rmem.Heap.Heaplist[(int)functionArguments.opdata];
+            for (int n = 0; n < heapElem.VisibleSize; ++n)
+            {
+                StackValue arg = heapElem.Stack[n];
+                arguments.Add(arg);
+            }
+
+            if (arguments.Count > 0)
+            {
+                bool isReplicatingCall = AddressType.Dynamic == arguments[0].optype && AddressType.ArrayPointer == lhs.optype;
+                if (isReplicatingCall)
+                {
+                    arguments[0] = lhs;
+                }
+                else if (AddressType.DefaultArg != arguments[0].optype)
+                {
+                    arguments.RemoveAt(0);
+                }
+            }
+
+            // Any replication guides pushed in a dotarg->dot call must be 
+            // retrieved here from the core
+            var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
+            bool doesDotCallFunctionHaveArgs = functionArgs > ProtoCore.DSASM.Constants.kThisFunctionAdditionalArgs;
+            if (doesDotCallFunctionHaveArgs)
+            {
+                replicationGuides = runtime.GetCachedReplicationGuides(core, arguments.Count);
+            }
+
+            // Find the first visible method in the class and its heirarchy
+            // The callsite will handle the overload
+            var dynamicFunctionNode = core.DynamicFunctionTable.functionTable[(int)dynamicTableIndex.opdata];
+            string functionName = dynamicFunctionNode.functionName;
+
+            int thisObjectType = (int)thisObject.metaData.type;
+            ClassNode classNode = runtime.exe.classTable.ClassNodes[thisObjectType];
+            int procIndex = classNode.vtable.IndexOfFirst(functionName);
+            ProcedureNode procNode = null;
+
+            // Trace hierarchy chain to find out the procedure node.
+            if (Constants.kInvalidIndex == procIndex)
+            {
+                var currentClassNode = classNode;
+                while (currentClassNode.baseList.Count > 0)
+                {
+                    int baseCI = currentClassNode.baseList[0];
+                    currentClassNode = runtime.exe.classTable.ClassNodes[baseCI];
+                    procIndex = currentClassNode.vtable.IndexOfFirst(functionName);
+                    if (Constants.kInvalidIndex != procIndex)
+                    {
+                        procNode = currentClassNode.vtable.procList[procIndex];
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                procNode = classNode.vtable.procList[procIndex];
+            }
+
+            // If the function still isn't found, then it may be a function 
+            // pointer. 
+            string dynamicFunctionName = string.Empty;
+            if (procNode == null)
+            {
+                int memvarIndex = classNode.GetFirstVisibleSymbolNoAccessCheck(dynamicFunctionNode.functionName);
+
+                int thisPtr = (int)thisObject.opdata;
+                if (Constants.kInvalidIndex != memvarIndex)
+                {
+                    StackValue svMemberPtr = rmem.Heap.Heaplist[thisPtr].Stack[memvarIndex];
+                    if (svMemberPtr.optype == AddressType.Pointer)
+                    {
+                        StackValue svFunctionPtr = rmem.Heap.Heaplist[(int)svMemberPtr.opdata].Stack[0];
+                        if (AddressType.FunctionPointer == svFunctionPtr.optype)
+                        {
+                            // It is a function pointer
+                            // Functions pointed to are all in the global scope
+                            thisObjectType = ProtoCore.DSASM.Constants.kGlobalScope;
+                            procIndex = (int)svFunctionPtr.opdata;
+                            procNode = runtime.exe.procedureTable[0].procList[procIndex];
+                            functionName = procNode.name;
+                        }
+                    }
+                }
+            }
+
+            // Build the stackframe
+            var newStackFrame = new StackFrame(thisObject, 
+                                               stackFrame.GetCallerClassIndex(), 
+                                               procIndex, 
+                                               stackFrame.GetReturnAddress(), 
+                                               stackFrame.GetFunctionBlock(), 
+                                               stackFrame.GetFunctionCallerBlock(), 
+                                               stackFrame.GetStackFrameType(),
+                                               StackFrameType.kTypeFunction, 
+                                               0,
+                                               core.Rmem.FramePointer, 
+                                               stackFrame.GetRegisters(), 
+                                               null);
+
+            ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, thisObjectType, functionName);
+            Validity.Assert(null != callsite);
+
+            // TODO: Disabling support for stepping into replicated function calls temporarily - pratapa
+            if (core.Options.IDEDebugMode &&
+                core.ExecMode != InterpreterMode.kExpressionInterpreter &&
+                procNode != null)
+            {
+                core.DebugProps.SetUpCallrForDebug(core,
+                                                   core.CurrentExecutive.CurrentDSASMExec,
+                                                   procNode,
+                                                   stackFrame.GetReturnAddress() - 1,
+                                                   false, callsite,
+                                                   arguments,
+                                                   replicationGuides,
+                                                   newStackFrame,
+                                                   null,
+                                                   false,
+                                                   true,
+                                                   thisObject);
+            }
+
+            StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, newStackFrame, core);
+
+            // Restore debug properties after returning from a CALL/CALLR
+            if (core.Options.IDEDebugMode && 
+                core.ExecMode != InterpreterMode.kExpressionInterpreter &&
+                procNode != null)
+            {
+                core.DebugProps.RestoreCallrForNoBreak(core, procNode);
+            }
+
+            runtime.GCRelease(lhs);
+            runtime.DecRefCounter(ret);
+            return ret;
+        }
     }
 
     internal class ContextDataBuiltIns

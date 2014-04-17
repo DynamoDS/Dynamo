@@ -235,7 +235,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            return ProtoCore.DSASM.Constants.kInvalidIndex;
+            return Constants.kInvalidIndex;
         }
 
 
@@ -244,18 +244,18 @@ namespace ProtoCore.DSASM
             IEnumerable<SymbolNode> allSymbols = symbols.GetNodeForName(name);
             if (allSymbols == null)
             {
-                return ProtoCore.DSASM.Constants.kInvalidIndex;
+                return Constants.kInvalidIndex;
             }
 
             // Try for member variables. 
             foreach (var memvar in allSymbols)
             {
-                if (memvar.functionIndex == ProtoCore.DSASM.Constants.kGlobalScope)
+                if (memvar.functionIndex == Constants.kGlobalScope)
                 {
                     return memvar.symbolTableIndex;
                 }
             }
-            return ProtoCore.DSASM.Constants.kInvalidIndex;
+            return Constants.kInvalidIndex;
         }
 
         // 1. In some class's scope, classScope != kInvalidIndex;

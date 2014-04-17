@@ -1006,7 +1006,7 @@
             line
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Line.ByBestFit(Autodesk.DesignScript.Geometry.Point[])">
+        <member name="M:Autodesk.DesignScript.Geometry.Line.ByBestFitThroughPoints(Autodesk.DesignScript.Geometry.Point[])">
             <summary>
             Creates a Line best approximating a scatter plot of Points.
             </summary>

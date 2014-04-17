@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Windows.Threading;
 using System.Xml.Serialization;
 using Autodesk.RevitAddIns;
 using Dynamo.NUnit.Tests;
@@ -33,6 +34,7 @@ namespace RevitTestFrameworkRunner
         internal static List<string> _journalPaths = new List<string>();
         internal static int _runCount = 0;
         internal static int _timeout = 120000;
+        private static ViewModel _vm;
         public static event EventHandler TestRunsComplete;
         private static void OnTestRunsComplete()
         {
@@ -56,9 +58,9 @@ namespace RevitTestFrameworkRunner
                     return;
                 }
 
-                var vm = new ViewModel();
+                _vm = new ViewModel();
 
-                if (!FindRevit(vm.Products))
+                if (!FindRevit(_vm.Products))
                 {
                     return;
                 }
@@ -69,11 +71,11 @@ namespace RevitTestFrameworkRunner
 
                     if (!string.IsNullOrEmpty(_testAssembly) && File.Exists(_testAssembly))
                     {
-                        Refresh(vm);
+                        Refresh(_vm);
                     }
 
                     // Show the user interface
-                    var view = new View(vm);
+                    var view = new View(_vm);
                     view.ShowDialog();
 
                     SaveSettings();
@@ -82,7 +84,7 @@ namespace RevitTestFrameworkRunner
                 {
                     if (string.IsNullOrEmpty(_revitPath))
                     {
-                        _revitPath = Path.Combine(vm.Products.First().InstallLocation, "revit.exe");
+                        _revitPath = Path.Combine(_vm.Products.First().InstallLocation, "revit.exe");
                     }
 
                     if (string.IsNullOrEmpty(_workingDirectory))
@@ -97,7 +99,7 @@ namespace RevitTestFrameworkRunner
                         return;
                     }
 
-                    if (!ReadAssembly(_testAssembly, vm.Assemblies))
+                    if (!ReadAssembly(_testAssembly, _vm.Assemblies))
                     {
                         return;
                     }
@@ -119,15 +121,15 @@ namespace RevitTestFrameworkRunner
 
                     if (string.IsNullOrEmpty(_fixture) && string.IsNullOrEmpty(_test))
                     {
-                        _runCount = vm.Assemblies.SelectMany(a => a.Fixtures.SelectMany(f => f.Tests)).Count();
-                        foreach (var ad in vm.Assemblies)
+                        _runCount = _vm.Assemblies.SelectMany(a => a.Fixtures.SelectMany(f => f.Tests)).Count();
+                        foreach (var ad in _vm.Assemblies)
                         {
                             RunAssembly(ad);
                         }
                     }
                     else if (string.IsNullOrEmpty(_test) && !string.IsNullOrEmpty(_fixture))
                     {
-                        var fd = vm.Assemblies.SelectMany(x => x.Fixtures).FirstOrDefault(f => f.Name == _fixture);
+                        var fd = _vm.Assemblies.SelectMany(x => x.Fixtures).FirstOrDefault(f => f.Name == _fixture);
                         if (fd != null)
                         {
                             _runCount = fd.Tests.Count;
@@ -137,7 +139,7 @@ namespace RevitTestFrameworkRunner
                     else if (string.IsNullOrEmpty(_fixture) && !string.IsNullOrEmpty(_test))
                     {
                         var td =
-                            vm.Assemblies.SelectMany(a => a.Fixtures.SelectMany(f => f.Tests))
+                            _vm.Assemblies.SelectMany(a => a.Fixtures.SelectMany(f => f.Tests))
                                 .FirstOrDefault(t => t.Name == _test);
                         if (td != null)
                         {
@@ -503,12 +505,16 @@ namespace RevitTestFrameworkRunner
                 if (ourTest.Item == null) return;
                 var failure = ourTest.Item as failureType;
                 if (failure == null) return;
-                td.ResultData.Add(
-                    new ResultData()
-                    {
-                        StackTrace = failure.stacktrace,
-                        Message = failure.message
-                    });
+
+                if (_vm != null && _vm.UiDispatcher != null)
+                {
+                    _vm.UiDispatcher.BeginInvoke((Action)(()=> td.ResultData.Add(
+                        new ResultData()
+                        {
+                            StackTrace = failure.stacktrace,
+                            Message = failure.message
+                        })));
+                }
             }
         }
 

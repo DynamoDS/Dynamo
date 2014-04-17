@@ -78,11 +78,14 @@
     <Compile Include="AnalysisDisplay\VectorAnalysisDisplay.cs" />
     <Compile Include="Application\Document.cs" />
     <Compile Include="Elements\Category.cs" />
+    <Compile Include="Elements\CurtainGrid.cs" />
+    <Compile Include="Elements\CurtainPanel.cs" />
     <Compile Include="Elements\Element.cs" />
     <Compile Include="Elements\AbstractFamilyInstance.cs" />
     <Compile Include="Elements\CurveByPoints.cs" />
     <Compile Include="Elements\CurveElement.cs" />
     <Compile Include="Elements\InternalUtilities\ElementQueries.cs" />
+    <Compile Include="Elements\Mullion.cs" />
     <Compile Include="Elements\UnknownElement.cs" />
     <Compile Include="Elements\FloorType.cs" />
     <Compile Include="Elements\ImportInstance.cs" />
@@ -106,6 +109,9 @@
     <Compile Include="Elements\Views\SectionView.cs" />
     <Compile Include="Elements\Views\Packing\OutOfSpaceException.cs" />
     <Compile Include="Elements\Views\Packing\RectanglePacker.cs" />
+    <Compile Include="GeometryConversion\SurfaceExtractor.cs" />
+    <Compile Include="GeometryConversion\SurfaceTrimmer.cs" />
+    <Compile Include="GeometryConversion\TrimValidator.cs" />
     <Compile Include="GeometryConversion\ProtoToRevitCurve.cs" />
     <Compile Include="GeometryConversion\RevitToProtoCurve.cs" />
     <Compile Include="GeometryConversion\RevitToProtoFace.cs" />

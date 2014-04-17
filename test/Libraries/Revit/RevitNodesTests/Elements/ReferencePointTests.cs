@@ -76,7 +76,7 @@ namespace DSRevitNodesTests
         }
 
         [Test]
-        [TestModelAttribute(@".\empty.rfa")]
+        [TestModelAttribute(@".\block.rfa")]
         public void ByParametersOnFaceReference_ValidInput()
         {
             var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
