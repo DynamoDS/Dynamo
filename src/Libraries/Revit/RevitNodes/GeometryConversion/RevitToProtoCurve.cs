@@ -55,7 +55,7 @@ namespace Revit.GeometryConversion
         private static Autodesk.DesignScript.Geometry.NurbsCurve Convert(Autodesk.Revit.DB.HermiteSpline crv)
         {
             return NurbsCurve.ByPointsTangents(crv.ControlPoints.Select(x => x.ToPoint()).ToArray(),
-                crv.Tangents.First().ToVector(), crv.Tangents.Last().ToVector());
+                crv.Tangents.First().ToVector().Normalized(), crv.Tangents.Last().ToVector().Normalized());
         }
 
         /// <summary>
