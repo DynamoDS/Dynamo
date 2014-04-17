@@ -114,15 +114,15 @@ namespace Revit.Elements
 
          var host = elementAsMullion.Host;
 
-         var hostingGrid = CurtainGrid.ByElement(UnknownElement.FromExisting(host));
+         //var hostingGrid = Panel.ByElement(UnknownElement.FromExisting(host));
 
-         var panels = hostingGrid.GetPanels();
+         var panels = CurtainPanel.ByElement(UnknownElement.FromExisting(host));
 
          var result = new List<CurtainPanel>();
 
          var thisCurve = this.LocationCurve;
 
-         int numberPanels = panels.Count;
+         int numberPanels = panels.Length;
          for (int index = 0; index < numberPanels; index++)
          {
             var panelAtIndex = panels[index] as CurtainPanel;
