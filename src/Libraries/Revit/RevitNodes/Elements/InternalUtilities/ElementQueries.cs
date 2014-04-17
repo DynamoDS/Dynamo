@@ -14,7 +14,10 @@ namespace Revit.Elements.InternalUtilities
             var instanceFilter = new ElementClassFilter(typeof(Autodesk.Revit.DB.FamilyInstance));
             var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
 
-            var familyInstances = fec.WherePasses(instanceFilter).ToElements().Cast<Autodesk.Revit.DB.FamilyInstance>()
+            var familyInstances = fec.WherePasses(instanceFilter)
+                .WhereElementIsNotElementType()
+                .ToElements()
+                .Cast<Autodesk.Revit.DB.FamilyInstance>()
                 .Where(x => x.Symbol.IsSimilarType(familyType.InternalFamilySymbol.Id));
 
             var instances = familyInstances
@@ -28,6 +31,7 @@ namespace Revit.Elements.InternalUtilities
             var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             var instances = 
                 fec.WherePasses(catFilter)
+                    .WhereElementIsNotElementType()
                     .ToElementIds()
                     .Select(id => ElementSelector.ByElementId(id.IntegerValue))
                     .ToList();
@@ -40,6 +44,7 @@ namespace Revit.Elements.InternalUtilities
             var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             var instances =
                 fec.WherePasses(levFilter)
+                    .WhereElementIsNotElementType()
                     .ToElementIds()
                     .Select(id => ElementSelector.ByElementId(id.IntegerValue))
                     .ToList();

@@ -157,6 +157,7 @@ namespace Revit.Elements
         {
             get
             {
+                DocumentManager.Regenerate();
                 var pos = InternalFamilyInstance.Location as LocationPoint;
                 return Point.ByCoordinates(pos.Point.X, pos.Point.Y, pos.Point.Z);
             }

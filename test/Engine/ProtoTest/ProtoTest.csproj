@@ -117,6 +117,7 @@
     </Compile>
     <Compile Include="DebugTests\SetValueTests.cs" />
     <Compile Include="DSASM\ExecutionMirrorTests.cs" />
+    <Compile Include="DSASM\HeapCorruptionTests.cs" />
     <Compile Include="DSASM\StackOverflowTests.cs" />
     <Compile Include="EventTests\EventTest.cs" />
     <Compile Include="FFITests\ArgumentMarshalingTests.cs" />

@@ -140,7 +140,7 @@ namespace Dynamo.Utilities
             {
                 try
                 {
-                    allLoadedAssembliesByPath[assembly.Location] = assembly;
+                     allLoadedAssembliesByPath[assembly.Location] = assembly;
                     allLoadedAssemblies[assembly.FullName] = assembly;
                 }
                 catch { }

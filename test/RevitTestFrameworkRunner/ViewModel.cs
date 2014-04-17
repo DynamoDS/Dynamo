@@ -30,6 +30,8 @@ namespace RevitTestFrameworkRunner
         public DelegateCommand SetWorkingPathCommand { get; set; }
         public DelegateCommand<object> RunCommand { get; set; }
 
+        public Dispatcher UiDispatcher { get; set; }
+
         public object SelectedItem
         {
             get { return _selectedItem; }

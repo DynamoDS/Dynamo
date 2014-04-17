@@ -119,7 +119,7 @@ namespace Dynamo.ViewModels
         {
             FindNodeForPathCommand = new DelegateCommand(FindNodeForPath, CanFindNodeForPath);
             IsNodeExpanded = true;
-            _showRawData = true;
+            _showRawData = false;
         }
 
         public WatchViewModel(string label, string path, bool expanded = false)

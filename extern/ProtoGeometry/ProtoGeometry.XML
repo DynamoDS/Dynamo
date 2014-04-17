@@ -509,6 +509,11 @@
             Makes PolySurface by Loft through Polycurves.
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Solid.UnionAll(Autodesk.DesignScript.Geometry.Solid[])">
+            <summary>
+            Union a collection of solids into one solid
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Centroid">
             <summary>
             The centroid of the solid
@@ -1647,6 +1652,11 @@
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ToString">
             <summary>
             Get a string representation of the Surface
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRuledLoft(Autodesk.DesignScript.Geometry.Line[])">
+            <summary>
+            Create a Surface by lofting between input cross section Lines.  This is slightly faster and produces a less smooth result than Surface.ByLoft.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(Autodesk.DesignScript.Geometry.Curve[],Autodesk.DesignScript.Geometry.Curve)">

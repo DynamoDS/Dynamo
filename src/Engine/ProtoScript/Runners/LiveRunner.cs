@@ -6,6 +6,7 @@ using GraphToDSCompiler;
 using ProtoCore.DSASM.Mirror;
 using System.Diagnostics;
 using ProtoCore.Utils;
+using ProtoCore;
 using System.ComponentModel;
 using System.Threading;
 using ProtoFFI;
@@ -1567,6 +1568,10 @@ namespace ProtoScript.Runners
             changeSetApplier.Apply(runnerCore, changeSetComputer.csData);
 
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
+
+#if DEBUG // Debug preproc the function here as we dont want it to perform additional calls on release
+            ProtoCore.Utils.HeapUtils.VerifyHeap(runnerCore);
+#endif
         }
 
 
