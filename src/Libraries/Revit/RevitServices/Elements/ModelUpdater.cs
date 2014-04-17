@@ -29,6 +29,7 @@ namespace RevitServices.Elements
         private readonly ControlledApplication application;
 
         public event ElementUpdateDelegate ElementsAdded;
+        public event ElementUpdateDelegateElementId ElementAddedForID;
         public event ElementUpdateDelegate ElementsModified;
         public event ElementDeleteDelegate ElementsDeleted;
 
@@ -39,6 +40,13 @@ namespace RevitServices.Elements
             var handler = ElementsAdded;
             if (handler != null) handler(updated);
         }
+
+        protected virtual void OnElementsAdded(Document doc, IEnumerable<ElementId> updated)
+        {
+            var handler = ElementAddedForID;
+            if (handler != null) handler(doc, updated);
+        }
+
 
         protected virtual void OnElementsModified(IEnumerable<string> updated)
         {
@@ -58,12 +66,12 @@ namespace RevitServices.Elements
         public RevitServicesUpdater(/*AddInId id, */ControlledApplication app)
         {
             application = app;
-            application.DocumentChanged += Application_DocumentChanged;
+            application.DocumentChanged += ApplicationDocumentChanged;
         }
 
         public void Dispose()
         {
-            application.DocumentChanged -= Application_DocumentChanged;
+            application.DocumentChanged -= ApplicationDocumentChanged;
         }
 
         //TODO: remove once we are using unique ids
@@ -83,23 +91,28 @@ namespace RevitServices.Elements
         public void RollBack(Document doc, ICollection<ElementId> deleted)
         {
             var empty = new List<string>();
-            ProcessUpdates(doc, empty, deleted, empty);
+            ProcessUpdates(doc, empty, deleted, empty, new List<ElementId>());
         }
 
-        private void ProcessUpdates(Document doc, IEnumerable<string> modified, IEnumerable<ElementId> deleted, IEnumerable<string> added)
+        private void ProcessUpdates(Document doc, IEnumerable<string> modified, 
+            IEnumerable<ElementId> deleted, IEnumerable<string> added, 
+            IEnumerable<ElementId> addedIds )
         {
             OnElementsModified(modified.Distinct());
             OnElementsDeleted(doc, deleted.Distinct());
             OnElementsAdded(added.Distinct());
+            OnElementsAdded(doc, addedIds);
         }
 
-        void Application_DocumentChanged(object sender, DocumentChangedEventArgs args)
+        void ApplicationDocumentChanged(object sender, DocumentChangedEventArgs args)
         {
             var doc = args.GetDocument();
             var added = args.GetAddedElementIds().Select(x => doc.GetElement(x).UniqueId);
+            var addedIds = args.GetAddedElementIds();
             var modified = args.GetModifiedElementIds().Select(x => doc.GetElement(x).UniqueId).ToList();
             var deleted = args.GetDeletedElementIds();
-            ProcessUpdates(doc, modified, deleted, added);
+
+            ProcessUpdates(doc, modified, deleted, added, addedIds);
         }
 
         /// <summary>
@@ -119,6 +132,15 @@ namespace RevitServices.Elements
     /// </summary>
     /// <param name="updated">All modified elements that have been registered with this callback.</param>
     public delegate void ElementUpdateDelegate(IEnumerable<string> updated);
+
+
+    /// <summary>
+    /// Callback for when Elements have been updated.
+    /// Recoemnt using the UUID version instead
+    /// </summary>
+    /// <param name="updated">All modified elements that have been registered with this callback.</param>
+    public delegate void ElementUpdateDelegateElementId(Document document, IEnumerable<ElementId> deleted);
+
 
     /// <summary>
     ///     Callback for when Elements have been deleted.
