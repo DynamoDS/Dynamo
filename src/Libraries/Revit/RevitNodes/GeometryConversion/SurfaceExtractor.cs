@@ -116,9 +116,11 @@ namespace Revit.GeometryConversion
             var numU = face.get_Params(0).Size;
             var numV = face.get_Params(1).Size;
 
-            // extract the points
+            // unpack the points
+            var points = face.Points;
+           
+            // structure the points
             var ptArr = new Autodesk.DesignScript.Geometry.Point[numV][];
-
             var count = 0;
             for (var i = 0; i < numV; i++)
             {
@@ -126,12 +128,42 @@ namespace Revit.GeometryConversion
 
                 for (var j = 0; j < numU; j++)
                 {
-                    ptArr[i][j] = face.Points[count++].ToPoint();
+                    ptArr[i][j] = points[count++].ToPoint();
                 }
             }
 
-            // TODO: we need to extend this method to also support tangents
-            return NurbsSurface.ByPoints(ptArr, 3, 3);
+            // unpack the tangents
+            var uTangents = face.get_Tangents(0);
+            var vtangents = face.get_Tangents(1);
+
+            // structure the points
+            // PB: could be simplified to just get the end vectors, but this is easier to debug
+            var uTangentsArr = new Autodesk.DesignScript.Geometry.Vector[numV][];
+            var vTangentsArr = new Autodesk.DesignScript.Geometry.Vector[numV][];
+
+            count = 0;
+            for (var i = 0; i < numV; i++)
+            {
+                uTangentsArr[i] = new Autodesk.DesignScript.Geometry.Vector[numU];
+                vTangentsArr[i] = new Autodesk.DesignScript.Geometry.Vector[numU];
+
+                for (var j = 0; j < numU; j++)
+                {
+                    uTangentsArr[i][j] = uTangents[count].ToVector();
+                    vTangentsArr[i][j] = vtangents[count].ToVector();
+                    count++;
+                }
+            }
+
+            // the required u tangents are the first and last row of the utangents 2d arr
+            var uStartTangents = uTangentsArr[0];
+            var uEndTangents = uTangentsArr[numV-1];
+
+            // the required v tangents are the first and last col of the vtangents 2d arr
+            var vStartTangents = vTangentsArr.Select(x => x[0]).ToArray();
+            var vEndTangents = vTangentsArr.Select(x => x[numU-1]).ToArray();
+
+            return NurbsSurface.ByPointsTangents(ptArr, uStartTangents, uEndTangents, vStartTangents, vEndTangents);
         }
 
         public static Surface ExtractSurface(Autodesk.Revit.DB.RevolvedFace face, IEnumerable<PolyCurve> edgeLoops)
@@ -142,7 +174,7 @@ namespace Revit.GeometryConversion
             var x = face.get_Radius(0);
             var y = face.get_Radius(1);
 
-            // TODO: This needs to take into account the actual coordinate system of the face, need another constructor to do that
+            // TODO: ensure x is in direction of profile plane
             return Surface.ByRevolve(crv, o, axis, 0, 360);
         }
 

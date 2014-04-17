@@ -367,10 +367,10 @@ namespace Revit.Elements
 
          var host = elementAsPanel.Host;
 
-         var hostingGrid = CurtainGrid.ByElement(UnknownElement.FromExisting(host));
+         //var hostingGrid = CurtainGrid.ByElement(UnknownElement.FromExisting(host));
 
-         var mullions = hostingGrid.GetMullions();
-         int numberMullions = mullions.Count;
+         var mullions = Mullion.ByElement(UnknownElement.FromExisting(host));//hostingGrid.GetMullions();
+         int numberMullions = mullions.Length;
          var result = new List<Mullion>();
 
          for (int index = 0; index < numberMullions; index++)
