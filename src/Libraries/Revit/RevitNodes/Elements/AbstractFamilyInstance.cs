@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
+using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
@@ -69,7 +70,10 @@ namespace Revit.Elements
         {
             get
             {
-                var pos = this.InternalFamilyInstance.Location as LocationPoint;
+                TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
+                DocumentManager.Regenerate();
+                var pos = InternalFamilyInstance.Location as LocationPoint;
+                TransactionManager.Instance.TransactionTaskDone();
                 return Point.ByCoordinates(pos.Point.X, pos.Point.Y, pos.Point.Z);
             }
         }
