@@ -33,18 +33,18 @@ namespace ProtoCore.Utils
         /// Checks if the heap contains at least 1 pointer element that points to itself
         /// </summary>
         /// <param name="core"></param>
-        /// <returns> Returns true if the heap contains no cycles</returns>
-        public static bool VerifyHeapNonCyclic(Core core)
+        /// <returns> Returns true if the heap contains at least one cycle</returns>
+        public static bool IsHeapCyclic(Core core)
         {
             for (int n = 0; n < core.Heap.Heaplist.Count; ++n)
             {
                 HeapElement heapElem = core.Heap.Heaplist[n];
                 if (IsHeapCyclic(heapElem, core, n))
                 {
-                    return false;
+                    return true;
                 }
             }
-            return true;
+            return false;
         }
 
         /// <summary>

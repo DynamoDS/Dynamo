@@ -1572,7 +1572,7 @@ namespace ProtoScript.Runners
 
 #if DEBUG
             // Check the integrity of the heap memory layout
-            if (!ProtoCore.Utils.HeapUtils.VerifyHeapNonCyclic(runnerCore))
+            if (ProtoCore.Utils.HeapUtils.IsHeapCyclic(runnerCore))
             {
                 throw new ProtoCore.Exceptions.HeapCorruptionException("Heap contains cyclic pointers.");
             }
