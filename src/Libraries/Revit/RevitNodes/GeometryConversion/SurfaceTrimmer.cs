@@ -20,6 +20,7 @@ namespace Revit.GeometryConversion
             foreach (var pc in loops)
             {
                 var subSurfaces = cutSurface.Split(pc).Cast<Surface>();
+                //var subSurfaces2 = cutSurface.Trim(pc, surface.PointAtParameter());
 
                 foreach (var srf in subSurfaces)
                 {

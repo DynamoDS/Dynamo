@@ -3,10 +3,14 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
+using Autodesk.Revit.DB;
+using Arc = Autodesk.DesignScript.Geometry.Arc;
+using Plane = Autodesk.DesignScript.Geometry.Plane;
 
 namespace Revit.GeometryConversion
 {
@@ -15,76 +19,89 @@ namespace Revit.GeometryConversion
     {
 
         /// <summary>
-        /// An extension method to convert a Revit Curve to a ProtoGeometry Curve
+        /// An extension method to convert a Revit Curve to a ProtoGeometry Curve.  Note that Bound Revit curves will be returned in trimmed form.
         /// </summary>
-        /// <param name="crv"></param>
+        /// <param name="revitCurve"></param>
         /// <returns></returns>
-        public static Autodesk.DesignScript.Geometry.Curve ToProtoType(this Autodesk.Revit.DB.Curve crv)
+        public static Autodesk.DesignScript.Geometry.Curve ToProtoType(this Autodesk.Revit.DB.Curve revitCurve)
         {
-            dynamic dyCrv = crv;
-            Autodesk.DesignScript.Geometry.Curve unboundCurve = RevitToProtoCurve.Convert(dyCrv);
+            if (revitCurve == null) throw new ArgumentNullException("revitCurve");
 
-            if (crv.IsBound)
-            {
-                var s = crv.ComputeNormalizedParameter(crv.get_EndParameter(0));
-                var e = crv.ComputeNormalizedParameter(crv.get_EndParameter(1));
-                var boundCurve = unboundCurve.ParameterTrim(s, e);
-
-                if (crv.GetEndPoint(0).ToPoint().DistanceTo(boundCurve.StartPoint) > 1e-6 ||
-                    crv.GetEndPoint(1).ToPoint().DistanceTo(boundCurve.EndPoint) > 1e-6)
-                {
-                    throw new Exception("Bounding of curves failed");
-                }
-
-                return boundCurve;
-            }
-
-            return unboundCurve;
+            dynamic dyCrv = revitCurve;
+            return RevitToProtoCurve.Convert(dyCrv);
         }
 
-        public static PolyCurve ToProtoTypes(this Autodesk.Revit.DB.CurveArray crvs)
+        public static PolyCurve ToProtoTypes(this Autodesk.Revit.DB.CurveArray revitCurves)
         {
-            var protoCurves = crvs.Cast<Autodesk.Revit.DB.Curve>().Select(x => x.ToProtoType());
+            if (revitCurves == null) throw new ArgumentNullException("revitCurves");
+
+            var protoCurves = revitCurves.Cast<Autodesk.Revit.DB.Curve>().Select(x => x.ToProtoType());
             return PolyCurve.ByJoinedCurves(protoCurves.ToArray());
         }
 
-        /// <summary>
-        /// Convert a Revit NurbSpline to a ProtoGeometry curve
-        /// </summary>
-        /// <param name="crv"></param>
-        /// <returns></returns>
-        private static Autodesk.DesignScript.Geometry.NurbsCurve Convert(Autodesk.Revit.DB.NurbSpline crv)
+        private static Autodesk.DesignScript.Geometry.Curve Convert(Autodesk.Revit.DB.NurbSpline crv)
         {
-            return NurbsCurve.ByControlPointsWeightsKnots(crv.CtrlPoints.Select(x => x.ToPoint()).ToArray(), crv.Weights.Cast<double>().ToArray(), crv.Knots.Cast<double>().ToArray(), crv.Degree );
+            var convert = NurbsCurve.ByControlPointsWeightsKnots(crv.CtrlPoints.Select(x => x.ToPoint()).ToArray(), 
+                crv.Weights.Cast<double>().ToArray(), crv.Knots.Cast<double>().ToArray(), crv.Degree );
+
+            if (!crv.IsBound) return convert;
+
+            // bound the curve parametric range
+            
+            // we first get the full parametric domain from the knots
+            // note that some knots be negative and the domain may appear reversed
+            var parms = crv.Knots.Cast<double>().ToList();
+            var fsp = parms.First();
+            var fep = parms.Last();
+
+            // obtain the full domain
+            var fd = Math.Abs(fsp - fep);
+
+            // these are the start and end parameters of the bound curve
+            var sp = crv.get_EndParameter(0);
+            var ep = crv.get_EndParameter(1);
+
+            // get the normalized parameters for trim
+            var nsp = Math.Abs(fsp - sp) / fd;
+            var nep = Math.Abs(fsp - ep) / fd;
+
+            return convert.ParameterTrim(nsp, nep);
         }
 
-        /// <summary>
-        /// Convert a Revit HermiteSpline to a ProtoGeometry BSplineCurve
-        /// </summary>
-        /// <param name="crv"></param>
-        /// <returns></returns>
-        private static Autodesk.DesignScript.Geometry.NurbsCurve Convert(Autodesk.Revit.DB.HermiteSpline crv)
+        private static Autodesk.DesignScript.Geometry.Curve Convert(Autodesk.Revit.DB.HermiteSpline crv)
         {
-            return NurbsCurve.ByPointsTangents(crv.ControlPoints.Select(x => x.ToPoint()).ToArray(),
-                crv.Tangents.First().ToVector().Normalized(), crv.Tangents.Last().ToVector().Normalized());
+            var convert = HermiteToNurbs.ConvertExact(crv);
+
+            if (!crv.IsBound) return convert;
+
+            // bound the curve parametric range
+
+            // we first get the full parametric domain from the parameters
+            // note that some knots be negative and the domain may appear reversed
+            var parms = crv.Parameters.Cast<double>().ToList();
+            var fsp = parms.First();
+            var fep = parms.Last();
+
+            // obtain the full domain
+            var fd = Math.Abs(fsp - fep);
+
+            // these are the start and end parameters of the bound curve
+            var sp = crv.get_EndParameter(0);
+            var ep = crv.get_EndParameter(1);
+
+            // get the normalized parameters for trim
+            var nsp = Math.Abs(fsp - sp)/fd;
+            var nep = Math.Abs(fsp - ep)/fd;
+
+            return convert.ParameterTrim(nsp, nep);
         }
 
-        /// <summary>
-        /// Convert a Revit Line to a ProtoGeometry Line
-        /// </summary>
-        /// <param name="crv"></param>
-        /// <returns></returns>
         private static Autodesk.DesignScript.Geometry.Line Convert(Autodesk.Revit.DB.Line crv)
         {
             return Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(
                  crv.GetEndPoint(0).ToPoint(), crv.GetEndPoint(1).ToPoint());
         }
 
-        /// <summary>
-        /// Convert a Revit Arc to a ProtoGeometry Arc
-        /// </summary>
-        /// <param name="crv"></param>
-        /// <returns></returns>
         private static Autodesk.DesignScript.Geometry.Curve Convert(Autodesk.Revit.DB.Arc crv)
         {
             var isCircle = !crv.IsBound ||
@@ -99,11 +116,6 @@ namespace Revit.GeometryConversion
                 (crv.GetEndParameter(1) - crv.GetEndParameter(0))*180/Math.PI, crv.Normal.ToVector());
         }
 
-        /// <summary>
-        /// Convert a Revit PolyLine to a degree 1 ProtoGeometry BSplineCurve
-        /// </summary>
-        /// <param name="crv"></param>
-        /// <returns></returns>
         private static Autodesk.DesignScript.Geometry.NurbsCurve Convert(Autodesk.Revit.DB.PolyLine crv)
         {
             return
@@ -111,11 +123,6 @@ namespace Revit.GeometryConversion
                     crv.GetCoordinates().Select(x => x.ToPoint()).ToArray(), 1);
         }
 
-        /// <summary>
-        /// Convert a Revit Ellipse to a ProtoGeometry Ellipse or EllipseArc
-        /// </summary>
-        /// <param name="crv"></param>
-        /// <returns></returns>
         private static Autodesk.DesignScript.Geometry.Curve Convert(Autodesk.Revit.DB.Ellipse crv)
         {
             var isComplete = !crv.IsBound ||
@@ -136,11 +143,6 @@ namespace Revit.GeometryConversion
                 (crv.XDirection*crv.RadiusX).ToVector(), (crv.YDirection*crv.RadiusY).ToVector());
         }
 
-        /// <summary>
-        /// Convert a Revit CylindricalHelix to a ProtoGeometry Helix
-        /// </summary>
-        /// <param name="crv"></param>
-        /// <returns></returns>
         private static Autodesk.DesignScript.Geometry.Helix Convert(Autodesk.Revit.DB.CylindricalHelix crv)
         {
             if (crv.IsRightHanded)
@@ -149,12 +151,10 @@ namespace Revit.GeometryConversion
                 return Autodesk.DesignScript.Geometry.Helix.ByAxis(crv.BasePoint.ToPoint(), (-1.0 * crv.ZVector).ToVector(),
                     crv.GetEndPoint(0).ToPoint(), -crv.Pitch, (crv.Height / crv.Pitch) * 360.0);
             }
-            else
-            {
-                // clockwise is default
-                return Autodesk.DesignScript.Geometry.Helix.ByAxis(crv.BasePoint.ToPoint(), crv.ZVector.ToVector(),
-                    crv.GetEndPoint(0).ToPoint(), crv.Pitch, (crv.Height/crv.Pitch)*360.0);
-            }
+
+            // clockwise is default
+            return Autodesk.DesignScript.Geometry.Helix.ByAxis(crv.BasePoint.ToPoint(), crv.ZVector.ToVector(),
+                crv.GetEndPoint(0).ToPoint(), crv.Pitch, (crv.Height/crv.Pitch)*360.0);
         }
     }
 }
