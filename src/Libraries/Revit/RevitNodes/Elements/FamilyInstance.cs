@@ -157,8 +157,10 @@ namespace Revit.Elements
         {
             get
             {
+                TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
                 DocumentManager.Regenerate();
                 var pos = InternalFamilyInstance.Location as LocationPoint;
+                TransactionManager.Instance.TransactionTaskDone();
                 return Point.ByCoordinates(pos.Point.X, pos.Point.Y, pos.Point.Z);
             }
         }

@@ -70,6 +70,7 @@ namespace Revit.GeometryConversion
 
         private static Autodesk.DesignScript.Geometry.Curve Convert(Autodesk.Revit.DB.HermiteSpline crv)
         {
+
             var convert = HermiteToNurbs.ConvertExact(crv);
 
             if (!crv.IsBound) return convert;
@@ -94,6 +95,7 @@ namespace Revit.GeometryConversion
             var nep = Math.Abs(fsp - ep)/fd;
 
             return convert.ParameterTrim(nsp, nep);
+
         }
 
         private static Autodesk.DesignScript.Geometry.Line Convert(Autodesk.Revit.DB.Line crv)

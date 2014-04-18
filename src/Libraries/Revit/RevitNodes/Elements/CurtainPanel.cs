@@ -78,10 +78,14 @@ namespace Revit.Elements
          }
       }
 
+      private PolyCurve[] boundsCache = null;
+
       public PolyCurve[] Boundaries
       {
          get
          {
+            if (boundsCache != null)
+               return boundsCache;
             var enumCurveLoops = PanelBoundaries.GetEnumerator();
             var bounds = new List<PolyCurve>();
 
@@ -95,9 +99,27 @@ namespace Revit.Elements
                   var crv = (Autodesk.Revit.DB.Curve) enumCurves.Current;
                   crvs.Append(crv);
                }
-               bounds.Add(Revit.GeometryConversion.RevitToProtoCurve.ToProtoTypes(crvs));
+               //try
+               //{
+                  bounds.Add(Revit.GeometryConversion.RevitToProtoCurve.ToProtoTypes(crvs));
+               //}
+               /* debugging code
+               catch (Exception e)
+               {
+                  var cl = new CurveLoop();
+                  var enumCurvesCl = crvArr.GetEnumerator();
+                  for (; enumCurvesCl.MoveNext(); )
+                  {
+                     var crv = (Autodesk.Revit.DB.Curve)enumCurvesCl.Current;
+                     cl.Append(crv);
+                  }
+                  double len = cl.GetExactLength();
+                  len = len/1.0;
+               }
+               end of debugging code */
             }
-            return bounds.ToArray();
+            boundsCache = bounds.ToArray();
+            return boundsCache;
          }
       }
 
@@ -291,6 +313,7 @@ namespace Revit.Elements
       protected CurtainPanel(Autodesk.Revit.DB.Panel panelElement)
       {
          InternalSetFamilyInstance(panelElement);
+         boundsCache = null;
       }
 
       #endregion
@@ -302,7 +325,7 @@ namespace Revit.Elements
       /// </summary>
       /// <param name="panelElement"></param>
 
-      public static CurtainPanel ByElement(CurtainPanel panelElement)
+      internal static CurtainPanel ByElement(CurtainPanel panelElement)
       {
          var elementAsPanel = panelElement.InternalElement as Autodesk.Revit.DB.Panel;
          if (elementAsPanel == null)
@@ -347,7 +370,7 @@ namespace Revit.Elements
          {
             throw new ArgumentNullException("panel");
          }
-
+         
          return new CurtainPanel(panel)
          {
             IsRevitOwned = true //making panels in Dynamo is not implemented

@@ -108,7 +108,9 @@ namespace Revit.Elements
         {
             get
             {
+                TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
                 DocumentManager.Regenerate();
+                TransactionManager.Instance.TransactionTaskDone();
                 return this.InternalGrid.Curve.ToProtoType();
             }
         }
