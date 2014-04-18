@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Dynamo.Controls;
-using Dynamo.FSchemeInterop;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Microsoft.FSharp.Collections;
-using Value = Dynamo.FScheme.Value;
 using ProtoCore.AST.AssociativeAST;
-using System.ComponentModel;
-using Dynamo.Utilities;
 using ProtoCore.Mirror;
 
 namespace Dynamo.Nodes
@@ -86,9 +79,26 @@ namespace Dynamo.Nodes
             {
                 p.PortDisconnected += p_PortDisconnected;
             }
-#if USE_DSENGINE
-            this.PropertyChanged += new PropertyChangedEventHandler(NodeValueUpdated);
-#endif
+
+            dynSettings.Controller.EvaluationCompleted += Controller_EvaluationCompleted;
+        }
+
+        void Controller_EvaluationCompleted(object sender, EventArgs e)
+        {
+            DispatchOnUIThread(
+                delegate
+                {
+                    //unhook the binding
+                    OnRequestBindingUnhook(EventArgs.Empty);
+
+                    Root.Children.Clear();
+
+                    Root.Children.Add(GetWatchNode());
+
+                    //rehook the binding
+                    OnRequestBindingRehook(EventArgs.Empty);
+                }
+            );
         }
 
         /// <summary>
@@ -159,33 +169,6 @@ namespace Dynamo.Nodes
             return resultAst;
         }
 
-#if USE_DSENGINE
-
-        #region NodeValueUpdated event handler
-
-        void NodeValueUpdated(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName != "IsUpdated")
-                return;
-
-            DispatchOnUIThread(
-                delegate
-                {
-                    //unhook the binding
-                    OnRequestBindingUnhook(EventArgs.Empty);
-
-                    Root.Children.Clear();
-
-                    Root.Children.Add(GetWatchNode());
-
-                    //rehook the binding
-                    OnRequestBindingRehook(EventArgs.Empty);
-                }
-            );
-        }
-
-        #endregion
-
         #region Watch Node creation for AST node
 
         /// <summary>
@@ -226,6 +209,5 @@ namespace Dynamo.Nodes
         }
 
         #endregion
-#endif
     }
 }
