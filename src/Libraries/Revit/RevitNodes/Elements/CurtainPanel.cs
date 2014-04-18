@@ -325,7 +325,7 @@ namespace Revit.Elements
       /// </summary>
       /// <param name="panelElement"></param>
 
-      public static CurtainPanel ByElement(CurtainPanel panelElement)
+      internal static CurtainPanel ByElement(CurtainPanel panelElement)
       {
          var elementAsPanel = panelElement.InternalElement as Autodesk.Revit.DB.Panel;
          if (elementAsPanel == null)

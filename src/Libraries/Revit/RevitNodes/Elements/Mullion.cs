@@ -51,7 +51,7 @@ namespace Revit.Elements
       /// </summary>
       /// <param name="mullionElement"></param>
 
-      public static Mullion ByElement(Mullion mullionElement)
+      internal static Mullion ByElement(Mullion mullionElement)
       {
          var elementAsMullion = mullionElement.InternalElement as Autodesk.Revit.DB.Mullion;
          if (elementAsMullion == null)
