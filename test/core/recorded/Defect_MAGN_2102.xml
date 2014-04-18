@@ -1,0 +1,16 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <OpenFileCommand XmlFilePath="C:\Users\t_chane\Documents\GitHub\Dynamo\test\core\recorded\Defect_MAGN_2102.dyn" />
+  <PausePlaybackCommand Tag="Start" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="37da4958-1b88-408b-b09d-3deba0ba3835" Modifiers="0" />
+  <DeleteModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" />
+  <PausePlaybackCommand Tag="Delete1" PauseDurationInMs="20" />
+  <UndoRedoCommand CmdOperation="0" />
+  <PausePlaybackCommand Tag="UndoDelete1" PauseDurationInMs="20" />
+  <UndoRedoCommand CmdOperation="1" />
+  <PausePlaybackCommand Tag="RedoDelete1" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="b12ce9c8-8c23-43c4-987d-759c6f623998" Modifiers="0" />
+  <DeleteModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" />
+  <PausePlaybackCommand Tag="Delete2" PauseDurationInMs="20" />
+  <UndoRedoCommand CmdOperation="0" />
+  <PausePlaybackCommand Tag="UndoDelete2" PauseDurationInMs="20" />
+</Commands>

@@ -22,18 +22,29 @@ namespace Revit.GeometryConversion
         public static Autodesk.DesignScript.Geometry.Curve ToProtoType(this Autodesk.Revit.DB.Curve crv)
         {
             dynamic dyCrv = crv;
-            return RevitToProtoCurve.Convert(dyCrv);
+            Autodesk.DesignScript.Geometry.Curve unboundCurve = RevitToProtoCurve.Convert(dyCrv);
+
+            if (crv.IsBound)
+            {
+                var s = crv.ComputeNormalizedParameter(crv.get_EndParameter(0));
+                var e = crv.ComputeNormalizedParameter(crv.get_EndParameter(1));
+                var boundCurve = unboundCurve.ParameterTrim(s, e);
+
+                if (crv.GetEndPoint(0).ToPoint().DistanceTo(boundCurve.StartPoint) > 1e-6 ||
+                    crv.GetEndPoint(1).ToPoint().DistanceTo(boundCurve.EndPoint) > 1e-6)
+                {
+                    throw new Exception("Bounding of curves failed");
+                }
+
+                return boundCurve;
+            }
+
+            return unboundCurve;
         }
 
         public static PolyCurve ToProtoTypes(this Autodesk.Revit.DB.CurveArray crvs)
         {
-            var protoCurves = new List<Curve>();
-            foreach (var crv in crvs)
-            {
-                dynamic dyCrv = crv;
-                protoCurves.Add(RevitToProtoCurve.Convert(dyCrv));
-            }
-
+            var protoCurves = crvs.Cast<Autodesk.Revit.DB.Curve>().Select(x => x.ToProtoType());
             return PolyCurve.ByJoinedCurves(protoCurves.ToArray());
         }
 
@@ -54,8 +65,58 @@ namespace Revit.GeometryConversion
         /// <returns></returns>
         private static Autodesk.DesignScript.Geometry.NurbsCurve Convert(Autodesk.Revit.DB.HermiteSpline crv)
         {
-            return NurbsCurve.ByPointsTangents(crv.ControlPoints.Select(x => x.ToPoint()).ToArray(),
+           var pointList = crv.ControlPoints; 
+           var paramList = crv.Parameters;
+           bool trim = false;
+           bool inserted = false;
+           if (Math.Abs(crv.get_EndParameter(0) - paramList.get_Item(0)) > 1.0e-9 ||
+               Math.Abs(crv.get_EndParameter(1) - paramList.get_Item(paramList.Size - 1)) > 1.0e-9)
+           {
+              trim = true;
+              for (int ii = 0; ii < pointList.Count - 1; ii++)
+              {
+                 if (crv.get_EndParameter(0) > paramList.get_Item(ii) + 1.0e-9 &&
+                     crv.get_EndParameter(0) < paramList.get_Item(ii + 1) - 1.0e-9)
+                 {
+                    pointList.Insert(ii + 1, crv.get_EndPoint(0));
+                    ii += 1;
+                    inserted = true;
+                 }
+                 int indexParam = inserted ? (ii - 1) : ii;
+                 if (crv.get_EndParameter(1) > paramList.get_Item(indexParam) + 1.0e-9 &&
+                     crv.get_EndParameter(1) < paramList.get_Item(indexParam + 1) - 1.0e-9)
+                 {
+                    pointList.Insert(ii + 1, crv.get_EndPoint(1));
+                    break;
+                 }
+                 if (crv.get_EndParameter(1) < paramList.get_Item(indexParam + 1) + 1.0e-9)
+                    break;
+              }
+           }
+
+           var nurb = NurbsCurve.ByPointsTangents(pointList.Select(x => x.ToPoint()).ToArray(),
                 crv.Tangents.First().ToVector().Normalized(), crv.Tangents.Last().ToVector().Normalized());
+           double sPar = nurb.ParameterAtPoint(crv.get_EndPoint(0).ToPoint());
+           double ePar = nurb.ParameterAtPoint(crv.get_EndPoint(1).ToPoint());
+
+           if (trim)
+           {
+              var trimNurb =  nurb.ParameterTrim(sPar, ePar).ToNurbsCurve();
+              /* debugging code
+              int trouble = 0;
+              var end0 = crv.get_EndPoint(0).ToPoint();
+              if (end0.DistanceTo(trimNurb.StartPoint) > 1.0e-9)
+                 trouble += 1;
+              var end1 = crv.get_EndPoint(1).ToPoint();
+              if (end1.DistanceTo(trimNurb.EndPoint) > 1.0e-9)
+                 trouble += 2;
+              if (trouble > 0)
+                 trouble = trouble/1;
+              end of debugging code */
+              return trimNurb;
+
+           }
+           return nurb;
         }
 
         /// <summary>

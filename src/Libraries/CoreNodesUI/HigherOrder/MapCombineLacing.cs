@@ -75,7 +75,7 @@ namespace DSCore
         }
     }
 
-    [IsVisibleInDynamoLibrary(false)]
+    //[IsVisibleInDynamoLibrary(false)]
     [NodeName("Combine")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each element in two sequences")]
