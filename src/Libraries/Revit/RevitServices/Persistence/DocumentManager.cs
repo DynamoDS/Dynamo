@@ -158,17 +158,9 @@ namespace RevitServices.Persistence
         /// </summary>
         public static void Regenerate()
         {
-
             if (TransactionManager.Instance.DoAssertInIdleThread)
             {
-
-                IdlePromise.ExecuteOnIdleSync(() =>
-                 {
-                     TransactionManager.Instance.EnsureInTransaction(
-                                  DocumentManager.Instance.CurrentDBDocument);
-                     Instance.CurrentDBDocument.Regenerate();
-                 }
-                    );
+                IdlePromise.ExecuteOnIdleSync(Instance.CurrentDBDocument.Regenerate);
             }
             else
             {

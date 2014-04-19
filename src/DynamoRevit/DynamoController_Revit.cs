@@ -450,6 +450,7 @@ namespace Dynamo
 
         protected override void OnEvaluationCompleted(object sender, EventArgs e)
         {
+            base.OnEvaluationCompleted(sender, e);
 
             //Cleanup Delegate
             Action cleanup = delegate
@@ -527,10 +528,6 @@ namespace Dynamo
             rename();
             TransactionManager.Instance.ForceCloseTransaction();
             //}
-
-
-            base.OnEvaluationCompleted(sender, e);
-
         }
 
         public override void ShutDown(bool shutDownHost)
