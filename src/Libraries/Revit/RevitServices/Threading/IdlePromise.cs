@@ -121,12 +121,6 @@ namespace RevitServices.Threading
                     try
                     {
                         p();
-
-                    }
-                    catch (Exception)
-                    {
-
-                        throw;
                     }
                     finally
                     {
