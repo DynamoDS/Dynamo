@@ -148,6 +148,8 @@ namespace Dynamo.Applications
 
                 //TODO: has to be changed when we handle multiple docs
                 Updater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication);
+                Updater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
+                Updater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
 
                 RevThread.IdlePromise.ExecuteOnIdleAsync(
                     delegate
