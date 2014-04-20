@@ -450,6 +450,9 @@ namespace Revit.Elements
         /// <param name="tol"></param>
         void IGraphicItem.Tessellate(IRenderPackage package, double tol, int gridLines)
         {
+            if (!IsAlive)
+                return;
+
             package.PushPointVertex(this.X, this.Y, this.Z);
         }
 

@@ -36,9 +36,18 @@ namespace ProtoCore.Mirror
             {
                 foreach (var item in collection)
                 {
-                    List<IGraphicItem> graphics = GetGraphicItemsFromObject(item);
-                    if (null != graphics)
-                        items.AddRange(graphics);
+                    try
+                    {
+
+
+                        List<IGraphicItem> graphics = GetGraphicItemsFromObject(item);
+                        if (null != graphics)
+                            items.AddRange(graphics);
+                    }
+                    catch (Exception e)
+                    {
+                        System.Diagnostics.Debug.WriteLine("GetGraphicItems: " + e);
+                    }
                 }
                 return items;
             }
