@@ -368,6 +368,19 @@ namespace Revit.Elements
 
         #region Internal Geometry Helpers
 
+        /// <summary>
+        /// Is this element still alive in Revit, and good to be drawn, queried etc.
+        /// </summary>
+        protected bool IsAlive
+        {
+            get
+            {
+                //Ensure that the object is still alive
+                return !ElementIDLifecycleManager<int>.GetInstance().IsRevitDeleted(this.InternalElementId.IntegerValue);
+            }
+        }
+
+
         protected IEnumerable<Autodesk.Revit.DB.Curve> GetCurves(Autodesk.Revit.DB.Options options)
         {
             var geomElem = this.InternalElement.get_Geometry(options);
