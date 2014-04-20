@@ -4,6 +4,7 @@ using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using Revit.GeometryConversion;
 using Revit.References;
+using RevitServices.Persistence;
 
 namespace Revit.Elements
 {
@@ -116,6 +117,9 @@ namespace Revit.Elements
 
         public void Tessellate(IRenderPackage package, double tol, int gridLines)
         {
+            //Ensure that the object is still alive
+            if (!IsAlive) return;
+
             this.Curve.Tessellate(package, tol);
         }
     }
