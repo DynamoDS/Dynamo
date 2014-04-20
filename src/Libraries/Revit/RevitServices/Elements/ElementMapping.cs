@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
+using RevitServices.Persistence;
 
 namespace RevitServices.Elements
 {
@@ -88,6 +89,7 @@ namespace RevitServices.Elements
             foreach (ElementId id in deleted)
             {
                 Delete(document, id);
+                ElementIDLifecycleManager<int>.GetInstance().NotifyOfRevitDeletion(id.IntegerValue);
             }
             
         }

@@ -143,11 +143,15 @@ namespace Revit.Elements
             if (DisposeLogic.IsShuttingDown)
                 return;
 
+            bool didRevitDelete = ElementIDLifecycleManager<int>.GetInstance().IsRevitDeleted(this.Id);
+
+
+
             var elementManager = ElementIDLifecycleManager<int>.GetInstance();
             int remainingBindings = elementManager.UnRegisterAssociation(this.Id, this);
 
             // Do not delete Revit owned elements
-            if (!IsRevitOwned && remainingBindings == 0)
+            if (!IsRevitOwned && remainingBindings == 0 && !didRevitDelete)
             {
                 DocumentManager.Instance.DeleteElement(this.InternalElementId);
             }
