@@ -1593,8 +1593,16 @@ namespace Dynamo.Models
 
         private void PushGraphicItemIntoPackage(IGraphicItem graphicItem, IRenderPackage package, string tag, double size)
         {
-            graphicItem.Tessellate(package, -1.0, dynSettings.Controller.VisualizationManager.MaxGridLines);
-            package.Tag = tag;
+            try
+            {
+
+                graphicItem.Tessellate(package, -1.0, dynSettings.Controller.VisualizationManager.MaxGridLines);
+                package.Tag = tag;
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("PushGraphicItemIntoPackage: " + e);
+            }
         }
 
         /// <summary>
