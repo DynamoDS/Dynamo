@@ -37,7 +37,7 @@ namespace Dynamo.Nodes
 
         private struct Formatting
         {
-            public const int InitialMargin = 4;
+            public const int InitialMargin = 5;
             public const int VerticalMargin = 20;
             public const string ToolTipForTempVariable = "Statement Output";
         }
