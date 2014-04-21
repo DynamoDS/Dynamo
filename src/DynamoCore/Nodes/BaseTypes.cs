@@ -1149,34 +1149,11 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement composeNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(composeNode, "",
-                "Compose", "__Compose@_FunctionObject[]");
+            XmlElement composeNode = MigrationManager.CloneAndChangeName(oldNode, 
+                "DSCoreNodesUI.HigherOrder.ComposeFunctions","Compose Function");
+            composeNode.SetAttribute("inputcount", "2");
             migratedData.AppendNode(composeNode);
-            string composeNodeId = MigrationManager.GetGuidFromXmlElement(composeNode);
-
-            XmlElement createListNode = MigrationManager.CreateNode(data.Document,
-                oldNode, 0, "DSCoreNodesUI.CreateList", "Create List");
-            migratedData.AppendNode(createListNode);
-            createListNode.SetAttribute("inputcount", "2");
-            string createListNodeId = MigrationManager.GetGuidFromXmlElement(createListNode);
-
-            //create and reconnect the connecters
-            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
-            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
-
-            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
-            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
-
-            PortId newInPort0 = new PortId(composeNodeId, 0, PortType.INPUT);
-            PortId newInPort1 = new PortId(createListNodeId, 0, PortType.INPUT);
-            PortId newInPort2 = new PortId(createListNodeId, 1, PortType.INPUT);
-
-            data.ReconnectToPort(connector0, newInPort1);
-            data.ReconnectToPort(connector1, newInPort2);
-            data.CreateConnector(createListNode, 0, composeNode, 0);
 
             return migratedData;
         }
