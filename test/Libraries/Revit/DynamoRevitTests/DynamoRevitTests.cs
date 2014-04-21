@@ -8,6 +8,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using RevitServices.Persistence;
+using RevitServices.Transactions;
 using ModelCurve = Autodesk.Revit.DB.ModelCurve;
 using Plane = Autodesk.Revit.DB.Plane;
 using SketchPlane = Autodesk.Revit.DB.SketchPlane;
@@ -64,6 +65,12 @@ namespace Dynamo.Tests
                 _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
                 _emptyModelPath1 = Path.Combine(_testPath, "empty1.rfa");
             }
+
+            //create the transaction manager object
+            TransactionManager.SetupManager(new AutomaticTransactionStrategy());
+
+            //tests do not run from idle thread
+            TransactionManager.Instance.DoAssertInIdleThread = false;
         }
 
         private void StartDynamo()
