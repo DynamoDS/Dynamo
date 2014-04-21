@@ -238,7 +238,7 @@ namespace Dynamo.Views
                     CanEditName = false
                 };
 
-            dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(this, args);
+            dynSettings.Controller.DynamoViewModel.OnRequestsFunctionNamePrompt(this, args);
 
             if (args.Success)
             {

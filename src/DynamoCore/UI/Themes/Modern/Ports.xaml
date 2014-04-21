@@ -44,7 +44,7 @@
             </interactivity:Interaction.Triggers>
 
             <Grid.ContextMenu>
-                <ContextMenu>
+                <ContextMenu Visibility="{Binding Path=DefaultValueEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <MenuItem Header="Use Default Value"
                               IsCheckable="True"
                               IsEnabled="{Binding Path=DefaultValueEnabled, Mode=TwoWay}"

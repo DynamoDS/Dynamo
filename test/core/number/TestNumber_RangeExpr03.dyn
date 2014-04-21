@@ -1,0 +1,13 @@
+<Workspace Version="0.7.0.30484" X="65" Y="2" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="ce2edddc-cfc2-40d3-a6b4-32aeb80fe8a2" nickname="Number" x="39" y="43.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="5..1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="d358da0e-9cfa-4562-b110-726133cc1be4" nickname="Watch" x="192" y="43.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="580f2bef-9ecb-45ae-b2cb-2701a125f546" nickname="Code Block" x="355" y="41" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="5..1;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ce2edddc-cfc2-40d3-a6b4-32aeb80fe8a2" start_index="0" end="d358da0e-9cfa-4562-b110-726133cc1be4" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

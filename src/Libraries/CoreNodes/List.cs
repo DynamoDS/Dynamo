@@ -323,11 +323,7 @@ namespace DSCore
         /// </param>
         /// <returns name="items">Items in the slice of the given list.</returns>
         /// <search>list,sub,sublist,slice</search>
-        public static IList Slice(
-            IList list,
-            int? start = null,
-            int? count = null,
-            int step = 1)
+        public static IList Slice(IList list, int? start = null, int? count = null, int step = 1)
         {
             #region Disabled python-like slicing capability
 
@@ -377,7 +373,7 @@ namespace DSCore
             int _start = start ?? 0;
             int end = count == null ? list.Count : (int)Math.Min(list.Count, _start + ((int)count)*step);
 
-            for (int i = start ?? 0; i < end; i += step)
+            for (int i = _start; i < end; i += step)
                 result.Add(list[i]);
 
             return result;

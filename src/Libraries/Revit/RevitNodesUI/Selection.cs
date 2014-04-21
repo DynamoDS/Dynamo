@@ -289,13 +289,13 @@ namespace Dynamo.Nodes
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             // When there's no selection, this returns an invalid ID.
-            var selectedElementId = SelectedElement ?? ElementId.InvalidElementId;
+            var selectedElementId = selectedUniqueId ?? "";
 
             var node = AstFactory.BuildFunctionCall(
                 new Func<string, bool, Element>(ElementSelector.ByUniqueId),
                 new List<AssociativeNode>
                 {
-                    AstFactory.BuildStringNode(selectedElementId.ToString()),
+                    AstFactory.BuildStringNode(selectedElementId),
                     AstFactory.BuildBooleanNode(true)
                 });
 
@@ -319,7 +319,11 @@ namespace Dynamo.Nodes
                       where subNode.Attributes != null
                       select subNode.Attributes[0].Value).Last();
 
-            SelectedElement = DocumentManager.Instance.CurrentDBDocument.GetElement(id).Id;
+            if (DocumentManager.Instance.ElementExistsInDocument(new ElementUUID(id)))
+            {
+                SelectedElement = DocumentManager.Instance.CurrentDBDocument.GetElement(id).Id;                
+            }
+
         }
     }
 

@@ -256,6 +256,34 @@ namespace DynamoCoreUITests
             Assert.AreEqual(cmdOne.Value, cmdTwo.Value);
         }
 
+        [Test, RequiresSTA]
+        public void TestCreateCustomNodeCommand()
+        {
+            Guid modelGuid = Guid.NewGuid();
+            string name = randomizer.Next().ToString();
+            string category = randomizer.Next().ToString();
+            string description = randomizer.Next().ToString();
+            bool makeCurrent = randomizer.Next(2) == 0;
+
+            var cmdOne = new DynamoViewModel.CreateCustomNodeCommand(
+                modelGuid, name, category, description, makeCurrent);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+
+            Assert.AreEqual(cmdOne.NodeId, cmdTwo.NodeId);
+            Assert.AreEqual(cmdOne.Name, cmdTwo.Name);
+            Assert.AreEqual(cmdOne.Category, cmdTwo.Category);
+            Assert.AreEqual(cmdOne.Description, cmdTwo.Description);
+            Assert.AreEqual(cmdOne.MakeCurrent, cmdTwo.MakeCurrent);
+        }
+
+        [Test, RequiresSTA]
+        public void TestSwitchTabCommand()
+        {
+            var cmdOne = new DynamoViewModel.SwitchTabCommand(randomizer.Next());
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+            Assert.AreEqual(cmdOne.TabIndex, cmdTwo.TabIndex);
+        }
+
         #endregion
 
         #region General Node Operations Test Cases
@@ -321,19 +349,29 @@ namespace DynamoCoreUITests
             Assert.AreEqual("# Modification 3", python.Script);
             Assert.AreEqual("# Modification 4", pvarin.Script);
         }
+
         [Test, Category("Failing")]
-        public void CustomNodeCreate()
+        public void CreateAndUseCustomNode()
         {
-            RunCommandsFromFile("CustomNodeCreate.xml");
-            Assert.AreEqual(0, workspace.Connectors.Count);
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            RunCommandsFromFile("CreateAndUseCustomNode.xml");
+            var workspaces = this.Controller.DynamoModel.Workspaces;
+            Assert.IsNotNull(workspaces);
+            Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
 
+            // 1 custom node + 3 number nodes + 1 watch node
+            Assert.AreEqual(4, workspace.Connectors.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count);
 
-            AssertPreviewValue("99a7b5ef-268f-44c2-94ce-84cf43054bb8", 1);
-            AssertPreviewValue("26e3e31a-c9d5-4b3b-b409-005b3595e5df", 1);
+            var customWorkspace = workspaces[1];
+            Assert.IsNotNull(customWorkspace);
 
-            
+            // 3 inputs + 1 output + 1 addition + 1 multiplication
+            Assert.AreEqual(5, customWorkspace.Connectors.Count);
+            Assert.AreEqual(6, customWorkspace.Nodes.Count);
+
+            AssertPreviewValue("345cd2d4-5f3b-4eb0-9d5f-5dd90c5a7493", 36.0);
         }
+
         #endregion
 
         #region Private Helper Methods
@@ -341,7 +379,7 @@ namespace DynamoCoreUITests
         protected ModelBase GetNode(string guid)
         {
             Guid id = Guid.Parse(guid);
-            return workspace.GetModelInternal(id);
+            return Controller.DynamoModel.CurrentWorkspace.GetModelInternal(id);
         }
 
         protected void RunCommandsFromFile(string commandFileName,
@@ -2038,6 +2076,49 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        public void Defect_MAGN_2102()
+        {
+            // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2102
+            
+            RunCommandsFromFile("Defect_MAGN_2102.xml", false, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "Start")
+                {
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+
+                    var node1 = GetNode("37da4958-1b88-408b-b09d-3deba0ba3835");
+                    var node2 = GetNode("b12ce9c8-8c23-43c4-987d-759c6f623998");
+
+                    Assert.NotNull(node1 as DSCoreNodesUI.DummyNode);
+                    Assert.NotNull(node2 as DSCoreNodesUI.DummyNode);
+                }
+                else if (commandTag == "Delete1")
+                {
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                }
+                else if (commandTag == "UndoDelete1")
+                {
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                }
+                else if (commandTag == "RedoDelete1")
+                {
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                }
+                else if (commandTag == "Delete2")
+                {
+                    Assert.AreEqual(0, workspace.Nodes.Count);
+                }
+                else if (commandTag == "UndoDelete2")
+                {
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                }
+            });
+        }
+
+        [Test, RequiresSTA]
         public void Defect_MAGN_2272()
         {
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2272
@@ -2240,7 +2321,7 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void Defect_MAGN_2563()
         {
-            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-23563
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2563
 
             RunCommandsFromFile("Defect_MAGN_2563.xml", true);
 

@@ -4,20 +4,31 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:revitTestFrameworkRunner="clr-namespace:RevitTestFrameworkRunner"
-             xmlns:revitAddIns="clr-namespace:Autodesk.RevitAddIns;assembly=RevitAddInUtility"
-             mc:Ignorable="d" MinWidth="400" MinHeight="600" Width="700" Closing="View_Closing">
+        mc:Ignorable="d" MinWidth="400" MinHeight="600" Width="700" Closing="View_Closing">
     <Window.Resources>
         <revitTestFrameworkRunner:AssemblyPathConverter x:Key="AssemblyPathConverter"></revitTestFrameworkRunner:AssemblyPathConverter>
         <revitTestFrameworkRunner:WorkingPathConverter x:Key="WorkingPathConverter"></revitTestFrameworkRunner:WorkingPathConverter>
         <revitTestFrameworkRunner:ResultsPathConverter x:Key="ResultsPathConverter"></revitTestFrameworkRunner:ResultsPathConverter>
-        
-        <HierarchicalDataTemplate x:Key="TestTemplate" DataType="{x:Type revitTestFrameworkRunner:TestData}">
-            <StackPanel Orientation="Horizontal" Tag="{Binding ElementName=TestDataTreeView, Path=DataContext}">
-                <TextBlock Text="{Binding Name}" VerticalAlignment="Center"></TextBlock>
-                <TextBlock Text="-->" VerticalAlignment="Center"></TextBlock>
-                <TextBlock Text="{Binding ModelPath}" VerticalAlignment="Center"></TextBlock>
+        <revitTestFrameworkRunner:StringToIntConverter x:Key="StringToIntConverter"></revitTestFrameworkRunner:StringToIntConverter>
+        <revitTestFrameworkRunner:TestStatusToColorConverter x:Key="TestStatusToColorConverter"></revitTestFrameworkRunner:TestStatusToColorConverter>
+        <revitTestFrameworkRunner:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter"></revitTestFrameworkRunner:EmptyStringToCollapsedConverter>
+
+        <HierarchicalDataTemplate x:Key="ResultTemplate" 
+                                  DataType="{x:Type revitTestFrameworkRunner:ResultData}">
+            <StackPanel Orientation="Vertical" Tag="{Binding ElementName=TestDataTreeView, Path=DataContext}">
+                <TextBlock Text="{Binding Message}" HorizontalAlignment="Left"></TextBlock>
+                <TextBlock Text="{Binding StackTrace}" HorizontalAlignment="Left"></TextBlock>
             </StackPanel>
-            
+        </HierarchicalDataTemplate>
+        
+        <HierarchicalDataTemplate x:Key="TestTemplate" 
+                                  DataType="{x:Type revitTestFrameworkRunner:TestData}"
+                                  ItemsSource="{Binding ResultData}"
+                                  ItemTemplate="{StaticResource ResultTemplate}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" Background="{Binding TestStatus, Converter={StaticResource TestStatusToColorConverter}, Mode= OneWay}"></TextBlock>
+                <!--<TextBlock Text="{Binding ModelPath}" HorizontalAlignment="Left"></TextBlock>-->
+            </StackPanel>
         </HierarchicalDataTemplate>
         
         <HierarchicalDataTemplate x:Key="FixtureTemplate" 
@@ -82,6 +93,8 @@
         
         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Margin="5">
             <CheckBox Content="Debug" IsChecked="{Binding IsDebug, Mode=TwoWay}"></CheckBox>
+            <TextBlock Margin="20,0,0,0" Text="Timeout"></TextBlock>
+            <TextBox Width ="100" Margin="5,0,0,0" Text="{Binding Timeout, Mode=TwoWay, Converter={StaticResource StringToIntConverter}}"></TextBox>
         </StackPanel>
         
         <TreeView Margin="5" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" 

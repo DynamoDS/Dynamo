@@ -393,13 +393,10 @@ namespace Dynamo.Nodes
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
-            int start = MigrationManager.GetNextIdentifierIndex();
-            int end = MigrationManager.GetNextIdentifierIndex();
-            int step = MigrationManager.GetNextIdentifierIndex();
-            string content = "start" + start + ".." + "end" + end + ".." + "step" + step + ";";
+            XmlElement newNode = MigrationManager.CloneAndChangeType(
+                oldNode, "DSCoreNodesUI.NumberRange");
+            newNode.SetAttribute("nickname", "Number Range");
 
-            XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
-            newNode.SetAttribute("CodeText", content);
             migrationData.AppendNode(newNode);
             return migrationData;
         }
@@ -413,14 +410,10 @@ namespace Dynamo.Nodes
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
-            int start = MigrationManager.GetNextIdentifierIndex();
-            int amount = MigrationManager.GetNextIdentifierIndex();
-            int step = MigrationManager.GetNextIdentifierIndex();
-            string content = string.Format("start{0}.. amount{1}*step{2}-" + 
-                "step{2}+start{0}..step{2};", start, amount, step);
+            XmlElement newNode = MigrationManager.CloneAndChangeType(
+                oldNode, "DSCoreNodesUI.NumberSeq");
+            newNode.SetAttribute("nickname", "Number Sequence");
 
-            XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
-            newNode.SetAttribute("CodeText", content);
             migrationData.AppendNode(newNode);
             return migrationData;
         }
@@ -1067,8 +1060,16 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.DiagonalLeft",
-                "List.DiagonalLeft@var[]..[],int");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                "List.DiagonalLeft", "List.DiagonalLeft@var[]..[],int");
+            newNode.SetAttribute("lacing", "shortest");
+            migrationData.AppendNode(newNode);
+
+            return migrationData;
         }
     }
 

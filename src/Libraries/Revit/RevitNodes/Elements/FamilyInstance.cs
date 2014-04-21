@@ -9,6 +9,7 @@ using Revit.GeometryObjects;
 using Revit.References;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
+using Curve = Autodesk.DesignScript.Geometry.Curve;
 using Face =  Revit.GeometryObjects.Face;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
@@ -35,7 +36,7 @@ namespace Revit.Elements
         /// <summary>
         /// Internal constructor for a FamilyInstance
         /// </summary>
-        internal FamilyInstance(Autodesk.Revit.DB.FamilySymbol fs, Autodesk.Revit.DB.XYZ pos,
+        internal FamilyInstance(Autodesk.Revit.DB.FamilySymbol fs, XYZ pos,
             Autodesk.Revit.DB.Level level)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
@@ -72,13 +73,13 @@ namespace Revit.Elements
 
             TransactionManager.Instance.TransactionTaskDone();
 
-            ElementBinder.SetElementForTrace(this.InternalElement);
+            ElementBinder.SetElementForTrace(InternalElement);
         }
 
         /// <summary>
         /// Internal constructor for a FamilyInstance
         /// </summary>
-        internal FamilyInstance(Autodesk.Revit.DB.FamilySymbol fs, Autodesk.Revit.DB.XYZ pos)
+        internal FamilyInstance(Autodesk.Revit.DB.FamilySymbol fs, XYZ pos)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
             var oldFam =
@@ -113,7 +114,7 @@ namespace Revit.Elements
 
             TransactionManager.Instance.TransactionTaskDone();
 
-            ElementBinder.SetElementForTrace(this.InternalElement);
+            ElementBinder.SetElementForTrace(InternalElement);
         }
 
         #endregion
@@ -134,7 +135,7 @@ namespace Revit.Elements
         {
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            var lp = this.InternalFamilyInstance.Location as LocationPoint;
+            var lp = InternalFamilyInstance.Location as LocationPoint;
             lp.Point = fi;
 
             TransactionManager.Instance.TransactionTaskDone();
@@ -148,7 +149,7 @@ namespace Revit.Elements
         {
             get
             {
-                return FamilySymbol.FromExisting(this.InternalFamilyInstance.Symbol, true);
+                return FamilySymbol.FromExisting(InternalFamilyInstance.Symbol, true);
             }
         }
 
@@ -156,15 +157,18 @@ namespace Revit.Elements
         {
             get
             {
-                var pos = this.InternalFamilyInstance.Location as LocationPoint;
+                TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
+                DocumentManager.Regenerate();
+                var pos = InternalFamilyInstance.Location as LocationPoint;
+                TransactionManager.Instance.TransactionTaskDone();
                 return Point.ByCoordinates(pos.Point.X, pos.Point.Y, pos.Point.Z);
             }
         }
 
-        public Autodesk.DesignScript.Geometry.Curve[] Curves {
+        public Curve[] Curves {
             get
             {
-                var curves = this.GetCurves(new Options()
+                var curves = GetCurves(new Options()
                 {
                     ComputeReferences = true
                 });
@@ -177,7 +181,7 @@ namespace Revit.Elements
         {
             get
             {
-                var curves = this.GetCurves(new Options()
+                var curves = GetCurves(new Options()
                 {
                     ComputeReferences = true
                 });
@@ -190,7 +194,7 @@ namespace Revit.Elements
         {
             get
             {
-                var faces = this.GetFaces(new Options()
+                var faces = GetFaces(new Options()
                 {
                     ComputeReferences = true
                 });
@@ -199,11 +203,11 @@ namespace Revit.Elements
             }
         }
 
-        public Revit.References.FaceReference[] FaceReferences
+        public FaceReference[] FaceReferences
         {
             get
             {
-                var faces = this.GetFaces(new Options()
+                var faces = GetFaces(new Options()
                 {
                     ComputeReferences = true
                 });
@@ -287,7 +291,7 @@ namespace Revit.Elements
             return DocumentManager.Instance
                 .ElementsOfType<Autodesk.Revit.DB.FamilyInstance>()
                 .Where(x => x.Symbol.Id == familySymbol.InternalFamilySymbol.Id)
-                .Select(x => FamilyInstance.FromExisting(x, true))
+                .Select(x => FromExisting(x, true))
                 .ToArray();
         }
 
@@ -313,7 +317,7 @@ namespace Revit.Elements
 
         #region Incomplete Static constructors
 
-        static FamilyInstance ByCurve(FamilySymbol fs, Autodesk.DesignScript.Geometry.Curve c)
+        static FamilyInstance ByCurve(FamilySymbol fs, Curve c)
         {
             throw new NotImplementedException();
         }

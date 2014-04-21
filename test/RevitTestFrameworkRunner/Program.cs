@@ -1,12 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Windows.Threading;
+using System.Xml.Serialization;
 using Autodesk.RevitAddIns;
+using Dynamo.NUnit.Tests;
 using Dynamo.Tests;
 using Dynamo.Utilities;
+using Microsoft.Practices.Prism.ViewModel;
 using NDesk.Options;
 using NUnit.Framework;
 
@@ -26,7 +33,8 @@ namespace RevitTestFrameworkRunner
         internal static string _revitPath;
         internal static List<string> _journalPaths = new List<string>();
         internal static int _runCount = 0;
-
+        internal static int _timeout = 120000;
+        private static ViewModel _vm;
         public static event EventHandler TestRunsComplete;
         private static void OnTestRunsComplete()
         {
@@ -50,9 +58,9 @@ namespace RevitTestFrameworkRunner
                     return;
                 }
 
-                var vm = new ViewModel();
+                _vm = new ViewModel();
 
-                if (!FindRevit(vm.Products))
+                if (!FindRevit(_vm.Products))
                 {
                     return;
                 }
@@ -63,17 +71,22 @@ namespace RevitTestFrameworkRunner
 
                     if (!string.IsNullOrEmpty(_testAssembly) && File.Exists(_testAssembly))
                     {
-                        Refresh(vm);
+                        Refresh(_vm);
                     }
 
                     // Show the user interface
-                    var view = new View(vm);
+                    var view = new View(_vm);
                     view.ShowDialog();
 
                     SaveSettings();
                 }
                 else
                 {
+                    if (string.IsNullOrEmpty(_revitPath))
+                    {
+                        _revitPath = Path.Combine(_vm.Products.First().InstallLocation, "revit.exe");
+                    }
+
                     if (string.IsNullOrEmpty(_workingDirectory))
                     {
                         _workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -86,7 +99,7 @@ namespace RevitTestFrameworkRunner
                         return;
                     }
 
-                    if (!ReadAssembly(_testAssembly, vm.Assemblies))
+                    if (!ReadAssembly(_testAssembly, _vm.Assemblies))
                     {
                         return;
                     }
@@ -96,30 +109,37 @@ namespace RevitTestFrameworkRunner
                         File.Delete(_results);
                     }
 
-                    // If fixture name and test name are specified
+                    Console.WriteLine("Assembly : {0}", _testAssembly);
+                    Console.WriteLine("Fixture : {0}", _fixture);
+                    Console.WriteLine("Test : {0}", _test);
+                    Console.WriteLine("Results Path : {0}", _results);
+                    Console.WriteLine("Timeout : {0}", _timeout);
+                    Console.WriteLine("Debug : {0}", _isDebug ? "True" : "False");
+                    Console.WriteLine("Working Directory : {0}", _workingDirectory);
+                    Console.WriteLine("GUI : {0}", _gui ? "True" : "False");
+                    Console.WriteLine("Revit : {0}", _revitPath);
+
                     if (string.IsNullOrEmpty(_fixture) && string.IsNullOrEmpty(_test))
                     {
-                        _runCount = vm.Assemblies.SelectMany(a => a.Fixtures.SelectMany(f => f.Tests)).Count();
-                        foreach (var ad in vm.Assemblies)
+                        _runCount = _vm.Assemblies.SelectMany(a => a.Fixtures.SelectMany(f => f.Tests)).Count();
+                        foreach (var ad in _vm.Assemblies)
                         {
                             RunAssembly(ad);
                         }
                     }
-                    // If test is not specified but fixture is specified
                     else if (string.IsNullOrEmpty(_test) && !string.IsNullOrEmpty(_fixture))
                     {
-                        var fd = vm.Assemblies.SelectMany(x => x.Fixtures).FirstOrDefault(f => f.Name == _fixture);
+                        var fd = _vm.Assemblies.SelectMany(x => x.Fixtures).FirstOrDefault(f => f.Name == _fixture);
                         if (fd != null)
                         {
                             _runCount = fd.Tests.Count;
                             RunFixture(fd);
                         }
                     }
-                    // If test is specified
                     else if (string.IsNullOrEmpty(_fixture) && !string.IsNullOrEmpty(_test))
                     {
                         var td =
-                            vm.Assemblies.SelectMany(a => a.Fixtures.SelectMany(f => f.Tests))
+                            _vm.Assemblies.SelectMany(a => a.Fixtures.SelectMany(f => f.Tests))
                                 .FirstOrDefault(t => t.Name == _test);
                         if (td != null)
                         {
@@ -139,12 +159,12 @@ namespace RevitTestFrameworkRunner
 
         static void Program_TestRunsComplete(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(_results) && 
-                File.Exists(_results) &&
-                _gui)
-            {
-                Process.Start(_results);
-            }
+            //if (!string.IsNullOrEmpty(_results) && 
+            //    File.Exists(_results) &&
+            //    _gui)
+            //{
+            //    Process.Start(_results);
+            //}
         }
 
         private static bool FindRevit(IList<RevitProduct> productList)
@@ -166,6 +186,7 @@ namespace RevitTestFrameworkRunner
             Properties.Settings.Default.assemblyPath = _testAssembly;
             Properties.Settings.Default.resultsPath = _results;
             Properties.Settings.Default.isDebug = _isDebug;
+            Properties.Settings.Default.timeout = _timeout;
             Properties.Settings.Default.Save();
         }
 
@@ -182,6 +203,8 @@ namespace RevitTestFrameworkRunner
             _results = !string.IsNullOrEmpty(Properties.Settings.Default.resultsPath)
                 ? Properties.Settings.Default.resultsPath
                 : null;
+
+            _timeout = Properties.Settings.Default.timeout;
 
             _isDebug = Properties.Settings.Default.isDebug;
         }
@@ -266,7 +289,7 @@ namespace RevitTestFrameworkRunner
                 {
                     if (!ReadFixture(fixtureType, assData))
                     {
-                        Console.WriteLine(string.Format("Journals could not be created for {0}", fixtureType.Name));
+                        //Console.WriteLine(string.Format("Journals could not be created for {0}", fixtureType.Name));
                     } 
                 }
             }
@@ -285,7 +308,7 @@ namespace RevitTestFrameworkRunner
             var fixtureAttribs = fixtureType.GetCustomAttributes(typeof (TestFixtureAttribute), true);
             if (!fixtureAttribs.Any())
             {
-                Console.WriteLine("Specified fixture does not have the required TestFixture attribute.");
+                //Console.WriteLine("Specified fixture does not have the required TestFixture attribute.");
                 return false;
             }
 
@@ -303,8 +326,7 @@ namespace RevitTestFrameworkRunner
 
                 if (!ReadTest(test, fixData))
                 {
-                    Console.WriteLine(string.Format("Journal could not be created for test:{0} in fixture:{1}", _test,
-                        _fixture));
+                    //Console.WriteLine(string.Format("Journal could not be created for test:{0} in fixture:{1}", _test,_fixture));
                     continue;
                 }
             }
@@ -317,7 +339,7 @@ namespace RevitTestFrameworkRunner
             var testModelAttribs =  test.GetCustomAttributes(typeof(TestModelAttribute), false);
             if (!testModelAttribs.Any())
             {
-                Console.WriteLine("The specified test does not have the required TestModelAttribute.");
+                //Console.WriteLine("The specified test does not have the required TestModelAttribute.");
                 return false;
             }
             
@@ -390,17 +412,45 @@ namespace RevitTestFrameworkRunner
             {
                 FileName = _revitPath,
                 WorkingDirectory = _workingDirectory,
-                Arguments = path
+                Arguments = path,
+                UseShellExecute = false
             };
 
             Console.WriteLine("Running {0}", path);
             var process = new Process { StartInfo = startInfo };
             process.Start();
 
+            var timedOut = false;
+
             if (_isDebug)
+            {
                 process.WaitForExit();
+            }  
             else
-                process.WaitForExit(120000);
+            {
+                var time = 0;
+                while(!process.WaitForExit(1000))
+                //if (!process.WaitForExit(_timeout))
+                {
+                    Console.Write(".");
+                    time += 1000;
+                    if (time > _timeout)
+                    {
+                        Console.WriteLine("Test timed out.");
+                        td.TestStatus = TestStatus.TimedOut;
+                        timedOut = true;
+                        break;
+                    }
+                }
+                if (timedOut)
+                {
+                    if(!process.HasExited)
+                        process.Kill();
+                }
+            }
+
+            if(!timedOut && _gui)
+                GetTestResultStatus(td);
 
             _runCount --;
             if (_runCount == 0)
@@ -409,23 +459,103 @@ namespace RevitTestFrameworkRunner
             }
         }
 
-        internal static void Cleanup()
+        private static void GetTestResultStatus(ITestData td)
         {
-            foreach (var path in _journalPaths)
+            //set the test status
+            var results = LoadResults(_results);
+            if (results != null)
             {
-                if (File.Exists(path))
+                //find our results in the results
+                var mainSuite = results.testsuite;
+                var ourSuite =
+                    results.testsuite.results.Items
+                        .Cast<testsuiteType>()
+                        .FirstOrDefault(s => s.name == td.Fixture.Name);
+                var ourTest = ourSuite.results.Items
+                    .Cast<testcaseType>().FirstOrDefault(t => t.name == td.Name);
+
+                switch (ourTest.result)
                 {
-                    File.Delete(path);
+                    case "Cancelled":
+                        td.TestStatus = TestStatus.Cancelled;
+                        break;
+                    case "Error":
+                        td.TestStatus = TestStatus.Error;
+                        break;
+                    case "Failure":
+                        td.TestStatus = TestStatus.Failure;
+                        break;
+                    case "Ignored":
+                        td.TestStatus = TestStatus.Ignored;
+                        break;
+                    case "Inconclusive":
+                        td.TestStatus = TestStatus.Inconclusive;
+                        break;
+                    case "NotRunnable":
+                        td.TestStatus = TestStatus.NotRunnable;
+                        break;
+                    case "Skipped":
+                        td.TestStatus = TestStatus.Skipped;
+                        break;
+                    case "Success":
+                        td.TestStatus = TestStatus.Success;
+                        break;
+                }
+
+                if (ourTest.Item == null) return;
+                var failure = ourTest.Item as failureType;
+                if (failure == null) return;
+
+                if (_vm != null && _vm.UiDispatcher != null)
+                {
+                    _vm.UiDispatcher.BeginInvoke((Action)(()=> td.ResultData.Add(
+                        new ResultData()
+                        {
+                            StackTrace = failure.stacktrace,
+                            Message = failure.message
+                        })));
                 }
             }
+        }
 
-            _journalPaths.Clear();
-
-            var journals = Directory.GetFiles(_workingDirectory, "journal.*.txt");
-            foreach (var journal in journals)
+        internal static void Cleanup()
+        {
+            try
             {
-                File.Delete(journal);
+                foreach (var path in _journalPaths)
+                {
+                    if (File.Exists(path))
+                    {
+                        File.Delete(path);
+                    }
+                }
+
+                _journalPaths.Clear();
+
+                var journals = Directory.GetFiles(_workingDirectory, "journal.*.txt");
+                foreach (var journal in journals)
+                {
+                    File.Delete(journal);
+                }
             }
+            catch (IOException ex)
+            {
+                Console.WriteLine("One or more journal files could not be deleted.");
+            }
+        }
+
+        private static resultType LoadResults(string resultsPath)
+        {
+            resultType results = null;
+
+            //write to the file
+            var x = new XmlSerializer(typeof(resultType));
+            using (var reader = new StreamReader(resultsPath))
+            {
+                results = (resultType)x.Deserialize(reader);
+            }
+
+            return results;
         }
     }
 
@@ -456,11 +586,26 @@ namespace RevitTestFrameworkRunner
         }
     }
 
-    internal class TestData : ITestData
+    internal class TestData : NotificationObject, ITestData
     {
+        private TestStatus _testStatus;
+        private IList<IResultData> _resultData;
         public string Name { get; set; }
         public bool RunDynamo { get; set; }
         public string ModelPath { get; set; }
+
+        public TestStatus TestStatus
+        {
+            get { return _testStatus; }
+            set
+            {
+                _testStatus = value; 
+                RaisePropertyChanged("TestStatus");
+            }
+        }
+
+        public ObservableCollection<IResultData> ResultData { get; set; }
+
         public IFixtureData Fixture { get; set; }
 
         public TestData(IFixtureData fixture, string name, string modelPath, bool runDynamo)
@@ -469,6 +614,43 @@ namespace RevitTestFrameworkRunner
             Name = name;
             ModelPath = modelPath;
             RunDynamo = runDynamo;
+            _testStatus = TestStatus.None;
+            ResultData = new ObservableCollection<IResultData>();
+
+            ResultData.CollectionChanged+= ResultDataOnCollectionChanged;
+        }
+
+        private void ResultDataOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RaisePropertyChanged("ResultData");
         }
     }
+
+    internal class ResultData : NotificationObject, IResultData
+    {
+        private string _message = "";
+        private string _stackTrace = "";
+
+        public string Message
+        {
+            get { return _message; }
+            set
+            {
+                _message = value;
+                RaisePropertyChanged("Message");
+            }
+        }
+
+        public string StackTrace
+        {
+            get { return _stackTrace; }
+            set
+            {
+                _stackTrace = value;
+                RaisePropertyChanged("StackTrace");
+            }
+        }
+    }
+
+
 }
