@@ -428,8 +428,17 @@ namespace Revit.Elements
 
         public override string ToString()
         {
-            return string.Format("Reference Point: Location=(X={0}, Y={1}, Z={2})", InternalReferencePoint.Position.X,
-                InternalReferencePoint.Position.Y, InternalReferencePoint.Position.Z);
+
+            try
+            {
+                return string.Format("Reference Point: Location=(X={0}, Y={1}, Z={2})", InternalReferencePoint.Position.X,
+    InternalReferencePoint.Position.Y, InternalReferencePoint.Position.Z);
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
+            }
+
         }
 
         #region Tesselation
@@ -441,6 +450,9 @@ namespace Revit.Elements
         /// <param name="tol"></param>
         void IGraphicItem.Tessellate(IRenderPackage package, double tol, int gridLines)
         {
+            if (!IsAlive)
+                return;
+
             package.PushPointVertex(this.X, this.Y, this.Z);
         }
 

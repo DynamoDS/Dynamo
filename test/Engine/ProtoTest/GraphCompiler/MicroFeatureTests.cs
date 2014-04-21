@@ -9,7 +9,15 @@ using GraphToDSCompiler;
 using ProtoTestFx.TD;
 using ProtoScript.Runners.Obsolete;
 using ProtoCore.DSASM;
-namespace ProtoTest.GraphCompiler
+
+//Note
+//This code was all testing an obsolete version of the LiveRunner it is left here
+//in anticipation of migrating the test cases over to the new version, after that this
+//file should be deleted
+//If this has not happened by 2014-Aug-01 this code should be deleted.
+
+
+/*namespace ProtoTest.GraphCompiler
 {
     public class MicroFeatureTests
     {
@@ -219,11 +227,11 @@ namespace ProtoTest.GraphCompiler
         [Test, Ignore]
         public void GraphILTest_FFIClassUsage_03()
         {
-            /* def f() {
-             *     X = 10;
-             *     return = X;
-             * }
-             */
+             //def f() {
+             //*     X = 10;
+             //*     return = X;
+             //* }
+             
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                     new ProtoCore.AST.AssociativeAST.IdentifierNode("X"),
                     new ProtoCore.AST.AssociativeAST.IntNode(10),
@@ -244,7 +252,7 @@ namespace ProtoTest.GraphCompiler
                 //IsIndexable = false,
                 rank = 0
             };
-            /*Class C { }*/
+            // Class C { }
             ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode();
             varDeclNode.Name = "X";
             ProtoCore.AST.AssociativeAST.IdentifierNode varDeclId = new ProtoCore.AST.AssociativeAST.IdentifierNode()
@@ -333,15 +341,15 @@ namespace ProtoTest.GraphCompiler
         [Test, Ignore]
         public void GraphILTest_FFIClassUsage_04()
         {
-            /*Class C {
-             *  def f: int (X: int, Y:int) {
-             *      Z = X + Y + X*Y;
-             *      return = Z;
-             *  }
-             * }
-             * p = C.C();
-             * t = p.f(4, 5);
-             */
+            //Class C {
+            //   def f: int (X: int, Y:int) {
+            //       Z = X + Y + X*Y;
+            //       return = Z;
+            //  }
+            //  }
+            //  p = C.C();
+            //  t = p.f(4, 5);
+             
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
                     new ProtoCore.AST.AssociativeAST.IdentifierNode("Z"),
                     new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
@@ -358,7 +366,8 @@ namespace ProtoTest.GraphCompiler
             ProtoCore.AST.AssociativeAST.IdentifierNode returnExpr = new ProtoCore.AST.AssociativeAST.IdentifierNode("Z");
             ProtoCore.AST.AssociativeAST.ReturnNode returnNode = new ProtoCore.AST.AssociativeAST.ReturnNode();
             returnNode.ReturnExpr = returnExpr;
-            /**/
+            
+ * 
             ProtoCore.AST.AssociativeAST.ArgumentSignatureNode argSignatureNode = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
             ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode1 = new ProtoCore.AST.AssociativeAST.VarDeclNode();
             ProtoCore.Type type = new ProtoCore.Type();
@@ -24626,12 +24635,12 @@ _temp_a561c2f0882f44e58c8f62adae0ce30d =10;</Content>
         [Test, Ignore]
         public void T064_IDE_1806()
         {
-            /*
- 1. Create a Point.ByCoordinates node
- 2. Click on the 'X' property from it's radial menu
- 3. create a CBN : '0' and connect it to all 3 inputs of the Point.ByCoordinates node 
- => no geometry/textual preview from neither the geometry node, nor the property node
-             */
+            
+ //1. Create a Point.ByCoordinates node
+ //2. Click on the 'X' property from it's radial menu
+ //3. create a CBN : '0' and connect it to all 3 inputs of the Point.ByCoordinates node 
+ //=> no geometry/textual preview from neither the geometry node, nor the property node
+             
             ILiveRunner liveRunner = new ProtoScript.Runners.Obsolete.LiveRunner();
             string code = @"<?xml version=""1.0"" encoding=""utf-16""?>
 <SynchronizeDataCollection xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
@@ -30370,7 +30379,7 @@ List<SynchronizeData> ls = GraphToDSCompiler.GraphUtilities.GetSDList(code)
                   liveRunner.UpdateGraph(sd);
               ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("Var3");
               Assert.IsTrue((Int64)mirror.GetData().GetStackValue().opdata == "testtest2func");
-          }*/
+          }
 
         [Test, Ignore]
         public void T078_1899()
@@ -37222,19 +37231,19 @@ _temp_4b7331cec248421390edcc6ded208409 =2..5;</Content>
         [Test, Ignore]
         public void T113_IDE_2181()
         {
-            // Steps are mentioned in the defect http://adsk-oss.myjetbrains.com/youtrack/issue/IDE-2181
-            /*
-             * 1. Start DSS and create a CBN : 
-                    a1 = Point.ByCoordinates(0, 0, 0);
-                    a2 = Point.ByCoordinates(1, 1, 1);
-                    l1 = Line.ByCoordinates(a1, a2);
-               2. Now create an identifier node assign the last line to it -> there is an error saying there is not match for Line.ByCoordinates.
-                3. Then I go and update the CBN to  : 
-                a1 = Point.ByCoordinates(0, 0, 0);
-                a2 = Point.ByCoordinates(1, 1, 1);
-                l1 = Line.ByStartPointEndPoint(a1, a2);
-             3. Create a node from the Line.Length and verify it's value
-             **/
+            //// Steps are mentioned in the defect http://adsk-oss.myjetbrains.com/youtrack/issue/IDE-2181
+            
+            // * 1. Start DSS and create a CBN : 
+            //        a1 = Point.ByCoordinates(0, 0, 0);
+            //        a2 = Point.ByCoordinates(1, 1, 1);
+            //        l1 = Line.ByCoordinates(a1, a2);
+            //   2. Now create an identifier node assign the last line to it -> there is an error saying there is not match for Line.ByCoordinates.
+            //    3. Then I go and update the CBN to  : 
+            //    a1 = Point.ByCoordinates(0, 0, 0);
+            //    a2 = Point.ByCoordinates(1, 1, 1);
+            //    l1 = Line.ByStartPointEndPoint(a1, a2);
+            // 3. Create a node from the Line.Length and verify it's value
+            // *
             ILiveRunner liveRunner = new ProtoScript.Runners.Obsolete.LiveRunner();
             string code = @"<?xml version=""1.0"" encoding=""utf-16""?>
 <SynchronizeDataCollection xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
@@ -37484,9 +37493,9 @@ l1 = Line.ByStartPointEndPoint(a1, a2);</Content>
             // 2. CBN : // This is a comment 1
             //          // This is comment 2
             //          a = 1;
-            // 3. CBN : /* This is commennt 1
+            // 3. CBN :  This is commennt 1
             //           * this is a comment 2
-            //          */
+            //          
             //          b  = a;
             // 4. CBN : // this is comment
             //          c = b;
@@ -37494,6 +37503,7 @@ l1 = Line.ByStartPointEndPoint(a1, a2);</Content>
             //          d = c + 1;
             //          // this is comment
             // 5. Verify d = 2
+
             ILiveRunner liveRunner = new ProtoScript.Runners.Obsolete.LiveRunner();
             string code = @"<?xml version=""1.0"" encoding=""utf-16""?>
 <SynchronizeDataCollection xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
@@ -38998,7 +39008,7 @@ a=Var3;</Content>
             ProtoCore.Mirror.RuntimeMirror mirror2 = liveRunner.QueryNodeValue("b");
             Assert.IsTrue(mirror2.GetData().GetStackValue().opdata == 1);
         }
-        /*
+        
         
 [Test, Ignore]
         public void T126_IDE_2152()
@@ -39010,7 +39020,7 @@ a=Var3;</Content>
                 liveRunner.UpdateGraph(sd);
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.QueryNodeValue("_temp_f111ee543d4946f9aa624c6a273dfffb");
             Assert.IsTrue(mirror.GetData().GetStackValue().opdata == 6);
-        }*/
+        }
 
         [Test, Ignore]
         public void T127_IDE_1934()
@@ -39459,9 +39469,9 @@ a=Var3;</Content>
             Assert.IsTrue(mirror.GetData().GetStackValue().opdata == 2);
         }
     }
-    /*
+    
      * Test Cases for Struct VariableLine
-     */
+     
     class VariableLineTests
     {
         [SetUp]
@@ -39584,4 +39594,4 @@ a=Var3;</Content>
             });
         }
     }
-}
+}*/

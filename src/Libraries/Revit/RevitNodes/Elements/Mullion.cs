@@ -51,7 +51,7 @@ namespace Revit.Elements
       /// </summary>
       /// <param name="mullionElement"></param>
 
-      public static Mullion ByElement(Mullion mullionElement)
+      internal static Mullion ByElement(Mullion mullionElement)
       {
          var elementAsMullion = mullionElement.InternalElement as Autodesk.Revit.DB.Mullion;
          if (elementAsMullion == null)
@@ -59,9 +59,13 @@ namespace Revit.Elements
          return new Mullion(elementAsMullion);
       }
 
-      public static Mullion[] ByElement(Element holderElement)
+      /// <summary>
+      ///get all mullions of curtain wall, system or slope galzing roof
+      /// </summary>
+      /// <param name="hostingElement"></param>
+      public static Mullion[] ByElement(Element hostingElement)
       {
-         CurtainGridSet thisSet = CurtainGrid.AllCurtainGrids(holderElement.InternalElement);
+         CurtainGridSet thisSet = CurtainGrid.AllCurtainGrids(hostingElement.InternalElement);
          var result = new List<Mullion>();
 
          var enumGrid = thisSet.GetEnumerator();
@@ -110,15 +114,15 @@ namespace Revit.Elements
 
          var host = elementAsMullion.Host;
 
-         var hostingGrid = CurtainGrid.ByElement(UnknownElement.FromExisting(host));
+         //var hostingGrid = Panel.ByElement(UnknownElement.FromExisting(host));
 
-         var panels = hostingGrid.GetPanels();
+         var panels = CurtainPanel.ByElement(UnknownElement.FromExisting(host));
 
          var result = new List<CurtainPanel>();
 
          var thisCurve = this.LocationCurve;
 
-         int numberPanels = panels.Count;
+         int numberPanels = panels.Length;
          for (int index = 0; index < numberPanels; index++)
          {
             var panelAtIndex = panels[index] as CurtainPanel;

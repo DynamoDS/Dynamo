@@ -67,6 +67,7 @@ limitations under the License.
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Elements\ElementMapping.cs" />
     <Compile Include="Elements\ElementUtils.cs" />
     <Compile Include="Elements\ModelUpdater.cs" />
     <Compile Include="Persistence\DocumentManager.cs" />

@@ -143,11 +143,15 @@ namespace Revit.Elements
             if (DisposeLogic.IsShuttingDown)
                 return;
 
+            bool didRevitDelete = ElementIDLifecycleManager<int>.GetInstance().IsRevitDeleted(this.Id);
+
+
+
             var elementManager = ElementIDLifecycleManager<int>.GetInstance();
             int remainingBindings = elementManager.UnRegisterAssociation(this.Id, this);
 
             // Do not delete Revit owned elements
-            if (!IsRevitOwned && remainingBindings == 0)
+            if (!IsRevitOwned && remainingBindings == 0 && !didRevitDelete)
             {
                 DocumentManager.Instance.DeleteElement(this.InternalElementId);
             }
@@ -363,6 +367,19 @@ namespace Revit.Elements
         }
 
         #region Internal Geometry Helpers
+
+        /// <summary>
+        /// Is this element still alive in Revit, and good to be drawn, queried etc.
+        /// </summary>
+        protected bool IsAlive
+        {
+            get
+            {
+                //Ensure that the object is still alive
+                return !ElementIDLifecycleManager<int>.GetInstance().IsRevitDeleted(this.InternalElementId.IntegerValue);
+            }
+        }
+
 
         protected IEnumerable<Autodesk.Revit.DB.Curve> GetCurves(Autodesk.Revit.DB.Options options)
         {

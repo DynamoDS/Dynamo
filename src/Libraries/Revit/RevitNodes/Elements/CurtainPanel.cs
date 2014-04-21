@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
@@ -34,13 +35,40 @@ namespace Revit.Elements
 
             var host = elementAsPanel.Host;
 
-            var hostingGrid = CurtainGrid.ByElement(UnknownElement.FromExisting(host));
+            CurtainGrid hostingGrid = null;
+            Autodesk.Revit.DB.CurtainGrid grid = null;
+            if (host is Autodesk.Revit.DB.Wall)
+            {
+               hostingGrid = CurtainGrid.ByElement(UnknownElement.FromExisting(host));
+            }
+            else
+            {
+               var gridSet = CurtainGrid.AllCurtainGrids(host);
+               var enumGrid = gridSet.GetEnumerator();
+               bool found = false;
+               for (; enumGrid.MoveNext();)
+               {
+                  grid = (Autodesk.Revit.DB.CurtainGrid)enumGrid.Current;
+                  if (grid.GetPanelIds().Contains(elementAsPanel.Id))
+                  {
+                     found = true;
+                     break;
+                  }
+               }
+               if (!found)
+                  throw new Exception("Could not find cell for panel");
+            }
 
             ElementId uGridId = ElementId.InvalidElementId;
             ElementId vGridId = ElementId.InvalidElementId;
             elementAsPanel.GetRefGridLines(ref uGridId, ref vGridId);
 
-            CurtainCell cell = hostingGrid.InternalCurtainGrid.GetCell(uGridId, vGridId);
+            if (grid == null && hostingGrid == null)
+               throw new Exception("Could not find cell for panel");
+
+            CurtainCell cell = hostingGrid != null
+               ? hostingGrid.InternalCurtainGrid.GetCell(uGridId, vGridId)
+               : grid.GetCell(uGridId, vGridId);
 
             TransactionManager.Instance.TransactionTaskDone();
 
@@ -50,10 +78,14 @@ namespace Revit.Elements
          }
       }
 
+      private PolyCurve[] boundsCache = null;
+
       public PolyCurve[] Boundaries
       {
          get
          {
+            if (boundsCache != null)
+               return boundsCache;
             var enumCurveLoops = PanelBoundaries.GetEnumerator();
             var bounds = new List<PolyCurve>();
 
@@ -67,9 +99,27 @@ namespace Revit.Elements
                   var crv = (Autodesk.Revit.DB.Curve) enumCurves.Current;
                   crvs.Append(crv);
                }
-               bounds.Add(Revit.GeometryConversion.RevitToProtoCurve.ToProtoTypes(crvs));
+               //try
+               //{
+                  bounds.Add(Revit.GeometryConversion.RevitToProtoCurve.ToProtoTypes(crvs));
+               //}
+               /* debugging code
+               catch (Exception e)
+               {
+                  var cl = new CurveLoop();
+                  var enumCurvesCl = crvArr.GetEnumerator();
+                  for (; enumCurvesCl.MoveNext(); )
+                  {
+                     var crv = (Autodesk.Revit.DB.Curve)enumCurvesCl.Current;
+                     cl.Append(crv);
+                  }
+                  double len = cl.GetExactLength();
+                  len = len/1.0;
+               }
+               end of debugging code */
             }
-            return bounds.ToArray();
+            boundsCache = bounds.ToArray();
+            return boundsCache;
          }
       }
 
@@ -263,6 +313,7 @@ namespace Revit.Elements
       protected CurtainPanel(Autodesk.Revit.DB.Panel panelElement)
       {
          InternalSetFamilyInstance(panelElement);
+         boundsCache = null;
       }
 
       #endregion
@@ -274,7 +325,7 @@ namespace Revit.Elements
       /// </summary>
       /// <param name="panelElement"></param>
 
-      public static CurtainPanel ByElement(CurtainPanel panelElement)
+      internal static CurtainPanel ByElement(CurtainPanel panelElement)
       {
          var elementAsPanel = panelElement.InternalElement as Autodesk.Revit.DB.Panel;
          if (elementAsPanel == null)
@@ -282,9 +333,13 @@ namespace Revit.Elements
          return new CurtainPanel(elementAsPanel);
       }
 
-      public static CurtainPanel[] ByElement(Element holderElement)
+      /// <summary>
+      ///get all panels of curtain wall, system or slope galzing roof
+      /// </summary>
+      /// <param name="hostingElement"></param>
+      public static CurtainPanel[] ByElement(Element hostingElement)
       {
-         CurtainGridSet thisSet = CurtainGrid.AllCurtainGrids(holderElement.InternalElement);
+         CurtainGridSet thisSet = CurtainGrid.AllCurtainGrids(hostingElement.InternalElement);
          var result = new List<CurtainPanel>();
 
          var enumGrid = thisSet.GetEnumerator();
@@ -315,7 +370,7 @@ namespace Revit.Elements
          {
             throw new ArgumentNullException("panel");
          }
-
+         
          return new CurtainPanel(panel)
          {
             IsRevitOwned = true //making panels in Dynamo is not implemented
@@ -335,10 +390,10 @@ namespace Revit.Elements
 
          var host = elementAsPanel.Host;
 
-         var hostingGrid = CurtainGrid.ByElement(UnknownElement.FromExisting(host));
+         //var hostingGrid = CurtainGrid.ByElement(UnknownElement.FromExisting(host));
 
-         var mullions = hostingGrid.GetMullions();
-         int numberMullions = mullions.Count;
+         var mullions = Mullion.ByElement(UnknownElement.FromExisting(host));//hostingGrid.GetMullions();
+         int numberMullions = mullions.Length;
          var result = new List<Mullion>();
 
          for (int index = 0; index < numberMullions; index++)

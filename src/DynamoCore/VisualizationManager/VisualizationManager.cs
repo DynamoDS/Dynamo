@@ -8,6 +8,7 @@ using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
@@ -300,6 +301,12 @@ namespace Dynamo
         /// <param name="connector"></param>
         void DynamoModel_ConnectorDeleted(ConnectorModel connector)
         {
+            // TODO: Ian should remove this when the CBN reconnection bug is solved.
+            if (connector.Start.Owner.GetType() == typeof (CodeBlockNodeModel))
+            {
+                return;
+            }
+
             //we are given the connector that was deleted
             //if it's end node still exists, clear the package for 
             //the node and trigger an update.
