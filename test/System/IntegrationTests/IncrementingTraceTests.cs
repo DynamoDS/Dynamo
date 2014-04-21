@@ -26,13 +26,14 @@ namespace IntegrationTests
             testFx = new TestFrameWork();
             astLiveRunner = new ProtoScript.Runners.LiveRunner();
             FFITarget.IncrementerTracedClass.ResetForNextTest();
-
+            
         }
 
         [TearDown]
         public static void TLSCleanup()
         {
             Thread.FreeNamedDataSlot(__TEMP_REVIT_TRACE_ID);
+           
         }
 
         [Test]
@@ -1687,6 +1688,63 @@ mtcAID = mtcA.ID;";
             TestFrameWork.AssertValue("mtcAID", new List<Object>() { 0, 1, 3 }, astLiveRunner);
 
 
+        }
+
+
+        //Multithread
+
+        [Test]
+        [Category("Trace")]
+        public void S2SMultiThread()
+        {
+
+            //Test to ensure that the first time the code is executed the wasTraced attribute is marked as false
+            //and the secodn time it is marked as true
+
+
+            string setupCode =
+            @"import(""FFITarget.dll""); 
+x = 0; 
+mtcA = IncrementerTracedClass.IncrementerTracedClass(x); 
+mtcAID = mtcA.ID;
+mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
+
+
+
+            // Create 2 CBNs
+
+            List<Subtree> added = new List<Subtree>();
+
+
+            // Simulate a new new CBN
+            Guid guid1 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            TestFrameWork.AssertValue("mtcAID", 0, astLiveRunner);
+            TestFrameWork.AssertValue("mtcAWasTraced", false, astLiveRunner);
+
+
+            Thread thread = new Thread(() =>
+                {
+                    // Simulate a new new CBN
+                    Guid guid2 = System.Guid.NewGuid();
+                    added = new List<Subtree>();
+                    added.Add(CreateSubTreeFromCode(guid2, "x = 1;"));
+
+
+                    syncData = new GraphSyncData(null, added, null);
+                    astLiveRunner.UpdateGraph(syncData);
+
+                    // Verify that a is re-executed
+                    TestFrameWork.AssertValue("mtcAID", 0, astLiveRunner);
+                    TestFrameWork.AssertValue("mtcAWasTraced", true, astLiveRunner);
+                });
+
+            thread.Start();
+            thread.Join();
         }
 
 
