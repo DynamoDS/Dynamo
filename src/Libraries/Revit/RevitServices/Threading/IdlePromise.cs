@@ -118,8 +118,15 @@ namespace RevitServices.Threading
             Promises.Enqueue(
                 delegate
                 {
-                    p();
-                    redeemed = true;
+                    try
+                    {
+                        p();
+                    }
+                    finally
+                    {
+                        redeemed = true;
+                    }
+
                 });
 
             while (!redeemed)

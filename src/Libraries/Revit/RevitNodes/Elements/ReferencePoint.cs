@@ -198,21 +198,33 @@ namespace Revit.Elements
 
         public double X
         {
-            get { return InternalReferencePoint.Position.X; }
+            get
+            {
+                DocumentManager.Regenerate();
+                return InternalReferencePoint.Position.X;
+            }
             set { InternalSetPosition(new XYZ(value, Y, Z)); }
         }
 
 
         public double Y
         {
-            get { return InternalReferencePoint.Position.Y; }
+            get
+            {
+                DocumentManager.Regenerate();
+                return InternalReferencePoint.Position.Y;
+            }
             set { InternalSetPosition(new XYZ(X, value, Z)); }
         }
 
 
         public double Z
         {
-            get { return InternalReferencePoint.Position.Z; }
+            get
+            {
+                DocumentManager.Regenerate();
+                return InternalReferencePoint.Position.Z;
+            }
             set { InternalSetPosition(new XYZ(X, Y, value)); }
         }
 
@@ -416,8 +428,17 @@ namespace Revit.Elements
 
         public override string ToString()
         {
-            return string.Format("Reference Point: Location=(X={0}, Y={1}, Z={2})", InternalReferencePoint.Position.X,
-                InternalReferencePoint.Position.Y, InternalReferencePoint.Position.Z);
+
+            try
+            {
+                return string.Format("Reference Point: Location=(X={0}, Y={1}, Z={2})", InternalReferencePoint.Position.X,
+    InternalReferencePoint.Position.Y, InternalReferencePoint.Position.Z);
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
+            }
+
         }
 
         #region Tesselation
@@ -429,6 +450,9 @@ namespace Revit.Elements
         /// <param name="tol"></param>
         void IGraphicItem.Tessellate(IRenderPackage package, double tol, int gridLines)
         {
+            if (!IsAlive)
+                return;
+
             package.PushPointVertex(this.X, this.Y, this.Z);
         }
 

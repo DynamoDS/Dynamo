@@ -516,6 +516,18 @@ namespace DSCore
             return CSMath.Truncate(value);
         }
 
+
+        /// <summary>
+        ///      Find the sum of a series of numbers
+        /// </summary>
+        /// <param name="values">The numbers to sum</param>
+        /// <returns name="sum">The sum of the values</returns>
+        /// <search>sum</search>
+        public static double Sum(IEnumerable<double> values)
+        {
+            return values.Sum();
+        }
+
         /// <summary>
         ///     Finds the factorial result of a positive integer.
         /// </summary>

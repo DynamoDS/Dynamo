@@ -569,6 +569,11 @@ namespace Dynamo.Nodes
                 "If you don't mind, it would be helpful for you to send us your " +
                 "file. That will make it quicker for us to get these issues fixed.";
 
+            if (exception is ProtoCore.Exceptions.HeapCorruptionException)
+            {
+                description = exception.Message;
+            }
+
             var imageUri = "/DynamoCore;component/UI/Images/task_dialog_crash.png";
             var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),

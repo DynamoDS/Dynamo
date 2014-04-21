@@ -743,7 +743,7 @@ limitations under the License.
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
 copy "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath).\License.rtf"
-copy "$(SolutionDir)..\scripts\install\extra\InstallASMForDynamo.exe" "$(OutputPath)\InstallASMForDynamo.exe"
+copy "$(SolutionDir)..\tools\install\extra\InstallASMForDynamo.exe" "$(OutputPath)\InstallASMForDynamo.exe"
 IF NOT EXIST "$(OutputPath)\dll" "$(OutputPath)\InstallASMForDynamo.exe" /SILENT /SUPPRESSMSGBOXES</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>

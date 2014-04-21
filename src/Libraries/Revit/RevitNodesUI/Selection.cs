@@ -319,7 +319,11 @@ namespace Dynamo.Nodes
                       where subNode.Attributes != null
                       select subNode.Attributes[0].Value).Last();
 
-            SelectedElement = DocumentManager.Instance.CurrentDBDocument.GetElement(id).Id;
+            if (DocumentManager.Instance.ElementExistsInDocument(new ElementUUID(id)))
+            {
+                SelectedElement = DocumentManager.Instance.CurrentDBDocument.GetElement(id).Id;                
+            }
+
         }
     }
 

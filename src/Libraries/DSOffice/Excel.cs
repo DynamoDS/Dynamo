@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
 using Dynamo.Utilities;
+using Autodesk.DesignScript.Runtime;
 
 namespace DSOffice
 {
@@ -24,7 +25,7 @@ namespace DSOffice
             }
         }
 
-        private static bool _showOnStartup = true;
+        private static bool _showOnStartup = false;
         public static bool ShowOnStartup
         {
             get { return _showOnStartup; }
@@ -128,61 +129,72 @@ namespace DSOffice
 
         }
 
-        public static object ReadExcelFile(string path)
+        [IsVisibleInDynamoLibrary(false)]
+        public static WorkBook ReadExcelFile(string path)
         {
-            
             return WorkBook.ReadExcelFile(path);
         }
 
-        public static object[] GetWorksheetsFromExcelWorkbook(object workbook)
+        [IsVisibleInDynamoLibrary(false)]
+        public static WorkSheet[] GetWorksheetsFromExcelWorkbook(WorkBook workbook)
         {
-            WorkBook wb = (WorkBook)workbook;
-            return wb.WorkSheets;
+            return workbook.WorkSheets;
         }
 
-        public static object GetExcelWorksheetByName(object workbook, string name)
+        [IsVisibleInDynamoLibrary(false)]
+        public static WorkSheet GetExcelWorksheetByName(WorkBook workbook, string name)
         {
-            WorkBook wb = (WorkBook)workbook;
-            return wb.GetWorksheetByName(name);
+            return workbook.GetWorksheetByName(name);
         }
 
-        public static object[][] GetDataFromExcelWorksheet(object worksheet)
+        [IsVisibleInDynamoLibrary(true)]
+        public static object[][] GetDataFromExcelWorksheet(WorkSheet worksheet)
         {
-            WorkSheet ws = (WorkSheet)worksheet;
-            return ws.Data;
+            return worksheet.Data;
         }
 
-        public static object WriteDataToExcelWorksheet(
-            object worksheet, int startRow, int startColumn, object[][] data)
+        [IsVisibleInDynamoLibrary(false)]
+        public static WorkSheet WriteDataToExcelWorksheet(
+            WorkSheet worksheet, int startRow, int startColumn, object[][] data)
         {
-            WorkSheet ws = (WorkSheet)worksheet;
-            return ws.WriteData(startRow, startColumn, data);
+            return worksheet.WriteData(startRow, startColumn, data);
         }
 
-        public static object AddExcelWorksheetToWorkbook(object workbook, string name)
+        [IsVisibleInDynamoLibrary(false)]
+        public static WorkSheet AddExcelWorksheetToWorkbook(WorkBook workbook, string name)
         {
-            WorkBook wb = (WorkBook)workbook;
-            return new WorkSheet(wb, name);
+            return new WorkSheet(workbook, name);
         }
 
-        public static object NewExcelWorkbook()
+        [IsVisibleInDynamoLibrary(false)]
+        public static WorkBook NewExcelWorkbook()
         {
             return new WorkBook("");
         }
 
-        public static object NewExcelWorkbook(string filePath)
+        [IsVisibleInDynamoLibrary(false)]
+        public static WorkBook SaveAsExcelWorkbook(WorkBook workbook, string filename)
         {
-            return new WorkBook(filePath);
+            return new WorkBook(workbook, filename);
         }
 
-        public static object SaveAsExcelWorkbook(object workbook, string filename)
+        public static object[][] Read(string filePath, string sheetName)
         {
-            WorkBook wb = (WorkBook)workbook;
-            return new WorkBook(wb, filename);
+            WorkBook wb = WorkBook.ReadExcelFile(filePath);
+            WorkSheet ws = wb.GetWorksheetByName(sheetName);
+            return ws.Data;
+        }
+
+        public static object[][] Write(string filePath, string sheetName, int startRow, int startCol, object[][] data)
+        {
+            WorkBook wb = new WorkBook(filePath);
+            WorkSheet ws = new WorkSheet (wb, sheetName);
+            ws = ws.WriteData(startRow, startCol, data);
+            return ws.Data;
         }
     }
 
-    internal class WorkSheet
+    public class WorkSheet
     {
         #region Helper methods
 
@@ -259,9 +271,18 @@ namespace DSOffice
         /// </summary>
         /// <param name="wbook"></param>
         /// <param name="sheetName"></param>
-        internal WorkSheet(WorkBook wbook, string sheetName)
+        internal WorkSheet (WorkBook wbook, string sheetName)
         {
             wb = wbook;
+            WorkSheet wSheet = wbook.WorkSheets.FirstOrDefault(n => n.ws.Name == sheetName);
+            
+            if (wSheet != null)
+            {
+                // Overwrite sheet
+                DSOffice.ExcelInterop.App.DisplayAlerts = false;
+                wSheet.ws.Delete();
+                DSOffice.ExcelInterop.App.DisplayAlerts = true;
+            }
             ws = (Worksheet)wb.Add();
             ws.Name = sheetName;
 
@@ -300,7 +321,7 @@ namespace DSOffice
 
     }
 
-    internal class WorkBook
+    public class WorkBook
     {
         /// <summary>
         /// 
@@ -332,17 +353,30 @@ namespace DSOffice
         }
  
         /// <summary>
-        /// Creates a new Workbook with filepath as input
+        /// Creates a new Workbook with filepath and sheet name as input
         /// </summary>
         internal WorkBook(string filePath)
-        {
-            wb = ExcelInterop.App.Workbooks.Add();
+        {            
             Name = filePath;
 
             if (!String.IsNullOrEmpty(filePath))
-            {                
-                wb.SaveAs(filePath);
+            {
+                try
+                {
+                    Workbook workbook = ExcelInterop.App.Workbooks.Open(filePath);
+                    wb = workbook;
+                    wb.Save();
+                    
+                }
+                catch (Exception ex)
+                {
+                    // Exception is thrown when there is no existing workbook with the given filepath
+                    wb = ExcelInterop.App.Workbooks.Add();
+                    wb.SaveAs(filePath);
+                }
             }
+            else
+                wb = ExcelInterop.App.Workbooks.Add();
         }
 
         /// <summary>
@@ -359,22 +393,26 @@ namespace DSOffice
                 wb.Save();
             else
             {
+                try
+                {
+                    Workbook workbook = ExcelInterop.App.Workbooks.Open(filename);
+                    workbook.Close(false);
+                }
+                catch (Exception)
+                {   
+                }
+                
                 wb.SaveAs(filename);
             }
 
         }
         
-        //public WorkBook(string wbName)
-        //{
-        //    Name = wbName;
-        //}
-
         private WorkBook(Workbook wb, string filePath)
         {
             this.wb = wb;
             Name = filePath;
         }
-
+                
         /// <summary>
         /// (ReadExcelFile node)
         /// </summary>

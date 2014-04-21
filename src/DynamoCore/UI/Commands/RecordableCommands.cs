@@ -154,6 +154,12 @@ namespace Dynamo.ViewModels
                     case "ConvertNodesToCodeCommand":
                         command = ConvertNodesToCodeCommand.DeserializeCore(element);
                         break;
+                    case "CreateCustomNodeCommand":
+                        command = CreateCustomNodeCommand.DeserializeCore(element);
+                        break;
+                    case "SwitchTabCommand":
+                        command = SwitchTabCommand.DeserializeCore(element);
+                        break;
                 }
 
                 if (null != command)
@@ -932,13 +938,110 @@ namespace Dynamo.ViewModels
 
             #endregion
         }
+
+        public class CreateCustomNodeCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            internal CreateCustomNodeCommand(Guid nodeId, string name,
+                string category, string description, bool makeCurrent)
+            {
+                this.NodeId = nodeId;
+                this.Name = name;
+                this.Category = category;
+                this.Description = description;
+                this.MakeCurrent = makeCurrent;
+            }
+
+            internal static CreateCustomNodeCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+
+                return new CreateCustomNodeCommand(
+                    helper.ReadGuid("NodeId"),
+                    helper.ReadString("Name"),
+                    helper.ReadString("Category"),
+                    helper.ReadString("Description"),
+                    helper.ReadBoolean("MakeCurrent"));
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal Guid NodeId { get; private set; }
+            internal string Name { get; private set; }
+            internal string Category { get; private set; }
+            internal string Description { get; private set; }
+            internal bool MakeCurrent { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                dynamoViewModel.CreateCustomNodeImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("NodeId", this.NodeId);
+                helper.SetAttribute("Name", this.Name);
+                helper.SetAttribute("Category", this.Category);
+                helper.SetAttribute("Description", this.Description);
+                helper.SetAttribute("MakeCurrent", this.MakeCurrent);
+            }
+
+            #endregion
+        }
+
+        public class SwitchTabCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            internal SwitchTabCommand(int tabIndex)
+            {
+                this.TabIndex = tabIndex;
+            }
+
+            internal static SwitchTabCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                return new SwitchTabCommand(helper.ReadInteger("TabIndex"));
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal int TabIndex { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                dynamoViewModel.SwitchTabImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("TabIndex", this.TabIndex);
+            }
+
+            #endregion
+        }
     }
 
     // public class XxxYyyCommand : RecordableCommand
     // {
     //     #region Public Class Methods
     // 
-    //     public XxxYyyCommand()
+    //     internal XxxYyyCommand()
     //     {
     //     }
     // 

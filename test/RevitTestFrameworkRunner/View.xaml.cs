@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace RevitTestFrameworkRunner
 {
@@ -16,6 +14,14 @@ namespace RevitTestFrameworkRunner
             DataContext = vm;
 
             this.Closing += View_Closing;
+
+            this.Loaded += View_Loaded;
+        }
+
+        void View_Loaded(object sender, RoutedEventArgs e)
+        {
+            var vm = DataContext as ViewModel;
+            vm.UiDispatcher = Dispatcher;
         }
 
         private void View_Closing(object sender, CancelEventArgs e)

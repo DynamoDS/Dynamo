@@ -411,7 +411,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement newNode = MigrationManager.CloneAndChangeType(
-                oldNode, "DSCoreNodesUI.NumberSequence");
+                oldNode, "DSCoreNodesUI.NumberSeq");
             newNode.SetAttribute("nickname", "Number Sequence");
 
             migrationData.AppendNode(newNode);
@@ -1060,8 +1060,16 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.DiagonalLeft",
-                "List.DiagonalLeft@var[]..[],int");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                "List.DiagonalLeft", "List.DiagonalLeft@var[]..[],int");
+            newNode.SetAttribute("lacing", "shortest");
+            migrationData.AppendNode(newNode);
+
+            return migrationData;
         }
     }
 
