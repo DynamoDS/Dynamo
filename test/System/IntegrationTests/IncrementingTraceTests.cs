@@ -1729,6 +1729,9 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             Thread thread = new Thread(() =>
                 {
+
+                    
+
                     // Simulate a new new CBN
                     Guid guid2 = System.Guid.NewGuid();
                     added = new List<Subtree>();
@@ -1738,13 +1741,18 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
                     syncData = new GraphSyncData(null, added, null);
                     astLiveRunner.UpdateGraph(syncData);
 
-                    // Verify that a is re-executed
-                    TestFrameWork.AssertValue("mtcAID", 0, astLiveRunner);
-                    TestFrameWork.AssertValue("mtcAWasTraced", true, astLiveRunner);
+
+
                 });
 
             thread.Start();
             thread.Join();
+
+            // Verify that a is re-executed
+            TestFrameWork.AssertValue("mtcAID", 0, astLiveRunner);
+            TestFrameWork.AssertValue("mtcAWasTraced", true, astLiveRunner);
+
+        
         }
 
 
