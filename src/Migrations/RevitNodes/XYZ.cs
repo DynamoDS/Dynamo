@@ -622,6 +622,12 @@ namespace Dynamo.Nodes
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+            
+            XmlElement newPointNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newPointNode, "ProtoGeometry.dll",
+                "Point.ByCoordinates", "Point.ByCoordinates@double,double,double");
+            migrationData.AppendNode(newPointNode);
+            string newPointNodeId = MigrationManager.GetGuidFromXmlElement(newPointNode);
 
             XmlElement getXNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 0,
                 "ProtoGeometry.dll", "Point.X", "Point.X");
@@ -653,11 +659,6 @@ namespace Dynamo.Nodes
             data.CreateConnector(getXNode, 0, xAverageNode, 0);
             data.CreateConnector(getYNode, 0, yAverageNode, 0);
             data.CreateConnector(getZNode, 0, zAverageNode, 0);
-
-            XmlElement newPointNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 6,
-                "ProtoGeometry.dll", "Point.ByCoordinates", "Point.ByCoordinates@double,double,double");
-            migrationData.AppendNode(newPointNode);
-            string newPointNodeId = MigrationManager.GetGuidFromXmlElement(newPointNode);
 
             data.CreateConnector(xAverageNode, 0, newPointNode, 0);
             data.CreateConnector(yAverageNode, 0, newPointNode, 1);
