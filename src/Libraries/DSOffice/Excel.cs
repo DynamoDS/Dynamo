@@ -115,9 +115,28 @@ namespace DSOffice
             }
         }
 
+        //public class ExcelCloseEventArgs : EventArgs
+        //{
+        //    public ExcelCloseEventArgs(bool saveWorkbooks = true)
+        //    {
+        //        this.SaveWorkbooks = saveWorkbooks;
+        //    }
+
+        //    public bool SaveWorkbooks { get; private set; }
+        //}
+
         private static void DynamoModelOnCleaningUp(object sender, EventArgs eventArgs)
         {
-            TryQuitAndCleanup(true);
+            if(eventArgs != null)
+            {
+                Dynamo.Nodes.ExcelCloseEventArgs args = eventArgs as Dynamo.Nodes.ExcelCloseEventArgs;
+                if (args != null)
+                {
+                    TryQuitAndCleanup(args.SaveWorkbooks);
+                }
+            }
+            else
+                TryQuitAndCleanup(true);
         }
     }
 

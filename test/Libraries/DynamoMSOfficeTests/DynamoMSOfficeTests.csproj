@@ -67,19 +67,28 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
+    <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoElementsTests\DynamoCoreTests.csproj">
+    <ProjectReference Include="..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
+      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
+      <Name>ProtoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Libraries\CoreNodesUI\CoreNodesUI.csproj">
+      <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
+      <Name>CoreNodesUI</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ED-1067-4B2C-8737-3839A6143EB2}</Project>
       <Name>DynamoCoreTests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoMSOffice\DynamoMSOffice.csproj">
+    <ProjectReference Include="..\..\..\src\Libraries\DynamoMSOffice\DynamoMSOffice.csproj">
       <Project>{798656E4-733F-4ABC-8AF4-604412FC0BC0}</Project>
       <Name>DynamoMSOffice</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
+    <ProjectReference Include="..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
     </ProjectReference>
