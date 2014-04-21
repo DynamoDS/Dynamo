@@ -15,7 +15,7 @@ namespace DSCore.File
         ///     Load a bitmap from a file path.
         /// </summary>
         /// <param name="path">The path to the image file.</param>
-        /// <returns></returns>
+        /// <returns name="bitmap">Bitmap</returns>
         public static Bitmap LoadImageFromPath(string path)
         {
             if (!System.IO.File.Exists(path)) return null;
