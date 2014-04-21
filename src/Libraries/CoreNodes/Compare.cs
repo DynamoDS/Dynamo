@@ -16,7 +16,7 @@ namespace DSCore
         /// <param name="a">A comparable object.</param>
         /// <param name="b">A comparable object.</param>
         /// <returns name="bool">Boolean result.</returns>
-        /// <search>greater,larger,bigger</search>
+        /// <search>larger,bigger</search>
         public static bool GreaterThan(object a, object b)
         {
             if (a is double || a is float)
@@ -38,7 +38,7 @@ namespace DSCore
         /// <param name="a">A comparable object.</param>
         /// <param name="b">A comparable object.</param>
         /// <returns name="bool">Boolean result.</returns>
-        /// <search>greater,larger,bigger,equal</search>
+        /// <search>larger,bigger,equal</search>
         public static bool GreaterThanOrEqual(object a, object b)
         {
             if (a is double || a is float)
@@ -82,7 +82,7 @@ namespace DSCore
         /// <param name="a">A comparable object.</param>
         /// <param name="b">A comparable object.</param>
         /// <returns name="bool">Boolean result.</returns>
-        /// <search>less,smaller,equal</search>
+        /// <search>smaller,equal</search>
         public static bool LessThanOrEqual(object a, object b)
         {
             if (a is double || a is float)

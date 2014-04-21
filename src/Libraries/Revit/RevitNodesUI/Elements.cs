@@ -11,13 +11,17 @@ namespace DSRevitNodesUI
 {
     public abstract class ElementsQueryBase : NodeModel
     {
+
+
+
         protected ElementsQueryBase()
         {
             var u = dynRevitSettings.Controller.Updater;
+            u.ElementsAdded += Updater_ElementsAdded;
             u.ElementsModified += Updater_ElementsModified;
             u.ElementsDeleted += Updater_ElementsDeleted;
         }
-
+        
         public override void Destroy()
         {
             base.Destroy();
@@ -27,15 +31,29 @@ namespace DSRevitNodesUI
             u.ElementsDeleted -= Updater_ElementsDeleted;
         }
 
+        private bool forceReExecuteOfNode = false;
+        public override bool ForceReExecuteOfNode
+        {
+            get { return forceReExecuteOfNode; }
+        }
+
+        private void Updater_ElementsAdded(IEnumerable<string> updated)
+        {
+            forceReExecuteOfNode = true;
+        }
+
+
         protected void Updater_ElementsModified(IEnumerable<string> updated)
         {
-            RequiresRecalc = true;
+            forceReExecuteOfNode = true;
         }
 
         protected void Updater_ElementsDeleted(Document document, IEnumerable<ElementId> deleted)
         {
-            RequiresRecalc = true;
+            forceReExecuteOfNode = true;
         }
+
+
     }
 
     [NodeName("All Elements of Family Type")]

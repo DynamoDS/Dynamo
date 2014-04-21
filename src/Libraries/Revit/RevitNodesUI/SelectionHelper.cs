@@ -56,7 +56,7 @@ namespace Revit.Interactivity
             return DocumentManager.Instance.CurrentDBDocument.GetElement(curveRef) as CurveElement;
         }
 
-        public static List<string> RequestMultipleCurveElementsSelection(string message)
+        public static List<ElementId> RequestMultipleCurveElementsSelection(string message)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
 
@@ -68,7 +68,7 @@ namespace Revit.Interactivity
             var ca = new ElementArray();
             ISelectionFilter selFilter = new CurveSelectionFilter();
             return doc.Selection.PickElementsByRectangle(//selFilter,
-                "Window select multiple curves.").Select(x => x.UniqueId).ToList();
+                "Window select multiple curves.").Select(x => x.Id).ToList();
 
         }
 
@@ -362,11 +362,11 @@ namespace Revit.Interactivity
             return xyzRef;
         }
 
-        public static List<string> RequestDividedSurfaceFamilyInstancesSelection(string message)
+        public static List<ElementId> RequestDividedSurfaceFamilyInstancesSelection(string message)
         {
             var ds = RequestDividedSurfaceSelection(message);
-            
-            var result = new List<string>();
+
+            var result = new List<ElementId>();
 
             var gn = new GridNode();
 
@@ -388,7 +388,7 @@ namespace Revit.Interactivity
                         if (fi != null)
                         {
                             //put the family instance into the tree
-                            result.Add(fi.UniqueId);
+                            result.Add(fi.Id);
                         }
                     }
                     v = v + 1;
