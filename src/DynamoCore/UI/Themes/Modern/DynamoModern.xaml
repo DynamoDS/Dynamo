@@ -1024,8 +1024,14 @@
                                        Padding="3"
                                        Margin="4 0 4 0"
                                        IsHitTestVisible="False"
-                                       Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}"
-                                       Text="{TemplateBinding Tag}" />
+                                       Text="{TemplateBinding Tag}">
+                                <TextBlock.Visibility>
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                             Path="Text.IsEmpty"
+                                             Converter="{StaticResource BooleanToVisibilityConverter}"
+                                             ConverterParameter="Collapse" />
+                                </TextBlock.Visibility>
+                            </TextBlock>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
