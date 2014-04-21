@@ -157,7 +157,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override bool RequiresReExecute
+        public override bool ForceReExecuteOfNode
         {
             get
             {
