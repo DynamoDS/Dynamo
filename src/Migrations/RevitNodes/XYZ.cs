@@ -615,6 +615,84 @@ namespace Dynamo.Nodes
 
     public class XyzAverage : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+            
+            XmlElement newPointNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newPointNode, "ProtoGeometry.dll",
+                "Point.ByCoordinates", "Point.ByCoordinates@double,double,double");
+            migrationData.AppendNode(newPointNode);
+            string newPointNodeId = MigrationManager.GetGuidFromXmlElement(newPointNode);
+
+            XmlElement getXNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 0,
+                "ProtoGeometry.dll", "Point.X", "Point.X");
+            XmlElement getYNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 1,
+                "ProtoGeometry.dll", "Point.Y", "Point.Y");
+            XmlElement getZNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 2,
+                "ProtoGeometry.dll", "Point.Z", "Point.Z");
+            migrationData.AppendNode(getXNode);
+            migrationData.AppendNode(getYNode);
+            migrationData.AppendNode(getZNode);
+
+            XmlElement xAverageNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 3,
+                "DSCoreNodes.dll", "Average", "Average@Double[]");
+            XmlElement yAverageNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 4,
+                "DSCoreNodes.dll", "Average", "Average@Double[]");
+            XmlElement zAverageNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 5,
+                "DSCoreNodes.dll", "Average", "Average@Double[]");
+            migrationData.AppendNode(xAverageNode);
+            migrationData.AppendNode(yAverageNode);
+            migrationData.AppendNode(zAverageNode);
+
+            string getXNodeId = MigrationManager.GetGuidFromXmlElement(getXNode);
+            string getYNodeId = MigrationManager.GetGuidFromXmlElement(getYNode);
+            string getZNodeId = MigrationManager.GetGuidFromXmlElement(getZNode);
+            string xAverageNodeId = MigrationManager.GetGuidFromXmlElement(xAverageNode);
+            string yAverageNodeId = MigrationManager.GetGuidFromXmlElement(yAverageNode);
+            string zAverageNodeId = MigrationManager.GetGuidFromXmlElement(zAverageNode);
+
+            data.CreateConnector(getXNode, 0, xAverageNode, 0);
+            data.CreateConnector(getYNode, 0, yAverageNode, 0);
+            data.CreateConnector(getZNode, 0, zAverageNode, 0);
+
+            data.CreateConnector(xAverageNode, 0, newPointNode, 0);
+            data.CreateConnector(yAverageNode, 0, newPointNode, 1);
+            data.CreateConnector(zAverageNode, 0, newPointNode, 2);
+
+            PortId oldOutPort = new PortId(oldNodeId, 0, PortType.OUTPUT);
+            PortId newOutPort = new PortId(newPointNodeId, 0, PortType.OUTPUT);
+            var connectors = data.FindConnectors(oldOutPort);
+            if (null != connectors)
+            {
+                foreach (var connector in connectors)
+                {
+                    data.ReconnectToPort(connector, newOutPort);
+                }
+            }
+
+            PortId oldInPort = new PortId(oldNodeId, 0, PortType.INPUT);
+            PortId newInPort0 = new PortId(getXNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(getYNodeId, 0, PortType.INPUT);
+            PortId newInPort2 = new PortId(getZNodeId, 0, PortType.INPUT);
+            var connector0 = data.FindFirstConnector(oldInPort);
+            if (null != connector0)
+            {
+                data.ReconnectToPort(connector0, newInPort0);
+                var connector1 = MigrationManager.CreateFunctionNodeFrom(connector0);
+                data.CreateConnector(connector1);
+                var connector2 = MigrationManager.CreateFunctionNodeFrom(connector0);
+                data.CreateConnector(connector2);
+                data.ReconnectToPort(connector1, newInPort1);
+                data.ReconnectToPort(connector2, newInPort2);
+            }
+
+            return migrationData;
+        }
     }
 
     public class XyzNegate : MigrationNode

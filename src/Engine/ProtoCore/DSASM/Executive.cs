@@ -1031,8 +1031,6 @@ namespace ProtoCore.DSASM
                 if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_')
                 {
                     core.calledInFunction = false;
-                    //@TODO(Gemeng, Luke): Remove me
-                    //Console.WriteLine("flag changed \t" + core.calledInFunction);
                 }
             }
             return sv;
