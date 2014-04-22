@@ -14,6 +14,8 @@ namespace DSCore
         ///     Converts an object to a string representation.
         /// </summary>
         /// <param name="obj">Object to serialize.</param>
+        /// <returns name="str">String representation of the object.</returns>
+        /// <search>tostring,2string,number2string,numbertostring</search>
         public static string FromObject(object obj)
         {
             return obj.ToString();
@@ -23,6 +25,8 @@ namespace DSCore
         ///     Converts a string to an integer or a double.
         /// </summary>
         /// <param name="str">String to be converted.</param>
+        /// <returns name="number">Integer or double-type number.</returns>
+        /// <search>2number,str2number,strtonumber,string2number,stringtonumber</search>
         public static object ToNumber(string str)
         {
             int i;
@@ -39,6 +43,9 @@ namespace DSCore
         /// <summary>
         ///     Concatenates multiple strings into a single string.
         /// </summary>
+        /// <param name="strings">List of strings to concatenate.</param>
+        /// <returns name="str">String made from list of strings.</returns>
+        /// <search>concatenate</search>
         public static string Concat(params string[] strings)
         {
             return string.Concat(strings);
@@ -47,20 +54,24 @@ namespace DSCore
         /// <summary>
         ///     Returns the number of characters contained in the given string.
         /// </summary>
-        /// <param name="str">String to take the length of.</param>
+        /// <param name="str">String to find the length of.</param>
+        /// <returns name="length">Number of characters in the string.</returns>
+        /// <search>count,size,characters</search>
         public static int Length(string str)
         {
             return str.Length;
         }
 
         /// <summary>
-        ///     Divides a single string into a list of strings, determined by
-        ///     the given separater strings.
+        ///     Divides a single string into a list of strings, with divisions
+        ///     determined by the given separater strings.
         /// </summary>
         /// <param name="str">String to split up.</param>
         /// <param name="separaters">
         ///     Strings that, if present, determine the end and start of a split.
         /// </param>
+        /// <returns name="strings">List of strings made from the input string.</returns>
+        /// <search>divide,separaters</search>
         public static IList Split(string str, params string[] separaters)
         {
             return str.Split(separaters, StringSplitOptions.RemoveEmptyEntries);
@@ -72,6 +83,10 @@ namespace DSCore
         /// </summary>
         /// <param name="separator">String to be inserted between joined strings.</param>
         /// <param name="strings">Strings to be joined into a single string.</param>
+        /// <returns name="str">
+        ///     A string made from the list of strings including the separator character.
+        /// </returns>
+        /// <search>join,separator</search>
         public static string Join(string separator, params string[] strings)
         {
             return string.Join(separator, strings);
@@ -120,6 +135,7 @@ namespace DSCore
         ///     Starting character position of the substring in the original string.
         /// </param>
         /// <param name="length">Number of characters in the substring.</param>
+        /// <returns name="substring">Substring made from the original string.</returns>
         public static string Substring(string str, int start, int length)
         {
             return str.Substring(start, length);
@@ -131,6 +147,8 @@ namespace DSCore
         /// <param name="str">String to search in.</param>
         /// <param name="searchFor">Substring to search for.</param>
         /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        /// <returns name="bool">Whether the string contains the substring.</returns>
+        /// <search>test</search>
         public static bool Contains(string str, string searchFor, bool ignoreCase = false)
         {
             return !ignoreCase ? str.Contains(searchFor) : str.ToLowerInvariant().Contains(searchFor.ToLowerInvariant());
@@ -165,6 +183,8 @@ namespace DSCore
         /// <param name="str">String to replace substrings in.</param>
         /// <param name="searchFor">Text to be replaced.</param>
         /// <param name="replaceWith">Text to replace with.</param>
+        /// <returns name="str">String with replacements made.</returns>
+        /// <search>replace</search>
         public static string Replace(string str, string searchFor, string replaceWith)
         {
             return str.Replace(searchFor, replaceWith);
@@ -176,6 +196,8 @@ namespace DSCore
         /// <param name="str">String to search the end of.</param>
         /// <param name="searchFor">Substring to search the end for.</param>
         /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        /// <returns name="bool">Whether the string ends with the substring.</returns>
+        /// <search>test</search>
         public static bool EndsWith(string str, string searchFor, bool ignoreCase = false)
         {
             return str.EndsWith(searchFor, ignoreCase, CultureInfo.InvariantCulture);
@@ -187,6 +209,8 @@ namespace DSCore
         /// <param name="str">String to search the start of.</param>
         /// <param name="searchFor">Substring to search the start for.</param>
         /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        /// <returns name="bool">Whether the string starts with the substring.</returns>
+        /// <search>test,beginswith</search>
         public static bool StartsWith(string str, string searchFor, bool ignoreCase = false)
         {
             return str.StartsWith(searchFor, ignoreCase, CultureInfo.InvariantCulture);
@@ -196,6 +220,8 @@ namespace DSCore
         ///     Removes all whitespace from the start and end of the given string.
         /// </summary>
         /// <param name="str">String to trim.</param>
+        /// <returns name="str">String with beginning and ending whitespaces removed.</returns>
+        /// <search>trimstring,cleanstring,whitespace,blanks,spaces</search>
         public static string TrimWhitespace(string str)
         {
             return str.Trim();
@@ -228,6 +254,10 @@ namespace DSCore
         /// <param name="str">A string to search in.</param>
         /// <param name="searchFor">Substring to search for.</param>
         /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        /// <returns name="index">
+        ///     Index of the first occurence of the substring or -1 if not found.
+        /// </returns>
+        /// <search>index,contains</search>
         public static int IndexOf(string str, string searchFor, bool ignoreCase = false)
         {
             return str.IndexOf(
@@ -243,7 +273,7 @@ namespace DSCore
         /// </summary>
         /// <param name="str">A string to search in.</param>
         /// <param name="searchFor">Substring to search for.</param>
-        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        /// <param name="ignoreCase">Whether comparison takes case into account.</param>
         [IsVisibleInDynamoLibrary(false)]
         public static int LastIndexOf(string str, string searchFor, bool ignoreCase = false)
         {
@@ -310,6 +340,8 @@ namespace DSCore
         /// <param name="str">String to insert into.</param>
         /// <param name="index">Index to insert at.</param>
         /// <param name="toInsert">String to be inserted.</param>
+        /// <returns name="str">String with inserted substring.</returns>
+        /// <search>insertstring</search>
         public static string Insert(string str, int index, string toInsert)
         {
             return str.Insert(index, toInsert);

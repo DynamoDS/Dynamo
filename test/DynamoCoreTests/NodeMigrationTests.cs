@@ -1697,6 +1697,32 @@ namespace Dynamo.Tests
             AssertPreviewValue("bede0d80-6382-4430-9403-a14c3916e041", 5);
         }
 
+        [Test]
+        public void TestXyzAverage()
+        {
+            OpenModel(GetDynPath("TestXyzAverage.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var x = workspace.NodeFromWorkspace<DSFunction>(
+                "024dbc25-b0a9-478f-9cc7-7005e44f0c5e");
+            var y = workspace.NodeFromWorkspace<DSFunction>(
+                "38085784-b781-4429-a37c-89fa56c97f68");
+            var z = workspace.NodeFromWorkspace<DSFunction>(
+                "6e68a338-d71e-4b72-a806-9c6b9e917c50");
+
+            Assert.AreEqual(14 + 6, workspace.Nodes.Count);
+            Assert.AreEqual(19 + 8, workspace.Connectors.Count);
+
+            Assert.NotNull(x);
+            Assert.NotNull(y);
+            Assert.NotNull(z);
+
+            RunCurrentModel();
+            AssertPreviewValue("024dbc25-b0a9-478f-9cc7-7005e44f0c5e", 0);
+            AssertPreviewValue("38085784-b781-4429-a37c-89fa56c97f68", -1.666667);
+            AssertPreviewValue("6e68a338-d71e-4b72-a806-9c6b9e917c50", 0);
+        }
+
         #endregion
 
         #region Dynamo Libraries Node Migration Tests

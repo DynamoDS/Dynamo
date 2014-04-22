@@ -45,7 +45,7 @@ namespace DSCore
         ///     Pi Constant Multiplied by 2
         /// </summary>
         /// <returns name="2pi">2 times PI.</returns>
-        /// <search>pi,2pi,2*pi,two</search>
+        /// <search>2pi,2*pi,twopi,two*pi</search>
         public static double PiTimes2
         {
             get
@@ -59,7 +59,7 @@ namespace DSCore
         /// </summary>
         /// <param name="numbers">List of numbers to be averaged.</param>
         /// <returns name="average">Average of the list of numbers.</returns>
-        /// <search>average,avg,mean</search>
+        /// <search>avg,mean</search>
         public static double Average(IList<double> numbers)
         {
             //DS will do proper marshalling, even if integer is sent.
@@ -74,7 +74,7 @@ namespace DSCore
         /// <param name="newMin">New minimum of the range.</param>
         /// <param name="newMax">New maximum of the range</param>
         /// <returns name="list">List remapped to new range.</returns>
-        /// <search>remap,range,remaprange</search>
+        /// <search>remap,range</search>
         public static IList RemapRange(IList<double> numbers, double newMin = 0, double newMax = 1)
         {
             var oldMax = numbers.Max();
@@ -94,21 +94,21 @@ namespace DSCore
         ///     The mathematical constant Pi, 3.14159...
         /// </summary>
         /// <returns name="pi">The constant Pi.</returns>
-        /// <search>pi,3.14</search>
+        /// <search>3.141592653589793</search>
         public static double PI { get { return 3.141592653589793; } }
 
         /// <summary>
         ///     The mathematical constant e, 2.71828...
         /// </summary>
         /// <returns name="e">The constant e.</returns>
-        /// <search>e,exp,2.718</search>
+        /// <search>exp,2.718281828459045</search>
         public static double E { get { return 2.718281828459045; } }
 
         /// <summary>
         ///     The golden ratio, (1 + sqrt(5))/2 = 1.61803...
         /// </summary>
         /// <returns name="phi">The golden ratio.</returns>
-        /// <search>golden,ratio,divine,phi,tau,1.618</search>
+        /// <search>golden,ratio,divine,phi,tau,1.61803398875</search>
         public static double GoldenRatio { get { return 1.61803398875; } }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace DSCore
         /// </summary>
         /// <param name="number">A number.</param>
         /// <returns name="absoluteValue">Absolute value of the number.</returns>
-        /// <search>absolute,magnitude</search>
+        /// <search>absolute value,magnitude</search>
         public static double Abs(double number)
         {
             return CSMath.Abs(number);
@@ -149,7 +149,7 @@ namespace DSCore
         /// </summary>
         /// <param name="integer">A number.</param>
         /// <returns name="absoluteValue">Absolute value of the number.</returns>
-        /// <search>absolute,magnitude</search>
+        /// <search>absolute value,magnitude</search>
         public static long Abs(long integer)
         {
             return CSMath.Abs(integer);
@@ -160,7 +160,7 @@ namespace DSCore
         /// </summary>
         /// <param name="ratio">The cosine of the angle, a number in the range [-1, 1].</param>
         /// <returns name="angle">The angle whose cosine is the input ratio.</returns>
-        /// <search>acos,arccos,arccosine</search>
+        /// <search>acosine,arccosine</search>
         public static double Acos(double ratio)
         {
             return CSMath.Acos(ratio) * kRadiansToDegrees;
@@ -171,7 +171,7 @@ namespace DSCore
         /// </summary>
         /// <param name="ratio">The sine of the angle, a number in the range [-1, 1].</param>
         /// <returns name="angle">The angle whose cosine is the input ratio.</returns>
-        /// <search>asin,arcsin,arcsine</search>
+        /// <search>asine,arcsin</search>
         public static double Asin(double ratio)
         {
             return CSMath.Asin(ratio) * kRadiansToDegrees;
@@ -182,7 +182,7 @@ namespace DSCore
         /// </summary>
         /// <param name="ratio">The tangent of the angle.</param>
         /// <returns name="angle">The angle whose tangent is the input ratio.</returns>
-        /// <search>atan,arctan,arctangent</search>
+        /// <search>atangent,arctangent</search>
         public static double Atan(double ratio)
         {
             return CSMath.Atan(ratio) * kRadiansToDegrees;
@@ -195,7 +195,7 @@ namespace DSCore
         /// <param name="numerator">The numerator of the tangent of the angle.</param>
         /// <param name="denominator">The denominator of the tangent of the angle.</param>
         /// <returns name="angle">The angle whose tangent is numerator/denominator.</returns>
-        /// <search>atan,arctan,arctangent</search>
+        /// <search>atangent,arctangent</search>
         public static double Atan2(double numerator, double denominator)
         {
             return CSMath.Atan2(numerator, denominator) * kRadiansToDegrees;
@@ -217,18 +217,18 @@ namespace DSCore
         /// </summary>
         /// <param name="angle">Angle in degrees to take the cosine of.</param>
         /// <returns name="cos">Cosine of the angle.</returns>
-        /// <search>cos,cosine</search>
+        /// <search>cosine</search>
         public static double Cos(double angle)
         {
             return CSMath.Cos(angle * kDegreesToRadians);
         }
 
         /// <summary>
-        ///     Finds the hyperbolic cosine of an angle.
+        ///     Finds the hyperbolic cosine of an angle (radians).
         /// </summary>
-        /// <param name="angle">An angle.</param>
+        /// <param name="angle">An angle in radians.</param>
         /// <returns name="cosh">Hyperbolic cosine of the angle.</returns>
-        /// <search>hyperbolic,cosh</search>
+        /// <search>hyperbolic cosine</search>
         public static double Cosh(double angle)
         {
             return CSMath.Cosh(angle);
@@ -240,7 +240,7 @@ namespace DSCore
         /// <param name="dividend">The number to be divided.</param>
         /// <param name="divisor">The number to be divided by.</param>
         /// <returns name="remainder">The remainder of the division.</returns>
-        /// <search>divrem,remainder</search>
+        /// <search>remainder</search>
         public static long DivRem(long dividend, long divisor)
         {
             long remainder = 0;
@@ -253,7 +253,7 @@ namespace DSCore
         /// </summary>
         /// <param name="number">Number.</param>
         /// <returns name="e^number">The exponential of the number.</returns>
-        /// <search>e,exp,exponential</search>
+        /// <search>exponential</search>
         public static double Exp(double number)
         {
             return CSMath.Exp(number);
@@ -264,7 +264,7 @@ namespace DSCore
         /// </summary>
         /// <param name="number">Number to round up.</param>
         /// <returns name="integer">First integer greater than the number.</returns>
-        /// <search>ceiling,round</search>
+        /// <search>round</search>
         public static long Floor(double number)
         {
             return (long)CSMath.Floor(number);
@@ -281,7 +281,7 @@ namespace DSCore
         /// </summary>
         /// <param name="number">Number greater than 0.</param>
         /// <returns name="log">Natural log of the number.</returns>
-        /// <search>natural,log,logarithm,ln</search>
+        /// <search>natural,logarithm,ln</search>
         public static double Log(double number)
         {
             return CSMath.Log(number);
@@ -293,7 +293,7 @@ namespace DSCore
         /// <param name="number">Number greater than 0.</param>
         /// <param name="logBase">Base of the logarithm in the range [0,1),(1, ∞).</param>
         /// <returns name="log">Logarithm of the number.</returns>
-        /// <search>log,logarithm,ld,lg</search>
+        /// <search>logarithm,ld,lg</search>
         public static double Log(double number, double logBase)
         {
             return CSMath.Log(number, logBase);
@@ -304,7 +304,7 @@ namespace DSCore
         /// </summary>
         /// <param name="number">Number greater than 0.</param>
         /// <returns name="log">Logarithm of the number.</returns>
-        /// <search>log,logarithm,log10</search>
+        /// <search>logarithm</search>
         public static double Log10(double number)
         {
             return CSMath.Log10(number);
@@ -316,7 +316,7 @@ namespace DSCore
         /// <param name="value1">Number to compare.</param>
         /// <param name="value2">Number to compare.</param>
         /// <returns name="max">Greater of the two numbers.</returns>
-        /// <search>max,maximum,greater,larger</search>
+        /// <search>maximum,greater,larger</search>
         public static double Max(double value1, double value2)
         {
             return CSMath.Max(value1, value2);
@@ -328,7 +328,7 @@ namespace DSCore
         /// <param name="int1">Number to compare.</param>
         /// <param name="int2">Number to compare.</param>
         /// <returns name="max">Greater of the two numbers.</returns>
-        /// <search>max,maximum,greater,larger</search>
+        /// <search>maximum,greater,larger</search>
         public static long Max(long int1, long int2)
         {
             return CSMath.Max(int1, int2);
@@ -340,7 +340,7 @@ namespace DSCore
         /// <param name="value1">Number to compare.</param>
         /// <param name="value2">Number to compare.</param>
         /// <returns name="min">Smaler of the two numbers.</returns>
-        /// <search>min,minimum,lesser,smaller</search>
+        /// <search>minimum,lesser,smaller</search>
         public static double Min(double value1, double value2)
         {
             return CSMath.Min(value1, value2);
@@ -352,7 +352,7 @@ namespace DSCore
         /// <param name="int1">Number to compare.</param>
         /// <param name="int2">Number to compare.</param>
         /// <returns name="min">Smaler of the two numbers.</returns>
-        /// <search>min,minimum,lesser,smaller</search>
+        /// <search>minimum,lesser,smaller</search>
         public static long Min(long int1, long int2)
         {
             return CSMath.Min(int1, int2);
@@ -364,7 +364,7 @@ namespace DSCore
         /// <param name="number">Number to be raised to a power.</param>
         /// <param name="power">Power to raise the number to.</param>
         /// <returns name="result">Number raised to the power.</returns>
-        /// <search>^,pow,power,raise,exponent</search>
+        /// <search>^,power,raise,exponent</search>
         public static double Pow(double number, double power)
         {
             return CSMath.Pow(number, power);
@@ -398,7 +398,6 @@ namespace DSCore
         /// </summary>
         /// <param name="number">Number to round.</param>
         /// <returns name="int">Integer closest to the number.</returns>
-        /// <search>round</search>
         public static double Round(double number)
         {
             return CSMath.Round(number);
@@ -417,7 +416,6 @@ namespace DSCore
         /// <param name="number">Number to round.</param>
         /// <param name="digits">Number of digits beyond the decimal to round to.</param>
         /// <returns name="number">Rounded number.</returns>
-        /// <search>round</search>
         public static double Round(double number, int digits)
         {
             return CSMath.Round(number, digits);
@@ -435,7 +433,6 @@ namespace DSCore
         /// </summary>
         /// <param name="number">A number.</param>
         /// <returns name="sign">The sign of the number: -1, 0, or 1.</returns>
-        /// <search>sign</search>
         public static long Sign(double number)
         {
             return CSMath.Sign(number);
@@ -446,7 +443,6 @@ namespace DSCore
         /// </summary>
         /// <param name="integer">A number.</param>
         /// <returns name="sign">The sign of the number: -1, 0, or 1.</returns>
-        /// <search>sign</search>
         public static long Sign(long integer)
         {
             return CSMath.Sign(integer);
@@ -457,18 +453,18 @@ namespace DSCore
         /// </summary>
         /// <param name="angle">Angle in degrees to take the cosine of.</param>
         /// <returns name="sin">Sine of the angle.</returns>
-        /// <search>sin,sine</search>
+        /// <search>sine</search>
         public static double Sin(double angle)
         {
             return CSMath.Sin(angle * kDegreesToRadians);
         }
 
         /// <summary>
-        ///     Finds the hyperbolic sine of an angle.
+        ///     Finds the hyperbolic sine of an angle (radians).
         /// </summary>
-        /// <param name="angle">An angle.</param>
+        /// <param name="angle">An angle in radians.</param>
         /// <returns name="sinh">Hyperbolic sine of the angle.</returns>
-        /// <search>hyperbolic,sinh</search>
+        /// <search>hyperbolic</search>
         public static double Sinh(double angle)
         {
             return CSMath.Sinh(angle);
@@ -479,7 +475,7 @@ namespace DSCore
         /// </summary>
         /// <param name="number">A number in the range [0, ∞).</param>
         /// <returns name="sqrt">Positive square root of the number.</returns>
-        /// <search>sqrt,square,root,radical</search>
+        /// <search>square,root,radical</search>
         public static double Sqrt(double number)
         {
             return CSMath.Sqrt(number);
@@ -490,7 +486,7 @@ namespace DSCore
         /// </summary>
         /// <param name="angle">Angle in degrees to take the tangent of.</param>
         /// <returns name="tan">Tangent of the angle.</returns>
-        /// <search>tan,tangent</search>
+        /// <search>tangent</search>
         public static double Tan(double angle)
         {
             if (!(Double.Equals(CSMath.IEEERemainder(angle, 180), 0.0) || Double.Equals(CSMath.IEEERemainder(angle, 180), 180.0))
@@ -500,9 +496,9 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Finds the hyperbolic tangent of an angle.
+        ///     Finds the hyperbolic tangent of an angle (radians).
         /// </summary>
-        /// <param name="angle">An angle.</param>
+        /// <param name="angle">An angle in radians.</param>
         /// <returns name="tanh">Hyperbolic tangent of the angle.</returns>
         /// <search>hyperbolic,tanh</search>
         public static double Tanh(double angle)
@@ -522,7 +518,7 @@ namespace DSCore
         /// </summary>
         /// <param name="values">The numbers to sum</param>
         /// <returns name="sum">The sum of the values</returns>
-        /// <search>sum</search>
+        /// <search>mass addition,massadd</search>
         public static double Sum(IEnumerable<double> values)
         {
             return values.Sum();
@@ -533,7 +529,7 @@ namespace DSCore
         /// </summary>
         /// <param name="number">A positive integer.</param>
         /// <returns name="number!">The factorial result of the integer.</returns>
-        /// <search>!,factorial</search>
+        /// <search>!</search>
         public static long Factorial(long number)
         {
             if (number < 0)
