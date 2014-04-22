@@ -34,6 +34,8 @@ namespace RevitTestFrameworkRunner
         internal static List<string> _journalPaths = new List<string>();
         internal static int _runCount = 0;
         internal static int _timeout = 120000;
+        internal static bool _concat = false;
+
         private static ViewModel _vm;
         public static event EventHandler TestRunsComplete;
         private static void OnTestRunsComplete()
@@ -104,7 +106,7 @@ namespace RevitTestFrameworkRunner
                         return;
                     }
 
-                    if (File.Exists(_results))
+                    if (File.Exists(_results) && !_concat)
                     {
                         File.Delete(_results);
                     }
@@ -220,6 +222,7 @@ namespace RevitTestFrameworkRunner
                 {"r:|results:", "The path to the results file.", v=>_results = Path.GetFullPath(v)},
                 {"f:|fixture:", "The full name (with namespace) of the test fixture.", v => _fixture = v},
                 {"t:|testName:", "The name of a test to run", v => _test = v},
+                {"c:|concatenate:", "Concatenate results with existing results file.", v=> _concat = v != null},
                 {"gui:", "Show the revit test runner gui.", v=>_gui = v != null},
                 {"d|debug", "Run in debug mode.", v=>_isDebug = v != null},
                 {"h|help", "Show this message and exit.", v=> showHelp = v != null}
