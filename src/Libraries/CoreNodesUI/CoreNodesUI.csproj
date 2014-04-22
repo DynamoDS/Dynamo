@@ -38,6 +38,9 @@
       <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="NCalc">
+      <HintPath>..\..\..\extern\NCalc\NCalc.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="ProtoInterface">
@@ -59,6 +62,7 @@
     <Compile Include="DropDown.cs" />
     <Compile Include="DummyNode.cs" />
     <Compile Include="Enum.cs" />
+    <Compile Include="Formula.cs" />
     <Compile Include="HigherOrder\Apply.cs" />
     <Compile Include="HigherOrder\MapCombineLacing.cs" />
     <Compile Include="Input\BasicInteractive.cs" />

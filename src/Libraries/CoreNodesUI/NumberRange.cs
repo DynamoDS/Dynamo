@@ -32,7 +32,7 @@ namespace DSCoreNodesUI
             {
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
-                    new RangeExprNode()
+                    new RangeExprNode
                     {
                         FromNode = inputAstNodes[0],
                         ToNode = inputAstNodes[1],
@@ -68,7 +68,7 @@ namespace DSCoreNodesUI
             {
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
-                    new RangeExprNode()
+                    new RangeExprNode 
                     {
                         FromNode = inputAstNodes[0],
                         ToNode = inputAstNodes[1],
