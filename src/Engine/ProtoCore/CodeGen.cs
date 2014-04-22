@@ -2472,55 +2472,16 @@ namespace ProtoCore
         protected void EmitReturnStatement(Node node, Type inferedType)
         {
             // Check the returned type against the declared return type
-            if (null != localProcedure && core.IsFunctionCodeBlock(codeBlock))
+            if (null != localProcedure && 
+                localProcedure.isConstructor &&
+                core.IsFunctionCodeBlock(codeBlock))
             {
-                if (localProcedure.isConstructor)
-                {
-                    buildStatus.LogSemanticError("return statements are not allowed in constructors", core.CurrentDSFileName, node.line, node.col);
-                }
-                else
-                {
-#if STATIC_TYPE_CHECKING
-                    if (inferedType.UID == (int)PrimitiveType.kInvalidType)
-                    {
-                        EmitPushNull();
-                        EmitReturnToRegister(node.line, node.col, node.endLine, node.endCol);
-                        return;
-                    }
-
-                    ProtoCore.DSASM.ClassNode typeNode = core.classTable.list[inferedType.UID];
-                    Validity.Assert(null != typeNode);
-
-                    bool diableRankCheck = localProcedure.returntype.UID == (int)PrimitiveType.kTypeVar || localProcedure.returntype.rank == -1 || inferedType.UID == (int)PrimitiveType.kTypeVar || inferedType.rank == -1;
-                    bool notMatchedRank = diableRankCheck ? false : localProcedure.returntype.rank != inferedType.rank;
-                    bool isReturnTypeMatch = (localProcedure.returntype.UID == inferedType.UID) && !notMatchedRank;
-                    if (!isReturnTypeMatch)
-                    {
-                        if (inferedType.UID != (int)PrimitiveType.kTypeVar && (!typeNode.ConvertibleTo(localProcedure.returntype.UID) || notMatchedRank))
-                        {
-                            // Log a warning and force conversion to null by popping the result to the LX register and pushing a null
-
-                            ProtoCore.DSASM.ClassNode returnTypeNode = core.classTable.list[localProcedure.returntype.UID];
-                            if (notMatchedRank)
-                            {
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kMismatchReturnType, "Function '" + localProcedure.name + "' " + "expects return value to be of type " + returnTypeNode.name + " and of rank " + localProcedure.returntype.rank, core.CurrentDSFileName, node.line, node.col);
-                            }
-                            else
-                            {
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kMismatchReturnType, "Function '" + localProcedure.name + "' " + "expects return value to be of type " + returnTypeNode.name, core.CurrentDSFileName, node.line, node.col);
-                            }
-                            EmitPushNull();
-                        }
-                        else if (localProcedure.returntype.UID < (int)PrimitiveType.kMaxPrimitives && inferedType.UID > (int)PrimitiveType.kTypeNull)
-                        {
-                            // EmitInstrConsole(ProtoCore.DSASM.kw.cast, localProcedure.returntype.UID.ToString());
-                            // EmitConvert(localProcedure.returntype.UID, localProcedure.returntype.rank);
-                        }
-                    }
-                }
-#endif
-                }
+                buildStatus.LogSemanticError("return statement is not allowed in constructor", 
+                                             core.CurrentDSFileName, 
+                                             node.line, 
+                                             node.col);
             }
+
             EmitReturnToRegister(node.line, node.col, node.endLine, node.endCol);
         }
 
