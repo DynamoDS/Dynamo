@@ -796,7 +796,7 @@ namespace Dynamo.Nodes
                     return "Select";
             }
 
-            return value == null ? "Select" : "Change";
+            return "Change";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
