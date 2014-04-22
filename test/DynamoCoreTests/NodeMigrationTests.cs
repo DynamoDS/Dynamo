@@ -1636,6 +1636,22 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestCompose()
+        {
+            OpenModel(GetDynPath("TestCompose.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            //During migraton, the manager will add a toRadius node. 
+            //So the number of node and connector will be increased.
+            Assert.AreEqual(8, workspace.Nodes.Count);
+            Assert.AreEqual(7, workspace.Connectors.Count);
+
+            RunCurrentModel();
+            AssertPreviewValue("a748df54-06dd-4159-a339-f824f190d5ea", 6);
+        }
+
+        [Test]
         [Category("Failing")]
         public void TestNumberInput()
         {
