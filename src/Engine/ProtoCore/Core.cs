@@ -2217,7 +2217,7 @@ namespace ProtoCore
                 }
 
                 // The class table is passed just to check for coercion values
-                int procIndex = searchBlock.procedureTable.IndexOf(name, argTypeList, ClassTable);
+                int procIndex = searchBlock.procedureTable.IndexOf(name, argTypeList);
                 if (ProtoCore.DSASM.Constants.kInvalidIndex != procIndex)
                 {
                     return searchBlock.procedureTable.procList[procIndex];

@@ -598,7 +598,6 @@ namespace GraphToDSCompiler
                 List<ProcedureNode> procList = procedureTable.procList;
                 string prefix = ProtoCore.DSASM.Constants.kGetterPrefix;
                 ArgumentInfo aInfo = new ArgumentInfo();
-                aInfo.isDefault = false;
                 aInfo.Name = ProtoCore.DSASM.Constants.kThisPointerArgName;
                 foreach (ProcedureNode pNode in procList)
                 {
@@ -633,7 +632,6 @@ namespace GraphToDSCompiler
                 List<ProcedureNode> procList = procedureTable.procList;
                 string prefix = ProtoCore.DSASM.Constants.kGetterPrefix;
                 ArgumentInfo aInfo = new ArgumentInfo();
-                aInfo.isDefault = false;
                 aInfo.Name = ProtoCore.DSASM.Constants.kThisPointerArgName;
                 foreach (ProcedureNode pNode in procList)
                 {

@@ -564,13 +564,6 @@ namespace ProtoAssociative
                 
             }
 
-            // TODO Jun: Set the symbol table index of the first local variable of 'funcIndex'
-            if (null != localProcedure && null == localProcedure.firstLocal && !IsInLanguageBlockDefinedInFunction())
-            {
-                localProcedure.firstLocal = symbolnode.index;
-            }
-
-
             if (ProtoCore.DSASM.Constants.kInvalidIndex == symbolindex)
             {
                 return null;
@@ -1524,12 +1517,6 @@ namespace ProtoAssociative
 
                 inferedType = procCallNode.returntype;
 
-                //if call is replication call
-                if (procCallNode.isThisCallReplication)
-                {
-                    inferedType.rank++;
-                }
-
                 // Get the dot call procedure
                 if (isConstructor || isStaticCall)
                 {
@@ -1802,12 +1789,6 @@ namespace ProtoAssociative
                 }
 
                 inferedType = procNode.returntype;
-
-                //if call is replication call
-                if (procNode.isThisCallReplication)
-                {
-                    inferedType.rank++;
-                }
 
                 if (procNode.procId != Constants.kInvalidIndex)
                 {
@@ -5283,7 +5264,7 @@ namespace ProtoAssociative
                 List<int> myBases = core.ClassTable.ClassNodes[globalClassIndex].baseList;
                 foreach (int bidx in myBases)
                 {
-                    int cidx = core.ClassTable.ClassNodes[bidx].vtable.IndexOf(baseConstructorName, argTypeList, core.ClassTable);
+                    int cidx = core.ClassTable.ClassNodes[bidx].vtable.IndexOf(baseConstructorName, argTypeList);
                     if ((cidx != ProtoCore.DSASM.Constants.kInvalidIndex) &&
                         core.ClassTable.ClassNodes[bidx].vtable.procList[cidx].isConstructor)
                     {
@@ -5301,7 +5282,7 @@ namespace ProtoAssociative
                 foreach (int bidx in myBases)
                 {
                     baseConstructorName = core.ClassTable.ClassNodes[bidx].name;
-                    int cidx = core.ClassTable.ClassNodes[bidx].vtable.IndexOf(baseConstructorName, argTypeList, core.ClassTable);
+                    int cidx = core.ClassTable.ClassNodes[bidx].vtable.IndexOf(baseConstructorName, argTypeList);
                     // If the base class is a FFI class, it may not contain a 
                     // default constructor, so only assert for design script 
                     // class for which we always generate a default constructor.
@@ -5366,7 +5347,6 @@ namespace ProtoAssociative
                         ++argNumber;
 
                         IdentifierNode paramNode = null;
-                        bool aIsDefault = false;
                         ProtoCore.AST.Node aDefaultExpression = null;
                         if (argNode.NameNode is IdentifierNode)
                         {
@@ -5376,10 +5356,7 @@ namespace ProtoAssociative
                         {
                             BinaryExpressionNode bNode = argNode.NameNode as BinaryExpressionNode;
                             paramNode = bNode.LeftNode as IdentifierNode;
-                            aIsDefault = true;
                             aDefaultExpression = bNode;
-                            //buildStatus.LogSemanticError("Default parameters are not supported");
-                            //throw new BuildHaltException();
                         }
                         else
                         {
@@ -5389,7 +5366,7 @@ namespace ProtoAssociative
                         ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode);
                         argsToBeAllocated.Add(new KeyValuePair<string, ProtoCore.Type>(paramNode.Value, argType));
                         localProcedure.argTypeList.Add(argType);
-                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, isDefault = aIsDefault, defaultExpression = aDefaultExpression };
+                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, DefaultExpression = aDefaultExpression };
                         localProcedure.argInfoList.Add(argInfo);
                     }
 
@@ -5470,11 +5447,11 @@ namespace ProtoAssociative
                     //Traverse default argument for the constructor
                     foreach (ProtoCore.DSASM.ArgumentInfo argNode in localProcedure.argInfoList)
                     {
-                        if (!argNode.isDefault)
+                        if (!argNode.IsDefault)
                         {
                             continue;
                         }
-                        BinaryExpressionNode bNode = argNode.defaultExpression as BinaryExpressionNode;
+                        BinaryExpressionNode bNode = argNode.DefaultExpression as BinaryExpressionNode;
                         // build a temporay node for statement : temp = defaultarg;
                         var iNodeTemp = nodeBuilder.BuildIdentfier(Constants.kTempDefaultArg);
                         BinaryExpressionNode bNodeTemp = new BinaryExpressionNode();
@@ -5722,10 +5699,7 @@ namespace ProtoAssociative
                         {
                             BinaryExpressionNode bNode = argNode.NameNode as BinaryExpressionNode;
                             paramNode = bNode.LeftNode as IdentifierNode;
-                            aIsDefault = true;
                             aDefaultExpression = bNode;
-                            //buildStatus.LogSemanticError("Defualt parameters are not supported");
-                            //throw new BuildHaltException();
                         }
                         else
                         {
@@ -5737,7 +5711,7 @@ namespace ProtoAssociative
                         argsToBeAllocated.Add(new KeyValuePair<string, ProtoCore.Type>(paramNode.Value, argType));
                         
                         localProcedure.argTypeList.Add(argType);
-                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, isDefault = aIsDefault, defaultExpression = aDefaultExpression };
+                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, DefaultExpression = aDefaultExpression };
                         localProcedure.argInfoList.Add(argInfo);
 
                         functionDescription += argNode.ArgumentType.ToString();
@@ -5837,11 +5811,11 @@ namespace ProtoAssociative
                     emitDebugInfo = false;
                     foreach (ProtoCore.DSASM.ArgumentInfo argNode in localProcedure.argInfoList)
                     {
-                        if (!argNode.isDefault)
+                        if (!argNode.IsDefault)
                         {
                             continue;
                         }
-                        BinaryExpressionNode bNode = argNode.defaultExpression as BinaryExpressionNode;
+                        BinaryExpressionNode bNode = argNode.DefaultExpression as BinaryExpressionNode;
                         // build a temporay node for statement : temp = defaultarg;
                         var iNodeTemp = nodeBuilder.BuildTempVariable();
                         var bNodeTemp = nodeBuilder.BuildBinaryExpression(iNodeTemp, bNode.LeftNode) as BinaryExpressionNode;

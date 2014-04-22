@@ -480,14 +480,6 @@ namespace ProtoImperative
                 symbolindex = codeBlock.symbolTable.Append(symbolnode);                
             }
 
-            // TODO Jun: Set the symbol table index of the first local variable of 'funcIndex'
-            // This will no longer required once the functiontable is refactored to include a symbol table 
-            // if the current codeblock is a while block, the procedureTable will be null
-            if (null != localProcedure && null == localProcedure.firstLocal && !IsInLanguageBlockDefinedInFunction())
-            {
-                localProcedure.firstLocal = symbolnode.index;
-            }
-
             if (ProtoCore.DSASM.MemoryRegion.kMemHeap == symbolnode.memregion)
             {
                 EmitInstrConsole(ProtoCore.DSASM.kw.alloca, symbolindex.ToString());
@@ -777,11 +769,6 @@ namespace ProtoImperative
             if (null != procNode)
             {
                 inferedType = procNode.returntype;
-                //if call is replication call
-                if (procNode.isThisCallReplication)
-                {
-                    inferedType.rank++;
-                }
 
                 if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId)
                 {
@@ -1346,7 +1333,6 @@ namespace ProtoImperative
                     foreach (VarDeclNode argNode in funcDef.Signature.Arguments)
                     {
                         IdentifierNode paramNode = null;
-                        bool aIsDefault = false;
                         ProtoCore.AST.Node aDefaultExpression = null;
                         if (argNode.NameNode is IdentifierNode)
                         {
@@ -1356,10 +1342,7 @@ namespace ProtoImperative
                         {
                             BinaryExpressionNode bNode = argNode.NameNode as BinaryExpressionNode;
                             paramNode = bNode.LeftNode as IdentifierNode;
-                            aIsDefault = true;
                             aDefaultExpression = bNode;
-                            //buildStatus.LogSemanticError("Defualt parameters are not supported");
-                            //throw new BuildHaltException();
                         }
                         else
                         {
@@ -1374,7 +1357,7 @@ namespace ProtoImperative
                         }
 
                         localProcedure.argTypeList.Add(argType);
-                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { isDefault = aIsDefault, defaultExpression = aDefaultExpression };
+                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { DefaultExpression = aDefaultExpression };
                         localProcedure.argInfoList.Add(argInfo);
                     }
                 }
@@ -1430,11 +1413,11 @@ namespace ProtoImperative
                 emitDebugInfo = false;
                 foreach (ProtoCore.DSASM.ArgumentInfo argNode in localProcedure.argInfoList)
                 {
-                    if (!argNode.isDefault)
+                    if (!argNode.IsDefault)
                     {
                         continue;
                     }
-                    BinaryExpressionNode bNode = argNode.defaultExpression as BinaryExpressionNode;
+                    BinaryExpressionNode bNode = argNode.DefaultExpression as BinaryExpressionNode;
 
                     // build a temporay node for statement : temp = defaultarg;
                     var iNodeTemp = nodeBuilder.BuildIdentfier(Constants.kTempDefaultArg);
