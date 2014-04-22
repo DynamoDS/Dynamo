@@ -58,11 +58,11 @@
     <Reference Include="PresentationCore" />
     <Reference Include="ProtoGeometry, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\AnyCPU\Debug\ProtoGeometry.dll</HintPath>
+      <HintPath>..\..\..\..\extern\DesignScript\ProtoGeometry.dll</HintPath>
     </Reference>
     <Reference Include="ProtoInterface, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\AnyCPU\Debug\ProtoInterface.dll</HintPath>
+      <HintPath>..\..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPI">
       <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
