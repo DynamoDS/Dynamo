@@ -304,7 +304,9 @@ namespace Dynamo.DSEngine
             IEnumerable<NodeModel> sortedNodes = TopologicalSort(nodes);
 
             if (isDeltaExecution)
-                sortedNodes = sortedNodes.Where(n => n.RequiresRecalc);
+            {
+                sortedNodes = sortedNodes.Where(n => n.RequiresRecalc || n.ForceReExecuteOfNode);
+            }
 
             var result = new List<AssociativeNode>();
 
