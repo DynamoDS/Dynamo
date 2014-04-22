@@ -518,25 +518,16 @@ namespace ProtoCore.Utils
 
             if (core != null)
             {
-                if (argNum >= 0)
+                int index = core.DynamicFunctionTable.functionTable.FindIndex(dynnode => dynnode.functionName == rhsName);
+                if (index >= 0)
                 {
-                    ProtoCore.DSASM.DynamicFunctionNode dynamicFunctionNode = new ProtoCore.DSASM.DynamicFunctionNode(rhsName, new List<ProtoCore.Type>());
-                    int index = core.DynamicFunctionTable.functionTable.FindIndex(dynnode => dynnode.functionName == rhsName);
-                    if (index >= 0)
-                    {
-                        rhsIdx = index;
-                    }
-                    else
-                    {
-                        core.DynamicFunctionTable.functionTable.Add(dynamicFunctionNode);
-                        rhsIdx = core.DynamicFunctionTable.functionTable.Count - 1;
-                    }
+                    rhsIdx = index;
                 }
                 else
                 {
-                    DSASM.DyanmicVariableNode dynamicVariableNode = new DSASM.DyanmicVariableNode(rhsName);
-                    core.DynamicVariableTable.variableTable.Add(dynamicVariableNode);
-                    rhsIdx = core.DynamicVariableTable.variableTable.Count - 1;
+                    var dynamicFunctionNode = new DynamicFunctionNode(rhsName, new List<ProtoCore.Type>());
+                    core.DynamicFunctionTable.functionTable.Add(dynamicFunctionNode);
+                    rhsIdx = core.DynamicFunctionTable.functionTable.Count - 1;
                 }
             }
 

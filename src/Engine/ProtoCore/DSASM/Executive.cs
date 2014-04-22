@@ -4096,46 +4096,21 @@ namespace ProtoCore.DSASM
         private bool ProcessDynamicVariable(bool isArray, ref StackValue svPtr, int classIndex)
         {
             int variableDynamicIndex = (int)svPtr.opdata;
-            DSASM.DyanmicVariableNode dynamicVariableNode = core.DynamicVariableTable.variableTable[variableDynamicIndex];
-            string name = dynamicVariableNode.variableName;
-            int contextClassIndex = dynamicVariableNode.classIndex;
-            int contextProcIndex = dynamicVariableNode.procIndex;
+            var dynamicVariableNode = core.DynamicVariableTable.variableTable[variableDynamicIndex];
 
             SymbolNode node = null;
             bool isStatic = false;
-            //if (classscope == ProtoCore.DSASM.Constants.kGlobalScope)
-            //{
-            //    classscope = dynamicVariableNode.classIndex;
-            //    int blockId = dynamicVariableNode.codeBlockId;
-            //    int symbolIndex = dynamicVariableNode.symbolIndex;
-            //    if (blockId != (int)ProtoCore.DSASM.Constants.kInvalidIndex && symbolIndex != (int)ProtoCore.DSASM.Constants.kInvalidIndex)
-            //    {
-            //        svPtr = rmem.GetStackData(blockId, symbolIndex, classscope);
-            //        return true;
-            //        //if (Constants.kInvalidIndex == classscope)
-            //        //{
-            //        //    node = core.executable.runtimeSymbols[blockId].symbolList[symbolIndex];
-            //        //}
-            //        //else
-            //        //{
-            //        //    node = core.classTable.list[classscope].symbols.symbolList[symbolIndex];
-            //        //}
-            //    }
-            //    return false;
-            //    //if (node != null)
-            //    //{
-            //    //    svPtr.metaData.type = node.datatype.UID;
-            //    //}
-            //}
-            //if (node == null)
-            //{
-            if (!((int)ProtoCore.PrimitiveType.kTypeVoid == classIndex
-                || ProtoCore.DSASM.Constants.kInvalidIndex == classIndex
+
+            if (!((int)PrimitiveType.kTypeVoid == classIndex
+                || Constants.kInvalidIndex == classIndex
                 || core.ClassTable.ClassNodes[classIndex].symbols == null))
             {
                 bool hasThisSymbol;
                 ProtoCore.DSASM.AddressType addressType;
 
+                string name = dynamicVariableNode.variableName;
+                int contextClassIndex = dynamicVariableNode.classIndex;
+                int contextProcIndex = dynamicVariableNode.procIndex;
                 int symbolIndex = core.ClassTable.ClassNodes[classIndex].GetSymbolIndex(name, contextClassIndex, contextProcIndex, core.RunningBlock, core, out hasThisSymbol, out addressType);
                 if (ProtoCore.DSASM.Constants.kInvalidIndex != symbolIndex)
                 {
@@ -4150,7 +4125,6 @@ namespace ProtoCore.DSASM
                     }
                 }
             }
-            //}
 
             if (null == node)
             {
