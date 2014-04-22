@@ -115,9 +115,28 @@ namespace DSOffice
             }
         }
 
+        //public class ExcelCloseEventArgs : EventArgs
+        //{
+        //    public ExcelCloseEventArgs(bool saveWorkbooks = true)
+        //    {
+        //        this.SaveWorkbooks = saveWorkbooks;
+        //    }
+
+        //    public bool SaveWorkbooks { get; private set; }
+        //}
+
         private static void DynamoModelOnCleaningUp(object sender, EventArgs eventArgs)
         {
-            TryQuitAndCleanup(true);
+            if(eventArgs != null)
+            {
+                Dynamo.Nodes.ExcelCloseEventArgs args = eventArgs as Dynamo.Nodes.ExcelCloseEventArgs;
+                if (args != null)
+                {
+                    TryQuitAndCleanup(args.SaveWorkbooks);
+                }
+            }
+            else
+                TryQuitAndCleanup(true);
         }
     }
 
@@ -129,30 +148,60 @@ namespace DSOffice
 
         }
 
+        /// <summary>
+        /// Reads the given Excel file and returns a workbook
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkBook ReadExcelFile(string path)
         {
             return WorkBook.ReadExcelFile(path);
         }
 
+        /// <summary>
+        /// Returns a list of all the worksheets present in the given Excel workbook
+        /// </summary>
+        /// <param name="workbook"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkSheet[] GetWorksheetsFromExcelWorkbook(WorkBook workbook)
         {
             return workbook.WorkSheets;
         }
 
+        /// <summary>
+        /// Returns the worksheet in the given workbook by its name
+        /// </summary>
+        /// <param name="workbook"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkSheet GetExcelWorksheetByName(WorkBook workbook, string name)
         {
             return workbook.GetWorksheetByName(name);
         }
 
-        [IsVisibleInDynamoLibrary(true)]
+        /// <summary>
+        /// Reads and retrieves the data from the given Excel worksheet
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
         public static object[][] GetDataFromExcelWorksheet(WorkSheet worksheet)
         {
             return worksheet.Data;
         }
 
+        /// <summary>
+        /// Writes the given data at the specified row and column no. in the given worksheet
+        /// and returns the worksheet
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="startRow"></param>
+        /// <param name="startColumn"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkSheet WriteDataToExcelWorksheet(
             WorkSheet worksheet, int startRow, int startColumn, object[][] data)
@@ -160,18 +209,34 @@ namespace DSOffice
             return worksheet.WriteData(startRow, startColumn, data);
         }
 
+        /// <summary>
+        /// Adds a new Excel worksheet with the given name to the given workbook        
+        /// </summary>
+        /// <param name="workbook"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkSheet AddExcelWorksheetToWorkbook(WorkBook workbook, string name)
         {
             return new WorkSheet(workbook, name);
         }
 
+        /// <summary>
+        /// Creates a new temporary Excel workbook
+        /// </summary>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkBook NewExcelWorkbook()
         {
             return new WorkBook("");
         }
 
+        /// <summary>
+        /// Saves the given Excel workbook to the specified file path and returns it
+        /// </summary>
+        /// <param name="workbook"></param>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkBook SaveAsExcelWorkbook(WorkBook workbook, string filename)
         {

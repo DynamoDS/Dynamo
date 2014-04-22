@@ -350,14 +350,14 @@ namespace Dynamo
 
         #endregion
 
-        public virtual void ShutDown(bool shutDownHost)
+        public virtual void ShutDown(bool shutDownHost, EventArgs args = null)
         {
             EngineController.Dispose();
             EngineController = null;
 
             PreferenceSettings.Save();
 
-            dynSettings.Controller.DynamoModel.OnCleanup(null);
+            dynSettings.Controller.DynamoModel.OnCleanup(args);
             dynSettings.Controller = null;
             
             DynamoSelection.Instance.ClearSelection();
