@@ -1484,7 +1484,7 @@ namespace ProtoAssociative
                 }
             }
 
-            if (isUnresolvedDot)
+            if (isUnresolvedDot || procCallNode == null)
             {
                 if (dotCallType.UID != (int)PrimitiveType.kTypeVar)
                 {
@@ -1502,8 +1502,7 @@ namespace ProtoAssociative
                 }
                 return procNode;
             }
-
-            if (null != procCallNode)
+            else
             {
                 if (procCallNode.isConstructor &&
                     (globalClassIndex != Constants.kInvalidIndex) &&
@@ -1584,86 +1583,6 @@ namespace ProtoAssociative
                 
                 return procCallNode;
             }
-            else
-            {
-                // Function does not exist at this point but we try to reolve at runtime
-                if (depth <= 0 && procName != ProtoCore.DSASM.Constants.kFunctionPointerCall)
-                {
-                    if (inferedType.UID != (int)PrimitiveType.kTypeVar)
-                    {
-                        if (!core.Options.SuppressFunctionResolutionWarning)
-                        {
-                            string property;
-                            if (CoreUtils.TryGetPropertyName(procName, out property))
-                            {
-                                string message = String.Format(WarningMessage.kPropertyNotFound, property);
-                                buildStatus.LogWarning(WarningID.kPropertyNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
-                            }
-                            else
-                            {
-                                string message = String.Format(WarningMessage.kMethodNotFound, procName);
-                                buildStatus.LogWarning(WarningID.kFunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
-                            }
-                        }
-                        inferedType.UID = (int)PrimitiveType.kTypeNull;
-                    }
-                   
-
-                    // Get the dot call procedure
-                    var procNode = core.GetFirstVisibleProcedure(Constants.kDotMethodName, null, codeBlock);
-
-                    if (CoreUtils.IsGetter(procName))
-                    {
-                        EmitFunctionCall(depth, type, arglist, procNode, funcCall, true);
-                    }
-                    else
-                    {
-                        EmitFunctionCall(depth, type, arglist, procNode, funcCall, false, bnode);
-                    }
-
-                    if (dotCallType.UID != (int)PrimitiveType.kTypeVar)
-                    {
-                        inferedType.UID = dotCallType.UID;
-                    }
-                }
-                else
-                {
-                    if (procName == Constants.kFunctionPointerCall && depth == 0)
-                    {
-                        DynamicFunctionNode dynamicFunctionNode = new DynamicFunctionNode(procName, arglist, lefttype);
-                        core.DynamicFunctionTable.functionTable.Add(dynamicFunctionNode);
-
-                        var iNode = nodeBuilder.BuildIdentfier(funcCall.Function.Name);
-                        EmitIdentifierNode(iNode, ref inferedType);
-                    }
-                    else
-                    {
-                        DynamicFunctionNode dynamicFunctionNode = new DynamicFunctionNode(funcCall.Function.Name, arglist, lefttype);
-                        core.DynamicFunctionTable.functionTable.Add(dynamicFunctionNode);
-                    }
-
-                    // The function call
-                    EmitInstrConsole(kw.callr, funcCall.Function.Name + "[dynamic]");
-                    EmitDynamicCall(core.DynamicFunctionTable.functionTable.Count - 1, globalClassIndex, depth, funcCall.line, funcCall.col, funcCall.endLine, funcCall.endCol);
-
-                    // The function return value
-                    EmitInstrConsole(kw.push, kw.regRX);
-                    StackValue opReturn = StackValue.BuildRegister(Registers.RX);
-                    EmitPush(opReturn);
-
-                    if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
-                    {
-                        int guides = EmitReplicationGuides(replicationGuide);
-                        EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, guides + "[guide]");
-                        EmitPushReplicationGuide(guides);
-                    }
-
-                    //assign inferedType to var
-                    inferedType.UID = (int)PrimitiveType.kTypeVar;
-                }
-            }
-
-            return null;
         }
 
 
@@ -8737,56 +8656,6 @@ namespace ProtoAssociative
             }
         }
 
-        private void EmitDotFunctionBodyNode(AssociativeNode node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.DSASM.AssociativeSubCompilePass subPass = ProtoCore.DSASM.AssociativeSubCompilePass.kNone)
-        {
-            emitDebugInfo = false;
-            DotFunctionBodyNode dnode = node as DotFunctionBodyNode;
-            //left hand side
-            int depth = 0;
-            ProtoCore.Type leftType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
-            bool isMethodCallPresent = false;
-            bool isFirstIdent = true;
-            ProtoCore.DSASM.SymbolNode firstSymbol = null;
-            if (subPass != ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
-            {
-                DfsEmitIdentList(dnode.leftNode, null, globalClassIndex, ref leftType, ref depth, ref inferedType, false, ref isFirstIdent, ref isMethodCallPresent, ref firstSymbol, graphNode, subPass);
-            }
-            //right hand side
-            if (dnode.rightNodeArgNum == null)
-            {
-                //push dimension expression
-                EmitIdentifierNode(dnode.rightNodeDimExprList, ref inferedType, isBooleanOp, graphNode, subPass);
-                EmitIdentifierNode(dnode.rightNodeDim, ref inferedType, isBooleanOp, graphNode, subPass);
-                EmitIdentifierNode(dnode.rightNode, ref inferedType, isBooleanOp, graphNode, subPass);
-                if (subPass == ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
-                {
-                    return;
-                }
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushlist, "2", globalClassIndex.ToString());
-                EmitPushList(2, globalClassIndex, blockScope, true);
-            }
-            else
-            {
-                EmitIdentifierNode(dnode.rightNodeArgList, ref inferedType, isBooleanOp, graphNode, subPass);
-                if (subPass == ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
-                {
-                    return;
-                }
-                //EmitIdentifierNode(dnode.rightNodeArgNum, ref inferedType, isBooleanOp, graphNode, subPass);
-                EmitIdentifierNode(dnode.rightNode, ref inferedType, isBooleanOp, graphNode, subPass);
-                EmitInstrConsole(ProtoCore.DSASM.kw.callr, dnode.rightNode.Name + "[dynamic]");
-                EmitDynamicCall(ProtoCore.DSASM.Constants.kInvalidIndex, globalClassIndex, depth);
-
-                // The function return value
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regRX);
-                StackValue opReturn = StackValue.BuildRegister(Registers.RX); 
-                EmitPush(opReturn);
-            }
-            //assign inferedType to var
-            inferedType.UID = (int)PrimitiveType.kTypeVar;
-            emitDebugInfo = true;
-        }
-
         protected void EmitExceptionHandlingNode(AssociativeNode node, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.DSASM.AssociativeSubCompilePass subPass = ProtoCore.DSASM.AssociativeSubCompilePass.kNone)
         {
 #if ENABLE_EXCEPTION_HANDLING
@@ -9403,10 +9272,6 @@ namespace ProtoAssociative
             {
                 int block = (node as DynamicBlockNode).block;
                 EmitDynamicBlockNode(block,subPass);
-            }
-            else if (node is DotFunctionBodyNode)
-            {
-                EmitDotFunctionBodyNode(node, ref inferedType, isBooleanOp, graphNode, subPass);
             }
             else if (node is ThisPointerNode)
             {

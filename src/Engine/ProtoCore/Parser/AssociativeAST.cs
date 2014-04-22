@@ -2182,63 +2182,6 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
-    public class DotFunctionBodyNode : AssociativeNode
-    {
-        public AssociativeNode leftNode { get; set; }
-        public AssociativeNode rightNode { get; set; }
-        public AssociativeNode rightNodeDimExprList { get; set; }
-        public AssociativeNode rightNodeDim { get; set; }
-        public AssociativeNode rightNodeArgList { get; set; }
-        public AssociativeNode rightNodeArgNum { get; set; }
-        public DotFunctionBodyNode(AssociativeNode lhs, AssociativeNode rhs, AssociativeNode dimExprList, AssociativeNode dim, AssociativeNode rhsArgList = null, AssociativeNode rhsArgNum = null)
-        {
-            leftNode = lhs;
-            rightNode = rhs;
-            rightNodeDimExprList = dimExprList;
-            rightNodeDim = dim;
-            rightNodeArgList = rhsArgList;
-            rightNodeArgNum = rhsArgNum;
-        }
-
-        public override bool Equals(object other)
-        {
-            var otherNode = other as DotFunctionBodyNode;
-            if (null == otherNode)
-                return false;
-
-            return leftNode.Equals(otherNode.leftNode) &&
-                   rightNode.Equals(otherNode.rightNode) &&
-                   rightNodeDimExprList.Equals(otherNode.rightNodeDimExprList) &&
-                   rightNodeDim.Equals(otherNode.rightNodeDim) &&
-                   rightNodeArgList.Equals(otherNode.rightNodeArgList) &&
-                   rightNodeArgNum.Equals(otherNode.rightNodeArgNum); 
-        }
-
-        public override int GetHashCode()
-        {
-            var leftNodeHashCode =
-                (leftNode == null ? base.GetHashCode() : leftNode.GetHashCode());
-            var rightNodeHashCode =
-                (rightNode == null ? base.GetHashCode() : rightNode.GetHashCode());
-            var rightNodeDimExprListHashCode =
-                (rightNodeDimExprList == null ? base.GetHashCode() : rightNodeDimExprList.GetHashCode());
-            var rightNodeDimHashCode =
-                (rightNodeDim == null ? base.GetHashCode() : rightNodeDim.GetHashCode());
-            var rightNodeArgListHashCode =
-                (rightNodeArgList == null ? base.GetHashCode() : rightNodeArgList.GetHashCode());
-            var rightNodeArgNumHashCode =
-                (rightNodeArgNum == null ? base.GetHashCode() : rightNodeArgNum.GetHashCode());
-
-            return leftNodeHashCode ^ rightNodeHashCode ^ rightNodeDimExprListHashCode 
-                ^ rightNodeDimHashCode ^ rightNodeArgListHashCode ^ rightNodeArgNumHashCode;
-        }
-
-        public override string ToString()
-        {
-            return Keyword.Null;
-        }
-    }
-
     public class ThisPointerNode : AssociativeNode
     {
         public ThisPointerNode()
