@@ -148,7 +148,7 @@ namespace Dynamo.Nodes
             {
                 return SelectedElement == null
                     ? "Nothing Selected"
-                    : string.Format("Element Id: {0}", SelectedElement);
+                    : string.Format("Element ID: {0}", SelectedElement);
             }
             set
             {
@@ -157,7 +157,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override bool RequiresReExecute
+        public override bool ForceReExecuteOfNode
         {
             get
             {
@@ -314,16 +314,15 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            var id = (from XmlNode subNode in nodeElement.ChildNodes
-                      where subNode.Name.Equals("instance")
-                      where subNode.Attributes != null
-                      select subNode.Attributes[0].Value).Last();
+            string id = (from XmlNode subNode in nodeElement.ChildNodes
+                         where subNode.Name.Equals("instance")
+                         where subNode.Attributes != null
+                         select subNode.Attributes[0].Value).LastOrDefault();
 
-            if (DocumentManager.Instance.ElementExistsInDocument(new ElementUUID(id)))
+            if (id != null && DocumentManager.Instance.ElementExistsInDocument(new ElementUUID(id)))
             {
                 SelectedElement = DocumentManager.Instance.CurrentDBDocument.GetElement(id).Id;                
             }
-
         }
     }
 
@@ -538,20 +537,30 @@ namespace Dynamo.Nodes
 
     public abstract class DSElementsSelection : DSSelectionBase
     {
-        private List<string> selected;
-        protected Func<string, List<string>> SelectionAction;
+        protected Func<string, List<ElementId>> SelectionAction;
+
+        private List<string> selectedUniqueIds = new List<string>();
+        private List<ElementId> selectedElements = new List<ElementId>();
+        private Document selectionOwner;
 
         /// <summary>
         /// The Element which is selected.
         /// </summary>
-        public List<string> SelectedElement
+        public List<ElementId> SelectedElement
         {
-            get { return selected; }
+            get { return selectedElements; }
             set
             {
                 bool dirty = value != null;
 
-                selected = value;
+                selectedElements = value;
+
+                if (selectedElements != null)
+                {
+                    selectionOwner = DocumentManager.Instance.CurrentDBDocument;
+                    selectedUniqueIds =
+                        selectedElements.Select(x => selectionOwner.GetElement(x).UniqueId).ToList();
+                }
 
                 if (dirty)
                     RequiresRecalc = true;
@@ -566,9 +575,9 @@ namespace Dynamo.Nodes
             {
                 var sb = new StringBuilder();
                 int count = 0;
-                while (count < Math.Min(selected.Count, 10))
+                while (count < Math.Min(SelectedElement.Count, 10))
                 {
-                    sb.Append(selected[count]+ ",");
+                    sb.Append(SelectedElement[count] + ",");
                     count++;
                 }
                 if (sb.Length > 0)
@@ -587,14 +596,43 @@ namespace Dynamo.Nodes
 
         #region protected constructors
 
-        protected DSElementsSelection(Func<string, List<string>> action, string message)
+        protected DSElementsSelection(Func<string, List<ElementId>> action, string message)
         {
-            selected = new List<string>();
             SelectionAction = action;
             _selectionMessage = message;
 
             OutPortData.Add(new PortData("Elements", "The selected elements.", typeof(object)));
             RegisterAllPorts();
+
+
+            dynRevitSettings.Controller.Updater.ElementsModified += Updater_ElementsModified;
+            dynRevitSettings.Controller.Updater.ElementsDeleted += Updater_ElementsDeleted;
+        }
+
+        public override void Destroy()
+        {
+            base.Destroy();
+
+            dynRevitSettings.Controller.Updater.ElementsModified -= Updater_ElementsModified;
+            dynRevitSettings.Controller.Updater.ElementsDeleted -= Updater_ElementsDeleted;
+        }
+
+        #endregion
+
+        #region ElementSync
+
+        void Updater_ElementsDeleted(Document document, IEnumerable<ElementId> deleted)
+        {
+            if (SelectedElement != null && document == selectionOwner)
+            {
+                SelectedElement = SelectedElement.Where(x => !deleted.Contains(x)).ToList();
+            }
+        }
+
+        void Updater_ElementsModified(IEnumerable<string> updated)
+        {
+            if (SelectedElement != null && selectedUniqueIds.Any(updated.Contains))
+                RequiresRecalc = true;
         }
 
         #endregion
@@ -690,7 +728,7 @@ namespace Dynamo.Nodes
             }
             else
             {
-                var els = SelectedElement;
+                var els = selectedUniqueIds;
 
                 var newInputs = els.Select(el =>
                     AstFactory.BuildFunctionCall(
@@ -705,7 +743,7 @@ namespace Dynamo.Nodes
                 node = AstFactory.BuildExprList(newInputs);
             }
 
-            return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -713,7 +751,7 @@ namespace Dynamo.Nodes
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (SelectedElement != null)
             {
-                foreach (string selectedElement in selected.Where(x => x != null))
+                foreach (string selectedElement in selectedUniqueIds.Where(x => x != null))
                 {
                     XmlElement outEl = xmlDoc.CreateElement("instance");
                     outEl.SetAttribute("id", selectedElement);
@@ -724,10 +762,23 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            SelectedElement.AddRange(
+            selectionOwner = DocumentManager.Instance.CurrentDBDocument;
+
+            selectedUniqueIds =
                 nodeElement.ChildNodes.Cast<XmlNode>()
                     .Where(subNode => subNode.Name.Equals("instance") && subNode.Attributes != null)
-                    .Select(subNode => subNode.Attributes[0].Value));
+                    .Select(subNode => subNode.Attributes[0].Value)
+                    .ToList();
+
+            selectedElements =
+                selectedUniqueIds
+                    .Where(id => DocumentManager.Instance.ElementExistsInDocument(new ElementUUID(id)))
+                    .Select(selectionOwner.GetElement)
+                    .Select(x => x.Id)
+                    .ToList();
+
+            RequiresRecalc = true;
+            RaisePropertyChanged("SelectedElement");
         }
     }
 
@@ -910,7 +961,8 @@ namespace Dynamo.Nodes
         }
 
         public DSEdgeSelection()
-            : base(SelectionHelper.RequestEdgeReferenceSelection, "Select an edge."){}
+            : base(SelectionHelper.RequestEdgeReferenceSelection, "Select an edge.")
+        { }
     }
 
     [NodeName("Select Point on Face")]
@@ -949,8 +1001,10 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectedElement");
             }
         }
+
         public DSPointOnElementSelection()
-            : base(SelectionHelper.RequestReferenceXYZSelection, "Select a point on a face."){}
+            : base(SelectionHelper.RequestReferenceXYZSelection, "Select a point on a face.")
+        { }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -1009,7 +1063,8 @@ namespace Dynamo.Nodes
         }
 
         public DSUVOnElementSelection()
-            : base(SelectionHelper.RequestReferenceXYZSelection, "Select a point on a face.") { }
+            : base(SelectionHelper.RequestReferenceXYZSelection, "Select a point on a face.")
+        { }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -1075,7 +1130,7 @@ namespace Dynamo.Nodes
             {
                 return _selectionText = 
                     (SelectedElement != null && SelectedElement.Count > 0)
-                        ? "Element IDs:" + formatSelectionText(SelectedElement.Where(x => x != null))
+                        ? "Element IDs:" + formatSelectionText(SelectedElement.Where(x => x != null).Select(x => x.ToString()))
                         : "Nothing Selected";
             }
             set

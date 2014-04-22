@@ -44,6 +44,12 @@ namespace Dynamo.Applications
         {
             try
             {
+                ControlledApplication = application.ControlledApplication;
+
+                RevThread.IdlePromise.RegisterIdle(application);
+                TransactionManager.SetupManager(new AutomaticTransactionStrategy());
+                ElementBinder.IsEnabled = true;
+
                 //TAF load english_us TODO add a way to localize
                 res = Resource_en_us.ResourceManager;
                 // Create new ribbon panel
@@ -67,12 +73,6 @@ namespace Dynamo.Applications
 
                 pushButton.LargeImage = bitmapSource;
                 pushButton.Image = bitmapSource;
-
-                ControlledApplication = application.ControlledApplication;
-
-                RevThread.IdlePromise.RegisterIdle(application);
-                TransactionManager.SetupManager(new AutomaticTransactionStrategy());
-                ElementBinder.IsEnabled = true;
 
                 return Result.Succeeded;
             }
