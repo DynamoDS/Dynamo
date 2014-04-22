@@ -73,15 +73,13 @@ namespace DSCoreNodesUI
                         AstFactory.BuildFunctionCall("_SingleFunctionObject", inputParams))
                 };
             }
-            else
+
+            return new[]
             {
-                return new[]
-                {
-                    AstFactory.BuildAssignment(
-                        GetAstIdentifierForOutputIndex(0),
-                        AstFactory.BuildExprList(inputAstNodes))
-                };
-            }
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(0),
+                    AstFactory.BuildExprList(inputAstNodes))
+            };
         }
     }
 }

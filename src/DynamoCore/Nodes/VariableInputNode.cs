@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
@@ -7,13 +8,13 @@ using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.UI;
-using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
     public abstract class VariableInputNode : NodeModel, IWpfNode
     {
         private int inputAmtLastBuild;
+        private readonly Dictionary<int, bool> connectedLastBuild = new Dictionary<int, bool>(); 
 
         public virtual void SetupCustomUIElements(dynNodeView view)
         {
@@ -68,7 +69,11 @@ namespace Dynamo.Nodes
 
         private void UpdateRecalcState()
         {
-            RequiresRecalc = InPortData.Count != inputAmtLastBuild;
+            var dirty = InPortData.Count != inputAmtLastBuild
+                || Enumerable.Range(0, InPortData.Count).Any(idx => connectedLastBuild[idx] == HasInput(idx));
+
+            if (dirty)
+                RequiresRecalc = true;
         }
 
         /// <summary>
@@ -77,20 +82,19 @@ namespace Dynamo.Nodes
         /// <param name="numInputs"></param>
         public void SetNumInputs(int numInputs)
         {
-            if (numInputs <= 0 || numInputs == InPorts.Count)
-                return;
-
-            InPortData.Clear();
-
-            for (var i = 0; i < numInputs; i++)
+            while (InPortData.Count < numInputs)
                 AddInput();
 
-            RegisterAllPorts();
+            while (InPortData.Count > numInputs)
+                RemoveInput();
         }
 
         protected override void OnBuilt()
         {
             inputAmtLastBuild = InPortData.Count;
+
+            foreach (var idx in Enumerable.Range(0, InPortData.Count))
+                connectedLastBuild[idx] = HasInput(idx);
         }
 
         #region Load/Save
@@ -103,11 +107,12 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            int amt = Convert.ToInt32(nodeElement.Attributes["inputcount"].Value);
-
-            SetNumInputs(amt);
-
-            RegisterAllPorts();
+            if (nodeElement.Attributes != null) 
+            {
+                int amt = Convert.ToInt32(nodeElement.Attributes["inputcount"].Value);
+                SetNumInputs(amt);
+                RegisterAllPorts();
+            }
         }
 
         #endregion
@@ -135,21 +140,9 @@ namespace Dynamo.Nodes
                 //Reads in the new number of ports required from the data stored in the Xml Element
                 //during Serialize (nextLength). Changes the current In Port Data to match the
                 //required size by adding or removing port data.
-                int currLength = InPortData.Count;
                 XmlNodeList inNodes = element.SelectNodes("Input");
                 int nextLength = inNodes.Count;
-                if (nextLength > currLength)
-                {
-                    for (; currLength < nextLength; currLength++)
-                    {
-                        XmlNode subNode = inNodes.Item(currLength);
-                        string nickName = subNode.Attributes["name"].Value;
-                        InPortData.Add(new PortData(nickName, "", typeof(object)));
-                    }
-                }
-                else if (nextLength < currLength)
-                    InPortData.RemoveRange(nextLength, currLength - nextLength);
-
+                SetNumInputs(nextLength);
                 RegisterAllPorts();
             }
         }
@@ -161,9 +154,7 @@ namespace Dynamo.Nodes
         private void RecordModels()
         {
             if (InPorts.Count == 0)
-            {
                 return;
-            }
 
             var connectors = InPorts[InPorts.Count - 1].Connectors;
             if (connectors.Count != 0)
