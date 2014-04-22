@@ -392,7 +392,9 @@ namespace Dynamo.Nodes
             //add a drop down list to the window
             var combo = new ComboBox
             {
-                Width = 300,
+                Width = System.Double.NaN,
+                MinWidth = 100,
+                Height = Configurations.PortHeightInPixels,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center
             };

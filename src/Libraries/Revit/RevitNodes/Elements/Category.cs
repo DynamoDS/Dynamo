@@ -49,7 +49,7 @@ namespace Revit.Elements
 
         public override string ToString()
         {
-            return internalCategory.Name;
+            return internalCategory != null ? internalCategory.Name : string.Empty;
         }
     }
 }
