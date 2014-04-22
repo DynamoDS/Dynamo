@@ -431,8 +431,8 @@ namespace Revit.Elements
 
             try
             {
-                return string.Format("Reference Point: Location=(X={0}, Y={1}, Z={2})", InternalReferencePoint.Position.X,
-    InternalReferencePoint.Position.Y, InternalReferencePoint.Position.Z);
+                return string.Format("Reference Point: Location=(X={0}, Y={1}, Z={2})", InternalReferencePoint.Position.X.ToString("f3"),
+                                    InternalReferencePoint.Position.Y.ToString("f3"), InternalReferencePoint.Position.Z.ToString("f3"));
             }
             catch (Exception e)
             {
