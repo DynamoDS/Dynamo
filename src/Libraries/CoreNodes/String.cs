@@ -34,10 +34,9 @@ namespace DSCore
 
             if (Int32.TryParse(str, out i))
                 return i;
-            else if (Double.TryParse(str, out d))
+            if (Double.TryParse(str, out d))
                 return d;
-            else
-                throw new ArgumentException("Not a valid number.", "str");
+            throw new ArgumentException("Not a valid number.", "str");
         }
 
         /// <summary>
@@ -121,7 +120,7 @@ namespace DSCore
         ///     True to convert to uppercase, false to convert to lowercase.
         /// </param>
         [IsVisibleInDynamoLibrary(false)]
-        public static string StringCase(string str, bool upper)
+        public static string ChangeCase(string str, bool upper)
         {
             return upper ? str.ToUpper() : str.ToLower();
         }
