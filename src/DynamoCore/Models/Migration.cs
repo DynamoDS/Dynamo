@@ -915,6 +915,19 @@ namespace Dynamo.Models
         {
             return element.Attributes["guid"].Value;
         }
+
+        public static void AddDefaultValues(XmlElement element, int portCount)
+        {
+            XmlDocument document = element.OwnerDocument;
+
+            for (int i = 0; i < portCount; i++)
+            {
+                XmlElement newChild = document.CreateElement("PortInfo");
+                newChild.SetAttribute("index", i.ToString());
+                newChild.SetAttribute("default", "True");
+                element.AppendChild(newChild);
+            }
+        }
     }
 
     /// <summary>
