@@ -758,7 +758,7 @@ namespace ProtoAssociative
             }
         }
 
-        public ProtoCore.DSASM.ProcedureNode GetProcedureFromInstance(int classScope, ProtoCore.AST.AssociativeAST.FunctionCallNode funcCall, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
+        public ProtoCore.DSASM.ProcedureNode GetProcedureFromInstance(int classScope, ProtoCore.AST.AssociativeAST.FunctionCallNode funcCall)
         {
             string procName = funcCall.Function.Name;
             Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != classScope);
@@ -1221,7 +1221,7 @@ namespace ProtoAssociative
                     inferedType.UID = dotCallType.UID = ci;
 
                     string rhsName = dotCall.FunctionCall.Function.Name;
-                    procCallNode = GetProcedureFromInstance(ci, dotCall.FunctionCall, graphNode);
+                    procCallNode = GetProcedureFromInstance(ci, dotCall.FunctionCall);
                     if (null != procCallNode)
                     {
                         isConstructor = procCallNode.isConstructor;
