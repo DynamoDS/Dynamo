@@ -1667,51 +1667,67 @@ namespace ProtoAssociative
         }
 
 
-        public override ProtoCore.DSASM.ProcedureNode TraverseFunctionCall(ProtoCore.AST.Node node, ProtoCore.AST.Node parentNode, int lefttype, int depth, ref ProtoCore.Type inferedType,             
-            ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.DSASM.AssociativeSubCompilePass subPass = ProtoCore.DSASM.AssociativeSubCompilePass.kNone,                 
+        public override ProcedureNode TraverseFunctionCall(
+            ProtoCore.AST.Node node, 
+            ProtoCore.AST.Node parentNode, 
+            int lefttype, 
+            int depth, 
+            ref ProtoCore.Type inferedType,             
+            GraphNode graphNode = null, 
+            AssociativeSubCompilePass subPass = AssociativeSubCompilePass.kNone,                 
             ProtoCore.AST.Node bnode = null)
         {
-            FunctionCallNode funcCall = null;
-            string procName = null;
-            List<ProtoCore.Type> arglist = new List<ProtoCore.Type>();
-            ProtoCore.Type dotCallType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0); 
-            ProtoCore.AssociativeGraph.UpdateNode updateNode = new ProtoCore.AssociativeGraph.UpdateNode();
-
-            if (node is ProtoCore.AST.AssociativeAST.FunctionDotCallNode)
+            if (node is FunctionDotCallNode)
             {
-                return TraverseDotFunctionCall(node, parentNode, lefttype, depth, ref inferedType, graphNode, subPass, bnode as BinaryExpressionNode);
+                return TraverseDotFunctionCall(node, 
+                                               parentNode, 
+                                               lefttype, 
+                                               depth, 
+                                               ref inferedType, 
+                                               graphNode, 
+                                               subPass, 
+                                               bnode as BinaryExpressionNode);
             }
-            else 
-            {
-                funcCall = node as FunctionCallNode;
-                procName = funcCall.Function.Name;
 
-                int classIndex = core.ClassTable.IndexOf(procName);
+            var arglist = new List<ProtoCore.Type>();
+            var funcCall = node as FunctionCallNode;
+            var procName = funcCall.Function.Name;
+            int classIndex = core.ClassTable.IndexOf(procName);
+
+            // To support unamed constructor
+            if (classIndex != Constants.kInvalidIndex)
+            {
                 bool isAccessible;
                 int dummy;
 
-                // To support unamed constructor
-                if (classIndex != Constants.kInvalidIndex)
+                ProcedureNode constructor = core.ClassTable.ClassNodes[classIndex].GetMemberFunction(procName, arglist, globalClassIndex, out isAccessible, out dummy, true);
+                if (constructor != null && constructor.isConstructor)
                 {
-                    ProcedureNode constructor = core.ClassTable.ClassNodes[classIndex].GetMemberFunction(procName, arglist, globalClassIndex, out isAccessible, out dummy, true);
-                    if (constructor != null && constructor.isConstructor)
-                    {
-                        FunctionCallNode rhsFNode = node as ProtoCore.AST.AssociativeAST.FunctionCallNode;
-                        AssociativeNode classNode = nodeBuilder.BuildIdentfier(procName);
-                        FunctionDotCallNode dotCallNode = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(classNode, rhsFNode, core);
-                        return TraverseDotFunctionCall(dotCallNode, parentNode, lefttype, depth, ref inferedType, graphNode, subPass, bnode as BinaryExpressionNode);
-                    }
+                    var rhsFNode = node as FunctionCallNode;
+                    var classNode = nodeBuilder.BuildIdentfier(procName);
+                    var dotCallNode = CoreUtils.GenerateCallDotNode(classNode, rhsFNode, core);
+
+                    return TraverseDotFunctionCall(dotCallNode, 
+                                                   parentNode, 
+                                                   lefttype, 
+                                                   depth, 
+                                                   ref inferedType, 
+                                                   graphNode, 
+                                                   subPass, 
+                                                   bnode as BinaryExpressionNode);
                 }
             }
 
             foreach (AssociativeNode paramNode in funcCall.FormalArguments)
             {
-                ProtoCore.Type paramType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
+                var paramType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 
                 // The range expression function does not need replication guides
-                emitReplicationGuide = !procName.Equals(ProtoCore.DSASM.Constants.kFunctionRangeExpression);
+                emitReplicationGuide = !procName.Equals(Constants.kFunctionRangeExpression)  
+                                    && !CoreUtils.IsGetterSetter(procName);
 
-                // If it's a binary node then continue type check, otherwise disable type check and just take the type of paramNode itself
+                // If it's a binary node then continue type check, otherwise 
+                // disable type check and just take the type of paramNode itself
                 // f(1+2.0) -> type check enabled - param is typed as double
                 // f(2) -> type check disabled - param is typed as int
                 enforceTypeCheck = !(paramNode is BinaryExpressionNode);
@@ -1724,49 +1740,48 @@ namespace ProtoAssociative
                 arglist.Add(paramType);
             }
            
-            if (subPass == ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
+            if (subPass == AssociativeSubCompilePass.kUnboundIdentifier)
             {
                 return null;   
             }
                     
-
-            ProtoCore.DSASM.ProcedureNode procNode = null;
-            int type = ProtoCore.DSASM.Constants.kInvalidIndex;
-            
-            int refClassIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
-            if (parentNode != null && parentNode is ProtoCore.AST.AssociativeAST.IdentifierListNode)
+            int refClassIndex = Constants.kInvalidIndex;
+            if (parentNode != null && parentNode is IdentifierListNode)
             {
-                ProtoCore.AST.Node leftnode = (parentNode as ProtoCore.AST.AssociativeAST.IdentifierListNode).LeftNode;
-                if (leftnode != null && leftnode is ProtoCore.AST.AssociativeAST.IdentifierNode)
+                var leftnode = (parentNode as IdentifierListNode).LeftNode;
+                if (leftnode != null && leftnode is IdentifierNode)
                 {
                     refClassIndex = core.ClassTable.IndexOf(leftnode.Name);
                 }
             }
 
+            ProcedureNode procNode = null;
+            int type = Constants.kInvalidIndex;
+
             // Check for the actual method, not the dot method
             // If lefttype is a valid class then check if calling a constructor
-            if ((int)ProtoCore.PrimitiveType.kInvalidType != inferedType.UID
-                && (int)ProtoCore.PrimitiveType.kTypeVoid != inferedType.UID
-                && procName != ProtoCore.DSASM.Constants.kFunctionPointerCall)
+            if ((int)PrimitiveType.kInvalidType != inferedType.UID
+                && (int)PrimitiveType.kTypeVoid != inferedType.UID
+                && procName != Constants.kFunctionPointerCall)
             {
 
                 bool isAccessible;
                 int realType;
 
-                bool isStaticOrConstructor = refClassIndex != ProtoCore.DSASM.Constants.kInvalidIndex;
+                bool isStaticOrConstructor = refClassIndex != Constants.kInvalidIndex;
                 procNode = core.ClassTable.ClassNodes[inferedType.UID].GetMemberFunction(procName, arglist, globalClassIndex, out isAccessible, out realType, isStaticOrConstructor);
 
                 if (procNode != null)
                 {
-                    Validity.Assert(realType != ProtoCore.DSASM.Constants.kInvalidIndex);
+                    Validity.Assert(realType != Constants.kInvalidIndex);
                     type = lefttype = realType;
 
                     if (!isAccessible)
                     {
                         type = lefttype = realType;
                         procNode = null;
-                        string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodIsInaccessible, procName);
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
+                        string message = String.Format(WarningMessage.kMethodIsInaccessible, procName);
+                        buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
 
                         EmitPushNull();
@@ -1780,15 +1795,19 @@ namespace ProtoAssociative
             if ((procNode == null) && (procName != ProtoCore.DSASM.Constants.kFunctionPointerCall))
             {
                 bool isAccessibleFp;
-                ProtoCore.DSASM.SymbolNode symbolnode = null;
+                SymbolNode symbolnode = null;
                 bool isAllocated = VerifyAllocation(procName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessibleFp);
-                if (isAllocated) // not checking the type against function pointer, as the type could be var
+
+                if (isAllocated) 
                 {
-                    procName = ProtoCore.DSASM.Constants.kFunctionPointerCall;
+                    // not checking the type against function pointer, as the 
+                    // type could be var
+                    procName = Constants.kFunctionPointerCall;
+
                     // The graph node always depends on this function pointer
                     if (null != graphNode)
                     {
-                        ProtoCore.AssociativeGraph.GraphNode dependentNode = new ProtoCore.AssociativeGraph.GraphNode();
+                        GraphNode dependentNode = new GraphNode();
                         dependentNode.PushSymbolReference(symbolnode);
                         graphNode.PushDependent(dependentNode);
                     }
@@ -1800,7 +1819,7 @@ namespace ProtoAssociative
             // member function firstly, there is no way to call a global function
             // For member function, we can use this.foo() to distinguish it from 
             // global function. 
-            if ((procNode == null) && (procName != ProtoCore.DSASM.Constants.kFunctionPointerCall))
+            if ((procNode == null) && (procName != Constants.kFunctionPointerCall))
             {
                 procNode = core.GetFirstVisibleProcedure(procName, arglist, codeBlock);
                 if (null != procNode)
@@ -1814,26 +1833,26 @@ namespace ProtoAssociative
             }
 
             // Try member functions in global class scope
-            if ((procNode == null) && (procName != ProtoCore.DSASM.Constants.kFunctionPointerCall) && (parentNode == null))
+            if ((procNode == null) && (procName != Constants.kFunctionPointerCall) && (parentNode == null))
             {
-                if (globalClassIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
+                if (globalClassIndex != Constants.kInvalidIndex)
                 {
                     int realType;
                     bool isAccessible;
-                    bool isStaticOrConstructor = refClassIndex != ProtoCore.DSASM.Constants.kInvalidIndex;
+                    bool isStaticOrConstructor = refClassIndex != Constants.kInvalidIndex;
                     ProtoCore.DSASM.ProcedureNode memProcNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(procName, arglist, globalClassIndex, out isAccessible, out realType, isStaticOrConstructor);
 
                     if (memProcNode != null)
                     {
-                        Validity.Assert(realType != ProtoCore.DSASM.Constants.kInvalidIndex);
+                        Validity.Assert(realType != Constants.kInvalidIndex);
                         procNode = memProcNode;
                         inferedType = procNode.returntype;
                         type = realType;
 
                         if (!isAccessible)
                         {
-                            string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodIsInaccessible, procName);
-                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
+                            string message = String.Format(WarningMessage.kMethodIsInaccessible, procName);
+                            buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
 
                             inferedType.UID = (int)PrimitiveType.kTypeNull;
                             EmitPushNull();
@@ -1845,18 +1864,18 @@ namespace ProtoAssociative
 
             if (null != procNode)
             {
-                if (procNode.isConstructor &&
-                        (globalClassIndex != ProtoCore.DSASM.Constants.kInvalidIndex) &&
-                        (globalProcIndex != ProtoCore.DSASM.Constants.kInvalidIndex) &&
-                        (globalClassIndex == inferedType.UID))
+                if (procNode.isConstructor && 
+                    (globalClassIndex != Constants.kInvalidIndex) && 
+                    (globalProcIndex != Constants.kInvalidIndex) && 
+                    (globalClassIndex == inferedType.UID))
                 {
-                    ProtoCore.DSASM.ProcedureNode contextProcNode = core.ClassTable.ClassNodes[globalClassIndex].vtable.procList[globalProcIndex];
+                    ProcedureNode contextProcNode = core.ClassTable.ClassNodes[globalClassIndex].vtable.procList[globalProcIndex];
                     if (contextProcNode.isConstructor &&
                         string.Equals(contextProcNode.name, procNode.name) &&
                         contextProcNode.runtimeIndex == procNode.runtimeIndex)
                     {
-                        string message = String.Format(ProtoCore.BuildData.WarningMessage.kCallingConstructorInConstructor, procName);
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingConstructorInConstructor, message, core.CurrentDSFileName, node.line, node.col );
+                        string message = String.Format(WarningMessage.kCallingConstructorInConstructor, procName);
+                        buildStatus.LogWarning(WarningID.kCallingConstructorInConstructor, message, core.CurrentDSFileName, node.line, node.col );
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
                         EmitPushNull();
                         return procNode;
@@ -1871,13 +1890,8 @@ namespace ProtoAssociative
                     inferedType.rank++;
                 }
 
-                if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId)
+                if (procNode.procId != Constants.kInvalidIndex)
                 {
-
-
-
-
-
 
                     //
                     // ==============Establishing graphnode links in modified arguments=============
@@ -1906,7 +1920,7 @@ namespace ProtoAssociative
                         // Get the lhs symbol list
                         ProtoCore.Type ltype = new ProtoCore.Type();
                         ltype.UID = globalClassIndex;
-                        ProtoCore.AssociativeGraph.UpdateNodeRef argNodeRef = new ProtoCore.AssociativeGraph.UpdateNodeRef();
+                        UpdateNodeRef argNodeRef = new UpdateNodeRef();
                         DFSGetSymbolList(paramNode, ref ltype, argNodeRef);
 
                         if (null != graphNode)
@@ -1918,10 +1932,10 @@ namespace ProtoAssociative
                         }
                     }
 
-
-                    // The function is at block 0 if its a constructor, member or at the globals scope.
-                    // Its at block 1 if its inside a language block. 
-                    // Its limited to block 1 as of R1 since we dont support nested function declarations yet
+                    // The function is at block 0 if its a constructor, member 
+                    // or at the globals scope.  Its at block 1 if its inside a 
+                    // language block. Its limited to block 1 as of R1 since we 
+                    // dont support nested function declarations yet
                     int blockId = procNode.runtimeIndex;
 
                     //push value-not-provided default argument
@@ -1936,45 +1950,67 @@ namespace ProtoAssociative
                     int dimensions = 0;
                     EmitPushVarData(blockId, dimensions);
 
-
                     // The function call
-                    EmitInstrConsole(ProtoCore.DSASM.kw.callr, procNode.name);
+                    EmitInstrConsole(kw.callr, procNode.name);
 
                     // Do not emit breakpoints at built-in methods like _add/_sub etc. - pratapa
-                    if (procNode.isAssocOperator || procNode.name.Equals(ProtoCore.DSASM.Constants.kInlineConditionalMethodName))
+                    if (procNode.isAssocOperator || procNode.name.Equals(Constants.kInlineConditionalMethodName))
                     {
-                        EmitCall(procNode.procId, type, depth, ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex,
-                                    ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kInvalidIndex, procNode.pc);
+                        EmitCall(procNode.procId, 
+                                 type, 
+                                 depth, 
+                                 Constants.kInvalidIndex, 
+                                 Constants.kInvalidIndex, 
+                                 Constants.kInvalidIndex, 
+                                 Constants.kInvalidIndex, 
+                                 procNode.pc);
                     }
                     // Break at function call inside dynamic lang block created for a 'true' or 'false' expression inside an inline conditional
                     else if (core.DebugProps.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
                     {
-                        Validity.Assert(core.DebugProps.highlightRange != null);
+                        var codeRange = core.DebugProps.highlightRange;
+                        Validity.Assert(codeRange != null);
 
-                        ProtoCore.CodeModel.CodePoint startInclusive = core.DebugProps.highlightRange.StartInclusive;
-                        ProtoCore.CodeModel.CodePoint endExclusive = core.DebugProps.highlightRange.EndExclusive;
+                        var startInclusive = codeRange.StartInclusive;
+                        var endExclusive = codeRange.EndExclusive;
 
-                        EmitCall(procNode.procId, type, depth, startInclusive.LineNo, startInclusive.CharNo, endExclusive.LineNo, endExclusive.CharNo, procNode.pc);
+                        EmitCall(procNode.procId, 
+                                 type, 
+                                 depth, 
+                                 startInclusive.LineNo, 
+                                 startInclusive.CharNo, 
+                                 endExclusive.LineNo, 
+                                 endExclusive.CharNo, 
+                                 procNode.pc);
                     }
                     // Use startCol and endCol of binary expression node containing function call except if it's a setter
                     else if (bnode != null && !procNode.name.StartsWith(Constants.kSetterPrefix))
                     {
-                        EmitCall(procNode.procId, type, depth, bnode.line, bnode.col, bnode.endLine, bnode.endCol, procNode.pc);
+                        EmitCall(procNode.procId, 
+                                 type, 
+                                 depth, 
+                                 bnode.line, 
+                                 bnode.col, 
+                                 bnode.endLine, 
+                                 bnode.endCol, 
+                                 procNode.pc);
                     }
                     else
                     {
-                        EmitCall(procNode.procId, type, depth, funcCall.line, funcCall.col, funcCall.endLine, funcCall.endCol, procNode.pc);
+                        EmitCall(procNode.procId, 
+                                 type, 
+                                 depth, 
+                                 funcCall.line, 
+                                 funcCall.col, 
+                                 funcCall.endLine, 
+                                 funcCall.endCol, 
+                                 procNode.pc);
                     }
 
                     // The function return value
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regRX);
+                    EmitInstrConsole(kw.push, kw.regRX);
                     StackValue opReturn = StackValue.BuildRegister(Registers.RX);
                     EmitPush(opReturn);
-
-                    if (dotCallType.UID != (int)PrimitiveType.kTypeVar)
-                    {
-                        inferedType.UID = dotCallType.UID;
-                    }
                 }
             }
             else
@@ -2000,22 +2036,29 @@ namespace ProtoAssociative
                 {
                     if (procName == ProtoCore.DSASM.Constants.kFunctionPointerCall && depth == 0)
                     {
-                        ProtoCore.DSASM.DynamicFunctionNode dynamicFunctionNode = new ProtoCore.DSASM.DynamicFunctionNode(procName, arglist, lefttype);
+                        var dynamicFunctionNode = new DynamicFunctionNode(procName, arglist, lefttype);
                         core.DynamicFunctionTable.functionTable.Add(dynamicFunctionNode);
                         var iNode = nodeBuilder.BuildIdentfier(funcCall.Function.Name);
                         EmitIdentifierNode(iNode, ref inferedType);
                     }
                     else
                     {
-                        ProtoCore.DSASM.DynamicFunctionNode dynamicFunctionNode = new ProtoCore.DSASM.DynamicFunctionNode(funcCall.Function.Name, arglist, lefttype);
+                        var dynamicFunctionNode = new DynamicFunctionNode(funcCall.Function.Name, arglist, lefttype);
                         core.DynamicFunctionTable.functionTable.Add(dynamicFunctionNode);
                     }
+
                     // The function call
-                    EmitInstrConsole(ProtoCore.DSASM.kw.callr, funcCall.Function.Name + "[dynamic]");
-                    EmitDynamicCall(core.DynamicFunctionTable.functionTable.Count - 1, globalClassIndex, depth, funcCall.line, funcCall.col, funcCall.endLine, funcCall.endCol);
+                    EmitInstrConsole(kw.callr, funcCall.Function.Name + "[dynamic]");
+                    EmitDynamicCall(core.DynamicFunctionTable.functionTable.Count - 1, 
+                                    globalClassIndex, 
+                                    depth, 
+                                    funcCall.line, 
+                                    funcCall.col, 
+                                    funcCall.endLine, 
+                                    funcCall.endCol);
 
                     // The function return value
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regRX);
+                    EmitInstrConsole(kw.push, kw.regRX);
                     StackValue opReturn = StackValue.BuildRegister(Registers.RX);
                     EmitPush(opReturn);
 
@@ -2023,6 +2066,7 @@ namespace ProtoAssociative
                     inferedType.UID = (int)PrimitiveType.kTypeVar;
                 }
             }
+
             return procNode;
         }
 
@@ -3332,6 +3376,7 @@ namespace ProtoAssociative
                                 ssaNode.exprUID = ssaID;
                                 ssaNode.ssaExprID = ssaExprID;
                                 ssaNode.guid = bnode.guid;
+                                ssaNode.SourceAstID = bnode.ID;
                                 NodeUtils.SetNodeLocation(ssaNode, node, node);
                             }
 
@@ -7893,6 +7938,7 @@ namespace ProtoAssociative
                     EmitCompileLog("==============Start Node==============\n");
                     graphNode = new ProtoCore.AssociativeGraph.GraphNode();
                     graphNode.AstID = bnode.ID;
+                    graphNode.SourceAstID = bnode.SourceAstID; 
                     graphNode.exprUID = bnode.exprUID;
                     graphNode.ssaExprID = bnode.ssaExprID;
                     graphNode.guid = core.SSASubscript_GUID;

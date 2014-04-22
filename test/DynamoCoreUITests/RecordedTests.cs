@@ -1028,6 +1028,28 @@ namespace DynamoCoreUITests
             Assert.AreEqual("CBN", cbn.NickName);
         }
 
+        [Test, RequiresSTA]
+        public void ReExecuteASTTest()
+        {
+            RunCommandsFromFile("ReExecuteASTTest.xml", false, (commandTag) =>
+            {
+                var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    AssertPreviewValue("cdaf568a-e830-4eb0-bce0-983a7a0903e1", 1);
+
+                }
+                else if (commandTag == "SecondRun")
+                {
+
+                    AssertPreviewValue("cdaf568a-e830-4eb0-bce0-983a7a0903e1", 1);
+
+                }
+            });
+        }
+
+
         #endregion
 
         #region Defect Verifications Test Cases

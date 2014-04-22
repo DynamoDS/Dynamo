@@ -1502,7 +1502,7 @@ namespace Dynamo.Models
         ///     This property forces all AST nodes that generated from this node
         ///     to be executed, even there is no change in AST nodes.
         /// </summary>
-        public virtual bool RequiresReExecute
+        public virtual bool ForceReExecuteOfNode
         {
             get
             {

@@ -82,8 +82,9 @@ namespace ProtoScript.Runners
         public ChangeSetData(){}
         public List<AssociativeNode> DeletedBinaryExprASTNodes;
         public List<AssociativeNode> DeletedFunctionDefASTNodes; 
-        public List<AssociativeNode> RemovedBinaryNodesFromModification; 
+        public List<AssociativeNode> RemovedBinaryNodesFromModification;
         public List<AssociativeNode> RemovedFunctionDefNodesFromModification;
+        public List<AssociativeNode> ForceExecuteASTList;
         public List<AssociativeNode> ModifiedFunctions; 
     }
 
@@ -99,6 +100,7 @@ namespace ProtoScript.Runners
             this.core = core;
             ApplyChangeSetDeleted(changeSet);
             ApplyChangeSetModified(changeSet);
+            ApplyChangeSetForceExecute(changeSet);
         }
 
         private void ApplyChangeSetDeleted(ChangeSetData changeSet)
@@ -113,6 +115,13 @@ namespace ProtoScript.Runners
             UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
             // Mark all graphnodes dependent on the modified functions as dirty
             ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(core, changeSet.ModifiedFunctions);
+        }
+
+
+        private void ApplyChangeSetForceExecute(ChangeSetData changeSet)
+        {
+            // Mark all graphnodes dirty which are associated with the force exec ASTs
+            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, changeSet.ForceExecuteASTList);
         }
 
         /// <summary>
@@ -304,6 +313,7 @@ namespace ProtoScript.Runners
             csData.RemovedBinaryNodesFromModification = new List<AssociativeNode>();
             csData.RemovedFunctionDefNodesFromModification = new List<AssociativeNode>();
             csData.ModifiedFunctions = new List<AssociativeNode>();
+            csData.ForceExecuteASTList = new List<AssociativeNode>();
 
             if (modifiedSubTrees == null)
             {
@@ -334,12 +344,17 @@ namespace ProtoScript.Runners
                 if (cachedTreeExists && oldSubTree.AstNodes != null)
                 {
                     List<AssociativeNode> removedNodes = null;
-                    if (st.ForceExecution)
-                    {
-                        removedNodes = oldSubTree.AstNodes;
-                        csData.RemovedBinaryNodesFromModification.AddRange(removedNodes);
-                    }
-                    else
+                    //if (st.ForceExecution)
+                    //{
+                    //    removedNodes = oldSubTree.AstNodes;
+                    //    csData.RemovedBinaryNodesFromModification.AddRange(removedNodes);
+                    //}
+                    //else
+                    //{
+                    //    removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+                    //    csData.RemovedBinaryNodesFromModification.AddRange(removedNodes);
+                    //}
+                    if (!st.ForceExecution)
                     {
                         removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
                         csData.RemovedBinaryNodesFromModification.AddRange(removedNodes);
@@ -370,17 +385,27 @@ namespace ProtoScript.Runners
                     }
                     else
                     {
-                       
-                        csData.RemovedFunctionDefNodesFromModification.AddRange(oldSubTree.AstNodes.Where(n => n is FunctionDefinitionNode));
+                        // If the subtree is ForceExecution, it means no AST has changed.
+                        if (st.ForceExecution)
+                        {
+                            // Get the cached AST and append it to the changeSet
+                            csData.ForceExecuteASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
+                        }
+                        else
+                        {
+                            // Only update the cached ASTs if it is not ForceExecution
 
-                        // Update the current subtree list
-                        List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
-                        newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
-                        newCachedASTList.AddRange(modifiedASTList);
+                            csData.RemovedFunctionDefNodesFromModification.AddRange(oldSubTree.AstNodes.Where(n => n is FunctionDefinitionNode));
 
-                        st.AstNodes.Clear();
-                        st.AstNodes.AddRange(newCachedASTList);
-                        currentSubTreeList[st.GUID] = st;
+                            // Update the current subtree list
+                            List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
+                            newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
+                            newCachedASTList.AddRange(modifiedASTList);
+
+                            st.AstNodes.Clear();
+                            st.AstNodes.AddRange(newCachedASTList);
+                            currentSubTreeList[st.GUID] = st;
+                        }
                     }
                 }
 
@@ -535,44 +560,43 @@ namespace ProtoScript.Runners
                             break;
                         }
                     }
-                }
-
-                if (!nodeFound)
-                {
-                    // node is modifed as it does not match any existing
-                    modifiedASTList.Add(node);
-
-                    BinaryExpressionNode bnode = node as BinaryExpressionNode;
-                    if (null != bnode && bnode.LeftNode is IdentifierNode)
+                    if (!nodeFound)
                     {
-                        string lhsName = (bnode.LeftNode as IdentifierNode).Name;
-                        Validity.Assert(null != lhsName && string.Empty != lhsName);
-                        if (CoreUtils.IsSSATemp(lhsName))
+                        // node is modifed as it does not match any existing
+                        modifiedASTList.Add(node);
+
+                        BinaryExpressionNode bnode = node as BinaryExpressionNode;
+                        if (null != bnode && bnode.LeftNode is IdentifierNode)
                         {
-                            // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
-                            // this means that it was a modified variable within the previous expression.
-                            // Inherit its expression ID 
-                            foreach (AssociativeNode prevNode in st.AstNodes)
+                            string lhsName = (bnode.LeftNode as IdentifierNode).Name;
+                            Validity.Assert(null != lhsName && string.Empty != lhsName);
+                            if (CoreUtils.IsSSATemp(lhsName))
                             {
-                                BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
-                                if (null != prevBinaryNode)
+                                // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
+                                // this means that it was a modified variable within the previous expression.
+                                // Inherit its expression ID 
+                                foreach (AssociativeNode prevNode in st.AstNodes)
                                 {
-                                    IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
-                                    if (null != prevIdent)
+                                    BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
+                                    if (null != prevBinaryNode)
                                     {
-                                        if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
+                                        IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
+                                        if (null != prevIdent)
                                         {
-                                            bnode.InheritID(prevBinaryNode.ID);
-                                            bnode.exprUID = prevBinaryNode.exprUID;
+                                            if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
+                                            {
+                                                bnode.InheritID(prevBinaryNode.ID);
+                                                bnode.exprUID = prevBinaryNode.exprUID;
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
-                            // Handle re-defined lhs expressions
-                            HandleRedefinedLHS(bnode, st.AstNodes);
+                            else
+                            {
+                                // Handle re-defined lhs expressions
+                                HandleRedefinedLHS(bnode, st.AstNodes);
+                            }
                         }
                     }
                 }

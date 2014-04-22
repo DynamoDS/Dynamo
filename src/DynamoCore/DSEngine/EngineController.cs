@@ -261,7 +261,7 @@ namespace Dynamo.DSEngine
             syncDataManager.ResetStates();
 
             var reExecuteNodesIds = controller.DynamoViewModel.Model.HomeSpace.Nodes
-                                                                    .Where(n => n.RequiresReExecute)
+                                                                    .Where(n => n.ForceReExecuteOfNode)
                                                                     .Select(n => n.GUID);
             if (reExecuteNodesIds.Any() && data.ModifiedSubtrees != null)
             {

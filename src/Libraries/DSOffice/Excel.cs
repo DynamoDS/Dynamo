@@ -178,6 +178,16 @@ namespace DSOffice
             return new WorkBook(workbook, filename);
         }
 
+        /// <summary>
+        ///     Read data from a Microsoft Excel spreadsheet. Data is read by row and
+        ///     returned in a series of lists by row. Rows and columns are zero-indexed;
+        ///     for example, the value in cell A1 will appear in the data list at [0,0].
+        ///     This node requires Microsoft Excel to be installed.
+        /// </summary>
+        /// <param name="filePath">File path to the Microsoft Excel spreadsheet.</param>
+        /// <param name="sheetName">Name of the worksheet containing the data.</param>
+        /// <returns name="data">Rows of data from the Excel worksheet.</returns>
+        /// <search>office,excel,spreadsheet</search>
         public static object[][] Read(string filePath, string sheetName)
         {
             WorkBook wb = WorkBook.ReadExcelFile(filePath);
@@ -185,6 +195,22 @@ namespace DSOffice
             return ws.Data;
         }
 
+        /// <summary>
+        ///     Write data to a Microsoft Excel spreadsheet. Data is written by row
+        ///     with sublists to be written in successive rows. Rows and columns are
+        ///     zero-indexed; for example, the value in the data list at [0,0] will
+        ///     be written to cell A1. This node requires Microsoft Excel to be
+        ///     installed.
+        /// </summary>
+        /// <param name="filePath">File path to the Microsoft Excel spreadsheet.</param>
+        /// <param name="sheetName">Name of the workseet to write data to.</param>
+        /// <param name="startRow">Start row for writing data. Enter 0 for A, 1 for B, etc.</param>
+        /// <param name="startCol">
+        ///     Start column for writing data. Enter 0 for col 1, 1 for column 2, ect.
+        /// </param>
+        /// <param name="data">Data to write to the spreadsheet.</param>
+        /// <returns name="data">Data written to the spreadsheet.</returns>
+        /// <search>office,excel,spreadsheet</search>
         public static object[][] Write(string filePath, string sheetName, int startRow, int startCol, object[][] data)
         {
             WorkBook wb = new WorkBook(filePath);

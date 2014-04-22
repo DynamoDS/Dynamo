@@ -14,7 +14,6 @@ namespace DSCore
         ///     Find the red component of a color, 0 to 255.
         /// </summary>
         /// <returns name="val">Value of the red component.</returns>
-        /// <search>red</search>
         public byte Red
         {
             get { return color.R; }
@@ -24,7 +23,6 @@ namespace DSCore
         ///     Find the green component of a color, 0 to 255.
         /// </summary>
         /// <returns name="val">Value of the green component.</returns>
-        /// <search>green</search>
         public byte Green
         {
             get { return color.G; }
@@ -34,7 +32,6 @@ namespace DSCore
         ///     Find the blue component of a color, 0 to 255.
         /// </summary>
         /// <returns name="val">Value of the blue component.</returns>
-        /// <search>blue</search>
         public byte Blue
         {
             get { return color.B; }
@@ -44,7 +41,6 @@ namespace DSCore
         ///     Find the alpha component of a color, 0 to 255.
         /// </summary>
         /// <returns name="val">Value of the alpha component.</returns>
-        /// <search>alpha</search>
         public byte Alpha
         {
             get { return color.A; }
@@ -83,7 +79,6 @@ namespace DSCore
         ///     Gets the birghtness value for this color.
         /// </summary>
         /// <returns name="val">Brightness value for the color.</returns>
-        /// <search>brightness</search>
         public static float Brightness(Color c)
         {
             return c.color.GetBrightness();
@@ -93,7 +88,6 @@ namespace DSCore
         ///     Gets the saturation value for this color.
         /// </summary>
         /// <returns name="val">Saturation value for the color.</returns>
-        /// <search>saturation</search>
         public static float Saturation(Color c)
         {
             return c.color.GetSaturation();
@@ -103,7 +97,6 @@ namespace DSCore
         ///     Gets the hue value for this color.
         /// </summary>
         /// <returns name="val">Hue value for the color.</returns>
-        /// <search>hue</search>
         public static float Hue(Color c)
         {
             return c.color.GetHue();
@@ -113,7 +106,7 @@ namespace DSCore
         ///     Lists the components for the color in the order: alpha, red, green, blue.
         /// </summary>
         /// <returns name="val">Saturation value for the color.</returns>
-        /// <search>components,alpha,red,green,blue</search>
+        /// <search>alpha,red,green,blue</search>
         [MultiReturn(new string[] {"a", "r", "g", "b"})]
         public static Dictionary<string, byte> Components(Color c)
         {
