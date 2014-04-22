@@ -3834,6 +3834,49 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             Assert.IsTrue(foundCallsite);
             Assert.AreEqual(guid2, astLiveRunner.Core.CallSiteToNodeMap[callsiteId]);
         }
+
+        [Test]
+        public void TestReExecute01()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"import(""FFITarget.dll"");", 
+                "p = TestUpdateCount.Ctor(10,20);",
+                "a = p.UpdateCount;"
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            // Create CBN1 for import
+            Guid guid1 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Create CBN2 to use TestCount
+            Guid guid2 = System.Guid.NewGuid();
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+
+
+            // Create CBN3 to check value of TestCount
+            Guid guid3 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 1);
+
+
+            // Modify CBN2 with same contents with ForceExecution flag set
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid2, codes[1]);
+            subtree.ForceExecution = true;
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("a", 2);
+        }
+
     }
 
 }

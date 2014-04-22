@@ -52,7 +52,7 @@ namespace ProtoCore.AssociativeEngine
 
                 foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
                 {
-                    if (gnode.isActive && gnode.exprUID == bNode.exprUID)
+                    if (gnode.isActive && gnode.SourceAstID == bNode.SourceAstID)
                     {
                         if (!setEntryPoint)
                         {
@@ -60,6 +60,7 @@ namespace ProtoCore.AssociativeEngine
                             core.SetNewEntryPoint(gnode.updateBlock.startpc);
                         }
                         gnode.isDirty = true;
+                        gnode.isActive = true;
                     }
                 }
             }
@@ -130,6 +131,7 @@ namespace ProtoCore.AssociativeGraph
         public Guid guid {get; set;}
         public int dependencyGraphListID { get; set; }
         public int AstID { get; set; }
+        public int SourceAstID { get; set; }    // The original AST that this graphnode is associated with
         public int exprUID { get; set; }
         public int ssaExprID { get; set; }
         public int modBlkUID { get; set; }

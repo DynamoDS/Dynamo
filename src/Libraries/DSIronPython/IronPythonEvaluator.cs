@@ -6,7 +6,7 @@ using IronPython.Hosting;
 namespace DSIronPython
 {
     /// <summary>
-    /// 
+    ///     Evaluates a Python script in the Dynamo context.
     /// </summary>
     public class IronPythonEvaluator
     {
@@ -15,12 +15,16 @@ namespace DSIronPython
         public static string TestCode { get { return "OUT = 0"; } }
 
         /// <summary>
-        /// 
+        ///     Executes a Python script with custom variable names. Script may be a string
+        ///     read from a file, for example. Pass a list of names (matching the variable
+        ///     names in the script) to bindingNames and pass a corresponding list of values
+        ///     to bindingValues.
         /// </summary>
-        /// <param name="code"></param>
-        /// <param name="bindingNames"></param>
-        /// <param name="bindingValues"></param>
-        /// <returns></returns>
+        /// <param name="code">Python script as a string.</param>
+        /// <param name="bindingNames">Names of values referenced in Python script.</param>
+        /// <param name="bindingValues">Values referenced in Python script.</param>
+        /// <returns name="OUT">Output of the Python script.</returns>
+        /// <search>python</search>
         public static object EvaluateIronPythonScript(
             string code, 
             IList bindingNames, 

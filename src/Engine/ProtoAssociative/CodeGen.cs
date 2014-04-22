@@ -3376,6 +3376,7 @@ namespace ProtoAssociative
                                 ssaNode.exprUID = ssaID;
                                 ssaNode.ssaExprID = ssaExprID;
                                 ssaNode.guid = bnode.guid;
+                                ssaNode.SourceAstID = bnode.ID;
                                 NodeUtils.SetNodeLocation(ssaNode, node, node);
                             }
 
@@ -7937,6 +7938,7 @@ namespace ProtoAssociative
                     EmitCompileLog("==============Start Node==============\n");
                     graphNode = new ProtoCore.AssociativeGraph.GraphNode();
                     graphNode.AstID = bnode.ID;
+                    graphNode.SourceAstID = bnode.SourceAstID; 
                     graphNode.exprUID = bnode.exprUID;
                     graphNode.ssaExprID = bnode.ssaExprID;
                     graphNode.guid = core.SSASubscript_GUID;

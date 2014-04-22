@@ -96,7 +96,7 @@ namespace DSCore
         /// Ex. the range \"0..3\" with an offset of 2 will yield
         /// {0,1,2,3}{2,3,4,5}{4,5,6,7}...</param>
         /// <returns name="lists">Sublists of the given list.</returns>
-        /// <search>sub,sublist,build</search>
+        /// <search>sublists,build sublists</search>
         public static IList Sublists(IList list, IList ranges, int offset)
         {
             var result = new List<object>();
@@ -500,7 +500,7 @@ namespace DSCore
         /// <param name="list">List to chop up.</param>
         /// <param name="subLength">Length of each new sub-list.</param>
         /// <returns name="lists">List of lists.</returns>
-        /// <search>sublists</search>
+        /// <search>sublists,build sublists</search>
         public static IList Chop(IList list, int subLength)
         {
             if (list.Count < subLength)

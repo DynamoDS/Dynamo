@@ -61,7 +61,7 @@ namespace DSCore.File
         /// </summary>
         /// <param name="filePath">Path to the text file.</param>
         /// <returns name="str">Contents of the text file.</returns>
-        /// <search>read,text,file</search>
+        /// <search>read file,text,file</search>
         public static string ReadText(string filePath)
         {
             if (System.IO.File.Exists(filePath) == false)
