@@ -383,7 +383,32 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "CoordinateSystem.XAxis", "CoordinateSystem.XAxis");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Vector.AsPoint", "Vector.AsPoint");
+            migrationData.AppendNode(newNode);
+
+            XmlElement axisNode = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
+                "CoordinateSystem.XAxis", "CoordinateSystem.XAxis");
+            migrationData.AppendNode(axisNode);
+            string axisNodeId = MigrationManager.GetGuidFromXmlElement(axisNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            PortId newInPort0 = new PortId(axisNodeId, 0, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, newInPort0);
+            data.CreateConnector(axisNode, 0, newNode, 0);
+
+            return migrationData;
         }
     }
 
@@ -392,7 +417,32 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "CoordinateSystem.YAxis", "CoordinateSystem.YAxis");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Vector.AsPoint", "Vector.AsPoint");
+            migrationData.AppendNode(newNode);
+
+            XmlElement axisNode = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
+                "CoordinateSystem.YAxis", "CoordinateSystem.YAxis");
+            migrationData.AppendNode(axisNode);
+            string axisNodeId = MigrationManager.GetGuidFromXmlElement(axisNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            PortId newInPort0 = new PortId(axisNodeId, 0, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, newInPort0);
+            data.CreateConnector(axisNode, 0, newNode, 0);
+
+            return migrationData;
         }
     }
 
@@ -401,7 +451,32 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "CoordinateSystem.ZAxis", "CoordinateSystem.ZAxis");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Vector.AsPoint", "Vector.AsPoint");
+            migrationData.AppendNode(newNode);
+
+            XmlElement axisNode = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
+                "CoordinateSystem.ZAxis", "CoordinateSystem.ZAxis");
+            migrationData.AppendNode(axisNode);
+            string axisNodeId = MigrationManager.GetGuidFromXmlElement(axisNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            PortId newInPort0 = new PortId(axisNodeId, 0, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, newInPort0);
+            data.CreateConnector(axisNode, 0, newNode, 0);
+
+            return migrationData;
         }
     }
 
