@@ -148,30 +148,60 @@ namespace DSOffice
 
         }
 
+        /// <summary>
+        /// Reads the given Excel file and returns a workbook
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkBook ReadExcelFile(string path)
         {
             return WorkBook.ReadExcelFile(path);
         }
 
+        /// <summary>
+        /// Returns a list of all the worksheets present in the given Excel workbook
+        /// </summary>
+        /// <param name="workbook"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkSheet[] GetWorksheetsFromExcelWorkbook(WorkBook workbook)
         {
             return workbook.WorkSheets;
         }
 
+        /// <summary>
+        /// Returns the worksheet in the given workbook by its name
+        /// </summary>
+        /// <param name="workbook"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkSheet GetExcelWorksheetByName(WorkBook workbook, string name)
         {
             return workbook.GetWorksheetByName(name);
         }
 
+        /// <summary>
+        /// Reads and retrieves the data from the given Excel worksheet
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static object[][] GetDataFromExcelWorksheet(WorkSheet worksheet)
         {
             return worksheet.Data;
         }
 
+        /// <summary>
+        /// Writes the given data at the specified row and column no. in the given worksheet
+        /// and returns the worksheet
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="startRow"></param>
+        /// <param name="startColumn"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkSheet WriteDataToExcelWorksheet(
             WorkSheet worksheet, int startRow, int startColumn, object[][] data)
@@ -179,24 +209,46 @@ namespace DSOffice
             return worksheet.WriteData(startRow, startColumn, data);
         }
 
+        /// <summary>
+        /// Adds a new Excel worksheet with the given name to the given workbook        
+        /// </summary>
+        /// <param name="workbook"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkSheet AddExcelWorksheetToWorkbook(WorkBook workbook, string name)
         {
             return new WorkSheet(workbook, name);
         }
 
+        /// <summary>
+        /// Creates a new temporary Excel workbook
+        /// </summary>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkBook NewExcelWorkbook()
         {
             return new WorkBook("");
         }
 
+        /// <summary>
+        /// Saves the given Excel workbook to the specified file path and returns it
+        /// </summary>
+        /// <param name="workbook"></param>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkBook SaveAsExcelWorkbook(WorkBook workbook, string filename)
         {
             return new WorkBook(workbook, filename);
         }
 
+        /// <summary>
+        /// Reads data from the specified file and worksheet and returns it
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="sheetName"></param>
+        /// <returns></returns>
         public static object[][] Read(string filePath, string sheetName)
         {
             WorkBook wb = WorkBook.ReadExcelFile(filePath);
@@ -204,6 +256,16 @@ namespace DSOffice
             return ws.Data;
         }
 
+        /// <summary>
+        /// Writes the given data to the Excel file specified and saves it 
+        /// given its filepath, worksheet name, and row and column
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="sheetName"></param>
+        /// <param name="startRow"></param>
+        /// <param name="startCol"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static object[][] Write(string filePath, string sheetName, int startRow, int startCol, object[][] data)
         {
             WorkBook wb = new WorkBook(filePath);
