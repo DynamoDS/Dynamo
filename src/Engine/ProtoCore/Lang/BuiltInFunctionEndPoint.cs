@@ -567,8 +567,8 @@ namespace ProtoCore.Lang
 
             // Find the first visible method in the class and its heirarchy
             // The callsite will handle the overload
-            var dynamicFunctionNode = core.DynamicFunctionTable.functionTable[(int)dynamicTableIndex.opdata];
-            string functionName = dynamicFunctionNode.functionName;
+            var dynamicFunction = core.DynamicFunctionTable.GetFunctionAtIndex((int)dynamicTableIndex.opdata);
+            string functionName = dynamicFunction.Name;
 
             int thisObjectType = (int)thisObject.metaData.type;
             ClassNode classNode = runtime.exe.classTable.ClassNodes[thisObjectType];
@@ -601,7 +601,7 @@ namespace ProtoCore.Lang
             string dynamicFunctionName = string.Empty;
             if (procNode == null)
             {
-                int memvarIndex = classNode.GetFirstVisibleSymbolNoAccessCheck(dynamicFunctionNode.functionName);
+                int memvarIndex = classNode.GetFirstVisibleSymbolNoAccessCheck(dynamicFunction.Name);
 
                 int thisPtr = (int)thisObject.opdata;
                 if (Constants.kInvalidIndex != memvarIndex)

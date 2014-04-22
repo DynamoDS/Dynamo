@@ -533,7 +533,7 @@ namespace Dynamo
 
         }
 
-        public override void ShutDown(bool shutDownHost)
+        public override void ShutDown(bool shutDownHost, EventArgs args = null)
         {
             DisposeLogic.IsShuttingDown = true;
 

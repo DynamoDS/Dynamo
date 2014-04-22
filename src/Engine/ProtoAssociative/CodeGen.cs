@@ -564,13 +564,6 @@ namespace ProtoAssociative
                 
             }
 
-            // TODO Jun: Set the symbol table index of the first local variable of 'funcIndex'
-            if (null != localProcedure && null == localProcedure.firstLocal && !IsInLanguageBlockDefinedInFunction())
-            {
-                localProcedure.firstLocal = symbolnode.index;
-            }
-
-
             if (ProtoCore.DSASM.Constants.kInvalidIndex == symbolindex)
             {
                 return null;
@@ -765,7 +758,7 @@ namespace ProtoAssociative
             }
         }
 
-        public ProtoCore.DSASM.ProcedureNode GetProcedureFromInstance(int classScope, ProtoCore.AST.AssociativeAST.FunctionCallNode funcCall, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
+        public ProtoCore.DSASM.ProcedureNode GetProcedureFromInstance(int classScope, ProtoCore.AST.AssociativeAST.FunctionCallNode funcCall)
         {
             string procName = funcCall.Function.Name;
             Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != classScope);
@@ -1228,7 +1221,7 @@ namespace ProtoAssociative
                     inferedType.UID = dotCallType.UID = ci;
 
                     string rhsName = dotCall.FunctionCall.Function.Name;
-                    procCallNode = GetProcedureFromInstance(ci, dotCall.FunctionCall, graphNode);
+                    procCallNode = GetProcedureFromInstance(ci, dotCall.FunctionCall);
                     if (null != procCallNode)
                     {
                         isConstructor = procCallNode.isConstructor;
@@ -1346,9 +1339,8 @@ namespace ProtoAssociative
                                     if (null != procCallNode)
                                     {
                                         var dynamicRhsIndex = (int)(dotCall.DotCall.FormalArguments[1] as IntNode).Value;
-                                        core.DynamicFunctionTable.functionTable[dynamicRhsIndex].classIndex = procCallNode.classScope;
-                                        core.DynamicFunctionTable.functionTable[dynamicRhsIndex].procedureIndex = procCallNode.procId;
-                                        core.DynamicFunctionTable.functionTable[dynamicRhsIndex].pc = procCallNode.pc;
+                                        var dynFunc = core.DynamicFunctionTable.GetFunctionAtIndex(dynamicRhsIndex);
+                                        dynFunc.ClassIndex = procCallNode.classScope;
                                     }
                                 }
                             }
@@ -1484,7 +1476,7 @@ namespace ProtoAssociative
                 }
             }
 
-            if (isUnresolvedDot)
+            if (isUnresolvedDot || procCallNode == null)
             {
                 if (dotCallType.UID != (int)PrimitiveType.kTypeVar)
                 {
@@ -1502,8 +1494,7 @@ namespace ProtoAssociative
                 }
                 return procNode;
             }
-
-            if (null != procCallNode)
+            else
             {
                 if (procCallNode.isConstructor &&
                     (globalClassIndex != Constants.kInvalidIndex) &&
@@ -1524,12 +1515,6 @@ namespace ProtoAssociative
                 }
 
                 inferedType = procCallNode.returntype;
-
-                //if call is replication call
-                if (procCallNode.isThisCallReplication)
-                {
-                    inferedType.rank++;
-                }
 
                 // Get the dot call procedure
                 if (isConstructor || isStaticCall)
@@ -1584,86 +1569,6 @@ namespace ProtoAssociative
                 
                 return procCallNode;
             }
-            else
-            {
-                // Function does not exist at this point but we try to reolve at runtime
-                if (depth <= 0 && procName != ProtoCore.DSASM.Constants.kFunctionPointerCall)
-                {
-                    if (inferedType.UID != (int)PrimitiveType.kTypeVar)
-                    {
-                        if (!core.Options.SuppressFunctionResolutionWarning)
-                        {
-                            string property;
-                            if (CoreUtils.TryGetPropertyName(procName, out property))
-                            {
-                                string message = String.Format(WarningMessage.kPropertyNotFound, property);
-                                buildStatus.LogWarning(WarningID.kPropertyNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
-                            }
-                            else
-                            {
-                                string message = String.Format(WarningMessage.kMethodNotFound, procName);
-                                buildStatus.LogWarning(WarningID.kFunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
-                            }
-                        }
-                        inferedType.UID = (int)PrimitiveType.kTypeNull;
-                    }
-                   
-
-                    // Get the dot call procedure
-                    var procNode = core.GetFirstVisibleProcedure(Constants.kDotMethodName, null, codeBlock);
-
-                    if (CoreUtils.IsGetter(procName))
-                    {
-                        EmitFunctionCall(depth, type, arglist, procNode, funcCall, true);
-                    }
-                    else
-                    {
-                        EmitFunctionCall(depth, type, arglist, procNode, funcCall, false, bnode);
-                    }
-
-                    if (dotCallType.UID != (int)PrimitiveType.kTypeVar)
-                    {
-                        inferedType.UID = dotCallType.UID;
-                    }
-                }
-                else
-                {
-                    if (procName == Constants.kFunctionPointerCall && depth == 0)
-                    {
-                        DynamicFunctionNode dynamicFunctionNode = new DynamicFunctionNode(procName, arglist, lefttype);
-                        core.DynamicFunctionTable.functionTable.Add(dynamicFunctionNode);
-
-                        var iNode = nodeBuilder.BuildIdentfier(funcCall.Function.Name);
-                        EmitIdentifierNode(iNode, ref inferedType);
-                    }
-                    else
-                    {
-                        DynamicFunctionNode dynamicFunctionNode = new DynamicFunctionNode(funcCall.Function.Name, arglist, lefttype);
-                        core.DynamicFunctionTable.functionTable.Add(dynamicFunctionNode);
-                    }
-
-                    // The function call
-                    EmitInstrConsole(kw.callr, funcCall.Function.Name + "[dynamic]");
-                    EmitDynamicCall(core.DynamicFunctionTable.functionTable.Count - 1, globalClassIndex, depth, funcCall.line, funcCall.col, funcCall.endLine, funcCall.endCol);
-
-                    // The function return value
-                    EmitInstrConsole(kw.push, kw.regRX);
-                    StackValue opReturn = StackValue.BuildRegister(Registers.RX);
-                    EmitPush(opReturn);
-
-                    if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
-                    {
-                        int guides = EmitReplicationGuides(replicationGuide);
-                        EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, guides + "[guide]");
-                        EmitPushReplicationGuide(guides);
-                    }
-
-                    //assign inferedType to var
-                    inferedType.UID = (int)PrimitiveType.kTypeVar;
-                }
-            }
-
-            return null;
         }
 
 
@@ -1884,12 +1789,6 @@ namespace ProtoAssociative
 
                 inferedType = procNode.returntype;
 
-                //if call is replication call
-                if (procNode.isThisCallReplication)
-                {
-                    inferedType.rank++;
-                }
-
                 if (procNode.procId != Constants.kInvalidIndex)
                 {
 
@@ -2034,22 +1933,27 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    if (procName == ProtoCore.DSASM.Constants.kFunctionPointerCall && depth == 0)
+                    DynamicFunction dynFunc = null;
+                    if (procName == Constants.kFunctionPointerCall && depth == 0)
                     {
-                        var dynamicFunctionNode = new DynamicFunctionNode(procName, arglist, lefttype);
-                        core.DynamicFunctionTable.functionTable.Add(dynamicFunctionNode);
+                        if (!core.DynamicFunctionTable.TryGetFunction(procName, arglist.Count, lefttype, out dynFunc))
+                        {
+                            dynFunc = core.DynamicFunctionTable.AddNewFunction(procName, arglist.Count, lefttype);
+                        }
                         var iNode = nodeBuilder.BuildIdentfier(funcCall.Function.Name);
                         EmitIdentifierNode(iNode, ref inferedType);
                     }
                     else
                     {
-                        var dynamicFunctionNode = new DynamicFunctionNode(funcCall.Function.Name, arglist, lefttype);
-                        core.DynamicFunctionTable.functionTable.Add(dynamicFunctionNode);
+                        if (!core.DynamicFunctionTable.TryGetFunction(procName, arglist.Count, lefttype, out dynFunc))
+                        {
+                            dynFunc = core.DynamicFunctionTable.AddNewFunction(procName, arglist.Count, lefttype);
+                        }
                     }
 
                     // The function call
                     EmitInstrConsole(kw.callr, funcCall.Function.Name + "[dynamic]");
-                    EmitDynamicCall(core.DynamicFunctionTable.functionTable.Count - 1, 
+                    EmitDynamicCall(dynFunc.Index, 
                                     globalClassIndex, 
                                     depth, 
                                     funcCall.line, 
@@ -5365,7 +5269,7 @@ namespace ProtoAssociative
                 List<int> myBases = core.ClassTable.ClassNodes[globalClassIndex].baseList;
                 foreach (int bidx in myBases)
                 {
-                    int cidx = core.ClassTable.ClassNodes[bidx].vtable.IndexOf(baseConstructorName, argTypeList, core.ClassTable);
+                    int cidx = core.ClassTable.ClassNodes[bidx].vtable.IndexOf(baseConstructorName, argTypeList);
                     if ((cidx != ProtoCore.DSASM.Constants.kInvalidIndex) &&
                         core.ClassTable.ClassNodes[bidx].vtable.procList[cidx].isConstructor)
                     {
@@ -5383,7 +5287,7 @@ namespace ProtoAssociative
                 foreach (int bidx in myBases)
                 {
                     baseConstructorName = core.ClassTable.ClassNodes[bidx].name;
-                    int cidx = core.ClassTable.ClassNodes[bidx].vtable.IndexOf(baseConstructorName, argTypeList, core.ClassTable);
+                    int cidx = core.ClassTable.ClassNodes[bidx].vtable.IndexOf(baseConstructorName, argTypeList);
                     // If the base class is a FFI class, it may not contain a 
                     // default constructor, so only assert for design script 
                     // class for which we always generate a default constructor.
@@ -5448,7 +5352,6 @@ namespace ProtoAssociative
                         ++argNumber;
 
                         IdentifierNode paramNode = null;
-                        bool aIsDefault = false;
                         ProtoCore.AST.Node aDefaultExpression = null;
                         if (argNode.NameNode is IdentifierNode)
                         {
@@ -5458,10 +5361,7 @@ namespace ProtoAssociative
                         {
                             BinaryExpressionNode bNode = argNode.NameNode as BinaryExpressionNode;
                             paramNode = bNode.LeftNode as IdentifierNode;
-                            aIsDefault = true;
                             aDefaultExpression = bNode;
-                            //buildStatus.LogSemanticError("Default parameters are not supported");
-                            //throw new BuildHaltException();
                         }
                         else
                         {
@@ -5471,7 +5371,7 @@ namespace ProtoAssociative
                         ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode);
                         argsToBeAllocated.Add(new KeyValuePair<string, ProtoCore.Type>(paramNode.Value, argType));
                         localProcedure.argTypeList.Add(argType);
-                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, isDefault = aIsDefault, defaultExpression = aDefaultExpression };
+                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, DefaultExpression = aDefaultExpression };
                         localProcedure.argInfoList.Add(argInfo);
                     }
 
@@ -5552,11 +5452,11 @@ namespace ProtoAssociative
                     //Traverse default argument for the constructor
                     foreach (ProtoCore.DSASM.ArgumentInfo argNode in localProcedure.argInfoList)
                     {
-                        if (!argNode.isDefault)
+                        if (!argNode.IsDefault)
                         {
                             continue;
                         }
-                        BinaryExpressionNode bNode = argNode.defaultExpression as BinaryExpressionNode;
+                        BinaryExpressionNode bNode = argNode.DefaultExpression as BinaryExpressionNode;
                         // build a temporay node for statement : temp = defaultarg;
                         var iNodeTemp = nodeBuilder.BuildIdentfier(Constants.kTempDefaultArg);
                         BinaryExpressionNode bNodeTemp = new BinaryExpressionNode();
@@ -5804,10 +5704,7 @@ namespace ProtoAssociative
                         {
                             BinaryExpressionNode bNode = argNode.NameNode as BinaryExpressionNode;
                             paramNode = bNode.LeftNode as IdentifierNode;
-                            aIsDefault = true;
                             aDefaultExpression = bNode;
-                            //buildStatus.LogSemanticError("Defualt parameters are not supported");
-                            //throw new BuildHaltException();
                         }
                         else
                         {
@@ -5819,7 +5716,7 @@ namespace ProtoAssociative
                         argsToBeAllocated.Add(new KeyValuePair<string, ProtoCore.Type>(paramNode.Value, argType));
                         
                         localProcedure.argTypeList.Add(argType);
-                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, isDefault = aIsDefault, defaultExpression = aDefaultExpression };
+                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, DefaultExpression = aDefaultExpression };
                         localProcedure.argInfoList.Add(argInfo);
 
                         functionDescription += argNode.ArgumentType.ToString();
@@ -5919,11 +5816,11 @@ namespace ProtoAssociative
                     emitDebugInfo = false;
                     foreach (ProtoCore.DSASM.ArgumentInfo argNode in localProcedure.argInfoList)
                     {
-                        if (!argNode.isDefault)
+                        if (!argNode.IsDefault)
                         {
                             continue;
                         }
-                        BinaryExpressionNode bNode = argNode.defaultExpression as BinaryExpressionNode;
+                        BinaryExpressionNode bNode = argNode.DefaultExpression as BinaryExpressionNode;
                         // build a temporay node for statement : temp = defaultarg;
                         var iNodeTemp = nodeBuilder.BuildTempVariable();
                         var bNodeTemp = nodeBuilder.BuildBinaryExpression(iNodeTemp, bNode.LeftNode) as BinaryExpressionNode;
@@ -8739,56 +8636,6 @@ namespace ProtoAssociative
             }
         }
 
-        private void EmitDotFunctionBodyNode(AssociativeNode node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.DSASM.AssociativeSubCompilePass subPass = ProtoCore.DSASM.AssociativeSubCompilePass.kNone)
-        {
-            emitDebugInfo = false;
-            DotFunctionBodyNode dnode = node as DotFunctionBodyNode;
-            //left hand side
-            int depth = 0;
-            ProtoCore.Type leftType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
-            bool isMethodCallPresent = false;
-            bool isFirstIdent = true;
-            ProtoCore.DSASM.SymbolNode firstSymbol = null;
-            if (subPass != ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
-            {
-                DfsEmitIdentList(dnode.leftNode, null, globalClassIndex, ref leftType, ref depth, ref inferedType, false, ref isFirstIdent, ref isMethodCallPresent, ref firstSymbol, graphNode, subPass);
-            }
-            //right hand side
-            if (dnode.rightNodeArgNum == null)
-            {
-                //push dimension expression
-                EmitIdentifierNode(dnode.rightNodeDimExprList, ref inferedType, isBooleanOp, graphNode, subPass);
-                EmitIdentifierNode(dnode.rightNodeDim, ref inferedType, isBooleanOp, graphNode, subPass);
-                EmitIdentifierNode(dnode.rightNode, ref inferedType, isBooleanOp, graphNode, subPass);
-                if (subPass == ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
-                {
-                    return;
-                }
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushlist, "2", globalClassIndex.ToString());
-                EmitPushList(2, globalClassIndex, blockScope, true);
-            }
-            else
-            {
-                EmitIdentifierNode(dnode.rightNodeArgList, ref inferedType, isBooleanOp, graphNode, subPass);
-                if (subPass == ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier)
-                {
-                    return;
-                }
-                //EmitIdentifierNode(dnode.rightNodeArgNum, ref inferedType, isBooleanOp, graphNode, subPass);
-                EmitIdentifierNode(dnode.rightNode, ref inferedType, isBooleanOp, graphNode, subPass);
-                EmitInstrConsole(ProtoCore.DSASM.kw.callr, dnode.rightNode.Name + "[dynamic]");
-                EmitDynamicCall(ProtoCore.DSASM.Constants.kInvalidIndex, globalClassIndex, depth);
-
-                // The function return value
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regRX);
-                StackValue opReturn = StackValue.BuildRegister(Registers.RX); 
-                EmitPush(opReturn);
-            }
-            //assign inferedType to var
-            inferedType.UID = (int)PrimitiveType.kTypeVar;
-            emitDebugInfo = true;
-        }
-
         protected void EmitExceptionHandlingNode(AssociativeNode node, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.DSASM.AssociativeSubCompilePass subPass = ProtoCore.DSASM.AssociativeSubCompilePass.kNone)
         {
 #if ENABLE_EXCEPTION_HANDLING
@@ -9405,10 +9252,6 @@ namespace ProtoAssociative
             {
                 int block = (node as DynamicBlockNode).block;
                 EmitDynamicBlockNode(block,subPass);
-            }
-            else if (node is DotFunctionBodyNode)
-            {
-                EmitDotFunctionBodyNode(node, ref inferedType, isBooleanOp, graphNode, subPass);
             }
             else if (node is ThisPointerNode)
             {
