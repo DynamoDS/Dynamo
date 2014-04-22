@@ -166,7 +166,7 @@ namespace DSOffice
             return workbook.GetWorksheetByName(name);
         }
 
-        [IsVisibleInDynamoLibrary(true)]
+        [IsVisibleInDynamoLibrary(false)]
         public static object[][] GetDataFromExcelWorksheet(WorkSheet worksheet)
         {
             return worksheet.Data;
