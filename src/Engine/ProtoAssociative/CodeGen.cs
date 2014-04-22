@@ -1339,9 +1339,8 @@ namespace ProtoAssociative
                                     if (null != procCallNode)
                                     {
                                         var dynamicRhsIndex = (int)(dotCall.DotCall.FormalArguments[1] as IntNode).Value;
-                                        core.DynamicFunctionTable.functionTable[dynamicRhsIndex].classIndex = procCallNode.classScope;
-                                        core.DynamicFunctionTable.functionTable[dynamicRhsIndex].procedureIndex = procCallNode.procId;
-                                        core.DynamicFunctionTable.functionTable[dynamicRhsIndex].pc = procCallNode.pc;
+                                        var dynFunc = core.DynamicFunctionTable.GetFunctionAtIndex(dynamicRhsIndex);
+                                        dynFunc.ClassIndex = procCallNode.classScope;
                                     }
                                 }
                             }
@@ -1934,22 +1933,27 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    if (procName == ProtoCore.DSASM.Constants.kFunctionPointerCall && depth == 0)
+                    DynamicFunction dynFunc = null;
+                    if (procName == Constants.kFunctionPointerCall && depth == 0)
                     {
-                        var dynamicFunctionNode = new DynamicFunctionNode(procName, arglist, lefttype);
-                        core.DynamicFunctionTable.functionTable.Add(dynamicFunctionNode);
+                        if (!core.DynamicFunctionTable.TryGetFunction(procName, arglist.Count, lefttype, out dynFunc))
+                        {
+                            dynFunc = core.DynamicFunctionTable.AddNewFunction(procName, arglist.Count, lefttype);
+                        }
                         var iNode = nodeBuilder.BuildIdentfier(funcCall.Function.Name);
                         EmitIdentifierNode(iNode, ref inferedType);
                     }
                     else
                     {
-                        var dynamicFunctionNode = new DynamicFunctionNode(funcCall.Function.Name, arglist, lefttype);
-                        core.DynamicFunctionTable.functionTable.Add(dynamicFunctionNode);
+                        if (!core.DynamicFunctionTable.TryGetFunction(procName, arglist.Count, lefttype, out dynFunc))
+                        {
+                            dynFunc = core.DynamicFunctionTable.AddNewFunction(procName, arglist.Count, lefttype);
+                        }
                     }
 
                     // The function call
                     EmitInstrConsole(kw.callr, funcCall.Function.Name + "[dynamic]");
-                    EmitDynamicCall(core.DynamicFunctionTable.functionTable.Count - 1, 
+                    EmitDynamicCall(dynFunc.Index, 
                                     globalClassIndex, 
                                     depth, 
                                     funcCall.line, 

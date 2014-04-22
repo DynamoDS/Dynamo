@@ -4137,26 +4137,32 @@ namespace ProtoCore.DSASM
 
         private bool ProcessDynamicFunction(Instruction instr)
         {
-            int fptr = ProtoCore.DSASM.Constants.kInvalidIndex;
+            int fptr = Constants.kInvalidIndex;
             int functionDynamicIndex = (int)instr.op1.opdata;
             int classIndex = (int)instr.op2.opdata;
             int depth = (int)instr.op3.opdata;
-            bool isDotMemFuncBody = functionDynamicIndex == ProtoCore.DSASM.Constants.kInvalidIndex;
+            bool isDotMemFuncBody = functionDynamicIndex == Constants.kInvalidIndex;
             bool isFunctionPointerCall = false;
             if (isDotMemFuncBody)
             {
                 functionDynamicIndex = (int)rmem.Pop().opdata;
             }
 
-            DSASM.DynamicFunctionNode dynamicFunctionNode = core.DynamicFunctionTable.functionTable[functionDynamicIndex];
+            var dynamicFunction = core.DynamicFunctionTable.GetFunctionAtIndex(functionDynamicIndex);
 
             if (isDotMemFuncBody)
             {
-                classIndex = dynamicFunctionNode.classIndex;
+                classIndex = dynamicFunction.ClassIndex;
             }
 
-            string procName = dynamicFunctionNode.functionName;
-            List<ProtoCore.Type> arglist = dynamicFunctionNode.argList;
+            string procName = dynamicFunction.Name;
+            int argumentNumber = dynamicFunction.ArgumentNumber;
+            List<ProtoCore.Type> arglist = new List<Type>();
+            for (int i = 0; i < argumentNumber; ++i)
+            {
+                arglist.Add(new ProtoCore.Type());
+            }
+
             if (procName == ProtoCore.DSASM.Constants.kFunctionPointerCall && depth == 0)
             {
                 isFunctionPointerCall = true;
@@ -4164,13 +4170,11 @@ namespace ProtoCore.DSASM
                 StackValue fpSv = rmem.Pop();
                 if (fpSv.optype != AddressType.FunctionPointer)
                 {
-                    rmem.Pop(arglist.Count); //remove the arguments
+                    rmem.Pop(argumentNumber); //remove the arguments
                     return false;
                 }
                 fptr = (int)fpSv.opdata;
             }
-
-
 
             //retrieve the function arguments
             List<StackValue> argSvList = new List<StackValue>();
@@ -4210,7 +4214,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                for (int i = 0; i < arglist.Count; i++)
+                for (int i = 0; i < argumentNumber; i++)
                 {
                     StackValue argSv = rmem.Pop();
                     argSvList.Add(argSv);
