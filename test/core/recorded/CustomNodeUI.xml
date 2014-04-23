@@ -1,0 +1,75 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateCustomNodeCommand NodeId="80aa55e1-938d-432d-9845-306af3ca1a94" Name="testUI" Category="TCN" Description="" MakeCurrent="true" />
+  <CreateNodeCommand NodeId="977b69da-fd74-437c-9aa3-3fa77b70ca1a" NodeName="Input" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="180c3242-cd93-4a12-97af-7dc09b3ee770" NodeName="Input" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="977b69da-fd74-437c-9aa3-3fa77b70ca1a" Modifiers="0" />
+  <DragSelectionCommand X="731" Y="556" DragOperation="0" />
+  <DragSelectionCommand X="731" Y="556" DragOperation="1" />
+  <UpdateModelValueCommand ModelGuid="977b69da-fd74-437c-9aa3-3fa77b70ca1a" Name="InputSymbol" Value="a" />
+  <SelectModelCommand ModelGuid="977b69da-fd74-437c-9aa3-3fa77b70ca1a" Modifiers="0" />
+  <DragSelectionCommand X="724" Y="441" DragOperation="0" />
+  <DragSelectionCommand X="599" Y="415" DragOperation="1" />
+  <CreateNodeCommand NodeId="bd1a1cb3-3f7f-4dae-b0e7-208856976807" NodeName="Output" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <UpdateModelValueCommand ModelGuid="180c3242-cd93-4a12-97af-7dc09b3ee770" Name="InputSymbol" Value="b" />
+  <SelectModelCommand ModelGuid="bd1a1cb3-3f7f-4dae-b0e7-208856976807" Modifiers="0" />
+  <DragSelectionCommand X="985" Y="410" DragOperation="0" />
+  <DragSelectionCommand X="985" Y="410" DragOperation="1" />
+  <SelectModelCommand ModelGuid="bd1a1cb3-3f7f-4dae-b0e7-208856976807" Modifiers="0" />
+  <DragSelectionCommand X="765" Y="498" DragOperation="0" />
+  <DragSelectionCommand X="1002" Y="410" DragOperation="1" />
+  <CreateNodeCommand NodeId="cad6b6d9-6826-4150-b4d7-d92dd8c3a081" NodeName="+@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="cad6b6d9-6826-4150-b4d7-d92dd8c3a081" Modifiers="0" />
+  <DragSelectionCommand X="832" Y="519" DragOperation="0" />
+  <DragSelectionCommand X="952" Y="563" DragOperation="1" />
+  <MakeConnectionCommand NodeId="977b69da-fd74-437c-9aa3-3fa77b70ca1a" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="cad6b6d9-6826-4150-b4d7-d92dd8c3a081" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="180c3242-cd93-4a12-97af-7dc09b3ee770" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="cad6b6d9-6826-4150-b4d7-d92dd8c3a081" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="cad6b6d9-6826-4150-b4d7-d92dd8c3a081" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="bd1a1cb3-3f7f-4dae-b0e7-208856976807" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SwitchTabCommand TabIndex="0" />
+  <CreateNodeCommand NodeId="3f3bf192-bd6c-4805-9c1c-dabea5351544" NodeName="3992eae0-35ba-43dc-9903-ea0234c11c34" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="efbca7df-680c-4580-8196-31b8c2c40fd8" NodeName="3992eae0-35ba-43dc-9903-ea0234c11c34" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="8a26ff62-3bc6-4403-9c8e-15f017b7b76d" NodeName="80aa55e1-938d-432d-9845-306af3ca1a94" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="181bba50-4142-4faa-ae63-e26f2d5f9d53" NodeName="Code Block" X="675" Y="567" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="181bba50-4142-4faa-ae63-e26f2d5f9d53" Name="Code" Value="5.5" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="5562a1cf-0568-4dd0-8306-effdf81fa5cf" NodeName="Code Block" X="611" Y="675" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="5562a1cf-0568-4dd0-8306-effdf81fa5cf" Name="Code" Value="2.1" />
+  <MakeConnectionCommand NodeId="181bba50-4142-4faa-ae63-e26f2d5f9d53" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="8a26ff62-3bc6-4403-9c8e-15f017b7b76d" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="5562a1cf-0568-4dd0-8306-effdf81fa5cf" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="8a26ff62-3bc6-4403-9c8e-15f017b7b76d" PortIndex="1" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <PausePlaybackCommand Tag="Tag-a9481ee6" PauseDurationInMs="20" />
+  <SwitchTabCommand TabIndex="1" />
+  <CreateNodeCommand NodeId="47b6d740-d441-4667-9abf-03e791944e05" NodeName="Input" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="47b6d740-d441-4667-9abf-03e791944e05" Modifiers="0" />
+  <DragSelectionCommand X="760" Y="503" DragOperation="0" />
+  <DragSelectionCommand X="751" Y="620" DragOperation="1" />
+  <CreateNodeCommand NodeId="a3a83f00-e0b1-486b-b790-84183413f655" NodeName="+@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="a3a83f00-e0b1-486b-b790-84183413f655" Modifiers="0" />
+  <DragSelectionCommand X="1147" Y="714" DragOperation="0" />
+  <DragSelectionCommand X="1147" Y="714" DragOperation="1" />
+  <SelectModelCommand ModelGuid="a3a83f00-e0b1-486b-b790-84183413f655" Modifiers="0" />
+  <DragSelectionCommand X="807" Y="521" DragOperation="0" />
+  <DragSelectionCommand X="1136" Y="707" DragOperation="1" />
+  <MakeConnectionCommand NodeId="cad6b6d9-6826-4150-b4d7-d92dd8c3a081" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="a3a83f00-e0b1-486b-b790-84183413f655" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="47b6d740-d441-4667-9abf-03e791944e05" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="a3a83f00-e0b1-486b-b790-84183413f655" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="a3a83f00-e0b1-486b-b790-84183413f655" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="bd1a1cb3-3f7f-4dae-b0e7-208856976807" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SwitchTabCommand TabIndex="0" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="c9eab36b-3ba4-4194-b940-c264afc48e16" NodeName="Code Block" X="687" Y="712" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="c9eab36b-3ba4-4194-b940-c264afc48e16" Name="Code" Value="1.1" />
+  <MakeConnectionCommand NodeId="c9eab36b-3ba4-4194-b940-c264afc48e16" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="8a26ff62-3bc6-4403-9c8e-15f017b7b76d" PortIndex="2" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+</Commands>
