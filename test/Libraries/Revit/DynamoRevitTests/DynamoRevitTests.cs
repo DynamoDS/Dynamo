@@ -8,6 +8,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using RevitServices.Persistence;
+using RevitServices.Transactions;
 using ModelCurve = Autodesk.Revit.DB.ModelCurve;
 using Plane = Autodesk.Revit.DB.Plane;
 using SketchPlane = Autodesk.Revit.DB.SketchPlane;
@@ -82,6 +83,12 @@ namespace Dynamo.Tests
             {
                 Console.WriteLine(ex.StackTrace);
             }
+
+            //create the transaction manager object
+            TransactionManager.SetupManager(new AutomaticTransactionStrategy());
+
+            //tests do not run from idle thread
+            TransactionManager.Instance.DoAssertInIdleThread = false;
         }
 
         /// <summary>
