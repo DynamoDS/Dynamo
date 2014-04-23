@@ -33,14 +33,83 @@ namespace Dynamo.Nodes
     }
     public class XyPlane : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction nodes
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "CoordinateSystem.XYPlane", "CoordinateSystem.XYPlane");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            var csNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 0, "ProtoGeometry.dll",
+                "CoordinateSystem.Identity", "CoordinateSystem.Identity");
+            migrationData.AppendNode(csNode);
+            string csNodeId = MigrationManager.GetGuidFromXmlElement(csNode);
+
+            // Create connector
+            data.CreateConnector(csNode, 0, newNode, 0);
+
+            return migrationData;
+        }
     }
 
     public class XzPlane : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction nodes
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "CoordinateSystem.ZXPlane", "CoordinateSystem.ZXPlane");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            var csNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 0, "ProtoGeometry.dll",
+                "CoordinateSystem.Identity", "CoordinateSystem.Identity");
+            migrationData.AppendNode(csNode);
+            string csNodeId = MigrationManager.GetGuidFromXmlElement(csNode);
+
+            // Create connector
+            data.CreateConnector(csNode, 0, newNode, 0);
+
+            return migrationData;
+        }
     }
 
     public class YzPlane : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction nodes
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "CoordinateSystem.YZPlane", "CoordinateSystem.YZPlane");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            var csNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 0, "ProtoGeometry.dll",
+                "CoordinateSystem.Identity", "CoordinateSystem.Identity");
+            migrationData.AppendNode(csNode);
+            string csNodeId = MigrationManager.GetGuidFromXmlElement(csNode);
+
+            // Create connector
+            data.CreateConnector(csNode, 0, newNode, 0);
+
+            return migrationData;
+        }
     }
 
     public class SketchPlane : MigrationNode
