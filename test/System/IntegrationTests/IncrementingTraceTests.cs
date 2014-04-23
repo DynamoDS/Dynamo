@@ -30,8 +30,17 @@ namespace IntegrationTests
         }
 
         [TearDown]
+        public void TestFixup()
+        {
+            testFx.CleanUp();
+            astLiveRunner.ReInitializeLiveRunner();
+            
+        }
+
+        [TearDown]
         public static void TLSCleanup()
         {
+
             Thread.FreeNamedDataSlot(__TEMP_REVIT_TRACE_ID);
            
         }
