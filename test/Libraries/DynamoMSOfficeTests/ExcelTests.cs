@@ -33,8 +33,20 @@ namespace Dynamo.Tests
         [TearDown]
         public override void Cleanup()
         {
-            ExcelInterop.TryQuitAndCleanup(false);
+            try
+            {
+                EventArgs args = new Dynamo.Nodes.ExcelCloseEventArgs(false);
+                Controller.ShutDown(false, args);
+                this.Controller = null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+
             base.Cleanup();
+
+            GC.Collect();
         }
 
         #region COM
@@ -67,8 +79,8 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
-
+            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+                        
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
@@ -90,7 +102,7 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(4, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
+            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
@@ -99,8 +111,8 @@ namespace Dynamo.Tests
 
             Controller.RunExpression(null);
 
-            Assert.IsTrue(watch.OldValue.IsList);
-            var list = watch.OldValue.GetListFromFSchemeValue();
+            Assert.IsTrue(watch.OldValue.IsCollection);
+            var list = watch.OldValue.GetElements();
 
             Assert.AreEqual(3, list.Count());
 
@@ -115,16 +127,16 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
+            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
-            // remap the filename as Excel requires an absolute path
+            //// remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
             Controller.RunExpression(null);
 
-            Assert.IsTrue(watch.OldValue.IsContainer);
+            Assert.IsTrue(watch.OldValue.Class.ClassName == "DSOffice.WorkSheet");
 
         }
 
@@ -136,18 +148,21 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
+            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-            var getWorksheet = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<GetExcelWorksheetByName>();
-            var readFile = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<ReadExcelFile>();
+            var getWorksheet = Controller.DynamoModel.CurrentWorkspace.Nodes.Where(node => node is DSFunction && 
+                node.NickName == "Excel.GetExcelWorksheetByName").FirstOrDefault();
+            var readFile = Controller.DynamoModel.CurrentWorkspace.Nodes.Where(node => node is DSFunction &&
+                node.NickName == "Excel.ReadExcelFile").FirstOrDefault();
 
-            Assert.Throws<AssertionException>(() => Controller.RunExpression(null));
+            //Assert.Throws<AssertionException>(() => Controller.RunExpression(null));
+            Controller.RunExpression(null);
 
-            Assert.IsTrue(readFile.OldValue.IsContainer);
-            Assert.IsNull(getWorksheet.OldValue);
+            Assert.IsTrue(readFile.OldValue.Class.ClassName == "DSOffice.WorkBook");
+            Assert.IsNull(getWorksheet.OldValue.Data);
         }
 
         [Test]
@@ -159,7 +174,7 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
+            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
@@ -168,8 +183,8 @@ namespace Dynamo.Tests
 
             Controller.RunExpression(null);
 
-            Assert.IsTrue(watch.OldValue.IsList);
-            var list = watch.OldValue.GetListFromFSchemeValue();
+            Assert.IsTrue(watch.OldValue.IsCollection);
+            var list = watch.OldValue.GetElements();
 
             Assert.AreEqual(16, list.Count());
 
@@ -178,10 +193,10 @@ namespace Dynamo.Tests
             for (var i = 0; i < 16; i++)
             {
                 // get data returns 2d array
-                Assert.IsTrue(list[i].IsList);
-                var rowList = list[i].GetListFromFSchemeValue();
+                Assert.IsTrue(list[i].IsCollection);
+                var rowList = list[i].GetElements();
                 Assert.AreEqual(1, rowList.Count());
-                Assert.AreEqual(counter++, rowList[0].GetDoubleFromFSchemeValue());
+                Assert.AreEqual(counter++, rowList[0].Data);
             }
 
         }
@@ -195,7 +210,7 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
+            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
@@ -204,26 +219,24 @@ namespace Dynamo.Tests
 
             Controller.RunExpression(null);
 
-            Assert.IsTrue(watch.OldValue.IsList);
-            var list = watch.OldValue.GetListFromFSchemeValue();
+            Assert.IsTrue(watch.OldValue.IsCollection);
+            var list = watch.OldValue.GetElements();
 
             Assert.AreEqual(18, list.Count());
 
             // 18 x 3 array of numbers
-            for (var i = 0; i < 16; i++)
+            for (var i = 0; i < 18; i++)
             {
                 // get data returns 2d array
-                Assert.IsTrue(list[i].IsList);
-                var rowList = list[i].GetListFromFSchemeValue();
+                Assert.IsTrue(list[i].IsCollection);
+                var rowList = list[i].GetElements();
                 Assert.AreEqual(3, rowList.Count());
 
                 for (var j = 0; j < 3; j++)
                 {
-                    Assert.IsTrue(rowList[j].IsNumber);
+                    Assert.AreEqual(rowList[j].Data, (i+1)+j);
                 }
-
             }
-
         }
 
         [Test]
@@ -234,7 +247,7 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
+            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
@@ -243,28 +256,27 @@ namespace Dynamo.Tests
 
             Controller.RunExpression(null);
 
-            Assert.IsTrue(watch.OldValue.IsList);
-            var list = watch.OldValue.GetListFromFSchemeValue();
+            Assert.IsTrue(watch.OldValue.IsCollection);
+            var list = watch.OldValue.GetElements();
 
             Assert.AreEqual(4, list.Count());
 
             // single column - 1, "word", 2, 3, "palabra"
-            Assert.IsTrue(list[0].IsList);
-            var rowList = list[0].GetListFromFSchemeValue();
-            Assert.AreEqual("a", rowList[0].GetStringFromFSchemeValue());
+            Assert.IsTrue(list[0].IsCollection);
+            var rowList = list[0].GetElements();
+            Assert.AreEqual("a", rowList[0].Data);
 
-            Assert.IsTrue(list[1].IsList);
-            rowList = list[1].GetListFromFSchemeValue();
-            Assert.IsTrue(rowList[0].IsContainer);
-            Assert.IsNull(((FScheme.Value.Container)rowList[0]).Item);
+            Assert.IsTrue(list[1].IsCollection);
+            rowList = list[1].GetElements();
+            Assert.IsNull(rowList[0].Data);
 
-            Assert.IsTrue(list[2].IsList);
-            rowList = list[2].GetListFromFSchemeValue();
-            Assert.AreEqual("cell is", rowList[0].GetStringFromFSchemeValue());
+            Assert.IsTrue(list[2].IsCollection);
+            rowList = list[2].GetElements();
+            Assert.AreEqual("cell is", rowList[0].Data);
 
-            Assert.IsTrue(list[3].IsList);
-            rowList = list[3].GetListFromFSchemeValue();
-            Assert.AreEqual("missing", rowList[0].GetStringFromFSchemeValue());
+            Assert.IsTrue(list[3].IsCollection);
+            rowList = list[3].GetElements();
+            Assert.AreEqual("missing", rowList[0].Data);
         }
 
         [Test]
@@ -276,7 +288,7 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
+            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
@@ -285,31 +297,31 @@ namespace Dynamo.Tests
 
             Controller.RunExpression(null);
 
-            Assert.IsTrue(watch.OldValue.IsList);
-            var list = watch.OldValue.GetListFromFSchemeValue();
+            Assert.IsTrue(watch.OldValue.IsCollection);
+            var list = watch.OldValue.GetElements();
 
             Assert.AreEqual(5, list.Count());
 
             // single column - 1, "word", 2, 3, "palabra"
-            Assert.IsTrue(list[0].IsList);
-            var rowList = list[0].GetListFromFSchemeValue();
-            Assert.AreEqual(1, rowList[0].GetDoubleFromFSchemeValue());
+            Assert.IsTrue(list[0].IsCollection);
+            var rowList = list[0].GetElements();
+            Assert.AreEqual(1, rowList[0].Data);
 
-            Assert.IsTrue(list[1].IsList);
-            rowList = list[1].GetListFromFSchemeValue();
-            Assert.AreEqual("word", rowList[0].GetStringFromFSchemeValue());
+            Assert.IsTrue(list[1].IsCollection);
+            rowList = list[1].GetElements();
+            Assert.AreEqual("word", rowList[0].Data);
 
-            Assert.IsTrue(list[2].IsList);
-            rowList = list[2].GetListFromFSchemeValue();
-            Assert.AreEqual(2, rowList[0].GetDoubleFromFSchemeValue());
+            Assert.IsTrue(list[2].IsCollection);
+            rowList = list[2].GetElements();
+            Assert.AreEqual(2, rowList[0].Data);
 
-            Assert.IsTrue(list[3].IsList);
-            rowList = list[3].GetListFromFSchemeValue();
-            Assert.AreEqual(3, rowList[0].GetDoubleFromFSchemeValue());
+            Assert.IsTrue(list[3].IsCollection);
+            rowList = list[3].GetElements();
+            Assert.AreEqual(3, rowList[0].Data);
 
-            Assert.IsTrue(list[4].IsList);
-            rowList = list[4].GetListFromFSchemeValue();
-            Assert.AreEqual("palabra", rowList[0].GetStringFromFSchemeValue());
+            Assert.IsTrue(list[4].IsCollection);
+            rowList = list[4].GetElements();
+            Assert.AreEqual("palabra", rowList[0].Data);
 
         }
 
@@ -322,36 +334,36 @@ namespace Dynamo.Tests
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_AddMixed1DData.dyn");
             Controller.DynamoModel.Open(openPath);
-            Assert.AreEqual(12, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(13, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             Controller.RunExpression(null);
 
-            Assert.IsTrue(watch.OldValue.IsList);
-            var list = watch.OldValue.GetListFromFSchemeValue();
+            Assert.IsTrue(watch.OldValue.IsCollection);
+            var list = watch.OldValue.GetElements();
 
             Assert.AreEqual(5, list.Count());
 
             // single column - 1, "word", 2, 3, "palabra"
-            Assert.IsTrue(list[0].IsList);
-            var rowList = list[0].GetListFromFSchemeValue();
-            Assert.AreEqual("doodle", rowList[0].GetStringFromFSchemeValue());
+            Assert.IsTrue(list[0].IsCollection);
+            var rowList = list[0].GetElements();
+            Assert.AreEqual("doodle", rowList[0].Data);
 
-            Assert.IsTrue(list[1].IsList);
-            rowList = list[1].GetListFromFSchemeValue();
-            Assert.AreEqual(0, rowList[0].GetDoubleFromFSchemeValue());
+            Assert.IsTrue(list[1].IsCollection);
+            rowList = list[1].GetElements();
+            Assert.AreEqual(0, rowList[0].Data);
 
-            Assert.IsTrue(list[2].IsList);
-            rowList = list[2].GetListFromFSchemeValue();
-            Assert.AreEqual(21029, rowList[0].GetDoubleFromFSchemeValue());
+            Assert.IsTrue(list[2].IsCollection);
+            rowList = list[2].GetElements();
+            Assert.AreEqual(21029, rowList[0].Data);
 
-            Assert.IsTrue(list[3].IsList);
-            rowList = list[3].GetListFromFSchemeValue();
-            Assert.IsTrue(rowList[0].IsContainer);
-            Assert.IsNull(((FScheme.Value.Container)rowList[0]).Item);
+            Assert.IsTrue(list[3].IsCollection);
+            rowList = list[3].GetElements();
+            //Assert.IsTrue(rowList[0].IsContainer);
+            Assert.IsNull(rowList[0].Data);
 
-            Assert.IsTrue(list[4].IsList);
-            rowList = list[4].GetListFromFSchemeValue();
-            Assert.AreEqual(-90, rowList[0].GetDoubleFromFSchemeValue());
+            Assert.IsTrue(list[4].IsCollection);
+            rowList = list[4].GetElements();
+            Assert.AreEqual(-90, rowList[0].Data);
 
         }
 
@@ -360,10 +372,13 @@ namespace Dynamo.Tests
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_AddWorksheet.dyn");
             Controller.DynamoModel.Open(openPath);
-            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var getWorksheet = Controller.DynamoModel.CurrentWorkspace.Nodes.Where(node => node is DSFunction &&
+                node.NickName == "Excel.GetExcelWorksheetByName").FirstOrDefault();
             Controller.RunExpression(null);
-            Assert.IsTrue(watch.OldValue.IsContainer);
+            Assert.AreEqual(watch.OldValue.Class.ClassName, "DSOffice.WorkSheet");
+            Assert.IsNull(getWorksheet.OldValue.Data);
         }
 
         [Test]
@@ -374,16 +389,16 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             Controller.RunExpression(null);
-            Assert.IsTrue(watch.OldValue.IsList);
-            var list = watch.OldValue.GetListFromFSchemeValue();
+            Assert.IsTrue(watch.OldValue.IsCollection);
+            var list = watch.OldValue.GetElements();
 
             Assert.AreEqual(1, list.Count());
 
             // get data returns 2d array
-            Assert.IsTrue(list[0].IsList);
-            var rowList = list[0].GetListFromFSchemeValue();
+            Assert.IsTrue(list[0].IsCollection);
+            var rowList = list[0].GetElements();
             Assert.AreEqual(1, rowList.Count());
-            Assert.AreEqual(100.0, rowList[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(100.0, rowList[0].Data);
         }
 
         [Test]
@@ -394,8 +409,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             Controller.RunExpression(null);
-            Assert.IsTrue(watch.OldValue.IsList);
-            var list = watch.OldValue.GetListFromFSchemeValue();
+            Assert.IsTrue(watch.OldValue.IsCollection);
+            var list = watch.OldValue.GetElements();
 
             Assert.AreEqual(101, list.Count());
 
@@ -404,10 +419,10 @@ namespace Dynamo.Tests
             for (var i = 0; i < 101; i++)
             {
                 // get data returns 2d array
-                Assert.IsTrue(list[i].IsList);
-                var rowList = list[i].GetListFromFSchemeValue();
+                Assert.IsTrue(list[i].IsCollection);
+                var rowList = list[i].GetElements();
                 Assert.AreEqual(1, rowList.Count());
-                Assert.AreEqual(counter++, rowList[0].GetDoubleFromFSchemeValue());
+                Assert.AreEqual(counter++, rowList[0].Data);
             }
 
         }
@@ -418,25 +433,27 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_Add2DListData.dyn");
             Controller.DynamoModel.Open(openPath);
             Assert.AreEqual(11, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
-            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watch = Controller.DynamoModel.CurrentWorkspace.Nodes.Where(x => x is DSFunction &&
+                x.NickName == "Excel.GetDataFromExcelWorksheet").FirstOrDefault();
+
             Controller.RunExpression(null);
 
-            Assert.IsTrue(watch.OldValue.IsList);
-            var list = watch.OldValue.GetListFromFSchemeValue();
+            Assert.IsTrue(watch.OldValue.IsCollection);
+            var list = watch.OldValue.GetElements();
 
-            // 101 x 5 - each column is 0..100
-            Assert.AreEqual(101, list.Count());
+            //// 5 X 101 - each row is 0..100
+            Assert.AreEqual(5, list.Count());
 
             // contents of first workbook is ascending array of numbers starting at 1
             var counter = 0;
-            for (var i = 0; i < 101; i++)
+            for (var i = 0; i < 5; i++)
             {
                 // get data returns 2d array
-                Assert.IsTrue(list[i].IsList);
-                var rowList = list[i].GetListFromFSchemeValue();
-                Assert.AreEqual(5, rowList.Count());
-                rowList.ToList().ForEach(x => Assert.AreEqual(counter, x.GetDoubleFromFSchemeValue()));
-                counter++;
+                Assert.IsTrue(list[i].IsCollection);
+                var rowList = list[i].GetElements();
+                Assert.AreEqual(101, rowList.Count());
+                rowList.ToList().ForEach(x => Assert.AreEqual(counter++, x.Data));
+                counter = 0;
             }
 
         }
@@ -449,7 +466,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             Controller.RunExpression(null);
-            Assert.IsTrue(watch.OldValue.IsContainer);
+            Assert.AreEqual(watch.OldValue.Class.ClassName, "DSOffice.WorkBook");
         }
 
         #endregion
@@ -463,7 +480,7 @@ namespace Dynamo.Tests
             Controller.DynamoModel.Open(openPath);
 
             var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
-            var stringNode = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.String>();
+            var stringNode = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
 
             stringNode.Value = filePath;
 
@@ -484,7 +501,7 @@ namespace Dynamo.Tests
         /// for an enhancement which allows "Watch.Process" to be called (and 
         /// crash without the fix).
         /// </summary>
-        [Ignore, Test]
+        [Test]
         public void Defect_MAGN_883()
         {
             string testDir = GetTestDirectory();
@@ -494,7 +511,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
             var workspace = Controller.DynamoModel.CurrentWorkspace;
-            var filename = workspace.FirstNodeFromWorkspace<StringFilename>();
+            var filename = workspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", testDir);

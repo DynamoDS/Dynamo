@@ -25,13 +25,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            var migrationData = new NodeMigrationData(data.Document);
-
-            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 1, 1);
-            migrationData.AppendNode(dummyNode);
-
-            return migrationData;
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Object.IsNull", "Object.IsNull@var");
         }
     }
 
@@ -42,34 +36,11 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement composeNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(composeNode, "",
-                "Compose", "__Compose@_FunctionObject[]");
+            XmlElement composeNode = MigrationManager.CloneAndChangeName(oldNode,
+                "DSCoreNodesUI.HigherOrder.ComposeFunctions", "Compose Function");
+            composeNode.SetAttribute("inputcount", "2");
             migratedData.AppendNode(composeNode);
-            string composeNodeId = MigrationManager.GetGuidFromXmlElement(composeNode);
-
-            XmlElement createListNode = MigrationManager.CreateNode(data.Document,
-                oldNode, 0, "DSCoreNodesUI.CreateList", "Create List");
-            migratedData.AppendNode(createListNode);
-            createListNode.SetAttribute("inputcount", "2");
-            string createListNodeId = MigrationManager.GetGuidFromXmlElement(createListNode);
-
-            //create and reconnect the connecters
-            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
-            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
-
-            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
-            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
-
-            PortId newInPort0 = new PortId(composeNodeId, 0, PortType.INPUT);
-            PortId newInPort1 = new PortId(createListNodeId, 0, PortType.INPUT);
-            PortId newInPort2 = new PortId(createListNodeId, 1, PortType.INPUT);
-
-            data.ReconnectToPort(connector0, newInPort1);
-            data.ReconnectToPort(connector1, newInPort2);
-            data.CreateConnector(createListNode, 0, composeNode, 0);
 
             return migratedData;
         }
@@ -1682,30 +1653,13 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement applyNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(applyNode, "",
-                "Apply", "Apply@_FunctionObject,var[]..[]");
-            migratedData.AppendNode(applyNode);
-            string applyNodeId = MigrationManager.GetGuidFromXmlElement(applyNode);
+            XmlElement applyNode = MigrationManager.CloneAndChangeName(oldNode, 
+                "DSCoreNodesUI.HigherOrder.ApplyFunction","Apply Function");           
 
-            int numberOfArgs = oldNode.ChildNodes.Count;
+            int numberOfArgs = oldNode.ChildNodes.Count + 1;
             string numberOfArgsString = numberOfArgs.ToString();
-            XmlElement createListNode = MigrationManager.CreateNode(data.Document,
-                oldNode, 0, "DSCoreNodesUI.CreateList", "Create List");
-            migratedData.AppendNode(createListNode);
-            createListNode.SetAttribute("inputcount", numberOfArgsString);
-            string createListNodeId = MigrationManager.GetGuidFromXmlElement(createListNode);
-
-            //create and reconnect the connecters
-            while (numberOfArgs > 0) 
-            {
-                PortId oldInPort = new PortId(oldNodeId, numberOfArgs, PortType.INPUT);
-                XmlElement connector = data.FindFirstConnector(oldInPort);
-                PortId newInPort = new PortId(createListNodeId, numberOfArgs - 1, PortType.INPUT);
-                data.ReconnectToPort(connector, newInPort);
-                numberOfArgs--;
-            }
-            data.CreateConnector(createListNode, 0, applyNode, 1);
+            applyNode.SetAttribute("inputcount", numberOfArgsString);
+            migratedData.AppendNode(applyNode);
 
             return migratedData;
         }

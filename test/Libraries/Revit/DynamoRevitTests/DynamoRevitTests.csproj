@@ -56,6 +56,14 @@
       <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="ProtoGeometry, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\extern\DesignScript\ProtoGeometry.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoInterface, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+    </Reference>
     <Reference Include="RevitAPI">
       <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
       <Private>False</Private>
@@ -89,6 +97,7 @@
     <Compile Include="ReferenceCurveTests.cs" />
     <Compile Include="SelectionTests.cs" />
     <Compile Include="TopographyTests.cs" />
+    <Compile Include="TransformTest.cs" />
     <Compile Include="XYZTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PythonTests.cs" />

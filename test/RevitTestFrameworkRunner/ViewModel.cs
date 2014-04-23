@@ -189,7 +189,7 @@ namespace RevitTestFrameworkRunner
 
         private void Run(object parameter)
         {
-            if (File.Exists(Program._results))
+            if (File.Exists(Program._results) && !Program._concat)
             {
                 File.Delete(Program._results);
             }

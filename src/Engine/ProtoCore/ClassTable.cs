@@ -274,7 +274,7 @@ namespace ProtoCore.DSASM
 
             ProtoCore.DSASM.ProcedureNode procNode = null;
 
-            int functionIndex = vtable.IndexOf(procName, argTypeList, typeSystem.classTable, isStaticOrConstructor);
+            int functionIndex = vtable.IndexOf(procName, argTypeList, isStaticOrConstructor);
             if (functionIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
             {
                 int myClassIndex = typeSystem.classTable.IndexOf(name);
@@ -353,9 +353,9 @@ namespace ProtoCore.DSASM
             return procNode;
         }
 
-        public ProtoCore.DSASM.ProcedureNode GetFirstStaticMemberFunction(string procName)
+        public ProcedureNode GetFirstStaticMemberFunction(string procName)
         {
-            ProtoCore.DSASM.ProcedureNode procNode = null;
+            ProcedureNode procNode = null;
             if (null != vtable)
             {
                 procNode = vtable.GetFirstStatic(procName);

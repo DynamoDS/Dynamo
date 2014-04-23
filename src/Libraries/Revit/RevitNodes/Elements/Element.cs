@@ -20,7 +20,7 @@ namespace Revit.Elements
     /// Superclass of all Revit element wrappers
     /// </summary>
     //[SupressImportIntoVM]
-    public abstract class Element : IDisposable, IGraphicItem
+    public abstract class Element : IDisposable, IGraphicItem, IFormattable
     {
         /// <summary>
         /// A reference to the current Document.
@@ -173,6 +173,13 @@ namespace Revit.Elements
         public override string ToString()
         {
             return this.GetType().Name;
+        }
+
+        public virtual string ToString(string format, IFormatProvider formatProvider)
+        {
+            // As a default, return the standard string representation.
+            // Override ToString with format information in children.
+            return ToString();
         }
 
         [IsVisibleInDynamoLibrary(false)]

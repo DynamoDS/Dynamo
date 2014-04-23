@@ -59,6 +59,7 @@ namespace RevitServices.Persistence
                 Validity.Assert(!existingWrappers.Contains(wrapper), 
                     "Lifecycle manager alert: registering the same Revit Element Wrapper twice"
                     + " {6528305F}");
+                //return;
             }
             else
             {
@@ -67,7 +68,10 @@ namespace RevitServices.Persistence
             }
 
             existingWrappers.Add(wrapper);
-            revitDeleted.Add(elementID, false);
+            if (!revitDeleted.ContainsKey(elementID))
+            {
+                revitDeleted.Add(elementID, false);                
+            }
         }
 
         /// <summary>

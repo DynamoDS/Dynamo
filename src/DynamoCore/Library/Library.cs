@@ -1102,9 +1102,9 @@ namespace Dynamo.DSEngine
                 (arg, argType) => 
                 {
                     object defaultValue = null;
-                    if (arg.isDefault)
+                    if (arg.IsDefault)
                     {
-                        var binaryExpr = arg.defaultExpression as BinaryExpressionNode;
+                        var binaryExpr = arg.DefaultExpression as BinaryExpressionNode;
                         if (binaryExpr != null)
                         {
                             var vnode = binaryExpr.RightNode;

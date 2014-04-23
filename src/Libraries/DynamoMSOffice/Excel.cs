@@ -13,6 +13,15 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Dynamo.Nodes
 {
+    public class ExcelCloseEventArgs : EventArgs
+    {
+        public ExcelCloseEventArgs(bool saveWorkbooks = true)
+        {
+            this.SaveWorkbooks = saveWorkbooks;
+        }
+
+        public bool SaveWorkbooks { get; private set; }
+    }
 
     public class ExcelInterop {
 
@@ -106,7 +115,7 @@ namespace Dynamo.Nodes
                     App.Workbooks.Cast<Workbook>().ToList().ForEach((wb) => wb.Close(saveWorkbooks));
                     App.Quit();
                 }
-                
+
                 while (Marshal.ReleaseComObject(_app) > 0)
                 {
 

@@ -40,17 +40,22 @@ namespace DSRevitNodesUI
         private void Updater_ElementsAdded(IEnumerable<string> updated)
         {
             forceReExecuteOfNode = true;
+            RequiresRecalc = true;
         }
 
 
         protected void Updater_ElementsModified(IEnumerable<string> updated)
         {
             forceReExecuteOfNode = true;
+            RequiresRecalc = true;
+
         }
 
         protected void Updater_ElementsDeleted(Document document, IEnumerable<ElementId> deleted)
         {
             forceReExecuteOfNode = true;
+            RequiresRecalc = true;
+
         }
 
 
