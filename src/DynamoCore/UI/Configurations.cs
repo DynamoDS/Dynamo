@@ -179,7 +179,7 @@ namespace Dynamo.UI
         #region CodeBlockNode
 
         public static readonly int CBNMaxPortNameLength = 24;
-        public static readonly int CBNMaxTextBoxWidth = 500;
+        public static readonly double CBNMaxTextBoxWidth = 500;
         public static readonly double CBNFontSize = 14.67;
 
         #endregion
