@@ -19,6 +19,7 @@ namespace DSIronPythonNode
         protected PythonNodeBase()
         {
             OutPortData.Add(new PortData("OUT", "Result of the python script"));
+            AddInput();
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
