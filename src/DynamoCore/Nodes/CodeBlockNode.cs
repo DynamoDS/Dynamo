@@ -28,8 +28,7 @@ namespace Dynamo.Nodes
     public partial class CodeBlockNodeModel : NodeModel
     {
         private readonly List<Statement> codeStatements = new List<Statement>();
-        private string code = "";
-        private string codeToParse = "";
+        private string code = string.Empty;
         private List<string> inputIdentifiers = new List<string>();
         private List<string> tempVariables = new List<string>();
         private string previewVariable = null;
@@ -37,8 +36,8 @@ namespace Dynamo.Nodes
 
         private struct Formatting
         {
-            public const int InitialMargin = 5;
-            public const int VerticalMargin = 20;
+            public const double InitialMargin = 7;
+            public const double VerticalMargin = 26;
             public const string ToolTipForTempVariable = "Statement Output";
         }
 
@@ -218,11 +217,6 @@ namespace Dynamo.Nodes
                         code = null;
                 }
             }
-        }
-
-        public string CodeToParse
-        {
-            get { return codeToParse; }
         }
 
         /// <summary>
@@ -428,18 +422,13 @@ namespace Dynamo.Nodes
             if (string.IsNullOrEmpty(Code))
                 previewVariable = null;
 
-            // Parse the text and assign each AST node to a statement instance
-            codeToParse = code;
-
             try
             {
-                ParseParam parseParam = new ParseParam(this.GUID, codeToParse);
+                ParseParam parseParam = new ParseParam(this.GUID, code);
                 if (GraphToDSCompiler.GraphUtilities.Parse(parseParam))
                 {
                     if (parseParam.ParsedNodes != null)
                     {
-                        codeToParse = parseParam.ProcessedCode;
-
                         // Create an instance of statement for each code statement written by the user
                         foreach (var parsedNode in parseParam.ParsedNodes)
                         {
@@ -589,31 +578,38 @@ namespace Dynamo.Nodes
 
             // Create output ports
             var allDefs = locationMap.OrderBy(p => p.Value);
-            if (allDefs.Any())
+            if (allDefs.Any() == false)
+                return;
+
+            double prevPortBottom = 0.0;
+            var map = CodeBlockUtils.MapLogicalToVisualLineIndices(this.code);
+            foreach (var def in allDefs)
             {
-                // Create first output port for the first defined variable
-                var firstVar = allDefs.FirstOrDefault();
-                string tooltip = tempVariables.Contains(firstVar.Key) ? Formatting.ToolTipForTempVariable : firstVar.Key;
-                OutPortData.Add(new PortData("", firstVar.Key, typeof(object))
+                // Map the given logical line index to its corresponding visual 
+                // line index. Do note that "def.Value" here is the line number 
+                // supplied by the paser, which uses 1-based line indexing so we 
+                // have to remove one from the line index.
+                // 
+                var logicalIndex = def.Value - 1;
+                var visualIndex = map.ElementAt(logicalIndex);
+
+                string tooltip = def.Key;
+                if (tempVariables.Contains(def.Key))
+                    tooltip = Formatting.ToolTipForTempVariable;
+
+                double portCoordsY = Formatting.InitialMargin;
+                portCoordsY += visualIndex * Formatting.VerticalMargin;
+                OutPortData.Add(new PortData(string.Empty, tooltip, typeof(object))
                 {
-                    VerticalMargin = Formatting.InitialMargin + (firstVar.Value - 1) * Formatting.VerticalMargin
+                    VerticalMargin = portCoordsY - prevPortBottom
                 });
 
-                // Calc the diff between the definition location of variable 
-                // and the defintion location of previous variable
-                var defs = allDefs.Skip(1)
-                                   .Zip(allDefs.Take(allDefs.Count() - 1), 
-                                        (kvp1, kvp2) => new KeyValuePair<string, int>(kvp1.Key, kvp1.Value - kvp2.Value - 1));
-
-                // Create output ports for variables
-                foreach (var pair in defs)
-                {
-                    tooltip = tempVariables.Contains(pair.Key) ? Formatting.ToolTipForTempVariable : pair.Key;
-                    OutPortData.Add(new PortData("", tooltip, typeof(object))
-                    {
-                        VerticalMargin = pair.Value < 0 ? 0 : pair.Value * Formatting.VerticalMargin
-                    });
-                }
+                // Since we compute the "delta" between the top of the current 
+                // port to the bottom of the previous port, we need to record 
+                // down the bottom coordinate value before proceeding to the next 
+                // port.
+                // 
+                prevPortBottom = portCoordsY + Formatting.VerticalMargin;
             }
         }
 
