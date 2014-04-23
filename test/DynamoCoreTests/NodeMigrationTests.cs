@@ -1739,6 +1739,54 @@ namespace Dynamo.Tests
             AssertPreviewValue("6e68a338-d71e-4b72-a806-9c6b9e917c50", 0);
         }
 
+        [Test]
+        public void TestXyPlane()
+        {
+            OpenModel(GetDynPath("TestXyPlane.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            Assert.AreEqual(12, workspace.Nodes.Count);
+            Assert.AreEqual(14, workspace.Connectors.Count);
+
+            RunCurrentModel();
+            AssertPreviewValue("4957d6b3-27c4-4cb5-939c-057ccf17ac48", new double[]{1});
+            AssertPreviewValue("e5621d44-334a-4814-ad29-aa37fdd059be", new double[]{1});
+            AssertPreviewValue("3890ec6d-1d41-4988-b827-11d9965b6cf8", new double[]{0});
+        }
+
+        [Test]
+        public void TestYzPlane()
+        {
+            OpenModel(GetDynPath("TestYzPlane.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            Assert.AreEqual(12, workspace.Nodes.Count);
+            Assert.AreEqual(14, workspace.Connectors.Count);
+
+            RunCurrentModel();
+            AssertPreviewValue("36b34044-9251-4e1d-af19-37db6396cd23", new double[] { 0 });
+            AssertPreviewValue("34363f7d-42f6-4985-9684-667a5190e428", new double[] { 3 });
+            AssertPreviewValue("fb96ef37-84d5-4c83-9a06-ed78b5b3d8ca", new double[] { 3 });
+        }
+
+        [Test]
+        public void TestXzPlane()
+        {
+            OpenModel(GetDynPath("TestXzPlane.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            Assert.AreEqual(12, workspace.Nodes.Count);
+            Assert.AreEqual(14, workspace.Connectors.Count);
+
+            RunCurrentModel();
+            AssertPreviewValue("5acac8cc-65ca-4410-a851-5b86a3987c1b", new double[] { 2 });
+            AssertPreviewValue("66e28a4b-09c6-4386-98c4-958bf7aad87f", new double[] { 0 });
+            AssertPreviewValue("635a4533-d522-4bf7-83a7-4f178fabd18f", new double[] { 2 });
+        }
+
         #endregion
 
         #region Dynamo Libraries Node Migration Tests
