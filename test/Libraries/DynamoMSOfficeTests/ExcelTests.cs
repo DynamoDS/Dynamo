@@ -325,6 +325,87 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        public void CanReadAndWriteExcel()
+        {
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\ReadAndWriteExcel.dyn");
+            Controller.DynamoModel.Open(openPath);
+
+            Assert.AreEqual(8, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+
+            var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+
+            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            var stringNode = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            stringNode.Value = filePath;
+
+            // watch displays the data from the Read node
+            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+
+            // writeNode should have the same data contained in watch
+            var writeNode = Controller.DynamoModel.CurrentWorkspace.Nodes.Where(x => x is DSFunction &&
+                x.NickName == "Excel.Write").FirstOrDefault();
+
+            Controller.RunExpression(null);
+
+            Assert.IsTrue(File.Exists(filePath));
+
+            Assert.IsTrue(writeNode.OldValue.IsCollection);
+            var list1 = writeNode.OldValue.GetElements();
+
+            Assert.IsTrue(watch.OldValue.IsCollection);
+            var list2 = watch.OldValue.GetElements();
+
+            Assert.AreEqual(5, list1.Count());
+            Assert.AreEqual(5, list2.Count());
+
+            // single column - 1, "word", 2, 3, "palabra"
+            Assert.IsTrue(list2[0].IsCollection);
+            var rowList = list2[0].GetElements();
+            Assert.AreEqual(1, rowList[0].Data);
+
+            Assert.IsTrue(list2[1].IsCollection);
+            rowList = list2[1].GetElements();
+            Assert.AreEqual("word", rowList[0].Data);
+
+            Assert.IsTrue(list2[2].IsCollection);
+            rowList = list2[2].GetElements();
+            Assert.AreEqual(2, rowList[0].Data);
+
+            Assert.IsTrue(list2[3].IsCollection);
+            rowList = list2[3].GetElements();
+            Assert.AreEqual(3, rowList[0].Data);
+
+            Assert.IsTrue(list2[4].IsCollection);
+            rowList = list2[4].GetElements();
+            Assert.AreEqual("palabra", rowList[0].Data);
+
+            Assert.IsTrue(list1[0].IsCollection);
+            rowList = list1[0].GetElements();
+            Assert.AreEqual(1, rowList[0].Data);
+
+            Assert.IsTrue(list1[1].IsCollection);
+            rowList = list1[1].GetElements();
+            Assert.AreEqual("word", rowList[0].Data);
+
+            Assert.IsTrue(list1[2].IsCollection);
+            rowList = list1[2].GetElements();
+            Assert.AreEqual(2, rowList[0].Data);
+
+            Assert.IsTrue(list1[3].IsCollection);
+            rowList = list1[3].GetElements();
+            Assert.AreEqual(3, rowList[0].Data);
+
+            Assert.IsTrue(list1[4].IsCollection);
+            rowList = list1[4].GetElements();
+            Assert.AreEqual("palabra", rowList[0].Data);
+
+        }
+
         #endregion
 
         #region Writing
@@ -469,6 +550,54 @@ namespace Dynamo.Tests
             Assert.AreEqual(watch.OldValue.Class.ClassName, "DSOffice.WorkBook");
         }
 
+        [Test]
+        public void CanWriteToExcelAndUpdateData()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WriteNodeAndUpdateData.dyn");
+            Controller.DynamoModel.Open(openPath);
+
+            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            var stringNode = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            stringNode.Value = filePath;
+
+            var writeNode = Controller.DynamoModel.CurrentWorkspace.Nodes.Where(x => x is DSFunction &&
+                x.NickName == "Excel.Write").FirstOrDefault();
+
+            Controller.RunExpression(null);
+
+            Assert.IsTrue(File.Exists(filePath));
+
+            Assert.IsTrue(writeNode.OldValue.IsCollection);
+            var list = writeNode.OldValue.GetElements();
+
+            Assert.AreEqual(1, list.Count());
+
+            // get data returns 2d array
+            Assert.IsTrue(list[0].IsCollection);
+            var rowList = list[0].GetElements();
+            Assert.AreEqual(1, rowList.Count());
+            Assert.AreEqual("BBB", rowList[0].Data);
+
+            var stringNodes = Controller.DynamoModel.CurrentWorkspace.Nodes.OfType<Dynamo.Nodes.StringInput>();
+            var inputStringNode = stringNodes.Where(x => x.Value == "BBB").FirstOrDefault();
+            inputStringNode.Value = "AAA";
+
+            Controller.RunExpression(null);
+
+            Assert.IsTrue(writeNode.OldValue.IsCollection);
+            list = writeNode.OldValue.GetElements();
+
+            Assert.AreEqual(1, list.Count());
+
+            // get data returns 2d array
+            Assert.IsTrue(list[0].IsCollection);
+            rowList = list[0].GetElements();
+            Assert.AreEqual(1, rowList.Count());
+            Assert.AreEqual("AAA", rowList[0].Data);
+
+        }
+
+
         #endregion
 
         #region Saving
@@ -489,6 +618,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(File.Exists(filePath));
         }
 
+       
         #endregion
 
         #region Defects
