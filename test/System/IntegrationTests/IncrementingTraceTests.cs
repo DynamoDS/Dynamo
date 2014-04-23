@@ -32,9 +32,7 @@ namespace IntegrationTests
         [TearDown]
         public void TestFixup()
         {
-            testFx.CleanUp();
             astLiveRunner.ReInitializeLiveRunner();
-            
         }
 
         [TearDown]
