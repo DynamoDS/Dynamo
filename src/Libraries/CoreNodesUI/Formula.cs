@@ -221,7 +221,14 @@ namespace DSCoreNodesUI
 
             if (HasUnconnectedInput())
             {
+                // Format input names to be used as function parameters
                 var inputs = InPortData.Select(x => x.NickName.Replace(' ', '_')).ToList();
+
+
+                /*  def formula_partial(<params>) {
+                 *    return = DSCore.Formula.Evaluate(<FormulaString>, <InPortData Names>, <params>);
+                 *  }
+                 */
 
                 var functionDef = new FunctionDefinitionNode
                 {
@@ -231,28 +238,29 @@ namespace DSCoreNodesUI
                         {
                             Arguments = inputs.Select(AstFactory.BuildParamNode).ToList()
                         },
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
                     FunctionBody =
                         new CodeBlockNode
                         {
                             Body =
                                 new List<AssociativeNode>
                                 {
-                                    AstFactory.BuildFunctionCall(
-                                        backingMethod,
-                                        new List<AssociativeNode>
-                                        {
-                                            AstFactory.BuildStringNode(FormulaString),
-                                            AstFactory.BuildExprList(
-                                                InPortData.Select(
-                                                    x =>
-                                                        AstFactory.BuildStringNode(x.NickName) as
-                                                        AssociativeNode).ToList()),
-                                            AstFactory.BuildExprList(
-                                                inputs.Select(AstFactory.BuildIdentifier)
-                                                    .Cast<AssociativeNode>()
-                                                    .ToList())
-                                        })
+                                    AstFactory.BuildReturnStatement(
+                                        AstFactory.BuildFunctionCall(
+                                            backingMethod,
+                                            new List<AssociativeNode>
+                                            {
+                                                AstFactory.BuildStringNode(FormulaString),
+                                                AstFactory.BuildExprList(
+                                                    InPortData.Select(
+                                                        x =>
+                                                            AstFactory.BuildStringNode(x.NickName) as
+                                                            AssociativeNode).ToList()),
+                                                AstFactory.BuildExprList(
+                                                    inputs.Select(AstFactory.BuildIdentifier)
+                                                        .Cast<AssociativeNode>()
+                                                        .ToList())
+                                            }))
                                 }
                         }
                 };
