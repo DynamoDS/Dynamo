@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -26,19 +25,19 @@ namespace DSCoreNodesUI
     //[NodeDeprecated]
     public class Formula : NodeModel, IWpfNode
     {
-        private string _formulaString = "";
+        private string formulaString = "";
         public string FormulaString
         {
             get
             {
-                return _formulaString;
+                return formulaString;
             }
 
             set
             {
-                if (_formulaString == null || !_formulaString.Equals(value))
+                if (formulaString == null || !formulaString.Equals(value))
                 {
-                    _formulaString = value;
+                    formulaString = value;
                     if (value != null)
                     {
                         ElementState oldState = State;
@@ -149,12 +148,14 @@ namespace DSCoreNodesUI
 
         #endregion
 
+/*
         private static readonly HashSet<string> reservedFuncNames = new HashSet<string> { 
             "abs", "acos", "asin", "atan", "ceiling", "cos",
             "exp", "floor", "ieeeremainder", "log", "log10",
             "max", "min", "pow", "round", "sign", "sin", "sqrt",
             "tan", "truncate", "in", "if"
         };
+*/
 
         private static readonly HashSet<string> reservedParamNames = new HashSet<string> {
             "pi", "π"
