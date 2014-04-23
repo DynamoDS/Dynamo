@@ -129,7 +129,7 @@ namespace Dynamo.Tests
 
             var filename = (DSCore.File.Filename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
-            //// remap the filename as Excel requires an absolute path
+            // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
@@ -441,7 +441,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(watch.OldValue.IsCollection);
             var list = watch.OldValue.GetElements();
 
-            //// 5 X 101 - each row is 0..100
+            // 5 X 101 - each row is 0..100
             Assert.AreEqual(5, list.Count());
 
             // contents of first workbook is ascending array of numbers starting at 1
