@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using DSCore;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 
-namespace DSCore
+namespace DSCoreNodesUI
 {
     [NodeName("Web Request")]
     [NodeDescription("Make a web request given a url.")]
