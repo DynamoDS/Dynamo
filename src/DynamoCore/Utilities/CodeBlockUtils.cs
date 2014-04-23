@@ -3,8 +3,11 @@ using Dynamo.Nodes;
 using Dynamo.UI;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Windows;
+using System.Windows.Media;
 
 namespace Dynamo.Utilities
 {
@@ -110,6 +113,81 @@ namespace Dynamo.Utilities
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Call this method to map logical lines in the given text input to their
+        /// corresponding visual line index. Due to wrapping behavior, a long line
+        /// may be wrapped into more than one line due to width constraint. For an
+        /// example:
+        /// 
+        ///     0 This is a longer line that will be wrapped around to next line
+        ///     1 This is a shorter line
+        /// 
+        /// The wrapped results will be as follow:
+        /// 
+        ///     0 This is a longer line that will 
+        ///       be wrapped around to next line
+        ///     1 This is a shorter line
+        /// 
+        /// The resulting array will be:
+        /// 
+        ///     result = { 0, 2 }
+        /// 
+        /// It means that the first logical line (with index 0) will be mapped to 
+        /// line 0 visually; the second logical line (with index 1) will be mapped 
+        /// to line 2 visually.
+        /// 
+        /// </summary>
+        /// <param name="text">The input text for the mapping.</param>
+        /// <returns>Returns a list of visual line indices. For an example, if the 
+        /// result is { 0, 6, 27 }, then the first logical line (index 0) is mapped 
+        /// to visual line with index 0; second logical line (index 1) is mapped to 
+        /// visual line with index 6; third logical line (index 2) is mapped to 
+        /// visual line with index 27.</returns>
+        /// 
+        public static IEnumerable<int> MapLogicalToVisualLineIndices(string text)
+        {
+            var logicalToVisualLines = new List<int>();
+            if (string.IsNullOrEmpty(text))
+                return logicalToVisualLines;
+
+            text = text.Replace("\r\n", "\n");
+            text = text.Replace("\r", "\n");
+            var lines = text.Split(new char[] { '\n' }, StringSplitOptions.None);
+
+            // We could have hard-coded "pack" instead of "UriSchemePack" here, 
+            // but in NUnit scenario there is no "Application" created. When there 
+            // is no Application instance, the Uri format "pack://" will fail Uri 
+            // object creation. Adding a reference to "UriSchemePack" resolves 
+            // this issue to avoid a "UriFormatException".
+            // 
+            string pack = System.IO.Packaging.PackUriHelper.UriSchemePack;
+            var uri = new Uri(pack + "://application:,,,/DynamoCore;component/");
+            var textFontFamily = new FontFamily(uri, ResourceNames.FontResourceUri);
+
+            var typeface = new Typeface(textFontFamily, FontStyles.Normal,
+                FontWeights.Normal, FontStretches.Normal);
+
+            int totalLinesSoFar = 0;
+            foreach (var line in lines)
+            {
+                FormattedText ft = new FormattedText(
+                    line, CultureInfo.CurrentCulture,
+                    System.Windows.FlowDirection.LeftToRight, typeface,
+                    Configurations.CBNFontSize, Brushes.Black)
+                {
+                    MaxTextWidth = Configurations.CBNMaxTextBoxWidth,
+                    Trimming = TextTrimming.None
+                };
+
+                logicalToVisualLines.Add(totalLinesSoFar);
+
+                var lineCount = Math.Floor(ft.Extent / Configurations.CBNFontSize);
+                totalLinesSoFar += (lineCount < 1.0 ? 1 : ((int)lineCount));
+            }
+
+            return logicalToVisualLines;
         }
     }
 }
