@@ -1854,7 +1854,7 @@ namespace Dynamo.Nodes
                 else
                 {
                     return _result.HasValue
-                        ? new DoubleNode(_result.Value) as AssociativeNode
+                        ? (new DoubleToken(_result.Value)).GetAstNode(idLookup)
                         : new NullNode() as AssociativeNode;
                 }
             }
@@ -2122,6 +2122,8 @@ namespace Dynamo.Nodes
 
             public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
             {
+                if (Math.Floor(_d) == _d)
+                    return AstFactory.BuildIntNode((int)_d);
                 return AstFactory.BuildDoubleNode(_d);
             }
         }
