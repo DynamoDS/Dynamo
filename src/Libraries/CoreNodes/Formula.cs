@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Autodesk.DesignScript.Runtime;
 using NCalc;
 
 namespace DSCore
