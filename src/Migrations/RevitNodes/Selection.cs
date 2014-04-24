@@ -265,7 +265,7 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)
-                newNode.AppendChild(subNode);
+                newNode.AppendChild(subNode.Clone());
 
             return migrationData;
         }
