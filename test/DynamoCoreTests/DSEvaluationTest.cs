@@ -685,6 +685,15 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void Defect_MAGN_2363()
+        {
+            // CBN: 0..#3..10;
+            RunModel(@"core\dsevaluation\Defect_MAGN_2363.dyn");
+            AssertPreviewValue("f20147a0-21bb-4f23-b6bb-450591e62b31",
+                new object[] { 0, 10, 20 });
+        }
+
+        [Test]
         public void Defect_MAGN_2479()
         {
             // Details are available in http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2479
