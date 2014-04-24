@@ -261,13 +261,20 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
 
+            //append asVector Node
+            XmlElement pointAsVector0 = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 1, "ProtoGeometry.dll",
+                "Point.AsVector", "Point.AsVector");
+            migrationData.AppendNode(pointAsVector0);
+            string pointAsVector0Id = MigrationManager.GetGuidFromXmlElement(pointAsVector0);
+
             // Update connectors
             PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
             PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
             PortId oldInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
 
             PortId newInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
-            PortId newInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
+            PortId newInPort2 = new PortId(pointAsVector0Id, 0, PortType.INPUT);
 
             PortId converterInPort = new PortId(converterNodeId, 0, PortType.INPUT);
 
@@ -281,6 +288,7 @@ namespace Dynamo.Nodes
 
             data.CreateConnector(converterNode, 0, newNode, 3);
             data.CreateConnector(identityCoordinateSystem, 0, newNode, 0);
+            data.CreateConnector(pointAsVector0, 0, newNode, 2);
 
             return migrationData;
         }
