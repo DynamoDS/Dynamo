@@ -12,6 +12,8 @@ using System.Collections;
 using Dynamo.Models;
 using DSCoreNodesUI;
 using DSCore.File;
+using Autodesk.DesignScript.Geometry;
+using Revit.Elements;
 namespace Dynamo.Tests
 {
     [TestFixture]
@@ -30,20 +32,39 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+ 	        Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+ 	
+            var nodes = Controller.DynamoModel.Nodes;
 
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
-
-            double noOfNdoes = nodes.Count();
-
-            if (noOfNdoes >= 1)
+            double dummyNodesCount = nodes.OfType<DummyNode>().Count();
+            if (dummyNodesCount >= 1)
             {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
+                Assert.Fail("Number of dummy nodes found in Sample: " + dummyNodesCount);
             }
 
             dynSettings.Controller.RunExpression(true);
 
+            var varPointByCoordinates = model.CurrentWorkspace.NodeFromWorkspace("14af8f89-a133-43cc-8449-95336fb0bb6d").VariableToPreview;
+            var varReferencePoint = model.CurrentWorkspace.NodeFromWorkspace("d615cc73-d32d-4b1f-b519-0b8f9b903ebf").VariableToPreview;
+            
+            RuntimeMirror mirrorPointByCoordinates = Controller.EngineController.GetMirror(varPointByCoordinates);
+            RuntimeMirror mirrorReferencePoint = Controller.EngineController.GetMirror(varReferencePoint);
 
+            Assert.IsNotNull(mirrorPointByCoordinates);
+            Assert.IsTrue(mirrorPointByCoordinates.GetData().IsCollection);
+            Assert.AreEqual(9, mirrorPointByCoordinates.GetData().GetElements().Count);
+            var data = mirrorPointByCoordinates.GetData().GetElements()[2].Data;
+            Assert.IsNotNull(data);
+            Assert.IsAssignableFrom<Point>(data);
+            Assert.AreEqual(20, ((Point)data).Z);
+
+            Assert.IsNotNull(mirrorReferencePoint);
+            Assert.IsTrue(mirrorReferencePoint.GetData().IsCollection);
+            Assert.AreEqual(9, mirrorReferencePoint.GetData().GetElements().Count);
+            data = mirrorReferencePoint.GetData().GetElements()[3].Data;
+            Assert.IsNotNull(data);
+            Assert.IsAssignableFrom<ReferencePoint>(data);
+            Assert.AreEqual(30, ((ReferencePoint)data).Z);
         }
 
         [Test]
@@ -55,25 +76,56 @@ namespace Dynamo.Tests
             string samplePath = Path.Combine(_samplesPath, @".\01 Create Point\create point - end.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
-            //test running the expression
             model.Open(testPath);
 
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
-            double noOfNdoes = nodes.Count();
+            var nodes = Controller.DynamoModel.Nodes;
 
-            if (noOfNdoes >= 1)
+            double dummyNodesCount = nodes.OfType<DummyNode>().Count();
+            if (dummyNodesCount >= 1)
             {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
+                Assert.Fail("Number of dummy nodes found in Sample: " + dummyNodesCount);
             }
 
             dynSettings.Controller.RunExpression(true);
 
-            //test copying and pasting the workflow
+            // test copying and pasting the workflow
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.AddRange(dynSettings.Controller.DynamoModel.Nodes);
             model.Copy(null);
             model.Paste(null);
+
+            // evaluate graph
+            var varPointByCoordinates = model.CurrentWorkspace.NodeFromWorkspace("14af8f89-a133-43cc-8449-95336fb0bb6d").VariableToPreview;
+            var varReferencePoint = model.CurrentWorkspace.NodeFromWorkspace("16d1ceb2-c780-45d1-9dfb-d9c49836a931").VariableToPreview;
+
+            RuntimeMirror mirrorPointByCoordinates = Controller.EngineController.GetMirror(varPointByCoordinates);
+            RuntimeMirror mirrorReferencePoint = Controller.EngineController.GetMirror(varReferencePoint);
+
+            Assert.IsNotNull(mirrorPointByCoordinates);
+            var data = mirrorPointByCoordinates.GetData().Data;
+            Assert.IsNotNull(data);
+            Assert.IsAssignableFrom<Point>(data);
+            Assert.AreEqual(0, ((Point)data).Z);
+
+            Assert.IsNotNull(mirrorReferencePoint);
+            data = mirrorReferencePoint.GetData().Data;
+            Assert.IsNotNull(data);
+            Assert.IsAssignableFrom<ReferencePoint>(data);
+            Assert.AreEqual(0, ((ReferencePoint)data).Z);
+
+            // change slider value and re-evaluate graph
+            DoubleSlider slider = model.CurrentWorkspace.NodeFromWorkspace("2eb70bdb-773d-4cf4-a10e-828dd39a0cca") as DoubleSlider;
+            slider.Value = 56.78;
+            dynSettings.Controller.RunExpression(true);
+            Assert.IsNotNull(mirrorReferencePoint);
+            data = mirrorReferencePoint.GetData().Data;
+            Assert.IsNotNull(data);
+            Assert.IsAssignableFrom<ReferencePoint>(data);
+            Assert.AreEqual(56.78, ((ReferencePoint)data).Z);
         }
 
         [Test]
@@ -86,16 +138,38 @@ namespace Dynamo.Tests
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
 
-            double noOfNdoes = nodes.Count();
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, model.CurrentWorkspace.Connectors.Count);
 
-            if (noOfNdoes >= 1)
+            var nodes = Controller.DynamoModel.Nodes;
+
+            double dummyNodesCount = nodes.OfType<DummyNode>().Count();
+            if (dummyNodesCount >= 1)
             {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
+                Assert.Fail("Number of dummy nodes found in Sample: " + dummyNodesCount);
             }
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            dynSettings.Controller.RunExpression(true);
+
+            var varPointByCoordinates = model.CurrentWorkspace.NodeFromWorkspace("888ce288-f0fe-4777-9cf4-aa586b226bb0").VariableToPreview;
+            var varReferencePoint = model.CurrentWorkspace.NodeFromWorkspace("f4088a7b-823a-49e8-936c-3c56d1a99455").VariableToPreview;
+
+            RuntimeMirror mirrorPointByCoordinates = Controller.EngineController.GetMirror(varPointByCoordinates);
+            RuntimeMirror mirrorReferencePoint = Controller.EngineController.GetMirror(varReferencePoint);
+
+            Assert.IsNotNull(mirrorPointByCoordinates);
+            var data = mirrorPointByCoordinates.GetData().Data;
+            Assert.IsNotNull(data);
+            Assert.IsAssignableFrom<Point>(data);
+            Assert.AreEqual(0, ((Point)data).Z);
+
+            Assert.IsNotNull(mirrorReferencePoint);
+            data = mirrorReferencePoint.GetData().Data;
+            Assert.IsNotNull(data);
+            Assert.IsAssignableFrom<ReferencePoint>(data);
+            Assert.AreEqual(0, ((ReferencePoint)data).Z);
         }
 
         [Test]
