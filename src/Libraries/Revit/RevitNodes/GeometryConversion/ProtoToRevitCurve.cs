@@ -59,10 +59,10 @@ namespace Revit.GeometryConversion
         /// <returns></returns>
         private static Autodesk.Revit.DB.Curve Convert(Autodesk.DesignScript.Geometry.NurbsCurve crv)
         {
-            if (crv.Degree == 1 && crv.ControlPoints().Length == 2 && !crv.IsRational)
+            if (crv.Degree == 1 && crv.ControlPoints().Count() == 2 && !crv.IsRational)
             {
-                return Autodesk.Revit.DB.Line.CreateBound(crv.ControlPoints()[0].ToXyz(), 
-                    crv.ControlPoints()[1].ToXyz());
+                return Autodesk.Revit.DB.Line.CreateBound(crv.ControlPoints().ElementAt(0).ToXyz(), 
+                    crv.ControlPoints().ElementAt(1).ToXyz());
             }
 
             if (crv.Degree <= 2)
@@ -205,8 +205,8 @@ namespace Revit.GeometryConversion
         /// <returns></returns>
         private static Autodesk.Revit.DB.Curve Convert(Autodesk.DesignScript.Geometry.Curve crvCurve)
         {
-           Autodesk.DesignScript.Geometry.Curve[] curves = crvCurve.ApproximateWithArcAndLineSegments();
-           if (curves.Length == 1)
+           var curves = crvCurve.ApproximateWithArcAndLineSegments();
+           if (curves.Count() == 1)
            {
               //line or arc?
               var point0 = crvCurve.PointAtParameter(0.0);
