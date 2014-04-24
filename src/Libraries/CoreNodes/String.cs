@@ -99,6 +99,8 @@ namespace DSCore
         ///     Converts the given string to all uppercase characters.
         /// </summary>
         /// <param name="str">String to be made uppercase.</param>
+        /// <returns name="str">Uppercase string.</returns>
+        /// <search>2uppercase,to uppercase,touppercase,uppercase</search>
         public static string ToUpper(string str)
         {
             return str.ToUpper();
@@ -108,6 +110,8 @@ namespace DSCore
         ///     Converts the given string to all lowercase characters.
         /// </summary>
         /// <param name="str">String to be made lowercase.</param>
+        /// <returns name="str">Lowercase string.</returns>
+        /// <search>2lowercase,to lowercase,tolowercase,lowercase</search>
         public static string ToLower(string str)
         {
             return str.ToLower();
@@ -121,6 +125,11 @@ namespace DSCore
         /// <param name="upper">
         ///     True to convert to uppercase, false to convert to lowercase.
         /// </param>
+        /// <returns name="str">String with converted case.</returns>
+        /// <search>
+        ///     2lowercase,to lowercase,tolowercase,lowercase,
+        ///     2uppercase,to uppercase,touppercase,uppercase
+        /// </search>
         public static string ChangeCase(string str, bool upper)
         {
             return upper ? str.ToUpper() : str.ToLower();
@@ -172,6 +181,8 @@ namespace DSCore
         /// <param name="str">String to search in.</param>
         /// <param name="searchFor">Substring to search for.</param>
         /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        /// <returns name="count">Number of non-overlapping occurrences of the substring in the string.</returns>
+        /// <search>count,substring,count occurrences</search>
         public static int CountOccurrences(string str, string searchFor, bool ignoreCase = false)
         {
             if (searchFor == string.Empty)
@@ -250,6 +261,8 @@ namespace DSCore
         ///     Removes all whitespace from the start of the given string.
         /// </summary>
         /// <param name="str">String to trim.</param>
+        /// <returns name="str">String with leading white spaces removed.</returns>
+        /// <search>trim string,clean string,trim leading whitespaces</search>
         public static string TrimLeadingWhitespace(string str)
         {
             return str.TrimStart();
@@ -259,22 +272,24 @@ namespace DSCore
         ///     Removes all whitespace from the end of the given string.
         /// </summary>
         /// <param name="str">String to trim.</param>
+        /// <returns name="str">String with white spaces at end removed.</returns>
+        /// <search>trim string,clean string,trim trailing whitespaces</search>
         public static string TrimTrailingWhitespace(string str)
         {
             return str.TrimEnd();
         }
 
         /// <summary>
-        ///     Finds the zero-based index of the first occurance of a sub-string inside a string.
+        ///     Finds the zero-based index of the first occurrence of a sub-string inside a string.
         ///     Returns -1 if no index could be found.
         /// </summary>
         /// <param name="str">A string to search in.</param>
         /// <param name="searchFor">Substring to search for.</param>
         /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
         /// <returns name="index">
-        ///     Index of the first occurence of the substring or -1 if not found.
+        ///     Index of the first occurrence of the substring or -1 if not found.
         /// </returns>
-        /// <search>index,contains</search>
+        /// <search>index of</search>
         public static int IndexOf(string str, string searchFor, bool ignoreCase = false)
         {
             return str.IndexOf(
@@ -285,12 +300,16 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Finds the zero-based index of the last occurance of a sub-string inside a string.
+        ///     Finds the zero-based index of the last occurrence of a sub-string inside a string.
         ///     Returns -1 if no index could be found.
         /// </summary>
         /// <param name="str">A string to search in.</param>
         /// <param name="searchFor">Substring to search for.</param>
         /// <param name="ignoreCase">Whether comparison takes case into account.</param>
+        /// <returns name="index">
+        ///     Index of the last occurrence of the substring or -1 if not found.
+        /// </returns>
+        /// <search>last index of</search>
         public static int LastIndexOf(string str, string searchFor, bool ignoreCase = false)
         {
             return str.LastIndexOf(
@@ -307,6 +326,10 @@ namespace DSCore
         /// <param name="str">String to pad.</param>
         /// <param name="newWidth">Total length of the string after padding.</param>
         /// <param name="padChars">Character to pad with, defaults to space.</param>
+        /// <returns name="str">
+        ///     Strings right-aligned by padding with leading whitespaces for a specified total length.
+        /// </returns>
+        /// <search>pad left,right align,right-align</search>
         public static string PadLeft(string str, int newWidth, string padChars = " ")
         {
             return new string(padChars.Cycle().Take(newWidth - str.Length).Concat(str).ToArray());
@@ -319,6 +342,10 @@ namespace DSCore
         /// <param name="str">String to pad.</param>
         /// <param name="newWidth">Total length of the string after padding.</param>
         /// <param name="padChars">Character to pad with, defaults to space.</param>
+        /// <returns name="str">
+        ///     Strings left-aligned by padding with trailing whitespaces for a specified total length.
+        /// </returns>
+        /// <search>pad right,left align,left-align</search>
         public static string PadRight(string str, int newWidth, string padChars = " ")
         {
             return new string(
@@ -332,6 +359,11 @@ namespace DSCore
         /// <param name="str">String to center.</param>
         /// <param name="newWidth">Total length of the string after centering.</param>
         /// <param name="padChars">Character to center with, defaults to space.</param>
+        /// <returns name="str">
+        ///     Strings center-aligned by padding them with leading and trailing
+        ///     whitespaces for a specified total length.
+        /// </returns>
+        /// <search>center align,center-align,centered</search>
         public static string Center(string str, int newWidth, string padChars = " ")
         {
             var padHalf = (newWidth - str.Length)/2;
@@ -365,7 +397,7 @@ namespace DSCore
         /// <param name="index">Index to insert at.</param>
         /// <param name="toInsert">String to be inserted.</param>
         /// <returns name="str">String with inserted substring.</returns>
-        /// <search>insertstring</search>
+        /// <search>insertstring,insert string</search>
         public static string Insert(string str, int index, string toInsert)
         {
             return str.Insert(index, toInsert);
@@ -375,11 +407,12 @@ namespace DSCore
         ///     Removes characters from a string.
         /// </summary>
         /// <param name="str">String to remove characters from.</param>
-        /// <param name="startIndex">Index to start removal.</param>
+        /// <param name="startIndex">Index at which to start removal.</param>
         /// <param name="count">
         ///     Amount of characters to remove, by default will remove all characters from
         ///     the given startIndex to the end of the string.
         /// </param>
+        /// <returns name="str">String with characters removed.</returns>
         public static string Remove(string str, int startIndex, int? count = null)
         {
             if (startIndex < 0)
