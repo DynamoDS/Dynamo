@@ -85,8 +85,9 @@ namespace Dynamo.Nodes
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+            
             XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
-
             codeBlockNode.SetAttribute("CodeText",
                 "radius = Math.Sqrt(p.X*p.X + p.Y*p.Y);\n" +
                 "rotation = Math.DegreesToRadians\n" +
@@ -94,6 +95,29 @@ namespace Dynamo.Nodes
                 "offset = p.Z;");
 
             codeBlockNode.SetAttribute("nickname", "XYZ to Polar Coordinates");
+
+            // Add default values
+            foreach (XmlNode child in oldNode.ChildNodes)
+            {
+                var newChild = child.Clone() as XmlElement;
+
+                switch (newChild.GetAttribute("index"))
+                {
+                    case "0":
+                        PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+                        XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+                        if (connector0 != null) break;
+
+                        XmlElement cbn0 = MigrationManager.CreateCodeBlockNodeModelNode(
+                            data.Document, oldNode, 0, "Point.ByCoordinates(1,0,0);");
+                        migrationData.AppendNode(cbn0);
+                        data.CreateConnector(cbn0, 0, codeBlockNode, 0);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
 
             migrationData.AppendNode(codeBlockNode);
             return migrationData;

@@ -53,17 +53,8 @@ namespace Dynamo.Nodes
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
-            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "DSOffice.dll",
-                "Excel.GetDataFromExcelWorksheet", "Excel.GetDataFromExcelWorksheet@var");
-
-            migrationData.AppendNode(newNode);
-
-            // Add default values
-            foreach (XmlNode child in oldNode.ChildNodes)
-                newNode.AppendChild(child.Clone());
-
-            return migrationData;
+            return MigrateToDsFunction(data, "DSOffice.dll", "Excel.GetDataFromExcelWorksheet",
+                "Excel.GetDataFromExcelWorksheet@var");
         }
     }
 
@@ -72,8 +63,21 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSOffice.dll", "Excel.WriteDataToExcelWorksheet",
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "DSOffice.dll",
+                "Excel.WriteDataToExcelWorksheet",
                 "Excel.WriteDataToExcelWorksheet@var,int,int,var[][]");
+
+            migrationData.AppendNode(newNode);
+
+            // Add default values
+            foreach (XmlNode child in oldNode.ChildNodes)
+                newNode.AppendChild(child.Clone());
+
+            return migrationData;
         }
     }
 
