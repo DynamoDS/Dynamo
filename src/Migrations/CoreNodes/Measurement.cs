@@ -37,14 +37,35 @@ namespace Dynamo.Nodes
 
     public class LengthFromNumber : MigrationNode
     {
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DynamoUnits.dll", "Length",
+                "Length@double");
+        }
     }
 
     public class AreaFromNumber : MigrationNode
     {
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DynamoUnits.dll", "Area",
+                "Area@double");
+        }
     }
 
     public class VolumeFromNumber : MigrationNode
     {
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DynamoUnits.dll", "Volume",
+                "Volume@double");
+        }
     }
 }
 
