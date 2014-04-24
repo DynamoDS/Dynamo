@@ -267,6 +267,7 @@ namespace ProtoCore.DSASM
     {
         private int size;
         private SortedList<int, SymbolNode> symbols = new SortedList<int,SymbolNode>();
+        private Dictionary<string, List<SymbolNode>> lookAsideSymbolCache = new Dictionary<string, List<SymbolNode>>();  
 
         public string ScopeName 
         { 
@@ -314,12 +315,22 @@ namespace ProtoCore.DSASM
                 size += node.size;
             }
 
+            if (!lookAsideSymbolCache.ContainsKey(node.name))
+                lookAsideSymbolCache.Add(node.name, new List<SymbolNode>());
+
+            lookAsideSymbolCache[node.name].Add(node);
+
             return symbolTableIndex;
         }
 
         public bool Remove(SymbolNode node)
         {
+            if (lookAsideSymbolCache.ContainsKey(node.name))
+                if (lookAsideSymbolCache[node.name].Contains(node))
+                    lookAsideSymbolCache[node.name].Remove(node);
+
             return symbolList.Remove(node.symbolTableIndex);
+
         }
 
         public IEnumerable<SymbolNode> GetNodeForName(string name)
@@ -356,12 +367,16 @@ namespace ProtoCore.DSASM
 
         public int IndexOf(string name, int classScope, int functionindex)
         {
-            var symbol = symbols.Values.FirstOrDefault(x => 
-                                            string.Equals(x.name, name) 
-                                        && x.classScope == classScope 
+
+            if (!lookAsideSymbolCache.ContainsKey(name))
+                return ProtoCore.DSASM.Constants.kInvalidIndex;  
+
+            var symbol = lookAsideSymbolCache[name].FirstOrDefault(x =>
+                                            string.Equals(x.name, name)
+                                        && x.classScope == classScope
                                         && x.functionIndex == functionindex);
 
-            if (null == symbol)
+           if (symbol == null)
                 return ProtoCore.DSASM.Constants.kInvalidIndex;
             else
                 return symbol.symbolTableIndex;
