@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
@@ -71,9 +73,11 @@ namespace DSCore
         /// </param>
         /// <returns name="strings">List of strings made from the input string.</returns>
         /// <search>divide,separaters</search>
-        public static IList Split(string str, params string[] separaters)
+        public static string[] Split(string str, params string[] separaters)
         {
-            return str.Split(separaters, StringSplitOptions.RemoveEmptyEntries);
+            return separaters.Contains("")
+                ? str.ToCharArray().Select(char.ToString).ToArray()
+                : str.Split(separaters, StringSplitOptions.RemoveEmptyEntries);
         }
 
         /// <summary>
@@ -92,7 +96,7 @@ namespace DSCore
         }
 
         /// <summary>
-        /// Converts the given string to all uppercase characters.
+        ///     Converts the given string to all uppercase characters.
         /// </summary>
         /// <param name="str">String to be made uppercase.</param>
         [IsVisibleInDynamoLibrary(false)]
@@ -130,14 +134,26 @@ namespace DSCore
         ///     character position and has the given length.
         /// </summary>
         /// <param name="str">String to take substring of.</param>
-        /// <param name="start">
+        /// <param name="startIndex">
         ///     Starting character position of the substring in the original string.
         /// </param>
         /// <param name="length">Number of characters in the substring.</param>
         /// <returns name="substring">Substring made from the original string.</returns>
-        public static string Substring(string str, int start, int length)
+        public static string Substring(string str, int startIndex, int length)
         {
-            return str.Substring(start, length);
+            if (startIndex < 0)
+            {
+                startIndex += str.Length;
+            }
+            bool reverse = false;
+            if (length < 0)
+            {
+                reverse = true;
+                startIndex += length;
+                length *= -1;
+            }
+            var result = str.Substring(startIndex, length);
+            return reverse ? new string(result.Reverse().ToArray()) : result;
         }
 
         /// <summary>
@@ -158,12 +174,15 @@ namespace DSCore
         /// </summary>
         /// <param name="str">String to search in.</param>
         /// <param name="searchFor">Substring to search for.</param>
-        /// <param name="ignoreCase">Whether or not compaison takes case into account.</param>
+        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
         [IsVisibleInDynamoLibrary(false)]
         public static int CountOccurrences(string str, string searchFor, bool ignoreCase = false)
         {
+            if (searchFor == string.Empty)
+                return str.Length + 1;
+
             int count = 0, start = 0;
-            while (start >= 0)
+            while (true)
             {
                 start = str.IndexOf(
                     searchFor,
@@ -171,7 +190,12 @@ namespace DSCore
                     ignoreCase
                         ? StringComparison.InvariantCultureIgnoreCase
                         : StringComparison.InvariantCulture);
+
+                if (start < 0)
+                    break;
+
                 count++;
+                start += searchFor.Length;
             }
             return count;
         }
@@ -288,15 +312,12 @@ namespace DSCore
         ///     for a specified total length.
         /// </summary>
         /// <param name="str">String to pad.</param>
-        /// <param name="totalWidth">Total length of the string after padding.</param>
-        /// <param name="padChar">Character to pad with, defaults to space.</param>
+        /// <param name="newWidth">Total length of the string after padding.</param>
+        /// <param name="padChars">Character to pad with, defaults to space.</param>
         [IsVisibleInDynamoLibrary(false)]
-        public static string PadLeft(string str, int totalWidth, string padChar = " ")
+        public static string PadLeft(string str, int newWidth, string padChars = " ")
         {
-            if (padChar.Length != 1)
-                throw new ArgumentException("padChar string must contain a single character.", "padChar");
-
-            return str.PadLeft(totalWidth);
+            return new string(padChars.Cycle().Take(newWidth - str.Length).Concat(str).ToArray());
         }
 
         /// <summary>
@@ -305,14 +326,12 @@ namespace DSCore
         /// </summary>
         /// <param name="str">String to pad.</param>
         /// <param name="newWidth">Total length of the string after padding.</param>
-        /// <param name="padChar">Character to pad with, defaults to space.</param>
+        /// <param name="padChars">Character to pad with, defaults to space.</param>
         [IsVisibleInDynamoLibrary(false)]
-        public static string PadRight(string str, int newWidth, string padChar = " ")
+        public static string PadRight(string str, int newWidth, string padChars = " ")
         {
-            if (padChar.Length != 1)
-                throw new ArgumentException("padChar string must contain a single character.", "padChar");
-
-            return str.PadRight(newWidth, padChar[0]);
+            return new string(
+                Enumerable.Concat(str, padChars.Cycle().Take(newWidth - str.Length)).ToArray());
         }
 
         /// <summary>
@@ -321,17 +340,33 @@ namespace DSCore
         /// </summary>
         /// <param name="str">String to center.</param>
         /// <param name="newWidth">Total length of the string after centering.</param>
-        /// <param name="padChar">Character to center with, defaults to space.</param>
+        /// <param name="padChars">Character to center with, defaults to space.</param>
         [IsVisibleInDynamoLibrary(false)]
-        public static string Center(string str, int newWidth, string padChar = " ")
+        public static string Center(string str, int newWidth, string padChars = " ")
         {
-            if (padChar.Length != 1)
-                throw new ArgumentException("padChar string must contain a single character.", "padChar");
+            var padHalf = (newWidth - str.Length)/2;
 
-            var padHalf = (newWidth - str.Length)/ 2 + str.Length;
-
-            return str.PadLeft(padHalf, padChar[0]).PadRight(newWidth - padHalf, padChar[0]);
+            return
+                new string(
+                    padChars.Cycle()
+                        .Take(padHalf)
+                        .Concat(str)
+                        .Concat(padChars.Cycle().Take(newWidth - str.Length - padHalf))
+                        .ToArray());
         }
+
+        #region Padding Helpers
+
+        private static IEnumerable<T> Cycle<T>(this IEnumerable<T> enumerable)
+        {
+            while (true)
+            {
+                foreach (var item in enumerable)
+                    yield return item;
+            }
+        }
+
+        #endregion
 
         /// <summary>
         ///     Inserts a string into another string at a given index.
@@ -358,7 +393,20 @@ namespace DSCore
         [IsVisibleInDynamoLibrary(false)]
         public static string Remove(string str, int startIndex, int? count = null)
         {
-            return str.Remove(startIndex, count ?? (str.Length - startIndex));
+            if (startIndex < 0)
+            {
+                startIndex += str.Length;
+            }
+
+            var _count = count ?? str.Length - startIndex;
+
+            if (_count < 0)
+            {
+                startIndex += _count;
+                _count *= -1;
+            }
+
+            return str.Remove(startIndex, _count);
         }
     }
 }
