@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Autodesk.DesignScript.Runtime;
-using DSCoreNodesUI;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.UI;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCore
@@ -75,7 +71,6 @@ namespace DSCore
         }
     }
 
-    //[IsVisibleInDynamoLibrary(false)]
     [NodeName("Combine")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each element in two sequences")]
@@ -99,7 +94,6 @@ namespace DSCore
         }
     }
 
-    [IsVisibleInDynamoLibrary(false)]
     [NodeName("For Each")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Performs a computation on each element of a list. Does not accumulate results.")]
@@ -171,12 +165,12 @@ namespace DSCore
         }
     }
 
+    ///<search>cross</search>
     [IsVisibleInDynamoLibrary(false)]
     [NodeName("Cartesian Product")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
     [IsDesignScriptCompatible]
-    ///<search>cross</search>
     public class CartesianProduct : CombinatorNode
     {
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -258,7 +252,6 @@ namespace DSCore
     }
     */
 
-    [IsVisibleInDynamoLibrary(false)]
     [NodeName("Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Reduces a list into a new value by combining each element with an accumulated result.")]
@@ -315,7 +308,6 @@ namespace DSCore
         }
     }
 
-    [IsVisibleInDynamoLibrary(false)]
     [NodeName("Filter")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Filters a sequence by a given predicate \"p\" such that for an arbitrary element \"x\" p(x) = True or False.")]
