@@ -107,7 +107,7 @@ namespace Revit.GeometryConversion
             //return cone.Faces.Select(f => f.SurfaceGeometry()).First(s => s.DistanceTo(o) > 1e-5);
 
             // the flat face of the cone is currently the second face in the Faces enumeration
-            return cone.Faces[1].SurfaceGeometry(); 
+            return cone.Faces.ElementAt(1).SurfaceGeometry(); 
         }
 
         public static Surface ExtractSurface(Autodesk.Revit.DB.HermiteFace face, IEnumerable<PolyCurve> edgeLoops)
