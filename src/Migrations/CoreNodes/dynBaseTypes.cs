@@ -245,7 +245,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.Reduce");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Reduce", "Reduce");
             newNode.SetAttribute("inputcount", "3");
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -267,8 +267,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.Filter");
-            newNode.SetAttribute("nickname", "Filter");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Filter", "Filter");
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
@@ -297,8 +296,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.Filter");
-            newNode.SetAttribute("nickname", "Filter");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Filter", "Filter");
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
@@ -327,8 +325,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.Filter");
-            newNode.SetAttribute("nickname", "Filter");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Filter", "Filter");
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             PortId oldOutputPort = new PortId(oldNodeId, 0, PortType.OUTPUT);
@@ -364,9 +361,8 @@ namespace Dynamo.Nodes
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
-            XmlElement newNode = MigrationManager.CloneAndChangeType(
-                oldNode, "DSCoreNodesUI.NumberRange");
-            newNode.SetAttribute("nickname", "Number Range");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(
+                oldNode, "DSCoreNodesUI.NumberRange", "Number Range");
 
             migrationData.AppendNode(newNode);
             return migrationData;
@@ -381,9 +377,8 @@ namespace Dynamo.Nodes
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
-            XmlElement newNode = MigrationManager.CloneAndChangeType(
-                oldNode, "DSCoreNodesUI.NumberSeq");
-            newNode.SetAttribute("nickname", "Number Sequence");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(
+                oldNode, "DSCoreNodesUI.NumberSeq", "Number Sequence");
 
             migrationData.AppendNode(newNode);
             return migrationData;
@@ -397,7 +392,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.Combine");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Combine", "Combine");
             newNode.RemoveAttribute("inputs");
             int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute("inputs")) + 1;
             newNode.SetAttribute("inputcount", Convert.ToString(numberOfInputs));
@@ -418,7 +413,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.LaceShortest");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.LaceShortest", "Lace Shortest");
             newNode.RemoveAttribute("inputs");
             int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute("inputs")) + 1;
             newNode.SetAttribute("inputcount", Convert.ToString(numberOfInputs));
@@ -435,7 +430,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.LaceLongest");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.LaceLongest", "Lace Longest");
             newNode.RemoveAttribute("inputs");
             int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute("inputs")) + 1;
             newNode.SetAttribute("inputcount", Convert.ToString(numberOfInputs));
@@ -454,8 +449,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.Map");
-            newNode.SetAttribute("nickname", "List Map");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Map", "List Map");
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
@@ -1203,7 +1197,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.Logic.And");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Logic.And", "And");
             newNode.SetAttribute("inputcount", "2");
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -1221,7 +1215,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCore.Logic.Or");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Logic.Or", "Or");
             newNode.SetAttribute("inputcount", "2");
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -1671,8 +1665,8 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "DSCoreNodesUI.Logic.If"));
+            migrationData.AppendNode(MigrationManager.CloneAndChangeName(
+                data.MigratedNodes.ElementAt(0), "DSCoreNodesUI.Logic.If", "If"));
 
             return migrationData;
         }
@@ -2174,7 +2168,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "Dynamo.Nodes.DoubleSlider");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "Dynamo.Nodes.DoubleSlider", "Double Slider");
 
             // Get attributes from old child node
             XmlElement newChild1 = data.Document.CreateElement("System.Double");
@@ -2206,7 +2200,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "Dynamo.Nodes.IntegerSlider");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "Dynamo.Nodes.IntegerSlider", "Integer Slider");
 
             // Get attributes from old child node
             XmlElement newChild1 = data.Document.CreateElement("System.Int32");
@@ -2238,7 +2232,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCoreNodesUI.BoolSelector");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCoreNodesUI.BoolSelector", "Boolean");
 
             // Get attribute from old child node
             XmlElement newChild = data.Document.CreateElement("System.Boolean");
@@ -2266,7 +2260,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement original = data.MigratedNodes.ElementAt(0);
-            var cloned = MigrationManager.CloneAndChangeType(original, "DSCore.File.Directory");
+            var cloned = MigrationManager.CloneAndChangeName(original, "DSCore.File.Directory", "Directory Path");
 
             var document = original.OwnerDocument;
             foreach (XmlNode childNode in original.ChildNodes)
@@ -2291,7 +2285,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement original = data.MigratedNodes.ElementAt(0);
-            var cloned = MigrationManager.CloneAndChangeType(original, "DSCore.File.Filename");
+            var cloned = MigrationManager.CloneAndChangeName(original, "DSCore.File.Filename", "File Path");
 
             var document = original.OwnerDocument;
             foreach (XmlNode childNode in original.ChildNodes)
