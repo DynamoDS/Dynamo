@@ -236,20 +236,61 @@
             </ItemsControl>
         </DockPanel>
 
-        <!-- INPUT GRID -->
-
-        <Grid Name="inputGrid"
+        <Grid Name="centralGrid"
               Grid.Column="1"
               Grid.Row="2"
-              x:FieldModifier="public"
-              VerticalAlignment="Stretch"
-              HorizontalAlignment="Stretch"
-              Height="Auto"
-              Width="Auto"
-              Background="Transparent"
-              Margin="5,0,5,0"
               Canvas.ZIndex="20"
-              IsEnabled="{Binding Path=IsInteractionEnabled}">
+              Background="Honeydew">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <!-- INPUT GRID -->
+
+            <Grid Name="inputGrid"
+                  x:FieldModifier="public"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch"
+                  Background="CornflowerBlue"
+                  Margin="5,0,5,0"
+                  Canvas.ZIndex="21"
+                  IsEnabled="{Binding Path=IsInteractionEnabled}">
+            </Grid>
+
+            <Rectangle Name="lacingIcon"
+                       Grid.Row="1"
+                       Canvas.ZIndex="22"
+                       Width="22"
+                       Height="22"
+                       Margin="2,2,2,0"
+                       Fill="Green"
+                       HorizontalAlignment="Center">
+                <Rectangle.Visibility>
+                    <Binding Path="ArgumentLacing"
+                             Converter="{StaticResource LacingToVisibilityConverter}" />
+                </Rectangle.Visibility>
+            </Rectangle>
+
+            <Rectangle Name="previewIcon"
+                       Grid.Row="2"
+                       Canvas.ZIndex="23"
+                       Width="22"
+                       Height="22"
+                       Margin="2"
+                       Fill="Red"
+                       HorizontalAlignment="Center">
+                <Rectangle.Visibility>
+                    <Binding Path="IsPreviewInsetVisible"
+                             UpdateSourceTrigger="PropertyChanged"
+                             Mode="OneWay"
+                             Converter="{StaticResource BooleanToVisibilityConverter}">
+                    </Binding>
+                </Rectangle.Visibility>
+            </Rectangle>
+
         </Grid>
 
         <TextBlock Name="lacingOptionTextBlock"
