@@ -122,5 +122,33 @@ namespace Dynamo.Tests
             Assert.AreEqual(20, add.OldValue.Data);
         }
 
+        [Test]
+        public void Defect_MAGN_2566()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2566
+            DynamoModel model = Controller.DynamoModel;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_2566.dyn");
+            RunModel(openPath);
+
+             // check all the nodes and connectors are loaded
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+
+            //dynSettings.Controller.RunExpression(null);
+
+            // Checking Point.X
+            AssertPreviewValue("eea90465-db68-4494-a85e-4d7c687b68e6", 0);
+
+            // Checking Sphere.Radius
+            AssertPreviewValue("18dbc746-18a4-4e4e-839b-14523e648f79", 1);
+
+            // Checking Cylinder.Radius
+            AssertPreviewValue("ca9b1501-bc63-49f4-af2d-8d4b4aab2e80", new int[] { 1, 1 });
+
+            // Checking Cylinder.Height
+            AssertPreviewValue("310b22ae-e3ce-462a-8391-c7e0c9a532f2", new int[] { 10, 1 });
+
+        }
+
     }
 }
