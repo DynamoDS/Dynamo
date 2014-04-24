@@ -58,7 +58,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="ProtoGeometry, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\extern\DesignScript\ProtoGeometry.dll</HintPath>
+      <HintPath>..\..\..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
     </Reference>
     <Reference Include="ProtoInterface, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -126,6 +126,10 @@
     <ProjectReference Include="..\..\..\..\src\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\src\Libraries\Revit\RevitNodes\RevitNodes.csproj">
+      <Project>{0bc2a611-bd0e-4fcc-a1de-81f14ed369b2}</Project>
+      <Name>RevitNodes</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ED-1067-4B2C-8737-3839A6143EB2}</Project>

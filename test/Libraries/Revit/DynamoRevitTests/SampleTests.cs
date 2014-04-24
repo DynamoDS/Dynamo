@@ -12,6 +12,8 @@ using System.Collections;
 using Dynamo.Models;
 using DSCoreNodesUI;
 using DSCore.File;
+using Autodesk.DesignScript.Geometry;
+using Revit.Elements;
 namespace Dynamo.Tests
 {
     [TestFixture]
@@ -30,20 +32,39 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+ 	        Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+ 	
+            var nodes = Controller.DynamoModel.Nodes;
 
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
-
-            double noOfNdoes = nodes.Count();
-
-            if (noOfNdoes >= 1)
+            double dummyNodesCount = nodes.OfType<DummyNode>().Count();
+            if (dummyNodesCount >= 1)
             {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
+                Assert.Fail("Number of dummy nodes found in Sample: " + dummyNodesCount);
             }
 
             dynSettings.Controller.RunExpression(true);
 
+            var varPointByCoordinates = model.CurrentWorkspace.NodeFromWorkspace("14af8f89-a133-43cc-8449-95336fb0bb6d").VariableToPreview;
+            var varReferencePoint = model.CurrentWorkspace.NodeFromWorkspace("d615cc73-d32d-4b1f-b519-0b8f9b903ebf").VariableToPreview;
+            
+            RuntimeMirror mirrorPointByCoordinates = Controller.EngineController.GetMirror(varPointByCoordinates);
+            RuntimeMirror mirrorReferencePoint = Controller.EngineController.GetMirror(varReferencePoint);
 
+            Assert.IsNotNull(mirrorPointByCoordinates);
+            Assert.IsTrue(mirrorPointByCoordinates.GetData().IsCollection);
+            Assert.AreEqual(9, mirrorPointByCoordinates.GetData().GetElements().Count);
+            var data = mirrorPointByCoordinates.GetData().GetElements()[2].Data;
+            Assert.IsNotNull(data);
+            Assert.IsAssignableFrom<Point>(data);
+            Assert.AreEqual(20, ((Point)data).Z);
+
+            Assert.IsNotNull(mirrorReferencePoint);
+            Assert.IsTrue(mirrorReferencePoint.GetData().IsCollection);
+            Assert.AreEqual(9, mirrorReferencePoint.GetData().GetElements().Count);
+            data = mirrorReferencePoint.GetData().GetElements()[3].Data;
+            Assert.IsNotNull(data);
+            Assert.IsAssignableFrom<ReferencePoint>(data);
+            Assert.AreEqual(30, ((ReferencePoint)data).Z);
         }
 
         [Test]
