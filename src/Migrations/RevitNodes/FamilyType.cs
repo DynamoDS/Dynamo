@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Xml;
 using Dynamo.Models;
 using Migrations;
 
@@ -28,10 +29,19 @@ namespace Dynamo.Nodes
 
     public class FamilyTypeParameterGetter : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return FamilyInstanceParameterGetter.Migrate_0630_to_0700(data);
+        }
     }
 
     public class GetFamilyInstancesByType : MigrationNode
     {
-
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return AllElementsOfType.Migrate_0630_to_0700(data);
+        }
     }
 }
