@@ -10,8 +10,19 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.ByCoordinates",
-                "Point.ByCoordinates@double,double,double");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Point.ByCoordinates", "Point.ByCoordinates@double,double,double");
+            migrationData.AppendNode(newNode);
+
+            // Add default values
+            foreach (XmlNode child in oldNode.ChildNodes)
+                newNode.AppendChild(child.Clone());
+
+            return migrationData;
         }
     }
 
@@ -58,6 +69,10 @@ namespace Dynamo.Nodes
             data.CreateConnector(converterNode, 0, newNode, 1);
             data.CreateConnector(identityCoordinateSystem, 0, newNode, 0);
 
+            // Add default values
+            foreach (XmlNode child in oldNode.ChildNodes)
+                newNode.AppendChild(child.Clone());
+
             return migrationData;
         }
     }
@@ -70,8 +85,9 @@ namespace Dynamo.Nodes
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+            
             XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
-
             codeBlockNode.SetAttribute("CodeText",
                 "radius = Math.Sqrt(p.X*p.X + p.Y*p.Y);\n" +
                 "rotation = Math.DegreesToRadians\n" +
@@ -79,6 +95,29 @@ namespace Dynamo.Nodes
                 "offset = p.Z;");
 
             codeBlockNode.SetAttribute("nickname", "XYZ to Polar Coordinates");
+
+            // Add default values
+            foreach (XmlNode child in oldNode.ChildNodes)
+            {
+                var newChild = child.Clone() as XmlElement;
+
+                switch (newChild.GetAttribute("index"))
+                {
+                    case "0":
+                        PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+                        XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+                        if (connector0 != null) break;
+
+                        XmlElement cbn0 = MigrationManager.CreateCodeBlockNodeModelNode(
+                            data.Document, oldNode, 0, "Point.ByCoordinates(1,0,0);");
+                        migrationData.AppendNode(cbn0);
+                        data.CreateConnector(cbn0, 0, codeBlockNode, 0);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
 
             migrationData.AppendNode(codeBlockNode);
             return migrationData;
@@ -139,6 +178,25 @@ namespace Dynamo.Nodes
             data.CreateConnector(identityCoordinateSystem, 0, newNode, 0);
             data.CreateConnector(converterPhiNode, 0, newNode, 1);
             data.CreateConnector(converterThetaNode, 0, newNode, 2);
+            
+            // Add default values
+            foreach (XmlNode child in oldNode.ChildNodes)
+            {
+                var newChild = child.Clone() as XmlElement;
+                switch (newChild.GetAttribute("index"))
+                {
+                    case "0":
+                        newChild.SetAttribute("index", "3");
+                        break;
+                    case "1":
+                        newChild.SetAttribute("index", "2");
+                        break;
+                    case "2":
+                        newChild.SetAttribute("index", "1");
+                        break;
+                }
+                newNode.AppendChild(newChild);
+            }
 
             return migrationData;
         }
