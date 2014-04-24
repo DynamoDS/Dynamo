@@ -140,6 +140,36 @@ namespace Dynamo.Nodes
                 "CoordinateSystem.Inverse", "CoordinateSystem.Inverse");
             migrationData.AppendNode(csInverse);
 
+            //append asVector Node
+            XmlElement pointAsVector0 = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 5, "ProtoGeometry.dll",
+                "Point.AsVector", "Point.AsVector");
+            migrationData.AppendNode(pointAsVector0);
+            string pointAsVector0Id = MigrationManager.GetGuidFromXmlElement(pointAsVector0);
+
+            XmlElement pointAsVector1 = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 6, "ProtoGeometry.dll",
+                "Point.AsVector", "Point.AsVector");
+            migrationData.AppendNode(pointAsVector1);
+            string pointAsVector1Id = MigrationManager.GetGuidFromXmlElement(pointAsVector1);
+
+            XmlElement pointAsVector2 = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 7, "ProtoGeometry.dll",
+                "Point.AsVector", "Point.AsVector");
+            migrationData.AppendNode(pointAsVector2);
+            string pointAsVector2Id = MigrationManager.GetGuidFromXmlElement(pointAsVector2);
+
+            XmlElement pointAsVector3 = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 8, "ProtoGeometry.dll",
+                "Point.AsVector", "Point.AsVector");
+            migrationData.AppendNode(pointAsVector3);
+            string pointAsVector3Id = MigrationManager.GetGuidFromXmlElement(pointAsVector3);
+
+            PortId pToV0 = new PortId(pointAsVector0Id, 0, PortType.INPUT);
+            PortId pToV1 = new PortId(pointAsVector1Id, 0, PortType.INPUT);
+            PortId pToV2 = new PortId(pointAsVector2Id, 0, PortType.INPUT);
+            PortId pToV3 = new PortId(pointAsVector3Id, 0, PortType.INPUT);
+
             // Update connectors
             PortId csFrom0 = new PortId(csFromId, 0, PortType.INPUT);
             PortId csFrom1 = new PortId(csFromId, 1, PortType.INPUT);
@@ -164,36 +194,22 @@ namespace Dynamo.Nodes
             XmlElement connector4 = data.FindFirstConnector(oldInPort4);
             XmlElement connector5 = data.FindFirstConnector(oldInPort5);
 
-            if (connector1 != null)
-            {
-                string uFromId = connector1.GetAttribute("start").ToString();
-                data.CreateConnectorFromId(uFromId, 0, vectorCrossFromId, 1);
-            }
-
-            if (connector2 != null)
-            {
-                string fFromId = connector2.GetAttribute("start").ToString();
-                data.CreateConnectorFromId(fFromId, 0, vectorCrossFromId, 0);
-            }
-
-            if (connector4 != null)
-            {
-                string uToId = connector4.GetAttribute("start").ToString();
-                data.CreateConnectorFromId(uToId, 0, vectorCrossToId, 1);
-            }
-
-            if (connector5 != null)
-            {
-                string fToId = connector5.GetAttribute("start").ToString();
-                data.CreateConnectorFromId(fToId, 0, vectorCrossToId, 0);
-            }
-
             data.ReconnectToPort(connector0, csFrom0);
-            data.ReconnectToPort(connector1, csFrom3);
-            data.ReconnectToPort(connector2, csFrom2);
+            data.ReconnectToPort(connector1, pToV0);
+            data.ReconnectToPort(connector2, pToV1);
             data.ReconnectToPort(connector3, csTo0);
-            data.ReconnectToPort(connector4, csTo3);
-            data.ReconnectToPort(connector5, csTo2);
+            data.ReconnectToPort(connector4, pToV2);
+            data.ReconnectToPort(connector5, pToV3);
+
+            data.CreateConnector(pointAsVector0, 0, csFrom, 3); 
+            data.CreateConnector(pointAsVector1, 0, csFrom, 2);
+            data.CreateConnector(pointAsVector2, 0, csTo, 3);
+            data.CreateConnector(pointAsVector3, 0, csTo, 2);
+
+            data.CreateConnector(pointAsVector0, 0, vectorCrossFrom, 1);
+            data.CreateConnector(pointAsVector1, 0, vectorCrossFrom, 0);
+            data.CreateConnector(pointAsVector2, 0, vectorCrossTo, 1);
+            data.CreateConnector(pointAsVector3, 0, vectorCrossTo, 0);
 
             data.CreateConnector(vectorCrossFrom, 0, csFrom, 1);
             data.CreateConnector(vectorCrossTo, 0, csTo, 1);
@@ -295,12 +311,21 @@ namespace Dynamo.Nodes
                 "CoordinateSystem.Identity");
             migrationData.AppendNode(identityCoordinateSystem);
 
+            //append asVector Node
+            XmlElement pointAsVector0 = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 1, "ProtoGeometry.dll",
+                "Point.AsVector", "Point.AsVector");
+            migrationData.AppendNode(pointAsVector0);
+            string pointAsVector0Id = MigrationManager.GetGuidFromXmlElement(pointAsVector0);
+
             // Update connectors
             PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
             PortId newInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            PortId pToV0 = new PortId(pointAsVector0Id, 0, PortType.INPUT);
 
-            data.ReconnectToPort(connector0, newInPort1);
+            data.ReconnectToPort(connector0, pToV0);
+            data.CreateConnector(pointAsVector0, 0, newNode, 1); 
             data.CreateConnector(identityCoordinateSystem, 0, newNode, 0);
 
             return migrationData;
