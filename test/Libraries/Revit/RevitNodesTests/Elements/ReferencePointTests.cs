@@ -88,7 +88,7 @@ namespace DSRevitNodesTests
             var pt = ReferencePoint.ByParametersOnFaceReference(faceRef, 0.5, 0.5);
 
             Assert.NotNull(pt);
-            pt.X.ShouldBeApproximately(-18.19622727891606);
+            pt.X.AssertShouldBeApproximately(-18.19622727891606);
         }
 
         [Test]

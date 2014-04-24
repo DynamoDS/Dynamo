@@ -185,13 +185,13 @@ namespace DSRevitNodesTests.GeometryObjects
             cs3.ForEach(x => DrawCurve(x.ToRevitType(), package));
             cs4.ForEach(x => DrawCurve(x.ToRevitType(), package));
 
-            cs1[0].StartPoint.ShouldBeApproximately(0, 0, 0);
-            cs2[0].StartPoint.ShouldBeApproximately(0, 0, 1);
-            cs3[0].StartPoint.ShouldBeApproximately(0, 0, 3);
-            cs4[0].StartPoint.ShouldBeApproximately(0, 0, 4);
+            cs1[0].StartPoint.AssertShouldBeApproximately(0, 0, 0);
+            cs2[0].StartPoint.AssertShouldBeApproximately(0, 0, 1);
+            cs3[0].StartPoint.AssertShouldBeApproximately(0, 0, 3);
+            cs4[0].StartPoint.AssertShouldBeApproximately(0, 0, 4);
 
-            spine.EndPoint.ShouldBeApproximately(Point.ByCoordinates(0, 0, 4));
-            spine.StartPoint.ShouldBeApproximately(Point.ByCoordinates(0, 0, 0));
+            spine.EndPoint.AssertShouldBeApproximately(Point.ByCoordinates(0, 0, 4));
+            spine.StartPoint.AssertShouldBeApproximately(Point.ByCoordinates(0, 0, 0));
 
             var modelPath = Path.Combine(TestGeometryDirectory, @"BySweptBlend_ValidArgs_Setup.obj");
             if (File.Exists(modelPath))
