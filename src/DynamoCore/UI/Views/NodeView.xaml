@@ -15,12 +15,12 @@
              MouseRightButtonDown="topControl_MouseRightButtonDown"
              Canvas.Left="{Binding Left, Mode=TwoWay}"
              Canvas.Top="{Binding Top, Mode=TwoWay}">
-
     <Grid Name="grid"
           x:FieldModifier="public"
           HorizontalAlignment="Left">
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -309,12 +309,12 @@
                    FontWeight="Bold"
                    Canvas.ZIndex="30" />
 
-        <Grid x:FieldModifier="public"
+        <Grid Name="PresentationGrid"
+              x:FieldModifier="public"
               Grid.Row="3"
               Grid.Column="0"
               Grid.ColumnSpan="3"
               Margin="5"
-              Name="PresentationGrid"
               ZIndex="50">
             <!--DO NOT ERASE THIS GRID TO BE USED FOR PRESENTING IMAGES, 3D VIEWS, ETC.-->
         </Grid>
@@ -382,6 +382,13 @@
             </Polygon.Points>
         </Polygon>
 
-    </Grid>
+        <Canvas Name="expansionBay"
+                Grid.Row="4"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Margin="4"
+                Background="Blue">
+        </Canvas>
 
+    </Grid>
 </UserControl>
