@@ -11,6 +11,7 @@ using ProtoCore.DSASM;
 using System.Text;
 using ProtoCore.AssociativeGraph;
 using ProtoCore.BuildData;
+using System.Linq;
 
 namespace ProtoAssociative
 {
@@ -1179,175 +1180,198 @@ namespace ProtoAssociative
                 className = (firstArgument as IdentifierNode).Name;
                 classIndex = core.ClassTable.IndexOf(className);
 
-                // As a class name can be used as property name, we need to
-                // check if this identifier is a property or a class name.
-                //
-                if (classIndex != Constants.kInvalidIndex && 
-                    globalClassIndex != Constants.kInvalidIndex)
-                {
-                    ProtoCore.DSASM.SymbolNode symbolnode;
-                    bool isAccessbile = false;
-                    bool hasAllocated = VerifyAllocation(className, 
-                                                         globalClassIndex, 
-                                                         globalProcIndex, 
-                                                         out symbolnode, 
-                                                         out isAccessbile);
+                // Check if the lhs is an variable
+                SymbolNode symbolnode;
+                bool isAccessible;
+                bool hasAllocated = VerifyAllocation(className,
+                                                     globalClassIndex,
+                                                     globalProcIndex,
+                                                     out symbolnode,
+                                                     out isAccessible);
 
-                    // Well, found a property whose name is class name. Now
-                    // we need to check if the RHS function call is 
-                    // constructor or not.  
-                    if (hasAllocated && 
-                        isAccessbile && 
-                        symbolnode.functionIndex == Constants.kInvalidIndex)
+                bool toResolveMethodOnClass = classIndex != Constants.kInvalidIndex;
+
+                // If the lhs is an variable which happens to have a same name
+                // as some class, then check the right hand side is a valid 
+                // constructor or static function call. 
+                if (toResolveMethodOnClass && hasAllocated && isAccessible)
+                {
+                    var classes = core.ClassTable.ClassNodes;
+                    var classNode = classes[classIndex];
+                    int argCount = dotCall.FunctionCall.FormalArguments.Count;
+                    var procNode = classNode.GetFirstConstructorBy(procName, argCount);
+                    if (procNode == null)
                     {
-                        var procnode = GetProcedureFromInstance(classIndex, dotCall.FunctionCall);
-                        if (procnode != null && !procnode.isConstructor)
-                        {
-                            classIndex = Constants.kInvalidIndex;
-                            className = string.Empty;
-                        }
+                        procNode = classNode.GetFirstStaticFunctionBy(procName, argCount);
+                    }
+
+                    if (procNode == null)
+                    {
+                        toResolveMethodOnClass = false;
+                        classIndex = Constants.kInvalidIndex;
+                        className = string.Empty;
                     }
                 }
 
-                if (classIndex != Constants.kInvalidIndex)
+                if (toResolveMethodOnClass)
                 {
-                    // The left hand side is a valid class, so we may create a
-                    // function pointer.
                     dotCall.DotCall.FormalArguments[0] = new IntNode(classIndex);
-                    firstArgument = dotCall.DotCall.FormalArguments[0];
-
                     inferedType.UID = dotCallType.UID = classIndex;
 
-                    procCallNode = GetProcedureFromInstance(classIndex, dotCall.FunctionCall);
-                    if (null != procCallNode)
+                    // Now the left hand side of dot call is a valid class name.
+                    // There are three cases for the right hand side: calling a 
+                    // function, getting a static property or getting a function 
+                    // pointer. I.e.,
+                    // 
+                    //    x = Foo.foo();
+                    //
+                    // Or
+                    //    
+                    //    y = Bar.bar;   // static property or funciton pointer
+                    //    Bar.bar_2 = z; // static property
+                    // 
+                    // For the latters, they are converted to getter/setter. 
+                    // I.e., 
+                    //
+                    //    y = Bar.%get_bar();
+                    //    %ret = Bar.%set_bar_2(z);
+                    //
+                    // We need to check each case. 
+
+                    var classes = core.ClassTable.ClassNodes;
+                    var classNode = classes[classIndex];
+
+                    var property = String.Empty;
+                    if (CoreUtils.TryGetPropertyName(procName, out property))
                     {
-                        isConstructor = procCallNode.isConstructor;
-                        isStaticCall = procCallNode.isStatic;
-
-                        // If this is a static call and the first method found was not static
-                        // Look further
-                        if (!isStaticCall && !isConstructor)
+                        if (procCallNode == null)
                         {
-                            var classes = core.ClassTable.ClassNodes;
-                            var classNode = classes[classIndex];
-                            var staticProcCallNode = classNode.GetFirstStaticMemberFunction(procName);
+                            procCallNode = classNode.GetFirstStaticFunctionBy(procName);
+                            isStaticCall = procCallNode != null;
+                        }
 
-                            if (null != staticProcCallNode)
+                        if (procCallNode == null)
+                        {
+                            if (subPass != AssociativeSubCompilePass.kNone)
                             {
-                                procCallNode = staticProcCallNode;
-                                isStaticCall = true; 
+                                return null;
                             }
+
+                            // Try static function firstly
+                            procCallNode = classNode.GetFirstStaticFunctionBy(property);
+                            if (procCallNode == null)
+                            {
+                                procCallNode = classNode.GetFirstMemberFunctionBy(property);
+                            }
+
+                            /*
+                            if (procCallNode == null)
+                            {
+                                procCallNode = classNode.GetFirstMemberFunctionBy(procName);
+                            }
+                            */
+
+                            if (procCallNode != null)
+                            {
+                                EmitFunctionPointer(procCallNode);
+                            }
+                            else
+                            {
+                                string message = String.Format(WarningMessage.kCallingNonStaticProperty,
+                                                               className,
+                                                               property);
+
+                                buildStatus.LogWarning(WarningID.kCallingNonStaticMethodOnClass,
+                                                       message,
+                                                       core.CurrentDSFileName,
+                                                       dotCall.line,
+                                                       dotCall.col);
+
+                                EmitNullNode(new NullNode(), ref inferedType);
+                            }
+                            
+                            return null;
                         }
                     }
                     else
                     {
-                        var classes = core.ClassTable.ClassNodes;
-                        var classNode = classes[classIndex];
-                        var procNode = classNode.GetFirstStaticMemberFunction(procName);
-                        string property;
+                        int argCount = dotCall.FunctionCall.FormalArguments.Count;
+                        procCallNode = classNode.GetFirstConstructorBy(procName, argCount);
+                        isConstructor = procCallNode != null;
 
-                        if (null != procNode)
+                        if (procCallNode == null)
                         {
-                            string message = String.Format(WarningMessage.kMethodHasInvalidArguments, procName);
-                            buildStatus.LogWarning(WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, dotCall.line, dotCall.col);
+                            procCallNode = classNode.GetFirstStaticFunctionBy(procName, argCount);
+                            isStaticCall = procCallNode != null;
                         }
-                        else if (CoreUtils.TryGetPropertyName(procName, out property))
-                        {
-                            procNode = classNode.GetFirstMemberFunction(property);
 
-                            if (procNode != null)
-                            {
-                                if (subPass == AssociativeSubCompilePass.kNone)
-                                {
-                                    EmitFunctionPointer(procNode);
-                                    return null;
-                                }
-                            }
-                            else
-                            {
-                                if (subPass != AssociativeSubCompilePass.kUnboundIdentifier)
-                                {
-                                    string message = String.Format(WarningMessage.kCallingNonStaticProperty,
-                                                                   className, 
-                                                                   property);
-
-                                    buildStatus.LogWarning(WarningID.kCallingNonStaticMethodOnClass,
-                                                           message,
-                                                           core.CurrentDSFileName,
-                                                           dotCall.line,
-                                                           dotCall.col);
-                                }
-                            }
-                        }
-                        else
+                        if (!isStaticCall && !isConstructor)
                         {
-                            if (subPass != AssociativeSubCompilePass.kUnboundIdentifier)
+                            if (subPass == AssociativeSubCompilePass.kNone)
                             {
-                                string message = String.Format(WarningMessage.kCallingNonStaticMethod, className, procName);
-                                buildStatus.LogWarning(WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, dotCall.line, dotCall.col);
+                                string message = String.Format(WarningMessage.kCallingNonStaticMethod,
+                                                               className,
+                                                               procName);
+
+                                buildStatus.LogWarning(WarningID.kCallingNonStaticMethodOnClass,
+                                                       message,
+                                                       core.CurrentDSFileName,
+                                                       dotCall.line,
+                                                       dotCall.col);
+
+                                EmitNullNode(new NullNode(), ref inferedType);
+                            }
+
+                            return null;
+                        }
+                    }
+                }
+                else if (hasAllocated && symbolnode.datatype.UID != (int)PrimitiveType.kTypeVar)
+                {
+                    inferedType.UID = symbolnode.datatype.UID;
+                    if (Constants.kInvalidIndex != inferedType.UID)
+                    {
+                        procCallNode = GetProcedureFromInstance(symbolnode.datatype.UID, dotCall.FunctionCall);
+                    }
+
+                    if (null != procCallNode)
+                    {
+                        if (procCallNode.isConstructor)
+                        {
+                            if (subPass == AssociativeSubCompilePass.kNone)
+                            {
+                                string message = String.Format(WarningMessage.KCallingConstructorOnInstance,
+                                                               procName);
+                                buildStatus.LogWarning(WarningID.kCallingConstructorOnInstance,
+                                                       message,
+                                                       core.CurrentDSFileName,
+                                                       funcCall.line,
+                                                       funcCall.col);
+                                EmitNullNode(new NullNode(), ref inferedType);
+                            }
+                            return null;
+                        }
+
+                        isAccessible = procCallNode.access == AccessSpecifier.kPublic
+                             || (procCallNode.access == AccessSpecifier.kPrivate && procCallNode.classScope == globalClassIndex);
+
+                        if (!isAccessible)
+                        {
+                            if (subPass == AssociativeSubCompilePass.kNone)
+                            {
+                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodIsInaccessible, procName);
+                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
                             }
                         }
+
+                        var dynamicRhsIndex = (int)(dotCall.DotCall.FormalArguments[1] as IntNode).Value;
+                        var dynFunc = core.DynamicFunctionTable.GetFunctionAtIndex(dynamicRhsIndex);
+                        dynFunc.ClassIndex = procCallNode.classScope;
                     }
                 }
                 else
                 {
-                    SymbolNode symbolnode = null;
-                    bool isAccessible = false;
-                    bool isAllocated = VerifyAllocation((firstArgument as IdentifierNode).Name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-                    if (isAllocated && symbolnode.datatype.UID != (int)PrimitiveType.kTypeVar)
-                    {
-                        inferedType.UID = symbolnode.datatype.UID;
-
-                        if (Constants.kInvalidIndex != inferedType.UID)
-                        {
-                            procCallNode = GetProcedureFromInstance(symbolnode.datatype.UID, dotCall.FunctionCall);
-                        }
-
-                        if (null != procCallNode)
-                        {
-                            if (procCallNode.isConstructor)
-                            {
-                                if (subPass != AssociativeSubCompilePass.kUnboundIdentifier)
-                                {
-                                    // A constructor cannot be called from an instance
-                                    string message = String.Format(WarningMessage.KCallingConstructorOnInstance, procName);
-                                    buildStatus.LogWarning(WarningID.kCallingConstructorOnInstance, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
-                                }
-
-                                if (subPass == AssociativeSubCompilePass.kNone)
-                                {
-                                    EmitNullNode(new NullNode(), ref inferedType);
-                                }
-
-                                return null;
-                            }
-                            else
-                            {
-                                isAccessible = procCallNode.access == AccessSpecifier.kPublic
-                                     || (procCallNode.access == AccessSpecifier.kPrivate && procCallNode.classScope == globalClassIndex);
-
-                                if (!isAccessible)
-                                {
-                                    if (subPass != AssociativeSubCompilePass.kUnboundIdentifier)
-                                    {
-                                        string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodIsInaccessible, procName);
-                                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col);
-                                    }
-                                }
-
-                                if (null != procCallNode)
-                                {
-                                    var dynamicRhsIndex = (int)(dotCall.DotCall.FormalArguments[1] as IntNode).Value;
-                                    var dynFunc = core.DynamicFunctionTable.GetFunctionAtIndex(dynamicRhsIndex);
-                                    dynFunc.ClassIndex = procCallNode.classScope;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        isUnresolvedDot = true;
-                    }
+                    isUnresolvedDot = true;
                 }
             }
 
@@ -1404,7 +1428,7 @@ namespace ProtoAssociative
                 && (int)PrimitiveType.kTypeVoid != inferedType.UID
                 && procName != Constants.kFunctionPointerCall)
             {
-                procCallNode = core.ClassTable.ClassNodes[inferedType.UID].GetFirstMemberFunction(procName);
+                procCallNode = core.ClassTable.ClassNodes[inferedType.UID].GetFirstMemberFunctionBy(procName);
             }
 
             // Try function pointer firstly
@@ -6141,7 +6165,7 @@ namespace ProtoAssociative
                         {
 
                             string functionName = dotcall.FunctionCall.Function.Name;
-                            ProcedureNode callNode = core.ClassTable.ClassNodes[classIndex].GetFirstMemberFunction(functionName);
+                            ProcedureNode callNode = core.ClassTable.ClassNodes[classIndex].GetFirstMemberFunctionBy(functionName);
                             if (null != callNode)
                             {
                                 isRHSConstructor = callNode.isConstructor;
@@ -6299,7 +6323,7 @@ namespace ProtoAssociative
                         if (i >= 1)
                         {
                             // Use class index to search for function call node and return procedure node
-                            ProcedureNode procCallNode = core.ClassTable.ClassNodes[ci].GetFirstMemberFunction(rnode.Function.Name, rnode.FormalArguments.Count);
+                            ProcedureNode procCallNode = core.ClassTable.ClassNodes[ci].GetFirstMemberFunctionBy(rnode.Function.Name, rnode.FormalArguments.Count);
 
                             // Only if procedure node is non-null do we know its a member function and prefix it with an instance pointer
                             if (procCallNode != null)
