@@ -902,11 +902,11 @@ namespace Dynamo.Nodes
             
             XmlElement normalized = MigrationManager.CreateFunctionNode(
                 data.Document, oldNode, 0, "ProtoGeometry.dll",
-                "Vector.Normalized", "Vector.ByTwoPoints@Point,Point");
+                "Vector.Normalized", "Vector.Normalized@Vector");
             migrationData.AppendNode(normalized);
             
             XmlElement vectorNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0, "ProtoGeometry.dll",
+                data.Document, oldNode, 1, "ProtoGeometry.dll",
                 "Vector.ByTwoPoints", "Vector.ByTwoPoints@Point,Point");
             migrationData.AppendNode(vectorNode);
             string vectorNodeId = MigrationManager.GetGuidFromXmlElement(vectorNode);

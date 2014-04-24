@@ -223,13 +223,13 @@ namespace Dynamo.Nodes
             string distanceToPointId = MigrationManager.GetGuidFromXmlElement(distanceToPoint);
 
             XmlElement point1 = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0, "ProtoGeometry.dll", 
+                data.Document, oldNode, 0, "RevitNodes.dll", 
                 "ReferencePoint.Point", "ReferencePoint.Point");
             migratedData.AppendNode(point1);
             string point1Id = MigrationManager.GetGuidFromXmlElement(point1);
 
             XmlElement point2 = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1, "ProtoGeometry.dll", 
+                data.Document, oldNode, 1, "RevitNodes.dll", 
                 "ReferencePoint.Point", "ReferencePoint.Point");
             migratedData.AppendNode(point2);
             string point2Id = MigrationManager.GetGuidFromXmlElement(point2);
