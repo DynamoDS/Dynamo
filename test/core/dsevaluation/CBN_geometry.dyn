@@ -1,0 +1,21 @@
+<Workspace Version="0.7.0.22057" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="f2dba8ea-9a90-4aca-aed6-b1b657ec66f3" nickname="Code Block" x="24" y="109" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="h=1;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="fdb47152-240d-4682-8f5d-50db0063577b" nickname="Code Block" x="234" y="136" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="ll=k+2;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="69f56690-5c85-4040-8ef1-db3c78f3cc84" nickname="Code Block" x="298" y="329" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="hf=v+2;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="03c7ed31-182b-4539-934e-710b3fabe5ad" nickname="Code Block" x="431" y="178.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="vv=Point.ByCoordinates(a45,3,1);" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="9c51f2d5-a9f2-4825-bda6-f062e69efc46" nickname="Code Block" x="762" y="190" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="x.X;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="f2dba8ea-9a90-4aca-aed6-b1b657ec66f3" start_index="0" end="fdb47152-240d-4682-8f5d-50db0063577b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fdb47152-240d-4682-8f5d-50db0063577b" start_index="0" end="69f56690-5c85-4040-8ef1-db3c78f3cc84" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="69f56690-5c85-4040-8ef1-db3c78f3cc84" start_index="0" end="03c7ed31-182b-4539-934e-710b3fabe5ad" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="03c7ed31-182b-4539-934e-710b3fabe5ad" start_index="0" end="9c51f2d5-a9f2-4825-bda6-f062e69efc46" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <SessionTraceData>
+    <NodeTraceData NodeId="03c7ed31-182b-4539-934e-710b3fabe5ad">
+      <CallsiteTraceData>PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDAuMC4wLjAlMkMlMjBDdWx0dXJlJTNEbmV1dHJhbCUyQyUyMFB1YmxpY0tleVRva2VuJTNEbnVsbCI+DQo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPg0KPEJhc2UtMF9IYXNEYXRhPmZhbHNlPC9CYXNlLTBfSGFzRGF0YT4NCjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+DQo8L2ExOkNhbGxTaXRlX3gwMDJCX1RyYWNlU2VyaWFsaXNlckhlbHBlcj4NCjwvU09BUC1FTlY6Qm9keT4NCjwvU09BUC1FTlY6RW52ZWxvcGU+DQo=</CallsiteTraceData>
+    </NodeTraceData>
+  </SessionTraceData>
+</Workspace>

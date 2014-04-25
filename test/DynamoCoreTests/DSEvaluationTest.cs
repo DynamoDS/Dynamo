@@ -732,18 +732,17 @@ namespace Dynamo.Tests
         }
 
         [Test]
-         public void CBN_Geometry()
-         {
-             RunModel(@"core\dsevaluation\CBN_Geometry.dyn");
-             AssertPreviewValue("03c7ed31-182b-4539-934e-710b3fabe5ad", 5.0);
-         }
-         [Test]
-         public void CBN_Range_1300()
-         {
-             RunModel(@"core\dsevaluation\CBN_Range_1300.dyn");
-             AssertPreviewValue("c5866d0f-3d76-4093-a62d-15bea73f7bee", new double[]{1.0,2.8,4.6,6.4,8.2,10.0});
-         }
-
+        public void CBN_Geometry()
+        {
+            RunModel(@"core\dsevaluation\CBN_Geometry.dyn");
+            AssertPreviewValue("9c51f2d5-a9f2-4825-bda6-f062e69efc46", 5.00000);
+        }
+        [Test]
+        public void CBN_Range_1300()
+        {
+            RunModel(@"core\dsevaluation\CBN_Range_1300.dyn");
+            AssertPreviewValue("372d31c2-b66e-494c-a33d-e82ae1ecf68a", new double[] { 0.000000, 2.000000, 10.392305, 16.000000, 10.392305, 2.000000, 0.000000, -2.000000, -10.392305, -16.000000, -10.392305, -2.000000, 0.000000 });
+        }
 
     }
 
