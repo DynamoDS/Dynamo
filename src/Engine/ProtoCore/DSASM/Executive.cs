@@ -1047,6 +1047,106 @@ namespace ProtoCore.DSASM
             return sv;
         }
 
+        private StackValue CallrForMemberFunction(int classIndex,
+                                                  int procIndex,
+                                                  bool hasDebugInfo,
+                                                  ref bool isExplicitCall)
+        {
+            var arrayDim = rmem.Pop();
+            Validity.Assert(arrayDim.IsArrayDimension());
+
+            var blockIndex = rmem.Pop();
+            Validity.Assert(blockIndex.IsBlockIndex());
+
+            ClassNode classNode = exe.classTable.ClassNodes[classIndex];
+            ProcedureNode procNode = classNode.vtable.procList[procIndex];
+
+            // Get all arguments and replications 
+            var arguments = new List<StackValue>();
+            var repGuides = new List<List<ReplicationGuide>>();
+            PopArgumentsFromStack(procNode.argTypeList.Count,
+                                  ref arguments,
+                                  ref repGuides);
+            arguments.Reverse();
+            repGuides = GetCachedReplicationGuides(core, arguments.Count + 1);
+
+            StackValue lhs = rmem.Pop();
+            StackValue thisObject = lhs;
+            if (StackUtils.IsArray(lhs))
+            {
+                ArrayUtils.GetFirstNonArrayStackValue(lhs, ref thisObject, core);
+                arguments.Insert(0, lhs);
+            }
+
+            if (!thisObject.IsObject() && !thisObject.IsArray())
+            {
+                core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
+                                              WarningMessage.kDeferencingNonPointer);
+                return StackValue.Null;
+            }
+
+            var registers = new List<StackValue>();
+            SaveRegisters(registers);
+
+            var stackFrame = new StackFrame(thisObject,         // thisptr 
+                                            classIndex,         // function class index
+                                            procIndex,          // function index
+                                            pc + 1,             // return address
+                                            0,                  // member function always declared in block 0 */
+                                            core.RunningBlock,  // caller block
+                                            fepRun ? StackFrameType.kTypeFunction : StackFrameType.kTypeLanguage,
+                                            StackFrameType.kTypeFunction,   // frame type
+                                            0,                              // block depth
+                                            rmem.FramePointer,
+                                            registers,
+                                            new List<bool>());
+
+            var callsite = core.GetCallSite(core.ExecutingGraphnode,
+                                            classIndex,
+                                            procNode.name);
+            Validity.Assert(null != callsite);
+
+            bool setDebugProperty = core.Options.IDEDebugMode &&
+                                    core.ExecMode != InterpreterMode.kExpressionInterpreter &&
+                                    procNode != null;
+
+            if (setDebugProperty)
+            {
+                core.DebugProps.SetUpCallrForDebug(core,
+                                                   this,
+                                                   procNode,
+                                                   pc,
+                                                   false,
+                                                   callsite,
+                                                   arguments,
+                                                   repGuides,
+                                                   stackFrame,
+                                                   null,
+                                                   hasDebugInfo);
+            }
+
+            SX = StackValue.BuildBlockIndex(0);
+            stackFrame.SetAt(StackFrame.AbsoluteIndex.kRegisterSX, SX);
+
+            StackValue sv = callsite.JILDispatch(arguments,
+                                                 repGuides,
+                                                 stackFrame,
+                                                 core,
+                                                 new Runtime.Context());
+
+            isExplicitCall = sv.IsExplicitCall();
+            if (isExplicitCall)
+            {
+                Properties.functionCallArguments = arguments;
+                Properties.functionCallDotCallDimensions = new List<StackValue>();
+
+                int entryPC = (int)sv.opdata;
+                CallExplicit(entryPC);
+            }
+
+            return sv;
+        }
+
         private void FindRecursivePoints()
         {
             foreach (FunctionCounter c in core.funcCounterTable)
@@ -7058,109 +7158,6 @@ namespace ProtoCore.DSASM
                 core.Rmem.PushConstructBlockId(-1);
             }
             throw new NotImplementedException();
-        }
-
-        private StackValue CallrForMemberFunction(int classIndex,
-                                                  int procIndex,
-                                                  bool hasDebugInfo,
-                                                  ref bool isExplicitCall)
-        {
-            var arrayDim = rmem.Pop();
-            Validity.Assert(arrayDim.IsArrayDimension());
-
-            var blockIndex = rmem.Pop();
-            Validity.Assert(blockIndex.IsBlockIndex());
-
-            ClassNode classNode = exe.classTable.ClassNodes[classIndex];
-            ProcedureNode procNode = classNode.vtable.procList[procIndex];
-
-            // Get all arguments and replications 
-            var arguments = new List<StackValue>();
-            var repGuides = new List<List<ReplicationGuide>>();
-            PopArgumentsFromStack(procNode.argTypeList.Count, 
-                                  ref arguments, 
-                                  ref repGuides);
-            arguments.Reverse();
-            repGuides = GetCachedReplicationGuides(core, arguments.Count + 1);
-
-            StackValue lhs = rmem.Pop();
-            StackValue thisObject = lhs;
-            if (StackUtils.IsArray(lhs))
-            {
-                ArrayUtils.GetFirstNonArrayStackValue(lhs, ref thisObject, core);
-                if (arguments.Count > 0)
-                {
-                    arguments.Insert(0, lhs);
-                }
-            }
-            
-            if (!thisObject.IsObject() && !thisObject.IsArray())
-            {
-                core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, 
-                                              WarningMessage.kDeferencingNonPointer);
-                return StackValue.Null;
-            }
-
-            var registers = new List<StackValue>();
-            SaveRegisters(registers);
-
-            var stackFrame = new StackFrame(thisObject,         // thisptr 
-                                            classIndex,         // function class index
-                                            procIndex,          // function index
-                                            pc + 1,             // return address
-                                            0,                  // member function always declared in block 0 */
-                                            core.RunningBlock,  // caller block
-                                            fepRun ?  StackFrameType.kTypeFunction : StackFrameType.kTypeLanguage,
-                                            StackFrameType.kTypeFunction,   // frame type
-                                            0,                              // block depth
-                                            rmem.FramePointer,              
-                                            registers, 
-                                            new List<bool>());
-           
-            var callsite = core.GetCallSite(core.ExecutingGraphnode, 
-                                            classIndex, 
-                                            procNode.name);
-            Validity.Assert(null != callsite);
-
-            bool setDebugProperty = core.Options.IDEDebugMode &&
-                                    core.ExecMode != InterpreterMode.kExpressionInterpreter &&
-                                    procNode != null;
-
-            if (setDebugProperty)
-            {
-                core.DebugProps.SetUpCallrForDebug(core,
-                                                   this,
-                                                   procNode, 
-                                                   pc,
-                                                   false,
-                                                   callsite,
-                                                   arguments,
-                                                   repGuides,
-                                                   stackFrame,
-                                                   null,
-                                                   hasDebugInfo);
-            }
-
-            SX = StackValue.BuildBlockIndex(0);
-            stackFrame.SetAt(StackFrame.AbsoluteIndex.kRegisterSX, SX);
-
-            StackValue sv = callsite.JILDispatch(arguments,
-                                                 repGuides, 
-                                                 stackFrame, 
-                                                 core, 
-                                                 new Runtime.Context());
-
-            isExplicitCall = sv.IsExplicitCall();
-            if (isExplicitCall)
-            {
-                Properties.functionCallArguments = arguments;
-                Properties.functionCallDotCallDimensions = new List<StackValue>();
-
-                int entryPC = (int)sv.opdata;
-                CallExplicit(entryPC);
-            }
-
-            return sv;
         }
 
         protected virtual void CALLR_Handler(Instruction instruction)
