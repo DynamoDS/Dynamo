@@ -991,17 +991,31 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
 
+            // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Curve.PointAtParameter",
+                "Autodesk.DesignScript.Geometry.Curve.PointAtParameter@double");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Create new node
+            XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeModelNode(data.Document,oldNode,1,"");            
+            codeBlockNode.SetAttribute("CodeText", "0..1..#x;");
+            migrationData.AppendNode(codeBlockNode);
             string codeBlockNodeId = MigrationManager.GetGuidFromXmlElement(codeBlockNode);
 
-            codeBlockNode.SetAttribute("CodeText",
-                "List.AddItemToFront(curve.PointAtParameter(0),\n" +
-                "curve.DivideByLength(count - 2).PointAtParameter(1));");
+            // Update connectors
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
-            codeBlockNode.SetAttribute("nickname", "XYZ Array On Curve");
+            PortId codeBlockNodePort = new PortId(codeBlockNodeId, 0, PortType.INPUT);
 
-            migrationData.AppendNode(codeBlockNode);
+            data.ReconnectToPort(connector1, codeBlockNodePort);
+            data.CreateConnector(codeBlockNode, 0, newNode, 1);
 
             return migrationData;
         }
