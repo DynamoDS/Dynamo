@@ -5,13 +5,9 @@ using Dynamo.Selection;
 using System.Linq;
 using Dynamo.Utilities;
 using NUnit.Framework;
-using System.Collections.Generic;
-using Dynamo.DSEngine;
-using ProtoCore.Mirror;
-using System.Collections;
-using Dynamo.Models;
 using DSCoreNodesUI;
 using DSCore.File;
+using Revit.Elements;
 namespace Dynamo.Tests
 {
     [TestFixture]
@@ -22,28 +18,23 @@ namespace Dynamo.Tests
         public void CreatePointSequenceSample()
         {
             var model = dynSettings.Controller.DynamoModel;
-
-            string samplePath = Path.Combine(_samplesPath, @".\01 Create Point\create point_sequence.dyn");
-            string testPath = Path.GetFullPath(samplePath);
-
-            model.Open(testPath);
+            OpenModel(@".\01 Create Point\create point_sequence.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+ 	        Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+            AssertNoDummyNodes();
 
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
+            // evaluate  graph
+            RunCurrentModel();
 
-            double noOfNdoes = nodes.Count();
+            var refPtNodeId = "d615cc73-d32d-4b1f-b519-0b8f9b903ebf";
+            AssertPreviewCount(refPtNodeId, 9);
 
-            if (noOfNdoes >= 1)
-            {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
-            }
-
-            dynSettings.Controller.RunExpression(true);
-
-
+            // get 8th reference point
+            var refPt = GetPreviewValueAtIndex(refPtNodeId, 8) as ReferencePoint;
+            Assert.IsNotNull(refPt);
+            Assert.AreEqual(80, refPt.Z);
         }
 
         [Test]
@@ -51,29 +42,35 @@ namespace Dynamo.Tests
         public void CreatePointEndSample()
         {
             var model = dynSettings.Controller.DynamoModel;
+            OpenModel(@".\01 Create Point\create point - end.dyn");
 
-            string samplePath = Path.Combine(_samplesPath, @".\01 Create Point\create point - end.dyn");
-            string testPath = Path.GetFullPath(samplePath);
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            AssertNoDummyNodes();
 
-            //test running the expression
-            model.Open(testPath);
+            RunCurrentModel();
 
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
-
-            double noOfNdoes = nodes.Count();
-
-            if (noOfNdoes >= 1)
-            {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
-            }
-
-            dynSettings.Controller.RunExpression(true);
-
-            //test copying and pasting the workflow
+            // test copying and pasting the workflow
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.AddRange(dynSettings.Controller.DynamoModel.Nodes);
             model.Copy(null);
             model.Paste(null);
+
+            // evaluate graph
+            var refPtNodeId = "16d1ceb2-c780-45d1-9dfb-d9c49836a931";
+            var refPt = GetPreviewValue(refPtNodeId) as ReferencePoint;
+            Assert.IsNotNull(refPt);
+            Assert.AreEqual(0, refPt.Z);
+
+            // change slider value and re-evaluate graph
+            DoubleSlider slider = model.CurrentWorkspace.NodeFromWorkspace("2eb70bdb-773d-4cf4-a10e-828dd39a0cca") as DoubleSlider;
+            slider.Value = 56.78;
+            RunCurrentModel();
+
+            refPt = GetPreviewValue(refPtNodeId) as ReferencePoint;
+            Assert.IsNotNull(refPt);
+            Assert.AreEqual(56.78, refPt.Z);
         }
 
         [Test]
@@ -81,21 +78,20 @@ namespace Dynamo.Tests
         public void CreatePointSample()
         {
             var model = dynSettings.Controller.DynamoModel;
+            OpenModel(@".\01 Create Point\create point.dyn");
 
-            string samplePath = Path.Combine(_samplesPath, @".\01 Create Point\create point.dyn");
-            string testPath = Path.GetFullPath(samplePath);
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, model.CurrentWorkspace.Connectors.Count);
+            AssertNoDummyNodes();
 
-            model.Open(testPath);
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
+            // evaluate graph
+            RunCurrentModel();
 
-            double noOfNdoes = nodes.Count();
-
-            if (noOfNdoes >= 1)
-            {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
-            }
-
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            var refPtNodeId = "f4088a7b-823a-49e8-936c-3c56d1a99455";
+            var refPt = GetPreviewValue(refPtNodeId) as ReferencePoint;
+            Assert.IsNotNull(refPt);
+            Assert.AreEqual(0, refPt.Z);
         }
 
         [Test]
@@ -103,21 +99,29 @@ namespace Dynamo.Tests
         public void RefGridSlidersSample()
         {
             var model = dynSettings.Controller.DynamoModel;
+            OpenModel(@".\02 Ref Grid Sliders\ref grid sliders.dyn");
 
-            string samplePath = Path.Combine(_samplesPath, @".\02 Ref Grid Sliders\ref grid sliders.dyn");
-            string testPath = Path.GetFullPath(samplePath);
+            // check all the nodes and connectors are loaded
+            Assert.GreaterOrEqual(8, model.CurrentWorkspace.Nodes.Count);
+            Assert.GreaterOrEqual(10, model.CurrentWorkspace.Connectors.Count);
+            AssertNoDummyNodes();
 
-            model.Open(testPath);
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
+            // evaluate graph
+            RunCurrentModel();
 
-            double noOfNdoes = nodes.Count();
+            var refPtNodeId = "69dcdcdc-941f-46f9-8e8b-242b61e74e80";
+            AssertPreviewCount(refPtNodeId, 36);
+            
+            var refPt = GetPreviewValueAtIndex(refPtNodeId, 3) as ReferencePoint;
+            Assert.IsNotNull(refPt);
+            Assert.AreEqual(57, refPt.Y);
 
-            if (noOfNdoes >= 1)
-            {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
-            }
+            // change slider value and re-evaluate graph
+            DoubleSlider slider = model.CurrentWorkspace.NodeFromWorkspace("5adff29b-3cac-4387-8d1d-b75ceb9c6dec") as DoubleSlider;
+            slider.Value = 3.5;
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            RunCurrentModel();
+            AssertPreviewCount(refPtNodeId, 16);
         }
 
         [Test]
@@ -125,21 +129,27 @@ namespace Dynamo.Tests
         public void RefGridSlidersEndSample()
         {
             var model = dynSettings.Controller.DynamoModel;
+            OpenModel(@".\02 Ref Grid Sliders\ref grid sliders - end.dyn");
 
-            string samplePath = Path.Combine(_samplesPath, @".\02 Ref Grid Sliders\ref grid sliders - end.dyn");
-            string testPath = Path.GetFullPath(samplePath);
+            // check all the nodes and connectors are loaded
+            Assert.GreaterOrEqual(9, model.CurrentWorkspace.Nodes.Count);
+            Assert.GreaterOrEqual(11, model.CurrentWorkspace.Connectors.Count);
+            AssertNoDummyNodes();
 
-            model.Open(testPath);
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
+            // evaluate graph
+            //DSRevitNodesUI.FamilyTypes famTypes =
+                //model.CurrentWorkspace.NodeFromWorkspace("84ad80e7-2497-4637-a346-c1aea914dc43")
+                //as DSRevitNodesUI.FamilyTypes;
+            //famTypes.SelectedIndex = 70;
 
-            double noOfNdoes = nodes.Count();
+            RunCurrentModel();
 
-            if (noOfNdoes >= 1)
-            {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
-            }
+            var famInstNodeId = "fc83b9b2-42c6-4a9f-8f60-a6ee29ef8a34";
+            AssertPreviewCount(famInstNodeId, 36);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            var famInst = GetPreviewValueAtIndex(famInstNodeId, 3) as FamilyInstance;
+            Assert.IsNotNull(famInst);
+            Assert.IsNotNullOrEmpty(famInst.Name);
         }
 
         [Test]

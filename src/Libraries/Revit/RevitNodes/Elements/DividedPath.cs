@@ -4,6 +4,7 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
+using Revit.GeometryConversion;
 using Revit.References;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
@@ -16,6 +17,17 @@ namespace Revit.Elements
     [RegisterForTrace]
     public class DividedPath: Element
     {
+        #region Private fields
+        
+        private static Options geometryOptions = new Options
+        {
+            ComputeReferences = true,
+            DetailLevel = ViewDetailLevel.Medium,
+            IncludeNonVisibleObjects = false
+        };
+
+        #endregion
+
         #region Properties
 
         /// <summary>
@@ -33,6 +45,21 @@ namespace Revit.Elements
         public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalDividedPath; }
+        }
+
+        /// <summary>
+        /// All points along the DividedPath.
+        /// </summary>
+        public Autodesk.DesignScript.Geometry.Point[] Points
+        {
+            get
+            {
+                return
+                    InternalDividedPath.get_Geometry(geometryOptions)
+                        .Cast<Autodesk.Revit.DB.Point>()
+                        .Select(x => x.Coord.ToPoint())
+                        .ToArray();
+            }
         }
 
         #endregion
