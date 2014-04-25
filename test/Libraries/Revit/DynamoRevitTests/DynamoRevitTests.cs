@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Dynamo.Interfaces;
@@ -7,7 +8,9 @@ using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
+using ProtoCore.Mirror;
 using RevitServices.Persistence;
+using RevitServices.Transactions;
 using ModelCurve = Autodesk.Revit.DB.ModelCurve;
 using Plane = Autodesk.Revit.DB.Plane;
 using SketchPlane = Autodesk.Revit.DB.SketchPlane;
@@ -82,6 +85,12 @@ namespace Dynamo.Tests
             {
                 Console.WriteLine(ex.StackTrace);
             }
+
+            //create the transaction manager object
+            TransactionManager.SetupManager(new AutomaticTransactionStrategy());
+
+            //tests do not run from idle thread
+            TransactionManager.Instance.DoAssertInIdleThread = false;
         }
 
         /// <summary>
@@ -154,5 +163,89 @@ namespace Dynamo.Tests
 
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
+
+        #region Revit unit test helper methods
+
+        public void OpenModel(string relativeFilePath)
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_samplesPath, relativeFilePath);
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+        }
+
+        public void RunCurrentModel()
+        {
+            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+        }
+
+        public void AssertNoDummyNodes()
+        {
+            var nodes = Controller.DynamoModel.Nodes;
+
+            double dummyNodesCount = nodes.OfType<DSCoreNodesUI.DummyNode>().Count();
+            if (dummyNodesCount >= 1)
+            {
+                Assert.Fail("Number of dummy nodes found in Sample: " + dummyNodesCount);
+            }
+        }
+
+        public void AssertPreviewCount(string guid, int count)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+
+            var data = mirror.GetData();
+            Assert.IsTrue(data.IsCollection);
+            Assert.AreEqual(count, data.GetElements().Count);
+        }
+
+        public object GetPreviewValue(string guid)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+
+            return mirror.GetData().Data;
+        }
+
+        public object GetPreviewValueAtIndex(string guid, int index)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+
+            return mirror.GetData().GetElements()[index].Data;
+        }
+
+        public void AssertClassName(string guid, string className)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+            var classInfo = mirror.GetData().Class;
+            Assert.AreEqual(classInfo.ClassName, className);
+        }
+
+        private string GetVarName(string guid)
+        {
+            var model = Controller.DynamoModel;
+            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
+            Assert.IsNotNull(node);
+            return node.VariableToPreview;
+        }
+
+        private RuntimeMirror GetRuntimeMirror(string varName)
+        {
+            RuntimeMirror mirror = null;
+            Assert.DoesNotThrow(() => mirror = Controller.EngineController.GetMirror(varName));
+            return mirror;
+        }
+
+        #endregion
+
     }
 }

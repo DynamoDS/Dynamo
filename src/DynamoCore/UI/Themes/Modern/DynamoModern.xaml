@@ -1005,15 +1005,21 @@
         <Setter Property="HorizontalAlignment"
                 Value="Stretch" />
         <Setter Property="FontSize"
-                Value="14.67px" />
+                Value="15px" />
+        <Setter Property="TextBlock.LineHeight"
+                Value="26" />
+        <Setter Property="TextBlock.LineStackingStrategy"
+                Value="BlockLineHeight" />
+        <Setter Property="TextBlock.VerticalAlignment"
+                Value="Center"/>
         <Setter Property="Padding"
                 Value="3" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <Border Name="borderText"
-                            BorderThickness="1px"
-                            BorderBrush="#444"
+                            BorderThickness="1,0,1,0"
+                            BorderBrush="#aaa"
                             Background="#88FFFFFF">
                         <Grid>
                             <ScrollViewer x:Name="PART_ContentHost"
@@ -1024,8 +1030,14 @@
                                        Padding="3"
                                        Margin="4 0 4 0"
                                        IsHitTestVisible="False"
-                                       Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}"
-                                       Text="{TemplateBinding Tag}" />
+                                       Text="{TemplateBinding Tag}">
+                                <TextBlock.Visibility>
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                             Path="Text.IsEmpty"
+                                             Converter="{StaticResource BooleanToVisibilityConverter}"
+                                             ConverterParameter="Collapse" />
+                                </TextBlock.Visibility>
+                            </TextBlock>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>

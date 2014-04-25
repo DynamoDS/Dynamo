@@ -275,7 +275,187 @@ namespace DynamoCoreUITests
             Assert.AreEqual(cmdOne.Description, cmdTwo.Description);
             Assert.AreEqual(cmdOne.MakeCurrent, cmdTwo.MakeCurrent);
         }
+        [Test]
+        public void TestCustomNode()
+        {
+            RunCommandsFromFile("TestCustomNode.xml");
+            var workspaces = this.Controller.DynamoModel.Workspaces;
+            Assert.IsNotNull(workspaces);
+            Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
 
+            // 1 custom node + 1 number node
+            Assert.AreEqual(1, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var customWorkspace = workspaces[1];
+            Assert.IsNotNull(customWorkspace);
+
+            // 1 inputs + 1 output 
+            Assert.AreEqual(1, customWorkspace.Connectors.Count);
+            Assert.AreEqual(2, customWorkspace.Nodes.Count);
+
+            var node = customWorkspace.Nodes[0];
+            var outports = node.OutPorts;
+
+            AssertPreviewValue("04f6dab5-0a0b-4563-9f20-d0e58fcae7a5", 1.0);
+        }
+        [Test]
+        public void TestCustomNodeUI()
+        {
+            RunCommandsFromFile("CustomNodeUI.xml", false, (commandTag) =>
+            {
+                var workspaces = Controller.DynamoModel.Workspaces;
+
+                if (commandTag == "FirstRun")
+                {
+                    Assert.IsNotNull(workspaces);
+                    Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
+
+                    // 1 custom node + 1 number node
+                    Assert.AreEqual(2, workspace.Connectors.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count);
+
+                    var customWorkspace = workspaces[1];
+                    Assert.IsNotNull(customWorkspace);
+
+                    // 2 inputs + 1 output 
+                    Assert.AreEqual(3, customWorkspace.Connectors.Count);
+                    Assert.AreEqual(4, customWorkspace.Nodes.Count);
+
+                    var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
+                    Assert.AreEqual(2, node.InPorts.Count);
+                    Assert.AreEqual(1, node.OutPorts.Count);
+
+                    AssertPreviewValue("6cec1997-ed61-4277-a1a8-3f3e4eb4321d", 7.6);
+
+                }
+                else if (commandTag == "SecondRun")
+                {
+
+                    Assert.IsNotNull(workspaces);
+                    Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
+
+                    // 1 custom node + 1 number node
+                    Assert.AreEqual(3, workspace.Connectors.Count);
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+
+                    var customWorkspace = workspaces[1];
+                    Assert.IsNotNull(customWorkspace);
+
+                    // 2 inputs + 1 output 
+                    Assert.AreEqual(2, customWorkspace.Connectors.Count);
+                    Assert.AreEqual(1, customWorkspace.Nodes.Count);
+                    var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
+                    Assert.AreEqual(3, node.InPorts.Count);
+                    Assert.AreEqual(1, node.OutPorts.Count);
+                    AssertPreviewValue("6cec1997-ed61-4277-a1a8-3f3e4eb4321d", 11.5);
+
+                }
+
+
+            });
+        }
+        [Test]
+        public void Deffect_CN_1143()
+        {
+            // modify the name of the input node
+            RunCommandsFromFile("Deffect_CN_1143.xml", false, (commandTag) =>
+            {
+                var workspaces = Controller.DynamoModel.Workspaces;
+
+                if (commandTag == "FirstRun")
+                {
+                    Assert.IsNotNull(workspaces);
+                    Assert.AreEqual(2, workspaces.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+
+                    var customWorkspace = workspaces[1];
+                    Assert.IsNotNull(customWorkspace);
+
+                    Assert.AreEqual(2, customWorkspace.Connectors.Count);
+                    Assert.AreEqual(1, customWorkspace.Nodes.Count);
+
+                    var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
+
+
+                }
+                else if (commandTag == "SecondRun")
+                {
+
+                    Assert.IsNotNull(workspaces);
+                    Assert.AreEqual(2, workspaces.Count);
+
+
+                    Assert.AreEqual(2, workspace.Connectors.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    var customWorkspace = workspaces[1];
+                    Assert.IsNotNull(customWorkspace);
+                    Assert.AreEqual(2, customWorkspace.Connectors.Count);
+                    Assert.AreEqual(1, customWorkspace.Nodes.Count);
+
+
+
+
+                }
+
+
+            });
+        }
+        [Test]
+        public void TestDeffect_CN_2144()
+        {
+            RunCommandsFromFile("Deffect_CN_2144.xml", false, (commandTag) =>
+            {
+                var workspaces = Controller.DynamoModel.Workspaces;
+
+                if (commandTag == "FirstRun")
+                {
+                    Assert.IsNotNull(workspaces);
+                    Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
+
+                    // 1 custom node + 1 number node
+                    Assert.AreEqual(1, workspace.Connectors.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+
+                    var customWorkspace = workspaces[1];
+                    Assert.IsNotNull(customWorkspace);
+
+                    // 2 inputs + 1 output 
+                    Assert.AreEqual(2, customWorkspace.Connectors.Count);
+                    Assert.AreEqual(3, customWorkspace.Nodes.Count);
+
+                    var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
+
+                    AssertPreviewValue("6cec1997-ed61-4277-a1a8-3f3e4eb4321d", 1);
+
+                }
+                else if (commandTag == "SecondRun")
+                {
+
+                    Assert.IsNotNull(workspaces);
+                    Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
+
+                    // 1 custom node + 1 number node
+                    Assert.AreEqual(1, workspace.Connectors.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+
+                    var customWorkspace = workspaces[1];
+                    Assert.IsNotNull(customWorkspace);
+
+                    // 2 inputs + 1 output 
+                    Assert.AreEqual(2, customWorkspace.Connectors.Count);
+                    Assert.AreEqual(3, customWorkspace.Nodes.Count);
+                    var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
+                    Assert.AreEqual(2, node.InPorts.Count);
+                    Assert.AreEqual(3, node.OutPorts.Count);
+                    AssertPreviewValue("6cec1997-ed61-4277-a1a8-3f3e4eb4321d", 1);
+
+                }
+
+
+            });
+        }
         [Test, RequiresSTA]
         public void TestSwitchTabCommand()
         {

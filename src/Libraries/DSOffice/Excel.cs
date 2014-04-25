@@ -115,16 +115,6 @@ namespace DSOffice
             }
         }
 
-        //public class ExcelCloseEventArgs : EventArgs
-        //{
-        //    public ExcelCloseEventArgs(bool saveWorkbooks = true)
-        //    {
-        //        this.SaveWorkbooks = saveWorkbooks;
-        //    }
-
-        //    public bool SaveWorkbooks { get; private set; }
-        //}
-
         private static void DynamoModelOnCleaningUp(object sender, EventArgs eventArgs)
         {
             if(eventArgs != null)
@@ -194,7 +184,7 @@ namespace DSOffice
         }
 
         /// <summary>
-        /// Writes the given data at the specified row and column no. in the given worksheet
+        /// Writes the given data at the specified row and column no. (base 0) in the given worksheet
         /// and returns the worksheet
         /// </summary>
         /// <param name="worksheet"></param>
@@ -204,9 +194,12 @@ namespace DSOffice
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkSheet WriteDataToExcelWorksheet(
-            WorkSheet worksheet, int startRow, int startColumn, object[][] data)
+            WorkSheet worksheet, int startRow=0, int startColumn=0, object[][] data=null)
         {
-            return worksheet.WriteData(startRow, startColumn, data);
+            if (data == null)
+                return worksheet;
+            else
+                return worksheet.WriteData(startRow, startColumn, data);
         }
 
         /// <summary>

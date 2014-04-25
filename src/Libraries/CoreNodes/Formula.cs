@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Autodesk.DesignScript.Runtime;
+﻿using System.Linq;
 using NCalc;
 
 namespace DSCore
@@ -9,6 +6,7 @@ namespace DSCore
     /// <summary>
     ///     Backend implementation for Formula node.
     /// </summary>
+    //[IsVisibleInDynamoLibrary(false)]
     public static class Formula
     {
         /// <summary>
@@ -17,11 +15,9 @@ namespace DSCore
         /// <param name="formulaString">NCalc formula</param>
         /// <param name="parameters">Variable names</param>
         /// <param name="args">Variable bindings</param>
+        /// <returns name="result">Result of the formula calculation.</returns>
         public static object Evaluate(string formulaString, string[] parameters, object[] args)
         {
-            //Evaluate("a+b", new[] { "a", "b" }, new object[] { new[] { 0, 1 }, 5 });
-
-
             var e = new Expression(formulaString.ToLower(), EvaluateOptions.IgnoreCase);
 
             e.Parameters["pi"] = 3.14159265358979;

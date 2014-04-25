@@ -1,0 +1,32 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateCustomNodeCommand NodeId="94cc6066-ea6f-4f23-8ff2-1e7479299450" Name="test1143" Category="TCN" Description="" MakeCurrent="true" />
+  <CreateNodeCommand NodeId="574b053b-fa11-4bf7-82c2-e52a0335522d" NodeName="Input" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="86b458b2-4d8b-4d4e-afc2-5d576f834aa7" NodeName="Output" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="86b458b2-4d8b-4d4e-afc2-5d576f834aa7" Modifiers="0" />
+  <DragSelectionCommand X="273" Y="265" DragOperation="0" />
+  <DragSelectionCommand X="416" Y="251" DragOperation="1" />
+  <UpdateModelValueCommand ModelGuid="574b053b-fa11-4bf7-82c2-e52a0335522d" Name="InputSymbol" Value="a" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="86b458b2-4d8b-4d4e-afc2-5d576f834aa7" Name="Symbol" Value="b" />
+  <MakeConnectionCommand NodeId="574b053b-fa11-4bf7-82c2-e52a0335522d" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="86b458b2-4d8b-4d4e-afc2-5d576f834aa7" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SwitchTabCommand TabIndex="0" />
+  <SwitchTabCommand TabIndex="1" />
+  <SwitchTabCommand TabIndex="0" />
+  <CreateNodeCommand NodeId="60817749-e83f-43de-88e4-6ecc5fc6bfe0" NodeName="94cc6066-ea6f-4f23-8ff2-1e7479299450" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="e558801d-5c53-4714-bb8d-3216cd046777" NodeName="Code Block" X="148" Y="300" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="e558801d-5c53-4714-bb8d-3216cd046777" Name="Code" Value="1" />
+  <MakeConnectionCommand NodeId="e558801d-5c53-4714-bb8d-3216cd046777" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="60817749-e83f-43de-88e4-6ecc5fc6bfe0" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <PausePlaybackCommand Tag="Tag-d6eb807a" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="60817749-e83f-43de-88e4-6ecc5fc6bfe0" Modifiers="0" />
+  <SelectModelCommand ModelGuid="60817749-e83f-43de-88e4-6ecc5fc6bfe0" Modifiers="0" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="574b053b-fa11-4bf7-82c2-e52a0335522d" Name="InputSymbol" Value="c" />
+  <SwitchTabCommand TabIndex="0" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+</Commands>

@@ -12,6 +12,7 @@
         /// <param name="msTimeout">
         ///     Amount of time to pause the thread, in milliseconds.
         /// </param>
+        /// <returns name="x">Object passed through.</returns>
         public static object Pause(object x, int msTimeout)
         {
             System.Threading.Thread.Sleep(msTimeout);
