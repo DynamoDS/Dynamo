@@ -144,6 +144,27 @@ namespace Dynamo.Nodes
             return cbn.inputIdentifiers.IndexOf(variableName);
         }
 
+        /// <summary>
+        ///  Returns the corresponding output port index for a given defined variable 
+        /// </summary>
+        /// <param name="variableName"></param>
+        /// <returns></returns>
+        public int GetOutportIndex(string variableName)
+        {
+            var svs = CodeBlockUtils.GetStatementVariables(codeStatements, true);
+            for (int i = 0; i < codeStatements.Count; i++)
+            {
+                Statement s = codeStatements[i];
+                if (CodeBlockUtils.DoesStatementRequireOutputPort(svs, i))
+                {
+                    List<string> varNames = Statement.GetDefinedVariableNames(s, true);
+                    if (varNames.Contains(variableName))
+                        return i;
+                }
+            }
+            return -1;
+        }
+
         #endregion
 
         #region Properties
