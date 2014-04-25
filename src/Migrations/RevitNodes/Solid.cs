@@ -16,9 +16,9 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll", 
-                "Form.ByLoftingCurveReferences", 
-                "Form.ByLoftingCurveReferences@CurveReference[],bool");
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll",
+                "Form.ByLoftingCurveElements",
+                "Form.ByLoftingCurveElements@CurveElement[],bool");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
