@@ -15,6 +15,7 @@ namespace DSCore
         /// <param name="formulaString">NCalc formula</param>
         /// <param name="parameters">Variable names</param>
         /// <param name="args">Variable bindings</param>
+        /// <returns name="result">Result of the formula calculation.</returns>
         public static object Evaluate(string formulaString, string[] parameters, object[] args)
         {
             var e = new Expression(formulaString.ToLower(), EvaluateOptions.IgnoreCase);

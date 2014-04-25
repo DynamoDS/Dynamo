@@ -87,7 +87,7 @@ namespace DSCore
         /// <param name="newMin">New minimum of the range.</param>
         /// <param name="newMax">New maximum of the range</param>
         /// <returns name="list">List remapped to new range.</returns>
-        /// <search>remap,range</search>
+        /// <search>remap range</search>
         public static IList RemapRange(IList<double> numbers, double newMin = 0, double newMax = 1)
         {
             var oldMax = numbers.Max();
