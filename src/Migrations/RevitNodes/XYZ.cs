@@ -999,6 +999,7 @@ namespace Dynamo.Nodes
             MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Curve.PointAtParameter",
                 "Autodesk.DesignScript.Geometry.Curve.PointAtParameter@double");
+            newNode.SetAttribute("lacing", "CrossProduct");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
