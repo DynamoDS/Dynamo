@@ -1264,12 +1264,10 @@ namespace ProtoAssociative
                                 procCallNode = classNode.GetFirstMemberFunctionBy(property);
                             }
 
-                            /*
                             if (procCallNode == null)
                             {
                                 procCallNode = classNode.GetFirstMemberFunctionBy(procName);
                             }
-                            */
 
                             if (procCallNode != null)
                             {
