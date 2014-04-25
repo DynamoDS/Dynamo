@@ -194,9 +194,12 @@ namespace DSOffice
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkSheet WriteDataToExcelWorksheet(
-            WorkSheet worksheet, int startRow, int startColumn, object[][] data)
+            WorkSheet worksheet, int startRow=0, int startColumn=0, object[][] data=null)
         {
-            return worksheet.WriteData(startRow, startColumn, data);
+            if (data == null)
+                return worksheet;
+            else
+                return worksheet.WriteData(startRow, startColumn, data);
         }
 
         /// <summary>

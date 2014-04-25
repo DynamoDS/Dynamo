@@ -196,7 +196,7 @@ namespace Revit.Elements
 
         #region Public static constructors 
 
-        public static Form ByLoftingCurveReferences( CurveReference[] curves, bool isSolid )
+        public static Form ByLoftingCurveReferences( CurveReference[] curves, bool isSolid=true )
         {
             var refArrArr = new ReferenceArrayArray();
 
@@ -211,7 +211,7 @@ namespace Revit.Elements
 
         }
 
-        public static Form ByLoftingCurveElements( CurveElement[] curves, bool isSolid)
+        public static Form ByLoftingCurveElements( CurveElement[] curves, bool isSolid=true )
         {
             var refArrArr = new ReferenceArrayArray();
 
@@ -226,7 +226,7 @@ namespace Revit.Elements
 
         }
 
-        public static Form ByLoftingCurveReferences( CurveReference[][] curves, bool isSolid )
+        public static Form ByLoftingCurveReferences( CurveReference[][] curves, bool isSolid=true )
         {
             var refArrArr = new ReferenceArrayArray();
 
@@ -241,7 +241,7 @@ namespace Revit.Elements
 
         }
 
-        public static Form ByLoftingCurveElements( CurveElement[][] curves, bool isSolid )
+        public static Form ByLoftingCurveElements( CurveElement[][] curves, bool isSolid=true )
         {
             var refArrArr = new ReferenceArrayArray();
 

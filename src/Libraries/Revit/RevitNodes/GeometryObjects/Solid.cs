@@ -448,7 +448,7 @@ namespace Revit.GeometryObjects
         /// <param name="direction"></param>
         /// <param name="height"></param>
         /// <returns></returns>
-        public static Solid Cylinder(Autodesk.DesignScript.Geometry.Point origin, double radius, Vector direction, double height)
+        public static Solid Cylinder(Autodesk.DesignScript.Geometry.Point origin, double radius=1, Vector direction=null, double height=2)
         {
             if (radius <= 0)
             {
@@ -492,7 +492,7 @@ namespace Revit.GeometryObjects
         /// <param name="center"></param>
         /// <param name="radius"></param>
         /// <returns></returns>
-        public static Solid Sphere(Autodesk.DesignScript.Geometry.Point center, double radius)
+        public static Solid Sphere(Autodesk.DesignScript.Geometry.Point center, double radius=1)
         {
             if (center == null)
             {
@@ -532,7 +532,7 @@ namespace Revit.GeometryObjects
         /// <param name="radius"></param>
         /// <param name="sectionRadius"></param>
         /// <returns></returns>
-        public static Solid Torus(Vector axis, Point center, double radius, double sectionRadius)
+        public static Solid Torus(Vector axis, Point center, double radius=1, double sectionRadius=0.25)
         {
             if (center == null)
             {
@@ -643,7 +643,7 @@ namespace Revit.GeometryObjects
         /// <param name="y"></param>
         /// <param name="z"></param>
         /// <returns></returns>
-        public static Solid BoxByCenterAndDimensions(Point center,double x, double y, double z)
+        public static Solid BoxByCenterAndDimensions(Point center, double x=1, double y=1, double z=1)
         {
             var bottom = center.ToXyz() - new XYZ(x / 2, y / 2, z / 2);
             var top = center.ToXyz() + new XYZ(x / 2, y / 2, z / 2);

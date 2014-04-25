@@ -16,16 +16,16 @@ Dynamo extends the parametric functionality of Autodesk Revit. Dynamo aims to be
 * [Luke Church](https://github.com/lukechurch): Software Architecture, Programming UX specialist.
 * Lillian Smith: Useful feedback and use cases.
 * [Tom Vollaro](https://github.com/tvollaro): Useful feedback and use cases.
-* Aparajit Pratap: Node and UI developer.
-* Beng-Lin Goh: UI developer.
-* Elaybharath Elango: Interaction and visual designer.
-* Jun Mendoza: Language and vm developer.
-* Monika Prabhub: Testing and QA.
-* Ritesh Chandawar: Testing and QA.
-* Sharad Jaiswal: Project management.
-* Yu Ke: Langauge and vm developer.
-* Randy Ma: Geometry developer.
-* Patrick Tierney: Geometry developer.
+* [Aparajit Pratap](https://github.com/aparajit-pratap): Node and UI developer.
+* [Ben Goh](https://github.com/Benglin): UI developer.
+* [Elaybharath Elango](https://github.com/Elayabharath): Interaction and visual designer.
+* [Jun Mendoza](https://github.com/junmendoza): Language and vm developer.
+* [Monika Prabhub](https://github.com/monikaprabhu): Testing and QA.
+* [Ritesh Chandawar](https://github.com/riteshchandawar): Testing and QA.
+* [Sharad Jaiswal](https://github.com/sharadkjaiswal): Project management.
+* [Yu Ke](https://github.com/ke-yu): Langauge and vm developer.
+* [Randy Ma](https://github.com/Randy-Ma): Geometry developer.
+* [Patrick Tierney](https://github.com/hlp): Geometry developer.
 
 
 Dynamo has been developed based on feedback from several parties including Arup, KPF, Buro Happold, Autodesk, and students and faculty at the USC School of Architecture.
