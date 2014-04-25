@@ -31,14 +31,7 @@ namespace Dynamo.Tests
 
             model.Open(testPath);
 
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
-
-            double noOfNdoes = nodes.Count();
-
-            if (noOfNdoes >= 1)
-            {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
-            }
+            AssertNoDummyNodes();
 
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
@@ -56,14 +49,7 @@ namespace Dynamo.Tests
 
             model.Open(testPath);
 
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
-
-            double noOfNdoes = nodes.Count();
-
-            if (noOfNdoes >= 1)
-            {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
-            }
+            AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
@@ -84,16 +70,7 @@ namespace Dynamo.Tests
 
             model.Open(testPath);
 
-            model.Open(testPath);
-
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
-
-            double noOfNdoes = nodes.Count();
-
-            if (noOfNdoes >= 1)
-            {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
-            }
+            AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
@@ -114,16 +91,7 @@ namespace Dynamo.Tests
 
             model.Open(testPath);
 
-            model.Open(testPath);
-
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
-
-            double noOfNdoes = nodes.Count();
-
-            if (noOfNdoes >= 1)
-            {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
-            }
+            AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
@@ -145,14 +113,7 @@ namespace Dynamo.Tests
 
             model.Open(testPath);
 
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
-
-            double noOfNdoes = nodes.Count();
-
-            if (noOfNdoes >= 1)
-            {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
-            }
+            AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
