@@ -87,9 +87,9 @@ namespace DSRevitNodesUI
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All elements in the active document of a given type.")]
     [IsDesignScriptCompatible]
-    public class AllElementsOfType : ElementsQueryBase
+    public class ElementsOfType : ElementsQueryBase
     {
-        public AllElementsOfType()
+        public ElementsOfType()
         {
             InPortData.Add(new PortData("element type", "An element type."));
             OutPortData.Add(new PortData("elements", "All elements in the active document of a given type."));
