@@ -72,6 +72,11 @@ namespace Dynamo.Nodes
             }
         }
 
+        public override bool ForceReExecuteOfNode
+        {
+            get { return true; }
+        }
+
         /// <summary>
         /// Handler for the selection button's Click event.
         /// </summary>
@@ -155,14 +160,6 @@ namespace Dynamo.Nodes
             {
                 _selectionText = value;
                 RaisePropertyChanged("SelectionText");
-            }
-        }
-
-        public override bool ForceReExecuteOfNode
-        {
-            get
-            {
-                return true;
             }
         }
 
@@ -588,7 +585,10 @@ namespace Dynamo.Nodes
                 }
 
                 if (dirty)
+                {
                     RequiresRecalc = true;
+                }
+                    
 
                 RaisePropertyChanged("SelectedElement");
             }
