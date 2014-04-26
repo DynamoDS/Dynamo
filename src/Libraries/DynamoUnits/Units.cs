@@ -713,9 +713,9 @@ namespace DynamoUnits
     {
         internal Area(double value):base(value){}
 
-        public static Area FromDouble(double d)
+        public static Area FromDouble(double value)
         {
-            return new Area(d);
+            return new Area(value);
         }
 
         public static Area FromSquareFeet(double value)
