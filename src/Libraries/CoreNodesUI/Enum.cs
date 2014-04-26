@@ -118,7 +118,6 @@ namespace DSCoreNodesUI
     {
         protected AllChildrenOfType() : base("Types")
         {
-            OutPortData.Add(new PortData("", string.Format("All types which inherit from {0}.", typeof(T))));
             RegisterAllPorts();
         }
 

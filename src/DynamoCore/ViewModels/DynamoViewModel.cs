@@ -9,7 +9,6 @@ using System.Net;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
-using Dynamo.Units;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
@@ -19,6 +18,7 @@ using Dynamo.UI.Commands;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.Services;
+using DynamoUnits;
 
 namespace Dynamo.ViewModels
 {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
@@ -21,6 +22,17 @@ namespace Revit.Elements.InternalUtilities
                 .Where(x => x.Symbol.IsSimilarType(familyType.InternalFamilySymbol.Id));
 
             var instances = familyInstances
+                .Select(x => ElementSelector.ByElementId(x.Id.IntegerValue)).ToList();
+            return instances;
+        }
+
+        public static IList<Element> OfElementType(Type elementType)
+        {
+            var elFilter = new ElementClassFilter(elementType);
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
+            fec.WherePasses(elFilter);
+
+            var instances = fec.ToElements()
                 .Select(x => ElementSelector.ByElementId(x.Id.IntegerValue)).ToList();
             return instances;
         }

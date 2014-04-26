@@ -174,7 +174,6 @@ namespace Revit.GeometryConversion
             var x = face.get_Radius(0);
             var y = face.get_Radius(1);
 
-            // TODO: ensure x is in direction of profile plane
             return Surface.ByRevolve(crv, o, axis, 0, 360);
         }
 
