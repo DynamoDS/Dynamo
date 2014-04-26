@@ -392,7 +392,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(listTestFolder, "testPlattenCompletely_singleInput.dyn");
             RunModel(testFilePath);
 
-            AssertPreviewValue("6595fa34-fc78-4995-8efb-9fd7e73cbd8a", new int[] { 20 });
+            AssertPreviewValue("6595fa34-fc78-4995-8efb-9fd7e73cbd8a", null);
         }
 
         [Test]

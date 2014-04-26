@@ -1,4 +1,6 @@
-﻿using Dynamo.Models;
+﻿using System.Linq;
+using System.Xml;
+using Dynamo.Models;
 using Migrations;
 
 namespace Dynamo.Nodes
@@ -8,7 +10,17 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "WebRequest.ByUrl", "WebRequest.ByUrl@string");
+            var migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeName(
+                oldNode, "DSCoreNodesUI.WebRequest", "Web Request");
+            migrationData.AppendNode(newNode);
+
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode);
+
+            return migrationData;
         }
     }
 

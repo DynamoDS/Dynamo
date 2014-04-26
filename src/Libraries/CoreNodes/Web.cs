@@ -1,10 +1,12 @@
 ﻿using System.IO;
+using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
 {
-    public class WebRequest
+    [IsVisibleInDynamoLibrary(false)]
+    public class Web
     {
-        public static string ByUrl(string url)
+        public static string WebRequestByUrl(string url)
         {
             //send a webrequest to the URL
             // Initialize the WebRequest.
@@ -22,7 +24,7 @@ namespace DSCore
                 {
                     // Read the content.
                     responseFromServer = reader.ReadToEnd();
-                } 
+                }
             }
 
             return responseFromServer;

@@ -238,11 +238,11 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            var migrationData = new NodeMigrationData(data.Document);
 
-            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeName(
-                oldNode, "DSRevitNodesUI.FamilyTypes", "Family Types");
+            var oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CloneAndChangeName(
+                oldNode, "DSRevitNodesUI.ElementTypes", "Element Types");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)
@@ -257,11 +257,11 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            var migrationData = new NodeMigrationData(data.Document);
 
-            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeName(
-                oldNode, "DSRevitNodesUI.ElementsOfFamilyType", "All Elements of Family Type");
+            var oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CloneAndChangeName(
+                oldNode, "DSRevitNodesUI.ElementsOfType", "All Elements of Type");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)
