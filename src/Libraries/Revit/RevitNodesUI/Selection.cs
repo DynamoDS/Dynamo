@@ -29,6 +29,7 @@ namespace Dynamo.Nodes
         protected string _selectionMessage;
         protected string _selectButtonContent;
 
+
         /// <summary>
         /// The text that describes this selection.
         /// </summary>
@@ -136,7 +137,10 @@ namespace Dynamo.Nodes
                 }
 
                 if (dirty)
+                {
+
                     RequiresRecalc = true;
+                }
 
                 RaisePropertyChanged("SelectedElement");
             }
@@ -157,13 +161,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override bool ForceReExecuteOfNode
-        {
-            get
-            {
-                return true;
-            }
-        }
+
 
         #region protected constructors
 
@@ -258,7 +256,9 @@ namespace Dynamo.Nodes
         void Updater_ElementsModified(IEnumerable<string> updated)
         {
             if (SelectedElement != null && updated.Contains(selectedUniqueId))
+            {
                 RequiresRecalc = true;
+            }
         }
 
         #endregion
@@ -344,7 +344,10 @@ namespace Dynamo.Nodes
                 Selected = value;
 
                 if (dirty)
+                {
                     RequiresRecalc = true;
+
+                }
 
                 RaisePropertyChanged("SelectedElement");
             }
@@ -364,6 +367,9 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("SelectionText");
             }
         }
+
+        
+
 
         #region protected constructors
 
@@ -445,6 +451,7 @@ namespace Dynamo.Nodes
                 //call the delegate associated with a selection type
                 SelectedElement = SelectionAction(_selectionMessage);
                 RaisePropertyChanged("SelectionText");
+
                 RequiresRecalc = true;
             }
             catch (OperationCanceledException)
@@ -563,8 +570,10 @@ namespace Dynamo.Nodes
                 }
 
                 if (dirty)
+                {
                     RequiresRecalc = true;
 
+                }
                 RaisePropertyChanged("SelectedElement");
             }
         }
@@ -632,7 +641,10 @@ namespace Dynamo.Nodes
         void Updater_ElementsModified(IEnumerable<string> updated)
         {
             if (SelectedElement != null && selectedUniqueIds.Any(updated.Contains))
+            {
+
                 RequiresRecalc = true;
+            }
         }
 
         #endregion
@@ -706,6 +718,7 @@ namespace Dynamo.Nodes
                 //call the delegate associated with a selection type
                 SelectedElement = SelectionAction(_selectionMessage);
                 RaisePropertyChanged("SelectionText");
+
                 RequiresRecalc = true;
             }
             catch (OperationCanceledException)
@@ -996,7 +1009,9 @@ namespace Dynamo.Nodes
                 Selected = value;
 
                 if (dirty)
+                {
                     RequiresRecalc = true;
+                }
 
                 RaisePropertyChanged("SelectedElement");
             }
