@@ -17,6 +17,7 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI;
 using ProtoCore.AST.AssociativeAST;
+using RevitServices.Elements;
 using RevitServices.Persistence;
 using Element = Revit.Elements.Element;
 
@@ -374,6 +375,30 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("Reference", "The geometry reference.", typeof(object)));
             RegisterAllPorts();
+
+            var u = dynRevitSettings.Controller.Updater;
+            u.ElementsModified += u_ElementsModified;
+        }
+
+        void u_ElementsModified(IEnumerable<string> updated)
+        {
+            var enumerable = updated as string[] ?? updated.ToArray();
+
+            if (Selected == null || !enumerable.Any()) return;
+ 
+            var doc = DocumentManager.Instance.CurrentDBDocument;
+            if(enumerable.Contains(doc.GetElement(Selected).UniqueId))
+            {
+                RequiresRecalc = true;
+            }
+        }
+
+        public override void Destroy()
+        {
+            base.Destroy();
+
+            var u = dynRevitSettings.Controller.Updater;
+            u.ElementsModified -= u_ElementsModified;
         }
 
         #endregion
