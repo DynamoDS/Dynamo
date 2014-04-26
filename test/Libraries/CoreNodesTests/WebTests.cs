@@ -1,4 +1,4 @@
-﻿using System.Net;
+﻿using System;
 using DSCore;
 using NUnit.Framework;
 
@@ -17,7 +17,7 @@ namespace DSCoreNodesTests
         [Test]
         public void WebRequest_BadArgs()
         {
-            Assert.Throws<WebException>(()=>Web.WebRequestByUrl("http://www.somesitethatdoesnotexist.com"));
+            Assert.Throws<UriFormatException>(()=>Web.WebRequestByUrl("ThisIsNotAUrl"));
         }
     }
 }
