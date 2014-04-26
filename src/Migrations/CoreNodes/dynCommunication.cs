@@ -13,8 +13,8 @@ namespace Dynamo.Nodes
             var migrationData = new NodeMigrationData(data.Document);
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeType(
-                oldNode, "DSCoreNodesUI.WebRequest");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(
+                oldNode, "DSCoreNodesUI.WebRequest", "Web Request");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)
