@@ -48,12 +48,20 @@ namespace Dynamo.UI.Controls
         public PreviewControl()
         {
             InitializeComponent();
+            this.Loaded += OnPreviewControlLoaded;
         }
 
         public void TransitionToState(State nextState)
         {
             queuedRequest.Enqueue(nextState);
-            if (this.currentTransition == Transition.None)
+
+            // If this call is made before the PreviewControl is loaded, then 
+            // it won't have the necessary width information for alignment 
+            // computation (the PreviewControl is to be centralized horizontally
+            // with respect to the HostingCanvas). So if the control is not yet 
+            // loaded, then do not attempt to process the transition request.
+            // 
+            if (this.IsLoaded && (this.currentTransition == Transition.None))
                 DequeueAndBeginTransition();
         }
 
@@ -196,6 +204,14 @@ namespace Dynamo.UI.Controls
         #endregion
 
         #region Private Event Handlers
+
+        private void OnPreviewControlLoaded(object sender, RoutedEventArgs e)
+        {
+            // If there was a request queued before this control is loaded, 
+            // then process the request as we now have the right width.
+            if (this.currentTransition == Transition.None)
+                DequeueAndBeginTransition();
+        }
 
         private void OnPreviewOpacityAnimationCompleted(object sender, EventArgs e)
         {
