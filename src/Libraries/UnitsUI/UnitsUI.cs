@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +14,7 @@ using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using DynamoUnits;
+using ProtoCore.AST.AssociativeAST;
 
 namespace UnitsUI
 {
@@ -178,6 +180,13 @@ namespace UnitsUI
                 }
             }
         }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            var doubleNode = AstFactory.BuildDoubleNode(Value);
+            var functionCall = AstFactory.BuildFunctionCall(new Func<double,Length>(Length.FromDouble), new List<AssociativeNode> { doubleNode });
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+        }
     }
 
     [NodeName("Area From String")]
@@ -193,6 +202,13 @@ namespace UnitsUI
             OutPortData.Add(new PortData("area", "The area. Stored internally as decimal meters squared."));
             RegisterAllPorts();
         }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            var doubleNode = AstFactory.BuildDoubleNode(Value);
+            var functionCall = AstFactory.BuildFunctionCall(new Func<double,Area>(Area.FromDouble), new List<AssociativeNode> { doubleNode });
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+        }
     }
 
     [NodeName("Volume From String")]
@@ -207,6 +223,13 @@ namespace UnitsUI
             _measure = new Volume(0.0);
             OutPortData.Add(new PortData("volume", "The volume. Stored internally as decimal meters cubed."));
             RegisterAllPorts();
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            var doubleNode = AstFactory.BuildDoubleNode(Value);
+            var functionCall = AstFactory.BuildFunctionCall(new Func<double, Volume>(Volume.FromDouble), new List<AssociativeNode> { doubleNode });
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
     }
 }
