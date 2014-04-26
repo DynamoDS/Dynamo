@@ -35,7 +35,11 @@ namespace Dynamo.UI.Controls
         private State currentState = State.Hidden;
         private Transition currentTransition = Transition.None;
         private Queue<State> queuedRequest = new Queue<State>();
-        private DoubleAnimation previewOpacityAnimation = null;
+        private Canvas hostingCanvas = null;
+
+        // Animation controllers.
+        private DoubleAnimation controlOpacityAnimation = null;
+        private DoubleAnimation controlOffsetAnimation = null;
 
         #endregion
 
@@ -59,9 +63,53 @@ namespace Dynamo.UI.Controls
 
         public State CurrentState { get { return currentState; } }
 
+        private Canvas HostingCanvas
+        {
+            get
+            {
+                if (this.hostingCanvas == null)
+                {
+                    this.hostingCanvas = this.Parent as Canvas;
+                    if (this.hostingCanvas == null)
+                    {
+                        var message = "PreviewControl must be a child of Canvas";
+                        throw new InvalidOperationException(message);
+                    }
+                }
+
+                return this.hostingCanvas;
+            }
+        }
+
         #endregion
 
         #region Private Class Methods
+
+        private void SetupAnimators()
+        {
+            if (controlOpacityAnimation == null)
+            {
+                var ms = Configurations.FadeInOutDurationInMs;
+                controlOpacityAnimation = new DoubleAnimation();
+                controlOpacityAnimation.AutoReverse = false;
+                controlOpacityAnimation.Duration = TimeSpan.FromMilliseconds(ms);
+                controlOpacityAnimation.Completed += OnPreviewOpacityAnimationCompleted;
+            }
+
+            if (controlOffsetAnimation == null)
+            {
+                var ms = Configurations.FadeInOutDurationInMs;
+                controlOffsetAnimation = new DoubleAnimation();
+                controlOffsetAnimation.AutoReverse = false;
+                controlOffsetAnimation.Duration = TimeSpan.FromMilliseconds(ms);
+            }
+        }
+
+        private void CenterHorizontallyOnHostCanvas()
+        {
+            var horzOffset = ((HostingCanvas.ActualWidth - this.ActualWidth) * 0.5);
+            SetValue(Canvas.LeftProperty, horzOffset);
+        }
 
         private void DequeueAndBeginTransition()
         {
@@ -77,6 +125,8 @@ namespace Dynamo.UI.Controls
                 if (queuedRequest.Count <= 0)
                     return; // There's no more request for now.
             }
+
+            this.SetupAnimators();
 
             if (requestedState == State.Hidden)
             {
@@ -100,21 +150,19 @@ namespace Dynamo.UI.Controls
             if (this.currentState != State.Hidden)
                 throw new InvalidOperationException();
 
-            if (this.previewOpacityAnimation == null)
-            {
-                this.previewOpacityAnimation = new DoubleAnimation();
-                this.previewOpacityAnimation.Completed += OnPreviewOpacityAnimationCompleted;
-            }
-
-            previewOpacityAnimation.From = 0.0;
-            previewOpacityAnimation.To = 1.0;
-            previewOpacityAnimation.Duration = TimeSpan.FromMilliseconds(300);
-            previewOpacityAnimation.AutoReverse = false;
+            CenterHorizontallyOnHostCanvas();
 
             this.Opacity = 0.0;
             this.Visibility = System.Windows.Visibility.Visible;
             this.currentTransition = Transition.FadingIn;
-            this.BeginAnimation(UIElement.OpacityProperty, previewOpacityAnimation);
+
+            controlOpacityAnimation.From = 0.0;
+            controlOpacityAnimation.To = 1.0;
+            this.BeginAnimation(UIElement.OpacityProperty, controlOpacityAnimation);
+
+            controlOffsetAnimation.From = Configurations.PreviewHiddenOffset;
+            controlOffsetAnimation.To = 0.0;
+            this.BeginAnimation(Canvas.TopProperty, controlOffsetAnimation);
         }
 
         private void BeginFadeOutTransition()
@@ -122,13 +170,15 @@ namespace Dynamo.UI.Controls
             if (this.currentState != State.Condensed)
                 throw new InvalidOperationException();
 
-            previewOpacityAnimation.From = 1.0;
-            previewOpacityAnimation.To = 0.0;
-            previewOpacityAnimation.Duration = TimeSpan.FromMilliseconds(300);
-            previewOpacityAnimation.AutoReverse = false;
-
             this.currentTransition = Transition.FadingOut;
-            this.BeginAnimation(UIElement.OpacityProperty, previewOpacityAnimation);
+
+            controlOpacityAnimation.From = 1.0;
+            controlOpacityAnimation.To = 0.0;
+            this.BeginAnimation(UIElement.OpacityProperty, controlOpacityAnimation);
+
+            controlOffsetAnimation.From = 0.0;
+            controlOffsetAnimation.To = Configurations.PreviewHiddenOffset;
+            this.BeginAnimation(Canvas.TopProperty, controlOffsetAnimation);
         }
 
         private void BeginCondenseTransition()

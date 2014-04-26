@@ -193,6 +193,13 @@ namespace Dynamo.UI
 
         #endregion
 
+        #region Preview Control Settings
+
+        public static readonly double PreviewHiddenOffset = -32.0;
+        public static readonly double FadeInOutDurationInMs = 200;
+
+        #endregion
+
         public const string UpdateDownloadLocation = "http://dyn-builds-data.s3-us-west-2.amazonaws.com/";
     }
 
