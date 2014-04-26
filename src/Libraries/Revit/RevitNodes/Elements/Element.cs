@@ -6,12 +6,14 @@ using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using DSCore;
 using DSNodeServices;
+using DynamoUnits;
 using Revit.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Threading;
 using RevitServices.Transactions;
 using Color = DSCore.Color;
 using Revit.GeometryObjects;
+using Area = DynamoUnits.Area;
 using ArgumentException = Autodesk.Revit.Exceptions.ArgumentException;
 
 namespace Revit.Elements
@@ -239,13 +241,13 @@ namespace Revit.Elements
                     switch (param.Definition.ParameterType)
                     {
                         case ParameterType.Length:
-                            result = Dynamo.Units.Length.FromFeet(param.AsDouble());
+                            result = Length.FromFeet(param.AsDouble());
                             break;
                         case ParameterType.Area:
-                            result = Dynamo.Units.Area.FromSquareFeet(param.AsDouble());
+                            result = Area.FromSquareFeet(param.AsDouble());
                             break;
                         case ParameterType.Volume:
-                            result = Dynamo.Units.Volume.FromCubicFeet(param.AsDouble());
+                            result = Volume.FromCubicFeet(param.AsDouble());
                             break;
                         default:
                             result = param.AsDouble();

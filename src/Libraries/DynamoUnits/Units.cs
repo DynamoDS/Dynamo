@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Double = System.Double;
 using Autodesk.DesignScript.Runtime;
 
-namespace Dynamo.Units
+namespace DynamoUnits
 {
     [SupressImportIntoVM]
     public enum DynamoLengthUnit

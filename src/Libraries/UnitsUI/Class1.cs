@@ -11,8 +11,8 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
-using Dynamo.Units;
 using Dynamo.Utilities;
+using DynamoUnits;
 
 namespace UnitsUI
 {
@@ -147,7 +147,7 @@ namespace UnitsUI
         }
     }
 
-    [NodeName("Length")]
+    [NodeName("LengthInput")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Enter a length.")]
     [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
@@ -180,7 +180,7 @@ namespace UnitsUI
         }
     }
 
-    [NodeName("Area")]
+    [NodeName("AreaInput")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Enter an area.")]
     [NodeSearchTags("Imperial", "Metric", "Area", "Project", "units")]
@@ -195,7 +195,7 @@ namespace UnitsUI
         }
     }
 
-    [NodeName("Volume")]
+    [NodeName("VolumeInput")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Enter a volume.")]
     [NodeSearchTags("Imperial", "Metric", "volume", "Project", "units")]
