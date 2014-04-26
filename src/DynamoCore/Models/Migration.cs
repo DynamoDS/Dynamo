@@ -671,20 +671,9 @@ namespace Dynamo.Models
         /// <param name="element">The XmlElement to be cloned and the type name 
         /// updated.</param>
         /// <param name="type">The fully qualified name of the new type.</param>
+        /// <param name="nickname">The new nickname, by which this node is known.</param>
         /// <returns>Returns the cloned and updated XmlElement.</returns>
         /// 
-        public static XmlElement CloneAndChangeType(XmlElement element, string type)
-        {
-            XmlDocument document = element.OwnerDocument;
-            XmlElement cloned = document.CreateElement(type);
-            
-            foreach (XmlAttribute attribute in element.Attributes)
-                cloned.SetAttribute(attribute.Name, attribute.Value);
-
-            cloned.SetAttribute("type", type);
-            return cloned;
-        }
-
         public static XmlElement CloneAndChangeName(XmlElement element, string type, string nickname)
         {
             XmlDocument document = element.OwnerDocument;

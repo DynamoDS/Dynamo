@@ -12,7 +12,7 @@ namespace Dynamo.Nodes
         {
             var migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeType(oldNode, "DSCoreNodesUI.Formula");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCoreNodesUI.Formula", "Formula");
 
             XmlElement newChild = data.Document.CreateElement("FormulaText");
             newChild.InnerText = oldNode.FirstChild.InnerText;

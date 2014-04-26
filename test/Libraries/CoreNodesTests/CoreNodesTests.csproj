@@ -71,6 +71,7 @@
     <Compile Include="ProtoNodesTests.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="WebTests.cs" />
+    <Compile Include="StringTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">

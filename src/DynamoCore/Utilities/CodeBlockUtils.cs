@@ -14,6 +14,19 @@ namespace Dynamo.Utilities
     public class CodeBlockUtils
     {
         /// <summary>
+        /// Call this method to turn all "\r\n" and "\r" 
+        /// occurrences in the given string into "\n".
+        /// </summary>
+        /// <param name="text">The text to be normalized</param>
+        /// <returns>Returns the normalized string.</returns>
+        /// 
+        public static string NormalizeLineBreaks(string text)
+        {
+            text = text.Replace("\r\n", "\n");
+            return text.Replace("\r", "\n");
+        }
+
+        /// <summary>
         /// Call this method to generate a list of PortData from given set of 
         /// unbound identifiers. This method ensures that the generated ports 
         /// are only having names that do not exceed a preconfigured length.
@@ -152,8 +165,7 @@ namespace Dynamo.Utilities
             if (string.IsNullOrEmpty(text))
                 return logicalToVisualLines;
 
-            text = text.Replace("\r\n", "\n");
-            text = text.Replace("\r", "\n");
+            text = NormalizeLineBreaks(text);
             var lines = text.Split(new char[] { '\n' }, StringSplitOptions.None);
 
             // We could have hard-coded "pack" instead of "UriSchemePack" here, 
@@ -169,7 +181,7 @@ namespace Dynamo.Utilities
             var typeface = new Typeface(textFontFamily, FontStyles.Normal,
                 FontWeights.Normal, FontStretches.Normal);
 
-            int totalLinesSoFar = 0;
+            int totalVisualLinesSoFar = 0;
             foreach (var line in lines)
             {
                 FormattedText ft = new FormattedText(
@@ -181,10 +193,15 @@ namespace Dynamo.Utilities
                     Trimming = TextTrimming.None
                 };
 
-                logicalToVisualLines.Add(totalLinesSoFar);
+                logicalToVisualLines.Add(totalVisualLinesSoFar);
 
+                // Empty lines (i.e. those with just a "\n" character) will result 
+                // in "ft.Extent" to be 0.0, but the line still occupies one line
+                // visually. This is why we need to make sure "lineCount" cannot be 
+                // zero.
+                // 
                 var lineCount = Math.Floor(ft.Extent / Configurations.CBNFontSize);
-                totalLinesSoFar += (lineCount < 1.0 ? 1 : ((int)lineCount));
+                totalVisualLinesSoFar += (lineCount < 1.0 ? 1 : ((int)lineCount));
             }
 
             return logicalToVisualLines;

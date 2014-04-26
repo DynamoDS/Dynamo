@@ -287,7 +287,7 @@ namespace Revit.Elements
 
         private void SetParameterValue(Autodesk.Revit.DB.Parameter param, double value)
         {
-            if(param.StorageType != StorageType.Double)
+            if (param.StorageType != StorageType.Integer && param.StorageType != StorageType.Double)
                 throw new Exception("The parameter's storage type is not a number.");
 
             param.Set(value);
@@ -295,8 +295,8 @@ namespace Revit.Elements
 
         private void SetParameterValue(Autodesk.Revit.DB.Parameter param, int value)
         {
-            if (param.StorageType != StorageType.Integer)
-                throw new Exception("The parameter's storage type is not an integer.");
+            if (param.StorageType != StorageType.Integer && param.StorageType != StorageType.Double)
+                throw new Exception("The parameter's storage type is not a number.");
 
             param.Set(value);
         }

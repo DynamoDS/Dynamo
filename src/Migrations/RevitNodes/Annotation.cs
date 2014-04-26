@@ -77,6 +77,13 @@ namespace Dynamo.Nodes
             migratedData.AppendNode(dsModelTextType);
             string dsModelTextTypeId = MigrationManager.GetGuidFromXmlElement(dsModelTextType);
 
+            //append asVector Node
+            XmlElement pointAsVector0 = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 3, "ProtoGeometry.dll",
+                "Point.AsVector", "Point.AsVector");
+            migratedData.AppendNode(pointAsVector0);
+            string pointAsVector0Id = MigrationManager.GetGuidFromXmlElement(pointAsVector0);
+
             #endregion
 
             #region Move Connectors Onto the New Nodes
@@ -95,9 +102,10 @@ namespace Dynamo.Nodes
 
             // Move connector for "normal" over to "Plane" node.
             oldInPort = new PortId(oldNodeId, 2, PortType.INPUT);
-            newInPort = new PortId(planeId, 1, PortType.INPUT);
+            newInPort = new PortId(pointAsVector0Id, 0, PortType.INPUT);
             connector = data.FindFirstConnector(oldInPort);
             data.ReconnectToPort(connector, newInPort);
+            data.CreateConnector(pointAsVector0, 0, plane, 1);
 
             // Connect from "Plane" to "SketchPlane".
             data.CreateConnector(plane, 0, dsSketchPlane, 0);

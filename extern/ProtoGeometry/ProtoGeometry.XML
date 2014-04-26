@@ -464,6 +464,11 @@
             Get a string representation of the Solid
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Solid.ByJoinedSurfaces(Autodesk.DesignScript.Geometry.Surface[])">
+            <summary>
+            Create a solid by specifying it's component faces as Surfaces.
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(Autodesk.DesignScript.Geometry.Curve[])">
             <summary>
             Create a Solid by lofting between input cross section closed Curves.
@@ -1713,6 +1718,11 @@
         <member name="M:Autodesk.DesignScript.Geometry.Surface.UVParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
             <summary>
             Return the UV parameter pair at the input Point. This is the inverse of Point at parameter.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(Autodesk.DesignScript.Geometry.PolyCurve[])">
+            <summary>
+            Trim the surface with a collection of loops within the surface
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtPoint(Autodesk.DesignScript.Geometry.Point)">

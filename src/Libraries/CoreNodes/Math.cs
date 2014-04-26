@@ -18,9 +18,23 @@ namespace DSCore
         /// <param name="seed">Seed value for the random number generator.</param>
         /// <returns name="number">Random number between 0 and 1.</returns>
         /// <search>random,seed</search>
-        public static double RandomSeed(int seed)
+        public static double Random(int? seed = null)
         {
-            return new Random(seed).NextDouble();
+            var r = seed == null ? mRandom : new Random((int)seed);
+            return r.NextDouble();
+        }
+
+        /// <summary>
+        ///     Produce a random number in the range [lower_number, higher_number).
+        /// </summary>
+        /// <param name="value1">One end of the range for the random number.</param>
+        /// <param name="value2">One end of the range for the random number.</param>
+        /// <returns name="number">Random number in the range [lowValue, highValue).</returns>
+        /// <search>random</search>
+        public static double Random(double value1, double value2)
+        {
+            double result = Min(value1, value2) + Abs(value2 - value1) * mRandom.NextDouble();
+            return result;
         }
 
         /// <summary>
@@ -34,8 +48,7 @@ namespace DSCore
         {
             var result = new ArrayList();
 
-            var r = new Random();
-            foreach (var x in Enumerable.Range(0, amount).Select(_ => r.NextDouble()))
+            foreach (var x in Enumerable.Range(0, amount).Select(_ => mRandom.NextDouble()))
                 result.Add(x);
 
             return result;
@@ -50,7 +63,7 @@ namespace DSCore
         {
             get
             {
-                return System.Math.PI*2;
+                return CSMath.PI*2;
             }
         }
 
@@ -74,7 +87,7 @@ namespace DSCore
         /// <param name="newMin">New minimum of the range.</param>
         /// <param name="newMax">New maximum of the range</param>
         /// <returns name="list">List remapped to new range.</returns>
-        /// <search>remap,range</search>
+        /// <search>remap range</search>
         public static IList RemapRange(IList<double> numbers, double newMin = 0, double newMax = 1)
         {
             var oldMax = numbers.Max();
@@ -243,7 +256,7 @@ namespace DSCore
         /// <search>remainder</search>
         public static long DivRem(long dividend, long divisor)
         {
-            long remainder = 0;
+            long remainder;
             CSMath.DivRem(dividend, divisor, out remainder);
             return remainder;
         }
@@ -375,22 +388,10 @@ namespace DSCore
         /// </summary>
         /// <returns name="number">Random number in the range [0, 1).</returns>
         /// <search>random</search>
+        //[IsVisibleInDynamoLibrary(false)] //Keeping for compatibility, Random() supercedes this --SJE
         public static double Rand()
         {
             return mRandom.NextDouble();
-        }
-        
-        /// <summary>
-        ///     Produce a random number in the range [lower_number, higher_number).
-        /// </summary>
-        /// <param name="value1">One end of the range for the random number.</param>
-        /// <param name="value2">One end of the range for the random number.</param>
-        /// <returns name="number">Random number in the range [lowValue, highValue).</returns>
-        /// <search>random</search>
-        public static double Rand(double value1, double value2)
-        {
-            double result = Min(value1, value2) + Abs(value2 - value1) * mRandom.NextDouble();
-            return result;
         }
         
         /// <summary>
@@ -489,8 +490,8 @@ namespace DSCore
         /// <search>tangent</search>
         public static double Tan(double angle)
         {
-            if (!(Double.Equals(CSMath.IEEERemainder(angle, 180), 0.0) || Double.Equals(CSMath.IEEERemainder(angle, 180), 180.0))
-                && (Double.Equals(CSMath.IEEERemainder(angle, 90), 0.0) || Double.Equals(CSMath.IEEERemainder(angle, 90), 90.0)))
+            if (!(Equals(CSMath.IEEERemainder(angle, 180), 0.0) || Equals(CSMath.IEEERemainder(angle, 180), 180.0))
+                && (Equals(CSMath.IEEERemainder(angle, 90), 0.0) || Equals(CSMath.IEEERemainder(angle, 90), 90.0)))
                 return Double.NaN;
             return CSMath.Tan(angle * kDegreesToRadians);
         }
@@ -539,6 +540,6 @@ namespace DSCore
             return (number > 1) ? number * Factorial(number - 1) : 1;
         }
 
-        private static Random mRandom = new Random();
+        private static readonly Random mRandom = new Random();
     }
 }

@@ -7,6 +7,20 @@ namespace Dynamo.Nodes
 {
     public class FamilyInstanceParameterSelector : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeName(
+                oldNode, "DSRevitNodesUI.FamilyInstanceParameters", "Get Family Parameter");
+            migrationData.AppendNode(newNode);
+            
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode.Clone());
+
+            return migrationData;
+        }
     }
 
     public class FamilyInstanceCreatorXyz : MigrationNode
@@ -104,6 +118,12 @@ namespace Dynamo.Nodes
 
     public class FamilyInstanceParameterGetter : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "RevitNodes.dll",
+                "Element.GetParameterValueByName", "Element.GetParameterValueByName@string");
+        }
     }
 
     public class GetFamilyInstanceLocation : MigrationNode
