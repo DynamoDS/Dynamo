@@ -464,8 +464,7 @@ namespace DynamoUnits
     /// </summary>
     public class Length : SIUnit, IComparable, IEquatable<Length>
     {
-        [IsVisibleInDynamoLibrary(false)]
-        public Length(double value):base(value){}
+        internal Length(double value):base(value){}
 
         public static Length FromDouble(double value)
         {
@@ -712,8 +711,7 @@ namespace DynamoUnits
     /// </summary>
     public class Area : SIUnit, IComparable, IEquatable<Area>
     {
-        [IsVisibleInDynamoLibrary(false)]
-        public Area(double value):base(value){}
+        internal Area(double value):base(value){}
 
         public static Area FromDouble(double d)
         {
@@ -953,8 +951,7 @@ namespace DynamoUnits
     /// </summary>
     public class Volume : SIUnit, IComparable, IEquatable<Volume>
     {
-        [IsVisibleInDynamoLibrary(false)]
-        public Volume(double value) : base(value){}
+        internal Volume(double value) : base(value){}
 
         public static Volume FromDouble(double value)
         {

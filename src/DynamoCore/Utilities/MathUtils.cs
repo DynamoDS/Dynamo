@@ -19,11 +19,11 @@ namespace Dynamo.Utilities
         {
             if (power == 2)
             {
-                return new Area(Math.Pow(input.Value, power));
+                return Area.FromDouble(Math.Pow(input.Value, power));
             }
             else if (power == 3)
             {
-                return new Volume(Math.Pow(input.Value, power));
+                return Volume.FromDouble(Math.Pow(input.Value, power));
             }
 
             throw new MathematicalArgumentException();

@@ -150,7 +150,7 @@ namespace UnitsUI
     }
 
     [NodeName("Length From String")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeCategory("Units.Length.Create")]
     [NodeDescription("Enter a length.")]
     [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
     [IsDesignScriptCompatible]
@@ -158,7 +158,7 @@ namespace UnitsUI
     {
         public LengthFromString()
         {
-            _measure = new Length(0.0);
+            _measure = Length.FromDouble(0.0);
             OutPortData.Add(new PortData("length", "The length. Stored internally as decimal meters."));
             RegisterAllPorts();
         }
@@ -190,7 +190,7 @@ namespace UnitsUI
     }
 
     [NodeName("Area From String")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeCategory("Units.Area.Create")]
     [NodeDescription("Enter an area.")]
     [NodeSearchTags("Imperial", "Metric", "Area", "Project", "units")]
     [IsDesignScriptCompatible]
@@ -198,7 +198,7 @@ namespace UnitsUI
     {
         public AreaFromString()
         {
-            _measure = new Area(0.0);
+            _measure = Area.FromDouble(0.0);
             OutPortData.Add(new PortData("area", "The area. Stored internally as decimal meters squared."));
             RegisterAllPorts();
         }
@@ -212,7 +212,7 @@ namespace UnitsUI
     }
 
     [NodeName("Volume From String")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeCategory("Units.Volume.Create")]
     [NodeDescription("Enter a volume.")]
     [NodeSearchTags("Imperial", "Metric", "volume", "Project", "units")]
     [IsDesignScriptCompatible]
@@ -220,7 +220,7 @@ namespace UnitsUI
     {
         public VolumeFromString()
         {
-            _measure = new Volume(0.0);
+            _measure = Volume.FromDouble(0.0);
             OutPortData.Add(new PortData("volume", "The volume. Stored internally as decimal meters cubed."));
             RegisterAllPorts();
         }

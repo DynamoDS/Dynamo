@@ -68,7 +68,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DynamoUnits.dll", "Length",
-                "Length@double");
+                "Length.FromDouble@double");
         }
     }
 
@@ -79,7 +79,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DynamoUnits.dll", "Area",
-                "Area@double");
+                "Area.FromDouble@double");
         }
     }
 
@@ -90,7 +90,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DynamoUnits.dll", "Volume",
-                "Volume@double");
+                "Volume.FromDouble@double");
         }
     }
 }
