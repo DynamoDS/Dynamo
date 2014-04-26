@@ -4,8 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="60"
-             d:DesignWidth="180">
+             Visibility="Hidden"
+             Opacity="0.0"
+             Width="180"
+             Height="60">
     <Grid>
 
         <Border CornerRadius="2"
@@ -14,8 +16,7 @@
                 BorderBrush="Black"></Border>
 
         <Grid Name="condensedGrid"
-              Margin="6"
-              Visibility="Collapsed"></Grid>
+              Margin="6"></Grid>
 
         <Grid Name="expandedGrid"
               Margin="6"

@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -34,6 +35,7 @@ namespace Dynamo.UI.Controls
         private State currentState = State.Hidden;
         private Transition currentTransition = Transition.None;
         private Queue<State> queuedRequest = new Queue<State>();
+        private DoubleAnimation previewOpacityAnimation = null;
 
         #endregion
 
@@ -47,6 +49,8 @@ namespace Dynamo.UI.Controls
         public void TransitionToState(State nextState)
         {
             queuedRequest.Enqueue(nextState);
+            if (this.currentTransition == Transition.None)
+                DequeueAndBeginTransition();
         }
 
         #endregion
@@ -54,6 +58,116 @@ namespace Dynamo.UI.Controls
         #region Public Class Properties
 
         public State CurrentState { get { return currentState; } }
+
+        #endregion
+
+        #region Private Class Methods
+
+        private void DequeueAndBeginTransition()
+        {
+            if (this.currentTransition != Transition.None)
+                throw new InvalidOperationException("Still in transition");
+
+            if (queuedRequest.Count <= 0)
+                return; // Nothing else to do now, moving on.
+
+            State requestedState = queuedRequest.Dequeue();
+            while (requestedState == this.currentState)
+            {
+                if (queuedRequest.Count <= 0)
+                    return; // There's no more request for now.
+            }
+
+            if (requestedState == State.Hidden)
+            {
+                BeginFadeOutTransition();
+            }
+            else if (requestedState == State.Condensed)
+            {
+                if (this.currentState == State.Hidden)
+                    BeginFadeInTransition();
+                else if (this.currentState == State.Expanded)
+                    BeginCondenseTransition();
+            }
+            else if (requestedState == State.Expanded)
+            {
+                BeginExpandTransition();
+            }
+        }
+
+        private void BeginFadeInTransition()
+        {
+            if (this.currentState != State.Hidden)
+                throw new InvalidOperationException();
+
+            if (this.previewOpacityAnimation == null)
+            {
+                this.previewOpacityAnimation = new DoubleAnimation();
+                this.previewOpacityAnimation.Completed += OnPreviewOpacityAnimationCompleted;
+            }
+
+            previewOpacityAnimation.From = 0.0;
+            previewOpacityAnimation.To = 1.0;
+            previewOpacityAnimation.Duration = TimeSpan.FromMilliseconds(300);
+            previewOpacityAnimation.AutoReverse = false;
+
+            this.Opacity = 0.0;
+            this.Visibility = System.Windows.Visibility.Visible;
+            this.currentTransition = Transition.FadingIn;
+            this.BeginAnimation(UIElement.OpacityProperty, previewOpacityAnimation);
+        }
+
+        private void BeginFadeOutTransition()
+        {
+            if (this.currentState != State.Condensed)
+                throw new InvalidOperationException();
+
+            previewOpacityAnimation.From = 1.0;
+            previewOpacityAnimation.To = 0.0;
+            previewOpacityAnimation.Duration = TimeSpan.FromMilliseconds(300);
+            previewOpacityAnimation.AutoReverse = false;
+
+            this.currentTransition = Transition.FadingOut;
+            this.BeginAnimation(UIElement.OpacityProperty, previewOpacityAnimation);
+        }
+
+        private void BeginCondenseTransition()
+        {
+            if (this.currentState != State.Expanded)
+                throw new InvalidOperationException();
+        }
+
+        private void BeginExpandTransition()
+        {
+            if (this.currentState != State.Condensed)
+                throw new InvalidOperationException();
+        }
+
+        #endregion
+
+        #region Private Event Handlers
+
+        private void OnPreviewOpacityAnimationCompleted(object sender, EventArgs e)
+        {
+            if (this.currentTransition == Transition.FadingIn)
+            {
+                this.currentState = State.Condensed;
+            }
+            else if (this.currentTransition == Transition.FadingOut)
+            {
+                this.Visibility = System.Windows.Visibility.Hidden;
+                this.currentState = State.Hidden;
+            }
+            else
+            {
+                // Opacity of the preview control is only enabled for fading in/out.
+                var message = "Opacity animation is only expected for fading in/out";
+                throw new InvalidOperationException(message);
+            }
+
+            this.currentTransition = Transition.None;
+            DequeueAndBeginTransition(); // See if there's any more requests.
+        }
 
         #endregion
     }
