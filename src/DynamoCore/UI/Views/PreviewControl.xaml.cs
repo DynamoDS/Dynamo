@@ -29,15 +29,21 @@ namespace Dynamo.UI.Controls
 
         private enum Transition
         {
-            None, FadingIn, Expanding, Condensing, FadingOut
+            None, FadingIn, Expanding, CrossFading, Condensing, FadingOut
         }
 
         private State currentState = State.Hidden;
         private Transition currentTransition = Transition.None;
         private Queue<State> queuedRequest = new Queue<State>();
+
+        private Size smallContentSize = new Size(180, 60);
+        private Size largeContentSize = new Size(720, 240);
         private Canvas hostingCanvas = null;
 
         // Animation controllers.
+        private DoubleAnimation controlWidthAnimation = null;
+        private DoubleAnimation controlHeightAnimation = null;
+        private DoubleAnimation contentOpacityAnimation = null;
         private DoubleAnimation controlOpacityAnimation = null;
         private DoubleAnimation controlOffsetAnimation = null;
 
@@ -91,22 +97,45 @@ namespace Dynamo.UI.Controls
 
         #endregion
 
-        #region Private Class Methods
+        #region Private Class Methods - Generic Helpers
 
         private void SetupAnimators()
         {
+            var ms = Configurations.FadeInOutDurationInMs;
+
+            if (controlWidthAnimation == null)
+            {
+                controlWidthAnimation = new DoubleAnimation();
+                controlWidthAnimation.AutoReverse = false;
+                controlWidthAnimation.Duration = TimeSpan.FromMilliseconds(ms);
+                controlWidthAnimation.CurrentTimeInvalidated += OnPreviewControlSizeChanged;
+            }
+
+            if (controlHeightAnimation == null)
+            {
+                controlHeightAnimation = new DoubleAnimation();
+                controlHeightAnimation.AutoReverse = false;
+                controlHeightAnimation.Duration = TimeSpan.FromMilliseconds(ms);
+            }
+
+            if (contentOpacityAnimation == null)
+            {
+                contentOpacityAnimation = new DoubleAnimation();
+                contentOpacityAnimation.AutoReverse = false;
+                contentOpacityAnimation.Duration = TimeSpan.FromMilliseconds(ms);
+                contentOpacityAnimation.Completed += OnContentFadeCompleted;
+            }
+
             if (controlOpacityAnimation == null)
             {
-                var ms = Configurations.FadeInOutDurationInMs;
                 controlOpacityAnimation = new DoubleAnimation();
                 controlOpacityAnimation.AutoReverse = false;
                 controlOpacityAnimation.Duration = TimeSpan.FromMilliseconds(ms);
-                controlOpacityAnimation.Completed += OnPreviewOpacityAnimationCompleted;
+                controlOpacityAnimation.Completed += OnPreviewControlFadeCompleted;
             }
 
             if (controlOffsetAnimation == null)
             {
-                var ms = Configurations.FadeInOutDurationInMs;
                 controlOffsetAnimation = new DoubleAnimation();
                 controlOffsetAnimation.AutoReverse = false;
                 controlOffsetAnimation.Duration = TimeSpan.FromMilliseconds(ms);
@@ -115,8 +144,8 @@ namespace Dynamo.UI.Controls
 
         private void CenterHorizontallyOnHostCanvas()
         {
-            var horzOffset = ((HostingCanvas.ActualWidth - this.ActualWidth) * 0.5);
-            SetValue(Canvas.LeftProperty, horzOffset);
+            var widthDifference = HostingCanvas.ActualWidth - this.ActualWidth;
+            SetValue(Canvas.LeftProperty, widthDifference * 0.5);
         }
 
         private void DequeueAndBeginTransition()
@@ -152,6 +181,10 @@ namespace Dynamo.UI.Controls
                 BeginExpandTransition();
             }
         }
+
+        #endregion
+
+        #region Private Class Methods - Transition Helpers
 
         private void BeginFadeInTransition()
         {
@@ -199,6 +232,20 @@ namespace Dynamo.UI.Controls
         {
             if (this.currentState != State.Condensed)
                 throw new InvalidOperationException();
+
+            this.currentTransition = Transition.Expanding;
+
+            contentOpacityAnimation.From = 1.0;
+            contentOpacityAnimation.To = 0.0;
+            smallContentGrid.BeginAnimation(UIElement.OpacityProperty, contentOpacityAnimation);
+
+            controlWidthAnimation.From = smallContentSize.Width;
+            controlWidthAnimation.To = largeContentSize.Width;
+            this.BeginAnimation(FrameworkElement.WidthProperty, controlWidthAnimation);
+
+            controlHeightAnimation.From = smallContentGrid.Height;
+            controlHeightAnimation.To = largeContentSize.Height;
+            this.BeginAnimation(FrameworkElement.HeightProperty, controlHeightAnimation);
         }
 
         #endregion
@@ -213,7 +260,7 @@ namespace Dynamo.UI.Controls
                 DequeueAndBeginTransition();
         }
 
-        private void OnPreviewOpacityAnimationCompleted(object sender, EventArgs e)
+        private void OnPreviewControlFadeCompleted(object sender, EventArgs e)
         {
             if (this.currentTransition == Transition.FadingIn)
             {
@@ -233,6 +280,52 @@ namespace Dynamo.UI.Controls
 
             this.currentTransition = Transition.None;
             DequeueAndBeginTransition(); // See if there's any more requests.
+        }
+
+        private void OnContentFadeCompleted(object sender, EventArgs e)
+        {
+            if (this.currentTransition == Transition.Expanding)
+            {
+                this.currentTransition = Transition.CrossFading;
+
+                // The expansion has ended, hide the small content 
+                // grid and start fading the large content grid in.
+                smallContentGrid.Visibility = Visibility.Hidden;
+
+                contentOpacityAnimation.From = 0.0;
+                contentOpacityAnimation.To = 1.0;
+                largeContentGrid.BeginAnimation(UIElement.OpacityProperty, contentOpacityAnimation);
+            }
+            else if (this.currentTransition == Transition.Condensing)
+            {
+                this.currentTransition = Transition.CrossFading;
+
+                // The condensation has ended, hide the large content 
+                // grid and start fading the small content grid in.
+                largeContentGrid.Visibility = Visibility.Hidden;
+
+                contentOpacityAnimation.From = 0.0;
+                contentOpacityAnimation.To = 1.0;
+                smallContentGrid.BeginAnimation(UIElement.OpacityProperty, contentOpacityAnimation);
+            }
+            else if (this.currentTransition == Transition.CrossFading)
+            {
+                this.currentTransition = Transition.None;
+                if (this.currentState == State.Condensed)
+                    this.currentState = State.Expanded;
+                else if (this.currentState == State.Expanded)
+                    this.currentState = State.Condensed;
+            }
+            else
+            {
+                var message = "Not expecting preview control to size";
+                throw new InvalidOperationException(message);
+            }
+        }
+
+        private void OnPreviewControlSizeChanged(object sender, EventArgs e)
+        {
+            CenterHorizontallyOnHostCanvas();
         }
 
         #endregion

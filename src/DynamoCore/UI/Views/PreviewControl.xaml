@@ -15,10 +15,10 @@
                 BorderThickness="1"
                 BorderBrush="Black"></Border>
 
-        <Grid Name="condensedGrid"
+        <Grid Name="smallContentGrid"
               Margin="6"></Grid>
 
-        <Grid Name="expandedGrid"
+        <Grid Name="largeContentGrid"
               Margin="6"
               Visibility="Collapsed"></Grid>
         
