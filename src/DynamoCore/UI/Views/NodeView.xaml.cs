@@ -17,6 +17,7 @@ using System.Windows.Media;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Threading;
 using Dynamo.Core;
+using Dynamo.UI.Controls;
 
 namespace Dynamo.Controls
 {
@@ -25,7 +26,8 @@ namespace Dynamo.Controls
         public delegate void SetToolTipDelegate(string message);
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
 
-        private NodeViewModel viewModel;
+        private NodeViewModel viewModel = null;
+        private PreviewControl previewControl = null;
 
         public dynNodeView TopControl
         {
@@ -41,6 +43,20 @@ namespace Dynamo.Controls
         {
             get { return viewModel; }
             private set { viewModel = value; }
+        }
+
+        private PreviewControl PreviewControl
+        {
+            get
+            {
+                if (this.previewControl == null)
+                {
+                    this.previewControl = new PreviewControl();
+                    this.expansionBay.Children.Add(this.previewControl);
+                }
+
+                return this.previewControl;
+            }
         }
 
         private DispatcherTimer toolTipDelayTimer;
@@ -315,6 +331,16 @@ namespace Dynamo.Controls
             UIElement uiElement = sender as UIElement;
             if (uiElement.Visibility == System.Windows.Visibility.Visible)
                 ViewModel.ShowPreviewCommand.Execute(null);
+        }
+
+        private void OnPreviewIconMouseEnter(object sender, MouseEventArgs e)
+        {
+            this.PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+        }
+
+        private void OnPreviewIconMouseLeave(object sender, MouseEventArgs e)
+        {
+            this.PreviewControl.TransitionToState(PreviewControl.State.Hidden);
         }
     }
 }

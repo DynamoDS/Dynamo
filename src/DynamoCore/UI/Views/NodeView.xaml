@@ -281,7 +281,9 @@
                        Height="22"
                        Margin="2"
                        Fill="Red"
-                       HorizontalAlignment="Center">
+                       HorizontalAlignment="Center"
+                       MouseEnter="OnPreviewIconMouseEnter"
+                       MouseLeave="OnPreviewIconMouseLeave">
                 <Rectangle.Visibility>
                     <Binding Path="IsPreviewInsetVisible"
                              UpdateSourceTrigger="PropertyChanged"
@@ -386,8 +388,7 @@
                 Grid.Row="4"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
-                Margin="4"
-                Background="Blue">
+                Margin="4">
         </Canvas>
 
     </Grid>
