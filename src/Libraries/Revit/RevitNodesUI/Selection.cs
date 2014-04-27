@@ -763,12 +763,12 @@ namespace Dynamo.Nodes
 
                 var newInputs = els.Select(el =>
                     AstFactory.BuildFunctionCall(
-                    "ElementSelector",
-                    "ByUniqueId",
+                    new Func<string, bool, Element>(ElementSelector.ByUniqueId),
                     new List<AssociativeNode>
-                {
-                    AstFactory.BuildStringNode(el),
-                }
+                    {
+                        AstFactory.BuildStringNode(el),
+                        AstFactory.BuildBooleanNode(true)
+                    }
                     )).ToList();
 
                 node = AstFactory.BuildExprList(newInputs);
