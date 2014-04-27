@@ -40,12 +40,14 @@ namespace Dynamo.UI.Controls
         private Size largeContentSize = new Size(720, 240);
         private Canvas hostingCanvas = null;
 
+        // Animation storyboards.
+        private Storyboard phaseInStoryboard = null;
+        private Storyboard phaseOutStoryboard = null;
+
         // Animation controllers.
         private DoubleAnimation controlWidthAnimation = null;
         private DoubleAnimation controlHeightAnimation = null;
         private DoubleAnimation contentOpacityAnimation = null;
-        private DoubleAnimation controlOpacityAnimation = null;
-        private DoubleAnimation controlOffsetAnimation = null;
 
         #endregion
 
@@ -125,21 +127,6 @@ namespace Dynamo.UI.Controls
                 contentOpacityAnimation.Duration = TimeSpan.FromMilliseconds(ms);
                 contentOpacityAnimation.Completed += OnContentFadeCompleted;
             }
-
-            if (controlOpacityAnimation == null)
-            {
-                controlOpacityAnimation = new DoubleAnimation();
-                controlOpacityAnimation.AutoReverse = false;
-                controlOpacityAnimation.Duration = TimeSpan.FromMilliseconds(ms);
-                controlOpacityAnimation.Completed += OnPreviewControlFadeCompleted;
-            }
-
-            if (controlOffsetAnimation == null)
-            {
-                controlOffsetAnimation = new DoubleAnimation();
-                controlOffsetAnimation.AutoReverse = false;
-                controlOffsetAnimation.Duration = TimeSpan.FromMilliseconds(ms);
-            }
         }
 
         private void CenterHorizontallyOnHostCanvas()
@@ -196,14 +183,7 @@ namespace Dynamo.UI.Controls
             this.Opacity = 0.0;
             this.Visibility = System.Windows.Visibility.Visible;
             this.currentTransition = Transition.FadingIn;
-
-            controlOpacityAnimation.From = 0.0;
-            controlOpacityAnimation.To = 1.0;
-            this.BeginAnimation(UIElement.OpacityProperty, controlOpacityAnimation);
-
-            controlOffsetAnimation.From = Configurations.PreviewHiddenOffset;
-            controlOffsetAnimation.To = 0.0;
-            this.BeginAnimation(Canvas.TopProperty, controlOffsetAnimation);
+            phaseInStoryboard.Begin();
         }
 
         private void BeginFadeOutTransition()
@@ -212,14 +192,7 @@ namespace Dynamo.UI.Controls
                 throw new InvalidOperationException();
 
             this.currentTransition = Transition.FadingOut;
-
-            controlOpacityAnimation.From = 1.0;
-            controlOpacityAnimation.To = 0.0;
-            this.BeginAnimation(UIElement.OpacityProperty, controlOpacityAnimation);
-
-            controlOffsetAnimation.From = 0.0;
-            controlOffsetAnimation.To = Configurations.PreviewHiddenOffset;
-            this.BeginAnimation(Canvas.TopProperty, controlOffsetAnimation);
+            phaseOutStoryboard.Begin();
         }
 
         private void BeginCondenseTransition()
@@ -254,6 +227,9 @@ namespace Dynamo.UI.Controls
 
         private void OnPreviewControlLoaded(object sender, RoutedEventArgs e)
         {
+            phaseInStoryboard = this.Resources["phaseInStoryboard"] as Storyboard;
+            phaseOutStoryboard = this.Resources["phaseOutStoryboard"] as Storyboard;
+
             // If there was a request queued before this control is loaded, 
             // then process the request as we now have the right width.
             if (this.currentTransition == Transition.None)
