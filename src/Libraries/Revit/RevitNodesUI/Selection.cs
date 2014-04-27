@@ -29,7 +29,6 @@ namespace Dynamo.Nodes
         protected string _selectionMessage;
         protected string _selectButtonContent;
 
-
         /// <summary>
         /// The text that describes this selection.
         /// </summary>
