@@ -11,8 +11,9 @@
              Height="60">
 
     <UserControl.Resources>
+
         <Storyboard x:Key="phaseInStoryboard"
-                    Completed="OnPreviewControlFadeCompleted">
+                    Completed="OnPreviewControlPhasedIn">
             <DoubleAnimation Storyboard.TargetName="ThisPreviewControl"
                              Storyboard.TargetProperty="Opacity"
                              From="0.0"
@@ -24,8 +25,55 @@
                              To="0.0"
                              Duration="0:0:0.2" />
         </Storyboard>
+
+        <Storyboard x:Key="expandStoryboard"
+                    Changed="OnPreviewControlSizeChanged"
+                    Completed="OnPreviewControlExpanded">
+            <DoubleAnimation Storyboard.TargetName="ThisPreviewControl"
+                             Storyboard.TargetProperty="Width"
+                             To="720.0"
+                             Duration="0:0:0.2" />
+            <DoubleAnimation Storyboard.TargetName="ThisPreviewControl"
+                             Storyboard.TargetProperty="Height"
+                             To="240.0"
+                             Duration="0:0:0.2" />
+            <DoubleAnimation Storyboard.TargetName="smallContentGrid"
+                             Storyboard.TargetProperty="Opacity"
+                             To="0.0"
+                             Duration="0:0:0.2" />
+            <DoubleAnimation Storyboard.TargetName="largeContentGrid"
+                             Storyboard.TargetProperty="Opacity"
+                             To="1.0"
+                             Duration="0:0:0.2"
+                             BeginTime="0:0:0.2" />
+        </Storyboard>
+
+        <Storyboard x:Key="condenseStoryboard"
+                    Changed="OnPreviewControlSizeChanged"
+                    Completed="OnPreviewControlCondensed">
+            <DoubleAnimation Storyboard.TargetName="largeContentGrid"
+                             Storyboard.TargetProperty="Opacity"
+                             To="0.0"
+                             Duration="0:0:0.2" />
+            <DoubleAnimation Storyboard.TargetName="ThisPreviewControl"
+                             Storyboard.TargetProperty="Width"
+                             To="180.0"
+                             Duration="0:0:0.2"
+                             BeginTime="0:0:0.2" />
+            <DoubleAnimation Storyboard.TargetName="ThisPreviewControl"
+                             Storyboard.TargetProperty="Height"
+                             To="60.0"
+                             Duration="0:0:0.2"
+                             BeginTime="0:0:0.2" />
+            <DoubleAnimation Storyboard.TargetName="smallContentGrid"
+                             Storyboard.TargetProperty="Opacity"
+                             To="1.0"
+                             Duration="0:0:0.2"
+                             BeginTime="0:0:0.2" />
+        </Storyboard>
+
         <Storyboard x:Key="phaseOutStoryboard"
-                    Completed="OnPreviewControlFadeCompleted">
+                    Completed="OnPreviewControlPhasedOut">
             <DoubleAnimation Storyboard.TargetName="ThisPreviewControl"
                              Storyboard.TargetProperty="Opacity"
                              From="1.0"
@@ -37,6 +85,7 @@
                              To="-32.0"
                              Duration="0:0:0.2" />
         </Storyboard>
+
     </UserControl.Resources>
 
     <Grid>
@@ -47,11 +96,16 @@
                 BorderBrush="Black"></Border>
 
         <Grid Name="smallContentGrid"
-              Margin="6"></Grid>
+              Margin="6"
+              Visibility="Collapsed">
+            <TextBlock>Small Content</TextBlock>
+        </Grid>
 
         <Grid Name="largeContentGrid"
               Margin="6"
-              Visibility="Collapsed"></Grid>
+              Visibility="Collapsed">
+            <TextBlock>Large Content</TextBlock>
+        </Grid>
 
     </Grid>
 
