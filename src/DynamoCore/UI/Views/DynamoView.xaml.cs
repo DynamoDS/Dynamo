@@ -83,10 +83,6 @@ namespace Dynamo.Controls
             //LibraryManagerMenu.Visibility = System.Windows.Visibility.Collapsed;
 
             this.Loaded += dynBench_Activated;
-
-            //setup InfoBubble for library items tooltip
-            InfoBubbleView InfoBubble = new InfoBubbleView { DataContext = dynSettings.Controller.InfoBubbleViewModel };
-            InfoBubbleGrid.Children.Add(InfoBubble);
         }
 
         void InitializeShortcutBar()

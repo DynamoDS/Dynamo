@@ -12,8 +12,8 @@
 
     <UserControl.Resources>
 
-        <clr:Double x:Key="MinPreviewControlWidth">180.0</clr:Double>
-        <clr:Double x:Key="MinPreviewControlHeight">60.0</clr:Double>
+        <clr:Double x:Key="MinPreviewControlWidth">135.0</clr:Double>
+        <clr:Double x:Key="MinPreviewControlHeight">32.0</clr:Double>
         <clr:Double x:Key="MaxPreviewControlWidth">500.0</clr:Double>
         <clr:Double x:Key="MaxPreviewControlHeight">300.0</clr:Double>
         <clr:Double x:Key="PhasedOutPosition">-32.0</clr:Double>

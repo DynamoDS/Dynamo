@@ -1454,29 +1454,9 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void ShowInfoBubble(object parameter)
-        {
-            InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
-            controller.InfoBubbleViewModel.UpdateContentCommand.Execute(data);
-            controller.InfoBubbleViewModel.OnRequestAction(
-                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.FadeIn));
-        }
-
         internal bool CanShowInfoBubble(object parameter)
         {
             return true;
-        }
-
-        public void HideInfoBubble(object parameter)
-        {
-            controller.InfoBubbleViewModel.OnRequestAction(
-                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
-        }
-
-        public void FadeOutInfoBubble(object parameter)
-        {
-            controller.InfoBubbleViewModel.OnRequestAction(
-                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.FadeOut));
         }
 
         public void TogglePreviewBubbleVisibility(object parameter)

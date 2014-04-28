@@ -313,9 +313,6 @@ namespace Dynamo.Controls
             if (toolTipDelayTimer != null && toolTipDelayTimer.IsEnabled)
                 toolTipDelayTimer.Stop();
 
-            dynSettings.Controller.InfoBubbleViewModel.OnRequestAction(
-                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
-
             if (e.ClickCount == 2)
             {
                 Debug.WriteLine("Nickname double clicked!");
