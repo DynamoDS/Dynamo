@@ -99,6 +99,8 @@ namespace Dynamo.DSEngine
                     return "System.Int32";
                 case "bool":
                     return "System.Boolean";
+                case "string":
+                    return "System.String";
                 default:
                     return s;
             }

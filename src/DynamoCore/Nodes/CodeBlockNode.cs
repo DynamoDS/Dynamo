@@ -599,7 +599,7 @@ namespace Dynamo.Nodes
 
                 double portCoordsY = Formatting.InitialMargin;
                 portCoordsY += visualIndex * Formatting.VerticalMargin;
-                OutPortData.Add(new PortData(string.Empty, tooltip, typeof(object))
+                OutPortData.Add(new PortData(string.Empty, tooltip)
                 {
                     VerticalMargin = portCoordsY - prevPortBottom
                 });

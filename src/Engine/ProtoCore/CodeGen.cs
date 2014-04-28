@@ -906,7 +906,7 @@ namespace ProtoCore
                         {
                             string procName = identnode.Name;
                             string property;
-                            ProtoCore.DSASM.ProcedureNode staticProcCallNode = core.ClassTable.ClassNodes[leftci].GetFirstStaticMemberFunction(procName);
+                            ProtoCore.DSASM.ProcedureNode staticProcCallNode = core.ClassTable.ClassNodes[leftci].GetFirstStaticFunctionBy(procName);
 
                             if (null != staticProcCallNode)
                             {

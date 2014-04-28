@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -85,17 +84,17 @@ namespace Dynamo.Nodes
             {
                 InPortData.Clear();
                 foreach (string arg in Definition.Parameters)
-                    InPortData.Add(new PortData(arg, "parameter", typeof(object)));
+                    InPortData.Add(new PortData(arg, "parameter"));
             }
 
             OutPortData.Clear();
             if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
             {
                 foreach (string key in Definition.ReturnKeys)
-                    OutPortData.Add(new PortData(key, "return value", typeof(object)));
+                    OutPortData.Add(new PortData(key, "return value"));
             }
             else
-                OutPortData.Add(new PortData("", "return value", typeof(object)));
+                OutPortData.Add(new PortData("", "return value"));
 
             RegisterAllPorts();
             NickName = Definition.DisplayName;
@@ -121,7 +120,7 @@ namespace Dynamo.Nodes
                 if (InPortData.Count > i)
                     InPortData[i].NickName = input;
                 else
-                    InPortData.Add(new PortData(input, "Input #" + (i + 1), typeof(object)));
+                    InPortData.Add(new PortData(input, "Input #" + (i + 1)));
 
                 i++;
             }
@@ -145,7 +144,7 @@ namespace Dynamo.Nodes
                 if (OutPortData.Count > i)
                     OutPortData[i].NickName = output;
                 else
-                    OutPortData.Add(new PortData(output, "Output #" + (i + 1), typeof(object)));
+                    OutPortData.Add(new PortData(output, "Output #" + (i + 1)));
 
                 i++;
             }
@@ -264,7 +263,7 @@ namespace Dynamo.Nodes
 
                 else if (subNode.Name.Equals("Output"))
                 {
-                    var data = new PortData(subNode.Attributes[0].Value, "function output", typeof(object));
+                    var data = new PortData(subNode.Attributes[0].Value, "function output");
 
                     if (OutPortData.Any())
                         OutPortData[0] = data;
@@ -545,7 +544,7 @@ namespace Dynamo.Nodes
 
         public Symbol()
         {
-            OutPortData.Add(new PortData("", "Symbol", typeof(object)));
+            OutPortData.Add(new PortData("", "Symbol"));
 
             RegisterAllPorts();
 
@@ -628,7 +627,7 @@ namespace Dynamo.Nodes
 
         public Output()
         {
-            InPortData.Add(new PortData("", "", typeof(object)));
+            InPortData.Add(new PortData("", ""));
 
             RegisterAllPorts();
 

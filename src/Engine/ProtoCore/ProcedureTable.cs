@@ -126,20 +126,35 @@ namespace ProtoCore.DSASM
             return ProtoCore.DSASM.Constants.kInvalidIndex;
         }
 
-        public ProcedureNode GetFirst(string name)
+        /// <summary>
+        /// Return all functions whose names are 'name'
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IEnumerable<ProcedureNode> GetFunctionsBy(string name)
         {
-            ProcedureNode procReturn = null;
-            for (int n = 0; n < procList.Count; ++n)
-            {
-                if (name == procList[n].name)
-                {
-                    procReturn = procList[n];
-                    break;
-                }
-            }
-            return procReturn;
+            return procList.Where(p => p.name.Equals(name));
         }
 
+        /// <summary>
+        /// Return all functions whose names are 'name' and the number of
+        /// parameters are 'argumentNumber'
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="argumentNumber"></param>
+        /// <returns></returns>
+        public IEnumerable<ProcedureNode> GetFunctionsBy(string name, int argumentNumber)
+        {
+            return procList.Where(p =>
+            {
+                int defaultArgumentNumber = p.argInfoList.Count(X => X.DefaultExpression != null);
+                int parameterNumber = p.argTypeList.Count;
+                return p.name.Equals(name) &&
+                       (argumentNumber <= parameterNumber) &&
+                       (argumentNumber - parameterNumber <= defaultArgumentNumber);
+            }).OrderBy(p => p.argTypeList.Count - argumentNumber);
+        }
+        
         public ProcedureNode GetFirst(string name, int argCount)
         {
             ProcedureNode procReturn = null;
