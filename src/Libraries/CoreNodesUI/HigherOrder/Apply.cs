@@ -105,7 +105,7 @@ namespace DSCoreNodesUI.HigherOrder
                         "__Compose",
                         new List<AssociativeNode>
                         {
-                            AstFactory.BuildExprList(inputAstNodes)
+                            AstFactory.BuildExprList(Enumerable.Reverse(inputAstNodes).ToList())
                         }))
             };
         }
