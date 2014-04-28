@@ -144,11 +144,12 @@ namespace Dynamo.UI.Controls
 
             CenterHorizontallyOnHostCanvas();
 
-            this.Opacity = 0.0;
-            this.Visibility = System.Windows.Visibility.Visible;
-            this.currentTransition = Transition.FadingIn;
+            this.centralizedGrid.Opacity = 0.0;
+            this.centralizedGrid.Visibility = System.Windows.Visibility.Visible;
             this.smallContentGrid.Visibility = System.Windows.Visibility.Visible;
-            phaseInStoryboard.Begin();
+
+            this.currentTransition = Transition.FadingIn;
+            phaseInStoryboard.Begin(this, true);
         }
 
         private void BeginFadeOutTransition()
@@ -157,7 +158,7 @@ namespace Dynamo.UI.Controls
                 throw new InvalidOperationException();
 
             this.currentTransition = Transition.FadingOut;
-            phaseOutStoryboard.Begin();
+            phaseOutStoryboard.Begin(this, true);
         }
 
         private void BeginCondenseTransition()
@@ -165,9 +166,9 @@ namespace Dynamo.UI.Controls
             if (this.currentState != State.Expanded)
                 throw new InvalidOperationException();
 
-            this.currentTransition = Transition.Condensing;
             this.smallContentGrid.Visibility = System.Windows.Visibility.Visible;
-            this.condenseStoryboard.Begin();
+            this.currentTransition = Transition.Condensing;
+            this.condenseStoryboard.Begin(this, true);
         }
 
         private void BeginExpandTransition()
@@ -175,9 +176,9 @@ namespace Dynamo.UI.Controls
             if (this.currentState != State.Condensed)
                 throw new InvalidOperationException();
 
-            this.currentTransition = Transition.Expanding;
             this.largeContentGrid.Visibility = System.Windows.Visibility.Visible;
-            this.expandStoryboard.Begin();
+            this.currentTransition = Transition.Expanding;
+            this.expandStoryboard.Begin(this, true);
         }
 
         #endregion
@@ -229,11 +230,6 @@ namespace Dynamo.UI.Controls
 
             this.currentTransition = Transition.None;
             DequeueAndBeginTransition(); // See if there's any more requests.
-        }
-
-        private void OnPreviewControlSizeChanged(object sender, EventArgs e)
-        {
-            CenterHorizontallyOnHostCanvas();
         }
 
         #endregion

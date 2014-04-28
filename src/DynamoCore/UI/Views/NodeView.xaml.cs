@@ -336,10 +336,12 @@ namespace Dynamo.Controls
         private void OnPreviewIconMouseEnter(object sender, MouseEventArgs e)
         {
             this.PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+            this.previewControl.TransitionToState(PreviewControl.State.Expanded);
         }
 
         private void OnPreviewIconMouseLeave(object sender, MouseEventArgs e)
         {
+            this.PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             this.PreviewControl.TransitionToState(PreviewControl.State.Hidden);
         }
     }

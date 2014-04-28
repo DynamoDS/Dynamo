@@ -1,25 +1,22 @@
-﻿<UserControl x:Name="ThisPreviewControl"
-             x:Class="Dynamo.UI.Controls.PreviewControl"
+﻿<UserControl x:Class="Dynamo.UI.Controls.PreviewControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             Visibility="Hidden"
-             Opacity="0.0"
-             Width="180"
-             Height="60">
+             Width="500"
+             Height="300">
 
     <UserControl.Resources>
 
         <Storyboard x:Key="phaseInStoryboard"
                     Completed="OnPreviewControlPhasedIn">
-            <DoubleAnimation Storyboard.TargetName="ThisPreviewControl"
+            <DoubleAnimation Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Opacity"
                              From="0.0"
                              To="1.0"
                              Duration="0:0:0.2" />
-            <DoubleAnimation Storyboard.TargetName="ThisPreviewControl"
+            <DoubleAnimation Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="(Canvas.Top)"
                              From="-32.0"
                              To="0.0"
@@ -27,15 +24,14 @@
         </Storyboard>
 
         <Storyboard x:Key="expandStoryboard"
-                    Changed="OnPreviewControlSizeChanged"
                     Completed="OnPreviewControlExpanded">
-            <DoubleAnimation Storyboard.TargetName="ThisPreviewControl"
+            <DoubleAnimation Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Width"
-                             To="720.0"
+                             To="500.0"
                              Duration="0:0:0.2" />
-            <DoubleAnimation Storyboard.TargetName="ThisPreviewControl"
+            <DoubleAnimation Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Height"
-                             To="240.0"
+                             To="300.0"
                              Duration="0:0:0.2" />
             <DoubleAnimation Storyboard.TargetName="smallContentGrid"
                              Storyboard.TargetProperty="Opacity"
@@ -49,18 +45,17 @@
         </Storyboard>
 
         <Storyboard x:Key="condenseStoryboard"
-                    Changed="OnPreviewControlSizeChanged"
                     Completed="OnPreviewControlCondensed">
             <DoubleAnimation Storyboard.TargetName="largeContentGrid"
                              Storyboard.TargetProperty="Opacity"
                              To="0.0"
                              Duration="0:0:0.2" />
-            <DoubleAnimation Storyboard.TargetName="ThisPreviewControl"
+            <DoubleAnimation Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Width"
                              To="180.0"
                              Duration="0:0:0.2"
                              BeginTime="0:0:0.2" />
-            <DoubleAnimation Storyboard.TargetName="ThisPreviewControl"
+            <DoubleAnimation Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Height"
                              To="60.0"
                              Duration="0:0:0.2"
@@ -74,12 +69,12 @@
 
         <Storyboard x:Key="phaseOutStoryboard"
                     Completed="OnPreviewControlPhasedOut">
-            <DoubleAnimation Storyboard.TargetName="ThisPreviewControl"
+            <DoubleAnimation Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Opacity"
                              From="1.0"
                              To="0.0"
                              Duration="0:0:0.2" />
-            <DoubleAnimation Storyboard.TargetName="ThisPreviewControl"
+            <DoubleAnimation Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="(Canvas.Top)"
                              From="0.0"
                              To="-32.0"
@@ -88,23 +83,33 @@
 
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Name="outerContainer"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Top">
 
-        <Border CornerRadius="2"
-                Background="White"
-                BorderThickness="1"
-                BorderBrush="Black"></Border>
+        <Grid Name="centralizedGrid"
+              Width="180"
+              Height="60">
+            <Border CornerRadius="2"
+                    Background="White"
+                    BorderThickness="1"
+                    BorderBrush="Black"></Border>
 
-        <Grid Name="smallContentGrid"
-              Margin="6"
-              Visibility="Collapsed">
-            <TextBlock>Small Content</TextBlock>
-        </Grid>
+            <Grid Name="smallContentGrid"
+                  Margin="6"
+                  Visibility="Collapsed"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center">
+                <TextBlock>Small Content</TextBlock>
+            </Grid>
 
-        <Grid Name="largeContentGrid"
-              Margin="6"
-              Visibility="Collapsed">
-            <TextBlock>Large Content</TextBlock>
+            <Grid Name="largeContentGrid"
+                  Margin="6"
+                  Visibility="Collapsed"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center">
+                <TextBlock FontSize="32">Large Content</TextBlock>
+            </Grid>
         </Grid>
 
     </Grid>
