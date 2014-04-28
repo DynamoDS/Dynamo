@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
+using System.Linq;
 
 namespace ProtoCore.DSASM
 {
@@ -311,64 +312,113 @@ namespace ProtoCore.DSASM
             return procNode;
         }
 
-        public ProtoCore.DSASM.ProcedureNode GetFirstMemberFunction(string procName)
+        public ProcedureNode GetFirstMemberFunctionBy(string procName)
         {
-            ProtoCore.DSASM.ProcedureNode procNode = null;
-            if (null != vtable)
+            if (vtable == null)
             {
-                procNode = vtable.GetFirst(procName);
-                if (null == procNode)
+                return null;
+            }
+
+            ProcedureNode procNode = vtable.GetFunctionsBy(procName).FirstOrDefault();
+            if (procNode != null)
+            {
+                return procNode;
+            }
+
+            foreach (int baseClassIndex in baseList)
+            {
+                var baseClass = typeSystem.classTable.ClassNodes[baseClassIndex];
+                procNode = baseClass.GetFirstMemberFunctionBy(procName);
+                if (null != procNode)
                 {
-                    foreach (int baseClassIndex in baseList)
-                    {
-                        procNode = typeSystem.classTable.ClassNodes[baseClassIndex].GetFirstMemberFunction(procName);
-                        if (null != procNode)
-                        {
-                            break;
-                        }
-                    }
+                    break;
                 }
             }
             return procNode;
         }
 
-        public ProtoCore.DSASM.ProcedureNode GetFirstMemberFunction(string procName, int argCount)
+        public ProcedureNode GetFirstMemberFunctionBy(string procName, int argCount)
         {
-            ProtoCore.DSASM.ProcedureNode procNode = null;
-            if (null != vtable)
+            if (vtable == null)            {                return null;            }
+            ProcedureNode procNode = vtable.GetFunctionsBy(procName, argCount).FirstOrDefault();
+            if (procNode != null)
             {
-                procNode = vtable.GetFirst(procName, argCount);
-                if (null == procNode)
+                return procNode;
+            }
+
+            foreach (int baseClassIndex in baseList)
+            {
+                var baseClass = typeSystem.classTable.ClassNodes[baseClassIndex];
+                procNode = baseClass.GetFirstMemberFunctionBy(procName, argCount);
+                if (null != procNode)
                 {
-                    foreach (int baseClassIndex in baseList)
-                    {
-                        procNode = typeSystem.classTable.ClassNodes[baseClassIndex].GetFirstMemberFunction(procName, argCount);
-                        if (null != procNode)
-                        {
-                            break;
-                        }
-                    }
+                    break;
                 }
             }
             return procNode;
         }
 
-        public ProcedureNode GetFirstStaticMemberFunction(string procName)
+        public ProcedureNode GetFirstConstructorBy(string procName, int argCount)
         {
-            ProcedureNode procNode = null;
-            if (null != vtable)
+            if (vtable == null)
             {
-                procNode = vtable.GetFirstStatic(procName);
-                if (null == procNode)
+                return null;
+            }
+
+            return  vtable.GetFunctionsBy(procName, argCount)
+                          .Where(p => p.isConstructor)
+                          .FirstOrDefault();
+        }
+
+        public ProcedureNode GetFirstStaticFunctionBy(string procName)
+        {
+            if (vtable == null)
+            {
+                return null;
+            }
+
+            ProcedureNode procNode = vtable.GetFunctionsBy(procName)
+                                           .Where(p => p.isStatic)
+                                           .FirstOrDefault();
+            if (procNode != null)
+            {
+                return procNode;
+            }
+
+            foreach (int baseClassIndex in baseList)
+            {
+                var baseClass = typeSystem.classTable.ClassNodes[baseClassIndex];
+                procNode = baseClass.GetFirstStaticFunctionBy(procName);
+                if (null != procNode)
                 {
-                    foreach (int baseClassIndex in baseList)
-                    {
-                        procNode = typeSystem.classTable.ClassNodes[baseClassIndex].GetFirstMemberFunction(procName);
-                        if (null != procNode)
-                        {
-                            break;
-                        }
-                    }
+                    break;
+                }
+            }
+            return procNode;
+        }
+
+        public ProcedureNode GetFirstStaticFunctionBy(string procName, int argCount)
+        {
+            if (vtable == null)
+            {
+                return null;
+            }
+
+            ProcedureNode procNode = vtable.GetFunctionsBy(procName, argCount)
+                                           .Where(p => p.isStatic)
+                                           .FirstOrDefault();
+            if (procNode != null)
+            {
+                return procNode;
+            }
+
+            foreach (int baseClassIndex in baseList)
+            {
+                var baseClass = typeSystem.classTable.ClassNodes[baseClassIndex];
+                procNode = baseClass.GetFirstStaticFunctionBy(procName, argCount);
+                if (null != procNode)
+                {
+                    break;
                 }
             }
             return procNode;
@@ -376,6 +426,11 @@ namespace ProtoCore.DSASM
 
         private ProcedureNode GetProcNode(string variableName)
         {
+            if (vtable == null)
+            {
+                return null;
+            }
+
             Validity.Assert(null != variableName && variableName.Length > 0);
             string getterName = ProtoCore.DSASM.Constants.kGetterPrefix + variableName;
             int index = vtable.IndexOfFirst(getterName);
@@ -398,6 +453,11 @@ namespace ProtoCore.DSASM
         {
             // Jun:
             // To find a member variable, get its getter name and check the vtable
+            if (vtable == null)
+            {
+                return false;
+            }
+
             Validity.Assert(null != variableName && variableName.Length > 0);
             string getterName = ProtoCore.DSASM.Constants.kGetterPrefix + variableName;
             return ProtoCore.DSASM.Constants.kInvalidIndex != vtable.IndexOfFirst(getterName) ? true : false;
