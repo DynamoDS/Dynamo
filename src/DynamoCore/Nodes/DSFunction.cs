@@ -360,41 +360,64 @@ namespace Dynamo.Nodes
                 case FunctionType.InstanceProperty:
 
                     // Only handle getter here. Setter could be handled in CBN.
-                    rhs = new NullNode();
-                    if (inputAstNodes != null && inputAstNodes.Count >= 1)
+                    if (IsPartiallyApplied)
                     {
-                        var thisNode = inputAstNodes[0];
-                        if (thisNode != null && !(thisNode is NullNode))
+                        var functionNode = new IdentifierListNode
                         {
-                            var insProp = new IdentifierListNode
+                            LeftNode = new IdentifierNode(Definition.ClassName),
+                            RightNode = new IdentifierNode(Definition.Name)
+                        };
+                        rhs = CreateFunctionObject(functionNode, inputAstNodes);
+                    }
+                    else
+                    {
+                        rhs = new NullNode();
+                        if (inputAstNodes != null && inputAstNodes.Count >= 1)
+                        {
+                            var thisNode = inputAstNodes[0];
+                            if (thisNode != null && !(thisNode is NullNode))
                             {
-                                LeftNode = inputAstNodes[0],
-                                RightNode = new IdentifierNode(Definition.Name)
-                            };
-                            rhs = insProp;
+                                var insProp = new IdentifierListNode
+                                {
+                                    LeftNode = inputAstNodes[0],
+                                    RightNode = new IdentifierNode(Definition.Name)
+                                };
+                                rhs = insProp;
+                            }
                         }
                     }
 
                     break;
 
                 case FunctionType.InstanceMethod:
-
-                    rhs = new NullNode();
-                    AppendReplicationGuides(inputAstNodes);
-
-                    if (inputAstNodes != null && inputAstNodes.Count >= 1)
+                    if (IsPartiallyApplied)
                     {
-                        var thisNode = inputAstNodes[0];
-                        inputAstNodes.RemoveAt(0); // remove this pointer
-
-                        if (thisNode != null && !(thisNode is NullNode))
+                        var functionNode = new IdentifierListNode
                         {
-                            var memberFunc = new IdentifierListNode
+                            LeftNode = new IdentifierNode(Definition.ClassName),
+                            RightNode = new IdentifierNode(Definition.Name)
+                        };
+                        rhs = CreateFunctionObject(functionNode, inputAstNodes);
+                    }
+                    else
+                    {
+                        rhs = new NullNode();
+                        AppendReplicationGuides(inputAstNodes);
+
+                        if (inputAstNodes != null && inputAstNodes.Count >= 1)
+                        {
+                            var thisNode = inputAstNodes[0];
+                            inputAstNodes.RemoveAt(0); // remove this pointer
+
+                            if (thisNode != null && !(thisNode is NullNode))
                             {
-                                LeftNode = thisNode,
-                                RightNode = AstFactory.BuildFunctionCall(function, inputAstNodes)
-                            };
-                            rhs = memberFunc;
+                                var memberFunc = new IdentifierListNode
+                                {
+                                    LeftNode = thisNode,
+                                    RightNode = AstFactory.BuildFunctionCall(function, inputAstNodes)
+                                };
+                                rhs = memberFunc;
+                            }
                         }
                     }
 
