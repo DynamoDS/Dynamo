@@ -449,7 +449,7 @@ namespace Dynamo.DSEngine
 
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
-            foreach (var node in dynSettings.Controller.DynamoViewModel.Model.HomeSpace.Nodes)
+            foreach (var node in dynSettings.Controller.DynamoModel.HomeSpace.Nodes)
             {
                 node.RequiresRecalc = true;
             }

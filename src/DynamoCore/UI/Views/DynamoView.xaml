@@ -264,9 +264,9 @@
                         <MenuItem Header ="{Binding AlternateContextGeometryDisplayText}" 
                                   Name="showGeometryInAlternateContextMenu" 
                                   Focusable="False" 
-                                  Visibility="{Binding AlternateDrawingContextAvailable, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}"
+                                  Visibility="{Binding Path=Controller.VisualizationManager.AlternateDrawingContextAvailable , Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}"
                                   IsCheckable="True"
-                                  IsChecked="{Binding Path=ShowGeometryInAlternateContext}">
+                                  IsChecked="{Binding Path=Controller.VisualizationManager.DrawToAlternateContext}">
                         </MenuItem>
                         <MenuItem Header="_Background 3D Preview" Name="background3dMenu" Focusable="False">
                             <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}" 
