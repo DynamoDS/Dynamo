@@ -38,8 +38,8 @@ namespace Dynamo.Nodes
 
         public Python()
         {
-            InPortData.Add(new PortData("IN", "Input", typeof(object)));
-            OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
+            InPortData.Add(new PortData("IN", "Input"));
+            OutPortData.Add(new PortData("OUT", "Result of the python script"));
 
             RegisterAllPorts();
             InitializeDefaultScript();
@@ -256,8 +256,8 @@ namespace Dynamo.Nodes
 
         public PythonVarIn()
         {
-            InPortData.Add(new PortData("IN0", "Input0", typeof(object)));
-            OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
+            InPortData.Add(new PortData("IN0", "Input0"));
+            OutPortData.Add(new PortData("OUT", "Result of the python script"));
 
             RegisterAllPorts();
             InitializeDefaultScript();
@@ -280,7 +280,7 @@ namespace Dynamo.Nodes
 
             for (var i = 0; i < numInputs; i++)
             {
-                InPortData.Add(new PortData(GetInputRootName() + GetInputNameIndex(), "", typeof(object)));
+                InPortData.Add(new PortData(GetInputRootName() + GetInputNameIndex(), ""));
             }
 
             RegisterAllPorts();
@@ -517,9 +517,9 @@ namespace Dynamo.Nodes
 
         public PythonString()
         {
-            InPortData.Add(new PortData("script", "Script to run", typeof(Value.String)));
-            InPortData.Add(new PortData("IN", "Input", typeof(object)));
-            OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
+            InPortData.Add(new PortData("script", "Script to run"));
+            InPortData.Add(new PortData("IN", "Input"));
+            OutPortData.Add(new PortData("OUT", "Result of the python script"));
 
             RegisterAllPorts();
 

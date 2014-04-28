@@ -402,7 +402,7 @@ namespace DSRevitNodesUI
 
         public Levels()
         {
-            OutPortData.Add(new PortData("Level", "The level.", typeof(object)));
+            OutPortData.Add(new PortData("Level", "The level."));
 
             RegisterAllPorts();
 
@@ -460,7 +460,7 @@ namespace DSRevitNodesUI
 
         public StructuralFramingTypes()
         {
-            OutPortData.Add(new PortData("type", "The selected structural framing type.", typeof(object)));
+            OutPortData.Add(new PortData("type", "The selected structural framing type."));
 
             RegisterAllPorts();
 

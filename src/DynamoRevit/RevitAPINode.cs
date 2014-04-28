@@ -67,7 +67,7 @@ namespace Dynamo.Nodes
     {
         public RevitDocument()
         {
-            OutPortData.Add(new PortData("doc", "The active Revit doc.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("doc", "The active Revit doc."));
             RegisterAllPorts();
         }
 

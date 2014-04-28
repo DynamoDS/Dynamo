@@ -25,8 +25,8 @@ namespace Dynamo.Nodes
 
         public WatchImageCore()
         {
-            InPortData.Add(new PortData("image", "image", typeof(System.Drawing.Bitmap)));
-            OutPortData.Add(new PortData("image", "image", typeof(System.Drawing.Bitmap)));
+            InPortData.Add(new PortData("image", "image"));
+            OutPortData.Add(new PortData("image", "image"));
 
             RegisterAllPorts();
         }

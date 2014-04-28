@@ -51,8 +51,8 @@ namespace Dynamo.Nodes
 
         public Watch3D()
         {
-            InPortData.Add(new PortData("", "Incoming geometry objects.", typeof(object)));
-            OutPortData.Add(new PortData("", "Watch contents, passed through", typeof(object)));
+            InPortData.Add(new PortData("", "Incoming geometry objects."));
+            OutPortData.Add(new PortData("", "Watch contents, passed through"));
 
             RegisterAllPorts();
 

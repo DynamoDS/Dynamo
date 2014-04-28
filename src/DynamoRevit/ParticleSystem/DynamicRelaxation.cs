@@ -44,24 +44,24 @@ namespace Dynamo.Nodes
         private FSharpList<Value> _curves;
 
         private readonly PortData _psPort = new PortData(
-            "ps", "Particle System", typeof(ParticleSystem));
+            "ps", "Particle System");
 
         private readonly PortData _forcesPort = new PortData(
-            "forces", "Member forces.", typeof(Value.List));
+            "forces", "Member forces.");
 
         public DynamicRelaxation()
         {
-            InPortData.Add(new PortData("points", "The points to use as fixed nodes.", typeof(Value.List)));
-            InPortData.Add(new PortData("curves", "Curves to use as springs.", typeof(Value.List)));
-            InPortData.Add(new PortData("d", "Dampening.", typeof(Value.Number)));
-            InPortData.Add(new PortData("s", "Spring constant.", typeof(Value.Number)));
-            InPortData.Add(new PortData("rl", "Rest length.", typeof(Value.Number)));
-            InPortData.Add(new PortData("use_rl", "Should the rest length be considered (true), or should we use the rest length factor instead (false)?.", typeof(Value.Number)));
+            InPortData.Add(new PortData("points", "The points to use as fixed nodes."));
+            InPortData.Add(new PortData("curves", "Curves to use as springs."));
+            InPortData.Add(new PortData("d", "Dampening."));
+            InPortData.Add(new PortData("s", "Spring constant."));
+            InPortData.Add(new PortData("rl", "Rest length."));
+            InPortData.Add(new PortData("use_rl", "Should the rest length be considered (true), or should we use the rest length factor instead (false)?."));
             InPortData.Add(new PortData("rlf", "Rest length factor. If use rest length factor is set to false," +
-                " rest length will be ignored and this factor will be used to determine the rest length as a factor of the spring's initial size.", typeof(Value.Number)));
-            InPortData.Add(new PortData("m", "Nodal Mass.", typeof(Value.Number)));
-            InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(Value.Number)));
-            InPortData.Add(new PortData("threshold", "The convergence threshold. When the maximum nodal velocity falls below this number, the particle system is flagged \"converged\".", typeof(Value.Number)));
+                " rest length will be ignored and this factor will be used to determine the rest length as a factor of the spring's initial size."));
+            InPortData.Add(new PortData("m", "Nodal Mass."));
+            InPortData.Add(new PortData("gravity", "Gravity in Z."));
+            InPortData.Add(new PortData("threshold", "The convergence threshold. When the maximum nodal velocity falls below this number, the particle system is flagged \"converged\"."));
 
             OutPortData.Add(_psPort);
             OutPortData.Add(_forcesPort);
@@ -325,16 +325,16 @@ namespace Dynamo.Nodes
     {
         public DynamicRelaxationOnFace()
         {
-            InPortData.Add(new PortData("face", "The face to use for distribution of particles.", typeof(Value.Container)));
-            InPortData.Add(new PortData("d", "Dampening.", typeof(Value.Number)));
-            InPortData.Add(new PortData("s", "Spring Constant.", typeof(Value.Number)));
-            InPortData.Add(new PortData("r", "Rest Length.", typeof(Value.Number)));
-            InPortData.Add(new PortData("m", "Nodal Mass.", typeof(Value.Number)));
-            InPortData.Add(new PortData("numU", "Number of Particles in U.", typeof(Value.Number)));
-            InPortData.Add(new PortData("numV", "Number of Particles in V.", typeof(Value.Number)));
-            InPortData.Add(new PortData("gravity", "Gravity in Z.", typeof(Value.Number)));
+            InPortData.Add(new PortData("face", "The face to use for distribution of particles."));
+            InPortData.Add(new PortData("d", "Dampening."));
+            InPortData.Add(new PortData("s", "Spring Constant."));
+            InPortData.Add(new PortData("r", "Rest Length."));
+            InPortData.Add(new PortData("m", "Nodal Mass."));
+            InPortData.Add(new PortData("numU", "Number of Particles in U."));
+            InPortData.Add(new PortData("numV", "Number of Particles in V."));
+            InPortData.Add(new PortData("gravity", "Gravity in Z."));
 
-            OutPortData.Add(new PortData("ps", "Particle System", typeof(Value.Container)));
+            OutPortData.Add(new PortData("ps", "Particle System"));
             RegisterAllPorts();
         }
 
@@ -409,18 +409,17 @@ namespace Dynamo.Nodes
     public class DynamicRelaxationStep : NodeModel
     {
         private readonly PortData _vMaxPort = new PortData(
-            "vMax", "Maximum nodal velocity.", typeof(Value.Number));
+            "vMax", "Maximum nodal velocity.");
 
         private readonly PortData _convergedPort = new PortData(
             "converged?",
-            "Has the maximum nodal velocity dropped below the threshold set for the system?",
-            typeof(Value.Number));
+            "Has the maximum nodal velocity dropped below the threshold set for the system?");
 
         public DynamicRelaxationStep()
         {
-            InPortData.Add(new PortData("ps", "Particle System to simulate", typeof(Value.Container)));
-            InPortData.Add(new PortData("step", "Time to step.", typeof(Value.Number)));
-            InPortData.Add(new PortData("interval", "An execution interval.", typeof(Value.Number)));
+            InPortData.Add(new PortData("ps", "Particle System to simulate"));
+            InPortData.Add(new PortData("step", "Time to step."));
+            InPortData.Add(new PortData("interval", "An execution interval."));
             
             OutPortData.Add(_vMaxPort); 
             OutPortData.Add(_convergedPort);
@@ -458,8 +457,8 @@ namespace Dynamo.Nodes
     {
         public XyZsFromPs()
         {
-            InPortData.Add(new PortData("ps", "Particle System", typeof(Value.Container)));
-            OutPortData.Add(new PortData("XYZs", "XYZs.", typeof(Value.Container)));
+            InPortData.Add(new PortData("ps", "Particle System"));
+            OutPortData.Add(new PortData("XYZs", "XYZs."));
 
             RegisterAllPorts();
         }
@@ -481,8 +480,8 @@ namespace Dynamo.Nodes
     {
         public CurvesFromPs()
         {
-            InPortData.Add(new PortData("ps", "Particle System", typeof(Value.Container)));
-            OutPortData.Add(new PortData("curves", "geometry curves.", typeof(Value.List)));
+            InPortData.Add(new PortData("ps", "Particle System"));
+            OutPortData.Add(new PortData("curves", "geometry curves."));
 
             RegisterAllPorts();
         }

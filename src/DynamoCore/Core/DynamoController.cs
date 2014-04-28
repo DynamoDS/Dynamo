@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Windows.Threading;
 using DSNodeServices;
 using Dynamo.DSEngine;
-using Dynamo.FSchemeInterop;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
@@ -295,13 +294,7 @@ namespace Dynamo
 
             DynamoLoader.ClearCachedAssemblies();
             DynamoLoader.LoadNodeModels();
-
-            //run tests
-            if (FScheme.RunTests(DynamoLogger.Instance.Log))
-            {
-                DynamoLogger.Instance.Log("All Tests Passed. Core library loaded OK.");
-            }
-
+            
             InfoBubbleViewModel = new InfoBubbleViewModel();
 
             AddPythonBindings();
@@ -829,7 +822,7 @@ namespace Dynamo
             }
         }
 
-        void DrawPython(FScheme.Value val, string id)
+        void DrawPython(object val, string id)
         {
             //DrawContainers(val, id);
         }

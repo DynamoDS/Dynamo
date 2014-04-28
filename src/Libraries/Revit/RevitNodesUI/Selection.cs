@@ -167,7 +167,7 @@ namespace Dynamo.Nodes
             SelectionAction = action;
             _selectionMessage = message;
 
-            OutPortData.Add(new PortData("Element", "The selected element.", typeof(object)));
+            OutPortData.Add(new PortData("Element", "The selected element."));
             RegisterAllPorts();
 
             dynRevitSettings.Controller.Updater.ElementsModified += Updater_ElementsModified;
@@ -372,7 +372,7 @@ namespace Dynamo.Nodes
             SelectionAction = action;
             _selectionMessage = message;
 
-            OutPortData.Add(new PortData("Reference", "The geometry reference.", typeof(object)));
+            OutPortData.Add(new PortData("Reference", "The geometry reference."));
             RegisterAllPorts();
 
             var u = dynRevitSettings.Controller.Updater;
@@ -628,7 +628,7 @@ namespace Dynamo.Nodes
             SelectionAction = action;
             _selectionMessage = message;
 
-            OutPortData.Add(new PortData("Elements", "The selected elements.", typeof(object)));
+            OutPortData.Add(new PortData("Elements", "The selected elements."));
             RegisterAllPorts();
 
 

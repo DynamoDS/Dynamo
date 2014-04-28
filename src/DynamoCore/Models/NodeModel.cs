@@ -10,47 +10,21 @@ using System.Diagnostics;
 using System.Collections.ObjectModel;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.FSchemeInterop;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.DSEngine;
-using Dynamo.FSchemeInterop.Node;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
-using Microsoft.FSharp.Core;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
-using Utils = Dynamo.FSchemeInterop.Utils;
 
 namespace Dynamo.Models
 {
     public abstract class NodeModel : ModelBase, IBlockingModel
     {
-        #region abstract members
-
-        /// <summary>
-        ///     The dynElement's Evaluation Logic.
-        /// </summary>
-        /// <param name="args">
-        ///     Parameters to the node. You are guaranteed to have as many arguments as you have InPorts at the time
-        ///     it is run.
-        /// </param>
-        /// <param name="outPuts"></param>
-        /// <returns>
-        ///     An expression that is the result of the Node's evaluation. It will be passed along to whatever the OutPort is
-        ///     connected to.
-        /// </returns>
-        public virtual void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
         #region private members
 
         private bool overrideNameWithNickName;
@@ -1255,78 +1229,6 @@ namespace Dynamo.Models
                 }
             }
             return previewValue;
-        }
-
-        public static string PrintValue(
-            FScheme.Value eIn,
-            int currentListIndex,
-            int maxListIndex,
-            int currentDepth,
-            int maxDepth,
-            int maxStringLength = 20)
-        {
-            if (eIn == null)
-                return "<null>";
-
-            string accString = String.Concat(Enumerable.Repeat("  ", currentDepth));
-
-            if (maxDepth == currentDepth || currentListIndex == maxListIndex)
-            {
-                accString += "...";
-                return accString;
-            }
-
-            if (eIn.IsContainer)
-            {
-                string str = (eIn as FScheme.Value.Container).Item != null
-                                 ? (eIn as FScheme.Value.Container).Item.ToString()
-                                 : "<empty>";
-
-                accString += str;
-            }
-            else if (eIn.IsFunction)
-                accString += "<function>";
-            else if (eIn.IsList)
-            {
-                accString += "List";
-
-                FSharpList<FScheme.Value> list = (eIn as FScheme.Value.List).Item;
-
-                if (!list.Any())
-                    accString += " (empty)";
-
-                // when children will be at maxDepth, just do 1
-                if (currentDepth + 1 == maxDepth)
-                    maxListIndex = 0;
-
-                // build all elements of sub list
-                accString =
-                    list.Select((x, i) => new { Element = x, Index = i })
-                        .TakeWhile(e => e.Index <= maxListIndex)
-                        .Aggregate(
-                            accString,
-                            (current, e) =>
-                            current + "\n"
-                            + PrintValue(e.Element, e.Index, maxListIndex, currentDepth + 1, maxDepth, maxStringLength));
-            }
-            else if (eIn.IsNumber)
-            {
-                double num = (eIn as FScheme.Value.Number).Item;
-                var numFloat = (float)num;
-                accString += numFloat.ToString();
-            }
-            else if (eIn.IsString)
-            {
-                string str = (eIn as FScheme.Value.String).Item;
-                if (str.Length > maxStringLength)
-                    str = str.Substring(0, maxStringLength) + "...";
-
-                accString += "\"" + str + "\"";
-            }
-            else if (eIn.IsSymbol)
-                accString += "<" + (eIn as FScheme.Value.Symbol).Item + ">";
-
-            return accString;
         }
         
 

@@ -145,7 +145,7 @@ namespace Dynamo.Nodes
 
         public NewExcelWorkbook()
         {
-            OutPortData.Add(new PortData("workbook", "The new Excel Workbook ", typeof(FScheme.Value.Container)));
+            OutPortData.Add(new PortData("workbook", "The new Excel Workbook "));
             RegisterAllPorts();
         }
 
@@ -178,7 +178,7 @@ namespace Dynamo.Nodes
 
         public ReadExcelFile()
         {
-            OutPortData.Add(new PortData("workbook", "The workbook opened from the file", typeof(FScheme.Value.Container)));
+            OutPortData.Add(new PortData("workbook", "The workbook opened from the file"));
             RegisterAllPorts();
         }
 
@@ -226,8 +226,8 @@ namespace Dynamo.Nodes
 
         public GetWorksheetsFromExcelWorkbook()
         {
-            InPortData.Add(new PortData("workbook", "The excel workbook", typeof(FScheme.Value.Container)));
-            OutPortData.Add(new PortData("worksheets", "A list of worksheets", typeof(FScheme.Value.List)));
+            InPortData.Add(new PortData("workbook", "The excel workbook"));
+            OutPortData.Add(new PortData("worksheets", "A list of worksheets"));
             RegisterAllPorts();
         }
 
@@ -255,9 +255,9 @@ namespace Dynamo.Nodes
 
         public GetExcelWorksheetByName()
         {
-            InPortData.Add(new PortData("workbook", "The excel workbook", typeof(FScheme.Value.Container)));
-            InPortData.Add(new PortData("name", "Name of the worksheet to get", typeof(FScheme.Value.Number)));
-            OutPortData.Add(new PortData("worksheet", "The worksheet with the given name", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("workbook", "The excel workbook"));
+            InPortData.Add(new PortData("name", "Name of the worksheet to get"));
+            OutPortData.Add(new PortData("worksheet", "The worksheet with the given name"));
             RegisterAllPorts();
         }
 
@@ -291,8 +291,8 @@ namespace Dynamo.Nodes
 
         public GetDataFromExcelWorksheet()
         {
-            InPortData.Add(new PortData("worksheet", "The excel workbook", typeof(FScheme.Value.Container)));
-            OutPortData.Add(new PortData("worksheet", "The worksheet with the given name", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("worksheet", "The excel workbook"));
+            OutPortData.Add(new PortData("worksheet", "The worksheet with the given name"));
             RegisterAllPorts();
         }
 
@@ -359,12 +359,12 @@ namespace Dynamo.Nodes
 
         public WriteDataToExcelWorksheet()
         {
-            InPortData.Add(new PortData("worksheet", "The Excel Worksheet to write to.", typeof(FScheme.Value.Container)));
-            InPortData.Add(new PortData("start row", "Row index to insert data.", typeof(FScheme.Value.Number), FScheme.Value.NewNumber(0)));
-            InPortData.Add(new PortData("start column", "Column index to insert data.", typeof(FScheme.Value.Number), FScheme.Value.NewNumber(0)));
-            InPortData.Add(new PortData("data", "A single item, a 1d list, or a 2d list to write to the worksheet", typeof(FScheme.Value.List)));
+            InPortData.Add(new PortData("worksheet", "The Excel Worksheet to write to."));
+            InPortData.Add(new PortData("start row", "Row index to insert data.", defaultValue: FScheme.Value.NewNumber(0)));
+            InPortData.Add(new PortData("start column", "Column index to insert data.", defaultValue: FScheme.Value.NewNumber(0)));
+            InPortData.Add(new PortData("data", "A single item, a 1d list, or a 2d list to write to the worksheet"));
 
-            OutPortData.Add(new PortData("worksheet", "The modified excel worksheet", typeof(FScheme.Value.Container)));
+            OutPortData.Add(new PortData("worksheet", "The modified excel worksheet"));
 
             RegisterAllPorts();
         }
@@ -485,10 +485,10 @@ namespace Dynamo.Nodes
 
         public AddExcelWorksheetToWorkbook()
         {
-            InPortData.Add(new PortData("workbook", "The Excel Worksheet to write to", typeof(FScheme.Value.Container)));
-            InPortData.Add(new PortData("name", "Name of new Worksheet to add", typeof(FScheme.Value.String)));
+            InPortData.Add(new PortData("workbook", "The Excel Worksheet to write to"));
+            InPortData.Add(new PortData("name", "Name of new Worksheet to add"));
 
-            OutPortData.Add(new PortData("worksheet", "The Worksheet newly added to the Workbook", typeof(FScheme.Value.Container)));
+            OutPortData.Add(new PortData("worksheet", "The Worksheet newly added to the Workbook"));
 
             RegisterAllPorts();
         }
@@ -519,10 +519,10 @@ namespace Dynamo.Nodes
     {
         public SaveAsExcelWorkbook()
         {
-            InPortData.Add(new PortData("workbook", "The Excel Workbook to save", typeof(FScheme.Value.Container)));
-            InPortData.Add(new PortData("filename", "Filename to save the Workbook to", typeof(FScheme.Value.String)));
+            InPortData.Add(new PortData("workbook", "The Excel Workbook to save"));
+            InPortData.Add(new PortData("filename", "Filename to save the Workbook to"));
 
-            OutPortData.Add(new PortData("workbook", "The Excel Workbook", typeof(FScheme.Value.Container)));
+            OutPortData.Add(new PortData("workbook", "The Excel Workbook"));
 
             RegisterAllPorts();
         }
