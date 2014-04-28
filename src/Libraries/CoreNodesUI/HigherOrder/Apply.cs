@@ -8,7 +8,7 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI.HigherOrder
 {
-    [NodeName("Apply Function")]
+    [NodeName("Function.Apply")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
     [NodeDescription("Applies a function to arguments.")]
     [IsDesignScriptCompatible]
@@ -64,7 +64,7 @@ namespace DSCoreNodesUI.HigherOrder
         }
     }
 
-    [NodeName("Compose Function")]
+    [NodeName("Function.Compose")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
     [NodeDescription("Compose multiple functions.")]
     [IsDesignScriptCompatible]
