@@ -299,7 +299,16 @@ namespace Dynamo.UpdateManager
             XDocument doc = null;
             using (TextReader td = new StringReader(request.Data))
             {
-                doc = XDocument.Load(td);
+                try
+                {
+                    doc = XDocument.Load(td);
+                }
+                catch (Exception e)
+                {
+                    DynamoLogger.Instance.Log(e);
+                    _versionCheckInProgress = false;
+                    return;
+                }
             }
 
             var bucketresult = doc.Element(ns + "ListBucketResult");

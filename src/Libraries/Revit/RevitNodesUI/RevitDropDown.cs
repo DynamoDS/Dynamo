@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Xml;
 using Autodesk.Revit.DB;
+using DSCore;
 using DSCoreNodesUI;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -514,4 +515,19 @@ namespace DSRevitNodesUI
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_DIVIDE)]
     [NodeDescription("A spacing rule layout for calculating divided paths.")]
     public class SpacingRuleLayouts : EnumAsInt<SpacingRuleLayout> { }
+
+    [NodeName("Element Types")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("All element subtypes.")]
+    [IsDesignScriptCompatible]
+    public class ElementTypes : AllChildrenOfType<Element>
+    {
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            var typeName = AstFactory.BuildStringNode(Items[SelectedIndex].Name);
+            var assemblyName = AstFactory.BuildStringNode("RevitAPI");
+            var functionCall = AstFactory.BuildFunctionCall(new Func<string,string,object>(Types.FindTypeByNameInAssembly) , new List<AssociativeNode>(){typeName, assemblyName});
+            return new []{AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall)};
+        }
+    }
 }

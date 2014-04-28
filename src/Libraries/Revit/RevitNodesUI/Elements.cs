@@ -11,9 +11,6 @@ namespace DSRevitNodesUI
 {
     public abstract class ElementsQueryBase : NodeModel
     {
-
-
-
         protected ElementsQueryBase()
         {
             var u = dynRevitSettings.Controller.Updater;
@@ -80,6 +77,30 @@ namespace DSRevitNodesUI
             var func =
                 new Func<Revit.Elements.FamilySymbol, IList<Revit.Elements.Element>>(
                     ElementQueries.OfFamilyType);
+
+            var functionCall = AstFactory.BuildFunctionCall(func, inputAstNodes);
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+        }
+    }
+
+    [NodeName("All Elements of Type")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("All elements in the active document of a given type.")]
+    [IsDesignScriptCompatible]
+    public class ElementsOfType : ElementsQueryBase
+    {
+        public ElementsOfType()
+        {
+            InPortData.Add(new PortData("element type", "An element type."));
+            OutPortData.Add(new PortData("elements", "All elements in the active document of a given type."));
+            RegisterAllPorts();
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            var func =
+                new Func<Type, IList<Revit.Elements.Element>>(
+                    ElementQueries.OfElementType);
 
             var functionCall = AstFactory.BuildFunctionCall(func, inputAstNodes);
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };

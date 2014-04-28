@@ -550,7 +550,11 @@ namespace ProtoScript.Runners
             {
                 // Check if node exists in the prev AST list
                 bool nodeFound = false;
-                if (!subtree.ForceExecution)
+                if (subtree.ForceExecution)
+                {
+                    modifiedASTList.AddRange(subtree.AstNodes);
+                }
+                else
                 {
                     foreach (AssociativeNode prevNode in st.AstNodes)
                     {

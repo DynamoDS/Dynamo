@@ -19,8 +19,11 @@ namespace Revit.GeometryConversion
             // now trim underlyingPlane using the pcLoops
             foreach (var pc in loops)
             {
-                var subSurfaces = cutSurface.Split(pc).Cast<Surface>();
-                //var subSurfaces2 = cutSurface.Trim(pc, surface.PointAtParameter());
+                var intersectingCurves = cutSurface.Intersect(pc)
+                    .Where(x => x is Curve).Cast<Curve>().ToArray();
+
+                var pcIntersecting = PolyCurve.ByJoinedCurves(intersectingCurves);
+                var subSurfaces = cutSurface.Split(pcIntersecting).Cast<Surface>();
 
                 foreach (var srf in subSurfaces)
                 {
