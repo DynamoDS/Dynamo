@@ -109,24 +109,28 @@ namespace Dynamo.ViewModels
 
         public string OldValue
         {
-            get { 
+            get
+            {
                 if (nodeLogic.WorkSpace is CustomNodeWorkspaceModel)
-                {
                     return "Not available in custom nodes";
+
+                var variableName = nodeLogic.VariableToPreview;
+
+                string previewValue = "<null>";
+                if (!string.IsNullOrEmpty(variableName))
+                {
+                    try
+                    {
+                        var engine = dynSettings.Controller.EngineController;
+                        previewValue = engine.GetStringValue(variableName);
+                    }
+                    catch (Exception ex)
+                    {
+                        DynamoLogger.Instance.Log(ex.Message);
+                    }
                 }
 
-#if USE_DSENGINE
-                return NodeModel.PrintValue(nodeLogic.VariableToPreview,
-                                            0,
-                                            Configurations.PreviewMaxListLength,
-                                            0,
-                                            Configurations.PreviewMaxListDepth,
-                                            Configurations.PreviewMaxLength);
-#else
-                return NodeModel.PrintValue(nodeLogic.OldValue, 0, Configurations.PreviewMaxListLength, 0, 
-                    Configurations.PreviewMaxListDepth, Configurations.PreviewMaxLength);
-
-#endif
+                return previewValue;
             }
         }
 

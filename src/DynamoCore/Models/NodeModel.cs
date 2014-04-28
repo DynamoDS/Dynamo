@@ -1235,29 +1235,6 @@ namespace Dynamo.Models
         #region Code Serialization
 
         public static string PrintValue(
-            string variableName,
-            int currentListIndex,
-            int maxListIndex,
-            int currentDepth,
-            int maxDepth,
-            int maxStringLength = 20)
-        {
-            string previewValue = "<null>";
-            if (!string.IsNullOrEmpty(variableName))
-            {
-                try
-                {
-                    previewValue = dynSettings.Controller.EngineController.GetStringValue(variableName);
-                }
-                catch (Exception ex)
-                {
-                    DynamoLogger.Instance.Log(ex.Message);
-                }
-            }
-            return previewValue;
-        }
-
-        public static string PrintValue(
             FScheme.Value eIn,
             int currentListIndex,
             int maxListIndex,
@@ -1328,7 +1305,6 @@ namespace Dynamo.Models
 
             return accString;
         }
-        
 
         /// <summary>
         ///     Creates a Scheme representation of this dynNode and all connected dynNodes.
