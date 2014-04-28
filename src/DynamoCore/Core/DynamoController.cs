@@ -44,19 +44,13 @@ namespace Dynamo
 
     public delegate void ImageSaveEventHandler(object sender, ImageSaveEventArgs e);
 
-    public class DynamoController:NotificationObject
+    public class DynamoController : NotificationObject
     {
-        private static bool testing = false;
-        
+        private static bool testing;
 
         #region properties
 
-        private bool _isCrashing = false;
-        public bool IsCrashing
-        {
-            get { return _isCrashing; }
-            set { _isCrashing = value; }
-        }
+        public bool IsCrashing { get; set; }
 
         private bool uiLocked = true;
         public bool IsUILocked
@@ -74,8 +68,8 @@ namespace Dynamo
 
         private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
             new Dictionary<string, TypeLoadData>();
-
         
+        //TODO: this is dumb --SJE
         protected VisualizationManager visualizationManager;
 
         public CustomNodeManager CustomNodeManager { get; internal set; }
@@ -100,8 +94,8 @@ namespace Dynamo
         /// </summary>
         public static bool IsTestMode 
         {
-            get { return DynamoController.testing; }
-            set { DynamoController.testing = value; }
+            get { return testing; }
+            set { testing = value; }
         }
 
         ObservableCollection<ModelBase> clipBoard = new ObservableCollection<ModelBase>();
@@ -121,12 +115,7 @@ namespace Dynamo
             get { return builtinTypesByTypeName; }
         }
 
-        private string context;
-        public string Context
-        {
-            get { return context; }
-            set { context = value; }
-        }
+        public string Context { get; set; }
 
         public bool IsShowingConnectors
         {
@@ -146,19 +135,14 @@ namespace Dynamo
             }
         }
 
-        private bool isShowPreViewByDefault = false;
+        private bool isShowPreViewByDefault;
         public bool IsShowPreviewByDefault
         {
             get { return isShowPreViewByDefault;}
             set { isShowPreViewByDefault = value; RaisePropertyChanged("IsShowPreviewByDefault"); }
         }
 
-        private EngineController _engineController = null;
-        public EngineController EngineController
-        {
-            get { return _engineController; }
-            protected set { _engineController = value; }
-        }
+        public EngineController EngineController { get; protected set; }
 
         #endregion
 
@@ -236,6 +220,7 @@ namespace Dynamo
         /// </summary>
         public DynamoController(Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences)
         {
+            IsCrashing = false;
             DynamoLogger.Instance.StartLogging();
 
             dynSettings.Controller = this;
@@ -297,8 +282,6 @@ namespace Dynamo
             
             InfoBubbleViewModel = new InfoBubbleViewModel();
 
-            AddPythonBindings();
-
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
         }
 
@@ -327,7 +310,7 @@ namespace Dynamo
             }
         }
 
-        void updateManager_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
+        void updateManager_UpdateDownloaded(object sender, UpdateDownloadedEventArgs e)
         {
             UpdateManager.QuitAndInstallUpdate();
         }
@@ -555,11 +538,11 @@ namespace Dynamo
                 // if we're running in a unit-test, in which case there's no user. I'd 
                 // like not to display the dialog and hold up the continuous integration.
                 // 
-                if (DynamoController.IsTestMode == false && (fatalException != null))
+                if (IsTestMode == false && (fatalException != null))
                 {
                     Action showFailureMessage = new Action(() =>
                     {
-                        Dynamo.Nodes.Utilities.DisplayEngineFailureMessage(fatalException);
+                        Nodes.Utilities.DisplayEngineFailureMessage(fatalException);
                     });
 
                     // The "Run" method is guaranteed to be called on a background 
@@ -567,8 +550,8 @@ namespace Dynamo
                     // schedule the message to show up when the UI gets around and 
                     // handle it.
                     // 
-                    if (this.UIDispatcher != null)
-                        this.UIDispatcher.BeginInvoke(showFailureMessage);
+                    if (UIDispatcher != null)
+                        UIDispatcher.BeginInvoke(showFailureMessage);
                 }
 
                 // Currently just use inefficient way to refresh preview values. 
@@ -708,7 +691,7 @@ namespace Dynamo
 
         public void CancelRunCmd(object parameter)
         {
-            var command = new DynCmd.RunCancelCommand(false, true);
+            var command = new DynamoViewModel.RunCancelCommand(false, true);
             DynamoViewModel.ExecuteCommand(command);
         }
 
@@ -725,7 +708,7 @@ namespace Dynamo
         internal void RunExprCmd(object parameters)
         {
             bool showErrors = Convert.ToBoolean(parameters);
-            var command = new DynCmd.RunCancelCommand(showErrors, false);
+            var command = new DynamoViewModel.RunCancelCommand(showErrors, false);
             DynamoViewModel.ExecuteCommand(command);
         }
 
@@ -779,73 +762,6 @@ namespace Dynamo
         {
             return true;
         }
-
-        private void AddPythonBindings()
-        {
-            try
-            {
-                var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-                Assembly ironPythonAssembly = null;
-
-                string path;
-
-                if (File.Exists(path = Path.Combine(assemblyPath, "DynamoPython.dll")))
-                {
-                    ironPythonAssembly = Assembly.LoadFrom(path);
-                }
-                else if (File.Exists(path = Path.Combine(assemblyPath, "Packages", "IronPython", "DynamoPython.dll")))
-                {
-                    ironPythonAssembly = Assembly.LoadFrom(path);
-                }
-
-                if (ironPythonAssembly == null)
-                    throw new Exception();
-
-                var pythonEngine = ironPythonAssembly.GetType("DynamoPython.PythonEngine");
-
-                var drawingField = pythonEngine.GetField("Drawing");
-                var drawDelegateType = ironPythonAssembly.GetType("DynamoPython.PythonEngine+DrawDelegate");
-                Delegate draw = Delegate.CreateDelegate(
-                    drawDelegateType,
-                    this,
-                    typeof(DynamoController)
-                        .GetMethod("DrawPython", BindingFlags.NonPublic | BindingFlags.Instance));
-
-                drawingField.SetValue(null, draw);
-
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-                Debug.WriteLine(e.StackTrace);
-            }
-        }
-
-        void DrawPython(object val, string id)
-        {
-            //DrawContainers(val, id);
-        }
-
-        //private void DrawContainers(FScheme.Value val, string id)
-        //{
-        //    if (val.IsList)
-        //    {
-        //        foreach (FScheme.Value v in ((FScheme.Value.List)val).Item)
-        //        {
-        //            DrawContainers(v, id);
-        //        }
-        //    }
-        //    if (val.IsContainer)
-        //    {
-        //        var drawable = ((FScheme.Value.Container)val).Item;
-
-        //        if (drawable is GraphicItem)
-        //        {
-        //            VisualizationManager.Visualizations[id].Geometry.Add(drawable);
-        //        }
-        //    }
-        //}
     }
 
     public class CancelEvaluationException : Exception
