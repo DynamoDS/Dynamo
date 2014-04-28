@@ -773,5 +773,91 @@ r = fx(cs<1>, vs<2>);
             thisTest.Verify("r", new object[] { new object[] {142, 143},
                                                 new object[] {242, 243}});
         }
+
+        [Test]
+        public void T42_FunctionPointerToProperty()
+        {
+            string code = @"class Foo 
+{ 
+    X;
+    constructor Foo(x)
+    {
+        X = x;
+    } 
+} 
+c = Foo.Foo(42);
+fx = Foo.X;
+r = Evaluate(fx, {c}, true);
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 42);
+        }
+
+        [Test]
+        public void T43_FunctionPointerToProperty()
+        {
+            string code = @"class Foo 
+{ 
+    X;
+    constructor Foo(x)
+    {
+        X = x;
+    } 
+} 
+cs = Foo.Foo(42..43);
+fx = Foo.X;
+r = Evaluate(fx, {cs}, true);
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] {42, 43});
+        }
+
+        [Test]
+        public void T44_FunctionPointerToMemberFunction()
+        {
+            string code = @"class Foo 
+{ 
+    X;
+    constructor Foo(x)
+    {
+        X = x;
+    } 
+
+    def foo(x)
+    {
+        return = X + x;
+    }
+} 
+c = Foo.Foo(42);
+fx = Foo.foo;
+r = Evaluate(fx, {c, 100}, true);
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 142);
+        }
+
+        [Test]
+        public void T45_FunctionPointerToMemberFunction()
+        {
+            string code = @"class Foo 
+{ 
+    X;
+    constructor Foo(x)
+    {
+        X = x;
+    } 
+
+    def foo(x)
+    {
+        return = X + x;
+    }
+} 
+cs = Foo.Foo(42..43);
+fx = Foo.foo;
+r = Evaluate(fx, {cs, {100,200}}, true);
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] {142, 243});
+        }
     }
 }

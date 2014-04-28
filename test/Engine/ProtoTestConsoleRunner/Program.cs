@@ -92,7 +92,7 @@ namespace ProtoTestConsoleRunner
         {
             if (args.Length >= 1)
             {
-                Run(args[0], false);
+                Run(args[0], true);
             }
             else
             {

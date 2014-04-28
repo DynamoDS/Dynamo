@@ -41,6 +41,7 @@ namespace Dynamo.Nodes
             XmlElement planeNode = MigrationManager.CreateFunctionNode(
                 data.Document, oldNode, 1, "", "Plane.ByOriginNormal", 
                 "Plane.ByOriginNormal@Point,Vector");
+            planeNode.SetAttribute("isVisible", "false");
             migrationData.AppendNode(planeNode);
             string planeNodeId = MigrationManager.GetGuidFromXmlElement(planeNode);
 
@@ -86,7 +87,7 @@ namespace Dynamo.Nodes
                 data.ReconnectToPort(connector5, minusNodeInPort1);
             }
 
-            data.CreateConnector(minusNode, 0, converterNode1, 4);
+            data.CreateConnector(minusNode, 0, converterNode1, 0);
             data.CreateConnector(converterNode0, 0, newNode, 3);
             data.CreateConnector(converterNode1, 0, newNode, 4);
             data.CreateConnector(zAxis, 0, planeNode, 1);
