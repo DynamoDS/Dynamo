@@ -3,6 +3,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:clr="clr-namespace:System;assembly=mscorlib"
+             xmlns:sys="clr-namespace:System.Windows;assembly=PresentationCore"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              Width="500"
@@ -10,39 +12,47 @@
 
     <UserControl.Resources>
 
+        <clr:Double x:Key="MinPreviewControlWidth">180.0</clr:Double>
+        <clr:Double x:Key="MinPreviewControlHeight">60.0</clr:Double>
+        <clr:Double x:Key="MaxPreviewControlWidth">500.0</clr:Double>
+        <clr:Double x:Key="MaxPreviewControlHeight">300.0</clr:Double>
+        <clr:Double x:Key="PhasedOutPosition">-32.0</clr:Double>
+        <clr:TimeSpan x:Key="ResizeBeginTime">0:0:0.2</clr:TimeSpan>
+        <sys:Duration x:Key="AnimationDuration">0:0:0.2</sys:Duration>
+
         <Storyboard x:Key="phaseInStoryboard"
                     Completed="OnPreviewControlPhasedIn">
             <DoubleAnimation Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Opacity"
                              From="0.0"
                              To="1.0"
-                             Duration="0:0:0.2" />
+                             Duration="{StaticResource AnimationDuration}" />
             <DoubleAnimation Storyboard.TargetName="thisPreviewControl"
                              Storyboard.TargetProperty="(Canvas.Top)"
-                             From="-32.0"
+                             From="{StaticResource PhasedOutPosition}"
                              To="0.0"
-                             Duration="0:0:0.2" />
+                             Duration="{StaticResource AnimationDuration}" />
         </Storyboard>
 
         <Storyboard x:Key="expandStoryboard"
                     Completed="OnPreviewControlExpanded">
             <DoubleAnimation Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Width"
-                             To="500.0"
-                             Duration="0:0:0.2" />
+                             To="{StaticResource MaxPreviewControlWidth}"
+                             Duration="{StaticResource AnimationDuration}" />
             <DoubleAnimation Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Height"
-                             To="300.0"
-                             Duration="0:0:0.2" />
+                             To="{StaticResource MaxPreviewControlHeight}"
+                             Duration="{StaticResource AnimationDuration}" />
             <DoubleAnimation Storyboard.TargetName="smallContentGrid"
                              Storyboard.TargetProperty="Opacity"
                              To="0.0"
-                             Duration="0:0:0.2" />
+                             Duration="{StaticResource AnimationDuration}" />
             <DoubleAnimation Storyboard.TargetName="largeContentGrid"
                              Storyboard.TargetProperty="Opacity"
                              To="1.0"
-                             Duration="0:0:0.2"
-                             BeginTime="0:0:0.2" />
+                             Duration="{StaticResource AnimationDuration}"
+                             BeginTime="{StaticResource ResizeBeginTime}" />
         </Storyboard>
 
         <Storyboard x:Key="condenseStoryboard"
@@ -50,22 +60,22 @@
             <DoubleAnimation Storyboard.TargetName="largeContentGrid"
                              Storyboard.TargetProperty="Opacity"
                              To="0.0"
-                             Duration="0:0:0.2" />
+                             Duration="{StaticResource AnimationDuration}" />
             <DoubleAnimation Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Width"
-                             To="180.0"
-                             Duration="0:0:0.2"
-                             BeginTime="0:0:0.2" />
+                             To="{StaticResource MinPreviewControlWidth}"
+                             Duration="{StaticResource AnimationDuration}"
+                             BeginTime="{StaticResource ResizeBeginTime}" />
             <DoubleAnimation Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Height"
-                             To="60.0"
-                             Duration="0:0:0.2"
-                             BeginTime="0:0:0.2" />
+                             To="{StaticResource MinPreviewControlHeight}"
+                             Duration="{StaticResource AnimationDuration}"
+                             BeginTime="{StaticResource ResizeBeginTime}" />
             <DoubleAnimation Storyboard.TargetName="smallContentGrid"
                              Storyboard.TargetProperty="Opacity"
                              To="1.0"
-                             Duration="0:0:0.2"
-                             BeginTime="0:0:0.2" />
+                             Duration="{StaticResource AnimationDuration}"
+                             BeginTime="{StaticResource ResizeBeginTime}" />
         </Storyboard>
 
         <Storyboard x:Key="phaseOutStoryboard"
@@ -74,12 +84,12 @@
                              Storyboard.TargetProperty="Opacity"
                              From="1.0"
                              To="0.0"
-                             Duration="0:0:0.2" />
+                             Duration="{StaticResource AnimationDuration}" />
             <DoubleAnimation Storyboard.TargetName="thisPreviewControl"
                              Storyboard.TargetProperty="(Canvas.Top)"
                              From="0.0"
-                             To="-32.0"
-                             Duration="0:0:0.2" />
+                             To="{StaticResource PhasedOutPosition}"
+                             Duration="{StaticResource AnimationDuration}" />
         </Storyboard>
 
     </UserControl.Resources>
@@ -89,8 +99,8 @@
           VerticalAlignment="Top">
 
         <Grid Name="centralizedGrid"
-              Width="180"
-              Height="60">
+              Width="{StaticResource MinPreviewControlWidth}"
+              Height="{StaticResource MinPreviewControlHeight}">
             <Border CornerRadius="2"
                     Background="White"
                     BorderThickness="1"

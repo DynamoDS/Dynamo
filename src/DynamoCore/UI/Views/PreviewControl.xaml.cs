@@ -15,12 +15,10 @@ using System.Windows.Shapes;
 
 namespace Dynamo.UI.Controls
 {
-    // A delegate type for hooking up change notifications.
+    // Event to be sent when PreviewControl goes into a stable 
+    // state (e.g. when all on-going storyboards have been completed).
     public delegate void StateChangedEventHandler(object sender, EventArgs e);
 
-    /// <summary>
-    /// Interaction logic for PreviewControl.xaml
-    /// </summary>
     public partial class PreviewControl : UserControl
     {
         #region Private Class Data Members
