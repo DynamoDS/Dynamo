@@ -169,12 +169,155 @@ namespace ProtoCore.DSASM
 
         }
         
-        // Some constant values
+        #region Some constant values
         public static StackValue Null = BuildNull();
         public static StackValue True = BuildBoolean(true);
         public static StackValue False = BuildBoolean(false);
+        #endregion
 
-        // Builders
+        #region Type checkers
+        public bool IsInvalid()
+        {
+            return optype == AddressType.Invalid;
+        }
+
+        public bool IsRegister()
+        {
+            return optype == AddressType.Register;
+        }
+
+        public bool IsVariableIndex()
+        {
+            return optype == AddressType.VarIndex;
+        }
+
+        public bool IsFunctionIndex()
+        {
+            return optype == AddressType.FunctionIndex;
+        }
+
+        public bool IsMemberVariableIndex()
+        {
+            return optype == AddressType.MemVarIndex;
+        }
+
+        public bool IsStaticVariableIndex()
+        {
+            return optype == AddressType.StaticMemVarIndex;
+        }
+
+        public bool IsClassIndex()
+        {
+            return optype == AddressType.ClassIndex;
+        }
+
+        public bool IsInteger()
+        {
+            return optype == AddressType.Int;
+        }
+
+        public bool IsDouble()
+        {
+            return optype == AddressType.Double;
+        }
+
+        public bool IsBoolean()
+        {
+            return optype == AddressType.Boolean;
+        }
+
+        public bool IsChar()
+        {
+            return optype == AddressType.Char;
+        }
+
+        public bool IsString()
+        {
+            return optype == AddressType.String;
+        }
+
+        public bool IsLabelIndex()
+        {
+            return optype == AddressType.LabelIndex;
+        }
+
+        public bool IsBlockIndex()
+        {
+            return optype == AddressType.BlockIndex;
+        }
+
+        public bool IsObject()
+        {
+            return optype == AddressType.Pointer;
+        }
+
+        public bool IsArray()
+        {
+            return optype == AddressType.ArrayPointer;
+        }
+
+        public bool IsFunctionPointer()
+        {
+            return optype == AddressType.FunctionPointer;
+        }
+
+        public bool IsNull()
+        {
+            return optype == AddressType.Null;
+        }
+
+        public bool IsDefaultArgument()
+        {
+            return optype == AddressType.DefaultArg;
+        }
+
+        public bool IsArrayDimension()
+        {
+            return optype == AddressType.ArrayDim;
+        }
+
+        public bool IsReplicationGuide()
+        {
+            return optype == AddressType.ReplicationGuide;
+        }
+
+        public bool IsDynamic()
+        {
+            return optype == AddressType.Dynamic;
+        }
+
+        public bool IsStaticType()
+        {
+            return optype == AddressType.StaticType;
+        }
+
+        public bool IsCallingConvention()
+        {
+            return optype == AddressType.CallingConvention;
+        }
+
+        public bool IsFrameType()
+        {
+            return optype == AddressType.FrameType;
+        }
+
+        public bool IsThisPtr()
+        {
+            return optype == AddressType.ThisPtr;
+        }
+
+        public bool IsExplicitCall()
+        {
+            return optype == AddressType.ExplicitCall;
+        }
+
+        public bool IsArrayKey()
+        {
+            return optype == AddressType.ArrayKey;
+        }
+        #endregion
+
+        #region Builders
         public static StackValue BuildInvalid()
         {
             StackValue value = new StackValue();
@@ -507,6 +650,7 @@ namespace ProtoCore.DSASM
             }
             return registers;
         }
+        #endregion
     }
 
     public class Instruction
