@@ -744,7 +744,21 @@ namespace Dynamo.Tests
              AssertPreviewValue("c5866d0f-3d76-4093-a62d-15bea73f7bee", new double[]{1.0,2.8,4.6,6.4,8.2,10.0});
          }
 
+         [Test]
+         public void Map_With_PropertyMethod()
+         {
+             // Function object to property method and used in map
+             RunModel(@"core\dsevaluation\map_property.dyn");
+             AssertPreviewValue("abc4796e-b35d-4076-b6ff-2f814dda350f", new double[] { 1.0, 2.0, 3.0, 4.0, 5.0});
+         }
 
+         [Test]
+         public void Apply_With_PropertyMethod()
+         {
+             // Function object to property method and used in apply 
+             RunModel(@"core\dsevaluation\apply_property.dyn");
+             AssertPreviewValue("2cbadbce-ee25-4f90-8309-3b81bf4fdfd9", 42.0);
+         }
     }
 
     [Category("DSCustomNode")]
