@@ -26,9 +26,6 @@ namespace Dynamo.Controls
         public delegate void SetToolTipDelegate(string message);
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
 
-        // TODO(Ben): Rename this weird thing.
-        private bool previewPinned = false;
-
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
 
@@ -55,6 +52,7 @@ namespace Dynamo.Controls
                 if (this.previewControl == null)
                 {
                     this.previewControl = new PreviewControl();
+                    this.previewControl.StateChanged += OnPreviewControlStateChanged;
                     this.expansionBay.Children.Add(this.previewControl);
                 }
 
@@ -207,7 +205,7 @@ namespace Dynamo.Controls
 
             var helpDialog = new NodeHelpPrompt(e.Model);
             helpDialog.Owner = Window.GetWindow(this);
-            
+
             helpDialog.Show();
 
         }
@@ -338,28 +336,50 @@ namespace Dynamo.Controls
 
         private void OnPreviewIconMouseEnter(object sender, MouseEventArgs e)
         {
-            if (this.previewPinned == false)
+            if (PreviewControl.IsTransitional) // Transitioning, come back later.
+                return;
+
+            if (PreviewControl.IsHidden)
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
         }
 
         private void OnPreviewIconMouseLeave(object sender, MouseEventArgs e)
         {
-            if (this.previewPinned == false)
+            if (PreviewControl.IsTransitional) // Transitioning, come back later.
+                return;
+
+            if (PreviewControl.IsCondensed)
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
         }
 
         private void OnPreviewIconMouseClicked(object sender, MouseEventArgs e)
         {
-            this.previewPinned = !this.previewPinned;
-            if (this.previewPinned != false)
+            if (PreviewControl.IsTransitional) // Transitioning, come back later.
+                return;
+
+            if (PreviewControl.IsCondensed)
+                PreviewControl.TransitionToState(PreviewControl.State.Expanded);
+            else if (PreviewControl.IsExpanded)
+                PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+        }
+
+        private void OnPreviewControlStateChanged(object sender, EventArgs e)
+        {
+            var preview = sender as PreviewControl;
+
+            if (this.previewIcon.IsMouseOver)
             {
-                if (PreviewControl.CurrentState == PreviewControl.State.Condensed)
-                    PreviewControl.TransitionToState(PreviewControl.State.Expanded);
+                // The mouse is currently over the preview icon, so if the 
+                // preview control is hidden, bring it into condensed state.
+                if (preview.IsHidden != false)
+                    preview.TransitionToState(PreviewControl.State.Condensed);
             }
             else
             {
-                if (PreviewControl.CurrentState == PreviewControl.State.Expanded)
-                    PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+                // The mouse is no longer over the preview icon, if the preview 
+                // control is currently in condensed state, hide it from view.
+                if (preview.IsCondensed != false)
+                    preview.TransitionToState(PreviewControl.State.Hidden);
             }
         }
     }
