@@ -283,7 +283,8 @@
                        Fill="Red"
                        HorizontalAlignment="Center"
                        MouseEnter="OnPreviewIconMouseEnter"
-                       MouseLeave="OnPreviewIconMouseLeave">
+                       MouseLeave="OnPreviewIconMouseLeave"
+                       MouseLeftButtonDown="OnPreviewIconMouseClicked">
                 <Rectangle.Visibility>
                     <Binding Path="IsPreviewInsetVisible"
                              UpdateSourceTrigger="PropertyChanged"

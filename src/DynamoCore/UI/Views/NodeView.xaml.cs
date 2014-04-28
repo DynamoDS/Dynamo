@@ -26,6 +26,9 @@ namespace Dynamo.Controls
         public delegate void SetToolTipDelegate(string message);
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
 
+        // TODO(Ben): Rename this weird thing.
+        private bool previewPinned = false;
+
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
 
@@ -335,14 +338,29 @@ namespace Dynamo.Controls
 
         private void OnPreviewIconMouseEnter(object sender, MouseEventArgs e)
         {
-            this.PreviewControl.TransitionToState(PreviewControl.State.Condensed);
-            this.previewControl.TransitionToState(PreviewControl.State.Expanded);
+            if (this.previewPinned == false)
+                PreviewControl.TransitionToState(PreviewControl.State.Condensed);
         }
 
         private void OnPreviewIconMouseLeave(object sender, MouseEventArgs e)
         {
-            this.PreviewControl.TransitionToState(PreviewControl.State.Condensed);
-            this.PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+            if (this.previewPinned == false)
+            {
+                if (PreviewControl.CurrentState == PreviewControl.State.Expanded)
+                    PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+
+                PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+            }
+        }
+
+        private void OnPreviewIconMouseClicked(object sender, MouseEventArgs e)
+        {
+            this.previewPinned = !this.previewPinned;
+            if (this.previewPinned != false)
+            {
+                if (PreviewControl.CurrentState == PreviewControl.State.Condensed)
+                    PreviewControl.TransitionToState(PreviewControl.State.Expanded);
+            }
         }
     }
 }
