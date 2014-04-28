@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Dynamo.UI.Controls.PreviewControl"
+﻿<UserControl x:Name="thisPreviewControl"
+             x:Class="Dynamo.UI.Controls.PreviewControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -16,7 +17,7 @@
                              From="0.0"
                              To="1.0"
                              Duration="0:0:0.2" />
-            <DoubleAnimation Storyboard.TargetName="centralizedGrid"
+            <DoubleAnimation Storyboard.TargetName="thisPreviewControl"
                              Storyboard.TargetProperty="(Canvas.Top)"
                              From="-32.0"
                              To="0.0"
@@ -74,7 +75,7 @@
                              From="1.0"
                              To="0.0"
                              Duration="0:0:0.2" />
-            <DoubleAnimation Storyboard.TargetName="centralizedGrid"
+            <DoubleAnimation Storyboard.TargetName="thisPreviewControl"
                              Storyboard.TargetProperty="(Canvas.Top)"
                              From="0.0"
                              To="-32.0"
