@@ -345,12 +345,7 @@ namespace Dynamo.Controls
         private void OnPreviewIconMouseLeave(object sender, MouseEventArgs e)
         {
             if (this.previewPinned == false)
-            {
-                if (PreviewControl.CurrentState == PreviewControl.State.Expanded)
-                    PreviewControl.TransitionToState(PreviewControl.State.Condensed);
-
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
-            }
         }
 
         private void OnPreviewIconMouseClicked(object sender, MouseEventArgs e)
@@ -360,6 +355,11 @@ namespace Dynamo.Controls
             {
                 if (PreviewControl.CurrentState == PreviewControl.State.Condensed)
                     PreviewControl.TransitionToState(PreviewControl.State.Expanded);
+            }
+            else
+            {
+                if (PreviewControl.CurrentState == PreviewControl.State.Expanded)
+                    PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             }
         }
     }
