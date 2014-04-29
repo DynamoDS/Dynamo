@@ -23,8 +23,11 @@ namespace DynamoCoreUITests
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
 
-            Controller = new DynamoController(typeof(DynamoViewModel), "None", null, updateManager, new DefaultWatchHandler(), new PreferenceSettings());
+            Controller = new DynamoController("None", updateManager, 
+                new DefaultWatchHandler(), new PreferenceSettings());
             DynamoController.IsTestMode = true;
+            Controller.DynamoViewModel = new DynamoViewModel(Controller, null);
+            Controller.VisualizationManager = new VisualizationManager();
 
             //create the view
             Ui = new DynamoView { DataContext = Controller.DynamoViewModel };

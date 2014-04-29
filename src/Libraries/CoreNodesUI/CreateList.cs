@@ -8,7 +8,7 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
 {
-    [NodeName("Create List")]
+    [NodeName("List.Create")]
     [NodeDescription("Makes a new list out of the given inputs")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [IsDesignScriptCompatible]

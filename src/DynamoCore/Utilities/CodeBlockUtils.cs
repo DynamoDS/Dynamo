@@ -52,7 +52,7 @@ namespace Dynamo.Utilities
                 if (portName.Length > maxLength)
                     portName = portName.Remove(maxLength - 3) + "...";
 
-                inputPorts.Add(new PortData(portName, name, typeof(object)));
+                inputPorts.Add(new PortData(portName, name));
             }
 
             return inputPorts;

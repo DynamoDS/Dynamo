@@ -4,15 +4,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
-using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
-using Value = Dynamo.FScheme.Value;
 using System.Globalization;
 using ProtoCore.AST.AssociativeAST;
-using Utils = Dynamo.FSchemeInterop.Utils;
 using System.IO;
 using Dynamo.UI;
 using System.Web;
@@ -622,7 +618,7 @@ namespace Dynamo.Nodes
         protected internal virtual void AddInput()
         {
             var idx = GetInputNameIndex();
-            InPortData.Add(new PortData(GetInputRootName() + idx, GetTooltipRootName() + idx, typeof(object)));
+            InPortData.Add(new PortData(GetInputRootName() + idx, GetTooltipRootName() + idx));
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -651,7 +647,7 @@ namespace Dynamo.Nodes
 
                 if (subNode.Name == "Input")
                 {
-                    InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                    InPortData.Add(new PortData(subNode.Attributes["name"].Value, ""));
                 }
             }
             RegisterAllPorts();
@@ -689,7 +685,7 @@ namespace Dynamo.Nodes
                     {
                         XmlNode subNode = inNodes.Item(currLength);
                         string nickName = subNode.Attributes["name"].Value;
-                        InPortData.Add(new PortData(nickName, "", typeof(object)));
+                        InPortData.Add(new PortData(nickName, ""));
                     }
                 }
                 else if (nextLength < currLength)
@@ -730,8 +726,8 @@ namespace Dynamo.Nodes
         protected internal virtual void AddInput()
         {
             var idx = GetInputNameIndex();
-            InPortData.Add(new PortData(GetInputRootName() + idx, GetTooltipRootName() + idx, typeof(object)));
-            OutPortData.Add(new PortData(GetOutputRootName() + idx, GetTooltipRootName() + idx, typeof(object)));
+            InPortData.Add(new PortData(GetInputRootName() + idx, GetTooltipRootName() + idx));
+            OutPortData.Add(new PortData(GetOutputRootName() + idx, GetTooltipRootName() + idx));
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -769,11 +765,11 @@ namespace Dynamo.Nodes
 
                 if (subNode.Name == "Input")
                 {
-                    InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                    InPortData.Add(new PortData(subNode.Attributes["name"].Value, ""));
                 }
                 else if (subNode.Name == "Output")
                 {
-                    OutPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                    OutPortData.Add(new PortData(subNode.Attributes["name"].Value, ""));
                 }
             }
             RegisterAllPorts();
@@ -819,7 +815,7 @@ namespace Dynamo.Nodes
                     {
                         XmlNode subNode = inNodes.Item(currLength);
                         string nickName = subNode.Attributes["name"].Value;
-                        InPortData.Add(new PortData(nickName, "", typeof(object)));
+                        InPortData.Add(new PortData(nickName, ""));
                     }
                 }
                 else if (nextLength < currLength)
@@ -835,7 +831,7 @@ namespace Dynamo.Nodes
                     {
                         XmlNode subNode = outNodes.Item(currLength);
                         string nickName = subNode.Attributes["name"].Value;
-                        OutPortData.Add(new PortData(nickName, "", typeof(object)));
+                        OutPortData.Add(new PortData(nickName, ""));
                     }
                 }
                 else if (nextLength < currLength)
@@ -860,11 +856,11 @@ namespace Dynamo.Nodes
     {
         public Sublists()
         {
-            InPortData.Add(new PortData("list", "The list from which to create sublists.", typeof(Value.List)));
-            InPortData.Add(new PortData("offset", "The offset to apply to the sub-list. Ex. The range \"0..2\" with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}...", typeof(Value.List)));
+            InPortData.Add(new PortData("list", "The list from which to create sublists."));
+            InPortData.Add(new PortData("offset", "The offset to apply to the sub-list. Ex. The range \"0..2\" with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}..."));
 
             OutPortData.RemoveAt(0); //remove the existing blank output
-            OutPortData.Add(new PortData("list", "The sublists.", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "The sublists."));
 
             RegisterAllPorts();
 
@@ -916,7 +912,7 @@ namespace Dynamo.Nodes
 
                 foreach (string parameter in parameters)
                 {
-                    InPortData.Add(new PortData(parameter, "variable", typeof(Value.Number)));
+                    InPortData.Add(new PortData(parameter, "variable"));
                 }
 
                 RegisterInputPorts();
@@ -1129,9 +1125,9 @@ namespace Dynamo.Nodes
     { 
         public ComposeFunctions()
         {
-            InPortData.Add(new PortData("f", "A Function", typeof(Value.Function)));
-            InPortData.Add(new PortData("g", "A Function", typeof(Value.Function)));
-            OutPortData.Add(new PortData("g ∘ f", "Composed function: g(f(x))", typeof(Value.Function)));
+            InPortData.Add(new PortData("f", "A Function"));
+            InPortData.Add(new PortData("g", "A Function"));
+            OutPortData.Add(new PortData("g ∘ f", "Composed function: g(f(x))"));
 
             RegisterAllPorts();
         }
@@ -1169,8 +1165,8 @@ namespace Dynamo.Nodes
     {
         public Apply1()
         {
-            InPortData.Add(new PortData("func", "Function", typeof(object)));
-            OutPortData.Add(new PortData("result", "Result of function application.", typeof(object)));
+            InPortData.Add(new PortData("func", "Function"));
+            OutPortData.Add(new PortData("result", "Result of function application."));
 
             RegisterAllPorts();
         }
@@ -1221,7 +1217,7 @@ namespace Dynamo.Nodes
                     var attr = subNode.Attributes["name"].Value;
 
                     if (!attr.Equals("func"))
-                        InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                        InPortData.Add(new PortData(subNode.Attributes["name"].Value, ""));
                 }
             }
             RegisterAllPorts();
@@ -1273,7 +1269,7 @@ namespace Dynamo.Nodes
         protected BasicInteractive()
         {
             Type type = typeof(T);
-            OutPortData.Add(new PortData("", type.Name, type));
+            OutPortData.Add(new PortData("", type.Name));
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -1521,7 +1517,7 @@ namespace Dynamo.Nodes
     {
         public DoubleInput()
         {
-            OutPortData.Add(new PortData("", "", typeof(Value.Number)));
+            OutPortData.Add(new PortData("", ""));
             RegisterAllPorts();
 
             _convertToken = Convert;
@@ -1556,7 +1552,7 @@ namespace Dynamo.Nodes
 
                     foreach (var id in idList)
                     {
-                        InPortData.Add(new PortData(id, "variable", typeof(Value.Number)));
+                        InPortData.Add(new PortData(id, "variable"));
                     }
 
                     RegisterInputPorts();
@@ -1815,7 +1811,7 @@ namespace Dynamo.Nodes
 
         public interface IDoubleSequence
         {
-            Value GetFSchemeValue(Dictionary<string, double> idLookup);
+            object GetFSchemeValue(Dictionary<string, double> idLookup);
             IEnumerable<double> GetValue(Dictionary<string, double> idLookup);
             AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup);
         }
@@ -1835,9 +1831,9 @@ namespace Dynamo.Nodes
                     _result = _convert(GetValue(null).First());
             }
 
-            public Value GetFSchemeValue(Dictionary<string, double> idLookup)
+            public object GetFSchemeValue(Dictionary<string, double> idLookup)
             {
-                return FScheme.Value.NewNumber(GetValue(idLookup).First());
+                return GetValue(idLookup).First();
             }
 
             public IEnumerable<double> GetValue(Dictionary<string, double> idLookup)
@@ -1882,10 +1878,9 @@ namespace Dynamo.Nodes
                 }
             }
 
-            public Value GetFSchemeValue(Dictionary<string, double> idLookup)
+            public object GetFSchemeValue(Dictionary<string, double> idLookup)
             {
-                return FScheme.Value.NewList(
-                    GetValue(idLookup).Select(FScheme.Value.NewNumber).ToFSharpList());
+                return GetValue(idLookup);
             }
 
             public IEnumerable<double> GetValue(Dictionary<string, double> idLookup)
@@ -1957,10 +1952,9 @@ namespace Dynamo.Nodes
                 }
             }
 
-            public Value GetFSchemeValue(Dictionary<string, double> idLookup)
+            public object GetFSchemeValue(Dictionary<string, double> idLookup)
             {
-                return FScheme.Value.NewList(
-                    GetValue(idLookup).Select(FScheme.Value.NewNumber).ToFSharpList());
+                return GetValue(idLookup);
             }
 
             public IEnumerable<double> GetValue(Dictionary<string, double> idLookup)
@@ -1980,6 +1974,16 @@ namespace Dynamo.Nodes
                 return _result;
             }
 
+            private IEnumerable<double> _Range(double start, double step, double stop)
+            {
+                var current = start;
+                while (current <= stop)
+                {
+                    yield return current;
+                    current += step;
+                }
+            }
+
             protected virtual IEnumerable<double> Process(double start, double step, double end)
             {
                 if (step < 0)
@@ -1993,8 +1997,8 @@ namespace Dynamo.Nodes
                 var countingUp = start < end;
 
                 return countingUp
-                    ? FScheme.Range(start, step, end)
-                    : FScheme.Range(end, step, start).Reverse();
+                    ? _Range(start, step, end)
+                    : _Range(end, step, start).Reverse();
             }
 
             protected virtual ProtoCore.DSASM.RangeStepOperator GetRangeExpressionOperator()

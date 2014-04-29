@@ -3,20 +3,17 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSNodeServices;
-using Revit.Elements;
 using Revit.GeometryConversion;
-using Revit.GeometryObjects;
 using Revit.References;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
-using Edge = Autodesk.DesignScript.Geometry.Edge;
 using Plane = Autodesk.DesignScript.Geometry.Plane;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using Reference = Autodesk.Revit.DB.Reference;
+using UV = Autodesk.Revit.DB.UV;
 
 namespace Revit.Elements
 {
-
     /// <summary>
     /// A Revit Reference Point
     /// </summary>
@@ -24,7 +21,6 @@ namespace Revit.Elements
     [ShortName("refPt")]
     public class ReferencePoint : Element, IGraphicItem
     {
-
         #region Internal properties
 
         /// <summary>
@@ -61,7 +57,7 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="faceReference"></param>
         /// <param name="uv"></param>
-        private ReferencePoint(Autodesk.Revit.DB.Reference faceReference, Autodesk.Revit.DB.UV uv)
+        private ReferencePoint(Reference faceReference, UV uv)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
             var oldRefPt =
@@ -83,7 +79,7 @@ namespace Revit.Elements
 
             TransactionManager.Instance.TransactionTaskDone();
 
-            ElementBinder.SetElementForTrace(this.InternalElement);
+            ElementBinder.SetElementForTrace(InternalElement);
         }
 
         /// <summary>
@@ -117,7 +113,7 @@ namespace Revit.Elements
 
             TransactionManager.Instance.TransactionTaskDone();
 
-            ElementBinder.SetElementForTrace(this.InternalElement);
+            ElementBinder.SetElementForTrace(InternalElement);
         }
 
         /// <summary>
@@ -147,7 +143,7 @@ namespace Revit.Elements
 
             TransactionManager.Instance.TransactionTaskDone();
 
-            ElementBinder.SetElementForTrace(this.InternalElement);
+            ElementBinder.SetElementForTrace(InternalElement);
         }
 
         #endregion
@@ -163,7 +159,7 @@ namespace Revit.Elements
             TransactionManager.Instance.TransactionTaskDone();
         }
 
-        private void InternalSetPointOnFace(Reference faceReference, Autodesk.Revit.DB.UV uv)
+        private void InternalSetPointOnFace(Reference faceReference, UV uv)
         {
             TransactionManager.Instance.EnsureInTransaction(Document);
 
@@ -188,8 +184,8 @@ namespace Revit.Elements
         private void InternalSetReferencePoint(Autodesk.Revit.DB.ReferencePoint p)
         {
             InternalReferencePoint = p;
-            this.InternalElementId = InternalReferencePoint.Id;
-            this.InternalUniqueId = InternalReferencePoint.UniqueId;
+            InternalElementId = InternalReferencePoint.Id;
+            InternalUniqueId = InternalReferencePoint.UniqueId;
         }
 
         #endregion
@@ -266,7 +262,9 @@ namespace Revit.Elements
             }
         }
 
-        public String Id { get { return InternalElementId.ToString(); } 
+        public String Id
+        {
+            get { return InternalElementId.ToString(); }
         }
 
 
@@ -317,7 +315,7 @@ namespace Revit.Elements
         /// <param name="direction"></param>
         /// <param name="distance"></param>
         /// <returns></returns>
-        public static ReferencePoint ByPointVectorDistance(Autodesk.DesignScript.Geometry.Point basePoint, Autodesk.DesignScript.Geometry.Vector direction, double distance)
+        public static ReferencePoint ByPointVectorDistance(Point basePoint, Vector direction, double distance)
         {
             if (!Document.IsFamilyDocument)
             {
@@ -403,7 +401,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("face");
             }
 
-            return new ReferencePoint(face.InternalReference, new Autodesk.Revit.DB.UV(u, v));
+            return new ReferencePoint(face.InternalReference, new UV(u, v));
         }
 
         #endregion
@@ -459,12 +457,13 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="package"></param>
         /// <param name="tol"></param>
+        /// <param name="gridLines"></param>
         void IGraphicItem.Tessellate(IRenderPackage package, double tol, int gridLines)
         {
             if (!IsAlive)
                 return;
 
-            package.PushPointVertex(this.X, this.Y, this.Z);
+            package.PushPointVertex(X, Y, Z);
         }
 
         #endregion

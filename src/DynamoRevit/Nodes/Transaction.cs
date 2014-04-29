@@ -23,8 +23,8 @@ namespace Dynamo.Nodes
         public Transaction()
         {
             InPortData.Add(
-                new PortData("expr", "Expression to run in a transaction.", typeof(object)));
-            OutPortData.Add(new PortData("result", "Result of the expression.", typeof(Value.List)));
+                new PortData("expr", "Expression to run in a transaction."));
+            OutPortData.Add(new PortData("result", "Result of the expression."));
 
             RegisterAllPorts();
         }

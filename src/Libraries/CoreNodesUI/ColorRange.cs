@@ -30,10 +30,10 @@ namespace DSCoreNodesUI
 
         public ColorRange()
         {
-            InPortData.Add(new PortData("start", "The start color.", typeof(object)));
-            InPortData.Add(new PortData("end", "The end color.", typeof(object)));
-            InPortData.Add(new PortData("value", "The value between 0 and 1 of the selected color.", typeof(object)));
-            OutPortData.Add(new PortData("color", "The selected color.", typeof(object)));
+            InPortData.Add(new PortData("start", "The start color."));
+            InPortData.Add(new PortData("end", "The end color."));
+            InPortData.Add(new PortData("value", "The value between 0 and 1 of the selected color."));
+            OutPortData.Add(new PortData("color", "The selected color."));
 
             RegisterAllPorts();
 
