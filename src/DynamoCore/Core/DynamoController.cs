@@ -566,6 +566,8 @@ namespace Dynamo
                     foreach (NodeModel node in nodes)
                     {
                         node.IsUpdated = true;
+                        var mirror = EngineController.GetMirror(node.AstIdentifierForPreview.Value);
+                        node.OldValue = mirror == null ? null : mirror.GetData();
                     }
                 }
             }

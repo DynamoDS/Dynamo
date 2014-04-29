@@ -72,7 +72,6 @@ namespace Dynamo
 
             IEnumerable<FScheme.Value> values = dynSettings.Controller.DynamoModel.Nodes
                 .Where(x => x.IsVisible).Where(x => x.OldValue != null)
-                //.Where(x => x.OldValue is Value.Container || x.OldValue is Value.List)
                 .Select(x => x.OldValue.Data as FScheme.Value);
 
             List<GeometryObject> geoms = values.ToList().SelectMany(RevitGeometryFromNodes).ToList();

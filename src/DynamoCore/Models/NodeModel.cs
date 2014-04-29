@@ -301,17 +301,7 @@ namespace Dynamo.Models
             }
         }
 
-        /// <summary>
-        ///     The value which was produced for this node during the previous evaluation.
-        /// </summary>
-        public virtual MirrorData OldValue
-        {
-            get
-            {
-                var mirrorData = dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Value);
-                return mirrorData == null ? null : mirrorData.GetData();
-            }
-        }
+        public virtual MirrorData OldValue { get; set; }
 
         /// <summary>
         ///     If the node is updated in LiveRunner's execution
@@ -1421,10 +1411,10 @@ namespace Dynamo.Models
         /// </summary>
         public virtual void UpdateRenderPackage()
         {
-            //Avoid attempting an update after the controller 
-            //has shut down.
             if (dynSettings.Controller == null)
+            {
                 return;
+            }
 
             //dispose of the current render package
             lock (RenderPackagesMutex)
@@ -1432,7 +1422,9 @@ namespace Dynamo.Models
                 RenderPackages.Clear();
                 HasRenderPackages = false;
 
-                if (State == ElementState.Error || !IsVisible)
+                if (State == ElementState.Error ||
+                    !IsVisible ||
+                    OldValue == null)
                 {
                     return;
                 }
