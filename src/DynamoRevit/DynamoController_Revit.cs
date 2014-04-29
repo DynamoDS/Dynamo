@@ -52,12 +52,6 @@ namespace Dynamo
 
             dynRevitSettings.Controller = this;
 
-            //Predicate<NodeModel> requiresTransactionPredicate = node => node is RevitTransactionNode;
-            //CheckRequiresTransaction = new PredicateTraverser(requiresTransactionPredicate);
-
-            //Predicate<NodeModel> manualTransactionPredicate = node => node is Transaction;
-            //CheckManualTransaction = new PredicateTraverser(manualTransactionPredicate);
-
             dynSettings.Controller.DynamoViewModel.RequestAuthentication += RegisterSingleSignOn;
 
             AddPythonBindings();
@@ -92,26 +86,18 @@ namespace Dynamo
         ///     A dictionary which temporarily stores element names for setting after element deletion.
         /// </summary>
         public Dictionary<ElementId, string> ElementNameStore { get; set; }
-
-        /// <summary>
-        ///     A visualization manager responsible for generating geometry for rendering.
-        /// </summary>
-        public override VisualizationManager VisualizationManager
+        
+        protected override VisualizationManager InitializeVisualizationManager()
         {
-            get
-            {
-                if (visualizationManager == null)
-                {
-                    visualizationManager = new VisualizationManagerRevit(this);
+            var visualizationManager = new VisualizationManagerRevit(this);
 
-                    visualizationManager.VisualizationUpdateComplete +=
-                        visualizationManager_VisualizationUpdateComplete;
+            visualizationManager.VisualizationUpdateComplete +=
+                visualizationManager_VisualizationUpdateComplete;
 
-                    visualizationManager.RequestAlternateContextClear += CleanupVisualizations;
-                    dynSettings.Controller.DynamoModel.CleaningUp += CleanupVisualizations;
-                }
-                return visualizationManager;
-            }
+            visualizationManager.RequestAlternateContextClear += CleanupVisualizations;
+            dynSettings.Controller.DynamoModel.CleaningUp += CleanupVisualizations;
+
+            return visualizationManager;
         }
 
         public bool InIdleThread

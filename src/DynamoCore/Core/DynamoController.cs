@@ -70,7 +70,7 @@ namespace Dynamo
             new Dictionary<string, TypeLoadData>();
         
         //TODO: this is dumb --SJE
-        protected VisualizationManager visualizationManager;
+        private VisualizationManager visualizationManager;
 
         public CustomNodeManager CustomNodeManager { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
@@ -82,9 +82,14 @@ namespace Dynamo
         public IWatchHandler WatchHandler { get; set; }
         public IPreferences PreferenceSettings { get; set; }
 
-        public virtual VisualizationManager VisualizationManager
+        public VisualizationManager VisualizationManager
         {
-            get { return visualizationManager ?? (visualizationManager = new VisualizationManager(this)); }
+            get { return visualizationManager ?? (visualizationManager = InitializeVisualizationManager()); }
+        }
+
+        protected virtual VisualizationManager InitializeVisualizationManager()
+        {
+            return new VisualizationManager(this);
         }
 
         /// <summary>
