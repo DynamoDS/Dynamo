@@ -747,6 +747,8 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var buf = new StringBuilder();
             string functionName = (Function as IdentifierNode).Value;
+            if (string.IsNullOrEmpty(functionName))
+                functionName = Function.Name;
             string postfix = base.ToString();
 
             if (CoreUtils.IsInternalMethod(functionName))
