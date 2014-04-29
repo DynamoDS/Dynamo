@@ -52,7 +52,7 @@ namespace ProtoCore.AssociativeEngine
 
                 foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
                 {
-                    if (gnode.isActive && gnode.OriginalAstID == bNode.SourceAstID)
+                    if (gnode.isActive && gnode.OriginalAstID == bNode.OriginalAstID)
                     {
                         if (!setEntryPoint)
                         {
