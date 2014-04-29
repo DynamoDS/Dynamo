@@ -143,7 +143,7 @@ namespace DSRevitNodesUI
             }
             else
             {
-                _sunVector = GetSunDirection(PickedSunAndShadowSettings);
+                _sunVector = GetSunDirection(PickedSunAndShadowSettings).Normalize();
 
                 var xNode = AstFactory.BuildDoubleNode(_sunVector.X);
                 var yNode = AstFactory.BuildDoubleNode(_sunVector.Y);
