@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -40,7 +39,6 @@ namespace Dynamo.Applications
         private static readonly string assemblyName = Assembly.GetExecutingAssembly().Location;
         private static ResourceManager res;
         internal static ControlledApplication ControlledApplication;
-        internal static List<IUpdater> Updaters = new List<IUpdater>();
 
         public Result OnStartup(UIControlledApplication application)
         {
@@ -76,8 +74,6 @@ namespace Dynamo.Applications
                 pushButton.LargeImage = bitmapSource;
                 pushButton.Image = bitmapSource;
 
-                RegisterAdditionalUpdaters(application);
-
                 return Result.Succeeded;
             }
             catch (Exception ex)
@@ -85,28 +81,6 @@ namespace Dynamo.Applications
                 MessageBox.Show(ex.ToString());
                 return Result.Failed;
             }
-        }
-
-        /// <summary>
-        /// Register some document updaters. Generally, document updaters 
-        // should be handled by the ModelUpdater class. But there are some
-        // cases where the document modifications handled there do no catch
-        // certain document interactions. Those should be registered here.
-        /// </summary>
-        /// <param name="application"></param>
-        private static void RegisterAdditionalUpdaters(UIControlledApplication application)
-        {
-            
-            var sunUpdater = new SunPathUpdater(application.ActiveAddInId);
-
-            if (!UpdaterRegistry.IsUpdaterRegistered(sunUpdater.GetUpdaterId()))
-                UpdaterRegistry.RegisterUpdater(sunUpdater);
-
-            var sunFilter = new ElementClassFilter(typeof (SunAndShadowSettings));
-            var filterList = new List<ElementFilter> {sunFilter};
-            ElementFilter filter = new LogicalOrFilter(filterList);
-            UpdaterRegistry.AddTrigger(sunUpdater.GetUpdaterId(), filter, Element.GetChangeTypeAny());
-            Updaters.Add(sunUpdater);
         }
 
         public Result OnShutdown(UIControlledApplication application)
@@ -173,7 +147,7 @@ namespace Dynamo.Applications
                 dynRevitSettings.DefaultLevel = defaultLevel;
 
                 //TODO: has to be changed when we handle multiple docs
-                Updater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
+                Updater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication);
                 Updater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
                 Updater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
 
