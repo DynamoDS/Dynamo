@@ -187,6 +187,20 @@ namespace ProtoAssociative
             expressionSSATempSymbolList = new Stack<SymbolNode>();
         }
 
+        /// <summary>
+        /// Helper function to initialize the global function table entry for a class
+        /// </summary>
+        /// <param name="classIndexAtCallsite"></param>
+        private void InitGlobalFunctionTableEntry(int classIndexAtCallsite)
+        {
+            Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != classIndexAtCallsite);
+            if (!core.FunctionTable.GlobalFuncTable.ContainsKey(classIndexAtCallsite))
+            {
+                Dictionary<string, FunctionGroup> funcList = new Dictionary<string, FunctionGroup>();
+                core.FunctionTable.GlobalFuncTable.Add(classIndexAtCallsite, funcList);
+            }
+        }
+
         private ProtoCore.DSASM.CodeBlock GetDeltaCompileCodeBlock()
         {
             ProtoCore.DSASM.CodeBlock cb = null;
@@ -3300,7 +3314,7 @@ namespace ProtoAssociative
                                 ssaNode.exprUID = ssaID;
                                 ssaNode.ssaExprID = ssaExprID;
                                 ssaNode.guid = bnode.guid;
-                                ssaNode.SourceAstID = bnode.ID;
+                                ssaNode.OriginalAstID = bnode.ID;
                                 NodeUtils.SetNodeLocation(ssaNode, node, node);
                             }
 
@@ -5243,6 +5257,11 @@ namespace ProtoAssociative
 
                 globalClassIndex = core.ClassTable.GetClassId(classDecl.className);
 
+                // Initialize the global function table for this class
+                // 'classIndexAtCallsite' is the class index as it is stored at the callsite function tables
+                int classIndexAtCallsite = globalClassIndex + 1;
+                InitGlobalFunctionTableEntry(classIndexAtCallsite);
+
                 foreach (AssociativeNode funcdecl in classDecl.funclist)
                 {
                     // reset the inferedtype between functions
@@ -5568,16 +5587,10 @@ namespace ProtoAssociative
                 fep.FormalParams = new ProtoCore.Type[localProcedure.argTypeList.Count];
                 fep.procedureNode = localProcedure;
                 localProcedure.argTypeList.CopyTo(fep.FormalParams, 0);
-                
-                // TODO Jun: 'classIndexAtCallsite' is the class index as it is stored at the callsite function tables
-                // Determine whether this still needs to be aligned to the actual 'classIndex' variable
-                // The factors that will affect this is whether the 2 function tables (compiler and callsite) need to be merged
+
+                // 'classIndexAtCallsite' is the class index as it is stored at the callsite function tables
                 int classIndexAtCallsite = globalClassIndex + 1;
-                if (!core.FunctionTable.GlobalFuncTable.ContainsKey(classIndexAtCallsite))
-                {
-                    Dictionary<string, FunctionGroup> funcList = new Dictionary<string, FunctionGroup>();
-                    core.FunctionTable.GlobalFuncTable.Add(classIndexAtCallsite, funcList);
-                }
+                InitGlobalFunctionTableEntry(classIndexAtCallsite);
 
                 Dictionary<string, FunctionGroup> fgroup = core.FunctionTable.GlobalFuncTable[classIndexAtCallsite];
                 if (!fgroup.ContainsKey(funcDef.Name))
@@ -5981,16 +5994,9 @@ namespace ProtoAssociative
                 fep.procedureNode = localProcedure;
                 localProcedure.argTypeList.CopyTo(fep.FormalParams, 0);
 
-                // TODO Jun: 'classIndexAtCallsite' is the class index as it is stored at the callsite function tables
-                // Determine whether this still needs to be aligned to the actual 'classIndex' variable
-                // The factors that will affect this is whether the 2 function tables (compiler and callsite) need to be merged
+                // 'classIndexAtCallsite' is the class index as it is stored at the callsite function tables
                 int classIndexAtCallsite = globalClassIndex + 1;
-                if (!core.FunctionTable.GlobalFuncTable.ContainsKey(classIndexAtCallsite))
-                {
-                    // Create a new table for the class as this class does not exist in the tables yet
-                    Dictionary<string, FunctionGroup> funcList = new Dictionary<string, FunctionGroup>();
-                    core.FunctionTable.GlobalFuncTable.Add(classIndexAtCallsite, funcList);
-                }
+                InitGlobalFunctionTableEntry(classIndexAtCallsite);
 
                 // Get the function group of the current class and see if the current function exists
                 Dictionary<string, FunctionGroup> fgroup = core.FunctionTable.GlobalFuncTable[classIndexAtCallsite];
@@ -7855,7 +7861,7 @@ namespace ProtoAssociative
                     EmitCompileLog("==============Start Node==============\n");
                     graphNode = new ProtoCore.AssociativeGraph.GraphNode();
                     graphNode.AstID = bnode.ID;
-                    graphNode.SourceAstID = bnode.SourceAstID; 
+                    graphNode.OriginalAstID = bnode.OriginalAstID; 
                     graphNode.exprUID = bnode.exprUID;
                     graphNode.ssaExprID = bnode.ssaExprID;
                     graphNode.guid = core.SSASubscript_GUID;
