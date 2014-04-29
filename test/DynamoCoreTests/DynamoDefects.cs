@@ -119,7 +119,7 @@ namespace Dynamo.Tests
 
             dynSettings.Controller.RunExpression(null);
             var add = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("ccb2eda9-0966-4ab8-a186-0d5f844559c1");
-            Assert.AreEqual(20, add.OldValue.Data);
+            Assert.AreEqual(20, add.CachedValue.Data);
         }
 
         [Test]
