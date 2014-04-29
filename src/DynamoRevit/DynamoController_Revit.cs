@@ -184,11 +184,7 @@ namespace Dynamo
             else
             {
                 DynamoViewModel.RunEnabled = true;
-                DynamoLogger.Instance.LogWarning(
-                    string.Format(
-                        "Dynamo is now pointing at document: {0}",
-                        DocumentManager.Instance.CurrentUIDocument.Document.PathName),
-                    WarningLevel.Moderate);
+                DynamoLogger.Instance.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
             }
 
             ResetForNewDocument();
@@ -199,14 +195,18 @@ namespace Dynamo
             //if Dynamo doesn't have a view, then latch onto this one
             if (DocumentManager.Instance.CurrentUIDocument != null)
             {
-                DynamoLogger.Instance.LogWarning(
-                    string.Format(
-                        "Dynamo is now pointing at document: {0}",
-                        DocumentManager.Instance.CurrentUIDocument.Document.PathName),
-                    WarningLevel.Moderate);
-
+                DynamoLogger.Instance.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
                 ResetForNewDocument();
             }
+        }
+
+        private static string GetDocumentPointerMessage()
+        {
+            var docPath = DocumentManager.Instance.CurrentUIDocument.Document.PathName;
+            var message = string.IsNullOrEmpty(docPath)
+                ? "a new document."
+                : string.Format("document: {0}", docPath);
+            return string.Format("Dynamo is now running on {0}", message);
         }
 
         public event EventHandler RevitDocumentChanged;
