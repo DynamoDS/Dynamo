@@ -171,10 +171,16 @@ namespace Dynamo.Applications
                         BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
                         dynamoController = new DynamoController_Revit(Updater, context);
+
+                        // Generate a view model to be the data context for the view
                         dynamoController.DynamoViewModel = new DynamoRevitViewModel(dynamoController, null);
                         dynamoController.DynamoViewModel.RequestAuthentication += ((DynamoController_Revit)dynamoController).RegisterSingleSignOn;
                         dynamoController.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
                         dynamoController.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = ((DynamoController_Revit)dynamoController).FindNodesFromSelection;
+                        
+                        // Register the view model to handle sign-on requests
+                        dynSettings.Controller.DynamoViewModel.RequestAuthentication += ((DynamoController_Revit)dynamoController).RegisterSingleSignOn;
+
                         dynamoController.VisualizationManager = new VisualizationManagerRevit();
                         
                         dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
