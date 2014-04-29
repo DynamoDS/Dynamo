@@ -170,7 +170,12 @@ namespace Dynamo.Applications
                         BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
                         BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
-                        dynamoController = new DynamoController_Revit(Updater, typeof(DynamoRevitViewModel), context);
+                        dynamoController = new DynamoController_Revit(Updater, context);
+                        dynamoController.DynamoViewModel = new DynamoRevitViewModel(dynamoController, null);
+                        dynamoController.DynamoViewModel.RequestAuthentication += ((DynamoController_Revit)dynamoController).RegisterSingleSignOn;
+                        dynamoController.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
+                        dynamoController.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = ((DynamoController_Revit)dynamoController).FindNodesFromSelection;
+                        dynamoController.VisualizationManager = new VisualizationManagerRevit();
                         
                         dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
                         dynamoController.UIDispatcher = dynamoView.Dispatcher;

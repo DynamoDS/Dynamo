@@ -68,29 +68,17 @@ namespace Dynamo
 
         private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
             new Dictionary<string, TypeLoadData>();
-        
-        //TODO: this is dumb --SJE
-        private VisualizationManager visualizationManager;
 
         public CustomNodeManager CustomNodeManager { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
-        public DynamoViewModel DynamoViewModel { get; internal set; }
+        public DynamoViewModel DynamoViewModel { get; set; }
         public InfoBubbleViewModel InfoBubbleViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
         public Dispatcher UIDispatcher { get; set; }
         public IUpdateManager UpdateManager { get; set; }
         public IWatchHandler WatchHandler { get; set; }
         public IPreferences PreferenceSettings { get; set; }
-
-        public VisualizationManager VisualizationManager
-        {
-            get { return visualizationManager ?? (visualizationManager = InitializeVisualizationManager()); }
-        }
-
-        protected virtual VisualizationManager InitializeVisualizationManager()
-        {
-            return new VisualizationManager(this);
-        }
+        public IVisualizationManager VisualizationManager { get; set; }
 
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
@@ -206,24 +194,33 @@ namespace Dynamo
 
         public static DynamoController MakeSandbox(string commandFilePath = null)
         {
-            //var env = new ExecutionEnvironment();
+            DynamoController controller = null;
 
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
-                return new DynamoController(typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
+            {
+                controller = new DynamoController("None", new UpdateManager.UpdateManager(),
+                    new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
 
-            return new DynamoController(typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
-        }
+                controller.DynamoViewModel = new DynamoViewModel(controller, null);
+            }
+            else
+            {
+                controller = new DynamoController("None", new UpdateManager.UpdateManager(),
+                 new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
 
-        public DynamoController(Type viewModelType, string context, IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences) : 
-            this(viewModelType, context, null, updateManager, watchHandler, preferences)
-        {
+                controller.DynamoViewModel = new DynamoViewModel(controller, commandFilePath);
+            }
+
+            controller.VisualizationManager = new VisualizationManager();
+            return controller;
         }
 
         /// <summary>
         ///     Class constructor
         /// </summary>
-        public DynamoController(Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences)
+        public DynamoController(string context, IUpdateManager updateManager, 
+            IWatchHandler watchHandler, IPreferences preferences)
         {
             IsCrashing = false;
             DynamoLogger.Instance.StartLogging();
@@ -250,10 +247,12 @@ namespace Dynamo
 
             WatchHandler = watchHandler;
 
-            //create the view model to which the main window will bind
-            //the DynamoModel is created therein
-            DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
-                viewModelType, new object[] { this, commandFilePath });
+            //create the model
+            DynamoModel = new DynamoModel ();
+            DynamoModel.AddHomeWorkspace();
+            DynamoModel.CurrentWorkspace = DynamoModel.HomeSpace;
+            DynamoModel.CurrentWorkspace.X = 0;
+            DynamoModel.CurrentWorkspace.Y = 0;
 
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -267,9 +266,6 @@ namespace Dynamo
 
             dynSettings.PackageLoader.DoCachedPackageUninstalls();
             dynSettings.PackageLoader.LoadPackages();
-            
-            DynamoViewModel.Model.CurrentWorkspace.X = 0;
-            DynamoViewModel.Model.CurrentWorkspace.Y = 0;
 
             DisposeLogic.IsShuttingDown = false;
             EngineController = new EngineController(this, false);
@@ -331,7 +327,8 @@ namespace Dynamo
 
         #endregion
 
-        public virtual void ShutDown(bool shutDownHost, EventArgs args = null)
+        public virtual void 
+            ShutDown(bool shutDownHost, EventArgs args = null)
         {
             EngineController.Dispose();
             EngineController = null;

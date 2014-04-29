@@ -118,6 +118,7 @@
     <Compile Include="GeometryObjects\PlanarFace.cs" />
     <Compile Include="GeometryObjects\InternalUtilities\GeometryObjectSelector.cs" />
     <Compile Include="Geometry\Domain.cs" />
+    <Compile Include="References\RayBounce.cs" />
     <Compile Include="References\Reference.cs" />
     <Compile Include="References\FaceReference.cs" />
     <Compile Include="Elements\InternalUtilities\ElementSelector.cs" />

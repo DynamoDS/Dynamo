@@ -480,16 +480,16 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool AlternateDrawingContextAvailable
-        {
-            get { return dynSettings.Controller.VisualizationManager.AlternateDrawingContextAvailable; }
-        }
+        //public bool AlternateDrawingContextAvailable
+        //{
+        //    get { return dynSettings.Controller.VisualizationManager.AlternateDrawingContextAvailable; }
+        //}
 
-        public bool ShowGeometryInAlternateContext
-        {
-            get { return dynSettings.Controller.VisualizationManager.DrawToAlternateContext; }
-            set { dynSettings.Controller.VisualizationManager.DrawToAlternateContext = value; }
-        }
+        //public bool ShowGeometryInAlternateContext
+        //{
+        //    get { return dynSettings.Controller.VisualizationManager.DrawToAlternateContext; }
+        //    set { dynSettings.Controller.VisualizationManager.DrawToAlternateContext = value; }
+        //}
 
         public string AlternateContextGeometryDisplayText
         {
@@ -541,21 +541,19 @@ namespace Dynamo.ViewModels
 
         public DynamoViewModel(DynamoController controller, string commandFilePath)
         {
-            //create the model
-            _model = new DynamoModel();
-            dynSettings.Controller.DynamoModel = _model;
+            Controller = controller;
+            _model = controller.DynamoModel;
+
+            //add the initial workspace and register for future 
+            //updates to the workspaces collection
+            _workspaces.Add(new WorkspaceViewModel(_model.HomeSpace, this));
+            _model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
 
             //register for property change notifications 
             //on the model and the controller
             _model.PropertyChanged += _model_PropertyChanged;
             dynSettings.Controller.PropertyChanged += Controller_PropertyChanged;
-            _model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
-
-            _model.AddHomeWorkspace();
-            _model.CurrentWorkspace = _model.HomeSpace;
-
-            Controller = controller;
-
+            
             //Register for a notification when the update manager downloads an update
             dynSettings.Controller.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
 
@@ -627,7 +625,7 @@ namespace Dynamo.ViewModels
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
-            dynSettings.Controller.VisualizationManager.PropertyChanged += VisualizationManager_PropertyChanged;
+            //((VisualizationManager)dynSettings.Controller.VisualizationManager).PropertyChanged += VisualizationManager_PropertyChanged;
 
             this.Model.PropertyChanged += (e, args) =>
             {
@@ -657,18 +655,18 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("UpToDate");
         }
 
-        void VisualizationManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "AlternateDrawingContextAvailable":
-                    RaisePropertyChanged("AlternateDrawingContextAvailable");
-                    break;
-                case "ShowGeometryInAlternateContext":
-                    RaisePropertyChanged("ShowGeometryInAlternateContext");
-                    break;
-            }
-        }
+        //void VisualizationManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        //{
+        //    switch (e.PropertyName)
+        //    {
+        //        case "AlternateDrawingContextAvailable":
+        //            RaisePropertyChanged("AlternateDrawingContextAvailable");
+        //            break;
+        //        case "ShowGeometryInAlternateContext":
+        //            RaisePropertyChanged("ShowGeometryInAlternateContext");
+        //            break;
+        //    }
+        //}
 
         void CollectInfoManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {

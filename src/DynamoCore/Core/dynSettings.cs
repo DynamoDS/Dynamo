@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dynamo.Nodes;
 using Dynamo.PackageManager;
 
 namespace Dynamo.Utilities
@@ -25,7 +24,7 @@ namespace Dynamo.Utilities
 
         public static CustomNodeManager CustomNodeManager { get { return Controller.CustomNodeManager; } }
 
-        public static DynamoController Controller { get; internal set; }
+        public static DynamoController Controller { get; set; }
 
         private static PackageManagerClient _packageManagerClient;
         public static PackageManagerClient PackageManagerClient { 
