@@ -75,14 +75,6 @@
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
-      <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
-      <Name>FSchemeInterop2012</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Legacy\FScheme\FScheme.2012.fsproj">
-      <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
-      <Name>FScheme.2012</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\logo_square_32x32.ico" />

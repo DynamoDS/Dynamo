@@ -49,13 +49,7 @@ namespace Dynamo
 
             dynRevitSettings.Controller = this;
 
-            //Predicate<NodeModel> requiresTransactionPredicate = node => node is RevitTransactionNode;
-            //CheckRequiresTransaction = new PredicateTraverser(requiresTransactionPredicate);
-
-            //Predicate<NodeModel> manualTransactionPredicate = node => node is Transaction;
-            //CheckManualTransaction = new PredicateTraverser(manualTransactionPredicate);
-
-            AddPythonBindings();
+            dynSettings.Controller.DynamoViewModel.RequestAuthentication += RegisterSingleSignOn;
 
             DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosed +=
                 Application_DocumentClosed;
@@ -75,8 +69,6 @@ namespace Dynamo
         }
 
         public RevitServicesUpdater Updater { get; private set; }
-        //public PredicateTraverser CheckManualTransaction { get; private set; }
-        //public PredicateTraverser CheckRequiresTransaction { get; private set; }
 
         /// <summary>
         ///     A dictionary which temporarily stores element names for setting after element deletion.
@@ -176,10 +168,7 @@ namespace Dynamo
             //when a document is opened 
             if (DocumentManager.Instance.CurrentUIDocument != null)
             {
-                //DocumentManager.Instance.CurrentUIDocument =
-                //    DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 DynamoViewModel.RunEnabled = true;
-
                 ResetForNewDocument();
             }
         }
@@ -189,7 +178,6 @@ namespace Dynamo
             //Disable running against revit without a document
             if (DocumentManager.Instance.CurrentDBDocument == null)
             {
-                //DocumentManager.Instance.CurrentUIDocument = null;
                 DynamoViewModel.RunEnabled = false;
                 DynamoLogger.Instance.LogWarning(
                     "Dynamo no longer has an active document.",
@@ -197,8 +185,6 @@ namespace Dynamo
             }
             else
             {
-                //DocumentManager.Instance.CurrentUIDocument =
-                //    DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 DynamoViewModel.RunEnabled = true;
                 DynamoLogger.Instance.LogWarning(
                     string.Format(
@@ -215,8 +201,6 @@ namespace Dynamo
             //if Dynamo doesn't have a view, then latch onto this one
             if (DocumentManager.Instance.CurrentUIDocument != null)
             {
-                //DocumentManager.Instance.CurrentUIDocument =
-                //    DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
                 DynamoLogger.Instance.LogWarning(
                     string.Format(
                         "Dynamo is now pointing at document: {0}",
@@ -329,24 +313,11 @@ namespace Dynamo
                 TransactionManager.Instance.TransactionTaskDone();
             };
 
-            //If we're in a debug run or not already in the idle thread, then run the Cleanup Delegate
-            //from the idle thread. Otherwise, just run it in this thread.
-            //if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread && !IsTestMode)
-            //{
-            //    RevThread.IdlePromise.ExecuteOnIdleSync(cleanup);
-            //    RevThread.IdlePromise.ExecuteOnIdleSync(rename);
-            //    RevThread.IdlePromise.ExecuteOnIdleAsync(TransactionManager.Instance.ForceCloseTransaction);
-            //}
-            //else
-            //{
             cleanup();
             rename();
             TransactionManager.Instance.ForceCloseTransaction();
-            //}
-
-
+            
             base.OnEvaluationCompleted(sender, e);
-
         }
 
         public override void ShutDown(bool shutDownHost, EventArgs args = null)
@@ -370,9 +341,8 @@ namespace Dynamo
                     TransactionManager.Instance.ForceCloseTransaction();
                 });
 
-            base.ShutDown(shutDownHost);
+            base.ShutDown(shutDownHost, args);
             Updater.UnRegisterAllChangeHooks();
-            RevertPythonBindings();
 
             // PB: killed this block as the LookupPostableCommandId method is not available in revit 2013
             //     dynamo will crash consistently on shutdown without this commented out.  
@@ -418,56 +388,7 @@ namespace Dynamo
             //Run in idle thread no matter what
             RevThread.IdlePromise.ExecuteOnIdleSync(base.Run);
         }
-
-        //protected override void Run(List<NodeModel> topElements, FScheme.Expression runningExpression)
-        //{
-        //    var model = (DynamoRevitViewModel) DynamoViewModel;
-
-        //    //If we are not running in debug...
-        //    if (!DynamoViewModel.RunInDebug)
-        //    {
-        //        //Do we need manual transaction control?
-        //        bool manualTrans = topElements.Any(CheckManualTransaction.TraverseUntilAny);
-
-        //        //Can we avoid running everything in the Revit Idle thread?
-        //        bool noIdleThread = manualTrans ||
-        //                            !topElements.Any(CheckRequiresTransaction.TraverseUntilAny);
-
-        //        //If we don't need to be in the idle thread...
-        //        if (noIdleThread || Testing)
-        //        {
-        //            //DynamoLogger.Instance.Log("Running expression in evaluation thread...");
-        //            TransMode = TransactionMode.Manual; //Manual transaction control
-
-        //            if (Testing)
-        //                TransMode = TransactionMode.Automatic;
-
-        //            InIdleThread = false; //Not in idle thread at the moment
-        //            base.Run(topElements, runningExpression); //Just run the Run Delegate
-        //        }
-        //        else //otherwise...
-        //        {
-        //            //DynamoLogger.Instance.Log("Running expression in Revit's Idle thread...");
-        //            TransMode = TransactionMode.Automatic; //Automatic transaction control
-
-        //            Debug.WriteLine("Adding a run to the idle stack.");
-        //            InIdleThread = true; //Now in the idle thread.
-        //            RevThread.IdlePromise.ExecuteOnIdleSync(() => base.Run(topElements, runningExpression)); //Execute the Run Delegate in the Idle thread.
-
-        //        }
-        //    }
-        //    else //If we are in debug mode...
-        //    {
-        //        TransMode = TransactionMode.Debug; //Debug transaction control
-        //        InIdleThread = true; //Everything will be evaluated in the idle thread.
-
-        //        DynamoLogger.Instance.Log("Running expression in debug.");
-
-        //        //Execute the Run Delegate.
-        //        base.Run(topElements, runningExpression);
-        //    }
-        //}
-
+        
         public override void ResetEngine()
         {
             RevThread.IdlePromise.ExecuteOnIdleAsync(
@@ -479,160 +400,6 @@ namespace Dynamo
                     EngineController = new EngineController(this, true);
                 });
         }
-
-        #region Python Nodes Revit Hooks
-
-        private FieldInfo evaluatorField;
-        private dynamic oldPyEval;
-
-        private void AddPythonBindings()
-        {
-            try
-            {
-                string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                Debug.Assert(assemblyPath != null, "assemblyPath != null");
-
-                Assembly ironPythonAssembly = null;
-
-                string path;
-
-                if (File.Exists(path = Path.Combine(assemblyPath, "DynamoPython.dll")))
-                    ironPythonAssembly = Assembly.LoadFrom(path);
-                else if (
-                    File.Exists(
-                        path = Path.Combine(assemblyPath, "Packages", "IronPython", "DynamoPython.dll")))
-                    ironPythonAssembly = Assembly.LoadFrom(path);
-
-                if (ironPythonAssembly == null)
-                    return;
-
-                Type pythonBindings = ironPythonAssembly.GetType("DynamoPython.PythonBindings");
-
-                PropertyInfo pyBindingsProperty = pythonBindings.GetProperty("Bindings");
-                object pyBindings = pyBindingsProperty.GetValue(null, null);
-
-                Action<string, object> addToBindings =
-                    (name, boundObject) =>
-                        pyBindings.GetType()
-                            .InvokeMember(
-                                "Add",
-                                BindingFlags.InvokeMethod,
-                                null,
-                                pyBindings,
-                                new[] { name, boundObject });
-
-                addToBindings("DynLog", new LogDelegate(DynamoLogger.Instance.Log)); //Logging
-
-                addToBindings(
-                    "DynTransaction",
-                    new Func<SubTransaction>(
-                        delegate
-                        {
-                            TransactionManager.Instance.EnsureInTransaction(
-                                DocumentManager.Instance.CurrentUIDocument.Document);
-                            return new SubTransaction(DocumentManager.Instance.CurrentUIDocument.Document);
-                        }));
-
-                addToBindings("__revit__", DocumentManager.Instance.CurrentUIDocument.Application);
-                addToBindings(
-                    "__doc__",
-                    DocumentManager.Instance.CurrentUIDocument.Application.ActiveUIDocument.Document);
-
-                Type pythonEngine = ironPythonAssembly.GetType("DynamoPython.PythonEngine");
-                evaluatorField = pythonEngine.GetField("Evaluator");
-
-                oldPyEval = evaluatorField.GetValue(null);
-
-                //var x = PythonEngine.GetMembers();
-                //foreach (var y in x)
-                //    Console.WriteLine(y);
-
-                Type evalDelegateType =
-                    ironPythonAssembly.GetType("DynamoPython.PythonEngine+EvaluationDelegate");
-
-                Delegate d = Delegate.CreateDelegate(
-                    evalDelegateType,
-                    this,
-                    typeof(DynamoController_Revit).GetMethod(
-                        "newEval",
-                        BindingFlags.NonPublic | BindingFlags.Instance));
-
-                evaluatorField.SetValue(null, d);
-
-                FieldInfo drawingField = pythonEngine.GetField("Drawing");
-                Type drawDelegateType = ironPythonAssembly.GetType("DynamoPython.PythonEngine+DrawDelegate");
-                Delegate draw = Delegate.CreateDelegate(
-                    drawDelegateType,
-                    this,
-                    typeof(DynamoController_Revit).GetMethod(
-                        "DrawPython",
-                        BindingFlags.NonPublic | BindingFlags.Instance));
-
-                drawingField.SetValue(null, draw);
-
-                // use this to pass into the python script a list of previously created elements from dynamo
-                //TODO: ADD BACK IN
-                //bindings.Add(new Binding("DynStoredElements", this.Elements));
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-                Debug.WriteLine(e.StackTrace);
-            }
-        }
-
-        private void RevertPythonBindings()
-        {
-            try
-            {
-                if (evaluatorField != null && oldPyEval != null)
-                    evaluatorField.SetValue(null, oldPyEval);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-                Debug.WriteLine(e.StackTrace);
-            }
-        }
-
-// ReSharper disable once UnusedMember.Local
-        private void DrawPython(FScheme.Value val, string id)
-        {
-            //DrawContainers(val, id);
-        }
-
-        //private void DrawContainers(Value val, string id)
-        //{
-        //    if (val.IsList)
-        //    {
-        //        foreach (Value v in ((Value.List)val).Item)
-        //        {
-        //            DrawContainers(v, id);
-        //        }
-        //    }
-        //    if (val.IsContainer)
-        //    {
-        //        var drawable = ((Value.Container)val).Item;
-
-        //        //support drawing XYZs geometry objects or LibG graphic items
-        //        if(drawable is XYZ || drawable is GeometryObject || drawable is GraphicItem )
-        //        {
-        //            VisualizationManager.Visualizations[id].Geometry.Add(drawable);
-        //        }
-        //    }
-        //}
-
-// ReSharper disable once UnusedMember.Local
-        private FScheme.Value newEval(bool dirty, string script, dynamic bindings)
-        {
-            return InIdleThread
-                ? oldPyEval(dirty, script, bindings)
-                : RevThread.IdlePromise.ExecuteOnIdleSync(() => oldPyEval(dirty, script, bindings));
-        }
-
-        private delegate void LogDelegate(string msg);
-
-        #endregion
 
         #region Element Persistence Management
 

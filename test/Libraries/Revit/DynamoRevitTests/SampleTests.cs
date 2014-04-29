@@ -137,11 +137,6 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // evaluate graph
-            //DSRevitNodesUI.FamilyTypes famTypes =
-                //model.CurrentWorkspace.NodeFromWorkspace("84ad80e7-2497-4637-a346-c1aea914dc43")
-                //as DSRevitNodesUI.FamilyTypes;
-            //famTypes.SelectedIndex = 70;
-
             RunCurrentModel();
 
             var famInstNodeId = "fc83b9b2-42c6-4a9f-8f60-a6ee29ef8a34";

@@ -4,7 +4,6 @@ using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
 using NUnit.Framework;
 using RevitServices.Persistence;
 using Transaction = Autodesk.Revit.DB.Transaction;

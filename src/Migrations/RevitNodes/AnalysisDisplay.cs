@@ -53,6 +53,16 @@ namespace Dynamo.Nodes
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
 
+            XmlElement documentNode = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 0, "RevitNodes.dll",
+                "Document.Current", "Document.Current");
+            migratedData.AppendNode(documentNode);
+
+            XmlElement activeViewNode = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 1, "RevitNodes.dll",
+                "Document.ActiveView", "Document.ActiveView");
+            migratedData.AppendNode(activeViewNode);
+
             //create and reconnect the connecters
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
@@ -61,20 +71,21 @@ namespace Dynamo.Nodes
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
             PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
-            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
-
+            
             PortId oldInPort3 = new PortId(oldNodeId, 3, PortType.INPUT);
             XmlElement connector3 = data.FindFirstConnector(oldInPort3);
 
-            PortId newInPort0 = new PortId(dsRevitNodeId, 0, PortType.INPUT);
             PortId newInPort1 = new PortId(dsRevitNodeId, 1, PortType.INPUT);
             PortId newInPort2 = new PortId(dsRevitNodeId, 2, PortType.INPUT);
             PortId newInPort3 = new PortId(dsRevitNodeId, 3, PortType.INPUT);
 
             data.ReconnectToPort(connector0, newInPort3);
             data.ReconnectToPort(connector1, newInPort2);
-            data.ReconnectToPort(connector2, newInPort0);
             data.ReconnectToPort(connector3, newInPort1);
+
+            data.RemoveFirstConnector(oldInPort2);
+            data.CreateConnector(documentNode, 0, activeViewNode, 0);
+            data.CreateConnector(activeViewNode, 0, dsRevitNode, 0);
 
             return migratedData;
         }
@@ -95,6 +106,16 @@ namespace Dynamo.Nodes
                 "PointAnalysisDisplay.ByViewPointsAndValues",
                 "PointAnalysisDisplay.ByViewPointsAndValues@var,Point[],double[]");
 
+            XmlElement documentNode = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 0, "RevitNodes.dll",
+                "Document.Current", "Document.Current");
+            migratedData.AppendNode(documentNode);
+
+            XmlElement activeViewNode = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 1, "RevitNodes.dll",
+                "Document.ActiveView", "Document.ActiveView");
+            migratedData.AppendNode(activeViewNode);
+
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
 
@@ -106,15 +127,16 @@ namespace Dynamo.Nodes
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
             PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
-            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
-
-            PortId newInPort0 = new PortId(dsRevitNodeId, 0, PortType.INPUT);
+            
             PortId newInPort1 = new PortId(dsRevitNodeId, 1, PortType.INPUT);
             PortId newInPort2 = new PortId(dsRevitNodeId, 2, PortType.INPUT);
 
             data.ReconnectToPort(connector0, newInPort2);
             data.ReconnectToPort(connector1, newInPort1);
-            data.ReconnectToPort(connector2, newInPort0);
+
+            data.RemoveFirstConnector(oldInPort2);
+            data.CreateConnector(documentNode, 0, activeViewNode, 0);
+            data.CreateConnector(activeViewNode, 0, dsRevitNode, 0);
 
             return migratedData;
         }
@@ -138,6 +160,16 @@ namespace Dynamo.Nodes
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
 
+            XmlElement documentNode = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 0, "RevitNodes.dll",
+                "Document.Current", "Document.Current");
+            migratedData.AppendNode(documentNode);
+
+            XmlElement activeViewNode = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 1, "RevitNodes.dll",
+                "Document.ActiveView", "Document.ActiveView");
+            migratedData.AppendNode(activeViewNode);
+
             //create and reconnect the connecters
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
@@ -146,15 +178,16 @@ namespace Dynamo.Nodes
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
             PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
-            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
-
-            PortId newInPort0 = new PortId(dsRevitNodeId, 0, PortType.INPUT);
+            
             PortId newInPort1 = new PortId(dsRevitNodeId, 1, PortType.INPUT);
             PortId newInPort2 = new PortId(dsRevitNodeId, 2, PortType.INPUT);
 
             data.ReconnectToPort(connector0, newInPort2);
             data.ReconnectToPort(connector1, newInPort1);
-            data.ReconnectToPort(connector2, newInPort0);
+            
+            data.RemoveFirstConnector(oldInPort2);
+            data.CreateConnector(documentNode, 0, activeViewNode, 0);
+            data.CreateConnector(activeViewNode, 0, dsRevitNode, 0);
 
             return migratedData;
         }

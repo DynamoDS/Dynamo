@@ -4,11 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Models;
-using Dynamo.Controls;
 using System.Reflection;
 using System.IO;
-using System.Windows.Controls;
-using System.Windows;
 using Autodesk.DesignScript.Runtime;
 using String = System.String;
 
@@ -26,13 +23,14 @@ namespace Dynamo.Utilities
             {
                 var dynamoAssembly = Assembly.GetExecutingAssembly();
                 _dynamoDirectory = Path.GetDirectoryName(dynamoAssembly.Location);
-                
             }
             return _dynamoDirectory;
         }
 
         public static HashSet<string> LoadedAssemblyNames = new HashSet<string>();
-        public static Dictionary<string, List<Type>> AssemblyPathToTypesLoaded = new Dictionary<string, List<Type>>();
+
+        public static Dictionary<string, List<Type>> AssemblyPathToTypesLoaded =
+            new Dictionary<string, List<Type>>();
 
         internal static void LoadPackages()
         {
@@ -43,8 +41,6 @@ namespace Dynamo.Utilities
         ///     Enumerate local library assemblies and add them to DynamoController's
         ///     dictionaries and search.  
         /// </summary>
-        /// <param name="searchViewModel">The searchViewModel to which the nodes will be added</param>
-        /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
         internal static void LoadBuiltinTypes()
         {
             string location = GetDynamoDirectory();
@@ -92,9 +88,7 @@ namespace Dynamo.Utilities
                 LoadedAssemblyNames.Add(fn);
 
                 if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
-                {
                     LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath]);
-                }
                 else
                 {
                     try
@@ -107,7 +101,7 @@ namespace Dynamo.Utilities
                     {
                         //swallow these warnings.
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         DynamoLogger.Instance.Log(e);
                     }
@@ -181,9 +175,7 @@ namespace Dynamo.Utilities
                 LoadedAssemblyNames.Add(fn);
 
                 if (allLoadedAssembliesByPath.ContainsKey(assemblyPath))
-                {
                     LoadNodesFromAssembly(allLoadedAssembliesByPath[assemblyPath]);
-                }
                 else
                 {
                     try
@@ -225,12 +217,12 @@ namespace Dynamo.Utilities
         ///     dictionaries and the search view model.  Internally catches exceptions and sends the error 
         ///     to the console.
         /// </summary>
-        /// <param name="searchViewModel">The searchViewModel to which the nodes will be added</param>
-        /// <param name="controller">The DynamoController, whose dictionaries will be modified</param>
-        /// <param name="bench">The bench where logging errors will be sent</param>
         /// <Returns>The list of node types loaded from this assembly</Returns>
         public static List<Type> LoadNodesFromAssembly(Assembly assembly)
         {
+            if (assembly == null) 
+                throw new ArgumentNullException("assembly");
+            
             var controller = dynSettings.Controller;
             var searchViewModel = dynSettings.Controller.SearchViewModel;
 
@@ -253,7 +245,7 @@ namespace Dynamo.Utilities
 
                         bool isHidden = false;
                         var attrs = t.GetCustomAttributes(typeof(IsVisibleInDynamoLibraryAttribute), true);
-                        if (null != attrs && attrs.Count() > 0)
+                        if (null != attrs && attrs.Any())
                         {
                             var isVisibleAttr = attrs[0] as IsVisibleInDynamoLibraryAttribute;
                             if (null != isVisibleAttr && isVisibleAttr.Visible == false)
@@ -274,28 +266,24 @@ namespace Dynamo.Utilities
                             if (platformExclusionAttribs.Length > 0)
                             {
                                 string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
-                                int iExclusion = exclusions.Length - 1;
-                                for (; iExclusion > -1; iExclusion--)
-                                {
-                                    if (exclusions[iExclusion].Contains(controller.Context))
-                                        //if the attribute's values contain the context stored on the controller
-                                        //then skip loading this type.
-                                        break;
-                                }
-                                if (iExclusion > -1)
+
+                                //if the attribute's values contain the context stored on the controller
+                                //then skip loading this type.
+
+                                if (exclusions.Reverse().Any(e => e.Contains(controller.Context)))
                                     continue;
 
                                 //utility was late for Vasari release, but could be available with after-post RevitAPI.dll
                                 if (t.Name.Equals("dynSkinCurveLoops"))
                                 {
-                                    MethodInfo[] specialTypeStaticMethods = t.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
-                                    String nameOfMethodCreate = "noSkinSolidMethod";
+                                    MethodInfo[] specialTypeStaticMethods = t.GetMethods(BindingFlags.Static | BindingFlags.Public);
+                                    const string nameOfMethodCreate = "noSkinSolidMethod";
                                     bool exclude = true;
                                     foreach (MethodInfo m in specialTypeStaticMethods)
                                     {
                                         if (m.Name == nameOfMethodCreate)
                                         {
-                                            object[] argsM = new object[0];
+                                            var argsM = new object[0];
                                             exclude = (bool)m.Invoke(null, argsM);
                                             break;
                                         }
@@ -316,35 +304,23 @@ namespace Dynamo.Utilities
                         {
                             searchViewModel.Add(t);
                             typeName = (attribs[0] as NodeNameAttribute).Name;
-  
                         }
                         else
-                        {
                             typeName = t.Name;
-                        }
 
                         AssemblyPathToTypesLoaded[assembly.Location].Add(t);
 
                         var data = new TypeLoadData(assembly, t);
 
                         if (!controller.BuiltInTypesByNickname.ContainsKey(typeName))
-                        {
                             controller.BuiltInTypesByNickname.Add(typeName, data);
-                        }
                         else
-                        {
                             DynamoLogger.Instance.Log("Duplicate type encountered: " + typeName);
-                        }
 
                         if (!controller.BuiltInTypesByName.ContainsKey(t.FullName))
-                        {
                             controller.BuiltInTypesByName.Add(t.FullName, data);
-                        }
                         else
-                        {
                             DynamoLogger.Instance.Log("Duplicate type encountered: " + typeName);
-                        }
-
                     }
                     catch (Exception e)
                     {
@@ -382,7 +358,6 @@ namespace Dynamo.Utilities
         /// </summary>
         public static IEnumerable<CustomNodeInfo> LoadCustomNodes()
         {
-
             var customNodeLoader = dynSettings.CustomNodeManager;
             var searchViewModel = dynSettings.Controller.SearchViewModel;
             var loadedNodes = customNodeLoader.UpdateSearchPath();
@@ -394,7 +369,6 @@ namespace Dynamo.Utilities
             searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);
 
             return loadedNodes;
-
         }
 
         /// <summary>
@@ -418,7 +392,6 @@ namespace Dynamo.Utilities
             searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);
 
             return loadedNodes;
-
         }
 
         public static HashSet<string> SearchPaths = new HashSet<string>();

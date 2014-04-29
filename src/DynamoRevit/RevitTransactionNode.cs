@@ -7,14 +7,9 @@ using System.Xml;
 
 using Autodesk.Revit.DB;
 using Dynamo.Models;
-using Microsoft.FSharp.Collections;
 
 using Dynamo.Utilities;
-using RevitServices.Elements;
 using RevitServices.Persistence;
-using RevitServices.Threading;
-using RevitServices.Transactions;
-using Value = Dynamo.FScheme.Value;
 using RevThread = RevitServices.Threading;
 
 namespace Dynamo.Revit
@@ -202,7 +197,7 @@ namespace Dynamo.Revit
         //    outPuts[OutPortData[0]] = Evaluate(args);
         //}
 
-        public abstract Value Evaluate(FSharpList<Value> args);
+        //public abstract Value Evaluate(FSharpList<Value> args);
     }
     /*
     namespace SyncedNodeExtensions

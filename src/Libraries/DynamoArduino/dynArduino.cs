@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,9 +7,6 @@ using System.IO.Ports;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Controls;
 using Dynamo.Models;
-using Microsoft.FSharp.Collections;
-using Dynamo.FSchemeInterop;
-using Value = Dynamo.FScheme.Value;
 
 
 namespace Dynamo.Nodes
