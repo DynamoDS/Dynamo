@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:clr="clr-namespace:System;assembly=mscorlib"
              xmlns:sys="clr-namespace:System.Windows;assembly=PresentationCore"
+             xmlns:fwk="clr-namespace:System.Windows;assembly=PresentationFramework"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              Width="500"
@@ -12,10 +13,16 @@
 
     <UserControl.Resources>
 
-        <clr:Double x:Key="MinPreviewControlWidth">135.0</clr:Double>
-        <clr:Double x:Key="MinPreviewControlHeight">32.0</clr:Double>
         <clr:Double x:Key="MaxPreviewControlWidth">500.0</clr:Double>
         <clr:Double x:Key="MaxPreviewControlHeight">300.0</clr:Double>
+        <clr:Double x:Key="MinPreviewControlWidth">135.0</clr:Double>
+        <clr:Double x:Key="MinPreviewControlHeight">32.0</clr:Double>
+        
+        <!-- MaxContentGrid = (MaxPreviewControl - (2 * Margin)) -->
+        <fwk:Thickness x:Key="PreviewContentMargin">6.0</fwk:Thickness>
+        <clr:Double x:Key="MaxContentGridWidth">488.0</clr:Double>
+        <clr:Double x:Key="MaxContentGridHeight">288</clr:Double>
+        
         <clr:Double x:Key="PhasedOutPosition">-32.0</clr:Double>
         <clr:TimeSpan x:Key="ResizeBeginTime">0:0:0.2</clr:TimeSpan>
         <sys:Duration x:Key="AnimationDuration">0:0:0.2</sys:Duration>
@@ -107,7 +114,7 @@
                     BorderBrush="Black"></Border>
 
             <Grid Name="smallContentGrid"
-                  Margin="6"
+                  Margin="{StaticResource PreviewContentMargin}"
                   Visibility="Collapsed"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center">
@@ -115,7 +122,9 @@
             </Grid>
 
             <Grid Name="largeContentGrid"
-                  Margin="6"
+                  Margin="{StaticResource PreviewContentMargin}"
+                  MaxWidth="{StaticResource MaxContentGridWidth}"
+                  MaxHeight="{StaticResource MaxContentGridHeight}"
                   Visibility="Collapsed"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center">
