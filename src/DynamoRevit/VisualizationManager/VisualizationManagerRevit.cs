@@ -19,7 +19,7 @@ namespace Dynamo
             get { return keeperId; }
         }
 
-        public VisualizationManagerRevit():base()
+        public VisualizationManagerRevit() : base()
         {
             if (dynSettings.Controller.Context == Context.VASARI_2014)
             {
@@ -64,20 +64,20 @@ namespace Dynamo
         /// <param name="e"></param>
         private void visualizationManager_VisualizationUpdateComplete(object sender, EventArgs e)
         {
-            //do not draw to geom keeper if the user has selected
-            //not to draw to the alternate context or if it is not available
-            if (!AlternateDrawingContextAvailable
-                || !DrawToAlternateContext)
-                return;
+            ////do not draw to geom keeper if the user has selected
+            ////not to draw to the alternate context or if it is not available
+            //if (!AlternateDrawingContextAvailable
+            //    || !DrawToAlternateContext)
+            //    return;
 
-            IEnumerable<FScheme.Value> values = dynSettings.Controller.DynamoModel.Nodes
-                .Where(x => x.IsVisible).Where(x => x.OldValue != null)
-                //.Where(x => x.OldValue is Value.Container || x.OldValue is Value.List)
-                .Select(x => x.OldValue.Data as FScheme.Value);
+            //IEnumerable<FScheme.Value> values = dynSettings.Controller.DynamoModel.Nodes
+            //    .Where(x => x.IsVisible).Where(x => x.OldValue != null)
+            //    //.Where(x => x.OldValue is Value.Container || x.OldValue is Value.List)
+            //    .Select(x => x.OldValue.Data as FScheme.Value);
 
-            List<GeometryObject> geoms = values.ToList().SelectMany(RevitGeometryFromNodes).ToList();
+            //List<GeometryObject> geoms = values.ToList().SelectMany(RevitGeometryFromNodes).ToList();
 
-            Draw(geoms);
+            //Draw(geoms);
         }
 
         private void Draw(List<GeometryObject> geoms)
@@ -127,69 +127,69 @@ namespace Dynamo
                 });
         }
 
-        /// <summary>
-        ///     Utility method to get the Revit geometry associated with nodes.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private static List<GeometryObject> RevitGeometryFromNodes(FScheme.Value value)
-        {
-            var geoms = new List<GeometryObject>();
+        ///// <summary>
+        /////     Utility method to get the Revit geometry associated with nodes.
+        ///// </summary>
+        ///// <param name="value"></param>
+        ///// <returns></returns>
+        //private static List<GeometryObject> RevitGeometryFromNodes(FScheme.Value value)
+        //{
+        //    var geoms = new List<GeometryObject>();
 
-            if (value == null)
-                return geoms;
+        //    if (value == null)
+        //        return geoms;
 
-            if (value.IsList)
-            {
-                foreach (FScheme.Value valInner in ((FScheme.Value.List)value).Item)
-                    geoms.AddRange(RevitGeometryFromNodes(valInner));
-                return geoms;
-            }
+        //    if (value.IsList)
+        //    {
+        //        foreach (FScheme.Value valInner in ((FScheme.Value.List)value).Item)
+        //            geoms.AddRange(RevitGeometryFromNodes(valInner));
+        //        return geoms;
+        //    }
 
-            var container = value as FScheme.Value.Container;
-            if (container == null)
-                return geoms;
+        //    var container = value as FScheme.Value.Container;
+        //    if (container == null)
+        //        return geoms;
 
-            var geom = ((FScheme.Value.Container)value).Item as GeometryObject;
-            if (geom != null && !(geom is Face))
-                geoms.Add(geom);
+        //    var geom = ((FScheme.Value.Container)value).Item as GeometryObject;
+        //    if (geom != null && !(geom is Face))
+        //        geoms.Add(geom);
 
-            var ps = ((FScheme.Value.Container)value).Item as ParticleSystem;
-            if (ps != null)
-            {
-                geoms.AddRange(
-                    ps.Springs.Select(
-                        spring =>
-                            Line.CreateBound(
-                                spring.getOneEnd().getPosition(),
-                                spring.getTheOtherEnd().getPosition())));
-            }
+        //    var ps = ((FScheme.Value.Container)value).Item as ParticleSystem;
+        //    if (ps != null)
+        //    {
+        //        geoms.AddRange(
+        //            ps.Springs.Select(
+        //                spring =>
+        //                    Line.CreateBound(
+        //                        spring.getOneEnd().getPosition(),
+        //                        spring.getTheOtherEnd().getPosition())));
+        //    }
 
-            var cl = ((FScheme.Value.Container)value).Item as CurveLoop;
-            if (cl != null)
-                geoms.AddRange(cl);
+        //    var cl = ((FScheme.Value.Container)value).Item as CurveLoop;
+        //    if (cl != null)
+        //        geoms.AddRange(cl);
 
-            //draw xyzs as Point objects
-            var pt = ((FScheme.Value.Container)value).Item as XYZ;
-            if (pt != null)
-            {
-                Type pointType = typeof(Point);
-                MethodInfo[] pointTypeMethods = pointType.GetMethods(
-                    BindingFlags.Static | BindingFlags.Public);
-                MethodInfo method = pointTypeMethods.FirstOrDefault(x => x.Name == "CreatePoint");
+        //    //draw xyzs as Point objects
+        //    var pt = ((FScheme.Value.Container)value).Item as XYZ;
+        //    if (pt != null)
+        //    {
+        //        Type pointType = typeof(Point);
+        //        MethodInfo[] pointTypeMethods = pointType.GetMethods(
+        //            BindingFlags.Static | BindingFlags.Public);
+        //        MethodInfo method = pointTypeMethods.FirstOrDefault(x => x.Name == "CreatePoint");
 
-                if (method != null)
-                {
-                    var args = new object[3];
-                    args[0] = pt.X;
-                    args[1] = pt.Y;
-                    args[2] = pt.Z;
-                    geoms.Add((Point)method.Invoke(null, args));
-                }
-            }
+        //        if (method != null)
+        //        {
+        //            var args = new object[3];
+        //            args[0] = pt.X;
+        //            args[1] = pt.Y;
+        //            args[2] = pt.Z;
+        //            geoms.Add((Point)method.Invoke(null, args));
+        //        }
+        //    }
 
-            return geoms;
-        }
+        //    return geoms;
+        //}
 
     }
 }
