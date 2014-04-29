@@ -655,15 +655,21 @@ namespace DSCore
             if (lists.Count == 0 || !lists.Cast<object>().Any(x => x is IList))
                 return lists;
 
-            var genList = lists.Cast<IList>();
-            var maxLength = genList.Max(subList => subList.Count); 
-            var emptyList = Enumerable.Range(0, maxLength).Select(i => new ArrayList());
+            var ilists = lists.Cast<IList>();
+            var maxLength = ilists.Max(subList => subList.Count); 
+            List<ArrayList> transposedList = Enumerable.Range(0, maxLength)
+                                                       .Select(i => new ArrayList())
+                                                       .ToList();
 
-            var ret = genList.Aggregate(emptyList, 
-                                       (accList, list) => accList.Zip(list.Cast<object>(), (os, o) => { os.Add(o); return os; })
-                                                                 .Concat(accList.Skip(list.Count)));
+            foreach (var sublist in ilists)
+            {
+                for (int i = 0; i < sublist.Count; i++)
+                {
+                    transposedList[i].Add(sublist[i]);                
+                }
+            }
 
-            return ret.ToList();
+            return transposedList;
         }
 
         
