@@ -30,21 +30,25 @@ namespace Dynamo.Models
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;
         private bool displayLabels;
-        private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
         private bool interactionEnabled = true;
         private bool isUpstreamVisible;
         private bool isVisible;
         private string nickName;
-        private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
         private ElementState state;
         private string toolTipText = "";
         private IdentifierNode identifier;
         private bool saveResult;
-        private bool isUpdated;
         private string description;
         private const string FailureString = "Node evaluation failed";
+
+        // Data caching related class members.
+        private bool isUpdated = false;
+        private MirrorData cachedMirrorData = null;
+
+        // Input and output port related data members.
+        private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
+        private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
         private readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
-        private int errorCount;
 
         private List<IRenderPackage> _renderPackages = new List<IRenderPackage>();
 
@@ -302,14 +306,34 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     The value which was produced for this node during the previous evaluation.
+        /// The value which was produced for this node during the evaluation. Note 
+        /// that this value will be cached until the next time this node is updated 
+        /// by the evaluation.
         /// </summary>
-        public virtual MirrorData OldValue
+        public MirrorData CachedValue
         {
             get
             {
-                var mirrorData = dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Value);
-                return mirrorData == null ? null : mirrorData.GetData();
+                if (cachedMirrorData != null)
+                    return cachedMirrorData;
+
+                var engine = dynSettings.Controller.EngineController;
+                var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
+
+                if (runtimeMirror != null)
+                    cachedMirrorData = runtimeMirror.GetData();
+
+
+                if (cachedMirrorData == null) // If we didn't get anything...
+                {
+                    // If we fail to get anything from the engine at this time,
+                    // then no point query again in subsequent calls. We simply
+                    // make a MirrorData that represents DesignScript "null" here.
+                    cachedMirrorData = new MirrorData(engine.LiveRunnerCore,
+                        ProtoCore.DSASM.StackValue.BuildNull());
+                }
+
+                return cachedMirrorData;
             }
         }
 
@@ -322,6 +346,9 @@ namespace Dynamo.Models
             set
             {
                 isUpdated = value;
+                if (isUpdated != false)      // When a NodeModel is updated, its 
+                    cachedMirrorData = null; // cached data should be invalidated.
+
                 RaisePropertyChanged("IsUpdated");
             }
         }
