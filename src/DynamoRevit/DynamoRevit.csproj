@@ -138,7 +138,6 @@
       <DependentUpon>Resource_en_us.resx</DependentUpon>
     </Compile>
     <Compile Include="RevitWatchHandler.cs" />
-    <Compile Include="SunPathUpdater.cs" />
     <Compile Include="Views\Partials.cs" />
     <Compile Include="ViewModels\DynamoRevitViewModel.cs" />
     <Compile Include="VisualizationManager\VisualizationManagerRevit.cs" />
