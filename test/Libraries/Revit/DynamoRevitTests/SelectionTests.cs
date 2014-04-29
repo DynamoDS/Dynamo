@@ -24,6 +24,8 @@ namespace Dynamo.Tests
             //open the test file
             model.Open(testPath);
 
+            AssertNoDummyNodes();
+
             //first assert that we have only one node
             var nodeCount = dynSettings.Controller.DynamoModel.Nodes.Count;
             Assert.AreEqual(1, nodeCount);
@@ -66,6 +68,8 @@ namespace Dynamo.Tests
 
             //open the test file
             model.Open(testPath);
+
+            AssertNoDummyNodes();
 
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
