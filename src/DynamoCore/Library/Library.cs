@@ -104,6 +104,10 @@ namespace Dynamo.DSEngine
         /// </summary>
         private string summary;
 
+        public FunctionDescriptor(string name, IEnumerable<TypedParameter> parameters, FunctionType type)
+            : this(null, null, name, parameters, null, type) 
+        { }
+
         public FunctionDescriptor(
             string assembly, string className, string name, IEnumerable<TypedParameter> parameters,
             string returnType, FunctionType type, bool isVisibleInLibrary = true,
@@ -810,7 +814,7 @@ namespace Dynamo.DSEngine
             AddBuiltinFunctions(functions);
         }
 
-        private static IEnumerable<TypedParameter> GetBinaryFuncArgs()
+        private static List<TypedParameter> GetBinaryFuncArgs()
         {
             return new List<TypedParameter>
             {
@@ -829,114 +833,35 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulateOperators()
         {
+            var args = GetBinaryFuncArgs();
+
             var functions = new List<FunctionDescriptor>
             {
-                new FunctionDescriptor(
-                    null,
-                    null,
-                    Op.GetOpFunction(Operator.add),
-                    GetBinaryFuncArgs(),
-                    null,
-                    FunctionType.GenericFunction),
-                new FunctionDescriptor(
-                    null,
-                    null,
-                    Op.GetOpFunction(Operator.sub),
-                    GetBinaryFuncArgs(),
-                    null,
-                    FunctionType.GenericFunction),
-                new FunctionDescriptor(
-                    null,
-                    null,
-                    Op.GetOpFunction(Operator.mul),
-                    GetBinaryFuncArgs(),
-                    null,
-                    FunctionType.GenericFunction),
-                new FunctionDescriptor(
-                    null,
-                    null,
-                    Op.GetOpFunction(Operator.div),
-                    GetBinaryFuncArgs(),
-                    null,
-                    FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.add), args, FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.sub), args, FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.mul), args, FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.div), args, FunctionType.GenericFunction),
 
                 //add new operators
-                new FunctionDescriptor(
-                    null,
-                    null,
-                    Op.GetOpFunction(Operator.eq),
-                    GetBinaryFuncArgs(),
-                    null,
-                    FunctionType.GenericFunction),
-                new FunctionDescriptor(
-                    null,
-                    null,
-                    Op.GetOpFunction(Operator.ge),
-                    GetBinaryFuncArgs(),
-                    null,
-                    FunctionType.GenericFunction),
-                new FunctionDescriptor(
-                    null,
-                    null,
-                    Op.GetOpFunction(Operator.gt),
-                    GetBinaryFuncArgs(),
-                    null,
-                    FunctionType.GenericFunction),
-                new FunctionDescriptor(
-                    null,
-                    null,
-                    Op.GetOpFunction(Operator.mod),
-                    GetBinaryFuncArgs(),
-                    null,
-                    FunctionType.GenericFunction),
-                new FunctionDescriptor(
-                    null,
-                    null,
-                    Op.GetOpFunction(Operator.le),
-                    GetBinaryFuncArgs(),
-                    null,
-                    FunctionType.GenericFunction),
-                new FunctionDescriptor(
-                    null,
-                    null,
-                    Op.GetOpFunction(Operator.lt),
-                    GetBinaryFuncArgs(),
-                    null,
-                    FunctionType.GenericFunction),
-                new FunctionDescriptor(
-                    null,
-                    null,
-                    Op.GetOpFunction(Operator.and),
-                    GetBinaryFuncArgs(),
-                    null,
-                    FunctionType.GenericFunction),
-                new FunctionDescriptor(
-                    null,
-                    null,
-                    Op.GetOpFunction(Operator.or),
-                    GetBinaryFuncArgs(),
-                    null,
-                    FunctionType.GenericFunction),
-                new FunctionDescriptor(
-                    null,
-                    null,
-                    Op.GetOpFunction(Operator.nq),
-                    GetBinaryFuncArgs(),
-                    null,
-                    FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.eq), args, FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.ge), args, FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.gt), args, FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.mod), args, FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.le), args, FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.lt), args, FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.and), args, FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.or), args, FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.nq), args, FunctionType.GenericFunction),
                 /*
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.assign), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwiseand), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwiseor), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
-                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.bitwisexor), GetBinaryFuncArgs(), null, FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.assign), args, FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.bitwiseand), args, FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.bitwiseor), args, FunctionType.GenericFunction),
+                new FunctionDescriptor(Op.GetOpFunction(Operator.bitwisexor), args, FunctionType.GenericFunction),
                 */
 
                 new FunctionDescriptor(
-                    null,
-                    null,
                     Op.GetUnaryOpFunction(UnaryOperator.Not),
                     GetUnaryFuncArgs(),
-                    null,
                     FunctionType.GenericFunction),
             };
 
