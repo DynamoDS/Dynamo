@@ -7,10 +7,6 @@ namespace RevitServices.Elements
 {
     public delegate void UpdaterHandler(object sender, UpdaterArgs args);
 
-    /// <summary>
-    /// EventArgs structure designed to pass added, modified, and deleted 
-    /// element ids during the Updated event.
-    /// </summary>
     public class UpdaterArgs : EventArgs
     {
         public ICollection<ElementId> Added { get; set; }
@@ -25,9 +21,6 @@ namespace RevitServices.Elements
         }
     }
 
-    /// <summary>
-    /// Base class for element updaters.
-    /// </summary>
     public abstract class ElementTypeSpecificUpdater : IUpdater
     {
         private readonly AddInId _id;
@@ -82,9 +75,6 @@ namespace RevitServices.Elements
         }
     }
 
-    /// <summary>
-    /// Updater which is designed to be used for Sun and Shadow Settings document modifications.
-    /// </summary>
     public class SunPathUpdater : ElementTypeSpecificUpdater
     {
         public SunPathUpdater(AddInId id):base(id){}
