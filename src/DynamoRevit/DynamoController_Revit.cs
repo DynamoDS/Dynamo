@@ -49,8 +49,6 @@ namespace Dynamo
 
             dynRevitSettings.Controller = this;
 
-            dynSettings.Controller.DynamoViewModel.RequestAuthentication += RegisterSingleSignOn;
-
             DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosed +=
                 Application_DocumentClosed;
             DocumentManager.Instance.CurrentUIApplication.Application.DocumentOpened +=
