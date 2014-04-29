@@ -12,8 +12,6 @@ using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Microsoft.FSharp.Collections;
-using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {

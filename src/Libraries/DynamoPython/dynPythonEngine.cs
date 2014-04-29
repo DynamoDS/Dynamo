@@ -24,43 +24,43 @@ namespace DynamoPython
             _source = _engine.CreateScriptSourceFromString(code, SourceCodeKind.Statements);
         }
 
-        public FScheme.Value Evaluate(IEnumerable<KeyValuePair<string, dynamic>> bindings, IEnumerable<KeyValuePair<string, FScheme.Value>> inputs)
-        {
-            var scope = _engine.CreateScope();
+        //public FScheme.Value Evaluate(IEnumerable<KeyValuePair<string, dynamic>> bindings, IEnumerable<KeyValuePair<string, FScheme.Value>> inputs)
+        //{
+        //    var scope = _engine.CreateScope();
 
-            foreach (var bind in bindings)
-            {
-                scope.SetVariable(bind.Key, bind.Value);
-            }
+        //    foreach (var bind in bindings)
+        //    {
+        //        scope.SetVariable(bind.Key, bind.Value);
+        //    }
 
-            var ops = scope.Engine.CreateOperations();
+        //    var ops = scope.Engine.CreateOperations();
 
-            foreach (var input in inputs)
-            {
-                scope.SetVariable(input.Key, Converters.convertFromValue(input.Value, ops));
-            }
+        //    foreach (var input in inputs)
+        //    {
+        //        scope.SetVariable(input.Key, Converters.convertFromValue(input.Value, ops));
+        //    }
 
-            try
-            {
-                _source.Execute(scope);
-            }
-            catch (Exception e)
-            {
-                var eo = _engine.GetService<ExceptionOperations>();
-                string error = eo.FormatException(e);
-                return FScheme.Value.NewString(error);
-            }
+        //    try
+        //    {
+        //        _source.Execute(scope);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        var eo = _engine.GetService<ExceptionOperations>();
+        //        string error = eo.FormatException(e);
+        //        return FScheme.Value.NewString(error);
+        //    }
 
-            FScheme.Value result = FScheme.Value.NewNumber(1);
+        //    FScheme.Value result = FScheme.Value.NewNumber(1);
 
-            if (scope.ContainsVariable("OUT"))
-            {
-                dynamic output = scope.GetVariable("OUT");
+        //    if (scope.ContainsVariable("OUT"))
+        //    {
+        //        dynamic output = scope.GetVariable("OUT");
 
-                result = Converters.convertToValue(output, ops);
-            }
+        //        result = Converters.convertToValue(output, ops);
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
     }
 }
