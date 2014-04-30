@@ -393,9 +393,12 @@ namespace Dynamo
                 () =>
                 {
                     if (EngineController != null)
+                    {
                         EngineController.Dispose();
+                        EngineController = null;
+                    }
 
-                    EngineController = new EngineController(this, true);
+                    EngineController = new EngineController(this);
                 });
         }
 

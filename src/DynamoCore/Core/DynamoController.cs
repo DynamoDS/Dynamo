@@ -268,7 +268,7 @@ namespace Dynamo
             dynSettings.PackageLoader.LoadPackages();
 
             DisposeLogic.IsShuttingDown = false;
-            EngineController = new EngineController(this, false);
+
             //This is necessary to avoid a race condition by causing a thread join
             //inside the vm exec
             //TODO(Luke): Push this into a resync call with the engine controller
@@ -674,9 +674,12 @@ namespace Dynamo
         public virtual void ResetEngine()
         {
             if (EngineController != null)
+            {
                 EngineController.Dispose();
+                EngineController = null;
+            }
 
-            EngineController = new EngineController(this, true);
+            EngineController = new EngineController(this);
         }
 
         public void RequestRedraw()
