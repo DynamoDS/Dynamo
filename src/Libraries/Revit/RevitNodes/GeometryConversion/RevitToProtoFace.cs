@@ -22,7 +22,7 @@ namespace Revit.GeometryConversion
             return revitFace.InternalFace.ToSurface();
         }
 
-        public static Surface ToSurface(this Autodesk.Revit.DB.Face face)
+        internal static Surface ToSurface(this Autodesk.Revit.DB.Face face)
         {
             if (face == null) return null;
 
@@ -39,7 +39,7 @@ namespace Revit.GeometryConversion
             return revitFace.InternalFace.ToUntrimmedSurface();
         }
 
-        public static Surface ToUntrimmedSurface(this Autodesk.Revit.DB.Face face)
+        internal static Surface ToUntrimmedSurface(this Autodesk.Revit.DB.Face face)
         {
             if (face == null) return null;
 
@@ -60,7 +60,7 @@ namespace Revit.GeometryConversion
             return revitFace.InternalFace.EdgeLoops();
         }
 
-        public static PolyCurve[] EdgeLoops(this Autodesk.Revit.DB.Face face)
+        internal static PolyCurve[] EdgeLoops(this Autodesk.Revit.DB.Face face)
         {
             if (face == null) return null;
 

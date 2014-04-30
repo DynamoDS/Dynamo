@@ -234,11 +234,11 @@ namespace Revit.Elements
         /// <summary>
         /// The Position of the ModelText Element
         /// </summary>
-        public XYZ Position
+        public Point Position
         {
             get
             {
-                return ((LocationPoint) InternalElement.Location).Point;
+                return ((LocationPoint) InternalElement.Location).Point.ToPoint();
             }
         }
 

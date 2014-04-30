@@ -27,7 +27,7 @@ namespace Revit.Elements
         /// <summary>
         /// A reference to the current Document.
         /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
+        [SupressImportIntoVM]
         public static Document Document
         {
             get { return DocumentManager.Instance.CurrentDBDocument; }
@@ -54,7 +54,7 @@ namespace Revit.Elements
         /// <summary>
         /// Get the Name of the Element
         /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
+        [SupressImportIntoVM]
         public string Name
         {
             get
@@ -92,7 +92,7 @@ namespace Revit.Elements
         /// <summary>
         /// Get the Element Unique Id for this element
         /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
+        [SupressImportIntoVM]
         public string UniqueId
         {
             get
@@ -104,8 +104,7 @@ namespace Revit.Elements
         /// <summary>
         /// A reference to the element
         /// </summary>
-        //[SupressImportIntoVM]
-        [IsVisibleInDynamoLibrary(false)]
+        [SupressImportIntoVM]
         public abstract Autodesk.Revit.DB.Element InternalElement
         {
             get;
@@ -137,7 +136,6 @@ namespace Revit.Elements
         /// Default implementation of dispose that removes the element from the
         /// document
         /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
         public virtual void Dispose()
         {
 
@@ -171,12 +169,13 @@ namespace Revit.Elements
         /// A basic implementation of ToString for Elements
         /// </summary>
         /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
+        [SupressImportIntoVM]
         public override string ToString()
         {
             return this.GetType().Name;
         }
 
+        [SupressImportIntoVM]
         public virtual string ToString(string format, IFormatProvider formatProvider)
         {
             // As a default, return the standard string representation.
@@ -184,8 +183,8 @@ namespace Revit.Elements
             return ToString();
         }
 
-        [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol, int gridLines)
+        [SupressImportIntoVM]
+        public virtual void Tessellate(IRenderPackage package, double tol, int gridLines)
         {
             // Do nothing. We implement this method only to prevent the GraphicDataProvider from
             // attempting to interrogate the public properties, some of which may require regeneration

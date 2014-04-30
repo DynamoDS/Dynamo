@@ -16,6 +16,7 @@ namespace Revit.References
     [IsVisibleInDynamoLibrary(false)]
     public abstract class Reference
     {
+        [SupressImportIntoVM]
         public static Document Document
         {
             get { return DocumentManager.Instance.CurrentDBDocument; }
