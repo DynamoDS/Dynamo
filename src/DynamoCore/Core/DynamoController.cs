@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Windows.Threading;
 using DSNodeServices;
 using Dynamo.DSEngine;
-using Dynamo.FSchemeInterop;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
@@ -45,19 +44,13 @@ namespace Dynamo
 
     public delegate void ImageSaveEventHandler(object sender, ImageSaveEventArgs e);
 
-    public class DynamoController:NotificationObject
+    public class DynamoController : NotificationObject
     {
-        private static bool testing = false;
-        
+        private static bool testing;
 
         #region properties
 
-        private bool _isCrashing = false;
-        public bool IsCrashing
-        {
-            get { return _isCrashing; }
-            set { _isCrashing = value; }
-        }
+        public bool IsCrashing { get; set; }
 
         private bool uiLocked = true;
         public bool IsUILocked
@@ -76,23 +69,16 @@ namespace Dynamo
         private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
             new Dictionary<string, TypeLoadData>();
 
-        
-        protected VisualizationManager visualizationManager;
-
         public CustomNodeManager CustomNodeManager { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
-        public DynamoViewModel DynamoViewModel { get; internal set; }
+        public DynamoViewModel DynamoViewModel { get; set; }
         public InfoBubbleViewModel InfoBubbleViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
         public Dispatcher UIDispatcher { get; set; }
         public IUpdateManager UpdateManager { get; set; }
         public IWatchHandler WatchHandler { get; set; }
         public IPreferences PreferenceSettings { get; set; }
-
-        public virtual VisualizationManager VisualizationManager
-        {
-            get { return visualizationManager ?? (visualizationManager = new VisualizationManager(this)); }
-        }
+        public IVisualizationManager VisualizationManager { get; set; }
 
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
@@ -101,8 +87,8 @@ namespace Dynamo
         /// </summary>
         public static bool IsTestMode 
         {
-            get { return DynamoController.testing; }
-            set { DynamoController.testing = value; }
+            get { return testing; }
+            set { testing = value; }
         }
 
         ObservableCollection<ModelBase> clipBoard = new ObservableCollection<ModelBase>();
@@ -122,12 +108,7 @@ namespace Dynamo
             get { return builtinTypesByTypeName; }
         }
 
-        private string context;
-        public string Context
-        {
-            get { return context; }
-            set { context = value; }
-        }
+        public string Context { get; set; }
 
         public bool IsShowingConnectors
         {
@@ -147,19 +128,14 @@ namespace Dynamo
             }
         }
 
-        private bool isShowPreViewByDefault = false;
+        private bool isShowPreViewByDefault;
         public bool IsShowPreviewByDefault
         {
             get { return isShowPreViewByDefault;}
             set { isShowPreViewByDefault = value; RaisePropertyChanged("IsShowPreviewByDefault"); }
         }
 
-        private EngineController _engineController = null;
-        public EngineController EngineController
-        {
-            get { return _engineController; }
-            protected set { _engineController = value; }
-        }
+        public EngineController EngineController { get; protected set; }
 
         #endregion
 
@@ -218,25 +194,35 @@ namespace Dynamo
 
         public static DynamoController MakeSandbox(string commandFilePath = null)
         {
-            //var env = new ExecutionEnvironment();
+            DynamoController controller = null;
 
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
-                return new DynamoController(typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
+            {
+                controller = new DynamoController("None", new UpdateManager.UpdateManager(),
+                    new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
 
-            return new DynamoController(typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
-        }
+                controller.DynamoViewModel = new DynamoViewModel(controller, null);
+            }
+            else
+            {
+                controller = new DynamoController("None", new UpdateManager.UpdateManager(),
+                 new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
 
-        public DynamoController(Type viewModelType, string context, IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences) : 
-            this(viewModelType, context, null, updateManager, watchHandler, preferences)
-        {
+                controller.DynamoViewModel = new DynamoViewModel(controller, commandFilePath);
+            }
+
+            controller.VisualizationManager = new VisualizationManager();
+            return controller;
         }
 
         /// <summary>
         ///     Class constructor
         /// </summary>
-        public DynamoController(Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences)
+        public DynamoController(string context, IUpdateManager updateManager, 
+            IWatchHandler watchHandler, IPreferences preferences)
         {
+            IsCrashing = false;
             DynamoLogger.Instance.StartLogging();
 
             dynSettings.Controller = this;
@@ -261,10 +247,12 @@ namespace Dynamo
 
             WatchHandler = watchHandler;
 
-            //create the view model to which the main window will bind
-            //the DynamoModel is created therein
-            DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
-                viewModelType, new object[] { this, commandFilePath });
+            //create the model
+            DynamoModel = new DynamoModel ();
+            DynamoModel.AddHomeWorkspace();
+            DynamoModel.CurrentWorkspace = DynamoModel.HomeSpace;
+            DynamoModel.CurrentWorkspace.X = 0;
+            DynamoModel.CurrentWorkspace.Y = 0;
 
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -278,9 +266,6 @@ namespace Dynamo
 
             dynSettings.PackageLoader.DoCachedPackageUninstalls();
             dynSettings.PackageLoader.LoadPackages();
-            
-            DynamoViewModel.Model.CurrentWorkspace.X = 0;
-            DynamoViewModel.Model.CurrentWorkspace.Y = 0;
 
             DisposeLogic.IsShuttingDown = false;
             EngineController = new EngineController(this, false);
@@ -295,16 +280,8 @@ namespace Dynamo
 
             DynamoLoader.ClearCachedAssemblies();
             DynamoLoader.LoadNodeModels();
-
-            //run tests
-            if (FScheme.RunTests(DynamoLogger.Instance.Log))
-            {
-                DynamoLogger.Instance.Log("All Tests Passed. Core library loaded OK.");
-            }
-
+            
             InfoBubbleViewModel = new InfoBubbleViewModel();
-
-            AddPythonBindings();
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
         }
@@ -334,7 +311,7 @@ namespace Dynamo
             }
         }
 
-        void updateManager_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
+        void updateManager_UpdateDownloaded(object sender, UpdateDownloadedEventArgs e)
         {
             UpdateManager.QuitAndInstallUpdate();
         }
@@ -350,7 +327,8 @@ namespace Dynamo
 
         #endregion
 
-        public virtual void ShutDown(bool shutDownHost, EventArgs args = null)
+        public virtual void 
+            ShutDown(bool shutDownHost, EventArgs args = null)
         {
             EngineController.Dispose();
             EngineController = null;
@@ -562,11 +540,11 @@ namespace Dynamo
                 // if we're running in a unit-test, in which case there's no user. I'd 
                 // like not to display the dialog and hold up the continuous integration.
                 // 
-                if (DynamoController.IsTestMode == false && (fatalException != null))
+                if (IsTestMode == false && (fatalException != null))
                 {
                     Action showFailureMessage = new Action(() =>
                     {
-                        Dynamo.Nodes.Utilities.DisplayEngineFailureMessage(fatalException);
+                        Nodes.Utilities.DisplayEngineFailureMessage(fatalException);
                     });
 
                     // The "Run" method is guaranteed to be called on a background 
@@ -574,8 +552,8 @@ namespace Dynamo
                     // schedule the message to show up when the UI gets around and 
                     // handle it.
                     // 
-                    if (this.UIDispatcher != null)
-                        this.UIDispatcher.BeginInvoke(showFailureMessage);
+                    if (UIDispatcher != null)
+                        UIDispatcher.BeginInvoke(showFailureMessage);
                 }
 
                 // Currently just use inefficient way to refresh preview values. 
@@ -586,9 +564,7 @@ namespace Dynamo
                 {
                     var nodes = DynamoViewModel.Model.HomeSpace.Nodes;
                     foreach (NodeModel node in nodes)
-                    {
                         node.IsUpdated = true;
-                    }
                 }
             }
             catch (CancelEvaluationException ex)
@@ -715,7 +691,7 @@ namespace Dynamo
 
         public void CancelRunCmd(object parameter)
         {
-            var command = new DynCmd.RunCancelCommand(false, true);
+            var command = new DynamoViewModel.RunCancelCommand(false, true);
             DynamoViewModel.ExecuteCommand(command);
         }
 
@@ -732,7 +708,7 @@ namespace Dynamo
         internal void RunExprCmd(object parameters)
         {
             bool showErrors = Convert.ToBoolean(parameters);
-            var command = new DynCmd.RunCancelCommand(showErrors, false);
+            var command = new DynamoViewModel.RunCancelCommand(showErrors, false);
             DynamoViewModel.ExecuteCommand(command);
         }
 
@@ -786,73 +762,6 @@ namespace Dynamo
         {
             return true;
         }
-
-        private void AddPythonBindings()
-        {
-            try
-            {
-                var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-                Assembly ironPythonAssembly = null;
-
-                string path;
-
-                if (File.Exists(path = Path.Combine(assemblyPath, "DynamoPython.dll")))
-                {
-                    ironPythonAssembly = Assembly.LoadFrom(path);
-                }
-                else if (File.Exists(path = Path.Combine(assemblyPath, "Packages", "IronPython", "DynamoPython.dll")))
-                {
-                    ironPythonAssembly = Assembly.LoadFrom(path);
-                }
-
-                if (ironPythonAssembly == null)
-                    throw new Exception();
-
-                var pythonEngine = ironPythonAssembly.GetType("DynamoPython.PythonEngine");
-
-                var drawingField = pythonEngine.GetField("Drawing");
-                var drawDelegateType = ironPythonAssembly.GetType("DynamoPython.PythonEngine+DrawDelegate");
-                Delegate draw = Delegate.CreateDelegate(
-                    drawDelegateType,
-                    this,
-                    typeof(DynamoController)
-                        .GetMethod("DrawPython", BindingFlags.NonPublic | BindingFlags.Instance));
-
-                drawingField.SetValue(null, draw);
-
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-                Debug.WriteLine(e.StackTrace);
-            }
-        }
-
-        void DrawPython(FScheme.Value val, string id)
-        {
-            //DrawContainers(val, id);
-        }
-
-        //private void DrawContainers(FScheme.Value val, string id)
-        //{
-        //    if (val.IsList)
-        //    {
-        //        foreach (FScheme.Value v in ((FScheme.Value.List)val).Item)
-        //        {
-        //            DrawContainers(v, id);
-        //        }
-        //    }
-        //    if (val.IsContainer)
-        //    {
-        //        var drawable = ((FScheme.Value.Container)val).Item;
-
-        //        if (drawable is GraphicItem)
-        //        {
-        //            VisualizationManager.Visualizations[id].Geometry.Add(drawable);
-        //        }
-        //    }
-        //}
     }
 
     public class CancelEvaluationException : Exception

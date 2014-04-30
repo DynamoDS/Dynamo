@@ -10,67 +10,45 @@ using System.Diagnostics;
 using System.Collections.ObjectModel;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.FSchemeInterop;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.DSEngine;
-using Dynamo.FSchemeInterop.Node;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
-using Microsoft.FSharp.Core;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
-using Utils = Dynamo.FSchemeInterop.Utils;
 
 namespace Dynamo.Models
 {
     public abstract class NodeModel : ModelBase, IBlockingModel
     {
-        #region abstract members
-
-        /// <summary>
-        ///     The dynElement's Evaluation Logic.
-        /// </summary>
-        /// <param name="args">
-        ///     Parameters to the node. You are guaranteed to have as many arguments as you have InPorts at the time
-        ///     it is run.
-        /// </param>
-        /// <param name="outPuts"></param>
-        /// <returns>
-        ///     An expression that is the result of the Node's evaluation. It will be passed along to whatever the OutPort is
-        ///     connected to.
-        /// </returns>
-        public virtual void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
         #region private members
 
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;
         private bool displayLabels;
-        private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
         private bool interactionEnabled = true;
         private bool isUpstreamVisible;
         private bool isVisible;
         private string nickName;
-        private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
         private ElementState state;
         private string toolTipText = "";
         private IdentifierNode identifier;
         private bool saveResult;
-        private bool isUpdated;
         private string description;
         private const string FailureString = "Node evaluation failed";
+
+        // Data caching related class members.
+        private bool isUpdated = false;
+        private MirrorData cachedMirrorData = null;
+
+        // Input and output port related data members.
+        private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
+        private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
         private readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
-        private int errorCount;
 
         private List<IRenderPackage> _renderPackages = new List<IRenderPackage>();
 
@@ -327,15 +305,32 @@ namespace Dynamo.Models
             }
         }
 
-        /// <summary>
-        ///     The value which was produced for this node during the previous evaluation.
-        /// </summary>
-        public virtual MirrorData OldValue
+        public MirrorData CachedValue
         {
             get
             {
                 var mirrorData = dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Value);
                 return mirrorData == null ? null : mirrorData.GetData();
+                if (cachedMirrorData != null)
+                    return cachedMirrorData;
+
+                var engine = dynSettings.Controller.EngineController;
+                var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
+
+                if (runtimeMirror != null)
+                    cachedMirrorData = runtimeMirror.GetData();
+
+
+                if (cachedMirrorData == null) // If we didn't get anything...
+                {
+                    // If we fail to get anything from the engine at this time,
+                    // then no point query again in subsequent calls. We simply
+                    // make a MirrorData that represents DesignScript "null" here.
+                    cachedMirrorData = new MirrorData(engine.LiveRunnerCore,
+                        ProtoCore.DSASM.StackValue.BuildNull());
+                }
+
+                return cachedMirrorData;
             }
         }
 
@@ -348,6 +343,9 @@ namespace Dynamo.Models
             set
             {
                 isUpdated = value;
+                if (isUpdated != false)      // When a NodeModel is updated, its 
+                    cachedMirrorData = null; // cached data should be invalidated.
+
                 RaisePropertyChanged("IsUpdated");
             }
         }
@@ -1256,78 +1254,6 @@ namespace Dynamo.Models
             }
             return previewValue;
         }
-
-        public static string PrintValue(
-            FScheme.Value eIn,
-            int currentListIndex,
-            int maxListIndex,
-            int currentDepth,
-            int maxDepth,
-            int maxStringLength = 20)
-        {
-            if (eIn == null)
-                return "<null>";
-
-            string accString = String.Concat(Enumerable.Repeat("  ", currentDepth));
-
-            if (maxDepth == currentDepth || currentListIndex == maxListIndex)
-            {
-                accString += "...";
-                return accString;
-            }
-
-            if (eIn.IsContainer)
-            {
-                string str = (eIn as FScheme.Value.Container).Item != null
-                                 ? (eIn as FScheme.Value.Container).Item.ToString()
-                                 : "<empty>";
-
-                accString += str;
-            }
-            else if (eIn.IsFunction)
-                accString += "<function>";
-            else if (eIn.IsList)
-            {
-                accString += "List";
-
-                FSharpList<FScheme.Value> list = (eIn as FScheme.Value.List).Item;
-
-                if (!list.Any())
-                    accString += " (empty)";
-
-                // when children will be at maxDepth, just do 1
-                if (currentDepth + 1 == maxDepth)
-                    maxListIndex = 0;
-
-                // build all elements of sub list
-                accString =
-                    list.Select((x, i) => new { Element = x, Index = i })
-                        .TakeWhile(e => e.Index <= maxListIndex)
-                        .Aggregate(
-                            accString,
-                            (current, e) =>
-                            current + "\n"
-                            + PrintValue(e.Element, e.Index, maxListIndex, currentDepth + 1, maxDepth, maxStringLength));
-            }
-            else if (eIn.IsNumber)
-            {
-                double num = (eIn as FScheme.Value.Number).Item;
-                var numFloat = (float)num;
-                accString += numFloat.ToString();
-            }
-            else if (eIn.IsString)
-            {
-                string str = (eIn as FScheme.Value.String).Item;
-                if (str.Length > maxStringLength)
-                    str = str.Substring(0, maxStringLength) + "...";
-
-                accString += "\"" + str + "\"";
-            }
-            else if (eIn.IsSymbol)
-                accString += "<" + (eIn as FScheme.Value.Symbol).Item + ">";
-
-            return accString;
-        }
         
 
         /// <summary>
@@ -1519,10 +1445,10 @@ namespace Dynamo.Models
         /// </summary>
         public virtual void UpdateRenderPackage()
         {
-            //Avoid attempting an update after the controller 
-            //has shut down.
             if (dynSettings.Controller == null)
+            {
                 return;
+            }
 
             //dispose of the current render package
             lock (RenderPackagesMutex)
@@ -1530,7 +1456,9 @@ namespace Dynamo.Models
                 RenderPackages.Clear();
                 HasRenderPackages = false;
 
-                if (State == ElementState.Error || !IsVisible)
+                if (State == ElementState.Error ||
+                    !IsVisible ||
+                    CachedValue == null)
                 {
                     return;
                 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.DesignScript.Runtime;
-using Autodesk.Revit.DB;
+﻿using Autodesk.DesignScript.Runtime;
 
 namespace Revit.Elements
 {
@@ -29,7 +24,14 @@ namespace Revit.Elements
         /// <param name="element"></param>
         private UnknownElement(Autodesk.Revit.DB.Element element)
         {
-            this._element = element;
+            InternalSetElement(element);
+        }
+
+        private void InternalSetElement(Autodesk.Revit.DB.Element e)
+        {
+            _element = e;
+            InternalElementId = _element.Id;
+            InternalUniqueId = _element.UniqueId;
         }
 
         /// <summary>

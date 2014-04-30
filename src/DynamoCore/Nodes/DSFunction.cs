@@ -107,8 +107,7 @@ namespace Dynamo.Nodes
                          new PortData(
                              arg.Name,
                              arg.Description,
-                             typeof(object),
-                             arg.DefaultValue));
+                             defaultValue: arg.DefaultValue));
                 }
             }
 
@@ -542,7 +541,7 @@ namespace Dynamo.Nodes
         {
             if (IsInstanceMember())
             {
-                InPortData.Add(new PortData("this", Definition.ClassName, typeof(object)));
+                InPortData.Add(new PortData("this", Definition.ClassName));
             }
 
             if (Definition.Parameters != null)
@@ -553,8 +552,7 @@ namespace Dynamo.Nodes
                          new PortData(
                              arg.Name,
                              string.IsNullOrEmpty(arg.Type) ? "var" : arg.Type,
-                             typeof(object),
-                             arg.DefaultValue));
+                             defaultValue: arg.DefaultValue));
                 }
                 AddInput();
             }
@@ -564,13 +562,13 @@ namespace Dynamo.Nodes
             {
                 foreach (var key in Definition.ReturnKeys)
                 {
-                    OutPortData.Add(new PortData(key, "var", typeof(object)));
+                    OutPortData.Add(new PortData(key, "var"));
                 }
             }
             else
             {
                 string returnType = IsConstructor() ? Definition.ClassName : Definition.ReturnType;
-                OutPortData.Add(new PortData("", returnType, typeof(object)));
+                OutPortData.Add(new PortData("", returnType));
             }
 
             RegisterAllPorts();

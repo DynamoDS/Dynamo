@@ -167,11 +167,19 @@ namespace Dynamo.Nodes
             SelectionAction = action;
             _selectionMessage = message;
 
-            OutPortData.Add(new PortData("Element", "The selected element.", typeof(object)));
+            OutPortData.Add(new PortData("Element", "The selected element."));
             RegisterAllPorts();
 
             dynRevitSettings.Controller.Updater.ElementsModified += Updater_ElementsModified;
             dynRevitSettings.Controller.Updater.ElementsDeleted += Updater_ElementsDeleted;
+            dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
+        }
+
+        void Controller_RevitDocumentChanged(object sender, EventArgs e)
+        {
+            SelectedElement = null;
+            RaisePropertyChanged("SelectedElement");
+            RaisePropertyChanged("SelectionText");
         }
 
         public override void Destroy()
@@ -372,11 +380,20 @@ namespace Dynamo.Nodes
             SelectionAction = action;
             _selectionMessage = message;
 
-            OutPortData.Add(new PortData("Reference", "The geometry reference.", typeof(object)));
+            OutPortData.Add(new PortData("Reference", "The geometry reference."));
             RegisterAllPorts();
 
             var u = dynRevitSettings.Controller.Updater;
             u.ElementsModified += u_ElementsModified;
+
+            dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
+        }
+
+        void Controller_RevitDocumentChanged(object sender, EventArgs e)
+        {
+            SelectedElement = null;
+            RaisePropertyChanged("SelectedElement");
+            RaisePropertyChanged("SelectionText");
         }
 
         void u_ElementsModified(IEnumerable<string> updated)
@@ -628,12 +645,20 @@ namespace Dynamo.Nodes
             SelectionAction = action;
             _selectionMessage = message;
 
-            OutPortData.Add(new PortData("Elements", "The selected elements.", typeof(object)));
+            OutPortData.Add(new PortData("Elements", "The selected elements."));
             RegisterAllPorts();
 
 
             dynRevitSettings.Controller.Updater.ElementsModified += Updater_ElementsModified;
             dynRevitSettings.Controller.Updater.ElementsDeleted += Updater_ElementsDeleted;
+            dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
+        }
+
+        void Controller_RevitDocumentChanged(object sender, EventArgs e)
+        {
+            SelectedElement.Clear();
+            RaisePropertyChanged("SelectedElement");
+            RaisePropertyChanged("SelectionText");
         }
 
         public override void Destroy()

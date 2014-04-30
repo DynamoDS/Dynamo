@@ -63,7 +63,7 @@ namespace Dynamo.Nodes
         protected virtual void AddInput()
         {
             var idx = GetInputIndex();
-            InPortData.Add(new PortData(GetInputName(idx), GetInputTooltip(idx), typeof(object)));
+            InPortData.Add(new PortData(GetInputName(idx), GetInputTooltip(idx)));
             UpdateRecalcState();
         }
 
