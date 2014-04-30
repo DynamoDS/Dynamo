@@ -9,6 +9,10 @@ using Autodesk.Revit.DB;
 
 namespace Revit.GeometryConversion
 {
+    /// <summary>
+    /// This class is required to extract the underlying surface representation from a Revit Face.
+    /// All Face types are supported.
+    /// </summary>
     [SupressImportIntoVM]
     [IsVisibleInDynamoLibrary(false)]
     public static class SurfaceExtractor
@@ -112,7 +116,6 @@ namespace Revit.GeometryConversion
 
         public static Surface ExtractSurface(Autodesk.Revit.DB.HermiteFace face, IEnumerable<PolyCurve> edgeLoops)
         {
-
             // The number of interpolating points in the u direction is given by get_Params
             var uParams = face.get_Params(0).Cast<double>().ToArray();
             var vParams = face.get_Params(1).Cast<double>().ToArray();
@@ -123,7 +126,7 @@ namespace Revit.GeometryConversion
             // unpack the points
             var points = face.Points;
            
-            // structure the points
+            // structure the points as 2d array - numU x numV
             var ptArr = new Autodesk.DesignScript.Geometry.Point[numV][];
             var count = 0;
             for (var i = 0; i < numV; i++)
@@ -140,15 +143,15 @@ namespace Revit.GeometryConversion
             var uTangents = face.get_Tangents(0);
             var vTangents = face.get_Tangents(1);
 
-            // structure the tangents
-            var uTangentsArr = new Autodesk.DesignScript.Geometry.Vector[numV][];
-            var vTangentsArr = new Autodesk.DesignScript.Geometry.Vector[numV][];
+            // structure the tangents as 2d array - numU x numV
+            var uTangentsArr = new Vector[numV][];
+            var vTangentsArr = new Vector[numV][];
 
             count = 0;
             for (var i = 0; i < numV; i++)
             {
-                uTangentsArr[i] = new Autodesk.DesignScript.Geometry.Vector[numU];
-                vTangentsArr[i] = new Autodesk.DesignScript.Geometry.Vector[numU];
+                uTangentsArr[i] = new Vector[numU];
+                vTangentsArr[i] = new Vector[numU];
 
                 for (var j = 0; j < numU; j++)
                 {
@@ -166,15 +169,14 @@ namespace Revit.GeometryConversion
             var vStartTangents = vTangentsArr[0];
             var vEndTangents = vTangentsArr[numV-1];
 
+            // The mixed derivs are the twist vectors - dP / dUdV
             var md = face.MixedDerivs;
-            var mdf0 = md[0].ToVector();
-            var mdf3 = md[md.Count - 1].ToVector();
-            var mdf1 = md[numU - 1].ToVector();
-            var mdf2 = md[(md.Count - 1) - (numU-1)].ToVector();
-
-            Autodesk.DesignScript.Geometry.Vector[] mds =
+            Vector[] mds =
             {
-                mdf0, mdf1, mdf2, mdf3
+                md[0].ToVector(), 
+                md[numU - 1].ToVector(), 
+                md[(md.Count - 1) - (numU-1)].ToVector(),
+                md[md.Count - 1].ToVector()
             };
 
             return NurbsSurface.ByPointsTangentsKnotsDerivatives(   ptArr, 
@@ -196,7 +198,12 @@ namespace Revit.GeometryConversion
             var x = face.get_Radius(0).ToVector();
             var y = face.get_Radius(1).ToVector();
 
-            crv = face.GetRevolvedSurfaceCurve();
+            // Note: The profile curve is represented in the coordinate system of the revolve
+            //       so we need to transform it into the global coordinate system
+            var revolveCs = CoordinateSystem.Identity();
+            var globalCs = CoordinateSystem.ByOriginVectors(o.AsPoint(), x, y);
+
+            crv = (Autodesk.DesignScript.Geometry.Curve) crv.Transform(revolveCs, globalCs);
 
             return Surface.ByRevolve(crv, o.AsPoint(), axis.Normalized(), 0, 360);
         }
