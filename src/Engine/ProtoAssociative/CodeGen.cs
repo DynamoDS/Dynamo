@@ -187,20 +187,6 @@ namespace ProtoAssociative
             expressionSSATempSymbolList = new Stack<SymbolNode>();
         }
 
-        /// <summary>
-        /// Helper function to initialize the global function table entry for a class
-        /// </summary>
-        /// <param name="classIndexAtCallsite"></param>
-        private void InitGlobalFunctionTableEntry(int classIndexAtCallsite)
-        {
-            Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != classIndexAtCallsite);
-            if (!core.FunctionTable.GlobalFuncTable.ContainsKey(classIndexAtCallsite))
-            {
-                Dictionary<string, FunctionGroup> funcList = new Dictionary<string, FunctionGroup>();
-                core.FunctionTable.GlobalFuncTable.Add(classIndexAtCallsite, funcList);
-            }
-        }
-
         private ProtoCore.DSASM.CodeBlock GetDeltaCompileCodeBlock()
         {
             ProtoCore.DSASM.CodeBlock cb = null;
@@ -5260,7 +5246,7 @@ namespace ProtoAssociative
                 // Initialize the global function table for this class
                 // 'classIndexAtCallsite' is the class index as it is stored at the callsite function tables
                 int classIndexAtCallsite = globalClassIndex + 1;
-                InitGlobalFunctionTableEntry(classIndexAtCallsite);
+                core.FunctionTable.InitGlobalFunctionEntry(classIndexAtCallsite);
 
                 foreach (AssociativeNode funcdecl in classDecl.funclist)
                 {
@@ -5590,7 +5576,7 @@ namespace ProtoAssociative
 
                 // 'classIndexAtCallsite' is the class index as it is stored at the callsite function tables
                 int classIndexAtCallsite = globalClassIndex + 1;
-                InitGlobalFunctionTableEntry(classIndexAtCallsite);
+                core.FunctionTable.InitGlobalFunctionEntry(classIndexAtCallsite);
 
                 Dictionary<string, FunctionGroup> fgroup = core.FunctionTable.GlobalFuncTable[classIndexAtCallsite];
                 if (!fgroup.ContainsKey(funcDef.Name))
@@ -5996,7 +5982,7 @@ namespace ProtoAssociative
 
                 // 'classIndexAtCallsite' is the class index as it is stored at the callsite function tables
                 int classIndexAtCallsite = globalClassIndex + 1;
-                InitGlobalFunctionTableEntry(classIndexAtCallsite);
+                core.FunctionTable.InitGlobalFunctionEntry(classIndexAtCallsite);
 
                 // Get the function group of the current class and see if the current function exists
                 Dictionary<string, FunctionGroup> fgroup = core.FunctionTable.GlobalFuncTable[classIndexAtCallsite];
