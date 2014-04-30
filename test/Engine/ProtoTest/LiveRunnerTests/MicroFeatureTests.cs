@@ -2279,6 +2279,34 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        public void TestSimpleFunctionRedefinition04()
+        {
+            List<string> codes = new List<string>() 
+            {                    
+                "def f(){y = 1; return = 2;} x = f();",
+                "def f(){return = 1;}"
+            };
+
+            Guid guid = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+
+            // Create CBNs
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x", 2);
+
+            // Modify CBN2 - remove the last line
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x", 1);
+        }
+
+        [Test]
         public void TestFunctionRedefinitionOnNewNode01()
         {
             List<string> codes = new List<string>() 
@@ -3319,6 +3347,39 @@ z=Point.ByCoordinates(y,a,a);
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("x", 2);
         }
+
+        [Test]
+        public void TestCodeblockModification16()
+        {
+            List<string> codes = new List<string>() 
+            {                    
+                "a = 2;",
+                "def f(x){return = x;} b = a; p = f(b); i = p;",
+                "def f(x){return = x;} p = i;"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+
+            // Create CBNs
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("i", 2);
+
+            // Modify CBN2 - Remove the line that calls the function
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            var mirror = astLiveRunner.InspectNodeValue("i");
+            Assert.IsTrue(mirror.GetData().IsNull);
+        }
+
 
         [Test]
         public void TestEmptyCodeblock01()

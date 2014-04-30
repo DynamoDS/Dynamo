@@ -357,10 +357,10 @@ namespace ProtoScript.Runners
                     core.RuntimeStatus.ClearWarningsForGraph(st.GUID);
                 }
 
-                // Handle modifed functions
-                var modifiedFunctions = st.AstNodes.Where(n => n is FunctionDefinitionNode);
+                // Cache the modifed functions
+                //var modifiedFunctions = st.AstNodes.Where(n => n is FunctionDefinitionNode);
+                var modifiedFunctions = modifiedASTList.Where(n => n is FunctionDefinitionNode);
                 csData.ModifiedFunctions.AddRange(modifiedFunctions);
-                deltaAstList.AddRange(modifiedFunctions);
 
                 // Handle cached subtree
                 if (cachedTreeExists)
@@ -384,7 +384,9 @@ namespace ProtoScript.Runners
                         {
                             // Only update the cached ASTs if it is not ForceExecution
 
-                            csData.RemovedFunctionDefNodesFromModification.AddRange(oldSubTree.AstNodes.Where(n => n is FunctionDefinitionNode));
+                            // Cache the functions that were re-defined
+                            // The changeSetApplier will remove the previous definition of these functions given the function signature
+                            csData.RemovedFunctionDefNodesFromModification.AddRange(modifiedFunctions.Where(n => n is FunctionDefinitionNode));
 
                             // Update the current subtree list
                             List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
