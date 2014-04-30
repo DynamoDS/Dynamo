@@ -1121,13 +1121,21 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
+            XmlElement curveNode = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 0, "RevitNodes.dll",
+                "Element.Geometry", "Element.Geometry");
+            migrationData.AppendNode(curveNode);
+            string curveNodeId = MigrationManager.GetGuidFromXmlElement(curveNode);
+
             // Update connectors
             PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
             PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            PortId curveNodePort = new PortId(curveNodeId, 0, PortType.INPUT);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
             data.ReconnectToPort(connector0, oldInPort1);
-            data.ReconnectToPort(connector1, oldInPort0);
+            data.ReconnectToPort(connector1, curveNodePort);
+            data.CreateConnector(curveNode, 0, newNode, 0);
 
             return migrationData;
         }

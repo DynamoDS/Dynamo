@@ -74,7 +74,7 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
             var selNodes = model.AllNodes.Where(x => x is DSElementSelection || x is DSModelElementsSelection);
-            Assert.IsFalse(selNodes.Any(x => x.OldValue == null));
+            Assert.IsFalse(selNodes.Any(x => x.CachedValue == null));
 
             //Assert.Inconclusive("Porting : MultipleElementSelectionBase");
         }
