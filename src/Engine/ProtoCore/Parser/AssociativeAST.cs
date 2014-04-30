@@ -1360,11 +1360,17 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var otherNode = other as FunctionDefinitionNode;
             if (null == otherNode)
+            {
                 return false;
+            }
 
-            return EqualityComparer<ArgumentSignatureNode>.Default.Equals(Signature, otherNode.Signature) &&
+            bool equalSignature = EqualityComparer<ArgumentSignatureNode>.Default.Equals(Signature, otherNode.Signature) &&
                    ReturnType.Equals(otherNode.ReturnType) &&
                    Attributes.SequenceEqual(otherNode.Attributes);
+
+            bool equalBody = FunctionBody.Equals(otherNode.FunctionBody);
+
+            return equalSignature && equalBody;
         }
 
         public override int GetHashCode()
