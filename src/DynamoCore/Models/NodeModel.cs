@@ -305,37 +305,7 @@ namespace Dynamo.Models
             }
         }
 
-        /// <summary>
-        /// The value which was produced for this node during the evaluation. Note 
-        /// that this value will be cached until the next time this node is updated 
-        /// by the evaluation.
-        /// </summary>
-        public MirrorData CachedValue
-        {
-            get
-            {
-                if (cachedMirrorData != null)
-                    return cachedMirrorData;
-
-                var engine = dynSettings.Controller.EngineController;
-                var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
-
-                if (runtimeMirror != null)
-                    cachedMirrorData = runtimeMirror.GetData();
-
-
-                if (cachedMirrorData == null) // If we didn't get anything...
-                {
-                    // If we fail to get anything from the engine at this time,
-                    // then no point query again in subsequent calls. We simply
-                    // make a MirrorData that represents DesignScript "null" here.
-                    cachedMirrorData = new MirrorData(engine.LiveRunnerCore,
-                        ProtoCore.DSASM.StackValue.BuildNull());
-                }
-
-                return cachedMirrorData;
-            }
-        }
+        public virtual MirrorData OldValue { get; set; }
 
         /// <summary>
         ///     If the node is updated in LiveRunner's execution
@@ -1448,10 +1418,10 @@ namespace Dynamo.Models
         /// </summary>
         public virtual void UpdateRenderPackage()
         {
-            //Avoid attempting an update after the controller 
-            //has shut down.
             if (dynSettings.Controller == null)
+            {
                 return;
+            }
 
             //dispose of the current render package
             lock (RenderPackagesMutex)
@@ -1459,7 +1429,9 @@ namespace Dynamo.Models
                 RenderPackages.Clear();
                 HasRenderPackages = false;
 
-                if (State == ElementState.Error || !IsVisible)
+                if (State == ElementState.Error ||
+                    !IsVisible ||
+                    OldValue == null)
                 {
                     return;
                 }

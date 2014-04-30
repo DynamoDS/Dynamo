@@ -554,6 +554,13 @@ namespace Dynamo.Nodes
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             _watchTree = new WatchTree();
+
+            // MAGN-2446: Fixes the maximum width/height of watch node so it won't 
+            // go too crazy on us. Note that this is only applied to regular watch 
+            // node so it won't be limiting the size of image/3D watch nodes.
+            // 
+            nodeUI.PresentationGrid.MaxWidth = Configurations.MaxWatchNodeWidth;
+            nodeUI.PresentationGrid.MaxHeight = Configurations.MaxWatchNodeHeight;
             nodeUI.PresentationGrid.Children.Add(_watchTree);
 
             if (Root == null)

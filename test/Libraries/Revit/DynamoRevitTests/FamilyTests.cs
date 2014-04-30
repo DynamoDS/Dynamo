@@ -3,7 +3,6 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
 using NUnit.Framework;
 
 namespace Dynamo.Tests

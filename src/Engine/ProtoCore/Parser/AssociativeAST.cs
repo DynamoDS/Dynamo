@@ -747,6 +747,8 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var buf = new StringBuilder();
             string functionName = (Function as IdentifierNode).Value;
+            if (string.IsNullOrEmpty(functionName))
+                functionName = Function.Name;
             string postfix = base.ToString();
 
             if (CoreUtils.IsInternalMethod(functionName))
@@ -1512,7 +1514,7 @@ namespace ProtoCore.AST.AssociativeAST
         public int ssaExprID { get; set; }
         public int modBlkUID { get; set; }
         public Guid guid { get; set; }
-        public int SourceAstID { get; set; }    // The original AST that this Binarynode was derived from
+        public int OriginalAstID { get; set; }    // The original AST that this Binarynode was derived from
         public bool isSSAAssignment { get; set; }
         public bool isSSAPointerAssignment { get; set; }
         public bool isSSAFirstAssignment { get; set; }
@@ -1534,7 +1536,7 @@ namespace ProtoCore.AST.AssociativeAST
             isMultipleAssign = false;
             exprUID = Constants.kInvalidIndex;
             modBlkUID = Constants.kInvalidIndex;
-            SourceAstID = ID;
+            OriginalAstID = ID;
             guid = System.Guid.Empty;
             LeftNode = left;
             Optr = optr;
@@ -1550,7 +1552,7 @@ namespace ProtoCore.AST.AssociativeAST
             exprUID = rhs.exprUID;
             modBlkUID = rhs.modBlkUID;
             guid = rhs.guid;
-            SourceAstID = rhs.SourceAstID;
+            OriginalAstID = rhs.OriginalAstID;
 
             Optr = rhs.Optr;
             LeftNode = NodeUtils.Clone(rhs.LeftNode);

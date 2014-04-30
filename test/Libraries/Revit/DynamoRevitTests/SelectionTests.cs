@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using Autodesk.Revit.DB;
+using DSRevitNodesUI;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -15,63 +16,67 @@ namespace Dynamo.Tests
         [TestModel(@".\empty.rfa")]
         public void FamilyTypeSelectorNode()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
-            //string samplePath = Path.Combine(_testPath, @".\Selection\SelectFamily.dyn");
-            //string testPath = Path.GetFullPath(samplePath);
+            string samplePath = Path.Combine(_testPath, @".\Selection\SelectFamily.dyn");
+            string testPath = Path.GetFullPath(samplePath);
 
-            ////open the test file
-            //model.Open(testPath);
+            //open the test file
+            model.Open(testPath);
 
-            ////first assert that we have only one node
-            //var nodeCount = dynSettings.Controller.DynamoModel.Nodes.Count;
-            //Assert.AreEqual(1, nodeCount);
+            AssertNoDummyNodes();
 
-            ////assert that we have the right number of family symbols
-            ////in the node's items source
-            //FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
-            //fec.OfClass(typeof(Family));
-            //int count = 0;
-            //foreach (Family f in fec.ToElements())
-            //{
-            //    foreach (FamilySymbol fs in f.Symbols)
-            //    {
-            //        count++;
-            //    }
-            //}
+            //first assert that we have only one node
+            var nodeCount = dynSettings.Controller.DynamoModel.Nodes.Count;
+            Assert.AreEqual(1, nodeCount);
 
-            //FamilyTypeSelector typeSelNode = (FamilyTypeSelector)dynSettings.Controller.DynamoModel.Nodes.First();
-            //Assert.AreEqual(typeSelNode.Items.Count, count);
+            //assert that we have the right number of family symbols
+            //in the node's items source
+            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
+            fec.OfClass(typeof(Family));
+            int count = 0;
+            foreach (Family f in fec.ToElements())
+            {
+                foreach (FamilySymbol fs in f.Symbols)
+                {
+                    count++;
+                }
+            }
 
-            ////assert that the selected index is correct
-            //Assert.AreEqual(typeSelNode.SelectedIndex, 3);
+            FamilyTypes typeSelNode = (FamilyTypes)dynSettings.Controller.DynamoModel.Nodes.First();
+            Assert.AreEqual(typeSelNode.Items.Count, count);
 
-            ////now try and set the selected index to something
-            ////greater than what is possible
-            //typeSelNode.SelectedIndex = count + 5;
-            //Assert.AreEqual(typeSelNode.SelectedIndex, -1);
+            //assert that the selected index is correct
+            Assert.AreEqual(typeSelNode.SelectedIndex, 3);
 
-            Assert.Inconclusive("Porting : FamilyTypeSelector");
+            //now try and set the selected index to something
+            //greater than what is possible
+            typeSelNode.SelectedIndex = count + 5;
+            Assert.AreEqual(typeSelNode.SelectedIndex, -1);
+
+            //Assert.Inconclusive("Porting : FamilyTypeSelector");
         }
 
         [Test]
         [TestModel(@".\Selection\Selection.rfa")]
         public void AllSelectionNodes()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
-            //string samplePath = Path.Combine(_testPath, @".\Selection\Selection.dyn");
-            //string testPath = Path.GetFullPath(samplePath);
+            string samplePath = Path.Combine(_testPath, @".\Selection\Selection.dyn");
+            string testPath = Path.GetFullPath(samplePath);
 
-            ////open the test file
-            //model.Open(testPath);
+            //open the test file
+            model.Open(testPath);
 
-            //Assert.DoesNotThrow(()=>dynSettings.Controller.RunExpression(true));
+            AssertNoDummyNodes();
 
-            //var selNodes = model.AllNodes.Where(x => x is SelectionBase || x is MultipleElementSelectionBase);
-            //Assert.IsFalse(selNodes.Any(x=>x.OldValue == null));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
-            Assert.Inconclusive("Porting : MultipleElementSelectionBase");
+            var selNodes = model.AllNodes.Where(x => x is DSElementSelection || x is DSModelElementsSelection);
+            Assert.IsFalse(selNodes.Any(x => x.OldValue == null));
+
+            //Assert.Inconclusive("Porting : MultipleElementSelectionBase");
         }
     }
 }
