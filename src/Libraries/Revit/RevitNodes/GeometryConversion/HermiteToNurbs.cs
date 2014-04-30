@@ -16,7 +16,7 @@ namespace Revit.GeometryConversion
         /// <returns></returns>
         public static NurbsCurve ConvertExact(Autodesk.Revit.DB.HermiteSpline crv)
         {
-            var knots = GetNurbsKnots(crv);
+            var knots = Clamp(crv.Parameters.Cast<double>());
             var points = GetNurbsPoints(crv, knots);
 
             // the resultant nurbs curve is not rational - i.e. it's weights are 1
@@ -26,29 +26,20 @@ namespace Revit.GeometryConversion
         }
 
         /// <summary>
-        /// Build a NURBS knot structure from a HermiteSpline
+        /// Clamp a collection of curve parameters by introducing knot multiplicities at each end such
+        /// that each end of the knot vector has degree + 1 copies of the knot
         /// </summary>
         /// <param name="curve"></param>
-        /// <returns></returns>
-        private static double[] GetNurbsKnots(Autodesk.Revit.DB.HermiteSpline curve)
+        /// <returns></returns>,
+        internal static double[] Clamp(IEnumerable<double> curveParameters, int degree = 3)
         {
-            var parms = curve.Parameters.Cast<double>().ToList();
-            var knots = new List<double>();
+            var parms = curveParameters.ToList();
+            return
+                Enumerable.Repeat(parms.First(), degree)
+                    .Concat(parms)
+                    .Concat(Enumerable.Repeat(parms.Last(), degree))
+                    .ToArray();
 
-            for (int ii = 0; ii < parms.Count; ii++)
-            {
-                if (ii == 0 || ii == parms.Count - 1)
-                {
-                    for (int jj = 4; jj-- > 0; )
-                        knots.Add(parms[ii]);
-                }
-                else
-                {
-                    knots.Add(parms[ii]);
-                }
-            }
-
-            return knots.ToArray();
         }
 
         /// <summary>
@@ -57,7 +48,7 @@ namespace Revit.GeometryConversion
         /// <param name="curve"></param>
         /// <param name="nurbsKnots"></param>
         /// <returns></returns>
-        private static Autodesk.DesignScript.Geometry.Point[] GetNurbsPoints(Autodesk.Revit.DB.HermiteSpline curve, double[] nurbsKnots)
+        internal static Autodesk.DesignScript.Geometry.Point[] GetNurbsPoints(Autodesk.Revit.DB.HermiteSpline curve, double[] nurbsKnots)
         {
 
             int numKnots = nurbsKnots.Length;
@@ -147,6 +138,89 @@ namespace Revit.GeometryConversion
         }
 
         #region Helper methods
+
+        private static Autodesk.DesignScript.Geometry.Curve[] HermiteFaceIsoCurves(this Autodesk.Revit.DB.Face fa, bool useUDirection = true)
+        {
+            if (!(fa is HermiteFace)) return null;
+
+            var face = (HermiteFace)fa;
+
+            // The number of interpolating points in the u direction is given by get_Params
+            var numU = face.get_Params(0).Size;
+            var numV = face.get_Params(1).Size;
+
+            // unpack the points
+            var points = face.Points;
+
+            // structure the points
+            var ptArr = new Autodesk.DesignScript.Geometry.Point[numV][];
+            var count = 0;
+            for (var i = 0; i < numV; i++)
+            {
+                ptArr[i] = new Autodesk.DesignScript.Geometry.Point[numU];
+
+                for (var j = 0; j < numU; j++)
+                {
+                    ptArr[i][j] = points[count++].ToPoint();
+                }
+            }
+
+            // unpack the tangents
+            var uTangents = face.get_Tangents(0);
+            var vtangents = face.get_Tangents(1);
+
+            // structure the points
+            var uTangentsArr = new Vector[numV][];
+            var vTangentsArr = new Vector[numV][];
+
+            count = 0;
+            for (var i = 0; i < numV; i++)
+            {
+                uTangentsArr[i] = new Vector[numU];
+                vTangentsArr[i] = new Vector[numU];
+
+                for (var j = 0; j < numU; j++)
+                {
+                    uTangentsArr[i][j] = uTangents[count].ToVector();
+                    vTangentsArr[i][j] = vtangents[count].ToVector();
+                    count++;
+                }
+            }
+
+            // u tangents run in increasing column direction
+            var uStartTangents = uTangentsArr.Select(x => x[0]).ToArray();
+            var uEndTangents = uTangentsArr.Select(x => x[numU - 1]).ToArray();
+
+            // v tangents run in increasing row direction
+            var vStartTangents = vTangentsArr[0];
+            var vEndTangents = vTangentsArr[numV - 1];
+
+            var startTangents = useUDirection ? uStartTangents : vStartTangents;
+            var endTangents = useUDirection ? uEndTangents : vEndTangents;
+
+            var crvs = new List<Autodesk.DesignScript.Geometry.Curve>();
+            var numCrvs = useUDirection ? numV : numU;
+
+            for (var i = 0; i < numCrvs; i++)
+            {
+                var xyzs = (useUDirection ? ptArr[i] : ptArr.Select(x => x[i])).Select(x => x.ToXyz());
+
+                var f = new HermiteSplineTangents()
+                {
+                    StartTangent = startTangents[i].ToXyz().Normalize(),
+                    EndTangent = endTangents[i].ToXyz().Normalize()
+                };
+
+                var hermiteSpline = HermiteSpline.Create(xyzs.ToList(), false, f);
+
+                crvs.Add(hermiteSpline.ToProtoType());
+
+            }
+
+            return crvs.ToArray();
+
+        }
+
 
         private static double[] Symmetric(double[] pX)
         {

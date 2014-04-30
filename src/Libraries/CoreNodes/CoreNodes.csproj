@@ -95,7 +95,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DSCoreNodes_DynamoCustomization.xml" />
+    <Content Include="DSCoreNodes_DynamoCustomization.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

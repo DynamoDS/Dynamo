@@ -112,9 +112,13 @@ namespace Revit.GeometryConversion
 
         public static Surface ExtractSurface(Autodesk.Revit.DB.HermiteFace face, IEnumerable<PolyCurve> edgeLoops)
         {
+
             // The number of interpolating points in the u direction is given by get_Params
-            var numU = face.get_Params(0).Size;
-            var numV = face.get_Params(1).Size;
+            var uParams = face.get_Params(0).Cast<double>().ToArray();
+            var vParams = face.get_Params(1).Cast<double>().ToArray();
+
+            var numU = uParams.Length;
+            var numV = vParams.Length;
 
             // unpack the points
             var points = face.Points;
@@ -134,10 +138,9 @@ namespace Revit.GeometryConversion
 
             // unpack the tangents
             var uTangents = face.get_Tangents(0);
-            var vtangents = face.get_Tangents(1);
+            var vTangents = face.get_Tangents(1);
 
-            // structure the points
-            // PB: could be simplified to just get the end vectors, but this is easier to debug
+            // structure the tangents
             var uTangentsArr = new Autodesk.DesignScript.Geometry.Vector[numV][];
             var vTangentsArr = new Autodesk.DesignScript.Geometry.Vector[numV][];
 
@@ -150,37 +153,56 @@ namespace Revit.GeometryConversion
                 for (var j = 0; j < numU; j++)
                 {
                     uTangentsArr[i][j] = uTangents[count].ToVector();
-                    vTangentsArr[i][j] = vtangents[count].ToVector();
+                    vTangentsArr[i][j] = vTangents[count].ToVector();
                     count++;
                 }
             }
 
-            // the required u tangents are the first and last row of the utangents 2d arr
-            var uStartTangents = uTangentsArr[0];
-            var uEndTangents = uTangentsArr[numV-1];
+            // u tangents run in increasing column direction
+            var uStartTangents = uTangentsArr.Select(x => x[0]).ToArray();
+            var uEndTangents = uTangentsArr.Select(x => x[numU - 1]).ToArray();
 
-            // the required v tangents are the first and last col of the vtangents 2d arr
-            var vStartTangents = vTangentsArr.Select(x => x[0]).ToArray();
-            var vEndTangents = vTangentsArr.Select(x => x[numU-1]).ToArray();
+            // v tangents run in increasing row direction
+            var vStartTangents = vTangentsArr[0];
+            var vEndTangents = vTangentsArr[numV-1];
 
-            return NurbsSurface.ByPointsTangents(ptArr, uStartTangents, uEndTangents, vStartTangents, vEndTangents);
+            var md = face.MixedDerivs;
+            var mdf0 = md[0].ToVector();
+            var mdf3 = md[md.Count - 1].ToVector();
+            var mdf1 = md[numU - 1].ToVector();
+            var mdf2 = md[(md.Count - 1) - (numU-1)].ToVector();
+
+            Autodesk.DesignScript.Geometry.Vector[] mds =
+            {
+                mdf0, mdf1, mdf2, mdf3
+            };
+
+            return NurbsSurface.ByPointsTangentsKnotsDerivatives(   ptArr, 
+                                                                    uStartTangents, 
+                                                                    uEndTangents, 
+                                                                    vStartTangents, 
+                                                                    vEndTangents,
+                                                                    HermiteToNurbs.Clamp(uParams),
+                                                                    HermiteToNurbs.Clamp(vParams), 
+                                                                    mds);
+
         }
 
         public static Surface ExtractSurface(Autodesk.Revit.DB.RevolvedFace face, IEnumerable<PolyCurve> edgeLoops)
         {
             var crv = face.Curve.ToProtoType();
             var axis = face.Axis.ToVector();
-            var o = face.Origin.ToPoint();
-            var x = face.get_Radius(0);
-            var y = face.get_Radius(1);
+            var o = face.Origin.ToVector();
+            var x = face.get_Radius(0).ToVector();
+            var y = face.get_Radius(1).ToVector();
 
-            return Surface.ByRevolve(crv, o, axis, 0, 360);
+            crv = face.GetRevolvedSurfaceCurve();
+
+            return Surface.ByRevolve(crv, o.AsPoint(), axis.Normalized(), 0, 360);
         }
 
         public static Surface ExtractSurface(Autodesk.Revit.DB.RuledFace face, IEnumerable<PolyCurve> edgeLoops)
         {
-            // Naive lofting operation
-            // TODO: Check the parameterization of the two curves
             var c0 = face.get_Curve(0).ToProtoType();
             var c1 = face.get_Curve(1).ToProtoType();
 

@@ -48,6 +48,28 @@ namespace Revit.GeometryConversion
             return SurfaceExtractor.ExtractSurface(dyFace, edgeLoops);
         }
 
+        public static Autodesk.DesignScript.Geometry.Curve GetRevolvedSurfaceCurve(this Revit.GeometryObjects.Face face)
+        {
+            return face.InternalFace.GetRevolvedSurfaceCurve();
+        }
+
+        public static Autodesk.DesignScript.Geometry.Curve GetRevolvedSurfaceCurve(this Autodesk.Revit.DB.Face face)
+        {
+            if (face == null) return null;
+            if (!(face is Autodesk.Revit.DB.RevolvedFace)) return null;
+
+            var f = face as RevolvedFace;
+            var crv = f.Curve.ToProtoType();
+            var o = f.Origin.ToVector();
+            var x = f.get_Radius(0).ToVector();
+            var y = f.get_Radius(1).ToVector();
+
+            var revolveCs = CoordinateSystem.Identity();
+            var globalCs = CoordinateSystem.ByOriginVectors(o.AsPoint(), x, y);
+
+            return (Autodesk.DesignScript.Geometry.Curve)crv.Transform(revolveCs, globalCs);
+        }
+
         public static Autodesk.DesignScript.Geometry.Solid ToSolid(Surface[] surfaces)
         {
             return Autodesk.DesignScript.Geometry.Solid.ByJoinedSurfaces(surfaces);
