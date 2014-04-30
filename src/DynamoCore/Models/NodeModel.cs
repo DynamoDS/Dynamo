@@ -305,7 +305,34 @@ namespace Dynamo.Models
             }
         }
 
-        public virtual MirrorData OldValue { get; set; }
+        public MirrorData CachedValue
+        {
+            get
+            {
+                var mirrorData = dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Value);
+                return mirrorData == null ? null : mirrorData.GetData();
+                if (cachedMirrorData != null)
+                    return cachedMirrorData;
+
+                var engine = dynSettings.Controller.EngineController;
+                var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
+
+                if (runtimeMirror != null)
+                    cachedMirrorData = runtimeMirror.GetData();
+
+
+                if (cachedMirrorData == null) // If we didn't get anything...
+                {
+                    // If we fail to get anything from the engine at this time,
+                    // then no point query again in subsequent calls. We simply
+                    // make a MirrorData that represents DesignScript "null" here.
+                    cachedMirrorData = new MirrorData(engine.LiveRunnerCore,
+                        ProtoCore.DSASM.StackValue.BuildNull());
+                }
+
+                return cachedMirrorData;
+            }
+        }
 
         /// <summary>
         ///     If the node is updated in LiveRunner's execution
@@ -1431,7 +1458,7 @@ namespace Dynamo.Models
 
                 if (State == ElementState.Error ||
                     !IsVisible ||
-                    OldValue == null)
+                    CachedValue == null)
                 {
                     return;
                 }

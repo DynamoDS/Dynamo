@@ -564,11 +564,7 @@ namespace Dynamo
                 {
                     var nodes = DynamoViewModel.Model.HomeSpace.Nodes;
                     foreach (NodeModel node in nodes)
-                    {
                         node.IsUpdated = true;
-                        var mirror = EngineController.GetMirror(node.AstIdentifierForPreview.Value);
-                        node.OldValue = mirror == null ? null : mirror.GetData();
-                    }
                 }
             }
             catch (CancelEvaluationException ex)
