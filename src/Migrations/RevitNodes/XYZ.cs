@@ -1123,7 +1123,7 @@ namespace Dynamo.Nodes
 
             XmlElement curveNode = MigrationManager.CreateFunctionNode(
                 data.Document, oldNode, 0, "RevitNodes.dll",
-                "CurveElement.Curve", "CurveElement.Curve");
+                "Element.Geometry", "Element.Geometry");
             migrationData.AppendNode(curveNode);
             string curveNodeId = MigrationManager.GetGuidFromXmlElement(curveNode);
 
