@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Dynamo.Utilities;
 using Autodesk.Revit.DB;
 
 namespace Dynamo.Nodes
@@ -130,8 +130,8 @@ namespace Dynamo.Nodes
                 }
                 catch (Exception e)
                 {
-                    DynamoLogger.Instance.Log(e.Message);
-                    DynamoLogger.Instance.Log(e.StackTrace);
+                    dynSettings.Controller.DynamoLogger.Log(e.Message);
+                    dynSettings.Controller.DynamoLogger.Log(e.StackTrace);
                 }
             }
 

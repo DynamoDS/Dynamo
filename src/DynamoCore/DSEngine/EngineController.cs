@@ -104,7 +104,7 @@ namespace Dynamo.DSEngine
             }
             catch (Exception ex)
             {
-                DynamoLogger.Instance.Log("Failed to get mirror for variable: " + variableName + "; reason: " + ex.Message);
+                dynSettings.Controller.DynamoLogger.Log("Failed to get mirror for variable: " + variableName + "; reason: " + ex.Message);
             }
 
             return mirror;
@@ -330,7 +330,7 @@ namespace Dynamo.DSEngine
                         if (fatalException == null)
                             fatalException = e;
 
-                        DynamoLogger.Instance.Log("Update graph failed: " + e.Message);
+                        dynSettings.Controller.DynamoLogger.Log("Update graph failed: " + e.Message);
                     }
                 }
             }

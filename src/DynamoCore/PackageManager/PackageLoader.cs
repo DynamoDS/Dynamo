@@ -85,8 +85,8 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log("Exception encountered scanning the package directory at " + this.RootPackagesDirectory );
-                DynamoLogger.Instance.Log(e.GetType() + ": " + e.Message);
+                dynSettings.Controller.DynamoLogger.Log("Exception encountered scanning the package directory at " + this.RootPackagesDirectory );
+                dynSettings.Controller.DynamoLogger.Log(e.GetType() + ": " + e.Message);
             }
 
             return null;

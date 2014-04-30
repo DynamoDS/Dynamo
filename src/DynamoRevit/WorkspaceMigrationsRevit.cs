@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using Dynamo.Models;
+using Dynamo.Utilities;
 
 namespace Dynamo
 {
@@ -77,7 +78,7 @@ namespace Dynamo
 
             foreach (var correction in corrections)
             {
-                DynamoLogger.Instance.LogWarning("Replacing XyzZero with Xyz with default inputs.", WarningLevel.Mild);
+                dynSettings.Controller.DynamoLogger.LogWarning("Replacing XyzZero with Xyz with default inputs.", WarningLevel.Mild);
                 elementsRoot.InsertBefore(correction.Item1, correction.Item2);
                 elementsRoot.RemoveChild(correction.Item2);
             }

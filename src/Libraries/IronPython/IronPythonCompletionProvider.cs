@@ -118,7 +118,7 @@ namespace Dynamo.Python
                 }
                 catch
                 {
-                    DynamoLogger.Instance.Log("Failed to load Revit types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
+                    dynSettings.Controller.DynamoLogger.Log("Failed to load Revit types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
                 }
             }
 
@@ -135,8 +135,8 @@ namespace Dynamo.Python
                 }
                 catch (Exception e)
                 {
-                    DynamoLogger.Instance.Log(e.ToString());
-                    DynamoLogger.Instance.Log("Failed to load ProtoGeometry types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
+                    dynSettings.Controller.DynamoLogger.Log(e.ToString());
+                    dynSettings.Controller.DynamoLogger.Log("Failed to load ProtoGeometry types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
                 }
             }
 
@@ -200,7 +200,7 @@ namespace Dynamo.Python
                 }
                 catch
                 {
-                    //Dynamo.DynamoLogger.Instance.Log("EXCEPTION: GETTING COMPLETION DATA");
+                    //Dynamo.dynSettings.Controller.DynamoLogger.Log("EXCEPTION: GETTING COMPLETION DATA");
                 }
                 AutocompletionInProgress = false;
             }
@@ -479,8 +479,8 @@ namespace Dynamo.Python
             }
             catch (Exception e)
             {
-                Dynamo.DynamoLogger.Instance.Log(e.ToString());
-                Dynamo.DynamoLogger.Instance.Log("Failed to look up type");
+                dynSettings.Controller.DynamoLogger.Log(e.ToString());
+                dynSettings.Controller.DynamoLogger.Log("Failed to look up type");
             }
             return type as Type;
         }

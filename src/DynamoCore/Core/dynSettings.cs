@@ -9,9 +9,9 @@ namespace Dynamo.Utilities
         public static HashSet<CustomNodeDefinition> FunctionWasEvaluated =
             new HashSet<CustomNodeDefinition>();
 
-        static dynSettings()
-        {
-        }
+        //static dynSettings()
+        //{
+        //}
 
         public static ObservableDictionary<string, Guid> CustomNodes {
             get

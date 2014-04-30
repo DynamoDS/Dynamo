@@ -37,7 +37,7 @@ namespace Dynamo.UI.Views
             DisplayVersionInformation(null);
             var um = dynSettings.Controller.UpdateManager;
             um.UpdateDownloaded += OnUpdatePackageDownloaded;
-            dynSettings.Controller.UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), DynamoLogger.Instance, um.UpdateDataAvailable));
+            dynSettings.Controller.UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation), dynSettings.Controller.DynamoLogger, um.UpdateDataAvailable));
         }
 
         private void HandleEsc(object sender, KeyEventArgs e)

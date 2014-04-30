@@ -287,7 +287,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log(e);
+                dynSettings.Controller.DynamoLogger.Log(e);
             }
         }
 
@@ -495,7 +495,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log(e);
+                dynSettings.Controller.DynamoLogger.Log(e);
             }
         }
 
@@ -568,7 +568,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        DynamoLogger.Instance.Log(
+                        dynSettings.Controller.DynamoLogger.Log(
                             "Unable to find reference with stable id: " + id);
                     }
                     SelectedElement = saved;
@@ -770,7 +770,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log(e);
+                dynSettings.Controller.DynamoLogger.Log(e);
             }
         }
 

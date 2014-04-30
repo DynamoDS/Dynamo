@@ -6,6 +6,7 @@ using System.Net;
 using System.ComponentModel;
 using System.Windows;
 using Dynamo.Interfaces;
+using Dynamo.Utilities;
 using Dynamo.UI;
 using System.Xml.Linq;
 using Microsoft.Practices.Prism.ViewModel;
@@ -234,9 +235,9 @@ namespace Dynamo.UpdateManager
 
         #endregion
 
-        public UpdateManager()
+        public UpdateManager(ILogger logger)
         {
-            _logger = DynamoLogger.Instance;
+            _logger = logger;
             PropertyChanged += UpdateManager_PropertyChanged;
         }
 
@@ -305,7 +306,7 @@ namespace Dynamo.UpdateManager
                 }
                 catch (Exception e)
                 {
-                    DynamoLogger.Instance.Log(e);
+                    dynSettings.Controller.DynamoLogger.Log(e);
                     _versionCheckInProgress = false;
                     return;
                 }
