@@ -9,7 +9,6 @@ using Autodesk.Revit.DB;
 
 namespace Revit.GeometryObjects
 {
-    //[SupressImportIntoVM]
     public abstract class GeometryObject : IGraphicItem
     {
         /// <summary>
@@ -24,13 +23,13 @@ namespace Revit.GeometryObjects
         /// Simple implementation of ToString - override for customized behavior
         /// </summary>
         /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
+        [SupressImportIntoVM]
         public override string ToString()
         {
             return GetType().FullName;
         }
 
-        [IsVisibleInDynamoLibrary(false)]
+        [SupressImportIntoVM]
         public abstract void Tessellate(IRenderPackage package, double tol, int gridLines);
 
         /// <summary>

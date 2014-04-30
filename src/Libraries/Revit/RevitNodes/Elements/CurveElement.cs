@@ -8,7 +8,7 @@ using RevitServices.Persistence;
 
 namespace Revit.Elements
 {
-    public abstract class CurveElement : Element, IGraphicItem
+    public abstract class CurveElement : Element
     {
         public override Autodesk.Revit.DB.Element InternalElement
         {
@@ -115,7 +115,7 @@ namespace Revit.Elements
 
         #endregion
 
-        public void Tessellate(IRenderPackage package, double tol, int gridLines)
+        public override void Tessellate(IRenderPackage package, double tol, int gridLines)
         {
             //Ensure that the object is still alive
             if (!IsAlive) return;

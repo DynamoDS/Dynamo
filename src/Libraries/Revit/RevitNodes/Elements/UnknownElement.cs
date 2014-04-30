@@ -6,7 +6,7 @@ namespace Revit.Elements
     /// A Revit Element of an unknown type.  This allows an arbitrary element
     /// to be passed around in the graph.
     /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
+    [SupressImportIntoVM]
     public class UnknownElement : Element
     {
         /// <summary>

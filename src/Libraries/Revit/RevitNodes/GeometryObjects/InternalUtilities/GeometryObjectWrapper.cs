@@ -7,7 +7,7 @@ using Microsoft.CSharp.RuntimeBinder;
 
 namespace Revit.GeometryObjects
 {
-    [IsVisibleInDynamoLibrary(false)]
+    [SupressImportIntoVM]
     public static class GeometryObjectWrapper
     {
         /// <summary>

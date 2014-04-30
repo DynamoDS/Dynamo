@@ -7,7 +7,7 @@ using RevitServices.Persistence;
 
 namespace Revit.Elements.InternalUtilities
 {
-    [IsVisibleInDynamoLibrary(false)]
+    [SupressImportIntoVM]
     public static class ElementQueries
     {
         public static IList<Element> OfFamilyType(FamilySymbol familyType)
