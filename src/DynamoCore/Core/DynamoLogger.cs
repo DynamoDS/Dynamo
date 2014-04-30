@@ -69,11 +69,16 @@ namespace Dynamo
             StartLogging();
         }
 
+        public void Log(string message, LogLevel level)
+        {
+            Log(message, level, true);
+        }
+
         /// <summary>
         /// Log the message to the the correct path
         /// </summary>
         /// <param name="message"></param>
-        public void Log(string message, LogLevel level)
+        private void Log(string message, LogLevel level, bool reportModification)
         {
             InstrumentationLogger.LogInfo("LogMessage-" + level.ToString(), message);
 
@@ -114,7 +119,10 @@ namespace Dynamo
                     break;
             }
 
-            RaisePropertyChanged("LogText");   
+            if(reportModification)
+            {
+                RaisePropertyChanged("LogText"); 
+            } 
         }
 
         public void LogWarning(string message, WarningLevel level)
@@ -242,7 +250,7 @@ namespace Dynamo
                 try
                 {
                     FileWriter.Flush();
-                    Log("Goodbye", LogLevel.Console);
+                    Log("Goodbye", LogLevel.Console, false);
                     FileWriter.Close();
                 }
                 catch
