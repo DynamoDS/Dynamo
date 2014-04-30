@@ -30,21 +30,25 @@ namespace Dynamo.Models
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;
         private bool displayLabels;
-        private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
         private bool interactionEnabled = true;
         private bool isUpstreamVisible;
         private bool isVisible;
         private string nickName;
-        private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
         private ElementState state;
         private string toolTipText = "";
         private IdentifierNode identifier;
         private bool saveResult;
-        private bool isUpdated;
         private string description;
         private const string FailureString = "Node evaluation failed";
+
+        // Data caching related class members.
+        private bool isUpdated = false;
+        private MirrorData cachedMirrorData = null;
+
+        // Input and output port related data members.
+        private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
+        private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
         private readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
-        private int errorCount;
 
         private List<IRenderPackage> _renderPackages = new List<IRenderPackage>();
 
@@ -312,6 +316,9 @@ namespace Dynamo.Models
             set
             {
                 isUpdated = value;
+                if (isUpdated != false)      // When a NodeModel is updated, its 
+                    cachedMirrorData = null; // cached data should be invalidated.
+
                 RaisePropertyChanged("IsUpdated");
             }
         }

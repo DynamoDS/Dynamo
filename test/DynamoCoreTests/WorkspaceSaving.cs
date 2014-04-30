@@ -634,8 +634,8 @@ namespace Dynamo.Tests
 
             var evaluatedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
 
-            Assert.IsAssignableFrom<double>(evaluatedNode.OldValue.Data);
-            Assert.AreEqual(2.0, evaluatedNode.OldValue.Data);
+            Assert.IsAssignableFrom<double>(evaluatedNode.CachedValue.Data);
+            Assert.AreEqual(2.0, evaluatedNode.CachedValue.Data);
         }
 
         [Test]

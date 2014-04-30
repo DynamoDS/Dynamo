@@ -96,7 +96,7 @@ namespace Dynamo.Tests
 
             foreach (var test in tests)
             {
-                var runResult = model.CurrentWorkspace.NodeFromWorkspace(test.Key).OldValue.Data;
+                var runResult = model.CurrentWorkspace.NodeFromWorkspace(test.Key).CachedValue.Data;
                 Assert.AreEqual(test.Value, runResult);
             }
         }
