@@ -7,6 +7,7 @@ using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoUnits;
+using Dynamo.UpdateManager;
 using NUnit.Framework;
 using ProtoCore.Mirror;
 using RevitServices.Persistence;
@@ -77,8 +78,11 @@ namespace Dynamo.Tests
                 SIUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
                 SIUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
+                var logger = new DynamoLogger();
+                var updateManager = new UpdateManager.UpdateManager(logger);
+
                 //create a new instance of the ViewModel
-                Controller = new DynamoController(Context.NONE, new UpdateManager.UpdateManager(), 
+                Controller = new DynamoController(Context.NONE, updateManager, logger, 
                     new DefaultWatchHandler(), new PreferenceSettings());
                 DynamoController.IsTestMode = true;
                 Controller.DynamoViewModel = new DynamoViewModel(Controller, null);

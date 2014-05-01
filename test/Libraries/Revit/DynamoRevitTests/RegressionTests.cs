@@ -44,7 +44,7 @@ namespace Dynamo.Tests
         /// <returns></returns>
         static List<object[]> SetupRevitRegressionTests()
         {
-            DynamoLogger.Instance.Log("Setting up regression tests...", LogLevel.File);
+            dynSettings.Controller.DynamoLogger.Log("Setting up regression tests...", LogLevel.File);
 
             var testParameters = new List<object[]>();
 
@@ -53,7 +53,7 @@ namespace Dynamo.Tests
             string testsLoc = Path.Combine(assDir, @"..\..\..\test\revit\Regression\");
             var regTestPath = Path.GetFullPath(testsLoc);
 
-            DynamoLogger.Instance.Log(string.Format("Using regression path: {0}", regTestPath), LogLevel.File);
+            dynSettings.Controller.DynamoLogger.Log(string.Format("Using regression path: {0}", regTestPath), LogLevel.File);
 
             var di = new DirectoryInfo(regTestPath);
             var dyns = di.GetFiles("*.dyn");
@@ -80,8 +80,8 @@ namespace Dynamo.Tests
 
                 testParameters.Add(data);
 
-                DynamoLogger.Instance.Log(data[0].ToString(),LogLevel.File);
-                DynamoLogger.Instance.Log(data[0].ToString(), LogLevel.File);
+                dynSettings.Controller.DynamoLogger.Log(data[0].ToString(),LogLevel.File);
+                dynSettings.Controller.DynamoLogger.Log(data[0].ToString(), LogLevel.File);
             }
 
             return testParameters;

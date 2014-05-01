@@ -122,14 +122,14 @@ namespace Dynamo.Revit
                         }
                         catch (NullReferenceException)
                         {
-                            //DynamoLogger.Instance.Log("Element with UID \"" + eid + "\" not found in Document.");
+                            //dynSettings.Controller.DynamoLogger.Log("Element with UID \"" + eid + "\" not found in Document.");
                             sb.AppendLine("Element with UID \"" + eid + "\" not found in Document.");
                         }
                     }
                 }
             }
 
-            DynamoLogger.Instance.Log(sb.ToString());
+            dynSettings.Controller.DynamoLogger.Log(sb.ToString());
         }
 
         //TODO: Move handling of increments to wrappers for eval. Should never have to touch this in subclasses.

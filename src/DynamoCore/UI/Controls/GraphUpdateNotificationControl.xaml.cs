@@ -19,7 +19,7 @@ namespace DynamoCore.UI.Controls
 
         private void OnInstallButtonClicked(object sender, RoutedEventArgs e)
         {
-            //DynamoLogger.Instance.LogInfo("UpdateNotificationControl-OnInstallButtonClicked",
+            //dynSettings.Controller.DynamoLogger.LogInfo("UpdateNotificationControl-OnInstallButtonClicked",
             //    "UpdateNotificationControl-OnInstallButtonClicked");
 
             //dynSettings.Controller.UpdateManager.QuitAndInstallUpdate(); // Quit application

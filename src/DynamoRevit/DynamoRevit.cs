@@ -21,6 +21,7 @@ using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Utilities;
 using DynamoUnits;
+using Dynamo.UpdateManager;
 using RevitServices.Elements;
 using RevitServices.Transactions;
 using RevitServices.Persistence;
@@ -168,7 +169,7 @@ namespace Dynamo.Applications
                 if (DocumentManager.Instance.CurrentUIApplication == null)
                     DocumentManager.Instance.CurrentUIApplication = revit.Application;
 
-                DocumentManager.OnLogError += DynamoLogger.Instance.Log;
+                DocumentManager.OnLogError += dynSettings.Controller.DynamoLogger.Log;
 
                 dynRevitSettings.DefaultLevel = defaultLevel;
 
@@ -196,7 +197,9 @@ namespace Dynamo.Applications
                         BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
                         BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
-                        dynamoController = new DynamoController_Revit(Updater, context);
+                        var logger = new DynamoLogger();
+                        var updateManager = new UpdateManager.UpdateManager(logger);
+                        dynamoController = new DynamoController_Revit(Updater, context, updateManager,logger);
 
                         // Generate a view model to be the data context for the view
                         dynamoController.DynamoViewModel = new DynamoRevitViewModel(dynamoController, null);
@@ -239,9 +242,9 @@ namespace Dynamo.Applications
                 isRunning = false;
                 MessageBox.Show(ex.ToString());
 
-                DynamoLogger.Instance.LogError(ex.Message);
-                DynamoLogger.Instance.LogError(ex.StackTrace);
-                DynamoLogger.Instance.LogError("Dynamo log ended " + DateTime.Now);
+                dynSettings.Controller.DynamoLogger.LogError(ex.Message);
+                dynSettings.Controller.DynamoLogger.LogError(ex.StackTrace);
+                dynSettings.Controller.DynamoLogger.LogError("Dynamo log ended " + DateTime.Now);
 
                 return Result.Failed;
             }
@@ -264,7 +267,7 @@ namespace Dynamo.Applications
                 && dynSettings.Controller.Context != Context.VASARI_2013
                 && dynSettings.Controller.Context != Context.VASARI_2014)
             {
-                DynamoLogger.Instance.LogWarning(
+                dynSettings.Controller.DynamoLogger.LogWarning(
                     "Dynamo is not available in a perspective view. Please switch to another view to Run.",
                     WarningLevel.Moderate);
                 dynSettings.Controller.DynamoViewModel.RunEnabled = false;
@@ -272,7 +275,7 @@ namespace Dynamo.Applications
             else
             {
                 //alert the user of the new active view and enable the run button
-                DynamoLogger.Instance.LogWarning(string.Format("Active view is now {0}", e.NewActiveView.Name), WarningLevel.Mild);
+                dynSettings.Controller.DynamoLogger.LogWarning(string.Format("Active view is now {0}", e.NewActiveView.Name), WarningLevel.Mild);
                 dynSettings.Controller.DynamoViewModel.RunEnabled = true;
             }
         }
@@ -300,8 +303,8 @@ namespace Dynamo.Applications
 
             try
             {
-                DynamoLogger.Instance.LogError("Dynamo Unhandled Exception");
-                DynamoLogger.Instance.LogError(exceptionMessage);
+                dynSettings.Controller.DynamoLogger.LogError("Dynamo Unhandled Exception");
+                dynSettings.Controller.DynamoLogger.LogError(exceptionMessage);
             }
             catch
             {
@@ -354,7 +357,7 @@ namespace Dynamo.Applications
             isRunning = false;
 
             Updater.Dispose();
-            DocumentManager.OnLogError -= DynamoLogger.Instance.Log;
+            DocumentManager.OnLogError -= dynSettings.Controller.DynamoLogger.Log;
 
             view.Dispatcher.UnhandledException -= DispatcherOnUnhandledException;
             view.Closing -= dynamoView_Closing;

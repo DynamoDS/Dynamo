@@ -126,7 +126,7 @@ namespace Dynamo.ViewModels
                     }
                     catch (Exception ex)
                     {
-                        DynamoLogger.Instance.Log(ex.Message);
+                        dynSettings.Controller.DynamoLogger.Log(ex.Message);
                     }
                 }
 

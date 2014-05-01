@@ -869,7 +869,7 @@ namespace Dynamo.ViewModels
             }
             catch
             {
-                DynamoLogger.Instance.Log("No node could be found with that Id.");
+                dynSettings.Controller.DynamoLogger.Log("No node could be found with that Id.");
             }
 
             try
@@ -889,7 +889,7 @@ namespace Dynamo.ViewModels
             }
             catch
             {
-                DynamoLogger.Instance.Log("No node could be found with that Id.");
+                dynSettings.Controller.DynamoLogger.Log("No node could be found with that Id.");
                 return;
             }
         }

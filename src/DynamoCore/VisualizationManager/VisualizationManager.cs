@@ -456,7 +456,7 @@ namespace Dynamo
             }
             catch (Exception ex)
             {
-                DynamoLogger.Instance.Log(ex);
+                dynSettings.Controller.DynamoLogger.Log(ex);
             }
             finally
             {

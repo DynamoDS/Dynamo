@@ -668,7 +668,7 @@ namespace Dynamo.PackageManager
             catch (Exception e)
             {
                 ErrorString = e.Message;
-                Dynamo.DynamoLogger.Instance.Log(e);
+                dynSettings.Controller.DynamoLogger.Log(e);
             }
 
         }

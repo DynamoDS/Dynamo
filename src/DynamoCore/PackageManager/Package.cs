@@ -135,8 +135,8 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log("Failed to form package from json header.");
-                DynamoLogger.Instance.Log(e.GetType() + ": " + e.Message);
+                dynSettings.Controller.DynamoLogger.Log("Failed to form package from json header.");
+                dynSettings.Controller.DynamoLogger.Log(e.GetType() + ": " + e.Message);
                 return null;
             }
 
@@ -154,8 +154,8 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log("Exception when attempting to load package " + this.Name + " from " + this.RootDirectory);
-                DynamoLogger.Instance.Log(e.GetType() + ": " + e.Message);
+                dynSettings.Controller.DynamoLogger.Log("Exception when attempting to load package " + this.Name + " from " + this.RootDirectory);
+                dynSettings.Controller.DynamoLogger.Log(e.GetType() + ": " + e.Message);
             }
 
         }
@@ -224,8 +224,8 @@ namespace Dynamo.PackageManager
             catch( Exception e )
             {
                 MessageBox.Show("Dynamo failed to uninstall the package.  You may need to delete the package's root directory manually.", "Uninstall Failure", MessageBoxButton.OK, MessageBoxImage.Error);
-                DynamoLogger.Instance.Log("Exception when attempting to uninstall the package " + this.Name + " from " + this.RootDirectory);
-                DynamoLogger.Instance.Log(e.GetType() + ": " + e.Message);
+                dynSettings.Controller.DynamoLogger.Log("Exception when attempting to uninstall the package " + this.Name + " from " + this.RootDirectory);
+                dynSettings.Controller.DynamoLogger.Log(e.GetType() + ": " + e.Message);
             }
             
         }

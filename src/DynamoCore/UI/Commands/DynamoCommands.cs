@@ -53,7 +53,7 @@ namespace Dynamo.ViewModels
             {
                 var msg = string.Format("PausePlaybackCommand '{0}' inserted",
                     automationSettings.InsertPausePlaybackCommand());
-                DynamoLogger.Instance.Log(msg);
+                dynSettings.Controller.DynamoLogger.Log(msg);
             }
         }
 

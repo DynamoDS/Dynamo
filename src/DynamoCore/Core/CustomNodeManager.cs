@@ -562,8 +562,8 @@ namespace Dynamo.Utilities
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log("ERROR: The header for the custom node at " + path + " failed to load.  It will be left out of search.");
-                DynamoLogger.Instance.Log(e.ToString());
+                dynSettings.Controller.DynamoLogger.Log("ERROR: The header for the custom node at " + path + " failed to load.  It will be left out of search.");
+                dynSettings.Controller.DynamoLogger.Log(e.ToString());
                 category = "";
                 guid = Guid.Empty;
                 name = "";
@@ -668,7 +668,7 @@ namespace Dynamo.Utilities
                             "Original file '{0}' gets backed up at '{1}'",
                             Path.GetFileName(xmlPath), backupPath);
 
-                        DynamoLogger.Instance.Log(message);
+                        dynSettings.Controller.DynamoLogger.Log(message);
                     }
 
                     MigrationManager.Instance.ProcessWorkspaceMigrations(xmlDoc, fileVersion);
