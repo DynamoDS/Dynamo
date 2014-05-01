@@ -102,13 +102,7 @@ namespace Dynamo.Nodes
             if (Definition.Parameters != null)
             {
                 foreach (var arg in Definition.Parameters)
-                {
-                    InPortData.Add(
-                         new PortData(
-                             arg.Name,
-                             arg.Description,
-                             defaultValue: arg.DefaultValue));
-                }
+                    InPortData.Add(new PortData(arg.Name, arg.Description, arg.DefaultValue));
             }
 
             // Returns a dictionary
@@ -312,10 +306,8 @@ namespace Dynamo.Nodes
 
                 return indexedValue;
             }
-            else
-            {
-                return base.GetAstIdentifierForOutputIndex(outputIndex);
-            }
+
+            return base.GetAstIdentifierForOutputIndex(outputIndex);
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
