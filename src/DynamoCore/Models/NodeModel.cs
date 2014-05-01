@@ -309,8 +309,6 @@ namespace Dynamo.Models
         {
             get
             {
-                var mirrorData = dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Value);
-                return mirrorData == null ? null : mirrorData.GetData();
                 if (cachedMirrorData != null)
                     return cachedMirrorData;
 
