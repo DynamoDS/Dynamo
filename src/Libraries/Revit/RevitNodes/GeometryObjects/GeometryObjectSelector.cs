@@ -14,21 +14,20 @@ namespace Revit.GeometryObjects
     public static class GeometryObjectSelector
     {
         /// <summary>
-        /// Return a ProtoGeometry Curve object from a string representation of the curve's reference.
+        /// Return an AbstractGeometryObject given a string representation of the geometry's reference.
         /// </summary>
         /// <param name="referenceString"></param>
         /// <returns></returns>
-        public static Autodesk.DesignScript.Geometry.Curve ByCurve(string referenceString)
+        public static Autodesk.DesignScript.Geometry.Geometry ByReferenceStableRepresentation(string referenceString)
         {
             var geob = InternalGetGeometryByStableRepresentation(referenceString);
-            var curve = geob as Autodesk.Revit.DB.Curve;
 
-            if (curve != null)
+            if (geob != null)
             {
-                return curve.ToProtoType();
+                return geob.Convert();
             }
 
-            throw new Exception("The reference representation does not represent a curve.");
+            throw new Exception("Could not get a geometry object from the current document using the provided reference.");
         }
 
         /// <summary>

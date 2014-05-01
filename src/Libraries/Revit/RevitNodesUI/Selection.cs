@@ -519,26 +519,15 @@ namespace Dynamo.Nodes
                 stableRep = SelectedElement.ConvertToStableRepresentation(dbDocument);
             }
 
-            
             var args = new List<AssociativeNode>
             {
                 AstFactory.BuildStringNode(stableRep)
             };
 
-            if (geob is Curve)
-            {
-                node = AstFactory.BuildFunctionCall(
-                    "GeometryObjectSelector",
-                    "ByCurve", 
-                    args);
-            }
-            else
-            {
-                node = AstFactory.BuildFunctionCall(
+            node = AstFactory.BuildFunctionCall(
                     "GeometryObjectSelector",
                     "ByReferenceStableRepresentation",
                     args);
-            }
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
