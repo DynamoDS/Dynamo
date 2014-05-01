@@ -60,6 +60,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
     </Reference>
+    <Reference Include="RevitAPI">
+      <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -106,19 +110,16 @@
     <Compile Include="Elements\Views\Packing\OutOfSpaceException.cs" />
     <Compile Include="Elements\Views\Packing\RectanglePacker.cs" />
     <Compile Include="GeometryConversion\HermiteToNurbs.cs" />
+    <Compile Include="GeometryConversion\RevitToProtoSolid.cs" />
     <Compile Include="GeometryConversion\SurfaceExtractor.cs" />
-    <Compile Include="GeometryConversion\SurfaceTrimmer.cs" />
-    <Compile Include="GeometryConversion\TrimValidator.cs" />
     <Compile Include="GeometryConversion\ProtoToRevitCurve.cs" />
     <Compile Include="GeometryConversion\RevitToProtoCurve.cs" />
     <Compile Include="GeometryConversion\RevitToProtoFace.cs" />
     <Compile Include="GeometryConversion\RevitToProtoMesh.cs" />
     <Compile Include="GeometryConversion\GeometryObjectConverter.cs" />
     <Compile Include="GeometryObjects\InternalUtilities\GeometryObjectWrapper.cs" />
-    <Compile Include="GeometryObjects\PlanarFace.cs" />
     <Compile Include="GeometryObjects\InternalUtilities\GeometryObjectSelector.cs" />
     <Compile Include="Geometry\Domain.cs" />
-    <Compile Include="References\RayBounce.cs" />
     <Compile Include="References\Reference.cs" />
     <Compile Include="References\FaceReference.cs" />
     <Compile Include="Elements\InternalUtilities\ElementSelector.cs" />

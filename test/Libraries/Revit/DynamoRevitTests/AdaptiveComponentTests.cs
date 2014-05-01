@@ -1,6 +1,8 @@
 ﻿using System.IO;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
+using Revit.Elements;
 
 namespace Dynamo.Tests
 {
@@ -13,10 +15,17 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponentByFace.dyn");
-            string testPath = Path.GetFullPath(samplePath);
+            string testFilePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponentByFace.dyn");
+            string testPath = Path.GetFullPath(testFilePath);
 
             model.Open(testPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
@@ -26,10 +35,17 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponentByCurve.dyn");
-            string testPath = Path.GetFullPath(samplePath);
+            string testFilePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponentByCurve.dyn");
+            string testPath = Path.GetFullPath(testFilePath);
 
             model.Open(testPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
+
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
@@ -37,36 +53,34 @@ namespace Dynamo.Tests
         [TestModel(@".\AdaptiveComponent\AdaptiveComponent.rfa")]
         public void AdaptiveComponent()
         {
-            //var model = dynSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
-            ////string path = Path.Combine(_testPath, @".\AdaptiveComponent.rfa");
-            ////string modelPath = Path.GetFullPath(path);
-            ////SwapCurrentModel(modelPath);
+            string testFilePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponent.dyn");
+            string testPath = Path.GetFullPath(testFilePath);
 
-            //string samplePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponent.dyn");
-            //string testPath = Path.GetFullPath(samplePath);
+            model.Open(testPath);
 
-            //model.Open(testPath);
+            AssertNoDummyNodes();
 
-            ////the .dyn has the slider set at 5. let's make sure that
-            ////if you set the slider to something else before running, that it get the correct number
-            //var slider = dynSettings.Controller.DynamoModel.Nodes.First(x => x is DoubleSliderInput);
-            //((BasicInteractive<double>)slider).Value = 1;
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(18, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(19, model.CurrentWorkspace.Connectors.Count);
 
-            //dynSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression(true);
 
-            ////get all the family instances in the document
-            //var acs = TestUtils.GetAllFamilyInstancesWithTypeName("3PointAC_wireTruss");
-            //Assert.AreEqual(1, acs.Count());
+            var refPtNodeId = "ac5bd8f9-fcf5-46db-b795-3590044edb56";
+            AssertPreviewCount(refPtNodeId, 5);
 
-            ////change the number slider
-            //((BasicInteractive<double>)slider).Value = 3;
+            var refPt = GetPreviewValueAtIndex(refPtNodeId, 3) as Family;
+            Assert.IsNotNull(refPt);
 
-            //dynSettings.Controller.RunExpression(true);
-            //acs = TestUtils.GetAllFamilyInstancesWithTypeName("3PointAC_wireTruss");
-            //Assert.AreEqual(3, acs.Count());
+            // change slider value and re-evaluate graph
+            DoubleSlider slider = model.CurrentWorkspace.NodeFromWorkspace
+                ("91b7e7ef-9db3-4aa2-8762-6a863188e7ec") as DoubleSlider;
+            slider.Value = 3;
 
-            Assert.Inconclusive("Porting : DoubleSliderInput");
+            RunCurrentModel();
+            AssertPreviewCount(refPtNodeId, 3);
 
         }
     }

@@ -63,10 +63,30 @@ namespace RevitServices.Elements
         #endregion
 
         // constructor takes the AddInId for the add-in associated with this updater
-        public RevitServicesUpdater(/*AddInId id, */ControlledApplication app)
+        public RevitServicesUpdater(/*AddInId id, */ControlledApplication app, IEnumerable<IUpdater> updaters)
         {
             application = app;
             application.DocumentChanged += ApplicationDocumentChanged;
+
+            foreach (var updater in updaters)
+            {
+                ((ElementTypeSpecificUpdater)updater).Updated += RevitServicesUpdater_Updated;
+            }
+        }
+
+        /// <summary>
+        /// Handler for the ElementTypeSpecificUpdater's Updated event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        void RevitServicesUpdater_Updated(object sender, UpdaterArgs args)
+        {
+            var doc = DocumentManager.Instance.CurrentDBDocument;
+            var added = args.Added.Select(x => doc.GetElement(x).UniqueId);
+            var addedIds = args.Added;
+            var modified = args.Modified.Select(x => doc.GetElement(x).UniqueId).ToList();
+            var deleted = args.Deleted;
+            ProcessUpdates(doc, modified, deleted, added, addedIds);
         }
 
         public void Dispose()

@@ -4,10 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
 using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -330,18 +328,18 @@ namespace Dynamo.Nodes
         //    return FScheme.Value.NewList(Utils.SequenceToFSharpList(rowData));
         //}
 
-        public static FScheme.Value TryParseCell(object element)
-        {
-            if (element == null )
-            {
-                return FScheme.Value.NewContainer(null);
-            }
+        //public static FScheme.Value TryParseCell(object element)
+        //{
+        //    if (element == null )
+        //    {
+        //        return FScheme.Value.NewContainer(null);
+        //    }
                 
-            double val;
-            return double.TryParse(element.ToString(), out val)
-                ? FScheme.Value.NewNumber(val)
-                : FScheme.Value.NewString(element.ToString());
-        }
+        //    double val;
+        //    return double.TryParse(element.ToString(), out val)
+        //        ? FScheme.Value.NewNumber(val)
+        //        : FScheme.Value.NewString(element.ToString());
+        //}
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
@@ -360,8 +358,8 @@ namespace Dynamo.Nodes
         public WriteDataToExcelWorksheet()
         {
             InPortData.Add(new PortData("worksheet", "The Excel Worksheet to write to."));
-            InPortData.Add(new PortData("start row", "Row index to insert data.", defaultValue: FScheme.Value.NewNumber(0)));
-            InPortData.Add(new PortData("start column", "Column index to insert data.", defaultValue: FScheme.Value.NewNumber(0)));
+            InPortData.Add(new PortData("start row", "Row index to insert data.", 0));
+            InPortData.Add(new PortData("start column", "Column index to insert data.", 0));
             InPortData.Add(new PortData("data", "A single item, a 1d list, or a 2d list to write to the worksheet"));
 
             OutPortData.Add(new PortData("worksheet", "The modified excel worksheet"));
@@ -369,79 +367,79 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        #region Helper methods
+        //#region Helper methods
 
-        public List<List<FScheme.Value>> ConvertTo2DList(FScheme.Value v)
-        {
-            if (v.IsList)
-            {
-                return ((FScheme.Value.List)v).Item.Select(ConvertRow).ToList();
-            }
+        //public List<List<FScheme.Value>> ConvertTo2DList(FScheme.Value v)
+        //{
+        //    if (v.IsList)
+        //    {
+        //        return ((FScheme.Value.List)v).Item.Select(ConvertRow).ToList();
+        //    }
 
-            var list = new List<List<FScheme.Value>>();
-            list.Add(ConvertRow(v));
-            return list;
-        }
+        //    var list = new List<List<FScheme.Value>>();
+        //    list.Add(ConvertRow(v));
+        //    return list;
+        //}
 
-        public static List<FScheme.Value> ConvertRow(FScheme.Value v)
-        {
-            if (v.IsString || v.IsNumber)
-            {
-                return new List<FScheme.Value>() {v};
-            }
-            else if (v.IsList)
-            {
-                return ((FScheme.Value.List) v).Item.Select(ConvertAsAtom).ToList();
-            }
-            else
-            {
-                return new List<FScheme.Value>() {ConvertAsAtom(v)};
-            }
-        }
+        //public static List<FScheme.Value> ConvertRow(FScheme.Value v)
+        //{
+        //    if (v.IsString || v.IsNumber)
+        //    {
+        //        return new List<FScheme.Value>() {v};
+        //    }
+        //    else if (v.IsList)
+        //    {
+        //        return ((FScheme.Value.List) v).Item.Select(ConvertAsAtom).ToList();
+        //    }
+        //    else
+        //    {
+        //        return new List<FScheme.Value>() {ConvertAsAtom(v)};
+        //    }
+        //}
 
-        public static FScheme.Value ConvertAsAtom(FScheme.Value v)
-        {
-            if (v == null)
-            {
-                return FScheme.Value.NewString("");
-            } 
-            else if (v.IsString || v.IsNumber)
-            {
-                return v;
-            }
-            else
-            {
-                return FScheme.Value.NewString(v.ToString());
-            }
-        }
+        //public static FScheme.Value ConvertAsAtom(FScheme.Value v)
+        //{
+        //    if (v == null)
+        //    {
+        //        return FScheme.Value.NewString("");
+        //    } 
+        //    else if (v.IsString || v.IsNumber)
+        //    {
+        //        return v;
+        //    }
+        //    else
+        //    {
+        //        return FScheme.Value.NewString(v.ToString());
+        //    }
+        //}
 
-        public static void GetObjectList(List<List<FScheme.Value>> input, out object[,] output, out int numRows,
-                                   out int numCols)
-        {
-            numRows = input.Count;
-            numCols = input.Select(x => x.Count).Max();
-            output = new object[numRows, numCols];
-            for (int i = 0; i < numRows; i++)
-            {
-                for (int j = 0; j < numCols; j++)
-                {
-                    if (j >= input[i].Count )
-                    {
-                        output[i, j] = "";
-                    }
-                    else if (input[i][j] is FScheme.Value.String)
-                    {
-                        output[i, j] = ((FScheme.Value.String)input[i][j]).Item;
-                    }
-                    else if (input[i][j] is FScheme.Value.Number)
-                    {
-                        output[i, j] = ((FScheme.Value.Number)input[i][j]).Item;
-                    }
-                }
-            }
-        }
+        //public static void GetObjectList(List<List<FScheme.Value>> input, out object[,] output, out int numRows,
+        //                           out int numCols)
+        //{
+        //    numRows = input.Count;
+        //    numCols = input.Select(x => x.Count).Max();
+        //    output = new object[numRows, numCols];
+        //    for (int i = 0; i < numRows; i++)
+        //    {
+        //        for (int j = 0; j < numCols; j++)
+        //        {
+        //            if (j >= input[i].Count )
+        //            {
+        //                output[i, j] = "";
+        //            }
+        //            else if (input[i][j] is FScheme.Value.String)
+        //            {
+        //                output[i, j] = ((FScheme.Value.String)input[i][j]).Item;
+        //            }
+        //            else if (input[i][j] is FScheme.Value.Number)
+        //            {
+        //                output[i, j] = ((FScheme.Value.Number)input[i][j]).Item;
+        //            }
+        //        }
+        //    }
+        //}
 
-        #endregion
+        //#endregion
 
         //public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         //{

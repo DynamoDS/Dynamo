@@ -12,17 +12,18 @@ using Autodesk.Revit.DB;
 
 namespace Revit.GeometryConversion
 {
+    [IsVisibleInDynamoLibrary(false)]
+    [SupressImportIntoVM]
     public static class RevitToProtoFace
     {
-        // PB: should be phased out eventually
-        public static Surface ToSurface(this Revit.GeometryObjects.Face revitFace)
+        public static Surface ToProtoType(this Revit.GeometryObjects.Face revitFace)
         {
             if (revitFace == null) return null;
 
-            return revitFace.InternalFace.ToSurface();
+            return revitFace.InternalFace.ToProtoType();
         }
 
-        public static Surface ToSurface(this Autodesk.Revit.DB.Face face)
+        public static Surface ToProtoType(this Autodesk.Revit.DB.Face face)
         {
             if (face == null) return null;
 
@@ -32,42 +33,7 @@ namespace Revit.GeometryConversion
             return untrimmedSrf != null ? untrimmedSrf.TrimWithEdgeLoops(edgeLoops.ToArray()) : null;
         }
 
-        public static Surface ToUntrimmedSurface(this Revit.GeometryObjects.Face revitFace)
-        {
-            if (revitFace == null) return null;
-
-            return revitFace.InternalFace.ToUntrimmedSurface();
-        }
-
-        public static Surface ToUntrimmedSurface(this Autodesk.Revit.DB.Face face)
-        {
-            if (face == null) return null;
-
-            dynamic dyFace = face;
-            List<PolyCurve> edgeLoops = EdgeLoopsAsPolyCurves(dyFace);
-            return SurfaceExtractor.ExtractSurface(dyFace, edgeLoops);
-        }
-
-        public static Autodesk.DesignScript.Geometry.Solid ToSolid(Surface[] surfaces)
-        {
-            return Autodesk.DesignScript.Geometry.Solid.ByJoinedSurfaces(surfaces);
-        }
-
-        public static PolyCurve[] EdgeLoops(this Revit.GeometryObjects.Face revitFace)
-        {
-            if (revitFace == null) return null;
-
-            return revitFace.InternalFace.EdgeLoops();
-        }
-
-        public static PolyCurve[] EdgeLoops(this Autodesk.Revit.DB.Face face)
-        {
-            if (face == null) return null;
-
-            return EdgeLoopsAsPolyCurves(face).ToArray();
-        }
-
-        private static List<PolyCurve> EdgeLoopsAsPolyCurves(Autodesk.Revit.DB.Face face)
+        internal static List<PolyCurve> EdgeLoopsAsPolyCurves(Autodesk.Revit.DB.Face face)
         {
             return face.EdgeLoops.Cast<EdgeArray>()
                 .Select(x => x.Cast<Autodesk.Revit.DB.Edge>())

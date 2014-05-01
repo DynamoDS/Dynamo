@@ -15,11 +15,28 @@ using Category = Revit.Elements.Category;
 
 namespace DSRevitNodesUI
 {
+    public abstract class RevitDropDownBase : DSDropDownBase
+    {
+        protected RevitDropDownBase(string value) : base(value)
+        {
+            dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
+        }
+
+        void Controller_RevitDocumentChanged(object sender, EventArgs e)
+        {
+            PopulateItems();
+            if (Items.Any())
+            {
+                SelectedIndex = 0;
+            }
+        }
+    }
+
     [NodeName("Family Types")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All family types available in the document.")]
     [IsDesignScriptCompatible]
-    public class FamilyTypes : DSDropDownBase
+    public class FamilyTypes : RevitDropDownBase
     {
         private const string noFamilyTypes = "No family types available.";
 
@@ -78,7 +95,7 @@ namespace DSRevitNodesUI
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Given a Family Instance or Symbol, allows the user to select a parameter as a string.")]
     [IsDesignScriptCompatible]
-    public class FamilyInstanceParameters : DSDropDownBase 
+    public class FamilyInstanceParameters : RevitDropDownBase 
     {
         private const string noFamilyParameters = "No family parameters available.";
         private Element element;
@@ -258,7 +275,7 @@ namespace DSRevitNodesUI
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All floor types available in the document.")]
     [IsDesignScriptCompatible]
-    public class FloorTypes : DSDropDownBase
+    public class FloorTypes : RevitDropDownBase
     {
         private const string noFloorTypes = "No floor types available.";
 
@@ -312,7 +329,7 @@ namespace DSRevitNodesUI
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All floor types available in the document.")]
     [IsDesignScriptCompatible]
-    public class WallTypes : DSDropDownBase
+    public class WallTypes : RevitDropDownBase
     {
         private const string noWallTypes = "No wall types available.";
 
@@ -396,20 +413,20 @@ namespace DSRevitNodesUI
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a level in the active document")]
     [IsDesignScriptCompatible]
-    public class Levels : DropDrownBase
+    public class Levels : RevitDropDownBase
     {
         private const string noLevels = "No levels available.";
 
-        public Levels()
-        {
-            OutPortData.Add(new PortData("Level", "The level."));
+        public Levels():base("Levels"){}
+        //{
+        //    OutPortData.Add(new PortData("Level", "The level."));
 
-            RegisterAllPorts();
+        //    RegisterAllPorts();
 
-            PopulateItems();
-        }
+        //    PopulateItems();
+        //}
 
-        public override void PopulateItems()
+        protected override void PopulateItems()
         {
             Items.Clear();
 
@@ -454,20 +471,20 @@ namespace DSRevitNodesUI
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a level in the active document")]
     [IsDesignScriptCompatible]
-    public class StructuralFramingTypes : DropDrownBase
+    public class StructuralFramingTypes : RevitDropDownBase
     {
         private const string noFraming = "No structural framing types available.";
 
-        public StructuralFramingTypes()
-        {
-            OutPortData.Add(new PortData("type", "The selected structural framing type."));
+        public StructuralFramingTypes():base("Framing Types"){}
+        //{
+        //    OutPortData.Add(new PortData("type", "The selected structural framing type."));
 
-            RegisterAllPorts();
+        //    RegisterAllPorts();
 
-            PopulateItems();
-        }
+        //    PopulateItems();
+        //}
 
-        public override void PopulateItems()
+        protected override void PopulateItems()
         {
             Items.Clear();
 

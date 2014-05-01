@@ -1144,6 +1144,38 @@ namespace ProtoFFITests
             thisTest.Verify("oy", 2);
         }
 
+        [Test]
+        public void InheritenceMethodInvokeOnEmptyDerivedClassInstance()
+        {
+            string code =
+                @"
+import(UnknownPoint from ""FFITarget.dll"");
+p = DummyPoint.ByCoordinates(1, 2, 3);
+u = p.UnknownPoint();
+newPoint = u.Translate(1,2,3);
+value = {u.X, u.Y, u.Z};
+                 ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("value", new double[] {1,2,3});
+            thisTest.Verify("newPoint", FFITarget.DummyPoint.ByCoordinates(2, 4, 6));
+        }
+
+        [Test]
+        public void InheritenceMethodInvokeWithoutImportDerivedClass()
+        {
+            string code =
+                @"
+import(DummyPoint from ""FFITarget.dll"");
+p = DummyPoint.ByCoordinates(1, 2, 3);
+u = p.UnknownPoint();
+newPoint = u.Translate(1,2,3);
+value = {u.X, u.Y, u.Z};
+                 ";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("value", new double[] { 1, 2, 3 });
+            thisTest.Verify("newPoint", FFITarget.DummyPoint.ByCoordinates(2, 4, 6));
+        }
+
     }
 
 

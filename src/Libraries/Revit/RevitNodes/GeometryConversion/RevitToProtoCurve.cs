@@ -17,7 +17,6 @@ namespace Revit.GeometryConversion
     [SupressImportIntoVM]
     public static class RevitToProtoCurve
     {
-
         /// <summary>
         /// An extension method to convert a Revit Curve to a ProtoGeometry Curve.  Note that Bound Revit curves will be returned in trimmed form.
         /// </summary>

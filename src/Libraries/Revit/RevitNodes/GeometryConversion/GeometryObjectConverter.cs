@@ -35,6 +35,16 @@ namespace Revit.GeometryConversion
             }
         }
 
+        private static Autodesk.DesignScript.Geometry.Surface InternalConvert(Autodesk.Revit.DB.Face geom)
+        {
+            return geom.ToProtoType();
+        }
+
+        private static Autodesk.DesignScript.Geometry.Solid InternalConvert(Autodesk.Revit.DB.Solid geom)
+        {
+            return geom.ToProtoType();
+        }
+
         private static Autodesk.DesignScript.Geometry.Point InternalConvert(Autodesk.Revit.DB.Point geom)
         {
             return Point.ByCoordinates(geom.Coord.X, geom.Coord.Y, geom.Coord.Z);
