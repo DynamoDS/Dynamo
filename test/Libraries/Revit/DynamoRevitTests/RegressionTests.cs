@@ -34,7 +34,7 @@ namespace Dynamo.Tests
 
             //run the expression and assert that it does not
             //throw an error
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(false));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         /// <summary>

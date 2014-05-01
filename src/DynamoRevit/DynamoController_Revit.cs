@@ -365,7 +365,7 @@ namespace Dynamo
             //}
         }
 
-        protected override void Run()
+        protected override void Evaluate()
         {
             //DocumentManager.Instance.CurrentDBDocument = DocumentManager.Instance.CurrentUIDocument.Document;
 
@@ -387,7 +387,7 @@ namespace Dynamo
             }
 
             //Run in idle thread no matter what
-            RevThread.IdlePromise.ExecuteOnIdleSync(base.Run);
+            RevThread.IdlePromise.ExecuteOnIdleSync(base.Evaluate);
         }
         
         public override void ResetEngine()

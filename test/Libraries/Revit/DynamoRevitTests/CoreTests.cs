@@ -28,7 +28,7 @@ namespace Dynamo.Tests
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.Throws(typeof(AssertionException), () => dynSettings.Controller.RunExpression(true));
+            Assert.Throws(typeof(AssertionException), () => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -142,7 +142,7 @@ namespace Dynamo.Tests
             string testPath = Path.Combine(_testPath, @".\ReferencePoint\ReferencePoint.dyn");
             model.Open(testPath);
             Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count());
-            Assert.DoesNotThrow(()=>dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(()=>dynSettings.Controller.RunExpression());
 
             //verify we have a reference point
             FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.Instance.CurrentUIDocument.Document);
@@ -164,7 +164,7 @@ namespace Dynamo.Tests
             node.Value = node.Value + .1;
 
             ////run the expression again
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
             //fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             //fec.OfClass(typeof(ReferencePoint));
             //Assert.AreEqual(1, fec.ToElements().Count());

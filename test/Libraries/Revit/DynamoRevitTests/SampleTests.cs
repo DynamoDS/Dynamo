@@ -273,7 +273,7 @@ namespace Dynamo.Tests
                 Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
             }
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -297,7 +297,7 @@ namespace Dynamo.Tests
                 Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
             }
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -324,7 +324,7 @@ namespace Dynamo.Tests
                 Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
             }
 
-            dynSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression();
         }
 
         [Test]
@@ -346,7 +346,7 @@ namespace Dynamo.Tests
                 Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
             }
 
-            dynSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression();
         }
 
         [Test]
@@ -369,7 +369,7 @@ namespace Dynamo.Tests
                 Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
             }
 
-            dynSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression();
         }
 
         [Test]
@@ -392,7 +392,7 @@ namespace Dynamo.Tests
                 Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
             }
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -425,7 +425,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(20, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -452,7 +452,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -479,7 +479,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -506,7 +506,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -533,7 +533,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(23, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
             //var watch = model.CurrentWorkspace.NodeFromWorkspace<NewList>("789c1592-b64c-4a97-8f1a-8cef3d0cc2d0");
             //FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -565,7 +565,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -593,7 +593,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -621,7 +621,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -649,7 +649,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(18, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -677,7 +677,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -705,7 +705,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -733,7 +733,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -772,7 +772,7 @@ namespace Dynamo.Tests
             Assert.IsFalse(string.IsNullOrEmpty(excelFilePath));
             Assert.IsTrue(File.Exists(excelFilePath));
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
             //Assert.Inconclusive("Porting : StringFileName");
         }
@@ -862,7 +862,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
 
             var workspace = model.CurrentWorkspace;
@@ -915,7 +915,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(47, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(61, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -943,7 +943,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(33, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(33, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -971,7 +971,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -999,7 +999,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -1027,7 +1027,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -1055,7 +1055,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -1083,7 +1083,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -1111,7 +1111,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -1143,7 +1143,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -1160,7 +1160,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -1178,7 +1178,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -1196,7 +1196,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 

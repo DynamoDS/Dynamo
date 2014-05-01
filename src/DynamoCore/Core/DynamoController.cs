@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Threading;
 using DSNodeServices;
 using Dynamo.DSEngine;
@@ -141,7 +142,7 @@ namespace Dynamo
         #region events
 
         /// <summary>
-        /// An event triggered when evaluation completes.
+        /// An event triggered when a single graph evaluation completes.
         /// </summary>
         public event EventHandler EvaluationCompleted;
 
@@ -287,6 +288,8 @@ namespace Dynamo
             InfoBubbleViewModel = new InfoBubbleViewModel();
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
+
+            evaluationWorker.DoWork += RunThread;
         }
 
         /// <summary>
@@ -346,22 +349,15 @@ namespace Dynamo
         }
 
         #region Running
+        
+        private readonly BackgroundWorker evaluationWorker = new BackgroundWorker
+        {
+            WorkerSupportsCancellation = true
+        };
 
-        //protected bool _debug;
-        private bool showErrors;
-
-        private bool runAgain;
         public bool Running { get; protected set; }
 
-        public bool RunCancelled { get; protected internal set; }
-
-        internal void QueueRun()
-        {
-            RunCancelled = true;
-            runAgain = true;
-        }
-
-        public void RunExpression(bool displayErrors = true)
+        public void RunExpression(int? executionInterval = null)
         {
             //dynSettings.Controller.DynamoLogger.LogWarning("Running expression", WarningLevel.Mild);
 
@@ -382,61 +378,58 @@ namespace Dynamo
             if (!EngineController.HasPendingGraphSyncData)
                 return;
 
-            showErrors = displayErrors;
-
-            //TODO: Hack. Might cause things to break later on...
-            //Reset Cancel and Rerun flags
-            RunCancelled = false;
-            runAgain = false;
-
             //We are now considered running
             Running = true;
 
             if (!testing)
             {
                 //Setup background worker
-                var worker = new BackgroundWorker();
-                worker.DoWork += EvaluationThread;
-
                 DynamoViewModel.RunEnabled = false;
 
                 //Let's start
-                worker.RunWorkerAsync();
+                evaluationWorker.RunWorkerAsync(executionInterval);
             }
             else
-                //for testing, we do not want to run
-                //asynchronously, as it will finish the 
-                //test before the evaluation (and the run)
-                //is complete
-                EvaluationThread(null, null);
+            {
+                //for testing, we do not want to run asynchronously, as it will finish the 
+                //test before the evaluation (and the run) is complete
+                RunThread(evaluationWorker, new DoWorkEventArgs(executionInterval));
+            }
         }
 
-        private void EvaluationThread(object s, DoWorkEventArgs args)
+        private void RunThread(object s, DoWorkEventArgs args)
+        {
+            var bw = s as BackgroundWorker;
+
+            do
+            {
+                Eval();
+
+                if (args == null || args.Argument == null)
+                    break;
+
+                var sleep = (int)args.Argument;
+                Thread.Sleep(sleep);
+            } 
+            while (bw != null && !bw.CancellationPending);
+
+            OnRunCompleted(this, false);
+
+            Running = false;
+            DynamoViewModel.RunEnabled = true;
+        }
+
+        private void Eval()
         {
             var sw = new Stopwatch();
-            sw.Start();
+
             try
             {
-                Run();
-            }
-            catch (CancelEvaluationException ex)
-            {
-                /* Evaluation was cancelled */
-
-                OnRunCancelled(false);
-                //this.CancelRun = false; //Reset cancel flag
-                RunCancelled = false;
-
-                //If we are forcing this, then make sure we don't run again either.
-                if (ex.Force)
-                    runAgain = false;
-
-                OnRunCompleted(this, false);
+                sw.Start();
+                Evaluate();
             }
             catch (Exception ex)
             {
-                /* Evaluation has an error */
-
                 //Catch unhandled exception
                 if (ex.Message.Length > 0)
                 {
@@ -445,47 +438,19 @@ namespace Dynamo
 
                 OnRunCancelled(true);
 
-                //Reset the flags
-                runAgain = false;
-                RunCancelled = false;
-
-                OnRunCompleted(this, false);
-
                 if (IsTestMode)
                     Assert.Fail(ex.Message + ":" + ex.StackTrace);
             }
             finally
             {
-                /* Post-evaluation cleanup */
-
-                DynamoViewModel.RunEnabled = true;
-
-                //No longer running
-                Running = false;
-
-                foreach (CustomNodeDefinition def in dynSettings.FunctionWasEvaluated)
-                    def.RequiresRecalc = false;
-
-                
-                //If we should run again...
-                if (runAgain)
-                {
-                    //Reset flag
-                    runAgain = false;
-
-                    RunExpression(showErrors);
-                }
-                else
-                {
-                    OnRunCompleted(this, true);
-                }
-
                 sw.Stop();
                 dynSettings.Controller.DynamoLogger.Log(string.Format("Evaluation completed in {0}", sw.Elapsed));
             }
+
+            OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
-        protected virtual void Run()
+        protected virtual void Evaluate()
         {
             //Print some stuff if we're in debug mode
             if (DynamoViewModel.RunInDebug)
@@ -527,14 +492,6 @@ namespace Dynamo
                         node.IsUpdated = true;
                 }
             }
-            catch (CancelEvaluationException ex)
-            {
-                /* Evaluation was cancelled */
-                OnRunCancelled(false);
-                RunCancelled = false;
-                if (ex.Force)
-                    runAgain = false;
-            }
             catch (Exception ex)
             {
                 /* Evaluation failed due to error */
@@ -542,8 +499,6 @@ namespace Dynamo
                 dynSettings.Controller.DynamoLogger.Log(ex);
 
                 OnRunCancelled(true);
-                RunCancelled = true;
-                runAgain = false;
 
                 //If we are testing, we need to throw an exception here
                 //which will, in turn, throw an Assert.Fail in the 
@@ -551,15 +506,11 @@ namespace Dynamo
                 if (IsTestMode)
                     throw new Exception(ex.Message);
             }
-
-            OnEvaluationCompleted(this, EventArgs.Empty);
         }
         
         protected virtual void OnRunCancelled(bool error)
         {
             //dynSettings.Controller.DynamoLogger.Log("Run cancelled. Error: " + error);
-            if (error)
-                dynSettings.FunctionWasEvaluated.Clear();
         }
 
         /// <summary>
@@ -609,7 +560,7 @@ namespace Dynamo
 
         public void RunExpression(object parameters) // For unit test cases.
         {
-            RunExpression(Convert.ToBoolean(parameters));
+            RunExpression();
         }
 
         internal void RunExprCmd(object parameters)
@@ -627,9 +578,9 @@ namespace Dynamo
         internal void RunCancelInternal(bool displayErrors, bool cancelRun)
         {
             if (cancelRun)
-                RunCancelled = true;
+                evaluationWorker.CancelAsync();
             else
-                RunExpression(displayErrors);
+                RunExpression();
         }
 
         public void DisplayFunction(object parameters)
@@ -663,17 +614,6 @@ namespace Dynamo
         internal bool CanClearLog(object parameter)
         {
             return true;
-        }
-    }
-
-    public class CancelEvaluationException : Exception
-    {
-        public bool Force;
-
-        public CancelEvaluationException(bool force)
-            : base("Run Cancelled")
-        {
-            Force = force;
         }
     }
     
