@@ -309,6 +309,9 @@ namespace Dynamo.Models
         {
             get
             {
+                if (cachedMirrorData != null)
+                    return cachedMirrorData;
+
                 var engine = dynSettings.Controller.EngineController;
                 var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
 
