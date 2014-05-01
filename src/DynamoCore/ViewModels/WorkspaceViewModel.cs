@@ -937,10 +937,20 @@ namespace Dynamo.ViewModels
 
         private void PauseVisualizationManagerUpdates(object parameter)
         {
-            dynSettings.Controller.VisualizationManager.UpdatingPaused = (bool)parameter;
+            dynSettings.Controller.VisualizationManager.Pause();
         }
 
         private bool CanPauseVisualizationManagerUpdates(object parameter)
+        {
+            return true;
+        }
+
+        private void UnPauseVisualizationManagerUpdates(object parameter)
+        {
+            dynSettings.Controller.VisualizationManager.UnPause();
+        }
+
+        private bool CanUnPauseVisualizationManagerUpdates(object parameter)
         {
             return true;
         }

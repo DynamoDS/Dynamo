@@ -27,7 +27,7 @@ namespace Dynamo
         /// <summary>
         /// Flag allows us to pause visualization updates.
         /// </summary>
-        bool UpdatingPaused { get; set; }
+        bool UpdatingPaused { get; }
 
         /// <summary>
         /// Is another context available for drawing?
@@ -47,30 +47,6 @@ namespace Dynamo
         string AlternateContextName { get; set; }
 
         int MaxGridLines { get; set; }
-
-        /// <summary>
-        /// Setup a spatial index for triangle vertex locations to 
-        /// be used in selection operations.
-        /// </summary>
-        /// <param name="toUpdate"></param>
-        //private void SetupOctree(IEnumerable<NodeModel> toUpdate)
-        //{
-        //    octree.Clear();
-        //    foreach (var node in toUpdate)
-        //    {
-        //        var packages = node.RenderPackages;
-        //        foreach (var p in packages)
-        //        {
-        //            for (int i = 0; i < p.TriangleVertices.Count - 3; i += 3)
-        //            {
-        //                var a = p.TriangleVertices[i];
-        //                var b = p.TriangleVertices[i + 1];
-        //                var c = p.TriangleVertices[i + 2];
-        //                octree.AddNode(a, b, c, node.GUID.ToString());
-        //            }
-        //        }
-        //    }
-        //}
 
         /// <summary>
         /// Aggregates all upstream geometry for the given node then sends
@@ -96,6 +72,16 @@ namespace Dynamo
         /// An event triggered when there are results to visualize
         /// </summary>
         event ResultsReadyHandler ResultsReadyToVisualize;
+
+        /// <summary>
+        /// Pause the visualization manager.
+        /// </summary>
+        void Pause();
+
+        /// <summary>
+        /// Unpause the visualization manager.
+        /// </summary>
+        void UnPause();
     }
 
     /// <summary>
@@ -125,11 +111,10 @@ namespace Dynamo
         public bool UpdatingPaused
         {
             get { return updatingPaused; }
-            set
+            internal set
             {
                 if (updatingPaused && value == false)
                 {
-                    //OnVisualizationUpdateComplete(this, EventArgs.Empty);
                     UpdateRenderPackages();
                 }
                 Debug.WriteLine("Updating paused = " + value.ToString());
@@ -234,9 +219,6 @@ namespace Dynamo
             _controller.DynamoModel.WorkspaceClearing += Pause;
             _controller.DynamoModel.WorkspaceCleared += UnPauseAndUpdate;
 
-            _controller.DynamoModel.WorkspaceOpening += Pause;
-            _controller.DynamoModel.WorkspaceOpened += UnPause;
-
             _controller.DynamoModel.NodeAdded += NodeAdded;
             _controller.DynamoModel.NodeDeleted += NodeDeleted;
 
@@ -245,6 +227,16 @@ namespace Dynamo
 
             _controller.DynamoModel.CleaningUp += Clear;
 
+            UnPause(this, EventArgs.Empty);
+        }
+
+        public void Pause()
+        {
+            Pause(this, EventArgs.Empty);
+        }
+
+        public void UnPause()
+        {
             UnPause(this, EventArgs.Empty);
         }
 
@@ -331,6 +323,9 @@ namespace Dynamo
         /// <param name="e"></param>
         void NodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            //  Don't respond to property changes when paused.
+            if (updatingPaused) return;
+
             if (e.PropertyName == "IsVisible" ||
                 e.PropertyName == "IsUpstreamVisible" ||
                 e.PropertyName == "DisplayLabels")

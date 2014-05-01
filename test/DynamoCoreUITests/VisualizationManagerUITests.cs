@@ -408,8 +408,6 @@ namespace DynamoCoreUITests
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
             Assert.AreEqual(4, BackgroundPreview.Points.Count());
 
-            cbn.Code = "Point.ByCoordinates(a<1>,a<1>,a<1>);";
-
             //label displayed should be possible now because
             //some nodes have values. toggle on label display
             cbn.DisplayLabels = true;
@@ -426,8 +424,6 @@ namespace DynamoCoreUITests
 
             cbn.DisplayLabels = false;
             Assert.AreEqual(0, BackgroundPreview.Text.Count());
-
-            model.HomeSpace.HasUnsavedChanges = false;
         }
 
         [Test, Category("Failing")]

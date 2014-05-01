@@ -65,6 +65,10 @@ namespace DynamoCoreUITests
         [TearDown]
         public void Exit()
         {
+            //Ensure that we leave the workspace marked as
+            //not having changes.
+            Controller.DynamoModel.HomeSpace.HasUnsavedChanges = false;
+
             if (Ui.IsLoaded)
                 Ui.Close();
 
