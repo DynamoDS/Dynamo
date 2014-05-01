@@ -116,8 +116,7 @@ namespace Dynamo.ViewModels
                 }
 
 #if USE_DSENGINE
-                return NodeModel.PrintValue(nodeLogic.VariableToPreview,
-                                            0,
+                return NodeLogic.PrintValue(0,
                                             Configurations.PreviewMaxListLength,
                                             0,
                                             Configurations.PreviewMaxListDepth,

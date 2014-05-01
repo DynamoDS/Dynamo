@@ -130,6 +130,8 @@ limitations under the License.
   <ItemGroup>
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="Interfaces\IBlockingModel.cs" />
+    <Compile Include="Interfaces\ICleanup.cs" />
+    <Compile Include="Interfaces\IVisualizationManager.cs" />
     <Compile Include="Library\DocumentationServices.cs" />
     <Compile Include="Library\LibraryCustomization.cs" />
     <Compile Include="Library\XmlDocumentationExtensions.cs" />

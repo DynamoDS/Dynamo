@@ -13,6 +13,7 @@ using ProtoCore.Utils;
 using ProtoFFI;
 using Constants = ProtoCore.DSASM.Constants;
 using Operator = ProtoCore.DSASM.Operator;
+using Dynamo.Utilities;
 
 #endregion
 
@@ -708,10 +709,10 @@ namespace Dynamo.DSEngine
                 if (GraphUtilities.BuildStatus.ErrorCount > 0)
                 {
                     string errorMessage = string.Format("Build error for library: {0}", library);
-                    DynamoLogger.Instance.LogWarning(errorMessage, WarningLevel.Moderate);
+                    dynSettings.Controller.DynamoLogger.LogWarning(errorMessage, WarningLevel.Moderate);
                     foreach (ErrorEntry error in GraphUtilities.BuildStatus.Errors)
                     {
-                        DynamoLogger.Instance.LogWarning(error.Message, WarningLevel.Moderate);
+                        dynSettings.Controller.DynamoLogger.LogWarning(error.Message, WarningLevel.Moderate);
                         errorMessage += error.Message + "\n";
                     }
 

@@ -21,7 +21,7 @@ namespace Dynamo.Nodes
             foreach (XmlElement subNode in xmlNode.ChildNodes)
             {
                 element.AppendChild(subNode.Clone());
-                subNode.InnerText = Regex.Replace(element.InnerText, @"\bIN\b", "IN[0]");
+                element.InnerText = Regex.Replace(element.InnerText, @"\bIN\b", "IN[0]");
             }
 
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);

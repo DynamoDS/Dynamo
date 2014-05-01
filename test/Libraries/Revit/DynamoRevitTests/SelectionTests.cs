@@ -71,7 +71,7 @@ namespace Dynamo.Tests
 
             AssertNoDummyNodes();
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
             var selNodes = model.AllNodes.Where(x => x is DSElementSelection || x is DSModelElementsSelection);
             Assert.IsFalse(selNodes.Any(x => x.CachedValue == null));

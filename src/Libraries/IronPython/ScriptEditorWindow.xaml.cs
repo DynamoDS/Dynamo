@@ -75,9 +75,9 @@ namespace DSIronPythonNode
             }
             catch (System.Exception ex)
             {
-                DynamoLogger.Instance.Log("Failed to perform python autocomplete with exception:");
-                DynamoLogger.Instance.Log(ex.Message);
-                DynamoLogger.Instance.Log(ex.StackTrace);
+                dynSettings.Controller.DynamoLogger.Log("Failed to perform python autocomplete with exception:");
+                dynSettings.Controller.DynamoLogger.Log(ex.Message);
+                dynSettings.Controller.DynamoLogger.Log(ex.StackTrace);
             }
         }
 
@@ -108,9 +108,9 @@ namespace DSIronPythonNode
             }
             catch (System.Exception ex)
             {
-                DynamoLogger.Instance.Log("Failed to perform python autocomplete with exception:");
-                DynamoLogger.Instance.Log(ex.Message);
-                DynamoLogger.Instance.Log(ex.StackTrace);
+                dynSettings.Controller.DynamoLogger.Log("Failed to perform python autocomplete with exception:");
+                dynSettings.Controller.DynamoLogger.Log(ex.Message);
+                dynSettings.Controller.DynamoLogger.Log(ex.StackTrace);
             }
         }
 

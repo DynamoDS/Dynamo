@@ -315,7 +315,7 @@ namespace Dynamo.Nodes
 
             string userMsg = "Failed to load custom node: " + NickName + ".  Replacing with proxy custom node.";
 
-            DynamoLogger.Instance.Log(userMsg);
+            dynSettings.Controller.DynamoLogger.Log(userMsg);
 
             // tell custom node loader, but don't provide path, forcing user to resave explicitly
             dynSettings.Controller.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);

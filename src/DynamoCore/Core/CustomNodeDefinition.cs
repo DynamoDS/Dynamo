@@ -263,8 +263,8 @@ namespace Dynamo
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log("Error saving:" + e.GetType());
-                DynamoLogger.Instance.Log(e);
+                dynSettings.Controller.DynamoLogger.Log("Error saving:" + e.GetType());
+                dynSettings.Controller.DynamoLogger.Log(e);
                 return false;
             }
 
