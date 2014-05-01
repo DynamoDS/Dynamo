@@ -17,6 +17,7 @@ using Dynamo.DSEngine;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
@@ -312,21 +313,13 @@ namespace Dynamo.Models
                 if (cachedMirrorData != null)
                     return cachedMirrorData;
 
+                cachedMirrorData = null;
+
                 var engine = dynSettings.Controller.EngineController;
                 var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
 
                 if (runtimeMirror != null)
                     cachedMirrorData = runtimeMirror.GetData();
-
-
-                if (cachedMirrorData == null) // If we didn't get anything...
-                {
-                    // If we fail to get anything from the engine at this time,
-                    // then no point query again in subsequent calls. We simply
-                    // make a MirrorData that represents DesignScript "null" here.
-                    cachedMirrorData = new MirrorData(engine.LiveRunnerCore,
-                        ProtoCore.DSASM.StackValue.BuildNull());
-                }
 
                 return cachedMirrorData;
             }
@@ -1230,8 +1223,7 @@ namespace Dynamo.Models
 
         #region Code Serialization
 
-        public static string PrintValue(
-            string variableName,
+        public string PrintValue(
             int currentListIndex,
             int maxListIndex,
             int currentDepth,
@@ -1239,11 +1231,11 @@ namespace Dynamo.Models
             int maxStringLength = 20)
         {
             string previewValue = "<null>";
-            if (!string.IsNullOrEmpty(variableName))
+            if (!string.IsNullOrEmpty(AstIdentifierForPreview.Value) && cachedMirrorData != null )
             {
                 try
                 {
-                    previewValue = dynSettings.Controller.EngineController.GetStringValue(variableName);
+                    previewValue = dynSettings.Controller.EngineController.GetStringValue(AstIdentifierForPreview.Value);
                 }
                 catch (Exception ex)
                 {

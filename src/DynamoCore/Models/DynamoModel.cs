@@ -162,24 +162,6 @@ namespace Dynamo.Models
                 RequestLayoutUpdate(this, e);
         }
 
-        public event EventHandler WorkspaceOpening;
-        public virtual void OnWorkspaceOpening(object sender, EventArgs e)
-        {
-            if (WorkspaceOpening != null)
-            {
-                WorkspaceOpening(this, e);
-            }
-        }
-
-        public event EventHandler WorkspaceOpened;
-        public virtual void OnWorkspaceOpened(object sender, EventArgs e)
-        {
-            if (WorkspaceOpened != null)
-            {
-                WorkspaceOpened(this, e);
-            }
-        }
-
         public event EventHandler WorkspaceClearing;
         public virtual void OnWorkspaceClearing(object sender, EventArgs e)
         {
@@ -399,6 +381,7 @@ namespace Dynamo.Models
         internal void OpenInternal(string xmlPath)
         {
             dynSettings.Controller.IsUILocked = true;
+            dynSettings.Controller.VisualizationManager.Pause();
 
             if (!OpenDefinition(xmlPath))
             {
@@ -415,6 +398,7 @@ namespace Dynamo.Models
 
             //clear the clipboard to avoid copying between dyns
             dynSettings.Controller.ClipBoard.Clear();
+            dynSettings.Controller.VisualizationManager.UnPause();
         }
 
         internal void PostUIActivation(object parameter)
@@ -685,13 +669,8 @@ namespace Dynamo.Models
         {
             dynSettings.Controller.DynamoLogger.Log("Opening home workspace " + xmlPath + "...");
 
-            OnWorkspaceOpening(this, EventArgs.Empty);
-
             CleanWorkbench();
             MigrationManager.ResetIdentifierIndex();
-
-            //clear the renderables
-            //dynSettings.Controller.VisualizationManager.ClearRenderables();
 
             var sw = new Stopwatch();
 
@@ -1028,8 +1007,6 @@ namespace Dynamo.Models
             }
 
             CurrentWorkspace.HasUnsavedChanges = false;
-
-            OnWorkspaceOpened(this, EventArgs.Empty);
 
             return true;
         }
