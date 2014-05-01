@@ -134,31 +134,6 @@ namespace Revit.Elements
 
         #endregion
 
-        #region Public static constructors
-
-        /// <summary>
-        /// Construct a FreeFrom element from a solid
-        /// </summary>
-        /// <param name="solid"></param>
-        /// <returns></returns>
-        public static FreeForm BySolid(Revit.GeometryObjects.Solid solid)
-        {
-            if (solid == null)
-            {
-                throw new ArgumentNullException("solid");
-            }
-
-            if (!Document.IsFamilyDocument)
-            {
-                throw new Exception("You can only create a FreeForm element in the Family editor.  You can then import" +
-                                    "this family into a Project environment as a family.");
-            }
-
-            return new FreeForm(solid.InternalSolid);
-        }
-
-        #endregion
-
         #region Internal static constructors
 
         /// <summary>

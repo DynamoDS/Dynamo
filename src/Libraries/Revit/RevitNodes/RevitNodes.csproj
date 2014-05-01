@@ -117,20 +117,14 @@
     <Compile Include="GeometryConversion\RevitToProtoFace.cs" />
     <Compile Include="GeometryConversion\RevitToProtoMesh.cs" />
     <Compile Include="GeometryConversion\GeometryObjectConverter.cs" />
-    <Compile Include="GeometryObjects\InternalUtilities\GeometryObjectWrapper.cs" />
-    <Compile Include="GeometryObjects\InternalUtilities\GeometryObjectSelector.cs" />
-    <Compile Include="Geometry\Domain.cs" />
-    <Compile Include="References\Reference.cs" />
-    <Compile Include="References\FaceReference.cs" />
+    <Compile Include="GeometryObjects\GeometryObjectSelector.cs" />
+    <Compile Include="GeometryReferences\ElementGeometryReference.cs" />
+    <Compile Include="GeometryReferences\ElementFaceReference.cs" />
     <Compile Include="Elements\InternalUtilities\ElementSelector.cs" />
     <Compile Include="Elements\Family.cs" />
     <Compile Include="GeometryConversion\Extensions.cs" />
-    <Compile Include="GeometryObjects\Edge.cs" />
-    <Compile Include="GeometryObjects\GeometryObject.cs" />
     <Compile Include="Graphics\GraphicsManager.cs" />
     <Compile Include="Elements\Parameter.cs" />
-    <Compile Include="GeometryObjects\Solid.cs" />
-    <Compile Include="GeometryObjects\Face.cs" />
     <Compile Include="Elements\AdaptiveComponent.cs" />
     <Compile Include="Elements\DividedPath.cs" />
     <Compile Include="Elements\DividedSurface.cs" />
@@ -142,7 +136,7 @@
     <Compile Include="Elements\Floor.cs" />
     <Compile Include="Elements\Grid.cs" />
     <Compile Include="Elements\Level.cs" />
-    <Compile Include="References\CurveReference.cs" />
+    <Compile Include="GeometryReferences\ElementCurveReference.cs" />
     <Compile Include="Elements\ReferencePlane.cs" />
     <Compile Include="Elements\ReferencePoint.cs" />
     <Compile Include="AnalysisDisplay\AbstractAnalysisDisplay.cs" />
@@ -150,7 +144,7 @@
     <Compile Include="Elements\Views\View3D.cs" />
     <Compile Include="Elements\Wall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="References\PlaneReference.cs" />
+    <Compile Include="GeometryReferences\ElementPlaneReference.cs" />
     <Compile Include="Transaction\Transaction.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -52,7 +52,7 @@ namespace DSRevitNodesTests
         {
             var l = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(1, 0, 0));
             var modelCurve = ModelCurve.ByCurve(l);
-            var pt = ReferencePoint.ByLengthOnCurveReference(modelCurve.CurveReference, 0.5);
+            var pt = ReferencePoint.ByLengthOnCurveReference(modelCurve.ElementCurveReference, 0.5);
 
             Assert.NotNull(pt);
             Assert.AreEqual(0.5, pt.X);
@@ -67,7 +67,7 @@ namespace DSRevitNodesTests
 
             var l = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(1, 0, 0));
             var modelCurve = ModelCurve.ByCurve(l);
-            var pt = ReferencePoint.ByParameterOnCurveReference(modelCurve.CurveReference, 0.5);
+            var pt = ReferencePoint.ByParameterOnCurveReference(modelCurve.ElementCurveReference, 0.5);
 
             Assert.NotNull(pt);
             Assert.AreEqual(0.5, pt.X);
@@ -83,7 +83,7 @@ namespace DSRevitNodesTests
             Assert.NotNull(ele);
 
             var form = ele as Form;
-            var faceRef = form.FaceReferences.First();
+            var faceRef = form.ElementFaceReferences.First();
 
             var pt = ReferencePoint.ByParametersOnFaceReference(faceRef, 0.5, 0.5);
 

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Revit.References
+namespace Revit.GeometryReferences
 {
     /// <summary>
     /// A Reference to a plane extracted from a Revit ELement
     /// </summary>
-    public class PlaneReference : Reference
+    public class ElementPlaneReference : ElementGeometryReference
     {
-        internal PlaneReference(Autodesk.Revit.DB.Reference planeReference)
+        internal ElementPlaneReference(Autodesk.Revit.DB.Reference planeReference)
         {
             this.InternalReference = planeReference;
         }

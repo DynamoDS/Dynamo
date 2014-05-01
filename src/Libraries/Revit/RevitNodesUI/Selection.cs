@@ -982,7 +982,7 @@ namespace Dynamo.Nodes
             {
                 return _selectionText = SelectedElement == null
                                             ? "Nothing Selected"
-                                            : "Face ID: " + SelectedElement.ElementId;
+                                            : "Face of Element ID: " + SelectedElement.ElementId;
             }
             set
             {
@@ -1007,7 +1007,7 @@ namespace Dynamo.Nodes
             {
                 return _selectionText = SelectedElement == null
                                             ? "Nothing Selected"
-                                            : "Element of Edge  ID: " + SelectedElement.ElementId;
+                                            : "Element of Element ID: " + SelectedElement.ElementId;
             }
             set
             {

@@ -88,7 +88,6 @@
     <Compile Include="Elements\FamilySymbolTests.cs" />
     <Compile Include="Elements\FamilyTests.cs" />
     <Compile Include="Elements\FormTests.cs" />
-    <Compile Include="Elements\FreeFormTests.cs" />
     <Compile Include="Elements\ModelCurveTests.cs" />
     <Compile Include="Elements\ReferencePointTests.cs" />
     <Compile Include="Elements\SketchPlaneTests.cs" />
@@ -106,7 +105,6 @@
     <Compile Include="GeometryConversion\ProtoToRevitCurveTests.cs" />
     <Compile Include="GeometryConversion\RevitToProtoCurveTests.cs" />
     <Compile Include="GeometryConversion\BoundingBoxTests.cs" />
-    <Compile Include="GeometryObjects\SolidTests.cs" />
     <Compile Include="GeometryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtoGeometryTest.cs" />
@@ -135,9 +133,7 @@
       <Name>RevitTestFramework</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="References\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
