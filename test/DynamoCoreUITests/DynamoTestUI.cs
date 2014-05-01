@@ -68,8 +68,6 @@ namespace DynamoCoreUITests
             if (Ui.IsLoaded)
                 Ui.Close();
 
-            Controller.ShutDown(false);
-
             Controller = null;
             Vm = null;
             Ui = null;

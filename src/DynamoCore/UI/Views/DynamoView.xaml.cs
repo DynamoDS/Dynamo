@@ -227,9 +227,6 @@ namespace Dynamo.Controls
             //ABOUT WINDOW
             _vm.RequestAboutWindow += _vm_RequestAboutWindow;
 
-            //ABOUT WINDOW
-            _vm.RequestAboutWindow += _vm_RequestAboutWindow;
-
             // Kick start the automation run, if possible.
             _vm.BeginCommandPlayback(this);
         }
@@ -530,10 +527,21 @@ namespace Dynamo.Controls
                 return;
             }
 
-            if (!DynamoController.IsTestMode)
-            {
-                dynSettings.Controller.ShutDown(false);
-            }
+            _vm.RequestPackagePublishDialog -= _vm_RequestRequestPackageManagerPublish;
+            _vm.RequestManagePackagesDialog -= _vm_RequestShowInstalledPackages;
+            _vm.RequestPackageManagerSearchDialog -= _vm_RequestShowPackageManagerSearch;
+            _vm.RequestsFunctionNamePrompt -= _vm_RequestsFunctionNamePrompt;
+            _vm.RequestClose -= _vm_RequestClose;
+            _vm.RequestSaveImage -= _vm_RequestSaveImage;
+            _vm.SidebarClosed -= _vm_SidebarClosed;
+            dynSettings.Controller.RequestsCrashPrompt -= Controller_RequestsCrashPrompt;
+            dynSettings.Controller.RequestTaskDialog -= Controller_RequestTaskDialog;
+            DynamoSelection.Instance.Selection.CollectionChanged -= Selection_CollectionChanged;
+            _vm.RequestUserSaveWorkflow -= _vm_RequestUserSaveWorkflow;
+            dynSettings.Controller.ClipBoard.CollectionChanged -= ClipBoard_CollectionChanged;
+            _vm.RequestAboutWindow -= _vm_RequestAboutWindow;
+
+            dynSettings.Controller.ShutDown(false);
         }
 
         private void WindowClosed(object sender, EventArgs e)
