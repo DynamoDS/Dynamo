@@ -121,9 +121,9 @@ namespace Dynamo.Views
         /// <param name="e"></param>
         void ViewModel_DragSelectionEnded(object sender, EventArgs e)
         {
-            if (ViewModel.PauseVisualizationManagerCommand.CanExecute(false))
+            if (ViewModel.UnPauseVisualizationManagerCommand.CanExecute(false))
             {
-                ViewModel.PauseVisualizationManagerCommand.Execute(false);
+                ViewModel.UnPauseVisualizationManagerCommand.Execute(false);
             }
         }
 
@@ -135,9 +135,9 @@ namespace Dynamo.Views
         /// <param name="e"></param>
         void ViewModel_DragSelectionStarted(object sender, EventArgs e)
         {
-            if (ViewModel.UnPauseVisualizationManagerCommand.CanExecute(true))
+            if (ViewModel.PauseVisualizationManagerCommand.CanExecute(true))
             {
-                ViewModel.UnPauseVisualizationManagerCommand.Execute(true);
+                ViewModel.PauseVisualizationManagerCommand.Execute(true);
             }
         }
 
