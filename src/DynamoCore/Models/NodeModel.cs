@@ -556,6 +556,10 @@ namespace Dynamo.Models
             State = ElementState.Dead;
             ArgumentLacing = LacingStrategy.Disabled;
             IsReportingModifications = true;
+
+            // Initialize the cachedMirrorData with a null
+            cachedMirrorData = new MirrorData(dynSettings.Controller.EngineController.LiveRunnerCore,
+                        ProtoCore.DSASM.StackValue.BuildNull());
         }
 
         /// <summary>
@@ -1456,7 +1460,7 @@ namespace Dynamo.Models
 
                 if (State == ElementState.Error ||
                     !IsVisible ||
-                    CachedValue == null)
+                    CachedValue.IsNull)
                 {
                     return;
                 }
