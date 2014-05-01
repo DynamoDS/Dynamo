@@ -21,12 +21,15 @@ namespace Dynamo.UI.Controls
 
     public partial class PreviewControl : UserControl
     {
-        #region Private Class Data Members
+        #region Class Data Members and Configurations
 
         public enum State
         {
             Hidden, Condensed, Expanded, Transitional
         }
+
+        private const double MaxPreviewWidth = 500.0;
+        private const double MaxPreviewHeight = 300.0;
 
         private State currentState = State.Hidden;
         private Queue<State> queuedRequest = new Queue<State>();
@@ -37,6 +40,8 @@ namespace Dynamo.UI.Controls
         private Storyboard phaseOutStoryboard = null;
         private Storyboard expandStoryboard = null;
         private Storyboard condenseStoryboard = null;
+        private DoubleAnimation widthAnimator = null;
+        private DoubleAnimation heightAnimator = null;
 
         public event StateChangedEventHandler StateChanged = null;
 
@@ -137,6 +142,31 @@ namespace Dynamo.UI.Controls
                 this.StateChanged(this, EventArgs.Empty);
         }
 
+        static bool switched = false;
+
+        private Size ComputeLargeContentSize()
+        {
+            // TODO: Remove these. Temporary logic to ensure animation's 
+            // value can be updated before the storyboard is started.
+            // 
+            Size size = new Size(180.0, 310.0);
+            switched = !switched;
+
+            if (switched)
+            {
+                size.Width = 310.0;
+                size.Height = 180.0;
+            }
+
+            // Cap the values within reasonable size.
+            if (size.Width > MaxPreviewWidth)
+                size.Width = MaxPreviewWidth;
+            if (size.Height > MaxPreviewHeight)
+                size.Height = MaxPreviewHeight;
+
+            return size;
+        }
+
         #endregion
 
         #region Private Class Methods - Transition Helpers
@@ -182,6 +212,10 @@ namespace Dynamo.UI.Controls
 
             this.largeContentGrid.Visibility = System.Windows.Visibility.Visible;
             SetCurrentStateAndNotify(State.Transitional);
+
+            var largeContentSize = ComputeLargeContentSize();
+            this.widthAnimator.To = largeContentSize.Width;
+            this.heightAnimator.To = largeContentSize.Height;
             this.expandStoryboard.Begin(this, true);
         }
 
@@ -195,6 +229,14 @@ namespace Dynamo.UI.Controls
             phaseOutStoryboard = this.Resources["phaseOutStoryboard"] as Storyboard;
             expandStoryboard = this.Resources["expandStoryboard"] as Storyboard;
             condenseStoryboard = this.Resources["condenseStoryboard"] as Storyboard;
+
+            // There must be width and height animators under expansion storyboard.
+            widthAnimator = expandStoryboard.Children[0] as DoubleAnimation;
+            heightAnimator = expandStoryboard.Children[1] as DoubleAnimation;
+            if (widthAnimator == null || (!widthAnimator.Name.Equals("widthAnimator")))
+                throw new InvalidOperationException("Width animator expected");
+            if (heightAnimator == null || (!heightAnimator.Name.Equals("heightAnimator")))
+                throw new InvalidOperationException("Height animator expected");
 
             // If there was a request queued before this control is loaded, 
             // then process the request as we now have the right width.

@@ -7,22 +7,21 @@
              xmlns:sys="clr-namespace:System.Windows;assembly=PresentationCore"
              xmlns:fwk="clr-namespace:System.Windows;assembly=PresentationFramework"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Dynamo.UI.Controls"
              mc:Ignorable="d"
              Width="500"
              Height="300">
 
     <UserControl.Resources>
 
-        <clr:Double x:Key="MaxPreviewControlWidth">500.0</clr:Double>
-        <clr:Double x:Key="MaxPreviewControlHeight">300.0</clr:Double>
         <clr:Double x:Key="MinPreviewControlWidth">135.0</clr:Double>
         <clr:Double x:Key="MinPreviewControlHeight">32.0</clr:Double>
-        
+
         <!-- MaxContentGrid = (MaxPreviewControl - (2 * Margin)) -->
         <fwk:Thickness x:Key="PreviewContentMargin">6.0</fwk:Thickness>
         <clr:Double x:Key="MaxContentGridWidth">488.0</clr:Double>
         <clr:Double x:Key="MaxContentGridHeight">288</clr:Double>
-        
+
         <clr:Double x:Key="PhasedOutPosition">-32.0</clr:Double>
         <clr:TimeSpan x:Key="ResizeBeginTime">0:0:0.2</clr:TimeSpan>
         <sys:Duration x:Key="AnimationDuration">0:0:0.2</sys:Duration>
@@ -43,13 +42,13 @@
 
         <Storyboard x:Key="expandStoryboard"
                     Completed="OnPreviewControlExpanded">
-            <DoubleAnimation Storyboard.TargetName="centralizedGrid"
+            <DoubleAnimation Name="widthAnimator"
+                             Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Width"
-                             To="{StaticResource MaxPreviewControlWidth}"
                              Duration="{StaticResource AnimationDuration}" />
-            <DoubleAnimation Storyboard.TargetName="centralizedGrid"
+            <DoubleAnimation Name="heightAnimator"
+                             Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Height"
-                             To="{StaticResource MaxPreviewControlHeight}"
                              Duration="{StaticResource AnimationDuration}" />
             <DoubleAnimation Storyboard.TargetName="smallContentGrid"
                              Storyboard.TargetProperty="Opacity"
