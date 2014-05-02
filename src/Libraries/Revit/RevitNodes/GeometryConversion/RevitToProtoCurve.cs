@@ -9,6 +9,7 @@ using System.Text;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
+using Revit.GeometryReferences;
 using Arc = Autodesk.DesignScript.Geometry.Arc;
 using Plane = Autodesk.DesignScript.Geometry.Plane;
 
@@ -33,7 +34,7 @@ namespace Revit.GeometryConversion
             var revitRef = revitCurve.Reference;
             if (revitCurve.IsElementGeometry && revitRef != null)
             {
-                converted.Tags.AddTag("revitReference", revitRef);
+                converted.Tags.AddTag(ElementCurveReference.DefaultTag, revitRef);
             }
 
             return converted;

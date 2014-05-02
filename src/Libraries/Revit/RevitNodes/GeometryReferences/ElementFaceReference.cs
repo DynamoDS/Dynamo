@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.Revit.DB;
 using Microsoft.CSharp.RuntimeBinder;
 using RevitServices.Persistence;
 
@@ -23,10 +24,17 @@ namespace Revit.GeometryReferences
             this.InternalReference = face.Reference;
         }
 
+        internal ElementFaceReference(Autodesk.Revit.DB.Reference reference)
+        {
+            this.InternalReference = reference;
+        }
+
         internal static ElementFaceReference FromExisting(Autodesk.Revit.DB.Face arg)
         {
             return new ElementFaceReference(arg);
         }
+
+        public const string DefaultTag = "RevitFaceReference";
 
         internal static ElementFaceReference TryGetFaceReference(object curveObject, string nodeTypeString = "This node")
         {
@@ -67,6 +75,23 @@ namespace Revit.GeometryReferences
 
         private static ElementFaceReference TryGetFaceReference(Autodesk.DesignScript.Geometry.Surface curveObject, string nodeTypeString = "This node")
         {
+            // If a Reference has been added to this object, we can use that
+            // to build the Element.
+            object tagObj = curveObject.Tags.LookupTag(DefaultTag);
+            if (tagObj != null)
+            {
+                var tagRef = (Reference)tagObj;
+                return new ElementFaceReference(tagRef);
+            }
+
+           //tagObj = curveObject.Tags.LookupTag("RevitElementId");
+           // if (tagObj != null)
+           // {
+           //     // do expensive face lookup
+           //     var tagRef = (Reference)tagObj;
+           //     return new ElementFaceReference(tagRef);
+           // }
+
             throw new ArgumentException(nodeTypeString + " requires a ElementFaceReference extracted from a Revit Element! " +
                                          "You can use the ImportInstance.ByGeometry to " +
                                             "turn this Surface into a Revit Element.");
