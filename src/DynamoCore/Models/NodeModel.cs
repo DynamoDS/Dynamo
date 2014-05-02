@@ -1239,7 +1239,7 @@ namespace Dynamo.Models
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Controller.DynamoLogger.Log(ex.Message);
+                    dynSettings.DynamoLogger.Log(ex.Message);
                 }
             }
             return previewValue;

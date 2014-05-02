@@ -1,4 +1,5 @@
 ﻿using System;
+using Dynamo;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
@@ -16,7 +17,6 @@ namespace DSCoreNodesTests
         [TearDown]
         public void RunAfterAnyTests()
         {
-
         }
     }
 }

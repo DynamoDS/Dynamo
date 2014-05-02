@@ -20,11 +20,11 @@ namespace DynamoCoreUITests
     [TestFixture]
     public class UpdateManagerUITests : DynamoTestUI
     {
-        private void Init(IUpdateManager updateManager, ILogger logger)
+        private void Init(IUpdateManager updateManager)
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
 
-            Controller = new DynamoController("None", updateManager, logger,
+            Controller = new DynamoController("None", updateManager,
                 new DefaultWatchHandler(), new PreferenceSettings());
             DynamoController.IsTestMode = true;
             Controller.DynamoViewModel = new DynamoViewModel(Controller, null);
@@ -62,12 +62,13 @@ namespace DynamoCoreUITests
         public void UpdateButtonNotCollapsedIfNotUpToDate()
         {
             var logger = new DynamoLogger();
+            dynSettings.DynamoLogger = logger;
 
             var um_mock = new Mock<IUpdateManager>();
             um_mock.Setup(um => um.AvailableVersion).Returns(BinaryVersion.FromString("9.9.9.9"));
             um_mock.Setup(um => um.ProductVersion).Returns(BinaryVersion.FromString("1.1.1.1"));
 
-            Init(um_mock.Object, logger);
+            Init(um_mock.Object);
 
             var stb = (ShortcutToolbar)Ui.shortcutBarGrid.Children[0];
             var sbgrid = (Grid)stb.FindName("ShortcutToolbarGrid");
@@ -80,12 +81,13 @@ namespace DynamoCoreUITests
         public void UpdateButtonCollapsedIfUpToDate()
         {
             var logger = new DynamoLogger();
+            dynSettings.DynamoLogger = logger;
 
             var um_mock = new Mock<IUpdateManager>();
             um_mock.Setup(um => um.AvailableVersion).Returns(BinaryVersion.FromString("1.1.1.1"));
             um_mock.Setup(um => um.ProductVersion).Returns(BinaryVersion.FromString("9.9.9.9"));
 
-            Init(um_mock.Object, logger);
+            Init(um_mock.Object);
 
             var stb = (ShortcutToolbar)Ui.shortcutBarGrid.Children[0];
             var sbgrid = (Grid)stb.FindName("ShortcutToolbarGrid");
@@ -98,12 +100,13 @@ namespace DynamoCoreUITests
         public void UpdateButtonCollapsedIfNotConnected()
         {
             var logger = new DynamoLogger();
+            dynSettings.DynamoLogger = logger;
 
             var um_mock = new Mock<IUpdateManager>();
             um_mock.Setup(um => um.AvailableVersion).Returns(BinaryVersion.FromString(""));
             um_mock.Setup(um => um.ProductVersion).Returns(BinaryVersion.FromString("9.9.9.9"));
             
-            Init(um_mock.Object, logger);
+            Init(um_mock.Object);
 
             var stb = (ShortcutToolbar)Ui.shortcutBarGrid.Children[0];
             var sbgrid = (Grid)stb.FindName("ShortcutToolbarGrid");

@@ -709,10 +709,10 @@ namespace Dynamo.DSEngine
                 if (GraphUtilities.BuildStatus.ErrorCount > 0)
                 {
                     string errorMessage = string.Format("Build error for library: {0}", library);
-                    dynSettings.Controller.DynamoLogger.LogWarning(errorMessage, WarningLevel.Moderate);
+                    dynSettings.DynamoLogger.LogWarning(errorMessage, WarningLevel.Moderate);
                     foreach (ErrorEntry error in GraphUtilities.BuildStatus.Errors)
                     {
-                        dynSettings.Controller.DynamoLogger.LogWarning(error.Message, WarningLevel.Moderate);
+                        dynSettings.DynamoLogger.LogWarning(error.Message, WarningLevel.Moderate);
                         errorMessage += error.Message + "\n";
                     }
 

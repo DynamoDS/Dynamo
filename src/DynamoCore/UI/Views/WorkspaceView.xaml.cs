@@ -295,7 +295,7 @@ namespace Dynamo.Views
             //sw.Start();
             //DrawGrid();
             //sw.Stop();
-            //dynSettings.Controller.DynamoLogger.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
+            //dynSettings.DynamoLogger.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
         }
 
         void vm_RequestAddViewToOuterCanvas(object sender, EventArgs e)

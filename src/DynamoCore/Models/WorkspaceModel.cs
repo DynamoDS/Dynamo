@@ -379,7 +379,7 @@ namespace Dynamo.Models
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            dynSettings.Controller.DynamoLogger.Log("Saving " + newPath + "...");
+            dynSettings.DynamoLogger.Log("Saving " + newPath + "...");
             try
             {
                 if (SaveInternal(newPath))
@@ -388,8 +388,8 @@ namespace Dynamo.Models
             catch (Exception ex)
             {
                 //Log(ex);
-                dynSettings.Controller.DynamoLogger.Log(ex.Message);
-                dynSettings.Controller.DynamoLogger.Log(ex.StackTrace);
+                dynSettings.DynamoLogger.Log(ex.Message);
+                dynSettings.DynamoLogger.Log(ex.StackTrace);
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 return false;
             }
@@ -751,7 +751,7 @@ namespace Dynamo.Models
 
         public virtual void Modified()
         {
-            //dynSettings.Controller.DynamoLogger.Log("Workspace modified.");
+            //dynSettings.DynamoLogger.Log("Workspace modified.");
             if (OnModified != null)
                 OnModified();
         }
@@ -945,8 +945,8 @@ namespace Dynamo.Models
             {
                 // We'd prefer file saving process to not crash Dynamo,
                 // otherwise user will lose the last hope in retaining data.
-                dynSettings.Controller.DynamoLogger.Log(exception.Message);
-                dynSettings.Controller.DynamoLogger.Log(exception.StackTrace);
+                dynSettings.DynamoLogger.Log(exception.Message);
+                dynSettings.DynamoLogger.Log(exception.StackTrace);
             }
         }
 

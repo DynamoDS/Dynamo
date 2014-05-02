@@ -217,7 +217,7 @@ namespace Dynamo.Nodes
                 AlsoKnownAsAttribute akaAttrib = attribs[0] as AlsoKnownAsAttribute;
                 if (akaAttrib.Values.Contains(fullyQualifiedName))
                 {
-                    dynSettings.Controller.DynamoLogger.Log(string.Format(
+                    dynSettings.DynamoLogger.Log(string.Format(
                         "Found matching node for {0} also known as {1}",
                         builtInType.Key, fullyQualifiedName));
 
@@ -225,10 +225,10 @@ namespace Dynamo.Nodes
                 }
             }
 
-            dynSettings.Controller.DynamoLogger.Log(string.Format(
+            dynSettings.DynamoLogger.Log(string.Format(
                 "Could not load node of type: {0}", fullyQualifiedName));
 
-            dynSettings.Controller.DynamoLogger.Log("Loading will continue but nodes " +
+            dynSettings.DynamoLogger.Log("Loading will continue but nodes " +
                 "might be missing from your workflow.");
 
             return null;
@@ -1256,7 +1256,7 @@ namespace Dynamo.Nodes
                 if (_value == null || !_value.Equals(value))
                 {
                     _value = value;
-                    //dynSettings.Controller.DynamoLogger.Log("Value changed to: " + _value);
+                    //dynSettings.DynamoLogger.Log("Value changed to: " + _value);
                     RequiresRecalc = value != null;
                     RaisePropertyChanged("Value");
                 }

@@ -188,7 +188,7 @@ namespace Dynamo.Controls
             _vm.PostUiActivationCommand.Execute(null);
 
             _timer.Stop();
-            dynSettings.Controller.DynamoLogger.Log(String.Format("{0} elapsed for loading Dynamo main window.",
+            dynSettings.DynamoLogger.Log(String.Format("{0} elapsed for loading Dynamo main window.",
                                                                      _timer.Elapsed));
             InitializeShortcutBar();
 
@@ -239,7 +239,7 @@ namespace Dynamo.Controls
         {
             if (_aboutWindow == null)
             {
-                _aboutWindow = new AboutWindow(dynSettings.Controller.DynamoLogger, model);
+                _aboutWindow = new AboutWindow(dynSettings.DynamoLogger, model);
                 _aboutWindow.Closed += (sender, args) => _aboutWindow = null;
                 _aboutWindow.Show();
 
@@ -379,7 +379,7 @@ namespace Dynamo.Controls
 
                 //if (bench == null)
                 //{
-                //    dynSettings.Controller.DynamoLogger.Log("Cannot export bench as image without UI.  No image wil be exported.");
+                //    dynSettings.DynamoLogger.Log("Cannot export bench as image without UI.  No image wil be exported.");
                 //    return;
                 //}
 
@@ -423,7 +423,7 @@ namespace Dynamo.Controls
                 }
                 catch
                 {
-                    dynSettings.Controller.DynamoLogger.Log("Failed to save the Workspace an image.");
+                    dynSettings.DynamoLogger.Log("Failed to save the Workspace an image.");
                 }
             }
         }
