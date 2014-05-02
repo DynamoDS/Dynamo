@@ -4,7 +4,7 @@ using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using Revit.GeometryConversion;
-using Revit.References;
+using Revit.GeometryReferences;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Plane = Autodesk.DesignScript.Geometry.Plane;
@@ -341,67 +341,67 @@ namespace Revit.Elements
         /// <summary>
         /// Create a Reference Point at a particular length along a curve
         /// </summary>
-        /// <param name="curveReference"></param>
+        /// <param name="elementCurveReference"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public static ReferencePoint ByLengthOnCurveReference(CurveReference curveReference, double length)
+        public static ReferencePoint ByLengthOnCurveReference(ElementCurveReference elementCurveReference, double length)
         {
             if (!Document.IsFamilyDocument)
             {
                 throw new Exception("ReferencePoint Elements can only be created in a Family Document");
             }
 
-            if (curveReference == null)
+            if (elementCurveReference == null)
             {
-                throw new ArgumentNullException("curveReference");
+                throw new ArgumentNullException("elementCurveReference");
             }
 
-            return new ReferencePoint(curveReference.InternalReference, length, PointOnCurveMeasurementType.SegmentLength, PointOnCurveMeasureFrom.Beginning);
+            return new ReferencePoint(elementCurveReference.InternalReference, length, PointOnCurveMeasurementType.SegmentLength, PointOnCurveMeasureFrom.Beginning);
         }
 
         /// <summary>
         /// Create a Reference Point at a parameter on an Curve.  This introduces a persistent relationship between
         /// Elements in the Revit document.
         /// </summary>
-        /// <param name="curveReference"></param>
+        /// <param name="elementCurveReference"></param>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        public static ReferencePoint ByParameterOnCurveReference(CurveReference curveReference, double parameter)
+        public static ReferencePoint ByParameterOnCurveReference(ElementCurveReference elementCurveReference, double parameter)
         {
             if (!Document.IsFamilyDocument)
             {
                 throw new Exception("ReferencePoint Elements can only be created in a Family Document");
             }
 
-            if (curveReference == null)
+            if (elementCurveReference == null)
             {
-                throw new ArgumentNullException("curveReference");
+                throw new ArgumentNullException("elementCurveReference");
             }
 
-            return new ReferencePoint(curveReference.InternalReference, parameter, PointOnCurveMeasurementType.NormalizedCurveParameter, PointOnCurveMeasureFrom.Beginning);
+            return new ReferencePoint(elementCurveReference.InternalReference, parameter, PointOnCurveMeasurementType.NormalizedCurveParameter, PointOnCurveMeasureFrom.Beginning);
         }
 
         /// <summary>
         /// Create a Reference Point by UV coordinates on a Face. This introduces a persistent relationship between
         /// Elements in the Revit document.
         /// </summary>
-        /// <param name="face"></param>
+        /// <param name="elementFace"></param>
         /// <param name="u"></param>
         /// <param name="v"></param>
         /// <returns></returns>
-        public static ReferencePoint ByParametersOnFaceReference(FaceReference face, double u, double v)
+        public static ReferencePoint ByParametersOnFaceReference(ElementFaceReference elementFace, double u, double v)
         {
             if (!Document.IsFamilyDocument)
             {
                 throw new Exception("ReferencePoint Elements can only be created in a Family Document");
             }
 
-            if (face == null)
+            if (elementFace == null)
             {
-                throw new ArgumentNullException("face");
+                throw new ArgumentNullException("elementFace");
             }
 
-            return new ReferencePoint(face.InternalReference, new UV(u, v));
+            return new ReferencePoint(elementFace.InternalReference, new UV(u, v));
         }
 
         #endregion

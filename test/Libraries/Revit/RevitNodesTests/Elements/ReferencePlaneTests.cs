@@ -23,7 +23,7 @@ namespace DSRevitNodesTests.Elements
 
             Assert.NotNull(refPlane);
             Assert.NotNull(refPlane.Plane);
-            Assert.NotNull(refPlane.PlaneReference);
+            Assert.NotNull(refPlane.ElementPlaneReference);
         }
 
         [Test]
@@ -35,7 +35,7 @@ namespace DSRevitNodesTests.Elements
 
             Assert.NotNull(refPlane);
             Assert.NotNull(refPlane.Plane);
-            Assert.NotNull(refPlane.PlaneReference);
+            Assert.NotNull(refPlane.ElementPlaneReference);
         }
 
         [Test]

@@ -93,7 +93,7 @@ namespace DSRevitNodesTests
                 0, 0.5, 1
             };
 
-            var ac = AdaptiveComponent.ByParametersOnCurveReference(parms, modCurve.CurveReference, fs);
+            var ac = AdaptiveComponent.ByParametersOnCurveReference(parms, modCurve.ElementCurveReference, fs);
             Assert.NotNull(ac);
 
         }

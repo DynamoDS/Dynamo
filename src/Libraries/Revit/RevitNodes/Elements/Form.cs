@@ -7,11 +7,9 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using Revit.GeometryObjects;
-using Revit.References;
+using Revit.GeometryReferences;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
-using Face = Revit.GeometryObjects.Face;
-using Solid = Revit.GeometryObjects.Solid;
 
 namespace Revit.Elements
 {
@@ -84,55 +82,6 @@ namespace Revit.Elements
 
         #endregion
 
-        #region Public properties
-
-        /// <summary>
-        /// Get the FaceReferences from this Element
-        /// </summary>
-        public FaceReference[] FaceReferences
-        {
-            get
-            {
-                return this.GetFaces(new Options()
-                {
-                    ComputeReferences = true
-                }).Select(x => new FaceReference(x)).ToArray();
-            }
-        }
-
-        /// <summary>
-        /// Get the Faces from this Element
-        /// </summary>
-        public Face[] Faces
-        {
-            get
-            {
-                return this.GetFaces(new Options()
-                {
-                    ComputeReferences = true
-                }).Select(Face.FromExisting).ToArray();
-            }
-        }
-
-        public Solid[] Solids
-        {
-            get
-            {
-                return EnumerateSolids().Select(x => new Solid(x)).ToArray();
-            }
-        }
-
-        #endregion
-
-        // need a way to enumerate solid edges as curves
-        //public DSCurveReference[] CurveReferences
-        //{
-        //    get
-        //    {
-        //        return EnumerateFaces().Select(x => new DSFaceReference(x)).ToArray();
-        //    }
-        //}
-
         #region Internal helper methods
 
         private IEnumerable<Autodesk.Revit.DB.Face> EnumerateFaces()
@@ -196,14 +145,15 @@ namespace Revit.Elements
 
         #region Public static constructors 
 
-        public static Form ByLoftingCurveReferences( CurveReference[] curves, bool isSolid=true )
+        public static Form ByLoftingCurveReferences(object[] curveReferences, bool isSolid = true)
         {
             var refArrArr = new ReferenceArrayArray();
 
-            foreach (var l in curves)
+            foreach (var l in curveReferences)
             {
+                if (l == null) throw new ArgumentNullException("curveReferences");
                 var refArr = new ReferenceArray();
-                refArr.Append(l.InternalReference);
+                refArr.Append(ElementCurveReference.TryGetCurveReference(l, "Form").InternalReference);
                 refArrArr.Append(refArr);
             }
 
@@ -211,44 +161,14 @@ namespace Revit.Elements
 
         }
 
-        public static Form ByLoftingCurveElements( CurveElement[] curves, bool isSolid=true )
+        public static Form ByLoftingCurveReferences(object[][] curveReferences, bool isSolid = true)
         {
             var refArrArr = new ReferenceArrayArray();
 
-            foreach (var l in curves)
+            foreach (var curveArr in curveReferences)
             {
                 var refArr = new ReferenceArray();
-                refArr.Append(l.InternalCurveElement.GeometryCurve.Reference);
-                refArrArr.Append(refArr);
-            }
-
-            return new Form(isSolid, refArrArr);
-
-        }
-
-        public static Form ByLoftingCurveReferences( CurveReference[][] curves, bool isSolid=true )
-        {
-            var refArrArr = new ReferenceArrayArray();
-
-            foreach (var curveArr in curves)
-            {
-                var refArr = new ReferenceArray();
-                curveArr.ForEach(x => refArr.Append(x.InternalReference));
-                refArrArr.Append(refArr);
-            }
-
-            return new Form(isSolid, refArrArr);
-
-        }
-
-        public static Form ByLoftingCurveElements( CurveElement[][] curves, bool isSolid=true )
-        {
-            var refArrArr = new ReferenceArrayArray();
-
-            foreach (var curveArr in curves)
-            {
-                var refArr = new ReferenceArray();
-                curveArr.ForEach(x => refArr.Append(x.InternalCurveElement.GeometryCurve.Reference));
+                curveArr.ForEach(x => refArr.Append(ElementCurveReference.TryGetCurveReference(x, "Form").InternalReference));
                 refArrArr.Append(refArr);
             }
 

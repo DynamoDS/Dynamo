@@ -30,7 +30,7 @@ namespace Revit.GeometryConversion
             return RevitToProtoCurve.Convert(dyCrv);
         }
 
-        public static PolyCurve ToProtoTypes(this Autodesk.Revit.DB.CurveArray revitCurves)
+        public static PolyCurve ToProtoType(this Autodesk.Revit.DB.CurveArray revitCurves)
         {
             if (revitCurves == null) throw new ArgumentNullException("revitCurves");
 

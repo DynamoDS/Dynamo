@@ -16,13 +16,6 @@ namespace Revit.GeometryConversion
     [SupressImportIntoVM]
     public static class RevitToProtoFace
     {
-        public static Surface ToProtoType(this Revit.GeometryObjects.Face revitFace)
-        {
-            if (revitFace == null) return null;
-
-            return revitFace.InternalFace.ToProtoType();
-        }
-
         public static Surface ToProtoType(this Autodesk.Revit.DB.Face face)
         {
             if (face == null) return null;

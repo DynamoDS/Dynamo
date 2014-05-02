@@ -33,7 +33,7 @@ namespace Dynamo.Models
             var controller = dynSettings.Controller;
             if (!controller.Running)
             {
-                controller.RunExpression(false);
+                controller.RunExpression();
             }
         }
 

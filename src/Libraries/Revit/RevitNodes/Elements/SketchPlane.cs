@@ -5,7 +5,7 @@ using System.Text;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using Revit.GeometryConversion;
-using Revit.References;
+using Revit.GeometryReferences;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
@@ -141,11 +141,11 @@ namespace Revit.Elements
 
         #region Public properties
 
-        public PlaneReference PlaneReference
+        public ElementPlaneReference ElementPlaneReference
         {
             get
             {
-                return new PlaneReference(this.InternalSketchPlane.GetPlaneReference());
+                return new ElementPlaneReference(this.InternalSketchPlane.GetPlaneReference());
             }
         }
 

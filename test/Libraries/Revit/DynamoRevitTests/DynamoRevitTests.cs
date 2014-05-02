@@ -169,7 +169,7 @@ namespace Dynamo.Tests
 
             model.Open(testPath);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         #region Revit unit test helper methods

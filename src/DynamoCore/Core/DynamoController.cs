@@ -6,13 +6,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Threading;
 using DSNodeServices;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
-using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UI;
 using Dynamo.UpdateManager;
@@ -27,7 +27,6 @@ using Dynamo.UI.Prompts;
 
 namespace Dynamo
 {
-
     /// <summary>
     /// Context values are required during controller instantiation to flag
     /// what application Dynamo is running within. Use NONE for the sandbox and
@@ -142,7 +141,7 @@ namespace Dynamo
         #region events
 
         /// <summary>
-        /// An event triggered when evaluation completes.
+        /// An event triggered when a single graph evaluation completes.
         /// </summary>
         public event EventHandler EvaluationCompleted;
 
@@ -194,7 +193,7 @@ namespace Dynamo
 
         public static DynamoController MakeSandbox(string commandFilePath = null)
         {
-            DynamoController controller = null;
+            DynamoController controller;
             var logger = new DynamoLogger();
             dynSettings.DynamoLogger = logger;
 
@@ -290,6 +289,8 @@ namespace Dynamo
             InfoBubbleViewModel = new InfoBubbleViewModel();
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
+
+            evaluationWorker.DoWork += RunThread;
         }
 
         /// <summary>
@@ -303,16 +304,16 @@ namespace Dynamo
             switch (e.PropertyName)
             {
                 case "LengthUnit":
-                    SIUnit.LengthUnit = PreferenceSettings.LengthUnit;
+                    BaseUnit.LengthUnit = PreferenceSettings.LengthUnit;
                     break;
                 case "AreaUnit":
-                    SIUnit.AreaUnit = PreferenceSettings.AreaUnit;
+                    BaseUnit.AreaUnit = PreferenceSettings.AreaUnit;
                     break;
                 case "VolumeUnit":
-                    SIUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
+                    BaseUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
                     break;
                 case "NumberFormat":
-                    SIUnit.NumberFormat = PreferenceSettings.NumberFormat;
+                    BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
                     break;
             }
         }
@@ -348,22 +349,15 @@ namespace Dynamo
         }
 
         #region Running
+        
+        private readonly BackgroundWorker evaluationWorker = new BackgroundWorker
+        {
+            WorkerSupportsCancellation = true
+        };
 
-        //protected bool _debug;
-        private bool _showErrors;
-
-        private bool runAgain;
         public bool Running { get; protected set; }
 
-        public bool RunCancelled { get; protected internal set; }
-
-        internal void QueueRun()
-        {
-            RunCancelled = true;
-            runAgain = true;
-        }
-
-        public void RunExpression(bool showErrors = true)
+        public void RunExpression(int? executionInterval = null)
         {
             //dynSettings.DynamoLogger.LogWarning("Running expression", WarningLevel.Mild);
 
@@ -380,20 +374,9 @@ namespace Dynamo
             DynamoViewModel.Model.HomeSpace.PreloadedTraceData = null; // Reset.
             EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
 
-#if USE_DSENGINE
             EngineController.GenerateGraphSyncData(DynamoViewModel.Model.HomeSpace.Nodes);
             if (!EngineController.HasPendingGraphSyncData)
-            {
                 return;
-            }
-#endif
-
-            _showErrors = showErrors;
-
-            //TODO: Hack. Might cause things to break later on...
-            //Reset Cancel and Rerun flags
-            RunCancelled = false;
-            runAgain = false;
 
             //We are now considered running
             Running = true;
@@ -401,84 +384,52 @@ namespace Dynamo
             if (!testing)
             {
                 //Setup background worker
-                var worker = new BackgroundWorker();
-                worker.DoWork += EvaluationThread;
-
                 DynamoViewModel.RunEnabled = false;
 
                 //Let's start
-                worker.RunWorkerAsync();
+                evaluationWorker.RunWorkerAsync(executionInterval);
             }
             else
-                //for testing, we do not want to run
-                //asynchronously, as it will finish the 
-                //test before the evaluation (and the run)
-                //is complete
-                EvaluationThread(null, null);
+            {
+                //for testing, we do not want to run asynchronously, as it will finish the 
+                //test before the evaluation (and the run) is complete
+                RunThread(evaluationWorker, new DoWorkEventArgs(executionInterval));
+            }
         }
 
-        private void EvaluationThread(object s, DoWorkEventArgs args)
+        private void RunThread(object s, DoWorkEventArgs args)
+        {
+            var bw = s as BackgroundWorker;
+
+            do
+            {
+                Eval();
+
+                if (args == null || args.Argument == null)
+                    break;
+
+                var sleep = (int)args.Argument;
+                Thread.Sleep(sleep);
+            } 
+            while (bw != null && !bw.CancellationPending);
+
+            OnRunCompleted(this, false);
+
+            Running = false;
+            DynamoViewModel.RunEnabled = true;
+        }
+
+        private void Eval()
         {
             var sw = new Stopwatch();
-            sw.Start();
 
-#if !USE_DSENGINE
-            //Get our entry points (elements with nothing connected to output)
-            List<NodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes().ToList();
-
-            //Mark the topmost as dirty/clean
-            foreach (NodeModel topMost in topElements)
-            {
-                topMost.MarkDirty();
-            }
-#endif
             try
             {
-
-#if USE_DSENGINE
-                Run();
-#else
-                var topNode = new BeginNode(new List<string>());
-                int i = 0;
-                var buildDict = new Dictionary<NodeModel, Dictionary<int, INode>>();
-                foreach (NodeModel topMost in topElements)
-                {
-                    string inputName = i.ToString();
-                    topNode.AddInput(inputName);
-                    topNode.ConnectInput(inputName, topMost.BuildExpression(buildDict));
-
-                    i++;
-
-                    //dynSettings.DynamoLogger.Log(topMost);
-                }
-
-                FScheme.Expression runningExpression = topNode.Compile();
-
-                Run(topElements, runningExpression);
-
-                // inform any objects that a run has happened
-
-                //dynSettings.DynamoLogger.Log(runningExpression);
-#endif
-            }
-            catch (CancelEvaluationException ex)
-            {
-                /* Evaluation was cancelled */
-
-                OnRunCancelled(false);
-                //this.CancelRun = false; //Reset cancel flag
-                RunCancelled = false;
-
-                //If we are forcing this, then make sure we don't run again either.
-                if (ex.Force)
-                    runAgain = false;
-
-                OnRunCompleted(this, false);
+                sw.Start();
+                Evaluate();
             }
             catch (Exception ex)
             {
-                /* Evaluation has an error */
-
                 //Catch unhandled exception
                 if (ex.Message.Length > 0)
                 {
@@ -487,47 +438,20 @@ namespace Dynamo
 
                 OnRunCancelled(true);
 
-                //Reset the flags
-                runAgain = false;
-                RunCancelled = false;
-
-                OnRunCompleted(this, false);
-
                 if (IsTestMode)
                     Assert.Fail(ex.Message + ":" + ex.StackTrace);
             }
             finally
             {
-                /* Post-evaluation cleanup */
-
-                DynamoViewModel.RunEnabled = true;
-
-                //No longer running
-                Running = false;
-
-                foreach (CustomNodeDefinition def in dynSettings.FunctionWasEvaluated)
-                    def.RequiresRecalc = false;
-
-                
-                //If we should run again...
-                if (runAgain)
-                {
-                    //Reset flag
-                    runAgain = false;
-
-                    RunExpression(_showErrors);
-                }
-                else
-                {
-                    OnRunCompleted(this, true);
-                }
-
                 sw.Stop();
-                dynSettings.DynamoLogger.Log(string.Format("Evaluation completed in {0}", sw.Elapsed.ToString()));
+
+                dynSettings.DynamoLogger.Log(string.Format("Evaluation completed in {0}", sw.Elapsed));
             }
+
+            OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
-        protected virtual void Run()
+        protected virtual void Evaluate()
         {
             //Print some stuff if we're in debug mode
             if (DynamoViewModel.RunInDebug)
@@ -547,10 +471,7 @@ namespace Dynamo
                 // 
                 if (IsTestMode == false && (fatalException != null))
                 {
-                    Action showFailureMessage = new Action(() =>
-                    {
-                        Nodes.Utilities.DisplayEngineFailureMessage(fatalException);
-                    });
+                    Action showFailureMessage = () => Nodes.Utilities.DisplayEngineFailureMessage(fatalException);
 
                     // The "Run" method is guaranteed to be called on a background 
                     // thread (for Revit's case, it is the idle thread). Here we 
@@ -572,14 +493,6 @@ namespace Dynamo
                         node.IsUpdated = true;
                 }
             }
-            catch (CancelEvaluationException ex)
-            {
-                /* Evaluation was cancelled */
-                OnRunCancelled(false);
-                RunCancelled = false;
-                if (ex.Force)
-                    runAgain = false;
-            }
             catch (Exception ex)
             {
                 /* Evaluation failed due to error */
@@ -587,8 +500,6 @@ namespace Dynamo
                 dynSettings.DynamoLogger.Log(ex);
 
                 OnRunCancelled(true);
-                RunCancelled = true;
-                runAgain = false;
 
                 //If we are testing, we need to throw an exception here
                 //which will, in turn, throw an Assert.Fail in the 
@@ -596,71 +507,11 @@ namespace Dynamo
                 if (IsTestMode)
                     throw new Exception(ex.Message);
             }
-
-            OnEvaluationCompleted(this, EventArgs.Empty);
         }
-
-        //protected virtual void Run(List<NodeModel> topElements, FScheme.Expression runningExpression)
-        //{
-        //    //Print some stuff if we're in debug mode
-        //    if (DynamoViewModel.RunInDebug)
-        //    {
-        //        if (dynSettings.Controller.UIDispatcher != null)
-        //        {
-        //            foreach (string exp in topElements.Select(node => node.PrintExpression()))
-        //                dynSettings.DynamoLogger.Log("> " + exp);
-        //        }
-        //    }
-
-        //    try
-        //    {
-        //        //Evaluate the expression
-        //        FScheme.Value expr = FSchemeEnvironment.Evaluate(runningExpression);
-
-        //        if (dynSettings.Controller.UIDispatcher != null)
-        //        {
-        //            //Print some more stuff if we're in debug mode
-        //            if (DynamoViewModel.RunInDebug && expr != null)
-        //            {
-        //                dynSettings.DynamoLogger.Log("Evaluating the expression...");
-        //                dynSettings.DynamoLogger.Log(FScheme.print(expr));
-        //            }
-        //        }
-        //    }
-        //    catch (CancelEvaluationException ex)
-        //    {
-        //        /* Evaluation was cancelled */
-
-        //        OnRunCancelled(false);
-        //        RunCancelled = false;
-        //        if (ex.Force)
-        //            runAgain = false;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        /* Evaluation failed due to error */
-
-        //        dynSettings.DynamoLogger.Log(ex);
-
-        //        OnRunCancelled(true);
-        //        RunCancelled = true;
-        //        runAgain = false;
-
-        //        //If we are testing, we need to throw an exception here
-        //        //which will, in turn, throw an Assert.Fail in the 
-        //        //Evaluation thread.
-        //        if (Testing)
-        //            throw new Exception(ex.Message);
-        //    }
-
-        //    OnEvaluationCompleted(this, EventArgs.Empty);
-        //}
-
+        
         protected virtual void OnRunCancelled(bool error)
         {
-            //dynSettings.DynamoLogger.Log("Run cancelled. Error: " + error);
-            if (error)
-                dynSettings.FunctionWasEvaluated.Clear();
+            //dynSettings.Controller.DynamoLogger.Log("Run cancelled. Error: " + error);
         }
 
         /// <summary>
@@ -710,13 +561,13 @@ namespace Dynamo
 
         public void RunExpression(object parameters) // For unit test cases.
         {
-            RunExpression(Convert.ToBoolean(parameters));
+            RunExpression();
         }
 
         internal void RunExprCmd(object parameters)
         {
-            bool showErrors = Convert.ToBoolean(parameters);
-            var command = new DynamoViewModel.RunCancelCommand(showErrors, false);
+            bool displayErrors = Convert.ToBoolean(parameters);
+            var command = new DynamoViewModel.RunCancelCommand(displayErrors, false);
             DynamoViewModel.ExecuteCommand(command);
         }
 
@@ -725,12 +576,12 @@ namespace Dynamo
             return (dynSettings.Controller != null);
         }
 
-        internal void RunCancelInternal(bool showErrors, bool cancelRun)
+        internal void RunCancelInternal(bool displayErrors, bool cancelRun)
         {
-            if (cancelRun != false)
-                RunCancelled = true;
+            if (cancelRun)
+                evaluationWorker.CancelAsync();
             else
-                RunExpression(showErrors);
+                RunExpression();
         }
 
         public void DisplayFunction(object parameters)
@@ -740,12 +591,7 @@ namespace Dynamo
 
         internal bool CanDisplayFunction(object parameters)
         {
-            var id = dynSettings.CustomNodes.FirstOrDefault(x => x.Value == (Guid)parameters).Value;
-
-            if (id != null)
-                return true;
-
-            return false;
+            return dynSettings.CustomNodes.Any(x => x.Value == (Guid)parameters);
         }
 
         public void ReportABug(object parameter)
@@ -771,20 +617,10 @@ namespace Dynamo
             return true;
         }
     }
-
-    public class CancelEvaluationException : Exception
-    {
-        public bool Force;
-
-        public CancelEvaluationException(bool force)
-            : base("Run Cancelled")
-        {
-            Force = force;
-        }
-    }
     
     public class CrashPromptArgs : EventArgs
     {
+        [Flags]
         public enum DisplayOptions
         {
             IsDefaultTextOverridden = 0x00000001,

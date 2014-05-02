@@ -5,7 +5,7 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using Revit.GeometryConversion;
-using Revit.References;
+using Revit.GeometryReferences;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
@@ -80,7 +80,7 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="c">Host curves</param>
         /// <param name="divs">Number of divisions</param>
-        private DividedPath(CurveReference[] c, int divs)
+        private DividedPath(ElementCurveReference[] c, int divs)
         {
             // PB: This constructor always *recreates* the divided path.
             // Mutating the divided path would require obtaining the referenced 
@@ -124,11 +124,11 @@ namespace Revit.Elements
 
         #region Static constructors
 
-        public static DividedPath ByCurveAndDivisions(CurveReference curve, int divisions)
+        public static DividedPath ByCurveAndDivisions(object curveReference, int divisions)
         {
-            if (curve == null)
+            if (curveReference == null)
             {
-                throw new ArgumentNullException("curve");
+                throw new ArgumentNullException("curveReference");
             }
 
             if (divisions < 2)
@@ -136,14 +136,14 @@ namespace Revit.Elements
                 throw new Exception("The number of divisions must be greater than 2!");
             }
 
-            return new DividedPath(new[] { curve }, divisions);
+            return new DividedPath(new[] { ElementCurveReference.TryGetCurveReference(curveReference) }, divisions);
         }
 
-        public static DividedPath ByCurvesAndDivisions(CurveReference[] curves, int divisions)
+        public static DividedPath ByCurvesAndDivisions(object[] curveReferences, int divisions)
         {
-            if (curves == null)
+            if (curveReferences == null)
             {
-                throw new ArgumentNullException("curves");
+                throw new ArgumentNullException("curveReferences");
             }
 
             if (divisions < 2)
@@ -151,12 +151,12 @@ namespace Revit.Elements
                 throw new Exception("The number of divisions must be greater than 2!");
             }
 
-            if (curves.Any(x => x == null))
+            if (curveReferences.Any(x => x == null))
             {
-                throw new ArgumentNullException(String.Format("curves[{0}]",  Array.FindIndex(curves, x => x == null)) );
+                throw new ArgumentNullException(String.Format("curves[{0}]",  Array.FindIndex(curveReferences, x => x == null)) );
             }
 
-            return new DividedPath(curves, divisions);
+            return new DividedPath(curveReferences.Select(x => ElementCurveReference.TryGetCurveReference(x)).ToArray(), divisions);
         }
 
         #endregion
