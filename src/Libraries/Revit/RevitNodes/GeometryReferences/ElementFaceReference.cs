@@ -87,7 +87,6 @@ namespace Revit.GeometryReferences
            //tagObj = curveObject.Tags.LookupTag("RevitElementId");
            // if (tagObj != null)
            // {
-           //     // do expensive face lookup
            //     var tagRef = (Reference)tagObj;
            //     return new ElementFaceReference(tagRef);
            // }
