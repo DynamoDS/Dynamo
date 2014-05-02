@@ -403,7 +403,7 @@ namespace Dynamo
 
             do
             {
-                Eval();
+                Evaluate();
 
                 if (args == null || args.Argument == null)
                     break;
@@ -419,14 +419,14 @@ namespace Dynamo
             DynamoViewModel.RunEnabled = true;
         }
 
-        private void Eval()
+        protected virtual void Evaluate()
         {
             var sw = new Stopwatch();
 
             try
             {
                 sw.Start();
-                Evaluate();
+                Eval();
             }
             catch (Exception ex)
             {
@@ -451,7 +451,7 @@ namespace Dynamo
             OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
-        protected virtual void Evaluate()
+        private void Eval()
         {
             //Print some stuff if we're in debug mode
             if (DynamoViewModel.RunInDebug)
