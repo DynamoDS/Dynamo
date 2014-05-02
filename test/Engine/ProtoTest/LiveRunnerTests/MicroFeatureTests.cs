@@ -2307,6 +2307,34 @@ z=Point.ByCoordinates(y,a,a);
         }
 
         [Test]
+        public void TestSimpleFunctionRedefinition05()
+        {
+            List<string> codes = new List<string>() 
+            {                    
+                "def f(x){return = x + 2;} p = f(10);",
+                "def f(x){return = x - 2;} p = f(10);",
+            };
+
+            Guid guid = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+
+            // Create CBN
+            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("p", 12);
+
+            // Modify function in CBN
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("p", 8);
+        }
+
+        [Test]
         public void TestFunctionRedefinitionOnNewNode01()
         {
             List<string> codes = new List<string>() 

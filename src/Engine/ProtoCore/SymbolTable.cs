@@ -289,6 +289,31 @@ namespace ProtoCore.DSASM
             }
         }
 
+        /// <summary>
+        /// Method to undefine a symbol from the symboltable entry and cache
+        /// </summary>
+        /// <param name="symbol"></param>
+        public void UndefineSymbol(SymbolNode symbol)
+        {
+            // Dont remove from symbol table, but just nullify it.
+            symbolList[symbol.symbolTableIndex] = new SymbolNode();
+
+            if (lookAsideSymbolCache.ContainsKey(symbol.name))
+            {
+                List<SymbolNode> cachedSymbolList = lookAsideSymbolCache[symbol.name];
+                for (int n = 0; n < cachedSymbolList.Count; ++n)
+                {
+                    SymbolNode cachedSymbol = cachedSymbolList[n];
+                    if (cachedSymbol.name.Equals(symbol.name) && cachedSymbol.classScope == symbol.classScope && cachedSymbol.functionIndex == symbol.functionIndex)
+                    {
+                        // Dont remove from symbol table, but just nullify it.
+                        cachedSymbolList[n] = new SymbolNode();
+                        break;
+                    }
+                }
+            }
+        }
+
         public SymbolTable(string scopeName, int runtimeIndex)
         {
             size = 0;
