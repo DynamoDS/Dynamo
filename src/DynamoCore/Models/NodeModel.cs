@@ -37,10 +37,10 @@ namespace Dynamo.Models
         private string nickName;
         private ElementState state;
         private string toolTipText = "";
-        private IdentifierNode identifier;
         private bool saveResult;
         private string description;
         private const string FailureString = "Node evaluation failed";
+        protected IdentifierNode identifier;
 
         // Data caching related class members.
         private bool isUpdated = false;
@@ -313,6 +313,11 @@ namespace Dynamo.Models
                 if (cachedMirrorData != null)
                     return cachedMirrorData;
 
+                // Do not have an identifier for preview right now. For an example,
+                // this can be happening at the beginning of a code block node creation.
+                if (AstIdentifierForPreview.Value == null)
+                    return null;
+
                 cachedMirrorData = null;
 
                 var engine = dynSettings.Controller.EngineController;
@@ -338,22 +343,6 @@ namespace Dynamo.Models
                     cachedMirrorData = null; // cached data should be invalidated.
 
                 RaisePropertyChanged("IsUpdated");
-            }
-        }
-
-        /// <summary>
-        ///     Return a variable whose value will be displayed in preview window.
-        ///     Derived nodes may overwrite this function to display default value
-        ///     of this node. E.g., code block node may want to display the value
-        ///     of the left hand side variable of last statement.
-        /// </summary>
-        /// <returns></returns>
-        public virtual string VariableToPreview
-        {
-            get
-            {
-                IdentifierNode ident = AstIdentifierForPreview;
-                return (ident == null) ? null : ident.Name;
             }
         }
 
@@ -442,9 +431,12 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Base name for ProtoAST Identifiers corresponding to this node's output.
+        ///     Return a variable whose value will be displayed in preview window.
+        ///     Derived nodes may overwrite this function to display default value
+        ///     of this node. E.g., code block node may want to display the value
+        ///     of the left hand side variable of last statement.
         /// </summary>
-        protected string AstIdentifierBase
+        public virtual string AstIdentifierBase
         {
             get { return AstBuilder.StringConstants.VarPrefix + GUID.ToString().Replace("-", string.Empty); }
         }
@@ -1231,17 +1223,19 @@ namespace Dynamo.Models
             int maxStringLength = 20)
         {
             string previewValue = "<null>";
-            if (!string.IsNullOrEmpty(AstIdentifierForPreview.Value) && cachedMirrorData != null )
+            if (!string.IsNullOrEmpty(this.AstIdentifierBase))
             {
                 try
                 {
-                    previewValue = dynSettings.Controller.EngineController.GetStringValue(AstIdentifierForPreview.Value);
+                    var engine = dynSettings.Controller.EngineController;
+                    previewValue = engine.GetStringValue(this.AstIdentifierBase);
                 }
                 catch (Exception ex)
                 {
                     dynSettings.DynamoLogger.Log(ex.Message);
                 }
             }
+
             return previewValue;
         }
         

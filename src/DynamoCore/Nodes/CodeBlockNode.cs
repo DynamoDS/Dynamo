@@ -156,6 +156,11 @@ namespace Dynamo.Nodes
             }
         }
 
+        public override string AstIdentifierBase
+        {
+            get { return (State == ElementState.Error) ? null : previewVariable; }
+        }
+
         public string Code
         {
             get { return code; }
@@ -230,11 +235,6 @@ namespace Dynamo.Nodes
         #endregion
 
         #region Protected Methods
-
-        public override string VariableToPreview
-        {
-            get { return (State == ElementState.Error) ? null : previewVariable; }
-        }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
@@ -527,6 +527,7 @@ namespace Dynamo.Nodes
             // instead of the full expression with array indexers.
             // 
             previewVariable = duplicatedNode.Value;
+            this.identifier = null; // Reset preview identifier for regeneration.
         }
 
         /// <summary>
@@ -816,7 +817,7 @@ namespace Dynamo.Nodes
                 var ident = identNode.Value;
                 if ((inputIdentifiers.Contains(ident) || definedVars.Contains(ident)) 
                     && !tempVariables.Contains(ident)
-                    && !identNode.Equals(AstIdentifierForPreview))
+                    && !identNode.Equals(this.identifier))
                 {
                     identNode.Name = identNode.Value = LocalizeIdentifier(ident);
                 }
