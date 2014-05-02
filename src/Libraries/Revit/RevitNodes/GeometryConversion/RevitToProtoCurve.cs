@@ -27,7 +27,16 @@ namespace Revit.GeometryConversion
             if (revitCurve == null) throw new ArgumentNullException("revitCurve");
 
             dynamic dyCrv = revitCurve;
-            return RevitToProtoCurve.Convert(dyCrv);
+            Autodesk.DesignScript.Geometry.Curve converted = RevitToProtoCurve.Convert(dyCrv);
+            
+            // If possible, add a geometry reference for downstream Element creation
+            var revitRef = revitCurve.Reference;
+            if (revitCurve.IsElementGeometry && revitRef != null)
+            {
+                converted.Tags.AddTag("revitReference", revitRef);
+            }
+
+            return converted;
         }
 
         public static PolyCurve ToProtoType(this Autodesk.Revit.DB.CurveArray revitCurves)
