@@ -1,6 +1,5 @@
 ﻿using Autodesk.DesignScript.Geometry;
 using NUnit.Framework;
-using Revit.Geometry;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSCoreNodesTests
@@ -44,38 +43,6 @@ namespace DSCoreNodesTests
             Assert.AreEqual(0, expectedPoint0.DistanceTo(closestPoint0), 1e-6);
 
             HostFactory.Instance.ShutDown();
-        }
-
-        [Test]
-        public void Domain2D()
-        {
-
-            //create a domain object
-            var dom = new Domain2D(Vector.ByCoordinates(0, 0, 0), Vector.ByCoordinates(1, 1, 0));
-
-            //assert the min and max of the domain
-            Assert.IsTrue(dom.Min.X == 0);
-            Assert.IsTrue(dom.Min.Y == 0);
-            Assert.IsTrue(dom.Max.X == 1);
-            Assert.IsTrue(dom.Max.Y == 1);
-
-            //assert the spans of the domain
-            Assert.IsTrue(dom.USpan == 1);
-            Assert.IsTrue(dom.VSpan == 1);
-        }
-
-        [Test]
-        public void Domain()
-        {
-            //create a domain object
-            var dom = new Domain(0, 1);
-
-            //assert the min and max of the domain
-            Assert.IsTrue(dom.Min == 0);
-            Assert.IsTrue(dom.Max == 1);
-
-            //assert the spans of the domain
-            Assert.IsTrue(dom.Span == 1);
         }
 
     }

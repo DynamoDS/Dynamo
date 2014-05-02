@@ -13,12 +13,12 @@ namespace Dynamo.Nodes
             var migrationData = new NodeMigrationData(data.Document);
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeType(
-                oldNode, "DSRevitNodesUI.StructuralFramingTypes");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(
+                oldNode, "DSRevitNodesUI.StructuralFramingTypes", "Structural Framing Types");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)
-                newNode.AppendChild(subNode);
+                newNode.AppendChild(subNode.Clone());
 
             return migrationData;
         }

@@ -45,7 +45,7 @@ namespace Dynamo.Tests
             model.Open(testPath);
             Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count);
 
-            dynSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression();
         }
     }
 }

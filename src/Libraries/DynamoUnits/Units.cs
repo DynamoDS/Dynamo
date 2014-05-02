@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Double = System.Double;
 using Autodesk.DesignScript.Runtime;
 
-namespace Dynamo.Units
+namespace DynamoUnits
 {
     [SupressImportIntoVM]
     public enum DynamoLengthUnit
@@ -465,7 +464,12 @@ namespace Dynamo.Units
     /// </summary>
     public class Length : SIUnit, IComparable, IEquatable<Length>
     {
-        public Length(double value):base(value){}
+        internal Length(double value):base(value){}
+
+        public static Length FromDouble(double value)
+        {
+            return new Length(value);
+        }
 
         public static Length FromFeet(double value)
         {
@@ -707,7 +711,12 @@ namespace Dynamo.Units
     /// </summary>
     public class Area : SIUnit, IComparable, IEquatable<Area>
     {
-        public Area(double value):base(value){}
+        internal Area(double value):base(value){}
+
+        public static Area FromDouble(double value)
+        {
+            return new Area(value);
+        }
 
         public static Area FromSquareFeet(double value)
         {
@@ -942,7 +951,12 @@ namespace Dynamo.Units
     /// </summary>
     public class Volume : SIUnit, IComparable, IEquatable<Volume>
     {
-        public Volume(double value) : base(value){}
+        internal Volume(double value) : base(value){}
+
+        public static Volume FromDouble(double value)
+        {
+            return new Volume(value);
+        }
 
         public static Volume FromCubicFeet(double value)
         {

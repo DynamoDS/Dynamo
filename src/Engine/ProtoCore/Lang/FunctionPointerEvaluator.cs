@@ -4,21 +4,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ProtoCore.DSASM;
+using ProtoCore.RuntimeData;
 using ProtoCore.Utils;
 
 namespace ProtoCore.Lang
 {
     class FunctionPointerEvaluator
     {
-        private Interpreter mRunTime;
-        private ProcedureNode mProcNode;
-        private CallSite mCallSite;
-        public string Name { get { return mProcNode.name; } }
+        private Interpreter interpreter;
+        private ProcedureNode procNode;
+        private CallSite callsite;
+        public string Name { get { return procNode.name; } }
 
         public FunctionPointerEvaluator(StackValue pointer, Interpreter dsi)
         {
             Validity.Assert(pointer.optype == AddressType.FunctionPointer);
-            mRunTime = dsi;
+            interpreter = dsi;
             Core core = dsi.runtime.Core;
 
             int fptr = (int)pointer.opdata;
@@ -30,54 +31,96 @@ namespace ProtoCore.Lang
                 int blockId = fptrNode.blockId;
                 int procId = fptrNode.procId;
                 classScope = fptrNode.classScope;
-                mProcNode = dsi.runtime.GetProcedureNode(blockId, classScope, procId);
+                procNode = dsi.runtime.GetProcedureNode(blockId, classScope, procId);
             }
 
-            mCallSite = new ProtoCore.CallSite(classScope, Name, core.FunctionTable, core.Options.ExecutionMode);
+            callsite = new ProtoCore.CallSite(classScope, Name, core.FunctionTable, core.Options.ExecutionMode);
         }
 
         public StackValue Evaluate(List<StackValue> args, StackFrame stackFrame)
         {
-            //
             // Build the stackframe
-            int classScopeCaller = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kClass).opdata;
-            int returnAddr = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kReturnAddress).opdata;
-            int blockDecl = (int)mProcNode.runtimeIndex;
-            int blockCaller = (int)stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunctionCallerBlock).opdata;
-            int framePointer = mRunTime.runtime.Core.Rmem.FramePointer;
+            var runtimeCore = interpreter.runtime.Core;
+
+            int classScopeCaller = (int)stackFrame.GetAt(StackFrame.AbsoluteIndex.kClass).opdata;
+            int returnAddr = (int)stackFrame.GetAt(StackFrame.AbsoluteIndex.kReturnAddress).opdata;
+            int blockDecl = (int)procNode.runtimeIndex;
+            int blockCaller = (int)stackFrame.GetAt(StackFrame.AbsoluteIndex.kFunctionCallerBlock).opdata;
+            int framePointer = runtimeCore.Rmem.FramePointer;
             StackValue thisPtr = StackValue.BuildPointer(-1);
 
-
-            // Comment Jun: the caller type is the current type in the stackframe
-            StackFrameType callerType = (StackFrameType)stackFrame.GetAt(StackFrame.AbsoluteIndex.kStackFrameType).opdata;
-
-            StackFrameType type = StackFrameType.kTypeFunction;
-            int depth = 0;
-            List<StackValue> registers = new List<StackValue>();
-
-            // Comment Jun: Calling convention data is stored on the TX register
-            StackValue svCallconvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
-            mRunTime.runtime.TX = svCallconvention;
-
-            StackValue svBlockDecl = StackValue.BuildBlockIndex(blockDecl);
-            mRunTime.runtime.SX = svBlockDecl;
-
-            mRunTime.runtime.SaveRegisters(registers);
-            ProtoCore.DSASM.StackFrame newStackFrame = new StackFrame(thisPtr, classScopeCaller, 1, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
-
-            List<List<ProtoCore.ReplicationGuide>> replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
-            if (mRunTime.runtime.Core.Options.IDEDebugMode && mRunTime.runtime.Core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+            bool isCallingMemberFunciton = procNode.classScope != Constants.kInvalidIndex 
+                                           && !procNode.isConstructor 
+                                           && !procNode.isStatic;
+            if (isCallingMemberFunciton)
             {
-                mRunTime.runtime.Core.DebugProps.SetUpCallrForDebug(mRunTime.runtime.Core, mRunTime.runtime, mProcNode, returnAddr - 1,
-                    false, mCallSite, args, replicationGuides, newStackFrame);
+                Validity.Assert(args.Count >= 1);
+                thisPtr = args[0];
+                if (thisPtr.IsArray())
+                {
+                    ArrayUtils.GetFirstNonArrayStackValue(thisPtr, ref thisPtr, runtimeCore);
+                }
+                else
+                {
+                    args.RemoveAt(0);
+                }
             }
 
-
-            StackValue rx = mCallSite.JILDispatchViaNewInterpreter(new Runtime.Context(), args, replicationGuides, newStackFrame, mRunTime.runtime.Core);
-
-            if (mRunTime.runtime.Core.Options.IDEDebugMode && mRunTime.runtime.Core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+            if (!thisPtr.IsObject() && !thisPtr.IsArray())
             {
-                mRunTime.runtime.Core.DebugProps.RestoreCallrForNoBreak(mRunTime.runtime.Core, mProcNode);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
+                                                     WarningMessage.kDeferencingNonPointer);
+                return StackValue.Null;
+            }
+
+            var callerType = (StackFrameType)stackFrame.GetAt(StackFrame.AbsoluteIndex.kStackFrameType).opdata;
+            interpreter.runtime.TX = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
+
+            StackValue svBlockDecl = StackValue.BuildBlockIndex(blockDecl);
+            interpreter.runtime.SX = svBlockDecl;
+
+            var repGuides = new List<List<ProtoCore.ReplicationGuide>>();
+
+            List<StackValue> registers = new List<StackValue>();
+            interpreter.runtime.SaveRegisters(registers);
+            var newStackFrame = new StackFrame(thisPtr, 
+                                               classScopeCaller, 
+                                               1, 
+                                               returnAddr, 
+                                               blockDecl, 
+                                               blockCaller, 
+                                               callerType, 
+                                               StackFrameType.kTypeFunction, 
+                                               0,   // depth
+                                               framePointer, 
+                                               registers, 
+                                               null);
+
+            bool isInDebugMode = runtimeCore.Options.IDEDebugMode &&
+                                 runtimeCore.ExecMode != InterpreterMode.kExpressionInterpreter;
+            if (isInDebugMode)
+            {
+                runtimeCore.DebugProps.SetUpCallrForDebug(runtimeCore, 
+                                                          interpreter.runtime, 
+                                                          procNode, 
+                                                          returnAddr - 1, 
+                                                          false, 
+                                                          callsite, 
+                                                          args, 
+                                                          repGuides, 
+                                                          newStackFrame);
+            }
+
+            StackValue rx = callsite.JILDispatchViaNewInterpreter(
+                                        new Runtime.Context(), 
+                                        args, 
+                                        repGuides, 
+                                        newStackFrame, 
+                                        runtimeCore);
+
+            if (isInDebugMode)
+            {
+                runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode);
             }
 
             return rx;

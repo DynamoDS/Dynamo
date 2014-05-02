@@ -116,8 +116,7 @@ namespace Dynamo.ViewModels
                 }
 
 #if USE_DSENGINE
-                return NodeModel.PrintValue(nodeLogic.VariableToPreview,
-                                            0,
+                return NodeLogic.PrintValue(0,
                                             Configurations.PreviewMaxListLength,
                                             0,
                                             Configurations.PreviewMaxListDepth,
@@ -393,11 +392,11 @@ namespace Dynamo.ViewModels
                     break;
                 case "OldValue":
                     RaisePropertyChanged("OldValue");
-                    UpdatePreviewBubbleContent();
+                    UpdatePreviewBubbleContent(false);
                     RaisePropertyChanged("CanDisplayLabels");
                     break;
                 case "IsUpdated":
-                    UpdatePreviewBubbleContent();
+                    UpdatePreviewBubbleContent(false);
                     break;
                 case "X":
                     RaisePropertyChanged("Left");
@@ -492,7 +491,7 @@ namespace Dynamo.ViewModels
             var vm = dynSettings.Controller.DynamoViewModel;
             if (vm.CurrentSpaceViewModel.Nodes.Contains(this))
             {
-                UpdatePreviewBubbleContent();
+                UpdatePreviewBubbleContent(true);
 
                 var command = PreviewBubble.ChangeInfoBubbleStateCommand;
                 command.Execute(
@@ -563,7 +562,7 @@ namespace Dynamo.ViewModels
             ErrorBubble.UpdatePositionCommand.Execute(data);
         }
 
-        private void UpdatePreviewBubbleContent()
+        private void UpdatePreviewBubbleContent(bool forceDataQuery)
         {
             if (PreviewBubble == null || NodeModel is Watch || dynSettings.Controller == null)
                 return;
@@ -571,6 +570,12 @@ namespace Dynamo.ViewModels
             var vm = dynSettings.Controller.DynamoViewModel;
             if (!vm.CurrentSpaceViewModel.Previews.Contains(PreviewBubble))
                 return;
+
+            if (PreviewBubble.InfoBubbleState == InfoBubbleViewModel.State.Minimized)
+            {
+                if (forceDataQuery == false)
+                    return;
+            }
 
             //create data packet to send to preview bubble
             const InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
@@ -831,7 +836,7 @@ namespace Dynamo.ViewModels
             if (PreviewBubble == null)
                 return;
 
-            UpdatePreviewBubbleContent();
+            UpdatePreviewBubbleContent(true);
             PreviewBubble.ZIndex = 5;
             PreviewBubble.OnRequestAction(
                 new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Show));

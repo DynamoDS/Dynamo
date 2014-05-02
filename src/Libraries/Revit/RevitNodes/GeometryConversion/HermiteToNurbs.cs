@@ -16,7 +16,7 @@ namespace Revit.GeometryConversion
         /// <returns></returns>
         public static NurbsCurve ConvertExact(Autodesk.Revit.DB.HermiteSpline crv)
         {
-            var knots = GetNurbsKnots(crv);
+            var knots = Clamp(crv.Parameters.Cast<double>());
             var points = GetNurbsPoints(crv, knots);
 
             // the resultant nurbs curve is not rational - i.e. it's weights are 1
@@ -26,29 +26,20 @@ namespace Revit.GeometryConversion
         }
 
         /// <summary>
-        /// Build a NURBS knot structure from a HermiteSpline
+        /// Clamp a collection of curve parameters by introducing knot multiplicities at each end such
+        /// that each end of the knot vector has degree + 1 copies of the knot
         /// </summary>
         /// <param name="curve"></param>
-        /// <returns></returns>
-        private static double[] GetNurbsKnots(Autodesk.Revit.DB.HermiteSpline curve)
+        /// <returns></returns>,
+        internal static double[] Clamp(IEnumerable<double> curveParameters, int degree = 3)
         {
-            var parms = curve.Parameters.Cast<double>().ToList();
-            var knots = new List<double>();
+            var parms = curveParameters.ToList();
+            return
+                Enumerable.Repeat(parms.First(), degree)
+                    .Concat(parms)
+                    .Concat(Enumerable.Repeat(parms.Last(), degree))
+                    .ToArray();
 
-            for (int ii = 0; ii < parms.Count; ii++)
-            {
-                if (ii == 0 || ii == parms.Count - 1)
-                {
-                    for (int jj = 4; jj-- > 0; )
-                        knots.Add(parms[ii]);
-                }
-                else
-                {
-                    knots.Add(parms[ii]);
-                }
-            }
-
-            return knots.ToArray();
         }
 
         /// <summary>
@@ -57,7 +48,7 @@ namespace Revit.GeometryConversion
         /// <param name="curve"></param>
         /// <param name="nurbsKnots"></param>
         /// <returns></returns>
-        private static Autodesk.DesignScript.Geometry.Point[] GetNurbsPoints(Autodesk.Revit.DB.HermiteSpline curve, double[] nurbsKnots)
+        internal static Autodesk.DesignScript.Geometry.Point[] GetNurbsPoints(Autodesk.Revit.DB.HermiteSpline curve, double[] nurbsKnots)
         {
 
             int numKnots = nurbsKnots.Length;

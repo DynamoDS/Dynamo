@@ -1,12 +1,15 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Dynamo.Interfaces;
-using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynamoUnits;
+using Dynamo.UpdateManager;
 using NUnit.Framework;
+using ProtoCore.Mirror;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using ModelCurve = Autodesk.Revit.DB.ModelCurve;
@@ -75,9 +78,16 @@ namespace Dynamo.Tests
                 SIUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
                 SIUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
+                var logger = new DynamoLogger();
+                dynSettings.DynamoLogger = logger;
+                var updateManager = new UpdateManager.UpdateManager(logger);
+
                 //create a new instance of the ViewModel
-                Controller = new DynamoController(typeof (DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), new PreferenceSettings());
+                Controller = new DynamoController(Context.NONE, updateManager, 
+                    new DefaultWatchHandler(), new PreferenceSettings());
                 DynamoController.IsTestMode = true;
+                Controller.DynamoViewModel = new DynamoViewModel(Controller, null);
+                Controller.VisualizationManager = new VisualizationManager();
             }
             catch (Exception ex)
             {
@@ -159,7 +169,91 @@ namespace Dynamo.Tests
 
             model.Open(testPath);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
+
+        #region Revit unit test helper methods
+
+        public void OpenModel(string relativeFilePath)
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_samplesPath, relativeFilePath);
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+        }
+
+        public void RunCurrentModel()
+        {
+            Assert.DoesNotThrow(() => Controller.RunExpression(null));
+        }
+
+        public void AssertNoDummyNodes()
+        {
+            var nodes = Controller.DynamoModel.Nodes;
+
+            double dummyNodesCount = nodes.OfType<DSCoreNodesUI.DummyNode>().Count();
+            if (dummyNodesCount >= 1)
+            {
+                Assert.Fail("Number of dummy nodes found in Sample: " + dummyNodesCount);
+            }
+        }
+
+        public void AssertPreviewCount(string guid, int count)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+
+            var data = mirror.GetData();
+            Assert.IsTrue(data.IsCollection);
+            Assert.AreEqual(count, data.GetElements().Count);
+        }
+
+        public object GetPreviewValue(string guid)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+
+            return mirror.GetData().Data;
+        }
+
+        public object GetPreviewValueAtIndex(string guid, int index)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+
+            return mirror.GetData().GetElements()[index].Data;
+        }
+
+        public void AssertClassName(string guid, string className)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+            var classInfo = mirror.GetData().Class;
+            Assert.AreEqual(classInfo.ClassName, className);
+        }
+
+        private string GetVarName(string guid)
+        {
+            var model = Controller.DynamoModel;
+            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
+            Assert.IsNotNull(node);
+            return node.VariableToPreview;
+        }
+
+        private RuntimeMirror GetRuntimeMirror(string varName)
+        {
+            RuntimeMirror mirror = null;
+            Assert.DoesNotThrow(() => mirror = Controller.EngineController.GetMirror(varName));
+            return mirror;
+        }
+
+        #endregion
+
     }
 }

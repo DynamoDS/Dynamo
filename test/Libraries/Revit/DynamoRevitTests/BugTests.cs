@@ -1,6 +1,17 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using Dynamo.Nodes;
+using Dynamo.Selection;
+using System.Linq;
 using Dynamo.Utilities;
 using NUnit.Framework;
+using System.Collections.Generic;
+using Dynamo.DSEngine;
+using ProtoCore.Mirror;
+using System.Collections;
+using Dynamo.Models;
+using DSCoreNodesUI;
+using DSCore.File;
 
 namespace Dynamo.Tests
 {
@@ -19,7 +30,10 @@ namespace Dynamo.Tests
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+            AssertNoDummyNodes();
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -35,11 +49,13 @@ namespace Dynamo.Tests
 
             model.Open(testPath);
 
+            AssertNoDummyNodes();
+
             // check all the nodes and connectors are loaded
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -54,11 +70,13 @@ namespace Dynamo.Tests
 
             model.Open(testPath);
 
+            AssertNoDummyNodes();
+
             // check all the nodes and connectors are loaded
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(20, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -73,11 +91,41 @@ namespace Dynamo.Tests
 
             model.Open(testPath);
 
+            AssertNoDummyNodes();
+
             // check all the nodes and connectors are loaded
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+        }
+
+        [Test]
+        [TestModel(@".\Bugs\MAGN_2576_DataImport.rvt")]
+        public void MAGN_2576()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2576
+            var model = dynSettings.Controller.DynamoModel;
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            string samplePath = Path.Combine(_testPath, @".\\Bugs\Defect_MAGN_2576.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
+
+            dynSettings.Controller.RunExpression();
+
+            // there should not be any crash on running this graph.
+            // below node should have an error because there is no selection for Floor Type.
+            NodeModel nodeModel = workspace.NodeFromWorkspace("cc38d11d-cda2-4294-81dc-119776af7338");
+            Assert.AreEqual(ElementState.Warning, nodeModel.State);
+
         }
     }
 }

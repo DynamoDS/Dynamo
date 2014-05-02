@@ -1,50 +1,97 @@
-﻿using System.Globalization;
+﻿using System.Linq;
 using System.Xml;
 using Dynamo.Models;
-using Dynamo.Units;
 using Migrations;
 
 namespace Dynamo.Nodes
 {
     public class LengthInput : MigrationNode
     {
-        [NodeMigration(from:"0.6.2")]
-        public void MigrateLengthFromFeetToMeters(XmlNode node)
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            //length values were previously stored as decimal feet
-            //convert them internally to SI meters.
-            foreach (XmlNode child in node.ChildNodes)
-            {
-                if (child.Name == "System.Double")
-                {
-                    if (child.Attributes != null && child.Attributes.Count > 0)
-                    {
-                        var valueAttrib = child.Attributes["value"];
-                        valueAttrib.Value = (double.Parse(valueAttrib.Value)/SIUnit.ToFoot).ToString(CultureInfo.InvariantCulture);
-                    }
-                }
-            }
-        }
+            var migrationData = new NodeMigrationData(data.Document);
+
+            var oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CloneAndChangeName(
+                oldNode, "UnitsUI.LengthFromString", "Length From String");
+            migrationData.AppendNode(newNode);
+
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode);
+
+            return migrationData;
+        } 
     }
 
     public class AreaInput : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+
+            var oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CloneAndChangeName(
+                oldNode, "UnitsUI.AreaFromString","Area From String");
+            migrationData.AppendNode(newNode);
+
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode);
+
+            return migrationData;
+        } 
     }
 
     public class VolumeInput : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+
+            var oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CloneAndChangeName(
+                oldNode, "UnitsUI.VolumeFromString", "Volume From String");
+            migrationData.AppendNode(newNode);
+
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode);
+
+            return migrationData;
+        }
     }
 
     public class LengthFromNumber : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DynamoUnits.dll", "Length",
+                "Length.FromDouble@double");
+        }
     }
 
     public class AreaFromNumber : MigrationNode
     {
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DynamoUnits.dll", "Area",
+                "Area.FromDouble@double");
+        }
     }
 
     public class VolumeFromNumber : MigrationNode
     {
+
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DynamoUnits.dll", "Volume",
+                "Volume.FromDouble@double");
+        }
     }
 }
 

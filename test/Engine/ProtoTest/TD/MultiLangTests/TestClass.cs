@@ -2453,11 +2453,9 @@ class A
 	}
 }
 a = A.foo(); 
-b = A.x;";
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue(mirror.GetValue("a", 0).DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("b", 0).DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-
         }
 
         [Test]
@@ -2475,10 +2473,9 @@ class Sample
 	}
 }
 test1 = Sample.ret_a(); 
-test2 = Sample.a;";
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue(mirror.GetValue("test1", 0).DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("test2", 0).DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
         }
 
         [Test]
@@ -2513,6 +2510,9 @@ class Sample
         [Category("SmokeTest")]
         public void T52_Defect_1461479_4()
         {
+            // Note now is valid to return non-static member as function 
+            // pointer
+
             // Assert.Fail("1463741 Sprint 20 : Rev 2150 : Error: Non-Static members are accessible via static calls");
             string code = @"
 class Sample
@@ -2534,22 +2534,13 @@ test1;test2;test5;
 {
 	S = Sample.Sample();
 	test1 = Sample.ret_a();
-	test2 = Sample.a;
 	test5 = S.ret_a();
 }
 S2 = Sample.Sample();
 test3 = Sample.ret_a();
-test4 = Sample.a;
 test6 = S2.ret_a();";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object v1 = null;
-
-            thisTest.Verify("test1", v1);
-            thisTest.Verify("test2", v1);
-            thisTest.Verify("test3", v1);
-            thisTest.Verify("test4", v1);
-            thisTest.Verify("test5", v1);
-            thisTest.Verify("test6", v1);
         }
 
         [Test]
@@ -2570,13 +2561,13 @@ test3 = Sample.ret_a();
 test4 = Sample.a;
 def fun1 ()
 {
-    return = { Sample.ret_a(), Sample.a };
+    return = { Sample.ret_a()};
 }
 def fun2 ()
 {
     return = [Imperative]
 	{
-	    return = { Sample.ret_a(), Sample.a };
+	    return = { Sample.ret_a()};
 	}
 }
 test5 = fun1();
@@ -2585,17 +2576,14 @@ test1;test2;test7;test8;
 [Imperative]
 {
 	test1 = Sample.ret_a();
-	test2 = Sample.a;
 	test7 = fun1();
     test8 = fun2();
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object v1 = null;
-            Object[] v2 = new Object[] { null, null };
+            Object[] v2 = new Object[] { null };
             thisTest.Verify("test1", v1, 0);
-            thisTest.Verify("test2", v1, 0);
             thisTest.Verify("test3", v1, 0);
-            thisTest.Verify("test4", v1, 0);
             thisTest.Verify("test5", v2, 0);
             thisTest.Verify("test6", v2, 0);
             thisTest.Verify("test7", v2, 0);

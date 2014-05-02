@@ -26,8 +26,8 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            migrationData.AppendNode(MigrationManager.CloneAndChangeType(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSAnalysisResultSelection"));
+            migrationData.AppendNode(MigrationManager.CloneAndChangeName(
+                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSAnalysisResultSelection", "Select Analysis Results"));
 
             return migrationData;
         }

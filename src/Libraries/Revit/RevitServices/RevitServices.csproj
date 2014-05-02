@@ -70,6 +70,7 @@ limitations under the License.
     <Compile Include="Elements\ElementMapping.cs" />
     <Compile Include="Elements\ElementUtils.cs" />
     <Compile Include="Elements\ModelUpdater.cs" />
+    <Compile Include="Elements\Updaters.cs" />
     <Compile Include="Persistence\DocumentManager.cs" />
     <Compile Include="Persistence\ElementBinder.cs" />
     <Compile Include="Persistence\ElementIDLifecycleManager.cs" />

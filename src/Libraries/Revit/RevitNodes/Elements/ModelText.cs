@@ -8,7 +8,7 @@ using Autodesk.Revit.DB;
 using DSNodeServices;
 using Revit.GeometryConversion;
 using Revit.GeometryObjects;
-using Revit.References;
+using Revit.GeometryReferences;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Plane = Autodesk.DesignScript.Geometry.Plane;

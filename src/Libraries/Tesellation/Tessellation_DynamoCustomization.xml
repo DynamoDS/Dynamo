@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tessellation</name>
+    </assembly>
+    <namespaces>
+        <namespace name="Tessellation">
+            <category>Geometry.Tessellation</category>
+        </namespace>
+    </namespaces>
+</doc>

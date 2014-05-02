@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="NCalc">
       <HintPath>..\..\..\extern\NCalc\NCalc.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -73,6 +74,7 @@
     <Compile Include="Logic\If.cs" />
     <Compile Include="NumberRange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">

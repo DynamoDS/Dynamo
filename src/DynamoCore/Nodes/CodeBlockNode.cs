@@ -66,7 +66,7 @@ namespace Dynamo.Nodes
         /// <param name="errorMessage"> Error message to be displayed </param>
         private void ProcessError()
         {
-            DynamoLogger.Instance.Log("Error in Code Block Node");
+            dynSettings.DynamoLogger.Log("Error in Code Block Node");
 
             //Remove all ports
             int size = InPortData.Count;
@@ -599,7 +599,7 @@ namespace Dynamo.Nodes
 
                 double portCoordsY = Formatting.InitialMargin;
                 portCoordsY += visualIndex * Formatting.VerticalMargin;
-                OutPortData.Add(new PortData(string.Empty, tooltip, typeof(object))
+                OutPortData.Add(new PortData(string.Empty, tooltip)
                 {
                     VerticalMargin = portCoordsY - prevPortBottom
                 });

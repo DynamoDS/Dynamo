@@ -44,6 +44,7 @@
     <Reference Include="NCalc, Version=1.3.8.0, Culture=neutral, PublicKeyToken=973cde3f1cafed03, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\extern\NCalc\NCalc.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -75,8 +76,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sorting.cs" />
     <Compile Include="String.cs" />
-    <Compile Include="WebRequest.cs" />
     <Compile Include="Thread.cs" />
+    <Compile Include="Types.cs" />
+    <Compile Include="Web.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoUnits\Units.csproj">
@@ -93,7 +95,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DSCoreNodes_DynamoCustomization.xml" />
+    <Content Include="DSCoreNodes_DynamoCustomization.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

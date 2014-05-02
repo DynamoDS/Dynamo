@@ -111,8 +111,8 @@ namespace Dynamo.Tests
 
             Controller.RunExpression(null);
 
-            Assert.IsTrue(watch.OldValue.IsCollection);
-            var list = watch.OldValue.GetElements();
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list = watch.CachedValue.GetElements();
 
             Assert.AreEqual(3, list.Count());
 
@@ -136,7 +136,7 @@ namespace Dynamo.Tests
 
             Controller.RunExpression(null);
 
-            Assert.IsTrue(watch.OldValue.Class.ClassName == "DSOffice.WorkSheet");
+            Assert.IsTrue(watch.CachedValue.Class.ClassName == "DSOffice.WorkSheet");
 
         }
 
@@ -161,8 +161,8 @@ namespace Dynamo.Tests
             //Assert.Throws<AssertionException>(() => Controller.RunExpression(null));
             Controller.RunExpression(null);
 
-            Assert.IsTrue(readFile.OldValue.Class.ClassName == "DSOffice.WorkBook");
-            Assert.IsNull(getWorksheet.OldValue.Data);
+            Assert.IsTrue(readFile.CachedValue.Class.ClassName == "DSOffice.WorkBook");
+            Assert.IsNull(getWorksheet.CachedValue.Data);
         }
 
         [Test]
@@ -183,8 +183,8 @@ namespace Dynamo.Tests
 
             Controller.RunExpression(null);
 
-            Assert.IsTrue(watch.OldValue.IsCollection);
-            var list = watch.OldValue.GetElements();
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list = watch.CachedValue.GetElements();
 
             Assert.AreEqual(16, list.Count());
 
@@ -219,8 +219,8 @@ namespace Dynamo.Tests
 
             Controller.RunExpression(null);
 
-            Assert.IsTrue(watch.OldValue.IsCollection);
-            var list = watch.OldValue.GetElements();
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list = watch.CachedValue.GetElements();
 
             Assert.AreEqual(18, list.Count());
 
@@ -256,8 +256,8 @@ namespace Dynamo.Tests
 
             Controller.RunExpression(null);
 
-            Assert.IsTrue(watch.OldValue.IsCollection);
-            var list = watch.OldValue.GetElements();
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list = watch.CachedValue.GetElements();
 
             Assert.AreEqual(4, list.Count());
 
@@ -297,8 +297,8 @@ namespace Dynamo.Tests
 
             Controller.RunExpression(null);
 
-            Assert.IsTrue(watch.OldValue.IsCollection);
-            var list = watch.OldValue.GetElements();
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list = watch.CachedValue.GetElements();
 
             Assert.AreEqual(5, list.Count());
 
@@ -354,11 +354,11 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(File.Exists(filePath));
 
-            Assert.IsTrue(writeNode.OldValue.IsCollection);
-            var list1 = writeNode.OldValue.GetElements();
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list1 = writeNode.CachedValue.GetElements();
 
-            Assert.IsTrue(watch.OldValue.IsCollection);
-            var list2 = watch.OldValue.GetElements();
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list2 = watch.CachedValue.GetElements();
 
             Assert.AreEqual(5, list1.Count());
             Assert.AreEqual(5, list2.Count());
@@ -419,8 +419,8 @@ namespace Dynamo.Tests
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             Controller.RunExpression(null);
 
-            Assert.IsTrue(watch.OldValue.IsCollection);
-            var list = watch.OldValue.GetElements();
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list = watch.CachedValue.GetElements();
 
             Assert.AreEqual(5, list.Count());
 
@@ -458,8 +458,8 @@ namespace Dynamo.Tests
             var getWorksheet = Controller.DynamoModel.CurrentWorkspace.Nodes.Where(node => node is DSFunction &&
                 node.NickName == "Excel.GetExcelWorksheetByName").FirstOrDefault();
             Controller.RunExpression(null);
-            Assert.AreEqual(watch.OldValue.Class.ClassName, "DSOffice.WorkSheet");
-            Assert.IsNull(getWorksheet.OldValue.Data);
+            Assert.AreEqual(watch.CachedValue.Class.ClassName, "DSOffice.WorkSheet");
+            Assert.IsNull(getWorksheet.CachedValue.Data);
         }
 
         [Test]
@@ -470,8 +470,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             Controller.RunExpression(null);
-            Assert.IsTrue(watch.OldValue.IsCollection);
-            var list = watch.OldValue.GetElements();
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list = watch.CachedValue.GetElements();
 
             Assert.AreEqual(1, list.Count());
 
@@ -490,8 +490,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             Controller.RunExpression(null);
-            Assert.IsTrue(watch.OldValue.IsCollection);
-            var list = watch.OldValue.GetElements();
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list = watch.CachedValue.GetElements();
 
             Assert.AreEqual(101, list.Count());
 
@@ -519,8 +519,8 @@ namespace Dynamo.Tests
 
             Controller.RunExpression(null);
 
-            Assert.IsTrue(watch.OldValue.IsCollection);
-            var list = watch.OldValue.GetElements();
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list = watch.CachedValue.GetElements();
 
             // 5 X 101 - each row is 0..100
             Assert.AreEqual(5, list.Count());
@@ -547,7 +547,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             Controller.RunExpression(null);
-            Assert.AreEqual(watch.OldValue.Class.ClassName, "DSOffice.WorkBook");
+            Assert.AreEqual(watch.CachedValue.Class.ClassName, "DSOffice.WorkBook");
         }
 
         [Test]
@@ -567,8 +567,8 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(File.Exists(filePath));
 
-            Assert.IsTrue(writeNode.OldValue.IsCollection);
-            var list = writeNode.OldValue.GetElements();
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
 
             Assert.AreEqual(1, list.Count());
 
@@ -584,8 +584,8 @@ namespace Dynamo.Tests
 
             Controller.RunExpression(null);
 
-            Assert.IsTrue(writeNode.OldValue.IsCollection);
-            list = writeNode.OldValue.GetElements();
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            list = writeNode.CachedValue.GetElements();
 
             Assert.AreEqual(1, list.Count());
 

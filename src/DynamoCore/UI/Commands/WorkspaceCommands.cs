@@ -22,6 +22,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _findNodesFromSelectionCommand;
         private DelegateCommand _selectAllCommand;
         private DelegateCommand _pauseVisualizationManagerUpdateCommand;
+        private DelegateCommand _unpauseVisualizationManagerUpdateCommand;
 
         public DelegateCommand SelectAllCommand
         {
@@ -176,7 +177,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public DelegateCommand PauseVisualizationManagerUpdatesCommand
+        public DelegateCommand PauseVisualizationManagerCommand
         {
             get
             {
@@ -184,6 +185,17 @@ namespace Dynamo.ViewModels
                     _pauseVisualizationManagerUpdateCommand = new DelegateCommand(PauseVisualizationManagerUpdates, CanPauseVisualizationManagerUpdates);
 
                 return _pauseVisualizationManagerUpdateCommand;
+            }
+        }
+
+        public DelegateCommand UnPauseVisualizationManagerCommand
+        {
+            get
+            {
+                if (_unpauseVisualizationManagerUpdateCommand == null)
+                    _unpauseVisualizationManagerUpdateCommand = new DelegateCommand(UnPauseVisualizationManagerUpdates, CanUnPauseVisualizationManagerUpdates);
+
+                return _unpauseVisualizationManagerUpdateCommand;
             }
         }
     }

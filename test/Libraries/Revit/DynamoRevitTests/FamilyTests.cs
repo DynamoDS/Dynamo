@@ -3,7 +3,6 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -76,7 +75,7 @@ namespace Dynamo.Tests
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]

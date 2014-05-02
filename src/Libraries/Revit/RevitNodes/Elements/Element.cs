@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using DSCore;
 using DSNodeServices;
+using DynamoUnits;
 using Revit.GeometryConversion;
+using Revit.GeometryReferences;
 using RevitServices.Persistence;
 using RevitServices.Threading;
 using RevitServices.Transactions;
 using Color = DSCore.Color;
 using Revit.GeometryObjects;
+using Area = DynamoUnits.Area;
 using ArgumentException = Autodesk.Revit.Exceptions.ArgumentException;
+using Curve = Autodesk.DesignScript.Geometry.Curve;
 
 namespace Revit.Elements
 {
@@ -239,13 +244,13 @@ namespace Revit.Elements
                     switch (param.Definition.ParameterType)
                     {
                         case ParameterType.Length:
-                            result = Dynamo.Units.Length.FromFeet(param.AsDouble());
+                            result = Length.FromFeet(param.AsDouble());
                             break;
                         case ParameterType.Area:
-                            result = Dynamo.Units.Area.FromSquareFeet(param.AsDouble());
+                            result = Area.FromSquareFeet(param.AsDouble());
                             break;
                         case ParameterType.Volume:
-                            result = Dynamo.Units.Volume.FromCubicFeet(param.AsDouble());
+                            result = Volume.FromCubicFeet(param.AsDouble());
                             break;
                         default:
                             result = param.AsDouble();
@@ -285,7 +290,7 @@ namespace Revit.Elements
 
         private void SetParameterValue(Autodesk.Revit.DB.Parameter param, double value)
         {
-            if(param.StorageType != StorageType.Double)
+            if (param.StorageType != StorageType.Integer && param.StorageType != StorageType.Double)
                 throw new Exception("The parameter's storage type is not a number.");
 
             param.Set(value);
@@ -293,8 +298,8 @@ namespace Revit.Elements
 
         private void SetParameterValue(Autodesk.Revit.DB.Parameter param, int value)
         {
-            if (param.StorageType != StorageType.Integer)
-                throw new Exception("The parameter's storage type is not an integer.");
+            if (param.StorageType != StorageType.Integer && param.StorageType != StorageType.Double)
+                throw new Exception("The parameter's storage type is not a number.");
 
             param.Set(value);
         }
@@ -321,10 +326,14 @@ namespace Revit.Elements
         /// <summary>
         /// Get all of the Geometry associated with this object
         /// </summary>
-        public object[] Geometry()
+        public Geometry[] Geometry()
         {
+            return InternalGeometry().Select(x => x.Convert()).ToArray();
+        }
 
-            Autodesk.Revit.DB.Element thisElement = InternalElement;
+        internal IEnumerable<Autodesk.Revit.DB.GeometryObject> InternalGeometry()
+        {
+            var thisElement = InternalElement;
 
             var instanceGeometryObjects = new List<Autodesk.Revit.DB.GeometryObject>();
 
@@ -336,10 +345,10 @@ namespace Revit.Elements
 
             if ((thisElement is GenericForm) && (geomElement.Count() < 1))
             {
-                GenericForm gF = (GenericForm)thisElement;
+                var gF = (GenericForm)thisElement;
                 if (!gF.Combinations.IsEmpty)
                 {
-                    Autodesk.Revit.DB.Options geoOptionsTwo = new Autodesk.Revit.DB.Options();
+                    var geoOptionsTwo = new Autodesk.Revit.DB.Options();
                     geoOptionsTwo.IncludeNonVisibleObjects = true;
                     geoOptionsTwo.ComputeReferences = true;
                     geomObj = thisElement.get_Geometry(geoOptionsTwo);
@@ -349,7 +358,7 @@ namespace Revit.Elements
 
             foreach (Autodesk.Revit.DB.GeometryObject geob in geomElement)
             {
-                GeometryInstance ginsta = geob as GeometryInstance;
+                var ginsta = geob as GeometryInstance;
                 if (ginsta != null)
                 {
                     Autodesk.Revit.DB.GeometryElement instanceGeom = ginsta.GetInstanceGeometry();
@@ -365,12 +374,64 @@ namespace Revit.Elements
                 }
             }
 
-            return instanceGeometryObjects.Select(x =>
+            return instanceGeometryObjects;
+        }
+
+        public Autodesk.DesignScript.Geometry.Solid[] Solids
+        {
+            get { return Geometry().OfType<Autodesk.DesignScript.Geometry.Solid>().ToArray(); }
+        }
+
+        public Curve[] Curves
+        {
+            get
             {
-                object w = x.Convert();
-                if (w != null) return w;
-                return x.Wrap();
-            }).ToArray();
+                var curves = GetCurves(new Options()
+                {
+                    ComputeReferences = true
+                });
+
+                return curves.Select(x => x.ToProtoType()).ToArray();
+            }
+        }
+
+        public Surface[] Faces
+        {
+            get
+            {
+                var curves = GetFaces(new Options()
+                {
+                    ComputeReferences = true
+                });
+
+                return curves.Select(x => x.ToProtoType()).ToArray();
+            }
+        }
+
+        public ElementCurveReference[] ElementCurveReferences
+        {
+            get
+            {
+                var curves = GetCurves(new Options()
+                {
+                    ComputeReferences = true
+                });
+
+                return curves.Select(ElementCurveReference.FromExisting).ToArray();
+            }
+        }
+
+        public ElementFaceReference[] ElementFaceReferences
+        {
+            get
+            {
+                var faces = GetFaces(new Options()
+                {
+                    ComputeReferences = true
+                });
+
+                return faces.Select(ElementFaceReference.FromExisting).ToArray();
+            }
         }
 
         #region Internal Geometry Helpers
@@ -386,7 +447,6 @@ namespace Revit.Elements
                 return !ElementIDLifecycleManager<int>.GetInstance().IsRevitDeleted(this.InternalElementId.IntegerValue);
             }
         }
-
 
         protected IEnumerable<Autodesk.Revit.DB.Curve> GetCurves(Autodesk.Revit.DB.Options options)
         {

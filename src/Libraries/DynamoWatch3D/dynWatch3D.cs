@@ -12,8 +12,6 @@ using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Microsoft.FSharp.Collections;
-using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
@@ -51,8 +49,8 @@ namespace Dynamo.Nodes
 
         public Watch3D()
         {
-            InPortData.Add(new PortData("", "Incoming geometry objects.", typeof(object)));
-            OutPortData.Add(new PortData("", "Watch contents, passed through", typeof(object)));
+            InPortData.Add(new PortData("", "Incoming geometry objects."));
+            OutPortData.Add(new PortData("", "Watch contents, passed through"));
 
             RegisterAllPorts();
 
@@ -164,8 +162,8 @@ namespace Dynamo.Nodes
             }
             catch(Exception ex)
             {
-                DynamoLogger.Instance.Log(ex);
-                DynamoLogger.Instance.Log("View attributes could not be read from the file.");
+                dynSettings.DynamoLogger.Log(ex);
+                dynSettings.DynamoLogger.Log("View attributes could not be read from the file.");
             }
             
         }

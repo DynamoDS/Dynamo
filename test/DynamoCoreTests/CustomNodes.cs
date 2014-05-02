@@ -34,7 +34,7 @@ namespace Dynamo.Tests
 
             Controller.RunExpression();
 
-            var valuePreCollapse = watchNode.OldValue;
+            var valuePreCollapse = watchNode.CachedValue;
 
             var nodesToCollapse = new[]
             {
@@ -67,7 +67,7 @@ namespace Dynamo.Tests
 
             Controller.RunExpression();
 
-            var valuePostCollapse = watchNode.OldValue;
+            var valuePostCollapse = watchNode.CachedValue;
 
             // Ensure the values are equal and both 65.
             var svPreCollapse = ((long)valuePreCollapse.Data);
@@ -365,19 +365,19 @@ namespace Dynamo.Tests
             var watch =
                 model.CurrentWorkspace.NodeFromWorkspace<Watch>(
                     "157557d2-2452-413a-9944-1df3df793cee");
-            var doubleWatchVal = (double)watch.OldValue.Data;
+            var doubleWatchVal = (double)watch.CachedValue.Data;
             Assert.AreEqual(15.0, doubleWatchVal, 0.001);
 
             var watch2 =
                 model.CurrentWorkspace.NodeFromWorkspace<Watch>(
                     "068dd555-a5d5-4f11-af05-e4fa0cc015c9");
-            var doubleWatchVal1 = (double)watch2.OldValue.Data;
+            var doubleWatchVal1 = (double)watch2.CachedValue.Data;
             Assert.AreEqual(15.0, doubleWatchVal1, 0.001);
 
             var watch3 =
                 model.CurrentWorkspace.NodeFromWorkspace<Watch>(
                     "1aca382d-ca81-4955-a6c1-0f549df19fd7");
-            var doubleWatchVal2 = (double)watch3.OldValue.Data;
+            var doubleWatchVal2 = (double)watch3.CachedValue.Data;
             Assert.AreEqual(15.0, doubleWatchVal2, 0.001);
         }
 
@@ -410,8 +410,8 @@ namespace Dynamo.Tests
             Assert.IsNotNull(watchNode);
 
             // odd numbers between 0 and 5
-            Assert.IsTrue(watchNode.OldValue.IsCollection);
-            var list = watchNode.OldValue.GetElements();
+            Assert.IsTrue(watchNode.CachedValue.IsCollection);
+            var list = watchNode.CachedValue.GetElements();
 
             Assert.AreEqual(new[] { 1, 3, 5 }, list.Select(x => x.Data).ToList());
         }
@@ -466,7 +466,7 @@ namespace Dynamo.Tests
 
             dynSettings.Controller.RunExpression();
 
-            var splitListVal = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>().OldValue;
+            var splitListVal = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>().CachedValue;
 
             Assert.IsTrue(splitListVal.IsCollection);
 
@@ -496,15 +496,15 @@ namespace Dynamo.Tests
 
             var firstWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("d824e8dd-1009-449f-b5d6-1cd83bd180d6");
 
-            Assert.IsTrue(firstWatch.OldValue.IsCollection);
-            Assert.IsAssignableFrom<double>(firstWatch.OldValue.GetElements()[0].Data);
-            Assert.AreEqual(0, firstWatch.OldValue.GetElements()[0].Data);
+            Assert.IsTrue(firstWatch.CachedValue.IsCollection);
+            Assert.IsAssignableFrom<double>(firstWatch.CachedValue.GetElements()[0].Data);
+            Assert.AreEqual(0, firstWatch.CachedValue.GetElements()[0].Data);
 
             var restWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("af7ada9a-4316-475b-8582-742acc40fc1b");
 
-            Assert.IsTrue(restWatch.OldValue.IsCollection);
-            Assert.IsTrue(restWatch.OldValue.GetElements()[0].IsCollection);
-            Assert.IsFalse(restWatch.OldValue.GetElements()[0].GetElements().Any());
+            Assert.IsTrue(restWatch.CachedValue.IsCollection);
+            Assert.IsTrue(restWatch.CachedValue.GetElements()[0].IsCollection);
+            Assert.IsFalse(restWatch.CachedValue.GetElements()[0].GetElements().Any());
         }
 
         //[Test]

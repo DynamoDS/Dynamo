@@ -11,41 +11,42 @@ namespace Dynamo
     public enum LogLevel{Console, File, Warning}
     public enum WarningLevel{Mild, Moderate, Error}
 
-    public class DynamoLogger:NotificationObject, ILogger
+    public class DynamoLogger:NotificationObject, ILogger, IDisposable
     {
         const string DYNAMO_LOG_DIRECTORY = @"Autodesk\Dynamo\Logs\";
 
-        private static DynamoLogger instance;
-        private string logPath;
-        private string warning;
-        private WarningLevel warningLevel;
+        //private static DynamoLogger instance;
+        private string _logPath;
+        private string _warning;
+        private WarningLevel _warningLevel;
+        private bool _isDisposed;
 
         public TextWriter FileWriter { get; set; }
         public StringBuilder ConsoleWriter { get; set; }
 
         public WarningLevel WarningLevel
         {
-            get { return warningLevel; }
+            get { return _warningLevel; }
             set
             {
-                warningLevel = value;
+                _warningLevel = value;
                 RaisePropertyChanged("WarningLevel");
             }
         }
 
         public string Warning
         {
-            get { return warning; }
+            get { return _warning; }
             set
             {
-                warning = value;
+                _warning = value;
                 RaisePropertyChanged("Warning");
             }
         }
 
         public string LogPath 
         {
-            get { return logPath; }
+            get { return _logPath; }
         }
 
         public string LogText
@@ -59,32 +60,28 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// The singelton instance.
-        /// </summary>
-        public static DynamoLogger Instance
-        {
-            get
-            {
-                if(instance == null)
-                    instance = new DynamoLogger();
-                return instance;
-            }
-        }
-
-        /// <summary>
         /// The default constructor.
         /// </summary>
-        private DynamoLogger()
+        public DynamoLogger()
         {
+            _isDisposed = false;
+
             WarningLevel = WarningLevel.Mild;
             Warning = "";
+
+            StartLogging();
+        }
+
+        public void Log(string message, LogLevel level)
+        {
+            Log(message, level, true);
         }
 
         /// <summary>
         /// Log the message to the the correct path
         /// </summary>
         /// <param name="message"></param>
-        public void Log(string message, LogLevel level)
+        private void Log(string message, LogLevel level, bool reportModification)
         {
             InstrumentationLogger.LogInfo("LogMessage-" + level.ToString(), message);
 
@@ -125,7 +122,10 @@ namespace Dynamo
                     break;
             }
 
-            RaisePropertyChanged("LogText");   
+            if(reportModification)
+            {
+                RaisePropertyChanged("LogText"); 
+            } 
         }
 
         public void LogWarning(string message, WarningLevel level)
@@ -182,25 +182,6 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Log some node info
-        /// </summary>
-        /// <param name="node"></param>
-        /*public void Log(NodeModel node)
-        {
-            string exp = node.PrintExpression();
-            Log("> " + exp, LogLevel.Console);
-        }*/
-
-        /// <summary>
-        /// Log an expression
-        /// </summary>
-        /// <param name="expression"></param>
-        /*public void Log(FScheme.Expression expression)
-        {
-            Instance.Log(FScheme.printExpression("\t", expression), LogLevel.Console);
-        }*/
-
-        /// <summary>
         /// Log some data with an associated tag
         /// </summary>
         /// <param name="tag"></param>
@@ -219,7 +200,7 @@ namespace Dynamo
         /// <summary>
         /// Begin logging.
         /// </summary>
-        public void StartLogging()
+        private void StartLogging()
         {
             //create log files in a directory 
             //with the executing assembly
@@ -233,9 +214,9 @@ namespace Dynamo
                 Directory.CreateDirectory(log_dir);
             }
 
-            logPath = Path.Combine(log_dir, string.Format("dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
+            _logPath = Path.Combine(log_dir, string.Format("dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
 
-            FileWriter = new StreamWriter(logPath);
+            FileWriter = new StreamWriter(_logPath);
             FileWriter.WriteLine("Dynamo log started " + DateTime.Now.ToString());
 
             ConsoleWriter = new StringBuilder();
@@ -244,16 +225,21 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Finish logging.
+        /// Dispose of the logger and finish logging.
         /// </summary>
-        public void FinishLogging()
+        public void Dispose(bool isDisposed)
         {
+            if (isDisposed)
+            {
+                return;
+            }
+
             if (FileWriter != null)
             {
                 try
                 {
                     FileWriter.Flush();
-                    Log("Goodbye", LogLevel.Console);
+                    Log("Goodbye", LogLevel.Console, false);
                     FileWriter.Close();
                 }
                 catch
@@ -263,6 +249,13 @@ namespace Dynamo
 
             if (ConsoleWriter != null)
                 ConsoleWriter = null;
+        }
+
+        public void Dispose()
+        {
+            Dispose(_isDisposed);
+
+            _isDisposed = true;
         }
     }
 }

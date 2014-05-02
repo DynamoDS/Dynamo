@@ -8,12 +8,9 @@ namespace DSIronPython
     /// <summary>
     ///     Evaluates a Python script in the Dynamo context.
     /// </summary>
-    public class IronPythonEvaluator
+    [IsVisibleInDynamoLibrary(false)]
+    public static class IronPythonEvaluator
     {
-        private IronPythonEvaluator() { }
-
-        public static string TestCode { get { return "OUT = 0"; } }
-
         /// <summary>
         ///     Executes a Python script with custom variable names. Script may be a string
         ///     read from a file, for example. Pass a list of names (matching the variable

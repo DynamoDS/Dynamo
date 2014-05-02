@@ -17,7 +17,6 @@ namespace Revit.GeometryConversion
     [SupressImportIntoVM]
     public static class RevitToProtoCurve
     {
-
         /// <summary>
         /// An extension method to convert a Revit Curve to a ProtoGeometry Curve.  Note that Bound Revit curves will be returned in trimmed form.
         /// </summary>
@@ -31,7 +30,7 @@ namespace Revit.GeometryConversion
             return RevitToProtoCurve.Convert(dyCrv);
         }
 
-        public static PolyCurve ToProtoTypes(this Autodesk.Revit.DB.CurveArray revitCurves)
+        public static PolyCurve ToProtoType(this Autodesk.Revit.DB.CurveArray revitCurves)
         {
             if (revitCurves == null) throw new ArgumentNullException("revitCurves");
 

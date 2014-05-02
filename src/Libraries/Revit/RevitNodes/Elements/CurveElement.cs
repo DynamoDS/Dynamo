@@ -3,7 +3,7 @@ using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using Revit.GeometryConversion;
-using Revit.References;
+using Revit.GeometryReferences;
 using RevitServices.Persistence;
 
 namespace Revit.Elements
@@ -29,11 +29,11 @@ namespace Revit.Elements
         /// <summary>
         /// Obtain the reference curve for this ModelCurve
         /// </summary>
-        public CurveReference CurveReference
+        public ElementCurveReference ElementCurveReference
         {
             get
             {
-                return new CurveReference(InternalCurveElement.GeometryCurve);
+                return new ElementCurveReference(InternalCurveElement.GeometryCurve);
             }
         }
 

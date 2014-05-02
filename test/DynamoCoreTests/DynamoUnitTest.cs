@@ -52,20 +52,33 @@ namespace Dynamo.Tests
 
         protected void StartDynamo()
         {
+            var logger = new DynamoLogger();
+            dynSettings.DynamoLogger = logger;
+
+            var updateManager = new UpdateManager.UpdateManager(logger);
+
             ////create a new instance of the ViewModel
-            Controller = new DynamoController(typeof(DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), new PreferenceSettings());
+            Controller = new DynamoController(Context.NONE, updateManager,
+                new DefaultWatchHandler(), new PreferenceSettings());
             DynamoController.IsTestMode = true;
+            Controller.DynamoViewModel = new DynamoViewModel(Controller, null);
+            Controller.VisualizationManager = new VisualizationManager();   
         }
 
         /// <summary>
         /// Enables starting Dynamo with a mock IUpdateManager
         /// </summary>
         /// <param name="updateManager"></param>
-        protected void StartDynamo(IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences)
+        /// <param name="watchHandler"></param>
+        /// <param name="preferences"></param>
+        /// <param name="visualizationManager"></param>
+        protected void StartDynamo(IUpdateManager updateManager, IWatchHandler watchHandler, IPreferences preferences, IVisualizationManager visualizationManager)
         {
             //create a new instance of the ViewModel
-            Controller = new DynamoController(typeof(DynamoViewModel), Context.NONE, updateManager, watchHandler, preferences);
+            Controller = new DynamoController(Context.NONE, updateManager, watchHandler, preferences);
+            Controller.DynamoViewModel = new DynamoViewModel(Controller, null);
             DynamoController.IsTestMode = true;
+            Controller.VisualizationManager = new VisualizationManager();
         }
 
         /// <summary>
@@ -88,7 +101,7 @@ namespace Dynamo.Tests
 
             foreach (var test in tests)
             {
-                var runResult = model.CurrentWorkspace.NodeFromWorkspace(test.Key).OldValue.Data;
+                var runResult = model.CurrentWorkspace.NodeFromWorkspace(test.Key).CachedValue.Data;
                 Assert.AreEqual(test.Value, runResult);
             }
         }

@@ -16,7 +16,7 @@ namespace DSRevitNodesTests.Elements
             var modelCurve = ModelCurve.ByCurve(line);
             Assert.NotNull(line);
 
-            var curveRef = modelCurve.CurveReference;
+            var curveRef = modelCurve.ElementCurveReference;
             Assert.NotNull(curveRef);
         }
     }

@@ -5,13 +5,9 @@ using Dynamo.Selection;
 using System.Linq;
 using Dynamo.Utilities;
 using NUnit.Framework;
-using System.Collections.Generic;
-using Dynamo.DSEngine;
-using ProtoCore.Mirror;
-using System.Collections;
-using Dynamo.Models;
 using DSCoreNodesUI;
 using DSCore.File;
+using Revit.Elements;
 namespace Dynamo.Tests
 {
     [TestFixture]
@@ -22,28 +18,23 @@ namespace Dynamo.Tests
         public void CreatePointSequenceSample()
         {
             var model = dynSettings.Controller.DynamoModel;
-
-            string samplePath = Path.Combine(_samplesPath, @".\01 Create Point\create point_sequence.dyn");
-            string testPath = Path.GetFullPath(samplePath);
-
-            model.Open(testPath);
+            OpenModel(@".\01 Create Point\create point_sequence.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+ 	        Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+            AssertNoDummyNodes();
 
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
+            // evaluate  graph
+            RunCurrentModel();
 
-            double noOfNdoes = nodes.Count();
+            var refPtNodeId = "d615cc73-d32d-4b1f-b519-0b8f9b903ebf";
+            AssertPreviewCount(refPtNodeId, 9);
 
-            if (noOfNdoes >= 1)
-            {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
-            }
-
-            dynSettings.Controller.RunExpression(true);
-
-
+            // get 8th reference point
+            var refPt = GetPreviewValueAtIndex(refPtNodeId, 8) as ReferencePoint;
+            Assert.IsNotNull(refPt);
+            Assert.AreEqual(80, refPt.Z);
         }
 
         [Test]
@@ -51,29 +42,35 @@ namespace Dynamo.Tests
         public void CreatePointEndSample()
         {
             var model = dynSettings.Controller.DynamoModel;
+            OpenModel(@".\01 Create Point\create point - end.dyn");
 
-            string samplePath = Path.Combine(_samplesPath, @".\01 Create Point\create point - end.dyn");
-            string testPath = Path.GetFullPath(samplePath);
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            AssertNoDummyNodes();
 
-            //test running the expression
-            model.Open(testPath);
+            RunCurrentModel();
 
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
-
-            double noOfNdoes = nodes.Count();
-
-            if (noOfNdoes >= 1)
-            {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
-            }
-
-            dynSettings.Controller.RunExpression(true);
-
-            //test copying and pasting the workflow
+            // test copying and pasting the workflow
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.AddRange(dynSettings.Controller.DynamoModel.Nodes);
             model.Copy(null);
             model.Paste(null);
+
+            // evaluate graph
+            var refPtNodeId = "16d1ceb2-c780-45d1-9dfb-d9c49836a931";
+            var refPt = GetPreviewValue(refPtNodeId) as ReferencePoint;
+            Assert.IsNotNull(refPt);
+            Assert.AreEqual(0, refPt.Z);
+
+            // change slider value and re-evaluate graph
+            DoubleSlider slider = model.CurrentWorkspace.NodeFromWorkspace("2eb70bdb-773d-4cf4-a10e-828dd39a0cca") as DoubleSlider;
+            slider.Value = 56.78;
+            RunCurrentModel();
+
+            refPt = GetPreviewValue(refPtNodeId) as ReferencePoint;
+            Assert.IsNotNull(refPt);
+            Assert.AreEqual(56.78, refPt.Z);
         }
 
         [Test]
@@ -81,21 +78,20 @@ namespace Dynamo.Tests
         public void CreatePointSample()
         {
             var model = dynSettings.Controller.DynamoModel;
+            OpenModel(@".\01 Create Point\create point.dyn");
 
-            string samplePath = Path.Combine(_samplesPath, @".\01 Create Point\create point.dyn");
-            string testPath = Path.GetFullPath(samplePath);
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, model.CurrentWorkspace.Connectors.Count);
+            AssertNoDummyNodes();
 
-            model.Open(testPath);
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
+            // evaluate graph
+            RunCurrentModel();
 
-            double noOfNdoes = nodes.Count();
-
-            if (noOfNdoes >= 1)
-            {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
-            }
-
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            var refPtNodeId = "f4088a7b-823a-49e8-936c-3c56d1a99455";
+            var refPt = GetPreviewValue(refPtNodeId) as ReferencePoint;
+            Assert.IsNotNull(refPt);
+            Assert.AreEqual(0, refPt.Z);
         }
 
         [Test]
@@ -103,21 +99,29 @@ namespace Dynamo.Tests
         public void RefGridSlidersSample()
         {
             var model = dynSettings.Controller.DynamoModel;
+            OpenModel(@".\02 Ref Grid Sliders\ref grid sliders.dyn");
 
-            string samplePath = Path.Combine(_samplesPath, @".\02 Ref Grid Sliders\ref grid sliders.dyn");
-            string testPath = Path.GetFullPath(samplePath);
+            // check all the nodes and connectors are loaded
+            Assert.GreaterOrEqual(8, model.CurrentWorkspace.Nodes.Count);
+            Assert.GreaterOrEqual(10, model.CurrentWorkspace.Connectors.Count);
+            AssertNoDummyNodes();
 
-            model.Open(testPath);
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
+            // evaluate graph
+            RunCurrentModel();
 
-            double noOfNdoes = nodes.Count();
+            var refPtNodeId = "69dcdcdc-941f-46f9-8e8b-242b61e74e80";
+            AssertPreviewCount(refPtNodeId, 36);
+            
+            var refPt = GetPreviewValueAtIndex(refPtNodeId, 3) as ReferencePoint;
+            Assert.IsNotNull(refPt);
+            Assert.AreEqual(57, refPt.Y);
 
-            if (noOfNdoes >= 1)
-            {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
-            }
+            // change slider value and re-evaluate graph
+            DoubleSlider slider = model.CurrentWorkspace.NodeFromWorkspace("5adff29b-3cac-4387-8d1d-b75ceb9c6dec") as DoubleSlider;
+            slider.Value = 3.5;
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            RunCurrentModel();
+            AssertPreviewCount(refPtNodeId, 16);
         }
 
         [Test]
@@ -125,21 +129,22 @@ namespace Dynamo.Tests
         public void RefGridSlidersEndSample()
         {
             var model = dynSettings.Controller.DynamoModel;
+            OpenModel(@".\02 Ref Grid Sliders\ref grid sliders - end.dyn");
 
-            string samplePath = Path.Combine(_samplesPath, @".\02 Ref Grid Sliders\ref grid sliders - end.dyn");
-            string testPath = Path.GetFullPath(samplePath);
+            // check all the nodes and connectors are loaded
+            Assert.GreaterOrEqual(9, model.CurrentWorkspace.Nodes.Count);
+            Assert.GreaterOrEqual(11, model.CurrentWorkspace.Connectors.Count);
+            AssertNoDummyNodes();
 
-            model.Open(testPath);
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
+            // evaluate graph
+            RunCurrentModel();
 
-            double noOfNdoes = nodes.Count();
+            var famInstNodeId = "fc83b9b2-42c6-4a9f-8f60-a6ee29ef8a34";
+            AssertPreviewCount(famInstNodeId, 36);
 
-            if (noOfNdoes >= 1)
-            {
-                Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
-            }
-
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            var famInst = GetPreviewValueAtIndex(famInstNodeId, 3) as FamilyInstance;
+            Assert.IsNotNull(famInst);
+            Assert.IsNotNullOrEmpty(famInst.Name);
         }
 
         [Test]
@@ -268,7 +273,7 @@ namespace Dynamo.Tests
                 Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
             }
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -292,7 +297,7 @@ namespace Dynamo.Tests
                 Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
             }
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -319,7 +324,7 @@ namespace Dynamo.Tests
                 Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
             }
 
-            dynSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression();
         }
 
         [Test]
@@ -341,7 +346,7 @@ namespace Dynamo.Tests
                 Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
             }
 
-            dynSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression();
         }
 
         [Test]
@@ -364,7 +369,7 @@ namespace Dynamo.Tests
                 Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
             }
 
-            dynSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression();
         }
 
         [Test]
@@ -387,7 +392,7 @@ namespace Dynamo.Tests
                 Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
             }
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -420,7 +425,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(20, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -447,7 +452,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -474,7 +479,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -501,7 +506,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -528,7 +533,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(23, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
             //var watch = model.CurrentWorkspace.NodeFromWorkspace<NewList>("789c1592-b64c-4a97-8f1a-8cef3d0cc2d0");
             //FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -560,7 +565,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -588,7 +593,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -616,7 +621,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -644,7 +649,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(18, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -672,7 +677,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -700,7 +705,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -728,7 +733,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -767,7 +772,7 @@ namespace Dynamo.Tests
             Assert.IsFalse(string.IsNullOrEmpty(excelFilePath));
             Assert.IsTrue(File.Exists(excelFilePath));
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
             //Assert.Inconclusive("Porting : StringFileName");
         }
@@ -857,7 +862,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
 
             var workspace = model.CurrentWorkspace;
@@ -910,7 +915,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(47, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(61, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -938,7 +943,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(33, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(33, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -966,7 +971,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -994,7 +999,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -1022,7 +1027,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -1050,7 +1055,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -1078,7 +1083,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -1106,7 +1111,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -1138,7 +1143,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -1155,7 +1160,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -1173,7 +1178,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
@@ -1191,7 +1196,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
         }
 
