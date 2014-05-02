@@ -73,7 +73,7 @@ namespace Dynamo.UI.Commands
             
             msg.AppendFormat("COMMAND: Name={0}, Parameter={1}", _execute.Method.Name, paramStr);
 
-            dynSettings.Controller.DynamoLogger.Log(msg.ToString(), LogLevel.File);
+            dynSettings.DynamoLogger.Log(msg.ToString(), LogLevel.File);
         }
     }
 
@@ -143,7 +143,7 @@ namespace Dynamo.UI.Commands
 
             if (dynSettings.Controller.UIDispatcher != null)
             {
-                dynSettings.Controller.DynamoLogger.Log(string.Format("dynSettings.Bench Thread : {0}",
+                dynSettings.DynamoLogger.Log(string.Format("dynSettings.Bench Thread : {0}",
                                                        dynSettings.Controller.UIDispatcher.Thread.ManagedThreadId.ToString(CultureInfo.InvariantCulture)));
             }
         }

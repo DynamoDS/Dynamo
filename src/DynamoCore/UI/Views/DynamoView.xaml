@@ -1107,9 +1107,9 @@
                       Content="Debug" VerticalContentAlignment="Center"/-->
 
                 </WrapPanel>
-                <TextBlock Name="warningText" Grid.Column="1" Text="{Binding Controller.DynamoLogger.Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}" FontStyle="Italic" FontSize="12" 
+                <TextBlock Name="warningText" Grid.Column="1" Text="{Binding Source={x:Static utilities:dynSettings.DynamoLogger}, Path=Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}" FontStyle="Italic" FontSize="12" 
                        VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" TextTrimming="WordEllipsis" Margin="10"
-                       Foreground="{Binding Controller.DynamoLogger.WarningLevel, Converter={StaticResource WarningLevelToColorConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" >
+                       Foreground="{Binding Source={x:Static utilities:dynSettings.DynamoLogger}, Path=Warning, Converter={StaticResource WarningLevelToColorConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" >
                     <TextBlock.Triggers>
                             <EventTrigger RoutedEvent="Binding.TargetUpdated">
                                 <BeginStoryboard>

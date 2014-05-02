@@ -306,7 +306,7 @@ namespace Dynamo.UpdateManager
                 }
                 catch (Exception e)
                 {
-                    dynSettings.Controller.DynamoLogger.Log(e);
+                    dynSettings.DynamoLogger.Log(e);
                     _versionCheckInProgress = false;
                     return;
                 }

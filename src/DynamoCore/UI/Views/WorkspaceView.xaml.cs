@@ -121,9 +121,9 @@ namespace Dynamo.Views
         /// <param name="e"></param>
         void ViewModel_DragSelectionEnded(object sender, EventArgs e)
         {
-            if (ViewModel.PauseVisualizationManagerUpdatesCommand.CanExecute(false))
+            if (ViewModel.UnPauseVisualizationManagerCommand.CanExecute(false))
             {
-                ViewModel.PauseVisualizationManagerUpdatesCommand.Execute(false);
+                ViewModel.UnPauseVisualizationManagerCommand.Execute(false);
             }
         }
 
@@ -135,9 +135,9 @@ namespace Dynamo.Views
         /// <param name="e"></param>
         void ViewModel_DragSelectionStarted(object sender, EventArgs e)
         {
-            if (ViewModel.PauseVisualizationManagerUpdatesCommand.CanExecute(true))
+            if (ViewModel.PauseVisualizationManagerCommand.CanExecute(true))
             {
-                ViewModel.PauseVisualizationManagerUpdatesCommand.Execute(true);
+                ViewModel.PauseVisualizationManagerCommand.Execute(true);
             }
         }
 
@@ -295,7 +295,7 @@ namespace Dynamo.Views
             //sw.Start();
             //DrawGrid();
             //sw.Stop();
-            //dynSettings.Controller.DynamoLogger.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
+            //dynSettings.DynamoLogger.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
         }
 
         void vm_RequestAddViewToOuterCanvas(object sender, EventArgs e)

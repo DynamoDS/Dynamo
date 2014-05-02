@@ -33,7 +33,7 @@ namespace Dynamo.Models
             var controller = dynSettings.Controller;
             if (!controller.Running)
             {
-                controller.RunExpression(false);
+                controller.RunExpression();
             }
         }
 
@@ -68,15 +68,15 @@ namespace Dynamo.Models
                 runExpressionTimer.Stop();
                 runExpressionTimer.Start(); // reset timer
 #else
-                //dynSettings.Controller.DynamoLogger.Log("Running Dynamically");
+                //dynSettings.DynamoLogger.Log("Running Dynamically");
                 if (!controller.Running)
                 {
-                    //dynSettings.Controller.DynamoLogger.Log("Nothing currently running, now running.");
+                    //dynSettings.DynamoLogger.Log("Nothing currently running, now running.");
                     controller.RunExpression(false);
                 }
                 else
                 {
-                    //dynSettings.Controller.DynamoLogger.Log("Run in progress, cancelling then running.");
+                    //dynSettings.DynamoLogger.Log("Run in progress, cancelling then running.");
                     controller.QueueRun();
                 }
 #endif

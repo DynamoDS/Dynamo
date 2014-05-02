@@ -46,7 +46,7 @@ namespace DSRevitNodesTests
             Assert.NotNull(modCurve);
 
             // build dividedPath
-            var divPath = DividedPath.ByCurveAndDivisions(modCurve.CurveReference, 5);
+            var divPath = DividedPath.ByCurveAndDivisions(modCurve.ElementCurveReference, 5);
             Assert.NotNull(divPath);
 
         }
@@ -81,7 +81,7 @@ namespace DSRevitNodesTests
             Assert.NotNull(modCurve);
 
             // build dividedPath
-            Assert.Throws(typeof(Exception), () => DividedPath.ByCurveAndDivisions(modCurve.CurveReference, 0));
+            Assert.Throws(typeof(Exception), () => DividedPath.ByCurveAndDivisions(modCurve.ElementCurveReference, 0));
 
         }
 
@@ -107,7 +107,7 @@ namespace DSRevitNodesTests
             Assert.NotNull(modCurve);
 
             // build dividedPath
-            var divPath = DividedPath.ByCurveAndDivisions(modCurve.CurveReference, 5);
+            var divPath = DividedPath.ByCurveAndDivisions(modCurve.ElementCurveReference, 5);
             Assert.NotNull(divPath);
 
             foreach (var pt in divPath.Points)

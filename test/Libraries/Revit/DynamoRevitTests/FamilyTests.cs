@@ -75,7 +75,7 @@ namespace Dynamo.Tests
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]

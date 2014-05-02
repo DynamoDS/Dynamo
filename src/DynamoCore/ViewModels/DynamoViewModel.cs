@@ -420,7 +420,7 @@ namespace Dynamo.ViewModels
 
         public string LogText
         {
-            get { return dynSettings.Controller.DynamoLogger.LogText; }
+            get { return dynSettings.DynamoLogger.LogText; }
         }
 
         public bool ConsoleShowing
@@ -622,7 +622,7 @@ namespace Dynamo.ViewModels
             CheckForUpdateCommand = new DelegateCommand(CheckForUpdate, CanCheckForUpdate);
             SetNumberFormatCommand = new DelegateCommand(SetNumberFormat, CanSetNumberFormat);
 
-            ((DynamoLogger)dynSettings.Controller.DynamoLogger).PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
+            ((DynamoLogger)dynSettings.DynamoLogger).PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
             //((VisualizationManager)dynSettings.Controller.VisualizationManager).PropertyChanged += VisualizationManager_PropertyChanged;

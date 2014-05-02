@@ -35,6 +35,11 @@ namespace Revit.GeometryConversion
             }
         }
 
+        private static Autodesk.DesignScript.Geometry.Curve InternalConvert(Autodesk.Revit.DB.Edge geom)
+        {
+            return geom.AsCurve().ToProtoType();
+        }
+
         private static Autodesk.DesignScript.Geometry.Surface InternalConvert(Autodesk.Revit.DB.Face geom)
         {
             return geom.ToProtoType();
@@ -62,7 +67,7 @@ namespace Revit.GeometryConversion
 
         private static Autodesk.DesignScript.Geometry.PolyCurve InternalConvert(Autodesk.Revit.DB.Profile geom)
         {
-            return geom.Curves.ToProtoTypes();
+            return geom.Curves.ToProtoType();
         }
 
         private static Autodesk.DesignScript.Geometry.Mesh InternalConvert(Autodesk.Revit.DB.Mesh geom)

@@ -4,7 +4,7 @@ using Autodesk.DesignScript.Geometry;
 using DSNodeServices;
 using Revit.Elements;
 using Revit.GeometryConversion;
-using Revit.References;
+using Revit.GeometryReferences;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Point = Autodesk.DesignScript.Geometry.Point;
@@ -118,11 +118,11 @@ namespace Revit.Elements
         /// <summary>
         /// Get a Reference to the underlying Curve Geometry of this Element
         /// </summary>
-        public CurveReference CurveReference
+        public ElementCurveReference ElementCurveReference
         {
             get
             {
-                return new CurveReference(this.InternalGrid.Curve);
+                return new ElementCurveReference(this.InternalGrid.Curve);
             }
         }
 

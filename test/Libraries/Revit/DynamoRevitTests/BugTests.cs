@@ -33,7 +33,7 @@ namespace Dynamo.Tests
 
             AssertNoDummyNodes();
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -76,7 +76,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(20, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         [Test]
@@ -119,7 +119,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
 
-            dynSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression();
 
             // there should not be any crash on running this graph.
             // below node should have an error because there is no selection for Floor Type.

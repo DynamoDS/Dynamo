@@ -6,7 +6,7 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using Revit.GeometryConversion;
-using Revit.References;
+using Revit.GeometryReferences;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Face = Autodesk.DesignScript.Geometry.Face;
@@ -101,7 +101,7 @@ namespace Revit.Elements
                }
                //try
                //{
-                  bounds.Add(Revit.GeometryConversion.RevitToProtoCurve.ToProtoTypes(crvs));
+                  bounds.Add(Revit.GeometryConversion.RevitToProtoCurve.ToProtoType(crvs));
                //}
                /* debugging code
                catch (Exception e)

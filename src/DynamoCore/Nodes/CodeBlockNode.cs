@@ -66,7 +66,7 @@ namespace Dynamo.Nodes
         /// <param name="errorMessage"> Error message to be displayed </param>
         private void ProcessError()
         {
-            dynSettings.Controller.DynamoLogger.Log("Error in Code Block Node");
+            dynSettings.DynamoLogger.Log("Error in Code Block Node");
 
             //Remove all ports
             int size = InPortData.Count;

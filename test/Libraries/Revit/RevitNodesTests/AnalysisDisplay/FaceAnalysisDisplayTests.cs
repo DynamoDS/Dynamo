@@ -17,7 +17,7 @@ namespace DSRevitNodesTests.AnalysisDisplay
             var fams = ElementSelector.ByType<Autodesk.Revit.DB.FamilyInstance>(true);
             var famInst = fams.First() as Revit.Elements.FamilyInstance;
 
-            var faceRef = famInst.FaceReferences.First();
+            var faceRef = famInst.ElementFaceReferences.First();
 
             var samplePoints = new[]
             {
@@ -47,7 +47,7 @@ namespace DSRevitNodesTests.AnalysisDisplay
             var fams = ElementSelector.ByType<Autodesk.Revit.DB.FamilyInstance>(true);
             var famInst = fams.First() as Revit.Elements.FamilyInstance;
 
-            var faceRef = famInst.FaceReferences.First();
+            var faceRef = famInst.ElementFaceReferences.First();
 
             var samplePoints = new[]
             {

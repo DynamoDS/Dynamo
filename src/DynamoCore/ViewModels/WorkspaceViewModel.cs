@@ -869,7 +869,7 @@ namespace Dynamo.ViewModels
             }
             catch
             {
-                dynSettings.Controller.DynamoLogger.Log("No node could be found with that Id.");
+                dynSettings.DynamoLogger.Log("No node could be found with that Id.");
             }
 
             try
@@ -889,7 +889,7 @@ namespace Dynamo.ViewModels
             }
             catch
             {
-                dynSettings.Controller.DynamoLogger.Log("No node could be found with that Id.");
+                dynSettings.DynamoLogger.Log("No node could be found with that Id.");
                 return;
             }
         }
@@ -936,10 +936,20 @@ namespace Dynamo.ViewModels
 
         private void PauseVisualizationManagerUpdates(object parameter)
         {
-            dynSettings.Controller.VisualizationManager.UpdatingPaused = (bool)parameter;
+            dynSettings.Controller.VisualizationManager.Pause();
         }
 
         private bool CanPauseVisualizationManagerUpdates(object parameter)
+        {
+            return true;
+        }
+
+        private void UnPauseVisualizationManagerUpdates(object parameter)
+        {
+            dynSettings.Controller.VisualizationManager.UnPause();
+        }
+
+        private bool CanUnPauseVisualizationManagerUpdates(object parameter)
         {
             return true;
         }
