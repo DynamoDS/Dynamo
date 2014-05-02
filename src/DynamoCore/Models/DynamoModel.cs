@@ -95,8 +95,8 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                dynSettings.Controller.DynamoLogger.Log("There was an error opening the workbench.");
-                dynSettings.Controller.DynamoLogger.Log(ex);
+                dynSettings.DynamoLogger.Log("There was an error opening the workbench.");
+                dynSettings.DynamoLogger.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
 
                 if (DynamoController.IsTestMode)
@@ -385,7 +385,7 @@ namespace Dynamo.Models
 
             if (!OpenDefinition(xmlPath))
             {
-                dynSettings.Controller.DynamoLogger.Log("Workbench could not be opened.");
+                dynSettings.DynamoLogger.Log("Workbench could not be opened.");
 
                 if (CanWriteToLog(null))
                 {
@@ -409,11 +409,11 @@ namespace Dynamo.Models
             dynSettings.Controller.SearchViewModel.RemoveEmptyCategories();
             dynSettings.Controller.SearchViewModel.SortCategoryChildren();
 
-            dynSettings.Controller.DynamoLogger.Log("Welcome to Dynamo!");
+            dynSettings.DynamoLogger.Log("Welcome to Dynamo!");
 
             if (UnlockLoadPath != null && !OpenWorkspace(UnlockLoadPath))
             {
-                dynSettings.Controller.DynamoLogger.Log("Workbench could not be opened.");
+                dynSettings.DynamoLogger.Log("Workbench could not be opened.");
 
                 if (CanWriteToLog(null))
                 {
@@ -613,7 +613,7 @@ namespace Dynamo.Models
 
         internal void CleanWorkbench()
         {
-            dynSettings.Controller.DynamoLogger.Log("Clearing workflow...");
+            dynSettings.DynamoLogger.Log("Clearing workflow...");
 
             //Copy locally
             List<NodeModel> elements = Nodes.ToList();
@@ -667,7 +667,7 @@ namespace Dynamo.Models
         /// <returns></returns>
         public bool OpenWorkspace(string xmlPath)
         {
-            dynSettings.Controller.DynamoLogger.Log("Opening home workspace " + xmlPath + "...");
+            dynSettings.DynamoLogger.Log("Opening home workspace " + xmlPath + "...");
 
             CleanWorkbench();
             MigrationManager.ResetIdentifierIndex();
@@ -684,7 +684,7 @@ namespace Dynamo.Models
                 xmlDoc.Load(xmlPath);
 
                 TimeSpan previousElapsed = sw.Elapsed;
-                dynSettings.Controller.DynamoLogger.Log(string.Format("{0} elapsed for loading xml.", sw.Elapsed));
+                dynSettings.DynamoLogger.Log(string.Format("{0} elapsed for loading xml.", sw.Elapsed));
 
                 double cx = 0;
                 double cy = 0;
@@ -740,7 +740,7 @@ namespace Dynamo.Models
                             "Original file '{0}' gets backed up at '{1}'",
                             Path.GetFileName(xmlPath), backupPath);
 
-                        dynSettings.Controller.DynamoLogger.Log(message);
+                        dynSettings.DynamoLogger.Log(message);
                     }
 
                     MigrationManager.Instance.ProcessWorkspaceMigrations(xmlDoc, fileVersion);
@@ -892,12 +892,12 @@ namespace Dynamo.Models
                         el.SaveResult = true;
                 }
 
-                dynSettings.Controller.DynamoLogger.Log(string.Format("{0} ellapsed for loading nodes.", sw.Elapsed - previousElapsed));
+                dynSettings.DynamoLogger.Log(string.Format("{0} ellapsed for loading nodes.", sw.Elapsed - previousElapsed));
                 previousElapsed = sw.Elapsed;
 
                 //OnRequestLayoutUpdate(this, EventArgs.Empty);
 
-                //dynSettings.Controller.DynamoLogger.Log(string.Format("{0} ellapsed for updating layout.", sw.Elapsed - previousElapsed));
+                //dynSettings.DynamoLogger.Log(string.Format("{0} ellapsed for updating layout.", sw.Elapsed - previousElapsed));
                 //previousElapsed = sw.Elapsed;
 
                 foreach (XmlNode connector in cNodesList.ChildNodes)
@@ -943,7 +943,7 @@ namespace Dynamo.Models
                     OnConnectorAdded(newConnector);
                 }
 
-                dynSettings.Controller.DynamoLogger.Log(string.Format("{0} ellapsed for loading connectors.",
+                dynSettings.DynamoLogger.Log(string.Format("{0} ellapsed for loading connectors.",
                     sw.Elapsed - previousElapsed));
                 previousElapsed = sw.Elapsed;
 
@@ -971,7 +971,7 @@ namespace Dynamo.Models
 
                 #endregion
 
-                dynSettings.Controller.DynamoLogger.Log(string.Format("{0} ellapsed for loading notes.", sw.Elapsed - previousElapsed));
+                dynSettings.DynamoLogger.Log(string.Format("{0} ellapsed for loading notes.", sw.Elapsed - previousElapsed));
 
                 foreach (NodeModel e in CurrentWorkspace.Nodes)
                     e.EnableReporting();
@@ -982,7 +982,7 @@ namespace Dynamo.Models
                     new Action(() =>
                     {
                         sw.Stop();
-                        dynSettings.Controller.DynamoLogger.Log(string.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
+                        dynSettings.DynamoLogger.Log(string.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
                     }));
 
                 #endregion
@@ -999,8 +999,8 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                dynSettings.Controller.DynamoLogger.Log("There was an error opening the workbench.");
-                dynSettings.Controller.DynamoLogger.Log(ex);
+                dynSettings.DynamoLogger.Log("There was an error opening the workbench.");
+                dynSettings.DynamoLogger.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
                 CleanWorkbench();
                 return false;
@@ -1054,12 +1054,12 @@ namespace Dynamo.Models
         {
             if (parameters == null) return;
             string logText = parameters.ToString();
-            dynSettings.Controller.DynamoLogger.Log(logText);
+            dynSettings.DynamoLogger.Log(logText);
         }
 
         internal bool CanWriteToLog(object parameters)
         {
-            if (dynSettings.Controller.DynamoLogger != null)
+            if (dynSettings.DynamoLogger != null)
             {
                 return true;
             }
@@ -1436,8 +1436,8 @@ namespace Dynamo.Models
                 }
                 catch (Exception ex)
                 {
-                    dynSettings.Controller.DynamoLogger.Log("Failed to load built-in type");
-                    dynSettings.Controller.DynamoLogger.Log(ex);
+                    dynSettings.DynamoLogger.Log("Failed to load built-in type");
+                    dynSettings.DynamoLogger.Log(ex);
                     result = null;
                 }
             }
@@ -1451,7 +1451,7 @@ namespace Dynamo.Models
                 }
                 else
                 {
-                    dynSettings.Controller.DynamoLogger.Log("Failed to find CustomNodeDefinition.");
+                    dynSettings.DynamoLogger.Log("Failed to find CustomNodeDefinition.");
                     return null;
                 }
             }
@@ -1686,8 +1686,8 @@ namespace Dynamo.Models
             }
             catch (Exception e)
             {
-                dynSettings.Controller.DynamoLogger.Log(e.Message);
-                dynSettings.Controller.DynamoLogger.Log(e);
+                dynSettings.DynamoLogger.Log(e.Message);
+                dynSettings.DynamoLogger.Log(e);
             }
 
             return null;

@@ -288,7 +288,7 @@ namespace Dynamo.PackageManager
             }
             else
             {
-                dynSettings.Controller.DynamoLogger.Log("Failed to obtain function definition from node.");
+                dynSettings.DynamoLogger.Log("Failed to obtain function definition from node.");
                 return;
             }
         }

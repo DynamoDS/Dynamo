@@ -279,7 +279,7 @@ namespace Dynamo.DSEngine
 
             //TODO: This should do something more than just log a generic message. --SJE
             if (node.State == ElementState.Error)
-                dynSettings.Controller.DynamoLogger.Log("Error in Node. Not sent for building and compiling");
+                dynSettings.DynamoLogger.Log("Error in Node. Not sent for building and compiling");
 
             if (isDeltaExecution)
                 OnAstNodeBuilding(node.GUID);

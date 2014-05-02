@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Dynamo.Interfaces;
 using System.Linq;
+
 using Dynamo.PackageManager;
 
 namespace Dynamo.Utilities
@@ -21,6 +23,8 @@ namespace Dynamo.Utilities
         {
             get { return _packageManagerClient ?? (_packageManagerClient = new PackageManagerClient()); }
         }
+
+        public static ILogger DynamoLogger { get; set; }
 
         public static string FormatFileName(string filename)
         {

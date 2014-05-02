@@ -36,12 +36,12 @@ namespace DynamoSandbox
             }
             catch (Exception e)
             {
-                #if DEBUG
+#if DEBUG
 
                 // Display the recorded command XML when the crash happens, so that it maybe saved and re-run later
                 dynSettings.Controller.DynamoViewModel.SaveRecordedCommand.Execute(null);
 
-                #endif
+#endif
 
                 try
                 {
@@ -61,6 +61,10 @@ namespace DynamoSandbox
 
                 Debug.WriteLine(e.Message);
                 Debug.WriteLine(e.StackTrace);
+            }
+            finally
+            {
+                ((DynamoLogger) dynSettings.DynamoLogger).Dispose();
             }
         }
     }

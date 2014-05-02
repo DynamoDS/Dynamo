@@ -392,7 +392,7 @@ namespace Dynamo
             }
             catch (Exception ex)
             {
-                dynSettings.Controller.DynamoLogger.Log(ex);
+                dynSettings.DynamoLogger.Log(ex);
             }
             finally
             {

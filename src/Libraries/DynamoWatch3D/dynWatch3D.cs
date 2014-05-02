@@ -162,8 +162,8 @@ namespace Dynamo.Nodes
             }
             catch(Exception ex)
             {
-                dynSettings.Controller.DynamoLogger.Log(ex);
-                dynSettings.Controller.DynamoLogger.Log("View attributes could not be read from the file.");
+                dynSettings.DynamoLogger.Log(ex);
+                dynSettings.DynamoLogger.Log("View attributes could not be read from the file.");
             }
             
         }

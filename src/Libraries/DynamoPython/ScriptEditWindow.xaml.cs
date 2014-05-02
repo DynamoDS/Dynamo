@@ -65,9 +65,9 @@ namespace Dynamo.Nodes
             }
             catch (System.Exception ex)
             {
-                dynSettings.Controller.DynamoLogger.Log("Failed to perform python autocomplete with exception:");
-                dynSettings.Controller.DynamoLogger.Log(ex.Message);
-                dynSettings.Controller.DynamoLogger.Log(ex.StackTrace);
+                dynSettings.DynamoLogger.Log("Failed to perform python autocomplete with exception:");
+                dynSettings.DynamoLogger.Log(ex.Message);
+                dynSettings.DynamoLogger.Log(ex.StackTrace);
             }
         }
 
@@ -98,9 +98,9 @@ namespace Dynamo.Nodes
             }
             catch (System.Exception ex)
             {
-                dynSettings.Controller.DynamoLogger.Log("Failed to perform python autocomplete with exception:");
-                dynSettings.Controller.DynamoLogger.Log(ex.Message);
-                dynSettings.Controller.DynamoLogger.Log(ex.StackTrace);
+                dynSettings.DynamoLogger.Log("Failed to perform python autocomplete with exception:");
+                dynSettings.DynamoLogger.Log(ex.Message);
+                dynSettings.DynamoLogger.Log(ex.StackTrace);
             }
         }
 

@@ -40,11 +40,10 @@ namespace Dynamo
         /// </summary>
         private Assembly singleSignOnAssembly;
 
-        public DynamoController_Revit(RevitServicesUpdater updater, string context, IUpdateManager updateManager, ILogger logger )
+        public DynamoController_Revit(RevitServicesUpdater updater, string context, IUpdateManager updateManager)
             : base(
                 context,
                 updateManager,
-                logger,
                 new RevitWatchHandler(),
                 Dynamo.PreferenceSettings.Load())
         {
@@ -180,14 +179,14 @@ namespace Dynamo
             if (DocumentManager.Instance.CurrentDBDocument == null)
             {
                 DynamoViewModel.RunEnabled = false;
-                dynSettings.Controller.DynamoLogger.LogWarning(
+                dynSettings.DynamoLogger.LogWarning(
                     "Dynamo no longer has an active document.",
                     WarningLevel.Moderate);
             }
             else
             {
                 DynamoViewModel.RunEnabled = true;
-                dynSettings.Controller.DynamoLogger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
+                dynSettings.DynamoLogger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
             }
 
             ResetForNewDocument();
@@ -198,7 +197,7 @@ namespace Dynamo
             //if Dynamo doesn't have a view, then latch onto this one
             if (DocumentManager.Instance.CurrentUIDocument != null)
             {
-                dynSettings.Controller.DynamoLogger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
+                dynSettings.DynamoLogger.LogWarning(GetDocumentPointerMessage(), WarningLevel.Moderate);
                 ResetForNewDocument();
             }
         }
@@ -372,7 +371,7 @@ namespace Dynamo
             if (DynamoViewModel.RunInDebug)
             {
                 TransMode = TransactionMode.Debug; //Debug transaction control
-                dynSettings.Controller.DynamoLogger.Log("Running expression in debug.");
+                dynSettings.DynamoLogger.Log("Running expression in debug.");
             }
             else
             {
@@ -462,7 +461,7 @@ namespace Dynamo
 
             foreach (FailureMessageAccessor fail in query)
             {
-                dynSettings.Controller.DynamoLogger.Log("!! Warning: " + fail.GetDescriptionText());
+                dynSettings.DynamoLogger.Log("!! Warning: " + fail.GetDescriptionText());
                 failuresAccessor.DeleteWarning(fail);
             }
         }

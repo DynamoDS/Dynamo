@@ -79,10 +79,11 @@ namespace Dynamo.Tests
                 SIUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
                 var logger = new DynamoLogger();
+                dynSettings.DynamoLogger = logger;
                 var updateManager = new UpdateManager.UpdateManager(logger);
 
                 //create a new instance of the ViewModel
-                Controller = new DynamoController(Context.NONE, updateManager, logger, 
+                Controller = new DynamoController(Context.NONE, updateManager, 
                     new DefaultWatchHandler(), new PreferenceSettings());
                 DynamoController.IsTestMode = true;
                 Controller.DynamoViewModel = new DynamoViewModel(Controller, null);
@@ -242,7 +243,7 @@ namespace Dynamo.Tests
             var model = Controller.DynamoModel;
             var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
             Assert.IsNotNull(node);
-            return node.VariableToPreview;
+            return node.AstIdentifierBase;
         }
 
         private RuntimeMirror GetRuntimeMirror(string varName)

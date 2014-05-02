@@ -130,8 +130,8 @@ namespace Dynamo.Nodes
                 }
                 catch (Exception e)
                 {
-                    dynSettings.Controller.DynamoLogger.Log(e.Message);
-                    dynSettings.Controller.DynamoLogger.Log(e.StackTrace);
+                    dynSettings.DynamoLogger.Log(e.Message);
+                    dynSettings.DynamoLogger.Log(e.StackTrace);
                 }
             }
 

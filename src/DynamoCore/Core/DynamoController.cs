@@ -78,7 +78,6 @@ namespace Dynamo
         public IWatchHandler WatchHandler { get; set; }
         public IPreferences PreferenceSettings { get; set; }
         public IVisualizationManager VisualizationManager { get; set; }
-        public ILogger DynamoLogger { get; set; }
 
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
@@ -196,20 +195,22 @@ namespace Dynamo
         {
             DynamoController controller;
             var logger = new DynamoLogger();
+            dynSettings.DynamoLogger = logger;
+
             var updateManager = new UpdateManager.UpdateManager(logger);
 
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
             {
                 
-                controller = new DynamoController("None", updateManager, logger,
+                controller = new DynamoController("None", updateManager,
                     new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
 
                 controller.DynamoViewModel = new DynamoViewModel(controller, null);
             }
             else
             {
-                controller = new DynamoController("None", updateManager, logger,
+                controller = new DynamoController("None", updateManager,
                  new DefaultWatchHandler(), Dynamo.PreferenceSettings.Load());
 
                 controller.DynamoViewModel = new DynamoViewModel(controller, commandFilePath);
@@ -222,12 +223,10 @@ namespace Dynamo
         /// <summary>
         ///     Class constructor
         /// </summary>
-        public DynamoController(string context, IUpdateManager updateManager, ILogger logger,
+        public DynamoController(string context, IUpdateManager updateManager,
             IWatchHandler watchHandler, IPreferences preferences)
         {
             IsCrashing = false;
-
-            DynamoLogger = logger;
 
             dynSettings.Controller = this;
 
@@ -239,15 +238,15 @@ namespace Dynamo
             PreferenceSettings = preferences;
             ((PreferenceSettings) PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
-            BaseUnit.LengthUnit = PreferenceSettings.LengthUnit;
-            BaseUnit.AreaUnit = PreferenceSettings.AreaUnit;
-            BaseUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
-            BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
+            SIUnit.LengthUnit = PreferenceSettings.LengthUnit;
+            SIUnit.AreaUnit = PreferenceSettings.AreaUnit;
+            SIUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
+            SIUnit.NumberFormat = PreferenceSettings.NumberFormat;
 
             UpdateManager = updateManager;
             UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
             UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
-            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation),dynSettings.Controller.DynamoLogger, UpdateManager.UpdateDataAvailable));
+            UpdateManager.CheckForProductUpdate(new UpdateRequest(new Uri(Configurations.UpdateDownloadLocation),dynSettings.DynamoLogger, UpdateManager.UpdateDataAvailable));
 
             WatchHandler = watchHandler;
 
@@ -273,12 +272,14 @@ namespace Dynamo
 
             DisposeLogic.IsShuttingDown = false;
 
+            EngineController = new EngineController(this);
+
             //This is necessary to avoid a race condition by causing a thread join
             //inside the vm exec
             //TODO(Luke): Push this into a resync call with the engine controller
             ResetEngine();
 
-            dynSettings.Controller.DynamoLogger.Log(String.Format(
+            dynSettings.DynamoLogger.Log(String.Format(
                 "Dynamo -- Build {0}",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
@@ -344,8 +345,7 @@ namespace Dynamo
             dynSettings.Controller.DynamoModel.OnCleanup(args);
             dynSettings.Controller = null;
 
-            //DynamoSelection.Instance.ClearSelection();
-            ((DynamoLogger)DynamoLogger).Dispose();
+            ((DynamoLogger)dynSettings.DynamoLogger).Dispose();
         }
 
         #region Running
@@ -359,7 +359,7 @@ namespace Dynamo
 
         public void RunExpression(int? executionInterval = null)
         {
-            //dynSettings.Controller.DynamoLogger.LogWarning("Running expression", WarningLevel.Mild);
+            //dynSettings.DynamoLogger.LogWarning("Running expression", WarningLevel.Mild);
 
             //If we're already running, do nothing.
             if (Running)
@@ -403,7 +403,7 @@ namespace Dynamo
 
             do
             {
-                Eval();
+                Evaluate();
 
                 if (args == null || args.Argument == null)
                     break;
@@ -419,21 +419,21 @@ namespace Dynamo
             DynamoViewModel.RunEnabled = true;
         }
 
-        private void Eval()
+        protected virtual void Evaluate()
         {
             var sw = new Stopwatch();
 
             try
             {
                 sw.Start();
-                Evaluate();
+                Eval();
             }
             catch (Exception ex)
             {
                 //Catch unhandled exception
                 if (ex.Message.Length > 0)
                 {
-                    dynSettings.Controller.DynamoLogger.Log(ex);
+                    dynSettings.DynamoLogger.Log(ex);
                 }
 
                 OnRunCancelled(true);
@@ -444,13 +444,14 @@ namespace Dynamo
             finally
             {
                 sw.Stop();
-                dynSettings.Controller.DynamoLogger.Log(string.Format("Evaluation completed in {0}", sw.Elapsed));
+
+                dynSettings.DynamoLogger.Log(string.Format("Evaluation completed in {0}", sw.Elapsed));
             }
 
             OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
-        protected virtual void Evaluate()
+        private void Eval()
         {
             //Print some stuff if we're in debug mode
             if (DynamoViewModel.RunInDebug)
@@ -496,7 +497,7 @@ namespace Dynamo
             {
                 /* Evaluation failed due to error */
 
-                dynSettings.Controller.DynamoLogger.Log(ex);
+                dynSettings.DynamoLogger.Log(ex);
 
                 OnRunCancelled(true);
 
@@ -608,7 +609,7 @@ namespace Dynamo
         /// </summary>
         public void ClearLog(object parameter)
         {
-            dynSettings.Controller.DynamoLogger.ClearLog();
+            dynSettings.DynamoLogger.ClearLog();
         }
 
         internal bool CanClearLog(object parameter)
