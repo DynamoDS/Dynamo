@@ -30,7 +30,7 @@ namespace Revit.GeometryReferences
             this.InternalReference = reference;
         }
 
-        public const string DefaultTag = "RevitRef";
+        public const string DefaultTag = "RevitCurveReference";
 
         internal static ElementCurveReference FromExisting(Autodesk.Revit.DB.Curve curve)
         {
