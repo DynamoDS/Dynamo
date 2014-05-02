@@ -239,10 +239,10 @@ namespace Dynamo
             PreferenceSettings = preferences;
             ((PreferenceSettings) PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
 
-            BaseUnit.LengthUnit = PreferenceSettings.LengthUnit;
-            BaseUnit.AreaUnit = PreferenceSettings.AreaUnit;
-            BaseUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
-            BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
+            SIUnit.LengthUnit = PreferenceSettings.LengthUnit;
+            SIUnit.AreaUnit = PreferenceSettings.AreaUnit;
+            SIUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
+            SIUnit.NumberFormat = PreferenceSettings.NumberFormat;
 
             UpdateManager = updateManager;
             UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
