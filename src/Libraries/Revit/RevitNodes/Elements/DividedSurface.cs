@@ -179,9 +179,9 @@ namespace Revit.Elements
         /// <param name="uDivs"></param>
         /// <param name="vDivs"></param>
         /// <returns></returns>
-        public static DividedSurface ByFaceAndUVDivisions(ElementFaceReference elementFace, int uDivs, int vDivs)
+        public static DividedSurface ByFaceAndUVDivisions(object elementFace, int uDivs, int vDivs)
         {
-            return ByFaceUVDivisionsAndRotation(elementFace, uDivs, vDivs, 0.0);
+            return ByFaceUVDivisionsAndRotation(ElementFaceReference.TryGetFaceReference(elementFace), uDivs, vDivs, 0.0);
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace Revit.Elements
         /// <param name="vDivs"></param>
         /// <param name="gridRotation"></param>
         /// <returns></returns>
-        public static DividedSurface ByFaceUVDivisionsAndRotation(ElementFaceReference elementFace, int uDivs, int vDivs, double gridRotation)
+        public static DividedSurface ByFaceUVDivisionsAndRotation(object elementFace, int uDivs, int vDivs, double gridRotation)
         {
 
             if (elementFace == null)
@@ -211,7 +211,7 @@ namespace Revit.Elements
                 throw new Exception("vDivs must be a positive integer");
             }
 
-            return new DividedSurface(elementFace, uDivs, vDivs, gridRotation);
+            return new DividedSurface(ElementFaceReference.TryGetFaceReference(elementFace), uDivs, vDivs, gridRotation);
         }
 
         #endregion
