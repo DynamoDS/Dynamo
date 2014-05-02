@@ -356,7 +356,6 @@ namespace Dynamo.Tests
             var numNode = (DoubleInput)Controller.DynamoModel.Nodes.Last(x => x is DoubleInput);
             numNode.Value = "3";
             dynSettings.Controller.RunExpression(null);
-            Thread.Sleep(300);
 
             watchData = watch.GetValue(0);
             Assert.IsTrue(watchData.IsCollection);
