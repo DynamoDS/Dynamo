@@ -211,9 +211,16 @@ namespace Dynamo.Nodes
                 if (!VerifyFuncId(ref funcId))
                 {
                     LoadProxyCustomNode(funcId);
-                    return;
                 }
                 Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
+
+                if (Definition.IsProxy)
+                {
+                    ArgumentLacing = LacingStrategy.Disabled;
+                    ResyncWithDefinition();
+                    RegisterAllPorts();
+                    Error("Cannot load custom node");
+                }
             }
 
             foreach (XmlNode subNode in childNodes)
@@ -312,6 +319,7 @@ namespace Dynamo.Nodes
             {
                 WorkspaceModel = new CustomNodeWorkspaceModel(NickName, "Custom Nodes") { FileName = null }
             };
+            proxyDef.IsProxy = true;
 
             string userMsg = "Failed to load custom node: " + NickName + ".  Replacing with proxy custom node.";
 
@@ -319,12 +327,6 @@ namespace Dynamo.Nodes
 
             // tell custom node loader, but don't provide path, forcing user to resave explicitly
             dynSettings.Controller.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
-            Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
-
-            ArgumentLacing = LacingStrategy.Disabled;
-            ResyncWithDefinition();
-            RegisterAllPorts();
-            State = ElementState.Error;
         }
 
         //public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)

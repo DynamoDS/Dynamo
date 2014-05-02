@@ -132,12 +132,15 @@ namespace Dynamo.Utilities
             // from somewhere else
             if (Contains(guid))
             {
-                return GetNodeInfo(guid);
+                var nodeInfo = GetNodeInfo(guid);
+                if (nodeInfo != null)
+                {
+                    return nodeInfo;
+                }
             }
 
             var info = new CustomNodeInfo(guid, name, category, description, file);
             SetNodeInfo(info);
-
             return info;
         }
 
@@ -316,6 +319,45 @@ namespace Dynamo.Utilities
                     return def;
                 }
             }
+            return null;
+        }
+
+        /// <summary>
+        ///     Try to reload function definition and set all custom node 
+        ///     instances' defintion to the new one. It happens when loading
+        ///     custom node for proxy node.
+        /// </summary>
+        /// <param name="id">The unique id for the node</param>
+        /// <returns></returns>
+        public CustomNodeDefinition ReloadFunctionDefintion(Guid id)
+        {
+            CustomNodeDefinition def;
+            if (GetDefinitionFromPath(id, out def))
+            {
+                if (def == null)
+                {
+                    return null;
+                }
+
+                var customNodeInstances =
+                       dynSettings.Controller
+                                  .DynamoModel
+                                  .AllNodes
+                                  .OfType<Function>()
+                                  .Where(f => f.Definition != null &&
+                                              f.Definition.FunctionId.Equals(id));
+
+                foreach (var item in customNodeInstances)
+                {
+                    item.Definition = def;
+                    item.ResyncWithDefinition();
+                    item.State = ElementState.Dead;
+                    item.ValidateConnections();
+                }
+
+                return def;
+            }
+
             return null;
         }
 
@@ -711,6 +753,7 @@ namespace Dynamo.Utilities
                 //controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
 
                 // set the node as loaded
+                LoadedCustomNodes.Remove(def.FunctionId);
                 LoadedCustomNodes.Add(def.FunctionId, def);
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");

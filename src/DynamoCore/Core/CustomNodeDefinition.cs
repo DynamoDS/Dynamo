@@ -32,6 +32,7 @@ namespace Dynamo
         public CustomNodeWorkspaceModel WorkspaceModel { get; internal set; }
         public IEnumerable<string> Parameters { get; internal set; }
         public IEnumerable<string> ReturnKeys { get; internal set; }
+        public bool IsProxy { get; set; }
 
         public string DisplayName
         {
