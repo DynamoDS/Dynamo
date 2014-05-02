@@ -451,8 +451,14 @@ namespace ProtoCore.Utils
         }
         */
 
-
-        // Retrieve the first non-array element in an array 
+        
+        /// <summary>
+        /// Retrieve the first non-array element in an array 
+        /// </summary>
+        /// <param name="svArray"></param>
+        /// <param name="sv"></param>
+        /// <param name="core"></param>
+        /// <returns> true if the element was found </returns>
         public static bool GetFirstNonArrayStackValue(StackValue svArray, ref StackValue sv, Core core)
         {
             if (AddressType.ArrayPointer != svArray.optype)
@@ -461,6 +467,13 @@ namespace ProtoCore.Utils
             }
 
             int ptr = (int)svArray.opdata;
+
+            // Handle the case where the array is valid but empty
+            if (null == core.Rmem.Heap.Heaplist[ptr].Stack || 0 == core.Rmem.Heap.Heaplist[ptr].Stack.Length)
+            {
+                return false;
+            }
+
             while (StackUtils.IsArray(core.Rmem.Heap.Heaplist[ptr].Stack[0]))
             {
                 ptr = (int)core.Rmem.Heap.Heaplist[ptr].Stack[0].opdata;
