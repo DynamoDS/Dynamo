@@ -163,12 +163,16 @@ namespace Dynamo.Controls
         /// 
         private void HandleCacheValueUpdated()
         {
-            if (previewControl == null) // There's no preview control yet.
-                return;
-            if (previewControl.IsHidden || previewControl.IsTransitional)
-                return; // Preview control does not need to know about this.
+            Dispatcher.BeginInvoke(new Action(delegate
+            {
+                if (previewControl == null) // There's no preview control yet.
+                    return;
 
-            previewControl.BindToDataSource(ViewModel.NodeLogic.CachedValue);
+                if (previewControl.IsHidden || previewControl.IsTransitional)
+                    return; // Preview control does not need to know about this.
+
+                previewControl.BindToDataSource(ViewModel.NodeLogic.CachedValue);
+            }));
         }
 
         void ViewModel_RequestsSelection(object sender, EventArgs e)
