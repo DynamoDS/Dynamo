@@ -117,7 +117,7 @@
                   Visibility="Collapsed"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center">
-                <TextBlock>Small Content</TextBlock>
+                <TextBlock></TextBlock>
             </Grid>
 
             <Grid Name="largeContentGrid"
@@ -127,7 +127,6 @@
                   Visibility="Collapsed"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center">
-                <TextBlock FontSize="32">Large Content</TextBlock>
             </Grid>
         </Grid>
 

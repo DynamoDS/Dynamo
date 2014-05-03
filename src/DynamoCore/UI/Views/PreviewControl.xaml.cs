@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Dynamo.Controls;
+using Dynamo.Nodes;
+using Dynamo.ViewModels;
+using ProtoCore.Mirror;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,6 +39,11 @@ namespace Dynamo.UI.Controls
         private Queue<State> queuedRequest = new Queue<State>();
         private Canvas hostingCanvas = null;
 
+        // Data source and display.
+        private MirrorData mirrorData = null;
+        private String cachedSmallContent = null;
+        private WatchViewModel cachedLargeContent = null;
+
         // Animation storyboards.
         private Storyboard phaseInStoryboard = null;
         private Storyboard phaseOutStoryboard = null;
@@ -69,10 +78,28 @@ namespace Dynamo.UI.Controls
                 DequeueAndBeginTransition();
         }
 
+        internal void BindToDataSource(MirrorData mirrorData)
+        {
+            // First detach the bound data from its view.
+            ResetContentViews();
+
+            this.mirrorData = mirrorData;
+            this.cachedLargeContent = null; // Reset expanded content.
+            this.cachedSmallContent = null; // Reset condensed content.
+
+            // If at the time of data binding the preview control is within the 
+            // following states, then its contents need to be updated immediately.
+            if (this.IsCondensed)
+                RefreshCondensedDisplay();
+            else if (this.IsExpanded)
+                RefreshExpandedDisplay();
+        }
+
         #endregion
 
         #region Public Class Properties
 
+        internal bool IsDataBound { get { return mirrorData != null; } }
         internal bool IsHidden { get { return currentState == State.Hidden; } }
         internal bool IsCondensed { get { return currentState == State.Condensed; } }
         internal bool IsExpanded { get { return currentState == State.Expanded; } }
@@ -142,6 +169,83 @@ namespace Dynamo.UI.Controls
                 this.StateChanged(this, EventArgs.Empty);
         }
 
+        private void ResetContentViews()
+        {
+            var smallContentView = smallContentGrid.Children[0] as TextBlock;
+            smallContentView.Text = string.Empty;
+
+            if (largeContentGrid.Children.Count <= 0)
+                return; // No view to reset, return now.
+
+            var watchTree = largeContentGrid.Children[0] as WatchTree;
+            var rootDataContext = watchTree.DataContext as WatchViewModel;
+
+            // Unbind the view from data context, then clear the data context.
+            BindingOperations.ClearAllBindings(watchTree.treeView1);
+            rootDataContext.Children.Clear();
+        }
+
+        private void RefreshCondensedDisplay()
+        {
+            // The preview control will not have its content refreshed unless 
+            // the content is null. In order to perform real refresh, new data 
+            // source needs to be rebound to the preview control by calling 
+            // BindToDataSource method.
+            // 
+            if (cachedSmallContent != null)
+                return;
+
+            if ((mirrorData == null) || mirrorData.IsNull)
+                cachedSmallContent = "null";
+            else
+            {
+                var clrData = mirrorData.Data;
+                if (clrData == null)
+                    cachedSmallContent = "null";
+                else
+                {
+                    cachedSmallContent = string.Format("{0} ({1})",
+                        clrData.ToString(), clrData.GetType().ToString());
+                }
+            }
+
+            var smallContentView = smallContentGrid.Children[0] as TextBlock;
+            smallContentView.Text = cachedSmallContent; // Update displayed text.
+        }
+
+        private void RefreshExpandedDisplay()
+        {
+            // The preview control will not have its content refreshed unless 
+            // the content is null. In order to perform real refresh, new data 
+            // source needs to be rebound to the preview control by calling 
+            // BindToDataSource method.
+            // 
+            if (this.cachedLargeContent != null)
+                return;
+
+            if (largeContentGrid.Children.Count <= 0)
+            {
+                var newWatchTree = new WatchTree();
+                newWatchTree.DataContext = new WatchViewModel();
+                largeContentGrid.Children.Add(newWatchTree);
+            }
+
+            var watchTree = largeContentGrid.Children[0] as WatchTree;
+            var rootDataContext = watchTree.DataContext as WatchViewModel;
+
+            // Associate the data context to the view before binding.
+            cachedLargeContent = Watch.Process(mirrorData, string.Empty, false);
+            rootDataContext.Children.Add(cachedLargeContent);
+
+            // Establish data binding between data context and the view.
+            watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
+                new Binding("Children")
+                {
+                    Mode = BindingMode.TwoWay,
+                    Source = rootDataContext
+                });
+        }
+
         static bool switched = false;
 
         private Size ComputeLargeContentSize()
@@ -177,6 +281,7 @@ namespace Dynamo.UI.Controls
                 throw new InvalidOperationException();
 
             CenterHorizontallyOnHostCanvas();
+            RefreshCondensedDisplay(); // Bind data to the view, if needed.
 
             this.centralizedGrid.Opacity = 0.0;
             this.centralizedGrid.Visibility = System.Windows.Visibility.Visible;
@@ -200,6 +305,8 @@ namespace Dynamo.UI.Controls
             if (this.IsExpanded == false)
                 throw new InvalidOperationException();
 
+            RefreshCondensedDisplay(); // Bind data to the view, if needed.
+
             this.smallContentGrid.Visibility = System.Windows.Visibility.Visible;
             SetCurrentStateAndNotify(State.Transitional);
             this.condenseStoryboard.Begin(this, true);
@@ -209,6 +316,8 @@ namespace Dynamo.UI.Controls
         {
             if (this.IsCondensed == false)
                 throw new InvalidOperationException();
+
+            RefreshExpandedDisplay(); // Bind data to the view, if needed.
 
             this.largeContentGrid.Visibility = System.Windows.Visibility.Visible;
             SetCurrentStateAndNotify(State.Transitional);
