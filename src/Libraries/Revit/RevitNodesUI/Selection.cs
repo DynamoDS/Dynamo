@@ -200,7 +200,8 @@ namespace Dynamo.Nodes
             var selectButton = new DynamoNodeButton()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Top,
+                Height = Configurations.PortHeightInPixels,
             };
             selectButton.Click += selectButton_Click;
 
@@ -427,7 +428,8 @@ namespace Dynamo.Nodes
             var selectButton = new DynamoNodeButton()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Top,
+                Height = Configurations.PortHeightInPixels,
             };
             selectButton.Click += selectButton_Click;
 
@@ -689,7 +691,8 @@ namespace Dynamo.Nodes
             var selectButton = new DynamoNodeButton()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Top,
+                Height = Configurations.PortHeightInPixels,
             };
             selectButton.Click += selectButton_Click;
 
