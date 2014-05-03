@@ -739,7 +739,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
-            if ((bool)value == true)
+            if ((int)value > 0)
             {
                 return "Hide Console";
             }
@@ -984,15 +984,12 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            bool consoleShowing = (bool) value;
-            if (consoleShowing)
-                return 100.0;
-            return 0;
+            return new GridLength((int)value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            throw new NotSupportedException();
+            return ((GridLength)value).Value;
         }
     }
 
