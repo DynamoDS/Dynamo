@@ -15,8 +15,14 @@ namespace Dynamo.UI
         public static readonly double IntegerSliderTextBoxWidth = 30.0;
         public static readonly double MaxWatchNodeWidth = 280.0;
         public static readonly double MaxWatchNodeHeight = 310.0;
-        public static readonly double MinWatchNodeWidth = 135.0;
-        public static readonly double MinWatchNodeHeight = 32.0;
+
+        public static readonly double MaxExpandedPreviewWidth = MaxWatchNodeWidth;
+        public static readonly double MaxExpandedPreviewHeight = MaxWatchNodeHeight;
+        public static readonly double MaxCondensedPreviewWidth = 280.0;
+        public static readonly double MaxCondensedPreviewHeight = 64.0;
+        public static readonly double DefCondensedPreviewWidth = 135.0;
+        public static readonly double DefCondensedPreviewHeight = 32.0;
+        public static readonly double PreviewControlMargin = 6.0;
 
         #endregion
 

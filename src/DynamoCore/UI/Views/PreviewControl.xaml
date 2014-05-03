@@ -42,11 +42,11 @@
 
         <Storyboard x:Key="expandStoryboard"
                     Completed="OnPreviewControlExpanded">
-            <DoubleAnimation Name="widthAnimator"
+            <DoubleAnimation Name="expandWidthAnimator"
                              Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Width"
                              Duration="{StaticResource AnimationDuration}" />
-            <DoubleAnimation Name="heightAnimator"
+            <DoubleAnimation Name="expandHeightAnimator"
                              Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Height"
                              Duration="{StaticResource AnimationDuration}" />
@@ -67,12 +67,14 @@
                              Storyboard.TargetProperty="Opacity"
                              To="0.0"
                              Duration="{StaticResource AnimationDuration}" />
-            <DoubleAnimation Storyboard.TargetName="centralizedGrid"
+            <DoubleAnimation Name="condenseWidthAnimator"
+                             Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Width"
                              To="{StaticResource MinPreviewControlWidth}"
                              Duration="{StaticResource AnimationDuration}"
                              BeginTime="{StaticResource ResizeBeginTime}" />
-            <DoubleAnimation Storyboard.TargetName="centralizedGrid"
+            <DoubleAnimation Name="condenseHeightAnimator"
+                             Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Height"
                              To="{StaticResource MinPreviewControlHeight}"
                              Duration="{StaticResource AnimationDuration}"
