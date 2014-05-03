@@ -32,9 +32,6 @@ namespace Dynamo.UI.Controls
             Hidden, Condensed, Expanded, Transitional
         }
 
-        private const double MaxPreviewWidth = 500.0;
-        private const double MaxPreviewHeight = 300.0;
-
         private State currentState = State.Hidden;
         private Queue<State> queuedRequest = new Queue<State>();
         private Canvas hostingCanvas = null;
@@ -211,6 +208,12 @@ namespace Dynamo.UI.Controls
 
             var smallContentView = smallContentGrid.Children[0] as TextBlock;
             smallContentView.Text = cachedSmallContent; // Update displayed text.
+
+            smallContentView.Measure(new Size()
+            {
+                Width = Configurations.MinWatchNodeWidth,
+                Height = Configurations.MinWatchNodeHeight
+            });
         }
 
         private void RefreshExpandedDisplay()
@@ -246,29 +249,25 @@ namespace Dynamo.UI.Controls
                 });
         }
 
-        static bool switched = false;
-
         private Size ComputeLargeContentSize()
         {
-            // TODO: Remove these. Temporary logic to ensure animation's 
-            // value can be updated before the storyboard is started.
-            // 
-            Size size = new Size(180.0, 310.0);
-            switched = !switched;
-
-            if (switched)
+            if (this.cachedLargeContent == null)
             {
-                size.Width = 310.0;
-                size.Height = 180.0;
+                return new Size()
+                {
+                    Width = Configurations.MinWatchNodeWidth,
+                    Height = Configurations.MinWatchNodeHeight
+                };
             }
 
-            // Cap the values within reasonable size.
-            if (size.Width > MaxPreviewWidth)
-                size.Width = MaxPreviewWidth;
-            if (size.Height > MaxPreviewHeight)
-                size.Height = MaxPreviewHeight;
+            var maxSize = new Size()
+            {
+                Width = Configurations.MaxWatchNodeWidth,
+                Height = Configurations.MaxWatchNodeHeight
+            };
 
-            return size;
+            this.largeContentGrid.Measure(maxSize);
+            return this.largeContentGrid.DesiredSize;
         }
 
         #endregion

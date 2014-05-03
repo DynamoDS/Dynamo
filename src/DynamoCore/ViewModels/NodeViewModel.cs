@@ -114,7 +114,7 @@ namespace Dynamo.ViewModels
                 if (nodeLogic.WorkSpace is CustomNodeWorkspaceModel)
                     return "Not available in custom nodes";
 
-                var variableName = nodeLogic.VariableToPreview;
+                var variableName = nodeLogic.AstIdentifierBase;
 
                 string previewValue = "<null>";
                 if (!string.IsNullOrEmpty(variableName))
