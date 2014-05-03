@@ -148,7 +148,27 @@ namespace Dynamo.Controls
                 case "ArgumentLacing":
                     ViewModel.SetLacingTypeCommand.RaiseCanExecuteChanged();
                     break;
+
+                case "IsUpdated":
+                    HandleCacheValueUpdated();
+                    break;
             }
+        }
+
+        /// <summary>
+        /// Whenever property "NodeModel.IsUpdated" is set to true, this method 
+        /// is invoked. It will result in preview control updated, if the control 
+        /// is currently visible. Otherwise this call will be ignored.
+        /// </summary>
+        /// 
+        private void HandleCacheValueUpdated()
+        {
+            if (previewControl == null) // There's no preview control yet.
+                return;
+            if (previewControl.IsHidden || previewControl.IsTransitional)
+                return; // Preview control does not need to know about this.
+
+            previewControl.BindToDataSource(ViewModel.NodeLogic.CachedValue);
         }
 
         void ViewModel_RequestsSelection(object sender, EventArgs e)
@@ -324,6 +344,8 @@ namespace Dynamo.Controls
             }
         }
 
+        #region Preview Control Related Event Handlers
+
         private void PreviewArrow_MouseEnter(object sender, MouseEventArgs e)
         {
             UIElement uiElement = sender as UIElement;
@@ -337,7 +359,12 @@ namespace Dynamo.Controls
                 return;
 
             if (PreviewControl.IsHidden)
+            {
+                if (PreviewControl.IsDataBound == false)
+                    PreviewControl.BindToDataSource(ViewModel.NodeLogic.CachedValue);
+
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+            }
         }
 
         private void OnPreviewIconMouseLeave(object sender, MouseEventArgs e)
@@ -379,5 +406,7 @@ namespace Dynamo.Controls
                     preview.TransitionToState(PreviewControl.State.Hidden);
             }
         }
+
+        #endregion
     }
 }
