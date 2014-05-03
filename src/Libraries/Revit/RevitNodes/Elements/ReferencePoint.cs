@@ -344,7 +344,7 @@ namespace Revit.Elements
         /// <param name="elementCurveReference"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public static ReferencePoint ByLengthOnCurveReference(ElementCurveReference elementCurveReference, double length)
+        public static ReferencePoint ByLengthOnCurveReference(object elementCurveReference, double length)
         {
             if (!Document.IsFamilyDocument)
             {
@@ -356,7 +356,8 @@ namespace Revit.Elements
                 throw new ArgumentNullException("elementCurveReference");
             }
 
-            return new ReferencePoint(elementCurveReference.InternalReference, length, PointOnCurveMeasurementType.SegmentLength, PointOnCurveMeasureFrom.Beginning);
+            return new ReferencePoint(ElementCurveReference.TryGetCurveReference(elementCurveReference).InternalReference, 
+                length, PointOnCurveMeasurementType.SegmentLength, PointOnCurveMeasureFrom.Beginning);
         }
 
         /// <summary>
@@ -366,7 +367,7 @@ namespace Revit.Elements
         /// <param name="elementCurveReference"></param>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        public static ReferencePoint ByParameterOnCurveReference(ElementCurveReference elementCurveReference, double parameter)
+        public static ReferencePoint ByParameterOnCurveReference(object elementCurveReference, double parameter)
         {
             if (!Document.IsFamilyDocument)
             {
@@ -378,30 +379,30 @@ namespace Revit.Elements
                 throw new ArgumentNullException("elementCurveReference");
             }
 
-            return new ReferencePoint(elementCurveReference.InternalReference, parameter, PointOnCurveMeasurementType.NormalizedCurveParameter, PointOnCurveMeasureFrom.Beginning);
+            return new ReferencePoint(ElementCurveReference.TryGetCurveReference(elementCurveReference).InternalReference, parameter, PointOnCurveMeasurementType.NormalizedCurveParameter, PointOnCurveMeasureFrom.Beginning);
         }
 
         /// <summary>
         /// Create a Reference Point by UV coordinates on a Face. This introduces a persistent relationship between
         /// Elements in the Revit document.
         /// </summary>
-        /// <param name="elementFace"></param>
+        /// <param name="elementFaceReference"></param>
         /// <param name="u"></param>
         /// <param name="v"></param>
         /// <returns></returns>
-        public static ReferencePoint ByParametersOnFaceReference(ElementFaceReference elementFace, double u, double v)
+        public static ReferencePoint ByParametersOnFaceReference(object elementFaceReference, double u, double v)
         {
             if (!Document.IsFamilyDocument)
             {
                 throw new Exception("ReferencePoint Elements can only be created in a Family Document");
             }
 
-            if (elementFace == null)
+            if (elementFaceReference == null)
             {
-                throw new ArgumentNullException("elementFace");
+                throw new ArgumentNullException("elementFaceReference");
             }
 
-            return new ReferencePoint(elementFace.InternalReference, new UV(u, v));
+            return new ReferencePoint(ElementFaceReference.TryGetFaceReference(elementFaceReference).InternalReference, new UV(u, v));
         }
 
         #endregion

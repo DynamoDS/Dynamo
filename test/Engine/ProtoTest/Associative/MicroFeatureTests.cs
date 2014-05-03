@@ -1317,6 +1317,16 @@ r = a[null];
         }
 
         [Test]
+        public void TestDynamicArrayNegative03()
+        {
+            // Test calling a function on an empty array
+            string code = @"p = {};x = p.f();";
+            thisTest.RunScriptSource(code, "");
+            thisTest.Verify("x", null);
+        }
+
+
+        [Test]
         public void TestReplicationGuidesOnFunctions01()
         {
             string code = @"def f(){    return = { 1, 2 };}def g(){    return = { 3, 4 };}x = f()<1> + g()<2>;a = x[0];b = x[1];";

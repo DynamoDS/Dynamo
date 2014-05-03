@@ -144,6 +144,27 @@ namespace Dynamo.Nodes
             return cbn.inputIdentifiers.IndexOf(variableName);
         }
 
+        /// <summary>
+        ///  Returns the corresponding output port index for a given defined variable 
+        /// </summary>
+        /// <param name="variableName"></param>
+        /// <returns></returns>
+        public int GetOutportIndex(string variableName)
+        {
+            var svs = CodeBlockUtils.GetStatementVariables(codeStatements, true);
+            for (int i = 0; i < codeStatements.Count; i++)
+            {
+                Statement s = codeStatements[i];
+                if (CodeBlockUtils.DoesStatementRequireOutputPort(svs, i))
+                {
+                    List<string> varNames = Statement.GetDefinedVariableNames(s, true);
+                    if (varNames.Contains(variableName))
+                        return i;
+                }
+            }
+            return -1;
+        }
+
         #endregion
 
         #region Properties
@@ -154,6 +175,11 @@ namespace Dynamo.Nodes
             {
                 return true;
             }
+        }
+
+        public override string AstIdentifierBase
+        {
+            get { return (State == ElementState.Error) ? null : previewVariable; }
         }
 
         public string Code
@@ -230,11 +256,6 @@ namespace Dynamo.Nodes
         #endregion
 
         #region Protected Methods
-
-        public override string VariableToPreview
-        {
-            get { return (State == ElementState.Error) ? null : previewVariable; }
-        }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
@@ -527,6 +548,7 @@ namespace Dynamo.Nodes
             // instead of the full expression with array indexers.
             // 
             previewVariable = duplicatedNode.Value;
+            this.identifier = null; // Reset preview identifier for regeneration.
         }
 
         /// <summary>
@@ -816,7 +838,7 @@ namespace Dynamo.Nodes
                 var ident = identNode.Value;
                 if ((inputIdentifiers.Contains(ident) || definedVars.Contains(ident)) 
                     && !tempVariables.Contains(ident)
-                    && !identNode.Equals(AstIdentifierForPreview))
+                    && !identNode.Equals(this.identifier))
                 {
                     identNode.Name = identNode.Value = LocalizeIdentifier(ident);
                 }

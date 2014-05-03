@@ -1130,6 +1130,26 @@
             The maximum point
             </summary>
         </member>
+        <member name="T:Autodesk.DesignScript.Geometry.Core.EntityTags">
+            <summary>
+            Tags allow you to add arbitrary metadata to a DesignScriptEntity.  This is critical for Revit
+            geometry integration.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Core.EntityTags.AddTag(System.String,System.Object)">
+            <summary>
+            Add or overwrite a Geometry tag
+            </summary>
+            <param name="tag"></param>
+            <param name="data"></param>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Core.EntityTags.LookupTag(System.String)">
+            <summary>
+            Do recursive lookup of geometry tags
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
             <summary>
             Get a string representation of the PolyCurve
@@ -1868,7 +1888,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangentsKnotsDerivatives(Autodesk.DesignScript.Geometry.Point[][],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Double[],System.Double[],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector})">
             <summary>
-            
+            Creates a NurbsSurface satisfying a collection of different surface characteristics. This is the most advanced surface fitting method.  The resultant surface  will pass through all of the points.  The number of tangents must match  the number of points in the corresponding direction.  The resultant surface will be degree 3 in both the U and V direction.  The corner derivatives should be  second order (dP/dUdV) and should be supplied in this order [ lowU, lowV ], [ highU, lowV ],  [ lowU, highV ], [ highU, highV ].
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPoints(Autodesk.DesignScript.Geometry.Point[][],System.Int32,System.Int32)">

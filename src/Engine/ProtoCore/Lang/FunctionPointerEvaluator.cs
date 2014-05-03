@@ -52,13 +52,15 @@ namespace ProtoCore.Lang
             bool isCallingMemberFunciton = procNode.classScope != Constants.kInvalidIndex 
                                            && !procNode.isConstructor 
                                            && !procNode.isStatic;
+
+            bool isValidThisPointer = true;
             if (isCallingMemberFunciton)
             {
                 Validity.Assert(args.Count >= 1);
                 thisPtr = args[0];
                 if (thisPtr.IsArray())
                 {
-                    ArrayUtils.GetFirstNonArrayStackValue(thisPtr, ref thisPtr, runtimeCore);
+                    isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(thisPtr, ref thisPtr, runtimeCore);
                 }
                 else
                 {
@@ -66,7 +68,7 @@ namespace ProtoCore.Lang
                 }
             }
 
-            if (!thisPtr.IsObject() && !thisPtr.IsArray())
+            if (!isValidThisPointer || (!thisPtr.IsObject() && !thisPtr.IsArray()))
             {
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
                                                      WarningMessage.kDeferencingNonPointer);

@@ -295,19 +295,19 @@ namespace Revit.Elements
         /// Create an adaptive component by uv points on a face.
         /// </summary>
         /// <param name="uvs">An array of UV pairs</param>
-        /// <param name="faceReference">The face on which to place the AdaptiveComponent</param>
-        /// <param name="faceReference">The face on which to place the AdaptiveComponent</param>
+        /// <param name="face">The surface on which to place the AdaptiveComponent</param>
+        /// <param name="face">The face on which to place the AdaptiveComponent</param>
         /// <returns></returns>
-        public static AdaptiveComponent ByParametersOnFace(double[][] uvs, object faceReference, FamilySymbol familySymbol)
+        public static AdaptiveComponent ByParametersOnFace(double[][] uvs, object face, FamilySymbol familySymbol)
         {
             if (uvs == null)
             {
                 throw new ArgumentNullException("uvs");
             }
 
-            if (faceReference == null)
+            if (face == null)
             {
-                throw new ArgumentNullException("faceReference");
+                throw new ArgumentNullException("face");
             }
 
             if (familySymbol == null)
@@ -315,26 +315,26 @@ namespace Revit.Elements
                 throw new ArgumentNullException("familySymbol");
             }
 
-            return new AdaptiveComponent(uvs, ElementFaceReference.TryGetFaceReference(faceReference), familySymbol);
+            return new AdaptiveComponent(uvs, ElementFaceReference.TryGetFaceReference(face), familySymbol);
         }
 
         /// <summary>
         /// Create an adaptive component referencing the parameters on a Curve reference
         /// </summary>
         /// <param name="parameters">The parameters on the curve</param>
-        /// <param name="elementCurveReference">The curve to reference</param>
+        /// <param name="curve">The curve to reference</param>
         /// <param name="familySymbol">The family symbol to construct</param>
         /// <returns></returns>
-        public static AdaptiveComponent ByParametersOnCurveReference(double[] parameters, ElementCurveReference elementCurveReference, FamilySymbol familySymbol)
+        public static AdaptiveComponent ByParametersOnCurveReference(double[] parameters, object curve, FamilySymbol familySymbol)
         {
             if (parameters == null)
             {
                 throw new ArgumentNullException("parameters");
             }
 
-            if (elementCurveReference == null)
+            if (curve == null)
             {
-                throw new ArgumentNullException("elementCurveReference");
+                throw new ArgumentNullException("curve");
             }
 
             if (familySymbol == null)
@@ -342,7 +342,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("familySymbol");
             }
 
-            return new AdaptiveComponent(parameters, elementCurveReference.InternalReference, familySymbol);
+            return new AdaptiveComponent(parameters, ElementCurveReference.TryGetCurveReference(curve).InternalReference, familySymbol);
         }
 
         #endregion

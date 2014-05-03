@@ -426,12 +426,3 @@ namespace Revit.Elements
         }
     }
 }
-
-
-
-
-
-
-
-
-

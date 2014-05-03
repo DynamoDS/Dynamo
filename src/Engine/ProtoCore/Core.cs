@@ -1185,8 +1185,7 @@ namespace ProtoCore
 
                 foreach (var symbol in localSymbols)
                 {
-                    // Dont remove from symbol table, but just nullify it.
-                    block.symbolTable.symbolList[symbol.symbolTableIndex] = new SymbolNode();
+                    block.symbolTable.UndefineSymbol(symbol);
                 }
 
                 break;
