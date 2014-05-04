@@ -350,13 +350,6 @@ namespace Dynamo.Controls
 
         #region Preview Control Related Event Handlers
 
-        private void PreviewArrow_MouseEnter(object sender, MouseEventArgs e)
-        {
-            UIElement uiElement = sender as UIElement;
-            if (uiElement.Visibility == System.Windows.Visibility.Visible)
-                ViewModel.ShowPreviewCommand.Execute(null);
-        }
-
         private void OnPreviewIconMouseEnter(object sender, MouseEventArgs e)
         {
             if (PreviewControl.IsTransitional) // Transitioning, come back later.

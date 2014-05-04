@@ -359,32 +359,6 @@
             </Rectangle.Visibility>
         </Rectangle>
 
-        <Polygon Grid.Row="3"
-                 Grid.ColumnSpan="3"
-                 Fill="White"
-                 Canvas.ZIndex="42"
-                 HorizontalAlignment="Center"
-                 VerticalAlignment="Bottom"
-                 StrokeThickness="1"
-                 Stroke="Gray"
-                 MouseEnter="PreviewArrow_MouseEnter">
-            <Polygon.Visibility>
-                <Binding Path="IsPreviewInsetVisible"
-                         UpdateSourceTrigger="PropertyChanged"
-                         Mode="OneWay"
-                         Converter="{StaticResource BooleanToVisibilityConverter}">
-                </Binding>
-            </Polygon.Visibility>
-            <Polygon.Points>
-                <Point X="0"
-                       Y="6" />
-                <Point X="6"
-                       Y="0" />
-                <Point X="12"
-                       Y="6" />
-            </Polygon.Points>
-        </Polygon>
-
         <Canvas Name="expansionBay"
                 Grid.Row="4"
                 Grid.Column="0"

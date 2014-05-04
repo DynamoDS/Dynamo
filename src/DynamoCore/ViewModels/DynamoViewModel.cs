@@ -198,7 +198,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand EscapeCommand { get; set; }
         public DelegateCommand SelectVisualizationInViewCommand { get; set; }
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
-        public DelegateCommand TogglePreviewBubbleVisibilityCommand { get; set; }
         public DelegateCommand ExportToSTLCommand { get; set; }
         public DelegateCommand ImportLibraryCommand { get; set; }
         public DelegateCommand SetLengthUnitCommand { get; set; }
@@ -453,11 +452,6 @@ namespace Dynamo.ViewModels
 
         public bool IsMouseDown { get; set; }
 
-        public bool IsShowPreviewByDefault
-        {
-            get { return Controller.IsShowPreviewByDefault; }
-        }
-
         public ConnectorType ConnectorType
         {
             get
@@ -612,7 +606,6 @@ namespace Dynamo.ViewModels
             EscapeCommand = new DelegateCommand(Escape, CanEscape);
             SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
-            TogglePreviewBubbleVisibilityCommand = new DelegateCommand(TogglePreviewBubbleVisibility, CanTogglePreviewBubbleVisibility);
             ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
             ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
             SetLengthUnitCommand = new DelegateCommand(SetLengthUnit, CanSetLengthUnit);
@@ -691,9 +684,6 @@ namespace Dynamo.ViewModels
             {
                 case "IsUILocked":
                     RaisePropertyChanged("IsUILocked");
-                    break;
-                case "IsShowPreviewByDefault":
-                    RaisePropertyChanged("IsShowPreviewByDefault");
                     break;
             }
         }
@@ -1453,16 +1443,6 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanShowInfoBubble(object parameter)
-        {
-            return true;
-        }
-
-        public void TogglePreviewBubbleVisibility(object parameter)
-        {
-            this.Controller.IsShowPreviewByDefault = !this.Controller.IsShowPreviewByDefault;
-        }
-
-        internal bool CanTogglePreviewBubbleVisibility(object parameter)
         {
             return true;
         }
