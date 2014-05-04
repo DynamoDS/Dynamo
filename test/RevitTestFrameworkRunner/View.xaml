@@ -79,7 +79,7 @@
         </StackPanel>
 
         <StackPanel Margin="5" Grid.Row="2" Grid.Column="0" >
-            <TextBlock Text="Working Directory:"></TextBlock>
+            <TextBlock Text="Working Directory (Location of empty.rfa):"></TextBlock>
             <TextBox Text="{Binding WorkingPath, Converter={StaticResource WorkingPathConverter}}"></TextBox>
         </StackPanel>
         
