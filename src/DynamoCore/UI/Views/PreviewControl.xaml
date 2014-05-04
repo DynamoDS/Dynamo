@@ -100,6 +100,17 @@
                              Duration="{StaticResource AnimationDuration}" />
         </Storyboard>
 
+        <Storyboard x:Key="resizingStoryboard">
+            <DoubleAnimation Name="gridWidthAnimator"
+                             Storyboard.TargetName="centralizedGrid"
+                             Storyboard.TargetProperty="Width"
+                             Duration="{StaticResource AnimationDuration}" />
+            <DoubleAnimation Name="gridHeightAnimator"
+                             Storyboard.TargetName="centralizedGrid"
+                             Storyboard.TargetProperty="Height"
+                             Duration="{StaticResource AnimationDuration}" />
+        </Storyboard>
+
     </UserControl.Resources>
 
     <Grid Name="outerContainer"

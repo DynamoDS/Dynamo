@@ -32,6 +32,11 @@ namespace Dynamo.UI.Controls
             Hidden, Condensed, Expanded, Transitional
         }
 
+        public enum SizeAnimator
+        {
+            Expansion, Condensation, Resizing
+        }
+
         private State currentState = State.Hidden;
         private Queue<State> queuedRequest = new Queue<State>();
         private Canvas hostingCanvas = null;
@@ -46,10 +51,8 @@ namespace Dynamo.UI.Controls
         private Storyboard phaseOutStoryboard = null;
         private Storyboard expandStoryboard = null;
         private Storyboard condenseStoryboard = null;
-        private DoubleAnimation condenseWidthAnimator = null;
-        private DoubleAnimation condenseHeightAnimator = null;
-        private DoubleAnimation expandWidthAnimator = null;
-        private DoubleAnimation expandHeightAnimator = null;
+        private Storyboard resizingStoryboard = null;
+        private Dictionary<string, DoubleAnimation> sizeAnimators = null;
 
         public event StateChangedEventHandler StateChanged = null;
 
@@ -200,18 +203,11 @@ namespace Dynamo.UI.Controls
             if (cachedSmallContent != null)
                 return;
 
-            if ((mirrorData == null) || mirrorData.IsNull)
-                cachedSmallContent = "null";
-            else
+            cachedSmallContent = "null";
+            if (mirrorData != null && (mirrorData.IsNull == false))
             {
                 var clrData = mirrorData.Data;
-                if (clrData == null)
-                    cachedSmallContent = "null";
-                else
-                {
-                    cachedSmallContent = string.Format("{0} ({1})",
-                        clrData.ToString(), clrData.GetType().ToString());
-                }
+                cachedSmallContent = clrData.ToString();
             }
 
             var smallContentView = smallContentGrid.Children[0] as TextBlock;
@@ -309,6 +305,27 @@ namespace Dynamo.UI.Controls
             return size;
         }
 
+        private void UpdateAnimatorTargetSize(SizeAnimator animator, Size targetSize)
+        {
+            switch (animator)
+            {
+                case SizeAnimator.Expansion:
+                    sizeAnimators["expandWidthAnimator"].To = targetSize.Width;
+                    sizeAnimators["expandHeightAnimator"].To = targetSize.Height;
+                    break;
+
+                case SizeAnimator.Condensation:
+                    sizeAnimators["condenseWidthAnimator"].To = targetSize.Width;
+                    sizeAnimators["condenseHeightAnimator"].To = targetSize.Height;
+                    break;
+
+                case SizeAnimator.Resizing:
+                    sizeAnimators["gridWidthAnimator"].To = targetSize.Width;
+                    sizeAnimators["gridHeightAnimator"].To = targetSize.Height;
+                    break;
+            }
+        }
+
         #endregion
 
         #region Private Class Methods - Transition Helpers
@@ -354,8 +371,7 @@ namespace Dynamo.UI.Controls
             SetCurrentStateAndNotify(State.Transitional);
 
             var smallContentSize = ComputeSmallContentSize();
-            this.condenseWidthAnimator.To = smallContentSize.Width;
-            this.condenseHeightAnimator.To = smallContentSize.Height;
+            UpdateAnimatorTargetSize(SizeAnimator.Condensation, smallContentSize);
             this.condenseStoryboard.Begin(this, true);
         }
 
@@ -370,16 +386,14 @@ namespace Dynamo.UI.Controls
             SetCurrentStateAndNotify(State.Transitional);
 
             var largeContentSize = ComputeLargeContentSize();
-            this.expandWidthAnimator.To = largeContentSize.Width;
-            this.expandHeightAnimator.To = largeContentSize.Height;
+            UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
             this.expandStoryboard.Begin(this, true);
         }
 
         private void BeginViewSizeTransition(Size targetSize)
         {
-            this.centralizedGrid.Width = targetSize.Width;
-            this.centralizedGrid.Height = targetSize.Height;
-            this.centralizedGrid.UpdateLayout();
+            UpdateAnimatorTargetSize(SizeAnimator.Resizing, targetSize);
+            resizingStoryboard.Begin(this, true);
         }
 
         #endregion
@@ -392,40 +406,38 @@ namespace Dynamo.UI.Controls
             phaseOutStoryboard = this.Resources["phaseOutStoryboard"] as Storyboard;
             expandStoryboard = this.Resources["expandStoryboard"] as Storyboard;
             condenseStoryboard = this.Resources["condenseStoryboard"] as Storyboard;
+            resizingStoryboard = this.Resources["resizingStoryboard"] as Storyboard;
 
-            // There must be width and height animators under expansion storyboard.
-            foreach (var child in expandStoryboard.Children)
+            var children = new List<Timeline>();
+            children.AddRange(expandStoryboard.Children);
+            children.AddRange(condenseStoryboard.Children);
+            children.AddRange(resizingStoryboard.Children);
+
+            this.sizeAnimators = new Dictionary<string, DoubleAnimation>();
+
+            foreach (var child in children)
             {
-                if (string.IsNullOrEmpty(child.Name) == false)
+                if (string.IsNullOrEmpty(child.Name))
+                    continue;
+
+                switch (child.Name)
                 {
-                    if (child.Name.Equals("expandWidthAnimator"))
-                        this.expandWidthAnimator = child as DoubleAnimation;
-                    else if (child.Name.Equals("expandHeightAnimator"))
-                        this.expandHeightAnimator = child as DoubleAnimation;
+                    case "expandWidthAnimator":
+                    case "expandHeightAnimator":
+                    case "condenseWidthAnimator":
+                    case "condenseHeightAnimator":
+                    case "gridWidthAnimator":
+                    case "gridHeightAnimator":
+                        sizeAnimators.Add(child.Name, child as DoubleAnimation);
+                        break;
                 }
             }
 
-            if (this.expandWidthAnimator == null)
-                throw new InvalidOperationException("Expand width animator expected");
-            if (this.expandHeightAnimator == null)
-                throw new InvalidOperationException("Expand height animator expected");
-
-            // There must be width and height animators under condensation storyboard.
-            foreach (var child in condenseStoryboard.Children)
+            if (this.sizeAnimators.Count != 6)
             {
-                if (string.IsNullOrEmpty(child.Name) == false)
-                {
-                    if (child.Name.Equals("condenseWidthAnimator"))
-                        this.condenseWidthAnimator = child as DoubleAnimation;
-                    else if (child.Name.Equals("condenseHeightAnimator"))
-                        this.condenseHeightAnimator = child as DoubleAnimation;
-                }
+                var message = "One or more DoubleAnimation timeline not found";
+                throw new InvalidOperationException(message);
             }
-
-            if (this.condenseWidthAnimator == null)
-                throw new InvalidOperationException("Condense width animator expected");
-            if (this.condenseHeightAnimator == null)
-                throw new InvalidOperationException("Condense height animator expected");
 
             // If there was a request queued before this control is loaded, 
             // then process the request as we now have the right width.
