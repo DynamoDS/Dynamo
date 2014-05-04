@@ -37,6 +37,18 @@ namespace Dynamo.UI.Controls
             PhaseIn, Expansion, Condensation, Resizing
         }
 
+        private struct Element
+        {
+            public const string PhaseInWidthAnimator = "phaseInWidthAnimator";
+            public const string PhaseInHeightAnimator = "phaseInHeightAnimator";
+            public const string ExpandWidthAnimator = "expandWidthAnimator";
+            public const string ExpandHeightAnimator = "expandHeightAnimator";
+            public const string CondenseWidthAnimator = "condenseWidthAnimator";
+            public const string CondenseHeightAnimator = "condenseHeightAnimator";
+            public const string GridWidthAnimator = "gridWidthAnimator";
+            public const string GridHeightAnimator = "gridHeightAnimator";
+        }
+
         private State currentState = State.Hidden;
         private Queue<State> queuedRequest = new Queue<State>();
         private Canvas hostingCanvas = null;
@@ -249,16 +261,6 @@ namespace Dynamo.UI.Controls
 
         private Size ComputeSmallContentSize()
         {
-            // // If there's no content, then return default size.
-            // if ((this.mirrorData == null) || this.mirrorData.IsNull)
-            // {
-            //     return new Size()
-            //     {
-            //         Width = Configurations.DefCondensedPreviewWidth,
-            //         Height = Configurations.DefCondensedPreviewHeight
-            //     };
-            // }
-
             this.smallContentGrid.Measure(new Size()
             {
                 Width = Configurations.MaxCondensedPreviewWidth,
@@ -271,16 +273,6 @@ namespace Dynamo.UI.Controls
 
         private Size ComputeLargeContentSize()
         {
-            // // If there's no content, then return default size.
-            // if ((this.mirrorData == null) || this.mirrorData.IsNull)
-            // {
-            //     return new Size()
-            //     {
-            //         Width = Configurations.DefCondensedPreviewWidth,
-            //         Height = Configurations.DefCondensedPreviewHeight
-            //     };
-            // }
-
             this.largeContentGrid.Measure(new Size()
             {
                 Width = Configurations.MaxExpandedPreviewWidth,
@@ -305,28 +297,34 @@ namespace Dynamo.UI.Controls
 
         private void UpdateAnimatorTargetSize(SizeAnimator animator, Size targetSize)
         {
+            string widthAnimator = string.Empty;
+            string heightAnimator = string.Empty;
+
             switch (animator)
             {
                 case SizeAnimator.PhaseIn:
-                    sizeAnimators["phaseInWidthAnimator"].To = targetSize.Width;
-                    sizeAnimators["phaseInHeightAnimator"].To = targetSize.Height;
+                    widthAnimator = Element.PhaseInWidthAnimator;
+                    heightAnimator = Element.PhaseInHeightAnimator;
                     break;
 
                 case SizeAnimator.Expansion:
-                    sizeAnimators["expandWidthAnimator"].To = targetSize.Width;
-                    sizeAnimators["expandHeightAnimator"].To = targetSize.Height;
+                    widthAnimator = Element.ExpandWidthAnimator;
+                    heightAnimator = Element.ExpandHeightAnimator;
                     break;
 
                 case SizeAnimator.Condensation:
-                    sizeAnimators["condenseWidthAnimator"].To = targetSize.Width;
-                    sizeAnimators["condenseHeightAnimator"].To = targetSize.Height;
+                    widthAnimator = Element.CondenseWidthAnimator;
+                    heightAnimator = Element.CondenseHeightAnimator;
                     break;
 
                 case SizeAnimator.Resizing:
-                    sizeAnimators["gridWidthAnimator"].To = targetSize.Width;
-                    sizeAnimators["gridHeightAnimator"].To = targetSize.Height;
+                    widthAnimator = Element.GridWidthAnimator;
+                    heightAnimator = Element.GridHeightAnimator;
                     break;
             }
+
+            sizeAnimators[widthAnimator].To = targetSize.Width;
+            sizeAnimators[heightAnimator].To = targetSize.Height;
         }
 
         #endregion
@@ -425,14 +423,14 @@ namespace Dynamo.UI.Controls
 
                 switch (child.Name)
                 {
-                    case "phaseInWidthAnimator":
-                    case "phaseInHeightAnimator":
-                    case "expandWidthAnimator":
-                    case "expandHeightAnimator":
-                    case "condenseWidthAnimator":
-                    case "condenseHeightAnimator":
-                    case "gridWidthAnimator":
-                    case "gridHeightAnimator":
+                    case Element.PhaseInWidthAnimator:
+                    case Element.PhaseInHeightAnimator:
+                    case Element.ExpandWidthAnimator:
+                    case Element.ExpandHeightAnimator:
+                    case Element.CondenseWidthAnimator:
+                    case Element.CondenseHeightAnimator:
+                    case Element.GridWidthAnimator:
+                    case Element.GridHeightAnimator:
                         sizeAnimators.Add(child.Name, child as DoubleAnimation);
                         break;
                 }
