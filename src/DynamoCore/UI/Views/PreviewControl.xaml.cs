@@ -218,8 +218,18 @@ namespace Dynamo.UI.Controls
             cachedSmallContent = "null";
             if (mirrorData != null && (mirrorData.IsNull == false))
             {
-                var clrData = mirrorData.Data;
-                cachedSmallContent = clrData.ToString();
+                if (mirrorData.IsCollection == false)
+                {
+                    var clrData = mirrorData.Data;
+                    cachedSmallContent = clrData.ToString();
+                }
+                else
+                {
+                    // TODO(Ben): Can we display details of the array and 
+                    // probably display the first element of the array (even 
+                    // when it is multi-dimensional array)?
+                    cachedSmallContent = "Array";
+                }
             }
 
             var smallContentView = smallContentGrid.Children[0] as TextBlock;
