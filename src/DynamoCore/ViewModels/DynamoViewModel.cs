@@ -423,17 +423,17 @@ namespace Dynamo.ViewModels
             get { return dynSettings.DynamoLogger.LogText; }
         }
 
-        public int ConsoleHeight
+        public bool ConsoleShowing
         {
             get
             {
-                return this.controller.PreferenceSettings.ConsoleHeight;
+                return this.controller.PreferenceSettings.ShowConsole;
             }
             set
             {
-                this.controller.PreferenceSettings.ConsoleHeight = value;
+                this.controller.PreferenceSettings.ShowConsole = value;
 
-                RaisePropertyChanged("ConsoleHeight");
+                RaisePropertyChanged("ConsoleShowing");
             }
         }
 
@@ -1257,13 +1257,13 @@ namespace Dynamo.ViewModels
 
         public void ToggleConsoleShowing(object parameter)
         {
-            if (ConsoleHeight == 0)
+            if (ConsoleShowing)
             {
-                ConsoleHeight = 100;
+                ConsoleShowing = false;
             }
             else
             {
-                ConsoleHeight = 0;
+                ConsoleShowing = true;
             }
         }
 
