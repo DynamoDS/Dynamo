@@ -34,7 +34,7 @@ namespace Dynamo.UI.Controls
 
         public enum SizeAnimator
         {
-            Expansion, Condensation, Resizing
+            PhaseIn, Expansion, Condensation, Resizing
         }
 
         private State currentState = State.Hidden;
@@ -249,15 +249,15 @@ namespace Dynamo.UI.Controls
 
         private Size ComputeSmallContentSize()
         {
-            // If there's no content, then return default size.
-            if ((this.mirrorData == null) || this.mirrorData.IsNull)
-            {
-                return new Size()
-                {
-                    Width = Configurations.DefCondensedPreviewWidth,
-                    Height = Configurations.DefCondensedPreviewHeight
-                };
-            }
+            // // If there's no content, then return default size.
+            // if ((this.mirrorData == null) || this.mirrorData.IsNull)
+            // {
+            //     return new Size()
+            //     {
+            //         Width = Configurations.DefCondensedPreviewWidth,
+            //         Height = Configurations.DefCondensedPreviewHeight
+            //     };
+            // }
 
             this.smallContentGrid.Measure(new Size()
             {
@@ -271,15 +271,15 @@ namespace Dynamo.UI.Controls
 
         private Size ComputeLargeContentSize()
         {
-            // If there's no content, then return default size.
-            if ((this.mirrorData == null) || this.mirrorData.IsNull)
-            {
-                return new Size()
-                {
-                    Width = Configurations.DefCondensedPreviewWidth,
-                    Height = Configurations.DefCondensedPreviewHeight
-                };
-            }
+            // // If there's no content, then return default size.
+            // if ((this.mirrorData == null) || this.mirrorData.IsNull)
+            // {
+            //     return new Size()
+            //     {
+            //         Width = Configurations.DefCondensedPreviewWidth,
+            //         Height = Configurations.DefCondensedPreviewHeight
+            //     };
+            // }
 
             this.largeContentGrid.Measure(new Size()
             {
@@ -293,12 +293,10 @@ namespace Dynamo.UI.Controls
 
         private Size ContentToControlSize(Size size)
         {
-            if (size.IsEmpty)
-            {
+            if (size.Width < Configurations.DefCondensedPreviewWidth)
                 size.Width = Configurations.DefCondensedPreviewWidth;
+            if (size.Height < Configurations.DefCondensedPreviewHeight)
                 size.Height = Configurations.DefCondensedPreviewHeight;
-                return size;
-            }
 
             size.Width = (size.Width + (Configurations.PreviewControlMargin * 2.0));
             size.Height = (size.Height + (Configurations.PreviewControlMargin * 2.0));
@@ -309,6 +307,11 @@ namespace Dynamo.UI.Controls
         {
             switch (animator)
             {
+                case SizeAnimator.PhaseIn:
+                    sizeAnimators["phaseInWidthAnimator"].To = targetSize.Width;
+                    sizeAnimators["phaseInHeightAnimator"].To = targetSize.Height;
+                    break;
+
                 case SizeAnimator.Expansion:
                     sizeAnimators["expandWidthAnimator"].To = targetSize.Width;
                     sizeAnimators["expandHeightAnimator"].To = targetSize.Height;
@@ -339,9 +342,8 @@ namespace Dynamo.UI.Controls
             RefreshCondensedDisplay(); // Bind data to the view, if needed.
 
             // Update size before fading in to view.
-            var size = ComputeSmallContentSize();
-            this.centralizedGrid.Width = size.Width;
-            this.centralizedGrid.Height = size.Height;
+            var smallContentSize = ComputeSmallContentSize();
+            UpdateAnimatorTargetSize(SizeAnimator.PhaseIn, smallContentSize);
 
             this.centralizedGrid.Opacity = 0.0;
             this.centralizedGrid.Visibility = System.Windows.Visibility.Visible;
@@ -409,6 +411,7 @@ namespace Dynamo.UI.Controls
             resizingStoryboard = this.Resources["resizingStoryboard"] as Storyboard;
 
             var children = new List<Timeline>();
+            children.AddRange(phaseInStoryboard.Children);
             children.AddRange(expandStoryboard.Children);
             children.AddRange(condenseStoryboard.Children);
             children.AddRange(resizingStoryboard.Children);
@@ -422,6 +425,8 @@ namespace Dynamo.UI.Controls
 
                 switch (child.Name)
                 {
+                    case "phaseInWidthAnimator":
+                    case "phaseInHeightAnimator":
                     case "expandWidthAnimator":
                     case "expandHeightAnimator":
                     case "condenseWidthAnimator":
@@ -433,7 +438,7 @@ namespace Dynamo.UI.Controls
                 }
             }
 
-            if (this.sizeAnimators.Count != 6)
+            if (this.sizeAnimators.Count != 8)
             {
                 var message = "One or more DoubleAnimation timeline not found";
                 throw new InvalidOperationException(message);

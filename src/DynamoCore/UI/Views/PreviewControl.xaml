@@ -28,6 +28,14 @@
 
         <Storyboard x:Key="phaseInStoryboard"
                     Completed="OnPreviewControlPhasedIn">
+            <DoubleAnimation Name="phaseInWidthAnimator"
+                             Storyboard.TargetName="centralizedGrid"
+                             Storyboard.TargetProperty="Width"
+                             Duration="{StaticResource AnimationDuration}" />
+            <DoubleAnimation Name="phaseInHeightAnimator"
+                             Storyboard.TargetName="centralizedGrid"
+                             Storyboard.TargetProperty="Height"
+                             Duration="{StaticResource AnimationDuration}" />
             <DoubleAnimation Storyboard.TargetName="centralizedGrid"
                              Storyboard.TargetProperty="Opacity"
                              From="0.0"
