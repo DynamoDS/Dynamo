@@ -763,14 +763,7 @@ namespace Dynamo.Models
 
         public IEnumerable<NodeModel> GetTopMostNodes()
         {
-#if USE_DSENGINE
             return Nodes.Where(IsTopMostNode);
-#else
-            return Nodes.Where(
-                x =>
-                    x.OutPortData.Any()
-                    && x.OutPorts.Any(y => !y.Connectors.Any() || y.Connectors.Any(c => c.End.Owner is Output)));
-#endif
         }
 
         //If node is connected to some other node(other than Output) then it is not a 'top' node
