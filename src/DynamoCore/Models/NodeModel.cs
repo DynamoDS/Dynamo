@@ -1648,6 +1648,9 @@ namespace Dynamo.Models
         private string GetDrawableId(int outPortIndex)
         {
             var output = GetAstIdentifierForOutputIndex(outPortIndex);
+            if (output == null)
+                return null;
+
             return output.ToString();
         }
 
