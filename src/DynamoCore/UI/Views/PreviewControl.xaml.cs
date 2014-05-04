@@ -29,7 +29,7 @@ namespace Dynamo.UI.Controls
 
         public enum State
         {
-            Hidden, Condensed, Expanded, Transitional
+            Hidden, Condensed, Expanded, InTransition
         }
 
         public enum SizeAnimator
@@ -78,6 +78,7 @@ namespace Dynamo.UI.Controls
             this.Loaded += OnPreviewControlLoaded;
         }
 
+        // TODO(Ben): Document this when codes are finalized.
         public void TransitionToState(State nextState)
         {
             queuedRequest.Enqueue(nextState);
@@ -89,9 +90,10 @@ namespace Dynamo.UI.Controls
             // loaded, then do not attempt to process the transition request.
             // 
             if (this.IsLoaded)
-                DequeueAndBeginTransition();
+                BeginNextTransition();
         }
 
+        // TODO(Ben): Document this when codes are finalized.
         internal void BindToDataSource(MirrorData mirrorData)
         {
             // First detach the bound data from its view.
@@ -123,7 +125,7 @@ namespace Dynamo.UI.Controls
         internal bool IsHidden { get { return currentState == State.Hidden; } }
         internal bool IsCondensed { get { return currentState == State.Condensed; } }
         internal bool IsExpanded { get { return currentState == State.Expanded; } }
-        internal bool IsTransitional { get { return currentState == State.Transitional; } }
+        internal bool IsInTransition { get { return currentState == State.InTransition; } }
 
         private Canvas HostingCanvas
         {
@@ -153,9 +155,9 @@ namespace Dynamo.UI.Controls
             SetValue(Canvas.LeftProperty, widthDifference * 0.5);
         }
 
-        private void DequeueAndBeginTransition()
+        private void BeginNextTransition()
         {
-            if (this.IsTransitional || (queuedRequest.Count <= 0))
+            if (this.IsInTransition || (queuedRequest.Count <= 0))
                 return; // Still in transition or nothing else to do.
 
             State requestedState = queuedRequest.Dequeue();
@@ -357,7 +359,7 @@ namespace Dynamo.UI.Controls
             this.centralizedGrid.Visibility = System.Windows.Visibility.Visible;
             this.smallContentGrid.Visibility = System.Windows.Visibility.Visible;
 
-            SetCurrentStateAndNotify(State.Transitional);
+            SetCurrentStateAndNotify(State.InTransition);
             phaseInStoryboard.Begin(this, true);
         }
 
@@ -366,7 +368,7 @@ namespace Dynamo.UI.Controls
             if (this.IsCondensed == false)
                 throw new InvalidOperationException();
 
-            SetCurrentStateAndNotify(State.Transitional);
+            SetCurrentStateAndNotify(State.InTransition);
             phaseOutStoryboard.Begin(this, true);
         }
 
@@ -378,7 +380,7 @@ namespace Dynamo.UI.Controls
             RefreshCondensedDisplay(); // Bind data to the view, if needed.
 
             this.smallContentGrid.Visibility = System.Windows.Visibility.Visible;
-            SetCurrentStateAndNotify(State.Transitional);
+            SetCurrentStateAndNotify(State.InTransition);
 
             var smallContentSize = ComputeSmallContentSize();
             UpdateAnimatorTargetSize(SizeAnimator.Condensation, smallContentSize);
@@ -393,7 +395,7 @@ namespace Dynamo.UI.Controls
             RefreshExpandedDisplay(); // Bind data to the view, if needed.
 
             this.largeContentGrid.Visibility = System.Windows.Visibility.Visible;
-            SetCurrentStateAndNotify(State.Transitional);
+            SetCurrentStateAndNotify(State.InTransition);
 
             var largeContentSize = ComputeLargeContentSize();
             UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
@@ -454,33 +456,33 @@ namespace Dynamo.UI.Controls
 
             // If there was a request queued before this control is loaded, 
             // then process the request as we now have the right width.
-            DequeueAndBeginTransition();
+            BeginNextTransition();
         }
 
         private void OnPreviewControlPhasedIn(object sender, EventArgs e)
         {
             SetCurrentStateAndNotify(State.Condensed);
-            DequeueAndBeginTransition(); // See if there's any more requests.
+            BeginNextTransition(); // See if there's any more requests.
         }
 
         private void OnPreviewControlPhasedOut(object sender, EventArgs e)
         {
             SetCurrentStateAndNotify(State.Hidden);
-            DequeueAndBeginTransition(); // See if there's any more requests.
+            BeginNextTransition(); // See if there's any more requests.
         }
 
         private void OnPreviewControlExpanded(object sender, EventArgs e)
         {
             SetCurrentStateAndNotify(State.Expanded);
             smallContentGrid.Visibility = System.Windows.Visibility.Hidden;
-            DequeueAndBeginTransition(); // See if there's any more requests.
+            BeginNextTransition(); // See if there's any more requests.
         }
 
         private void OnPreviewControlCondensed(object sender, EventArgs e)
         {
             SetCurrentStateAndNotify(State.Condensed);
             largeContentGrid.Visibility = System.Windows.Visibility.Hidden;
-            DequeueAndBeginTransition(); // See if there's any more requests.
+            BeginNextTransition(); // See if there's any more requests.
         }
 
         #endregion

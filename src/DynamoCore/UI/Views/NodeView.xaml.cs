@@ -168,7 +168,7 @@ namespace Dynamo.Controls
                 if (previewControl == null) // There's no preview control yet.
                     return;
 
-                if (previewControl.IsHidden || previewControl.IsTransitional)
+                if (previewControl.IsHidden || previewControl.IsInTransition)
                     return; // Preview control does not need to know about this.
 
                 previewControl.BindToDataSource(ViewModel.NodeLogic.CachedValue);
@@ -352,7 +352,7 @@ namespace Dynamo.Controls
 
         private void OnPreviewIconMouseEnter(object sender, MouseEventArgs e)
         {
-            if (PreviewControl.IsTransitional) // Transitioning, come back later.
+            if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
 
             if (PreviewControl.IsHidden)
@@ -366,7 +366,7 @@ namespace Dynamo.Controls
 
         private void OnPreviewIconMouseLeave(object sender, MouseEventArgs e)
         {
-            if (PreviewControl.IsTransitional) // Transitioning, come back later.
+            if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
 
             if (PreviewControl.IsCondensed)
@@ -375,7 +375,7 @@ namespace Dynamo.Controls
 
         private void OnPreviewIconMouseClicked(object sender, MouseEventArgs e)
         {
-            if (PreviewControl.IsTransitional) // Transitioning, come back later.
+            if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
 
             if (PreviewControl.IsCondensed)
