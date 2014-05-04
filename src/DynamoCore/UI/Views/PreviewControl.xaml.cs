@@ -89,9 +89,15 @@ namespace Dynamo.UI.Controls
             // If at the time of data binding the preview control is within the 
             // following states, then its contents need to be updated immediately.
             if (this.IsCondensed)
+            {
                 RefreshCondensedDisplay();
+                BeginViewSizeTransition(ComputeSmallContentSize());
+            }
             else if (this.IsExpanded)
+            {
                 RefreshExpandedDisplay();
+                BeginViewSizeTransition(ComputeLargeContentSize());
+            }
         }
 
         #endregion
@@ -264,10 +270,7 @@ namespace Dynamo.UI.Controls
             });
 
             // Add padding since we are sizing the centralizedGrid.
-            var size = this.smallContentGrid.DesiredSize;
-            size.Width = (size.Width + (Configurations.PreviewControlMargin * 2.0));
-            size.Height = (size.Height + (Configurations.PreviewControlMargin * 2.0));
-            return size;
+            return ContentToControlSize(this.smallContentGrid.DesiredSize);
         }
 
         private Size ComputeLargeContentSize()
@@ -282,15 +285,25 @@ namespace Dynamo.UI.Controls
                 };
             }
 
-            var maxSize = new Size()
+            this.largeContentGrid.Measure(new Size()
             {
                 Width = Configurations.MaxExpandedPreviewWidth,
                 Height = Configurations.MaxExpandedPreviewHeight
-            };
+            });
 
             // Add padding since we are sizing the centralizedGrid.
-            this.largeContentGrid.Measure(maxSize);
-            var size = this.largeContentGrid.DesiredSize;
+            return ContentToControlSize(this.largeContentGrid.DesiredSize);
+        }
+
+        private Size ContentToControlSize(Size size)
+        {
+            if (size.IsEmpty)
+            {
+                size.Width = Configurations.DefCondensedPreviewWidth;
+                size.Height = Configurations.DefCondensedPreviewHeight;
+                return size;
+            }
+
             size.Width = (size.Width + (Configurations.PreviewControlMargin * 2.0));
             size.Height = (size.Height + (Configurations.PreviewControlMargin * 2.0));
             return size;
@@ -360,6 +373,13 @@ namespace Dynamo.UI.Controls
             this.expandWidthAnimator.To = largeContentSize.Width;
             this.expandHeightAnimator.To = largeContentSize.Height;
             this.expandStoryboard.Begin(this, true);
+        }
+
+        private void BeginViewSizeTransition(Size targetSize)
+        {
+            this.centralizedGrid.Width = targetSize.Width;
+            this.centralizedGrid.Height = targetSize.Height;
+            this.centralizedGrid.UpdateLayout();
         }
 
         #endregion
