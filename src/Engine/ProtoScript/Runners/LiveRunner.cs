@@ -176,7 +176,7 @@ namespace ProtoScript.Runners
                 {
                     foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
                     {
-                        if (gnode.AstID == bNode.ID)
+                        if (gnode.OriginalAstID == bNode.OriginalAstID)
                         {
                             gnode.isActive = false;
                         }
@@ -347,7 +347,9 @@ namespace ProtoScript.Runners
                     if (!st.ForceExecution)
                     {
                         removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
-                        csData.RemovedBinaryNodesFromModification.AddRange(removedNodes);
+                        // We only need the removed binary ASTs
+                        // Function definitions are handled in ChangeSetData.RemovedFunctionDefNodesFromModification
+                        csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode));
                     }
 
                     // There is a bug in DeactivateGraphNodes(), otherwise we
