@@ -166,7 +166,7 @@ namespace DSCore
     }
 
     ///<search>cross</search>
-    //[IsVisibleInDynamoLibrary(false)]
+    [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.CartesianProduct")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
