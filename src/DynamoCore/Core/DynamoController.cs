@@ -360,6 +360,7 @@ namespace Dynamo
         public void RunExpression(int? executionInterval = null)
         {
             //dynSettings.DynamoLogger.LogWarning("Running expression", WarningLevel.Mild);
+            //executionInterval = executionInterval ?? 1000;
 
             //If we're already running, do nothing.
             if (Running)
@@ -373,10 +374,6 @@ namespace Dynamo
             var traceData = DynamoViewModel.Model.HomeSpace.PreloadedTraceData;
             DynamoViewModel.Model.HomeSpace.PreloadedTraceData = null; // Reset.
             EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
-
-            EngineController.GenerateGraphSyncData(DynamoViewModel.Model.HomeSpace.Nodes);
-            if (!EngineController.HasPendingGraphSyncData)
-                return;
 
             //We are now considered running
             Running = true;
@@ -403,7 +400,9 @@ namespace Dynamo
 
             do
             {
-                Evaluate();
+                EngineController.GenerateGraphSyncData(DynamoViewModel.Model.HomeSpace.Nodes);
+                if (EngineController.HasPendingGraphSyncData)
+                    Evaluate();
 
                 if (args == null || args.Argument == null)
                     break;
