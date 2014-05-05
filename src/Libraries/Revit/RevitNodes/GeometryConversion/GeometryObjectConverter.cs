@@ -7,6 +7,7 @@ using Autodesk.DesignScript.Runtime;
 using Autodesk.Revit.DB;
 using Microsoft.CSharp.RuntimeBinder;
 using Revit.GeometryConversion;
+using Revit.GeometryReferences;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace Revit.GeometryConversion
@@ -19,25 +20,45 @@ namespace Revit.GeometryConversion
         /// </summary>
         /// <param name="geom"></param>
         /// <returns>A Geometry type.  Null if there's no suitable conversion.</returns>
-        public static Autodesk.DesignScript.Geometry.Geometry Convert(this Autodesk.Revit.DB.GeometryObject geom)
+        public static Autodesk.DesignScript.Geometry.Geometry Convert(this Autodesk.Revit.DB.GeometryObject geom, Autodesk.Revit.DB.Reference reference = null )
         {
             if (geom == null) return null;
 
             dynamic dynGeom = geom;
             try
             {
-                return InternalConvert(dynGeom);
+                return Tag( InternalConvert(dynGeom), reference);
             }
             catch (RuntimeBinderException e)
             {
-                // There's no InternalConvert method
-                return null;
+                return null; 
             }
+
         }
+
+        private static Autodesk.DesignScript.Geometry.Curve Tag(Autodesk.DesignScript.Geometry.Curve curve,
+            Autodesk.Revit.DB.Reference reference)
+        {
+            return reference != null ? ElementCurveReference.AddTag(curve, reference) : curve;
+        }
+
+        private static Autodesk.DesignScript.Geometry.Surface Tag(Autodesk.DesignScript.Geometry.Surface srf,
+    Autodesk.Revit.DB.Reference reference)
+        {
+            return reference != null ? ElementFaceReference.AddTag(srf, reference) : srf;
+        }
+
+        private static Autodesk.DesignScript.Geometry.Geometry Tag(Autodesk.DesignScript.Geometry.Geometry geo,
+    Autodesk.Revit.DB.Reference reference)
+        {
+            return geo;
+        }
+
+        #region Converter methods
 
         private static Autodesk.DesignScript.Geometry.Curve InternalConvert(Autodesk.Revit.DB.Edge geom)
         {
-            return geom.AsCurve().ToProtoType();
+            return (Autodesk.DesignScript.Geometry.Curve) geom.AsCurve().Convert();
         }
 
         private static Autodesk.DesignScript.Geometry.Surface InternalConvert(Autodesk.Revit.DB.Face geom)
@@ -52,7 +73,7 @@ namespace Revit.GeometryConversion
 
         private static Autodesk.DesignScript.Geometry.Point InternalConvert(Autodesk.Revit.DB.Point geom)
         {
-            return Point.ByCoordinates(geom.Coord.X, geom.Coord.Y, geom.Coord.Z);
+            return geom.ToProtoType();
         }
 
         private static Autodesk.DesignScript.Geometry.Curve InternalConvert(Autodesk.Revit.DB.Curve geom)
@@ -60,9 +81,9 @@ namespace Revit.GeometryConversion
             return geom.ToProtoType();
         }
 
-        private static Autodesk.DesignScript.Geometry.PolyCurve InternalConvert(Autodesk.Revit.DB.PolyLine geom)
+        public static Autodesk.DesignScript.Geometry.PolyCurve ToProtoType(Autodesk.Revit.DB.PolyLine geom)
         {
-            return PolyCurve.ByPoints(geom.GetCoordinates().Select(x => Point.ByCoordinates(x.X, x.Y, x.Z)).ToArray());
+            return geom.ToProtoType();
         }
 
         private static Autodesk.DesignScript.Geometry.PolyCurve InternalConvert(Autodesk.Revit.DB.Profile geom)
@@ -74,6 +95,8 @@ namespace Revit.GeometryConversion
         {
             return geom.ToProtoType();
         }
+
+        #endregion
 
     }
 }
