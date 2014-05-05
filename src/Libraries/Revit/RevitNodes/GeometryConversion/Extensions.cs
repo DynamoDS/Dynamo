@@ -175,9 +175,15 @@ namespace Revit.GeometryConversion
         /// </summary>
         /// <param name="xyz"></param>
         /// <returns></returns>
-        public static Autodesk.DesignScript.Geometry.Point ToPoint(this XYZ xyz )
+        public static Autodesk.DesignScript.Geometry.Point ToPoint(this XYZ xyz)
         {
             return Autodesk.DesignScript.Geometry.Point.ByCoordinates(xyz.X, xyz.Y, xyz.Z);
+
+        }
+
+        public static Autodesk.DesignScript.Geometry.Point ToProtoType(this Autodesk.Revit.DB.Point point)
+        {
+            return point.Coord.ToPoint();
         }
 
         /// <summary>

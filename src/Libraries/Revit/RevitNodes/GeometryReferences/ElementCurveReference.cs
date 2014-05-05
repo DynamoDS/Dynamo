@@ -42,6 +42,12 @@ namespace Revit.GeometryReferences
             return new ElementCurveReference(reference);
         }
 
+        internal static Autodesk.DesignScript.Geometry.Curve AddTag(Autodesk.DesignScript.Geometry.Curve curve, Autodesk.Revit.DB.Reference reference)
+        {
+            curve.Tags.AddTag(DefaultTag, reference);
+            return curve;
+        }
+
         /// <summary>
         /// Attempt to extract a CurveReference from an object which may be a Revit.References.CurveReference, Revit.Elements.CurveElement, or Revit.Elements.Element
         /// </summary>
