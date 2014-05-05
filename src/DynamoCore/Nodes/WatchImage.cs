@@ -60,6 +60,7 @@ namespace Dynamo.Nodes
             };
 
             nodeUi.PresentationGrid.Children.Add(image);
+            nodeUi.PresentationGrid.Visibility = Visibility.Visible;
         }
 
         private void SetImageSource(System.Drawing.Bitmap bmp)

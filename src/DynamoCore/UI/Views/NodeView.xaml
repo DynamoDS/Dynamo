@@ -239,8 +239,7 @@
         <Grid Name="centralGrid"
               Grid.Column="1"
               Grid.Row="2"
-              Canvas.ZIndex="20"
-              Background="Honeydew">
+              Canvas.ZIndex="20">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"></RowDefinition>
@@ -254,7 +253,6 @@
                   x:FieldModifier="public"
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
-                  Background="CornflowerBlue"
                   Margin="5,0,5,0"
                   Canvas.ZIndex="21"
                   IsEnabled="{Binding Path=IsInteractionEnabled}">
@@ -290,7 +288,8 @@
                     <Binding Path="IsPreviewInsetVisible"
                              UpdateSourceTrigger="PropertyChanged"
                              Mode="OneWay"
-                             Converter="{StaticResource BooleanToVisibilityConverter}">
+                             Converter="{StaticResource BooleanToVisibilityConverter}"
+                             ConverterParameter="Collapse">
                     </Binding>
                 </Rectangle.Visibility>
             </Rectangle>
@@ -319,7 +318,8 @@
               Grid.Column="0"
               Grid.ColumnSpan="3"
               Margin="5"
-              ZIndex="50">
+              ZIndex="50"
+              Visibility="Collapsed">
             <!--DO NOT ERASE THIS GRID TO BE USED FOR PRESENTING IMAGES, 3D VIEWS, ETC.-->
         </Grid>
 
@@ -364,7 +364,9 @@
                 Grid.Row="4"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
-                Margin="4">
+                Margin="4"
+                HorizontalAlignment="Center"
+                Background="Blue">
         </Canvas>
 
     </Grid>

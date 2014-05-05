@@ -297,13 +297,11 @@ namespace Dynamo.UI.Controls
 
         private Size ContentToControlSize(Size size)
         {
-            if (size.Width < Configurations.DefCondensedPreviewWidth)
-                size.Width = Configurations.DefCondensedPreviewWidth;
-            if (size.Height < Configurations.DefCondensedPreviewHeight)
-                size.Height = Configurations.DefCondensedPreviewHeight;
+            if (size.Width < Configurations.DefCondensedContentWidth)
+                size.Width = Configurations.DefCondensedContentWidth;
+            if (size.Height < Configurations.DefCondensedContentHeight)
+                size.Height = Configurations.DefCondensedContentHeight;
 
-            size.Width = (size.Width + (Configurations.PreviewControlMargin * 2.0));
-            size.Height = (size.Height + (Configurations.PreviewControlMargin * 2.0));
             return size;
         }
 

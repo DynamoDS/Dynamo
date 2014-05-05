@@ -20,9 +20,8 @@ namespace Dynamo.UI
         public static readonly double MaxExpandedPreviewHeight = MaxWatchNodeHeight;
         public static readonly double MaxCondensedPreviewWidth = 280.0;
         public static readonly double MaxCondensedPreviewHeight = 64.0;
-        public static readonly double DefCondensedPreviewWidth = 135.0;
-        public static readonly double DefCondensedPreviewHeight = 32.0;
-        public static readonly double PreviewControlMargin = 6.0;
+        public static readonly double DefCondensedContentWidth = 33.0;
+        public static readonly double DefCondensedContentHeight = 28.0;
 
         #endregion
 

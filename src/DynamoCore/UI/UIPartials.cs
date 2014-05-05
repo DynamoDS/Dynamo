@@ -562,6 +562,7 @@ namespace Dynamo.Nodes
             nodeUI.PresentationGrid.MaxWidth = Configurations.MaxWatchNodeWidth;
             nodeUI.PresentationGrid.MaxHeight = Configurations.MaxWatchNodeHeight;
             nodeUI.PresentationGrid.Children.Add(_watchTree);
+            nodeUI.PresentationGrid.Visibility = Visibility.Visible;
 
             if (Root == null)
                 Root = new WatchViewModel();

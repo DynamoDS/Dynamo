@@ -14,8 +14,8 @@
 
     <UserControl.Resources>
 
-        <clr:Double x:Key="MinPreviewControlWidth">135.0</clr:Double>
-        <clr:Double x:Key="MinPreviewControlHeight">32.0</clr:Double>
+        <clr:Double x:Key="MinPreviewControlWidth">33.0</clr:Double>
+        <clr:Double x:Key="MinPreviewControlHeight">28.0</clr:Double>
 
         <!-- MaxContentGrid = (MaxPreviewControl - (2 * Margin)) -->
         <fwk:Thickness x:Key="PreviewContentMargin">6.0</fwk:Thickness>
@@ -145,9 +145,7 @@
                   Margin="{StaticResource PreviewContentMargin}"
                   MaxWidth="{StaticResource MaxContentGridWidth}"
                   MaxHeight="{StaticResource MaxContentGridHeight}"
-                  Visibility="Collapsed"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center">
+                  Visibility="Collapsed">
             </Grid>
         </Grid>
 

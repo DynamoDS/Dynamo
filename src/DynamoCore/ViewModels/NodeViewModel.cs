@@ -240,6 +240,7 @@ namespace Dynamo.ViewModels
                     case "String":
                     case "Watch":
                     case "Watch 3D":
+                    case "Watch Image":
                     case "Boolean":
                         return false;
                 }
