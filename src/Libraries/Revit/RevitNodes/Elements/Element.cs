@@ -331,7 +331,8 @@ namespace Revit.Elements
             return InternalGeometry().Select(x => x.Convert()).ToArray();
         }
 
-        internal IEnumerable<Autodesk.Revit.DB.GeometryObject> InternalGeometry()
+        [SupressImportIntoVM]
+        public IEnumerable<Autodesk.Revit.DB.GeometryObject> InternalGeometry()
         {
             var thisElement = InternalElement;
 
