@@ -6,10 +6,9 @@ using System.IO;
 using System.Text;
 using System;
 
-namespace DSCore.File
+namespace DSCore
 {
-    [IsVisibleInDynamoLibrary(true)]
-    public static class FileReader
+    public static class File
     {
         /// <summary>
         ///     Load a bitmap from a file path.
@@ -105,6 +104,52 @@ namespace DSCore.File
             {
                 return false;
             }
+            return true;
+        }
+
+        /// <summary>
+        ///     Write the text content to a file specified by the path
+        /// </summary>
+        /// <param name="filePath">Path to write to</param>
+        /// <param name="data">Text content</param>
+        /// <returns name="ok">It is successful or not.</returns>
+        /// <search>write file,text,file</search>
+        public static bool WriteText(string filePath, string text)
+        {
+            try
+            {
+                System.IO.File.WriteAllText(filePath, text);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("The text is not written to the file successfully!", e);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        ///     Write the image to a path, given the specified file name.
+        ///     The file name will be appended with .png. 
+        /// </summary>
+        /// <param name="filePath">Path to write to</param>
+        /// <param name="fileName">File name to save as</param>
+        /// <param name="image">The image to write</param>
+        /// <returns name="ok">It is successful or not.</returns>
+        /// <search>write image,image,file</search>
+        public static bool WriteImage(string filePath, string fileName, System.Drawing.Bitmap image)
+        {
+            string pathName = Path.Combine(filePath, fileName + ".png");
+
+            try
+            {
+                image.Save(pathName);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("The image is not saved successfully!", e);
+            }
+
             return true;
         }
     }
