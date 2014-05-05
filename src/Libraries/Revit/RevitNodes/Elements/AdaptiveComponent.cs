@@ -6,10 +6,9 @@ using Autodesk.Revit.DB;
 using DSNodeServices;
 using Revit.GeometryConversion;
 using Revit.GeometryObjects;
-using Revit.References;
+using Revit.GeometryReferences;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
-using Face = Revit.GeometryObjects.Face;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using Reference = Autodesk.Revit.DB.Reference;
 
@@ -69,7 +68,7 @@ namespace Revit.Elements
         /// <param name="pts">Points to use as reference</param>
         /// <param name="f">Face to use as reference</param>
         /// <param name="fs">FamilySymbol to place</param>
-        private AdaptiveComponent(double[][] pts, Face f, FamilySymbol fs)
+        private AdaptiveComponent(double[][] pts, ElementFaceReference f, FamilySymbol fs)
         {
             // if the family instance is present in trace...
             var oldFam =
@@ -81,7 +80,7 @@ namespace Revit.Elements
                 InternalSetFamilyInstance(oldFam);
                 if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
                    InternalSetFamilySymbol(fs);
-                InternalSetUvsAndFace(pts.ToUvs(), f.InternalFace );
+                InternalSetUvsAndFace(pts.ToUvs(), f.InternalReference );
                 return;
             }
 
@@ -94,7 +93,7 @@ namespace Revit.Elements
                 throw new Exception("An adaptive component could not be found or created.");
 
             InternalSetFamilyInstance(fam);
-            InternalSetUvsAndFace(pts.ToUvs(), f.InternalFace);
+            InternalSetUvsAndFace(pts.ToUvs(), f.InternalReference );
 
             TransactionManager.Instance.TransactionTaskDone();
 
@@ -194,7 +193,7 @@ namespace Revit.Elements
         /// Set the positions of the InternalFamilyInstace from an array of uvs
         /// </summary>
         /// <param name="points"></param>
-        private void InternalSetUvsAndFace(Autodesk.Revit.DB.UV[] uvs, Autodesk.Revit.DB.Face f)
+        private void InternalSetUvsAndFace(Autodesk.Revit.DB.UV[] uvs, Autodesk.Revit.DB.Reference faceReference)
         {
             TransactionManager.Instance.EnsureInTransaction(Document);
 
@@ -209,7 +208,7 @@ namespace Revit.Elements
             {
                 var uv = uvs[i];
                 var point = Document.GetElement(id) as Autodesk.Revit.DB.ReferencePoint;
-                var peref = Document.Application.Create.NewPointOnFace(f.Reference, uv);
+                var peref = Document.Application.Create.NewPointOnFace(faceReference, uv);
                 point.SetPointElementReference(peref);
                 i++;
             }
@@ -296,10 +295,10 @@ namespace Revit.Elements
         /// Create an adaptive component by uv points on a face.
         /// </summary>
         /// <param name="uvs">An array of UV pairs</param>
-        /// <param name="face">The face on which to place the AdaptiveComponent</param>
+        /// <param name="face">The surface on which to place the AdaptiveComponent</param>
         /// <param name="face">The face on which to place the AdaptiveComponent</param>
         /// <returns></returns>
-        public static AdaptiveComponent ByParametersOnFace(double[][] uvs, Face face, FamilySymbol familySymbol)
+        public static AdaptiveComponent ByParametersOnFace(double[][] uvs, object face, FamilySymbol familySymbol)
         {
             if (uvs == null)
             {
@@ -316,26 +315,26 @@ namespace Revit.Elements
                 throw new ArgumentNullException("familySymbol");
             }
 
-            return new AdaptiveComponent(uvs, face, familySymbol);
+            return new AdaptiveComponent(uvs, ElementFaceReference.TryGetFaceReference(face), familySymbol);
         }
 
         /// <summary>
         /// Create an adaptive component referencing the parameters on a Curve reference
         /// </summary>
         /// <param name="parameters">The parameters on the curve</param>
-        /// <param name="curveReference">The curve to reference</param>
+        /// <param name="curve">The curve to reference</param>
         /// <param name="familySymbol">The family symbol to construct</param>
         /// <returns></returns>
-        public static AdaptiveComponent ByParametersOnCurveReference(double[] parameters, CurveReference curveReference, FamilySymbol familySymbol)
+        public static AdaptiveComponent ByParametersOnCurveReference(double[] parameters, object curve, FamilySymbol familySymbol)
         {
             if (parameters == null)
             {
                 throw new ArgumentNullException("parameters");
             }
 
-            if (curveReference == null)
+            if (curve == null)
             {
-                throw new ArgumentNullException("curveReference");
+                throw new ArgumentNullException("curve");
             }
 
             if (familySymbol == null)
@@ -343,7 +342,7 @@ namespace Revit.Elements
                 throw new ArgumentNullException("familySymbol");
             }
 
-            return new AdaptiveComponent(parameters, curveReference.InternalReference, familySymbol);
+            return new AdaptiveComponent(parameters, ElementCurveReference.TryGetCurveReference(curve).InternalReference, familySymbol);
         }
 
         #endregion

@@ -6,11 +6,10 @@ using Autodesk.Revit.DB;
 using DSNodeServices;
 using Revit.GeometryConversion;
 using Revit.GeometryObjects;
-using Revit.References;
+using Revit.GeometryReferences;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
-using Face =  Revit.GeometryObjects.Face;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace Revit.Elements
@@ -165,56 +164,7 @@ namespace Revit.Elements
             }
         }
 
-        public Curve[] Curves {
-            get
-            {
-                var curves = GetCurves(new Options()
-                {
-                    ComputeReferences = true
-                });
 
-                return curves.Select(x => x.ToProtoType()).ToArray();
-            }
-        }
-
-        public CurveReference[] CurveReferences
-        {
-            get
-            {
-                var curves = GetCurves(new Options()
-                {
-                    ComputeReferences = true
-                });
-
-                return curves.Select(CurveReference.FromExisting).ToArray();
-            }
-        }
-
-        public Face[] Faces
-        {
-            get
-            {
-                var faces = GetFaces(new Options()
-                {
-                    ComputeReferences = true
-                });
-
-                return faces.Select(Face.FromExisting).ToArray();
-            }
-        }
-
-        public FaceReference[] FaceReferences
-        {
-            get
-            {
-                var faces = GetFaces(new Options()
-                {
-                    ComputeReferences = true
-                });
-
-                return faces.Select(FaceReference.FromExisting).ToArray();
-            }
-        }
 
         #endregion
 
@@ -311,20 +261,6 @@ namespace Revit.Elements
             {
                 IsRevitOwned = isRevitOwned
             };
-        }
-
-        #endregion
-
-        #region Incomplete Static constructors
-
-        static FamilyInstance ByCurve(FamilySymbol fs, Curve c)
-        {
-            throw new NotImplementedException();
-        }
-
-        static FamilyInstance ByUvsOnFace(FamilySymbol fs, Vector uv, Face f)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

@@ -6,7 +6,7 @@ using Autodesk.Revit.UI;
 using DSNodeServices;
 using Revit.Elements;
 using Revit.GeometryConversion;
-using Revit.References;
+using Revit.GeometryReferences;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using ArgumentException = System.ArgumentException;
@@ -178,11 +178,11 @@ namespace Revit.Elements
         /// <summary>
         /// Get a reference to this plane for downstream Elements requiring it
         /// </summary>
-        public PlaneReference PlaneReference
+        public ElementPlaneReference ElementPlaneReference
         {
             get
             {
-                return new PlaneReference(InternalReferencePlane.Reference);
+                return new ElementPlaneReference(InternalReferencePlane.Reference);
             }
         }
 

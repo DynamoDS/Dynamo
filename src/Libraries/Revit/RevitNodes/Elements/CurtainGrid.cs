@@ -4,7 +4,7 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
-using Revit.References;
+using Revit.GeometryReferences;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
  
@@ -214,11 +214,11 @@ namespace Revit.Elements
       ///get curtain grid from element with curtain grid or grids
       /// </summary>
       /// <param name="curtainHolderElement"></param>
-      /// <param name="faceReference"></param>
+      /// <param name="elementFaceReference"></param>
 
-      static public CurtainGrid ByElementAndReference(Element curtainHolderElement, FaceReference faceReference)
+      static public CurtainGrid ByElementAndReference(Element curtainHolderElement, ElementFaceReference elementFaceReference)
       {
-         return new CurtainGrid(curtainHolderElement.InternalElement, faceReference.InternalReference);
+         return new CurtainGrid(curtainHolderElement.InternalElement, elementFaceReference.InternalReference);
       }
 
       /// <summary>

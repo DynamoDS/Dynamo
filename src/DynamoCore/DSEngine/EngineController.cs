@@ -28,7 +28,7 @@ namespace Dynamo.DSEngine
         private int shortVarCounter = 0;
         private DynamoController controller;
 
-        public EngineController(DynamoController controller, bool isReset)
+        public EngineController(DynamoController controller)
         {
             libraryServices = LibraryServices.GetInstance();
             libraryServices.LibraryLoading += this.LibraryLoading;
@@ -104,7 +104,7 @@ namespace Dynamo.DSEngine
             }
             catch (Exception ex)
             {
-                DynamoLogger.Instance.Log("Failed to get mirror for variable: " + variableName + "; reason: " + ex.Message);
+                dynSettings.DynamoLogger.Log("Failed to get mirror for variable: " + variableName + "; reason: " + ex.Message);
             }
 
             return mirror;
@@ -330,7 +330,7 @@ namespace Dynamo.DSEngine
                         if (fatalException == null)
                             fatalException = e;
 
-                        DynamoLogger.Instance.Log("Update graph failed: " + e.Message);
+                        dynSettings.DynamoLogger.Log("Update graph failed: " + e.Message);
                     }
                 }
             }
@@ -449,7 +449,7 @@ namespace Dynamo.DSEngine
 
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
-            foreach (var node in dynSettings.Controller.DynamoViewModel.Model.HomeSpace.Nodes)
+            foreach (var node in dynSettings.Controller.DynamoModel.HomeSpace.Nodes)
             {
                 node.RequiresRecalc = true;
             }

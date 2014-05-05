@@ -503,13 +503,14 @@ namespace ProtoCore.Lang
             var core = runtime.Core;
             var rmem = runtime.rmem;
 
+            bool isValidThisPointer = true;
             StackValue thisObject = lhs;
             if (StackUtils.IsArray(thisObject))
             {
-                ArrayUtils.GetFirstNonArrayStackValue(lhs, ref thisObject, core);
+                isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(lhs, ref thisObject, core);
             }
 
-            if (thisObject.optype != AddressType.Pointer && thisObject.optype != AddressType.ArrayPointer)
+            if (!isValidThisPointer || (thisObject.optype != AddressType.Pointer && thisObject.optype != AddressType.ArrayPointer))
             {
                 core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, WarningMessage.kDeferencingNonPointer);
                 return StackValue.Null;

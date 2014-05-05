@@ -8,7 +8,7 @@ using Autodesk.Revit.DB.Analysis;
 using Revit.Elements.Views;
 using Revit.GeometryConversion;
 using Revit.Elements;
-using Revit.References;
+using Revit.GeometryReferences;
 using RevitServices.Transactions;
 using Reference = Autodesk.Revit.DB.Reference;
 using View = Revit.Elements.Views.View;
@@ -112,11 +112,11 @@ namespace Revit.AnalysisDisplay
         /// Show a colored Face Analysis Display in the Revit View
         /// </summary>
         /// <param name="view"></param>
-        /// <param name="faceReference"></param>
+        /// <param name="elementFaceReference"></param>
         /// <param name="sampleUvPoints"></param>
         /// <param name="samples"></param>
         /// <returns></returns>
-        public static FaceAnalysisDisplay ByViewFacePointsAndValues(View view, FaceReference faceReference,
+        public static FaceAnalysisDisplay ByViewFacePointsAndValues(View view, ElementFaceReference elementFaceReference,
                         double[][] sampleUvPoints, double[] samples)
         {
 
@@ -125,9 +125,9 @@ namespace Revit.AnalysisDisplay
                 throw new ArgumentNullException("view");
             }
 
-            if (faceReference == null)
+            if (elementFaceReference == null)
             {
-                throw new ArgumentNullException("faceReference");
+                throw new ArgumentNullException("elementFaceReference");
             }
 
             if (sampleUvPoints == null)
@@ -145,7 +145,7 @@ namespace Revit.AnalysisDisplay
                 throw new Exception("The number of sample points and number of samples must be the same");
             }
 
-            return new FaceAnalysisDisplay(view.InternalView, faceReference.InternalReference, sampleUvPoints.ToUvs(), samples);
+            return new FaceAnalysisDisplay(view.InternalView, elementFaceReference.InternalReference, sampleUvPoints.ToUvs(), samples);
         }
 
         #endregion

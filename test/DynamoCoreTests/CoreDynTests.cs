@@ -339,34 +339,32 @@ namespace Dynamo.Tests
         [Test]
         public void Repeat()
         {
-            //var model = dynSettings.Controller.DynamoModel;
-            //var examplePath = Path.Combine(GetTestDirectory(), @"core");
-            //string openPath = Path.Combine(examplePath, "RepeatTest.dyn");
+            var model = dynSettings.Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core");
+            string openPath = Path.Combine(examplePath, "RepeatTest.dyn");
 
-            ////open and run the expression
-            //model.Open(openPath);
-            //dynSettings.Controller.RunExpression(null);
+            //open and run the expression
+            model.Open(openPath);
+            dynSettings.Controller.RunExpression(null);
 
-            //var watch = (Watch)dynSettings.Controller.DynamoModel.Nodes.First(x => x is Watch);
-            //var watchData = watch.GetValue(0);
-            //Assert.IsTrue(watchData.IsCollection);
-            //Assert.AreEqual(5, watchData.GetElements().Count);
+            var watch = (Watch)dynSettings.Controller.DynamoModel.Nodes.First(x => x is Watch);
+            var watchData = watch.GetValue(0);
+            Assert.IsTrue(watchData.IsCollection);
+            Assert.AreEqual(5, watchData.GetElements().Count);
 
-            ////change the value of the list
-            //var numNode = (DoubleInput)Controller.DynamoModel.Nodes.Last(x => x is DoubleInput);
-            //numNode.Value = "3";
-            //dynSettings.Controller.RunExpression(null);
-            //Thread.Sleep(300);
+            //change the value of the list
+            var numNode = (DoubleInput)Controller.DynamoModel.Nodes.Last(x => x is DoubleInput);
+            numNode.Value = "3";
+            dynSettings.Controller.RunExpression(null);
 
-            //watchData = watch.GetValue(0);
-            //Assert.IsTrue(watchData.IsCollection);
-            //Assert.AreEqual(3, watchData.GetElements().Count);
+            watchData = watch.GetValue(0);
+            Assert.IsTrue(watchData.IsCollection);
+            Assert.AreEqual(3, watchData.GetElements().Count);
 
-            ////test the negative case to make sure it throws an error
-            //numNode.Value = "-1";
-            //Assert.Throws<AssertionException>(() => dynSettings.Controller.RunExpression(null));
-
-            Assert.Inconclusive("Porting : DoubleInput");
+            //test the negative case
+            numNode.Value = "-1";
+            dynSettings.Controller.RunExpression(null);
+            Assert.IsNull(watch.GetValue(0).GetElements());
         }
 
         [Test]
@@ -440,7 +438,7 @@ namespace Dynamo.Tests
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("360f3b50-5f27-460a-a57a-bb6338064d98");
             var expectedValue = new int[] { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 };
-            var oldVal = watch.OldValue;
+            var oldVal = watch.CachedValue;
             Assert.IsTrue(oldVal.IsCollection);
             AssertValue(oldVal, expectedValue);
 
@@ -454,7 +452,7 @@ namespace Dynamo.Tests
             // Make sure results are still consistent
             dynSettings.Controller.RunExpression(null);
 
-            var newVal = watch.OldValue;
+            var newVal = watch.CachedValue;
             Assert.IsTrue(newVal.IsCollection);
             AssertValue(newVal, expectedValue);
         }
@@ -480,7 +478,7 @@ namespace Dynamo.Tests
 
             foreach (var watch in watches)
             {
-                Assert.AreEqual(19, watch.OldValue.Data);
+                Assert.AreEqual(19, watch.CachedValue.Data);
             }
         }
 

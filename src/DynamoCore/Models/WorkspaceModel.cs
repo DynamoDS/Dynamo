@@ -379,7 +379,7 @@ namespace Dynamo.Models
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            DynamoLogger.Instance.Log("Saving " + newPath + "...");
+            dynSettings.DynamoLogger.Log("Saving " + newPath + "...");
             try
             {
                 if (SaveInternal(newPath))
@@ -388,8 +388,8 @@ namespace Dynamo.Models
             catch (Exception ex)
             {
                 //Log(ex);
-                DynamoLogger.Instance.Log(ex.Message);
-                DynamoLogger.Instance.Log(ex.StackTrace);
+                dynSettings.DynamoLogger.Log(ex.Message);
+                dynSettings.DynamoLogger.Log(ex.StackTrace);
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 return false;
             }
@@ -751,7 +751,7 @@ namespace Dynamo.Models
 
         public virtual void Modified()
         {
-            //DynamoLogger.Instance.Log("Workspace modified.");
+            //dynSettings.DynamoLogger.Log("Workspace modified.");
             if (OnModified != null)
                 OnModified();
         }
@@ -763,14 +763,7 @@ namespace Dynamo.Models
 
         public IEnumerable<NodeModel> GetTopMostNodes()
         {
-#if USE_DSENGINE
             return Nodes.Where(IsTopMostNode);
-#else
-            return Nodes.Where(
-                x =>
-                    x.OutPortData.Any()
-                    && x.OutPorts.Any(y => !y.Connectors.Any() || y.Connectors.Any(c => c.End.Owner is Output)));
-#endif
         }
 
         //If node is connected to some other node(other than Output) then it is not a 'top' node
@@ -945,8 +938,8 @@ namespace Dynamo.Models
             {
                 // We'd prefer file saving process to not crash Dynamo,
                 // otherwise user will lose the last hope in retaining data.
-                DynamoLogger.Instance.Log(exception.Message);
-                DynamoLogger.Instance.Log(exception.StackTrace);
+                dynSettings.DynamoLogger.Log(exception.Message);
+                dynSettings.DynamoLogger.Log(exception.StackTrace);
             }
         }
 

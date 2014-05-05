@@ -19,7 +19,7 @@ namespace DSRevitNodesTests
             Assert.NotNull(ele);
 
             var form = ele as Form;
-            var face = form.FaceReferences.First();
+            var face = form.ElementFaceReferences.First();
 
             var divSrf = DividedSurface.ByFaceAndUVDivisions(face, 5, 6);
             Assert.NotNull(divSrf);
@@ -37,7 +37,7 @@ namespace DSRevitNodesTests
             Assert.NotNull(ele);
 
             var form = ele as Form;
-            var face = form.FaceReferences.First();
+            var face = form.ElementFaceReferences.First();
 
             var divSrf = DividedSurface.ByFaceUVDivisionsAndRotation(face, 5, 6, 30);
             Assert.NotNull(divSrf);
@@ -55,7 +55,7 @@ namespace DSRevitNodesTests
             Assert.NotNull(ele);
 
             var form = ele as Form;
-            var face = form.FaceReferences.First();
+            var face = form.ElementFaceReferences.First();
 
             Assert.Throws(typeof(Exception), () => DividedSurface.ByFaceUVDivisionsAndRotation(face, 5, 0, 30));
             Assert.Throws(typeof(Exception), () => DividedSurface.ByFaceUVDivisionsAndRotation(face, 5, 0, 30));
@@ -70,7 +70,7 @@ namespace DSRevitNodesTests
             Assert.NotNull(ele);
 
             var form = ele as Form;
-            var face = form.FaceReferences.First();
+            var face = form.ElementFaceReferences.First();
 
             Assert.Throws(typeof(Exception), () => DividedSurface.ByFaceAndUVDivisions(face, 5, 0));
             Assert.Throws(typeof(Exception), () => DividedSurface.ByFaceAndUVDivisions(face, 0, 5));

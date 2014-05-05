@@ -98,7 +98,7 @@ namespace Dynamo.Tests
             var model = Controller.DynamoModel;
             var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
             Assert.IsNotNull(node);
-            return  node.VariableToPreview;
+            return node.AstIdentifierBase;
         }
 
         private RuntimeMirror GetRuntimeMirror(string varName)
@@ -731,13 +731,21 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             //run the graph after copy paste
-            dynSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression();
 
             var nodes = Controller.DynamoModel.Nodes.OfType<DSVarArgFunction>();
             foreach (var item in nodes)
             {
                 AssertPreviewValue(item.GUID.ToString(), new string[] { "Dynamo", "DS" });   
             }
+        }
+
+        [Test]
+        public void Map_With_PropertyMethod()
+        {
+            // Function object to property method and used in map
+            RunModel(@"core\dsevaluation\map_property.dyn");
+            AssertPreviewValue("abc4796e-b35d-4076-b6ff-2f814dda350f", new double[] { 1.0, 2.0, 3.0, 4.0, 5.0});
         }
 
         [Test]
@@ -753,6 +761,13 @@ namespace Dynamo.Tests
             AssertPreviewValue("372d31c2-b66e-494c-a33d-e82ae1ecf68a", new double[] { 0.000000, 2.000000, 10.392305, 16.000000, 10.392305, 2.000000, 0.000000, -2.000000, -10.392305, -16.000000, -10.392305, -2.000000, 0.000000 });
         }
 
+        [Test]
+        public void Apply_With_PropertyMethod()
+        {
+            // Function object to property method and used in apply 
+            RunModel(@"core\dsevaluation\apply_property.dyn");
+            AssertPreviewValue("2cbadbce-ee25-4f90-8309-3b81bf4fdfd9", 42.0);
+        }
     }
 
     [Category("DSCustomNode")]

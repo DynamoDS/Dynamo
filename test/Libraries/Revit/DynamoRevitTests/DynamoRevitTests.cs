@@ -7,6 +7,7 @@ using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoUnits;
+using Dynamo.UpdateManager;
 using NUnit.Framework;
 using ProtoCore.Mirror;
 using RevitServices.Persistence;
@@ -77,9 +78,16 @@ namespace Dynamo.Tests
                 SIUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
                 SIUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
+                var logger = new DynamoLogger();
+                dynSettings.DynamoLogger = logger;
+                var updateManager = new UpdateManager.UpdateManager(logger);
+
                 //create a new instance of the ViewModel
-                Controller = new DynamoController(typeof (DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager(), new DefaultWatchHandler(), new PreferenceSettings());
+                Controller = new DynamoController(Context.NONE, updateManager, 
+                    new DefaultWatchHandler(), new PreferenceSettings());
                 DynamoController.IsTestMode = true;
+                Controller.DynamoViewModel = new DynamoViewModel(Controller, null);
+                Controller.VisualizationManager = new VisualizationManager();
             }
             catch (Exception ex)
             {
@@ -161,7 +169,7 @@ namespace Dynamo.Tests
 
             model.Open(testPath);
 
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         #region Revit unit test helper methods
@@ -235,7 +243,7 @@ namespace Dynamo.Tests
             var model = Controller.DynamoModel;
             var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
             Assert.IsNotNull(node);
-            return node.VariableToPreview;
+            return node.AstIdentifierBase;
         }
 
         private RuntimeMirror GetRuntimeMirror(string varName)

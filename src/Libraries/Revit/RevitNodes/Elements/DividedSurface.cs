@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using DSNodeServices;
-using Revit.References;
+using Revit.GeometryReferences;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Face = Autodesk.DesignScript.Geometry.Face;
@@ -49,11 +49,11 @@ namespace Revit.Elements
         /// <summary>
         /// Private constructor for creating a divided surface
         /// </summary>
-        /// <param name="face"></param>
+        /// <param name="elementFace"></param>
         /// <param name="uDivs"></param>
         /// <param name="vDivs"></param>
         /// <param name="rotation"></param>
-        private DividedSurface(FaceReference face, int uDivs, int vDivs, double rotation)
+        private DividedSurface(ElementFaceReference elementFace, int uDivs, int vDivs, double rotation)
         {
             // if the family instance is present in trace...
             var oldEle =
@@ -71,7 +71,7 @@ namespace Revit.Elements
             // otherwise create a new family instance...
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            var divSurf = Document.FamilyCreate.NewDividedSurface(face.InternalReference);
+            var divSurf = Document.FamilyCreate.NewDividedSurface(elementFace.InternalReference);
 
             InternalSetDividedSurface(divSurf);
             InternalSetDivisions(uDivs, vDivs);
@@ -175,30 +175,30 @@ namespace Revit.Elements
         /// <summary>
         /// Create a Revit DividedSurface on a face given the face and number of divisions in u and v directon
         /// </summary>
-        /// <param name="face"></param>
+        /// <param name="elementFace"></param>
         /// <param name="uDivs"></param>
         /// <param name="vDivs"></param>
         /// <returns></returns>
-        public static DividedSurface ByFaceAndUVDivisions(FaceReference face, int uDivs, int vDivs)
+        public static DividedSurface ByFaceAndUVDivisions(object elementFace, int uDivs, int vDivs)
         {
-            return ByFaceUVDivisionsAndRotation(face, uDivs, vDivs, 0.0);
+            return ByFaceUVDivisionsAndRotation(ElementFaceReference.TryGetFaceReference(elementFace), uDivs, vDivs, 0.0);
         }
 
         /// <summary>
         /// Create a Revit DividedSurface on a face given the face and number of divisions in u and v directon
         /// and the rotation of the grid lines with respect to the natural UV parameterization of the face
         /// </summary>
-        /// <param name="face"></param>
+        /// <param name="elementFace"></param>
         /// <param name="uDivs"></param>
         /// <param name="vDivs"></param>
         /// <param name="gridRotation"></param>
         /// <returns></returns>
-        public static DividedSurface ByFaceUVDivisionsAndRotation(FaceReference face, int uDivs, int vDivs, double gridRotation)
+        public static DividedSurface ByFaceUVDivisionsAndRotation(object elementFace, int uDivs, int vDivs, double gridRotation)
         {
 
-            if (face == null)
+            if (elementFace == null)
             {
-                throw new ArgumentNullException("face");
+                throw new ArgumentNullException("elementFace");
             }
 
             if (uDivs <= 0)
@@ -211,7 +211,7 @@ namespace Revit.Elements
                 throw new Exception("vDivs must be a positive integer");
             }
 
-            return new DividedSurface(face, uDivs, vDivs, gridRotation);
+            return new DividedSurface(ElementFaceReference.TryGetFaceReference(elementFace), uDivs, vDivs, gridRotation);
         }
 
         #endregion

@@ -103,6 +103,66 @@ namespace Dynamo.Nodes
 
     internal class BestFitLine : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+            
+            if (data.FindFirstConnector(new PortId(oldNodeId, 1, PortType.OUTPUT)) != null)
+            {
+                // If the second output port is utilized, migrate to CBN
+                XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
+                codeBlockNode.SetAttribute("CodeText",
+                    "Line.ByBestFitThroughPoints(XYZs)\n" +
+                    ".Direction.Normalized().AsPoint();\n" +
+                    "Point.ByCoordinates(Math.Average(XYZs.X),\n" +
+                    "Math.Average(XYZs.Y), Math.Average(XYZs.Z));");
+                codeBlockNode.SetAttribute("nickname", "Best Fit Line");
+                migrationData.AppendNode(codeBlockNode);
+            }
+            else
+            {
+                // When only the first output port is utilized, migrate to a chain of nodes
+
+                var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+                MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                    "Vector.AsPoint", "Vector.AsPoint");
+
+                var lineNode = MigrationManager.CreateFunctionNode(
+                    data.Document, oldNode, 0, "ProtoGeometry.dll",
+                    "Line.ByBestFitThroughPoints",
+                    "Line.ByBestFitThroughPoints@Point[]");
+                string lineNodeId = MigrationManager.GetGuidFromXmlElement(lineNode);
+                
+                var directionNode = MigrationManager.CreateFunctionNode(
+                    data.Document, oldNode, 1, "ProtoGeometry.dll",
+                    "Line.Direction", "Line.Direction");
+
+                var normalizedNode = MigrationManager.CreateFunctionNode(
+                    data.Document, oldNode, 2, "ProtoGeometry.dll",
+                    "Vector.Normalized", "Vector.Normalized");
+
+                migrationData.AppendNode(newNode);
+                migrationData.AppendNode(lineNode);
+                migrationData.AppendNode(directionNode);
+                migrationData.AppendNode(normalizedNode);
+
+                // Update connectors
+                PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+                PortId lineInPort0 = new PortId(lineNodeId, 0, PortType.INPUT);
+                XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+                data.ReconnectToPort(connector0, lineInPort0);
+                data.CreateConnector(lineNode, 0, directionNode, 0);
+                data.CreateConnector(directionNode, 0, normalizedNode, 0);
+                data.CreateConnector(normalizedNode, 0, newNode, 0);
+            }
+
+            return migrationData;
+        }
     }
 
 }

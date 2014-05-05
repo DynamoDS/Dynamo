@@ -5,9 +5,7 @@ using Dynamo.Utilities;
 using Dynamo.Revit;
 
 
-using Microsoft.FSharp.Collections;
 using RevitServices.Persistence;
-using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
@@ -21,20 +19,20 @@ namespace Dynamo.Nodes
         protected MethodBase MethodBase;
         protected ParameterInfo[] ParametersInfo;
 
-        ///<summary>
-        ///Auto-generated evaulate method for Dynamo node wrapping Autodesk.Revit.Creation.FamilyItemFactory.NewRadialDimension
-        ///</summary>
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            //foreach (var e in Elements)
-            //{
-            //    this.DeleteElement(e);
-            //}
+        /////<summary>
+        /////Auto-generated evaulate method for Dynamo node wrapping Autodesk.Revit.Creation.FamilyItemFactory.NewRadialDimension
+        /////</summary>
+        //public override Value Evaluate(FSharpList<Value> args)
+        //{
+        //    //foreach (var e in Elements)
+        //    //{
+        //    //    this.DeleteElement(e);
+        //    //}
 
-            Value result = dynRevitUtils.InvokeAPIMethod(this, args, BaseType, ParametersInfo, MethodBase, ReturnType);
+        //    Value result = dynRevitUtils.InvokeAPIMethod(this, args, BaseType, ParametersInfo, MethodBase, ReturnType);
 
-            return result;
-        }
+        //    return result;
+        //}
 
     }
 
@@ -67,14 +65,14 @@ namespace Dynamo.Nodes
     {
         public RevitDocument()
         {
-            OutPortData.Add(new PortData("doc", "The active Revit doc.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("doc", "The active Revit doc."));
             RegisterAllPorts();
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            return Value.NewContainer(DocumentManager.Instance.CurrentUIDocument.Document);
-        }
+        //public override Value Evaluate(FSharpList<Value> args)
+        //{
+        //    return Value.NewContainer(DocumentManager.Instance.CurrentUIDocument.Document);
+        //}
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)

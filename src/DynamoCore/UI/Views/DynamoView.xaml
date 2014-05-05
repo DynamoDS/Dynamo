@@ -264,9 +264,9 @@
                         <MenuItem Header ="{Binding AlternateContextGeometryDisplayText}" 
                                   Name="showGeometryInAlternateContextMenu" 
                                   Focusable="False" 
-                                  Visibility="{Binding AlternateDrawingContextAvailable, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}"
+                                  Visibility="{Binding Path=Controller.VisualizationManager.AlternateDrawingContextAvailable , Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}"
                                   IsCheckable="True"
-                                  IsChecked="{Binding Path=ShowGeometryInAlternateContext}">
+                                  IsChecked="{Binding Path=Controller.VisualizationManager.DrawToAlternateContext}">
                         </MenuItem>
                         <MenuItem Header="_Background 3D Preview" Name="background3dMenu" Focusable="False">
                             <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}" 
@@ -1107,9 +1107,9 @@
                       Content="Debug" VerticalContentAlignment="Center"/-->
 
                 </WrapPanel>
-                <TextBlock Name="warningText" Grid.Column="1" Text="{Binding Source={x:Static dynamo:DynamoLogger.Instance}, Path=Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}" FontStyle="Italic" FontSize="12" 
+                <TextBlock Name="warningText" Grid.Column="1" Text="{Binding Source={x:Static utilities:dynSettings.DynamoLogger}, Path=Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}" FontStyle="Italic" FontSize="12" 
                        VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" TextTrimming="WordEllipsis" Margin="10"
-                       Foreground="{Binding Source={x:Static dynamo:DynamoLogger.Instance}, Path=WarningLevel, Converter={StaticResource WarningLevelToColorConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" >
+                       Foreground="{Binding Source={x:Static utilities:dynSettings.DynamoLogger}, Path=Warning, Converter={StaticResource WarningLevelToColorConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" >
                     <TextBlock.Triggers>
                             <EventTrigger RoutedEvent="Binding.TargetUpdated">
                                 <BeginStoryboard>

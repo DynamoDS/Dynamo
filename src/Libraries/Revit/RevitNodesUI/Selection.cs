@@ -167,11 +167,19 @@ namespace Dynamo.Nodes
             SelectionAction = action;
             _selectionMessage = message;
 
-            OutPortData.Add(new PortData("Element", "The selected element.", typeof(object)));
+            OutPortData.Add(new PortData("Element", "The selected element."));
             RegisterAllPorts();
 
             dynRevitSettings.Controller.Updater.ElementsModified += Updater_ElementsModified;
             dynRevitSettings.Controller.Updater.ElementsDeleted += Updater_ElementsDeleted;
+            dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
+        }
+
+        void Controller_RevitDocumentChanged(object sender, EventArgs e)
+        {
+            SelectedElement = null;
+            RaisePropertyChanged("SelectedElement");
+            RaisePropertyChanged("SelectionText");
         }
 
         public override void Destroy()
@@ -192,7 +200,8 @@ namespace Dynamo.Nodes
             var selectButton = new DynamoNodeButton()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Top,
+                Height = Configurations.PortHeightInPixels,
             };
             selectButton.Click += selectButton_Click;
 
@@ -279,7 +288,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log(e);
+                dynSettings.DynamoLogger.Log(e);
             }
         }
 
@@ -372,11 +381,20 @@ namespace Dynamo.Nodes
             SelectionAction = action;
             _selectionMessage = message;
 
-            OutPortData.Add(new PortData("Reference", "The geometry reference.", typeof(object)));
+            OutPortData.Add(new PortData("Reference", "The geometry reference."));
             RegisterAllPorts();
 
             var u = dynRevitSettings.Controller.Updater;
             u.ElementsModified += u_ElementsModified;
+
+            dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
+        }
+
+        void Controller_RevitDocumentChanged(object sender, EventArgs e)
+        {
+            SelectedElement = null;
+            RaisePropertyChanged("SelectedElement");
+            RaisePropertyChanged("SelectionText");
         }
 
         void u_ElementsModified(IEnumerable<string> updated)
@@ -410,7 +428,8 @@ namespace Dynamo.Nodes
             var selectButton = new DynamoNodeButton()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Top,
+                Height = Configurations.PortHeightInPixels,
             };
             selectButton.Click += selectButton_Click;
 
@@ -478,7 +497,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log(e);
+                dynSettings.DynamoLogger.Log(e);
             }
         }
 
@@ -502,26 +521,15 @@ namespace Dynamo.Nodes
                 stableRep = SelectedElement.ConvertToStableRepresentation(dbDocument);
             }
 
-            
             var args = new List<AssociativeNode>
             {
                 AstFactory.BuildStringNode(stableRep)
             };
 
-            if (geob is Curve)
-            {
-                node = AstFactory.BuildFunctionCall(
-                    "GeometryObjectSelector",
-                    "ByCurve", 
-                    args);
-            }
-            else
-            {
-                node = AstFactory.BuildFunctionCall(
+            node = AstFactory.BuildFunctionCall(
                     "GeometryObjectSelector",
                     "ByReferenceStableRepresentation",
                     args);
-            }
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
@@ -551,7 +559,7 @@ namespace Dynamo.Nodes
                     }
                     catch
                     {
-                        DynamoLogger.Instance.Log(
+                        dynSettings.DynamoLogger.Log(
                             "Unable to find reference with stable id: " + id);
                     }
                     SelectedElement = saved;
@@ -628,12 +636,20 @@ namespace Dynamo.Nodes
             SelectionAction = action;
             _selectionMessage = message;
 
-            OutPortData.Add(new PortData("Elements", "The selected elements.", typeof(object)));
+            OutPortData.Add(new PortData("Elements", "The selected elements."));
             RegisterAllPorts();
 
 
             dynRevitSettings.Controller.Updater.ElementsModified += Updater_ElementsModified;
             dynRevitSettings.Controller.Updater.ElementsDeleted += Updater_ElementsDeleted;
+            dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
+        }
+
+        void Controller_RevitDocumentChanged(object sender, EventArgs e)
+        {
+            SelectedElement.Clear();
+            RaisePropertyChanged("SelectedElement");
+            RaisePropertyChanged("SelectionText");
         }
 
         public override void Destroy()
@@ -675,7 +691,8 @@ namespace Dynamo.Nodes
             var selectButton = new DynamoNodeButton()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Top,
+                Height = Configurations.PortHeightInPixels,
             };
             selectButton.Click += selectButton_Click;
 
@@ -745,7 +762,7 @@ namespace Dynamo.Nodes
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log(e);
+                dynSettings.DynamoLogger.Log(e);
             }
         }
 
@@ -858,93 +875,7 @@ namespace Dynamo.Nodes
             : base(SelectionHelper.RequestModelElementSelection, "Select Model Element")
         { }
     }
-
-    /*[NodeName("Select Family Instance")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Select a family instance from the document.")]
-    [IsDesignScriptCompatible]
-    public class DSFamilyInstanceSelection : DSElementSelection
-    {
-        public override string SelectionText
-        {
-            get
-            {
-                return _selectionText = SelectedElement == null
-                                            ? "Nothing Selected"
-                                            : SelectedElement.Name;
-            }
-            set
-            {
-                _selectionText = value;
-                RaisePropertyChanged("SelectionText");
-            }
-        }
-
-        public DSFamilyInstanceSelection()
-            :base (SelectionHelper.RequestFamilyInstanceSelection, "Select a family instance."){}
-    }*/
-
-    /*[NodeName("Select Level")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Select a level from the document.")]
-    [IsDesignScriptCompatible]
-    public class DSLevelSelection : DSElementSelection
-    {
-        public override string SelectionText
-        {
-            get
-            {
-                return _selectionText = SelectedElement == null
-                                            ? "Nothing Selected"
-                                            : SelectedElement.Name + " ("
-                                              + SelectedElement.Id + ")";
-            }
-            set
-            {
-                _selectionText = value;
-                RaisePropertyChanged("SelectionText");
-            }
-        }
-
-        public DSLevelSelection()
-            :base(SelectionHelper.RequestLevelSelection,"Select a level."){}
-    }*/
-
-    /*[NodeName("Select Curve Element")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Select a curve element from the document.")]
-    [IsDesignScriptCompatible]
-    public class DSCurveElementSelection : DSElementSelection
-    {
-        public override string SelectionText
-        {
-            get
-            {
-                return _selectionText = SelectedElement == null
-                                            ? "Nothing Selected"
-                                            : "Curve ID: " + SelectedElement.Id;
-            }
-            set
-            {
-                _selectionText = value;
-                RaisePropertyChanged("SelectionText");
-            }
-        }
-
-        public DSCurveElementSelection()
-            :base(SelectionHelper.RequestCurveElementSelection, "Select a model or reference curve."){}
-    }*/
-
-    /*[NodeName("Select Reference Point")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Select a reference point from the document.")]
-    [IsDesignScriptCompatible]
-    public class DSReferencePointSelection : DSElementSelection
-    {
-        public DSReferencePointSelection()
-            :base(SelectionHelper.RequestReferencePointSelection,"Select a reference point."){}
-    }*/
-
+    
     [NodeName("Select Face")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a face.")]
@@ -957,7 +888,7 @@ namespace Dynamo.Nodes
             {
                 return _selectionText = SelectedElement == null
                                             ? "Nothing Selected"
-                                            : "Face ID: " + SelectedElement.ElementId;
+                                            : "Face of Element ID: " + SelectedElement.ElementId;
             }
             set
             {
@@ -982,7 +913,7 @@ namespace Dynamo.Nodes
             {
                 return _selectionText = SelectedElement == null
                                             ? "Nothing Selected"
-                                            : "Element of Edge  ID: " + SelectedElement.ElementId;
+                                            : "Element of Element ID: " + SelectedElement.ElementId;
             }
             set
             {

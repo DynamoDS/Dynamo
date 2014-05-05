@@ -34,7 +34,7 @@ namespace Dynamo.Tests
 
             //run the expression and assert that it does not
             //throw an error
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(false));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Dynamo.Tests
         /// <returns></returns>
         static List<object[]> SetupRevitRegressionTests()
         {
-            DynamoLogger.Instance.Log("Setting up regression tests...", LogLevel.File);
+            dynSettings.DynamoLogger.Log("Setting up regression tests...", LogLevel.File);
 
             var testParameters = new List<object[]>();
 
@@ -53,7 +53,7 @@ namespace Dynamo.Tests
             string testsLoc = Path.Combine(assDir, @"..\..\..\test\revit\Regression\");
             var regTestPath = Path.GetFullPath(testsLoc);
 
-            DynamoLogger.Instance.Log(string.Format("Using regression path: {0}", regTestPath), LogLevel.File);
+            dynSettings.DynamoLogger.Log(string.Format("Using regression path: {0}", regTestPath), LogLevel.File);
 
             var di = new DirectoryInfo(regTestPath);
             var dyns = di.GetFiles("*.dyn");
@@ -80,8 +80,8 @@ namespace Dynamo.Tests
 
                 testParameters.Add(data);
 
-                DynamoLogger.Instance.Log(data[0].ToString(),LogLevel.File);
-                DynamoLogger.Instance.Log(data[0].ToString(), LogLevel.File);
+                dynSettings.DynamoLogger.Log(data[0].ToString(),LogLevel.File);
+                dynSettings.DynamoLogger.Log(data[0].ToString(), LogLevel.File);
             }
 
             return testParameters;

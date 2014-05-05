@@ -18,7 +18,7 @@ namespace DSRevitNodesTests.Elements
 
             Assert.NotNull(grid);
             Assert.NotNull(grid.Curve);
-            Assert.NotNull(grid.CurveReference);
+            Assert.NotNull(grid.ElementCurveReference);
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace DSRevitNodesTests.Elements
 
             Assert.NotNull(grid);
             Assert.NotNull(grid.Curve);
-            Assert.NotNull(grid.CurveReference);
+            Assert.NotNull(grid.ElementCurveReference);
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace DSRevitNodesTests.Elements
 
             Assert.NotNull(grid);
             Assert.NotNull(grid.Curve);
-            Assert.NotNull(grid.CurveReference);
+            Assert.NotNull(grid.ElementCurveReference);
         }
 
         [Test]

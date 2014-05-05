@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,9 +7,6 @@ using System.IO.Ports;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Controls;
 using Dynamo.Models;
-using Microsoft.FSharp.Collections;
-using Dynamo.FSchemeInterop;
-using Value = Dynamo.FScheme.Value;
 
 
 namespace Dynamo.Nodes
@@ -26,8 +22,8 @@ namespace Dynamo.Nodes
 
         public Arduino()
         {
-            InPortData.Add(new PortData("exec", "Execution Interval", typeof(object)));
-            OutPortData.Add(new PortData("arduino", "Serial port for later read/write", typeof(Value.Container)));
+            InPortData.Add(new PortData("exec", "Execution Interval"));
+            OutPortData.Add(new PortData("arduino", "Serial port for later read/write"));
 
             RegisterAllPorts();
 
@@ -148,9 +144,9 @@ namespace Dynamo.Nodes
 
         public ArduinoRead()
         {
-            InPortData.Add(new PortData("arduino", "Arduino serial connection", typeof(object)));
-            InPortData.Add(new PortData("delimiter", "The delimeter in your data coming from the Arduino.", typeof(Value.String)));
-            OutPortData.Add(new PortData("output", "Serial output line", typeof(Value.List)));
+            InPortData.Add(new PortData("arduino", "Arduino serial connection"));
+            InPortData.Add(new PortData("delimiter", "The delimeter in your data coming from the Arduino."));
+            OutPortData.Add(new PortData("output", "Serial output line"));
 
             RegisterAllPorts();
         }
@@ -207,9 +203,9 @@ namespace Dynamo.Nodes
 
         public ArduinoWrite()
         {
-            InPortData.Add(new PortData("arduino", "Arduino serial connection", typeof(object)));
-            InPortData.Add(new PortData("text", "Text to be written", typeof(string)));
-            OutPortData.Add(new PortData("success?", "Whether or not the operation was successful.", typeof(Value.Number)));
+            InPortData.Add(new PortData("arduino", "Arduino serial connection"));
+            InPortData.Add(new PortData("text", "Text to be written"));
+            OutPortData.Add(new PortData("success?", "Whether or not the operation was successful."));
 
             RegisterAllPorts();
         }
