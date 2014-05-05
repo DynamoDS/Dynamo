@@ -387,6 +387,12 @@ namespace Dynamo.Controls
         private void OnPreviewControlStateChanged(object sender, EventArgs e)
         {
             var preview = sender as PreviewControl;
+            if (preview.IsHidden)
+                previewIcon.Fill = Brushes.LightGray;
+            else if (preview.IsCondensed)
+                previewIcon.Fill = Brushes.Pink;
+            else if (preview.IsExpanded)
+                previewIcon.Fill = Brushes.DeepPink;
 
             if (this.previewIcon.IsMouseOver)
             {
