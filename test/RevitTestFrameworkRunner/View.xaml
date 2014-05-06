@@ -70,17 +70,17 @@
 
         <StackPanel Margin="5" Grid.Row="0" Grid.Column="0" >
             <TextBlock Text="Test Assembly:"></TextBlock>
-            <TextBox Text="{Binding AssemblyPath, Converter={StaticResource AssemblyPathConverter}}" ></TextBox>
+            <TextBox Text="{Binding AssemblyPath, Converter={StaticResource AssemblyPathConverter},Mode=TwoWay}" ></TextBox>
         </StackPanel>
 
         <StackPanel Margin="5" Grid.Row="1" Grid.Column="0">
             <TextBlock Text="Results File Path:"></TextBlock>
-            <TextBox  Text="{Binding ResultsPath, Converter={StaticResource ResultsPathConverter}}"></TextBox>
+            <TextBox  Text="{Binding ResultsPath, Converter={StaticResource ResultsPathConverter}, Mode=TwoWay}"></TextBox>
         </StackPanel>
 
         <StackPanel Margin="5" Grid.Row="2" Grid.Column="0" >
             <TextBlock Text="Working Directory (Location of empty.rfa):"></TextBlock>
-            <TextBox Text="{Binding WorkingPath, Converter={StaticResource WorkingPathConverter}}"></TextBox>
+            <TextBox Text="{Binding WorkingPath, Converter={StaticResource WorkingPathConverter}, Mode=TwoWay}"></TextBox>
         </StackPanel>
         
         <ComboBox ItemsSource="{Binding Products}" Grid.Row="3" Grid.Column="0" Margin="5" SelectedIndex="{Binding SelectedProductIndex, Mode=TwoWay}">

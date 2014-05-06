@@ -135,7 +135,7 @@ namespace RevitTestFrameworkRunner
             set
             {
                 Program._workingDirectory = value;
-                Program.Refresh(this);
+                //Program.Refresh(this);
                 RaisePropertyChanged("WorkingPath");
             }
         }
