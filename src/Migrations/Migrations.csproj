@@ -59,6 +59,7 @@
     <Compile Include="RevitNodes\Curve.cs" />
     <Compile Include="RevitNodes\DividedCurve.cs" />
     <Compile Include="RevitNodes\DividedSurface.cs" />
+    <Compile Include="RevitNodes\DynamicRelaxation.cs" />
     <Compile Include="RevitNodes\Element.cs" />
     <Compile Include="RevitNodes\Ellipse.cs" />
     <Compile Include="RevitNodes\Face.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="RevitNodes\ModelCurve.cs" />
     <Compile Include="RevitNodes\NurbsSpline.cs" />
     <Compile Include="RevitNodes\Plane.cs" />
+    <Compile Include="RevitNodes\Project.cs" />
     <Compile Include="RevitNodes\RayBounce.cs" />
     <Compile Include="RevitNodes\Rectangle.cs" />
     <Compile Include="RevitNodes\ReferenceCurve.cs" />
