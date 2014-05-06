@@ -481,16 +481,16 @@ namespace ProtoTest.LiveRunner
             liveRunner.UpdateGraph(syncData);
 
             mirror = liveRunner.InspectNodeValue("a");
-            Assert.IsTrue(mirror.GetData().IsNull);
+            Assert.IsTrue((Int64)mirror.GetData().Data == 10);
 
             mirror = liveRunner.InspectNodeValue("b");
-            Assert.IsTrue(mirror.GetData().IsNull);
+            Assert.IsTrue((Int64)mirror.GetData().Data == 10);
 
             mirror = liveRunner.InspectNodeValue("c");
             Assert.IsTrue((Int64)mirror.GetData().Data == 78);
 
             mirror = liveRunner.InspectNodeValue("d");
-            Assert.IsTrue(mirror.GetData().IsNull);
+            Assert.IsTrue((Int64)mirror.GetData().Data == 10);
         }
 
         [Test]
@@ -2284,7 +2284,7 @@ z=Point.ByCoordinates(y,a,a);
             List<string> codes = new List<string>() 
             {                    
                 "def f(){y = 1; return = 2;} x = f();",
-                "def f(){return = 1;}"
+                "def f(){return = 1;} x = f();"
             };
 
             Guid guid = System.Guid.NewGuid();
@@ -3380,10 +3380,77 @@ z=Point.ByCoordinates(y,a,a);
         public void TestCodeblockModification16()
         {
             List<string> codes = new List<string>() 
+            {
+                @"import(""FFITarget.dll"");",
+                "y = 10.0;",
+                "p = DummyPoint.ByCoordinates(0.0, 0.0, 0.0);",
+                "i = p.Y;",
+                "p = DummyPoint.ByCoordinates(0.0, y, 0.0);"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+            Guid guid4 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+
+            // Create CBN and run import stmt
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            // Create a CBN with a point
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid2, codes[2]));
+
+            // Create a CBN that checks the value of p.Y
+            added.Add(CreateSubTreeFromCode(guid3, codes[3]));
+
+            // Execute
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("i", 0.0);
+
+
+            // Create a CBN defining 'y'
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid4, codes[1]));
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("y", 10.0);
+
+            // Connect CBN to point
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid2, codes[4]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("i", 10.0);
+
+            // Disconnect point
+            modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("i", 0.0);
+
+            // Delete CBN
+            List<Subtree> deleted = new List<Subtree>();
+            deleted.Add(CreateSubTreeFromCode(guid4, codes[1]));
+            syncData = new GraphSyncData(deleted, null, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("i", 0.0);
+        }
+
+        [Test]
+        public void TestCodeBlockDeleteLine01()
+        {
+            List<string> codes = new List<string>() 
             {                    
                 "a = 2;",
-                "def f(x){return = x;} b = a; p = f(b); i = p;",
-                "def f(x){return = x;} p = i;"
+                "def f(x){return = x;} b = a; p = f(b);",
+                "def f(x){return = x;}"
             };
 
             Guid guid1 = System.Guid.NewGuid();
@@ -3396,7 +3463,7 @@ z=Point.ByCoordinates(y,a,a);
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
 
-            AssertValue("i", 2);
+            AssertValue("p", 2);
 
             // Modify CBN2 - Remove the line that calls the function
             List<Subtree> modified = new List<Subtree>();
@@ -3404,10 +3471,10 @@ z=Point.ByCoordinates(y,a,a);
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
 
-            var mirror = astLiveRunner.InspectNodeValue("i");
+            var mirror = astLiveRunner.InspectNodeValue("p");
+
             Assert.IsTrue(mirror.GetData().IsNull);
         }
-
 
         [Test]
         public void TestEmptyCodeblock01()

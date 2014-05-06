@@ -768,6 +768,14 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\apply_property.dyn");
             AssertPreviewValue("2cbadbce-ee25-4f90-8309-3b81bf4fdfd9", 42.0);
         }
+
+        [Test]
+        public void Defect_MAGN_3264()
+        {
+            // Function object to property method and used in apply 
+            RunModel(@"core\dsevaluation\Defect_MAGN_3264.dyn");
+            AssertPreviewValue("eaa2b29f-b5f4-4017-a143-3fb2d4af349c", new double[] {0, 1, 2, 3, 4});
+        }
     }
 
     [Category("DSCustomNode")]

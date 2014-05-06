@@ -1787,6 +1787,24 @@ namespace Dynamo.Tests
             AssertPreviewValue("635a4533-d522-4bf7-83a7-4f178fabd18f", new double[] { 2 });
         }
 
+        [Test]
+        public void TestWriteText()
+        {
+            OpenModel(GetDynPath("TestWriteFile.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Connectors.Count);
+
+            var path = workspace.NodeFromWorkspace<Dynamo.Nodes.StringInput>("1651f446-1b0f-4d5b-be59-c59bf9f80142");
+            string fullPath = Path.Combine(TempFolder, "filewriter.txt");
+            path.Value = fullPath;
+
+            RunCurrentModel();
+            AssertPreviewValue("a169a84b-2624-422c-9a48-1afe2691f11f", true);
+        }
+
         #endregion
 
         #region Dynamo Libraries Node Migration Tests

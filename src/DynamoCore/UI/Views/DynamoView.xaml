@@ -149,7 +149,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Name="consoleRow" Height="{Binding ConsoleShowing, Converter={StaticResource BoolToConsoleHeightConverter}}"/>
+            <RowDefinition Name="consoleRow" Height="{Binding ConsoleHeight, Mode=TwoWay, Converter={StaticResource ConsoleHeightConverter}}"/>
             <RowDefinition Height="48"/>
         </Grid.RowDefinitions>
 
@@ -250,7 +250,7 @@
                             <MenuItem  Header="Pan Down (Mouse wheel drag down)" Command="{Binding PanCommand}" CommandParameter="Down" InputGestureText="Ctrl + Alt + Down"/>
                         </MenuItem>    
 
-                        <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
+                        <MenuItem Header="{Binding Path=ConsoleHeight, Converter={StaticResource ShowHideConsoleMenuConverter}}"
                               Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl + Shift + Up"/>
 
                         <MenuItem Header="_Connectors" Name="connectorMenu">
