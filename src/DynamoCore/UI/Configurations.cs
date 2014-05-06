@@ -16,13 +16,6 @@ namespace Dynamo.UI
         public static readonly double MaxWatchNodeWidth = 280.0;
         public static readonly double MaxWatchNodeHeight = 310.0;
 
-        public static readonly double MaxExpandedPreviewWidth = MaxWatchNodeWidth;
-        public static readonly double MaxExpandedPreviewHeight = MaxWatchNodeHeight;
-        public static readonly double MaxCondensedPreviewWidth = 280.0;
-        public static readonly double MaxCondensedPreviewHeight = 64.0;
-        public static readonly double DefCondensedContentWidth = 33.0;
-        public static readonly double DefCondensedContentHeight = 28.0;
-
         #endregion
 
         #region Usage Reporting Error Message
@@ -206,8 +199,21 @@ namespace Dynamo.UI
 
         #region Preview Control Settings
 
-        public static readonly double PreviewHiddenOffset = -32.0;
-        public static readonly double FadeInOutDurationInMs = 200;
+        public static readonly double MaxExpandedPreviewWidth = MaxWatchNodeWidth;
+        public static readonly double MaxExpandedPreviewHeight = MaxWatchNodeHeight;
+        public static readonly double MaxCondensedPreviewWidth = 280.0;
+        public static readonly double MaxCondensedPreviewHeight = 64.0;
+        public static readonly double DefCondensedContentWidth = 33.0;
+        public static readonly double DefCondensedContentHeight = 28.0;
+
+        public static readonly SolidColorBrush PreviewIconPinnedBrush =
+            new SolidColorBrush(Color.FromArgb(0xFF, 0x97, 0x93, 0x8E));
+        public static readonly SolidColorBrush PreviewIconClickedBrush =
+            new SolidColorBrush(Color.FromArgb(0xFF, 0xA4, 0xA0, 0x9A));
+        public static readonly SolidColorBrush PreviewIconHoverBrush =
+            new SolidColorBrush(Color.FromArgb(0x00, 0xFF, 0xFF, 0xFF));
+        public static readonly SolidColorBrush PreviewIconNormalBrush =
+            new SolidColorBrush(Color.FromArgb(0x00, 0xFF, 0xFF, 0xFF));
 
         #endregion
 
