@@ -44,13 +44,6 @@ namespace Dynamo.Tests
 
         [Test]
         [TestModel(@".\empty.rfa")]
-        public void TestMigration_Analyze_Color()
-        {
-            TestMigration(@".\Migration\TestMigration_Analyze_Color.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
         public void TestMigration_Analyze_Daylighting()
         {
             TestMigration(@".\Migration\TestMigration_Analyze_Daylighting.dyn");
@@ -82,69 +75,6 @@ namespace Dynamo.Tests
         public void TestMigration_Analyze_Solar()
         {
             TestMigration(@".\Migration\TestMigration_Analyze_Solar.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_Analyze_Structure()
-        {
-            TestMigration(@".\Migration\TestMigration_Analyze_Structure.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_Core_Evaluate()
-        {
-            TestMigration(@".\Migration\TestMigration_Core_Evaluate.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_Core_Functions()
-        {
-            TestMigration(@".\Migration\TestMigration_Core_Functions.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_Core_Input()
-        {
-            TestMigration(@".\Migration\TestMigration_Core_Input.dyn");
-        }
-             
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_Core_List()
-        {
-            TestMigration(@".\Migration\TestMigration_Core_List.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_Core_Scripting()
-        {
-            TestMigration(@".\Migration\TestMigration_Core_Scripting.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_Core_Strings()
-        {
-            TestMigration(@".\Migration\TestMigration_Core_Strings.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_Core_Time()
-        {
-            TestMigration(@".\Migration\TestMigration_Core_Time.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_Core_Watch()
-        {
-            TestMigration(@".\Migration\TestMigration_Core_Watch.dyn");
         }
 
         [Test]
@@ -194,55 +124,6 @@ namespace Dynamo.Tests
         public void TestMigration_Geometry_Transform()
         {
             TestMigration(@".\Migration\TestMigration_Geometry_Transform.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_InputOutput_Excel()
-        {
-            TestMigration(@".\Migration\TestMigration_InputOutput_Excel.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_InputOutput_File()
-        {
-            TestMigration(@".\Migration\TestMigration_InputOutput_File.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_InputOutput_Hardware()
-        {
-            TestMigration(@".\Migration\TestMigration_InputOutput_Hardware.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_Logic_Comparison()
-        {
-            TestMigration(@".\Migration\TestMigration_Logic_Comparison.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_Logic_Conditional()
-        {
-            TestMigration(@".\Migration\TestMigration_Logic_Conditional.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_Logic_Effect()
-        {
-            TestMigration(@".\Migration\TestMigration_Logic_Effect.dyn");
-        }
-
-        [Test]
-        [TestModel(@".\empty.rfa")]
-        public void TestMigration_Logic_Math()
-        {
-            TestMigration(@".\Migration\TestMigration_Logic_Math.dyn");
         }
 
         [Test]
