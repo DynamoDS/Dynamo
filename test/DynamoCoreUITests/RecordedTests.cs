@@ -1570,7 +1570,7 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void DS_FunctionRedef01()
         {
             // test for function redefinition - evalaute function
@@ -1595,7 +1595,7 @@ namespace DynamoCoreUITests
             AssertValue("p_d4d53e201514434983e17cb5c533a3e0", 0);
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void DS_FunctionRedef02()
         {
             // test for function redefinition - evalaute function
@@ -1617,7 +1617,7 @@ namespace DynamoCoreUITests
             AssertValue("p_ed9c9950a1dc4487b1269a07d999d8a8", 0);
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void DS_FunctionRedef03()
         {
             // test for function redefinition - evalaute function
@@ -1639,7 +1639,7 @@ namespace DynamoCoreUITests
             AssertValue("d_f34e01e225e446349eb8e815e8ee580d", 1);
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void DS_FunctionRedef04()
         {
             // test for function redefinition - evalaute function

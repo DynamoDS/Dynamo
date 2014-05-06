@@ -77,7 +77,7 @@
     <controls:PortTypeToTextAlignmentConverter x:Key="PortTypeToTextAlignmentConverter"/>
     <controls:PortTypeToGridColumnConverter x:Key="PortTypeToGridColumnConverter"/>
     <controls:PortTypeToClipConverter x:Key="PortTypeToClipConverter"/>
-    <controls:BoolToConsoleHeightConverter x:Key="BoolToConsoleHeightConverter"/>
+    <controls:ConsoleHeightConverter x:Key="ConsoleHeightConverter"/>
     <controls:BoolToFullscreenWatchVisibilityConverter x:Key="BoolToFullscreenWatchVisibilityConverter"/>
     <controls:BoolToCanvasCursorConverter x:Key="BoolToCanvasCursorConverter"/>
     <controls:LacingToVisibilityConverter x:Key="LacingToVisibilityConverter"/>

@@ -144,7 +144,6 @@ namespace Revit.Interactivity
             choices.Elements.Clear();
 
             dynSettings.DynamoLogger.Log(message);
-
             Reference edgeRef = doc.Selection.PickObject(ObjectType.Edge);
 
             return edgeRef;
