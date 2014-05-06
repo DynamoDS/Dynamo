@@ -21,22 +21,15 @@ namespace Revit.GeometryConversion
         {
             if (revitFace == null) return null;
 
-            dynamic dyFace = revitFace;
+            var dyFace = (dynamic) revitFace;
             List<PolyCurve> edgeLoops = EdgeLoopsAsPolyCurves(dyFace);
             Surface untrimmedSrf = SurfaceExtractor.ExtractSurface(dyFace, edgeLoops);
             var converted = untrimmedSrf != null ? untrimmedSrf.TrimWithEdgeLoops(edgeLoops.ToArray()) : null;
 
-            // could not convert
             if (converted == null) return null;
 
-            // If possible, add a geometry reference for downstream Element creation
             var revitRef = revitFace.Reference;
-            if (revitFace.IsElementGeometry && revitRef != null)
-            {
-                converted.Tags.AddTag(ElementFaceReference.DefaultTag, revitRef);
-            }
-
-            return converted;
+            return revitRef != null ? ElementFaceReference.AddTag(converted, revitRef) : converted;
         }
 
         internal static List<PolyCurve> EdgeLoopsAsPolyCurves(Autodesk.Revit.DB.Face face)
