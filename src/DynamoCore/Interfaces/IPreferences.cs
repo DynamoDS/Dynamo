@@ -5,7 +5,7 @@ namespace Dynamo.Interfaces
 {
     public interface IPreferences
     {
-        bool ShowConsole { get; set; }
+        int ConsoleHeight { get; set; }
         bool ShowConnector { get; set; }
         ConnectorType ConnectorType { get; set; }
         bool FullscreenWatchShowing { get; set; }

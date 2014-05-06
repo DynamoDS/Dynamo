@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="ColorTests.cs" />
     <Compile Include="ComparisonTests.cs" />
+    <Compile Include="FileTests.cs" />
     <Compile Include="ListTests.cs" />
     <Compile Include="LogicTests.cs" />
     <Compile Include="MathTests.cs" />
@@ -91,6 +92,10 @@
     <ProjectReference Include="..\..\..\src\Libraries\CoreNodes\CoreNodes.csproj">
       <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
       <Name>CoreNodes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
+      <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
+      <Name>DynamoCoreTests</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

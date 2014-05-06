@@ -61,8 +61,9 @@ namespace ProtoCore
             public const string kPropertyIsInaccessible = "Property '{0}' is inaccessible.";
             public const string kMethodIsInaccessible = "Method '{0}()' is inaccessible.";
             public const string kCallingConstructorInConstructor = "Cannot call constructor '{0}()' in itself.";
-            public const string kPropertyNotFound = "Property '{0}' not found";
-            public const string kMethodNotFound = "Method '{0}()' not found";
+            public const string kPropertyNotFound = "Property '{0}' not found.";
+            public const string kMethodNotFound = "Method '{0}()' not found.";
+            public const string kStaticMethodNotFound = "Cannot find static method or constructor {0}.{1}().";
             public const string kUnboundIdentifierMsg = "Variable '{0}' hasn't been defined yet.";
             public const string kFunctionNotReturnAtAllCodePaths = "Method '{0}()' doesn't return at all code paths.";
             public const string kRangeExpressionWithStepSizeZero = "The step size of range expression should not be 0.";
