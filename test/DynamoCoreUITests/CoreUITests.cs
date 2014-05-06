@@ -48,32 +48,29 @@ namespace DynamoCoreUITests
         #region ToggleConsoleShowingCommand
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
-        public void CanShowConsoleWhenHidden()
+        [Category("DynamoUI")]
+        public void CanHideConsoleWhenShown()
         {
             Vm.ToggleConsoleShowingCommand.Execute(null);
             Ui.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (Action)(() => Assert.False(Ui.ConsoleShowing)));
-            Assert.Inconclusive("Binding is not being updated in time for the test to complete correctly");
         }
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void ConsoleIsHiddenOnOpen()
         {
             Assert.False(Ui.ConsoleShowing);
         }
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
-        public void CanHideConsoleWhenShown()
+        [Category("DynamoUI")]
+        public void CanShowConsoleWhenHidden()
         {
-            //Vm.ToggleConsoleShowingCommand.Execute(null);
-            //Assert.True(ui.ConsoleShowing);
+            Vm.ToggleConsoleShowingCommand.Execute(null);
+            Ui.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (Action)(() => Assert.False(Ui.ConsoleShowing)));
 
-            //Vm.ToggleConsoleShowingCommand.Execute(null);
-            //Assert.False(ui.ConsoleShowing); 
-            
-            Assert.Inconclusive("Binding is not being updated in time for the test to complete correctly");
+            Vm.ToggleConsoleShowingCommand.Execute(null);
+            Ui.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (Action)(() => Assert.True(Ui.ConsoleShowing)));
         }
 
         #endregion
@@ -490,14 +487,14 @@ namespace DynamoCoreUITests
             Assert.AreEqual(expectedValue, Controller.PreferenceSettings.FullscreenWatchShowing);
             #endregion
 
-            #region ShowConsole
-            expectedValue = !Controller.PreferenceSettings.ShowConsole;
+            #region ConsoleHeight
+            int expectedHeight = 0;;
             Vm.ToggleConsoleShowing(null);
-            Assert.AreEqual(expectedValue, Controller.PreferenceSettings.ShowConsole);
+            Assert.AreEqual(expectedHeight, Controller.PreferenceSettings.ConsoleHeight);
 
-            expectedValue = !Controller.PreferenceSettings.ShowConsole;
+            expectedHeight = 100;
             Vm.ToggleConsoleShowing(null);
-            Assert.AreEqual(expectedValue, Controller.PreferenceSettings.ShowConsole);
+            Assert.AreEqual(expectedHeight, Controller.PreferenceSettings.ConsoleHeight);
             #endregion
 
             #region ConnectorType
@@ -537,7 +534,7 @@ namespace DynamoCoreUITests
             #region First Test
 
             initalSetting.ConnectorType = ConnectorType.BEZIER;
-            initalSetting.ShowConsole = true;
+            initalSetting.ConsoleHeight = 100;
             initalSetting.FullscreenWatchShowing = true;
 
             initalSetting.Save(tempPath);
@@ -545,12 +542,12 @@ namespace DynamoCoreUITests
 
             Assert.AreEqual(resultSetting.FullscreenWatchShowing, initalSetting.FullscreenWatchShowing);
             Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
-            Assert.AreEqual(resultSetting.ShowConsole, initalSetting.ShowConsole);
+            Assert.AreEqual(resultSetting.ConsoleHeight, initalSetting.ConsoleHeight);
             #endregion
 
             #region Second Test
             initalSetting.ConnectorType = ConnectorType.POLYLINE;
-            initalSetting.ShowConsole = false;
+            initalSetting.ConsoleHeight = 0;
             initalSetting.FullscreenWatchShowing = false;
 
             initalSetting.Save(tempPath);
@@ -558,7 +555,7 @@ namespace DynamoCoreUITests
 
             Assert.AreEqual(resultSetting.FullscreenWatchShowing, initalSetting.FullscreenWatchShowing);
             Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
-            Assert.AreEqual(resultSetting.ShowConsole, initalSetting.ShowConsole);
+            Assert.AreEqual(resultSetting.ConsoleHeight, initalSetting.ConsoleHeight);
             #endregion
 
             #endregion

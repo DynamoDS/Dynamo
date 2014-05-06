@@ -248,20 +248,30 @@ namespace Dynamo.Nodes
 
                     for (int i = 0; i < inputs.Count(); ++i)
                     {
+                        ArrayNameNode astNode = null;
+
                         if (inputs[i] is ArrayNameNode)
                         {
-                            var astNode = NodeUtils.Clone(inputs[i]) as ArrayNameNode;
-                            astNode.ReplicationGuides = new List<AssociativeNode>();
+                            astNode = NodeUtils.Clone(inputs[i]) as ArrayNameNode;
+                            
+                        }
+                        else
+                        {
+                            var exprListNode  = new ExprListNode();
+                            exprListNode.list.Add(NodeUtils.Clone(inputs[i]));
+                            astNode = exprListNode;
+                        }
 
-                            var guideNode = new ReplicationGuideNode
+                        astNode.ReplicationGuides = new List<AssociativeNode>()
+                        {
+                            new ReplicationGuideNode
                             {
                                 RepGuide = AstFactory.BuildIdentifier("1"),
                                 IsLongest = true
-                            };
+                            }
+                        };
 
-                            astNode.ReplicationGuides.Add(guideNode);
-                            inputs[i] = astNode;
-                        }
+                        inputs[i] = astNode;
                     }
                     break;
 
@@ -270,20 +280,29 @@ namespace Dynamo.Nodes
                     int guide = 1;
                     for (int i = 0; i < inputs.Count(); ++i)
                     {
+                        ArrayNameNode astNode = null;
+
                         if (inputs[i] is ArrayNameNode)
                         {
-                            var astNode = NodeUtils.Clone(inputs[i]) as ArrayNameNode;
-                            astNode.ReplicationGuides = new List<AssociativeNode>();
+                            astNode = NodeUtils.Clone(inputs[i]) as ArrayNameNode;
+                        }
+                        else
+                        {
+                            var exprListNode  = new ExprListNode();
+                            exprListNode.list.Add(NodeUtils.Clone(inputs[i]));
+                            astNode = exprListNode;
+                        }
 
-                            var guideNode = new ReplicationGuideNode
+                        astNode.ReplicationGuides = new List<AssociativeNode>()
+                        {
+                            new ReplicationGuideNode
                             {
                                 RepGuide = AstFactory.BuildIdentifier(guide.ToString())
-                            };
+                            }
+                        };
 
-                            astNode.ReplicationGuides.Add(guideNode);
-                            inputs[i] = astNode;
-                            guide++;
-                        }
+                        inputs[i] = astNode;
+                        guide++;
                     }
                     break;
             }
