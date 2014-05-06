@@ -165,11 +165,19 @@ namespace Dynamo.Controls
         {
             Dispatcher.BeginInvoke(new Action(delegate
             {
-                if (previewControl == null) // There's no preview control yet.
+                // There is no preview control or the preview control is 
+                // currently in transition state (it can come back to handle
+                // the new data later on when it is ready).
+                if ((previewControl == null) || previewControl.IsInTransition)
                     return;
 
-                if (previewControl.IsHidden || previewControl.IsInTransition)
-                    return; // Preview control does not need to know about this.
+                if (previewControl.IsHidden) // The preview control is hidden.
+                {
+                    // Invalidate the previously bound data, if any.
+                    if (previewControl.IsDataBound)
+                        previewControl.BindToDataSource(null);
+                    return;
+                }
 
                 previewControl.BindToDataSource(ViewModel.NodeLogic.CachedValue);
             }));
