@@ -10,67 +10,46 @@ using System.Diagnostics;
 using System.Collections.ObjectModel;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.FSchemeInterop;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.DSEngine;
-using Dynamo.FSchemeInterop.Node;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
-using Microsoft.FSharp.Core;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
-using Utils = Dynamo.FSchemeInterop.Utils;
 
 namespace Dynamo.Models
 {
     public abstract class NodeModel : ModelBase, IBlockingModel
     {
-        #region abstract members
-
-        /// <summary>
-        ///     The dynElement's Evaluation Logic.
-        /// </summary>
-        /// <param name="args">
-        ///     Parameters to the node. You are guaranteed to have as many arguments as you have InPorts at the time
-        ///     it is run.
-        /// </param>
-        /// <param name="outPuts"></param>
-        /// <returns>
-        ///     An expression that is the result of the Node's evaluation. It will be passed along to whatever the OutPort is
-        ///     connected to.
-        /// </returns>
-        public virtual void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
         #region private members
 
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;
         private bool displayLabels;
-        private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
         private bool interactionEnabled = true;
         private bool isUpstreamVisible;
         private bool isVisible;
         private string nickName;
-        private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
         private ElementState state;
         private string toolTipText = "";
-        private IdentifierNode identifier;
         private bool saveResult;
-        private bool isUpdated;
         private string description;
         private const string FailureString = "Node evaluation failed";
+        protected IdentifierNode identifier;
+
+        // Data caching related class members.
+        private bool isUpdated = false;
+        private MirrorData cachedMirrorData = null;
+
+        // Input and output port related data members.
+        private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
+        private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
         private readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
-        private int errorCount;
 
         private List<IRenderPackage> _renderPackages = new List<IRenderPackage>();
 
@@ -327,15 +306,27 @@ namespace Dynamo.Models
             }
         }
 
-        /// <summary>
-        ///     The value which was produced for this node during the previous evaluation.
-        /// </summary>
-        public virtual MirrorData OldValue
+        public MirrorData CachedValue
         {
             get
             {
-                var mirrorData = dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Value);
-                return mirrorData == null ? null : mirrorData.GetData();
+                if (cachedMirrorData != null)
+                    return cachedMirrorData;
+
+                // Do not have an identifier for preview right now. For an example,
+                // this can be happening at the beginning of a code block node creation.
+                if (AstIdentifierForPreview.Value == null)
+                    return null;
+
+                cachedMirrorData = null;
+
+                var engine = dynSettings.Controller.EngineController;
+                var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
+
+                if (runtimeMirror != null)
+                    cachedMirrorData = runtimeMirror.GetData();
+
+                return cachedMirrorData;
             }
         }
 
@@ -348,23 +339,10 @@ namespace Dynamo.Models
             set
             {
                 isUpdated = value;
-                RaisePropertyChanged("IsUpdated");
-            }
-        }
+                if (isUpdated != false)      // When a NodeModel is updated, its 
+                    cachedMirrorData = null; // cached data should be invalidated.
 
-        /// <summary>
-        ///     Return a variable whose value will be displayed in preview window.
-        ///     Derived nodes may overwrite this function to display default value
-        ///     of this node. E.g., code block node may want to display the value
-        ///     of the left hand side variable of last statement.
-        /// </summary>
-        /// <returns></returns>
-        public virtual string VariableToPreview
-        {
-            get
-            {
-                IdentifierNode ident = AstIdentifierForPreview;
-                return (ident == null) ? null : ident.Name;
+                RaisePropertyChanged("IsUpdated");
             }
         }
 
@@ -453,9 +431,12 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Base name for ProtoAST Identifiers corresponding to this node's output.
+        ///     Return a variable whose value will be displayed in preview window.
+        ///     Derived nodes may overwrite this function to display default value
+        ///     of this node. E.g., code block node may want to display the value
+        ///     of the left hand side variable of last statement.
         /// </summary>
-        protected string AstIdentifierBase
+        public virtual string AstIdentifierBase
         {
             get { return AstBuilder.StringConstants.VarPrefix + GUID.ToString().Replace("-", string.Empty); }
         }
@@ -1234,8 +1215,7 @@ namespace Dynamo.Models
 
         #region Code Serialization
 
-        public static string PrintValue(
-            string variableName,
+        public string PrintValue(
             int currentListIndex,
             int maxListIndex,
             int currentDepth,
@@ -1243,90 +1223,20 @@ namespace Dynamo.Models
             int maxStringLength = 20)
         {
             string previewValue = "<null>";
-            if (!string.IsNullOrEmpty(variableName))
+            if (!string.IsNullOrEmpty(this.AstIdentifierBase))
             {
                 try
                 {
-                    previewValue = dynSettings.Controller.EngineController.GetStringValue(variableName);
+                    var engine = dynSettings.Controller.EngineController;
+                    previewValue = engine.GetStringValue(this.AstIdentifierBase);
                 }
                 catch (Exception ex)
                 {
-                    DynamoLogger.Instance.Log(ex.Message);
+                    dynSettings.DynamoLogger.Log(ex.Message);
                 }
             }
+
             return previewValue;
-        }
-
-        public static string PrintValue(
-            FScheme.Value eIn,
-            int currentListIndex,
-            int maxListIndex,
-            int currentDepth,
-            int maxDepth,
-            int maxStringLength = 20)
-        {
-            if (eIn == null)
-                return "<null>";
-
-            string accString = String.Concat(Enumerable.Repeat("  ", currentDepth));
-
-            if (maxDepth == currentDepth || currentListIndex == maxListIndex)
-            {
-                accString += "...";
-                return accString;
-            }
-
-            if (eIn.IsContainer)
-            {
-                string str = (eIn as FScheme.Value.Container).Item != null
-                                 ? (eIn as FScheme.Value.Container).Item.ToString()
-                                 : "<empty>";
-
-                accString += str;
-            }
-            else if (eIn.IsFunction)
-                accString += "<function>";
-            else if (eIn.IsList)
-            {
-                accString += "List";
-
-                FSharpList<FScheme.Value> list = (eIn as FScheme.Value.List).Item;
-
-                if (!list.Any())
-                    accString += " (empty)";
-
-                // when children will be at maxDepth, just do 1
-                if (currentDepth + 1 == maxDepth)
-                    maxListIndex = 0;
-
-                // build all elements of sub list
-                accString =
-                    list.Select((x, i) => new { Element = x, Index = i })
-                        .TakeWhile(e => e.Index <= maxListIndex)
-                        .Aggregate(
-                            accString,
-                            (current, e) =>
-                            current + "\n"
-                            + PrintValue(e.Element, e.Index, maxListIndex, currentDepth + 1, maxDepth, maxStringLength));
-            }
-            else if (eIn.IsNumber)
-            {
-                double num = (eIn as FScheme.Value.Number).Item;
-                var numFloat = (float)num;
-                accString += numFloat.ToString();
-            }
-            else if (eIn.IsString)
-            {
-                string str = (eIn as FScheme.Value.String).Item;
-                if (str.Length > maxStringLength)
-                    str = str.Substring(0, maxStringLength) + "...";
-
-                accString += "\"" + str + "\"";
-            }
-            else if (eIn.IsSymbol)
-                accString += "<" + (eIn as FScheme.Value.Symbol).Item + ">";
-
-            return accString;
         }
         
 
@@ -1519,10 +1429,10 @@ namespace Dynamo.Models
         /// </summary>
         public virtual void UpdateRenderPackage()
         {
-            //Avoid attempting an update after the controller 
-            //has shut down.
             if (dynSettings.Controller == null)
+            {
                 return;
+            }
 
             //dispose of the current render package
             lock (RenderPackagesMutex)
@@ -1530,7 +1440,9 @@ namespace Dynamo.Models
                 RenderPackages.Clear();
                 HasRenderPackages = false;
 
-                if (State == ElementState.Error || !IsVisible)
+                if (State == ElementState.Error ||
+                    !IsVisible ||
+                    CachedValue == null)
                 {
                     return;
                 }
@@ -1736,6 +1648,9 @@ namespace Dynamo.Models
         private string GetDrawableId(int outPortIndex)
         {
             var output = GetAstIdentifierForOutputIndex(outPortIndex);
+            if (output == null)
+                return null;
+
             return output.ToString();
         }
 

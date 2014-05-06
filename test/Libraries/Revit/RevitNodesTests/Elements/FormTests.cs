@@ -1,8 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Dynamo.Tests;
 using Revit.Elements;
 using NUnit.Framework;
+using Revit.GeometryReferences;
 using RevitServices.Persistence;
 using Form = Revit.Elements.Form;
 using ModelCurve = Revit.Elements.ModelCurve;
@@ -28,10 +31,10 @@ namespace DSRevitNodesTests.Elements
         [TestModel(@".\modelLines.rfa")]
         public void ByLoftingCurveReferences_ValidArgs()
         {
-            var eles =
+            IEnumerable<ElementCurveReference> eles =
                 ElementSelector.ByType<Autodesk.Revit.DB.CurveElement>(true)
                     .Cast<ModelCurve>()
-                    .Select(x => x.CurveReference);
+                    .Select(x => x.ElementCurveReference);
 
             Assert.AreEqual(2, eles.Count());
 
@@ -50,7 +53,7 @@ namespace DSRevitNodesTests.Elements
             Assert.NotNull(ele);
 
             var form = ele as Form;
-            var faces = form.FaceReferences; 
+            var faces = form.ElementFaceReferences; 
             Assert.IsTrue(faces.All(x => x != null));
             Assert.AreEqual(6, faces.Length);
         }

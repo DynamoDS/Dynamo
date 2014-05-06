@@ -97,7 +97,7 @@ namespace Dynamo.Nodes
                                 }
                                 catch (NullReferenceException)
                                 {
-                                    DynamoLogger.Instance.Log("Element with UID \"" + eid + "\" not found in Document.");
+                                    dynSettings.DynamoLogger.Log("Element with UID \"" + eid + "\" not found in Document.");
                                 }
                             }
                         }
@@ -121,7 +121,7 @@ namespace Dynamo.Nodes
                    }
                    catch (Exception ex)
                    {
-                       DynamoLogger.Instance.Log(
+                       dynSettings.DynamoLogger.Log(
                           "Error deleting elements: "
                           + ex.GetType().Name
                           + " -- " + ex.Message);

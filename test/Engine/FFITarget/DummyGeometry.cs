@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FFITarget
 {
-    public class DummyPoint
+    public class DummyPoint : IDisposable
     {
         public double X { get; set; }
         public double Y { get; set; }
@@ -44,6 +44,11 @@ namespace FFITarget
             return ByCoordinates(points.Average(p => p.X), points.Average(p => p.Y), points.Average(p => p.Z));
         }
 
+        public DummyPoint UnknownPoint()
+        {
+            return new UnknownPoint(this.X, this.Y, this.Z);
+        }
+
         public override bool Equals(object obj)
         {
             DummyPoint other = obj as DummyPoint;
@@ -51,6 +56,19 @@ namespace FFITarget
                 return false;
 
             return this.DirectionTo(other).GetLengthSquare() < 0.00001;
+        }
+
+        public void Dispose()
+        {
+            //Don't do anything
+        }
+    }
+
+    public class UnknownPoint : DummyPoint
+    {
+        internal UnknownPoint(double x, double y, double z)
+        {
+            X = x; Y = y; Z = z;
         }
     }
 

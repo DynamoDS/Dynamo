@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -61,18 +62,26 @@ namespace Dynamo.Applications
 
         internal WatchViewModel ProcessThing(MirrorData data, string tag, bool showRawData = true)
         {
-            //If the input data is an instance of a class, create a watch node
-            //with the class name and let WatchHandler process the underlying CLR data
-            var classMirror = data.Class;
-            if (null != classMirror)
+            try
             {
-                if (data.Data == null && !data.IsNull) //Must be a DS Class instance.
-                    return ProcessThing(classMirror.ClassName, tag); //just show the class name.
-                return ProcessThing(data.Data as dynamic, tag, showRawData);
-            }
+                //If the input data is an instance of a class, create a watch node
+                //with the class name and let WatchHandler process the underlying CLR data
+                var classMirror = data.Class;
+                if (null != classMirror)
+                {
+                    if (data.Data == null && !data.IsNull) //Must be a DS Class instance.
+                        return ProcessThing(classMirror.ClassName, tag); //just show the class name.
+                    return ProcessThing(data.Data as dynamic, tag, showRawData);
+                }
 
-            //Finally for all else get the string representation of data as watch content.
-            return ProcessThing(data.Data as dynamic, tag);
+                //Finally for all else get the string representation of data as watch content.
+                return ProcessThing(data.Data as dynamic, tag);
+            }
+            catch (Exception)
+            {
+                return ProcessThing(data.Data, tag, showRawData);
+            }
+            
         }
 
         private string ToString(object obj)

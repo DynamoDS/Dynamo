@@ -22,7 +22,7 @@ namespace DSRevitNodesTests.Elements
             Assert.NotNull(sketchPlane.Plane);
             Assert.AreEqual(normal, sketchPlane.Plane.Normal);
             Assert.AreEqual(origin, sketchPlane.Plane.Origin);
-            Assert.NotNull(sketchPlane.PlaneReference);
+            Assert.NotNull(sketchPlane.ElementPlaneReference);
         }
 
         [Test]

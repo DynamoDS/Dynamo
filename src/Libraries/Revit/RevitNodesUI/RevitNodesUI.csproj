@@ -40,6 +40,10 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="ProtoGeometry">
+      <HintPath>..\..\..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="ProtoInterface">
       <HintPath>..\..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
       <Private>False</Private>
@@ -64,6 +68,7 @@
     <Compile Include="Selection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SelectionHelper.cs" />
+    <Compile Include="SunPath.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\DynamoRevit\DynamoRevit.csproj">

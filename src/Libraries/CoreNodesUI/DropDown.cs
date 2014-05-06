@@ -48,7 +48,7 @@ namespace DSCoreNodesUI
 
         protected DSDropDownBase(string outputName)
         {
-            OutPortData.Add(new PortData(outputName, string.Format("The selected {0}", outputName), typeof(object)));
+            OutPortData.Add(new PortData(outputName, string.Format("The selected {0}", outputName)));
             RegisterAllPorts();
             PopulateItems();
         }

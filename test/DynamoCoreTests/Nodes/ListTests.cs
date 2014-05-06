@@ -511,7 +511,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void TestTransposeNormalInput()
         {
             // Input array                  Expected output array

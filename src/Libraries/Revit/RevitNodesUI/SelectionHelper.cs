@@ -5,6 +5,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
 using Autodesk.Revit.UI.Selection;
 using Dynamo;
+using Dynamo.Utilities;
 using RevitServices.Persistence;
 
 namespace Revit.Interactivity
@@ -21,7 +22,7 @@ namespace Revit.Interactivity
 
             choices.Elements.Clear();
 
-            DynamoLogger.Instance.Log(message);
+            dynSettings.DynamoLogger.Log(message);
 
             //create some geometry options so that we computer references
             var opts = new Options
@@ -49,7 +50,7 @@ namespace Revit.Interactivity
             choices.Elements.Clear();
 
             //MessageBox.Show(message);
-            DynamoLogger.Instance.Log(message);
+            dynSettings.DynamoLogger.Log(message);
 
             Reference curveRef = doc.Selection.PickObject(ObjectType.Element);
             
@@ -63,7 +64,7 @@ namespace Revit.Interactivity
             Selection choices = doc.Selection;
             choices.Elements.Clear();
 
-            DynamoLogger.Instance.Log(message);
+            dynSettings.DynamoLogger.Log(message);
 
             var ca = new ElementArray();
             ISelectionFilter selFilter = new CurveSelectionFilter();
@@ -99,7 +100,7 @@ namespace Revit.Interactivity
 
             choices.Elements.Clear();
 
-            DynamoLogger.Instance.Log(message);
+            dynSettings.DynamoLogger.Log(message);
 
             //create some geometry options so that we computer references
             var opts = new Options
@@ -129,7 +130,7 @@ namespace Revit.Interactivity
             var choices = doc.Selection;
             choices.Elements.Clear();
 
-            DynamoLogger.Instance.Log(message);
+            dynSettings.DynamoLogger.Log(message);
             faceRef = doc.Selection.PickObject(ObjectType.Face);
 
             return faceRef;
@@ -142,8 +143,7 @@ namespace Revit.Interactivity
             Selection choices = doc.Selection;
             choices.Elements.Clear();
 
-            DynamoLogger.Instance.Log(message);
-
+            dynSettings.DynamoLogger.Log(message);
             Reference edgeRef = doc.Selection.PickObject(ObjectType.Edge);
 
             return edgeRef;
@@ -159,7 +159,7 @@ namespace Revit.Interactivity
 
             choices.Elements.Clear();
 
-            DynamoLogger.Instance.Log(message);
+            dynSettings.DynamoLogger.Log(message);
 
             Reference formRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -182,7 +182,7 @@ namespace Revit.Interactivity
 
             choices.Elements.Clear();
 
-            DynamoLogger.Instance.Log(message);
+            dynSettings.DynamoLogger.Log(message);
 
             Reference formRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -208,7 +208,7 @@ namespace Revit.Interactivity
                 choices.Elements.Clear();
 
                 //MessageBox.Show(message);
-                DynamoLogger.Instance.Log(message);
+                dynSettings.DynamoLogger.Log(message);
 
                 Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -226,7 +226,7 @@ namespace Revit.Interactivity
             }
             catch (Exception ex)
             {
-                DynamoLogger.Instance.Log(ex);
+                dynSettings.DynamoLogger.Log(ex);
                 return null;
             }
         }
@@ -242,7 +242,7 @@ namespace Revit.Interactivity
                 choices.Elements.Clear();
 
                 //MessageBox.Show(message);
-                DynamoLogger.Instance.Log(message);
+                dynSettings.DynamoLogger.Log(message);
 
                 Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -255,7 +255,7 @@ namespace Revit.Interactivity
             }
             catch (Exception ex)
             {
-                DynamoLogger.Instance.Log(ex);
+                dynSettings.DynamoLogger.Log(ex);
                 return null;
             }
         }
@@ -271,7 +271,7 @@ namespace Revit.Interactivity
             choices.Elements.Clear();
 
             //MessageBox.Show(message);
-            DynamoLogger.Instance.Log(message);
+            dynSettings.DynamoLogger.Log(message);
 
             Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -303,7 +303,7 @@ namespace Revit.Interactivity
                     choices.Elements.Clear();
 
                     //MessageBox.Show(message);
-                    DynamoLogger.Instance.Log(message);
+                    dynSettings.DynamoLogger.Log(message);
 
                     Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -319,7 +319,7 @@ namespace Revit.Interactivity
             }
             catch (Exception ex)
             {
-                DynamoLogger.Instance.Log(ex);
+                dynSettings.DynamoLogger.Log(ex);
                 return null;
             }
         }
@@ -333,7 +333,7 @@ namespace Revit.Interactivity
             Selection choices = doc.Selection;
             choices.Elements.Clear();
 
-            DynamoLogger.Instance.Log(message);
+            dynSettings.DynamoLogger.Log(message);
 
             Reference fsRef = doc.Selection.PickObject(ObjectType.Element);
             if (fsRef != null)
@@ -355,7 +355,7 @@ namespace Revit.Interactivity
             Selection choices = doc.Selection;
             choices.Elements.Clear();
 
-            DynamoLogger.Instance.Log(message);
+            dynSettings.DynamoLogger.Log(message);
 
             Reference xyzRef = doc.Selection.PickObject(ObjectType.PointOnElement);
 

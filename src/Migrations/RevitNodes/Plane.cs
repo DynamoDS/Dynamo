@@ -136,8 +136,33 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll",
-                "Plane.ByBestFitThroughPoints", "Plane.ByBestFitThroughPoints@Point[]");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            if ((data.FindFirstConnector(new PortId(oldNodeId, 1, PortType.OUTPUT)) != null) ||
+                (data.FindFirstConnector(new PortId(oldNodeId, 2, PortType.OUTPUT)) != null))
+            {
+                // If the second or third output port is utilized, migrate to CBN
+                XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
+                codeBlockNode.SetAttribute("CodeText",
+                    "p = Plane.ByBestFitThroughPoints(XYZs);\n" +
+                    "p.Normal.AsPoint();\n" +
+                    "p.Origin;");
+                codeBlockNode.SetAttribute("nickname", "Best Fit Plane");
+                migrationData.AppendNode(codeBlockNode);
+            }
+            else
+            {
+                // When only the first output port is utilized, migrate directly
+                var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+                MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                    "Plane.ByBestFitThroughPoints", "Plane.ByBestFitThroughPoints");
+                migrationData.AppendNode(newNode);
+            }
+
+            return migrationData;
         }
     }
 

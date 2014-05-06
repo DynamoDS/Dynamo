@@ -219,31 +219,29 @@ namespace DSCoreNodesUI
         {
             Func<string, string[], object[], object> backingMethod = DSCore.Formula.Evaluate;
 
-            if (HasUnconnectedInput())
+            // Format input names to be used as function parameters
+            var inputs = InPortData.Select(x => x.NickName.Replace(' ', '_')).ToList();
+
+
+            /*  def formula_partial(<params>) {
+             *    return = DSCore.Formula.Evaluate(<FormulaString>, <InPortData Names>, <params>);
+             *  }
+             */
+
+            var functionDef = new FunctionDefinitionNode
             {
-                // Format input names to be used as function parameters
-                var inputs = InPortData.Select(x => x.NickName.Replace(' ', '_')).ToList();
-
-
-                /*  def formula_partial(<params>) {
-                 *    return = DSCore.Formula.Evaluate(<FormulaString>, <InPortData Names>, <params>);
-                 *  }
-                 */
-
-                var functionDef = new FunctionDefinitionNode
-                {
-                    Name = "__formula_" + GUID.ToString().Replace("-", string.Empty),
-                    Signature =
-                        new ArgumentSignatureNode
-                        {
-                            Arguments = inputs.Select(AstFactory.BuildParamNode).ToList()
-                        },
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
-                    FunctionBody =
-                        new CodeBlockNode
-                        {
-                            Body =
-                                new List<AssociativeNode>
+                Name = "__formula_" + GUID.ToString().Replace("-", string.Empty),
+                Signature =
+                    new ArgumentSignatureNode
+                    {
+                        Arguments = inputs.Select(AstFactory.BuildParamNode).ToList()
+                    },
+                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
+                FunctionBody =
+                    new CodeBlockNode
+                    {
+                        Body =
+                            new List<AssociativeNode>
                                 {
                                     AstFactory.BuildReturnStatement(
                                         AstFactory.BuildFunctionCall(
@@ -262,9 +260,11 @@ namespace DSCoreNodesUI
                                                         .ToList())
                                             }))
                                 }
-                        }
-                };
+                    }
+            };
 
+            if (HasUnconnectedInput())
+            {
                 return new AssociativeNode[]
                 {
                     functionDef,
@@ -278,20 +278,14 @@ namespace DSCoreNodesUI
                 };
             }
 
-            return new[]
+            return new AssociativeNode[]
             {
+                functionDef,
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        backingMethod,
-                        new List<AssociativeNode>
-                        {
-                            AstFactory.BuildStringNode(FormulaString),
-                            AstFactory.BuildExprList(
-                                InPortData.Select(
-                                    x => AstFactory.BuildStringNode(x.NickName) as AssociativeNode).ToList()),
-                            AstFactory.BuildExprList(inputAstNodes)
-                        }))
+                        functionDef.Name,
+                        inputAstNodes))
             };
         }
     }

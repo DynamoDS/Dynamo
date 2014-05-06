@@ -1072,13 +1072,14 @@ namespace ProtoCore.DSASM
 
             StackValue lhs = rmem.Pop();
             StackValue thisObject = lhs;
+            bool isValidThisPointer = true;
             if (StackUtils.IsArray(lhs))
             {
-                ArrayUtils.GetFirstNonArrayStackValue(lhs, ref thisObject, core);
+                isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(lhs, ref thisObject, core);
                 arguments.Insert(0, lhs);
             }
 
-            if (!thisObject.IsObject() && !thisObject.IsArray())
+            if (!isValidThisPointer || (!thisObject.IsObject() && !thisObject.IsArray()))
             {
                 core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
                                               WarningMessage.kDeferencingNonPointer);

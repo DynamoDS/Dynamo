@@ -52,7 +52,7 @@ namespace Dynamo.Utilities
                 if (portName.Length > maxLength)
                     portName = portName.Remove(maxLength - 3) + "...";
 
-                inputPorts.Add(new PortData(portName, name, typeof(object)));
+                inputPorts.Add(new PortData(portName, name));
             }
 
             return inputPorts;
@@ -114,6 +114,9 @@ namespace Dynamo.Utilities
             if (index < 0 || (index >= statementCount))
                 throw new IndexOutOfRangeException("index");
 
+            if (!statementVariables.ElementAt(index).Any())
+                return false;
+           
             var currentVariables = statementVariables.ElementAt(index);
             for (int stmt = index + 1; stmt < statementCount; stmt++)
             {

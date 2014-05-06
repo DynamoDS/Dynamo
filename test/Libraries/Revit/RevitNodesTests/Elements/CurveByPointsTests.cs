@@ -27,7 +27,7 @@ namespace DSRevitNodesTests.Elements
             var curveByPoints = CurveByPoints.ByReferencePoints(new List<ReferencePoint>{p1,p2,p3}.ToArray());
             Assert.NotNull(curveByPoints);
 
-            var curveRef = curveByPoints.CurveReference;
+            var curveRef = curveByPoints.ElementCurveReference;
             Assert.NotNull(curveRef);
         }
 
@@ -68,7 +68,7 @@ namespace DSRevitNodesTests.Elements
             var curveByPoints = CurveByPoints.ByReferencePoints(new List<ReferencePoint> { p1, p2, p3 }.ToArray());
             Assert.NotNull(curveByPoints);
 
-            var curveRef = curveByPoints.CurveReference;
+            var curveRef = curveByPoints.ElementCurveReference;
             Assert.NotNull(curveRef);
 
             var p4 = ReferencePoint.ByCoordinates(3, 3, 3);

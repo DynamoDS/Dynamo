@@ -7,8 +7,6 @@ using System.Xml;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using System.IO;
-using Dynamo.FSchemeInterop.Node;
-using Dynamo.FSchemeInterop;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using Enum = System.Enum;
@@ -564,8 +562,8 @@ namespace Dynamo.Utilities
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log("ERROR: The header for the custom node at " + path + " failed to load.  It will be left out of search.");
-                DynamoLogger.Instance.Log(e.ToString());
+                dynSettings.DynamoLogger.Log("ERROR: The header for the custom node at " + path + " failed to load.  It will be left out of search.");
+                dynSettings.DynamoLogger.Log(e.ToString());
                 category = "";
                 guid = Guid.Empty;
                 name = "";
@@ -670,7 +668,7 @@ namespace Dynamo.Utilities
                             "Original file '{0}' gets backed up at '{1}'",
                             Path.GetFileName(xmlPath), backupPath);
 
-                        DynamoLogger.Instance.Log(message);
+                        dynSettings.DynamoLogger.Log(message);
                     }
 
                     MigrationManager.Instance.ProcessWorkspaceMigrations(xmlDoc, fileVersion);

@@ -44,11 +44,11 @@ namespace Dynamo.Tests
             }
 
             // Run the model
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
             // Check node output
             NodeModel node = model.CurrentWorkspace.NodeFromWorkspace("58d488dd-b668-467f-b3ac-d46b5a97fabe");
-            RuntimeMirror mirror = Controller.EngineController.GetMirror(node.VariableToPreview);
+            RuntimeMirror mirror = Controller.EngineController.GetMirror(node.AstIdentifierBase);
             Assert.IsNotNull(mirror);
 
             var point = mirror.GetData().Data as Point;
@@ -84,11 +84,11 @@ namespace Dynamo.Tests
             }
 
             // Run the model
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
             // Check node output
             NodeModel node = model.CurrentWorkspace.NodeFromWorkspace("7fdb538d-22a3-412c-b646-d0fb23ca2dc6");
-            RuntimeMirror mirror = Controller.EngineController.GetMirror(node.VariableToPreview);
+            RuntimeMirror mirror = Controller.EngineController.GetMirror(node.AstIdentifierBase);
             Assert.IsNotNull(mirror);
 
             var point = mirror.GetData().Data as Point;
@@ -124,11 +124,11 @@ namespace Dynamo.Tests
             }
 
             // Run the model
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
 
             // Check node output
             NodeModel node = model.CurrentWorkspace.NodeFromWorkspace("783ce70c-789d-4c2a-ad40-c16d6d933fd4");
-            RuntimeMirror mirror = Controller.EngineController.GetMirror(node.VariableToPreview);
+            RuntimeMirror mirror = Controller.EngineController.GetMirror(node.AstIdentifierBase);
             Assert.IsNotNull(mirror);
 
             var point = mirror.GetData().Data as Point;

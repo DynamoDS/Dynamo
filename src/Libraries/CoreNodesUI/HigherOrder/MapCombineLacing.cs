@@ -7,7 +7,7 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace DSCore
 {
-    [NodeName("List Map")]
+    [NodeName("List.Map")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription(
         "Applies a function over all elements of a list, generating a new list from the results.")]
@@ -71,7 +71,7 @@ namespace DSCore
         }
     }
 
-    [NodeName("Combine")]
+    [NodeName("List.Combine")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each element in two sequences")]
     [IsDesignScriptCompatible]
@@ -94,7 +94,7 @@ namespace DSCore
         }
     }
 
-    [NodeName("For Each")]
+    [NodeName("List.ForEach")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Performs a computation on each element of a list. Does not accumulate results.")]
     [IsDesignScriptCompatible]
@@ -118,7 +118,7 @@ namespace DSCore
     }
 
     [IsVisibleInDynamoLibrary(false)]
-    [NodeName("Lace Shortest")]
+    [NodeName("List.LaceShortest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair resulting from a shortest lacing of the input lists. All lists are truncated to the length of the shortest input.")]
     [IsDesignScriptCompatible]
@@ -142,7 +142,7 @@ namespace DSCore
     }
 
     [IsVisibleInDynamoLibrary(false)]
-    [NodeName("Lace Longest")]
+    [NodeName("List.LaceLongest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair resulting from a longest lacing of the input lists. All lists have their last element repeated to match the length of the longest input.")]
     [IsDesignScriptCompatible]
@@ -167,7 +167,7 @@ namespace DSCore
 
     ///<search>cross</search>
     [IsVisibleInDynamoLibrary(false)]
-    [NodeName("Cartesian Product")]
+    [NodeName("List.CartesianProduct")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
     [IsDesignScriptCompatible]
@@ -252,7 +252,7 @@ namespace DSCore
     }
     */
 
-    [NodeName("Reduce")]
+    [NodeName("List.Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Reduces a list into a new value by combining each element with an accumulated result.")]
     [IsDesignScriptCompatible]
@@ -308,7 +308,7 @@ namespace DSCore
         }
     }
 
-    [NodeName("Filter")]
+    [NodeName("List.Filter")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Filters a sequence by a given predicate \"p\" such that for an arbitrary element \"x\" p(x) = True or False.")]
     [IsDesignScriptCompatible]

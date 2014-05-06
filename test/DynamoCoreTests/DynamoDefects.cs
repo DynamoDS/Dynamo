@@ -119,7 +119,7 @@ namespace Dynamo.Tests
 
             dynSettings.Controller.RunExpression(null);
             var add = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("ccb2eda9-0966-4ab8-a186-0d5f844559c1");
-            Assert.AreEqual(20, add.OldValue.Data);
+            Assert.AreEqual(20, add.CachedValue.Data);
         }
 
         [Test]
@@ -147,6 +147,24 @@ namespace Dynamo.Tests
 
             // Checking Cylinder.Height
             AssertPreviewValue("310b22ae-e3ce-462a-8391-c7e0c9a532f2", new int[] { 10, 1 });
+
+        }
+
+        [Test]
+        public void Defect_MAGN_3256()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3256
+            DynamoModel model = Controller.DynamoModel;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3256.dyn");
+            RunModel(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
+
+            dynSettings.Controller.RunExpression(null);
+
+            AssertPreviewValue("21780859-f85e-44ff-bedb-bd016ca7398d", 5.706339);
 
         }
 

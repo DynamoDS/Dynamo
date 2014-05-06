@@ -15,7 +15,8 @@ namespace Dynamo.Nodes
             XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCoreNodesUI.Formula", "Formula");
 
             XmlElement newChild = data.Document.CreateElement("FormulaText");
-            newChild.InnerText = oldNode.FirstChild.InnerText;
+            if (oldNode.FirstChild != null)
+                newChild.InnerText = oldNode.FirstChild.InnerText;
             newNode.AppendChild(newChild);
 
             migrationData.AppendNode(newNode);

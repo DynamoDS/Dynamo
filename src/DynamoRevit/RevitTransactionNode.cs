@@ -7,14 +7,9 @@ using System.Xml;
 
 using Autodesk.Revit.DB;
 using Dynamo.Models;
-using Microsoft.FSharp.Collections;
 
 using Dynamo.Utilities;
-using RevitServices.Elements;
 using RevitServices.Persistence;
-using RevitServices.Threading;
-using RevitServices.Transactions;
-using Value = Dynamo.FScheme.Value;
 using RevThread = RevitServices.Threading;
 
 namespace Dynamo.Revit
@@ -127,14 +122,14 @@ namespace Dynamo.Revit
                         }
                         catch (NullReferenceException)
                         {
-                            //DynamoLogger.Instance.Log("Element with UID \"" + eid + "\" not found in Document.");
+                            //dynSettings.DynamoLogger.Log("Element with UID \"" + eid + "\" not found in Document.");
                             sb.AppendLine("Element with UID \"" + eid + "\" not found in Document.");
                         }
                     }
                 }
             }
 
-            DynamoLogger.Instance.Log(sb.ToString());
+            dynSettings.DynamoLogger.Log(sb.ToString());
         }
 
         //TODO: Move handling of increments to wrappers for eval. Should never have to touch this in subclasses.
@@ -197,12 +192,12 @@ namespace Dynamo.Revit
 
     public abstract class RevitTransactionNodeWithOneOutput : RevitTransactionNode
     {
-        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
-        {
-            outPuts[OutPortData[0]] = Evaluate(args);
-        }
+        //public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        //{
+        //    outPuts[OutPortData[0]] = Evaluate(args);
+        //}
 
-        public abstract Value Evaluate(FSharpList<Value> args);
+        //public abstract Value Evaluate(FSharpList<Value> args);
     }
     /*
     namespace SyncedNodeExtensions
