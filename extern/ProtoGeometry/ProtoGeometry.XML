@@ -276,6 +276,11 @@
             Join this curve and the input curve into a new PolyCurve, maintaining the original curves exactly.
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>
+            Join set of curves to the start of the end of the polycurve.  Flips curves to assure connectivity.
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(System.Double)">
             <summary>
             Extrudes a Curve in the normal Vector direction
@@ -339,6 +344,16 @@
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Project(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
             <summary>
             Project another piece of Geometry onto this along a given direction Vector
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>
+            Sweeps this Curve along the path Curve, creating a Surface
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>
+            Sweeps this closed Curve along the path Curve, creating a Solid
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
@@ -1165,59 +1180,14 @@
             Make PolyCurve from sequence of lines connecting points. For closed curve last point should be in same location as start point.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.JoinTo(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>
-            Join set of curves to the start of the end of the polycurve. Flips curves to assure connectivity.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.JoinTo(Autodesk.DesignScript.Geometry.PolyCurve)">
-            <summary>
-            Join two open polycurves which share start or end location
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.PointByCurveLength(System.Double,System.Boolean)">
-            <summary>
-            Point located by length from start or end of the polycurve
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
             <summary>
             Returns curves of the polycurve
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CurveByIndex(System.Int32,System.Boolean)">
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CurveAtIndex(System.Int32,System.Boolean)">
             <summary>
             Returns curve of the polycurve by index
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Reverse">
-            <summary>
-            Returns flipped polycurve
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.IsRectangle">
-            <summary>
-            Returns if the polycurve is geometrical rectangle
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.RectangleCoordinateSystem">
-            <summary>
-            If the polycurve is geometrical rectangle returns coordinate system at center aligned with sides of rectangle.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Width(Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>
-            If the polycurve is geometrical rectangle returns its width.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Height(Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>
-            Height of polycurve in coordinate system.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.IsPlanar">
-            <summary>
-            Returns if the polycurve is planar
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.BasePlane">
@@ -1225,99 +1195,39 @@
             Returns plane of planar polycurve
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.DivideByLength(System.Int32)">
-            <summary>
-            Divides curve into given number of equal length curves
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.DivideByDistance(System.Int32)">
-            <summary>
-            Divides curve into given number of curves with equal distances between start and end of each curve (equal chords).
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.DivideByLengthFromParameter(System.Double,System.Double,System.Boolean)">
-            <summary>
-            Divides curve into curves of given length measuring from given location
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.DivideByDistanceFromParameter(System.Double,System.Double,System.Boolean)">
-            <summary>
-            Divides curve into curves of given distances between start and end (chords) measuring from given location
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendByEllipse(System.Double,System.Double,System.Double,System.Double,System.Boolean)">
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithEllipse(System.Double,System.Double,System.Double,System.Double,System.Boolean)">
             <summary>
             Extends polycurve by tangent ellipse
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendByArc(System.Double,System.Double,System.Boolean)">
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithArc(System.Double,System.Double,System.Boolean)">
             <summary>
             Extends polycurve by tangent ellipse
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseByLine">
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLine">
             <summary>
             Close polycurve by line connecting start and end points
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseByLineWithTangentArcs(System.Double,System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs(System.Double,System.Double)">
             <summary>
             Close polycurve by tangent chain of arc, line, and arc
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Sweep polycurve along path
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Sweep polycurve along path
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.OffsetPlanarPolyCurve(System.Double,System.Boolean,System.Boolean)">
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Offset(System.Double,System.Boolean)">
             <summary>
             Offset polycurve in its plane.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.FilletPlanarPolyCurve(System.Double,System.Boolean)">
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Fillet(System.Double,System.Boolean)">
             <summary>
             Fillet polycurve in its plane.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Patch">
-            <summary>
-            Make Surface patch on closed polycurve
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Project(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Project point or curve along direction into polysurface
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.StartPoint">
-            <summary>
-            Start point of the polycurve
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.EndPoint">
-            <summary>
-            End point of the polycurve
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.Length">
-            <summary>
-            Length of the polycurve
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.NumberOfCurves">
             <summary>
             Number if curves of the polycurve
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.IsClosed">
-            <summary>
-            Number if  the polycurve is closed
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ToString">
@@ -1840,6 +1750,16 @@
             Returns a new Surface with the Normal flipped. Leaves this surface unchanged.
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>
+            Combines this Surface and input Surface into a PolySurface
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>
+            Combines this Surface and input Surfaces into a PolySurface
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
             <summary>
             Returns the total surface area.
@@ -2198,27 +2118,12 @@
             Locate Surfaces by Line. Takes all surfaces hit by line.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ByCombine(Autodesk.DesignScript.Geometry.PolySurface)">
-            <summary>
-            Combine polysurface with other without resolving edges and intersections
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ByCombine(Autodesk.DesignScript.Geometry.Solid)">
-            <summary>
-            Combine polysurface with Solid without resolving edges and intersections
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.AddPatchSurfaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
-            <summary>
-            Patch PolySurface by Surface created on the closed Polycurves.
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.UnconnectedBoundaries">
             <summary>
-            Patch PolySurface by Surface created on the closed Polycurves.
+            Compute 2d cell boundaries which are not connected to other Surfaces
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ExtractSolids(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ExtractSolids">
             <summary>
             Extract Solids from Polysurface defined by subset of surfaces
             </summary>
@@ -2236,11 +2141,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.VertexCount">
             <summary>
             number of vertices of Polysurface
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Area">
-            <summary>
-            returns sum of areas of surfaces
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ToString">
