@@ -646,5 +646,15 @@ r = a;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
         }
+
+
+        [Test]
+        public void TestStringIndexing()
+        {
+            String code =
+                @"                s = ""abc"";                r = s[0];                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 'a');
+        }
     }
 }

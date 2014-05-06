@@ -4178,7 +4178,7 @@ namespace ProtoCore.DSASM
                 thisArray = rmem.GetAtRelative(symbolNode);
             }
 
-            if (AddressType.ArrayPointer != thisArray.optype)
+            if (!thisArray.IsArray() && !thisArray.IsString())
             {
                 if (varname.StartsWith(ProtoCore.DSASM.Constants.kForLoopExpression))
                 {
