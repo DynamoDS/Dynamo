@@ -1,0 +1,19 @@
+<Workspace Version="0.6.3.7993" X="572" Y="213" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.ConcatStrings type="Dynamo.Nodes.ConcatStrings" guid="a1060235-e86b-4a8a-bc32-99317081402e" nickname="Concat Strings" x="-181" y="205.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.JoinStrings type="Dynamo.Nodes.JoinStrings" guid="16abfb11-87a8-4bd0-924b-40173a197681" nickname="Join Strings" x="-181" y="436.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.JoinStrings>
+    <Dynamo.Nodes.Num2String type="Dynamo.Nodes.Num2String" guid="0855199b-2dbc-4734-aaeb-81ca7a805148" nickname="Number to String" x="234" y="278.166666666667" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.SplitString type="Dynamo.Nodes.SplitString" guid="863cd294-fd0f-49f1-be55-e20b96101f23" nickname="Split String" x="234" y="428.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.SplitString>
+    <Dynamo.Nodes.StringCase type="Dynamo.Nodes.StringCase" guid="32ec6f92-21c1-4069-87ec-7faa0416c8ba" nickname="String Case" x="-181" y="-25.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.StringLen type="Dynamo.Nodes.StringLen" guid="78394aa8-856b-4312-b24f-9ab63c2f1ef0" nickname="String Length" x="-181" y="90" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.String2Num type="Dynamo.Nodes.String2Num" guid="22485394-9274-4999-bf8f-1e6c8ffb6fbf" nickname="String to Number" x="-181" y="321" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Substring type="Dynamo.Nodes.Substring" guid="4fc6fbbc-8c9e-4422-908c-322616776310" nickname="Substring" x="234" y="127.833333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.ToString type="Dynamo.Nodes.ToString" guid="727024e0-29b7-4806-afa2-edc765178cc0" nickname="To String" x="234" y="-22.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>
