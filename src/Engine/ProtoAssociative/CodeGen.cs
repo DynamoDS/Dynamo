@@ -1307,11 +1307,11 @@ namespace ProtoAssociative
                         {
                             if (subPass == AssociativeSubCompilePass.kNone)
                             {
-                                string message = String.Format(WarningMessage.kCallingNonStaticMethod,
+                                string message = String.Format(WarningMessage.kStaticMethodNotFound,
                                                                className,
                                                                procName);
 
-                                buildStatus.LogWarning(WarningID.kCallingNonStaticMethodOnClass,
+                                buildStatus.LogWarning(WarningID.kFunctionNotFound,
                                                        message,
                                                        core.CurrentDSFileName,
                                                        dotCall.line,
