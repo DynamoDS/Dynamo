@@ -10,6 +10,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
+            /*
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
 
             // Create DSFunction node
@@ -35,6 +36,14 @@ namespace Dynamo.Nodes
             data.ReconnectToPort(connector0, polySurfaceInPort0);
             data.CreateConnector(polySurface, 0, newNode, 0);
 
+            return migrationData;*/
+
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 2, 1);
+            migrationData.AppendNode(dummyNode);
+
             return migrationData;
         }
     }
@@ -56,12 +65,12 @@ namespace Dynamo.Nodes
 
     public class ComputeFaceDerivatives : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        /*[NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll", "Face.CoordinateSystemAtParameter",
-                            "Face.CoordinateSystemAtParameter@double,double");
-        }
+            //return MigrateToDsFunction(data, "ProtoGeometry.dll", "Surface.DerivativesAtParameter",
+              //              "Surface.DerivativesAtParameter@double,double");
+        }*/
     }
 
     class XyzEvaluate : MigrationNode
@@ -179,5 +188,16 @@ namespace Dynamo.Nodes
 
     public class SurfaceDomain : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 1, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
+        }
     }
 }

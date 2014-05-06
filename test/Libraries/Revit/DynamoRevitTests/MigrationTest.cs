@@ -24,18 +24,21 @@ namespace Dynamo.Tests
 
             var nodes = Controller.DynamoModel.Nodes;
             int unresolvedNodeCount = 0;
+            string str = "\n";
 
             foreach (var node in nodes.OfType<DSCoreNodesUI.DummyNode>())
             {
                 if (node.NodeNature == DummyNode.Nature.Unresolved) 
                 {
                     unresolvedNodeCount++;
+                    str += node.NickName;
+                    str += "\n";
                 }
             }
 
             if (unresolvedNodeCount >= 1)
             {
-                Assert.Fail("Number of unresolved nodes found in TestCase: " + unresolvedNodeCount);
+                Assert.Fail("Number of unresolved nodes found in TestCase: " + unresolvedNodeCount +str);
             }
         }
 
