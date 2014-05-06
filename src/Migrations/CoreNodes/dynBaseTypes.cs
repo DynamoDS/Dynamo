@@ -1017,6 +1017,7 @@ namespace Dynamo.Nodes
 
     public class Last : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.LastItem",
@@ -2475,7 +2476,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.StringCase", "String.StringCase@string,bool");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.ChangeCase", "String.ChangeCase@string,bool");
         }
     }
 

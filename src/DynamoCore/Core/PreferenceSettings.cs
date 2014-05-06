@@ -31,7 +31,7 @@ namespace Dynamo
         public bool IsUsageReportingApproved { get; set; }
         #endregion
 
-        public bool ShowConsole { get; set; }
+        public int ConsoleHeight { get; set; }
         public bool ShowConnector { get; set; }
         public ConnectorType ConnectorType { get; set; }
         public bool FullscreenWatchShowing { get; set; }
@@ -80,7 +80,7 @@ namespace Dynamo
             // Default Settings
             IsFirstRun = true;
             IsUsageReportingApproved = false;
-            ShowConsole = false;
+            ConsoleHeight = 100;
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
             FullscreenWatchShowing = true;

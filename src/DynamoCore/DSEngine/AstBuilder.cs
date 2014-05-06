@@ -349,7 +349,7 @@ namespace Dynamo.DSEngine
                  */
 
                 // return array, holds all outputs
-                string rtnName = "__temp_rtn_" + def.Name.Replace("-", "");
+                string rtnName = "__temp_rtn_" + def.FunctionId.ToString().Replace("-", String.Empty); 
                 functionBody.Body.Add(
                     AstFactory.BuildAssignment(
                         AstFactory.BuildIdentifier(rtnName),
