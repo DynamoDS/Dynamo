@@ -27,7 +27,7 @@ using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Element = Autodesk.Revit.DB.Element;
-//using ReferencePlane = Autodesk.Revit.DB.ReferencePlane;
+using WrappedElement = Revit.Elements.Element;
 using RevThread = RevitServices.Threading;
 using ReferencePlane = Autodesk.Revit.DB.ReferencePlane;
 
@@ -69,7 +69,8 @@ namespace Dynamo
 
             EngineController.ImportLibrary("RevitNodes.dll");
 
-            PythonDataMarshaler.Instance.RegisterMarshaler((Element element) => element.ToDSType(false));
+            //IronPythonEvaluator.InputMarshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
+            //IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => element.ToDSType(false));
         }
 
         public RevitServicesUpdater Updater { get; private set; }
