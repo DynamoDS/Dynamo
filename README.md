@@ -1,9 +1,8 @@
 ![Image](https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png) 
 
-#Visual Programming for BIM#
+Dynamo is a Visual Programming language that aims to be accessible to both non-programmers and the programmers alike. It gives users the ability to visually script behavior, define custom nodes, and script using Python.
 
-## Description ##
-Dynamo extends the parametric functionality of Autodesk Revit. Dynamo aims to be accessible to both non-programmers and the programmers alike with the ability to visually script behavior, define custom nodes, and script using Python.
+Dynamo runs as an addin on top of Autodesk Revit, extending the parametric functionality already provided.
 
 ## Contributors ##
 
