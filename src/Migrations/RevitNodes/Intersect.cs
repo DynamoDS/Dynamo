@@ -43,7 +43,10 @@ namespace Dynamo.Nodes
             var newXyzOut = new PortId(newNodeId, 0, PortType.OUTPUT);
             var xyzConnects = data.FindConnectors(oldXYZOut);
 
-            xyzConnects.ToList().ForEach(x => data.ReconnectToPort(x, newXyzOut));
+            if (xyzConnects != null)
+            {
+                xyzConnects.ToList().ForEach(x => data.ReconnectToPort(x, newXyzOut));
+            }
 
             // get u parm
             if (connector0 != null)
