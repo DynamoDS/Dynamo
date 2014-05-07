@@ -508,9 +508,8 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "RevitNodes.dll",
-                "Solid.BoxByCenterAndDimensions",
-                "Solid.BoxByCenterAndDimensions@Point,double,double,double");
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll", "Cuboid.ByLengths",
+                "Cuboid.ByLengths@Autodesk.DesignScript.Geometry.Point,double,double,double");
 
             migrationData.AppendNode(newNode);
 
