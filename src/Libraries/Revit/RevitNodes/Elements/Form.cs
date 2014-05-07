@@ -145,27 +145,41 @@ namespace Revit.Elements
 
         #region Public static constructors 
 
-        public static Form ByLoftingCurveReferences(object[] curveReferences, bool isSolid = true)
+        public static Form ByLoftCrossSections(object[] curves, bool isSolid = true)
         {
+            if (curves == null) throw new ArgumentNullException("curves");
+
+            // if the arguments are polycurves, explode them
+            if (curves.Any(x => x is PolyCurve))
+            {
+                var ca = curves.Cast<Autodesk.DesignScript.Geometry.Curve>()
+                    .Select(x => x is PolyCurve ? ((PolyCurve) x).Curves() : new []{ x } ).ToArray();
+
+                return ByLoftCrossSections(ca, isSolid);
+            }
+
             var refArrArr = new ReferenceArrayArray();
 
-            foreach (var l in curveReferences)
+            foreach (var l in curves)
             {
-                if (l == null) throw new ArgumentNullException("curveReferences");
+                if (l == null) throw new ArgumentNullException("curves");
                 var refArr = new ReferenceArray();
+
+                
                 refArr.Append(ElementCurveReference.TryGetCurveReference(l, "Form").InternalReference);
                 refArrArr.Append(refArr);
             }
 
             return new Form(isSolid, refArrArr);
-
         }
 
-        public static Form ByLoftingCurveReferences(object[][] curveReferences, bool isSolid = true)
+        public static Form ByLoftCrossSections(object[][] curves, bool isSolid = true)
         {
+            if (curves == null) throw new ArgumentNullException("curves");
+
             var refArrArr = new ReferenceArrayArray();
 
-            foreach (var curveArr in curveReferences)
+            foreach (var curveArr in curves)
             {
                 var refArr = new ReferenceArray();
                 curveArr.ForEach(x => refArr.Append(ElementCurveReference.TryGetCurveReference(x, "Form").InternalReference));

@@ -38,7 +38,7 @@ namespace DSRevitNodesTests.Elements
 
             Assert.AreEqual(2, eles.Count());
 
-            var loft = Form.ByLoftingCurveReferences(eles.ToArray(), false);
+            var loft = Form.ByLoftCrossSections(eles.ToArray(), false);
 
             Assert.NotNull(loft);
             Assert.IsTrue(DocumentManager.Instance.ElementExistsInDocument(
