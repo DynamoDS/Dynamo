@@ -395,7 +395,7 @@ namespace Dynamo
         
         public override void ResetEngine()
         {
-            RevThread.IdlePromise.ExecuteOnIdleSync(base.ResetEngine);
+            RevThread.IdlePromise.ExecuteOnIdleAsync(base.ResetEngine);
         }
 
         #region Element Persistence Management
