@@ -346,44 +346,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
-
-            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "RevitNodes.dll",
-                "Solid.Sphere", "Solid.Sphere@Point,double");
-
-            migrationData.AppendNode(newNode);
-
-            // Add default values
-            foreach (XmlNode child in oldNode.ChildNodes)
-            {
-                var newChild = child.Clone() as XmlElement;
-
-                switch (newChild.GetAttribute("index"))
-                {
-                    case "0":
-                        PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
-                        XmlElement connector0 = data.FindFirstConnector(oldInPort0);
-                        if (connector0 != null) break;
-
-                        XmlElement cbn0 = MigrationManager.CreateCodeBlockNodeModelNode(
-                            data.Document, oldNode, 0, "Point.ByCoordinates(0,0,0);");
-                        migrationData.AppendNode(cbn0);
-                        data.CreateConnector(cbn0, 0, newNode, 0);
-                        break;
-
-                    case "1":
-                        newNode.AppendChild(newChild);
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-
-            return migrationData;
+            return MigrateToDsFunction(data, "ProtoGeometry.dll",
+                "Sphere.ByCenterPointRadius", "Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double");
         }
     }
 
