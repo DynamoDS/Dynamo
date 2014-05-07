@@ -222,8 +222,14 @@ namespace Dynamo.UI.Controls
             {
                 if (mirrorData.IsCollection == false)
                 {
+                    // The following determines if we do get a CLR object before
+                    // trying to access it. For example, placing just a "+" node 
+                    // without any input will return a "null" here, in which case 
+                    // its display should remain "null".
+                    // 
                     var clrData = mirrorData.Data;
-                    cachedSmallContent = clrData.ToString();
+                    if (clrData != null)
+                        cachedSmallContent = clrData.ToString();
                 }
                 else
                 {
