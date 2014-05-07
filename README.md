@@ -6,7 +6,7 @@ Dynamo runs as an addin on top of Autodesk Revit, extending the parametric funct
 ## Contributors ##
 
 * [Ian Keough](https://github.com/ikeough): Started the project, main developer.
-* [Stephen Elliott](https://github.com/Steell): VM, language, and node developer, functional programming specialist.
+* [Stephen Elliott](https://github.com/Steell): VM, language, and node developer. Functional programming specialist.
 * [Peter Boyer](https://github.com/pboyer): Package manager and geometry developer.
 * [Lev Lipkin](https://github.com/LevL): Revit node designer, Revit interaction specialist.
 * [Matt Jezyk](https://github.com/tatlin): Product management, requirements gathering, and node designer.
