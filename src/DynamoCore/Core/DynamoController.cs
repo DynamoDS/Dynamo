@@ -221,6 +221,27 @@ namespace Dynamo
         }
 
         /// <summary>
+        /// Force reset of the execution substrait. Executing this will have a negative performance impact
+        /// </summary>
+        public void Reset()
+        {
+
+            //This is necessary to avoid a race condition by causing a thread join
+            //inside the vm exec
+            //TODO(Luke): Push this into a resync call with the engine controller
+            ResetEngine();
+
+            foreach (var node in this.DynamoModel.Nodes)
+            {
+                node.RequiresRecalc = true;
+            }
+
+            //DynamoLoader.ClearCachedAssemblies();
+            //DynamoLoader.LoadNodeModels();
+            
+        }
+
+        /// <summary>
         ///     Class constructor
         /// </summary>
         public DynamoController(string context, IUpdateManager updateManager,
@@ -571,6 +592,13 @@ namespace Dynamo
             DynamoViewModel.ExecuteCommand(command);
         }
 
+        internal void ForceRunExprCmd(object parameters)
+        {
+            bool displayErrors = Convert.ToBoolean(parameters);
+            var command = new DynamoViewModel.ForceRunCancelCommand(displayErrors, false);
+            DynamoViewModel.ExecuteCommand(command);
+        }
+
         internal bool CanRunExprCmd(object parameters)
         {
             return (dynSettings.Controller != null);
@@ -582,6 +610,26 @@ namespace Dynamo
                 evaluationWorker.CancelAsync();
             else
                 RunExpression();
+        }
+
+        internal void ForceRunCancelInternal(bool displayErrors, bool cancelRun)
+        {
+            if (cancelRun)
+                evaluationWorker.CancelAsync();
+            else
+            {
+                dynSettings.DynamoLogger.Log(
+"Beginning engine reset");
+
+                
+                Reset();
+
+
+                dynSettings.DynamoLogger.Log(
+"Reset complete");
+
+                RunExpression();
+            }
         }
 
         public void DisplayFunction(object parameters)
