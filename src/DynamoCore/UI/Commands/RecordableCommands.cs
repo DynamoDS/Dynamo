@@ -401,6 +401,24 @@ namespace Dynamo.ViewModels
             #endregion
         }
 
+
+        public class ForceRunCancelCommand : RunCancelCommand
+        {
+
+            public ForceRunCancelCommand(bool showErrors, bool cancelRun) : base(showErrors, cancelRun)
+            {
+            }
+
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+
+                dynamoViewModel.ForceRunCancelImpl(this);
+            }
+
+        }
+
+
         public class CreateNodeCommand : RecordableCommand
         {
             #region Public Class Methods
