@@ -34,7 +34,8 @@ namespace DSRevitNodesTests.GeometryConversion
             var allSolidsInDoc = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true)
                 .Cast<Revit.Elements.Form>()
                 .SelectMany(x => x.InternalGeometry())
-                .OfType<Autodesk.Revit.DB.Solid>();
+                .OfType<Autodesk.Revit.DB.Solid>()
+                .ToList();
 
             foreach (var solid in allSolidsInDoc)
             {
@@ -42,7 +43,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
                 asmSolid.Volume.ShouldBeApproximately(solid.Volume);
                 asmSolid.Area.ShouldBeApproximately(solid.SurfaceArea);
-                Assert.AreEqual(allSolidsInDoc.Count(), asmSolid.Faces.Length);
+                Assert.AreEqual(allSolidsInDoc.Count, asmSolid.Faces.Length);
                 asmSolid.Centroid().ShouldBeApproximately(solid.ComputeCentroid());
 
             }
