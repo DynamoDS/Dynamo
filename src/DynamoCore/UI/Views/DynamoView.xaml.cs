@@ -604,7 +604,6 @@ namespace Dynamo.Controls
         /// <summary>
         ///     Setup the "Samples" sub-menu with contents of samples directory.
         /// </summary>
-        /// <param name="bench">The bench where the UI will be loaded</param>
         private void LoadSamplesMenu()
         {
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);

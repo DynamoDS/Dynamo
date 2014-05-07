@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using IronPython.Hosting;
 
@@ -20,8 +21,6 @@ namespace DSIronPython
         /// <param name="code">Python script as a string.</param>
         /// <param name="bindingNames">Names of values referenced in Python script.</param>
         /// <param name="bindingValues">Values referenced in Python script.</param>
-        /// <returns name="OUT">Output of the Python script.</returns>
-        /// <search>python</search>
         public static object EvaluateIronPythonScript(
             string code, 
             IList bindingNames, 
@@ -39,7 +38,9 @@ namespace DSIronPython
 
             engine.CreateScriptSourceFromString(code).Execute(scope);
 
-            return scope.ContainsVariable("OUT") ? scope.GetVariable("OUT") : null;
+            var result = scope.ContainsVariable("OUT") ? scope.GetVariable("OUT") : null;
+
+            return PythonDataMarshaler.Instance.Marshal(result);
         }
     }
 }

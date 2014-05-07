@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="IronPythonEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PythonDataMarshaler.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DSIronPython_DynamoCustomization.xml" />
