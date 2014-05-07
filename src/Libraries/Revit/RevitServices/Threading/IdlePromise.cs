@@ -192,7 +192,7 @@ namespace RevitServices.Threading
             redeemed = false;
             value = default(T);
 
-            IdlePromise.ExecuteOnIdleAsync(
+            IdlePromise.Promises.Enqueue(
                 delegate
                 {
                     value = d();
@@ -210,7 +210,7 @@ namespace RevitServices.Threading
             redeemed = false;
             value = default(T);
 
-            IdlePromise.ExecuteOnIdleAsync(
+            IdlePromise.Promises.Enqueue(
                 delegate
                 {
                     d();
