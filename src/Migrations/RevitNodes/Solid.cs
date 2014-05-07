@@ -71,7 +71,13 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByRevolve", "Solid.ByRevolve@Curve[],CoordinateSystem,double,double");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 4, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 
@@ -502,9 +508,8 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "RevitNodes.dll",
-                "Solid.BoxByCenterAndDimensions",
-                "Solid.BoxByCenterAndDimensions@Point,double,double,double");
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll", "Cuboid.ByLengths",
+                "Cuboid.ByLengths@Autodesk.DesignScript.Geometry.Point,double,double,double");
 
             migrationData.AppendNode(newNode);
 
