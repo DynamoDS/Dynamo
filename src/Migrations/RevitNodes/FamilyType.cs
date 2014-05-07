@@ -41,7 +41,17 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return AllElementsOfType.Migrate_0630_to_0700(data);
+            var migrationData = new NodeMigrationData(data.Document);
+
+            var oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CloneAndChangeName(
+                oldNode, "DSRevitNodesUI.ElementsOfFamilyType", "All Elements of Family Type");
+            migrationData.AppendNode(newNode);
+
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode.Clone());
+
+            return migrationData;
         }
     }
 }
