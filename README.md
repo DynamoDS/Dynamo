@@ -8,22 +8,20 @@ Dynamo extends the parametric functionality of Autodesk Revit. Dynamo aims to be
 ## Contributors ##
 
 * [Ian Keough](https://github.com/ikeough): Started the project, main developer.
-* [Stephen Elliott](https://github.com/Steell): Engine overhaul, main developer. 
-* [Peter Boyer](https://github.com/pboyer): UX and UI overhaul, main developer.
+* [Stephen Elliott](https://github.com/Steell): VM, language, and node developer, functional programming specialist.
+* [Peter Boyer](https://github.com/pboyer): Package manager and geometry developer.
 * [Lev Lipkin](https://github.com/LevL): Revit node designer, Revit interaction specialist.
-* [Matt Jezyk](https://github.com/tatlin): Product management and requirements gathering. Node designer and overall design input.
+* [Matt Jezyk](https://github.com/tatlin): Product management, requirements gathering, and node designer.
 * [Zach Kron](https://github.com/kronz): Project management and requirements gathering.
 * [Luke Church](https://github.com/lukechurch): Software Architecture, Programming UX specialist.
-* Lillian Smith: Useful feedback and use cases.
-* [Tom Vollaro](https://github.com/tvollaro): Useful feedback and use cases.
 * [Aparajit Pratap](https://github.com/aparajit-pratap): Node and UI developer.
 * [Ben Goh](https://github.com/Benglin): UI developer.
 * [Elaybharath Elango](https://github.com/Elayabharath): Interaction and visual designer.
-* [Jun Mendoza](https://github.com/junmendoza): Language and vm developer.
+* [Jun Mendoza](https://github.com/junmendoza): Language and VM developer.
 * [Monika Prabhub](https://github.com/monikaprabhu): Testing and QA.
 * [Ritesh Chandawar](https://github.com/riteshchandawar): Testing and QA.
 * [Sharad Jaiswal](https://github.com/sharadkjaiswal): Project management.
-* [Yu Ke](https://github.com/ke-yu): Langauge and vm developer.
+* [Yu Ke](https://github.com/ke-yu): Langauge and VM developer.
 * [Randy Ma](https://github.com/Randy-Ma): Geometry developer.
 * [Patrick Tierney](https://github.com/hlp): Geometry developer.
 
@@ -112,142 +110,6 @@ Fixes
 - Allow unpluggeed ports on Perform All
 - Sphere cannot be made anywhere but 0,0,0
 - Crash when making revolved geometry
-
-
-###0.6.2###
-
-November 2013
-
-Fixes
-- 2*Pi node
-- Cross Product lacing now gives a list of lists
-- Lots of custom node fixes
-- Fixes for package manager uploads (crash when not logged in)
-- Python cleanup and fixes
-- Dynamo now handles close and open new document in same session
-- Get Family Location fixes
-- Color range node preview is now accurate
-- Structural Framing can now take a single or a list of UP values
-- So Many!  Check Github for full list
-
-
-New
-- UI enhancements
-- Mouse-less navigation
-- Background Preview elemnents highlight when nodes are selected
-- Selection of Solids in background highlights nodes
-- Cloud based Daylighting Analysis
-- No limit to the size of canvas
-- Background 3d visualization improvments
-- Resizable Watch 3d windows
-- PReview data bubbles on nodes
-- Added an interval node to Web Request
-- Equal can now compare all data types
-- Updates to arduino. Use delimiter instead of new lines.
-- More forgiving inputs for Solid Geometry creation
-- Browser reorganization.  
-- Search Improvements
-- List handling.  Most nodes now can take lists and lists of lists
-- XYZ and Vector improvments:  Normalize, Dot product, components, ploar and spherical coordinates
-- Solid Primitives: Boxes, Cylinder, Sphere, Torus
-- Boolean improvments
-- Get Family Location now takes single origin and multi-pick placement families
-- Drag and Drop dyn files into canvas to open
-- Asin, Acos, Atan
-- Wall and Floor Creation nodes.  WARNING!  Recreated, not modified on change.
-- Point and Curve numbering available in node right click "Show Label"
-- Extract Transform Basis for x, y, and z vector components
-- Curve Plane Intersection
-- transform origin node
-- plane from reference plane.
-- line by start point direction and length
-- integer slider
-- xyz by distance offset from origin
-- STL export (from file menu)
-- Adaptive Component Batch creation node (make more stuff faster)
-- Default values added to many nodes
-
-###0.6.1###
-
-October 2013
-
-Fixes
-- Project to Face/Plane corrections
-- many excel node fixes and performance improvements
-- Python output improvements for integers
-- Best Fit Plane Orientation consistency
-- Conditional statements don't break formula node
-- Custom node fixes
-- Package Manager download fixes
-
-
-New
-- Undo/Redo now available
-- Many UI improvements
-- Visualization in canvas (available in Vasari only)
-- Background and watch 3d can now draw from any node with geometric output
-- Coloring preview geometry based on node selection
-- navigation without with key commands
-- navigation with onscreen commands
-- View creation nodes: section, axo, crop controls,element isolation, more
-- Sheet creation and View placement
-- Override Colors in View
-- Package manager search is now instant, no commit needed
-- Deprecation of Packages
-- Drop down menus sorted by name
-- name inputs for levels
-- better reference line/model line creation methods
-- Model Text nodes
-- Raybounce nodes
-
-
-###0.6.0###
-
-September 2013
-
-Fixes
-- Nodes properly save/load port state
-- Build sublists now uses same sematics as Number node
-- Better descriptions for boolean logic nodes
-- Fixed bug for equal distance on curve node for closed curves
-- Fixed List To CSV to allow for non-string data
-- Performance improvement for Combine node
-- Nodes properly save/load port state
-- Fixed cultural variaces issues with number node
-- Number sequence and range fixes
-- Better descriptions for boolean logic nodes
-- Length node fixes
-- Best Fit Plane fixes
-- Legacy custom node loading fixes
-- Watch node performance improvements
-- Installer now installs for all users
-- Better output ports for intersection nodes
-- Excel nodes improvements
-
-
-New
-- Package Manager: share custom nodes online
-- Can now use material parameters (Get Material by Name node)
-- Get and Remove From List nodes now can use ranges of indices
-- Color Range node
-- Intersection nodes return more granular results
-- Adaptive Component By Face and By Curve nodes 
-- Default values for some nodes
-- Root finding nodes
-- Convert anything to a String (To String node)
-- Is XYZ Zero Length & XYZ Length nodes
-- New Slice List node (get a sublist from a given list)
-- Custom nodes differentiated from built in nodes in search
-- Domain node (specify a domain by Min and Max)
-- For Each node
-- Multithreading nodes
-- Nodes to perform explicit lacing (Lace Shortest, Longest, Cartesian)
-- Divided Surface Selection node (returns a list of hosted components)
-- Add basic instrumentation infrastructure to report usage
-- Allow writing a range of data to excel
-- Face Face intersection node
-- Default value capability for ports
-- UI Refinement
 
 
 ###Older Releases###
