@@ -294,15 +294,29 @@ namespace Dynamo.Nodes
             var oldInPort3 = new PortId(oldNodeId, 3, PortType.INPUT);
             XmlElement connector3 = data.FindFirstConnector(oldInPort3);
 
+            var oldOutPort0 = new PortId(oldNodeId, 0, PortType.OUTPUT);
+            var oldOutConnectors = data.FindConnectors(oldOutPort0);
+            
             var newInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
             var newInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
             var newInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
             var newInPort3 = new PortId(oldNodeId, 3, PortType.INPUT);
+            var newOutPort2 = new PortId(oldNodeId, 2, PortType.OUTPUT);
 
             data.ReconnectToPort(connector0, newInPort1);
             data.ReconnectToPort(connector1, newInPort0);
             data.ReconnectToPort(connector2, newInPort2);
             data.ReconnectToPort(connector3, newInPort3);
+
+            if (oldOutConnectors.Any())
+            {
+                foreach (var connector in oldOutConnectors)
+                {
+                    //connect anything that previously was connected to output port 0
+                    //to output port 2
+                    data.ReconnectToPort(connector, newOutPort2); 
+                }
+            }
 
             return migratedData;
         }
@@ -524,7 +538,12 @@ namespace Dynamo.Nodes
 
     public class VolumeMeasure : MigrationNode
     {
-        // PB: deprecated
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll",
+                "Solid.Volume", "Solid.Volume");
+        }
     }
 
 }
