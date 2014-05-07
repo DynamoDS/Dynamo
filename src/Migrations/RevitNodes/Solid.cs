@@ -10,6 +10,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
+            /*
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
@@ -53,7 +54,15 @@ namespace Dynamo.Nodes
                 }
             }
 
-            return migratedData;
+            return migratedData;*/
+
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 3, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 
@@ -446,8 +455,8 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "RevitNodes.dll",
-                "Solid.BoxByTwoCorners", "Solid.BoxByTwoCorners@Point,Point");
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Cuboid.ByCorners", "Cuboid.ByCorners@Point,Point");
 
             migrationData.AppendNode(newNode);
 

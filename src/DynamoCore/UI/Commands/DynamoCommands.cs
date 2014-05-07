@@ -93,6 +93,13 @@ namespace Dynamo.ViewModels
                 command.ShowErrors, command.CancelRun);
         }
 
+        private void ForceRunCancelImpl(RunCancelCommand command)
+        {
+            dynSettings.Controller.ForceRunCancelInternal(
+                command.ShowErrors, command.CancelRun);
+        }
+
+
         private void CreateNodeImpl(CreateNodeCommand command)
         {
             NodeModel nodeModel = Model.CreateNode(
