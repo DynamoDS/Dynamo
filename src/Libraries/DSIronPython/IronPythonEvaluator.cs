@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
+using Dynamo.Utilities;
 using IronPython.Hosting;
 
 namespace DSIronPython
@@ -12,6 +13,9 @@ namespace DSIronPython
     [IsVisibleInDynamoLibrary(false)]
     public static class IronPythonEvaluator
     {
+        public static DataMarshaler InputMarshaler = new DataMarshaler();
+        public static DataMarshaler OutputMarshaler = new DataMarshaler();
+
         /// <summary>
         ///     Executes a Python script with custom variable names. Script may be a string
         ///     read from a file, for example. Pass a list of names (matching the variable
@@ -33,14 +37,14 @@ namespace DSIronPython
 
             for (int i = 0; i < amt; i++)
             {
-                scope.SetVariable((string)bindingNames[i], bindingValues[i]);
+                scope.SetVariable((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]));
             }
 
             engine.CreateScriptSourceFromString(code).Execute(scope);
 
             var result = scope.ContainsVariable("OUT") ? scope.GetVariable("OUT") : null;
 
-            return PythonDataMarshaler.Instance.Marshal(result);
+            return OutputMarshaler.Marshal(result);
         }
     }
 }

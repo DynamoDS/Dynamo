@@ -1,32 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Odbc;
 using System.Linq;
-using System.Text;
-using IronPython.Hosting;
 
-namespace DSIronPython
+namespace Dynamo.Utilities
 {
     /// <summary>
     /// 
     /// </summary>
-    public class PythonDataMarshaler
+    public class DataMarshaler
     {
-        #region Singleton
-        
-        /// <summary>
-        ///     Singleton object.
-        /// </summary>
-        public static PythonDataMarshaler Instance
-        {
-            get { return _instance ?? (_instance = new PythonDataMarshaler()); }
-        }
-        private static PythonDataMarshaler _instance;
-
-        private PythonDataMarshaler() { }
-
-        #endregion
-
         private readonly Dictionary<Type, Converter<object, object>> marshalers =
             new Dictionary<Type, Converter<object, object>>(); 
 
