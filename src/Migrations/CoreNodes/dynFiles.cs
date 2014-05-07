@@ -9,12 +9,18 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll",
-                "FileReader.ReadText", "FileReader.ReadText@string");
+                "File.ReadText", "File.ReadText@string");
         }
     }
 
     public class FileWriter : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSCoreNodes.dll",
+                "File.WriteText", "File.WriteText@string,string");
+        }
     }
 
     public class ListToCsv : MigrationNode
@@ -23,12 +29,18 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll",
-                "FileReader.ExportToCSV", "FileReader.ExportToCSV@string,double[][]");
+                "File.ExportToCSV", "File.ExportToCSV@string,double[][]");
         }
     }
 
     public class ImageFileWriter : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "DSCoreNodes.dll",
+                "File.WriteImage", "File.WriteImage@string,string,var");
+        }
     }
 
     public class FileWatcher : MigrationNode
@@ -53,7 +65,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll",
-                "FileReader.ReadImage", "FileReader.ReadImage@string,int,int");
+                "File.ReadImage", "File.ReadImage@string,int,int");
         }
     }
 }

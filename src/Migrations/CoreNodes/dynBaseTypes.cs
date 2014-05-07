@@ -405,7 +405,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Combine", "Combine");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Combine", "List.Combine");
             newNode.RemoveAttribute("inputs");
             int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute("inputs")) + 1;
             newNode.SetAttribute("inputcount", Convert.ToString(numberOfInputs));
@@ -417,6 +417,19 @@ namespace Dynamo.Nodes
 
     public class CartProd : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.CartesianProduct", "List.CartesianProduct");
+            newNode.RemoveAttribute("inputs");
+            int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute("inputs")) + 1;
+            newNode.SetAttribute("inputcount", Convert.ToString(numberOfInputs));
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
     }
 
     public class LaceShortest : MigrationNode
@@ -426,7 +439,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.LaceShortest", "Lace Shortest");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.LaceShortest", "List.LaceShortest");
             newNode.RemoveAttribute("inputs");
             int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute("inputs")) + 1;
             newNode.SetAttribute("inputcount", Convert.ToString(numberOfInputs));
@@ -443,7 +456,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.LaceLongest", "Lace Longest");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.LaceLongest", "List.Longest");
             newNode.RemoveAttribute("inputs");
             int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute("inputs")) + 1;
             newNode.SetAttribute("inputcount", Convert.ToString(numberOfInputs));
@@ -462,7 +475,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Map", "List Map");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Map", "List.Map");
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
@@ -1004,6 +1017,7 @@ namespace Dynamo.Nodes
 
     public class Last : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.LastItem",
@@ -2462,7 +2476,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.StringCase", "String.StringCase@string,bool");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.ChangeCase", "String.ChangeCase@string,bool");
         }
     }
 

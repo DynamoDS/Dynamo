@@ -7,6 +7,7 @@ using System.Text;
 using Dynamo.Nodes;
 using NUnit.Framework;
 using DSCoreNodesUI;
+using Dynamo.Utilities;
 
 namespace Dynamo.Tests
 {
@@ -15,25 +16,105 @@ namespace Dynamo.Tests
         #region Dynamo Core Node Migration Tests
 
         [Test]
-        public void TestOverall00()
+        public void TestMigration_Analyze_Color()
         {
-            //currently, the color range node is excluded in the test.
-            OpenModel(GetDynPath("TestOverall00.dyn"));
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();   
-
-            int noOfNdoes = nodes.Count(); 
-            Assert.AreEqual(0, noOfNdoes);
+            TestMigration("TestMigration_Analyze_Color.dyn");
         }
 
         [Test]
-        public void TestOverall01()
+        public void TestMigration_Analyze_Structure()
         {
-            //currently, the color range node is excluded in the test.
-            OpenModel(GetDynPath("TestOverall01.dyn"));
-            var nodes = Controller.DynamoModel.Nodes.OfType<DummyNode>();
+            TestMigration("TestMigration_Analyze_Structure.dyn");
+        }
 
-            int noOfNdoes = nodes.Count();
-            Assert.AreEqual(0, noOfNdoes);
+        [Test]
+        public void TestMigration_Core_Evaluate()
+        {
+            TestMigration("TestMigration_Core_Evaluate.dyn");
+        }
+
+        [Test]
+        public void TestMigration_Core_Functions()
+        {
+            TestMigration("TestMigration_Core_Functions.dyn");
+        }
+
+        [Test]
+        public void TestMigration_Core_Input()
+        {
+            TestMigration("TestMigration_Core_Input.dyn");
+        }
+
+        [Test]
+        public void TestMigration_Core_List()
+        {
+            TestMigration("TestMigration_Core_List.dyn");
+        }
+
+        [Test]
+        public void TestMigration_Core_Scripting()
+        {
+            TestMigration("TestMigration_Core_Scripting.dyn");
+        }
+
+        [Test]
+        public void TestMigration_Core_Strings()
+        {
+            TestMigration("TestMigration_Core_Strings.dyn");
+        }
+
+        [Test]
+        public void TestMigration_Core_Time()
+        {
+            TestMigration("TestMigration_Core_Time.dyn");
+        }
+
+        [Test]
+        public void TestMigration_Core_Watch()
+        {
+            TestMigration("TestMigration_Core_Watch.dyn");
+        }
+
+        [Test]
+        public void TestMigration_InputOutput_Excel()
+        {
+            TestMigration("TestMigration_InputOutput_Excel.dyn");
+        }
+
+        [Test]
+        public void TestMigration_InputOutput_File()
+        {
+            TestMigration("TestMigration_InputOutput_File.dyn");
+        }
+
+        [Test]
+        public void TestMigration_InputOutput_Hardware()
+        {
+            TestMigration("TestMigration_InputOutput_Hardware.dyn");
+        }
+
+        [Test]
+        public void TestMigration_Logic_Comparison()
+        {
+            TestMigration("TestMigration_Logic_Comparison.dyn");
+        }
+
+        [Test]
+        public void TestMigration_Logic_Conditional()
+        {
+            TestMigration("TestMigration_Logic_Conditional.dyn");
+        }
+
+        [Test]
+        public void TestMigration_Logic_Effect()
+        {
+            TestMigration("TestMigration_Logic_Effect.dyn");
+        }
+
+        [Test]
+        public void TestMigration_Logic_Math()
+        {
+            TestMigration("TestMigration_Logic_Math.dyn");
         }
 
         [Test]
@@ -1787,6 +1868,24 @@ namespace Dynamo.Tests
             AssertPreviewValue("635a4533-d522-4bf7-83a7-4f178fabd18f", new double[] { 2 });
         }
 
+        [Test]
+        public void TestWriteText()
+        {
+            OpenModel(GetDynPath("TestWriteFile.dyn"));
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Connectors.Count);
+
+            var path = workspace.NodeFromWorkspace<Dynamo.Nodes.StringInput>("1651f446-1b0f-4d5b-be59-c59bf9f80142");
+            string fullPath = Path.Combine(TempFolder, "filewriter.txt");
+            path.Value = fullPath;
+
+            RunCurrentModel();
+            AssertPreviewValue("a169a84b-2624-422c-9a48-1afe2691f11f", true);
+        }
+
         #endregion
 
         #region Dynamo Libraries Node Migration Tests
@@ -1899,6 +1998,33 @@ namespace Dynamo.Tests
             var workspace = Controller.DynamoModel.CurrentWorkspace;
             return workspace.NodeFromWorkspace<CodeBlockNodeModel>(
                 System.Guid.Parse(nodeGuid));
+        }
+
+        private void TestMigration(string filename)
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            model.Open(GetDynPath(filename));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression());
+
+            var nodes = Controller.DynamoModel.Nodes;
+            int unresolvedNodeCount = 0;
+            string str = "\n";
+
+            foreach (var node in nodes.OfType<DSCoreNodesUI.DummyNode>())
+            {
+                if (node.NodeNature == DummyNode.Nature.Unresolved)
+                {
+                    unresolvedNodeCount++;
+                    str += node.NickName;
+                    str += "\n";
+                }
+            }
+
+            if (unresolvedNodeCount >= 1)
+            {
+                Assert.Fail("Number of unresolved nodes found in TestCase: " + unresolvedNodeCount + str);
+            }
         }
 
         #endregion

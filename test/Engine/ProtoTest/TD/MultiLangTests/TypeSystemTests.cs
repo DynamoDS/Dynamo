@@ -291,7 +291,7 @@ namespace ProtoTest.TD.MultiLangTests
         public void TS019_conditional_cantevaluate_1465293_3()
         {
             string code =
-                @"                     test1;                     test2;                     test3;                     p1 = 1;                     test1 = p1 == null ? true : false; // expected false, received false                     test2 = p1!= null ? true : false; // expected true,  received false                     test2 = !p1 ? true : false;                        ";
+                @"                     test1;                     test2;                     test3;                     p1 = 1;                     test1 = p1 == null ? true : false; // expected false, received false                     test2 = p1!= null ? true : false; // expected true,  received false                     test3 = !p1 ? true : false;                        ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("test1", false);
             thisTest.Verify("test2", true);
