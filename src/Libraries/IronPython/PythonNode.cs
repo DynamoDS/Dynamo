@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
+using DSIronPython;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -19,7 +20,6 @@ namespace DSIronPythonNode
         protected PythonNodeBase()
         {
             OutPortData.Add(new PortData("OUT", "Result of the python script"));
-            AddInput();
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
@@ -46,7 +46,7 @@ namespace DSIronPythonNode
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
             Func<string, IList, IList, object> backendMethod =
-                DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript;
+                IronPythonEvaluator.EvaluateIronPythonScript;
 
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
@@ -66,7 +66,7 @@ namespace DSIronPythonNode
     [NodeDescription("Runs an embedded IronPython script.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
-    public class PythonNode : PythonNodeBase
+    public sealed class PythonNode : PythonNodeBase
     {
         public PythonNode()
         {
@@ -77,6 +77,7 @@ namespace DSIronPythonNode
                 + "#Assign your output to the OUT variable\n"
                 + "OUT = 0";
 
+            AddInput();
 
             RegisterAllPorts();
         }
@@ -124,7 +125,7 @@ namespace DSIronPythonNode
             bool? acceptChanged = editWindow.ShowDialog();
             if (acceptChanged.HasValue && acceptChanged.Value)
             {
-                this.RequiresRecalc = true;
+                RequiresRecalc = true;
             }
         }
 
@@ -204,11 +205,12 @@ namespace DSIronPythonNode
     [NodeDescription("Runs a IronPython script from a string.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
-    public class PythonStringNode : PythonNodeBase
+    public sealed class PythonStringNode : PythonNodeBase
     {
         public PythonStringNode()
         {
             InPortData.Add(new PortData("script", "Python script to run."));
+            AddInput();
             RegisterAllPorts();
         }
 

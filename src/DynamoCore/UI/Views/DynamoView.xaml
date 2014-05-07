@@ -1091,7 +1091,17 @@
                     CommandParameter="{Binding Path=RunInDebug}"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
 
-                <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
+
+                    <Button Name="ForceRunButton" Width="150" Content="Force ReExec" 
+                    Margin="5" Style="{DynamicResource ResourceKey=STextButton}" 
+                    Click="RunButton_OnClick"
+                    Command="{Binding ForceRunExpressionCommand}"
+                    CommandParameter="{Binding Path=RunInDebug}"
+                    IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
+
+
+
+                    <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
 
                       Command="{Binding CancelRunCommand}" Margin="5"/>
 
@@ -1109,7 +1119,7 @@
                 </WrapPanel>
                 <TextBlock Name="warningText" Grid.Column="1" Text="{Binding Source={x:Static utilities:dynSettings.DynamoLogger}, Path=Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}" FontStyle="Italic" FontSize="12" 
                        VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" TextTrimming="WordEllipsis" Margin="10"
-                       Foreground="{Binding Source={x:Static utilities:dynSettings.DynamoLogger}, Path=Warning, Converter={StaticResource WarningLevelToColorConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" >
+                       Foreground="{Binding Source={x:Static utilities:dynSettings.DynamoLogger}, Path=WarningLevel, Converter={StaticResource WarningLevelToColorConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" >
                     <TextBlock.Triggers>
                             <EventTrigger RoutedEvent="Binding.TargetUpdated">
                                 <BeginStoryboard>

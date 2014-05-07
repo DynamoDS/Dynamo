@@ -179,6 +179,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ShowPackageManagerCommand { get; set; }
         public DelegateCommand CancelRunCommand { get; set; }
         public DelegateCommand RunExpressionCommand { get; set; }
+        public DelegateCommand ForceRunExpressionCommand { get; set; }
         public DelegateCommand DisplayFunctionCommand { get; set; }
         public DelegateCommand SetConnectorTypeCommand { get; set; }
         public DelegateCommand ReportABugCommand { get; set; }
@@ -592,6 +593,8 @@ namespace Dynamo.ViewModels
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
             CancelRunCommand = new DelegateCommand(Controller.CancelRunCmd, Controller.CanCancelRunCmd);
             RunExpressionCommand = new DelegateCommand(Controller.RunExprCmd, Controller.CanRunExprCmd);
+            ForceRunExpressionCommand = new DelegateCommand(Controller.ForceRunExprCmd, Controller.CanRunExprCmd);
+
             DisplayFunctionCommand = new DelegateCommand(Controller.DisplayFunction, Controller.CanDisplayFunction);
             SetConnectorTypeCommand = new DelegateCommand(SetConnectorType, CanSetConnectorType);
             ReportABugCommand = new DelegateCommand(Controller.ReportABug, Controller.CanReportABug);

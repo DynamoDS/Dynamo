@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -15,7 +16,7 @@ namespace RevitTestFrameworkRunner
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            return value;
         }
     }
 
@@ -28,7 +29,7 @@ namespace RevitTestFrameworkRunner
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            return value;
         }
     }
 
@@ -41,7 +42,7 @@ namespace RevitTestFrameworkRunner
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            return value;
         }
     }
 

@@ -75,6 +75,7 @@
     <Compile Include="AnalysisDisplayTests.cs" />
     <Compile Include="DividedCurveTests.cs" />
     <Compile Include="MaterialTests.cs" />
+    <Compile Include="MigrationTest.cs" />
     <Compile Include="ModelCurveTests.cs" />
     <Compile Include="RayBounceTests.cs" />
     <Compile Include="BugTests.cs" />
