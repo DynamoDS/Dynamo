@@ -304,8 +304,18 @@ namespace Dynamo.Controls
             MeshCount = 0;
 
             //separate the selected packages
-            var packages = e.Packages.Where(x => x.Selected == false).ToArray();
-            var selPackages = e.Packages.Where(x => x.Selected).ToArray();
+            var packages = e.Packages.Where(x => x.Selected == false)
+                .Where(rp=>rp.TriangleVertices.Count % 9 == 0)
+                .ToArray();
+            var selPackages = e.Packages
+                .Where(x => x.Selected)
+                .Where(rp => rp.TriangleVertices.Count % 9 == 0)
+                .ToArray();
+
+            if (packages.Any(rp => rp.TriangleVertices.Count % 3 != 0))
+            {
+                //debug.
+            }
 
             //pre-size the points collections
             var pointsCount = packages.Select(x => x.PointVertices.Count/3).Sum();
