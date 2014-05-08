@@ -78,7 +78,24 @@ namespace Dynamo.UI.Controls
             this.Loaded += OnPreviewControlLoaded;
         }
 
-        // TODO(Ben): Document this when codes are finalized.
+        /// <summary>
+        /// Call this method to request the preview control for a transition 
+        /// into a new state. The requested state must be a logical state after
+        /// the current state. The following sequence illustrates the logical 
+        /// state progression of a preview control:
+        /// 
+        ///     Hidden -> Condensed -> Expanded -> Condensed -> Hidden
+        /// 
+        /// For example, an exception will be thrown if State.Expanded is
+        /// requested when the preview control is currently in State.Hidden,
+        /// skipping State.Condensed state.
+        /// 
+        /// Because this method deals with UI resources like Storyboard, this 
+        /// call must be made on the main UI thread.
+        /// </summary>
+        /// <param name="nextState">The state for the preview control to 
+        /// transition into.</param>
+        /// 
         public void TransitionToState(State nextState)
         {
             queuedRequest.Enqueue(nextState);
@@ -93,7 +110,18 @@ namespace Dynamo.UI.Controls
                 BeginNextTransition();
         }
 
-        // TODO(Ben): Document this when codes are finalized.
+        /// <summary>
+        /// Bind a mirror data to the preview control for display, this call 
+        /// unbinds the internal data structure from the view that it was 
+        /// originally bound to and resets the data structure. If this call is 
+        /// made while the preview control is in condensed or expanded state,
+        /// the display will immediately be refreshed. Since this method deals 
+        /// with UI elements internally, it must be called from the UI thread.
+        /// </summary>
+        /// <param name="mirrorData">The mirror data to bind the preview control
+        /// to. This value can be null to reset the preview control to its 
+        /// initial state.</param>
+        /// 
         internal void BindToDataSource(MirrorData mirrorData)
         {
             // First detach the bound data from its view.
