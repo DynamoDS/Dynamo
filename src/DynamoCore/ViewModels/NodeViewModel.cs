@@ -234,6 +234,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
+                if (!(nodeLogic.WorkSpace is HomeWorkspaceModel))
+                    return false; // Preview only shown in Home workspace.
+
                 switch (nodeLogic.Name)
                 {
                     case "Number":
