@@ -10,7 +10,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            /*
+            
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
@@ -18,8 +18,8 @@ namespace Dynamo.Nodes
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll",
-                "Form.ByLoftingCurveElements",
-                "Form.ByLoftingCurveElements@CurveElement[],bool");
+                "Form.ByLoft",
+                "Form.ByLoft@object[],bool");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
@@ -54,15 +54,7 @@ namespace Dynamo.Nodes
                 }
             }
 
-            return migratedData;*/
-
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-
-            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 3, 1);
-            migrationData.AppendNode(dummyNode);
-
-            return migrationData;
+            return migratedData;
         }
     }
 
@@ -131,9 +123,9 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "RevitNodes.dll",
-                "Solid.ByExtrusion",
-                "Solid.ByExtrusion@Curve[],Vector,double");
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Curve.ExtrudeAsSolid",
+                "Curve.ExtrudeAsSolid@Vector,double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -165,8 +157,8 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll",
-                "Solid.ByBlend", "Solid.ByBlend@Curve[][]");
+            MigrationManager.SetFunctionSignature(dsRevitNode, "ProtoGeometry.dll",
+                "Solid.ByLoft", "Solid.ByLoft@Curve[]");
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
 
@@ -225,8 +217,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByBooleanDifference",
-                "Solid.ByBooleanDifference@Solid,Solid");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Solid.Difference",
+                "Solid.Difference@Solid,Solid");
         }
     }
 
@@ -235,8 +227,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByBooleanUnion",
-                "Solid.ByBooleanUnion@Solid,Solid");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Solid.Union",
+                "Solid.Union@Solid,Solid");
         }
     }
 
@@ -245,8 +237,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByBooleanIntersection",
-                "Solid.ByBooleanIntersection@Solid,Solid");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Geometry.Intersect",
+                "Geometry.Intersect@Geometry,Geometry");
         }
     }
 
@@ -256,7 +248,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll",
-                "Solid.FromElement", "Solid.FromElement@Element");
+                "Element.Solids", "Element.Solids");
         }
     }
 
@@ -268,11 +260,6 @@ namespace Dynamo.Nodes
             var migratedData = new NodeMigrationData(data.Document);
             var oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
-
-            //cylinder previously took an axis, an origin, a radius, and a height
-            //we need to convert the axis and the origin to a coordinate system
-            //we do this by using a Plane.ByOriginNormal, passing in the origin and 
-            //the axis vector previously supplied
 
             var codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
             codeBlockNode.SetAttribute("CodeText",
@@ -327,8 +314,46 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll",
-                "Sphere.ByCenterPointRadius", "Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double");
+
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Sphere.ByCenterPointRadius", "Sphere.ByCenterPointRadius@Point,double");
+
+            migrationData.AppendNode(newNode);
+
+            // Add default values
+            foreach (XmlNode child in oldNode.ChildNodes)
+            {
+                var newChild = child.Clone() as XmlElement;
+
+                switch (newChild.GetAttribute("index"))
+                {
+                    case "0":
+                        PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+                        XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+                        if (connector0 != null) break;
+
+                        XmlElement cbn0 = MigrationManager.CreateCodeBlockNodeModelNode(
+                            data.Document, oldNode, 0, "Point.ByCoordinates(0,0,0);");
+                        migrationData.AppendNode(cbn0);
+                        data.CreateConnector(cbn0, 0, newNode, 0);
+                        break;
+
+                    case "1":
+                        newNode.AppendChild(newChild);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            return migrationData;
+
         }
     }
 
