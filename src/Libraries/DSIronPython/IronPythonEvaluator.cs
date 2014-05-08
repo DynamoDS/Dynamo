@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using Autodesk.DesignScript.Runtime;
+using Dynamo.Utilities;
 using IronPython.Hosting;
 
 namespace DSIronPython
@@ -11,6 +13,9 @@ namespace DSIronPython
     [IsVisibleInDynamoLibrary(false)]
     public static class IronPythonEvaluator
     {
+        public static DataMarshaler InputMarshaler = new DataMarshaler();
+        public static DataMarshaler OutputMarshaler = new DataMarshaler();
+
         /// <summary>
         ///     Executes a Python script with custom variable names. Script may be a string
         ///     read from a file, for example. Pass a list of names (matching the variable
@@ -20,8 +25,6 @@ namespace DSIronPython
         /// <param name="code">Python script as a string.</param>
         /// <param name="bindingNames">Names of values referenced in Python script.</param>
         /// <param name="bindingValues">Values referenced in Python script.</param>
-        /// <returns name="OUT">Output of the Python script.</returns>
-        /// <search>python</search>
         public static object EvaluateIronPythonScript(
             string code, 
             IList bindingNames, 
@@ -34,12 +37,14 @@ namespace DSIronPython
 
             for (int i = 0; i < amt; i++)
             {
-                scope.SetVariable((string)bindingNames[i], bindingValues[i]);
+                scope.SetVariable((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]));
             }
 
             engine.CreateScriptSourceFromString(code).Execute(scope);
 
-            return scope.ContainsVariable("OUT") ? scope.GetVariable("OUT") : null;
+            var result = scope.ContainsVariable("OUT") ? scope.GetVariable("OUT") : null;
+
+            return OutputMarshaler.Marshal(result);
         }
     }
 }

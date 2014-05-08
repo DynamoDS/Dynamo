@@ -102,6 +102,31 @@ namespace Dynamo.Nodes
             EnableReporting();
         }
 
+        /// <summary>
+        ///   Return if the custom node instance is in sync with its definition.
+        ///   It may be out of sync if .dyf file is opened and updated and then
+        ///   .dyn file is opened. 
+        /// </summary>
+        /// <returns></returns>
+        public bool IsInSyncWithDefinition()
+        {
+            if (Definition.Parameters != null)
+            {
+                if (Definition.Parameters.Count() != InPortData.Count() ||
+                    !Definition.Parameters.SequenceEqual(InPortData.Select(p => p.NickName)))
+                    return false;
+            }
+
+            if (Definition.ReturnKeys != null)
+            {
+                if (Definition.ReturnKeys.Count() != OutPortData.Count() ||
+                    !Definition.ReturnKeys.SequenceEqual(OutPortData.Select(p => p.NickName)))
+                    return false;
+            }
+
+            return true;
+        }
+
         //protected override InputNode Compile(IEnumerable<string> portNames)
         //{
         //    return SaveResult ? base.Compile(portNames) : new FunctionNode(Symbol, portNames);
@@ -216,9 +241,6 @@ namespace Dynamo.Nodes
 
                 if (Definition.IsProxy)
                 {
-                    ArgumentLacing = LacingStrategy.Disabled;
-                    ResyncWithDefinition();
-                    RegisterAllPorts();
                     Error("Cannot load custom node");
                 }
             }
@@ -281,7 +303,14 @@ namespace Dynamo.Nodes
                 #endregion
             }
 
-            RegisterAllPorts();
+            if (!IsInSyncWithDefinition())
+            {
+                ResyncWithDefinition();
+            }
+            else
+            {
+                RegisterAllPorts();
+            }
 
             //argument lacing on functions should be set to disabled
             //by default in the constructor, but for any workflow saved
