@@ -364,9 +364,18 @@ namespace Dynamo
             PreferenceSettings.Save();
 
             dynSettings.Controller.DynamoModel.OnCleanup(args);
+            dynSettings.Controller.DynamoModel = null;
             dynSettings.Controller = null;
 
             ((DynamoLogger)dynSettings.DynamoLogger).Dispose();
+
+            InstrumentationLogger.End();
+            Dynamo.Selection.DynamoSelection.DestroyInstance();
+            UsageReportingManager.DestroyInstance();
+
+            DocumentationServices.DestroyCachedData();
+
+            dynSettings.DestroyInstance();
         }
 
         #region Running

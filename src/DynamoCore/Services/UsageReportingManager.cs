@@ -20,11 +20,14 @@ namespace Dynamo.Services
 
         #region Static Properties
 
-        public static UsageReportingAgreementPrompt UsageReportingPrompt { get; set; }
-
         public static UsageReportingManager Instance
         {
             get { return instance ?? (instance = new UsageReportingManager()); }
+        }
+
+        public static void DestroyInstance()
+        {
+            instance = null;
         }
 
         #endregion
@@ -117,11 +120,11 @@ namespace Dynamo.Services
 
         private static void ShowUsageReportingPrompt()
         {
-            UsageReportingPrompt = new UsageReportingAgreementPrompt();
+            var usageReportingPrompt = new UsageReportingAgreementPrompt();
             if (null != Application.Current)
-                UsageReportingPrompt.Owner = Application.Current.MainWindow;
+                usageReportingPrompt.Owner = Application.Current.MainWindow;
 
-            UsageReportingPrompt.ShowDialog();
+            usageReportingPrompt.ShowDialog();
         }
     }
 }

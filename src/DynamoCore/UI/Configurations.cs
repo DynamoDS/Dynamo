@@ -63,13 +63,13 @@ namespace Dynamo.UI
 
         public static int CondensedPreviewMaxLength = 25;
 
-        public static SolidColorBrush PreviewFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+        public static Color PreviewFrameFillColor = Color.FromRgb(255, 255, 255);
         public static double PreviewFrameStrokeThickness = 1;
-        public static SolidColorBrush PreviewFrameStrokeColor = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+        public static Color PreviewFrameStrokeColor = Color.FromRgb(153, 153, 153);
 
         public static double PreviewTextFontSize = 10;
         public static FontWeight PreviewTextFontWeight = FontWeights.Light;
-        public static SolidColorBrush PreviewTextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
+        public static Color PreviewTextForeground = Color.FromRgb(51, 51, 51);
         public static TextWrapping PreviewContentWrapping = TextWrapping.Wrap;
         public static Thickness PreviewContentMargin = new Thickness(5, 12, 5, 5);
 
@@ -93,16 +93,16 @@ namespace Dynamo.UI
         #endregion
 
         #region Warning Bubble
-        public static SolidColorBrush WarningFrameFill = new SolidColorBrush(Color.FromRgb(0xff, 0xef, 0xa0));
-        public static SolidColorBrush WarningFrameStrokeColor = new SolidColorBrush(Color.FromRgb(0xf2, 0xbd, 0x53));
-        public static SolidColorBrush WarningTextForeground = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
+        public static Color WarningFrameFill = Color.FromRgb(0xff, 0xef, 0xa0);
+        public static Color WarningFrameStrokeColor = Color.FromRgb(0xf2, 0xbd, 0x53);
+        public static Color WarningTextForeground = Color.FromRgb(0x33, 0x33, 0x33);
         #endregion
 
         #region Error Bubble
 
-        public static SolidColorBrush ErrorFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+        public static Color ErrorFrameFill = Color.FromRgb(255, 255, 255);
         public static double ErrorFrameStrokeThickness = 1;
-        public static SolidColorBrush ErrorFrameStrokeColor = new SolidColorBrush(Color.FromRgb(190, 70, 70));
+        public static Color ErrorFrameStrokeColor = Color.FromRgb(190, 70, 70);
 
         public static double ErrorMaxWidth = 300;
         public static double ErrorMaxHeight = 200;
@@ -118,7 +118,7 @@ namespace Dynamo.UI
 
         public static double ErrorTextFontSize = 13;
         public static FontWeight ErrorTextFontWeight = FontWeights.Normal;
-        public static SolidColorBrush ErrorTextForeground = new SolidColorBrush(Color.FromRgb(190, 70, 70));
+        public static Color ErrorTextForeground = Color.FromRgb(190, 70, 70);
         public static TextWrapping ErrorContentWrapping = TextWrapping.Wrap;
         public static Thickness ErrorContentMargin = new Thickness(5, 5, 5, 12);
 
@@ -130,9 +130,9 @@ namespace Dynamo.UI
         #region Node Tooltip
         public static int ToolTipFadeInDelayInMS = 1000;
 
-        public static SolidColorBrush NodeTooltipFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+        public static Color NodeTooltipFrameFill = Color.FromRgb(255, 255, 255);
         public static double NodeTooltipFrameStrokeThickness = 1;
-        public static SolidColorBrush NodeTooltipFrameStrokeColor = new SolidColorBrush(Color.FromRgb(165, 209, 226));
+        public static Color NodeTooltipFrameStrokeColor = Color.FromRgb(165, 209, 226);
 
         public static double NodeTooltipMaxWidth = 200;
         public static double NodeTooltipMaxHeight = 200;
@@ -141,7 +141,7 @@ namespace Dynamo.UI
 
         public static double NodeTooltipTextFontSize = 11;
         public static FontWeight NodeTooltipTextFontWeight = FontWeights.Light;
-        public static SolidColorBrush NodeTooltipTextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
+        public static Color NodeTooltipTextForeground = Color.FromRgb(51, 51, 51);
         public static TextWrapping NodeTooltipContentWrapping = TextWrapping.Wrap;
 
         public static Thickness NodeTooltipContentMarginLeft = new Thickness(11, 5, 5, 5);
@@ -158,9 +158,9 @@ namespace Dynamo.UI
 
         #region Library Item Tooltip
 
-        public static SolidColorBrush LibraryTooltipFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+        public static Color LibraryTooltipFrameFill = Color.FromRgb(255, 255, 255);
         public static double LibraryTooltipFrameStrokeThickness = 1;
-        public static SolidColorBrush LibraryTooltipFrameStrokeColor = new SolidColorBrush(Color.FromRgb(165, 209, 226));
+        public static Color LibraryTooltipFrameStrokeColor = Color.FromRgb(165, 209, 226);
 
         public static double LibraryTooltipMaxWidth = 400;
         public static double LibraryTooltipMaxHeight = 200;
@@ -168,7 +168,7 @@ namespace Dynamo.UI
         public static double LibraryTooltipContentMaxHeight = LibraryTooltipMaxHeight - 17;
 
         public static double LibraryTooltipTextFontSize = 11;
-        public static SolidColorBrush LibraryTooltipTextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
+        public static Color LibraryTooltipTextForeground = Color.FromRgb(51, 51, 51);
         public static FontWeight LibraryTooltipTextFontWeight = FontWeights.Normal;
         public static TextWrapping LibraryTooltipContentWrapping = TextWrapping.Wrap;
         public static Thickness LibraryTooltipContentMargin = new Thickness(12, 5, 5, 5);

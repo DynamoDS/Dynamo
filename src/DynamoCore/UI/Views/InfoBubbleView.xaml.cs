@@ -302,9 +302,9 @@ namespace Dynamo.Controls
 
         private void SetStyle_LibraryItemPreview()
         {
-            backgroundPolygon.Fill = Configurations.LibraryTooltipFrameFill;
+            backgroundPolygon.Fill = new SolidColorBrush(Configurations.LibraryTooltipFrameFill);
             backgroundPolygon.StrokeThickness = Configurations.LibraryTooltipFrameStrokeThickness;
-            backgroundPolygon.Stroke = Configurations.LibraryTooltipFrameStrokeColor;
+            backgroundPolygon.Stroke = new SolidColorBrush(Configurations.LibraryTooltipFrameStrokeColor);
 
             ContentContainer.MaxWidth = Configurations.LibraryTooltipMaxWidth;
             ContentContainer.MaxHeight = Configurations.LibraryTooltipMaxHeight;
@@ -314,15 +314,15 @@ namespace Dynamo.Controls
             ContentMaxHeight = Configurations.LibraryTooltipContentMaxHeight;
 
             ContentFontSize = Configurations.LibraryTooltipTextFontSize;
-            ContentForeground = Configurations.LibraryTooltipTextForeground;
+            ContentForeground = new SolidColorBrush(Configurations.LibraryTooltipTextForeground);
             ContentFontWeight = Configurations.LibraryTooltipTextFontWeight;
         }
 
         private void SetStyle_NodeTooltip(InfoBubbleViewModel.Direction connectingDirection)
         {
-            backgroundPolygon.Fill = Configurations.NodeTooltipFrameFill;
+            backgroundPolygon.Fill = new SolidColorBrush(Configurations.NodeTooltipFrameFill);
             backgroundPolygon.StrokeThickness = Configurations.NodeTooltipFrameStrokeThickness;
-            backgroundPolygon.Stroke = Configurations.NodeTooltipFrameStrokeColor;
+            backgroundPolygon.Stroke = new SolidColorBrush(Configurations.NodeTooltipFrameStrokeColor);
 
             ContentContainer.MaxWidth = Configurations.NodeTooltipMaxWidth;
             ContentContainer.MaxHeight = Configurations.NodeTooltipMaxHeight;
@@ -331,7 +331,7 @@ namespace Dynamo.Controls
             ContentMaxHeight = Configurations.NodeTooltipContentMaxHeight;
 
             ContentFontSize = Configurations.NodeTooltipTextFontSize;
-            ContentForeground = Configurations.NodeTooltipTextForeground;
+            ContentForeground = new SolidColorBrush(Configurations.NodeTooltipTextForeground);
             ContentFontWeight = Configurations.NodeTooltipTextFontWeight;
 
             switch (connectingDirection)
@@ -350,9 +350,9 @@ namespace Dynamo.Controls
 
         private void SetStyle_Warning()
         {
-            backgroundPolygon.Fill = Configurations.WarningFrameFill;
+            backgroundPolygon.Fill = new SolidColorBrush(Configurations.WarningFrameFill);
             backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
-            backgroundPolygon.Stroke = Configurations.WarningFrameStrokeColor;
+            backgroundPolygon.Stroke = new SolidColorBrush(Configurations.WarningFrameStrokeColor);
 
             ContentContainer.MaxWidth = Configurations.ErrorMaxWidth;
             ContentContainer.MaxHeight = Configurations.ErrorMaxHeight;
@@ -362,15 +362,15 @@ namespace Dynamo.Controls
             ContentMaxHeight = Configurations.ErrorContentMaxHeight;
 
             ContentFontSize = Configurations.ErrorTextFontSize;
-            ContentForeground = Configurations.WarningTextForeground;
+            ContentForeground = new SolidColorBrush(Configurations.WarningTextForeground);
             ContentFontWeight = Configurations.ErrorTextFontWeight;
         }
 
         private void SetStyle_WarningCondensed()
         {
-            backgroundPolygon.Fill = Configurations.WarningFrameFill;
+            backgroundPolygon.Fill = new SolidColorBrush(Configurations.WarningFrameFill);
             backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
-            backgroundPolygon.Stroke = Configurations.WarningFrameStrokeColor;
+            backgroundPolygon.Stroke = new SolidColorBrush(Configurations.WarningFrameStrokeColor);
 
             ContentContainer.MaxWidth = Configurations.ErrorCondensedMaxWidth;
             ContentContainer.MinWidth = Configurations.ErrorCondensedMinWidth;
@@ -382,15 +382,15 @@ namespace Dynamo.Controls
             ContentMaxHeight = Configurations.ErrorCondensedContentMaxHeight;
 
             ContentFontSize = Configurations.ErrorTextFontSize;
-            ContentForeground = Configurations.WarningTextForeground;
+            ContentForeground = new SolidColorBrush(Configurations.WarningTextForeground);
             ContentFontWeight = Configurations.ErrorTextFontWeight;
         }
 
         private void SetStyle_Error()
         {
-            backgroundPolygon.Fill = Configurations.ErrorFrameFill;
+            backgroundPolygon.Fill = new SolidColorBrush(Configurations.ErrorFrameFill);
             backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
-            backgroundPolygon.Stroke = Configurations.ErrorFrameStrokeColor;
+            backgroundPolygon.Stroke = new SolidColorBrush(Configurations.ErrorFrameStrokeColor);
 
             ContentContainer.MaxWidth = Configurations.ErrorMaxWidth;
             ContentContainer.MaxHeight = Configurations.ErrorMaxHeight;
@@ -400,15 +400,15 @@ namespace Dynamo.Controls
             ContentMaxHeight = Configurations.ErrorContentMaxHeight;
 
             ContentFontSize = Configurations.ErrorTextFontSize;
-            ContentForeground = Configurations.ErrorTextForeground;
+            ContentForeground = new SolidColorBrush(Configurations.ErrorTextForeground);
             ContentFontWeight = Configurations.ErrorTextFontWeight;
         }
 
         private void SetStyle_ErrorCondensed()
         {
-            backgroundPolygon.Fill = Configurations.ErrorFrameFill;
+            backgroundPolygon.Fill = new SolidColorBrush(Configurations.ErrorFrameFill);
             backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
-            backgroundPolygon.Stroke = Configurations.ErrorFrameStrokeColor;
+            backgroundPolygon.Stroke = new SolidColorBrush(Configurations.ErrorFrameStrokeColor);
 
             ContentContainer.MaxWidth = Configurations.ErrorCondensedMaxWidth;
             ContentContainer.MinWidth = Configurations.ErrorCondensedMinWidth;
@@ -420,18 +420,18 @@ namespace Dynamo.Controls
             ContentMaxHeight = Configurations.ErrorCondensedContentMaxHeight;
 
             ContentFontSize = Configurations.ErrorTextFontSize;
-            ContentForeground = Configurations.ErrorTextForeground;
+            ContentForeground = new SolidColorBrush(Configurations.ErrorTextForeground);
             ContentFontWeight = Configurations.ErrorTextFontWeight;
         }
 
         private void SetStyle_Preview()
         {
-            backgroundPolygon.Fill = Configurations.PreviewFrameFill;
+            backgroundPolygon.Fill = new SolidColorBrush(Configurations.PreviewFrameFillColor);
             backgroundPolygon.StrokeThickness = Configurations.PreviewFrameStrokeThickness;
-            backgroundPolygon.Stroke = Configurations.PreviewFrameStrokeColor;
+            backgroundPolygon.Stroke = new SolidColorBrush(Configurations.PreviewFrameStrokeColor);
 
             ContentFontSize = Configurations.PreviewTextFontSize;
-            ContentForeground = Configurations.PreviewTextForeground;
+            ContentForeground = new SolidColorBrush(Configurations.PreviewTextForeground);
             ContentFontWeight = Configurations.PreviewTextFontWeight;
 
             ContentMargin = Configurations.PreviewContentMargin;
@@ -464,9 +464,9 @@ namespace Dynamo.Controls
 
         private void SetStyle_PreviewCondensed()
         {
-            backgroundPolygon.Fill = Configurations.PreviewFrameFill;
+            backgroundPolygon.Fill = new SolidColorBrush(Configurations.PreviewFrameFillColor);
             backgroundPolygon.StrokeThickness = Configurations.PreviewFrameStrokeThickness;
-            backgroundPolygon.Stroke = Configurations.PreviewFrameStrokeColor;
+            backgroundPolygon.Stroke = new SolidColorBrush(Configurations.PreviewFrameStrokeColor);
 
             ContentContainer.MaxWidth = Configurations.PreviewCondensedMaxWidth;
             ContentContainer.MinWidth = Configurations.PreviewCondensedMinWidth;
@@ -478,7 +478,7 @@ namespace Dynamo.Controls
             ContentMaxHeight = Configurations.PreviewCondensedContentMaxHeight;
 
             ContentFontSize = Configurations.PreviewTextFontSize;
-            ContentForeground = Configurations.PreviewTextForeground;
+            ContentForeground = new SolidColorBrush(Configurations.PreviewTextForeground);
             ContentFontWeight = Configurations.PreviewTextFontWeight;
         }
 

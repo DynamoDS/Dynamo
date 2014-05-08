@@ -26,6 +26,22 @@ namespace Dynamo.Selection
             }
         }
 
+        // TODO(Ben): Remove this when dynSettings is unified.
+        public static void DestroyInstance()
+        {
+            if (_instance != null)
+            {
+                if (_instance.selection != null)
+                {
+                    _instance.selection.CollectionChanged -= selection_CollectionChanged;
+                    _instance.selection.Clear();
+                    _instance.selection = null;
+                }
+
+                _instance = null;
+            }
+        }
+
         /// <summary>
         /// Returns a collection of ISelectable elements.
         /// </summary>
@@ -50,7 +66,7 @@ namespace Dynamo.Selection
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        static void selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             //call the select method on elements added to the collection
             if (e.NewItems != null)

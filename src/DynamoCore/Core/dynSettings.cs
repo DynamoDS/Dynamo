@@ -14,6 +14,14 @@ namespace Dynamo.Utilities
             get { return Controller.CustomNodeManager.GetAllNodeNames(); }
         }
 
+        public static void DestroyInstance()
+        {
+            dynSettings._packageManagerClient = null;
+            dynSettings.PackageLoader = null;
+            dynSettings.DynamoLogger = null;
+            dynSettings.Controller = null;
+        }
+
         public static PackageLoader PackageLoader { get; internal set; }
         public static CustomNodeManager CustomNodeManager { get { return Controller.CustomNodeManager; } }
         public static DynamoController Controller { get; set; }
