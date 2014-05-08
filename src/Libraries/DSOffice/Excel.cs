@@ -318,7 +318,7 @@ namespace DSOffice
                     if (j > input[i].GetUpperBound(0))
                         output[i, j] = "";
                     else
-                        output[i, j] = input[i][j];
+                        output[i, j] = input[i][j].ToString();
                 }
             }
 
