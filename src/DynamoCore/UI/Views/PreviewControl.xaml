@@ -18,7 +18,7 @@
         <clr:Double x:Key="MinPreviewControlHeight">28.0</clr:Double>
 
         <!-- MaxContentGrid = (MaxPreviewControl - (2 * Margin)) -->
-        <fwk:Thickness x:Key="PreviewContentMargin">6.0</fwk:Thickness>
+        <fwk:Thickness x:Key="PreviewContentMargin">5.0</fwk:Thickness>
         <clr:Double x:Key="MaxContentGridWidth">488.0</clr:Double>
         <clr:Double x:Key="MaxContentGridHeight">288</clr:Double>
 
@@ -131,14 +131,14 @@
             <Border CornerRadius="2"
                     Background="White"
                     BorderThickness="1"
-                    BorderBrush="Black"></Border>
+                    BorderBrush="#aaaaaa"></Border>
 
             <Grid Name="smallContentGrid"
                   Margin="{StaticResource PreviewContentMargin}"
                   Visibility="Collapsed"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center">
-                <TextBlock></TextBlock>
+                <TextBlock>null</TextBlock>
             </Grid>
 
             <Grid Name="largeContentGrid"
