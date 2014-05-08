@@ -14,7 +14,10 @@ namespace Dynamo
             var packages = dynSettings.Controller.DynamoModel.Nodes
                 .Where(node => node.HasRenderPackages)
                 .SelectMany(rp=>rp.RenderPackages)
-                .Cast<RenderPackage>().ToList();
+                .Cast<RenderPackage>()
+                .Where(rp=>rp.TriangleVertices.Count % 9 == 0)
+                .ToList();
+
             var n = packages.SelectMany(rp => rp.TriangleNormals).ToList();
             var v = packages.SelectMany(rp => rp.TriangleVertices).ToList();
 

@@ -312,11 +312,6 @@ namespace Dynamo.Controls
                 .Where(rp => rp.TriangleVertices.Count % 9 == 0)
                 .ToArray();
 
-            if (packages.Any(rp => rp.TriangleVertices.Count % 3 != 0))
-            {
-                //debug.
-            }
-
             //pre-size the points collections
             var pointsCount = packages.Select(x => x.PointVertices.Count/3).Sum();
             var selPointsCount = selPackages.Select(x => x.PointVertices.Count / 3).Sum();
