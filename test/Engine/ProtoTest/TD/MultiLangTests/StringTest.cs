@@ -646,5 +646,52 @@ r = a;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
         }
+
+
+        [Test]
+        public void TestStringIndexing01()
+        {
+            String code =
+                @"                s = ""abc"";                r = s[0];                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 'a');
+        }
+
+        [Test]
+        public void TestStringIndexing02()
+        {
+            String code =
+                @"                s = ""abcdef"";                r = s[1..3];                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", "bcd");
+        }
+
+        [Test]
+        public void TestStringIndexing03()
+        {
+            String code =
+                @"                s = ""abcdef"";                r = s[-1];                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 'f');
+        }
+
+        [Test]
+        public void TestStringIndexing04()
+        {
+            String code =
+                @"                s = ""abcdef"";                r = s[(-1)..(-3)];                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", "fed");
+        }
+
+        [Test]
+        public void TestStringIndexing05()
+        {
+            String code =
+                @"                s = """";                r = s[0];                ";
+            thisTest.RunScriptSource(code);
+            // Will get an index out of range runtime warning
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing);
+        }
     }
 }

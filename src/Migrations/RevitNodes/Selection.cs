@@ -55,8 +55,9 @@ namespace Dynamo.Nodes
                 oldNode, "Dynamo.Nodes.DSFaceSelection", "Select Face");
             migrationData.AppendNode(newNode);
 
-            foreach (XmlElement subNode in oldNode.ChildNodes)
-                newNode.AppendChild(subNode.Clone());
+            XmlElement newChild = data.Document.CreateElement("instance");
+            newChild.SetAttribute("id", oldNode.GetAttribute("faceRef"));
+            newNode.AppendChild(newChild);
 
             return migrationData;
         }
