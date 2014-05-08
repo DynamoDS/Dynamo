@@ -200,7 +200,7 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="parameterName">The name of the parameter to set.</param>
         /// <param name="value">The value.</param>
-        public void SetParameterByName(string parameterName, object value)
+        public Element SetParameterByName(string parameterName, object value)
         {
             var param = this.InternalElement.Parameters.Cast<Autodesk.Revit.DB.Parameter>().FirstOrDefault(x => x.Definition.Name == parameterName);
             
@@ -208,11 +208,13 @@ namespace Revit.Elements
                 throw new Exception("No parameter found by that name.");
 
             TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
-
+            
             var dynval = value as dynamic;
             SetParameterValue(param, dynval);
             
             TransactionManager.Instance.TransactionTaskDone();
+
+            return this;
         }
 
         /// <summary>
@@ -268,7 +270,7 @@ namespace Revit.Elements
         /// Override the element's color in the active view.
         /// </summary>
         /// <param name="color">The color to apply to a solid fill on the element.</param>
-        public void OverrideColorInView(Color color)
+        public Element OverrideColorInView(Color color)
         {
             TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
 
@@ -284,6 +286,7 @@ namespace Revit.Elements
             view.SetElementOverrides(this.InternalElementId, ogs);
 
             TransactionManager.Instance.TransactionTaskDone();
+            return this;
         }
 
         #region dynamic parameter setting methods

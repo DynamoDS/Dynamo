@@ -18,26 +18,55 @@ namespace Dynamo
             FunctionId = id;
         }
 
-        public string Name
-        {
-            get { return FunctionId.ToString(); }
-        }
-
+        /// <summary>
+        ///     Function name.
+        /// </summary>
         public string FunctionName
         {
-            get { return AstBuilder.StringConstants.FunctionPrefix + Name.Replace("-", string.Empty); }
+            get { return AstBuilder.StringConstants.FunctionPrefix + 
+                         FunctionId.ToString().Replace("-", string.Empty); }
         }
 
+        /// <summary>
+        ///     Function unique ID.
+        /// </summary>
         public Guid FunctionId { get; internal set; }
+
+        /// <summary>
+        ///     Custom node definition's workspace model. 
+        /// </summary>
         public CustomNodeWorkspaceModel WorkspaceModel { get; internal set; }
+
+        /// <summary>
+        ///     Function parameters
+        /// </summary>
         public IEnumerable<string> Parameters { get; internal set; }
+
+        /// <summary>
+        ///     If the function returns a dictionary, it specifies all keys in
+        ///     that dictionary.
+        /// </summary>
         public IEnumerable<string> ReturnKeys { get; internal set; }
 
+        /// <summary>
+        ///    A definition is a proxy definition if we are not able to load
+        ///    the corresponding .dyf file. All custom node instances that 
+        ///    point to proxy custom node definition will be in error state 
+        ///    until .dyf file loaded properly.
+        /// </summary>
+        public bool IsProxy { get; set; }
+
+        /// <summary>
+        ///     User friendly name on UI.
+        /// </summary>
         public string DisplayName
         {
             get { return WorkspaceModel.Name; }
         }
 
+        /// <summary>
+        ///     If need to rebuild ast nodes.
+        /// </summary>
         public bool RequiresRecalc { get; internal set; }
 
         #region Dependencies

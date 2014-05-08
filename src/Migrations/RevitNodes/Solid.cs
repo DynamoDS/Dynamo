@@ -10,6 +10,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
+            /*
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
@@ -53,7 +54,15 @@ namespace Dynamo.Nodes
                 }
             }
 
-            return migratedData;
+            return migratedData;*/
+
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 3, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 
@@ -62,7 +71,13 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll", "Solid.ByRevolve", "Solid.ByRevolve@Curve[],CoordinateSystem,double,double");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 4, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
         }
     }
 
@@ -250,75 +265,56 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
-            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var migratedData = new NodeMigrationData(data.Document);
+            var oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            //create the node itself
-            XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll",
-                "Solid.Cylinder", "Solid.Cylinder@Point,double,Vector,double");
+            //cylinder previously took an axis, an origin, a radius, and a height
+            //we need to convert the axis and the origin to a coordinate system
+            //we do this by using a Plane.ByOriginNormal, passing in the origin and 
+            //the axis vector previously supplied
 
-            migratedData.AppendNode(dsRevitNode);
-            string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
+            var codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
+            codeBlockNode.SetAttribute("CodeText",
+                "p=Plane.ByOriginNormal(origin,axis.AsVector());\n"+
+                "cs=CoordinateSystem.ByPlane(p);\n"+
+                "Cylinder.ByRadiusHeight(cs,r,h);");
+            migratedData.AppendNode(codeBlockNode);
 
             //create and reconnect the connecters
-            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            var oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
 
-            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            var oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
-            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            var oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
             XmlElement connector2 = data.FindFirstConnector(oldInPort2);
 
-            PortId oldInPort3 = new PortId(oldNodeId, 3, PortType.INPUT);
+            var oldInPort3 = new PortId(oldNodeId, 3, PortType.INPUT);
             XmlElement connector3 = data.FindFirstConnector(oldInPort3);
 
-            PortId newInPort0 = new PortId(dsRevitNodeId, 0, PortType.INPUT);
-            PortId newInPort1 = new PortId(dsRevitNodeId, 1, PortType.INPUT);
-            PortId newInPort2 = new PortId(dsRevitNodeId, 2, PortType.INPUT);
-            PortId newInPort3 = new PortId(dsRevitNodeId, 3, PortType.INPUT);
+            var oldOutPort0 = new PortId(oldNodeId, 0, PortType.OUTPUT);
+            var oldOutConnectors = data.FindConnectors(oldOutPort0);
+            
+            var newInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            var newInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            var newInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            var newInPort3 = new PortId(oldNodeId, 3, PortType.INPUT);
+            var newOutPort2 = new PortId(oldNodeId, 2, PortType.OUTPUT);
 
-            data.ReconnectToPort(connector0, newInPort2);
+            data.ReconnectToPort(connector0, newInPort1);
             data.ReconnectToPort(connector1, newInPort0);
-            data.ReconnectToPort(connector2, newInPort1);
+            data.ReconnectToPort(connector2, newInPort2);
             data.ReconnectToPort(connector3, newInPort3);
 
-            // Add default values
-            foreach (XmlNode child in oldNode.ChildNodes)
+            if (oldOutConnectors.Any())
             {
-                var newChild = child.Clone() as XmlElement;
-                switch (newChild.GetAttribute("index"))
+                foreach (var connector in oldOutConnectors)
                 {
-                    case "0":
-                        if (connector0 != null) break;
-                        XmlElement zAxis0 = MigrationManager.CreateFunctionNode(
-                            data.Document, oldNode, 1, "ProtoGeometry.dll",
-                            "Vector.ZAxis", "Vector.ZAxis");
-                        migratedData.AppendNode(zAxis0);
-                        data.CreateConnector(zAxis0, 0, dsRevitNode, 2);
-                        break;
-
-                    case "1":
-                        if (connector1 != null) break;
-                        XmlElement cbn1 = MigrationManager.CreateCodeBlockNodeModelNode(
-                            data.Document, oldNode, 0, "Point.ByCoordinates(0,0,0);");
-                        migratedData.AppendNode(cbn1);
-                        data.CreateConnector(cbn1, 0, dsRevitNode, 0);
-                        break;
-
-                    case "2":
-                        newChild.SetAttribute("index", "1");
-                        dsRevitNode.AppendChild(newChild);
-                        break;
-
-                    case "3":
-                        dsRevitNode.AppendChild(newChild);
-                        break;
-
-                    default:
-                        break;
+                    //connect anything that previously was connected to output port 0
+                    //to output port 2
+                    data.ReconnectToPort(connector, newOutPort2); 
                 }
             }
 
@@ -331,44 +327,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
-
-            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "RevitNodes.dll",
-                "Solid.Sphere", "Solid.Sphere@Point,double");
-
-            migrationData.AppendNode(newNode);
-
-            // Add default values
-            foreach (XmlNode child in oldNode.ChildNodes)
-            {
-                var newChild = child.Clone() as XmlElement;
-
-                switch (newChild.GetAttribute("index"))
-                {
-                    case "0":
-                        PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
-                        XmlElement connector0 = data.FindFirstConnector(oldInPort0);
-                        if (connector0 != null) break;
-
-                        XmlElement cbn0 = MigrationManager.CreateCodeBlockNodeModelNode(
-                            data.Document, oldNode, 0, "Point.ByCoordinates(0,0,0);");
-                        migrationData.AppendNode(cbn0);
-                        data.CreateConnector(cbn0, 0, newNode, 0);
-                        break;
-
-                    case "1":
-                        newNode.AppendChild(newChild);
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-
-            return migrationData;
+            return MigrateToDsFunction(data, "ProtoGeometry.dll",
+                "Sphere.ByCenterPointRadius", "Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double");
         }
     }
 
@@ -440,8 +400,8 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "RevitNodes.dll",
-                "Solid.BoxByTwoCorners", "Solid.BoxByTwoCorners@Point,Point");
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Cuboid.ByCorners", "Cuboid.ByCorners@Point,Point");
 
             migrationData.AppendNode(newNode);
 
@@ -493,9 +453,8 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "RevitNodes.dll",
-                "Solid.BoxByCenterAndDimensions",
-                "Solid.BoxByCenterAndDimensions@Point,double,double,double");
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll", "Cuboid.ByLengths",
+                "Cuboid.ByLengths@Autodesk.DesignScript.Geometry.Point,double,double,double");
 
             migrationData.AppendNode(newNode);
 
@@ -579,7 +538,12 @@ namespace Dynamo.Nodes
 
     public class VolumeMeasure : MigrationNode
     {
-        // PB: deprecated
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll",
+                "Solid.Volume", "Solid.Volume");
+        }
     }
 
 }

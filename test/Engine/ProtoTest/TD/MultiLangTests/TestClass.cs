@@ -4032,7 +4032,7 @@ a = Test.DoSomething(); //wrong warning is thrown:
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object n1 = null;
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound);
             thisTest.Verify("a", n1);
         }
 

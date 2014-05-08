@@ -102,6 +102,31 @@ namespace Dynamo.Nodes
             EnableReporting();
         }
 
+        /// <summary>
+        ///   Return if the custom node instance is in sync with its definition.
+        ///   It may be out of sync if .dyf file is opened and updated and then
+        ///   .dyn file is opened. 
+        /// </summary>
+        /// <returns></returns>
+        public bool IsInSyncWithDefinition()
+        {
+            if (Definition.Parameters != null)
+            {
+                if (Definition.Parameters.Count() != InPortData.Count() ||
+                    !Definition.Parameters.SequenceEqual(InPortData.Select(p => p.NickName)))
+                    return false;
+            }
+
+            if (Definition.ReturnKeys != null)
+            {
+                if (Definition.ReturnKeys.Count() != OutPortData.Count() ||
+                    !Definition.ReturnKeys.SequenceEqual(OutPortData.Select(p => p.NickName)))
+                    return false;
+            }
+
+            return true;
+        }
+
         //protected override InputNode Compile(IEnumerable<string> portNames)
         //{
         //    return SaveResult ? base.Compile(portNames) : new FunctionNode(Symbol, portNames);
@@ -211,9 +236,13 @@ namespace Dynamo.Nodes
                 if (!VerifyFuncId(ref funcId))
                 {
                     LoadProxyCustomNode(funcId);
-                    return;
                 }
                 Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
+
+                if (Definition.IsProxy)
+                {
+                    Error("Cannot load custom node");
+                }
             }
 
             foreach (XmlNode subNode in childNodes)
@@ -274,7 +303,14 @@ namespace Dynamo.Nodes
                 #endregion
             }
 
-            RegisterAllPorts();
+            if (!IsInSyncWithDefinition())
+            {
+                ResyncWithDefinition();
+            }
+            else
+            {
+                RegisterAllPorts();
+            }
 
             //argument lacing on functions should be set to disabled
             //by default in the constructor, but for any workflow saved
@@ -312,6 +348,7 @@ namespace Dynamo.Nodes
             {
                 WorkspaceModel = new CustomNodeWorkspaceModel(NickName, "Custom Nodes") { FileName = null }
             };
+            proxyDef.IsProxy = true;
 
             string userMsg = "Failed to load custom node: " + NickName + ".  Replacing with proxy custom node.";
 
@@ -319,12 +356,6 @@ namespace Dynamo.Nodes
 
             // tell custom node loader, but don't provide path, forcing user to resave explicitly
             dynSettings.Controller.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
-            Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
-
-            ArgumentLacing = LacingStrategy.Disabled;
-            ResyncWithDefinition();
-            RegisterAllPorts();
-            State = ElementState.Error;
         }
 
         //public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)

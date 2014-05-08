@@ -285,10 +285,32 @@ namespace Dynamo.DSEngine
                 OnAstNodeBuilding(node.GUID);
 
             IEnumerable<AssociativeNode> astNodes = node.BuildAst(inputAstNodes);
-            if (astNodes != null && isDeltaExecution)
+            if(null == astNodes)
+                resultList.AddRange(new AssociativeNode[0]);
+            else if (isDeltaExecution)
+            {
                 OnAstNodeBuilt(node.GUID, astNodes);
-
-            resultList.AddRange(astNodes ?? new AssociativeNode[0]);
+                resultList.AddRange(astNodes);
+            }
+            else //Inside custom node compilation.
+            {
+                bool notified = false;
+                foreach (var item in astNodes)
+                {
+                    if (item is FunctionDefinitionNode)
+                    {
+                        if (!notified)
+                            OnAstNodeBuilding(node.GUID);
+                        notified = true;
+                        //Register the function node in global scope with Graph Sync data,
+                        //so that we don't have a function definition inside the function def
+                        //of custom node.
+                        OnAstNodeBuilt(node.GUID, new AssociativeNode[] { item });
+                    }
+                    else
+                        resultList.Add(item);
+                }
+            }
         }
 
         /// <summary>
@@ -349,7 +371,7 @@ namespace Dynamo.DSEngine
                  */
 
                 // return array, holds all outputs
-                string rtnName = "__temp_rtn_" + def.Name.Replace("-", "");
+                string rtnName = "__temp_rtn_" + def.FunctionId.ToString().Replace("-", String.Empty); 
                 functionBody.Body.Add(
                     AstFactory.BuildAssignment(
                         AstFactory.BuildIdentifier(rtnName),

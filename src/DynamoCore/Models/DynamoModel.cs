@@ -442,6 +442,15 @@ namespace Dynamo.Models
             if (funcDef == null) // Fail to load custom function.
                 return;
 
+            if (funcDef.IsProxy && info != null)
+            {
+                funcDef = manager.ReloadFunctionDefintion(info.Guid);
+                if (funcDef == null)
+                {
+                    return;
+                }
+            }
+
             funcDef.AddToSearch();
 
             var ws = funcDef.WorkspaceModel;
