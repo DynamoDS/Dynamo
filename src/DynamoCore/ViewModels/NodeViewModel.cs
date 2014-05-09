@@ -252,6 +252,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool ShouldShowGlyphBar
+        {
+            get { return IsPreviewInsetVisible && ArgumentLacing != LacingStrategy.Disabled; }
+        }
+
         /// <summary>
         /// Enable or disable text labels on nodes.
         /// </summary>
