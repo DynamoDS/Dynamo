@@ -66,6 +66,10 @@
       <HintPath>$(REVITAPI)\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="RevitTestFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\extern\RevitTestFramework\RevitTestFramework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="WindowsBase" />
@@ -146,10 +150,6 @@
     <ProjectReference Include="..\..\..\..\src\Libraries\Revit\RevitServices\RevitServices.csproj">
       <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
       <Name>RevitServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\RevitTestFramework\RevitTestFramework.csproj">
-      <Project>{745cca0f-549e-4756-a31e-41bf7f905b8a}</Project>
-      <Name>RevitTestFramework</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

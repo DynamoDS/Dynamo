@@ -402,7 +402,7 @@ namespace DSCore
         /// <search>nth,remove,cull,every</search>
         public static IList DropEveryNthItem(IList list, int n, int offset = 0)
         {
-            return list.Cast<object>().Skip(offset).Where((_, i) => (i + 1)%n != 0).ToList();
+            return list.Cast<object>().Where((_, i) => (i + 1 - offset)%n != 0).ToList();
         }
 
         /// <summary>
@@ -421,7 +421,7 @@ namespace DSCore
         /// <search>fetch,take,every,nth</search>
         public static IList TakeEveryNthItem(IList list, int n, int offset = 0)
         {
-            return list.Cast<object>().Skip(offset).Where((_, i) => (i + 1)%n == 0).ToList();
+            return list.Cast<object>().Where((_, i) => (i + 1 - offset)%n == 0).ToList();
         }
 
         /// <summary>

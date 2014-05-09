@@ -84,9 +84,9 @@ namespace RevitServices.Threading
         /// Executes the given Action delegate on the Idle thread asynchronously.
         /// </summary>
         /// <param name="p">Delegate to be invoked on the Idle thread.</param>
-        public static void ExecuteOnIdleAsync(Action p)
+        public static IdlePromise<object> ExecuteOnIdleAsync(Action p)
         {
-            Promises.Enqueue(p);
+            return new IdlePromise<object>(p);
         }
 
         /// <summary>
@@ -94,7 +94,6 @@ namespace RevitServices.Threading
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="p"></param>
-        /// <returns></returns>
         public static IdlePromise<T> ExecuteOnIdleAsync<T>(IdlePromiseDelegate<T> p)
         {
             return new IdlePromise<T>(p);
@@ -155,9 +154,7 @@ namespace RevitServices.Threading
         public static void Shutdown()
         {
             foreach (var p in ShutdownPromises)
-            {
                 ExecuteOnIdleAsync(p);
-            }
 
             ClearShutdownPromises();
         }
@@ -195,10 +192,28 @@ namespace RevitServices.Threading
             redeemed = false;
             value = default(T);
 
-            IdlePromise.ExecuteOnIdleAsync(
+            IdlePromise.Promises.Enqueue(
                 delegate
                 {
                     value = d();
+                    redeemed = true;
+                });
+        }
+
+        /// <summary>
+        /// Creates a new IdlePromise out of the given delegate, immediately queuing its dispatch
+        /// on the Idle thread asynchronously.
+        /// </summary>
+        /// <param name="d">Delegate to be invoked on the Idle thread.</param>
+        internal IdlePromise(Action d)
+        {
+            redeemed = false;
+            value = default(T);
+
+            IdlePromise.Promises.Enqueue(
+                delegate
+                {
+                    d();
                     redeemed = true;
                 });
         }

@@ -109,7 +109,7 @@ namespace Dynamo.Nodes
         /// <param name="index">Index of input data if it is a part of a collection.</param>
         /// <param name="isListMember">Specifies if this data belongs to a collection.</param>
         /// <returns>WatchNode</returns>
-        public WatchViewModel Process(MirrorData data, string path, bool showRawData = true)
+        public static WatchViewModel Process(MirrorData data, string path, bool showRawData = true)
         {
             WatchViewModel node = null;
 

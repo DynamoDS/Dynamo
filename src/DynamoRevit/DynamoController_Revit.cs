@@ -6,28 +6,30 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Threading;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI.Events;
+using DSIronPython;
 using DSNodeServices;
 using Dynamo.Applications;
 using Dynamo.DSEngine;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Revit;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.UpdateManager;
-using Dynamo.Interfaces;
 using Greg;
+using Revit.Elements;
 using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
-using CurveLoop = Autodesk.Revit.DB.CurveLoop;
-using ReferencePlane = Autodesk.Revit.DB.ReferencePlane;
+using Element = Autodesk.Revit.DB.Element;
+using WrappedElement = Revit.Elements.Element;
 using RevThread = RevitServices.Threading;
+using ReferencePlane = Autodesk.Revit.DB.ReferencePlane;
 
 #endregion
 
@@ -66,6 +68,9 @@ namespace Dynamo
             ElementNameStore = new Dictionary<ElementId, string>();
 
             EngineController.ImportLibrary("RevitNodes.dll");
+
+            //IronPythonEvaluator.InputMarshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
+            //IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => element.ToDSType(false));
         }
 
         public RevitServicesUpdater Updater { get; private set; }
@@ -391,17 +396,7 @@ namespace Dynamo
         
         public override void ResetEngine()
         {
-            RevThread.IdlePromise.ExecuteOnIdleAsync(
-                () =>
-                {
-                    if (EngineController != null)
-                    {
-                        EngineController.Dispose();
-                        EngineController = null;
-                    }
-
-                    EngineController = new EngineController(this);
-                });
+            RevThread.IdlePromise.ExecuteOnIdleAsync(base.ResetEngine);
         }
 
         #region Element Persistence Management

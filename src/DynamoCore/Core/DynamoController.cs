@@ -71,7 +71,6 @@ namespace Dynamo
         public CustomNodeManager CustomNodeManager { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
         public DynamoViewModel DynamoViewModel { get; set; }
-        public InfoBubbleViewModel InfoBubbleViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
         public Dispatcher UIDispatcher { get; set; }
         public IUpdateManager UpdateManager { get; set; }
@@ -125,13 +124,6 @@ namespace Dynamo
             {
                 PreferenceSettings.ConnectorType = value;
             }
-        }
-
-        private bool isShowPreViewByDefault;
-        public bool IsShowPreviewByDefault
-        {
-            get { return isShowPreViewByDefault;}
-            set { isShowPreViewByDefault = value; RaisePropertyChanged("IsShowPreviewByDefault"); }
         }
 
         public EngineController EngineController { get; protected set; }
@@ -306,8 +298,6 @@ namespace Dynamo
 
             DynamoLoader.ClearCachedAssemblies();
             DynamoLoader.LoadNodeModels();
-            
-            InfoBubbleViewModel = new InfoBubbleViewModel();
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
@@ -555,7 +545,7 @@ namespace Dynamo
                 EvaluationCompleted(sender, e);
         }
 
-    #endregion
+        #endregion
 
         public virtual void ResetEngine()
         {

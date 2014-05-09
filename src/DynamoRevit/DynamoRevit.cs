@@ -132,6 +132,8 @@ namespace Dynamo.Applications
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
+
+
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
             AppDomain.CurrentDomain.AssemblyResolve += DynamoRaaS.AssemblyHelper.ResolveAssemblies;
 

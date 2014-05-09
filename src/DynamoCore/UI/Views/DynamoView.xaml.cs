@@ -83,10 +83,6 @@ namespace Dynamo.Controls
             //LibraryManagerMenu.Visibility = System.Windows.Visibility.Collapsed;
 
             this.Loaded += dynBench_Activated;
-
-            //setup InfoBubble for library items tooltip
-            InfoBubbleView InfoBubble = new InfoBubbleView { DataContext = dynSettings.Controller.InfoBubbleViewModel };
-            InfoBubbleGrid.Children.Add(InfoBubble);
         }
 
         void InitializeShortcutBar()
@@ -604,7 +600,6 @@ namespace Dynamo.Controls
         /// <summary>
         ///     Setup the "Samples" sub-menu with contents of samples directory.
         /// </summary>
-        /// <param name="bench">The bench where the UI will be loaded</param>
         private void LoadSamplesMenu()
         {
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
