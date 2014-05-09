@@ -5,6 +5,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Dynamo.Views"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              Height="Auto"
              Width="Auto"
              Name="topControl"
@@ -254,13 +255,14 @@
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
                   Canvas.ZIndex="21"
-                  IsEnabled="{Binding Path=IsInteractionEnabled}">
+                  IsEnabled="{Binding Path=IsInteractionEnabled}" MinHeight="{Binding Source={x:Static ui:Configurations.PortHeightInPixels}}">
             </Grid>
 
         </Grid>
         
         <StackPanel Name="GlyphStackPanel" HorizontalAlignment="Right" Orientation="Horizontal" 
-                    Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Canvas.ZIndex="30" Height="25">
+                    Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Canvas.ZIndex="30" Height="25"
+                    Visibility="{Binding ShouldShowGlyphBar, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
             
             <Canvas x:Name="previewIcon"
                     Width="25"
