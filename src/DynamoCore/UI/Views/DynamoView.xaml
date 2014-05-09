@@ -207,8 +207,8 @@
                                 <Image Source="/DynamoCore;component/UI/Images/screenshot_normal.png" Width="14" Height="14"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <!--<MenuItem Focusable="False" Header="_Export Model to STL..." Command="{Binding ExportToSTLCommand}" Name="saveSTL">
-                        </MenuItem>-->
+                        <MenuItem Focusable="False" Header="_Export Model to STL..." Command="{Binding ExportToSTLCommand}" Name="saveSTL">
+                        </MenuItem>
                         <Separator />
                         <MenuItem Header="_Exit" Command="{Binding ExitCommand}"  Name="exit" InputGestureText="Alt + F4" Focusable="False"/>
                     </MenuItem>
@@ -284,12 +284,12 @@
                         <MenuItem Focusable="False" Header="_Import Library (EXPERIMENTAL)..." Command="{Binding Path=DataContext.ImportLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="importLibrary"/>  
                     </MenuItem>
                     
-                    <!--<MenuItem Header="_Packages" Name="PackageManagerMenu" Focusable="False" IsEnabled="True">
+                    <MenuItem Header="_Packages" Name="PackageManagerMenu" Focusable="False" IsEnabled="True">
                         <MenuItem Focusable="False" Header="_Search for a Package..." Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMSearch" />
                         <MenuItem Focusable="False" Header="_Manage Packages..." Command="{Binding Path=DataContext.ShowInstalledPackagesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMInstalled" />
-                        <MenuItem Focusable="False" Header="_Publish Selected Nodes..." Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishSelected" />
-                        <MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishCurrent" />
-                    </MenuItem>-->
+                        <!--<MenuItem Focusable="False" Header="_Publish Selected Nodes..." Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishSelected" />-->
+                        <!--<MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishCurrent" />-->
+                    </MenuItem>
 
                     <MenuItem Header="_Settings" Name="SettingsMenu" Focusable="False" IsEnabled="True">
                         <MenuItem Header="_Enable usability data reporting"

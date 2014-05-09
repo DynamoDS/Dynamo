@@ -73,7 +73,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
-                "Surface.PointAtParameter", "Surface.CoordinateSystemAtParameter@double,double");
+                "Surface.CoordinateSystemAtParameter", "Surface.CoordinateSystemAtParameter@double,double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
