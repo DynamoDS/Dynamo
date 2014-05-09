@@ -8,7 +8,6 @@ namespace Dynamo.UI
         #region Dynamo Universal Constants
 
         // Add 0.5 to place the point in the middle of a pixel to sharpen it
-        public static readonly double PixelSharpeningConstant = 0.5;
         public static readonly string BackupFolderName = "backup";
         public static readonly string FilePathAttribName = "TargetXmlFilePath";
         public static readonly double DoubleSliderTextBoxWidth = 55.0;
@@ -51,16 +50,9 @@ namespace Dynamo.UI
         #endregion
 
         #region Information Bubble
-        public static int FadeInDurationInMilliseconds = 250;
-        public static int FadeOutDurationInMilliseconds = 250;
         public static double MaxOpacity = 0.95;
 
         #region Preview Bubble
-
-        public static int PreviewMaxListLength = 1000;
-        public static int PreviewMaxListDepth = 100;
-        public static int PreviewMaxLength = 1000;
-
         public static int CondensedPreviewMaxLength = 25;
 
         public static SolidColorBrush PreviewFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
@@ -70,11 +62,9 @@ namespace Dynamo.UI
         public static double PreviewTextFontSize = 10;
         public static FontWeight PreviewTextFontWeight = FontWeights.Light;
         public static SolidColorBrush PreviewTextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
-        public static TextWrapping PreviewContentWrapping = TextWrapping.Wrap;
         public static Thickness PreviewContentMargin = new Thickness(5, 12, 5, 5);
 
         public static double PreviewMaxWidth = 500;
-        public static double PreviewMaxHeight;
         public static double PreviewMinWidth = 40;
         public static double PreviewMinHeight = 30;
         public static double PreviewDefaultMaxWidth = 300;
@@ -119,17 +109,13 @@ namespace Dynamo.UI
         public static double ErrorTextFontSize = 13;
         public static FontWeight ErrorTextFontWeight = FontWeights.Normal;
         public static SolidColorBrush ErrorTextForeground = new SolidColorBrush(Color.FromRgb(190, 70, 70));
-        public static TextWrapping ErrorContentWrapping = TextWrapping.Wrap;
         public static Thickness ErrorContentMargin = new Thickness(5, 5, 5, 12);
 
         public static double ErrorArrowWidth = 12;
         public static double ErrorArrowHeight = 6;
-
         #endregion
 
         #region Node Tooltip
-        public static int ToolTipFadeInDelayInMS = 1000;
-
         public static SolidColorBrush NodeTooltipFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
         public static double NodeTooltipFrameStrokeThickness = 1;
         public static SolidColorBrush NodeTooltipFrameStrokeColor = new SolidColorBrush(Color.FromRgb(165, 209, 226));
@@ -142,7 +128,6 @@ namespace Dynamo.UI
         public static double NodeTooltipTextFontSize = 11;
         public static FontWeight NodeTooltipTextFontWeight = FontWeights.Light;
         public static SolidColorBrush NodeTooltipTextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
-        public static TextWrapping NodeTooltipContentWrapping = TextWrapping.Wrap;
 
         public static Thickness NodeTooltipContentMarginLeft = new Thickness(11, 5, 5, 5);
         public static Thickness NodeTooltipContentMarginRight = new Thickness(5, 5, 11, 5);
@@ -170,7 +155,6 @@ namespace Dynamo.UI
         public static double LibraryTooltipTextFontSize = 11;
         public static SolidColorBrush LibraryTooltipTextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
         public static FontWeight LibraryTooltipTextFontWeight = FontWeights.Normal;
-        public static TextWrapping LibraryTooltipContentWrapping = TextWrapping.Wrap;
         public static Thickness LibraryTooltipContentMargin = new Thickness(12, 5, 5, 5);
 
         public static double LibraryTooltipArrowHeight = 12;
