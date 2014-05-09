@@ -243,7 +243,7 @@ namespace Dynamo.Nodes
             var tb = new DynamoTextBox(Value ?? "0.0")
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Top,
+                VerticalAlignment = VerticalAlignment.Stretch,
                 Background =
                     new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
