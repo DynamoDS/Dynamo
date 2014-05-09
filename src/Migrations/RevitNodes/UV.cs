@@ -15,6 +15,25 @@ namespace Dynamo.Nodes
         }
     }
 
+    public class Domain : MigrationNode
+    {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
+            codeBlockNode.SetAttribute("CodeText", "{min,max};");
+            codeBlockNode.SetAttribute("nickname", "Domain");
+
+            migrationData.AppendNode(codeBlockNode);
+            return migrationData;
+        }
+    }
+    
     public class Domain2D : MigrationNode
     {
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
@@ -23,9 +42,13 @@ namespace Dynamo.Nodes
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 2, 1);
-            migrationData.AppendNode(dummyNode);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
+            XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
+            codeBlockNode.SetAttribute("CodeText", "{{min.U,min.V},{max.U,max.V}};");
+            codeBlockNode.SetAttribute("nickname", "UV Domain");
+
+            migrationData.AppendNode(codeBlockNode);
             return migrationData;
         }
     }
