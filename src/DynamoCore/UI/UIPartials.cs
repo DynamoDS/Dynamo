@@ -692,12 +692,12 @@ namespace Dynamo.Nodes
                 AcceptsTab = true,
                 TextWrapping = TextWrapping.Wrap,
                 MaxWidth = 200,
-                VerticalAlignment = VerticalAlignment.Top
+                VerticalAlignment = VerticalAlignment.Stretch
             };
 
             nodeUI.inputGrid.Children.Add(tb);
-            System.Windows.Controls.Grid.SetColumn(tb, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 0);
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
 
             tb.DataContext = this;
             tb.BindToProperty(new System.Windows.Data.Binding("Value")
