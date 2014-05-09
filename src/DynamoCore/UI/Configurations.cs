@@ -190,18 +190,61 @@ namespace Dynamo.UI
         public static readonly double DefCondensedContentWidth = 33.0;
         public static readonly double DefCondensedContentHeight = 28.0;
 
-        public static readonly SolidColorBrush PreviewIconPinnedBrush =
-            new SolidColorBrush(Color.FromArgb(0xFF, 0x97, 0x93, 0x8E));
-        public static readonly SolidColorBrush PreviewIconClickedBrush =
-            new SolidColorBrush(Color.FromArgb(0xFF, 0xA4, 0xA0, 0x9A));
-        public static readonly SolidColorBrush PreviewIconHoverBrush =
-            new SolidColorBrush(Color.FromArgb(0x00, 0xFF, 0xFF, 0xFF));
-        public static readonly SolidColorBrush PreviewIconNormalBrush =
-            new SolidColorBrush(Color.FromArgb(0x00, 0xFF, 0xFF, 0xFF));
-
         #endregion
 
         public const string UpdateDownloadLocation = "http://dyn-builds-data.s3-us-west-2.amazonaws.com/";
+    }
+
+    /// <summary>
+    /// This class is put in place to store Freezable objects that are made 
+    /// globally available as constant values. These resources are created once 
+    /// the first time any of the static members of FrozenResources is accessed.
+    /// The static constructor is responsible of initializing its data members
+    /// and freeze them at the same time. For this reason, each of the members 
+    /// in the class should be Freezable derived.
+    /// 
+    /// There is primarily a reason for doing so: avoid memory leaks. Consider 
+    /// the following use case:
+    /// 
+    ///     var myRectangle = new Rectangle();
+    ///     myRectangle.Fill = FrozenResources.PreviewIconPinnedBrush;
+    /// 
+    /// Innocent as it is, the above code does lead to memory leaks. The second
+    /// assignment made "myRectangle" subscribe to "PreviewIconPinnedBrush.Changed"
+    /// event, causing "PreviewIconPinnedBrush" to reference "myRectangle" 
+    /// internally (since it needs to notify "myRectangle" when its color updates).
+    /// One would expect "myRectangle" gets garbage collected when it goes out of 
+    /// scope, but this reference keeps "myRectangle" alive for as long as the 
+    /// "PreviewIconPinnedBrush" is alive. Since it is a static, "myRectangle" 
+    /// does not get released during collection and gets promoted to Gen 1. The 
+    /// following will not cause a reference from "PreviewIconPinnedBrush" to 
+    /// "myRectangle", avoiding any memory leaks:
+    /// 
+    ///     var myRectangle = new Rectangle();
+    ///     FrozenResources.PreviewIconPinnedBrush.Freeze();
+    ///     myRectangle.Fill = FrozenResources.PreviewIconPinnedBrush;
+    /// 
+    /// </summary>
+    /// 
+    public class FrozenResources
+    {
+        public static readonly SolidColorBrush PreviewIconPinnedBrush;
+        public static readonly SolidColorBrush PreviewIconClickedBrush;
+        public static readonly SolidColorBrush PreviewIconHoverBrush;
+        public static readonly SolidColorBrush PreviewIconNormalBrush;
+
+        static FrozenResources()
+        {
+            PreviewIconPinnedBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x97, 0x93, 0x8E));
+            PreviewIconClickedBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xA4, 0xA0, 0x9A));
+            PreviewIconHoverBrush = new SolidColorBrush(Color.FromArgb(0x00, 0xFF, 0xFF, 0xFF));
+            PreviewIconNormalBrush = new SolidColorBrush(Color.FromArgb(0x00, 0xFF, 0xFF, 0xFF));
+
+            PreviewIconPinnedBrush.Freeze();
+            PreviewIconClickedBrush.Freeze();
+            PreviewIconHoverBrush.Freeze();
+            PreviewIconNormalBrush.Freeze();
+        }
     }
 
     public class ResourceNames
