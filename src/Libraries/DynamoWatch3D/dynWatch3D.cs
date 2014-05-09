@@ -96,6 +96,7 @@ namespace Dynamo.Nodes
 
             nodeUI.PresentationGrid.Children.Add(backgroundRect);
             nodeUI.PresentationGrid.Children.Add(View);
+            nodeUI.PresentationGrid.Visibility = Visibility.Visible;
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
