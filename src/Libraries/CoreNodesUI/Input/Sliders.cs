@@ -284,6 +284,11 @@ namespace Dynamo.Nodes
 
             return base.UpdateValueCore(name, value);
         }
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
     }
 
     [NodeName("Integer Slider")]
@@ -559,5 +564,10 @@ namespace Dynamo.Nodes
         }
 
         #endregion
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
     }
 }
