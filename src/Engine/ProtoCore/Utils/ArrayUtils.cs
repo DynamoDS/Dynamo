@@ -468,15 +468,22 @@ namespace ProtoCore.Utils
 
             int ptr = (int)svArray.opdata;
 
-            // Handle the case where the array is valid but empty
-            if (null == core.Rmem.Heap.Heaplist[ptr].Stack || 0 == core.Rmem.Heap.Heaplist[ptr].Stack.Length)
+
+            if (null == core.Rmem.Heap.Heaplist[ptr].Stack || core.Rmem.Heap.Heaplist[ptr].Stack.Length == 0)
             {
                 return false;
             }
 
             while (StackUtils.IsArray(core.Rmem.Heap.Heaplist[ptr].Stack[0]))
             {
+
                 ptr = (int)core.Rmem.Heap.Heaplist[ptr].Stack[0].opdata;
+
+                // Handle the case where the array is valid but empty
+                if (core.Rmem.Heap.Heaplist[ptr].Stack.Length == 0)
+                {
+                    return false;
+                }
             }
 
             sv.optype = core.Rmem.Heap.Heaplist[ptr].Stack[0].optype;
