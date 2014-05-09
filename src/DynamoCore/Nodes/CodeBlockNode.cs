@@ -14,7 +14,6 @@ using ProtoCore.BuildData;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
-using NUnit.Framework;
 using System.Windows.Media;
 using System.Windows;
 using Dynamo.UI;
