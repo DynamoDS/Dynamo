@@ -61,8 +61,44 @@ namespace Dynamo.Nodes
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 3, 1);
-            migrationData.AppendNode(dummyNode);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeModelNode(
+                data.Document, oldNode, 0,
+                "domain[0][0]..domain[1][0]..#ucount+1;\n" +
+                "domain[0][1]..domain[1][1]..#vcount+1;");
+            migrationData.AppendNode(codeBlockNode);
+            string codeBlockNodeId = MigrationManager.GetGuidFromXmlElement(codeBlockNode);
+
+            XmlElement uvNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 1,
+                "ProtoGeometry.dll", "UV.ByCoordinates", "UV.ByCoordinates@double,double");
+            uvNode.SetAttribute("lacing", "CrossProduct");
+            migrationData.AppendNode(uvNode);
+
+            XmlElement flattenNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(flattenNode, "",
+                "Flatten", "Flatten");
+            flattenNode.SetAttribute("lacing", "Shortest");
+            migrationData.AppendNode(flattenNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            PortId newInPort0 = new PortId(codeBlockNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(codeBlockNodeId, 1, PortType.INPUT);
+            PortId newInPort2 = new PortId(codeBlockNodeId, 2, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
+
+            data.ReconnectToPort(connector0, newInPort0);
+            data.ReconnectToPort(connector1, newInPort1);
+            data.ReconnectToPort(connector2, newInPort2);
+
+            data.CreateConnector(codeBlockNode, 0, uvNode, 0);
+            data.CreateConnector(codeBlockNode, 1, uvNode, 1);
+            data.CreateConnector(uvNode, 0, flattenNode, 0);
 
             return migrationData;
         }
