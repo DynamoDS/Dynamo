@@ -135,7 +135,7 @@ namespace Dynamo.Applications
 
 
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
-            AppDomain.CurrentDomain.AssemblyResolve += DynamoRaaS.AssemblyHelper.ResolveAssemblies;
+            AppDomain.CurrentDomain.AssemblyResolve += Analyze.Render.AssemblyHelper.ResolveAssemblies;
 
             //Add an assembly load step for the System.Windows.Interactivity assembly
             //Revit owns a version of this as well. Adding our step here prevents a duplicative
@@ -373,7 +373,7 @@ namespace Dynamo.Applications
             DocumentManager.Instance.CurrentUIApplication.ViewActivating -= Application_ViewActivating;
 
             AppDomain.CurrentDomain.AssemblyResolve -= AssemblyHelper.CurrentDomain_AssemblyResolve;
-            AppDomain.CurrentDomain.AssemblyResolve -= DynamoRaaS.AssemblyHelper.ResolveAssemblies;
+            AppDomain.CurrentDomain.AssemblyResolve -= Analyze.Render.AssemblyHelper.ResolveAssemblies;
 
             ((DynamoLogger) dynSettings.DynamoLogger).Dispose();
         }
