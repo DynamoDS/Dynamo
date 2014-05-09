@@ -78,6 +78,7 @@
     <Compile Include="String.cs" />
     <Compile Include="Thread.cs" />
     <Compile Include="Types.cs" />
+    <Compile Include="VMDataBridge.cs" />
     <Compile Include="Web.cs" />
   </ItemGroup>
   <ItemGroup>

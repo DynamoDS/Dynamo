@@ -1,17 +1,27 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using System.Xml;
+using Autodesk.DesignScript.Interfaces;
+using DSCore;
 using Dynamo.Controls;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Lang;
+using Color = System.Windows.Media.Color;
 
 namespace Dynamo.Nodes
 {
@@ -61,6 +71,32 @@ namespace Dynamo.Nodes
             WatchIsResizable = true;
         }
 
+        private IEnumerable<IGraphicItem> UnpackRenderData(object data)
+        {
+            if (data is IGraphicItem)
+                yield return data as IGraphicItem;
+            else if (data is IEnumerable)
+            {
+                var graphics = (data as IEnumerable).Cast<object>().SelectMany(UnpackRenderData);
+                foreach (var g in graphics)
+                    yield return g;
+            }
+        }
+
+        private RenderPackage PackageRenderData(IGraphicItem gItem)
+        {
+            var renderPackage = new RenderPackage();
+            gItem.Tessellate(renderPackage, -1.0, dynSettings.Controller.VisualizationManager.MaxGridLines);
+            renderPackage.ItemsCount++;
+            return renderPackage;
+        }
+
+        private void RenderData(object data)
+        {
+            View.RenderDrawables(
+                new VisualizationEventArgs(UnpackRenderData(data).Select(PackageRenderData), GUID.ToString()));
+        }
+
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             var mi = new MenuItem { Header = "Zoom to Fit" };
@@ -97,6 +133,14 @@ namespace Dynamo.Nodes
             nodeUI.PresentationGrid.Children.Add(backgroundRect);
             nodeUI.PresentationGrid.Children.Add(View);
             nodeUI.PresentationGrid.Visibility = Visibility.Visible;
+
+            VMDataBridge.RegisterCallback(
+                GUID,
+                obj =>
+                    nodeUI.Dispatcher.Invoke(
+                        new Action<object>(RenderData),
+                        DispatcherPriority.Render,
+                        obj));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
@@ -173,6 +217,36 @@ namespace Dynamo.Nodes
         {
             //do nothing
             //a watch should not draw its outputs
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            return new[]
+            {
+                IsPartiallyApplied
+                    ? AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),
+                        AstFactory.BuildFunctionObject(
+                            new IdentifierListNode
+                            {
+                                LeftNode = AstFactory.BuildIdentifier("VMDataBridge"),
+                                RightNode = AstFactory.BuildIdentifier("BridgeData")
+                            },
+                            2,
+                            new[] { 0 },
+                            new List<AssociativeNode>
+                            {
+                                AstFactory.BuildStringNode(GUID.ToString()),
+                                AstFactory.BuildNullNode()
+                            }))
+                    : AstFactory.BuildFunctionCall(
+                        new Action<string, object>(VMDataBridge.BridgeData),
+                        new List<AssociativeNode>
+                        {
+                            AstFactory.BuildStringNode(GUID.ToString()),
+                            inputAstNodes[0]
+                        })
+            };
         }
 
         #region IWatchViewModel interface

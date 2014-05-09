@@ -279,7 +279,7 @@ namespace Dynamo.Controls
         /// the associated node. Visualizations for the background preview will return an empty id.
         /// </summary>
         /// <param name="e"></param>
-        private void RenderDrawables(VisualizationEventArgs e)
+        public void RenderDrawables(VisualizationEventArgs e)
         {
             //check the id, if the id is meant for another watch,
             //then ignore it
