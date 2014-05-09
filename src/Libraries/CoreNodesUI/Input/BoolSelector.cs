@@ -24,8 +24,6 @@ namespace DSCoreNodesUI
 
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            //base.SetupCustomUIElements(nodeUI);
-
             //add a text box to the input grid of the control
             var rbTrue = new RadioButton();
             var rbFalse = new RadioButton();
@@ -38,15 +36,16 @@ namespace DSCoreNodesUI
             rbTrue.GroupName = groupName;
             rbFalse.GroupName = groupName;
 
-            rbTrue.Content = "true";
-            rbTrue.Padding = new Thickness(5, 0, 12, 0);
-            rbFalse.Content = "false";
-            rbFalse.Padding = new Thickness(5, 0, 0, 0);
-
-            var wp = new WrapPanel
+            rbTrue.Content = "True";
+            rbTrue.Padding = new Thickness(0,0,12,0);
+            rbFalse.Content = "False";
+            rbFalse.Padding = new Thickness(0);
+            var wp = new StackPanel()
             {
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Margin = new Thickness(10,5,10,0),
+                Orientation = Orientation.Horizontal
             };
 
             wp.Children.Add(rbTrue);
