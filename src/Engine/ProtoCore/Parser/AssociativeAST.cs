@@ -2662,7 +2662,7 @@ namespace ProtoCore.AST.AssociativeAST
                 ArrayDimensions = new ArrayNode { Expr = arrayIndex }
             };
         }
-    
+
         public static ExprListNode BuildExprList(List<AssociativeNode> nodes)
         {
             return new ExprListNode { list = nodes };
@@ -2710,18 +2710,18 @@ namespace ProtoCore.AST.AssociativeAST
         }
 
         public static AssociativeNode BuildFunctionObject(
-            string functionName, 
-            int numParams, 
-            IEnumerable<int> connectedIndices, 
+            string functionName,
+            int numParams,
+            IEnumerable<int> connectedIndices,
             List<AssociativeNode> inputs)
         {
             return BuildFunctionObject(BuildIdentifier(functionName), numParams, connectedIndices, inputs);
         }
 
         public static AssociativeNode BuildFunctionObject(
-            AssociativeNode functionNode, 
-            int numParams, 
-            IEnumerable<int> connectedIndices, 
+            AssociativeNode functionNode,
+            int numParams,
+            IEnumerable<int> connectedIndices,
             List<AssociativeNode> inputs)
         {
             var paramNumNode = new IntNode(numParams);
@@ -2737,6 +2737,43 @@ namespace ProtoCore.AST.AssociativeAST
             };
 
             return BuildFunctionCall("_SingleFunctionObject", inputParams);
+        }
+
+        /// <summary>
+        /// Add replication guide to the node. The input node will not be 
+        /// modified.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="guides"></param>
+        /// <param name="isLongest"></param>
+        /// <returns></returns>
+        public static AssociativeNode AddReplicationGuide(AssociativeNode node,
+                                                          List<int> guides,
+                                                          bool isLongest)
+        {
+            if (guides == null)
+                throw new ArgumentNullException("guides");
+
+            ArrayNameNode repNode = null;
+
+            if (node is ArrayNameNode)
+            {
+                repNode = NodeUtils.Clone(node) as ArrayNameNode;
+            }
+            else
+            {
+                var exprListNode = new ExprListNode();
+                exprListNode.list.Add(NodeUtils.Clone(node));
+                repNode = exprListNode;
+            }
+
+            repNode.ReplicationGuides = guides.Select(g => new ReplicationGuideNode
+                {
+                    RepGuide = AstFactory.BuildIdentifier(g.ToString()),
+                    IsLongest = isLongest
+                } as AssociativeNode).ToList();
+
+            return repNode;
         }
     }
 
