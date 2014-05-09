@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
@@ -21,7 +20,6 @@ using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Utilities;
 using DynamoUnits;
-using Dynamo.UpdateManager;
 using RevitServices.Elements;
 using RevitServices.Transactions;
 using RevitServices.Persistence;
@@ -121,9 +119,8 @@ namespace Dynamo.Applications
     public class DynamoRevit : IExternalCommand
     {
         public static RevitServicesUpdater Updater;
-        private static DynamoView dynamoView;
+        private DynamoView dynamoView;
         private DynamoController dynamoController;
-        private static bool isRunning;
         public static double? DynamoViewX = null;
         public static double? DynamoViewY = null;
         public static double? DynamoViewWidth = null;
@@ -132,7 +129,6 @@ namespace Dynamo.Applications
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
-
 
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
             AppDomain.CurrentDomain.AssemblyResolve += Analyze.Render.AssemblyHelper.ResolveAssemblies;
@@ -143,20 +139,6 @@ namespace Dynamo.Applications
             var assLoc = Assembly.GetExecutingAssembly().Location;
             var interactivityPath = Path.Combine(Path.GetDirectoryName(assLoc), "System.Windows.Interactivity.dll");
             var interactivityAss = Assembly.LoadFrom(interactivityPath);
-
-            //When a user double-clicks the Dynamo icon, we need to make
-            //sure that we don't create another instance of Dynamo.
-            if (isRunning)
-            {
-                Debug.WriteLine("Dynamo is already running.");
-                if (dynamoView != null)
-                {
-                    dynamoView.Focus();
-                }
-                return Result.Succeeded;
-            }
-
-            isRunning = true;
 
             try
             {
@@ -246,7 +228,6 @@ namespace Dynamo.Applications
             }
             catch (Exception ex)
             {
-                isRunning = false;
                 MessageBox.Show(ex.ToString());
 
                 dynSettings.DynamoLogger.LogError(ex.Message);
@@ -362,7 +343,6 @@ namespace Dynamo.Applications
             var view = (DynamoView)sender;
 
             dynamoView = null;
-            isRunning = false;
 
             Updater.Dispose();
             DocumentManager.OnLogError -= dynSettings.DynamoLogger.Log;
