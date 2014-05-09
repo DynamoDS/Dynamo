@@ -20,7 +20,6 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoUnits;
 using Microsoft.Practices.Prism.ViewModel;
-using NUnit.Framework;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using Dynamo.UI.Prompts;
@@ -449,8 +448,8 @@ namespace Dynamo
 
                 OnRunCancelled(true);
 
-                if (IsTestMode)
-                    Assert.Fail(ex.Message + ":" + ex.StackTrace);
+                if (IsTestMode) // Throw exception for NUnit.
+                    throw new Exception(ex.Message + ":" + ex.StackTrace);
             }
             finally
             {
