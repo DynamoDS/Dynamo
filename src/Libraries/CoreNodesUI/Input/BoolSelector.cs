@@ -40,7 +40,7 @@ namespace DSCoreNodesUI
             rbTrue.Padding = new Thickness(0,0,12,0);
             rbFalse.Content = "False";
             rbFalse.Padding = new Thickness(0);
-            var wp = new StackPanel()
+            var wp = new WrapPanel()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
