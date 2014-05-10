@@ -121,10 +121,6 @@ namespace Dynamo.Applications
         public static RevitServicesUpdater Updater;
         private DynamoView dynamoView;
         private DynamoController dynamoController;
-        public static double? DynamoViewX = null;
-        public static double? DynamoViewY = null;
-        public static double? DynamoViewWidth = null;
-        public static double? DynamoViewHeight = null;
         private bool handledCrash;
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
@@ -212,10 +208,10 @@ namespace Dynamo.Applications
                         dynamoView.WindowStartupLocation = WindowStartupLocation.Manual;
 
                         Rectangle bounds = Screen.PrimaryScreen.Bounds;
-                        dynamoView.Left = DynamoViewX ?? bounds.X;
-                        dynamoView.Top = DynamoViewY ?? bounds.Y;
-                        dynamoView.Width = DynamoViewWidth ?? 1000.0;
-                        dynamoView.Height = DynamoViewHeight ?? 800.0;
+                        dynamoView.Left = bounds.X;
+                        dynamoView.Top = bounds.Y;
+                        dynamoView.Width = 1000.0;
+                        dynamoView.Height = 800.0;
 
                         dynamoView.Show();
 
@@ -324,11 +320,6 @@ namespace Dynamo.Applications
         /// <param name="e"></param>
         private void dynamoView_Closing(object sender, EventArgs e)
         {
-            // cache the size of the window for later reloading
-            DynamoViewX = dynamoView.Left;
-            DynamoViewY = dynamoView.Top;
-            DynamoViewWidth = dynamoView.ActualWidth;
-            DynamoViewHeight = dynamoView.ActualHeight;
             RevThread.IdlePromise.ClearPromises();
             RevThread.IdlePromise.Shutdown();
         }
