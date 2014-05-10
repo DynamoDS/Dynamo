@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Text;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Interfaces;
@@ -131,9 +130,31 @@ namespace Dynamo
         #region events
 
         /// <summary>
+        /// An event triggered when there are results to visualize
+        /// </summary>
+        public event ResultsReadyHandler ResultsReadyToVisualize;
+
+        protected virtual void OnResultsReadyToVisualize(object sender, VisualizationEventArgs e)
+        {
+            if (ResultsReadyToVisualize != null)
+                ResultsReadyToVisualize(sender, e);
+        }
+
+        /// <summary>
         /// An event triggered on the completion of visualization update.
         /// </summary>
         public event VisualizationCompleteEventHandler VisualizationUpdateComplete;
+
+        /// <summary>
+        /// Called when the update of visualizations is complete.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected virtual void OnVisualizationUpdateComplete(object sender, EventArgs e)
+        {
+            if (VisualizationUpdateComplete != null)
+                VisualizationUpdateComplete(sender, e);
+        }
 
         /// <summary>
         /// An event triggered when want any alternate drawing contexts to be cleared.
@@ -141,11 +162,19 @@ namespace Dynamo
         public event EventHandler RequestAlternateContextClear;
 
         /// <summary>
-        /// An event triggered when there are results to visualize
+        /// Called when we would like to request the clearing of any alternate drawing contexts.
         /// </summary>
-        public event ResultsReadyHandler ResultsReadyToVisualize;
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected virtual void OnRequestAlternateContextClear(object sender, EventArgs e)
+        {
+            if (RequestAlternateContextClear != null)
+                RequestAlternateContextClear(sender, e);
+        }
 
         #endregion
+
+        #region constructors
 
         public VisualizationManager()
         {
@@ -168,15 +197,136 @@ namespace Dynamo
             UnPause(this, EventArgs.Empty);
         }
 
+        #endregion
+
+        #region public methods
+
+        /// <summary>
+        /// Pause the visualization manager.
+        /// When the visualization manager is paused, no rendering
+        /// will occur.
+        /// </summary>
         public void Pause()
         {
             Pause(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Unpause the visualization manager.
+        /// When the visualization manager is unpaused, the visualization
+        /// manager begins rendering again.
+        /// </summary>
         public void UnPause()
         {
             UnPause(this, EventArgs.Empty);
         }
+
+        /// <summary>
+        /// Display a label for one or several render packages 
+        /// based on the paths of those render packages.
+        /// </summary>
+        /// <param name="path"></param>
+        public void TagRenderPackageForPath(string path)
+        {
+            var packages = new List<RenderPackage>();
+
+            foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
+            {
+                lock (node.RenderPackagesMutex)
+                {
+                    packages
+                        .AddRange(node.RenderPackages.Where(x => x.Tag == path || x.Tag.Contains(path + ":"))
+                        .Cast<RenderPackage>());
+                }
+            }
+
+            if (packages.Any())
+            {
+                //clear any labels that might have been drawn on this
+                //package already and add the one we want
+                if (_currentTaggedPackages.Any())
+                {
+                    _currentTaggedPackages.ForEach(x => x.DisplayLabels = false);
+                    _currentTaggedPackages.Clear();
+                }
+
+                packages.ToList().ForEach(x => x.DisplayLabels = true);
+                _currentTaggedPackages.AddRange(packages);
+
+                var allPackages = new List<RenderPackage>();
+
+                foreach (var node in _controller.DynamoModel.Nodes)
+                {
+                    lock (node.RenderPackagesMutex)
+                    {
+                        allPackages.AddRange(node.RenderPackages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>());
+                    }
+                }
+
+                OnResultsReadyToVisualize(this,
+                        new VisualizationEventArgs(
+                            allPackages, string.Empty));
+            }
+        }
+
+        /// <summary>
+        /// Aggregates all upstream geometry for the given node then sends
+        /// a message that a visualization is ready
+        /// </summary>
+        /// <param name="node">The node whose upstream geometry you need.</param>
+        /// <returns>A render description containing all upstream geometry.</returns>
+        public void AggregateUpstreamRenderPackages(NodeModel node)
+        {
+            var packages = new List<IRenderPackage>();
+
+            //send back just what the node needs
+            var watch = new Stopwatch();
+            watch.Start();
+
+            if (node == null)
+            {
+                //send back everything
+                foreach (var modelNode in _controller.DynamoModel.Nodes)
+                {
+                    lock (modelNode.RenderPackagesMutex)
+                    {
+                        packages.AddRange(modelNode.RenderPackages);
+                    }
+                }
+
+                if (packages.Any())
+                {
+                    // if there are packages, send any that aren't empty
+                    OnResultsReadyToVisualize(this,
+                        new VisualizationEventArgs(
+                            packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), string.Empty));
+                }
+                else
+                {
+                    // if there are no packages, still trigger an update
+                    // so the view gets redrawn
+                    OnResultsReadyToVisualize(this,
+                        new VisualizationEventArgs(packages.Cast<RenderPackage>(), string.Empty));
+                }
+
+            }
+            else
+            {
+                //send back renderables for the branch
+                packages = GetUpstreamPackages(node.Inputs).ToList();
+                if (packages.Any())
+                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), node.GUID.ToString()));
+            }
+
+            watch.Stop();
+            //Debug.WriteLine(String.Format("{0} ellapsed for aggregating geometry for watch.", watch.Elapsed));
+
+            //LogVisualizationUpdateData(rd, watch.Elapsed.ToString());
+        }
+
+        #endregion
+
+        #region private event handlers
 
         /// <summary>
         /// Disable visualization updates by unregistering event listeners from the model.
@@ -212,35 +362,15 @@ namespace Dynamo
             OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }
 
-        private void RegisterEventListeners()
-        {
-            _controller.EvaluationCompleted += Update;
-            _controller.RequestsRedraw += Update;
-            _controller.DynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
-            DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
-
-            dynSettings.Controller.DynamoModel.Nodes.ForEach(n => n.PropertyChanged += NodePropertyChanged);
-        }
-
-        private void UnregisterEventListeners()
-        {
-            _controller.EvaluationCompleted -= Update;
-            _controller.RequestsRedraw -= Update;
-            _controller.DynamoModel.ConnectorDeleted -= DynamoModel_ConnectorDeleted;
-            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
-
-            dynSettings.Controller.DynamoModel.Nodes.ForEach(n => n.PropertyChanged -= NodePropertyChanged);
-        }
-
         /// <summary>
         /// Handler for the model's NodeDeleted event.
         /// </summary>
         /// <param name="node"></param>
-        void NodeDeleted(NodeModel node)
+        private void NodeDeleted(NodeModel node)
         {
             node.PropertyChanged -= NodePropertyChanged;
-            
-            if(!UpdatingPaused)
+
+            if (!UpdatingPaused)
                 OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }
 
@@ -249,7 +379,7 @@ namespace Dynamo
         /// Registers for property changed events on the node.
         /// </summary>
         /// <param name="node"></param>
-        void NodeAdded(NodeModel node)
+        private void NodeAdded(NodeModel node)
         {
             node.BlockingStarted += Pause;
             node.BlockingEnded += UnPause;
@@ -266,7 +396,7 @@ namespace Dynamo
         /// </remarks>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void NodePropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void NodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsVisible" ||
                 e.PropertyName == "IsUpstreamVisible" ||
@@ -275,8 +405,8 @@ namespace Dynamo
                 UpdateRenderPackages();
             }
         }
-        
-        void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+
+        private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Reset)
                 return;
@@ -304,29 +434,13 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Handler for the controller's RequestRedraw event.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Update(object sender, EventArgs e)
-        {
-            UpdateRenderPackages();
-        }
-
-        void Clear(object sender, EventArgs e)
-        {
-            Pause(this, EventArgs.Empty);
-            OnVisualizationUpdateComplete(this, EventArgs.Empty);
-        }
-
-        /// <summary>
         /// Handler for the model's ConnectorDeleted event.
         /// </summary>
         /// <param name="connector"></param>
-        void DynamoModel_ConnectorDeleted(ConnectorModel connector)
+        private void DynamoModel_ConnectorDeleted(ConnectorModel connector)
         {
             // TODO: Ian should remove this when the CBN reconnection bug is solved.
-            if (connector.Start.Owner.GetType() == typeof (CodeBlockNodeModel))
+            if (connector.Start.Owner.GetType() == typeof(CodeBlockNodeModel))
             {
                 return;
             }
@@ -338,6 +452,46 @@ namespace Dynamo
                 connector.End.Owner.ClearRenderPackages();
 
             //tell the watches that they require re-binding.
+            OnVisualizationUpdateComplete(this, EventArgs.Empty);
+        }
+
+        #endregion
+
+        #region private methods
+
+        private void RegisterEventListeners()
+        {
+            _controller.EvaluationCompleted += Update;
+            _controller.RequestsRedraw += Update;
+            _controller.DynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
+
+            dynSettings.Controller.DynamoModel.Nodes.ForEach(n => n.PropertyChanged += NodePropertyChanged);
+        }
+
+        private void UnregisterEventListeners()
+        {
+            _controller.EvaluationCompleted -= Update;
+            _controller.RequestsRedraw -= Update;
+            _controller.DynamoModel.ConnectorDeleted -= DynamoModel_ConnectorDeleted;
+            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
+
+            dynSettings.Controller.DynamoModel.Nodes.ForEach(n => n.PropertyChanged -= NodePropertyChanged);
+        }
+
+        /// <summary>
+        /// Handler for the controller's RequestRedraw event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Update(object sender, EventArgs e)
+        {
+            UpdateRenderPackages();
+        }
+
+        private void Clear(object sender, EventArgs e)
+        {
+            Pause(this, EventArgs.Empty);
             OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }
 
@@ -364,7 +518,7 @@ namespace Dynamo
                 worker.RunWorkerAsync(toUpdate);   
         }
 
-        void UpdateRenderPackagesThread(object sender, DoWorkEventArgs e)
+        private void UpdateRenderPackagesThread(object sender, DoWorkEventArgs e)
         {
             try
             {
@@ -426,61 +580,6 @@ namespace Dynamo
         //}
 
         /// <summary>
-        /// Aggregates all upstream geometry for the given node then sends
-        /// a message that a visualization is ready
-        /// </summary>
-        /// <param name="node">The node whose upstream geometry you need.</param>
-        /// <returns>A render description containing all upstream geometry.</returns>
-        public void AggregateUpstreamRenderPackages(NodeModel node)
-        {
-            var packages = new List<IRenderPackage>(); 
-
-            //send back just what the node needs
-            var watch = new Stopwatch();
-            watch.Start();
-
-            if (node == null)
-            {
-                //send back everything
-                foreach (var modelNode in _controller.DynamoModel.Nodes)
-                {
-                    lock (modelNode.RenderPackagesMutex)
-                    {
-                        packages.AddRange(modelNode.RenderPackages);
-                    }
-                }
-
-                if (packages.Any())
-                {
-                    // if there are packages, send any that aren't empty
-                    OnResultsReadyToVisualize(this,
-                        new VisualizationEventArgs(
-                            packages.Where(x => ((RenderPackage) x).IsNotEmpty()).Cast<RenderPackage>(), string.Empty));
-                }
-                else
-                {
-                    // if there are no packages, still trigger an update
-                    // so the view gets redrawn
-                    OnResultsReadyToVisualize(this,
-                        new VisualizationEventArgs(packages.Cast<RenderPackage>(), string.Empty));
-                }
-                    
-            }
-            else
-            {
-                //send back renderables for the branch
-                packages = GetUpstreamPackages(node.Inputs).ToList();
-                if (packages.Any())
-                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), node.GUID.ToString()));
-            }
-
-            watch.Stop();
-            //Debug.WriteLine(String.Format("{0} ellapsed for aggregating geometry for watch.", watch.Elapsed));
-
-            //LogVisualizationUpdateData(rd, watch.Elapsed.ToString());
-        }
-
-        /// <summary>
         /// Gathers the Ids of the upstream drawable nodes.
         /// </summary>
         /// <param name="inputs">A dictionary describing the inputs on the node.</param>
@@ -512,28 +611,6 @@ namespace Dynamo
             }
 
             return packages;
-        }
-
-        /// <summary>
-        /// Called when the update of visualizations is complete.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public virtual void OnVisualizationUpdateComplete(object sender, EventArgs e)
-        {
-            if (VisualizationUpdateComplete != null)
-                VisualizationUpdateComplete(sender, e);
-        }
-
-        /// <summary>
-        /// Called when we would like to request the clearing of any alternate drawing contexts.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public virtual void OnRequestAlternateContextClear(object sender, EventArgs e)
-        {
-            if (RequestAlternateContextClear != null)
-                RequestAlternateContextClear(sender, e);
         }
 
         /// <summary>
@@ -580,135 +657,16 @@ namespace Dynamo
         //    }
         //}
 
-        /// <summary>
-        /// Display a label for one or several render packages 
-        /// based on the paths of those render packages.
-        /// </summary>
-        /// <param name="path"></param>
-        public void TagRenderPackageForPath(string path)
-        {
-            var packages = new List<RenderPackage>();
-
-            foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
-            {
-                lock (node.RenderPackagesMutex)
-                {
-                    packages
-                        .AddRange(node.RenderPackages.Where(x => x.Tag == path || x.Tag.Contains(path + ":"))
-                        .Cast<RenderPackage>());
-                }
-            }
-
-            if (packages.Any())
-            {
-                //clear any labels that might have been drawn on this
-                //package already and add the one we want
-                if (_currentTaggedPackages.Any())
-                {
-                    _currentTaggedPackages.ForEach(x=>x.DisplayLabels = false);
-                    _currentTaggedPackages.Clear();
-                }
-
-                packages.ToList().ForEach(x => x.DisplayLabels = true);
-                _currentTaggedPackages.AddRange(packages);
-
-                var allPackages = new List<RenderPackage>();
-
-                foreach (var node in _controller.DynamoModel.Nodes)
-                {
-                    lock (node.RenderPackagesMutex)
-                    {
-                        allPackages.AddRange(node.RenderPackages.Where(x=>((RenderPackage) x).IsNotEmpty()).Cast<RenderPackage>());
-                    }
-                }
-
-                OnResultsReadyToVisualize(this,
-                        new VisualizationEventArgs(
-                            allPackages, string.Empty));
-            }
-        }
-
-        public void OnResultsReadyToVisualize(object sender, VisualizationEventArgs e)
-        {
-            if (ResultsReadyToVisualize != null)
-                ResultsReadyToVisualize(sender, e);
-        }
-
-        #region utility methods
-
-        /// <summary>
-        /// Returns the objects from a Value type which have associated visualizers 
-        /// along with a string tag representing the array index of the value, i.e. [0][5][3]
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        //public static Dictionary<string,object> GetDrawableFromValue(List<int> chain, FScheme.Value value)
-        //{
-        //    //var drawables = new List<object>();
-        //    var drawables = new Dictionary<string, object>();
-
-        //    if (value == null)
-        //    {
-        //        return drawables;
-        //    }
-
-        //    var viz = dynSettings.Controller.VisualizationManager;
-
-        //    if (value.IsList)
-        //    {
-        //        int count = 0;
-        //        foreach (var val_inner in ((FScheme.Value.List)value).Item)
-        //        {
-        //            var subChain = new List<int>(chain);
-        //            subChain.Add(count);
-        //            var innerDrawables = GetDrawableFromValue(subChain, val_inner);
-        //            innerDrawables.ToList().ForEach(x=>drawables.Add(x.Key, x.Value));
-
-        //            count++;
-        //        }
-        //        return drawables;
-        //    }
-
-        //    var container = value as FScheme.Value.Container;
-        //    if (container == null)
-        //        return drawables;
-
-        //    var obj = ((FScheme.Value.Container)container).Item;
-
-        //    if (obj != null)
-        //    {
-        //        var t = obj.GetType();
-        //        var visualizer = viz.Visualizers.FirstOrDefault(x => x.Key == t || x.Key.IsAssignableFrom(t));
-
-        //        if (visualizer.Value != null)
-        //        {
-        //            drawables.Add(TagFromList(chain),obj);
-        //        }
-        //    }
-
-        //    return drawables;
-        //}
-
-        /// <summary>
-        /// Build a string tag from a list of ints. i.e "1,2,3,4"
-        /// </summary>
-        /// <param name="tags"></param>
-        /// <returns></returns>
-        private static string TagFromList(List<int> tags)
-        {
-            var sb = new StringBuilder();
-            tags.ForEach(x => sb.Append(string.Format("{0},", x)));
-            if(sb.Length > 1)
-                sb.Remove(sb.Length - 1, 1);    //remove the last ,
-            return sb.ToString();
-        }
-
         #endregion
+
+        #region ICleanup interface
 
         public void Cleanup()
         {
             UnregisterEventListeners();
         }
+
+        #endregion
     }
 
     public class VisualizationEventArgs : EventArgs
