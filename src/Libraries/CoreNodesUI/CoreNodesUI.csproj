@@ -75,6 +75,12 @@
     <Compile Include="NumberRange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Udp.cs" />
+    <Compile Include="DoubleSliderSettingsControl.xaml.cs">
+      <DependentUpon>DoubleSliderSettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IntegerSliderSettingsControl.xaml.cs">
+      <DependentUpon>IntegerSliderSettingsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WebRequest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +103,16 @@
   <ItemGroup>
     <Resource Include="Resources\DeprecatedNode.png" />
     <Resource Include="Resources\MissingNode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="DoubleSliderSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="IntegerSliderSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

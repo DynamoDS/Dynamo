@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using Dynamo.DSEngine;
 using Dynamo.Utilities;
 
 namespace Dynamo
@@ -8,39 +9,37 @@ namespace Dynamo
     {
         public static void ExportToSTL(string path, string modelName)
         {
-            //var vis = dynSettings.Controller.VisualizationManager;
+            var vis = dynSettings.Controller.VisualizationManager;
 
-            ////get all the meshes
-            //var meshes =
-            //    vis.Visualizations.SelectMany(x => x.Value.Meshes)
-            //        .Concat(vis.Visualizations.SelectMany(x => x.Value.SelectedMeshes));
+            var packages = dynSettings.Controller.DynamoModel.Nodes
+                .Where(node => node.HasRenderPackages)
+                .SelectMany(rp=>rp.RenderPackages)
+                .Cast<RenderPackage>()
+                .Where(rp=>rp.TriangleVertices.Count % 9 == 0)
+                .ToList();
 
-            //using (TextWriter tw = new StreamWriter(path))
-            //{
-            //    tw.WriteLine(string.Format("solid {0}", modelName));
+            var n = packages.SelectMany(rp => rp.TriangleNormals).ToList();
+            var v = packages.SelectMany(rp => rp.TriangleVertices).ToList();
 
-            //    foreach (var mesh in meshes)
-            //    {
-            //        for (int i = 0; i < mesh.TriangleIndices.Count; i += 3)
-            //        {
-            //            var a = mesh.Positions[mesh.TriangleIndices[i]];
-            //            var b = mesh.Positions[mesh.TriangleIndices[i+1]];
-            //            var c = mesh.Positions[mesh.TriangleIndices[i+2]];
+            using (TextWriter tw = new StreamWriter(path))
+            {
+                tw.WriteLine(string.Format("solid {0}", modelName));
 
-            //            var n1 = mesh.Normals[mesh.TriangleIndices[i]];
+                int nCount = 0;
+                for (int i = 0; i < v.Count(); i += 9)
+                {
+                    tw.WriteLine(string.Format("\tfacet normal {0} {1} {2}", n[nCount], n[nCount+1], n[nCount+2]));
+                    tw.WriteLine("\t\touter loop");
+                    tw.WriteLine(string.Format("\t\t\tvertex {0} {1} {2}", v[i], v[i+1], v[i+2]));
+                    tw.WriteLine(string.Format("\t\t\tvertex {0} {1} {2}", v[i+3], v[i+4], v[i+5]));
+                    tw.WriteLine(string.Format("\t\t\tvertex {0} {1} {2}", v[i+6], v[i+7], v[i+8]));
+                    tw.WriteLine("\t\tendloop");
+                    tw.WriteLine("\tendfacet");
 
-            //            tw.WriteLine(string.Format("\tfacet normal {0} {1} {2}", n1.X, n1.Y, n1.Z));
-            //            tw.WriteLine("\t\touter loop");
-            //            tw.WriteLine(string.Format("\t\t\tvertex {0} {1} {2}", a.X, a.Y, a.Z));
-            //            tw.WriteLine(string.Format("\t\t\tvertex {0} {1} {2}", b.X, b.Y, b.Z));
-            //            tw.WriteLine(string.Format("\t\t\tvertex {0} {1} {2}", c.X, c.Y, c.Z));
-            //            tw.WriteLine("\t\tendloop");
-            //            tw.WriteLine("\tendfacet");
-            //        }
-            //    }
-
-            //    tw.WriteLine(string.Format("endsolid {0}", modelName));
-            //}
+                    nCount += 3;
+                }
+                tw.WriteLine(string.Format("endsolid {0}", modelName));
+            }
         }
     }
 }

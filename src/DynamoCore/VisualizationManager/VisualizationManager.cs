@@ -251,11 +251,12 @@ namespace Dynamo
         /// <param name="node"></param>
         void NodeAdded(NodeModel node)
         {
+            node.BlockingStarted += Pause;
+            node.BlockingEnded += UnPause;
+
             if (updatingPaused) return;
 
             node.PropertyChanged += NodePropertyChanged;
-            node.BlockingStarted += Pause;
-            node.BlockingEnded += UnPause;
         }
 
         /// <summary>

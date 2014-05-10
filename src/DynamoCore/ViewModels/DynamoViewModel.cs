@@ -199,7 +199,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand EscapeCommand { get; set; }
         public DelegateCommand SelectVisualizationInViewCommand { get; set; }
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
-        public DelegateCommand TogglePreviewBubbleVisibilityCommand { get; set; }
         public DelegateCommand ExportToSTLCommand { get; set; }
         public DelegateCommand ImportLibraryCommand { get; set; }
         public DelegateCommand SetLengthUnitCommand { get; set; }
@@ -454,11 +453,6 @@ namespace Dynamo.ViewModels
 
         public bool IsMouseDown { get; set; }
 
-        public bool IsShowPreviewByDefault
-        {
-            get { return Controller.IsShowPreviewByDefault; }
-        }
-
         public ConnectorType ConnectorType
         {
             get
@@ -615,7 +609,6 @@ namespace Dynamo.ViewModels
             EscapeCommand = new DelegateCommand(Escape, CanEscape);
             SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
-            TogglePreviewBubbleVisibilityCommand = new DelegateCommand(TogglePreviewBubbleVisibility, CanTogglePreviewBubbleVisibility);
             ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
             ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
             SetLengthUnitCommand = new DelegateCommand(SetLengthUnit, CanSetLengthUnit);
@@ -694,9 +687,6 @@ namespace Dynamo.ViewModels
             {
                 case "IsUILocked":
                     RaisePropertyChanged("IsUILocked");
-                    break;
-                case "IsShowPreviewByDefault":
-                    RaisePropertyChanged("IsShowPreviewByDefault");
                     break;
             }
         }
@@ -1455,37 +1445,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void ShowInfoBubble(object parameter)
-        {
-            InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
-            controller.InfoBubbleViewModel.UpdateContentCommand.Execute(data);
-            controller.InfoBubbleViewModel.OnRequestAction(
-                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.FadeIn));
-        }
-
         internal bool CanShowInfoBubble(object parameter)
-        {
-            return true;
-        }
-
-        public void HideInfoBubble(object parameter)
-        {
-            controller.InfoBubbleViewModel.OnRequestAction(
-                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
-        }
-
-        public void FadeOutInfoBubble(object parameter)
-        {
-            controller.InfoBubbleViewModel.OnRequestAction(
-                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.FadeOut));
-        }
-
-        public void TogglePreviewBubbleVisibility(object parameter)
-        {
-            this.Controller.IsShowPreviewByDefault = !this.Controller.IsShowPreviewByDefault;
-        }
-
-        internal bool CanTogglePreviewBubbleVisibility(object parameter)
         {
             return true;
         }

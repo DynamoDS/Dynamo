@@ -183,6 +183,19 @@ namespace Dynamo.Controls
             InitializeComponent();
             watch_view.DataContext = this;
             Loaded += OnViewLoaded;
+            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+        }
+
+        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Watch 3D view unloaded.");
+
+            //check this for null so the designer can load the preview
+            if (dynSettings.Controller != null)
+            {
+                dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete -= VisualizationManager_VisualizationUpdateComplete;
+                dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
+            }
         }
 
         public Watch3DView(string id)
@@ -190,6 +203,8 @@ namespace Dynamo.Controls
             InitializeComponent();
             watch_view.DataContext = this;
             Loaded += OnViewLoaded;
+            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+
             _id = id;
         }
 
@@ -304,8 +319,13 @@ namespace Dynamo.Controls
             MeshCount = 0;
 
             //separate the selected packages
-            var packages = e.Packages.Where(x => x.Selected == false).ToArray();
-            var selPackages = e.Packages.Where(x => x.Selected).ToArray();
+            var packages = e.Packages.Where(x => x.Selected == false)
+                .Where(rp=>rp.TriangleVertices.Count % 9 == 0)
+                .ToArray();
+            var selPackages = e.Packages
+                .Where(x => x.Selected)
+                .Where(rp => rp.TriangleVertices.Count % 9 == 0)
+                .ToArray();
 
             //pre-size the points collections
             var pointsCount = packages.Select(x => x.PointVertices.Count/3).Sum();

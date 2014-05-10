@@ -8,7 +8,6 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using System.IO;
 using Dynamo.ViewModels;
-using NUnit.Framework;
 using Enum = System.Enum;
 using Utils = Dynamo.Nodes.Utilities;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -976,7 +975,7 @@ namespace Dynamo.Utilities
                 dynSettings.Controller.DynamoModel.WriteToLog(ex);
 
                 if (DynamoController.IsTestMode)
-                    Assert.Fail(ex.Message);
+                    throw ex; // Rethrow for NUnit.
 
                 def = null;
                 return false;
