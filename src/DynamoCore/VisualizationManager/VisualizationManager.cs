@@ -52,7 +52,7 @@ namespace Dynamo
             {
                 if (updatingPaused && value == false)
                 {
-                    UpdateRenderPackages();
+                    Render();
                 }
                 Debug.WriteLine("Updating paused = " + value.ToString());
                 updatingPaused = value;
@@ -101,7 +101,7 @@ namespace Dynamo
                     if (!_drawToAlternateContext)
                     {
                         _drawToAlternateContext = value;
-                        OnVisualizationUpdateComplete(this, EventArgs.Empty);
+                        OnRenderComplete(this, EventArgs.Empty);
                     }
                 }
                 RaisePropertyChanged("DrawToAlternateContext");
@@ -143,17 +143,17 @@ namespace Dynamo
         /// <summary>
         /// An event triggered on the completion of visualization update.
         /// </summary>
-        public event VisualizationCompleteEventHandler VisualizationUpdateComplete;
+        public event VisualizationCompleteEventHandler RenderComplete;
 
         /// <summary>
         /// Called when the update of visualizations is complete.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected virtual void OnVisualizationUpdateComplete(object sender, EventArgs e)
+        protected virtual void OnRenderComplete(object sender, EventArgs e)
         {
-            if (VisualizationUpdateComplete != null)
-                VisualizationUpdateComplete(sender, e);
+            if (RenderComplete != null)
+                RenderComplete(sender, e);
         }
 
         /// <summary>
@@ -359,7 +359,7 @@ namespace Dynamo
         {
             UpdatingPaused = false;
             RegisterEventListeners();
-            OnVisualizationUpdateComplete(this, EventArgs.Empty);
+            OnRenderComplete(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -371,7 +371,7 @@ namespace Dynamo
             node.PropertyChanged -= NodePropertyChanged;
 
             if (!UpdatingPaused)
-                OnVisualizationUpdateComplete(this, EventArgs.Empty);
+                OnRenderComplete(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -402,7 +402,7 @@ namespace Dynamo
                 e.PropertyName == "IsUpstreamVisible" ||
                 e.PropertyName == "DisplayLabels")
             {
-                UpdateRenderPackages();
+                Render();
             }
         }
 
@@ -427,7 +427,7 @@ namespace Dynamo
                 changes.AddRange(e.NewItems.Cast<ISelectable>());
             }
 
-            UpdateRenderPackages(
+            Render(
             changes.Any() ?
             changes.Where(sel => sel is NodeModel).Cast<NodeModel>() :
             null);
@@ -452,7 +452,7 @@ namespace Dynamo
                 connector.End.Owner.ClearRenderPackages();
 
             //tell the watches that they require re-binding.
-            OnVisualizationUpdateComplete(this, EventArgs.Empty);
+            OnRenderComplete(this, EventArgs.Empty);
         }
 
         #endregion
@@ -486,20 +486,20 @@ namespace Dynamo
         /// <param name="e"></param>
         private void Update(object sender, EventArgs e)
         {
-            UpdateRenderPackages();
+            Render();
         }
 
         private void Clear(object sender, EventArgs e)
         {
             Pause(this, EventArgs.Empty);
-            OnVisualizationUpdateComplete(this, EventArgs.Empty);
+            OnRenderComplete(this, EventArgs.Empty);
         }
 
         /// <summary>
         /// Finds all nodes marked as upated in the graph and calls their,
         /// update methods in paralell.
         /// </summary>
-        private void UpdateRenderPackages(IEnumerable<NodeModel> toUpdate = null)
+        private void Render(IEnumerable<NodeModel> toUpdate = null)
         {
             if (_controller == null)
                 return;
@@ -510,15 +510,15 @@ namespace Dynamo
             isUpdating = true;
             var worker = new BackgroundWorker();
 
-            worker.DoWork += UpdateRenderPackagesThread;
+            worker.DoWork += RenderThread;
 
             if (DynamoController.IsTestMode)
-                UpdateRenderPackagesThread(null, new DoWorkEventArgs(toUpdate));
+                RenderThread(null, new DoWorkEventArgs(toUpdate));
             else
                 worker.RunWorkerAsync(toUpdate);   
         }
 
-        private void UpdateRenderPackagesThread(object sender, DoWorkEventArgs e)
+        private void RenderThread(object sender, DoWorkEventArgs e)
         {
             try
             {
@@ -542,7 +542,7 @@ namespace Dynamo
                 //    SetupOctree(nodeModels);
 
                 //Debug.WriteLine(string.Format("Visualization updating {0} objects", toUpdate.Count()));
-                OnVisualizationUpdateComplete(this, EventArgs.Empty);
+                OnRenderComplete(this, EventArgs.Empty);
 
             }
             catch (Exception ex)

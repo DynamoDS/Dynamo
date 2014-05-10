@@ -219,7 +219,7 @@ namespace Dynamo.Controls
             //check this for null so the designer can load the preview
             if (dynSettings.Controller != null)
             {
-                dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete -= VisualizationManager_VisualizationUpdateComplete;
+                dynSettings.Controller.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
                 dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             }
         }
@@ -239,7 +239,7 @@ namespace Dynamo.Controls
             //check this for null so the designer can load the preview
             if (dynSettings.Controller != null)
             {
-                dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += VisualizationManager_VisualizationUpdateComplete;
+                dynSettings.Controller.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
                 dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
             }
 
@@ -264,7 +264,7 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void VisualizationManager_VisualizationUpdateComplete(object sender, EventArgs e)
+        private void VisualizationManagerRenderComplete(object sender, EventArgs e)
         {
             if (dynSettings.Controller == null)
             {
