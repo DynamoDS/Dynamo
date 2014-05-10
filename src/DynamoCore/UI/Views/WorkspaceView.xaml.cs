@@ -81,7 +81,21 @@ namespace Dynamo.Views
             selectionCanvas.Loaded += selectionCanvas_Loaded;
             DataContextChanged += dynWorkspaceView_DataContextChanged;
 
-            this.Loaded += dynWorkspaceView_Loaded;
+            Loaded += dynWorkspaceView_Loaded;
+            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+        }
+
+        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Workspace view unloaded.");
+
+            DynamoSelection.Instance.Selection.CollectionChanged -= new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+
+            if (ViewModel != null)
+            {
+                ViewModel.DragSelectionStarted -= ViewModel_DragSelectionStarted;
+                ViewModel.DragSelectionEnded -= ViewModel_DragSelectionEnded;
+            }
         }
 
         void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
@@ -197,21 +211,23 @@ namespace Dynamo.Views
                 oldViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
                 oldViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
             }
-            
 
-            // Adding registration of event listener
-            ViewModel.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
-            ViewModel.ZoomChanged += new ZoomEventHandler(vm_ZoomChanged);
-            ViewModel.RequestZoomToViewportCenter += new ZoomEventHandler(vm_ZoomAtViewportCenter);
-            ViewModel.RequestZoomToViewportPoint += new ZoomEventHandler(vm_ZoomAtViewportPoint);
-            ViewModel.RequestZoomToFitView += new ZoomEventHandler(vm_ZoomToFitView);
-            ViewModel.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
-            ViewModel.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
-            ViewModel.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
-            ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
-            ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
+            if (ViewModel != null)
+            {
+                // Adding registration of event listener
+                ViewModel.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
+                ViewModel.ZoomChanged += new ZoomEventHandler(vm_ZoomChanged);
+                ViewModel.RequestZoomToViewportCenter += new ZoomEventHandler(vm_ZoomAtViewportCenter);
+                ViewModel.RequestZoomToViewportPoint += new ZoomEventHandler(vm_ZoomAtViewportPoint);
+                ViewModel.RequestZoomToFitView += new ZoomEventHandler(vm_ZoomToFitView);
+                ViewModel.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
+                ViewModel.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
+                ViewModel.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
+                ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
+                ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
 
-            ViewModel.Loaded();
+                ViewModel.Loaded();
+            }
 
             outerCanvas.Children.Remove(zoomAndPanControl);
             zoomAndPanControl = new ZoomAndPanControl(DataContext as WorkspaceViewModel);
