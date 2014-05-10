@@ -74,13 +74,25 @@ namespace Dynamo.Controls
 
             InitializeComponent();
 
-            this.Loaded += new RoutedEventHandler(OnNodeViewLoaded);
+            Loaded += new RoutedEventHandler(OnNodeViewLoaded);
+            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
             inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
 
             this.SizeChanged += OnSizeChanged;
             this.DataContextChanged += OnDataContextChanged;
 
             Canvas.SetZIndex(this, 1);
+        }
+
+        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Node view unloaded.");
+
+            ViewModel.NodeLogic.DispatchedToUI -= NodeLogic_DispatchedToUI;
+            ViewModel.RequestShowNodeHelp -= ViewModel_RequestShowNodeHelp;
+            ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
+            ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
+            ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
         }
 
         #endregion

@@ -183,6 +183,19 @@ namespace Dynamo.Controls
             InitializeComponent();
             watch_view.DataContext = this;
             Loaded += OnViewLoaded;
+            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+        }
+
+        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Watch 3D view unloaded.");
+
+            //check this for null so the designer can load the preview
+            if (dynSettings.Controller != null)
+            {
+                dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete -= VisualizationManager_VisualizationUpdateComplete;
+                dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
+            }
         }
 
         public Watch3DView(string id)
@@ -190,6 +203,8 @@ namespace Dynamo.Controls
             InitializeComponent();
             watch_view.DataContext = this;
             Loaded += OnViewLoaded;
+            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+
             _id = id;
         }
 

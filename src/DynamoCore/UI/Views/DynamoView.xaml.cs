@@ -23,13 +23,10 @@ using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using String = System.String;
-using System.Collections.ObjectModel;
-using Dynamo.UI.Commands;
 using System.Windows.Data;
 using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using Dynamo.Core;
 using Dynamo.Services;
 
 namespace Dynamo.Controls
@@ -82,7 +79,8 @@ namespace Dynamo.Controls
 
             //LibraryManagerMenu.Visibility = System.Windows.Visibility.Collapsed;
 
-            this.Loaded += dynBench_Activated;
+            this.Loaded += DynamoView_Loaded;
+            this.Unloaded += DynamoView_Unloaded;
         }
 
         void InitializeShortcutBar()
@@ -173,7 +171,7 @@ namespace Dynamo.Controls
             Dispatcher.Invoke(new Action(UpdateLayout), DispatcherPriority.Render, null);
         }
 
-        private void dynBench_Activated(object sender, EventArgs e)
+        private void DynamoView_Loaded(object sender, EventArgs e)
         {
             // If first run, Collect Info Prompt will appear
             UsageReportingManager.Instance.CheckIsFirstRun();
@@ -223,11 +221,13 @@ namespace Dynamo.Controls
             //ABOUT WINDOW
             _vm.RequestAboutWindow += _vm_RequestAboutWindow;
 
-            //ABOUT WINDOW
-            _vm.RequestAboutWindow += _vm_RequestAboutWindow;
-
             // Kick start the automation run, if possible.
             _vm.BeginCommandPlayback(this);
+        }
+
+        void DynamoView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            
         }
 
         private UI.Views.AboutWindow _aboutWindow;
@@ -530,11 +530,40 @@ namespace Dynamo.Controls
             {
                 dynSettings.Controller.ShutDown(false);
             }
+
         }
 
         private void WindowClosed(object sender, EventArgs e)
         {
+            Debug.WriteLine("Dynamo window closed.");
 
+            _vm.Model.RequestLayoutUpdate -= vm_RequestLayoutUpdate;
+
+            //PACKAGE MANAGER
+            _vm.RequestPackagePublishDialog -= _vm_RequestRequestPackageManagerPublish;
+            _vm.RequestManagePackagesDialog -= _vm_RequestShowInstalledPackages;
+            _vm.RequestPackageManagerSearchDialog -= _vm_RequestShowPackageManagerSearch;
+
+            //FUNCTION NAME PROMPT
+            _vm.RequestsFunctionNamePrompt -= _vm_RequestsFunctionNamePrompt;
+
+            _vm.RequestClose -= _vm_RequestClose;
+            _vm.RequestSaveImage -= _vm_RequestSaveImage;
+            _vm.SidebarClosed -= _vm_SidebarClosed;
+
+            DynamoSelection.Instance.Selection.CollectionChanged -= Selection_CollectionChanged;
+
+            _vm.RequestUserSaveWorkflow -= _vm_RequestUserSaveWorkflow;
+
+            if (dynSettings.Controller != null)
+            {
+                dynSettings.Controller.RequestsCrashPrompt -= Controller_RequestsCrashPrompt;
+                dynSettings.Controller.RequestTaskDialog -= Controller_RequestTaskDialog;
+                dynSettings.Controller.ClipBoard.CollectionChanged -= ClipBoard_CollectionChanged;
+            }
+
+            //ABOUT WINDOW
+            _vm.RequestAboutWindow -= _vm_RequestAboutWindow;
         }
 
         private void OverlayCanvas_OnMouseMove(object sender, MouseEventArgs e)
@@ -583,6 +612,11 @@ namespace Dynamo.Controls
             if (_vm != null)
             {
                 int workspace_index = _vm.CurrentWorkspaceIndex;
+
+                //this condition is added for shutdown when we are clearing
+                //the workspace collection
+                if (workspace_index == -1) return;
+
                 var workspace_vm = _vm.Workspaces[workspace_index];
                 workspace_vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspace_vm.Model.X, workspace_vm.Model.Y)));
                 workspace_vm.OnZoomChanged(this, new ZoomEventArgs(workspace_vm.Zoom));
