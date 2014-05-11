@@ -132,6 +132,9 @@ namespace Dynamo.Utilities
             // cache the loaded assembly information
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
+                if (assembly.IsDynamic)
+                    continue;
+
                 try
                 {
                      allLoadedAssembliesByPath[assembly.Location] = assembly;
