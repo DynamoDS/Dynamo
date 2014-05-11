@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -27,7 +28,8 @@ namespace Dynamo.Search
         public SearchView()
         {
             InitializeComponent();
-            this.Loaded += SearchView_Loaded;
+            Loaded += SearchView_Loaded;
+            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
 
             SearchTextBox.IsVisibleChanged += delegate
             {
@@ -39,6 +41,17 @@ namespace Dynamo.Search
                     SearchTextBox.InputBindings.AddRange(view.InputBindings);
                 }
             };
+        }
+
+        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Note view unloaded.");
+
+            if (dynSettings.Controller != null)
+            {
+                dynSettings.Controller.SearchViewModel.RequestFocusSearch -= SearchViewModel_RequestFocusSearch;
+                dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch -= SearchViewModel_RequestReturnFocusToSearch;
+            }
         }
 
         void SearchView_Loaded(object sender, RoutedEventArgs e)
