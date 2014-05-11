@@ -98,6 +98,11 @@ namespace Dynamo.Nodes
             //do nothing
             //a watch should not draw its outputs
         }
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
     }
 
 }
