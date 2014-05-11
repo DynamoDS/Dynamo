@@ -8,7 +8,6 @@ namespace Dynamo.UI
         #region Dynamo Universal Constants
 
         // Add 0.5 to place the point in the middle of a pixel to sharpen it
-        public static readonly double PixelSharpeningConstant = 0.5;
         public static readonly string BackupFolderName = "backup";
         public static readonly string FilePathAttribName = "TargetXmlFilePath";
         public static readonly double DoubleSliderTextBoxWidth = 55.0;
@@ -51,16 +50,9 @@ namespace Dynamo.UI
         #endregion
 
         #region Information Bubble
-        public static int FadeInDurationInMilliseconds = 250;
-        public static int FadeOutDurationInMilliseconds = 250;
         public static double MaxOpacity = 0.95;
 
         #region Preview Bubble
-
-        public static int PreviewMaxListLength = 1000;
-        public static int PreviewMaxListDepth = 100;
-        public static int PreviewMaxLength = 1000;
-
         public static int CondensedPreviewMaxLength = 25;
 
         public static SolidColorBrush PreviewFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
@@ -70,11 +62,9 @@ namespace Dynamo.UI
         public static double PreviewTextFontSize = 10;
         public static FontWeight PreviewTextFontWeight = FontWeights.Light;
         public static SolidColorBrush PreviewTextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
-        public static TextWrapping PreviewContentWrapping = TextWrapping.Wrap;
         public static Thickness PreviewContentMargin = new Thickness(5, 12, 5, 5);
 
         public static double PreviewMaxWidth = 500;
-        public static double PreviewMaxHeight;
         public static double PreviewMinWidth = 40;
         public static double PreviewMinHeight = 30;
         public static double PreviewDefaultMaxWidth = 300;
@@ -119,17 +109,13 @@ namespace Dynamo.UI
         public static double ErrorTextFontSize = 13;
         public static FontWeight ErrorTextFontWeight = FontWeights.Normal;
         public static SolidColorBrush ErrorTextForeground = new SolidColorBrush(Color.FromRgb(190, 70, 70));
-        public static TextWrapping ErrorContentWrapping = TextWrapping.Wrap;
         public static Thickness ErrorContentMargin = new Thickness(5, 5, 5, 12);
 
         public static double ErrorArrowWidth = 12;
         public static double ErrorArrowHeight = 6;
-
         #endregion
 
         #region Node Tooltip
-        public static int ToolTipFadeInDelayInMS = 1000;
-
         public static SolidColorBrush NodeTooltipFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
         public static double NodeTooltipFrameStrokeThickness = 1;
         public static SolidColorBrush NodeTooltipFrameStrokeColor = new SolidColorBrush(Color.FromRgb(165, 209, 226));
@@ -142,7 +128,6 @@ namespace Dynamo.UI
         public static double NodeTooltipTextFontSize = 11;
         public static FontWeight NodeTooltipTextFontWeight = FontWeights.Light;
         public static SolidColorBrush NodeTooltipTextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
-        public static TextWrapping NodeTooltipContentWrapping = TextWrapping.Wrap;
 
         public static Thickness NodeTooltipContentMarginLeft = new Thickness(11, 5, 5, 5);
         public static Thickness NodeTooltipContentMarginRight = new Thickness(5, 5, 11, 5);
@@ -170,7 +155,6 @@ namespace Dynamo.UI
         public static double LibraryTooltipTextFontSize = 11;
         public static SolidColorBrush LibraryTooltipTextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
         public static FontWeight LibraryTooltipTextFontWeight = FontWeights.Normal;
-        public static TextWrapping LibraryTooltipContentWrapping = TextWrapping.Wrap;
         public static Thickness LibraryTooltipContentMargin = new Thickness(12, 5, 5, 5);
 
         public static double LibraryTooltipArrowHeight = 12;
@@ -206,18 +190,61 @@ namespace Dynamo.UI
         public static readonly double DefCondensedContentWidth = 33.0;
         public static readonly double DefCondensedContentHeight = 28.0;
 
-        public static readonly SolidColorBrush PreviewIconPinnedBrush =
-            new SolidColorBrush(Color.FromArgb(0xFF, 0x97, 0x93, 0x8E));
-        public static readonly SolidColorBrush PreviewIconClickedBrush =
-            new SolidColorBrush(Color.FromArgb(0xFF, 0xA4, 0xA0, 0x9A));
-        public static readonly SolidColorBrush PreviewIconHoverBrush =
-            new SolidColorBrush(Color.FromArgb(0x00, 0xFF, 0xFF, 0xFF));
-        public static readonly SolidColorBrush PreviewIconNormalBrush =
-            new SolidColorBrush(Color.FromArgb(0x00, 0xFF, 0xFF, 0xFF));
-
         #endregion
 
         public const string UpdateDownloadLocation = "http://dyn-builds-data.s3-us-west-2.amazonaws.com/";
+    }
+
+    /// <summary>
+    /// This class is put in place to store Freezable objects that are made 
+    /// globally available as constant values. These resources are created once 
+    /// the first time any of the static members of FrozenResources is accessed.
+    /// The static constructor is responsible of initializing its data members
+    /// and freeze them at the same time. For this reason, each of the members 
+    /// in the class should be Freezable derived.
+    /// 
+    /// There is primarily a reason for doing so: avoid memory leaks. Consider 
+    /// the following use case:
+    /// 
+    ///     var myRectangle = new Rectangle();
+    ///     myRectangle.Fill = FrozenResources.PreviewIconPinnedBrush;
+    /// 
+    /// Innocent as it is, the above code does lead to memory leaks. The second
+    /// assignment made "myRectangle" subscribe to "PreviewIconPinnedBrush.Changed"
+    /// event, causing "PreviewIconPinnedBrush" to reference "myRectangle" 
+    /// internally (since it needs to notify "myRectangle" when its color updates).
+    /// One would expect "myRectangle" gets garbage collected when it goes out of 
+    /// scope, but this reference keeps "myRectangle" alive for as long as the 
+    /// "PreviewIconPinnedBrush" is alive. Since it is a static, "myRectangle" 
+    /// does not get released during collection and gets promoted to Gen 1. The 
+    /// following will not cause a reference from "PreviewIconPinnedBrush" to 
+    /// "myRectangle", avoiding any memory leaks:
+    /// 
+    ///     var myRectangle = new Rectangle();
+    ///     FrozenResources.PreviewIconPinnedBrush.Freeze();
+    ///     myRectangle.Fill = FrozenResources.PreviewIconPinnedBrush;
+    /// 
+    /// </summary>
+    /// 
+    public class FrozenResources
+    {
+        public static readonly SolidColorBrush PreviewIconPinnedBrush;
+        public static readonly SolidColorBrush PreviewIconClickedBrush;
+        public static readonly SolidColorBrush PreviewIconHoverBrush;
+        public static readonly SolidColorBrush PreviewIconNormalBrush;
+
+        static FrozenResources()
+        {
+            PreviewIconPinnedBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x97, 0x93, 0x8E));
+            PreviewIconClickedBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xA4, 0xA0, 0x9A));
+            PreviewIconHoverBrush = new SolidColorBrush(Color.FromArgb(0x00, 0xFF, 0xFF, 0xFF));
+            PreviewIconNormalBrush = new SolidColorBrush(Color.FromArgb(0x00, 0xFF, 0xFF, 0xFF));
+
+            PreviewIconPinnedBrush.Freeze();
+            PreviewIconClickedBrush.Freeze();
+            PreviewIconHoverBrush.Freeze();
+            PreviewIconNormalBrush.Freeze();
+        }
     }
 
     public class ResourceNames

@@ -187,5 +187,10 @@ namespace DSRevitNodesUI
                 }
             }
         }
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
     }
 }

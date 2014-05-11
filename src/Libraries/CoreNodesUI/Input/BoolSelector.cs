@@ -70,6 +70,11 @@ namespace DSCoreNodesUI
             rbFalse.SetBinding(ToggleButton.IsCheckedProperty, rbFalseBinding);
         }
 
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
+
         private static void OnRadioButtonClicked(object sender, RoutedEventArgs e)
         {
             dynSettings.ReturnFocusToSearch();

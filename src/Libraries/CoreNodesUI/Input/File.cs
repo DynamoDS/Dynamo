@@ -95,6 +95,11 @@ namespace DSCore.File
                 Value = openDialog.FileName;
             }
         }
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
     }
 
 

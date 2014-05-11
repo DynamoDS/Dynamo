@@ -226,30 +226,9 @@ namespace Dynamo.ViewModels
             }
         }
 
-        // TODO: Improve this! The logic is taken from an old code but it definitely
-        // can be improved. For example, if there is no CachedValue and IsUpdated is 
-        // not true, then we may not want to show the preview icon.
-        // 
         public bool IsPreviewInsetVisible
         {
-            get
-            {
-                if (!(nodeLogic.WorkSpace is HomeWorkspaceModel))
-                    return false; // Preview only shown in Home workspace.
-
-                switch (nodeLogic.Name)
-                {
-                    case "Number":
-                    case "String":
-                    case "Watch":
-                    case "Watch 3D":
-                    case "Watch Image":
-                    case "Boolean":
-                        return false;
-                }
-
-                return true;
-            }
+            get { return nodeLogic.ShouldDisplayPreview(); }
         }
 
         public bool ShouldShowGlyphBar
