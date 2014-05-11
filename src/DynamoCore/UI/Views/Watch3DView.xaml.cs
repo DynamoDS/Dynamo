@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Web.UI.HtmlControls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -25,6 +24,8 @@ namespace Dynamo.Controls
     /// </summary>
     public partial class Watch3DView : UserControl, INotifyPropertyChanged
     {
+        #region events
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
         {
@@ -34,9 +35,12 @@ namespace Dynamo.Controls
             }
         }
 
-        private readonly string _id="";
-        Point _rightMousePoint;
+        #endregion
 
+        #region private members
+
+        private readonly string _id="";
+        private Point _rightMousePoint;
         private Point3DCollection _points = new Point3DCollection();
         private Point3DCollection _lines = new Point3DCollection();
         private Point3DCollection _xAxis = new Point3DCollection();
@@ -48,6 +52,10 @@ namespace Dynamo.Controls
         private MeshGeometry3D _meshSelected = new MeshGeometry3D();
         private List<Point3D> _grid = new List<Point3D>();
         private List<BillboardTextItem> _text = new List<BillboardTextItem>();
+
+        #endregion
+
+        #region public properties
 
         public Material MeshMaterial
         {
@@ -178,24 +186,16 @@ namespace Dynamo.Controls
         /// </summary>
         public int MeshCount { get; set; }
 
+        #endregion
+
+        #region constructors
+
         public Watch3DView()
         {
             InitializeComponent();
             watch_view.DataContext = this;
             Loaded += OnViewLoaded;
             Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
-        }
-
-        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
-        {
-            Debug.WriteLine("Watch 3D view unloaded.");
-
-            //check this for null so the designer can load the preview
-            if (dynSettings.Controller != null)
-            {
-                dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete -= VisualizationManager_VisualizationUpdateComplete;
-                dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
-            }
         }
 
         public Watch3DView(string id)
@@ -208,7 +208,23 @@ namespace Dynamo.Controls
             _id = id;
         }
 
-        void OnViewLoaded(object sender, RoutedEventArgs e)
+        #endregion
+
+        #region event handlers
+
+        private void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Watch 3D view unloaded.");
+
+            //check this for null so the designer can load the preview
+            if (dynSettings.Controller != null)
+            {
+                dynSettings.Controller.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
+                dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
+            }
+        }
+
+        private void OnViewLoaded(object sender, RoutedEventArgs e)
         {
             MouseLeftButtonDown += new MouseButtonEventHandler(view_MouseButtonIgnore);
             MouseLeftButtonUp += new MouseButtonEventHandler(view_MouseButtonIgnore);
@@ -223,7 +239,7 @@ namespace Dynamo.Controls
             //check this for null so the designer can load the preview
             if (dynSettings.Controller != null)
             {
-                dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += VisualizationManager_VisualizationUpdateComplete;
+                dynSettings.Controller.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
                 dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
             }
 
@@ -235,7 +251,7 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void VisualizationManager_ResultsReadyToVisualize(object sender, VisualizationEventArgs e)
+        private void VisualizationManager_ResultsReadyToVisualize(object sender, VisualizationEventArgs e)
         {
             Dispatcher.Invoke(new Action<VisualizationEventArgs>(RenderDrawables), DispatcherPriority.Render,
                                 new object[] {e});
@@ -248,10 +264,12 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void VisualizationManager_VisualizationUpdateComplete(object sender, EventArgs e)
+        private void VisualizationManagerRenderComplete(object sender, EventArgs e)
         {
             if (dynSettings.Controller == null)
+            {
                 return;
+            }
 
             Dispatcher.Invoke(new Action(delegate
             {
@@ -263,6 +281,96 @@ namespace Dynamo.Controls
                 }
             }));
         }
+
+
+        /// <summary>
+        /// Callback for thumb control's DragStarted event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ResizeThumb_OnDragStarted(object sender, DragStartedEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Callbcak for thumb control's DragCompleted event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ResizeThumb_OnDragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Callback for thumb control's DragDelta event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ResizeThumb_OnDragDelta(object sender, DragDeltaEventArgs e)
+        {
+            var yAdjust = ActualHeight + e.VerticalChange;
+            var xAdjust = ActualWidth + e.HorizontalChange;
+
+            //Debug.WriteLine("d_x:" + e.HorizontalChange + "," + "d_y:" + e.VerticalChange);
+            //Debug.WriteLine("Size:" + _nodeUI.Width + "," + _nodeUI.Height);
+            //Debug.WriteLine("ActualSize:" + _nodeUI.ActualWidth + "," + _nodeUI.ActualHeight);
+            //Debug.WriteLine("Grid size:" + _nodeUI.ActualWidth + "," + _nodeUI.ActualHeight);
+
+            if (xAdjust >= inputGrid.MinWidth)
+            {
+                Width = xAdjust;
+            }
+
+            if (yAdjust >= inputGrid.MinHeight)
+            {
+                Height = yAdjust;
+            }
+        }
+
+        protected void mi_Click(object sender, RoutedEventArgs e)
+        {
+            watch_view.ZoomExtents();
+        }
+
+        private void MainContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+        }
+
+        void view_MouseButtonIgnore(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = false;
+        }
+
+        void view_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            _rightMousePoint = e.GetPosition(topControl);
+        }
+
+        void view_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            //if the mouse has moved, and this is a right click, we assume 
+            // rotation. handle the event so we don't show the context menu
+            // if the user wants the contextual menu they can click on the
+            // node sidebar or top bar
+            if (e.GetPosition(topControl) != _rightMousePoint)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void Watch_view_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            //Point mousePos = e.GetPosition(watch_view);
+            //PointHitTestParameters hitParams = new PointHitTestParameters(mousePos);
+            //VisualTreeHelper.HitTest(watch_view, null, ResultCallback, hitParams);
+            //e.Handled = true;
+        }
+
+        #endregion
+
+        #region private methods
 
         /// <summary>
         /// Create the grid
@@ -424,6 +532,7 @@ namespace Dynamo.Controls
         {
             for (int i = 0; i < p.PointVertices.Count; i += 3)
             {
+
                 var pos = new Point3D(
                     p.PointVertices[i],
                     p.PointVertices[i + 1],
@@ -564,46 +673,7 @@ namespace Dynamo.Controls
             return sb.ToString();
         }
 
-        protected void mi_Click(object sender, RoutedEventArgs e)
-        {
-            watch_view.ZoomExtents();
-        }
-
-        private void MainContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-        }
-
-        void view_MouseButtonIgnore(object sender, MouseButtonEventArgs e)
-        {
-            e.Handled = false;
-        }
-
-        void view_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            _rightMousePoint = e.GetPosition(topControl);
-        }
-
-        void view_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            //if the mouse has moved, and this is a right click, we assume 
-            // rotation. handle the event so we don't show the context menu
-            // if the user wants the contextual menu they can click on the
-            // node sidebar or top bar
-            if (e.GetPosition(topControl) != _rightMousePoint)
-            {
-                e.Handled = true;
-            }
-        }
-
-        private void Watch_view_OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            //Point mousePos = e.GetPosition(watch_view);
-            //PointHitTestParameters hitParams = new PointHitTestParameters(mousePos);
-            //VisualTreeHelper.HitTest(watch_view, null, ResultCallback, hitParams);
-            //e.Handled = true;
-        }
-
-        public HitTestResultBehavior ResultCallback(HitTestResult result)
+        private HitTestResultBehavior ResultCallback(HitTestResult result)
         {
             // Did we hit 3D?
             var rayResult = result as RayHitTestResult;
@@ -625,50 +695,6 @@ namespace Dynamo.Controls
             return HitTestResultBehavior.Continue;
         }
 
-        /// <summary>
-        /// Callback for thumb control's DragStarted event.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ResizeThumb_OnDragStarted(object sender, DragStartedEventArgs e)
-        {
-            //throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Callbcak for thumb control's DragCompleted event.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ResizeThumb_OnDragCompleted(object sender, DragCompletedEventArgs e)
-        {
-            //throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Callback for thumb control's DragDelta event.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ResizeThumb_OnDragDelta(object sender, DragDeltaEventArgs e)
-        {
-            var yAdjust = ActualHeight + e.VerticalChange;
-            var xAdjust = ActualWidth + e.HorizontalChange;
-
-            //Debug.WriteLine("d_x:" + e.HorizontalChange + "," + "d_y:" + e.VerticalChange);
-            //Debug.WriteLine("Size:" + _nodeUI.Width + "," + _nodeUI.Height);
-            //Debug.WriteLine("ActualSize:" + _nodeUI.ActualWidth + "," + _nodeUI.ActualHeight);
-            //Debug.WriteLine("Grid size:" + _nodeUI.ActualWidth + "," + _nodeUI.ActualHeight);
-
-            if (xAdjust >= inputGrid.MinWidth)
-            {
-                Width = xAdjust;
-            }
-
-            if (yAdjust >= inputGrid.MinHeight)
-            {
-                Height = yAdjust;
-            }
-        }
+        #endregion
     }
 }
