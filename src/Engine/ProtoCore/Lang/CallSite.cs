@@ -35,6 +35,31 @@ namespace ProtoCore
                 get { return Data == null && NestedData == null; }
             }
 
+            /// <summary>
+            /// Is there any data anywhere in this run data, or is it all
+            /// empty structure
+            /// </summary>
+            public bool HasAnyNestedData
+            {
+                get
+                {
+                    //Base case
+                    if (IsEmpty)
+                        return false;
+
+                    if (HasData)
+                        return true;
+                    else
+                    {
+                        //Not empty, and doesn't have data so test recursive
+                        Validity.Assert(NestedData != null,
+                            "Invalid recursion logic, this is a VM bug, please report to the Dynamo Team");
+
+                        return NestedData.Any(srtd => srtd.HasAnyNestedData);
+                    }
+                }
+            }
+
             public bool HasNestedData
             {   
                 get { return NestedData != null; }
@@ -378,6 +403,10 @@ namespace ProtoCore
         /// 
         public string GetTraceDataToSave()
         {
+            //Test to see if there is any actual data in the trace cache
+            if (!this.traceData.Any(srtd => srtd.HasAnyNestedData))
+                return null;
+
             TraceSerialiserHelper helper = new TraceSerialiserHelper();
             helper.TraceData = this.traceData;
 
