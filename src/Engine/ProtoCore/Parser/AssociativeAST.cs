@@ -2740,12 +2740,11 @@ namespace ProtoCore.AST.AssociativeAST
         }
 
         /// <summary>
-        /// Add replication guide to the node. The input node will not be 
-        /// modified.
+        /// Create a copy of the node with replication guide added. 
         /// </summary>
-        /// <param name="node"></param>
-        /// <param name="guides"></param>
-        /// <param name="isLongest"></param>
+        /// <param name="node">Associative AST node.</param>
+        /// <param name="guides">Replication guide.</param>
+        /// <param name="isLongest">If use the Longest replication strategy.</param>
         /// <returns></returns>
         public static AssociativeNode AddReplicationGuide(AssociativeNode node,
                                                           List<int> guides,
