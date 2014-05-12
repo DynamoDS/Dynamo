@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -15,7 +16,7 @@ using Dynamo.DSEngine;
 
 namespace Dynamo
 {
-    public delegate void VisualizationCompleteEventHandler(object sender, EventArgs e);
+    public delegate void RenderCompleteEventHandler(object sender, RenderCompletionEventArgs e);
 
     public delegate void ResultsReadyHandler(object sender, VisualizationEventArgs e);
 
@@ -37,6 +38,8 @@ namespace Dynamo
         private DynamoController _controller;
         private List<RenderPackage> _currentTaggedPackages = new List<RenderPackage>();
         private bool _alternateDrawingContextAvailable;
+        private long _taskId = -1;
+        private List<long> _taskList = new List<long>();
 
         #endregion
 
@@ -101,7 +104,7 @@ namespace Dynamo
                     if (!_drawToAlternateContext)
                     {
                         _drawToAlternateContext = value;
-                        OnRenderComplete(this, EventArgs.Empty);
+                        QueueRenderTask();
                     }
                 }
                 RaisePropertyChanged("DrawToAlternateContext");
@@ -125,6 +128,45 @@ namespace Dynamo
 
         public int MaxGridLines { get; set; }
 
+        public Object CurrentTaskIdMutex = new object();
+        public long CurrentTaskId
+        {
+            get
+            {
+                lock (CurrentTaskIdMutex)
+                {
+                    return _taskId;
+                }
+            }
+
+            set
+            {
+                lock (CurrentTaskIdMutex)
+                {
+                    _taskId = value;
+                }
+            }
+        }
+
+        public Object TaskListMutex = new object();
+        public List<long> TaskList
+        {
+            get
+            {
+                lock (TaskListMutex)
+                {
+                    return _taskList;
+                }
+            }
+            set
+            {
+                lock (TaskListMutex)
+                {
+                    _taskList = value;
+                }
+            }
+        }
+        
         #endregion
 
         #region events
@@ -143,14 +185,14 @@ namespace Dynamo
         /// <summary>
         /// An event triggered on the completion of visualization update.
         /// </summary>
-        public event VisualizationCompleteEventHandler RenderComplete;
+        public event RenderCompleteEventHandler RenderComplete;
 
         /// <summary>
         /// Called when the update of visualizations is complete.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected virtual void OnRenderComplete(object sender, EventArgs e)
+        protected virtual void OnRenderComplete(object sender, RenderCompletionEventArgs e)
         {
             if (RenderComplete != null)
                 RenderComplete(sender, e);
@@ -228,6 +270,9 @@ namespace Dynamo
         /// <param name="path"></param>
         public void TagRenderPackageForPath(string path)
         {
+            CurrentTaskId++;
+            TaskList.Add(CurrentTaskId);
+
             var packages = new List<RenderPackage>();
 
             foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
@@ -265,7 +310,7 @@ namespace Dynamo
 
                 OnResultsReadyToVisualize(this,
                         new VisualizationEventArgs(
-                            allPackages, string.Empty));
+                            allPackages, string.Empty, CurrentTaskId));
             }
         }
 
@@ -275,7 +320,7 @@ namespace Dynamo
         /// </summary>
         /// <param name="node">The node whose upstream geometry you need.</param>
         /// <returns>A render description containing all upstream geometry.</returns>
-        public void AggregateUpstreamRenderPackages(NodeModel node)
+        public void AggregateUpstreamRenderPackages(RenderTag tag)
         {
             var packages = new List<IRenderPackage>();
 
@@ -283,7 +328,7 @@ namespace Dynamo
             var watch = new Stopwatch();
             watch.Start();
 
-            if (node == null)
+            if (tag.Node == null)
             {
                 //send back everything
                 foreach (var modelNode in _controller.DynamoModel.Nodes)
@@ -299,29 +344,42 @@ namespace Dynamo
                     // if there are packages, send any that aren't empty
                     OnResultsReadyToVisualize(this,
                         new VisualizationEventArgs(
-                            packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), string.Empty));
+                            packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), string.Empty, tag.TaskId));
                 }
                 else
                 {
                     // if there are no packages, still trigger an update
                     // so the view gets redrawn
                     OnResultsReadyToVisualize(this,
-                        new VisualizationEventArgs(packages.Cast<RenderPackage>(), string.Empty));
+                        new VisualizationEventArgs(packages.Cast<RenderPackage>(), string.Empty, tag.TaskId));
                 }
 
             }
             else
             {
                 //send back renderables for the branch
-                packages = GetUpstreamPackages(node.Inputs).ToList();
+                packages = GetUpstreamPackages(tag.Node.Inputs).ToList();
                 if (packages.Any())
-                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), node.GUID.ToString()));
+                    OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), tag.Node.GUID.ToString(),tag.TaskId));
             }
 
             watch.Stop();
             Debug.WriteLine(String.Format("RENDER: {0} ellapsed for aggregating geometry for watch.", watch.Elapsed));
 
             //LogVisualizationUpdateData(rd, watch.Elapsed.ToString());
+        }
+
+        /// <summary>
+        /// Checks the current Render task id against the list of task ids.
+        /// If a 'newer' task id is found, then another update has been fired more
+        /// recently, so we should trigger a re-render.
+        /// </summary>
+        public void CheckIfLatestAndUpdate(long taskId)
+        {
+            if (!TaskList.Any(id => id > taskId)) return;
+
+            Debug.WriteLine("RENDER : Latest render task id > {0}, re-rendering...", taskId);
+            Render(null,false);
         }
 
         #endregion
@@ -359,7 +417,7 @@ namespace Dynamo
         {
             UpdatingPaused = false;
             RegisterEventListeners();
-            OnRenderComplete(this, EventArgs.Empty);
+            QueueRenderTask();
         }
 
         /// <summary>
@@ -371,7 +429,9 @@ namespace Dynamo
             node.PropertyChanged -= NodePropertyChanged;
 
             if (!UpdatingPaused)
-                OnRenderComplete(this, EventArgs.Empty);
+            {
+                QueueRenderTask();
+            }
         }
 
         /// <summary>
@@ -381,8 +441,8 @@ namespace Dynamo
         /// <param name="node"></param>
         private void NodeAdded(NodeModel node)
         {
-            node.BlockingStarted += Pause;
-            node.BlockingEnded += UnPause;
+            //node.BlockingStarted += Pause;
+            //node.BlockingEnded += UnPause;
 
             if (updatingPaused) return;
 
@@ -452,7 +512,7 @@ namespace Dynamo
                 connector.End.Owner.ClearRenderPackages();
 
             //tell the watches that they require re-binding.
-            OnRenderComplete(this, EventArgs.Empty);
+            QueueRenderTask();
         }
 
         #endregion
@@ -492,44 +552,62 @@ namespace Dynamo
         private void Clear(object sender, EventArgs e)
         {
             Pause(this, EventArgs.Empty);
-            OnRenderComplete(this, EventArgs.Empty);
+            QueueRenderTask();
+        }
+
+        /// <summary>
+        /// Increment the render task id and fire the render completed event.
+        /// </summary>
+        private void QueueRenderTask(bool increment = true)
+        {
+            if (increment)
+            {
+                CurrentTaskId++;
+            }
+            
+            Debug.WriteLine("RENDER : Current task id = {0}", CurrentTaskId);
+            TaskList.Add(CurrentTaskId);
+            OnRenderComplete(this, new RenderCompletionEventArgs(CurrentTaskId));
         }
 
         /// <summary>
         /// Finds all nodes marked as upated in the graph and calls their,
         /// update methods in paralell.
         /// </summary>
-        private void Render(IEnumerable<NodeModel> toUpdate = null)
+        private void Render(IEnumerable<NodeModel> toUpdate = null, bool incrementId = true)
         {
             if (_controller == null)
                 return;
 
-            if (isUpdating)
-                return;
+            //if (isUpdating)
+            //{
+            //    Debug.WriteLine("RENDER: Already updating. Skipping render call.");
+            //    return;
+            //}
 
-            isUpdating = true;
+            //isUpdating = true;
             var worker = new BackgroundWorker();
 
-            worker.DoWork += RenderThread;
+            worker.DoWork += (n,i) => RenderThread(toUpdate, incrementId);
 
             if (DynamoController.IsTestMode)
-                RenderThread(null, new DoWorkEventArgs(toUpdate));
+                RenderThread(toUpdate, incrementId);
             else
-                worker.RunWorkerAsync(toUpdate);   
+                worker.RunWorkerAsync();   
         }
 
-        private void RenderThread(object sender, DoWorkEventArgs e)
+        private void RenderThread(IEnumerable<NodeModel> nodes, bool incrementId)
         {
-            var sw = new Stopwatch();
-            sw.Start();
-
             try
             {
+                var sw = new Stopwatch();
+                sw.Start();
+
                 //If the the event arguments contains a list of nodes,
                 //then update those nodes, otherwise process any nodes
                 //that are marked for updating.
 
-                var toUpdate = e.Argument as IEnumerable<NodeModel> ??
+                var toUpdate = nodes ??
                                _controller.DynamoModel.Nodes.Where(node => node.IsUpdated || node.RequiresRecalc);
 
                 var nodeModels = toUpdate as IList<NodeModel> ?? toUpdate.ToList();
@@ -544,21 +622,21 @@ namespace Dynamo
                 //if(!DynamoController.IsTestMode)
                 //    SetupOctree(nodeModels);
 
+                sw.Stop();
+                Debug.WriteLine(string.Format("RENDER: {0} ellapsed for updating render packages.", sw.Elapsed));
+
                 //Debug.WriteLine(string.Format("Visualization updating {0} objects", toUpdate.Count()));
-                OnRenderComplete(this, EventArgs.Empty);
+                QueueRenderTask(incrementId);
 
             }
             catch (Exception ex)
             {
                 dynSettings.DynamoLogger.Log(ex);
             }
-            finally
-            {
-                isUpdating = false;
-            }
-
-            sw.Stop();
-            Debug.WriteLine(string.Format("RENDER: {0} ellapsed for updating render packages.", sw.Elapsed));
+            //finally
+            //{
+            //    isUpdating = false;
+            //}
         }
 
         /// <summary>
@@ -688,10 +766,35 @@ namespace Dynamo
         /// </summary>
         public string Id { get; internal set; }
 
-        public VisualizationEventArgs(IEnumerable<RenderPackage> description, string viewId)
+        public long TaskId { get; internal set; }
+
+        public VisualizationEventArgs(IEnumerable<RenderPackage> description, string viewId, long taskId)
         {
             Packages = description;
             Id = viewId;
+            TaskId = taskId;
+        }
+    }
+
+    public class RenderCompletionEventArgs : EventArgs
+    {
+        public long TaskId { get; set; }
+
+        public RenderCompletionEventArgs(long taskId)
+        {
+            TaskId = taskId;
+        }
+    }
+
+    public class RenderTag
+    {
+        public long TaskId { get; internal set; }
+        public NodeModel Node { get; internal set; }
+
+        public RenderTag(long taskId, NodeModel node)
+        {
+            TaskId = taskId;
+            Node = node;
         }
     }
 }
