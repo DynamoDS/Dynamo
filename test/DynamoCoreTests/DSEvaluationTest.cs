@@ -784,6 +784,18 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\EvaluateFptrInOtherCBN.dyn");
             AssertPreviewValue("49048255-fc2c-463d-8e93-96e20f061a0d", 42);
         }
+
+        [Test]
+        public void Test_Formula_Lacing()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\formula\formula_lacing.dyn");
+
+            AssertPreviewValue("d9b9d0a9-1fec-4b20-82c4-2d1665306509", new int[] { 4, 6, 7});
+            AssertPreviewValue("c35f1c6d-b955-4638-802f-208f93112078", new object[] { new int[] { 4, 5, 6}, new int[] { 5, 6, 7}});
+        }
+
         [Test]
         public void Formula_Simple()
         {
@@ -805,8 +817,6 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\FormulaIntegration1.dyn");
             AssertPreviewValue("88d3bb73-42cd-4ffc-82e2-402c9550d5b1", new double[] { 0.000000, 0.001038, 0.002289, -0.007827, -0.035578, -0.046003, 0.034186, 0.216376, 0.315323, 0.000000 });
         }
-        
-
     }
 
     [Category("DSCustomNode")]
