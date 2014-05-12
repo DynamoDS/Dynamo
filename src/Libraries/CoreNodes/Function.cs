@@ -15,9 +15,5 @@ namespace DSCore
         /// <returns name="x">The same as the input.</returns>
         /// <search>identity,function</search>
        [IsVisibleInDynamoLibrary(false)] 
-        public static object Identity(object x)
-        {
-            return x;
-        }
     }
 }

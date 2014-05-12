@@ -92,6 +92,7 @@
     <Compile Include="RevitNodes\SunPath.cs" />
     <Compile Include="RevitNodes\Tesselation.cs" />
     <Compile Include="RevitNodes\Topography.cs" />
+    <Compile Include="RevitNodes\Transaction.cs" />
     <Compile Include="RevitNodes\Transform.cs" />
     <Compile Include="RevitNodes\UV.cs" />
     <Compile Include="RevitNodes\View.cs" />

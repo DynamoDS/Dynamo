@@ -116,8 +116,6 @@
     <Compile Include="RevitUtils.cs" />
     <Compile Include="ElementsContainer.cs" />
     <Compile Include="DynamoRevit.cs" />
-    <Compile Include="Nodes\Selection.cs" />
-    <Compile Include="Nodes\Transaction.cs" />
     <Compile Include="OutOfSpaceException.cs" />
     <Compile Include="ParticleSystem\DynamicRelaxation.cs" />
     <Compile Include="ParticleSystem\Particle.cs" />
