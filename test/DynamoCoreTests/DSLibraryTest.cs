@@ -91,5 +91,22 @@ namespace Dynamo.Tests
             RunModel(@"core\library\t2.dyn");
             AssertValue("a", 43);
         }
+
+        [Test]
+        public void TestOverloadedMethodsWithDifferentPrimitiveType()
+        {
+            RunModel(@"core\library\PrimitiveType.dyn");
+
+            AssertPreviewValue("fda58ebb-d3d8-46d1-9851-49a2b3235128", 1);
+            AssertPreviewValue("ef093169-6a45-4346-b361-1905c7b3a79c", 2);
+        }
+
+        [Test]
+        public void TestOverloadedMethodsWithDifferentIEnumerableType()
+        {
+            RunModel(@"core\library\IEnumerableOfDifferentObjectType.dyn");
+            AssertPreviewValue("0c9c34fa-236c-43c0-a5b1-44139c83cbb6", 3);
+            AssertPreviewValue("3cb6f401-2811-4b66-9d46-83f2deb1dacb", 4);
+        }
     }
 }
