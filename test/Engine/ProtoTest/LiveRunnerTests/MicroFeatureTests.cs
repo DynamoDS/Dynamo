@@ -4080,20 +4080,6 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
         [Test]
         public void TestNestedLanguageBlockExecution()
         {
-            /*
-               r = [Imperative]
-               {
-                   if (true)
-                   {
-                       return = [Associative] { return = 42; }
-                   }
-                   else
-                   {
-                       return = [Associative] { return = 43; }
-                   }
-               }
-             */
-
             List<string> codes = new List<string>() 
             {
                @"r = [Imperative]
