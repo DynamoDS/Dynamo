@@ -94,6 +94,11 @@ namespace Dynamo.Nodes
         protected abstract void OnSelectClick();
 
         public abstract void SetupCustomUIElements(dynNodeView view);
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
     }
 
     public abstract class DSElementSelection : DSSelectionBase 

@@ -236,9 +236,13 @@ namespace Dynamo.Nodes
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 1, 1);
-            migrationData.AppendNode(dummyNode);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
+            XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
+            codeBlockNode.SetAttribute("CodeText", "{{0,0},{1,1}};");
+            codeBlockNode.SetAttribute("nickname", "Get Surface Domain");
+
+            migrationData.AppendNode(codeBlockNode);
             return migrationData;
         }
     }

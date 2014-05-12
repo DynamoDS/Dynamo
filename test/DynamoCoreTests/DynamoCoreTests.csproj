@@ -137,6 +137,10 @@
       <Name>IronPythonUI</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Engine\FFITarget\FFITarget.csproj">
+      <Project>{c70fe632-5500-4c57-b3d6-9b5574137551}</Project>
+      <Name>FFITarget</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -13,7 +13,14 @@ namespace DSIronPython
     [IsVisibleInDynamoLibrary(false)]
     public static class IronPythonEvaluator
     {
+        /// <summary>
+        ///     Data Marshaler for all data coming into a Python node.
+        /// </summary>
         public static DataMarshaler InputMarshaler = new DataMarshaler();
+
+        /// <summary>
+        ///     Data Marshaler for all data coming out of a Python node.
+        /// </summary>
         public static DataMarshaler OutputMarshaler = new DataMarshaler();
 
         /// <summary>

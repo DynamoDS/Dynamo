@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
@@ -21,7 +20,6 @@ using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Utilities;
 using DynamoUnits;
-using Dynamo.UpdateManager;
 using RevitServices.Elements;
 using RevitServices.Transactions;
 using RevitServices.Persistence;
@@ -121,13 +119,8 @@ namespace Dynamo.Applications
     public class DynamoRevit : IExternalCommand
     {
         public static RevitServicesUpdater Updater;
-        private static DynamoView dynamoView;
+        private DynamoView dynamoView;
         private DynamoController dynamoController;
-        private static bool isRunning;
-        public static double? DynamoViewX = null;
-        public static double? DynamoViewY = null;
-        public static double? DynamoViewWidth = null;
-        public static double? DynamoViewHeight = null;
         private bool handledCrash;
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
@@ -142,20 +135,6 @@ namespace Dynamo.Applications
             var assLoc = Assembly.GetExecutingAssembly().Location;
             var interactivityPath = Path.Combine(Path.GetDirectoryName(assLoc), "System.Windows.Interactivity.dll");
             var interactivityAss = Assembly.LoadFrom(interactivityPath);
-
-            //When a user double-clicks the Dynamo icon, we need to make
-            //sure that we don't create another instance of Dynamo.
-            if (isRunning)
-            {
-                Debug.WriteLine("Dynamo is already running.");
-                if (dynamoView != null)
-                {
-                    dynamoView.Focus();
-                }
-                return Result.Succeeded;
-            }
-
-            isRunning = true;
 
             try
             {
@@ -229,10 +208,10 @@ namespace Dynamo.Applications
                         dynamoView.WindowStartupLocation = WindowStartupLocation.Manual;
 
                         Rectangle bounds = Screen.PrimaryScreen.Bounds;
-                        dynamoView.Left = DynamoViewX ?? bounds.X;
-                        dynamoView.Top = DynamoViewY ?? bounds.Y;
-                        dynamoView.Width = DynamoViewWidth ?? 1000.0;
-                        dynamoView.Height = DynamoViewHeight ?? 800.0;
+                        dynamoView.Left = bounds.X;
+                        dynamoView.Top = bounds.Y;
+                        dynamoView.Width = 1000.0;
+                        dynamoView.Height = 800.0;
 
                         dynamoView.Show();
 
@@ -245,7 +224,6 @@ namespace Dynamo.Applications
             }
             catch (Exception ex)
             {
-                isRunning = false;
                 MessageBox.Show(ex.ToString());
 
                 dynSettings.DynamoLogger.LogError(ex.Message);
@@ -342,11 +320,6 @@ namespace Dynamo.Applications
         /// <param name="e"></param>
         private void dynamoView_Closing(object sender, EventArgs e)
         {
-            // cache the size of the window for later reloading
-            DynamoViewX = dynamoView.Left;
-            DynamoViewY = dynamoView.Top;
-            DynamoViewWidth = dynamoView.ActualWidth;
-            DynamoViewHeight = dynamoView.ActualHeight;
             RevThread.IdlePromise.ClearPromises();
             RevThread.IdlePromise.Shutdown();
         }
@@ -361,7 +334,6 @@ namespace Dynamo.Applications
             var view = (DynamoView)sender;
 
             dynamoView = null;
-            isRunning = false;
 
             Updater.Dispose();
             DocumentManager.OnLogError -= dynSettings.DynamoLogger.Log;

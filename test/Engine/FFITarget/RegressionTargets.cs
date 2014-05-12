@@ -18,4 +18,20 @@ namespace FFITarget
         }
 
     }
+
+    public class BaseTestMAGN3178
+    {
+        public int dummy = 6;
+
+
+    }
+
+    public class DerivedTestMAGN3178 : BaseTestMAGN3178
+    {
+        public void Foo()
+        {
+        }
+    }
+
+
 }

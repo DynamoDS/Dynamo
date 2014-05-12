@@ -1761,8 +1761,11 @@ namespace ProtoCore
                 // Append each callsite element under node element.
                 var serializedCallsites = new List<string>();
                 foreach (CallSite callSite in matchingCallSites)
-                    serializedCallsites.Add(callSite.GetTraceDataToSave());
-
+                {
+                    String traceDataToSave = callSite.GetTraceDataToSave();
+                    if (!String.IsNullOrEmpty(traceDataToSave))
+                        serializedCallsites.Add(traceDataToSave);
+                }
                 // No point adding serialized callsite data if it's empty.
                 if (serializedCallsites.Count > 0)
                     nodeDataPairs.Add(nodeGuid, serializedCallsites);

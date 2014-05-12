@@ -27,6 +27,14 @@ namespace Dynamo.UI.Views
             InstallNewUpdate = false;
             PreviewKeyDown += new KeyEventHandler(HandleEsc);
             DataContext = model;
+
+            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+        }
+
+        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        {
+            var um = dynSettings.Controller.UpdateManager;
+            um.UpdateDownloaded -= OnUpdatePackageDownloaded;
         }
 
         public bool InstallNewUpdate { get; private set; }
@@ -89,6 +97,7 @@ namespace Dynamo.UI.Views
                 this.UpdateInfo.MouseUp -= new MouseButtonEventHandler(OnUpdateInfoMouseUp);
             }
         }
+
     }
 
     //http://www.rhyous.com/2011/08/01/loading-a-richtextbox-from-an-rtf-file-using-binding-or-a-richtextfile-control/

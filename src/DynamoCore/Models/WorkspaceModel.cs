@@ -932,7 +932,9 @@ namespace Dynamo.Models
                 }).Select((n) => n.GUID);
 
                 var nodeTraceDataList = core.GetTraceDataForNodes(nodeGuids);
-                Utils.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
+
+                if (nodeTraceDataList.Count() > 0)
+                    Utils.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
             }
             catch (Exception exception)
             {
