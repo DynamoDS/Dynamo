@@ -784,6 +784,29 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\EvaluateFptrInOtherCBN.dyn");
             AssertPreviewValue("49048255-fc2c-463d-8e93-96e20f061a0d", 42);
         }
+        [Test]
+        public void Formula_Simple()
+        {
+            
+            RunModel(@"core\dsevaluation\SimpleFormula.dyn");
+            AssertPreviewValue("6637546b-7998-4c48-bdb6-0bcf9f6ae997", new int[]{ 2, 6, 12, 20, 30 });
+        }
+        [Test]
+        public void CBNAndFormula()
+        {
+
+            RunModel(@"core\dsevaluation\CBNWithFormula.dyn");
+            AssertPreviewValue("60979b20-8089-4d5a-93bf-2cf829f74060", 3);
+        }
+        [Test]
+        public void FormulaIntegration()
+        {
+
+            RunModel(@"core\dsevaluation\FormulaIntegration1.dyn");
+            AssertPreviewValue("88d3bb73-42cd-4ffc-82e2-402c9550d5b1", new double[] { 0.000000, 0.001038, 0.002289, -0.007827, -0.035578, -0.046003, 0.034186, 0.216376, 0.315323, 0.000000 });
+        }
+        
+
     }
 
     [Category("DSCustomNode")]

@@ -1215,31 +1215,6 @@ namespace Dynamo.Models
 
         #region Code Serialization
 
-        public string PrintValue(
-            int currentListIndex,
-            int maxListIndex,
-            int currentDepth,
-            int maxDepth,
-            int maxStringLength = 20)
-        {
-            string previewValue = "<null>";
-            if (!string.IsNullOrEmpty(this.AstIdentifierBase))
-            {
-                try
-                {
-                    var engine = dynSettings.Controller.EngineController;
-                    previewValue = engine.GetStringValue(this.AstIdentifierBase);
-                }
-                catch (Exception ex)
-                {
-                    dynSettings.DynamoLogger.Log(ex.Message);
-                }
-            }
-
-            return previewValue;
-        }
-        
-
         /// <summary>
         ///     Creates a Scheme representation of this dynNode and all connected dynNodes.
         /// </summary>
@@ -1710,6 +1685,19 @@ namespace Dynamo.Models
             }
         }
 
+        public bool ShouldDisplayPreview()
+        {
+            // Previews are only shown in Home workspace.
+            if (!(this.WorkSpace is HomeWorkspaceModel))
+                return false;
+
+            return this.ShouldDisplayPreviewCore();
+        }
+
+        protected virtual bool ShouldDisplayPreviewCore()
+        {
+            return true; // Default implementation: always show preview.
+        }
     }
 
     public enum ElementState

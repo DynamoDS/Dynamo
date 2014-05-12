@@ -5,6 +5,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Dynamo.Views"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              Height="Auto"
              Width="Auto"
              Name="topControl"
@@ -15,12 +16,12 @@
              MouseRightButtonDown="topControl_MouseRightButtonDown"
              Canvas.Left="{Binding Left, Mode=TwoWay}"
              Canvas.Top="{Binding Top, Mode=TwoWay}">
-
     <Grid Name="grid"
           x:FieldModifier="public"
           HorizontalAlignment="Left">
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -236,45 +237,91 @@
             </ItemsControl>
         </DockPanel>
 
-        <!-- INPUT GRID -->
-
-        <Grid Name="inputGrid"
+        <Grid Name="centralGrid"
               Grid.Column="1"
               Grid.Row="2"
-              x:FieldModifier="public"
-              VerticalAlignment="Stretch"
-              HorizontalAlignment="Stretch"
-              Height="Auto"
-              Width="Auto"
-              Background="Transparent"
-              Margin="5,0,5,0"
-              Canvas.ZIndex="20"
-              IsEnabled="{Binding Path=IsInteractionEnabled}">
-        </Grid>
+              Canvas.ZIndex="20">
 
-        <TextBlock Name="lacingOptionTextBlock"
-                   Grid.Row="3"
-                   Grid.Column="0"
-                   Grid.ColumnSpan="3"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <!-- INPUT GRID -->
+
+            <Grid Name="inputGrid"
+                  x:FieldModifier="public"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch"
+                  Canvas.ZIndex="21"
+                  IsEnabled="{Binding Path=IsInteractionEnabled}" MinHeight="{Binding Source={x:Static ui:Configurations.PortHeightInPixels}}">
+            </Grid>
+
+        </Grid>
+        
+        <StackPanel Name="GlyphStackPanel" HorizontalAlignment="Right" Orientation="Horizontal" 
+                    Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Canvas.ZIndex="30" Height="25"
+                    Visibility="{Binding ShouldShowGlyphBar, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            
+            <Canvas x:Name="previewIcon"
+                    Width="25"
+                    Height="25"
+                    HorizontalAlignment="Center"
+                    Background="Transparent"
+                    MouseEnter="OnPreviewIconMouseEnter"
+                    MouseLeave="OnPreviewIconMouseLeave"
+                    MouseLeftButtonDown="OnPreviewIconMouseClicked">
+                <Canvas.Visibility>
+                    <Binding Path="IsPreviewInsetVisible"
+                             UpdateSourceTrigger="PropertyChanged"
+                             Mode="OneWay"
+                             Converter="{StaticResource BooleanToVisibilityConverter}"
+                             ConverterParameter="Collapse">
+                    </Binding>
+                </Canvas.Visibility>
+
+                <Rectangle x:Name="previewOuterRect"
+                           Width="9"
+                           Height="9"
+                           Canvas.Left="8"
+                           Canvas.Top="8"
+                           Stretch="Fill"
+                           StrokeMiterLimit="2.75"
+                           Stroke="#FF8A8682" />
+
+                <Rectangle x:Name="previewInnerRect"
+                           Width="4.6875"
+                           Height="4.6875"
+                           Canvas.Left="10.0938"
+                           Canvas.Top="10.2813"
+                           Stretch="Fill"
+                           Fill="#FFB1ACA6"
+                           Visibility="Hidden" />
+            </Canvas>
+            
+            <TextBlock Name="lacingOptionTextBlock"
                    Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
                    ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
                    FontFamily="Tahoma"
                    FontSize="8"
-                   Margin="3,0,3,2"
+                   Margin="5"
                    HorizontalAlignment="Right"
-                   VerticalAlignment="Bottom"
+                   VerticalAlignment="Center"
                    Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
                    Foreground="#99000000"
-                   FontWeight="Bold"
-                   Canvas.ZIndex="30" />
+                   FontWeight="Bold"/>
+        
+        </StackPanel>
 
-        <Grid x:FieldModifier="public"
+        <Grid Name="PresentationGrid"
+              x:FieldModifier="public"
               Grid.Row="3"
               Grid.Column="0"
               Grid.ColumnSpan="3"
               Margin="5"
-              Name="PresentationGrid"
-              ZIndex="50">
+              ZIndex="50"
+              Visibility="Collapsed">
             <!--DO NOT ERASE THIS GRID TO BE USED FOR PRESENTING IMAGES, 3D VIEWS, ETC.-->
         </Grid>
 
@@ -315,32 +362,14 @@
             </Rectangle.Visibility>
         </Rectangle>
 
-        <Polygon Grid.Row="3"
-                 Grid.ColumnSpan="3"
-                 Fill="White"
-                 Canvas.ZIndex="42"
-                 HorizontalAlignment="Center"
-                 VerticalAlignment="Bottom"
-                 StrokeThickness="1"
-                 Stroke="Gray"
-                 MouseEnter="PreviewArrow_MouseEnter">
-            <Polygon.Visibility>
-                <Binding Path="IsPreviewInsetVisible"
-                         UpdateSourceTrigger="PropertyChanged"
-                         Mode="OneWay"
-                         Converter="{StaticResource BooleanToVisibilityConverter}">
-                </Binding>
-            </Polygon.Visibility>
-            <Polygon.Points>
-                <Point X="0"
-                       Y="6" />
-                <Point X="6"
-                       Y="0" />
-                <Point X="12"
-                       Y="6" />
-            </Polygon.Points>
-        </Polygon>
+        <Canvas Name="expansionBay"
+                Grid.Row="4"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Margin="4"
+                HorizontalAlignment="Center"
+                Background="Blue">
+        </Canvas>
 
     </Grid>
-
 </UserControl>

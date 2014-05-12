@@ -255,17 +255,25 @@ namespace DSCoreNodesTests
         [Test]
         public static void DropEveryNthValueFromList()
         {
-            Assert.AreEqual(
-                new List<int> { 1, 2, 4, 5, 7 },
-                List.DropEveryNthItem(new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 }, 3, 1));
+            var list = Enumerable.Range(1, 12).ToList();
+            const int n = 3;
+
+            Assert.AreEqual(new List<int> { 1, 2, 4, 5, 7, 8, 10, 11 }, List.DropEveryNthItem(list, n, 0));
+            Assert.AreEqual(new List<int> { 2, 3, 5, 6, 8, 9, 11, 12 }, List.DropEveryNthItem(list, n, 1));
+            Assert.AreEqual(new List<int> { 1, 3, 4, 6, 7, 9, 10, 12 }, List.DropEveryNthItem(list, n, 2));
+            Assert.AreEqual(List.DropEveryNthItem(list, n, 0), List.DropEveryNthItem(list, n, 3));
         }
 
         [Test]
         public static void TakeEveryNthValueFromList()
         {
-            Assert.AreEqual(
-                new List<int> { 3, 6 },
-                List.TakeEveryNthItem(new List<int> { 0, 1, 2, 3, 4, 5, 6, 7}, 3, 1));
+            var list = Enumerable.Range(1, 12).ToList();
+            const int n = 3;
+
+            Assert.AreEqual(new List<int> { 3, 6, 9, 12 }, List.TakeEveryNthItem(list, n, 0));
+            Assert.AreEqual(new List<int> { 1, 4, 7, 10 }, List.TakeEveryNthItem(list, n, 1));
+            Assert.AreEqual(new List<int> { 2, 5, 8, 11 }, List.TakeEveryNthItem(list, n, 2));
+            Assert.AreEqual(List.TakeEveryNthItem(list, n, 0), List.TakeEveryNthItem(list, n, 3));
         }
 
         [Test]

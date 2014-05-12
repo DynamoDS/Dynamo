@@ -113,6 +113,11 @@ namespace DSCoreNodesUI
 
         #endregion
 
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
+
         private string GetDescription()
         {
             if (this.NodeNature == Nature.Deprecated)

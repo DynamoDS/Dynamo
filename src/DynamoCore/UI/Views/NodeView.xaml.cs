@@ -17,6 +17,7 @@ using System.Windows.Media;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Threading;
 using Dynamo.Core;
+using Dynamo.UI.Controls;
 
 namespace Dynamo.Controls
 {
@@ -25,7 +26,8 @@ namespace Dynamo.Controls
         public delegate void SetToolTipDelegate(string message);
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
 
-        private NodeViewModel viewModel;
+        private NodeViewModel viewModel = null;
+        private PreviewControl previewControl = null;
 
         public dynNodeView TopControl
         {
@@ -43,6 +45,21 @@ namespace Dynamo.Controls
             private set { viewModel = value; }
         }
 
+        private PreviewControl PreviewControl
+        {
+            get
+            {
+                if (this.previewControl == null)
+                {
+                    this.previewControl = new PreviewControl();
+                    this.previewControl.StateChanged += OnPreviewControlStateChanged;
+                    this.expansionBay.Children.Add(this.previewControl);
+                }
+
+                return this.previewControl;
+            }
+        }
+
         private DispatcherTimer toolTipDelayTimer;
 
         #region constructors
@@ -57,13 +74,25 @@ namespace Dynamo.Controls
 
             InitializeComponent();
 
-            this.Loaded += new RoutedEventHandler(OnNodeViewLoaded);
+            Loaded += new RoutedEventHandler(OnNodeViewLoaded);
+            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
             inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
 
             this.SizeChanged += OnSizeChanged;
             this.DataContextChanged += OnDataContextChanged;
 
             Canvas.SetZIndex(this, 1);
+        }
+
+        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Node view unloaded.");
+
+            ViewModel.NodeLogic.DispatchedToUI -= NodeLogic_DispatchedToUI;
+            ViewModel.RequestShowNodeHelp -= ViewModel_RequestShowNodeHelp;
+            ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
+            ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
+            ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
         }
 
         #endregion
@@ -131,7 +160,39 @@ namespace Dynamo.Controls
                 case "ArgumentLacing":
                     ViewModel.SetLacingTypeCommand.RaiseCanExecuteChanged();
                     break;
+
+                case "IsUpdated":
+                    HandleCacheValueUpdated();
+                    break;
             }
+        }
+
+        /// <summary>
+        /// Whenever property "NodeModel.IsUpdated" is set to true, this method 
+        /// is invoked. It will result in preview control updated, if the control 
+        /// is currently visible. Otherwise this call will be ignored.
+        /// </summary>
+        /// 
+        private void HandleCacheValueUpdated()
+        {
+            Dispatcher.BeginInvoke(new Action(delegate
+            {
+                // There is no preview control or the preview control is 
+                // currently in transition state (it can come back to handle
+                // the new data later on when it is ready).
+                if ((previewControl == null) || previewControl.IsInTransition)
+                    return;
+
+                if (previewControl.IsHidden) // The preview control is hidden.
+                {
+                    // Invalidate the previously bound data, if any.
+                    if (previewControl.IsDataBound)
+                        previewControl.BindToDataSource(null);
+                    return;
+                }
+
+                previewControl.BindToDataSource(ViewModel.NodeLogic.CachedValue);
+            }));
         }
 
         void ViewModel_RequestsSelection(object sender, EventArgs e)
@@ -188,7 +249,7 @@ namespace Dynamo.Controls
 
             var helpDialog = new NodeHelpPrompt(e.Model);
             helpDialog.Owner = Window.GetWindow(this);
-            
+
             helpDialog.Show();
 
         }
@@ -296,9 +357,6 @@ namespace Dynamo.Controls
             if (toolTipDelayTimer != null && toolTipDelayTimer.IsEnabled)
                 toolTipDelayTimer.Stop();
 
-            dynSettings.Controller.InfoBubbleViewModel.OnRequestAction(
-                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
-
             if (e.ClickCount == 2)
             {
                 Debug.WriteLine("Nickname double clicked!");
@@ -310,11 +368,89 @@ namespace Dynamo.Controls
             }
         }
 
-        private void PreviewArrow_MouseEnter(object sender, MouseEventArgs e)
+        #region Preview Control Related Event Handlers
+
+        private void OnPreviewIconMouseEnter(object sender, MouseEventArgs e)
         {
-            UIElement uiElement = sender as UIElement;
-            if (uiElement.Visibility == System.Windows.Visibility.Visible)
-                ViewModel.ShowPreviewCommand.Execute(null);
+            previewInnerRect.Visibility = System.Windows.Visibility.Visible;
+            previewOuterRect.Fill = FrozenResources.PreviewIconHoverBrush;
+
+            if (PreviewControl.IsInTransition) // In transition state, come back later.
+                return;
+
+            if (PreviewControl.IsHidden)
+            {
+                if (PreviewControl.IsDataBound == false)
+                    PreviewControl.BindToDataSource(ViewModel.NodeLogic.CachedValue);
+
+                PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+            }
         }
+
+        private void OnPreviewIconMouseLeave(object sender, MouseEventArgs e)
+        {
+            RefreshPreviewIconDisplay();
+            previewInnerRect.Visibility = System.Windows.Visibility.Hidden;
+
+            if (PreviewControl.IsInTransition) // In transition state, come back later.
+                return;
+
+            if (PreviewControl.IsCondensed)
+                PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+        }
+
+        private void OnPreviewIconMouseClicked(object sender, MouseEventArgs e)
+        {
+            if (PreviewControl.IsInTransition) // In transition state, come back later.
+                return;
+
+            if (PreviewControl.IsCondensed)
+                PreviewControl.TransitionToState(PreviewControl.State.Expanded);
+            else if (PreviewControl.IsExpanded)
+                PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+
+            previewOuterRect.Fill = FrozenResources.PreviewIconClickedBrush;
+        }
+
+        private void OnPreviewControlStateChanged(object sender, EventArgs e)
+        {
+            RefreshPreviewIconDisplay();
+
+            if (this.previewIcon.IsMouseOver)
+            {
+                // The mouse is currently over the preview icon, so if the 
+                // preview control is hidden, bring it into condensed state.
+                var preview = sender as PreviewControl;
+                if (preview.IsHidden != false)
+                    preview.TransitionToState(PreviewControl.State.Condensed);
+            }
+            else
+            {
+                // The mouse is no longer over the preview icon, if the preview 
+                // control is currently in condensed state, hide it from view.
+                var preview = sender as PreviewControl;
+                if (preview.IsCondensed != false)
+                    preview.TransitionToState(PreviewControl.State.Hidden);
+            }
+        }
+
+        private void RefreshPreviewIconDisplay()
+        {
+            if (this.previewControl == null)
+                return;
+
+            if (this.previewControl.IsHidden)
+                previewOuterRect.Fill = FrozenResources.PreviewIconNormalBrush;
+            else if (this.previewControl.IsCondensed)
+                previewOuterRect.Fill = FrozenResources.PreviewIconHoverBrush;
+            else if (this.previewControl.IsExpanded)
+                previewOuterRect.Fill = FrozenResources.PreviewIconPinnedBrush;
+            else if (this.previewControl.IsInTransition)
+            {
+                // No changes, those will come after transition is done.
+            }
+        }
+
+        #endregion
     }
 }

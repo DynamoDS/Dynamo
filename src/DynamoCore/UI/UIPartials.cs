@@ -233,6 +233,11 @@ namespace Dynamo.Nodes
         {
             //override in child classes
         }
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
     }
 
     public partial class DoubleInput
@@ -243,7 +248,7 @@ namespace Dynamo.Nodes
             var tb = new DynamoTextBox(Value ?? "0.0")
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Top,
+                VerticalAlignment = VerticalAlignment.Stretch,
                 Background =
                     new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
@@ -285,6 +290,11 @@ namespace Dynamo.Nodes
             }
 
             return base.UpdateValueCore(name, value);
+        }
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
         }
     }
 
@@ -562,6 +572,7 @@ namespace Dynamo.Nodes
             nodeUI.PresentationGrid.MaxWidth = Configurations.MaxWatchNodeWidth;
             nodeUI.PresentationGrid.MaxHeight = Configurations.MaxWatchNodeHeight;
             nodeUI.PresentationGrid.Children.Add(_watchTree);
+            nodeUI.PresentationGrid.Visibility = Visibility.Visible;
 
             if (Root == null)
                 Root = new WatchViewModel();
@@ -642,6 +653,11 @@ namespace Dynamo.Nodes
                     OnRequestBindingRehook(EventArgs.Empty);
                 });
         }
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
     }
 
     public abstract partial class AbstractString
@@ -691,12 +707,12 @@ namespace Dynamo.Nodes
                 AcceptsTab = true,
                 TextWrapping = TextWrapping.Wrap,
                 MaxWidth = 200,
-                VerticalAlignment = VerticalAlignment.Top
+                VerticalAlignment = VerticalAlignment.Stretch
             };
 
             nodeUI.inputGrid.Children.Add(tb);
-            System.Windows.Controls.Grid.SetColumn(tb, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 0);
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
 
             tb.DataContext = this;
             tb.BindToProperty(new System.Windows.Data.Binding("Value")
