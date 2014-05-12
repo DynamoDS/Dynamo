@@ -68,7 +68,8 @@ namespace Dynamo
             ElementNameStore = new Dictionary<ElementId, string>();
 
             EngineController.ImportLibrary("RevitNodes.dll");
-
+            EngineController.ImportLibrary("SimpleRaaS.dll");
+            
             //IronPythonEvaluator.InputMarshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
             //IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => element.ToDSType(false));
         }
