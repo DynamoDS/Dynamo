@@ -1685,6 +1685,19 @@ namespace Dynamo.Models
             }
         }
 
+        public bool ShouldDisplayPreview()
+        {
+            // Previews are only shown in Home workspace.
+            if (!(this.WorkSpace is HomeWorkspaceModel))
+                return false;
+
+            return this.ShouldDisplayPreviewCore();
+        }
+
+        protected virtual bool ShouldDisplayPreviewCore()
+        {
+            return true; // Default implementation: always show preview.
+        }
     }
 
     public enum ElementState

@@ -120,6 +120,11 @@ namespace DSCoreNodesUI
             };
         }
 
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
+
         //http://gaggerostechnicalnotes.blogspot.com/2012/01/wpf-colors-scale.html
         private WriteableBitmap CompleteColorScale(Color start, Color end)
         {

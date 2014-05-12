@@ -39,7 +39,7 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// An event triggered on the completion of visualization update.
         /// </summary>
-        event VisualizationCompleteEventHandler VisualizationUpdateComplete;
+        event VisualizationCompleteEventHandler RenderComplete;
 
         /// <summary>
         /// Display a label for one or several render packages 
