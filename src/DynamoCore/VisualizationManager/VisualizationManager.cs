@@ -32,7 +32,6 @@ namespace Dynamo
 
         private string _alternateContextName = "Host";
         private bool _drawToAlternateContext = true;
-        protected bool isUpdating = false;
         //private Octree.OctreeSearch.Octree octree;
         private bool updatingPaused = false;
         private DynamoController _controller;
@@ -579,13 +578,6 @@ namespace Dynamo
             if (_controller == null)
                 return;
 
-            //if (isUpdating)
-            //{
-            //    Debug.WriteLine("RENDER: Already updating. Skipping render call.");
-            //    return;
-            //}
-
-            //isUpdating = true;
             var worker = new BackgroundWorker();
 
             worker.DoWork += (n,i) => RenderThread(toUpdate, incrementId);
@@ -633,10 +625,6 @@ namespace Dynamo
             {
                 dynSettings.DynamoLogger.Log(ex);
             }
-            //finally
-            //{
-            //    isUpdating = false;
-            //}
         }
 
         /// <summary>
