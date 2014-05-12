@@ -4077,6 +4077,60 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             AssertValue("a", 42);
         }
 
+        [Test]
+        public void TestNestedLanguageBlockExecution()
+        {
+            /*
+               r = [Imperative]
+               {
+                   if (true)
+                   {
+                       return = [Associative] { return = 42; }
+                   }
+                   else
+                   {
+                       return = [Associative] { return = 43; }
+                   }
+               }
+             */
+
+            List<string> codes = new List<string>() 
+            {
+               @"r = [Imperative]
+               {
+                   if (true)
+                   {
+                       return = [Associative] { return = 42; }
+                   }
+                   return = null;
+               }",
+
+               @"r = [Imperative]
+               {
+                   if (true)
+                   {
+                       return = [Associative] { return = 45; }
+                   }
+                   return = null;
+               }"
+            };
+            
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("r", 42);
+
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid1, codes[1]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("r", 43);
+        }
     }
 
 }
