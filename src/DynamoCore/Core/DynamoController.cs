@@ -369,11 +369,11 @@ namespace Dynamo
 
         public void RunExpression(int? executionInterval = null)
         {
-            //dynSettings.DynamoLogger.LogWarning("Running expression", WarningLevel.Mild);
-
             //If we're already running, do nothing.
             if (Running)
+            {
                 return;
+            }
 
             // If there is preloaded trace data, send that along to the current
             // LiveRunner instance. Here we make sure it is done exactly once 
