@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -34,7 +35,15 @@ namespace Dynamo.Nodes
                 };
             noteText.PreviewMouseDown += noteText_PreviewMouseDown;
 
-            this.Loaded += dynNoteView_Loaded;
+            Loaded += dynNoteView_Loaded;
+            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+        }
+
+        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Note view unloaded.");
+
+            ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
         }
 
         void dynNoteView_Loaded(object sender, RoutedEventArgs e)

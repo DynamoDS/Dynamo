@@ -123,6 +123,7 @@
     <Compile Include="Elements\InternalUtilities\ElementSelector.cs" />
     <Compile Include="Elements\Family.cs" />
     <Compile Include="GeometryConversion\Extensions.cs" />
+    <Compile Include="GeometryReferences\RayBounce.cs" />
     <Compile Include="Graphics\GraphicsManager.cs" />
     <Compile Include="Elements\Parameter.cs" />
     <Compile Include="Elements\AdaptiveComponent.cs" />

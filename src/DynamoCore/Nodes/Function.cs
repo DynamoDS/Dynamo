@@ -6,7 +6,6 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
 
 #endregion
