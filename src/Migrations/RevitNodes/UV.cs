@@ -117,10 +117,10 @@ namespace Dynamo.Nodes
             XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeModelNode(
                 data.Document, oldNode, 0,
                 "dom[0][0]+Math.RandomList\n" +
-                "((ucount+1)*(vcount+1))\n" +
+                "(ucount*vcount)\n" +
                 "*(dom[1][0]-dom[0][0]);\n" +
                 "dom[0][1]+Math.RandomList\n" +
-                "((ucount+1)*(vcount+1))\n" +
+                "(ucount*vcount)\n" +
                 "*(dom[1][1]-dom[0][1]);");
             migrationData.AppendNode(codeBlockNode);
             string codeBlockNodeId = MigrationManager.GetGuidFromXmlElement(codeBlockNode);
