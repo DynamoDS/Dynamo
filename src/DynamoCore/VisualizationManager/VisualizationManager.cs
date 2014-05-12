@@ -319,7 +319,7 @@ namespace Dynamo
             }
 
             watch.Stop();
-            //Debug.WriteLine(String.Format("{0} ellapsed for aggregating geometry for watch.", watch.Elapsed));
+            Debug.WriteLine(String.Format("RENDER: {0} ellapsed for aggregating geometry for watch.", watch.Elapsed));
 
             //LogVisualizationUpdateData(rd, watch.Elapsed.ToString());
         }
@@ -520,6 +520,9 @@ namespace Dynamo
 
         private void RenderThread(object sender, DoWorkEventArgs e)
         {
+            var sw = new Stopwatch();
+            sw.Start();
+
             try
             {
                 //If the the event arguments contains a list of nodes,
@@ -553,6 +556,9 @@ namespace Dynamo
             {
                 isUpdating = false;
             }
+
+            sw.Stop();
+            Debug.WriteLine(string.Format("RENDER: {0} ellapsed for updating render packages.", sw.Elapsed));
         }
 
         /// <summary>

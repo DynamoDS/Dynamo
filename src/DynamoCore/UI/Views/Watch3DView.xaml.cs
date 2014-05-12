@@ -523,7 +523,7 @@ namespace Dynamo.Controls
                 
             GC.Collect();
 
-            Debug.WriteLine(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
+            Debug.WriteLine(string.Format("RENDER: {0} ellapsed for updating background preview.", sw.Elapsed));
         }
 
         private void ConvertPoints(RenderPackage p,
