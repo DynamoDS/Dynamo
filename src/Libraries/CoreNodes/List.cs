@@ -28,26 +28,25 @@ namespace DSCore
         {
             internal static readonly IEqualityComparer<object> Instance = new DistinctComparer();
 
-            private static bool Eq(object x, object y)
+            private static bool Eq(double x, double y)
             {
-                return object.Equals(x, y);
+                return x.Equals(y);
             }
 
-            private bool Eq(IList x, IList y)
+            private static bool Eq(IList x, IList y)
             {
                 return x.Cast<object>().Zip(y.Cast<object>(), Equals).All(b => b);
             }
 
-            public bool Equals(object x, object y)
+            bool IEqualityComparer<object>.Equals(object x, object y)
             {
                 return Eq(x as dynamic, y as dynamic);
             }
 
+            // Bypass hash code check, use Equals instead.
             public int GetHashCode(object obj)
             {
-                if (obj is IList)
-                    return -1;
-                return obj.GetHashCode();
+                return -1;
             }
         }
 
@@ -773,7 +772,8 @@ namespace DSCore
                     yield return Singleton(item);
                 else
                 {
-                    foreach (var result in GetCombinations(enumerable.Skip(replace ? i : i + 1), count - 1, replace))
+                    var combs = GetCombinations(enumerable.Skip(replace ? i : i + 1), count - 1, replace);
+                    foreach (var result in combs)
                         yield return Singleton(item).Concat(result);
                 }
 
@@ -781,8 +781,7 @@ namespace DSCore
             }
         }
 
-        private static IEnumerable<IEnumerable<T>> GetPermutations<T>(
-            IEnumerable<T> items, int count)
+        private static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> items, int count)
         {
             int i = 0;
             var enumerable = items as IList<T> ?? items.ToList();
