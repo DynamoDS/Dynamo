@@ -31,10 +31,7 @@ namespace Dynamo.Models
             (sender as DispatcherTimer).Stop();
 
             var controller = dynSettings.Controller;
-            if (!controller.Running)
-            {
-                controller.RunExpression();
-            }
+            controller.RunExpression();
         }
 
         public override void Modified()

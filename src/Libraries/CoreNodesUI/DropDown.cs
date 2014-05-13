@@ -124,5 +124,10 @@ namespace DSCoreNodesUI
             };
             combo.SetBinding(Selector.SelectedIndexProperty, indexBinding);
         }
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
     }
 }

@@ -34,12 +34,12 @@ namespace Dynamo.Interfaces
         /// </summary>
         /// <param name="node">The node whose upstream geometry you need.</param>
         /// <returns>A render description containing all upstream geometry.</returns>
-        void AggregateUpstreamRenderPackages(NodeModel node);
+        void AggregateUpstreamRenderPackages(RenderTag tag);
 
         /// <summary>
         /// An event triggered on the completion of visualization update.
         /// </summary>
-        event VisualizationCompleteEventHandler VisualizationUpdateComplete;
+        event RenderCompleteEventHandler RenderComplete;
 
         /// <summary>
         /// Display a label for one or several render packages 
@@ -62,5 +62,12 @@ namespace Dynamo.Interfaces
         /// Unpause the visualization manager.
         /// </summary>
         void UnPause();
+
+        /// <summary>
+        /// Checks whether the most recent rendering is the latest,
+        /// and triggers a re-render.
+        /// </summary>
+        void CheckIfLatestAndUpdate(long taskId);
+
     }
 }
