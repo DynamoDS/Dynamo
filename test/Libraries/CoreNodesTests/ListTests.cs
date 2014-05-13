@@ -43,9 +43,9 @@ namespace DSCoreNodesTests
         [Test]
         public static void SortList()
         {
-            Assert.AreEqual(
-                new ArrayList { 1, 2, 3, 4, 5 },
-                List.Sort(new ArrayList { 2, 3, 5, 4, 1 }));
+            var sorted = Enumerable.Range(1, 5).ToList();
+
+            Assert.AreEqual(sorted, List.Sort(List.Shuffle(sorted)));
         }
 
         [Test]
