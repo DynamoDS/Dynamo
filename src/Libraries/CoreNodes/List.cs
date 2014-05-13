@@ -310,39 +310,34 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Gets a single sub-list from the given list, based on starting index, amount of items
-        ///     to take, and a step amount.
+        ///     Gets a single sub-list from the given list, based on starting index, ending index,
+        ///     and a step amount.
         /// </summary>
         /// <param name="list">List to take a slice of.</param>
         /// <param name="start">Index to start the slice from.</param>
-        /// <param name="count">Number of items to take in the slice.</param>
+        /// <param name="end">Index to end the slice at.</param>
         /// <param name="step">
         ///     Amount the indices of the items are separate by in the original list.
         /// </param>
         /// <returns name="items">Items in the slice of the given list.</returns>
         /// <search>list,sub,sublist</search>
-        public static IList Slice(IList list, int? start = null, int? count = null, int step = 1)
+        public static IList Slice(IList list, int? start = null, int? end = null, int step = 1)
         {
-            #region Disabled python-like slicing capability
-
-            /*
             if (step == 0)
                 throw new ArgumentException("Cannot slice a list with step of 0.", @"step");
 
             int _start = start ?? (step < 0 ? -1 : 0);
             int _end = end ?? (step < 0 ? -list.Count - 1 : list.Count);
 
-            if (_start < -list.Count || _start >= list.Count)
-                throw new ArgumentException("Cannot slice a list starting at a negative index.", "start");
             _start = _start >= 0 ? _start : _start + list.Count;
 
-            if (_end < -list.Count - 1)
-                throw new ArgumentException("Ending index out of range.", "end");
+            if (_start < 0)
+                _start = 0;
+
+            _end = _end >= 0 ? _end : _end + list.Count;
 
             if (_end > list.Count)
                 _end = list.Count;
-
-            _end = _end >= 0 ? _end : _end + list.Count;
 
             IList result = new ArrayList();
 
@@ -357,22 +352,9 @@ namespace DSCore
             {
                 if (_end > _start)
                     return result;
-                for (int i = _start; i > end; i += step)
+                for (int i = _start; i > _end; i += step)
                     result.Add(list[i]);
             }
-
-            return result;
-            */
-
-            #endregion
-
-            IList result = new ArrayList();
-
-            int _start = start ?? 0;
-            int end = count == null ? list.Count : (int)Math.Min(list.Count, _start + ((int)count)*step);
-
-            for (int i = _start; i < end; i += step)
-                result.Add(list[i]);
 
             return result;
         }

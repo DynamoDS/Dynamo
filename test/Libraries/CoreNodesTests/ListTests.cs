@@ -222,11 +222,16 @@ namespace DSCoreNodesTests
         public static void TakeListSlice()
         {
             var list = new ArrayList(Enumerable.Range(0, 10).ToList());
+            var reversed = list.Cast<object>().Reverse().ToList();
 
             Assert.AreEqual(list, List.Slice(list));
-            Assert.AreEqual(new ArrayList { 0, 1, 2, 3, 4 }, List.Slice(list, count: 5));
-            Assert.AreEqual(new ArrayList { 1, 2, 3, 4, 5 }, List.Slice(list, 1, 5));
+
+            Assert.AreEqual(new ArrayList { 0, 1, 2, 3, 4 }, List.Slice(list, end: 5));
+            Assert.AreEqual(new ArrayList { 1, 2, 3, 4 }, List.Slice(list, 1, 5));
             Assert.AreEqual(new ArrayList { 0, 2, 4, 6, 8 }, List.Slice(list, step: 2));
+            Assert.AreEqual(reversed, List.Slice(list, step: -1));
+            Assert.AreEqual(new ArrayList { 0, 1, 2, 3, 4 }, List.Slice(list, -11, -5));
+            Assert.AreEqual(reversed, List.Slice(list, -1, -11, -1));
         }
 
         [Test]
