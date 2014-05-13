@@ -555,6 +555,9 @@ namespace Dynamo.Utilities
             collapsedNode.EnableReporting();
             currentWorkspace.EnableReporting();
 
+            foreach (var node in newNodeWorkspace.Nodes)
+                node.EnableReporting();
+
             newNodeWorkspace.WatchChanges = true;
         }
     }

@@ -482,9 +482,6 @@ namespace DSCoreNodesTests
         {
             var check = List.Permutations(new ArrayList { "A", "B", "C", "D" }, 2);
 
-            Console.WriteLine(string.Join("\n", check.Cast<IList>().Select(
-                lst => string.Join("", lst.Cast<string>()))));
-
             Assert.AreEqual(
                 new ArrayList
                 {
@@ -510,9 +507,6 @@ namespace DSCoreNodesTests
             var input = new ArrayList { "A", "B", "C", "D" };
 
             var check = List.Combinations(input, 2);
-
-            Console.WriteLine(string.Join("\n", check.Cast<IList>().Select(
-                lst => string.Join("", lst.Cast<string>()))));
 
             Assert.AreEqual(
                 new ArrayList
