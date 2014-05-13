@@ -10,7 +10,6 @@
              Loaded="InfoBubbleWindowUserControl_Loaded">
     <UserControl.Resources>
         <ResourceDictionary>
-            <controls:InfoBubbleStyleToVisibilityConverter x:Key="StyleToVisibilityConverter"/>
             <Storyboard x:Key="fadeInStoryBoard" Name="fadeInStoryBoard" TargetName="mainGrid" Storyboard.TargetProperty="Opacity">
                 <DoubleAnimation Name ="countUpDoubleAnimation" From="0" To="0.95" Duration="0:0:.25" FillBehavior="HoldEnd" Completed="CountUpDoubleAnimation_Completed"/>
             </Storyboard>
@@ -25,7 +24,7 @@
            MouseLeave="InfoBubble_MouseLeave" MouseMove="MainGrid_MouseMove" MouseWheel="InfoBubble_MouseWheel">
 
         <Polygon Name="backgroundPolygon" Margin="0, 0, 0, 0" 
-                 MouseMove="InfoBubble_MouseMove" MouseEnter="InfoBubble_MouseEnter" MouseDown="InfoBubble_PreviewMouseDown"
+                 MouseEnter="InfoBubble_MouseEnter"
                  RenderOptions.EdgeMode="Aliased">
         </Polygon>
 
@@ -78,21 +77,5 @@
             </StackPanel.Resources>
         </StackPanel>
 
-        <Rectangle Name="VerticalResizeBar" Width="15" HorizontalAlignment="Right" Fill="Transparent" StrokeThickness="0"
-                   Margin="0 0 -10 0" Visibility="{Binding Path=InfoBubbleStyle, Converter={StaticResource StyleToVisibilityConverter}}"
-                   MouseEnter="VerticalResizeBar_MouseEnter" MouseLeave="ResizeObject_MouseLeave"
-                   MouseDown="VerticalResizeBar_MouseDown" MouseUp="ResizeObject_MouseUp"/>
-
-        <Rectangle Name="HorizontalResizeBar" Height="15" VerticalAlignment="Bottom" Fill="Transparent" StrokeThickness="0"
-                   Margin="0 0 0 -10" Visibility="{Binding Path=InfoBubbleStyle, Converter={StaticResource StyleToVisibilityConverter}}"
-                   MouseEnter="HorizontalResizeBar_MouseEnter" MouseLeave="ResizeObject_MouseLeave"
-                   MouseDown="HorizontalResizeBar_MouseDown" MouseUp="ResizeObject_MouseUp"
-                   />
-
-        <Rectangle Name="ConnerResizePoint" Height="15" Width="15" VerticalAlignment="Bottom" HorizontalAlignment="Right" 
-                   Fill="Transparent" StrokeThickness="0" Margin="0 0 -10 -10"
-                   Visibility="{Binding Path=InfoBubbleStyle, Converter={StaticResource StyleToVisibilityConverter}}"
-                   MouseEnter="ConnerResizePoint_MouseEnter" MouseLeave="ResizeObject_MouseLeave"
-                   MouseDown="ConnerResizePoint_MouseDown" MouseUp="ResizeObject_MouseUp"/>
     </Grid>
 </UserControl>
