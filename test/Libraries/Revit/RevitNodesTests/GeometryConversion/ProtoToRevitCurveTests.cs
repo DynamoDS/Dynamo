@@ -117,7 +117,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             circ.CenterPoint.AssertShouldBeApproximately(revitArc.Center.ToPoint());
             circ.Radius.AssertShouldBeApproximately(revitArc.Radius);
-            circ.Normal.AssertShouldBeApproximately(revitArc.Normal.ToVector());
+            Math.Abs(circ.Normal.Dot(revitArc.Normal.ToVector())).AssertShouldBeApproximately(1);
 
         } 
 
@@ -138,7 +138,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             circ.CenterPoint.AssertShouldBeApproximately( revitArc.Center.ToPoint() );
             circ.Radius.AssertShouldBeApproximately( revitArc.Radius );
-            circ.Normal.AssertShouldBeApproximately( revitArc.Normal.ToVector() );
+            Math.Abs(circ.Normal.Dot(revitArc.Normal.ToVector())).AssertShouldBeApproximately(1);
 
         } 
 
