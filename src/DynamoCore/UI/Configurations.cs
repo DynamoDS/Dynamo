@@ -216,21 +216,12 @@ namespace Dynamo.UI
         #region Legacy Info Bubble related data members
 
         // TODO(Ben): Remove these once Info Bubble has been completely removed.
-        public static readonly SolidColorBrush NodeTooltipTextForeground;
-        public static readonly SolidColorBrush PreviewFrameFill;
-        public static readonly SolidColorBrush PreviewFrameStrokeColor;
-        public static readonly SolidColorBrush PreviewTextForeground;
         public static readonly SolidColorBrush WarningFrameFill;
         public static readonly SolidColorBrush WarningFrameStrokeColor;
         public static readonly SolidColorBrush WarningTextForeground;
         public static readonly SolidColorBrush ErrorFrameFill;
         public static readonly SolidColorBrush ErrorFrameStrokeColor;
         public static readonly SolidColorBrush ErrorTextForeground;
-        public static readonly SolidColorBrush NodeTooltipFrameFill;
-        public static readonly SolidColorBrush NodeTooltipFrameStrokeColor;
-        public static readonly SolidColorBrush LibraryTooltipFrameFill;
-        public static readonly SolidColorBrush LibraryTooltipFrameStrokeColor;
-        public static readonly SolidColorBrush LibraryTooltipTextForeground;
 
         #endregion
 
@@ -249,37 +240,19 @@ namespace Dynamo.UI
             #region Legacy Info Bubble related data members
 
             // TODO(Ben): Remove these once Info Bubble has been completely removed.
-            NodeTooltipTextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
-            PreviewFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-            PreviewFrameStrokeColor = new SolidColorBrush(Color.FromRgb(153, 153, 153));
-            PreviewTextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
             WarningFrameFill = new SolidColorBrush(Color.FromRgb(0xff, 0xef, 0xa0));
             WarningFrameStrokeColor = new SolidColorBrush(Color.FromRgb(0xf2, 0xbd, 0x53));
             WarningTextForeground = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
             ErrorFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
             ErrorFrameStrokeColor = new SolidColorBrush(Color.FromRgb(190, 70, 70));
             ErrorTextForeground = new SolidColorBrush(Color.FromRgb(190, 70, 70));
-            NodeTooltipFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-            NodeTooltipFrameStrokeColor = new SolidColorBrush(Color.FromRgb(165, 209, 226));
-            LibraryTooltipFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-            LibraryTooltipFrameStrokeColor = new SolidColorBrush(Color.FromRgb(165, 209, 226));
-            LibraryTooltipTextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
 
-            NodeTooltipTextForeground.Freeze();
-            PreviewFrameFill.Freeze();
-            PreviewFrameStrokeColor.Freeze();
-            PreviewTextForeground.Freeze();
             WarningFrameFill.Freeze();
             WarningFrameStrokeColor.Freeze();
             WarningTextForeground.Freeze();
             ErrorFrameFill.Freeze();
             ErrorFrameStrokeColor.Freeze();
             ErrorTextForeground.Freeze();
-            NodeTooltipFrameFill.Freeze();
-            NodeTooltipFrameStrokeColor.Freeze();
-            LibraryTooltipFrameFill.Freeze();
-            LibraryTooltipFrameStrokeColor.Freeze();
-            LibraryTooltipTextForeground.Freeze();
 
             #endregion
         }
