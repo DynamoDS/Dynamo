@@ -594,42 +594,6 @@ namespace DynamoCoreUITests
 
         [Test]
         [Category("DynamoUI"), Category("Failing")]
-        public void UpdateInfoBubble_LibItem()
-        {
-            InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
-            string content = "This is the test infoBubble";
-            InfoBubbleDataPacket inputData_LibItem = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.LibraryItemPreview, 
-                new Point(0, 0), new Point(0, 0), content, InfoBubbleViewModel.Direction.Left);
-
-            if (infoBubble.UpdateContentCommand.CanExecute(null))
-            {
-                infoBubble.UpdateContentCommand.Execute(inputData_LibItem);
-                Assert.AreEqual(content, infoBubble.Content);
-                Assert.AreEqual(InfoBubbleViewModel.Style.LibraryItemPreview, infoBubble.InfoBubbleStyle);
-                Assert.AreEqual(InfoBubbleViewModel.Direction.Left, infoBubble.ConnectingDirection);
-            }
-        }
-
-        [Test]
-        [Category("DynamoUI"), Category("Failing")]
-        public void UpdateInfoBubble_NodeTooltip()
-        {
-            var infoBubble = new InfoBubbleViewModel();
-            string content = "This is the test infoBubble";
-            var inputData_NodeTooltip = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip,
-                new Point(0, 0), new Point(0, 0), content, InfoBubbleViewModel.Direction.Right);
-
-            if (infoBubble.UpdateContentCommand.CanExecute(null))
-            {
-                infoBubble.UpdateContentCommand.Execute(inputData_NodeTooltip);
-                Assert.AreEqual(content, infoBubble.Content);
-                Assert.AreEqual(InfoBubbleViewModel.Style.NodeTooltip, infoBubble.InfoBubbleStyle);
-                Assert.AreEqual(InfoBubbleViewModel.Direction.Right, infoBubble.ConnectingDirection);
-            }
-        }
-
-        [Test]
-        [Category("DynamoUI"), Category("Failing")]
         public void UpdateInfoBubble_ErrorBubble()
         {
             InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
@@ -657,7 +621,7 @@ namespace DynamoCoreUITests
             //Assert.AreEqual(0, infoBubble.Opacity);
         }
 
-	    #endregion
+        #endregion
 
         #region Notes
 
@@ -699,13 +663,5 @@ namespace DynamoCoreUITests
 
 
         #endregion
-
-        //[Test]
-        //public void CrashPresentsSaveAs()
-        //{
-        //    dynSettings.Controller.IsCrashing = true;
-        //    dynSettings.Controller.DynamoModel.HomeSpace.HasUnsavedChanges = true;
-        //    dynSettings.Controller.DynamoViewModel.Exit(false);
-        //}
     }
 }
