@@ -586,7 +586,7 @@ namespace DynamoPython
         /// </summary>
         /// <param name="code">The code to search</param>
         /// <param name="valueRegex">Your regex to match the type</param>
-        /// <returns>A dictionary of name to assignment line pairs/returns>
+        /// <returns>A dictionary of name to assignment line pairs</returns>
         public static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
         {
             var matches = Regex.Matches(code, variableName + spacesOrNone + equals + spacesOrNone + valueRegex);
