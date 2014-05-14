@@ -531,6 +531,7 @@ namespace DSRevitNodesUI
     [NodeName("Spacing Rule Layout")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_DIVIDE)]
     [NodeDescription("A spacing rule layout for calculating divided paths.")]
+    [IsDesignScriptCompatible]
     public class SpacingRuleLayouts : EnumAsInt<SpacingRuleLayout> { }
 
     [NodeName("Element Types")]
