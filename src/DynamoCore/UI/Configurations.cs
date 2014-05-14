@@ -55,13 +55,10 @@ namespace Dynamo.UI
         #region Preview Bubble
         public static int CondensedPreviewMaxLength = 25;
 
-        public static Color PreviewFrameFillColor = Color.FromRgb(255, 255, 255);
         public static double PreviewFrameStrokeThickness = 1;
-        public static Color PreviewFrameStrokeColor = Color.FromRgb(153, 153, 153);
 
         public static double PreviewTextFontSize = 10;
         public static FontWeight PreviewTextFontWeight = FontWeights.Light;
-        public static Color PreviewTextForeground = Color.FromRgb(51, 51, 51);
         public static Thickness PreviewContentMargin = new Thickness(5, 12, 5, 5);
 
         public static double PreviewMaxWidth = 500;
@@ -82,17 +79,9 @@ namespace Dynamo.UI
 
         #endregion
 
-        #region Warning Bubble
-        public static Color WarningFrameFill = Color.FromRgb(0xff, 0xef, 0xa0);
-        public static Color WarningFrameStrokeColor = Color.FromRgb(0xf2, 0xbd, 0x53);
-        public static Color WarningTextForeground = Color.FromRgb(0x33, 0x33, 0x33);
-        #endregion
-
         #region Error Bubble
 
-        public static Color ErrorFrameFill = Color.FromRgb(255, 255, 255);
         public static double ErrorFrameStrokeThickness = 1;
-        public static Color ErrorFrameStrokeColor = Color.FromRgb(190, 70, 70);
 
         public static double ErrorMaxWidth = 300;
         public static double ErrorMaxHeight = 200;
@@ -108,7 +97,6 @@ namespace Dynamo.UI
 
         public static double ErrorTextFontSize = 13;
         public static FontWeight ErrorTextFontWeight = FontWeights.Normal;
-        public static Color ErrorTextForeground = Color.FromRgb(190, 70, 70);
         public static Thickness ErrorContentMargin = new Thickness(5, 5, 5, 12);
 
         public static double ErrorArrowWidth = 12;
@@ -116,9 +104,7 @@ namespace Dynamo.UI
         #endregion
 
         #region Node Tooltip
-        public static Color NodeTooltipFrameFill = Color.FromRgb(255, 255, 255);
         public static double NodeTooltipFrameStrokeThickness = 1;
-        public static Color NodeTooltipFrameStrokeColor = Color.FromRgb(165, 209, 226);
 
         public static double NodeTooltipMaxWidth = 200;
         public static double NodeTooltipMaxHeight = 200;
@@ -127,7 +113,6 @@ namespace Dynamo.UI
 
         public static double NodeTooltipTextFontSize = 11;
         public static FontWeight NodeTooltipTextFontWeight = FontWeights.Light;
-        public static Color NodeTooltipTextForeground = Color.FromRgb(51, 51, 51);
 
         public static Thickness NodeTooltipContentMarginLeft = new Thickness(11, 5, 5, 5);
         public static Thickness NodeTooltipContentMarginRight = new Thickness(5, 5, 11, 5);
@@ -143,9 +128,7 @@ namespace Dynamo.UI
 
         #region Library Item Tooltip
 
-        public static Color LibraryTooltipFrameFill = Color.FromRgb(255, 255, 255);
         public static double LibraryTooltipFrameStrokeThickness = 1;
-        public static Color LibraryTooltipFrameStrokeColor = Color.FromRgb(165, 209, 226);
 
         public static double LibraryTooltipMaxWidth = 400;
         public static double LibraryTooltipMaxHeight = 200;
@@ -153,7 +136,6 @@ namespace Dynamo.UI
         public static double LibraryTooltipContentMaxHeight = LibraryTooltipMaxHeight - 17;
 
         public static double LibraryTooltipTextFontSize = 11;
-        public static Color LibraryTooltipTextForeground = Color.FromRgb(51, 51, 51);
         public static FontWeight LibraryTooltipTextFontWeight = FontWeights.Normal;
         public static Thickness LibraryTooltipContentMargin = new Thickness(12, 5, 5, 5);
 
@@ -197,14 +179,12 @@ namespace Dynamo.UI
 
     /// <summary>
     /// This class is put in place to store Freezable objects that are made 
-    /// globally available as constant values. These resources are created once 
-    /// the first time any of the static members of FrozenResources is accessed.
+    /// globally available as constant values. These resources are created the 
+    /// first time any of the static members of FrozenResources is accessed.
     /// The static constructor is responsible of initializing its data members
-    /// and freeze them at the same time. For this reason, each of the members 
-    /// in the class should be Freezable derived.
+    /// and freeze them at the same time.
     /// 
-    /// There is primarily a reason for doing so: avoid memory leaks. Consider 
-    /// the following use case:
+    /// This is done to avoid memory leaks. Consider the following use case:
     /// 
     ///     var myRectangle = new Rectangle();
     ///     myRectangle.Fill = FrozenResources.PreviewIconPinnedBrush;
@@ -233,6 +213,18 @@ namespace Dynamo.UI
         public static readonly SolidColorBrush PreviewIconHoverBrush;
         public static readonly SolidColorBrush PreviewIconNormalBrush;
 
+        #region Legacy Info Bubble related data members
+
+        // TODO(Ben): Remove these once Info Bubble has been completely removed.
+        public static readonly SolidColorBrush WarningFrameFill;
+        public static readonly SolidColorBrush WarningFrameStrokeColor;
+        public static readonly SolidColorBrush WarningTextForeground;
+        public static readonly SolidColorBrush ErrorFrameFill;
+        public static readonly SolidColorBrush ErrorFrameStrokeColor;
+        public static readonly SolidColorBrush ErrorTextForeground;
+
+        #endregion
+
         static FrozenResources()
         {
             PreviewIconPinnedBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x97, 0x93, 0x8E));
@@ -244,6 +236,25 @@ namespace Dynamo.UI
             PreviewIconClickedBrush.Freeze();
             PreviewIconHoverBrush.Freeze();
             PreviewIconNormalBrush.Freeze();
+
+            #region Legacy Info Bubble related data members
+
+            // TODO(Ben): Remove these once Info Bubble has been completely removed.
+            WarningFrameFill = new SolidColorBrush(Color.FromRgb(0xff, 0xef, 0xa0));
+            WarningFrameStrokeColor = new SolidColorBrush(Color.FromRgb(0xf2, 0xbd, 0x53));
+            WarningTextForeground = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33));
+            ErrorFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+            ErrorFrameStrokeColor = new SolidColorBrush(Color.FromRgb(190, 70, 70));
+            ErrorTextForeground = new SolidColorBrush(Color.FromRgb(190, 70, 70));
+
+            WarningFrameFill.Freeze();
+            WarningFrameStrokeColor.Freeze();
+            WarningTextForeground.Freeze();
+            ErrorFrameFill.Freeze();
+            ErrorFrameStrokeColor.Freeze();
+            ErrorTextForeground.Freeze();
+
+            #endregion
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using Dynamo.Models;
 using Migrations;
@@ -120,6 +121,22 @@ namespace Dynamo.Nodes
 
     public class BoundingBoxXyz : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            var migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+
+            var newNode = MigrationManager.CreateCustomNodeFrom(oldNode.OwnerDocument, oldNode,
+                "1e10c22b-18f6-452c-8220-4b1407c80b7b",
+                "BoundingBoxXYZ",
+                "This node represents an upgrade of the 0.6.3 BoundingBoxXYZ node to 0.7.x",
+                new List<string>() {"coordinate system", "width", "length", "height"},
+                new List<string>() {"bounding box"});
+
+            migratedData.AppendNode(newNode);
+            return migratedData;
+        }
     }
 
     public class SectionView : MigrationNode

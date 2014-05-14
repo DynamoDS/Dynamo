@@ -71,6 +71,9 @@ Source: temp\bin\UI\*; DestDir: {app}\UI; Flags: ignoreversion overwritereadonly
 ;Samples
 Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
+;Other Custom Nodes
+Source: temp\definitions\*; DestDir: {app}\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+
 [UninstallDelete]
 ;Keep the old deletion steps for those who installed 0.7.0 before the rename
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo07.addin"

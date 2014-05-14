@@ -54,7 +54,7 @@ namespace Dynamo
             {
                 if (updatingPaused && value == false)
                 {
-                    Render();
+                    AggregateUpstreamRenderPackages(new RenderTag(CurrentTaskId, null));
                 }
                 Debug.WriteLine("Updating paused = " + value.ToString());
                 updatingPaused = value;
@@ -338,6 +338,9 @@ namespace Dynamo
                     }
                 }
 
+                watch.Stop();
+                Debug.WriteLine(String.Format("RENDER: {0} ellapsed for aggregating geometry for background preview.", watch.Elapsed));
+
                 if (packages.Any())
                 {
                     // if there are packages, send any that aren't empty
@@ -356,14 +359,16 @@ namespace Dynamo
             }
             else
             {
+                watch.Stop();
+                Debug.WriteLine(String.Format("RENDER: {0} ellapsed for aggregating geometry for branch {1}.", watch.Elapsed, tag.Node.GUID));
+
                 //send back renderables for the branch
                 packages = GetUpstreamPackages(tag.Node.Inputs).ToList();
                 if (packages.Any())
                     OnResultsReadyToVisualize(this, new VisualizationEventArgs(packages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>(), tag.Node.GUID.ToString(),tag.TaskId));
             }
 
-            watch.Stop();
-            Debug.WriteLine(String.Format("RENDER: {0} ellapsed for aggregating geometry for watch.", watch.Elapsed));
+            
 
             //LogVisualizationUpdateData(rd, watch.Elapsed.ToString());
         }
@@ -473,23 +478,9 @@ namespace Dynamo
             if (updatingPaused || dynSettings.Controller == null)
                 return;
 
-            var changes = new List<ISelectable>();
-
-            // Any node that has a visualizations but is
-            // no longer in the selection 
-            changes.AddRange(dynSettings.Controller.DynamoModel.Nodes
-                .Where(x => x.HasRenderPackages)
-                .Where(x => !DynamoSelection.Instance.Selection.Contains(x)));
-
-            if (e.NewItems != null && e.NewItems.Cast<ISelectable>().Any())
-            {
-                changes.AddRange(e.NewItems.Cast<ISelectable>());
-            }
-
-            Render(
-            changes.Any() ?
-            changes.Where(sel => sel is NodeModel).Cast<NodeModel>() :
-            null);
+            // For a selection event, we need only to trigger a new rendering for 
+            // the background preview.
+            AggregateUpstreamRenderPackages(new RenderTag(CurrentTaskId, null));
         }
 
         /// <summary>

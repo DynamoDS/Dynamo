@@ -85,13 +85,7 @@ namespace Dynamo.Models
             }
         }
 
-        public bool HasRenderPackages { get; set; //{
-            //    lock (RenderPackagesMutex)
-            //    {
-            //        return RenderPackages.Any();
-            //    }
-            //}
-        }
+        public bool HasRenderPackages { get; set; }
 
         #endregion
 
@@ -521,6 +515,17 @@ namespace Dynamo.Models
                 {
                     case ("OverrideName"):
                         RaisePropertyChanged("NickName");
+                        break;
+                    case ("IsSelected"):
+                        // Synchronize the selected state of any render packages for this node
+                        // with the selection state of the node.
+                        if (HasRenderPackages)
+                        {
+                            lock (RenderPackagesMutex)
+                            {
+                                RenderPackages.ForEach(rp => ((RenderPackage) rp).Selected = IsSelected);
+                            }
+                        }
                         break;
                 }
             };
