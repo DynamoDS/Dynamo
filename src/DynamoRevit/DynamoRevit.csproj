@@ -195,7 +195,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DynamoRaaS\RevitRaaS.dll.config" "$(OutputPath)"
-copy /Y "$(SolutionDir)..\extern\DynamoRaaS\DynamoRaaS.dll" "$(OutputPath)\nodes"
+copy /Y "$(SolutionDir)..\extern\DynamoRaaS\DynamoRaaS.dll" "$(OutputPath)\nodes\DynamoRaaS.dll"
 copy /Y "$(SolutionDir)..\extern\DynamoRaaS\SimpleRaaS.dll" "$(OutputPath)"
 copy /Y "$(SolutionDir)..\extern\DynamoRaaS\JobMonitor.dll" "$(OutputPath)"
 copy /Y "$(SolutionDir)..\extern\DynamoRaaS\RevitRaaS.dll" "$(OutputPath)"
