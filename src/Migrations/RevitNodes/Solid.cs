@@ -10,7 +10,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            
+            /*
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
@@ -54,6 +54,33 @@ namespace Dynamo.Nodes
                 }
             }
 
+            return migratedData;*/
+
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            //create the node itself
+            XmlElement newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Surface.ByLoft",
+                "Surface.ByLoft@Autodesk.DesignScript.Geometry.Curve[]");
+
+            migratedData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            data.RemoveFirstConnector(oldInPort0);
+
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            data.ReconnectToPort(connector1, newInPort0);
+
+            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            data.RemoveFirstConnector(oldInPort2);
+                      
             return migratedData;
         }
     }
@@ -564,6 +591,12 @@ namespace Dynamo.Nodes
     public class SkinCurveLoops : MigrationNode
     {
         // PB: deprecated
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll",
+                "Solid.ByLoft", "Solid.ByLoft@Autodesk.DesignScript.Geometry.PolyCurve[]");
+        }
     }
 
     public class VolumeMeasure : MigrationNode
