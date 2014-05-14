@@ -92,9 +92,10 @@
     <controls:TooltipLengthTruncater x:Key="TooltipLengthTruncater" />
     <controls:TabSizeConverter x:Key="TabSizeConverter" />
     <controls:WarningLevelToColorConverter x:Key="WarningLevelToColorConverter"/>
-    <controls:BoolToShowAllPreviewNameConverter x:Key="BoolToShowAllPreviewNameConverter" />
     <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
     <controls:IsUpdateAvailableToTextConverter x:Key="IsUpdateAvailableToTextConverter"/>
     <controls:IsUpdateAvailableBrushConverter x:Key="IsUpdateAvailableBrushConverter"/>
     <controls:NumberFormatToBoolConverter x:Key="NumberFormatToBoolConverter"/>
+    <controls:DoubleDisplay x:Key="DoubleDisplayConverter"/>
+    <controls:IntegerDisplay x:Key="IntegerDisplayConverter"/>
 </ResourceDictionary>

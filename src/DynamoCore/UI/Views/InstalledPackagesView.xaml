@@ -71,11 +71,11 @@
                                                     <!--<MenuItem Name="GetLatestVersionButton"  Command="{Binding Path=GetLatestVersionCommand}" Margin="3" ToolTip="Check if there is a newer version of this package and download it." Header="Get Latest Version" />-->
                                                     <MenuItem Name="UninstallButton" Command="{Binding Path=UninstallCommand}" Margin="3" ToolTip="Uninstall this package, only allowed if none of the types are currently in use" Header="Uninstall..." />
                                                     <Separator></Separator>
-                                                    <MenuItem Name="MakePackageButton" Command="{Binding Path=PublishNewPackageCommand}" Margin="3" ToolTip="Publish this package, if it has yet to be published." Header="Publish..." />
+                                                    <!--<MenuItem Name="MakePackageButton" Command="{Binding Path=PublishNewPackageCommand}" Margin="3" ToolTip="Publish this package, if it has yet to be published." Header="Publish..." />
                                                     <MenuItem Name="MakeNewVersionButton" Command="{Binding Path=PublishNewPackageVersionCommand}" Margin="3" ToolTip="Publish a new version of this package, assuming it has already been published. Only allowed if you're a current maintainer of the package." Header="Publish Version..."  />
                                                     <Separator></Separator>
                                                     <MenuItem Name="DeprecateButton" Command="{Binding Path=DeprecateCommand}" Margin="3" ToolTip="Set this package as deprecated.  Only allowed if you're a current maintainer of the package." Header="Deprecate" />
-                                                    <MenuItem Name="UndeprecateButton" Command="{Binding Path=UndeprecateCommand}" Margin="3" ToolTip="Remove package deprecation. Only allowed if you're a current maintainer of the package." Header="Remove deprecation"  />
+                                                    <MenuItem Name="UndeprecateButton" Command="{Binding Path=UndeprecateCommand}" Margin="3" ToolTip="Remove package deprecation. Only allowed if you're a current maintainer of the package." Header="Remove deprecation"  />-->
 
                                                 </ContextMenu>
 

@@ -30,6 +30,7 @@ namespace Dynamo.Nodes
 
         public DelegateCommand SelectVisualizationInViewCommand { get; set; }
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
+        public DelegateCommand CheckForLatestRenderCommand { get; set; }
         public bool WatchIsResizable { get; set; }
 
         public Watch3DView View { get; private set; }
@@ -58,6 +59,7 @@ namespace Dynamo.Nodes
 
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
             SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
+            CheckForLatestRenderCommand = new DelegateCommand(CheckForLatestRender, CanCheckForLatestRender);
             WatchIsResizable = true;
         }
 
@@ -96,6 +98,7 @@ namespace Dynamo.Nodes
 
             nodeUI.PresentationGrid.Children.Add(backgroundRect);
             nodeUI.PresentationGrid.Children.Add(View);
+            nodeUI.PresentationGrid.Visibility = Visibility.Visible;
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
@@ -178,7 +181,8 @@ namespace Dynamo.Nodes
 
         public void GetBranchVisualization(object parameters)
         {
-            dynSettings.Controller.VisualizationManager.AggregateUpstreamRenderPackages(this);
+            var taskId = (long)parameters;
+            dynSettings.Controller.VisualizationManager.AggregateUpstreamRenderPackages(new RenderTag(taskId, this));
         }
 
         public bool CanGetBranchVisualization(object parameter)
@@ -202,6 +206,22 @@ namespace Dynamo.Nodes
             return parameters != null;
         }
 
+        private bool CanCheckForLatestRender(object obj)
+        {
+            return true;
+        }
+
+        private void CheckForLatestRender(object obj)
+        {
+            dynSettings.Controller.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
+        }
+
+
         #endregion
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
     }
 }

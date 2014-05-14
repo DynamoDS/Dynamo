@@ -29,15 +29,18 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            var migrationData = new NodeMigrationData(data.Document);
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             XmlElement newNode = MigrationManager.CloneAndChangeName(
                 oldNode, "Dynamo.Nodes.DSDividedSurfaceFamiliesSelection", "Select Divided Surface Families");
             migrationData.AppendNode(newNode);
 
-            foreach (XmlElement subNode in oldNode.ChildNodes)
-                newNode.AppendChild(subNode.Clone());
+            // DO NOT clone the sub nodes. The behavior of this node changed from 0.6.3 to 0.7.0
+            // and we want to ensure that the user will need to reselect.
+
+            //foreach (XmlElement subNode in oldNode.ChildNodes)
+            //    newNode.AppendChild(subNode.Clone());
 
             return migrationData;
         }
@@ -55,8 +58,9 @@ namespace Dynamo.Nodes
                 oldNode, "Dynamo.Nodes.DSFaceSelection", "Select Face");
             migrationData.AppendNode(newNode);
 
-            foreach (XmlElement subNode in oldNode.ChildNodes)
-                newNode.AppendChild(subNode.Clone());
+            XmlElement newChild = data.Document.CreateElement("instance");
+            newChild.SetAttribute("id", oldNode.GetAttribute("faceRef"));
+            newNode.AppendChild(newChild);
 
             return migrationData;
         }

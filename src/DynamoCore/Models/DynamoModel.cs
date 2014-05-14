@@ -15,7 +15,6 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.Selection;
 using Microsoft.Practices.Prism;
-using NUnit.Framework;
 using Enum = System.Enum;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -100,7 +99,7 @@ namespace Dynamo.Models
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
 
                 if (DynamoController.IsTestMode)
-                    Assert.Fail(ex.Message);
+                    throw ex; // Rethrow for NUnit.
 
                 return null;
             }

@@ -7,6 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml;
+using DSCoreNodesUI;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -66,7 +67,8 @@ namespace Dynamo.Nodes
             var tbSlider = new DynamoSlider(this)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Height = Configurations.PortHeightInPixels,
                 MinWidth = 150,
                 TickPlacement = TickPlacement.None,
                 Value = Value
@@ -77,52 +79,25 @@ namespace Dynamo.Nodes
                 dynSettings.ReturnFocusToSearch();
             };
 
-            var mintb = new DynamoTextBox
-            {
-                Width = Configurations.DoubleSliderTextBoxWidth,
-                HorizontalContentAlignment = HorizontalAlignment.Center,
-                Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
-            };
-
             // input value textbox
             var valtb = new DynamoTextBox(SerializeValue())
             {
-                Width = Configurations.DoubleSliderTextBoxWidth,
-                HorizontalContentAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(0, 0, 10, 0)
+                MinWidth = Configurations.DoubleSliderTextBoxWidth,
+                HorizontalContentAlignment = HorizontalAlignment.Stretch,
             };
 
-            var maxtb = new DynamoTextBox
+            var sliderSp = new StackPanel()
             {
-                Width = Configurations.DoubleSliderTextBoxWidth,
-                HorizontalContentAlignment = HorizontalAlignment.Center,
-                Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                HorizontalAlignment = HorizontalAlignment.Stretch
             };
+            sliderSp.Children.Add(valtb);
 
-            var sliderGrid = new Grid();
-            sliderGrid.ColumnDefinitions.Add(
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            sliderGrid.ColumnDefinitions.Add(
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            sliderGrid.ColumnDefinitions.Add(
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            sliderGrid.ColumnDefinitions.Add(
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-
-            sliderGrid.Children.Add(valtb);
-            sliderGrid.Children.Add(mintb);
-            sliderGrid.Children.Add(tbSlider);
-            sliderGrid.Children.Add(maxtb);
-
-            Grid.SetColumn(valtb, 0);
-            Grid.SetColumn(mintb, 1);
-            Grid.SetColumn(tbSlider, 2);
-            Grid.SetColumn(maxtb, 3);
-            nodeUI.inputGrid.Children.Add(sliderGrid);
-
-            maxtb.DataContext = this;
+            sliderSp.Children.Add(new DoubleSliderSettingsControl() { DataContext = this });
+            nodeUI.inputGrid.Children.Add(tbSlider);
+            nodeUI.PresentationGrid.Children.Add(sliderSp);
+            nodeUI.PresentationGrid.Visibility = Visibility.Visible;
+            
             tbSlider.DataContext = this;
-            mintb.DataContext = this;
             valtb.DataContext = this;
 
             // value input
@@ -133,16 +108,6 @@ namespace Dynamo.Nodes
             var sliderBinding = new Binding("Value") { Mode = BindingMode.TwoWay, Source = this, };
             tbSlider.SetBinding(RangeBase.ValueProperty, sliderBinding);
 
-            // max value
-            maxtb.BindToProperty(
-                new Binding("Max")
-                {
-                    Mode = BindingMode.TwoWay,
-                    Converter = new DoubleDisplay(),
-                    Source = this,
-                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-                });
-
             // max slider value
             var bindingMaxSlider = new Binding("Max")
             {
@@ -151,17 +116,6 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tbSlider.SetBinding(RangeBase.MaximumProperty, bindingMaxSlider);
-
-
-            // min value
-            mintb.BindToProperty(
-                new Binding("Min")
-                {
-                    Mode = BindingMode.TwoWay,
-                    Converter = new DoubleDisplay(),
-                    Source = this,
-                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-                });
 
             // min slider value
             var bindingMinSlider = new Binding("Min")
@@ -284,6 +238,11 @@ namespace Dynamo.Nodes
 
             return base.UpdateValueCore(name, value);
         }
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
     }
 
     [NodeName("Integer Slider")]
@@ -334,8 +293,6 @@ namespace Dynamo.Nodes
 
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            //base.SetupCustomUIElements(nodeUI);
-
             //add a slider control to the input grid of the control
             var tbSlider = new DynamoSlider(this)
             {
@@ -352,52 +309,25 @@ namespace Dynamo.Nodes
                 dynSettings.ReturnFocusToSearch();
             };
 
-            var mintb = new DynamoTextBox
-            {
-                Width = Configurations.IntegerSliderTextBoxWidth,
-                HorizontalContentAlignment = HorizontalAlignment.Center,
-                Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
-            };
-
             // input value textbox
             var valtb = new DynamoTextBox
             {
-                Width = Configurations.IntegerSliderTextBoxWidth,
-                HorizontalContentAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(0, 0, 10, 0)
+                MinWidth = Configurations.IntegerSliderTextBoxWidth,
+                HorizontalContentAlignment = HorizontalAlignment.Stretch,
             };
 
-            var maxtb = new DynamoTextBox
+            var sliderSp = new StackPanel()
             {
-                Width = Configurations.IntegerSliderTextBoxWidth,
-                HorizontalContentAlignment = HorizontalAlignment.Center,
-                Background = new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                HorizontalAlignment = HorizontalAlignment.Stretch
             };
+            sliderSp.Children.Add(valtb);
+            sliderSp.Children.Add(new IntegerSliderSettingsControl() {DataContext = this});
 
-            var sliderGrid = new Grid();
-            sliderGrid.ColumnDefinitions.Add(
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            sliderGrid.ColumnDefinitions.Add(
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            sliderGrid.ColumnDefinitions.Add(
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            sliderGrid.ColumnDefinitions.Add(
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            nodeUI.inputGrid.Children.Add(tbSlider);
+            nodeUI.PresentationGrid.Children.Add(sliderSp);
+            nodeUI.PresentationGrid.Visibility = Visibility.Visible;
 
-            sliderGrid.Children.Add(valtb);
-            sliderGrid.Children.Add(mintb);
-            sliderGrid.Children.Add(tbSlider);
-            sliderGrid.Children.Add(maxtb);
-
-            Grid.SetColumn(valtb, 0);
-            Grid.SetColumn(mintb, 1);
-            Grid.SetColumn(tbSlider, 2);
-            Grid.SetColumn(maxtb, 3);
-            nodeUI.inputGrid.Children.Add(sliderGrid);
-
-            maxtb.DataContext = this;
             tbSlider.DataContext = this;
-            mintb.DataContext = this;
             valtb.DataContext = this;
 
             // value input
@@ -408,16 +338,6 @@ namespace Dynamo.Nodes
             var sliderBinding = new Binding("Value") { Mode = BindingMode.TwoWay, Source = this, };
             tbSlider.SetBinding(RangeBase.ValueProperty, sliderBinding);
 
-            // max value
-            maxtb.BindToProperty(
-                new Binding("Max")
-                {
-                    Mode = BindingMode.TwoWay,
-                    Converter = new IntegerDisplay(),
-                    Source = this,
-                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-                });
-
             // max slider value
             var bindingMaxSlider = new Binding("Max")
             {
@@ -426,17 +346,6 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tbSlider.SetBinding(RangeBase.MaximumProperty, bindingMaxSlider);
-
-
-            // min value
-            mintb.BindToProperty(
-                new Binding("Min")
-                {
-                    Mode = BindingMode.TwoWay,
-                    Converter = new IntegerDisplay(),
-                    Source = this,
-                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-                });
 
             // min slider value
             var bindingMinSlider = new Binding("Min")
@@ -559,5 +468,10 @@ namespace Dynamo.Nodes
         }
 
         #endregion
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
     }
 }

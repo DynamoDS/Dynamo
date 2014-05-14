@@ -200,8 +200,13 @@ namespace Revit.Elements
             return Topography.FromExisting(topoSurface, isRevitOwned);
         }
 
-        public static CurtainPanel Wrap(Autodesk.Revit.DB.Panel ele, bool isRevitOwned)
+        public static object Wrap(Autodesk.Revit.DB.Panel ele, bool isRevitOwned)
         {
+            if (AdaptiveComponentInstanceUtils.IsAdaptiveFamilySymbol(ele.Symbol))
+            {
+                return AdaptiveComponent.FromExisting(ele, isRevitOwned);
+            }
+
            return CurtainPanel.FromExisting(ele, isRevitOwned);
         }
 

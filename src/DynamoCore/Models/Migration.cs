@@ -590,6 +590,64 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Create a custom node as a replacement for an existing node.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="srcElement"></param>
+        /// <param name="id">The custom node id.</param>
+        /// <param name="name">The custom node name.</param>
+        /// <param name="description">The custom node's description.</param>
+        /// <param name="inputs">A list of input names.</param>
+        /// <param name="outputs">A list of output names.</param>
+        /// <returns></returns>
+        public static XmlElement CreateCustomNodeFrom(XmlDocument document, XmlElement srcElement, 
+            string id, string name, string description, List<string> inputs, List<string> outputs )
+        {
+            if (srcElement == null)
+                throw new ArgumentNullException("srcElement");
+
+            XmlElement funcEl = document.CreateElement("Dynamo.Nodes.Function");
+
+            foreach (XmlAttribute attribute in srcElement.Attributes)
+                funcEl.SetAttribute(attribute.Name, attribute.Value);
+
+            funcEl.SetAttribute("type", "Dynamo.Nodes.Function");
+
+            var idEl = document.CreateElement("ID");
+            idEl.SetAttribute("value", id);
+
+            var nameEl = document.CreateElement("Name");
+            nameEl.SetAttribute("value", name);
+
+            var descripEl = document.CreateElement("Description");
+            descripEl.SetAttribute("value", description);
+
+            var inputsEl = document.CreateElement("Inputs");
+            foreach (var input in inputs)
+            {
+                var inputEl = document.CreateElement("Input");
+                inputEl.SetAttribute("value", input);
+                inputsEl.AppendChild(inputEl);
+            }
+
+            var outputsEl = document.CreateElement("Outputs");
+            foreach (var output in outputs)
+            {
+                var outputEl = document.CreateElement("Output");
+                outputEl.SetAttribute("value", output);
+                outputsEl.AppendChild(outputEl);
+            }
+
+            funcEl.AppendChild(idEl);
+            funcEl.AppendChild(nameEl);
+            funcEl.AppendChild(descripEl);
+            funcEl.AppendChild(inputsEl);
+            funcEl.AppendChild(outputsEl);
+
+            return funcEl;
+        }
+
+        /// <summary>
         /// Call this method to create a duplicated XmlElement with 
         /// all the attributes found from the source XmlElement.
         /// </summary>

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Autodesk.DesignScript.Runtime;
 using Revit.Elements;
 using Revit.Elements.Views;
 using RevitServices.Persistence;
@@ -16,17 +13,12 @@ namespace Revit.Application
         /// <summary>
         /// Internal reference to the Document
         /// </summary>
-        internal Autodesk.Revit.DB.Document InternalDocument
-        {
-            get
-            {
-                return DocumentManager.Instance.CurrentDBDocument;
-            }
-        }
+        [IsVisibleInDynamoLibrary(false)]
+        public Autodesk.Revit.DB.Document InternalDocument { get; private set; }
 
-        internal Document()
+        internal Document(Autodesk.Revit.DB.Document currentDBDocument)
         {
-            
+            InternalDocument = currentDBDocument;
         }
 
         /// <summary>
@@ -36,7 +28,7 @@ namespace Revit.Application
         {
             get
             {
-                return (View) ElementWrapper.ToDSType(InternalDocument.ActiveView, true);
+                return (View)InternalDocument.ActiveView.ToDSType(true);
             }
         }
 
@@ -59,7 +51,7 @@ namespace Revit.Application
         {
             get
             {
-                return new Document();
+                return new Document(DocumentManager.Instance.CurrentDBDocument);
             }
         }
 

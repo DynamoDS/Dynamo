@@ -17,7 +17,7 @@ using Autodesk.Revit.DB;
 namespace DSRevitNodesUI
 {
     [NodeName("SunPath Direction")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_SOLAR)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Returns the current Sun Path direction.")]
     [IsDesignScriptCompatible]
     public class SunPathDirection : NodeModel, IWpfNode
@@ -186,6 +186,11 @@ namespace DSRevitNodesUI
                     catch { }
                 }
             }
+        }
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
         }
     }
 }

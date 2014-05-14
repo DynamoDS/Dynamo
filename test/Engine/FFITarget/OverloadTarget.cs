@@ -5,6 +5,14 @@ using System.Text;
 
 namespace FFITarget
 {
+    public class DummyClassA
+    {
+    }
+
+    public class DummyClassB
+    {
+    }
+
     /// <summary>
     /// Test target for overloaded methods
     /// </summary>
@@ -25,8 +33,24 @@ namespace FFITarget
             return 2;
         }
 
+        public static int DifferentPrimitiveType(bool isTrue)
+        {
+            return 1;
+        }
 
+        public static int DifferentPrimitiveType(int number)
+        {
+            return 2;
+        }
 
+        public static int IEnumerableOfDifferentObjectType(System.Collections.Generic.IEnumerable<DummyClassA> a)
+        {
+            return 3;
+        }
 
+        public static int IEnumerableOfDifferentObjectType(System.Collections.Generic.IEnumerable<DummyClassB> b)
+        {
+            return 4;
+        }
     }
 }

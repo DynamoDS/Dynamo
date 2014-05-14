@@ -7,6 +7,7 @@ using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.UI;
 using Dynamo.Utilities;
 using Autodesk.DesignScript.Runtime;
 using Binding = System.Windows.Data.Binding;
@@ -32,7 +33,8 @@ namespace DSCore.File
             var readFileButton = new DynamoNodeButton
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Top
+                VerticalAlignment = VerticalAlignment.Top,
+                Height = Configurations.PortHeightInPixels
             };
 
             readFileButton.Click += readFileButton_Click;
@@ -52,6 +54,7 @@ namespace DSCore.File
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
             tb.TextChanged += delegate { tb.ScrollToHorizontalOffset(double.PositiveInfinity); dynSettings.ReturnFocusToSearch(); };
+            tb.Margin = new Thickness(0,5,0,5);
 
             var sp = new StackPanel();
             sp.Children.Add(readFileButton);
@@ -91,6 +94,11 @@ namespace DSCore.File
             {
                 Value = openDialog.FileName;
             }
+        }
+
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
         }
     }
 

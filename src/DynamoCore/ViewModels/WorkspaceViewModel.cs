@@ -100,7 +100,6 @@ namespace Dynamo.ViewModels
                 //Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
                 ZoomChanged(this, e);
             }
-            dynSettings.Controller.DynamoViewModel.HideInfoBubble(null);
         }
 
         /// <summary>
@@ -190,7 +189,6 @@ namespace Dynamo.ViewModels
         ObservableCollection<NodeViewModel> _nodes = new ObservableCollection<NodeViewModel>();
         ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
         ObservableCollection<InfoBubbleViewModel> _errors = new ObservableCollection<InfoBubbleViewModel>();
-        ObservableCollection<InfoBubbleViewModel> preview = new ObservableCollection<InfoBubbleViewModel>();
 
         public ObservableCollection<ConnectorViewModel> Connectors
         {
@@ -223,11 +221,6 @@ namespace Dynamo.ViewModels
         {
             get { return _errors; }
             set { _errors = value; RaisePropertyChanged("Errors"); }
-        }
-        public ObservableCollection<InfoBubbleViewModel> Previews
-        {
-            get { return preview; }
-            set { preview = value; RaisePropertyChanged("Previews"); }
         }
 
         public string Name
@@ -313,10 +306,6 @@ namespace Dynamo.ViewModels
         {
             _model = model;
             stateMachine = new StateMachine(this);
-
-            //setup the composite collection
-            var previewsColl = new CollectionContainer { Collection = Previews };
-            _workspaceElements.Add(previewsColl);
 
             var nodesColl = new CollectionContainer { Collection = Nodes };
             _workspaceElements.Add(nodesColl);
@@ -420,21 +409,18 @@ namespace Dynamo.ViewModels
                             var nodeViewModel = new NodeViewModel(node);
                             _nodes.Add(nodeViewModel);
                             Errors.Add(nodeViewModel.ErrorBubble);
-                            Previews.Add(nodeViewModel.PreviewBubble);
                         }
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     _nodes.Clear();
                     Errors.Clear();
-                    Previews.Clear();
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
                     {
                         var node = item as NodeModel;
                         NodeViewModel nodeViewModel = _nodes.First(x => x.NodeLogic == item);
-                        Previews.Remove(nodeViewModel.PreviewBubble);
                         Errors.Remove(nodeViewModel.ErrorBubble);
                         _nodes.Remove(nodeViewModel);
 

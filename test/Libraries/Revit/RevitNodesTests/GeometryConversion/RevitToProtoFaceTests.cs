@@ -43,7 +43,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
                 asmSolid.Volume.ShouldBeApproximately(solid.Volume);
                 asmSolid.Area.ShouldBeApproximately(solid.SurfaceArea);
-                Assert.AreEqual(allSolidsInDoc.Count, asmSolid.Faces.Length);
+                Assert.AreEqual(solid.Faces.Size, asmSolid.Faces.Length);
                 asmSolid.Centroid().ShouldBeApproximately(solid.ComputeCentroid());
 
             }

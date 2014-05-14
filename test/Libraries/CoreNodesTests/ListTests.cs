@@ -15,7 +15,7 @@ namespace DSCoreNodesTests
         {
             Assert.AreEqual(
                 new ArrayList { 1, 2, 3, 4, 5 },
-                List.UniqueItems(new ArrayList { 1, 1, 2, 3, 4, 4, 5, 4, 2, 1, 3 }));
+                List.UniqueItems(new ArrayList { 1, 1.0, 2, 3, 4, 4, 5, 4, 2, 1, 3 }));
         }
 
         [Test]
@@ -43,9 +43,9 @@ namespace DSCoreNodesTests
         [Test]
         public static void SortList()
         {
-            Assert.AreEqual(
-                new ArrayList { 1, 2, 3, 4, 5 },
-                List.Sort(new ArrayList { 2, 3, 5, 4, 1 }));
+            var sorted = Enumerable.Range(1, 5).ToList();
+
+            Assert.AreEqual(sorted, List.Sort(List.Shuffle(sorted)));
         }
 
         [Test]
@@ -222,17 +222,22 @@ namespace DSCoreNodesTests
         public static void TakeListSlice()
         {
             var list = new ArrayList(Enumerable.Range(0, 10).ToList());
+            var reversed = list.Cast<object>().Reverse().ToList();
 
             Assert.AreEqual(list, List.Slice(list));
-            Assert.AreEqual(new ArrayList { 0, 1, 2, 3, 4 }, List.Slice(list, count: 5));
-            Assert.AreEqual(new ArrayList { 1, 2, 3, 4, 5 }, List.Slice(list, 1, 5));
+
+            Assert.AreEqual(new ArrayList { 0, 1, 2, 3, 4 }, List.Slice(list, end: 5));
+            Assert.AreEqual(new ArrayList { 1, 2, 3, 4 }, List.Slice(list, 1, 5));
             Assert.AreEqual(new ArrayList { 0, 2, 4, 6, 8 }, List.Slice(list, step: 2));
+            Assert.AreEqual(reversed, List.Slice(list, step: -1));
+            Assert.AreEqual(new ArrayList { 0, 1, 2, 3, 4 }, List.Slice(list, -11, -5));
+            Assert.AreEqual(reversed, List.Slice(list, -1, -11, -1));
         }
 
         [Test]
         public static void RemoveValueFromList()
         {
-            Assert.AreEqual(new List<int> { 0, 1, 3, 4 }, List.RemoveItemAtIndex(new List<int> { 0, 1, 2, 3, 4 }, new int[]{2}));
+            Assert.AreEqual(new List<int> { 0, 1, 3, 4 }, List.RemoveItemAtIndex(new List<int> { 0, 1, 2, 3, 4 }, new[]{2}));
         }
 
         [Test]
@@ -240,7 +245,7 @@ namespace DSCoreNodesTests
         {
             Assert.AreEqual(
                 new List<int> { 0, 4 },
-                List.RemoveItemAtIndex(new List<int> { 0, 1, 2, 3, 4 }, new int[] { 1, 2, 3 }));
+                List.RemoveItemAtIndex(new List<int> { 0, 1, 2, 3, 4 }, new[] { 1, 2, 3 }));
         }
 
         [Test]
@@ -249,23 +254,31 @@ namespace DSCoreNodesTests
             var strings = new List<string> { "one", "two" };
             Assert.AreEqual(
                 new List<object> { 0, 4 },
-                List.RemoveItemAtIndex(new List<object> { 0, 1, strings, new List<object> { 1, strings }, 4 }, new int[] { 1, 2, 3 }));
+                List.RemoveItemAtIndex(new List<object> { 0, 1, strings, new List<object> { 1, strings }, 4 }, new[] { 1, 2, 3 }));
         }
 
         [Test]
         public static void DropEveryNthValueFromList()
         {
-            Assert.AreEqual(
-                new List<int> { 1, 2, 4, 5, 7 },
-                List.DropEveryNthItem(new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 }, 3, 1));
+            var list = Enumerable.Range(1, 12).ToList();
+            const int n = 3;
+
+            Assert.AreEqual(new List<int> { 1, 2, 4, 5, 7, 8, 10, 11 }, List.DropEveryNthItem(list, n));
+            Assert.AreEqual(new List<int> { 2, 3, 5, 6, 8, 9, 11, 12 }, List.DropEveryNthItem(list, n, 1));
+            Assert.AreEqual(new List<int> { 1, 3, 4, 6, 7, 9, 10, 12 }, List.DropEveryNthItem(list, n, 2));
+            Assert.AreEqual(List.DropEveryNthItem(list, n), List.DropEveryNthItem(list, n, 3));
         }
 
         [Test]
         public static void TakeEveryNthValueFromList()
         {
-            Assert.AreEqual(
-                new List<int> { 3, 6 },
-                List.TakeEveryNthItem(new List<int> { 0, 1, 2, 3, 4, 5, 6, 7}, 3, 1));
+            var list = Enumerable.Range(1, 12).ToList();
+            const int n = 3;
+
+            Assert.AreEqual(new List<int> { 3, 6, 9, 12 }, List.TakeEveryNthItem(list, n));
+            Assert.AreEqual(new List<int> { 1, 4, 7, 10 }, List.TakeEveryNthItem(list, n, 1));
+            Assert.AreEqual(new List<int> { 2, 5, 8, 11 }, List.TakeEveryNthItem(list, n, 2));
+            Assert.AreEqual(List.TakeEveryNthItem(list, n), List.TakeEveryNthItem(list, n, 3));
         }
 
         [Test]
@@ -320,16 +333,15 @@ namespace DSCoreNodesTests
         public static void ListDiagonalRight()
         {
             Assert.AreEqual(
-                new List<List<int>>()
-                {
-                    new List<int>() { 15 }, 
-                    new List<int>() { 10, 16 }, 
-                    new List<int>() { 5, 11, 17, },
-                    new List<int>() { 0, 6, 12, 18 },
-                    new List<int>() { 1, 7, 13, 19 },
-                    new List<int>(){ 2, 8, 14 },
-                    new List<int>() { 3, 9 },
-                    new List<int>() { 4 }
+                new List<List<int>> {
+                    new List<int> { 15 }, 
+                    new List<int> { 10, 16 }, 
+                    new List<int> { 5, 11, 17, },
+                    new List<int> { 0, 6, 12, 18 },
+                    new List<int> { 1, 7, 13, 19 },
+                    new List<int> { 2, 8, 14 },
+                    new List<int> { 3, 9 },
+                    new List<int> { 4 }
                 },
                 List.DiagonalRight(Enumerable.Range(0, 20).ToList(), 5));
         }
@@ -338,16 +350,15 @@ namespace DSCoreNodesTests
         public static void ListDiagonalLeft()
         {
             Assert.AreEqual(
-                new List<List<int>>()
-                {
-                    new List<int>() { 0 }, 
-                    new List<int>() { 1, 5 }, 
-                    new List<int>() { 2, 6, 10, },
-                    new List<int>() { 3, 7, 11, 15 },
-                    new List<int>() { 4, 8, 12, 16 },
-                    new List<int>() { 9, 13, 17 },
-                    new List<int>() { 14, 18 },
-                    new List<int>() { 19 }
+                new List<List<int>> {
+                    new List<int> { 0 }, 
+                    new List<int> { 1, 5 }, 
+                    new List<int> { 2, 6, 10, },
+                    new List<int> { 3, 7, 11, 15 },
+                    new List<int> { 4, 8, 12, 16 },
+                    new List<int> { 9, 13, 17 },
+                    new List<int> { 14, 18 },
+                    new List<int> { 19 }
                 },
                 List.DiagonalLeft(Enumerable.Range(0, 20).ToList(), 5));
         }
@@ -471,9 +482,6 @@ namespace DSCoreNodesTests
         {
             var check = List.Permutations(new ArrayList { "A", "B", "C", "D" }, 2);
 
-            Console.WriteLine(string.Join("\n", check.Cast<IList>().Select(
-                lst => string.Join("", lst.Cast<string>()))));
-
             Assert.AreEqual(
                 new ArrayList
                 {
@@ -499,9 +507,6 @@ namespace DSCoreNodesTests
             var input = new ArrayList { "A", "B", "C", "D" };
 
             var check = List.Combinations(input, 2);
-
-            Console.WriteLine(string.Join("\n", check.Cast<IList>().Select(
-                lst => string.Join("", lst.Cast<string>()))));
 
             Assert.AreEqual(
                 new ArrayList

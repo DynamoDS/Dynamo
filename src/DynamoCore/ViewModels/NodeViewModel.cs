@@ -69,8 +69,6 @@ namespace Dynamo.ViewModels
 
         public InfoBubbleViewModel ErrorBubble { get; set; }
 
-        public InfoBubbleViewModel PreviewBubble { get; set; }
-
         public string ToolTipText
         {
             get { return nodeLogic.ToolTipText; }
@@ -109,23 +107,28 @@ namespace Dynamo.ViewModels
 
         public string OldValue
         {
-            get { 
+            get
+            {
                 if (nodeLogic.WorkSpace is CustomNodeWorkspaceModel)
-                {
                     return "Not available in custom nodes";
+
+                var variableName = nodeLogic.AstIdentifierBase;
+
+                string previewValue = "<null>";
+                if (!string.IsNullOrEmpty(variableName))
+                {
+                    try
+                    {
+                        var engine = dynSettings.Controller.EngineController;
+                        previewValue = engine.GetStringValue(variableName);
+                    }
+                    catch (Exception ex)
+                    {
+                        dynSettings.DynamoLogger.Log(ex.Message);
+                    }
                 }
 
-#if USE_DSENGINE
-                return NodeLogic.PrintValue(0,
-                                            Configurations.PreviewMaxListLength,
-                                            0,
-                                            Configurations.PreviewMaxListDepth,
-                                            Configurations.PreviewMaxLength);
-#else
-                return NodeModel.PrintValue(nodeLogic.OldValue, 0, Configurations.PreviewMaxListLength, 0, 
-                    Configurations.PreviewMaxListDepth, Configurations.PreviewMaxLength);
-
-#endif
+                return previewValue;
             }
         }
 
@@ -225,13 +228,12 @@ namespace Dynamo.ViewModels
 
         public bool IsPreviewInsetVisible
         {
-            get
-            {
-                if(PreviewBubble == null)
-                    return false;
+            get { return nodeLogic.ShouldDisplayPreview(); }
+        }
 
-                return (PreviewBubble.InfoBubbleState == InfoBubbleViewModel.State.Minimized);
-            }
+        public bool ShouldShowGlyphBar
+        {
+            get { return IsPreviewInsetVisible && ArgumentLacing != LacingStrategy.Disabled; }
         }
 
         /// <summary>
@@ -304,45 +306,15 @@ namespace Dynamo.ViewModels
             logic.PropertyChanged += logic_PropertyChanged;
 
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
-            dynSettings.Controller.PropertyChanged += Controller_PropertyChanged;
             
             ErrorBubble = new InfoBubbleViewModel();
-            ErrorBubble.PropertyChanged += ErrorBubble_PropertyChanged;
 
-            // Nodes mentioned in switch cases will not have preview bubble
-            switch (nodeLogic.Name)
-            {
-                case "Number":
-                    break;
-                case "String":
-                    break;
-                case "Watch":
-                    break;
-                case "Watch 3D":
-                    break;
-                case "Boolean":
-                    break;
-                default:
-                    PreviewBubble = new InfoBubbleViewModel();
-                    PreviewBubble.PropertyChanged += PreviewBubble_PropertyChanged;
-                    break;
-            }
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
             //is called after the node's constructor where the ports
             //are initially registered
             SetupInitialPortViewModels();
-
-            //dynSettings.Controller.RequestNodeSelect += new NodeEventHandler(Controller_RequestNodeSelect);
         }
-
-        //void Controller_RequestNodeSelect(object sender, EventArgs e)
-        //{
-        //    ModelBase n = (e as ModelEventArgs).Model;
-
-        //    DynamoSelection.Instance.ClearSelection();
-        //    DynamoSelection.Instance.Selection.Add(n);
-        //}
 
         #endregion
 
@@ -392,28 +364,21 @@ namespace Dynamo.ViewModels
                     break;
                 case "OldValue":
                     RaisePropertyChanged("OldValue");
-                    UpdatePreviewBubbleContent(false);
                     RaisePropertyChanged("CanDisplayLabels");
-                    break;
-                case "IsUpdated":
-                    UpdatePreviewBubbleContent(false);
                     break;
                 case "X":
                     RaisePropertyChanged("Left");
                     UpdateErrorBubblePosition();
-                    UpdatePreviewBubblePosition();
                     break;
                 case "Y":
                     RaisePropertyChanged("Top");
                     UpdateErrorBubblePosition();
-                    UpdatePreviewBubblePosition();
                     break;
                 case "InteractionEnabled":
                     RaisePropertyChanged("IsInteractionEnabled");
                     break;
                 case "IsSelected":
                     RaisePropertyChanged("IsSelected");
-                    UpdateZIndex();
                     break;
                 case "State":
                     RaisePropertyChanged("State");
@@ -434,88 +399,17 @@ namespace Dynamo.ViewModels
                 case "Width":
                     RaisePropertyChanged("Width");
                     UpdateErrorBubblePosition();
-                    UpdatePreviewBubblePosition();
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");
                     UpdateErrorBubblePosition();
-                    UpdatePreviewBubblePosition();
                     break;
                 case "DisplayLabels":
                     RaisePropertyChanged("IsDisplayingLables");
                     break;
                 case "Position":
                     UpdateErrorBubblePosition();
-                    UpdatePreviewBubblePosition();
                     break;
-            }
-        }
-
-        private void Controller_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "IsShowPreviewByDefault":
-                    HandleDefaultShowPreviewChanged();
-                    break;
-            }
-        }
-
-        private void ErrorBubble_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            // TODO set preview to be no visible
-
-            //switch (e.PropertyName)
-            //{
-            //    case "IsShowPreviewByDefault":
-            //        RaisePropertyChanged("IsPreviewInsetVisible");
-            //        break;
-            //}
-        }
-
-        private void PreviewBubble_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "InfoBubbleState":
-                    RaisePropertyChanged("IsPreviewInsetVisible");
-                    break;
-            }
-        }
-
-        private void HandleDefaultShowPreviewChanged()
-        {
-            if (PreviewBubble == null)
-                return;
-
-            var vm = dynSettings.Controller.DynamoViewModel;
-            if (vm.CurrentSpaceViewModel.Nodes.Contains(this))
-            {
-                UpdatePreviewBubbleContent(true);
-
-                var command = PreviewBubble.ChangeInfoBubbleStateCommand;
-                command.Execute(
-                    dynSettings.Controller.IsShowPreviewByDefault
-                        ? InfoBubbleViewModel.State.Pinned
-                        : InfoBubbleViewModel.State.Minimized);
-            }
-        }
-
-        private void UpdateZIndex()
-        {
-            if (IsSelected == true)
-            {
-                ZIndex = 4;
-
-                if (PreviewBubble != null)
-                    PreviewBubble.ZIndex = 4;
-            }
-            else
-            {
-                ZIndex = 3;
-
-                if (PreviewBubble != null)
-                    PreviewBubble.ZIndex = 3;
             }
         }
 
@@ -560,37 +454,6 @@ namespace Dynamo.ViewModels
                 BotRight = GetBotRight()
             };
             ErrorBubble.UpdatePositionCommand.Execute(data);
-        }
-
-        private void UpdatePreviewBubbleContent(bool forceDataQuery)
-        {
-            if (PreviewBubble == null || NodeModel is Watch || dynSettings.Controller == null)
-                return;
-
-            var vm = dynSettings.Controller.DynamoViewModel;
-            if (!vm.CurrentSpaceViewModel.Previews.Contains(PreviewBubble))
-                return;
-
-            if (PreviewBubble.InfoBubbleState == InfoBubbleViewModel.State.Minimized)
-            {
-                if (forceDataQuery == false)
-                    return;
-            }
-
-            //create data packet to send to preview bubble
-            const InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
-            string content = OldValue;
-            const InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
-            var data = new InfoBubbleDataPacket(style, GetTopLeft(), GetBotRight(), content, connectingDirection);
-            PreviewBubble.UpdateContentCommand.Execute(data);
-        }
-
-        private void UpdatePreviewBubblePosition()
-        {
-            if (PreviewBubble == null || NodeModel is Watch)
-                return;
-            var data = new InfoBubbleDataPacket { TopLeft = GetTopLeft(), BotRight = GetBotRight() };
-            PreviewBubble.UpdatePositionCommand.Execute(data);
         }
 
         private void ShowHelp(object parameter)
@@ -827,32 +690,6 @@ namespace Dynamo.ViewModels
         }
 
         private bool CanSelect(object parameter)
-        {
-            return true;
-        }
-
-        private void ShowPreview(object parameter)
-        {
-            if (PreviewBubble == null)
-                return;
-
-            UpdatePreviewBubbleContent(true);
-            PreviewBubble.ZIndex = 5;
-            PreviewBubble.OnRequestAction(
-                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Show));
-        }
-
-        private bool CanShowPreview(object parameter)
-        {
-            return true;
-        }
-
-        private void HidePreview(object parameter)
-        {
-            //this.PreviewBubble.FadeOutCommand.Execute(null);
-        }
-
-        private bool CanHidePreview(object parameter)
         {
             return true;
         }

@@ -60,6 +60,7 @@ namespace DSCoreNodesUI
 
         public Formula()
         {
+            ArgumentLacing = LacingStrategy.Shortest;
             OutPortData.Add(new PortData("", "Result of math computation"));
             RegisterAllPorts();
         }
@@ -277,16 +278,20 @@ namespace DSCoreNodesUI
                             inputAstNodes))
                 };
             }
-
-            return new AssociativeNode[]
+            else
             {
-                functionDef,
-                AstFactory.BuildAssignment(
-                    GetAstIdentifierForOutputIndex(0),
-                    AstFactory.BuildFunctionCall(
-                        functionDef.Name,
-                        inputAstNodes))
-            };
+                AppendReplicationGuides(inputAstNodes);
+
+                return new AssociativeNode[]
+                {
+                    functionDef,
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),
+                        AstFactory.BuildFunctionCall(
+                            functionDef.Name,
+                            inputAstNodes))
+                };
+            }
         }
     }
 }

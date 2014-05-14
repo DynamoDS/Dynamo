@@ -4178,7 +4178,7 @@ namespace ProtoCore.DSASM
                 thisArray = rmem.GetAtRelative(symbolNode);
             }
 
-            if (AddressType.ArrayPointer != thisArray.optype)
+            if (!thisArray.IsArray() && !thisArray.IsString())
             {
                 if (varname.StartsWith(ProtoCore.DSASM.Constants.kForLoopExpression))
                 {
@@ -4194,6 +4194,13 @@ namespace ProtoCore.DSASM
             try
             {
                 result = GetIndexedArray(thisArray, dims);
+
+                // If the source object is a string and the result is an array
+                // of character, wrap it into a string. 
+                if (result.IsArray() && thisArray.IsString())
+                {
+                    result = StackValue.BuildString(result.opdata);
+                }
             }
             catch (ArgumentOutOfRangeException)
             {

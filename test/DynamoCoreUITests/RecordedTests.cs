@@ -23,6 +23,7 @@ namespace DynamoCoreUITests
         #region Generic Set-up Routines and Data Members
 
         private System.Random randomizer = null;
+        private IEnumerable<string> customNodesToBeLoaded = null;
         private CommandCallback commandCallback = null;
 
         // For access within test cases.
@@ -562,6 +563,49 @@ namespace DynamoCoreUITests
             return Controller.DynamoModel.CurrentWorkspace.GetModelInternal(id);
         }
 
+        /// <summary>
+        /// Call this method to load custom nodes from their file paths. This 
+        /// call, if made, must precede the call to RunCommandsFromFile. This 
+        /// call cannot be made more than once for a single test case. If more 
+        /// than one custom node files are needed for the test case, they must 
+        /// be specified in the same call.
+        /// </summary>
+        /// <param name="customNodeFilePaths">And array of custom node file paths.
+        /// This array cannot be null or empty.</param>
+        /// 
+        protected void LoadCustomNodes(string[] customNodeFilePaths)
+        {
+            if (customNodeFilePaths == null || (customNodeFilePaths.Length <= 0))
+            {
+                var message = "Argument must be one or more valid file paths";
+                throw new ArgumentException(message);
+            }
+
+            if (this.customNodesToBeLoaded != null)
+                throw new InvalidOperationException("LoadCustomNodes called twice");
+
+            if (this.Controller != null)
+            {
+                var message = "'LoadCustomNodes' should be called before 'RunCommandsFromFile'";
+                throw new InvalidOperationException(message);
+            }
+
+            var fileList = new List<string>();
+            foreach (var customNodeFilePath in customNodeFilePaths)
+            {
+                if (File.Exists(customNodeFilePath) != false)
+                {
+                    fileList.Add(customNodeFilePath);
+                    continue;
+                }
+
+                var message = "Custom node file not found";
+                throw new System.IO.FileNotFoundException(message, customNodeFilePath);
+            }
+
+            this.customNodesToBeLoaded = fileList;
+        }
+
         protected void RunCommandsFromFile(string commandFileName,
             bool autoRun = false, CommandCallback commandCallback = null)
         {
@@ -580,6 +624,19 @@ namespace DynamoCoreUITests
             var controller = this.Controller;
             controller.DynamoViewModel.DynamicRunEnabled = autoRun;
             DynamoController.IsTestMode = true;
+
+            // Load all custom nodes if there is any specified for this test.
+            if (this.customNodesToBeLoaded != null)
+            {
+                foreach (var customNode in this.customNodesToBeLoaded)
+                {
+                    if (controller.CustomNodeManager.AddFileToPath(customNode) == null)
+                    {
+                        throw new System.IO.FileFormatException(string.Format(
+                            "Failed to load custom node: {0}", customNode));
+                    }
+                }
+            }
 
             RegisterCommandCallback(commandCallback);
 
