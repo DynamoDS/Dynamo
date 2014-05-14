@@ -379,6 +379,11 @@ namespace Dynamo.Nodes
             }
         }
 
+        public override bool ForceReExecuteOfNode
+        {
+            get { return true; }
+        }
+
         #region protected constructors
 
         protected DSReferenceSelection(Func<string, Reference> action, string message)
