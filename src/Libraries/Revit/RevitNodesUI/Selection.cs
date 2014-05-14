@@ -19,6 +19,7 @@ using ProtoCore.AST.AssociativeAST;
 using Revit.Interactivity;
 using RevitServices.Persistence;
 using Element = Revit.Elements.Element;
+using DividedSurface = Revit.Elements.DividedSurface;
 
 namespace Dynamo.Nodes
 {
@@ -577,7 +578,7 @@ namespace Dynamo.Nodes
     {
         protected Func<string, List<ElementId>> SelectionAction;
 
-        private List<string> selectedUniqueIds = new List<string>();
+        protected List<string> selectedUniqueIds = new List<string>();
         private List<ElementId> selectedElements = new List<ElementId>();
         private Document selectionOwner;
 
@@ -1037,7 +1038,6 @@ namespace Dynamo.Nodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            GeometryObject geob = null;
             string stableRep = string.Empty;
             var dbDocument = DocumentManager.Instance.CurrentDBDocument;
 
@@ -1078,6 +1078,34 @@ namespace Dynamo.Nodes
     {
         public DSDividedSurfaceFamiliesSelection()
             :base(SelectionHelper.RequestDividedSurfaceFamilyInstancesSelection, "Select a divided surface."){}
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode node;
+
+            if (SelectedElement == null)
+            {
+                node = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                var els = selectedUniqueIds;
+
+                var newInputs = els.Select(el =>
+                    AstFactory.BuildFunctionCall(
+                    new Func<string, bool, Object>(ElementSelector.DividedSurfaceFamiliesByUniqueId),
+                    new List<AssociativeNode>
+                    {
+                        AstFactory.BuildStringNode(el),
+                        AstFactory.BuildBooleanNode(true)
+                    }
+                    )).ToList();
+
+                node = AstFactory.BuildExprList(newInputs);
+            }
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+        }
     }
 
     [NodeName("Select Model Elements")]

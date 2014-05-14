@@ -36,11 +36,8 @@ namespace Dynamo.Nodes
                 oldNode, "Dynamo.Nodes.DSDividedSurfaceFamiliesSelection", "Select Divided Surface Families");
             migrationData.AppendNode(newNode);
 
-            // DO NOT clone the sub nodes. The behavior of this node changed from 0.6.3 to 0.7.0
-            // and we want to ensure that the user will need to reselect.
-
-            //foreach (XmlElement subNode in oldNode.ChildNodes)
-            //    newNode.AppendChild(subNode.Clone());
+            foreach (XmlElement subNode in oldNode.ChildNodes)
+                newNode.AppendChild(subNode.Clone());
 
             return migrationData;
         }
