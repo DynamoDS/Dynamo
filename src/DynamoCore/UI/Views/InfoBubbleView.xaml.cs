@@ -271,12 +271,6 @@ namespace Dynamo.Controls
 
             switch (style)
             {
-                case InfoBubbleViewModel.Style.LibraryItemPreview:
-                    SetStyle_LibraryItemPreview();
-                    break;
-                case InfoBubbleViewModel.Style.NodeTooltip:
-                    SetStyle_NodeTooltip(ViewModel.ConnectingDirection);
-                    break;
                 case InfoBubbleViewModel.Style.Warning:
                     SetStyle_Warning();
                     break;
@@ -289,70 +283,16 @@ namespace Dynamo.Controls
                 case InfoBubbleViewModel.Style.ErrorCondensed:
                     SetStyle_ErrorCondensed();
                     break;
-                case InfoBubbleViewModel.Style.Preview:
-                    SetStyle_Preview();
-                    break;
-                case InfoBubbleViewModel.Style.PreviewCondensed:
-                    SetStyle_PreviewCondensed();
-                    break;
                 case InfoBubbleViewModel.Style.None:
                     throw new ArgumentException("InfoWindow didn't have a style (456B24E0F400)");
             }
         }
 
-        private void SetStyle_LibraryItemPreview()
-        {
-            backgroundPolygon.Fill = Configurations.LibraryTooltipFrameFill;
-            backgroundPolygon.StrokeThickness = Configurations.LibraryTooltipFrameStrokeThickness;
-            backgroundPolygon.Stroke = Configurations.LibraryTooltipFrameStrokeColor;
-
-            ContentContainer.MaxWidth = Configurations.LibraryTooltipMaxWidth;
-            ContentContainer.MaxHeight = Configurations.LibraryTooltipMaxHeight;
-
-            ContentMargin = Configurations.LibraryTooltipContentMargin;
-            ContentMaxWidth = Configurations.LibraryTooltipContentMaxWidth;
-            ContentMaxHeight = Configurations.LibraryTooltipContentMaxHeight;
-
-            ContentFontSize = Configurations.LibraryTooltipTextFontSize;
-            ContentForeground = Configurations.LibraryTooltipTextForeground;
-            ContentFontWeight = Configurations.LibraryTooltipTextFontWeight;
-        }
-
-        private void SetStyle_NodeTooltip(InfoBubbleViewModel.Direction connectingDirection)
-        {
-            backgroundPolygon.Fill = Configurations.NodeTooltipFrameFill;
-            backgroundPolygon.StrokeThickness = Configurations.NodeTooltipFrameStrokeThickness;
-            backgroundPolygon.Stroke = Configurations.NodeTooltipFrameStrokeColor;
-
-            ContentContainer.MaxWidth = Configurations.NodeTooltipMaxWidth;
-            ContentContainer.MaxHeight = Configurations.NodeTooltipMaxHeight;
-
-            ContentMaxWidth = Configurations.NodeTooltipContentMaxWidth;
-            ContentMaxHeight = Configurations.NodeTooltipContentMaxHeight;
-
-            ContentFontSize = Configurations.NodeTooltipTextFontSize;
-            ContentForeground = Configurations.NodeTooltipTextForeground;
-            ContentFontWeight = Configurations.NodeTooltipTextFontWeight;
-
-            switch (connectingDirection)
-            {
-                case InfoBubbleViewModel.Direction.Left:
-                    ContentMargin = Configurations.NodeTooltipContentMarginLeft;
-                    break;
-                case InfoBubbleViewModel.Direction.Right:
-                    ContentMargin = Configurations.NodeTooltipContentMarginRight;
-                    break;
-                case InfoBubbleViewModel.Direction.Bottom:
-                    ContentMargin = Configurations.NodeTooltipContentMarginBottom;
-                    break;
-            }
-        }
-
         private void SetStyle_Warning()
         {
-            backgroundPolygon.Fill = Configurations.WarningFrameFill;
+            backgroundPolygon.Fill = FrozenResources.WarningFrameFill;
             backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
-            backgroundPolygon.Stroke = Configurations.WarningFrameStrokeColor;
+            backgroundPolygon.Stroke = FrozenResources.WarningFrameStrokeColor;
 
             ContentContainer.MaxWidth = Configurations.ErrorMaxWidth;
             ContentContainer.MaxHeight = Configurations.ErrorMaxHeight;
@@ -362,15 +302,15 @@ namespace Dynamo.Controls
             ContentMaxHeight = Configurations.ErrorContentMaxHeight;
 
             ContentFontSize = Configurations.ErrorTextFontSize;
-            ContentForeground = Configurations.WarningTextForeground;
+            ContentForeground = FrozenResources.WarningTextForeground;
             ContentFontWeight = Configurations.ErrorTextFontWeight;
         }
 
         private void SetStyle_WarningCondensed()
         {
-            backgroundPolygon.Fill = Configurations.WarningFrameFill;
+            backgroundPolygon.Fill = FrozenResources.WarningFrameFill;
             backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
-            backgroundPolygon.Stroke = Configurations.WarningFrameStrokeColor;
+            backgroundPolygon.Stroke = FrozenResources.WarningFrameStrokeColor;
 
             ContentContainer.MaxWidth = Configurations.ErrorCondensedMaxWidth;
             ContentContainer.MinWidth = Configurations.ErrorCondensedMinWidth;
@@ -382,15 +322,15 @@ namespace Dynamo.Controls
             ContentMaxHeight = Configurations.ErrorCondensedContentMaxHeight;
 
             ContentFontSize = Configurations.ErrorTextFontSize;
-            ContentForeground = Configurations.WarningTextForeground;
+            ContentForeground = FrozenResources.WarningTextForeground;
             ContentFontWeight = Configurations.ErrorTextFontWeight;
         }
 
         private void SetStyle_Error()
         {
-            backgroundPolygon.Fill = Configurations.ErrorFrameFill;
+            backgroundPolygon.Fill = FrozenResources.ErrorFrameFill;
             backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
-            backgroundPolygon.Stroke = Configurations.ErrorFrameStrokeColor;
+            backgroundPolygon.Stroke = FrozenResources.ErrorFrameStrokeColor;
 
             ContentContainer.MaxWidth = Configurations.ErrorMaxWidth;
             ContentContainer.MaxHeight = Configurations.ErrorMaxHeight;
@@ -400,15 +340,15 @@ namespace Dynamo.Controls
             ContentMaxHeight = Configurations.ErrorContentMaxHeight;
 
             ContentFontSize = Configurations.ErrorTextFontSize;
-            ContentForeground = Configurations.ErrorTextForeground;
+            ContentForeground = FrozenResources.ErrorTextForeground;
             ContentFontWeight = Configurations.ErrorTextFontWeight;
         }
 
         private void SetStyle_ErrorCondensed()
         {
-            backgroundPolygon.Fill = Configurations.ErrorFrameFill;
+            backgroundPolygon.Fill = FrozenResources.ErrorFrameFill;
             backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
-            backgroundPolygon.Stroke = Configurations.ErrorFrameStrokeColor;
+            backgroundPolygon.Stroke = FrozenResources.ErrorFrameStrokeColor;
 
             ContentContainer.MaxWidth = Configurations.ErrorCondensedMaxWidth;
             ContentContainer.MinWidth = Configurations.ErrorCondensedMinWidth;
@@ -420,66 +360,8 @@ namespace Dynamo.Controls
             ContentMaxHeight = Configurations.ErrorCondensedContentMaxHeight;
 
             ContentFontSize = Configurations.ErrorTextFontSize;
-            ContentForeground = Configurations.ErrorTextForeground;
+            ContentForeground = FrozenResources.ErrorTextForeground;
             ContentFontWeight = Configurations.ErrorTextFontWeight;
-        }
-
-        private void SetStyle_Preview()
-        {
-            backgroundPolygon.Fill = Configurations.PreviewFrameFill;
-            backgroundPolygon.StrokeThickness = Configurations.PreviewFrameStrokeThickness;
-            backgroundPolygon.Stroke = Configurations.PreviewFrameStrokeColor;
-
-            ContentFontSize = Configurations.PreviewTextFontSize;
-            ContentForeground = Configurations.PreviewTextForeground;
-            ContentFontWeight = Configurations.PreviewTextFontWeight;
-
-            ContentMargin = Configurations.PreviewContentMargin;
-
-            if (this.preview_LastMaxHeight == double.MaxValue)
-            {
-                ContentContainer.MaxHeight = Configurations.PreviewDefaultMaxHeight;
-                ContentMaxHeight = Configurations.PreviewDefaultMaxHeight - 17;
-            }
-            else
-            {
-                ContentContainer.MaxHeight = this.preview_LastMaxHeight;
-                ContentMaxHeight = this.preview_LastMaxHeight - 17;
-            }
-
-            if (this.preview_LastMaxWidth == double.MaxValue)
-            {
-                ContentContainer.MaxWidth = Configurations.PreviewDefaultMaxWidth;
-                ContentMaxWidth = Configurations.PreviewDefaultMaxWidth - 10;
-            }
-            else
-            {
-                ContentContainer.MaxWidth = this.preview_LastMaxWidth;
-                ContentMaxWidth = this.preview_LastMaxWidth - 10;
-            }
-
-            ContentContainer.MinHeight = Configurations.PreviewMinHeight;
-            ContentContainer.MinWidth = Configurations.PreviewMinWidth;
-        }
-
-        private void SetStyle_PreviewCondensed()
-        {
-            backgroundPolygon.Fill = Configurations.PreviewFrameFill;
-            backgroundPolygon.StrokeThickness = Configurations.PreviewFrameStrokeThickness;
-            backgroundPolygon.Stroke = Configurations.PreviewFrameStrokeColor;
-
-            ContentContainer.MaxWidth = Configurations.PreviewCondensedMaxWidth;
-            ContentContainer.MinWidth = Configurations.PreviewCondensedMinWidth;
-            ContentContainer.MaxHeight = Configurations.PreviewCondensedMaxHeight;
-            ContentContainer.MinHeight = Configurations.PreviewCondensedMinHeight;
-
-            ContentMargin = Configurations.PreviewContentMargin;            
-            ContentMaxWidth = Configurations.PreviewCondensedContentMaxWidth;
-            ContentMaxHeight = Configurations.PreviewCondensedContentMaxHeight;
-
-            ContentFontSize = Configurations.PreviewTextFontSize;
-            ContentForeground = Configurations.PreviewTextForeground;
-            ContentFontWeight = Configurations.PreviewTextFontWeight;
         }
 
         #endregion
@@ -609,21 +491,11 @@ namespace Dynamo.Controls
             PointCollection framePoints = new PointCollection();
             switch (ViewModel.InfoBubbleStyle)
             {
-                case InfoBubbleViewModel.Style.LibraryItemPreview:
-                    framePoints = GetFramePoints_LibraryItemPreview(estimatedHeight, estimatedWidth);
-                    break;
-                case InfoBubbleViewModel.Style.NodeTooltip:
-                    framePoints = GetFramePoints_NodeTooltip(estimatedHeight, estimatedWidth);
-                    break;
                 case InfoBubbleViewModel.Style.Warning:
                 case InfoBubbleViewModel.Style.WarningCondensed:
                 case InfoBubbleViewModel.Style.Error:
                 case InfoBubbleViewModel.Style.ErrorCondensed:
                     framePoints = GetFramePoints_Error(estimatedHeight, estimatedWidth);
-                    break;
-                case InfoBubbleViewModel.Style.Preview:
-                case InfoBubbleViewModel.Style.PreviewCondensed:
-                    framePoints = GetFramePoints_Preview(estimatedHeight, estimatedWidth);
                     break;
                 case InfoBubbleViewModel.Style.None:
                     break;
@@ -631,37 +503,6 @@ namespace Dynamo.Controls
 
             if (framePoints != null)
                 backgroundPolygon.Points = framePoints;
-        }
-
-        private PointCollection GetFramePoints_LibraryItemPreview(double estimatedHeight, double estimatedWidth)
-        {
-            double arrowHeight = Configurations.LibraryTooltipArrowHeight;
-            double arrowWidth = Configurations.LibraryTooltipArrowWidth;
-
-            PointCollection pointCollection = new PointCollection();
-            pointCollection.Add(new Point(estimatedWidth, 0));
-            pointCollection.Add(new Point(arrowWidth, 0));
-            pointCollection.Add(new Point(arrowWidth, estimatedHeight / 2 - arrowHeight / 2));
-            pointCollection.Add(new Point(0, estimatedHeight / 2));
-            pointCollection.Add(new Point(arrowWidth, estimatedHeight / 2 + arrowHeight / 2));
-            pointCollection.Add(new Point(arrowWidth, estimatedHeight));
-            pointCollection.Add(new Point(estimatedWidth, estimatedHeight));
-
-            return pointCollection;
-        }
-
-        private PointCollection GetFramePoints_NodeTooltip(double estimatedHeight, double estimatedWidth)
-        {
-            switch (ViewModel.ConnectingDirection)
-            {
-                case InfoBubbleViewModel.Direction.Bottom:
-                    return GetFramePoints_NodeTooltipConnectBottom(estimatedHeight, estimatedWidth);
-                case InfoBubbleViewModel.Direction.Left:
-                    return GetFramePoints_NodeTooltipConnectLeft(estimatedHeight, estimatedWidth);
-                case InfoBubbleViewModel.Direction.Right:
-                    return GetFramePoints_NodeTooltipConnectRight(estimatedHeight, estimatedWidth);
-            }
-            return new PointCollection();
         }
 
         private PointCollection GetFramePoints_NodeTooltipConnectBottom(double estimatedHeight, double estimatedWidth)
@@ -791,22 +632,6 @@ namespace Dynamo.Controls
             return pointCollection;
         }
 
-        private PointCollection GetFramePoints_Preview(double estimatedHeight, double estimatedWidth)
-        {
-            double arrowHeight = Configurations.PreviewArrowHeight;
-            double arrowWidth = Configurations.PreviewArrowWidth;
-
-            PointCollection pointCollection = new PointCollection();
-            pointCollection.Add(new Point(estimatedWidth, arrowHeight));
-            pointCollection.Add(new Point(estimatedWidth / 2 + arrowWidth / 2, arrowHeight));
-            pointCollection.Add(new Point(estimatedWidth / 2, 0));
-            pointCollection.Add(new Point(estimatedWidth / 2 - arrowWidth / 2, arrowHeight));
-            pointCollection.Add(new Point(0, arrowHeight));
-            pointCollection.Add(new Point(0, estimatedHeight));
-            pointCollection.Add(new Point(estimatedWidth, estimatedHeight));
-            return pointCollection;
-        }
-
         #endregion
 
         #region Update Position
@@ -819,82 +644,13 @@ namespace Dynamo.Controls
 
             switch (ViewModel.InfoBubbleStyle)
             {
-                case InfoBubbleViewModel.Style.LibraryItemPreview:
-                    mainGrid.Margin = GetMargin_LibraryItemPreview(estimatedHeight, estimatedWidth);
-                    //MakeFitInView(estimatedHeight, estimatedWidth);
-                    break;
-                case InfoBubbleViewModel.Style.NodeTooltip:
-                    mainGrid.Margin = GetMargin_NodeTooltip(estimatedHeight, estimatedWidth);
-                    MakeFitInView(estimatedHeight, estimatedWidth);
-                    break;
                 case InfoBubbleViewModel.Style.Warning:
                 case InfoBubbleViewModel.Style.WarningCondensed:
                 case InfoBubbleViewModel.Style.Error:
                 case InfoBubbleViewModel.Style.ErrorCondensed:
                     mainGrid.Margin = GetMargin_Error(estimatedHeight, estimatedWidth);
                     break;
-                case InfoBubbleViewModel.Style.Preview:
-                case InfoBubbleViewModel.Style.PreviewCondensed:
-                    mainGrid.Margin = GetMargin_Preview(estimatedHeight, estimatedWidth);
-                    break;
             }
-        }
-
-        private Thickness GetMargin_LibraryItemPreview(double estimatedHeight, double estimatedWidth)
-        {
-            Thickness margin = new Thickness();
-            margin.Top = (ViewModel.TargetTopLeft.Y + ViewModel.TargetBotRight.Y) / 2 - (estimatedHeight / 2);
-            return margin;
-        }
-
-        private Thickness GetMargin_NodeTooltip(double estimatedHeight, double estimatedWidth)
-        {
-            Thickness margin = new Thickness();
-            switch (ViewModel.ConnectingDirection)
-            {
-                case InfoBubbleViewModel.Direction.Bottom:
-                    if (ViewModel.LimitedDirection == InfoBubbleViewModel.Direction.TopRight)
-                    {
-                        margin.Top = ViewModel.TargetBotRight.Y - (ViewModel.TargetBotRight.Y - ViewModel.TargetTopLeft.Y) / 2;
-                        margin.Left = ViewModel.TargetTopLeft.X - estimatedWidth;
-                    }
-                    else if (ViewModel.LimitedDirection == InfoBubbleViewModel.Direction.Top)
-                    {
-                        margin.Top = ViewModel.TargetBotRight.Y - (ViewModel.TargetBotRight.Y - ViewModel.TargetTopLeft.Y) / 2;
-                        margin.Left = ViewModel.TargetBotRight.X;
-                    }
-                    else
-                    {
-                        margin.Top = ViewModel.TargetTopLeft.Y - estimatedHeight;
-                        margin.Left = (ViewModel.TargetTopLeft.X + ViewModel.TargetBotRight.X) / 2 - (estimatedWidth / 2);
-                    }
-                    break;
-                case InfoBubbleViewModel.Direction.Left:
-                    if (ViewModel.LimitedDirection == InfoBubbleViewModel.Direction.Right)
-                    {
-                        margin.Top = (ViewModel.TargetTopLeft.Y + ViewModel.TargetBotRight.Y) / 2 - (estimatedHeight / 2);
-                        margin.Left = ViewModel.TargetTopLeft.X - estimatedWidth;
-                    }
-                    else
-                    {
-                        margin.Top = (ViewModel.TargetTopLeft.Y + ViewModel.TargetBotRight.Y) / 2 - (estimatedHeight / 2);
-                        margin.Left = ViewModel.TargetBotRight.X;
-                    }
-                    break;
-                case InfoBubbleViewModel.Direction.Right:
-                    if (ViewModel.LimitedDirection == InfoBubbleViewModel.Direction.Left)
-                    {
-                        margin.Top = (ViewModel.TargetTopLeft.Y + ViewModel.TargetBotRight.Y) / 2 - (estimatedHeight / 2);
-                        margin.Left = ViewModel.TargetBotRight.X;
-                    }
-                    else
-                    {
-                        margin.Top = (ViewModel.TargetTopLeft.Y + ViewModel.TargetBotRight.Y) / 2 - (estimatedHeight / 2);
-                        margin.Left = ViewModel.TargetTopLeft.X - estimatedWidth;
-                    }
-                    break;
-            }
-            return margin;
         }
 
         private Thickness GetMargin_Error(double estimatedHeight, double estimatedWidth)
@@ -904,51 +660,6 @@ namespace Dynamo.Controls
             margin.Top = -(estimatedHeight) + ViewModel.TargetTopLeft.Y;
             margin.Left = -((estimatedWidth - nodeWidth) / 2) + ViewModel.TargetTopLeft.X;
             return margin;
-        }
-
-        private Thickness GetMargin_Preview(double estimatedHeight, double estimatedWidth)
-        {
-            Thickness margin = new Thickness();
-            double nodeWidth = ViewModel.TargetBotRight.X - ViewModel.TargetTopLeft.X;
-            margin.Top = ViewModel.TargetBotRight.Y;
-            margin.Left = -((estimatedWidth - nodeWidth) / 2) + ViewModel.TargetTopLeft.X;
-
-            if (ViewModel.InfoBubbleState == InfoBubbleViewModel.State.Minimized)
-                margin.Top -= Configurations.PreviewArrowHeight;
-            return margin;
-        }
-
-        private void MakeFitInView(double estimatedHeight, double estimatedWidth)
-        {
-            //top
-            if (mainGrid.Margin.Top <= 30)
-            {
-                Thickness newMargin = mainGrid.Margin;
-                newMargin.Top = 40;
-                mainGrid.Margin = newMargin;
-            }
-            //left
-            if (mainGrid.Margin.Left <= 0)
-            {
-                Thickness newMargin = mainGrid.Margin;
-                newMargin.Left = 0;
-                mainGrid.Margin = newMargin;
-            }
-            //botton
-            if (mainGrid.Margin.Top + estimatedHeight >= dynSettings.Controller.DynamoViewModel.WorkspaceActualHeight)
-            {
-                Thickness newMargin = mainGrid.Margin;
-                newMargin.Top = dynSettings.Controller.DynamoViewModel.WorkspaceActualHeight - estimatedHeight - 1;
-                mainGrid.Margin = newMargin;
-            }
-            //right
-            if (mainGrid.Margin.Left + estimatedWidth >= dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
-            {
-                Thickness newMargin = mainGrid.Margin;
-                newMargin.Left = dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth - estimatedWidth - 1;
-                mainGrid.Margin = newMargin;
-            }
-
         }
 
         #endregion
@@ -982,30 +693,6 @@ namespace Dynamo.Controls
         }
 
         #endregion
-
-        private void ShowPreviewBubbleFullContent()
-        {
-            if (this.IsDisconnected)
-                return;
-            
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
-            data.Style = InfoBubbleViewModel.Style.Preview;
-            data.ConnectingDirection = InfoBubbleViewModel.Direction.Top;
-
-            this.ViewModel.ShowFullContentCommand.Execute(data);
-        }
-
-        private void ShowPreviewBubbleCondensedContent()
-        {
-            if (this.IsDisconnected)
-                return;
-
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
-            data.Style = InfoBubbleViewModel.Style.PreviewCondensed;
-            data.ConnectingDirection = InfoBubbleViewModel.Direction.Top;
-
-            this.ViewModel.ShowCondensedContentCommand.Execute(data);
-        }
 
         private void ShowErrorBubbleFullContent()
         {
@@ -1119,13 +806,10 @@ namespace Dynamo.Controls
             if (this.IsDisconnected)
                 return;
                 
-            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
-                ShowPreviewBubbleFullContent();
-            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed ||
-                     ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.WarningCondensed)
+            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed ||
+                ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.WarningCondensed)
                 ShowErrorBubbleFullContent();
             
-            //FadeInInfoBubble();
             ShowInfoBubble();
 
             this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
@@ -1142,14 +826,6 @@ namespace Dynamo.Controls
 
             switch (ViewModel.InfoBubbleStyle)
             {
-                case InfoBubbleViewModel.Style.Preview:
-                case InfoBubbleViewModel.Style.PreviewCondensed:
-                    if (ViewModel.InfoBubbleState == InfoBubbleViewModel.State.Pinned)
-                        ShowPreviewBubbleCondensedContent();
-                    else
-                        goto default;
-                    break;
-
                 case InfoBubbleViewModel.Style.Warning:
                 case InfoBubbleViewModel.Style.Error:
                     ShowErrorBubbleCondensedContent();
@@ -1166,41 +842,6 @@ namespace Dynamo.Controls
         private void InfoBubble_MouseEnter(object sender, MouseEventArgs e)
         {
             this.Cursor = CursorLibrary.GetCursor(CursorSet.Condense);
-        }
-
-        private void InfoBubble_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            e.Handled = true;
-            if (this.IsDisconnected)
-                return;
-
-            if (ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.Preview && ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.PreviewCondensed)
-                return;
-
-            switch (ViewModel.InfoBubbleState)
-            {
-                case InfoBubbleViewModel.State.Minimized:
-                    ViewModel.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
-                    ShowPreviewBubbleCondensedContent();
-                    break;
-
-                case InfoBubbleViewModel.State.Pinned:
-                    ViewModel.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
-                    break;
-            }
-        }
-
-        private void ResizeObject_MouseLeave(object sender, MouseEventArgs e)
-        {
-            this.Cursor = null;
-        }
-
-        private void ResizeObject_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            Mouse.Capture(null);
-            isResizing = false;
-            isResizeHeight = false;
-            isResizeWidth = false;
         }
 
         private void MainGrid_MouseMove(object sender, MouseEventArgs e)
@@ -1221,73 +862,9 @@ namespace Dynamo.Controls
             Resize(mouseLocation);
         }
 
-        private void HorizontalResizeBar_MouseEnter(object sender, MouseEventArgs e)
-        {
-            this.Cursor = CursorLibrary.GetCursor(CursorSet.ResizeVertical);
-        }
-
-        private void HorizontalResizeBar_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            Mouse.Capture(sender as UIElement);
-            e.Handled = true;
-
-            isResizing = true;
-            isResizeHeight = true;
-        }
-
-        private void ConnerResizePoint_MouseEnter(object sender, MouseEventArgs e)
-        {
-            this.Cursor = CursorLibrary.GetCursor(CursorSet.ResizeDiagonal);
-        }
-
-        private void ConnerResizePoint_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            Mouse.Capture(sender as UIElement);
-            e.Handled = true;
-
-            isResizing = true;
-            isResizeWidth = true;
-            isResizeHeight = true;
-        }
-
-        private void VerticalResizeBar_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            Mouse.Capture(sender as UIElement);
-            e.Handled = true;
-
-            isResizing = true;
-            isResizeWidth = true;
-        }
-
-        private void VerticalResizeBar_MouseEnter(object sender, MouseEventArgs e)
-        {
-            this.Cursor = CursorLibrary.GetCursor(CursorSet.ResizeHorizontal);
-        }
-
         private void InfoBubble_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             e.Handled = true;
-        }
-
-        private void InfoBubble_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (this.IsDisconnected)
-                return;
-
-            Point mousePosition = e.GetPosition(this);
-
-            double offsetX = this.ActualWidth - ContentContainer.ActualWidth;
-            double offsetY = this.ActualHeight - ContentContainer.ActualHeight;
-            if (Math.Abs(mousePosition.X - offsetX - ContentContainer.ActualWidth / 2) < 25
-                && (mousePosition.Y - offsetY < 20)
-                && (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview))
-            {
-                this.Cursor = CursorLibrary.GetCursor(CursorSet.Expand);
-            }
-            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
-                this.Cursor = CursorLibrary.GetCursor(CursorSet.Condense);
-            else
-                this.Cursor = null;
         }
 
         #endregion

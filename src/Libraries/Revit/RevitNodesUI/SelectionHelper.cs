@@ -90,6 +90,23 @@ namespace Revit.Interactivity
             }
         }
 
+        public class DividedSurfaceSelectionFilter : ISelectionFilter
+        {
+            public bool AllowElement(Element elem)
+            {
+                if (elem is DividedSurface)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            public bool AllowReference(Reference reference, XYZ position)
+            {
+                return false;
+            }
+        }
+
         public static Face RequestFaceSelection(string message)
         {
             var doc = DocumentManager.Instance.CurrentUIDocument;
@@ -184,13 +201,13 @@ namespace Revit.Interactivity
 
             dynSettings.DynamoLogger.Log(message);
 
-            Reference formRef = doc.Selection.PickObject(ObjectType.Element);
+            Reference formRef = doc.Selection.PickObject(ObjectType.Element, new DividedSurfaceSelectionFilter());
 
             if (formRef != null)
             {
                 //get the element
                 var el = DocumentManager.Instance.CurrentDBDocument.GetElement(formRef);
-                f = el as DividedSurface;
+                f = (DividedSurface)el;
             }
             return f;
         }

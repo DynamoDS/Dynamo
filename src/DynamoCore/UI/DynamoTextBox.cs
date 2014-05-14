@@ -245,6 +245,7 @@ namespace Dynamo.Nodes
         {
             base.OnThumbDragCompleted(e);
             (nodeModel as IBlockingModel).OnBlockingEnded(EventArgs.Empty);
+            nodeModel.RequiresRecalc = true;
         }
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
