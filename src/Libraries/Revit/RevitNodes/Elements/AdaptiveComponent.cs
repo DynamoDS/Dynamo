@@ -7,6 +7,7 @@ using DSNodeServices;
 using Revit.GeometryConversion;
 using Revit.GeometryObjects;
 using Revit.GeometryReferences;
+using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Point = Autodesk.DesignScript.Geometry.Point;
@@ -20,7 +21,6 @@ namespace Revit.Elements
     [RegisterForTrace]
     public class AdaptiveComponent : AbstractFamilyInstance
     {
-
         #region Private constructors
 
         /// <summary>
@@ -257,12 +257,25 @@ namespace Revit.Elements
             }
         }
 
-        public Point Location
+        public List<Point> Locations
         {
             get
             {
-                var pos = this.InternalFamilyInstance.Location as LocationPoint;
-                return Point.ByCoordinates(pos.Point.X, pos.Point.Y, pos.Point.Z);
+                //var pos = this.InternalFamilyInstance.Location as LocationPoint;
+                //return Point.ByCoordinates(pos.Point.X, pos.Point.Y, pos.Point.Z);
+
+                TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
+                DocumentManager.Regenerate();
+                var pts = new List<Point>();
+                var ids = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(InternalFamilyInstance);
+                TransactionManager.Instance.TransactionTaskDone();
+                foreach (var id in ids)
+                {
+                    var p = DocumentManager.Instance.CurrentDBDocument.GetElement(id) as Autodesk.Revit.DB.ReferencePoint;
+                    var pos = p.Position;
+                    pts.Add(Point.ByCoordinates(p.Position.X, p.Position.Y, p.Position.Z));
+                }
+                return pts;
             }
         }
 

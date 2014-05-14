@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Windows.Threading;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
@@ -14,7 +13,6 @@ using Autodesk.Revit.UI.Events;
 using DSIronPython;
 using DSNodeServices;
 using Dynamo.Applications;
-using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Revit;
@@ -68,9 +66,15 @@ namespace Dynamo
             ElementNameStore = new Dictionary<ElementId, string>();
 
             EngineController.ImportLibrary("RevitNodes.dll");
-
+            EngineController.ImportLibrary("SimpleRaaS.dll");
+            
             //IronPythonEvaluator.InputMarshaler.RegisterMarshaler((WrappedElement element) => element.InternalElement);
-            //IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => element.ToDSType(false));
+            IronPythonEvaluator.OutputMarshaler.RegisterMarshaler((Element element) => element.ToDSType(true));
+
+            // Turn off element binding during iron python script execution
+            IronPythonEvaluator.EvaluationBegin += (a, b, c, d, e) => ElementBinder.IsEnabled = false;
+            IronPythonEvaluator.EvaluationEnd += (a, b, c, d, e) => ElementBinder.IsEnabled = true;
+
         }
 
         public RevitServicesUpdater Updater { get; private set; }
@@ -231,7 +235,8 @@ namespace Dynamo
         {
             if (dynSettings.Controller != null)
             {
-                dynSettings.Controller.DynamoModel.Nodes.ToList().ForEach(x => x.ResetOldValue());
+                foreach (var node in DynamoModel.Nodes)
+                    node.ResetOldValue();
 
                 foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
                 {
@@ -255,7 +260,6 @@ namespace Dynamo
 
         protected override void OnEvaluationCompleted(object sender, EventArgs e)
         {
-
             //Cleanup Delegate
             Action cleanup = delegate
             {

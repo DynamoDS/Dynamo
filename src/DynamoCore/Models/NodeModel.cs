@@ -85,13 +85,7 @@ namespace Dynamo.Models
             }
         }
 
-        public bool HasRenderPackages { get; set; //{
-            //    lock (RenderPackagesMutex)
-            //    {
-            //        return RenderPackages.Any();
-            //    }
-            //}
-        }
+        public bool HasRenderPackages { get; set; }
 
         #endregion
 
@@ -522,6 +516,17 @@ namespace Dynamo.Models
                     case ("OverrideName"):
                         RaisePropertyChanged("NickName");
                         break;
+                    case ("IsSelected"):
+                        // Synchronize the selected state of any render packages for this node
+                        // with the selection state of the node.
+                        if (HasRenderPackages)
+                        {
+                            lock (RenderPackagesMutex)
+                            {
+                                RenderPackages.ForEach(rp => ((RenderPackage) rp).Selected = IsSelected);
+                            }
+                        }
+                        break;
                 }
             };
 
@@ -726,6 +731,44 @@ namespace Dynamo.Models
             
         }
 
+        /// <summary>
+        /// Apppend replication guide to the input parameter based on lacing
+        /// strategy.
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <returns></returns>
+        protected void AppendReplicationGuides(List<AssociativeNode> inputs)
+        {
+            if (inputs == null || !inputs.Any())
+                return;
+
+            switch (ArgumentLacing)
+            {
+                case LacingStrategy.Longest:
+
+                    for (int i = 0; i < inputs.Count(); ++i)
+                    {
+                        inputs[i] = AstFactory.AddReplicationGuide(
+                                                inputs[i],
+                                                new List<int> { 1 },
+                                                true);
+                    }
+                    break;
+
+                case LacingStrategy.CrossProduct:
+
+                    int guide = 1;
+                    for (int i = 0; i < inputs.Count(); ++i)
+                    {
+                        inputs[i] = AstFactory.AddReplicationGuide(
+                                                inputs[i],
+                                                new List<int> { guide },
+                                                false);
+                        guide++;
+                    }
+                    break;
+            }
+        }
         #endregion
 
         #region Input and Output Connections

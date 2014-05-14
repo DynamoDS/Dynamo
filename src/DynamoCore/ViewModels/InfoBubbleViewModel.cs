@@ -38,14 +38,10 @@ namespace Dynamo.ViewModels
         public enum Style
         {
             None,
-            LibraryItemPreview,
-            NodeTooltip,
             Warning,
             WarningCondensed,
             Error,
             ErrorCondensed,
-            Preview,
-            PreviewCondensed
         }
         public enum Direction
         {
@@ -276,12 +272,6 @@ namespace Dynamo.ViewModels
         {
             switch (InfoBubbleStyle)
             {
-                case Style.PreviewCondensed:
-                    if (FullContent.Length > 25)
-                        Content = FullContent.Substring(0, Configurations.CondensedPreviewMaxLength) + "...";
-                    else
-                        Content = FullContent;
-                    break;
                 case Style.WarningCondensed:
                 case Style.ErrorCondensed:
                     Content = "...";

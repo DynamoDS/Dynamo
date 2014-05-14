@@ -2513,6 +2513,42 @@ o3 = OverloadTarget.StaticOverload(dp1);
 
         }
 
+        [Test]
+        public void T025_MethodOverload_DifferentPrimitiveType()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+
+o1 = OverloadTarget.DifferentPrimitiveType(1);
+o2 = OverloadTarget.DifferentPrimitiveType(true);
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("o1", 2);
+            thisTest.Verify("o2", 1);
+        }
+
+        [Test]
+        public void T026_MethodOverload_DifferentIEnumerable()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+
+a = DummyClassA.DummyClassA();
+o1 = OverloadTarget.IEnumerableOfDifferentObjectType(a);
+o2 = OverloadTarget.IEnumerableOfDifferentObjectType(a);
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+
+            //The script should not work at all.
+            //IEnumerableOfDifferentObjectType is expecting an input of an array
+            //other than one instance.
+            //But it is working.
+            thisTest.Verify("o1", 3);
+            thisTest.Verify("o2", 3);
+
+            //Make it fail
+            Assert.Fail("A wrong script is working!");
+        }
 
     }
 }

@@ -103,7 +103,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll",
-                "FamilyInstance.Curves", "FamilyInstance.Curves");
+                "Element.Curves", "Element.Curves");
         }
     }
 
@@ -138,6 +138,36 @@ namespace Dynamo.Nodes
 
     public class GetParameters : MigrationNode
     {
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
+
+            // Create CBN based on the input/output port count
+            string codeText = ""; int num = 1;
+            foreach (XmlElement childNode in oldNode.ChildNodes)
+            {
+                if (childNode.Name == "Output")
+                {
+                    codeText += "element.GetParameterValueByName(param" + num++ + ");";
+                    if (num > 1)
+                        codeText += "\n";
+                }
+            }
+
+            // To avoid empty CBN
+            if (codeText == "")
+                codeText = "element;";
+
+            codeBlockNode.SetAttribute("CodeText", codeText);
+            codeBlockNode.SetAttribute("nickname", "Get Parameters");
+
+            migrationData.AppendNode(codeBlockNode);
+            return migrationData;
+        }
     }
 
 }

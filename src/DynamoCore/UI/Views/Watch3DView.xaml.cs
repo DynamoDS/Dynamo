@@ -264,7 +264,7 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void VisualizationManagerRenderComplete(object sender, EventArgs e)
+        private void VisualizationManagerRenderComplete(object sender, RenderCompletionEventArgs e)
         {
             if (dynSettings.Controller == null)
             {
@@ -274,14 +274,13 @@ namespace Dynamo.Controls
             Dispatcher.Invoke(new Action(delegate
             {
                 var vm = (IWatchViewModel) DataContext;
-                   
-                if (vm.GetBranchVisualizationCommand.CanExecute(null))
+
+                if (vm.GetBranchVisualizationCommand.CanExecute(e.TaskId))
                 {
-                    vm.GetBranchVisualizationCommand.Execute(null);
+                    vm.GetBranchVisualizationCommand.Execute(e.TaskId);
                 }
             }));
         }
-
 
         /// <summary>
         /// Callback for thumb control's DragStarted event.
@@ -523,7 +522,13 @@ namespace Dynamo.Controls
                 
             GC.Collect();
 
-            Debug.WriteLine(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
+            Debug.WriteLine(string.Format("RENDER: {0} ellapsed for updating background preview.", sw.Elapsed));
+
+            var vm = (IWatchViewModel)DataContext;
+            if (vm.CheckForLatestRenderCommand.CanExecute(e.TaskId))
+            {
+                vm.CheckForLatestRenderCommand.Execute(e.TaskId);
+            }
         }
 
         private void ConvertPoints(RenderPackage p,
