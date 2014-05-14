@@ -469,6 +469,7 @@ namespace Dynamo.ViewModels
                 MouseClickHistory curClick = new MouseClickHistory(sender, e);
 
                 bool eventHandled = false;
+                bool returnFocusToSearch = true;
                 if (this.currentState == State.Connection)
                 {
                     // Clicking on the canvas while connecting simply cancels 
@@ -490,6 +491,7 @@ namespace Dynamo.ViewModels
                     else if (e.Source is Dynamo.Controls.EndlessGrid && MouseClickHistory.CheckIsDoubleClick(prevClick, curClick))
                     {
                         CreateCodeBlockNode(mouseDownPos); // Double clicking on background (EndlessGrid)
+                        returnFocusToSearch = false; // Keep the focus on newly created code block node.
                         prevClick = null;
                     }
                     else
@@ -504,7 +506,8 @@ namespace Dynamo.ViewModels
                     owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.HandPanActive);
                 }
 
-                dynSettings.ReturnFocusToSearch();
+                if (returnFocusToSearch != false)
+                    dynSettings.ReturnFocusToSearch();
 
                 return eventHandled;
             }
