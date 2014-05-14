@@ -473,23 +473,9 @@ namespace Dynamo
             if (updatingPaused || dynSettings.Controller == null)
                 return;
 
-            var changes = new List<ISelectable>();
-
-            // Any node that has a visualizations but is
-            // no longer in the selection 
-            changes.AddRange(dynSettings.Controller.DynamoModel.Nodes
-                .Where(x => x.HasRenderPackages)
-                .Where(x => !DynamoSelection.Instance.Selection.Contains(x)));
-
-            if (e.NewItems != null && e.NewItems.Cast<ISelectable>().Any())
-            {
-                changes.AddRange(e.NewItems.Cast<ISelectable>());
-            }
-
-            Render(
-            changes.Any() ?
-            changes.Where(sel => sel is NodeModel).Cast<NodeModel>() :
-            null);
+            // For a selection event, we need only to trigger a new rendering for 
+            // the background preview.
+            AggregateUpstreamRenderPackages(new RenderTag(CurrentTaskId, null));
         }
 
         /// <summary>
