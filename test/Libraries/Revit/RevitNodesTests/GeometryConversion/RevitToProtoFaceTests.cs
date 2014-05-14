@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
-using System.Text;
+﻿using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Dynamo.Tests;
 using NUnit.Framework;
@@ -15,13 +11,13 @@ namespace DSRevitNodesTests.GeometryConversion
     internal class RevitToProtoFaceTests : RevitNodeTestBase
     {
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
             HostFactory.Instance.StartUp();
         }
 
         [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
             HostFactory.Instance.ShutDown();
         }
