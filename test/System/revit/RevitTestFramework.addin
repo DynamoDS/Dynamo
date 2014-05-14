@@ -2,7 +2,7 @@
 <RevitAddIns>
   <AddIn Type="Command">
     <Name>Dynamo Dynamo Test Framework</Name>
-    <Assembly>"..\..\..\bin\AnyCPU\Debug\RevitTestFramework.dll"</Assembly>
+    <Assembly>"C:\Program Files (x86)\Revit Test Framework\RevitTestFramework.dll"</Assembly>
     <AddInId>487f9ff0-5b34-4e7e-97bf-70fbff69194f</AddInId>
     <FullClassName>Dynamo.Tests.RevitTestFramework</FullClassName>
     <VendorId>ADSK</VendorId>
