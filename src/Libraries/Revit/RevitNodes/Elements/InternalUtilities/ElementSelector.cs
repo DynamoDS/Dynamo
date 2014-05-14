@@ -74,6 +74,68 @@ namespace Revit.Elements
         }
 
         /// <summary>
+        /// Gets list of DividedSurface families from the given uniqueId. If given 
+        /// uniqueId does not refer to Autodesk.Revit.DB.FamilyInstance, then it 
+        /// gets the list of families using DividedSurfaceData. 
+        /// </summary>
+        /// <param name="uniqueId">The unique id of the element to select</param>
+        /// <param name="isRevitOwned">Whether the returned object should be revit owned or not</param>
+        /// <returns></returns>
+        public static Object DividedSurfaceFamiliesByUniqueId(string uniqueId, bool isRevitOwned)
+        {
+            var ele = InternalGetElementByUniqueId(uniqueId);
+            if (ele is Autodesk.Revit.DB.FamilyInstance)
+            {
+                return ele.ToDSType(isRevitOwned);
+            }
+            else if(ele != null)
+            {
+                List<List<Element>> result = new List<List<Element>>();
+                DividedSurfaceData dsd = ele.GetDividedSurfaceData();
+                foreach (Reference r in dsd.GetReferencesWithDividedSurfaces())
+                {
+                    Autodesk.Revit.DB.DividedSurface ds = dsd.GetDividedSurfaceForReference(r);
+                    var gn = new GridNode();
+
+                    int u = 0;
+                    while (u < ds.NumberOfUGridlines)
+                    {
+                        var lst = new List<Element>();
+                        gn.UIndex = u;
+
+                        int v = 0;
+                        while (v < ds.NumberOfVGridlines)
+                        {
+                            gn.VIndex = v;
+
+                            //"Reports whether a grid node is a "seed node," a node that is associated with one or more tiles."
+                            if (ds.IsSeedNode(gn))
+                            {
+                                var fi = ds.GetTileFamilyInstance(gn, 0);
+
+                                if (fi != null)
+                                {
+                                    //put the family instance into the tree
+                                    lst.Add(fi.ToDSType(isRevitOwned));
+                                }
+                            }
+                            v = v + 1;
+                        }
+
+                        //don't add list if it's empty
+                        if (lst.Any())
+                            result.Add(lst);
+
+                        u = u + 1;
+                    }
+                }
+                return result;
+            }
+
+            throw new Exception("Could not get the element from the document");
+        }
+
+        /// <summary>
         /// Internal helper method to get an element from the current document by id
         /// </summary>
         /// <param name="id"></param>
