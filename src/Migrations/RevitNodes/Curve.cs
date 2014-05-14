@@ -106,8 +106,31 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "PolyCurve.OffsetPlanarPolyCurve", 
-                "PolyCurve.OffsetPlanarPolyCurve@double,bool,bool");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "PolyCurve.ByThickeningCurve", "PolyCurve.ByThickeningCurve@Curve,double,Vector");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Create new node
+            XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 1, "ProtoGeometry.dll",
+                "Point.AsVector", "Point.AsVector");
+            migrationData.AppendNode(pointAsVector);
+            string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
+
+            PortId pToV0 = new PortId(pointAsVectorId, 0, PortType.INPUT);
+            PortId oldInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
+
+            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
+            data.ReconnectToPort(connector2, pToV0);
+            data.CreateConnector(pointAsVector, 0, newNode, 2);
+
+            return migrationData;
         }
     }
 
