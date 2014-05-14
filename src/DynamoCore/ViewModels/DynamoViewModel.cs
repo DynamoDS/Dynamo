@@ -532,6 +532,17 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool IsDebugBuild
+        {
+            get
+            {
+#if DEBUG
+                return true;
+#else
+                return false;
+#endif
+            }
+        }
         #endregion
 
         public DynamoViewModel(DynamoController controller, string commandFilePath)
