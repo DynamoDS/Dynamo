@@ -965,10 +965,18 @@ namespace DynamoCoreUITests
             });
         }
 
-
         #endregion
 
         #region Defect Verifications Test Cases
+
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_1956()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1956
+            RunCommandsFromFile("Defect_MAGN_1956.xml");
+            AssertPreviewValue("bbec3d26-e220-4b55-9da6-ca1f37a55d7f", -10);
+        }
 
         [Test, RequiresSTA]
         public void Defect_MAGN_159()
