@@ -69,6 +69,7 @@
     <Compile Include="RevitNodes\FamilyType.cs" />
     <Compile Include="RevitNodes\Floor.cs" />
     <Compile Include="RevitNodes\FreeForm.cs" />
+    <Compile Include="RevitNodes\FunctionWithRevit.cs" />
     <Compile Include="RevitNodes\Grid.cs" />
     <Compile Include="RevitNodes\HermiteSpline.cs" />
     <Compile Include="RevitNodes\Intersect.cs" />
