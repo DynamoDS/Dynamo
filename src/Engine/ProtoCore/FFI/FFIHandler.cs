@@ -103,7 +103,7 @@ namespace ProtoFFI
         private DLLFFIHandler() { }
         private static readonly Dictionary<FFILanguage, ModuleHelper> helpers = new Dictionary<FFILanguage, ModuleHelper>();
         private static readonly DLLFFIHandler Instance = new DLLFFIHandler();
-        private static bool registered;
+        private static bool registered = false;
         public static Dictionary<string, DLLModule> Modules = new Dictionary<string, DLLModule>(StringComparer.CurrentCultureIgnoreCase);
         public static IntPtr Env
         {
@@ -122,10 +122,20 @@ namespace ProtoFFI
         public static void Register(FFILanguage type, ModuleHelper helper)
         {
             if (!registered)
+            {
                 Register();
+                registered = true;
+            }
 
             if (!helpers.ContainsKey(type))
                 helpers.Add(type, helper);
+        }
+
+        public static void ClearLoadedModules()
+        {
+            Modules.Clear();
+            helpers.Clear();
+            registered = false;
         }
 
         public override FFIFunctionPointer GetFunctionPointer(string dllModuleName, string className, string functionName, List<ProtoCore.Type> parameterTypes, ProtoCore.Type returnType)

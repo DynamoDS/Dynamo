@@ -284,8 +284,6 @@ namespace Dynamo
 
             DisposeLogic.IsShuttingDown = false;
 
-            EngineController = new EngineController(this);
-
             //This is necessary to avoid a race condition by causing a thread join
             //inside the vm exec
             //TODO(Luke): Push this into a resync call with the engine controller

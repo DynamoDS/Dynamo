@@ -55,6 +55,10 @@ namespace Dynamo.DSEngine
             libraryServices.LibraryLoading -= this.LibraryLoading;
             libraryServices.LibraryLoadFailed -= this.LibraryLoadFailed;
             libraryServices.LibraryLoaded -= this.LibraryLoaded;
+            LibraryServices.DestroyInstance();
+
+            GraphToDSCompiler.GraphUtilities.Reset();
+            ProtoFFI.DLLFFIHandler.ClearLoadedModules();
         }
 
         /// <summary>
