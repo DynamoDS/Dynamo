@@ -233,7 +233,7 @@ namespace Dynamo.ViewModels
 
         public bool ShouldShowGlyphBar
         {
-            get { return IsPreviewInsetVisible && ArgumentLacing != LacingStrategy.Disabled; }
+            get { return IsPreviewInsetVisible || ArgumentLacing != LacingStrategy.Disabled; }
         }
 
         /// <summary>
