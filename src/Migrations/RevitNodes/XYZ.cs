@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using Dynamo.Models;
 using Migrations;
@@ -232,21 +233,18 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-
+            var migratedData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
 
-            codeBlockNode.SetAttribute("CodeText",
-                "Point.ByCoordinates(\n" +
-                "List.Sublists(list,0,3),\n" +
-                "List.Sublists(list,1,3),\n" +
-                "List.Sublists(list,2,3));");
+            var newNode = MigrationManager.CreateCustomNodeFrom(oldNode.OwnerDocument, oldNode,
+                "d58a9edc-7623-424b-ac45-a71bfa40046d",
+                "XyzFromListOfNumbers",
+                "This node represents an upgrade of the 0.6.3 XyzFromListOfNumbers node to 0.7.x",
+                new List<string>() { "list" },
+                new List<string>() { "list" });
 
-            codeBlockNode.SetAttribute("nickname", "XYZ from List of Numbers");
-
-            migrationData.AppendNode(codeBlockNode);
-            return migrationData;
+            migratedData.AppendNode(newNode);
+            return migratedData;
         }
     }
 
