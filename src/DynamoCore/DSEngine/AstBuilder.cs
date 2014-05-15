@@ -266,6 +266,11 @@ namespace Dynamo.DSEngine
                     int outputIndexOfInput = inputTuple.Item1;
                     NodeModel inputModel = inputTuple.Item2;
                     AssociativeNode inputNode = inputModel.GetAstIdentifierForOutputIndex(outputIndexOfInput);
+
+#if DEBUG
+                    Validity.Assert(inputNode != null,
+                        "Shouldn't have null nodes in the AST list");
+#endif
                     inputAstNodes.Add(inputNode);
                 }
                 else
