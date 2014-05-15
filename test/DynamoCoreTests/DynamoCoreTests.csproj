@@ -79,6 +79,7 @@
     <Compile Include="ExecutionIntervalTests.cs" />
     <Compile Include="LibraryCustomizationTests.cs" />
     <Compile Include="MigrationManagerTests.cs" />
+    <Compile Include="MigrationTestFramework.cs" />
     <Compile Include="NodeMigrationTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="UnitTestBase.cs" />

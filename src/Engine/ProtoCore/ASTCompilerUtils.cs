@@ -173,6 +173,39 @@ namespace ProtoCore
 
             return bNode;
         }
+
+        /// <summary>
+        /// A node is a single identifier if its type is Identifer and is not array indexed
+        /// 
+        /// i.e.    identifer: a, foo, _x
+        ///         non identifier: a[0], a.b, f(), f(x)
+        ///         
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public static bool IsSingleIdentifier(ProtoCore.AST.Node node)
+        {
+            Validity.Assert(null != node);
+            if (node is ProtoCore.AST.AssociativeAST.IdentifierNode)
+            {
+                // Check the identifier is array indexed
+                if (null == (node as ProtoCore.AST.AssociativeAST.IdentifierNode).ArrayDimensions)
+                {
+                    // The identifier is not array indexed
+                    return true;
+                }
+            }
+            else if (node is ProtoCore.AST.ImperativeAST.IdentifierNode)
+            {
+                // Check the identifier is array indexed
+                if (null == (node as ProtoCore.AST.ImperativeAST.IdentifierNode).ArrayDimensions)
+                {
+                    // The identifier is not array indexed
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
 }
