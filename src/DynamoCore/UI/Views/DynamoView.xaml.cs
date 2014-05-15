@@ -61,7 +61,6 @@ namespace Dynamo.Controls
             //create the view
             var ui = new DynamoView();
             ui.DataContext = controller.DynamoViewModel;
-            controller.UIDispatcher = ui.Dispatcher;
 
             app.Run(ui);
 

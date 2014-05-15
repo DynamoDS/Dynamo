@@ -583,7 +583,6 @@ namespace DynamoCoreUITests
             Ui = new DynamoView();
             Ui.DataContext = Controller.DynamoViewModel;
             Vm = Controller.DynamoViewModel;
-            Controller.UIDispatcher = Ui.Dispatcher;
             Ui.Show();
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());

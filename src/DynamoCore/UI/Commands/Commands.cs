@@ -141,10 +141,11 @@ namespace Dynamo.UI.Commands
             }
             commandQueue.Clear();
 
-            if (dynSettings.Controller.UIDispatcher != null)
+            var dispatcher = System.Windows.Threading.Dispatcher.CurrentDispatcher;
+            if (dispatcher != null)
             {
                 dynSettings.DynamoLogger.Log(string.Format("dynSettings.Bench Thread : {0}",
-                                                       dynSettings.Controller.UIDispatcher.Thread.ManagedThreadId.ToString(CultureInfo.InvariantCulture)));
+                    dispatcher.Thread.ManagedThreadId.ToString(CultureInfo.InvariantCulture)));
             }
         }
 

@@ -236,14 +236,10 @@ namespace Dynamo.Controls
                 }
             });
 
-            if (dynSettings.Controller != null &&
-                dynSettings.Controller.UIDispatcher != null)
-            {
-                if (dynSettings.Controller.UIDispatcher.CheckAccess())
-                    propertyChanged();
-                else
-                    dynSettings.Controller.UIDispatcher.BeginInvoke(propertyChanged);
-            }
+            if (Dispatcher.CheckAccess())
+                propertyChanged();
+            else
+                Dispatcher.BeginInvoke(propertyChanged);
         }
 
         private void HandleInfoBubbleStateChanged(InfoBubbleViewModel.State state)

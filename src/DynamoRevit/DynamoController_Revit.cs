@@ -127,9 +127,10 @@ namespace Dynamo
         /// <param name="client">The client, to which the provider will be attached</param>
         internal void RegisterSingleSignOn(PackageManagerClient client)
         {
+            var dispatcher = Dispatcher.CurrentDispatcher;
             singleSignOnAssembly = singleSignOnAssembly ?? LoadSSONet();
             client.Client.Provider = client.Client.Provider
-                ?? new RevitOxygenProvider(new DispatcherSynchronizationContext(UIDispatcher));
+                ?? new RevitOxygenProvider(new DispatcherSynchronizationContext(dispatcher));
         }
 
         /// <summary>

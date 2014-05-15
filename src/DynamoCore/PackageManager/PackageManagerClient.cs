@@ -390,7 +390,7 @@ namespace Dynamo.PackageManager
                     var response = Client.Execute(pkgDownload);
                     var pathDl = PackageDownload.GetFileFromResponse(response);
 
-                    dynSettings.Controller.UIDispatcher.BeginInvoke((Action) (() =>
+                    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke((Action) (() =>
                         {
                             try
                             {

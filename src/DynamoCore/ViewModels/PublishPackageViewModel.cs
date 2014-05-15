@@ -18,6 +18,7 @@ using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 using Double = System.Double;
 using String = System.String;
+using System.Windows.Threading;
 
 namespace Dynamo.PackageManager
 {
@@ -48,7 +49,7 @@ namespace Dynamo.PackageManager
                 {
                     this._uploading = value;
                     this.RaisePropertyChanged("Uploading");
-                    dynSettings.Controller.UIDispatcher.BeginInvoke(
+                    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(
                         (Action) (() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -145,7 +146,7 @@ namespace Dynamo.PackageManager
                 {
                     this._name = value;
                     this.RaisePropertyChanged("Name");
-                    dynSettings.Controller.UIDispatcher.BeginInvoke(
+                    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -211,7 +212,7 @@ namespace Dynamo.PackageManager
                 {
                     this._Description = value;
                     this.RaisePropertyChanged("Description");
-                    dynSettings.Controller.UIDispatcher.BeginInvoke(
+                    Dispatcher.CurrentDispatcher.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -273,7 +274,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._MinorVersion = value;
                     this.RaisePropertyChanged("MinorVersion");
-                    dynSettings.Controller.UIDispatcher.BeginInvoke(
+                    Dispatcher.CurrentDispatcher.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -296,7 +297,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._BuildVersion = value;
                     this.RaisePropertyChanged("BuildVersion");
-                    dynSettings.Controller.UIDispatcher.BeginInvoke(
+                    Dispatcher.CurrentDispatcher.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
@@ -319,7 +320,7 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
                     this._MajorVersion = value;
                     this.RaisePropertyChanged("MajorVersion");
-                    dynSettings.Controller.UIDispatcher.BeginInvoke(
+                    Dispatcher.CurrentDispatcher.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }

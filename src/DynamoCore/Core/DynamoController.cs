@@ -71,7 +71,6 @@ namespace Dynamo
         public SearchViewModel SearchViewModel { get; internal set; }
         public DynamoViewModel DynamoViewModel { get; set; }
         public DynamoModel DynamoModel { get; set; }
-        public Dispatcher UIDispatcher { get; set; }
         public IUpdateManager UpdateManager { get; set; }
         public IWatchHandler WatchHandler { get; set; }
         public IPreferences PreferenceSettings { get; set; }
@@ -333,7 +332,7 @@ namespace Dynamo
 
         void updateManager_ShutdownRequested(object sender, EventArgs e)
         {
-            UIDispatcher.Invoke((Action) delegate
+            Dispatcher.CurrentDispatcher.Invoke((Action)delegate
             {
                 ShutDown(true);
                 UpdateManager.HostApplicationBeginQuit(this, e);
@@ -495,8 +494,8 @@ namespace Dynamo
                     // schedule the message to show up when the UI gets around and 
                     // handle it.
                     // 
-                    if (UIDispatcher != null)
-                        UIDispatcher.BeginInvoke(showFailureMessage);
+                    if (Dispatcher.CurrentDispatcher != null)
+                        Dispatcher.CurrentDispatcher.BeginInvoke(showFailureMessage);
                 }
 
                 // Currently just use inefficient way to refresh preview values. 
