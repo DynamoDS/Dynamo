@@ -173,16 +173,7 @@ namespace Dynamo.ViewModels
         }
 
         private CompositeCollection _workspaceElements = new CompositeCollection();
-        public CompositeCollection WorkspaceElements
-        {
-            get { return _workspaceElements; }
-            set
-            {
-                _workspaceElements = value;
-                RaisePropertyChanged("Nodes");
-                RaisePropertyChanged("WorkspaceElements");
-            }
-        }
+        public CompositeCollection WorkspaceElements { get { return _workspaceElements; } }
 
         ObservableCollection<ConnectorViewModel> _connectors = new ObservableCollection<ConnectorViewModel>();
         private ObservableCollection<Watch3DFullscreenViewModel> _watches = new ObservableCollection<Watch3DFullscreenViewModel>();
@@ -306,6 +297,13 @@ namespace Dynamo.ViewModels
         {
             _model = model;
             stateMachine = new StateMachine(this);
+
+            // Create a new CollectionViewSource to avoid the static one 
+            // (WPF internal) being used (which leads to eventual memory leak).
+            var _elementViewSource = new CollectionViewSource()
+            {
+                Source = _workspaceElements
+            };
 
             var nodesColl = new CollectionContainer { Collection = Nodes };
             _workspaceElements.Add(nodesColl);

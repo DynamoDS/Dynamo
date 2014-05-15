@@ -247,13 +247,13 @@ namespace Dynamo.ViewModels
             if (null != connector)
             {
                 System.Diagnostics.Debug.Assert(null == activeConnector);
-                this.WorkspaceElements.Add(connector);
+                this._workspaceElements.Add(connector);
                 this.activeConnector = connector;
             }
             else
             {
                 System.Diagnostics.Debug.Assert(null != activeConnector);
-                this.WorkspaceElements.Remove(activeConnector);
+                this._workspaceElements.Remove(activeConnector);
                 this.activeConnector = null;
             }
 
