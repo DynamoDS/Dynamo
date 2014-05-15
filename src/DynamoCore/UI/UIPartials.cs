@@ -178,7 +178,7 @@ namespace Dynamo.Nodes
 
     public partial class Sublists
     {
-        public void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox

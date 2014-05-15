@@ -202,13 +202,18 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 2, 1);
-            migrationData.AppendNode(dummyNode);
 
-            return migrationData;
+            var index = oldNode.GetAttribute("index");
+            switch (index)
+            {
+                case "1":
+                    return Dynamo.Nodes.SolidIntersection.Migrate_0630_to_0700(data);
+                case "2":
+                    return Dynamo.Nodes.SolidDifference.Migrate_0630_to_0700(data);
+                default:
+                    return Dynamo.Nodes.SolidUnion.Migrate_0630_to_0700(data);
+            }
         }
     }
 
