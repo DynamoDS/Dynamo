@@ -2761,9 +2761,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
             else
             {
-                var exprListNode = new ExprListNode();
-                exprListNode.list.Add(NodeUtils.Clone(node));
-                repNode = exprListNode;
+                return node;
             }
 
             repNode.ReplicationGuides = guides.Select(g => new ReplicationGuideNode

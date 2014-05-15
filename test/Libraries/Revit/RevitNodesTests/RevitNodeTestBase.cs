@@ -6,7 +6,7 @@ namespace DSRevitNodesTests
     public class RevitNodeTestBase
     {
         [SetUp]
-        public void Setup()
+        public virtual void Setup()
         {
             // create the transaction manager object
             TransactionManager.SetupManager(new AutomaticTransactionStrategy());
@@ -16,7 +16,7 @@ namespace DSRevitNodesTests
         }
 
         [TearDown]
-        public void TearDown()
+        public virtual void TearDown()
         {
             // Automatic transaction strategy requires that we 
             // close the transaction if it hasn't been closed by 

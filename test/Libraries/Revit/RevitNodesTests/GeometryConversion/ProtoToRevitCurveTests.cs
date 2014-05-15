@@ -12,13 +12,13 @@ namespace DSRevitNodesTests.GeometryConversion
     internal class ProtoToRevitCurveTests : RevitNodeTestBase
     {
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
            HostFactory.Instance.StartUp(); 
         }
 
         [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
             HostFactory.Instance.ShutDown();
         }
