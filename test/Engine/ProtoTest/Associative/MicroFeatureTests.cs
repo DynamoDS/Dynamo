@@ -2447,5 +2447,30 @@ r3 = 'h' + 1;";
             bool areEqual = s1Root.Equals(s2Root);
             Assert.AreEqual(areEqual, true);
         }
+
+        [Test]
+        public void TestLHSUndefinedArrayIndex01()
+        {
+            string code = 
+@"
+a[i] = 10;     
+b = a[0];       
+            ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b", null);
+        }
+
+        [Test]
+        public void TestLHSUndefinedArrayIndex02()
+        {
+            string code =
+@"
+a = {1,2,3};
+a[i] = 10;     
+b = a[0];       
+            ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b", 1);
+        }
     }
 }
