@@ -58,7 +58,7 @@ namespace Dynamo.DSEngine
             LibraryServices.DestroyInstance();
 
             GraphToDSCompiler.GraphUtilities.Reset();
-            ProtoFFI.DLLFFIHandler.ClearLoadedModules();
+            ProtoFFI.DLLFFIHandler.DestroyInstance();
         }
 
         /// <summary>
