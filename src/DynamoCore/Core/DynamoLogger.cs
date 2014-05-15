@@ -4,6 +4,7 @@ using System.Text;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
+using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
@@ -83,7 +84,9 @@ namespace Dynamo
         /// <param name="message"></param>
         private void Log(string message, LogLevel level, bool reportModification)
         {
-            InstrumentationLogger.LogInfo("LogMessage-" + level.ToString(), message);
+            //Don't overwhelm the logging system
+            if (!dynSettings.VerboseLogging)
+                InstrumentationLogger.LogInfo("LogMessage-" + level.ToString(), message);                
 
             switch (level)
             {

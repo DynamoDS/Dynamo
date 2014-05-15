@@ -256,6 +256,7 @@ namespace Dynamo.DSEngine
 
         private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, bool isDeltaExecution)
         {
+
             var inputAstNodes = new List<AssociativeNode>();
             foreach (int index in Enumerable.Range(0, node.InPortData.Count))
             {
@@ -296,6 +297,15 @@ namespace Dynamo.DSEngine
 #endif
 
             IEnumerable<AssociativeNode> astNodes = node.BuildAst(inputAstNodes);
+
+            if (dynSettings.VerboseLogging)
+            {
+                foreach (var n in astNodes)
+                {
+                    dynSettings.DynamoLogger.Log(n.ToString());
+                }
+            }
+
             if(null == astNodes)
                 resultList.AddRange(new AssociativeNode[0]);
             else if (isDeltaExecution)
