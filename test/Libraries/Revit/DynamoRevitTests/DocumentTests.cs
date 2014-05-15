@@ -44,5 +44,12 @@ namespace Dynamo.Tests
         {
             Assert.Inconclusive("Finish me!");
         }
+
+        [Test]
+        [TestModel(@"./empty.rfa")]
+        public void WhenActiveDocumentResetIsRequiredVisualizationsAreCleared()
+        {
+            Assert.Inconclusive("Finish me!");
+        }
     }
 }
