@@ -34,7 +34,7 @@ namespace Dynamo.Tests
             }
 
             base.Cleanup();
-
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
             GC.Collect();
         }
 
