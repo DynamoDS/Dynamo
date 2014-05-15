@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
+using ProtoCore.Utils;
 using ProtoScript.Runners;
 using Type = ProtoCore.Type;
 
@@ -283,6 +284,11 @@ namespace Dynamo.DSEngine
 
             if (isDeltaExecution)
                 OnAstNodeBuilding(node.GUID);
+
+#if DEBUG
+            Validity.Assert(!inputAstNodes.Any((n) => n == null), 
+                "Shouldn't have null nodes in the AST list");
+#endif
 
             IEnumerable<AssociativeNode> astNodes = node.BuildAst(inputAstNodes);
             if(null == astNodes)
