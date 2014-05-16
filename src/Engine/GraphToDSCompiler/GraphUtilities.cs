@@ -799,14 +799,13 @@ namespace GraphToDSCompiler
                 {
                     ProtoCore.CodeGenDS codegen = new ProtoCore.CodeGenDS(new List<ProtoCore.AST.AssociativeAST.AssociativeNode>{ n });
                     stmt = codegen.GenerateCode();
-
                     ProtoCore.AST.AssociativeAST.BinaryExpressionNode ben = node as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
                     if (ben != null && ben.Optr == ProtoCore.DSASM.Operator.assign)
                     {
                         ProtoCore.AST.AssociativeAST.IdentifierNode lNode = ben.LeftNode as ProtoCore.AST.AssociativeAST.IdentifierNode;
                         if (lNode != null && lNode.Value == ProtoCore.DSASM.Constants.kTempProcLeftVar)
                         {
-                            stmt = "%t =" + stmt;
+                            stmt = stmt.Replace(ProtoCore.DSASM.Constants.kTempProcConstant, "%t");
                         }
                     }
                     else
