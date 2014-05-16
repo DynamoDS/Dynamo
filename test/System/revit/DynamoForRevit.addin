@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>Dynamo For Revit</Name>
+    <Assembly>..\..\..\bin\AnyCPU\Debug\DynamoRevitDS.dll</Assembly>
+    <AddInId>188B9080-EEBE-40C3-865A-8FC31DEEC12F</AddInId>
+    <FullClassName>Dynamo.Applications.DynamoRevitApp</FullClassName>
+    <VendorId>ADSK</VendorId>
+    <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>
+  </AddIn>
+</RevitAddIns>
