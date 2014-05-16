@@ -125,8 +125,8 @@ namespace RevitServices.Persistence
         }
 
         /// <summary>
-        /// Provide source of the currently active document
-        /// Dynamo is reponsible for updating this before use
+        /// Provides the currently active DB document.
+        /// This is based on the CurrentUIDocument
         /// </summary>
         public Document CurrentDBDocument {
             get
@@ -138,14 +138,9 @@ namespace RevitServices.Persistence
 
         /// <summary>
         /// Provides the currently active UI document.
+        /// This is the document to which Dynamo is bound.
         /// </summary>
-        public UIDocument CurrentUIDocument {
-            get
-            {
-                var c = CurrentUIApplication;
-                return c == null ? null : c.ActiveUIDocument;
-            }
-        }
+        public UIDocument CurrentUIDocument {get; set; }
 
         /// <summary>
         /// Provides the current UIApplication
@@ -158,17 +153,15 @@ namespace RevitServices.Persistence
         /// </summary>
         public static void Regenerate()
         {
-
             if (TransactionManager.Instance.DoAssertInIdleThread)
             {
-
                 IdlePromise.ExecuteOnIdleSync(() =>
                  {
                      TransactionManager.Instance.EnsureInTransaction(
                                   DocumentManager.Instance.CurrentDBDocument);
                      Instance.CurrentDBDocument.Regenerate();
                  }
-                    );
+                 );
             }
             else
             {

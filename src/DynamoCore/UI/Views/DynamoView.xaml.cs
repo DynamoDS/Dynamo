@@ -1021,5 +1021,11 @@ namespace Dynamo.Controls
 
             e.Handled = true;
         }
+
+        //@TODO(Luke): Turn this into a dependency property
+        private void VerboseLogging_OnChecked(object sender, RoutedEventArgs e)
+        {
+            dynSettings.VerboseLogging = ((MenuItem)e.Source).IsChecked;
+        }
     }
 }
