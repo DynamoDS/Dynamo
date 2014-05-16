@@ -20,6 +20,7 @@ using Autodesk.Revit.UI;
 using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using DynamoUnits;
 using Dynamo.UpdateManager;
 using RevitServices.Elements;
@@ -239,8 +240,10 @@ namespace Dynamo.Applications
         }
 
         /// <summary>
-        /// Callback on Revit view activation. Addins are not available in some views in Revit, notably perspective views.
+        /// Handler for Revit's ViewActivating event. 
+        /// Addins are not available in some views in Revit, notably perspective views.
         /// This will present a warning that Dynamo is not available to run and disable the run button.
+        /// This handler is called before the ViewActivated event registered on the controller.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -260,9 +263,21 @@ namespace Dynamo.Applications
             }
             else
             {
-                //alert the user of the new active view and enable the run button
-                dynSettings.DynamoLogger.LogWarning(string.Format("Active view is now {0}", e.NewActiveView.Name), WarningLevel.Mild);
-                dynSettings.Controller.DynamoViewModel.RunEnabled = true;
+                dynSettings.DynamoLogger.Log(string.Format("Active view is now {0}", e.NewActiveView.Name));
+
+                // If there is a current document, then set the run enabled
+                // state based on whether the view just activated is 
+                // the same document.
+                if (DocumentManager.Instance.CurrentUIDocument != null)
+                {
+                    dynSettings.Controller.DynamoViewModel.RunEnabled =
+                        e.NewActiveView.Document.Equals(DocumentManager.Instance.CurrentDBDocument);
+
+                    if (dynSettings.Controller.DynamoViewModel.RunEnabled == false)
+                    {
+                        dynSettings.DynamoLogger.LogWarning("Dynamo is not pointing at this document. Run will be disabled.", WarningLevel.Error);
+                    }
+                }
             }
         }
 
@@ -311,6 +326,7 @@ namespace Dynamo.Applications
             {
                 args.Handled = true;
                 ((DynamoLogger)dynSettings.DynamoLogger).Dispose();
+                DynamoRevitApp.dynamoButton.Enabled = true;
             }
             
         }

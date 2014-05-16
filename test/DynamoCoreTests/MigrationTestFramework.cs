@@ -73,47 +73,6 @@ namespace Dynamo.Tests
 
         #region Private Helper Methods
 
-        private void AssertNoDummyNodes()
-        {
-            var nodes = Controller.DynamoModel.Nodes;
-
-            double dummyNodesCount = nodes.OfType<DSCoreNodesUI.DummyNode>().Count();
-            if (dummyNodesCount >= 1)
-            {
-                Assert.Fail("Number of dummy nodes found in Sample: " + dummyNodesCount);
-            }
-        }
-
-        private void GetPreviewValues()
-        {
-            Controller.DynamoModel.Nodes.ForEach(node => GetPreviewValue(node.GUID));
-        }
-
-        private object GetPreviewValue(System.Guid guid)
-        {
-            string varname = GetVarName(guid);
-            var mirror = GetRuntimeMirror(varname);
-            Assert.IsNotNull(mirror);
-
-            return mirror.GetData().Data;
-        }
-
-        private string GetVarName(System.Guid guid)
-        {
-            var model = Controller.DynamoModel;
-            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
-            Assert.IsNotNull(node);
-            return node.AstIdentifierBase;
-        }
-
-        private RuntimeMirror GetRuntimeMirror(string varName)
-        {
-            RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror = Controller.EngineController.GetMirror(varName));
-            return mirror;
-        }
-
-
 
         #endregion
     }

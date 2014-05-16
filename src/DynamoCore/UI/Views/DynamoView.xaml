@@ -349,6 +349,8 @@
                     </MenuItem>
 
                     <MenuItem Header="Debug" Focusable="False" Visibility="{Binding IsDebugBuild, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <MenuItem Focusable="False" Name="VerboseLogging" IsCheckable="True" Unchecked="VerboseLogging_OnChecked" Checked="VerboseLogging_OnChecked" Header="Verbose Logging"/>
+
                     </MenuItem>
                     
                 </Menu>
