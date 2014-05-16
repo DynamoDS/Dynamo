@@ -643,6 +643,7 @@ namespace DynamoCoreUITests
             // Create the view.
             var dynamoView = new DynamoView();
             dynamoView.DataContext = controller.DynamoViewModel;
+            controller.UIDispatcher = dynamoView.Dispatcher;
             dynamoView.ShowDialog();
 
             Assert.IsNotNull(controller);

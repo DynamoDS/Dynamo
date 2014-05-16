@@ -199,6 +199,7 @@ namespace Dynamo.Applications
                         dynamoController.VisualizationManager = new VisualizationManagerRevit();
                         
                         var dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
+                        dynamoController.UIDispatcher = dynamoView.Dispatcher;
 
                         //set window handle and show dynamo
                         new WindowInteropHelper(dynamoView).Owner = mwHandle;

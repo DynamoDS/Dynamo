@@ -21,7 +21,6 @@ using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
-using System.Windows.Threading;
 
 namespace Dynamo.Models
 {
@@ -975,8 +974,8 @@ namespace Dynamo.Models
                 });
 
             if (dynSettings.Controller != null &&
-                Dispatcher.CurrentDispatcher != null &&
-                Dispatcher.CurrentDispatcher.CheckAccess() == false)
+                dynSettings.Controller.UIDispatcher != null &&
+                dynSettings.Controller.UIDispatcher.CheckAccess() == false)
             {
                 // This is put in place to solve the crashing issue outlined in 
                 // the following defect. ValidateConnections can be called from 
@@ -991,7 +990,7 @@ namespace Dynamo.Models
                 // 
                 //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
                 // 
-                Dispatcher.CurrentDispatcher.BeginInvoke(setState);
+                dynSettings.Controller.UIDispatcher.BeginInvoke(setState);
             }
             else
                 setState();

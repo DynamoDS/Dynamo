@@ -552,7 +552,7 @@ namespace Dynamo.ViewModels
 
             //add the initial workspace and register for future 
             //updates to the workspaces collection
-            _workspaces.Add(new WorkspaceViewModel(_model.HomeSpace));
+            _workspaces.Add(new WorkspaceViewModel(_model.HomeSpace, this));
             _model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
 
             //register for property change notifications 
@@ -744,7 +744,7 @@ namespace Dynamo.ViewModels
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
-                        _workspaces.Add(new WorkspaceViewModel(item as WorkspaceModel));
+                        _workspaces.Add(new WorkspaceViewModel(item as WorkspaceModel, this));
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)

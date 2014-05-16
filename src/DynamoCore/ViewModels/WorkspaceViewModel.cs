@@ -35,6 +35,7 @@ namespace Dynamo.ViewModels
 
         public WorkspaceModel _model;
         private bool _canFindNodesFromElements = false;
+        public Dispatcher Dispatcher;
 
         public event PointEventHandler CurrentOffsetChanged;
         public event ZoomEventHandler ZoomChanged;
@@ -292,10 +293,17 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        public WorkspaceViewModel(WorkspaceModel model)
+        public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel vm)
         {
             _model = model;
             stateMachine = new StateMachine(this);
+
+            // Create a new CollectionViewSource to avoid the static one 
+            // (WPF internal) being used (which leads to eventual memory leak).
+            var _elementViewSource = new CollectionViewSource()
+            {
+                Source = _workspaceElements
+            };
 
             var nodesColl = new CollectionContainer { Collection = Nodes };
             _workspaceElements.Add(nodesColl);
@@ -327,6 +335,7 @@ namespace Dynamo.ViewModels
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes));
             Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Connectors));
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Notes));
+            Dispatcher = Dispatcher.CurrentDispatcher;
         }
 
         void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
