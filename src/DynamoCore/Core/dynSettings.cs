@@ -25,6 +25,7 @@ namespace Dynamo.Utilities
         }
 
         public static ILogger DynamoLogger { get; set; }
+        public static bool EnableMigrationLogging { get; set; }
 
         public static string FormatFileName(string filename)
         {

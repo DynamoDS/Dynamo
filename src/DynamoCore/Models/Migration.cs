@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Xml;
+using System.Xml.Linq;
 using Dynamo.Utilities;
 using System.Collections.Generic;
 using System.IO;
@@ -87,6 +88,8 @@ namespace Dynamo.Models
             get { return _instance ?? (_instance = new MigrationManager()); }
         }
 
+        private MigrationReport migrationReport;
+
         /// <summary>
         /// A collection of types which contain migration methods.
         /// </summary>
@@ -136,6 +139,12 @@ namespace Dynamo.Models
 
         public void ProcessNodesInWorkspace(XmlDocument xmlDoc, Version workspaceVersion)
         {
+            if(dynSettings.EnableMigrationLogging)
+            {
+                // For each new file opened, create a new migration report
+                migrationReport = new MigrationReport();
+            }
+
             XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
             if (elNodes == null || (elNodes.Count == 0))
                 elNodes = xmlDoc.GetElementsByTagName("dynElements");
@@ -163,6 +172,12 @@ namespace Dynamo.Models
                 // Migrate the given node into one or more new nodes.
                 var migrationData = this.MigrateXmlNode(elNode, type, workspaceVersion);
                 migratedNodes.AddRange(migrationData.MigratedNodes);
+            }            
+
+            if (dynSettings.EnableMigrationLogging)
+            {
+                string dynFilePath = xmlDoc.BaseURI;
+                migrationReport.WriteToXmlFile(dynFilePath);
             }
 
             // Replace the old child nodes with the migrated nodes. Note that 
@@ -203,6 +218,12 @@ namespace Dynamo.Models
 
                 object ret = nextMigration.method.Invoke(this, new object[] { migrationData });
                 migrationData = ret as NodeMigrationData;
+
+                if(dynSettings.EnableMigrationLogging)
+                {
+                    // record migration data for successful migrations
+                    migrationReport.AddMigrationDataToNodeMap(nodeToMigrate.Name, migrationData.MigratedNodes);
+                }
                 workspaceVersion = nextMigration.To;
             }
 
