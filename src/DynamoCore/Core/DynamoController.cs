@@ -342,27 +342,21 @@ namespace Dynamo
 
         #endregion
 
-        public virtual void
-            ShutDown(bool shutDownHost, EventArgs args = null)
+        // TODO(Ben): Make this protected and call from DestroySessionSingletonObjects.
+        public virtual void ShutDown(bool shutDownHost, EventArgs args = null)
         {
             EngineController.Dispose();
             EngineController = null;
 
-            PreferenceSettings.Save();
+            var settings = PreferenceSettings as PreferenceSettings;
+            settings.Save();
+            settings.PropertyChanged -= PreferenceSettings_PropertyChanged;
 
-            dynSettings.Controller.DynamoModel.OnCleanup(args);
-            dynSettings.Controller.DynamoModel = null;
-            dynSettings.Controller = null;
-
-            ((DynamoLogger)dynSettings.DynamoLogger).Dispose();
-
-            InstrumentationLogger.End();
-            Dynamo.Selection.DynamoSelection.DestroyInstance();
-            UsageReportingManager.DestroyInstance();
+            this.DynamoModel.OnCleanup(args);
+            this.DynamoModel = null;
 
             DocumentationServices.DestroyCachedData();
-
-            dynSettings.DestroyInstance();
+            dynSettings.DestroySessionSingletonObjects();
         }
 
         #region Running

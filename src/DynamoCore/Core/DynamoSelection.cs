@@ -26,7 +26,6 @@ namespace Dynamo.Selection
             }
         }
 
-        // TODO(Ben): Remove this when dynSettings is unified.
         public static void DestroyInstance()
         {
             if (_instance != null)

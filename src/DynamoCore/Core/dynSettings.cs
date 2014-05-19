@@ -14,12 +14,19 @@ namespace Dynamo.Utilities
             get { return Controller.CustomNodeManager.GetAllNodeNames(); }
         }
 
-        public static void DestroyInstance()
+        public static void DestroySessionSingletonObjects()
         {
             dynSettings._packageManagerClient = null;
             dynSettings.PackageLoader = null;
-            dynSettings.DynamoLogger = null;
             dynSettings.Controller = null;
+
+            Dynamo.Selection.DynamoSelection.DestroyInstance();
+
+            (dynSettings.DynamoLogger as DynamoLogger).Dispose();
+            dynSettings.DynamoLogger = null;
+
+            Dynamo.Services.InstrumentationLogger.End();
+            Dynamo.Services.UsageReportingManager.DestroyInstance();
         }
 
         public static PackageLoader PackageLoader { get; internal set; }
