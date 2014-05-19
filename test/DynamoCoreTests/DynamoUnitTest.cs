@@ -112,10 +112,17 @@ namespace Dynamo.Tests
         {
             var nodes = Controller.DynamoModel.Nodes;
 
-            double dummyNodesCount = nodes.OfType<DSCoreNodesUI.DummyNode>().Count();
+            var dummyNodes = nodes.OfType<DSCoreNodesUI.DummyNode>();
+            string logs = string.Empty;
+            foreach (var node in dummyNodes)
+            {
+                logs += string.Format("{0} is a {1} node\n", node.NickName, node.NodeNature);
+            }
+
+            double dummyNodesCount = dummyNodes.Count();
             if (dummyNodesCount >= 1)
             {
-                Assert.Fail("Number of dummy nodes found in Sample: " + dummyNodesCount);
+                Assert.Fail(logs + "Number of dummy nodes found in Sample: " + dummyNodesCount);
             }
         }
 
