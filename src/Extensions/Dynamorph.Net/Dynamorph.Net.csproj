@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamorph</RootNamespace>
     <AssemblyName>Dynamorph.Net</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS.props" />
@@ -48,6 +49,9 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamorphWindow.xaml.cs">
+      <DependentUpon>DynamorphWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VisualizerHwndHost.cs" />
     <Page Include="DynamorphControl.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -57,6 +61,10 @@
       <DependentUpon>DynamorphControl.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="DynamorphWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

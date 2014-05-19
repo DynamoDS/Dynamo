@@ -28,6 +28,7 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
+using Dynamo.UI.Commands;
 
 namespace Dynamo.Controls
 {
@@ -136,6 +137,14 @@ namespace Dynamo.Controls
             redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
             redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
 
+            ShortcutBarItem dynamorphButton = new ShortcutBarItem();
+            dynamorphButton.ShortcutToolTip = "Dynamorph!";
+            dynamorphButton.ShortcutCommand = new DelegateCommand(DoDynamorph, CanDynamorph);
+            dynamorphButton.ShortcutCommandParameter = null;
+            dynamorphButton.ImgNormalSource = "/DynamoCore;component/UI/Images/redo_normal.png";
+            dynamorphButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
+            dynamorphButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
+
             //ShortcutBarItem updateButton = new ShortcutBarItem();
             ////redoButton.ShortcutToolTip = "Update [Ctrl + ]";
             //updateButton.ShortcutCommand = _vm.CheckForUpdateCommand;
@@ -158,12 +167,28 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(saveButton);
             shortcutBar.ShortcutBarItems.Add(undoButton);
             shortcutBar.ShortcutBarItems.Add(redoButton);
-            //shortcutBar.ShortcutBarItems.Add(runButton);            
+            shortcutBar.ShortcutBarItems.Add(dynamorphButton);
 
             //shortcutBar.ShortcutBarRightSideItems.Add(updateButton);
             shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
 
             shortcutBarGrid.Children.Add(shortcutBar);
+        }
+
+        private Dynamorph.DynamorphWindow dynamorphWindow = null;
+
+        private void DoDynamorph(object parameter)
+        {
+            if (dynamorphWindow == null)
+                dynamorphWindow = new Dynamorph.DynamorphWindow();
+
+            if (dynamorphWindow.Visibility != System.Windows.Visibility.Visible)
+                dynamorphWindow.Show();
+        }
+
+        private bool CanDynamorph(object parameter)
+        {
+            return true;
         }
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
