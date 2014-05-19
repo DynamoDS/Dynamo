@@ -255,12 +255,14 @@ namespace ProtoCore.DSASM
             switch (operand.optype)
             {
                 case AddressType.Boolean:
+                    return operand;
                 case AddressType.Int:
                     return StackValue.BuildBoolean(operand.opdata != 0);
                 case AddressType.Null:
                     return StackValue.Null; //BuildBoolean(false);
                 case AddressType.Double:
-                    bool b = !(Double.IsNaN(operand.opdata_d) || operand.opdata_d.Equals(0.0));
+                    double value = operand.RawDoubleValue;
+                    bool b = !(Double.IsNaN(value) || value.Equals(0.0));
                     return StackValue.BuildBoolean(b);
                 case AddressType.Pointer:
                     return StackValue.BuildBoolean(true);
@@ -287,9 +289,9 @@ namespace ProtoCore.DSASM
             switch (operand.optype)
             {
                 case AddressType.Int:
-                    return StackValue.BuildDouble(operand.opdata);
+                    return StackValue.BuildDouble(operand.RawIntValue);
                 case AddressType.Double:
-                    return StackValue.BuildDouble(operand.opdata_d);
+                    return operand;
                 default:
                     return StackValue.Null;
             }
@@ -302,7 +304,8 @@ namespace ProtoCore.DSASM
                 case AddressType.Int:
                     return operand;
                 case AddressType.Double:
-                    return StackValue.BuildInt((Int64)Math.Round(operand.opdata_d, 0, MidpointRounding.AwayFromZero));
+                    double value = operand.RawDoubleValue;
+                    return StackValue.BuildInt((Int64)Math.Round(value, 0, MidpointRounding.AwayFromZero));
                 default:
                     return StackValue.Null;
             }
@@ -326,9 +329,12 @@ namespace ProtoCore.DSASM
                 case AddressType.Char:
                     return sv1.opdata == sv2.opdata;
                 case AddressType.Double:
-                    if(Double.IsInfinity(sv1.opdata_d) && Double.IsInfinity(sv2.opdata_d))
+                    var value1 = sv1.RawDoubleValue;
+                    var value2 = sv2.RawDoubleValue;
+
+                    if(Double.IsInfinity(value1) && Double.IsInfinity(value2))
                         return true;
-                    return MathUtils.Equals(sv1.opdata_d, sv2.opdata_d);
+                    return MathUtils.Equals(value1, value2);
                 case AddressType.Boolean:
                     return (sv1.opdata > 0 && sv2.opdata > 0) || (sv1.opdata == 0 && sv2.opdata == 0);
                 case AddressType.ArrayPointer:
@@ -441,7 +447,9 @@ namespace ProtoCore.DSASM
                     return lhs.opdata == rhs.opdata;
 
                 case AddressType.Double:
-                    return MathUtils.Equals(lhs.opdata_d, rhs.opdata_d);
+                    double lhsValue = lhs.RawDoubleValue;
+                    double rhsValue = rhs.RawDoubleValue;
+                    return MathUtils.Equals(lhsValue, rhsValue);
 
                 case AddressType.Boolean:
                     return (lhs.opdata > 0 && rhs.opdata > 0) || (lhs.opdata == 0 && rhs.opdata ==0);

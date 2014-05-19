@@ -2495,10 +2495,6 @@ namespace ProtoCore
             StackValue opAX = StackValue.BuildRegister(Registers.AX);
             EmitPop(opAX, Constants.kGlobalScope);
 
-            // TODO Jun: double operations are executed in the main instruction for now, until this proves to be a performance issue
-            bool isDoubleOp = false; // (optype1 == ProtoCore.DSASM.AddressType.Double || optype2 == ProtoCore.DSASM.AddressType.Double);
-
-            optr = (isDoubleOp) ? Op.GetFloatingOp(optr) : optr;
             string op = Op.GetOpName(optr);
             EmitInstrConsole(op, ProtoCore.DSASM.kw.regAX, ProtoCore.DSASM.kw.regBX);
             EmitBinary(Op.GetOpCode(optr), opAX, opBX);

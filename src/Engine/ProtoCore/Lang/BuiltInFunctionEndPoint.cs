@@ -929,9 +929,9 @@ namespace ProtoCore.Lang
                 ((sv1.optype == DSASM.AddressType.Double) || (sv1.optype == DSASM.AddressType.Int)) &&                
                 ((sv2.optype == DSASM.AddressType.Double) || (sv2.optype == DSASM.AddressType.Int))))
                 return ProtoCore.DSASM.Constants.kInvalidIndex;
-            double rangeMin = sv0.opdata_d;
-            double rangeMax = sv1.opdata_d;
-            double inputValue = sv2.opdata_d;
+            double rangeMin = sv0.AsDouble().RawDoubleValue;
+            double rangeMax = sv1.AsDouble().RawDoubleValue;
+            double inputValue = sv2.AsDouble().RawDoubleValue;
             double result =  (inputValue - rangeMin) / (rangeMax - rangeMin);
             if (result < 0) return 0.0; //Exceed the range (less than rangeMin)
             if (result > 1) return 1.0; //Exceed the range (less than rangeMax)
@@ -946,11 +946,11 @@ namespace ProtoCore.Lang
                 ((sv3.optype == DSASM.AddressType.Double) || (sv3.optype == DSASM.AddressType.Int)) &&
                 ((sv4.optype == DSASM.AddressType.Double) || (sv4.optype == DSASM.AddressType.Int))))
                 return ProtoCore.DSASM.Constants.kInvalidIndex;
-            double rangeMin = sv0.opdata_d;
-            double rangeMax = sv1.opdata_d;
-            double inputValue = sv2.opdata_d;
-            double targetRangeMin = sv3.opdata_d;
-            double targetRangeMax = sv4.opdata_d;
+            double rangeMin = sv0.AsDouble().RawDoubleValue;
+            double rangeMax = sv1.AsDouble().RawDoubleValue;
+            double inputValue = sv2.AsDouble().RawDoubleValue;
+            double targetRangeMin = sv3.AsDouble().RawDoubleValue;
+            double targetRangeMax = sv4.AsDouble().RawDoubleValue;
             double result = targetRangeMin + (inputValue - rangeMin) * (targetRangeMax - targetRangeMin) / (rangeMax - rangeMin);
             if (result < targetRangeMin){ return targetRangeMin; }     //clamp to targetRangeMin
             if (result > targetRangeMax){ return targetRangeMax; }     //clamp to targetRangeMax
@@ -1065,8 +1065,8 @@ namespace ProtoCore.Lang
                 return StackValue.Null;
             }
 
-            decimal start = new decimal(svStart.opdata_d);
-            decimal end = new decimal(svEnd.opdata_d);
+            decimal start = new decimal(svStart.AsDouble().RawDoubleValue);
+            decimal end = new decimal(svEnd.AsDouble().RawDoubleValue);
             bool isIntRange = svStart.optype == AddressType.Int && svEnd.optype == AddressType.Int;
 
             StackValue[] range = null;
@@ -1078,7 +1078,7 @@ namespace ProtoCore.Lang
                    core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kInvalidAmountInRangeExpression);
                    return StackValue.Null;
                 }
-                decimal stepsize = new decimal(svStep.opdata_d);
+                decimal stepsize = new decimal(svStep.AsDouble().RawDoubleValue);
                 range = GenerateRangeByAmount(start, amount, stepsize, isIntRange);
             }
             else
@@ -1090,7 +1090,7 @@ namespace ProtoCore.Lang
                             decimal stepsize = (start > end) ? -1 : 1;
                             if (hasStep)
                             {
-                                stepsize = new decimal(svStep.opdata_d);
+                                stepsize = new decimal(svStep.IsDouble() ? svStep.RawDoubleValue : svStep.RawIntValue);
                                 isIntRange = isIntRange && (svStep.optype == AddressType.Int);
                             }
 
@@ -1099,7 +1099,7 @@ namespace ProtoCore.Lang
                         }
                     case (int)ProtoCore.DSASM.RangeStepOperator.num:
                         {
-                            decimal stepnum = new decimal(Math.Round(svStep.opdata_d));
+                            decimal stepnum = new decimal(Math.Round(svStep.IsDouble() ? svStep.RawDoubleValue : svStep.RawIntValue));
                             if (stepnum > 0)
                             {
                                 range = GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
@@ -1108,7 +1108,7 @@ namespace ProtoCore.Lang
                         }
                     case (int)ProtoCore.DSASM.RangeStepOperator.approxsize:
                         {
-                            decimal astepsize = new decimal(svStep.opdata_d);
+                            decimal astepsize = new decimal(svStep.IsDouble() ? svStep.RawDoubleValue : svStep.RawIntValue);
                             if (astepsize != 0)
                             {
                                 decimal dist = end - start;
@@ -1294,7 +1294,7 @@ namespace ProtoCore.Lang
         //*//
         internal static bool EqualsInValue(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
         {
-            if ((sv1.optype == DSASM.AddressType.ArrayPointer) && (sv2.optype == DSASM.AddressType.ArrayPointer))
+            if (sv1.IsArray() && sv2.IsArray())
             {
                 StackValue[] svArray1 = runtime.runtime.rmem.GetArrayElements(sv1);
                 StackValue[] svArray2 = runtime.runtime.rmem.GetArrayElements(sv2);
@@ -1307,15 +1307,23 @@ namespace ProtoCore.Lang
                 {
                     var item1 = svArray1[i];
                     var item2 = svArray2[i];
-                    if ((item1.optype == DSASM.AddressType.ArrayPointer) || (item2.optype == DSASM.AddressType.ArrayPointer))
+                    if (item1.IsArray() || item2.IsArray())
                     {
                         if (!EqualsInValue(item1, item2, runtime))
                             return false;
                     }
                     else
                     {
-                        if ((item1.opdata != item2.opdata) || (item1.opdata_d != item2.opdata_d)
-                            || (item1.optype != item2.optype) || (item1.metaData.type != item2.metaData.type))
+                        if (item1.IsDouble() && item2.IsDouble())
+                        {
+                            double value1 = item1.RawDoubleValue;
+                            double value2 = item2.RawDoubleValue;
+                            if (!value1.Equals(value2))
+                                return false;
+                        }
+                        else if ((item1.opdata != item2.opdata) || 
+                                 (item1.optype != item2.optype) || 
+                                 (item1.metaData.type != item2.metaData.type))
                         {
                             return false;
                         }
@@ -1323,17 +1331,19 @@ namespace ProtoCore.Lang
                 }
                 return true;
             }
-            else if ((sv1.optype != DSASM.AddressType.ArrayPointer) && (sv2.optype != DSASM.AddressType.ArrayPointer))
+            else if (!sv1.IsArray() && !sv2.IsArray())
             {
-                if ((sv1.opdata == sv2.opdata) && (sv1.opdata_d == sv2.opdata_d)
-                        && (sv1.optype == sv2.optype) && (sv1.metaData.type == sv2.metaData.type))
+                if (sv1.IsDouble() && sv2.IsDouble())
                 {
-                    return true;
+                    double value1 = sv1.RawDoubleValue;
+                    double value2 = sv2.RawDoubleValue;
+                    if (!value1.Equals(value2))
+                        return false;
                 }
-                else
-                {
-                    return false;
-                }
+
+                return (sv1.opdata == sv2.opdata) && 
+                       (sv1.optype == sv2.optype) &&  
+                       (sv1.metaData.type == sv2.metaData.type);
             }
             else return false;
         }
@@ -1512,9 +1522,9 @@ namespace ProtoCore.Lang
                 bContainsValidElement = true;
 
                 if (type == AddressType.Double)
-                    sum += element.opdata_d;
+                    sum += element.AsDouble().RawDoubleValue;
                 else
-                    sum += element.opdata;
+                    sum += element.AsInt().RawIntValue;
             }
 
             if (!bContainsValidElement)
@@ -1559,7 +1569,7 @@ namespace ProtoCore.Lang
                 return ProtoCore.DSASM.StackValue.Null;
             StackValue resSv = Sum(newsv, runtime);
             if (resSv.optype == AddressType.Double)
-                return ProtoCore.DSASM.StackValue.BuildDouble(resSv.opdata_d / length);
+                return ProtoCore.DSASM.StackValue.BuildDouble(resSv.RawDoubleValue / length);
             else if (resSv.optype == AddressType.Int)
                 return ProtoCore.DSASM.StackValue.BuildDouble((double)(resSv.opdata) / length);
             else
@@ -1724,9 +1734,8 @@ namespace ProtoCore.Lang
         //Contains & ArrayContainsArray ::: sv1 contains sv2
         internal static bool Contains(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
         {
-            if (sv1.optype != DSASM.AddressType.ArrayPointer)
+            if (!sv1.IsArray())
             {
-                // Type mismatch.
                 runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, RuntimeData.WarningMessage.kInvalidArguments);
                 return false;
             }
@@ -1735,12 +1744,10 @@ namespace ProtoCore.Lang
             StackValue[] svArray = runtime.runtime.rmem.GetArrayElements(sv1);
             foreach (StackValue op in svArray)
             {
-                if (op.optype != DSASM.AddressType.ArrayPointer)
+                if (!op.IsArray())
                 {
-                    if ((op.opdata == sv2.opdata) && (op.opdata_d == sv2.opdata_d) && (op.optype == sv2.optype))
-                    {
+                    if (op.Equals(sv2))
                         return true;
-                    }
                 }
                 else
                 {
@@ -1770,11 +1777,12 @@ namespace ProtoCore.Lang
             for (int i = 0; i < runtime.runtime.rmem.Heap.Heaplist[(int)sv1.opdata].VisibleSize; ++i)
             {
                 StackValue op = runtime.runtime.rmem.Heap.Heaplist[(int)sv1.opdata].Stack[i];
-                if (sv2.optype != DSASM.AddressType.ArrayPointer)
+                if (!sv2.IsArray())
                 {
-                    if (op.optype != DSASM.AddressType.ArrayPointer)
+                    if (!op.IsArray())
                     {
-                        if ((op.opdata == sv2.opdata) && (op.opdata_d == sv2.opdata_d) && (op.optype == sv2.optype)) return true;
+                        if (op.Equals(sv2))
+                            return true;
                     }
                     else
                     {
@@ -2218,8 +2226,11 @@ namespace ProtoCore.Lang
                 args.Add(y);
                 StackValue ret;
                 ret = evaluator.Evaluate(args, stackFrame);
-                Validity.Assert(ret.optype == AddressType.Int || ret.optype == AddressType.Double);
-                return (int)ret.opdata_d;
+                Validity.Assert(ret.IsNumeric());
+                if (ret.IsDouble())
+                    return (int)ret.RawDoubleValue;
+                else
+                    return (int)ret.RawIntValue;
             };
 
             try
@@ -2270,28 +2281,36 @@ namespace ProtoCore.Lang
 
         bool Equals(StackValue sv1, StackValue sv2)
         {
-            bool sv1null = sv1.optype != AddressType.Double && sv1.optype != AddressType.Int;
-            bool sv2null = sv2.optype != AddressType.Double && sv2.optype != AddressType.Int;
+            bool sv1null = !sv1.IsNumeric();
+            bool sv2null = !sv2.IsNumeric(); 
             if ( sv1null && sv2null)
                 return true;
             if (sv1null || sv2null)
                 return false;
-            if (Math.Abs(sv1.opdata_d - sv2.opdata_d) < 0.0000001)
-                return true;
 
-            return false;
+            var v1 = sv1.IsDouble() ? sv1.RawDoubleValue : sv1.RawIntValue;
+            var v2 = sv2.IsDouble() ? sv2.RawDoubleValue : sv2.RawIntValue;
+
+            return MathUtils.Equals(v1, v2);
         }
 
         public int Compare(StackValue sv1, StackValue sv2)
         {
             if (Equals(sv1, sv2))
                 return 0;
-            if (sv1.optype != AddressType.Double && sv1.optype != AddressType.Int)
+
+            if (!sv1.IsNumeric())
                 return mbAscending ? int.MinValue : int.MaxValue;
-            if (sv2.optype != AddressType.Double && sv2.optype != AddressType.Int)
+
+            if (!sv2.IsNumeric())
                 return mbAscending ? int.MaxValue : int.MinValue;
-            double x = mbAscending ? sv1.opdata_d : sv2.opdata_d;
-            double y = mbAscending ? sv2.opdata_d : sv1.opdata_d;
+
+            var value1 = sv1.IsDouble() ? sv1.RawDoubleValue : sv1.RawIntValue;
+            var value2 = sv2.IsDouble() ? sv2.RawDoubleValue : sv2.RawIntValue;
+
+            double x = mbAscending ? value1 : value2;
+            double y = mbAscending ? value2 : value1; 
+
             if (x > y)
                 return 1;
             else

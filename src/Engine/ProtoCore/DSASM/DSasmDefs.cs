@@ -44,17 +44,6 @@ namespace ProtoCore.DSASM
         div,
         mod,
 
-        ltd,
-        gtd,
-        led,
-        ged,
-        eqd,
-        nqd,
-        addd,
-        subd,
-        muld,
-        divd,
-
         and,
         or,
         dot,
@@ -104,18 +93,6 @@ namespace ProtoCore.DSASM
         public const string lt = "lt";
         public const string ge = "ge";
         public const string le = "le";
-        public const string addd = "addd";
-        public const string subd = "subd";
-        public const string muld = "muld";
-        public const string divd = "divd";
-        public const string eqd = "eqd";
-        public const string nqd = "nqd";
-        public const string gtd = "gtd";
-        public const string ltd = "ltd";
-        public const string ged = "ged";
-        public const string led = "led";
-        public const string jeq = "jeq";
-        public const string jnq = "jnq";
         public const string jg = "jg";
         public const string jl = "jl";
         public const string jge = "jge";
@@ -279,20 +256,6 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Return the corresponding operator for handling floating point number.
-        /// </summary>
-        /// <param name="op"></param>
-        /// <returns></returns>
-        public static Operator GetFloatingOp(Operator op)
-        {
-            if (null == floatingOpTable)
-            {
-                initFloatingOpTable();
-            }
-            return floatingOpTable[op];
-        }
-
-        /// <summary>
         /// Return the internal function name for operator.
         /// </summary>
         /// <param name="op"></param>
@@ -315,7 +278,6 @@ namespace ProtoCore.DSASM
         private static Dictionary<Operator, ProtoCore.DSASM.OpCode> opCodeTable;
         private static Dictionary<Operator, string> opNameTable;
         private static Dictionary<Operator, string> opSymbolTable;
-        private static Dictionary<Operator, Operator> floatingOpTable;
 
         private static Dictionary<UnaryOperator, ProtoCore.DSASM.OpCode> unaryOpCodeTable;
         private static Dictionary<UnaryOperator, string> unaryOpNameTable;
@@ -363,17 +325,6 @@ namespace ProtoCore.DSASM
             opNameTable.Add(Operator.mul, ProtoCore.DSASM.kw.mul);
             opNameTable.Add(Operator.div, ProtoCore.DSASM.kw.div);
             opNameTable.Add(Operator.mod, ProtoCore.DSASM.kw.mod);
-
-            opNameTable.Add(Operator.ltd, ProtoCore.DSASM.kw.ltd);
-            opNameTable.Add(Operator.gtd, ProtoCore.DSASM.kw.gtd);
-            opNameTable.Add(Operator.led, ProtoCore.DSASM.kw.led);
-            opNameTable.Add(Operator.ged, ProtoCore.DSASM.kw.ged);
-            opNameTable.Add(Operator.eqd, ProtoCore.DSASM.kw.eqd);
-            opNameTable.Add(Operator.nqd, ProtoCore.DSASM.kw.nqd);
-            opNameTable.Add(Operator.addd, ProtoCore.DSASM.kw.addd);
-            opNameTable.Add(Operator.subd, ProtoCore.DSASM.kw.subd);
-            opNameTable.Add(Operator.muld, ProtoCore.DSASM.kw.muld);
-            opNameTable.Add(Operator.divd, ProtoCore.DSASM.kw.divd);
         }
 
         private static void initOpCodeTable()
@@ -397,32 +348,6 @@ namespace ProtoCore.DSASM
             opCodeTable.Add(Operator.bitwiseand, ProtoCore.DSASM.OpCode.BITAND);
             opCodeTable.Add(Operator.bitwiseor, ProtoCore.DSASM.OpCode.BITOR);
             opCodeTable.Add(Operator.bitwisexor, ProtoCore.DSASM.OpCode.BITXOR);
-
-            opCodeTable.Add(Operator.ltd, ProtoCore.DSASM.OpCode.LTD);
-            opCodeTable.Add(Operator.gtd, ProtoCore.DSASM.OpCode.GTD);
-            opCodeTable.Add(Operator.led, ProtoCore.DSASM.OpCode.LED);
-            opCodeTable.Add(Operator.ged, ProtoCore.DSASM.OpCode.GED);
-            opCodeTable.Add(Operator.eqd, ProtoCore.DSASM.OpCode.EQD);
-            opCodeTable.Add(Operator.nqd, ProtoCore.DSASM.OpCode.NQD);
-            opCodeTable.Add(Operator.addd, ProtoCore.DSASM.OpCode.ADDD);
-            opCodeTable.Add(Operator.subd, ProtoCore.DSASM.OpCode.SUBD);
-            opCodeTable.Add(Operator.muld, ProtoCore.DSASM.OpCode.MULD);
-            opCodeTable.Add(Operator.divd, ProtoCore.DSASM.OpCode.DIVD);
-        }
-
-        private static void initFloatingOpTable()
-        {
-            floatingOpTable = new Dictionary<Operator, Operator>();
-            floatingOpTable.Add(Operator.lt, Operator.ltd);
-            floatingOpTable.Add(Operator.gt, Operator.gtd);
-            floatingOpTable.Add(Operator.le, Operator.led);
-            floatingOpTable.Add(Operator.ge, Operator.ged);
-            floatingOpTable.Add(Operator.eq, Operator.eqd);
-            floatingOpTable.Add(Operator.nq, Operator.nqd);
-            floatingOpTable.Add(Operator.add, Operator.addd);
-            floatingOpTable.Add(Operator.sub, Operator.subd);
-            floatingOpTable.Add(Operator.mul, Operator.muld);
-            floatingOpTable.Add(Operator.div, Operator.divd);
         }
 
         private static void initOpSymbolTable()

@@ -59,10 +59,6 @@ namespace ProtoCore.DSASM
         MUL,
         DIV,
         MOD,
-        ADDD,
-        SUBD,
-        MULD,
-        DIVD,
         PUSH,
         PUSHG,
         PUSHM,
@@ -96,12 +92,6 @@ namespace ProtoCore.DSASM
         LT,
         GE,
         LE,
-        EQD,
-        NQD,
-        GTD,
-        LTD,
-        GED,
-        LED,
         BOUNCE,
         ALLOC,
         ALLOCA,
@@ -140,7 +130,6 @@ namespace ProtoCore.DSASM
     public struct StackValue
     {
         public Int64 opdata;
-        public Double opdata_d;
         public AddressType optype;
         public MetaData metaData;
 
@@ -148,27 +137,79 @@ namespace ProtoCore.DSASM
         {
             StackValue newSv = new StackValue();
             newSv.optype = optype;
-            newSv.opdata_d = opdata_d;
             newSv.opdata = opdata;
             newSv.metaData = new MetaData { type = metaData.type };
 
             return newSv;
         }
 
+        public override bool Equals(object other)
+        {
+            if (!(other is StackValue))
+                return false;
+
+            StackValue rhs = (StackValue)other;
+            if (this.optype != rhs.optype || this.metaData.type != rhs.metaData.type)
+                return false;
+
+            if (this.IsDouble())
+                return this.RawDoubleValue.Equals(rhs.RawDoubleValue);
+            else
+                return this.opdata == rhs.opdata;
+        }
+
         public override string ToString()
         {
-            if (optype == AddressType.Double)
-                return opdata_d.ToString();
-
-            if (optype == AddressType.Int)
-                return opdata.ToString();
-
+            if (IsDouble())
+            {
+                return RawDoubleValue.ToString();
+            }
+            else if (IsInteger())
+            {
+                return RawIntValue.ToString();
+            }
             else
                 return String.Format("{0}, opdata = {1}, metaData = {2}", optype.ToString(), opdata.ToString(),
                                      metaData.type.ToString());
 
         }
-        
+
+        /// <summary>
+        /// Get integer value without checking its type or do type conversion,
+        /// so the StackValue shoule be boolean typed.
+        /// </summary>
+        public Int64 RawIntValue
+        {
+            get
+            {
+                return opdata;
+            }
+        }
+
+        /// <summary>
+        /// Get double value without checking its type or do type conversion. 
+        /// The StackValue should be double typed. 
+        /// </summary>
+        public double RawDoubleValue
+        {
+            get
+            {
+                return BitConverter.Int64BitsToDouble(opdata);
+            }
+        }
+
+        /// <summary>
+        /// Get boolean value without checking its type or do type conversion,
+        /// so the StackValue shoule be boolean typed.
+        /// </summary>
+        public bool RawBooleanValue
+        {
+            get
+            {
+                return opdata != 0;
+            }
+        }
+
         #region Some constant values
         public static StackValue Null = BuildNull();
         public static StackValue True = BuildBoolean(true);
@@ -219,6 +260,11 @@ namespace ProtoCore.DSASM
         public bool IsDouble()
         {
             return optype == AddressType.Double;
+        }
+
+        public bool IsNumeric()
+        {
+            return optype == AddressType.Int || optype == AddressType.Double;
         }
 
         public bool IsBoolean()
@@ -331,7 +377,6 @@ namespace ProtoCore.DSASM
             StackValue value = new StackValue();
             value.optype = AddressType.Int;
             value.opdata = data;
-            value.opdata_d = value.opdata;
 
             MetaData mdata = new MetaData();
             mdata.type = (int)PrimitiveType.kTypeInt;
@@ -343,8 +388,7 @@ namespace ProtoCore.DSASM
         {
             StackValue value = new StackValue();
             value.optype = AddressType.Double;
-            value.opdata_d = data;
-            value.opdata = (long)data;
+            value.opdata = BitConverter.DoubleToInt64Bits(data);
 
             MetaData mdata = new MetaData();
             mdata.type = (int)PrimitiveType.kTypeDouble;
@@ -357,7 +401,6 @@ namespace ProtoCore.DSASM
             StackValue value = new StackValue();
             value.optype = AddressType.Char;
             value.opdata = ProtoCore.Utils.EncodingUtils.ConvertCharacterToInt64(ch);
-            value.opdata_d = value.opdata;
 
             MetaData mdata = new MetaData();
             mdata.type = (int)PrimitiveType.kTypeChar;
@@ -369,7 +412,6 @@ namespace ProtoCore.DSASM
         {
             StackValue value = new StackValue();
             value.optype = AddressType.Null;
-            value.opdata_d = 0;
             value.opdata = 0;
             MetaData mdata = new MetaData();
             mdata.type = (int)PrimitiveType.kTypeNull;
@@ -406,12 +448,21 @@ namespace ProtoCore.DSASM
             return value;
         }
 
-        public static StackValue BuildArrayKey(int index, int arrayPtr)
+        public static StackValue BuildArrayKey(int rawArrayPtr, int index)
         {
             StackValue value = new StackValue();
             value.optype = AddressType.ArrayKey;
-            value.opdata = index;
-            value.opdata_d = arrayPtr;
+
+            if (index == Constants.kInvalidIndex || rawArrayPtr == Constants.kInvalidIndex)
+            {
+                value.opdata = Constants.kInvalidIndex;
+            }
+            else
+            {
+                ulong key = (ulong)rawArrayPtr;
+                key = (key << 32) | (uint)index;
+                value.opdata = (long)key;
+            }
             return value;
         }
 
@@ -564,7 +615,7 @@ namespace ProtoCore.DSASM
         {
             StackValue value = new StackValue();
             value.optype = AddressType.DefaultArg;
-            value.opdata_d = value.opdata = 0;
+            value.opdata = 0;
 
             MetaData mdata;
             mdata.type = (int)PrimitiveType.kTypeVar;
@@ -651,6 +702,23 @@ namespace ProtoCore.DSASM
             return registers;
         }
         #endregion
+
+        public bool TryGetArrayKey(out int rawArrayPointer, out int key)
+        {
+            rawArrayPointer = Constants.kInvalidIndex;
+            key = Constants.kInvalidIndex;
+
+            if (!this.IsArrayKey())
+                return false;
+
+            long value = opdata;
+            if (value == Constants.kInvalidIndex)
+                return false;
+
+            rawArrayPointer = (int)((ulong)value >> 32);
+            key = (int)((ulong)value << 32 >> 32);
+            return true;
+        }
     }
 
     public class Instruction

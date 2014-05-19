@@ -442,8 +442,7 @@ namespace ProtoCore
                 // Not initialized yet
                 if (sv.optype == AddressType.Invalid)
                 {
-                    sv.optype = AddressType.Null;
-                    sv.opdata_d = sv.opdata = 0;
+                    sv = StackValue.Null;
                     return sv;
                 }
                 else if (sv.optype == AddressType.ArrayPointer)

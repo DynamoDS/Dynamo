@@ -1284,7 +1284,7 @@ namespace ProtoCore.DSASM
                 }
                 else if (AddressType.Double == snode.optype)
                 {
-                    double data = rmem.GetStackData(blockId, index, Constants.kGlobalScope).opdata_d;
+                    double data = rmem.GetStackData(blockId, index, Constants.kGlobalScope).RawDoubleValue;
                     rhs = data.ToString("R").IndexOf('.') != -1 ? data.ToString("R") : data.ToString("R") + ".0";
                 }
                 else if (AddressType.Boolean == snode.optype)
@@ -1333,7 +1333,7 @@ namespace ProtoCore.DSASM
             }
             else if (AddressType.Double == snode.optype)
             {
-                double data = snode.opdata_d;
+                double data = snode.RawDoubleValue;
                 rhs = data.ToString("R").IndexOf('.') != -1 ? data.ToString("R") : data.ToString("R") + ".0";
             }
             else if (AddressType.Boolean == snode.optype)
@@ -1634,10 +1634,10 @@ namespace ProtoCore.DSASM
         }
         private bool IsNodeModified(StackValue svGraphNode, StackValue svUpdateNode)
         {
-            bool isPointerModified = AddressType.Pointer == svGraphNode.optype || AddressType.Pointer == svUpdateNode.optype;
-            bool isArrayModified = AddressType.ArrayPointer == svGraphNode.optype || AddressType.ArrayPointer == svUpdateNode.optype;
+            bool isPointerModified = svGraphNode.IsObject() || svUpdateNode.IsObject();
+            bool isArrayModified = svGraphNode.IsArray() || svUpdateNode.IsArray();
             bool isDataModified = svGraphNode.opdata != svUpdateNode.opdata;
-            bool isDoubleDataModified = svGraphNode.optype == AddressType.Double && svGraphNode.opdata_d != svUpdateNode.opdata_d;
+            bool isDoubleDataModified = svGraphNode.IsDouble() && svGraphNode.RawDoubleValue != svUpdateNode.AsDouble().RawDoubleValue;
             bool isTypeModified = svGraphNode.optype != AddressType.Invalid && svUpdateNode.optype != AddressType.Invalid && svGraphNode.optype != svUpdateNode.optype;
 
             // Jun Comment: an invalid optype means that the value was not set
@@ -5348,7 +5348,7 @@ namespace ProtoCore.DSASM
             {
                 if (he.VisibleSize > 0 || (he.Dict != null && he.Dict.Count > 0))
                 {
-                    key = StackValue.BuildArrayKey(0, (int)array.opdata);
+                    key = StackValue.BuildArrayKey((int)array.opdata, 0);
                 }
             }
             else if (!StackUtils.IsNull(array))
@@ -6198,51 +6198,38 @@ namespace ProtoCore.DSASM
             StackValue opdata2 = GetOperandData(instruction.op1);
 
             // Need to optmize these if-elses to a table. 
-            if ((AddressType.Int == opdata1.optype) && (AddressType.Int == opdata2.optype))
+            if (opdata1.IsInteger() && opdata2.IsInteger())
             {
-                opdata2 = StackValue.BuildInt(opdata1.opdata + opdata2.opdata);
+                opdata2 = StackValue.BuildInt(opdata1.RawIntValue + opdata2.RawIntValue);
 
             }
-            else if (StackUtils.IsNumeric(opdata1) && StackUtils.IsNumeric(opdata2))
+            else if (opdata1.IsNumeric() && opdata2.IsNumeric())
             {
-                opdata2 = StackValue.BuildDouble(opdata1.opdata_d + opdata2.opdata_d);
+                double value1 = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                double value2 = opdata2.IsDouble() ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+
+                opdata2 = StackValue.BuildDouble(value1 + value2);
             }
-            else if ((StackUtils.IsString(opdata1) && (AddressType.Char == opdata2.optype || StackUtils.IsString(opdata2))) ||
-                     (StackUtils.IsString(opdata2) && (AddressType.Char == opdata1.optype || StackUtils.IsString(opdata1))))
+            else if ((opdata1.IsChar() || opdata1.IsString()) &&
+                     (opdata2.IsChar() || opdata2.IsString()))
             {
                 opdata2 = StringUtils.ConcatString(opdata2, opdata1, rmem);
             }
-            else if (((AddressType.Char == opdata1.optype) && (AddressType.Char == opdata2.optype || StackUtils.IsString(opdata2))) || ((AddressType.Char == opdata2.optype) && (AddressType.Char == opdata1.optype || StackUtils.IsString(opdata1))))
-            {
-                if (opdata1.optype == AddressType.Char)
-                {
-                    (ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(opdata1.opdata)).ToString();
-                }
-                if (opdata2.optype == AddressType.Char)
-                {
-                    (ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(opdata2.opdata)).ToString();
-                }
-                opdata2 = StringUtils.ConcatString(opdata2, opdata1, rmem);
-            }
-            else if ((StackUtils.IsString(opdata1)) || (StackUtils.IsString(opdata2)))
+            else if (opdata1.IsString() || opdata2.IsString())
             {
                 StackValue newSV;
-                if (StackUtils.IsString(opdata1))
+                if (opdata1.IsString())
                 {
                     newSV = StringUtils.ConvertToString(opdata2, core, rmem);
                     opdata2 = StringUtils.ConcatString(newSV, opdata1, rmem);
                 }
-                else if (StackUtils.IsString(opdata2))
+                else if (opdata2.IsString())
                 {
                     newSV = StringUtils.ConvertToString(opdata1, core, rmem);
                     opdata2 = StringUtils.ConcatString(opdata2, newSV, rmem);
                 }
-                else
-                {
-                    opdata2 = StringUtils.ConcatString(opdata2, opdata1, rmem);
-                }
             }
-            else if (opdata2.optype == AddressType.ArrayKey && opdata1.optype == AddressType.Int)
+            else if (opdata2.IsArrayKey() && opdata1.IsInteger())
             {
                 if (opdata1.opdata == 1)
                 {
@@ -6263,43 +6250,21 @@ namespace ProtoCore.DSASM
             ++pc;
             return;
         }
-        private void ADDD_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
-
-            if ((AddressType.Int == opdata1.optype) && (AddressType.Int == opdata2.optype))
-            {
-                opdata2 = StackValue.BuildInt(opdata1.opdata + opdata2.opdata);
-            }
-            else if (StackUtils.IsNumeric(opdata1) && StackUtils.IsNumeric(opdata2))
-            {
-                opdata2 = StackValue.BuildDouble(opdata1.opdata_d + opdata2.opdata_d);
-            }
-            else
-            {
-                opdata2.opdata_d = opdata2.opdata = 0;
-                opdata2.optype = AddressType.Null;
-            }
-
-            Nullify(ref opdata2, ref opdata1);
-            SetOperandData(instruction.op1, opdata2);
-
-            ++pc;
-            return;
-        }
+        
         private void SUB_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            if ((AddressType.Int == opdata1.optype) && (AddressType.Int == opdata2.optype))
+            if (opdata1.IsInteger() && opdata2.IsInteger())
             {
-                opdata2 = StackValue.BuildInt(opdata2.opdata - opdata1.opdata);
+                opdata2 = StackValue.BuildInt(opdata2.RawIntValue - opdata1.RawIntValue);
             }
-            else if (StackUtils.IsNumeric(opdata1) && StackUtils.IsNumeric(opdata2))
+            else if (opdata1.IsNumeric() && opdata2.IsNumeric())
             {
-                opdata2 = StackValue.BuildDouble(opdata2.opdata_d - opdata1.opdata_d);
+                double value1 = opdata2.IsDouble() ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                double value2 = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                opdata2 = StackValue.BuildDouble(value1 - value2);
             }
             else
             {
@@ -6312,43 +6277,21 @@ namespace ProtoCore.DSASM
             ++pc;
             return;
         }
-        private void SUBD_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
-
-            if ((AddressType.Int == opdata1.optype) && (AddressType.Int == opdata2.optype))
-            {
-                opdata2 = StackValue.BuildInt(opdata2.opdata - opdata1.opdata);
-            }
-            else if (StackUtils.IsNumeric(opdata1) && StackUtils.IsNumeric(opdata2))
-            {
-                opdata2 = StackValue.BuildDouble(opdata2.opdata_d - opdata1.opdata_d);
-            }
-            else
-            {
-                opdata2 = StackValue.Null;
-            }
-
-            Nullify(ref opdata2, ref opdata1);
-            SetOperandData(instruction.op1, opdata2);
-
-            ++pc;
-            return;
-        }
+        
         private void MUL_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            if ((AddressType.Int == opdata1.optype) && (AddressType.Int == opdata2.optype))
+            if (opdata1.IsInteger() && opdata2.IsInteger())
             {
                 opdata2 = StackValue.BuildInt(opdata1.opdata * opdata2.opdata);
             }
-            else if (((AddressType.Int == opdata1.optype) || (AddressType.Double == opdata1.optype)) &&
-                     ((AddressType.Int == opdata2.optype) || (AddressType.Double == opdata2.optype)))
+            else if (opdata1.IsNumeric() && opdata2.IsNumeric())
             {
-                opdata2 = StackValue.BuildDouble(opdata1.opdata_d * opdata2.opdata_d);
+                double value1 = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                double value2 = opdata2.IsDouble() ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                opdata2 = StackValue.BuildDouble(value1 * value2);
             }
             else
             {
@@ -6361,41 +6304,18 @@ namespace ProtoCore.DSASM
             ++pc;
             return;
         }
-        private void MULD_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
-
-            if ((AddressType.Int == opdata1.optype) && (AddressType.Int == opdata2.optype))
-            {
-                opdata2 = StackValue.BuildInt(opdata1.opdata * opdata2.opdata);
-            }
-            else if (((AddressType.Int == opdata1.optype) || (AddressType.Double == opdata1.optype)) &&
-                     ((AddressType.Int == opdata2.optype) || (AddressType.Double == opdata2.optype)))
-            {
-                opdata2 = StackValue.BuildDouble(opdata1.opdata_d * opdata2.opdata_d);
-            }
-            else
-            {
-                opdata2 = StackValue.Null;
-            }
-
-            Nullify(ref opdata2, ref opdata1);
-            SetOperandData(instruction.op1, opdata2);
-
-            ++pc;
-            return;
-        }
+        
         private void DIV_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
             //division is always carried out as a double
-            if (((AddressType.Int == opdata1.optype) || (AddressType.Double == opdata1.optype)) &&
-                ((AddressType.Int == opdata2.optype) || (AddressType.Double == opdata2.optype)))
+            if (opdata1.IsNumeric() && opdata2.IsNumeric())
             {
-                opdata2 = StackValue.BuildDouble(opdata2.opdata_d / opdata1.opdata_d);
+                double lhs = opdata2.IsDouble() ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                double rhs = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                opdata2 = StackValue.BuildDouble(lhs / rhs);
             }
             else
             {
@@ -6408,35 +6328,15 @@ namespace ProtoCore.DSASM
             ++pc;
             return;
         }
-        private void DIVD_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
-
-            if (((AddressType.Int == opdata1.optype) || (AddressType.Double == opdata1.optype)) &&
-                ((AddressType.Int == opdata2.optype) || (AddressType.Double == opdata2.optype)))
-            {
-                opdata2 = StackValue.BuildDouble(opdata2.opdata_d / opdata1.opdata_d);
-            }
-            else
-            {
-                opdata2 = StackValue.Null;
-            }
-
-            Nullify(ref opdata2, ref opdata1);
-            SetOperandData(instruction.op1, opdata2);
-
-            ++pc;
-            return;
-        }
+        
         private void MOD_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            if ((opdata1.optype == AddressType.Int) && (opdata2.optype == AddressType.Int))
+            if (opdata1.IsInteger() && opdata2.IsInteger())
             {
-                opdata2 = StackValue.BuildInt(opdata2.opdata % opdata1.opdata);
+                opdata2 = StackValue.BuildInt(opdata2.RawIntValue % opdata1.RawIntValue);
             }
             else
             {
@@ -6454,10 +6354,9 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            if (opdata1.optype == AddressType.Int && opdata2.optype == AddressType.Int)
+            if (opdata1.IsInteger() && opdata2.IsInteger())
             {
                 opdata2.opdata &= opdata1.opdata;
-                opdata2.opdata_d = opdata2.opdata;
             }
             else
             {
@@ -6476,10 +6375,9 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            if (opdata1.optype == AddressType.Int && opdata2.optype == AddressType.Int)
+            if (opdata1.IsInteger() && opdata2.IsInteger())
             {
                 opdata2.opdata |= opdata1.opdata;
-                opdata2.opdata_d = opdata2.opdata;
             }
             else
             {
@@ -6497,10 +6395,9 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            if (opdata1.optype == AddressType.Int && opdata2.optype == AddressType.Int)
+            if (opdata1.IsInteger() && opdata2.IsInteger())
             {
-                opdata2.opdata ^= opdata1.opdata;
-                opdata2.opdata_d = opdata2.opdata;
+                opdata2 = StackValue.BuildInt(opdata2.RawIntValue ^ opdata1.RawIntValue);
             }
             else
             {
@@ -6517,10 +6414,9 @@ namespace ProtoCore.DSASM
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
 
-            if (opdata1.optype == AddressType.Int)
+            if (opdata1.IsInteger())
             {
                 opdata1.opdata = ~opdata1.opdata;
-                opdata1.opdata_d = opdata1.opdata;
             }
             else
             {
@@ -6536,7 +6432,6 @@ namespace ProtoCore.DSASM
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
             opdata1.opdata = -opdata1.opdata;
-            opdata1.opdata_d = -opdata1.opdata_d;
 
             SetOperandData(instruction.op1, opdata1);
             ++pc;
@@ -6606,33 +6501,33 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            if (AddressType.Boolean == opdata1.optype || AddressType.Boolean == opdata2.optype)
+            if (opdata1.IsBoolean() || opdata2.IsBoolean())
             {
                 opdata1 = opdata1.AsBoolean(core);
                 opdata2 = opdata2.AsBoolean(core);
-                if (StackUtils.IsNull(opdata1) || StackUtils.IsNull(opdata2))
+                if (opdata1.IsNull() || opdata2.IsNull()) 
                 {
                     opdata2 = StackValue.Null;
                 }
                 else
                 {
-                    opdata2 = StackValue.BuildBoolean(opdata1.opdata == opdata2.opdata);
+                    opdata2 = StackValue.BuildBoolean(opdata1.RawBooleanValue == opdata2.RawBooleanValue);
                 }
             }
-            else if (StackUtils.IsNumeric(opdata1) && StackUtils.IsNumeric(opdata2))
+            else if (opdata1.IsNumeric() && opdata2.IsNumeric())
             {
-                if (AddressType.Double == opdata1.optype || AddressType.Double == opdata2.optype)
+                if (opdata1.IsDouble() || opdata2.IsDouble())
                 {
-                    opdata1 = opdata1.AsDouble();
-                    opdata2 = opdata2.AsDouble();
-                    opdata2 = StackValue.BuildBoolean(MathUtils.Equals(opdata1.opdata_d, opdata2.opdata_d));
+                    double value1 = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                    double value2 = opdata2.IsDouble() ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                    opdata2 = StackValue.BuildBoolean(MathUtils.Equals(value1, value2));
                 }
                 else
                 {
-                    opdata2 = StackValue.BuildBoolean(opdata1.opdata == opdata2.opdata);
+                    opdata2 = StackValue.BuildBoolean(opdata1.RawIntValue == opdata2.RawIntValue);
                 }
             }
-            else if (StackUtils.IsString(opdata1) && StackUtils.IsString(opdata2))
+            else if (opdata1.IsString() && opdata2.IsString())
             {
                 int diffIndex = StringUtils.CompareString(opdata2, opdata1, core);
                 opdata2 = StackValue.BuildBoolean(diffIndex == 0);
@@ -6651,37 +6546,25 @@ namespace ProtoCore.DSASM
             ++pc;
             return;
         }
-        private void EQD_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
-
-            opdata2.opdata_d = (opdata2.opdata_d.Equals(opdata1.opdata_d)) ? 1 : 0;
-            opdata2.opdata_d = opdata2.opdata;
-
-            SetOperandData(instruction.op1, opdata2);
-
-            ++pc;
-            return;
-        }
+        
         private void NQ_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            if (AddressType.Boolean == opdata1.optype || AddressType.Boolean == opdata2.optype)
+            if (opdata1.IsBoolean() || opdata2.IsBoolean())
             {
                 opdata1 = opdata1.AsBoolean(core);
                 opdata2 = opdata2.AsBoolean(core);
                 opdata2 = StackValue.BuildBoolean(opdata1.opdata != opdata2.opdata);
             }
-            else if (StackUtils.IsNumeric(opdata1) && StackUtils.IsNumeric(opdata2))
+            else if (opdata1.IsNumeric() && opdata2.IsNumeric())
             {
-                if (AddressType.Double == opdata1.optype || AddressType.Double == opdata2.optype)
+                if (opdata1.IsDouble() || opdata2.IsDouble())
                 {
-                    opdata1 = opdata1.AsDouble();
-                    opdata2 = opdata2.AsDouble();
-                    opdata2 = StackValue.BuildBoolean(!MathUtils.Equals(opdata1.opdata_d, opdata2.opdata_d));
+                    double value1 = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                    double value2 = opdata2.IsDouble() ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                    opdata2 = StackValue.BuildBoolean(!MathUtils.Equals(value1, value2));
                 }
                 else
                 {
@@ -6707,36 +6590,17 @@ namespace ProtoCore.DSASM
             ++pc;
             return;
         }
-        private void NQD_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
-
-            opdata2.opdata_d = !MathUtils.Equals(opdata2.opdata_d, opdata1.opdata_d) ? 1 : 0;
-            opdata2.opdata_d = opdata2.opdata;
-
-            SetOperandData(instruction.op1, opdata2);
-
-            ++pc;
-            return;
-        }
+        
         private void GT_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            if (StackUtils.IsNumeric(opdata1) && StackUtils.IsNumeric(opdata2))
+            if (opdata1.IsNumeric() && opdata2.IsNumeric())
             {
-                if (AddressType.Double == opdata1.optype || AddressType.Double == opdata2.optype)
-                {
-                    opdata1 = opdata1.AsDouble();
-                    opdata2 = opdata2.AsDouble();
-                    opdata2 = StackValue.BuildBoolean(MathUtils.IsGreaterThan(opdata2.opdata_d, opdata1.opdata_d));
-                }
-                else
-                {
-                    opdata2 = StackValue.BuildBoolean(opdata2.opdata > opdata1.opdata);
-                }
+                var value1 = opdata2.IsDouble() ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                var value2 = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                opdata2 = StackValue.BuildBoolean(value1 > value2);
             }
             else
             {
@@ -6747,36 +6611,17 @@ namespace ProtoCore.DSASM
             ++pc;
             return;
         }
-        private void GTD_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
-
-            opdata2.opdata = (opdata2.opdata_d > opdata1.opdata_d) ? 1 : 0;
-            opdata2.opdata_d = opdata2.opdata;
-
-            SetOperandData(instruction.op1, opdata2);
-
-            ++pc;
-            return;
-        }
+        
         private void LT_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            if (StackUtils.IsNumeric(opdata1) && StackUtils.IsNumeric(opdata2))
+            if (opdata1.IsNumeric() && opdata2.IsNumeric())
             {
-                if (AddressType.Double == opdata1.optype || AddressType.Double == opdata2.optype)
-                {
-                    opdata1 = opdata1.AsDouble();
-                    opdata2 = opdata2.AsDouble();
-                    opdata2 = StackValue.BuildBoolean(MathUtils.IsLessThan(opdata2.opdata_d, opdata1.opdata_d));
-                }
-                else
-                {
-                    opdata2 = StackValue.BuildBoolean(opdata2.opdata < opdata1.opdata);
-                }
+                double value1 = opdata2.IsDouble() ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                double value2 = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                opdata2 = StackValue.BuildBoolean(MathUtils.IsLessThan(value1, value2));
             }
             else
             {
@@ -6788,31 +6633,19 @@ namespace ProtoCore.DSASM
             ++pc;
             return;
         }
-        private void LTD_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
-
-            opdata2.opdata_d = (opdata2.opdata_d < opdata1.opdata_d) ? 1 : 0;
-            opdata2.opdata_d = opdata2.opdata;
-
-            SetOperandData(instruction.op1, opdata2);
-
-            ++pc;
-            return;
-        }
+        
         private void GE_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            if (StackUtils.IsNumeric(opdata1) && StackUtils.IsNumeric(opdata2))
+            if (opdata1.IsNumeric() && opdata2.IsNumeric())
             {
-                if (AddressType.Double == opdata1.optype || AddressType.Double == opdata2.optype)
+                if (opdata1.IsDouble() || opdata2.IsDouble())
                 {
-                    opdata1 = opdata1.AsDouble();
-                    opdata2 = opdata2.AsDouble();
-                    opdata2 = StackValue.BuildBoolean(MathUtils.IsGreaterThanOrEquals(opdata2.opdata_d, opdata1.opdata_d));
+                    double lhs = opdata2.IsDouble() ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                    double rhs = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                    opdata2 = StackValue.BuildBoolean(MathUtils.IsGreaterThanOrEquals(lhs, rhs));
                 }
                 else
                 {
@@ -6829,31 +6662,19 @@ namespace ProtoCore.DSASM
             ++pc;
             return;
         }
-        private void GED_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
-
-            opdata2.opdata_d = (MathUtils.IsGreaterThanOrEquals(opdata2.opdata_d, opdata1.opdata_d)) ? 1 : 0;
-            opdata2.opdata_d = opdata2.opdata;
-
-            SetOperandData(instruction.op1, opdata2);
-
-            ++pc;
-            return;
-        }
+        
         private void LE_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            if (StackUtils.IsNumeric(opdata1) && StackUtils.IsNumeric(opdata2))
+            if (opdata1.IsNumeric() && opdata2.IsNumeric())
             {
-                if (AddressType.Double == opdata1.optype || AddressType.Double == opdata2.optype)
+                if (opdata1.IsDouble() || opdata2.IsDouble())
                 {
-                    opdata1 = opdata1.AsDouble();
-                    opdata2 = opdata2.AsDouble();
-                    opdata2 = StackValue.BuildBoolean(MathUtils.IsLessThanOrEquals(opdata2.opdata_d, opdata1.opdata_d));
+                    double lhs = opdata2.IsDouble() ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                    double rhs = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                    opdata2 = StackValue.BuildBoolean(MathUtils.IsLessThanOrEquals(lhs, rhs));
                 }
                 else
                 {
@@ -6864,19 +6685,6 @@ namespace ProtoCore.DSASM
             {
                 opdata2 = StackValue.Null;
             }
-
-            SetOperandData(instruction.op1, opdata2);
-
-            ++pc;
-            return;
-        }
-        private void LED_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
-
-            opdata2.opdata = MathUtils.IsLessThanOrEquals(opdata2.opdata_d, opdata1.opdata_d) ? 1 : 0;
-            opdata2.opdata_d = opdata2.opdata;
 
             SetOperandData(instruction.op1, opdata2);
 
@@ -7821,9 +7629,9 @@ namespace ProtoCore.DSASM
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
 
-            if (opdata1.optype == ProtoCore.DSASM.AddressType.Double)
+            if (opdata1.IsDouble())
             {
-                if (0 == opdata1.opdata_d)
+                if (opdata1.RawDoubleValue.Equals(0))
                 {
                     pc = (int)GetOperandData(instruction.op3).opdata;
                 }
@@ -7834,7 +7642,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                if (opdata1.optype == ProtoCore.DSASM.AddressType.Pointer)
+                if (opdata1.IsObject())
                 {
                     pc = (int)GetOperandData(instruction.op2).opdata;
                 }
@@ -7855,9 +7663,12 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = GetOperandData(instruction.op1);
             StackValue opdata2 = GetOperandData(instruction.op2);
 
-            if (AddressType.Double == opdata1.optype || AddressType.Double == opdata2.optype)
+            if (opdata1.IsDouble() || opdata2.IsDouble())
             {
-                if (Math.Equals(opdata1.opdata_d, opdata2.opdata))
+                double lhs = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                double rhs = opdata2.IsDouble() ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+
+                if (Math.Equals(lhs, rhs))
                 {
                     pc = (int)instruction.op3.opdata;
                 }
@@ -7885,9 +7696,11 @@ namespace ProtoCore.DSASM
             StackValue opdata2 = GetOperandData(instruction.op2);
 
             bool isGT = false;
-            if (AddressType.Double == opdata1.optype || AddressType.Double == opdata2.optype)
+            if (opdata1.IsDouble() || opdata2.IsDouble())
             {
-                isGT = opdata1.opdata_d > opdata2.opdata_d;
+                double value1 = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                double value2 = opdata2.IsDouble() ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                isGT = value1 > value2;
             }
             else
             {
@@ -7909,9 +7722,11 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = GetOperandData(instruction.op1);
             StackValue opdata2 = GetOperandData(instruction.op2);
 
-            if (AddressType.Double == opdata1.optype || AddressType.Double == opdata2.optype)
+            if (opdata1.IsDouble() || opdata2.IsDouble())
             {
-                if (MathUtils.IsGreaterThanOrEquals(opdata1.opdata_d, opdata2.opdata_d))
+                double value1 = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                double value2 = opdata2.IsDouble() ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                if (MathUtils.IsGreaterThanOrEquals(value1, value2))
                 {
                     pc = (int)instruction.op3.opdata;
                 }
@@ -7938,9 +7753,11 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = GetOperandData(instruction.op1);
             StackValue opdata2 = GetOperandData(instruction.op2);
 
-            if (AddressType.Double == opdata1.optype || AddressType.Double == opdata2.optype)
+            if (opdata1.IsDouble() || opdata2.IsDouble())
             {
-                if (opdata1.opdata_d < opdata2.opdata_d)
+                var value1 = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                var value2 = opdata2.IsDouble() ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                if (value1 < value2)
                 {
                     pc = (int)instruction.op3.opdata;
                 }
@@ -7967,9 +7784,11 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = GetOperandData(instruction.op1);
             StackValue opdata2 = GetOperandData(instruction.op2);
 
-            if (AddressType.Double == opdata1.optype || AddressType.Double == opdata2.optype)
+            if (opdata1.IsDouble() || opdata2.IsDouble())
             {
-                if (MathUtils.IsLessThanOrEquals(opdata1.opdata_d, opdata2.opdata_d))
+                double value1 = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                double value2 = opdata2.IsDouble() ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                if (MathUtils.IsLessThanOrEquals(value1, value2))
                 {
                     pc = (int)instruction.op3.opdata;
                 }
@@ -7996,9 +7815,11 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = GetOperandData(instruction.op1);
             StackValue opdata2 = GetOperandData(instruction.op2);
 
-            if (AddressType.Double == opdata1.optype || AddressType.Double == opdata2.optype)
+            if (opdata1.IsDouble() || opdata2.IsDouble())
             {
-                if (!MathUtils.Equals(opdata1.opdata_d, opdata2.opdata_d))
+                var value1 = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                var value2 = opdata2.IsDouble() ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                if (!MathUtils.Equals(value1, value2))
                 {
                     pc = (int)instruction.op3.opdata;
                 }
@@ -8023,8 +7844,9 @@ namespace ProtoCore.DSASM
         private void JLZ_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
+            var opvalue = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
 
-            if (opdata1.opdata_d < 0)
+            if (opvalue < 0)
             {
                 pc = (int)instruction.op2.opdata;
             }
@@ -8038,8 +7860,9 @@ namespace ProtoCore.DSASM
         private void JGZ_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
+            var value = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
 
-            if (opdata1.opdata_d > 0)
+            if (value > 0)
             {
                 pc = (int)instruction.op2.opdata;
             }
@@ -8054,7 +7877,8 @@ namespace ProtoCore.DSASM
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
 
-            if (MathUtils.Equals(opdata1.opdata_d, 0))
+            var opvalue = opdata1.IsDouble() ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+            if (MathUtils.Equals(opvalue, 0))
             {
                 pc = (int)instruction.op2.opdata;
             }
@@ -8577,21 +8401,9 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.ADDD:
-                    {
-                        ADDD_Handler(instruction);
-                        return;
-                    }
-
                 case OpCode.SUB:
                     {
                         SUB_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.SUBD:
-                    {
-                        SUBD_Handler(instruction);
                         return;
                     }
 
@@ -8601,21 +8413,9 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.MULD:
-                    {
-                        MULD_Handler(instruction);
-                        return;
-                    }
-
                 case OpCode.DIV:
                     {
                         DIV_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.DIVD:
-                    {
-                        DIVD_Handler(instruction);
                         return;
                     }
 
@@ -8676,21 +8476,9 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.EQD:
-                    {
-                        EQD_Handler(instruction);
-                        return;
-                    }
-
                 case OpCode.NQ:
                     {
                         NQ_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.NQD:
-                    {
-                        NQD_Handler(instruction);
                         return;
                     }
 
@@ -8700,21 +8488,9 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.GTD:
-                    {
-                        GTD_Handler(instruction);
-                        return;
-                    }
-
                 case OpCode.LT:
                     {
                         LT_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.LTD:
-                    {
-                        LTD_Handler(instruction);
                         return;
                     }
 
@@ -8724,21 +8500,9 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.GED:
-                    {
-                        GED_Handler(instruction);
-                        return;
-                    }
-
                 case OpCode.LE:
                     {
                         LE_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.LED:
-                    {
-                        LED_Handler(instruction);
                         return;
                     }
 

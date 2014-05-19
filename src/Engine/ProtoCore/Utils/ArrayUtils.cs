@@ -1265,24 +1265,19 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetNextKey(StackValue key, Core core)
         {
-            if (StackUtils.IsNull(key) || 
-                key.optype != AddressType.ArrayKey ||
-                key.opdata < 0 ||
-                key.opdata_d < 0)
+            int ptr;
+            int index;
+
+            if (!key.TryGetArrayKey(out ptr, out index))
             {
                 return StackValue.Null;
             }
-
-            int ptr = (int)key.opdata_d;
-            int index = (int) key.opdata;
 
             HeapElement he = core.Heap.Heaplist[ptr];
             if ((he.VisibleSize  > index + 1) ||
                 (he.Dict != null && he.Dict.Count + he.VisibleSize > index + 1))
             {
-                StackValue newKey = key;
-                newKey.opdata = newKey.opdata + 1;
-                return newKey;
+                return StackValue.BuildArrayKey(ptr, index + 1); 
             }
 
             return StackValue.Null;

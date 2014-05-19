@@ -149,7 +149,7 @@ namespace ProtoCore.DSASM.Mirror
                 case AddressType.Int:
                     return val.opdata.ToString();
                 case AddressType.Double:
-                    return val.opdata_d.ToString(core.Options.FormatToPrintFloatingPoints);
+                    return val.RawDoubleValue.ToString(core.Options.FormatToPrintFloatingPoints);
                 case AddressType.Null:
                     return "null";
                 case AddressType.Pointer:
@@ -1206,7 +1206,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Double:
                     {
-                        double data = val.opdata_d;
+                        double data = val.RawDoubleValue;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, Type =
@@ -1304,7 +1304,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 case AddressType.Double:
                     {
-                        double data = val.opdata_d;
+                        double data = val.RawDoubleValue;
                         Obj o = new Obj(val) 
                         { 
                             Payload = data, 
@@ -1404,7 +1404,7 @@ namespace ProtoCore.DSASM.Mirror
                 case AddressType.Double:
                     obj = new Obj(val) 
                     { 
-                        Payload = val.opdata_d, 
+                        Payload = val.RawDoubleValue, 
                         Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0) 
                     };
                     break;

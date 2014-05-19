@@ -175,7 +175,7 @@ namespace ProtoCore
                     case AddressType.Int:
                         return sv.opdata;
                     case AddressType.Double:
-                        return sv.opdata_d;
+                        return sv.RawDoubleValue;
                     case AddressType.Boolean:
                         return sv.opdata != 0;
                     case AddressType.Char:
