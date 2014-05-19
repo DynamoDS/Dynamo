@@ -257,7 +257,7 @@ namespace ProtoCore.Utils
             {
                 StackValue sv = heapElement.Stack[i];
 
-                if (sv.optype == AddressType.ArrayPointer)
+                if (sv.IsArray())
                 {
                     //Recurse
                     Dictionary<ClassNode, int> subLayer = GetTypeStatisticsForArray(sv, core);
@@ -305,7 +305,7 @@ namespace ProtoCore.Utils
             {
                 StackValue sv = heapElement.Stack[i];
 
-                if (sv.optype == AddressType.ArrayPointer)
+                if (sv.IsArray())
                 {
                     int subArrayRank = GetMaxRankForArray(sv, core, tracer + 1);
 
@@ -318,7 +318,7 @@ namespace ProtoCore.Utils
             {
                 foreach (var sv in dict.Values)
                 {
-                    if (sv.optype == AddressType.ArrayPointer)
+                    if (sv.IsArray())
                     {
                         int subArrayRank = GetMaxRankForArray(sv, core, tracer + 1);
                         largestSub = Math.Max(subArrayRank, largestSub);
@@ -391,9 +391,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static HeapElement GetHeapElement(StackValue heapObject, Core core)
         {
-            if (heapObject.optype != AddressType.ArrayPointer && 
-                heapObject.optype != AddressType.String &&
-                heapObject.optype != AddressType.Pointer)
+            if (!heapObject.IsArray() && !heapObject.IsString() && !heapObject.IsObject())
             {
                 return null;
             }
@@ -653,7 +651,7 @@ namespace ProtoCore.Utils
         public static StackValue SetValueForIndex(StackValue array, int index, StackValue value, Core core)
         {
             Validity.Assert(StackUtils.IsArray(array) || StackUtils.IsString(array));
-            if (StackUtils.IsString(array) && value.optype != AddressType.Char)
+            if (array.IsString() && !value.IsChar())
             {
                 core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, RuntimeData.WarningMessage.kAssignNonCharacterToString);
                 return StackValue.Null;
@@ -786,7 +784,7 @@ namespace ProtoCore.Utils
                 t.rank = t.rank - 1;
             }
 
-            if (value.optype == AddressType.ArrayPointer)
+            if (value.IsArray())
             {
                 // Replication happens on both side.
                 HeapElement dataHeapElement = GetHeapElement(value, core);
@@ -862,7 +860,7 @@ namespace ProtoCore.Utils
                 index = index.AsInt();
                 return GetValueFromIndex(array, (int)index.opdata, core);
             }
-            else if (index.optype == AddressType.ArrayKey)
+            else if (index.IsArrayKey())
             {
                 int fullIndex = (int)index.opdata;
                 HeapElement he = GetHeapElement(array, core);
@@ -929,7 +927,7 @@ namespace ProtoCore.Utils
                 }
                 else
                 {
-                    if (array.optype != AddressType.ArrayPointer)
+                    if (!array.IsArray())
                     {
                         core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
                         return StackValue.Null;

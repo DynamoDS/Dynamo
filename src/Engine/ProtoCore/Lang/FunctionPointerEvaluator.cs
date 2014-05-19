@@ -18,7 +18,7 @@ namespace ProtoCore.Lang
 
         public FunctionPointerEvaluator(StackValue pointer, Interpreter dsi)
         {
-            Validity.Assert(pointer.optype == AddressType.FunctionPointer);
+            Validity.Assert(pointer.IsFunctionPointer());
             interpreter = dsi;
             Core core = dsi.runtime.Core;
 
@@ -130,7 +130,7 @@ namespace ProtoCore.Lang
 
         public static string GetMethodName(StackValue pointer, Interpreter dsi)
         {
-            Validity.Assert(pointer.optype == AddressType.FunctionPointer);
+            Validity.Assert(pointer.IsFunctionPointer());
             return dsi.runtime.exe.procedureTable[0].procList[(int)pointer.opdata].name;
         }
     }

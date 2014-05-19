@@ -384,20 +384,20 @@ namespace ProtoCore
         public static StackValue Coerce(StackValue sv, Type targetType, Core core)
         {
             //@TODO(Jun): FIX ME - abort coersion for default args
-            if (sv.optype == AddressType.DefaultArg)
+            if (sv.IsDefaultArgument())
                 return sv;
 
             if (!(
                 (int)sv.metaData.type == targetType.UID ||
                 (core.ClassTable.ClassNodes[(int)sv.metaData.type].ConvertibleTo(targetType.UID))
-                || sv.optype == AddressType.ArrayPointer))
+                || sv.IsArray()))
             {
                 core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kConversionNotPossible, ProtoCore.RuntimeData.WarningMessage.kConvertNonConvertibleTypes);
                 return StackValue.Null;
             }
 
             //if it's an array
-            if (sv.optype == AddressType.ArrayPointer && !targetType.IsIndexable)
+            if (sv.IsArray() && !targetType.IsIndexable)
             {
                 //This is an array rank reduction
                 //this may only be performed in recursion and is illegal here
@@ -407,7 +407,7 @@ namespace ProtoCore
             }
 
 
-            if (sv.optype == AddressType.ArrayPointer &&
+            if (sv.IsArray() &&
                 targetType.IsIndexable)
             {
                 Validity.Assert(StackUtils.IsArray(sv));
@@ -445,8 +445,7 @@ namespace ProtoCore
                 return ArrayUtils.CopyArray(sv, newTargetType, core);
             }
 
-            if (sv.optype != AddressType.ArrayPointer &&
-                sv.optype != AddressType.Null &&
+            if (!sv.IsArray() && !sv.IsNull() &&
                 targetType.IsIndexable &&
                 targetType.rank != DSASM.Constants.kArbitraryRank)
             {
@@ -481,7 +480,7 @@ namespace ProtoCore
                 }
             }
 
-            if (sv.optype == AddressType.Pointer)
+            if (sv.IsObject())
             {
                 StackValue ret = ClassCoerece(sv, targetType, core);
                 return ret;
@@ -575,7 +574,7 @@ namespace ProtoCore
                     }
 
                 default:
-                    if (sv.optype == AddressType.Null)
+                    if (sv.IsNull())
                         return StackValue.Null;
                     else
                         throw new NotImplementedException("Requested coercion not implemented");

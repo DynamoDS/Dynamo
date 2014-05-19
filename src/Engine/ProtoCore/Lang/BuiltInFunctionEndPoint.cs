@@ -158,7 +158,7 @@ namespace ProtoCore.Lang
                 case BuiltInMethods.MethodID.kSleep:
                     {
                         StackValue stackValue = formalParameters[0];
-                        if (stackValue.optype == AddressType.Int)
+                        if (stackValue.IsInteger())
                             System.Threading.Thread.Sleep((int)stackValue.opdata);
                         else
                         {
@@ -280,7 +280,7 @@ namespace ProtoCore.Lang
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kInlineConditional:
                     {
                         StackValue svCondition = formalParameters[0];
-                        if (svCondition.optype != AddressType.Boolean)
+                        if (!svCondition.IsBoolean())
                         {
                             // Comment Jun: Perhaps we can allow coercion?
                             Type booleanType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0);
@@ -289,10 +289,10 @@ namespace ProtoCore.Lang
                         }
 
                         StackValue svTrue = formalParameters[1];
-                        Validity.Assert(svTrue.optype == AddressType.Int);
+                        Validity.Assert(svTrue.IsInteger());
 
                         StackValue svFalse = formalParameters[2];
-                        Validity.Assert(svFalse.optype == AddressType.Int);
+                        Validity.Assert(svFalse.IsInteger());
 
                         int blockId = (1 == (int)svCondition.opdata) ? (int)svTrue.opdata : (int)svFalse.opdata;
 
@@ -308,7 +308,7 @@ namespace ProtoCore.Lang
                         {
                             StackValue sci = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kClass);
                             StackValue sfi = stackFrame.GetAt(DSASM.StackFrame.AbsoluteIndex.kFunction);
-                            if (sci.optype == AddressType.Int && sfi.optype == AddressType.Int)
+                            if (sci.IsInteger() && sfi.IsInteger())
                             {
                                 ci = (int)sci.opdata;
                                 fi = (int)sfi.opdata;
@@ -510,7 +510,7 @@ namespace ProtoCore.Lang
                 isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(lhs, ref thisObject, core);
             }
 
-            if (!isValidThisPointer || (thisObject.optype != AddressType.Pointer && thisObject.optype != AddressType.ArrayPointer))
+            if (!isValidThisPointer || (!thisObject.IsObject() && !thisObject.IsArray()))
             {
                 core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, WarningMessage.kDeferencingNonPointer);
                 return StackValue.Null;
@@ -520,19 +520,19 @@ namespace ProtoCore.Lang
 
             // TODO Jun: Consider having a DynamicFunction AddressType
             StackValue dynamicTableIndex = rmem.Stack[stackPtr - 4];
-            Validity.Assert(dynamicTableIndex.optype == AddressType.Int);
+            Validity.Assert(dynamicTableIndex.IsInteger());
 
             StackValue dimensions = rmem.Stack[stackPtr - 3];
-            Validity.Assert(dimensions.optype == AddressType.ArrayPointer);
+            Validity.Assert(dimensions.IsArray());
 
             StackValue dimensionCount = rmem.Stack[stackPtr - 2];
-            Validity.Assert(dimensionCount.optype == AddressType.Int);
+            Validity.Assert(dimensionCount.IsInteger());
 
             StackValue functionArguments = rmem.Stack[stackPtr - 1];
-            Validity.Assert(functionArguments.optype == AddressType.ArrayPointer);
+            Validity.Assert(functionArguments.IsArray());
 
             StackValue argumentCount = rmem.Stack[stackPtr];
-            Validity.Assert(argumentCount.optype == AddressType.Int);
+            Validity.Assert(argumentCount.IsInteger());
             int functionArgs = (int)argumentCount.opdata;
 
             // Build the function arguments
@@ -608,7 +608,7 @@ namespace ProtoCore.Lang
                 if (Constants.kInvalidIndex != memvarIndex)
                 {
                     StackValue svMemberPtr = rmem.Heap.Heaplist[thisPtr].Stack[memvarIndex];
-                    if (svMemberPtr.optype == AddressType.Pointer)
+                    if (svMemberPtr.IsObject())
                     {
                         StackValue svFunctionPtr = rmem.Heap.Heaplist[(int)svMemberPtr.opdata].Stack[0];
                         if (AddressType.FunctionPointer == svFunctionPtr.optype)
@@ -810,7 +810,7 @@ namespace ProtoCore.Lang
         }
         internal static StackValue LoadCSVWithMode(StackValue fn, StackValue trans, ProtoCore.DSASM.Interpreter runtime)
         {
-            if (trans.optype != AddressType.Boolean)
+            if (!trans.IsBoolean())
             {
                 // Type mismatch.
                 runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, ProtoCore.RuntimeData.WarningMessage.kInvalidArguments);
@@ -1067,7 +1067,7 @@ namespace ProtoCore.Lang
 
             decimal start = new decimal(svStart.AsDouble().RawDoubleValue);
             decimal end = new decimal(svEnd.AsDouble().RawDoubleValue);
-            bool isIntRange = svStart.optype == AddressType.Int && svEnd.optype == AddressType.Int;
+            bool isIntRange = svStart.IsInteger() && svEnd.IsInteger();
 
             StackValue[] range = null;
             if (hasAmountOp)
@@ -1091,7 +1091,7 @@ namespace ProtoCore.Lang
                             if (hasStep)
                             {
                                 stepsize = new decimal(svStep.IsDouble() ? svStep.RawDoubleValue : svStep.RawIntValue);
-                                isIntRange = isIntRange && (svStep.optype == AddressType.Int);
+                                isIntRange = isIntRange && (svStep.IsInteger());
                             }
 
                             range = GenerateRangeByStepSize(start, end, stepsize, isIntRange);
@@ -1155,14 +1155,14 @@ namespace ProtoCore.Lang
 
         internal static int Rank(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
-            if (sv.optype != AddressType.ArrayPointer)
+            if (!sv.IsArray())
                 return 0;
             StackValue[] svArray = runtime.runtime.rmem.GetArrayElements(sv);
             int highestrank = 0;
             foreach (StackValue element in svArray)
             {
                 int rank = 0;
-                if (element.optype == AddressType.ArrayPointer)
+                if (element.IsArray())
                 {
                     rank = Rank(element, runtime);
                     if (rank > highestrank)
@@ -1373,9 +1373,9 @@ namespace ProtoCore.Lang
             StackValue[] svArray = runtime.runtime.rmem.GetArrayElements(sv);
             foreach (var item in svArray)
             {
-                if (item.optype == AddressType.ArrayPointer)
+                if (item.IsArray())
                     countTrue += CountTrue(item, runtime);
-                else if (item.optype == AddressType.Boolean && item.opdata != 0)
+                else if (item.IsBoolean() && item.opdata != 0)
                     ++countTrue;
             }
 
@@ -1442,24 +1442,24 @@ namespace ProtoCore.Lang
         //SomeBulls, SomeFalse, SomeTrue
         internal static bool SomeNulls(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
-            return Exists(sv, runtime, element => element.optype == AddressType.Null);
+            return Exists(sv, runtime, element => element.IsNull());
         }
         internal static bool SomeTrue(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
-            return Exists(sv, runtime, element => (element.optype == AddressType.Boolean && element.opdata != 0));
+            return Exists(sv, runtime, element => (element.IsBoolean() && element.opdata != 0));
         }
         internal static bool SomeFalse(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
-            return Exists(sv, runtime, element => (element.optype == AddressType.Boolean && element.opdata == 0));
+            return Exists(sv, runtime, element => (element.IsBoolean() && element.opdata == 0));
         }
         //AllTrue
         internal static bool AllFalse(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
-            return ForAll(sv, runtime, element => (element.optype == AddressType.Boolean && element.opdata == 0));
+            return ForAll(sv, runtime, element => (element.IsBoolean() && element.opdata == 0));
         }
         internal static bool AllTrue(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
-            return ForAll(sv, runtime, element => (element.optype == AddressType.Boolean && element.opdata != 0));
+            return ForAll(sv, runtime, element => (element.IsBoolean() && element.opdata != 0));
         }
         //isHomogeneous
         internal static bool IsHomogeneous(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
@@ -1568,9 +1568,9 @@ namespace ProtoCore.Lang
             if (length == 0) 
                 return ProtoCore.DSASM.StackValue.Null;
             StackValue resSv = Sum(newsv, runtime);
-            if (resSv.optype == AddressType.Double)
+            if (resSv.IsDouble())
                 return ProtoCore.DSASM.StackValue.BuildDouble(resSv.RawDoubleValue / length);
-            else if (resSv.optype == AddressType.Int)
+            else if (resSv.IsInteger())
                 return ProtoCore.DSASM.StackValue.BuildDouble((double)(resSv.opdata) / length);
             else
                 return ProtoCore.DSASM.StackValue.Null;
@@ -1792,7 +1792,7 @@ namespace ProtoCore.Lang
                 }
                 else
                 {
-                    if (op.optype == AddressType.ArrayPointer)
+                    if (op.IsArray())
                     {
                         contains = EqualsInValue(op, sv2, runtime);
                         if (!contains)
@@ -2160,7 +2160,7 @@ namespace ProtoCore.Lang
             int numOfCols = 1;
             int numOfRows = svarr.Length;
             foreach(StackValue element in svarr)
-                if (element.optype == AddressType.ArrayPointer)
+                if (element.IsArray())
                 {
                     is2DArray = true;
                     numOfCols = Math.Max(HeapList[(int)element.opdata].Stack.Length, numOfCols);
@@ -2173,7 +2173,7 @@ namespace ProtoCore.Lang
             {
                 int c2 = 1;
                 StackValue rowArray = HeapList[(int)sv.opdata].Stack[c1];
-                if (rowArray.optype != AddressType.ArrayPointer)
+                if (!rowArray.IsArray())
                     original[c1, 0] = rowArray;
                 else
                 {

@@ -439,7 +439,7 @@ namespace ProtoCore.DSASM
             for (int n = 0; n < ptrList.Length; ++n)
             {
                 StackValue svPtr = ptrList[n];
-                if (svPtr.optype != AddressType.Pointer && svPtr.optype != AddressType.ArrayPointer)
+                if (!svPtr.IsObject() && !svPtr.IsArray())
                 {
                     continue;
                 }
@@ -465,10 +465,10 @@ namespace ProtoCore.DSASM
                 if (hs.Refcount == 0)
                 {
                     // if it is of class type, first call its destructor before clean its members
-                    if(svPtr.optype == AddressType.Pointer)
+                    if(svPtr.IsObject())
                         GCDisposeObject(ref svPtr, exe);
 
-                    if (svPtr.optype == AddressType.ArrayPointer && hs.Dict != null)
+                    if (svPtr.IsArray() && hs.Dict != null)
                     {
                         foreach (var item in hs.Dict)
                         {

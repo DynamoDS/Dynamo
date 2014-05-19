@@ -219,34 +219,34 @@ namespace ProtoCore.DSASM
     {
         public static bool IsTrue(StackValue operand)
         {
-            return operand.optype == AddressType.Boolean &&
+            return operand.IsBoolean() &&
                    operand.opdata != 0;
         }
 
         public static bool IsArray(StackValue operand)
         {
-            return operand.optype == AddressType.ArrayPointer;
+            return operand.IsArray();
         }
 
         public static bool IsNull(StackValue operand)
         {
-            return operand.optype == AddressType.Null;
+            return operand.IsNull();
         }
 
         public static bool IsString(StackValue operand)
         {
-            return operand.optype == AddressType.String;
+            return operand.IsString();
         }
 
         public static bool IsNumeric(StackValue operand)
         {
-            return operand.optype == AddressType.Int ||
-                   operand.optype == AddressType.Double;
+            return operand.IsInteger() ||
+                   operand.IsDouble();
         }
 
         public static bool IsValidPointer(StackValue operand)
         {
-            return operand.optype == AddressType.Pointer &&
+            return operand.IsObject() &&
                    operand.opdata != ProtoCore.DSASM.Constants.kInvalidIndex;
         }
 
@@ -313,9 +313,9 @@ namespace ProtoCore.DSASM
 
         public static bool IsReferenceType(this StackValue operand)
         {
-            return (operand.optype == AddressType.ArrayPointer ||
-                    operand.optype == AddressType.Pointer ||
-                    operand.optype == AddressType.String) && ProtoCore.DSASM.Constants.kInvalidIndex != operand.opdata;
+            return (operand.IsArray() ||
+                    operand.IsObject() ||
+                    operand.IsString()) && ProtoCore.DSASM.Constants.kInvalidIndex != operand.opdata;
         }
 
         //this method compares the values of the stack variables passed

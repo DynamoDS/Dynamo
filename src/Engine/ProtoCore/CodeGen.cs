@@ -1373,13 +1373,13 @@ namespace ProtoCore
         protected void Backpatch(int bp, int pc)
         {
             if (ProtoCore.DSASM.OpCode.JMP == codeBlock.instrStream.instrList[bp].opCode
-                && ProtoCore.DSASM.AddressType.LabelIndex == codeBlock.instrStream.instrList[bp].op1.optype)
+                && codeBlock.instrStream.instrList[bp].op1.IsLabelIndex())
             {
                 Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == codeBlock.instrStream.instrList[bp].op1.opdata);
                 codeBlock.instrStream.instrList[bp].op1.opdata = pc;
             }
             else if (ProtoCore.DSASM.OpCode.CJMP == codeBlock.instrStream.instrList[bp].opCode
-                && ProtoCore.DSASM.AddressType.LabelIndex == codeBlock.instrStream.instrList[bp].op3.optype)
+                && codeBlock.instrStream.instrList[bp].op3.IsLabelIndex())
             {
                 Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == codeBlock.instrStream.instrList[bp].op3.opdata);
                 codeBlock.instrStream.instrList[bp].op3.opdata = pc;

@@ -43,11 +43,11 @@ namespace ProtoTest.DebugTests
 @"    a = 1;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             StackValue svA = mirror.GetValue("a").DsasmValue;
-            Assert.IsTrue(svA.optype == AddressType.Int);
+            Assert.IsTrue(svA.IsInteger());
             Assert.IsTrue(svA.opdata == 1);
             mirror.SetValueAndExecute("a", 2);
             StackValue svA2 = mirror.GetValue("a").DsasmValue;
-            Assert.IsTrue(svA2.optype == AddressType.Int);
+            Assert.IsTrue(svA2.IsInteger());
             Assert.IsTrue(svA2.opdata == 2);
         }
 
@@ -58,17 +58,17 @@ namespace ProtoTest.DebugTests
 @"    a = 1;    b = a + 1;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             StackValue svA = mirror.GetValue("a").DsasmValue;
-            Assert.IsTrue(svA.optype == AddressType.Int);
+            Assert.IsTrue(svA.IsInteger());
             Assert.IsTrue(svA.opdata == 1);
             StackValue svB = mirror.GetValue("b").DsasmValue;
-            Assert.IsTrue(svB.optype == AddressType.Int);
+            Assert.IsTrue(svB.IsInteger());
             Assert.IsTrue(svB.opdata == 2);
             mirror.SetValueAndExecute("a", 2);
             StackValue svA2 = mirror.GetValue("a").DsasmValue;
-            Assert.IsTrue(svA2.optype == AddressType.Int);
+            Assert.IsTrue(svA2.IsInteger());
             Assert.IsTrue(svA2.opdata == 2);
             StackValue svB2 = mirror.GetValue("b").DsasmValue;
-            Assert.IsTrue(svB2.optype == AddressType.Int);
+            Assert.IsTrue(svB2.IsInteger());
             Assert.IsTrue(svB2.opdata == 3);
         }
 
@@ -79,23 +79,23 @@ namespace ProtoTest.DebugTests
 @"    def foo(a) { return = a * 2; }    a = 1;    b = a + 1;    c = foo(b);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             StackValue svA = mirror.GetValue("a").DsasmValue;
-            Assert.IsTrue(svA.optype == AddressType.Int);
+            Assert.IsTrue(svA.IsInteger());
             Assert.IsTrue(svA.opdata == 1);
             StackValue svB = mirror.GetValue("b").DsasmValue;
-            Assert.IsTrue(svB.optype == AddressType.Int);
+            Assert.IsTrue(svB.IsInteger());
             Assert.IsTrue(svB.opdata == 2);
             StackValue svC = mirror.GetValue("c").DsasmValue;
-            Assert.IsTrue(svC.optype == AddressType.Int);
+            Assert.IsTrue(svC.IsInteger());
             Assert.IsTrue(svC.opdata == 4);
             mirror.SetValueAndExecute("a", 2);
             StackValue svA2 = mirror.GetValue("a").DsasmValue;
-            Assert.IsTrue(svA2.optype == AddressType.Int);
+            Assert.IsTrue(svA2.IsInteger());
             Assert.IsTrue(svA2.opdata == 2);
             StackValue svB2 = mirror.GetValue("b").DsasmValue;
-            Assert.IsTrue(svB2.optype == AddressType.Int);
+            Assert.IsTrue(svB2.IsInteger());
             Assert.IsTrue(svB2.opdata == 3);
             StackValue svC2 = mirror.GetValue("c").DsasmValue;
-            Assert.IsTrue(svC2.optype == AddressType.Int);
+            Assert.IsTrue(svC2.IsInteger());
             Assert.IsTrue(svC2.opdata == 6);
         }
 
@@ -107,23 +107,23 @@ namespace ProtoTest.DebugTests
             // Defect : DNL-1467620 Regression in SetValueAndExecute API
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             StackValue svA = mirror.GetValue("a").DsasmValue;
-            Assert.IsTrue(svA.optype == AddressType.Int);
+            Assert.IsTrue(svA.IsInteger());
             Assert.IsTrue(svA.opdata == 1);
             StackValue svB = mirror.GetValue("b").DsasmValue;
-            Assert.IsTrue(svB.optype == AddressType.Int);
+            Assert.IsTrue(svB.IsInteger());
             Assert.IsTrue(svB.opdata == 2);
             StackValue svC = mirror.GetValue("c").DsasmValue;
-            Assert.IsTrue(svC.optype == AddressType.Int);
+            Assert.IsTrue(svC.IsInteger());
             Assert.IsTrue(svC.opdata == 4);
             mirror.SetValueAndExecute("a", 2);
             StackValue svA2 = mirror.GetValue("a").DsasmValue;
-            Assert.IsTrue(svA2.optype == AddressType.Int);
+            Assert.IsTrue(svA2.IsInteger());
             Assert.IsTrue(svA2.opdata == 2);
             StackValue svB2 = mirror.GetValue("b").DsasmValue;
-            Assert.IsTrue(svB2.optype == AddressType.Int);
+            Assert.IsTrue(svB2.IsInteger());
             Assert.IsTrue(svB2.opdata == 3);
             StackValue svC2 = mirror.GetValue("c").DsasmValue;
-            Assert.IsTrue(svC2.optype == AddressType.Int);
+            Assert.IsTrue(svC2.IsInteger());
             Assert.IsTrue(svC2.opdata == 6);
         }
     }

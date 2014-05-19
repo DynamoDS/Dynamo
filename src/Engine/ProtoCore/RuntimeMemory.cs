@@ -440,12 +440,12 @@ namespace ProtoCore
                 Validity.Assert(AddressType.Pointer == sv.optype || AddressType.ArrayPointer == sv.optype || AddressType.Invalid == sv.optype);
 
                 // Not initialized yet
-                if (sv.optype == AddressType.Invalid)
+                if (sv.IsInvalid())
                 {
                     sv = StackValue.Null;
                     return sv;
                 }
-                else if (sv.optype == AddressType.ArrayPointer)
+                else if (sv.IsArray())
                 {
                     return sv;
                 }
@@ -496,7 +496,7 @@ namespace ProtoCore
 
             public int GetArraySize(StackValue array)
             {
-                if (array.optype != AddressType.ArrayPointer)
+                if (!array.IsArray())
                 {
                     return Constants.kInvalidIndex;
                 }

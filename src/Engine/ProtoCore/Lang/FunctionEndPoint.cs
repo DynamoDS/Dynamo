@@ -154,7 +154,7 @@ namespace ProtoCore
 
                     // If its a default argumnet, then it wasnt provided by the caller
                     // The rcvdType is the type of the argument signature
-                    if (args[i].optype == AddressType.DefaultArg)
+                    if (args[i].IsDefaultArgument())
                     {
                         rcvdType = FormalParams[i].UID;
                     }
@@ -223,7 +223,7 @@ namespace ProtoCore
 
                         // If its a default argumnet, then it wasnt provided by the caller
                         // The rcvdType is the type of the argument signature
-                        if (args[i].optype == AddressType.DefaultArg)
+                        if (args[i].IsDefaultArgument())
                         {
                             rcvdType = FormalParams[i].UID; 
                         }

@@ -345,7 +345,7 @@ namespace ProtoCore
                 Validity.Assert(sv.metaData.type != (int)PrimitiveType.kInvalidType,
                                 "Invalid object passed to JILDispatch");
 
-                Validity.Assert(sv.optype != AddressType.Invalid,
+                Validity.Assert(!sv.IsInvalid(),
                                 "Invalid object passed to JILDispatch");
             }
         }
@@ -769,7 +769,7 @@ namespace ProtoCore
                                                        List<FunctionEndPoint> feps, List<StackValue> argumentsList)
         {
             StackValue svThisPtr = stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr);
-            Validity.Assert(svThisPtr.optype == AddressType.Pointer,
+            Validity.Assert(svThisPtr.IsObject(),
                             "this pointer wasn't a pointer. {89635B06-AD53-4170-ADA5-065EB2AE5858}");
 
             int typeID = (int) svThisPtr.metaData.type;
@@ -942,11 +942,11 @@ namespace ProtoCore
             foreach (FunctionEndPoint fep in candidatesWithDistances.Keys)
             {
                 // The first line checks if the lhs of a dot operation was a class name
-                //if (stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).optype == AddressType.ClassIndex
+                //if (stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).IsClassIndex()
                 //    && !fep.procedureNode.isConstructor
                 //    && !fep.procedureNode.isStatic)
 
-                if ((stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).optype == AddressType.Pointer &&
+                if ((stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).IsObject() &&
                      stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).opdata == -1 && fep.procedureNode != null
                      && !fep.procedureNode.isConstructor) && !fep.procedureNode.isStatic
                     && (fep.procedureNode.classScope != -1))
@@ -1262,7 +1262,7 @@ namespace ProtoCore
             }
 
             // Explicit calls require the GC of arguments in the function return instruction
-            if (ret.optype != AddressType.ExplicitCall)
+            if (!ret.IsExplicitCall())
             {
                 for (int i = 0; i < formalParameters.Count; ++i)
                 {
@@ -1273,7 +1273,7 @@ namespace ProtoCore
 
             invokeCount++; //We've completed this invocation
 
-            if (ret.optype == AddressType.Null)
+            if (ret.IsNull())
                 return ret; //It didn't return a value
 
             return ret;
@@ -1458,7 +1458,7 @@ namespace ProtoCore
                 int retSize;
                 StackValue[] parameters = null; 
                 
-                if (formalParameters[cartIndex].optype == AddressType.ArrayPointer)
+                if (formalParameters[cartIndex].IsArray())
                 {
                     parameters = ArrayUtils.GetValues(formalParameters[cartIndex], core);
                     retSize = parameters.Length;
@@ -1507,7 +1507,7 @@ namespace ProtoCore
 
                     // Comment Jun: If the array pointer passed in was of type DS Null, 
                     // then it means this is the first time the results are being computed.
-                    bool executeAll = c.ArrayPointer.optype == AddressType.Null;
+                    bool executeAll = c.ArrayPointer.IsNull();
 
                     if (executeAll || ProtoCore.AssociativeEngine.ArrayUpdate.IsIndexInElementUpdateList(i, c.IndicesIntoArgMap))
                     {
@@ -1686,7 +1686,7 @@ namespace ProtoCore
 
 
             // An explicit call requires return coercion at the return instruction
-            if (ret.optype != AddressType.ExplicitCall)
+            if (!ret.IsExplicitCall())
             {
                 ret = PerformReturnTypeCoerce(finalFep, core, ret);
             }
@@ -1823,11 +1823,11 @@ namespace ProtoCore
                 }
             }
 
-            if (ret.optype == AddressType.Null)
+            if (ret.IsNull())
                 return ret; //IT was a var type, so don't cast
 
             if (ret.metaData.type == retType.UID &&
-                ret.optype != AddressType.ArrayPointer &&
+                !ret.IsArray() &&
                 retType.IsIndexable)
             {
                 StackValue coercedRet = TypeSystem.Coerce(ret, retType, core);

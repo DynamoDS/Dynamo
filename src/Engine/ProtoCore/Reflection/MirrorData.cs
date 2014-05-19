@@ -211,7 +211,7 @@ namespace ProtoCore
             {
                 get
                 {
-                    return svData.optype == AddressType.Null;
+                    return svData.IsNull();
                 }
             }
 
@@ -222,7 +222,7 @@ namespace ProtoCore
             {
                 get
                 {
-                    return svData.optype == AddressType.ArrayPointer;
+                    return svData.IsArray();
                 }
             }
         }

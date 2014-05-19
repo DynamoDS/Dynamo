@@ -133,11 +133,11 @@ namespace ProtoCore
                 if (fep.DoesTypeDeepMatch(reducedParamSVs, core))
                 {
                     //// The first line checks if the lhs of a dot operation was a class name
-                    //if (stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).optype == AddressType.ClassIndex 
+                    //if (stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).IsClassIndex() 
                     //    && !fep.procedureNode.isConstructor
                     //    && !fep.procedureNode.isStatic)
 
-                    if ((stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).optype == AddressType.Pointer &&
+                    if ((stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).IsObject() &&
                         stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).opdata == -1 && fep.procedureNode != null
                         && !fep.procedureNode.isConstructor) && !fep.procedureNode.isStatic
                         && (fep.procedureNode.classScope != -1))

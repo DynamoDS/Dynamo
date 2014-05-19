@@ -119,7 +119,7 @@ namespace ProtoTestFx
 
             StackValue svData = POP_helper(instruction, out blockId, out dimensions);
 
-            if (instruction.op1.optype == AddressType.Register)
+            if (instruction.op1.IsRegister())
                 return;
 
             SymbolNode symbolNode = GetSymbolNode(blockId, (int)instruction.op2.opdata, (int)instruction.op1.opdata);

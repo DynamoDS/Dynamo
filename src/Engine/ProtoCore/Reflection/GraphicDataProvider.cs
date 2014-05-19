@@ -134,7 +134,7 @@ namespace ProtoCore.Mirror
 
         internal List<IGraphicItem> GetGraphicItems(DSASM.StackValue svData, Core core)
         {
-            Validity.Assert(svData.optype == AddressType.Pointer);
+            Validity.Assert(svData.IsObject());
 
             object obj = GetCLRObject(svData, core);
             if (obj != null)

@@ -291,7 +291,7 @@ namespace ProtoFFI
                 {
                     Type paramType = paraminfos[i].ParameterType;
                     object param = null;
-                    if (opArg.optype == AddressType.DefaultArg)
+                    if (opArg.IsDefaultArgument())
                         param = Type.Missing;
                     else 
                         param = marshaller.UnMarshal(opArg, c, dsi, paramType);
