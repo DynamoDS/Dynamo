@@ -2414,9 +2414,10 @@ namespace Dynamo.Nodes
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
-            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            var newNode = MigrationManager.CreateVarArgFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
                 "String.Split", "String.Split@string,string[]");
+            newNode.SetAttribute("inputcount", "2");
 
             migrationData.AppendNode(newNode);
 
