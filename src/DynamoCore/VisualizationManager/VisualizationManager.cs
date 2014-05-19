@@ -432,10 +432,10 @@ namespace Dynamo
         {
             node.PropertyChanged -= NodePropertyChanged;
 
-            if (!UpdatingPaused)
+            /*if (!UpdatingPaused)
             {
                 QueueRenderTask();
-            }
+            }*/
         }
 
         /// <summary>
@@ -490,7 +490,7 @@ namespace Dynamo
         private void DynamoModel_ConnectorDeleted(ConnectorModel connector)
         {
             // TODO: Ian should remove this when the CBN reconnection bug is solved.
-            if (connector.Start.Owner.GetType() == typeof(CodeBlockNodeModel))
+            /*if (connector.Start.Owner.GetType() == typeof(CodeBlockNodeModel))
             {
                 return;
             }
@@ -502,7 +502,7 @@ namespace Dynamo
                 connector.End.Owner.ClearRenderPackages();
 
             //tell the watches that they require re-binding.
-            QueueRenderTask();
+            QueueRenderTask();*/
         }
 
         #endregion
