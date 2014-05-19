@@ -347,6 +347,11 @@
                         <MenuItem Header="_Go To Project Wiki" Command="{Binding GoToWikiCommand}"  Name="wiki" Focusable="False"/>
                         <MenuItem Header="_About..." Command="{Binding ShowAboutWindowCommand}" Focusable="False" />
                     </MenuItem>
+
+                    <MenuItem Header="Debug" Focusable="False" Visibility="{Binding IsDebugBuild, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <MenuItem Focusable="False" Name="VerboseLogging" IsCheckable="True" Unchecked="VerboseLogging_OnChecked" Checked="VerboseLogging_OnChecked" Header="Verbose Logging"/>
+
+                    </MenuItem>
                     
                 </Menu>
 

@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dynamo.Models;
+using Migrations;
 
-namespace Migrations.RevitNodes
+namespace Dynamo.Nodes
 {
     public class Transaction : MigrationNode
     {

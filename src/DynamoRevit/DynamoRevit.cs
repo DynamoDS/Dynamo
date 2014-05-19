@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
@@ -19,7 +20,9 @@ using Autodesk.Revit.UI;
 using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using DynamoUnits;
+using Dynamo.UpdateManager;
 using RevitServices.Elements;
 using RevitServices.Transactions;
 using RevitServices.Persistence;
@@ -40,6 +43,7 @@ namespace Dynamo.Applications
         private static ResourceManager res;
         internal static ControlledApplication ControlledApplication;
         internal static List<IUpdater> Updaters = new List<IUpdater>();
+        internal static PushButton dynamoButton;
 
         public Result OnStartup(UIControlledApplication application)
         {
@@ -55,25 +59,26 @@ namespace Dynamo.Applications
                 res = Resource_en_us.ResourceManager;
                 // Create new ribbon panel
                 RibbonPanel ribbonPanel = application.CreateRibbonPanel(res.GetString("App_Description"));
-                
-                var pushButton =
-                        ribbonPanel.AddItem(
+
+                dynamoButton =
+                        (PushButton)ribbonPanel.AddItem(
                             new PushButtonData(
                                 "Dynamo 0.7 Alpha",
                                 res.GetString("App_Name"),
                                 assemblyName,
-                                "Dynamo.Applications.DynamoRevit")) as PushButton;
-
+                                "Dynamo.Applications.DynamoRevit"));
+                
+                
                 Bitmap dynamoIcon = Resources.logo_square_32x32;
-
+                
                 BitmapSource bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
                     dynamoIcon.GetHbitmap(),
                     IntPtr.Zero,
                     Int32Rect.Empty,
                     BitmapSizeOptions.FromEmptyOptions());
 
-                pushButton.LargeImage = bitmapSource;
-                pushButton.Image = bitmapSource;
+                dynamoButton.LargeImage = bitmapSource;
+                dynamoButton.Image = bitmapSource;
 
                 RegisterAdditionalUpdaters(application);
 
@@ -119,13 +124,11 @@ namespace Dynamo.Applications
     public class DynamoRevit : IExternalCommand
     {
         public static RevitServicesUpdater Updater;
-        private DynamoView dynamoView;
         private DynamoController dynamoController;
         private bool handledCrash;
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
-
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
             AppDomain.CurrentDomain.AssemblyResolve += Analyze.Render.AssemblyHelper.ResolveAssemblies;
 
@@ -135,6 +138,8 @@ namespace Dynamo.Applications
             var assLoc = Assembly.GetExecutingAssembly().Location;
             var interactivityPath = Path.Combine(Path.GetDirectoryName(assLoc), "System.Windows.Interactivity.dll");
             var interactivityAss = Assembly.LoadFrom(interactivityPath);
+
+            DynamoRevitApp.dynamoButton.Enabled = false;
 
             try
             {
@@ -180,11 +185,8 @@ namespace Dynamo.Applications
                         BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
                         BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
 
-                        
                         var updateManager = new UpdateManager.UpdateManager(logger);
                         dynamoController = new DynamoController_Revit(Updater, context, updateManager);
-
-                        
 
                         // Generate a view model to be the data context for the view
                         dynamoController.DynamoViewModel = new DynamoRevitViewModel(dynamoController, null);
@@ -197,7 +199,7 @@ namespace Dynamo.Applications
 
                         dynamoController.VisualizationManager = new VisualizationManagerRevit();
                         
-                        dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
+                        var dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
                         dynamoController.UIDispatcher = dynamoView.Dispatcher;
 
                         //set window handle and show dynamo
@@ -224,6 +226,7 @@ namespace Dynamo.Applications
             }
             catch (Exception ex)
             {
+                //isRunning = false;
                 MessageBox.Show(ex.ToString());
 
                 dynSettings.DynamoLogger.LogError(ex.Message);
@@ -237,8 +240,10 @@ namespace Dynamo.Applications
         }
 
         /// <summary>
-        /// Callback on Revit view activation. Addins are not available in some views in Revit, notably perspective views.
+        /// Handler for Revit's ViewActivating event. 
+        /// Addins are not available in some views in Revit, notably perspective views.
         /// This will present a warning that Dynamo is not available to run and disable the run button.
+        /// This handler is called before the ViewActivated event registered on the controller.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -258,9 +263,21 @@ namespace Dynamo.Applications
             }
             else
             {
-                //alert the user of the new active view and enable the run button
-                dynSettings.DynamoLogger.LogWarning(string.Format("Active view is now {0}", e.NewActiveView.Name), WarningLevel.Mild);
-                dynSettings.Controller.DynamoViewModel.RunEnabled = true;
+                dynSettings.DynamoLogger.Log(string.Format("Active view is now {0}", e.NewActiveView.Name));
+
+                // If there is a current document, then set the run enabled
+                // state based on whether the view just activated is 
+                // the same document.
+                if (DocumentManager.Instance.CurrentUIDocument != null)
+                {
+                    dynSettings.Controller.DynamoViewModel.RunEnabled =
+                        e.NewActiveView.Document.Equals(DocumentManager.Instance.CurrentDBDocument);
+
+                    if (dynSettings.Controller.DynamoViewModel.RunEnabled == false)
+                    {
+                        dynSettings.DynamoLogger.LogWarning("Dynamo is not pointing at this document. Run will be disabled.", WarningLevel.Error);
+                    }
+                }
             }
         }
 
@@ -309,6 +326,7 @@ namespace Dynamo.Applications
             {
                 args.Handled = true;
                 ((DynamoLogger)dynSettings.DynamoLogger).Dispose();
+                DynamoRevitApp.dynamoButton.Enabled = true;
             }
             
         }
@@ -333,8 +351,6 @@ namespace Dynamo.Applications
         {
             var view = (DynamoView)sender;
 
-            dynamoView = null;
-
             Updater.Dispose();
             DocumentManager.OnLogError -= dynSettings.DynamoLogger.Log;
 
@@ -347,6 +363,8 @@ namespace Dynamo.Applications
             AppDomain.CurrentDomain.AssemblyResolve -= Analyze.Render.AssemblyHelper.ResolveAssemblies;
 
             ((DynamoLogger) dynSettings.DynamoLogger).Dispose();
+
+            DynamoRevitApp.dynamoButton.Enabled = true;
         }
     }
 

@@ -9,14 +9,14 @@ namespace DSRevitNodesTests.Elements
     public class ModelTextTests : RevitNodeTestBase
     {
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
             HostFactory.Instance.StartUp();
             base.Setup();
         }
 
         [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
             HostFactory.Instance.ShutDown();
             base.TearDown();
