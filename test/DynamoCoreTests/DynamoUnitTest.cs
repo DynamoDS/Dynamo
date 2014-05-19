@@ -7,6 +7,8 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 
+using ProtoCore.Mirror;
+
 namespace Dynamo.Tests
 {
     public class DynamoUnitTest : UnitTestBase
@@ -105,5 +107,61 @@ namespace Dynamo.Tests
                 Assert.AreEqual(test.Value, runResult);
             }
         }
+
+        protected void AssertNoDummyNodes()
+        {
+            var nodes = Controller.DynamoModel.Nodes;
+
+            var dummyNodes = nodes.OfType<DSCoreNodesUI.DummyNode>();
+            string logs = string.Empty;
+            foreach (var node in dummyNodes)
+            {
+                logs += string.Format("{0} is a {1} node\n", node.NickName, node.NodeNature);
+            }
+
+            double dummyNodesCount = dummyNodes.Count();
+            if (dummyNodesCount >= 1)
+            {
+                Assert.Fail(logs + "Number of dummy nodes found in Sample: " + dummyNodesCount);
+            }
+        }
+
+        protected void GetPreviewValues()
+        {
+            Controller.DynamoModel.Nodes.ForEach(node => GetPreviewValue(node.GUID));
+        }
+
+        protected object GetPreviewValue(System.Guid guid)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+
+            return mirror.GetData().Data;
+        }
+
+        protected string GetVarName(System.Guid guid)
+        {
+            var model = Controller.DynamoModel;
+            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
+            Assert.IsNotNull(node);
+            return node.AstIdentifierBase;
+        }
+
+        protected string GetVarName(string guid)
+        {
+            var model = Controller.DynamoModel;
+            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
+            Assert.IsNotNull(node);
+            return node.AstIdentifierBase;
+        }
+
+        protected RuntimeMirror GetRuntimeMirror(string varName)
+        {
+            RuntimeMirror mirror = null;
+            Assert.DoesNotThrow(() => mirror = Controller.EngineController.GetMirror(varName));
+            return mirror;
+        }
+
     }
 }

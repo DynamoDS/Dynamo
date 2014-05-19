@@ -2491,6 +2491,146 @@ namespace ProtoAssociative
             }
 #endregion
         }
+        
+        /// <summary>
+        /// Emits the SSA form of each dimension in the ArrayNode data structure
+        /// The dimensionNode is updated by the function with the SSA'd dimensions
+        /// 
+        /// Given:
+        ///     dimensionNode -> a[b][c] 
+        /// Outputs:
+        ///     astlist -> t0 = b
+        ///             -> t1 = c
+        ///     dimensionNode -> a[t0][t1] 
+        ///     
+        /// </summary>
+        /// <param name="dimensionNode"></param>
+        /// <param name="astlist"></param>
+        private void EmitSSAforArrayDimension(ref ArrayNode dimensionNode, ref List<AssociativeNode> astlist)
+        {
+            AssociativeNode indexNode = dimensionNode.Expr;
+            List<AssociativeNode> ssaIndexList = new List<AssociativeNode>();
+
+            // Traverse first dimension
+            Stack<AssociativeNode> localStack = new Stack<AssociativeNode>();
+            DFSEmitSSA_AST(indexNode, localStack, ref astlist);
+
+            AssociativeNode tempIndexNode = localStack.Last();
+            if (tempIndexNode is BinaryExpressionNode)
+            {
+                dimensionNode.Expr = (tempIndexNode as BinaryExpressionNode).LeftNode;
+
+                // Traverse next dimension
+                indexNode = dimensionNode.Type;
+                while (indexNode is ArrayNode)
+                {
+                    ArrayNode arrayNode = indexNode as ArrayNode;
+                    DFSEmitSSA_AST(arrayNode.Expr, localStack, ref astlist);
+                    tempIndexNode = localStack.Last();
+                    if (tempIndexNode is BinaryExpressionNode)
+                    {
+                        arrayNode.Expr = (tempIndexNode as BinaryExpressionNode).LeftNode;
+                    }
+                    indexNode = arrayNode.Type;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Apply SSA to array indices, while preserving the original dimension.
+        ///    
+        /// Given:
+        ///     a[b][c][d] = 1  
+        /// Emit:
+        ///     t0 = b
+        ///     t1 = c
+        ///     t2 = d
+        ///     a[t0][t1][t3] = 1
+        /// 
+        /// The function will perform the following
+        ///     1. Get the array index list from the node 
+        ///     2. For each index:  Apply SSA transform 
+        ///     3.                  Replace the original index with the SSA temp. 
+        ///                         This replaces the original dimensions in the indexed array  
+        ///     
+        ///     
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="ssaStack"></param>
+        /// <param name="astlist"></param>
+        /// <param name="isSSAPointerAssignment"></param>
+        private void EmitSSAArrayIndexRetainDimension(
+            ref AssociativeNode node, 
+            ref List<AssociativeNode> astlist, 
+            bool isSSAPointerAssignment = false)
+        {
+            IdentifierNode identNode = null;
+            ArrayNode arrayDimensions = null;
+            if (node is IdentifierNode)
+            {
+                // Retrieve arrayindex data structure (Arraynode) for an identifier
+                // a[b][c] -> [b][c]
+
+                identNode = node as IdentifierNode;
+                arrayDimensions = identNode.ArrayDimensions;
+            }
+            else if (node is FunctionCallNode)
+            {
+                // Retrieve arrayindex data structure (Arraynode) for an identifier
+                // a()[b][c] -> [b][c]
+
+                FunctionCallNode fcall = node as FunctionCallNode;
+                Validity.Assert(fcall.Function is IdentifierNode);
+                identNode = fcall.Function as IdentifierNode;
+
+                // Get the array dimensions of this node
+                arrayDimensions = identNode.ArrayDimensions;
+            }
+            else if (node is IdentifierListNode)
+            {
+                // Retrieve arrayindex data structure (Arraynode) for an identifier
+                // x.y[b][c] -> [b][c]
+
+                // Apply array indexing to the right node of the ident list
+                //      a = p.x[i] -> apply it to x
+                IdentifierListNode identList = node as IdentifierListNode;
+                AssociativeNode rhsNode = identList.RightNode;
+
+                if (rhsNode is IdentifierNode)
+                {
+                    identNode = rhsNode as IdentifierNode;
+
+                    // Get the array dimensions of this node
+                    arrayDimensions = identNode.ArrayDimensions;
+                }
+                else if (rhsNode is FunctionCallNode)
+                {
+                    FunctionCallNode fcall = rhsNode as FunctionCallNode;
+                    identNode = fcall.Function as IdentifierNode;
+
+                    // Get the array dimensions of this node
+                    arrayDimensions = identNode.ArrayDimensions;
+                }
+                else
+                {
+                    Validity.Assert(false, "This token is not indexable");
+                }
+            }
+            else if (node is GroupExpressionNode)
+            {
+                // Retrieve arrayindex data structure (Arraynode) for an identifier
+                // (a + b)[b][c] -> [b][c]
+
+                GroupExpressionNode groupExpr = node as GroupExpressionNode;
+                arrayDimensions = groupExpr.ArrayDimensions;
+            }
+            else
+            {
+                Validity.Assert(false);
+            }
+            
+            EmitSSAforArrayDimension(ref arrayDimensions, ref astlist);
+        }
 
         /// <summary>
         /// This helper function extracts the replication guide data from the 
@@ -2586,7 +2726,27 @@ namespace ProtoAssociative
                 ssastack.push(node)
             end
         end     
-        */   
+        */
+
+        /// <summary>
+        /// Handle ssa transforms for LHS identifiers
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="ssaStack"></param>
+        /// <param name="astlist"></param>
+        private void EmitSSALHS(ref AssociativeNode node, Stack<AssociativeNode> ssaStack, ref List<AssociativeNode> astlist)
+        {
+            if (node is IdentifierNode && null != (node as IdentifierNode).ArrayDimensions)
+            {
+                // Handle LHS ssa for indexed identifiers
+                EmitSSAArrayIndexRetainDimension(ref node, ref astlist);
+            }
+            else if (node is IdentifierListNode)
+            {
+                // TODO Handle LHS ssa for identifier lists
+            }
+        }
+
         private void DFSEmitSSA_AST(AssociativeNode node, Stack<AssociativeNode> ssaStack, ref List<AssociativeNode> astlist)
         {
             Validity.Assert(null != astlist && null != ssaStack);
@@ -2610,8 +2770,15 @@ namespace ProtoAssociative
                     {
                         rightNode = assocNode;
                     }
-
                     isSSAAssignment = false;
+
+                    // Handle SSA if the lhs is not an identifier
+                    // A non-identifier LHS is any LHS that is not just an identifier name.
+                    //  i.e. a[0], a.b, f(), f(x)
+                    if (!ProtoCore.ASTCompilerUtils.IsSingleIdentifier(leftNode))
+                    {
+                        EmitSSALHS(ref leftNode, ssaStack, ref astlist);
+                    }
                 }
                 else
                 {

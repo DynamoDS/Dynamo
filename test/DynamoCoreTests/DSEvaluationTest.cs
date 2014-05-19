@@ -93,21 +93,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(classInfo.ClassName, className);
         }
 
-        private string GetVarName(string guid)
-        {
-            var model = Controller.DynamoModel;
-            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
-            Assert.IsNotNull(node);
-            return node.AstIdentifierBase;
-        }
-
-        private RuntimeMirror GetRuntimeMirror(string varName)
-        {
-            RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror = Controller.EngineController.GetMirror(varName));
-            return mirror;
-        }
-
         private void SelectivelyAssertValues(MirrorData data, Dictionary<int, object> selectedValues)
         {
             Assert.IsTrue(data.IsCollection);
