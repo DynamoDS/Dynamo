@@ -5,9 +5,12 @@
 #define DYNAMORPH_API __declspec(dllimport)
 #endif
 
-public ref class Visualizer
+namespace Dynamorph
 {
-public:
+    DYNAMORPH_API public ref class Visualizer
+    {
+    public:
 
-    static System::IntPtr Create();
-};
+        static System::IntPtr Create(System::IntPtr hwndParent, int width, int height);
+    };
+}
