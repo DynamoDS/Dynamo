@@ -45,8 +45,42 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll",
-                "NurbsCurve.ByPoints", "NurbsCurve.ByPoints@Point[]");
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Line.ByStartPointEndPoint", "Line.ByStartPointEndPoint@Point,Point");
+            newNode.SetAttribute("lacing", "Shortest");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Create new nodes
+            XmlElement reverse = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 0, "DSCoreNodes.dll",
+                "List.Reverse",
+                "List.Reverse@var[]..[]");
+            migrationData.AppendNode(reverse);
+            string reverseId = MigrationManager.GetGuidFromXmlElement(reverse);
+
+            XmlElement rest = MigrationManager.CreateFunctionNode(
+                data.Document, oldNode, 1, "DSCoreNodes.dll",
+                "List.RestOfItems",
+                "List.RestOfItems@var[]..[]");
+            migrationData.AppendNode(rest);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            PortId reverseInPort0 = new PortId(reverseId, 0, PortType.INPUT);
+            
+            data.ReconnectToPort(connector0, reverseInPort0);
+            data.CreateConnector(reverse, 0, newNode, 0);
+            data.CreateConnector(reverse, 0, rest, 0);
+            data.CreateConnector(rest, 0, newNode, 1);
+            
+            return migrationData;
         }
     }
 
