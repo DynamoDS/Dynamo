@@ -489,11 +489,6 @@
             Create a Solid by lofting between input cross section closed Curves.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
-            <summary>
-            Create a Solid by lofting between input cross section closed PolyCurves.
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
             <summary>
             Create a Solid by lofting between input cross section closed Curves,  with guide Curve to assist. Guide Curve must intersect all cross section Curves.
@@ -517,16 +512,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
             <summary>
             Create a Surface of revolution, sweeping the profile Curve around the axis Ray formed by the origin and the axis Vector, from the start angle in degrees to the sweep angle in degrees.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.BySweep(Autodesk.DesignScript.Geometry.PolyCurve,Autodesk.DesignScript.Geometry.PolyCurve,System.Boolean)">
-            <summary>
-            Makes PolySurface by Sweep through Polycurves.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
-            <summary>
-            Makes PolySurface by Loft through Polycurves.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.UnionAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Solid})">
@@ -1178,6 +1163,11 @@
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
             <summary>
             Make PolyCurve from sequence of lines connecting points. For closed curve last point should be in same location as start point.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Make PolyCurve by thickening a curve.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
