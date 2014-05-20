@@ -54,7 +54,8 @@ HWND Visualizer::GetWindowHandle(void)
 }
 
 Visualizer::Visualizer() : 
-    mhWndVisualizer(nullptr)
+    mhWndVisualizer(nullptr),
+    mpGraphicsContext(nullptr)
 {
 }
 
@@ -80,10 +81,20 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
 
     mhWndVisualizer = CreateWindowEx(0, windowClass.lpszClassName, nullptr,
         WS_CHILD | WS_VISIBLE, 0, 0, width, height, hWndParent, nullptr, nullptr, 0);
+
+    // Initialize graphics context for rendering.
+    auto contextType = IGraphicsContext::ContextType::OpenGL;
+    mpGraphicsContext = IGraphicsContext::Create(contextType);
+    mpGraphicsContext->Initialize(mhWndVisualizer);
 }
 
 void Visualizer::Uninitialize(void)
 {
+    if (this->mpGraphicsContext != nullptr) {
+        this->mpGraphicsContext->Uninitialize();
+        this->mpGraphicsContext = nullptr;
+    }
+
     if (this->mhWndVisualizer != nullptr) {
         ::DestroyWindow(this->mhWndVisualizer);
         this->mhWndVisualizer = nullptr;

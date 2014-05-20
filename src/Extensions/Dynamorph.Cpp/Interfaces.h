@@ -17,10 +17,12 @@ namespace Dynamorph
 
     public:
         virtual ~IGraphicsContext() { }
-        void Create(HWND hWndOwner) { this->CreateCore(hWndOwner); }
+        void Initialize(HWND hWndOwner) { this->InitializeCore(hWndOwner); }
+        void Uninitialize(void) { this->UninitializeCore(); }
 
     protected:
-        virtual void CreateCore(HWND hWndOwner) = 0;
+        virtual void InitializeCore(HWND hWndOwner) = 0;
+        virtual void UninitializeCore(void) = 0;
     };
 }
 

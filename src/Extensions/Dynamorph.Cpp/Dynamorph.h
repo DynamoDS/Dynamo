@@ -7,6 +7,8 @@
 
 namespace Dynamorph
 {
+    class IGraphicsContext;
+
     DYNAMORPH_API public ref class Visualizer
     {
     public:
@@ -30,5 +32,6 @@ namespace Dynamorph
 
         // Class instance data members.
         HWND mhWndVisualizer;
+        IGraphicsContext* mpGraphicsContext;
     };
 }
