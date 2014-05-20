@@ -25,6 +25,7 @@ namespace Dynamo.Utilities
         }
 
         public static ILogger DynamoLogger { get; set; }
+        public static bool EnableMigrationLogging { get; set; }
 
         /// <summary>
         /// Enable verbose logging this is a lot of data
