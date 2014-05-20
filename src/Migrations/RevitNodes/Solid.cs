@@ -10,49 +10,30 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             //create the node itself
-            XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll",
-                "Form.ByLoft",
-                "Form.ByLoft@object[],bool");
+            XmlElement newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "Surface.ByLoft",
+                "Surface.ByLoft@Autodesk.DesignScript.Geometry.Curve[]");
 
-            migratedData.AppendNode(dsRevitNode);
-            string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
+            migratedData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            //create and reconnect the connecters
+
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
-            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            data.RemoveFirstConnector(oldInPort0);
 
             PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
-
-            PortId newInPort0 = new PortId(dsRevitNodeId, 0, PortType.INPUT);
-            PortId newInPort1 = new PortId(dsRevitNodeId, 1, PortType.INPUT);
-
-            data.ReconnectToPort(connector0, newInPort1);
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
             data.ReconnectToPort(connector1, newInPort0);
 
-            // Add default values
-            foreach (XmlNode child in oldNode.ChildNodes)
-            {
-                var newChild = child.Clone() as XmlElement;
-
-                switch (newChild.GetAttribute("index"))
-                {
-                    case "0":
-                        newChild.SetAttribute("index", "1");
-                        dsRevitNode.AppendChild(newChild);
-                        break;
-
-                    default:
-                        break;
-                }
-            }
+            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            data.RemoveFirstConnector(oldInPort2);
 
             return migratedData;
         }
@@ -549,21 +530,65 @@ namespace Dynamo.Nodes
     public class ReplaceFacesOfSolid : MigrationNode
     {
         // PB: deprecated
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 3, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
+        }
     }
 
     public class OnesidedEdgesAsCurveLoops : MigrationNode
     {
         // PB: deprecated
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 2, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
+        }
     }
 
     public class PatchSolid : MigrationNode
     {
         // PB: deprecated
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 3, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
+        }
     }
 
     public class SkinCurveLoops : MigrationNode
     {
         // PB: deprecated
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement dummyNode = MigrationManager.CreateDummyNode(oldNode, 1, 1);
+            migrationData.AppendNode(dummyNode);
+
+            return migrationData;
+        }
     }
 
     public class VolumeMeasure : MigrationNode
