@@ -352,6 +352,17 @@ namespace Dynamo.Models
                 if (CanOpen(_fileDialog.FileName))
                     Open(_fileDialog.FileName);
             }
+
+            var graph = new GraphLayout.Graph();
+
+            foreach (var x in CurrentWorkspace.Nodes)
+                graph.AddNode(x.GUID, x.Width, x.Height);
+
+            foreach (var x in CurrentWorkspace.Connectors)
+                graph.AddEdge(x.GUID, x.Start.Owner.GUID, x.End.Owner.GUID);
+
+            var a = graph.Edges[0].StartNode;
+
         }
 
         internal bool CanShowOpenDialogAndOpenResultCommand(object parameter)
