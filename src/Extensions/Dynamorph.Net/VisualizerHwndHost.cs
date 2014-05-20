@@ -10,6 +10,13 @@ namespace Dynamorph
 {
     class VisualizerHwndHost : HwndHost, IDisposable
     {
+        private System.Windows.Size dimension;
+
+        internal VisualizerHwndHost(double width, double height)
+        {
+            dimension = new System.Windows.Size(width, height);
+        }
+
         // internal VisualizerHwndHost()
         // {
         //     this.MessageHook += OnHwndHostMessage;
@@ -21,11 +28,14 @@ namespace Dynamorph
 
         protected override void Dispose(bool disposing)
         {
+            Visualizer.Destroy();
         }
 
         protected override HandleRef BuildWindowCore(HandleRef hwndParent)
         {
-            var hwndVisualizer = Visualizer.Create(hwndParent.Handle, 320, 240);
+            var width = ((int)dimension.Width);
+            var height = ((int)dimension.Height);
+            var hwndVisualizer = Visualizer.Create(hwndParent.Handle, width, height);
             return new HandleRef(this, hwndVisualizer);
         }
 
@@ -38,7 +48,7 @@ namespace Dynamorph
 
         protected override void DestroyWindowCore(HandleRef hwnd)
         {
-            DestroyWindow(hwnd.Handle);
+            Visualizer.Destroy();
         }
 
         #region PInvoke Class Static Methods

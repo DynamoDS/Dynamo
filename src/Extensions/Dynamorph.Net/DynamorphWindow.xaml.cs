@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,14 +15,17 @@ using System.Windows.Shapes;
 
 namespace Dynamorph
 {
-    /// <summary>
-    /// Interaction logic for DynamorphWindow.xaml
-    /// </summary>
     public partial class DynamorphWindow : Window
     {
         public DynamorphWindow()
         {
             InitializeComponent();
+            this.Closing += OnDynamorphWindowClosing;
+        }
+
+        private void OnDynamorphWindowClosing(object sender, CancelEventArgs e)
+        {
+            TheDynamorphControl.DestroyVisualizer();
         }
     }
 }

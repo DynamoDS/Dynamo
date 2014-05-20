@@ -15,14 +15,33 @@ using System.Windows.Shapes;
 
 namespace Dynamorph
 {
-    /// <summary>
-    /// Interaction logic for UserControl1.xaml
-    /// </summary>
     public partial class DynamorphControl : UserControl
     {
+        private Dynamorph.VisualizerHwndHost visualizer = null;
+
         public DynamorphControl()
         {
             InitializeComponent();
+            this.Loaded += OnDynamorphControlLoaded;
+        }
+
+        internal void DestroyVisualizer()
+        {
+            if (visualizer != null)
+            {
+                visualizer.Dispose();
+                visualizer = null;
+            }
+        }
+
+        private void OnDynamorphControlLoaded(object sender, RoutedEventArgs e)
+        {
+            if (visualizer == null)
+            {
+                var b = VisualizerHostElement;
+                visualizer = new VisualizerHwndHost(b.ActualWidth, b.ActualHeight);
+                VisualizerHostElement.Child = visualizer;
+            }
         }
     }
 }

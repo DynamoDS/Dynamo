@@ -4,6 +4,6 @@
         xmlns:local="clr-namespace:Dynamorph"
         Title="DynamorphWindow" Height="540" Width="720">
     <Grid>
-        <local:DynamorphControl></local:DynamorphControl>
+        <local:DynamorphControl x:Name="TheDynamorphControl"></local:DynamorphControl>
     </Grid>
 </Window>
