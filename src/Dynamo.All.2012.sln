@@ -2,6 +2,9 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{54C12D23-B989-45F4-9681-3A8716F30050} = {54C12D23-B989-45F4-9681-3A8716F30050}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevit", "DynamoRevit\DynamoRevit.csproj", "{FD56AE51-739E-4893-8DE4-925D60C7097C}"
 EndProject
@@ -112,6 +115,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{C77525F0-91F7-4754-A56A-94ADC2A3F88E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynamorph.Net", "Extensions\Dynamorph.Net\Dynamorph.Net.csproj", "{54C12D23-B989-45F4-9681-3A8716F30050}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C1E084AB-AF20-4D56-B9E3-E606C4DF6ECF} = {C1E084AB-AF20-4D56-B9E3-E606C4DF6ECF}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dynamorph.Cpp", "Extensions\Dynamorph.Cpp\Dynamorph.vcxproj", "{C1E084AB-AF20-4D56-B9E3-E606C4DF6ECF}"
 EndProject
