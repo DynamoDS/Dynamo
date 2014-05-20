@@ -32,7 +32,7 @@ namespace ProtoCore.DSASM
         public Executable exe { get; set; }
         private Language executingLanguage;
 
-        protected int pc = ProtoCore.DSASM.Constants.kInvalidPC;
+        protected int pc = Constants.kInvalidPC;
         public int PC
         {
             get
@@ -76,7 +76,7 @@ namespace ProtoCore.DSASM
 
         private Stack<bool> fepRunStack = new Stack<bool>();
 
-        public int executingBlock = ProtoCore.DSASM.Constants.kInvalidIndex;
+        public int executingBlock = Constants.kInvalidIndex;
 
         ProtoCore.DSASM.CallingConvention.BounceType bounceType;
 
@@ -162,7 +162,7 @@ namespace ProtoCore.DSASM
 
         private void CallExplicit(int entry)
         {
-            StackValue svFunctionBlock = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunctionBlock);
+            StackValue svFunctionBlock = rmem.GetAtRelative(StackFrame.kFrameIndexFunctionBlock);
             Validity.Assert(svFunctionBlock.IsBlockIndex());
 
             int exeblock = (int)svFunctionBlock.opdata;
@@ -176,7 +176,7 @@ namespace ProtoCore.DSASM
         private bool IsInsideFunction()
         {
             int fpRestore = rmem.FramePointer;
-            StackValue svFrameType = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexStackFrameType);
+            StackValue svFrameType = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameType);
             while (svFrameType.IsFrameType())
             {
                 StackFrameType frametype = (StackFrameType)svFrameType.opdata;
@@ -190,7 +190,7 @@ namespace ProtoCore.DSASM
                 rmem.FramePointer -= StackFrame.kStackFrameSize;
                 if (rmem.FramePointer >= StackFrame.kStackFrameSize)
                 {
-                    svFrameType = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexStackFrameType);
+                    svFrameType = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameType);
                 }
                 else
                 {
@@ -204,21 +204,21 @@ namespace ProtoCore.DSASM
 
         private void RestoreRegistersFromStackFrame()
         {
-            AX = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexRegisterAX);
-            BX = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexRegisterBX);
-            CX = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexRegisterCX);
-            DX = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexRegisterDX);
-            EX = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexRegisterEX);
-            FX = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexRegisterFX);
-            LX = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexRegisterLX);
-            //RX = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexRegisterRX);
-            SX = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexRegisterSX);
-            TX = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexRegisterTX);
+            AX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterAX);
+            BX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterBX);
+            CX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterCX);
+            DX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterDX);
+            EX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterEX);
+            FX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterFX);
+            LX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterLX);
+            //RX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterRX);
+            SX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterSX);
+            TX = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterTX);
         }
 
         private void RestoreFromCall()
         {
-            StackValue svExecutingBlock = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunctionCallerBlock);
+            StackValue svExecutingBlock = rmem.GetAtRelative(StackFrame.kFrameIndexFunctionCallerBlock);
             Validity.Assert(svExecutingBlock.IsBlockIndex());
 
             executingBlock = (int)svExecutingBlock.opdata;
@@ -227,7 +227,7 @@ namespace ProtoCore.DSASM
             fepRun = false;
             isGlobScope = true;
 
-            StackFrameType callerType = (StackFrameType)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexCallerStackFrameType).opdata;
+            StackFrameType callerType = (StackFrameType)rmem.GetAtRelative(StackFrame.kFrameIndexCallerStackFrameType).opdata;
             if (callerType == StackFrameType.kTypeFunction)
             {
                 fepRun = true;
@@ -245,7 +245,7 @@ namespace ProtoCore.DSASM
             // XLangUpdateDependencyGraph requires the executingBlock to be the current running block (the block before leaving language block)
             XLangUpdateDependencyGraph(executingBlock);
 
-            executingBlock = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunctionCallerBlock).opdata;
+            executingBlock = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunctionCallerBlock).opdata;
             Language currentLang = executingLanguage;
 
             RestoreExecutive(executingBlock);
@@ -263,12 +263,12 @@ namespace ProtoCore.DSASM
 
 
             // TODO Jun: Remove this check once the global bounce stackframe is pushed
-            if (rmem.FramePointer >= ProtoCore.DSASM.StackFrame.kStackFrameSize)
+            if (rmem.FramePointer >= StackFrame.kStackFrameSize)
             {
                 fepRun = false;
                 isGlobScope = true;
 
-                StackFrameType callerType = (StackFrameType)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexCallerStackFrameType).opdata;
+                StackFrameType callerType = (StackFrameType)rmem.GetAtRelative(StackFrame.kFrameIndexCallerStackFrameType).opdata;
                 if (callerType == StackFrameType.kTypeFunction)
                 {
                     fepRun = true;
@@ -280,7 +280,7 @@ namespace ProtoCore.DSASM
             Validity.Assert(null != istream);
             Validity.Assert(null != istream.instrList);
 
-            pc = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexReturnAddress).opdata;
+            pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
         }
 
         private void PushInterpreterProps(ProtoCore.InterpreterProperties properties)
@@ -340,8 +340,8 @@ namespace ProtoCore.DSASM
             {
                 if (fepRun)
                 {
-                    int ci = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-                    int fi = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunction).opdata;
+                    int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+                    int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
                     UpdateMethodDependencyGraph(pc, fi, ci);
                 }
                 else
@@ -415,8 +415,8 @@ namespace ProtoCore.DSASM
 
             if (Language.kAssociative == executingLanguage)
             {
-                int ci = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-                int fi = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunction).opdata;
+                int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+                int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
                 UpdateMethodDependencyGraph(pc, fi, ci);
             }
         }
@@ -507,7 +507,7 @@ namespace ProtoCore.DSASM
         public void GCDotMethods(string name, ref StackValue sv, List<StackValue> dotCallDimensions = null, List<StackValue> arguments = null)
         {
             // Index into the resulting array
-            if (name == ProtoCore.DSASM.Constants.kDotMethodName)
+            if (name == Constants.kDotMethodName)
             {
                 sv = IndexIntoArray(sv, dotCallDimensions);
 
@@ -519,7 +519,7 @@ namespace ProtoCore.DSASM
                 GCRelease(rmem.Stack[stackPtr - 3]);
                 GCRelease(rmem.Stack[stackPtr - 4]);
 
-                rmem.PopFrame(ProtoCore.DSASM.Constants.kDotCallArgCount);
+                rmem.PopFrame(Constants.kDotCallArgCount);
             }
         }
 
@@ -679,7 +679,7 @@ namespace ProtoCore.DSASM
                     List<int> indexIntoList = new List<int>();
                     {
                         // Check if the current dependent was indexed into
-                        ProtoCore.DSASM.SymbolNode argSymbol = Properties.executingGraphNode.dependentList[n].updateNodeRefList[0].nodeList[0].symbol;
+                        SymbolNode argSymbol = Properties.executingGraphNode.dependentList[n].updateNodeRefList[0].nodeList[0].symbol;
                         if (symbolArrayIndexMap.ContainsKey(argSymbol.name))
                         {
                             indexIntoList = symbolArrayIndexMap[argSymbol.name];
@@ -719,8 +719,8 @@ namespace ProtoCore.DSASM
                 // 
                 if (!svThisPtr.IsObject())
                 {
-                    string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kInvokeMethodOnInvalidObject, fNode.name);
-                    core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kDereferencingNonPointer, message);
+                    string message = String.Format(WarningMessage.kInvokeMethodOnInvalidObject, fNode.name);
+                    core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, message);
                     isGlobScope = true;
                     return StackValue.Null;
                 }
@@ -733,13 +733,13 @@ namespace ProtoCore.DSASM
                 {
                     // A member function
                     // Get the this pointer as this class instance would have already been cosntructed
-                    svThisPtr = rmem.GetAtRelative(rmem.GetStackIndex(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr));
+                    svThisPtr = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexThisPtr));
 
                 }
                 else
                 {
                     // Global
-                    svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(ProtoCore.DSASM.Constants.kInvalidPointer);
+                    svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(Constants.kInvalidPointer);
                 }
             }
 
@@ -757,21 +757,21 @@ namespace ProtoCore.DSASM
 
             // Build the stackframe
             //int thisPtr = (int)svThisPtr.opdata;
-            int ci = classIndex; // ProtoCore.DSASM.Constants.kInvalidIndex;   // Handled at FEP
-            int fi = ProtoCore.DSASM.Constants.kInvalidIndex;   // Handled at FEP
+            int ci = classIndex; // Constants.kInvalidIndex;   // Handled at FEP
+            int fi = Constants.kInvalidIndex;   // Handled at FEP
 
             int returnAddr = pc + 1;
 
             int blockDecl = (int)svBlockDeclaration.opdata;
 
-            int currentClassIndex = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-            int currentFunctionIndex = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunction).opdata;
-            bool isGlobalScope = ProtoCore.DSASM.Constants.kGlobalScope == currentClassIndex && ProtoCore.DSASM.Constants.kGlobalScope == currentFunctionIndex;
+            int currentClassIndex = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+            int currentFunctionIndex = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+            bool isGlobalScope = Constants.kGlobalScope == currentClassIndex && Constants.kGlobalScope == currentFunctionIndex;
             if (core.ExecMode != InterpreterMode.kExpressionInterpreter)
             {
-                if (ProtoCore.DSASM.Constants.kGlobalScope != currentFunctionIndex)
+                if (Constants.kGlobalScope != currentFunctionIndex)
                 {
-                    int currentFunctionDeclBlock = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunctionBlock).opdata;
+                    int currentFunctionDeclBlock = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunctionBlock).opdata;
                     ProcedureNode currentProcCall = GetProcedureNode(currentFunctionDeclBlock, currentClassIndex, currentFunctionIndex);
                 }
             }
@@ -791,8 +791,8 @@ namespace ProtoCore.DSASM
             SaveRegisters(registers);
 
             // Get the execution states of the current stackframe
-            int currentScopeClass = ProtoCore.DSASM.Constants.kInvalidIndex;
-            int currentScopeFunction = ProtoCore.DSASM.Constants.kInvalidIndex;
+            int currentScopeClass = Constants.kInvalidIndex;
+            int currentScopeFunction = Constants.kInvalidIndex;
             GetCallerInformation(out currentScopeClass, out currentScopeFunction);
 
             List<bool> execStates = new List<bool>();
@@ -803,10 +803,10 @@ namespace ProtoCore.DSASM
             // as this mechanism is used to keep track of maintining execution states of recursive calls
             // This mechanism should also be ignored if the function call is non-recursive as it does not need to maintains state in that case
             //
-            if (currentScopeFunction != ProtoCore.DSASM.Constants.kGlobalScope)
+            if (currentScopeFunction != Constants.kGlobalScope)
             {
                 // Get the instruction stream where the current function resides in
-                StackValue svCurrentFunctionBlockDecl = rmem.GetAtRelative(rmem.GetStackIndex(ProtoCore.DSASM.StackFrame.kFrameIndexFunctionBlock));
+                StackValue svCurrentFunctionBlockDecl = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexFunctionBlock));
                 Validity.Assert(svCurrentFunctionBlockDecl.IsBlockIndex());
                 AssociativeGraph.DependencyGraph depgraph = exe.instrStreamList[(int)svCurrentFunctionBlockDecl.opdata].dependencyGraph;
 
@@ -842,7 +842,7 @@ namespace ProtoCore.DSASM
             if (core.Options.RecursionChecking)
             {
                 //Do the recursion check before call
-                if (counter.times < ProtoCore.DSASM.Constants.kRecursionTheshold) //&& counter.sharedCounter < ProtoCore.DSASM.Constants.kRepetationTheshold)
+                if (counter.times < Constants.kRecursionTheshold) //&& counter.sharedCounter < Constants.kRepetationTheshold)
                 {
 
                     // Build a context object in JILDispatch and call the Dispatch
@@ -854,7 +854,7 @@ namespace ProtoCore.DSASM
 
                     else if (counter.times >= 1)
                     {
-                        if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_' && !fNode.name.Equals(ProtoCore.DSASM.Constants.kDotMethodName) && core.calledInFunction)
+                        if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_' && !fNode.name.Equals(Constants.kDotMethodName) && core.calledInFunction)
                         {
                             counter.times++;
                         }
@@ -872,7 +872,7 @@ namespace ProtoCore.DSASM
                 else
                 {
                     FindRecursivePoints();
-                    string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kMethodStackOverflow, core.recursivePoint[0].name);
+                    string message = String.Format(WarningMessage.kMethodStackOverflow, core.recursivePoint[0].name);
                     core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidRecursion, message);
 
                     core.recursivePoint = new List<FunctionCounter>();
@@ -1140,11 +1140,11 @@ namespace ProtoCore.DSASM
             foreach (FunctionCounter c in core.funcCounterTable)
             {
 
-                if (c.times == ProtoCore.DSASM.Constants.kRecursionTheshold || c.times == ProtoCore.DSASM.Constants.kRecursionTheshold - 1)
+                if (c.times == Constants.kRecursionTheshold || c.times == Constants.kRecursionTheshold - 1)
                 {
                     core.recursivePoint.Add(c);
                 }
-                //else if (c.sharedCounter == ProtoCore.DSASM.Constants.kRepetationTheshold || (c.sharedCounter == ProtoCore.DSASM.Constants.kRepetationTheshold - 1 || c.sharedCounter == ProtoCore.DSASM.Constants.kRepetationTheshold + 1)
+                //else if (c.sharedCounter == Constants.kRepetationTheshold || (c.sharedCounter == Constants.kRepetationTheshold - 1 || c.sharedCounter == Constants.kRepetationTheshold + 1)
                 //{
                 core.recursivePoint.Add(c);
                 //}
@@ -1228,12 +1228,12 @@ namespace ProtoCore.DSASM
             if (0 != (debugFlags & (int)DebugFlags.ENABLE_LOG))
             {
                 string symbol = core.DSExecutable.runtimeSymbols[blockId].symbolList[index].name;
-                if (symbol.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix))
+                if (symbol.StartsWith(Constants.kInternalNamePrefix))
                 {
                     return;
                 }
                 int ci = core.DSExecutable.runtimeSymbols[blockId].symbolList[index].classScope;
-                if (ci != ProtoCore.DSASM.Constants.kInvalidIndex)
+                if (ci != Constants.kInvalidIndex)
                 {
                     symbol = core.ClassTable.ClassNodes[ci].name + "::" + symbol;
                 }
@@ -1498,7 +1498,7 @@ namespace ProtoCore.DSASM
             if (!isUpdated)
             {
                 // There were no updates, this is the end of this associative block
-                pc = ProtoCore.DSASM.Constants.kInvalidPC;
+                pc = Constants.kInvalidPC;
             }
         }
 
@@ -1549,7 +1549,7 @@ namespace ProtoCore.DSASM
                 Console.WriteLine("nodes " + node.updateNodeRefList[0].nodeList[0].symbol.name);
             }
 
-            string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kCyclicDependency, CycleStartNodeAndEndNode[0].updateNodeRefList[0].nodeList[0].symbol.name, CycleStartNodeAndEndNode[1].updateNodeRefList[0].nodeList[0].symbol.name);
+            string message = String.Format(WarningMessage.kCyclicDependency, CycleStartNodeAndEndNode[0].updateNodeRefList[0].nodeList[0].symbol.name, CycleStartNodeAndEndNode[1].updateNodeRefList[0].nodeList[0].symbol.name);
             core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kCyclicDependency, message);
             //BreakDependency(NodeExecutedSameTimes);
             foreach (ProtoCore.AssociativeGraph.GraphNode node in nodeIterations)
@@ -1563,7 +1563,7 @@ namespace ProtoCore.DSASM
 
         private void handleSSAAssignCycle(ProtoCore.AssociativeGraph.GraphNode graphNode)
         {
-            string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kCyclicDependency, graphNode.updateNodeRefList[0].nodeList[0].symbol.name, graphNode.updateNodeRefList[0].nodeList[0].symbol.name);
+            string message = String.Format(WarningMessage.kCyclicDependency, graphNode.updateNodeRefList[0].nodeList[0].symbol.name, graphNode.updateNodeRefList[0].nodeList[0].symbol.name);
             core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kCyclicDependency, message);
 
             List<AssociativeGraph.GraphNode> nodeIterations = core.InterpreterProps.Peek().nodeIterations;
@@ -1579,7 +1579,7 @@ namespace ProtoCore.DSASM
         private bool HasCyclicDependency(ProtoCore.AssociativeGraph.GraphNode node)
         {
 
-            //if (IsExecutedTooManyTimes(node, ProtoCore.DSASM.Constants.kDynamicCycleThreshold))
+            //if (IsExecutedTooManyTimes(node, Constants.kDynamicCycleThreshold))
             if (IsExecutedTooManyTimes(node, core.Options.kDynamicCycleThreshold))
             {
                 return true;
@@ -1653,7 +1653,7 @@ namespace ProtoCore.DSASM
                 setModifierNode = false;
             }
 
-            if (modBlkUID != ProtoCore.DSASM.Constants.kInvalidIndex)
+            if (modBlkUID != Constants.kInvalidIndex)
             {
                 for (int i = index; i < istream.dependencyGraph.GraphList.Count; ++i)
                 {
@@ -1677,7 +1677,7 @@ namespace ProtoCore.DSASM
         {
             Validity.Assert(!graphNode.isReturn);
             // TODO Jun: Expand me to handle complex ident lists
-            ProtoCore.DSASM.SymbolNode symbol = graphNode.updateNodeRefList[0].nodeList[0].symbol;
+            SymbolNode symbol = graphNode.updateNodeRefList[0].nodeList[0].symbol;
             Validity.Assert(null != symbol);
             rmem.SetStackData(symbol.runtimeTableIndex, symbol.symbolTableIndex, symbol.classScope, sv);
         }
@@ -1770,8 +1770,8 @@ namespace ProtoCore.DSASM
                         bool allowRedefine = true;
 
                         SymbolNode symbol = Properties.executingGraphNode.updateNodeRefList[0].nodeList[0].symbol;
-                        bool isMember = symbol.classScope != ProtoCore.DSASM.Constants.kInvalidIndex
-                            && symbol.functionIndex == ProtoCore.DSASM.Constants.kInvalidIndex;
+                        bool isMember = symbol.classScope != Constants.kInvalidIndex
+                            && symbol.functionIndex == Constants.kInvalidIndex;
 
                         if (isMember)
                         {
@@ -2408,14 +2408,14 @@ namespace ProtoCore.DSASM
             if (!isUpdated)
             {
                 // There were no updates, this is the end of this associative block
-                pc = ProtoCore.DSASM.Constants.kInvalidPC;
+                pc = Constants.kInvalidPC;
             }
         }
 
         private void XLangUpdateDependencyGraph(int currentLangBlock)
         {
-            int classScope = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-            int functionScope = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunction).opdata;
+            int classScope = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+            int functionScope = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
 
             List<ProtoCore.AssociativeGraph.UpdateNodeRef> upadatedList = new List<AssociativeGraph.UpdateNodeRef>();
 
@@ -2491,8 +2491,8 @@ namespace ProtoCore.DSASM
 
                                     AddressType opAddr = AddressType.VarIndex;
 
-                                    ProtoCore.DSASM.SymbolNode firstSymbolInUpdatedRef = graphNode.updateNodeRefList[0].nodeList[0].symbol;
-                                    if (ProtoCore.DSASM.Constants.kInvalidIndex != firstSymbolInUpdatedRef.classScope)
+                                    SymbolNode firstSymbolInUpdatedRef = graphNode.updateNodeRefList[0].nodeList[0].symbol;
+                                    if (Constants.kInvalidIndex != firstSymbolInUpdatedRef.classScope)
                                     {
                                         if (exe.classTable.ClassNodes[firstSymbolInUpdatedRef.classScope].IsMemberVariable(firstSymbolInUpdatedRef))
                                         {
@@ -2806,8 +2806,8 @@ namespace ProtoCore.DSASM
             instructions = istream.instrList;
             executingLanguage = istream.language;
 
-            ci = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-            fi = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunction).opdata;
+            ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+            fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
 
             int localCount = 0;
             int paramCount = 0;
@@ -2817,14 +2817,14 @@ namespace ProtoCore.DSASM
             GetLocalAndParamCount(blockId, ci, fi, out localCount, out paramCount);
 
             // Pop function stackframe as this is not allowed in Ret/Retc in debug mode
-            rmem.FramePointer = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFramePointer).opdata;
-            rmem.PopFrame(ProtoCore.DSASM.StackFrame.kStackFrameSize + localCount + paramCount);
+            rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
+            rmem.PopFrame(StackFrame.kStackFrameSize + localCount + paramCount);
 
 
             ResumeRegistersFromStackExceptRX();
 
-            //StackValue svFrameType = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexCallerStackFrameType);
-            StackValue svFrameType = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexStackFrameType);
+            //StackValue svFrameType = rmem.GetAtRelative(StackFrame.kFrameIndexCallerStackFrameType);
+            StackValue svFrameType = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameType);
             StackFrameType frametype = (StackFrameType)svFrameType.opdata;
             if (frametype == StackFrameType.kTypeLanguage)
             {
@@ -2870,8 +2870,8 @@ namespace ProtoCore.DSASM
                 Properties.executingGraphNode = debugFrame.ExecutingGraphNode;
 
                 // Pop language stackframe as this is not allowed in Retb in debug mode
-                rmem.FramePointer = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFramePointer).opdata;
-                rmem.PopFrame(ProtoCore.DSASM.StackFrame.kStackFrameSize);
+                rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
+                rmem.PopFrame(StackFrame.kStackFrameSize);
 
                 ResumeRegistersFromStackExceptRX();
                 bounceType = (ProtoCore.DSASM.CallingConvention.BounceType)TX.opdata;
@@ -2947,9 +2947,9 @@ namespace ProtoCore.DSASM
             bool waspopped = false;
 
             bool isReplicating = false;
-            int exeblock = ProtoCore.DSASM.Constants.kInvalidIndex;
-            int ci = ProtoCore.DSASM.Constants.kInvalidIndex;
-            int fi = ProtoCore.DSASM.Constants.kInvalidIndex;
+            int exeblock = Constants.kInvalidIndex;
+            int ci = Constants.kInvalidIndex;
+            int fi = Constants.kInvalidIndex;
 
             DebugFrame debugFrame = null;
             if (core.Options.IDEDebugMode && core.ExecMode != InterpreterMode.kExpressionInterpreter)
@@ -3049,8 +3049,8 @@ namespace ProtoCore.DSASM
             {
                 if (fepRun)
                 {
-                    int ci = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-                    int fi = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunction).opdata;
+                    int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+                    int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
                     UpdateMethodDependencyGraph(pc, fi, ci);
                 }
                 else
@@ -3444,7 +3444,7 @@ namespace ProtoCore.DSASM
                     break;
 
                 case AddressType.ThisPtr:
-                    data = rmem.GetAtRelative(rmem.GetStackIndex(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr));
+                    data = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexThisPtr));
                     break;
 
                 default:
@@ -4012,7 +4012,7 @@ namespace ProtoCore.DSASM
 
             if (!svPtr.IsArray())
             {
-                core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
@@ -4032,7 +4032,7 @@ namespace ProtoCore.DSASM
 
             if (!svPtr.IsArray())
             {
-                core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
@@ -4046,14 +4046,14 @@ namespace ProtoCore.DSASM
                     StackValue array = core.Heap.Heaplist[ptr].GetValue(dimList[n], core);
                     if (!array.IsArray())
                     {
-                        core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
+                        core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
                         return StackValue.Null;
                     }
                     ptr = (int)array.opdata;
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
+                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
                     return StackValue.Null;
                 }
             }
@@ -4064,12 +4064,12 @@ namespace ProtoCore.DSASM
             }
             catch (ArgumentOutOfRangeException)
             {
-                core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
                 sv = StackValue.Null;
             }
             catch (IndexOutOfRangeException)
             {
-                core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kIndexOutOfRange, RuntimeData.WarningMessage.kIndexOutOfRange);
+                core.RuntimeStatus.LogWarning(WarningID.kIndexOutOfRange, RuntimeData.WarningMessage.kIndexOutOfRange);
                 return StackValue.Null;
             }
             return sv;
@@ -4104,7 +4104,7 @@ namespace ProtoCore.DSASM
             {
                 if (op1.IsMemberVariableIndex())
                 {
-                    int thisptr = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr).opdata;
+                    int thisptr = (int)rmem.GetAtRelative(StackFrame.kFrameIndexThisPtr).opdata;
                     thisArray = rmem.Heap.Heaplist[thisptr].Stack[stackindex];
                 }
                 else
@@ -4115,13 +4115,13 @@ namespace ProtoCore.DSASM
 
             if (!thisArray.IsArray())
             {
-                if (varname.StartsWith(ProtoCore.DSASM.Constants.kForLoopExpression))
+                if (varname.StartsWith(Constants.kForLoopExpression))
                 {
                     return thisArray;
                 }
 
-                string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kSymbolOverIndexed, varname);
-                core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, message);
+                string message = String.Format(WarningMessage.kSymbolOverIndexed, varname);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                 return StackValue.Null;
             }
 
@@ -4132,8 +4132,8 @@ namespace ProtoCore.DSASM
             }
             catch (ArgumentOutOfRangeException)
             {
-                string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kSymbolOverIndexed, varname);
-                core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, message);
+                string message = String.Format(WarningMessage.kSymbolOverIndexed, varname);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                 return StackValue.Null;
             }
 
@@ -4152,7 +4152,7 @@ namespace ProtoCore.DSASM
             StackValue thisArray;
             if (op1.IsMemberVariableIndex())
             {
-                int thisptr = (int)rmem.GetAtRelative(rmem.GetStackIndex(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr)).opdata;
+                int thisptr = (int)rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexThisPtr)).opdata;
 
                 // For member variables, the stackindex is absolute and needs no offset as this is found in the heap
                 stackindex = symbolNode.index;
@@ -4165,13 +4165,13 @@ namespace ProtoCore.DSASM
 
             if (!thisArray.IsArray() && !thisArray.IsString())
             {
-                if (varname.StartsWith(ProtoCore.DSASM.Constants.kForLoopExpression))
+                if (varname.StartsWith(Constants.kForLoopExpression))
                 {
                     return thisArray;
                 }
 
-                string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kSymbolOverIndexed, varname);
-                core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, message);
+                string message = String.Format(WarningMessage.kSymbolOverIndexed, varname);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                 return StackValue.Null;
             }
 
@@ -4189,8 +4189,8 @@ namespace ProtoCore.DSASM
             }
             catch (ArgumentOutOfRangeException)
             {
-                string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kSymbolOverIndexed, varname);
-                core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, message);
+                string message = String.Format(WarningMessage.kSymbolOverIndexed, varname);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                 return StackValue.Null;
             }
 
@@ -4216,7 +4216,7 @@ namespace ProtoCore.DSASM
                 int contextClassIndex = dynamicVariableNode.classIndex;
                 int contextProcIndex = dynamicVariableNode.procIndex;
                 int symbolIndex = core.ClassTable.ClassNodes[classIndex].GetSymbolIndex(name, contextClassIndex, contextProcIndex, core.RunningBlock, core, out hasThisSymbol, out addressType);
-                if (ProtoCore.DSASM.Constants.kInvalidIndex != symbolIndex)
+                if (Constants.kInvalidIndex != symbolIndex)
                 {
                     if (addressType == AddressType.StaticMemVarIndex)
                     {
@@ -4268,10 +4268,10 @@ namespace ProtoCore.DSASM
                 arglist.Add(new ProtoCore.Type());
             }
 
-            if (procName == ProtoCore.DSASM.Constants.kFunctionPointerCall && depth == 0)
+            if (procName == Constants.kFunctionPointerCall && depth == 0)
             {
                 isFunctionPointerCall = true;
-                classIndex = ProtoCore.DSASM.Constants.kGlobalScope;
+                classIndex = Constants.kGlobalScope;
                 StackValue fpSv = rmem.Pop();
                 if (!fpSv.IsFunctionPointer())
                 {
@@ -4349,7 +4349,7 @@ namespace ProtoCore.DSASM
                 // check whether it is function pointer, this checking is done at runtime to handle the case
                 // when turning on converting dot operator to function call
                 if (!((int)ProtoCore.PrimitiveType.kTypeVoid == type
-                    || ProtoCore.DSASM.Constants.kInvalidIndex == type
+                    || Constants.kInvalidIndex == type
                     || core.ClassTable.ClassNodes[type].symbols == null))
                 {
                     bool hasThisSymbol;
@@ -4357,7 +4357,7 @@ namespace ProtoCore.DSASM
                     SymbolNode node = null;
                     bool isStatic = false;
                     int symbolIndex = core.ClassTable.ClassNodes[type].GetSymbolIndex(procName, type, DSASM.Constants.kGlobalScope, core.RunningBlock, core, out hasThisSymbol, out addressType);
-                    if (ProtoCore.DSASM.Constants.kInvalidIndex != symbolIndex)
+                    if (Constants.kInvalidIndex != symbolIndex)
                     {
                         if (addressType == AddressType.StaticMemVarIndex)
                         {
@@ -4459,7 +4459,7 @@ namespace ProtoCore.DSASM
             else
             {
                 // This is a member function of the previous type
-                if (ProtoCore.DSASM.Constants.kInvalidIndex != type)
+                if (Constants.kInvalidIndex != type)
                 {
                     int realType;
                     bool isAccessible;
@@ -4471,13 +4471,13 @@ namespace ProtoCore.DSASM
                         if (CoreUtils.TryGetPropertyName(procName, out property))
                         {
                             string classname = core.ClassTable.ClassNodes[type].name;
-                            string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kPropertyOfClassNotFound, classname, property);
-                            core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure, message);
+                            string message = String.Format(WarningMessage.kPropertyOfClassNotFound, classname, property);
+                            core.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, message);
                         }
                         else
                         {
-                            string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kMethodResolutionFailure, procName);
-                            core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure, message);
+                            string message = String.Format(WarningMessage.kMethodResolutionFailure, procName);
+                            core.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, message);
                         }
                     }
                     else
@@ -4561,7 +4561,7 @@ namespace ProtoCore.DSASM
         // GC for local code blocks if,for,while
         public void GCCodeBlock(int blockId, int functionIndex = DSASM.Constants.kGlobalScope, int classIndex = DSASM.Constants.kInvalidIndex)
         {
-            foreach (ProtoCore.DSASM.SymbolNode sn in exe.runtimeSymbols[blockId].symbolList.Values)
+            foreach (SymbolNode sn in exe.runtimeSymbols[blockId].symbolList.Values)
             {   
                 bool allowGC = sn.classScope == classIndex 
                     && sn.functionIndex == functionIndex 
@@ -4680,14 +4680,14 @@ namespace ProtoCore.DSASM
             foreach (SymbolNode symbol in st.symbolList.Values)
             {
                 bool allowGC = symbol.functionIndex == functionIndex
-                    && !symbol.name.Equals(ProtoCore.DSASM.Constants.kWatchResultVar);
+                    && !symbol.name.Equals(Constants.kWatchResultVar);
 
                 if (core.Options.GCTempVarsOnDebug && core.Options.ExecuteSSA)
                 {
                     if (core.Options.IDEDebugMode)
                     {
                         allowGC = symbol.functionIndex == functionIndex
-                            && !symbol.name.Equals(ProtoCore.DSASM.Constants.kWatchResultVar)
+                            && !symbol.name.Equals(Constants.kWatchResultVar)
                             && !CoreUtils.IsSSATemp(symbol.name);
                     }
                 }
@@ -4770,7 +4770,7 @@ namespace ProtoCore.DSASM
 
         public ProcedureNode GetProcedureNode(int blockId, int classIndex, int functionIndex)
         {
-            if (ProtoCore.DSASM.Constants.kGlobalScope != classIndex)
+            if (Constants.kGlobalScope != classIndex)
             {
                 return exe.classTable.ClassNodes[classIndex].vtable.procList[functionIndex];
             }
@@ -4781,7 +4781,7 @@ namespace ProtoCore.DSASM
         {
             localCount = paramCount = 0;
 
-            if (ProtoCore.DSASM.Constants.kGlobalScope != classIndex)
+            if (Constants.kGlobalScope != classIndex)
             {
                 localCount = exe.classTable.ClassNodes[classIndex].vtable.procList[functionIndex].localCount;
                 paramCount = exe.classTable.ClassNodes[classIndex].vtable.procList[functionIndex].argTypeList.Count;
@@ -4796,10 +4796,10 @@ namespace ProtoCore.DSASM
         /*
         public int GetPreviousFramePointer(int offset)
         {
-            int ptr = (int)rmem.GetAtRelative(offset, ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr).opdata;
-            int ci = (int)rmem.GetAtRelative(offset, ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-            int fi = (int)rmem.GetAtRelative(offset, ProtoCore.DSASM.StackFrame.kFrameIndexFunction).opdata;
-            int blockId = (int)rmem.GetAtRelative(offset, ProtoCore.DSASM.StackFrame.kFrameIndexFunctionBlock).opdata;
+            int ptr = (int)rmem.GetAtRelative(offset, StackFrame.kFrameIndexThisPtr).opdata;
+            int ci = (int)rmem.GetAtRelative(offset, StackFrame.kFrameIndexClass).opdata;
+            int fi = (int)rmem.GetAtRelative(offset, StackFrame.kFrameIndexFunction).opdata;
+            int blockId = (int)rmem.GetAtRelative(offset, StackFrame.kFrameIndexFunctionBlock).opdata;
 
             int localVars = 0;
             int paramCount = 0;
@@ -4807,11 +4807,11 @@ namespace ProtoCore.DSASM
             int localCount = localVars + paramCount;
 
 
-            return rmem.Stack.Count - ProtoCore.DSASM.StackFrame.kStackFrameSize - localCount - paramCount - offset;
+            return rmem.Stack.Count - StackFrame.kStackFrameSize - localCount - paramCount - offset;
         }
          * */
 
-        public List<List<ProtoCore.ReplicationGuide>> GetCachedReplicationGuides(Core core, int argumentCount)
+        public List<List<ReplicationGuide>> GetCachedReplicationGuides(Core core, int argumentCount)
         {
             int index = core.replicationGuides.Count - argumentCount;
             if (index >= 0)
@@ -4820,7 +4820,7 @@ namespace ProtoCore.DSASM
                 core.replicationGuides.RemoveRange(index, argumentCount);
                 return replicationGuides;
             }
-            return new List<List<ProtoCore.ReplicationGuide>>();
+            return new List<List<ReplicationGuide>>();
         }
 
         private void NONE_Handler(Instruction instruction)
@@ -4842,7 +4842,7 @@ namespace ProtoCore.DSASM
             fepRunStack.Push(fepRun);
             runtimeVerify(instruction.op1.IsClassIndex());
             int type = (int)instruction.op1.opdata;
-            int ptr = ProtoCore.DSASM.Constants.kInvalidPointer;
+            int ptr = Constants.kInvalidPointer;
             lock (core.Heap.cslock)
             {
                 ptr = core.Heap.Allocate(exe.classTable.ClassNodes[type].size);
@@ -4851,7 +4851,7 @@ namespace ProtoCore.DSASM
             MetaData metadata;
             metadata.type = type;
             StackValue pointer = StackValue.BuildPointer(ptr, metadata);
-            rmem.SetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr, pointer);
+            rmem.SetAtRelative(StackFrame.kFrameIndexThisPtr, pointer);
 
             // Increase reference count here to avoid that in the 
             // constructor we use thisptr so that the executive will
@@ -4870,10 +4870,10 @@ namespace ProtoCore.DSASM
 
             lock (core.Heap.cslock)
             {
-                ptr = core.Heap.Allocate(ProtoCore.DSASM.Constants.kPointerSize);
+                ptr = core.Heap.Allocate(Constants.kPointerSize);
             }
 
-            int thisptr = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr).opdata;
+            int thisptr = (int)rmem.GetAtRelative(StackFrame.kFrameIndexThisPtr).opdata;
 
             lock (core.Heap.cslock)
             {
@@ -5060,7 +5060,7 @@ namespace ProtoCore.DSASM
             {
                 int guides = (int)instruction.op1.opdata;
 
-                List<ProtoCore.ReplicationGuide> argGuides = new List<ProtoCore.ReplicationGuide>();
+                List<ReplicationGuide> argGuides = new List<ReplicationGuide>();
                 for (int i = 0; i < guides; ++i)
                 {
                     StackValue svGuideProperty = rmem.Pop();
@@ -5071,7 +5071,7 @@ namespace ProtoCore.DSASM
                     runtimeVerify(svGuide.IsInteger());
                     int guideNumber = (int)svGuide.opdata;
 
-                    argGuides.Add(new ProtoCore.ReplicationGuide(guideNumber, isLongest));
+                    argGuides.Add(new ReplicationGuide(guideNumber, isLongest));
                 }
 
                 argGuides.Reverse();
@@ -5118,7 +5118,7 @@ namespace ProtoCore.DSASM
                     runtimeVerify(svNumGuides.IsReplicationGuide());
                     guides = (int)svNumGuides.opdata;
 
-                    List<ProtoCore.ReplicationGuide> argGuides = new List<ProtoCore.ReplicationGuide>();
+                    List<ReplicationGuide> argGuides = new List<ReplicationGuide>();
                     for (int i = 0; i < guides; ++i)
                     {
                         StackValue svGuideProperty = rmem.Pop();
@@ -5129,7 +5129,7 @@ namespace ProtoCore.DSASM
                         runtimeVerify(svGuide.IsInteger());
                         int guideNumber = (int)svGuide.opdata;
 
-                        argGuides.Add(new ProtoCore.ReplicationGuide(guideNumber, isLongest));
+                        argGuides.Add(new ReplicationGuide(guideNumber, isLongest));
                     }
 
                     argGuides.Reverse();
@@ -5199,7 +5199,7 @@ namespace ProtoCore.DSASM
 
                 if (0 == dimensions)
                 {
-                    List<ProtoCore.ReplicationGuide> argGuides = new List<ProtoCore.ReplicationGuide>();
+                    List<ReplicationGuide> argGuides = new List<ReplicationGuide>();
                     for (int i = 0; i < guides; ++i)
                     {
                         StackValue svGuideProperty = rmem.Pop();
@@ -5210,7 +5210,7 @@ namespace ProtoCore.DSASM
                         runtimeVerify(svGuide.IsInteger());
                         int guideNumber = (int)svGuide.opdata;
 
-                        argGuides.Add(new ProtoCore.ReplicationGuide(guideNumber, isLongest));
+                        argGuides.Add(new ReplicationGuide(guideNumber, isLongest));
                     }
 
                     argGuides.Reverse();
@@ -5359,7 +5359,7 @@ namespace ProtoCore.DSASM
             dimensions = 0;
             blockId = DSASM.Constants.kInvalidIndex;
             int staticType = (int)ProtoCore.PrimitiveType.kTypeVar;
-            int rank = ProtoCore.DSASM.Constants.kArbitraryRank;
+            int rank = Constants.kArbitraryRank;
             bool objectIndexing = false;
 
             if (instruction.op1.IsVariableIndex() ||
@@ -5491,7 +5491,7 @@ namespace ProtoCore.DSASM
 
 
                 // Comment Jun: Store the indices into the symbol into the map                
-                ProtoCore.DSASM.SymbolNode symbol = core.DSExecutable.runtimeSymbols[blockId].symbolList[(int)instruction.op1.opdata];
+                SymbolNode symbol = core.DSExecutable.runtimeSymbols[blockId].symbolList[(int)instruction.op1.opdata];
 
 #if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
                 ProtoCore.AssociativeEngine.ArrayUpdate.UpdateSymbolArrayIndex(symbol.name, indexIntoList, symbolArrayIndexMap);
@@ -5547,7 +5547,7 @@ namespace ProtoCore.DSASM
             int dimensions = 0;
             int blockId = DSASM.Constants.kInvalidIndex;
             int staticType = (int)ProtoCore.PrimitiveType.kTypeVar;
-            int rank = ProtoCore.DSASM.Constants.kArbitraryRank;
+            int rank = Constants.kArbitraryRank;
             if (instruction.op1.IsVariableIndex() ||
                 instruction.op1.IsObject() ||
                 instruction.op1.IsArray())
@@ -5621,7 +5621,7 @@ namespace ProtoCore.DSASM
             runtimeVerify(svNumGuides.IsReplicationGuide());
             int guides = (int)svNumGuides.opdata;
 
-            List<ProtoCore.ReplicationGuide> argGuides = new List<ProtoCore.ReplicationGuide>();
+            List<ReplicationGuide> argGuides = new List<ReplicationGuide>();
             for (int i = 0; i < guides; ++i)
             {
                 StackValue svGuideProperty = rmem.Pop();
@@ -5632,7 +5632,7 @@ namespace ProtoCore.DSASM
                 runtimeVerify(svGuide.IsInteger());
                 int guideNumber = (int)svGuide.opdata;
 
-                argGuides.Add(new ProtoCore.ReplicationGuide(guideNumber, isLongest));
+                argGuides.Add(new ReplicationGuide(guideNumber, isLongest));
             }
 
             argGuides.Reverse();
@@ -5709,7 +5709,7 @@ namespace ProtoCore.DSASM
             }
 
             int symbolIndex = (int)instruction.op1.opdata;
-            classIndex = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
+            classIndex = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
             int stackIndex = core.ClassTable.ClassNodes[classIndex].symbols.symbolList[symbolIndex].index;
 
             //==================================================
@@ -5717,7 +5717,7 @@ namespace ProtoCore.DSASM
             //  2. If pointing to a class, just point to the class directly, do not allocate a new pointer
             //==================================================
 
-            StackValue svThis = rmem.GetAtRelative(rmem.GetStackIndex(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr));
+            StackValue svThis = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexThisPtr));
             runtimeVerify(svThis.IsObject());
             int thisptr = (int)svThis.opdata;
             StackValue svProperty = core.Heap.Heaplist[thisptr].Stack[stackIndex];
@@ -6614,12 +6614,12 @@ namespace ProtoCore.DSASM
                 core.stackActiveExceptionRegistration.Push(core.ExceptionHandlingManager.CurrentActiveRegistration);
 #endif
 
-            int ci = ProtoCore.DSASM.Constants.kInvalidIndex;
-            int fi = ProtoCore.DSASM.Constants.kInvalidIndex;
-            if (rmem.Stack.Count >= ProtoCore.DSASM.StackFrame.kStackFrameSize)
+            int ci = Constants.kInvalidIndex;
+            int fi = Constants.kInvalidIndex;
+            if (rmem.Stack.Count >= StackFrame.kStackFrameSize)
             {
-                StackValue sci = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass);
-                StackValue sfi = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunction);
+                StackValue sci = rmem.GetAtRelative(StackFrame.kFrameIndexClass);
+                StackValue sfi = rmem.GetAtRelative(StackFrame.kFrameIndexFunction);
                 if (sci.IsInteger() && sfi.IsInteger())
                 {
                     ci = (int)sci.opdata;
@@ -6631,12 +6631,12 @@ namespace ProtoCore.DSASM
             core.ExceptionHandlingManager.SwitchContextTo(blockId, fi, ci, pc);
 #endif
 
-            StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(ProtoCore.DSASM.Constants.kInvalidPointer);
+            StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(Constants.kInvalidPointer);
             int returnAddr = pc + 1;
 
-            Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != executingBlock);
+            Validity.Assert(Constants.kInvalidIndex != executingBlock);
             //int blockDecl = executingBlock;
-            int blockDecl = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunctionBlock).opdata;
+            int blockDecl = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunctionBlock).opdata;
             int blockCaller = executingBlock;
 
             StackFrameType type = StackFrameType.kTypeLanguage;
@@ -6702,7 +6702,7 @@ namespace ProtoCore.DSASM
             SX = svBlock;
 
             ProcedureNode fNode = null;
-            if (ci != ProtoCore.DSASM.Constants.kInvalidIndex)
+            if (ci != Constants.kInvalidIndex)
             {
                 fNode = core.ClassTable.ClassNodes[ci].vtable.procList[fi];
             }
@@ -6739,7 +6739,7 @@ namespace ProtoCore.DSASM
                (instruction.op3.opdata >= 0))
             {
                 // thisptr should be the pointer to the instance of derive class
-                svThisPointer = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr);
+                svThisPointer = rmem.GetAtRelative(StackFrame.kFrameIndexThisPtr);
                 // how many instruction offset? basically it should be 1 to skip ALLOCC
                 pcoffset = (int)instruction.op3.opdata;
                 // Validity.Assert(pcoffset == 1);
@@ -6925,7 +6925,7 @@ namespace ProtoCore.DSASM
 
                 if (core.ExceptionHandlingManager.IsStackUnwinding)
                 {
-                    int newpc = ProtoCore.DSASM.Constants.kInvalidIndex;
+                    int newpc = Constants.kInvalidIndex;
                     if (core.ExceptionHandlingManager.CanHandleIt(ref newpc))
                     {
                         LX = RX;
@@ -6937,14 +6937,14 @@ namespace ProtoCore.DSASM
                         // Clean up stack
                         isGlobScope = true;
                         runtimeVerify(rmem.ValidateStackFrame());
-                        pc = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexReturnAddress).opdata;
+                        pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
 
                         ReturnSiteGC(blockId, classIndex, functionIndex);
 
-                        rmem.FramePointer = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFramePointer).opdata;
+                        rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
                         int localCount, paramCount;
                         GetLocalAndParamCount(blockId, classIndex, functionIndex, out localCount, out paramCount);
-                        rmem.PopFrame(ProtoCore.DSASM.StackFrame.kStackFrameSize + localCount + paramCount);
+                        rmem.PopFrame(StackFrame.kStackFrameSize + localCount + paramCount);
 
                         if (fepRunStack.Count > 0)
                         {
@@ -6970,12 +6970,12 @@ namespace ProtoCore.DSASM
         {
             runtimeVerify(rmem.ValidateStackFrame());
 
-            RX = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr);
+            RX = rmem.GetAtRelative(StackFrame.kFrameIndexThisPtr);
 
-            int ci = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-            int fi = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunction).opdata;
+            int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+            int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
 
-            pc = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexReturnAddress).opdata;
+            pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
 
             // block id is used in ReturnSiteGC to get the procedure node if it is not a member function 
             // not meaningful here, because we are inside a constructor
@@ -6991,7 +6991,7 @@ namespace ProtoCore.DSASM
             core.RunningBlock = executingBlock;
 
             // If we're returning from a block to a function, the instruction stream needs to be restored.
-            StackValue sv = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexRegisterTX);
+            StackValue sv = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterTX);
             Validity.Assert(sv.IsCallingConvention());
             CallingConvention.CallType callType = (CallingConvention.CallType)sv.opdata;
             bool explicitCall = CallingConvention.CallType.kExplicit == callType || CallingConvention.CallType.kExplicitBase == callType;
@@ -7003,8 +7003,8 @@ namespace ProtoCore.DSASM
                 int paramCount = 0;
                 GetLocalAndParamCount(blockId, ci, fi, out localCount, out paramCount);
 
-                rmem.FramePointer = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFramePointer).opdata;
-                rmem.PopFrame(ProtoCore.DSASM.StackFrame.kStackFrameSize + localCount + paramCount);
+                rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
+                rmem.PopFrame(StackFrame.kStackFrameSize + localCount + paramCount);
 
                 if (core.ExecMode != InterpreterMode.kExpressionInterpreter)
                 {
@@ -7073,18 +7073,18 @@ namespace ProtoCore.DSASM
 
             if (ProtoCore.DSASM.CallingConvention.BounceType.kImplicit == bounceType)
             {
-                pc = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexReturnAddress).opdata;
+                pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
                 terminate = true;
             }
 
 
-            ProtoCore.DSASM.StackFrameType type = StackFrameType.kTypeLanguage;
+            StackFrameType type = StackFrameType.kTypeLanguage;
 
             // Comment Jun: Just want to see if this is the global rerb, in which case we dont retrieve anything
             //if (executingBlock > 0)
             {
-                StackValue svCallerType = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexCallerStackFrameType);
-                type = (ProtoCore.DSASM.StackFrameType)svCallerType.opdata;
+                StackValue svCallerType = rmem.GetAtRelative(StackFrame.kFrameIndexCallerStackFrameType);
+                type = (StackFrameType)svCallerType.opdata;
             }
 
             // Pop the frame as we are adding stackframes for language blocks as well - pratapa
@@ -7092,8 +7092,8 @@ namespace ProtoCore.DSASM
             //if (core.RunningBlock != 0)
             if (!core.Options.IDEDebugMode || core.ExecMode == InterpreterMode.kExpressionInterpreter)
             {
-                rmem.FramePointer = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFramePointer).opdata;
-                rmem.PopFrame(ProtoCore.DSASM.StackFrame.kStackFrameSize);
+                rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
+                rmem.PopFrame(StackFrame.kStackFrameSize);
 
                 if (bounceType == CallingConvention.BounceType.kExplicit)
                 {
@@ -7112,7 +7112,7 @@ namespace ProtoCore.DSASM
                         // run GC to reclaim those allocated memory.
                         GCCodeBlock(core.RunningBlock);
 
-                        int newpc = ProtoCore.DSASM.Constants.kInvalidIndex;
+                        int newpc = Constants.kInvalidIndex;
                         if (core.ExceptionHandlingManager.CanHandleIt(ref newpc))
                         {
                             LX = RX;
@@ -7151,12 +7151,12 @@ namespace ProtoCore.DSASM
                 if (bounceType == CallingConvention.BounceType.kExplicit)
                 {
                     // If we're returning from a block to a function, the instruction stream needs to be restored.
-                    StackValue sv = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexRegisterTX);
+                    StackValue sv = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterTX);
                     Validity.Assert(sv.IsCallingConvention());
                     CallingConvention.CallType callType = (CallingConvention.CallType)sv.opdata;
                     if (CallingConvention.CallType.kExplicit == callType)
                     {
-                        int callerblock = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunctionBlock).opdata;
+                        int callerblock = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunctionBlock).opdata;
                         istream = exe.instrStreamList[callerblock];
                     }
                 }
@@ -7190,13 +7190,13 @@ namespace ProtoCore.DSASM
 
             runtimeVerify(rmem.ValidateStackFrame());
 
-            int ptr = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexThisPtr).opdata;
-            int ci = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-            int fi = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunction).opdata;
+            int ptr = (int)rmem.GetAtRelative(StackFrame.kFrameIndexThisPtr).opdata;
+            int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+            int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
 
             int blockId = (int)SX.opdata;
 
-            StackValue svBlockDecl = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexRegisterSX);
+            StackValue svBlockDecl = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterSX);
             Validity.Assert(svBlockDecl.IsBlockIndex());
             blockId = (int)svBlockDecl.opdata;
 
@@ -7215,8 +7215,8 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            pc = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexReturnAddress).opdata;
-            executingBlock = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunctionCallerBlock).opdata;
+            pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
+            executingBlock = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunctionCallerBlock).opdata;
 
             if (core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
             {
@@ -7228,7 +7228,7 @@ namespace ProtoCore.DSASM
 
 
             // If we're returning from a block to a function, the instruction stream needs to be restored.
-            StackValue sv = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexRegisterTX);
+            StackValue sv = rmem.GetAtRelative(StackFrame.kFrameIndexRegisterTX);
             Validity.Assert(sv.IsCallingConvention());
             CallingConvention.CallType callType = (CallingConvention.CallType)sv.opdata;
             bool explicitCall = CallingConvention.CallType.kExplicit == callType;
@@ -7244,10 +7244,10 @@ namespace ProtoCore.DSASM
                 GetLocalAndParamCount(blockId, ci, fi, out localCount, out paramCount);
 
                 // Retrieve the execution execution states 
-                int execstates = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexExecutionStates).opdata;
+                int execstates = (int)rmem.GetAtRelative(StackFrame.kFrameIndexExecutionStates).opdata;
                 if (execstates > 0)
                 {
-                    int offset = ProtoCore.DSASM.StackFrame.kStackFrameSize + localCount + paramCount;
+                    int offset = StackFrame.kStackFrameSize + localCount + paramCount;
                     for (int n = 0; n < execstates; ++n)
                     {
                         int relativeIndex = -offset - n - 1; 
@@ -7258,10 +7258,10 @@ namespace ProtoCore.DSASM
                 }
 
                 // Pop the stackframe
-                rmem.FramePointer = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFramePointer).opdata;
+                rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
 
                 // Get the size of the stackframe and all variable size contents (local, args and exec states)
-                int stackFrameSize = ProtoCore.DSASM.StackFrame.kStackFrameSize + localCount + paramCount + execstates;
+                int stackFrameSize = StackFrame.kStackFrameSize + localCount + paramCount + execstates;
                 rmem.PopFrame(stackFrameSize);
 
                 if (core.ExecMode != InterpreterMode.kExpressionInterpreter)
@@ -7329,18 +7329,18 @@ namespace ProtoCore.DSASM
             {
                 // Now that the stack frame is popped off, we can retrieve the returned scope
                 // Get graphnodes at the current scope after the return
-                int currentScopeClass = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-                int currentScopeFunction = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunction).opdata;
+                int currentScopeClass = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+                int currentScopeFunction = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
 
                 bool isReturningFromRecursiveCall = procNode.procId == currentScopeFunction;
                 if (isReturningFromRecursiveCall)
                 {
                     // Since there are execution states retrieved from the stack frame,
                     // this means that we must be returning to a function and not the global scope
-                    Validity.Assert(currentScopeFunction != ProtoCore.DSASM.Constants.kGlobalScope);
+                    Validity.Assert(currentScopeFunction != Constants.kGlobalScope);
 
                     // Get the instruction stream where the current function resides in
-                    StackValue svCurrentFunctionBlockDecl = rmem.GetAtRelative(rmem.GetStackIndex(ProtoCore.DSASM.StackFrame.kFrameIndexFunctionBlock));
+                    StackValue svCurrentFunctionBlockDecl = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexFunctionBlock));
                     Validity.Assert(svCurrentFunctionBlockDecl.IsBlockIndex());
                     AssociativeGraph.DependencyGraph depgraph = exe.instrStreamList[(int)svCurrentFunctionBlockDecl.opdata].dependencyGraph;
 
@@ -7796,8 +7796,8 @@ namespace ProtoCore.DSASM
             bool isInFunction = core.FunctionCallDepth > 0;
 
 
-            StackValue svType = rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexStackFrameType);
-            ProtoCore.DSASM.StackFrameType type = (ProtoCore.DSASM.StackFrameType)svType.opdata;
+            StackValue svType = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameType);
+            StackFrameType type = (StackFrameType)svType.opdata;
 
             isInFunction = IsInsideFunction();
 
@@ -7812,8 +7812,8 @@ namespace ProtoCore.DSASM
 
             if (isInFunction)
             {
-                ci = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-                fi = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunction).opdata;
+                ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+                fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
             }
 
             if (null != Properties.executingGraphNode)
@@ -7889,10 +7889,10 @@ namespace ProtoCore.DSASM
             runtimeVerify(symbolList[0].IsInteger());
             int symindex = (int)symbolList[0].opdata;
 
-            if (ProtoCore.DSASM.Constants.kInvalidIndex != symindex)
+            if (Constants.kInvalidIndex != symindex)
             {
-                ProtoCore.DSASM.SymbolNode symnode = null;
-                if (ProtoCore.DSASM.Constants.kInvalidIndex != classIndex)
+                SymbolNode symnode = null;
+                if (Constants.kInvalidIndex != classIndex)
                 {
                     symnode = core.ClassTable.ClassNodes[classIndex].symbols.symbolList[symindex];
                 }
@@ -7999,8 +7999,8 @@ namespace ProtoCore.DSASM
             int fi = DSASM.Constants.kGlobalScope;
             if (fepRun)
             {
-                ci = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-                fi = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunction).opdata;
+                ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+                fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
             }
 
             // Set the next graph to be executed
@@ -8051,7 +8051,7 @@ namespace ProtoCore.DSASM
 
             // The exception can be handled in current scope, so simply jmp to 
             // the corresponding catch block
-            int newpc = ProtoCore.DSASM.Constants.kInvalidIndex;
+            int newpc = Constants.kInvalidIndex;
             if (core.ExceptionHandlingManager.CanHandleIt(ref newpc))
             {
                 pc = newpc;
@@ -8071,8 +8071,8 @@ namespace ProtoCore.DSASM
                     if (StackFrameType.kTypeLanguage == type)
                     {
                         RestoreFromBounce();
-                        rmem.FramePointer = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFramePointer).opdata;
-                        rmem.PopFrame(ProtoCore.DSASM.StackFrame.kStackFrameSize);
+                        rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
+                        rmem.PopFrame(StackFrame.kStackFrameSize);
 
 
                         // Restoring the registers require the current frame pointer of the stack frame 
@@ -8089,7 +8089,7 @@ namespace ProtoCore.DSASM
                         // run GC to reclaim those allocated memory.
                         GCCodeBlock(core.RunningBlock);
 
-                        newpc = ProtoCore.DSASM.Constants.kInvalidIndex;
+                        newpc = Constants.kInvalidIndex;
                         if (core.ExceptionHandlingManager.CanHandleIt(ref newpc))
                         {
                             LX = RX;
@@ -8110,15 +8110,15 @@ namespace ProtoCore.DSASM
                     {
                         RestoreFromCall();
 
-                        int ci = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-                        int fi = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFunction).opdata;
+                        int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+                        int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
 
                         int localCount = 0;
                         int paramCount = 0;
                         GetLocalAndParamCount(executingBlock, ci, fi, out localCount, out paramCount);
 
-                        rmem.FramePointer = (int)rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFramePointer).opdata;
-                        rmem.PopFrame(ProtoCore.DSASM.StackFrame.kStackFrameSize + localCount + paramCount);
+                        rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
+                        rmem.PopFrame(StackFrame.kStackFrameSize + localCount + paramCount);
                     }
                 }
             }
