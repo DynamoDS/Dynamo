@@ -454,6 +454,11 @@ namespace DynamoUnits
             return x.GetType() == y.GetType() && x.Value <= y.Value;
         }
 
+        public static SIUnit ToSIUnit(object value)
+        {
+            return value as SIUnit;
+        }
+
         #endregion
 
         public abstract double ConvertToHostUnits();
