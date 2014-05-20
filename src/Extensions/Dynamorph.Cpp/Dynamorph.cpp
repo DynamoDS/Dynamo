@@ -65,8 +65,21 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
         throw gcnew System::InvalidOperationException(gcnew String(message));
     }
 
-    mhWndVisualizer = CreateWindowEx(0, L"static", L"", WS_CHILD | WS_VISIBLE,
-        0, 0, width, height, hWndParent, NULL, NULL, 0);
+    WNDCLASSEX windowClass = { 0 };
+
+    // The reason we create our own window class is that we need CS_OWNDC style 
+    // to be specified for the window we are creating (OpenGL creation needs it).
+    // 
+    windowClass.cbSize = sizeof(windowClass);
+    windowClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+    windowClass.lpfnWndProc = ::DefWindowProc;
+    windowClass.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
+    windowClass.hbrBackground = ::CreateSolidBrush(RGB(100, 149, 237));
+    windowClass.lpszClassName = L"VisualizerClass";
+    RegisterClassEx(&windowClass);
+
+    mhWndVisualizer = CreateWindowEx(0, windowClass.lpszClassName, nullptr,
+        WS_CHILD | WS_VISIBLE, 0, 0, width, height, hWndParent, nullptr, nullptr, 0);
 }
 
 void Visualizer::Uninitialize(void)
