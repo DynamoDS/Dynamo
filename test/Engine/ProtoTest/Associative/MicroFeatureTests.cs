@@ -46,11 +46,11 @@ namespace ProtoTest.Associative
             String code =
 @"x;y;a;b;c;[Associative]{	x = null;    y = x;    a = null;    b = a + 2;    c = 2 + a * x;}";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("x").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("y").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("b").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
-            Assert.IsTrue(mirror.GetValue("c").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("x").DsasmValue.IsNull());
+            Assert.IsTrue(mirror.GetValue("y").DsasmValue.IsNull());
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull());
+            Assert.IsTrue(mirror.GetValue("b").DsasmValue.IsNull());
+            Assert.IsTrue(mirror.GetValue("c").DsasmValue.IsNull());
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace ProtoTest.Associative
             String code =
 @"c;[Associative]{    def foo : int ( a : int )    {        b = a + 1;    }	     c = foo(1);	}";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("c").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("c").DsasmValue.IsNull());
         }
 
         [Test]
@@ -1993,7 +1993,7 @@ x4 = 0..#5..10;
                 @"class Test{    X : int;    constructor Test(x : int)    {        X = x;    }        def Equals : bool (other : Test)    {        return = (other.X == this.X);    }}x = {1001,2001};t = Point.ByCoordinates(x, 0, 0);s = t;s[1] = null;check = s.Equals(t);value = check[1];Print(check);                ";
             code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetFirstValue("value").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetFirstValue("value").DsasmValue.IsNull());
         }
 
         [Test]

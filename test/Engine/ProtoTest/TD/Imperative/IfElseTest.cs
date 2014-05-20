@@ -1495,7 +1495,7 @@ c;
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 2);
             Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 1);
-            Assert.IsTrue(mirror.GetValue("b").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("b").DsasmValue.IsNull());
         }
 
         [Test]
@@ -1569,7 +1569,7 @@ c;
 } 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull());
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier);
         }
 

@@ -164,7 +164,7 @@ namespace ProtoTestFx
             //if (callrLineNo != Constants.kInvalidIndex)
             {
                 SymbolNode symbolNode = null;
-                if (ProtoCore.DSASM.AddressType.StaticMemVarIndex == instruction.op1.optype)
+                if (instruction.op1.IsStaticVariableIndex())
                 {
                     symbolNode = exe.runtimeSymbols[blockId].symbolList[(int)instruction.op1.opdata];
                 }

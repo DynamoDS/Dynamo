@@ -196,7 +196,7 @@ namespace ProtoCore
 
                 //Compute the type of target param
                 if (!allowArrayPromotion)
-                    Validity.Assert(StackUtils.IsArray(reducedSVs[i]), "This should be an array otherwise this shouldn't have passed previous tests");
+                    Validity.Assert(reducedSVs[i].IsArray(), "This should be an array otherwise this shouldn't have passed previous tests");
 
 
                 if (!allowArrayPromotion)

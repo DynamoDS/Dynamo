@@ -1673,9 +1673,7 @@ namespace ProtoCore
             instr.op2 = StackValue.BuildClassIndex(classIndex);
 
             // For debugging, assert here but these should raise runtime errors in the VM
-            Validity.Assert(ProtoCore.DSASM.AddressType.VarIndex == op.optype
-                || ProtoCore.DSASM.AddressType.MemVarIndex == op.optype
-                || ProtoCore.DSASM.AddressType.Register == op.optype);
+            Validity.Assert(op.IsVariableIndex() || op.IsMemberVariableIndex() || op.IsRegister());
 
             ++pc;
             instr.debug = GetDebugObject(line, col, eline, ecol, pc);
@@ -1992,7 +1990,7 @@ namespace ProtoCore
             instr.op2 = op2;
 
             // For debugging, assert here but these should raise runtime errors in the VM
-            Validity.Assert(ProtoCore.DSASM.AddressType.VarIndex == op1.optype || ProtoCore.DSASM.AddressType.Register == op1.optype);
+            Validity.Assert(op1.IsVariableIndex() || op1.IsRegister());
 
             ++pc;
             instr.debug = GetDebugObject(line, col, eline, ecol, pc);
@@ -2008,7 +2006,7 @@ namespace ProtoCore
             instr.op1 = op1;
 
             // For debugging, assert here but these should raise runtime errors in the VM
-            Validity.Assert(ProtoCore.DSASM.AddressType.VarIndex == op1.optype || ProtoCore.DSASM.AddressType.Register == op1.optype);
+            Validity.Assert(op1.IsVariableIndex() || op1.IsRegister());
 
             ++pc;
             instr.debug = GetDebugObject(line, col, eline, ecol, pc);

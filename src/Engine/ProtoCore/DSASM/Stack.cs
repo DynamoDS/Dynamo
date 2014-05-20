@@ -217,39 +217,6 @@ namespace ProtoCore.DSASM
     
     public static class StackUtils
     {
-        public static bool IsTrue(StackValue operand)
-        {
-            return operand.IsBoolean() &&
-                   operand.opdata != 0;
-        }
-
-        public static bool IsArray(StackValue operand)
-        {
-            return operand.IsArray();
-        }
-
-        public static bool IsNull(StackValue operand)
-        {
-            return operand.IsNull();
-        }
-
-        public static bool IsString(StackValue operand)
-        {
-            return operand.IsString();
-        }
-
-        public static bool IsNumeric(StackValue operand)
-        {
-            return operand.IsInteger() ||
-                   operand.IsDouble();
-        }
-
-        public static bool IsValidPointer(StackValue operand)
-        {
-            return operand.IsObject() &&
-                   operand.opdata != ProtoCore.DSASM.Constants.kInvalidIndex;
-        }
-
         public static StackValue AsBoolean(this StackValue operand, Core core)
         {
             switch (operand.optype)
@@ -309,13 +276,6 @@ namespace ProtoCore.DSASM
                 default:
                     return StackValue.Null;
             }
-        }
-
-        public static bool IsReferenceType(this StackValue operand)
-        {
-            return (operand.IsArray() ||
-                    operand.IsObject() ||
-                    operand.IsString()) && ProtoCore.DSASM.Constants.kInvalidIndex != operand.opdata;
         }
 
         //this method compares the values of the stack variables passed

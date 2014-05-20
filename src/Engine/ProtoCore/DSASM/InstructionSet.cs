@@ -361,6 +361,11 @@ namespace ProtoCore.DSASM
         {
             return optype == AddressType.ArrayKey;
         }
+
+        public bool IsReferenceType()
+        {
+            return opdata != Constants.kInvalidIndex && (IsArray() || IsObject() || IsString());
+        }
         #endregion
 
         #region Builders

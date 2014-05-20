@@ -120,7 +120,7 @@ namespace ProtoCore
             /// <returns></returns>
             private ClassMirror GetClass()
             {
-                if (svData.optype != DSASM.AddressType.Pointer)
+                if (!svData.IsObject())
                     return null;
 
                 return new ClassMirror(svData, this.core);

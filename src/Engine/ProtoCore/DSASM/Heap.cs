@@ -194,7 +194,7 @@ namespace ProtoCore.DSASM
 
         public int GetHashCode(StackValue value)
         {
-            if (AddressType.String == value.optype)
+            if (value.IsString())
             {
                 HeapElement he = ArrayUtils.GetHeapElement(value, core);
                 int length = he.VisibleSize;
@@ -295,7 +295,7 @@ namespace ProtoCore.DSASM
             {
                 for (int j = 0; j < Heaplist[i].GetAllocatedSize(); ++j)
                 {
-                    if (ProtoCore.DSASM.AddressType.Pointer == Heaplist[i].Stack[j].optype)
+                    if (Heaplist[i].Stack[j].IsObject())
                     {
                         Heaplist[i].Stack[j].opdata += offset;
                     }
@@ -391,7 +391,7 @@ namespace ProtoCore.DSASM
 
         public bool IsTemporaryPointer(StackValue sv)
         {
-            if (!StackUtils.IsReferenceType(sv))
+            if (!sv.IsReferenceType())
             {
                 return false;
             }
@@ -403,7 +403,7 @@ namespace ProtoCore.DSASM
 
         public void IncRefCount(StackValue sv)
         {
-            if (!StackUtils.IsReferenceType(sv))
+            if (!sv.IsReferenceType())
             {
                 return;
             }
@@ -419,7 +419,7 @@ namespace ProtoCore.DSASM
 
         public void DecRefCount(StackValue sv)
         {
-            if (!StackUtils.IsReferenceType(sv))
+            if (!sv.IsReferenceType())
             {
                 return;
             }

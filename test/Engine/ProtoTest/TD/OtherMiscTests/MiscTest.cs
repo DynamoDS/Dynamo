@@ -729,10 +729,10 @@ return = t;
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 1.0);
             thisTest.Verify("b", 1);
-            Assert.IsTrue(mirror.GetValue("a", 0).DsasmValue.optype == ProtoCore.DSASM.AddressType.Double);
-            Assert.IsFalse(mirror.GetValue("a", 0).DsasmValue.optype == ProtoCore.DSASM.AddressType.Int);
-            Assert.IsTrue(mirror.GetValue("b", 0).DsasmValue.optype == ProtoCore.DSASM.AddressType.Int);
-            Assert.IsFalse(mirror.GetValue("b", 0).DsasmValue.optype == ProtoCore.DSASM.AddressType.Double);
+            Assert.IsTrue(mirror.GetValue("a", 0).DsasmValue.IsDouble());
+            Assert.IsFalse(mirror.GetValue("a", 0).DsasmValue.IsInteger());
+            Assert.IsTrue(mirror.GetValue("b", 0).DsasmValue.IsInteger());
+            Assert.IsFalse(mirror.GetValue("b", 0).DsasmValue.IsDouble());
 
             //thisTest.Verify("b", 1.0);
         }

@@ -560,7 +560,7 @@ namespace ProtoCore
 
             log.AppendLine("Case 4: Replication + Type conversion");
             {
-                if (arguments.Any(StackUtils.IsArray))
+                if (arguments.Any(arg => arg.IsArray()))
                 {
                     //Build the possible ways in which we might replicate
                     List<List<ReplicationInstruction>> replicationTrials =
@@ -1341,7 +1341,7 @@ namespace ProtoCore
                 {
 
                     StackValue[] subParameters = null;
-                    if (StackUtils.IsArray(formalParameters[repIndex]))
+                    if (formalParameters[repIndex].IsArray())
                     {
                         subParameters = ArrayUtils.GetValues(formalParameters[repIndex], core);
                     }
@@ -1668,7 +1668,7 @@ namespace ProtoCore
             //EXECUTE
             StackValue ret = finalFep.Execute(c, coercedParameters, stackFrame, core);
 
-            if (StackUtils.IsNull(ret))
+            if (ret.IsNull())
             {
 
                 //wipe the trace cache
@@ -1716,7 +1716,7 @@ namespace ProtoCore
 
 
                 //We have rep guides
-                if (StackUtils.IsArray(arguments[i]))
+                if (arguments[i].IsArray())
                 {
                     //Rep guides on array, use guides as provided
                     return providedReplicationGuides;
@@ -1843,7 +1843,7 @@ namespace ProtoCore
             }
 
 
-            if (StackUtils.IsArray(ret) && procNode.returntype.IsIndexable)
+            if (ret.IsArray() && procNode.returntype.IsIndexable)
             {
                 StackValue coercedRet = TypeSystem.Coerce(ret, retType, core);
                 GCUtils.GCRetain(coercedRet, core);
