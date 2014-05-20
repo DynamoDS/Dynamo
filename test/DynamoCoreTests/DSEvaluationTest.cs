@@ -802,6 +802,16 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\FormulaIntegration1.dyn");
             AssertPreviewValue("88d3bb73-42cd-4ffc-82e2-402c9550d5b1", new double[] { 0.000000, 0.001038, 0.002289, -0.007827, -0.035578, -0.046003, 0.034186, 0.216376, 0.315323, 0.000000 });
         }
+
+        [Test]
+        public void Test_Formula_InputWithUnit()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\formula\formula-inputWithUnit-test.dyn");
+
+            AssertPreviewValue("152a2a64-8c73-4e8c-a418-06ceb4ac0637", 1);
+        }
     }
 
     [Category("DSCustomNode")]
