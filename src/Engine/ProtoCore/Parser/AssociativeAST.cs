@@ -572,7 +572,9 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override string ToString()
         {
-            return Value.ToString();
+            // Do not use "ToString" here since it converts things to Camel case
+            return (Value ? "true" : "false");
+
         }
     }
 
