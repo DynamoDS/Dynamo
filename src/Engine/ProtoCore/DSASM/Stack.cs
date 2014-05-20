@@ -393,33 +393,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public static bool Equals(this StackValue lhs, StackValue rhs)
-        {
-            if (lhs.optype != rhs.optype)
-            {
-                return false;
-            }
-
-            switch (lhs.optype)
-            {
-                case AddressType.Int:
-                case AddressType.Char:
-                    return lhs.opdata == rhs.opdata;
-
-                case AddressType.Double:
-                    double lhsValue = lhs.RawDoubleValue;
-                    double rhsValue = rhs.RawDoubleValue;
-                    return MathUtils.Equals(lhsValue, rhsValue);
-
-                case AddressType.Boolean:
-                    return (lhs.opdata > 0 && rhs.opdata > 0) || (lhs.opdata == 0 && rhs.opdata ==0);
-                case AddressType.Pointer:
-                    return lhs.opdata == rhs.opdata && lhs.metaData.type == rhs.metaData.type;
-                default:
-                    return lhs.opdata == rhs.opdata;
-            }
-        }
-
         // heaper method to support negative index into stack
         public static StackValue GetValue(this HeapElement hs, int ix, Core core)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ProtoCore.Utils;
 using Operand = ProtoCore.DSASM.StackValue;
 
 namespace ProtoCore.DSASM
@@ -153,9 +154,11 @@ namespace ProtoCore.DSASM
                 return false;
 
             if (this.IsDouble())
-                return this.RawDoubleValue.Equals(rhs.RawDoubleValue);
+                return MathUtils.Equals(this.RawDoubleValue, rhs.RawDoubleValue);
+            else if (this.IsBoolean())
+                return this.RawBooleanValue == rhs.RawBooleanValue;
             else
-                return this.opdata == rhs.opdata;
+                return this.RawIntValue == rhs.RawIntValue;
         }
 
         public override string ToString()
