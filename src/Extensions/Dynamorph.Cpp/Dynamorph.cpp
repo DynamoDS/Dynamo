@@ -3,9 +3,30 @@
 
 #include "stdafx.h"
 #include "Dynamorph.h"
+#include "OpenGL Files\OpenInterfaces.h"
 
 using namespace System;
 using namespace Dynamorph;
+
+// ================================================================================
+// IGraphicsContext
+// ================================================================================
+
+IGraphicsContext* IGraphicsContext::Create(IGraphicsContext::ContextType contextType)
+{
+    switch(contextType)
+    {
+    case IGraphicsContext::ContextType::OpenGL:
+        return new Dynamorph::OpenGL::GraphicsContext();
+    }
+
+    auto message = L"Invalid value for 'IGraphicsContext::ContextType'";
+    throw gcnew System::InvalidOperationException(gcnew String(message));
+}
+
+// ================================================================================
+// Visualizer
+// ================================================================================
 
 System::IntPtr Visualizer::Create(System::IntPtr hWndParent, int width, int height)
 {
