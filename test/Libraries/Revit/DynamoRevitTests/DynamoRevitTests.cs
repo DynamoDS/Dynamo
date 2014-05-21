@@ -96,26 +96,19 @@ namespace Dynamo.Tests
                 dynSettings.DynamoLogger = logger;
                 var updateManager = new UpdateManager.UpdateManager(logger);
 
-                //create a new instance of the ViewModel
-                //Controller = new DynamoController(Context.NONE, updateManager, 
-                //    new DefaultWatchHandler(), new PreferenceSettings());
-                 
                 Controller = DynamoRevit.CreateDynamoRevitControllerAndViewModel(updater, logger, Context.NONE);
                 DynamoController.IsTestMode = true;
 
-                //Controller.DynamoViewModel = new DynamoViewModel(Controller, null);
-                //Controller.VisualizationManager = new VisualizationManager();
+                // create the transaction manager object
+                TransactionManager.SetupManager(new AutomaticTransactionStrategy());
+
+                //tests do not run from idle thread
+                TransactionManager.Instance.DoAssertInIdleThread = false;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
             }
-
-            //create the transaction manager object
-            TransactionManager.SetupManager(new AutomaticTransactionStrategy());
-
-            //tests do not run from idle thread
-            TransactionManager.Instance.DoAssertInIdleThread = false;
         }
 
         /// <summary>
