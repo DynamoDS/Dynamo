@@ -217,67 +217,6 @@ namespace ProtoCore.DSASM
     
     public static class StackUtils
     {
-        public static StackValue AsBoolean(this StackValue operand, Core core)
-        {
-            switch (operand.optype)
-            {
-                case AddressType.Boolean:
-                    return operand;
-                case AddressType.Int:
-                    return StackValue.BuildBoolean(operand.opdata != 0);
-                case AddressType.Null:
-                    return StackValue.Null; //BuildBoolean(false);
-                case AddressType.Double:
-                    double value = operand.RawDoubleValue;
-                    bool b = !(Double.IsNaN(value) || value.Equals(0.0));
-                    return StackValue.BuildBoolean(b);
-                case AddressType.Pointer:
-                    return StackValue.BuildBoolean(true);
-                case AddressType.String:
-                    if (ArrayUtils.GetElementSize(operand, core) == 0)
-                    {
-                        return StackValue.BuildBoolean(false);
-                    }
-                    return StackValue.BuildBoolean(true);
-
-                case AddressType.Char:
-                    if (EncodingUtils.ConvertInt64ToCharacter(operand.opdata)==0)
-                    {
-                        return StackValue.BuildBoolean(false);
-                    }
-                    return StackValue.BuildBoolean(true); 
-                default:
-                    return StackValue.Null;
-            }
-        }
-
-        public static StackValue AsDouble(this StackValue operand)
-        {
-            switch (operand.optype)
-            {
-                case AddressType.Int:
-                    return StackValue.BuildDouble(operand.RawIntValue);
-                case AddressType.Double:
-                    return operand;
-                default:
-                    return StackValue.Null;
-            }
-        }
-
-        public static StackValue AsInt(this StackValue operand)
-        {
-            switch (operand.optype)
-            {
-                case AddressType.Int:
-                    return operand;
-                case AddressType.Double:
-                    double value = operand.RawDoubleValue;
-                    return StackValue.BuildInt((Int64)Math.Round(value, 0, MidpointRounding.AwayFromZero));
-                default:
-                    return StackValue.Null;
-            }
-        }
-
         //this method compares the values of the stack variables passed
         public static bool CompareStackValues(StackValue sv1, StackValue sv2, Core c1, Core c2, ProtoCore.Runtime.Context context = null)
         {

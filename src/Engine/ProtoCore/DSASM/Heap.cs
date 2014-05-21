@@ -172,7 +172,7 @@ namespace ProtoCore.DSASM
 
             second.Stack = new StackValue[Stack.Length];
             for (int i = 0; i < Stack.Length; i++)
-                second.Stack[i] = Stack[i].ShallowClone();
+                second.Stack[i] = Stack[i];
 
             return second;
         }

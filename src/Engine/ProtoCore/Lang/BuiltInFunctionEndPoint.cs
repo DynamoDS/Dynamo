@@ -929,9 +929,9 @@ namespace ProtoCore.Lang
                 ((sv1.IsDouble()) || (sv1.IsInteger())) &&                
                 ((sv2.IsDouble()) || (sv2.IsInteger()))))
                 return ProtoCore.DSASM.Constants.kInvalidIndex;
-            double rangeMin = sv0.AsDouble().RawDoubleValue;
-            double rangeMax = sv1.AsDouble().RawDoubleValue;
-            double inputValue = sv2.AsDouble().RawDoubleValue;
+            double rangeMin = sv0.ToDouble().RawDoubleValue;
+            double rangeMax = sv1.ToDouble().RawDoubleValue;
+            double inputValue = sv2.ToDouble().RawDoubleValue;
             double result =  (inputValue - rangeMin) / (rangeMax - rangeMin);
             if (result < 0) return 0.0; //Exceed the range (less than rangeMin)
             if (result > 1) return 1.0; //Exceed the range (less than rangeMax)
@@ -946,11 +946,11 @@ namespace ProtoCore.Lang
                 ((sv3.IsDouble()) || (sv3.IsInteger())) &&
                 ((sv4.IsDouble()) || (sv4.IsInteger()))))
                 return ProtoCore.DSASM.Constants.kInvalidIndex;
-            double rangeMin = sv0.AsDouble().RawDoubleValue;
-            double rangeMax = sv1.AsDouble().RawDoubleValue;
-            double inputValue = sv2.AsDouble().RawDoubleValue;
-            double targetRangeMin = sv3.AsDouble().RawDoubleValue;
-            double targetRangeMax = sv4.AsDouble().RawDoubleValue;
+            double rangeMin = sv0.ToDouble().RawDoubleValue;
+            double rangeMax = sv1.ToDouble().RawDoubleValue;
+            double inputValue = sv2.ToDouble().RawDoubleValue;
+            double targetRangeMin = sv3.ToDouble().RawDoubleValue;
+            double targetRangeMax = sv4.ToDouble().RawDoubleValue;
             double result = targetRangeMin + (inputValue - rangeMin) * (targetRangeMax - targetRangeMin) / (rangeMax - rangeMin);
             if (result < targetRangeMin){ return targetRangeMin; }     //clamp to targetRangeMin
             if (result > targetRangeMax){ return targetRangeMax; }     //clamp to targetRangeMax
@@ -1065,20 +1065,20 @@ namespace ProtoCore.Lang
                 return StackValue.Null;
             }
 
-            decimal start = new decimal(svStart.AsDouble().RawDoubleValue);
-            decimal end = new decimal(svEnd.AsDouble().RawDoubleValue);
+            decimal start = new decimal(svStart.ToDouble().RawDoubleValue);
+            decimal end = new decimal(svEnd.ToDouble().RawDoubleValue);
             bool isIntRange = svStart.IsInteger() && svEnd.IsInteger();
 
             StackValue[] range = null;
             if (hasAmountOp)
             {
-                long amount = svEnd.AsInt().opdata;
+                long amount = svEnd.ToInteger().opdata;
                 if (amount < 0)
                 {
                    core.RuntimeStatus.LogWarning(WarningID.kInvalidArguments, WarningMessage.kInvalidAmountInRangeExpression);
                    return StackValue.Null;
                 }
-                decimal stepsize = new decimal(svStep.AsDouble().RawDoubleValue);
+                decimal stepsize = new decimal(svStep.ToDouble().RawDoubleValue);
                 range = GenerateRangeByAmount(start, amount, stepsize, isIntRange);
             }
             else
@@ -1522,9 +1522,9 @@ namespace ProtoCore.Lang
                 bContainsValidElement = true;
 
                 if (type == AddressType.Double)
-                    sum += element.AsDouble().RawDoubleValue;
+                    sum += element.ToDouble().RawDoubleValue;
                 else
-                    sum += element.AsInt().RawIntValue;
+                    sum += element.ToInteger().RawIntValue;
             }
 
             if (!bContainsValidElement)

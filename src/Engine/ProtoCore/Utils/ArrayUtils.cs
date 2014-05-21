@@ -682,7 +682,7 @@ namespace ProtoCore.Utils
 
             if (index.IsNumeric())
             {
-                index = index.AsInt();
+                index = index.ToInteger();
                 return SetValueForIndex(array, (int)index.opdata, value, core);
             }
             else
@@ -731,7 +731,7 @@ namespace ProtoCore.Utils
 
                 if (index.IsNumeric())
                 {
-                    index = index.AsInt();
+                    index = index.ToInteger();
                     int absIndex = he.ExpandByAcessingAt((int)index.opdata);
                     subArray = he.Stack[absIndex];
                 }
@@ -857,7 +857,7 @@ namespace ProtoCore.Utils
 
             if (index.IsNumeric())
             {
-                index = index.AsInt();
+                index = index.ToInteger();
                 return GetValueFromIndex(array, (int)index.opdata, core);
             }
             else if (index.IsArrayKey())
@@ -922,7 +922,7 @@ namespace ProtoCore.Utils
                 StackValue index = indices[i];
                 if (index.IsNumeric())
                 {
-                    index = index.AsInt();
+                    index = index.ToInteger();
                     array = GetValueFromIndex(array, (int)index.opdata, core);
                 }
                 else
@@ -1197,7 +1197,7 @@ namespace ProtoCore.Utils
             HeapElement he = GetHeapElement(array, core);
             if (key.IsNumeric())
             {
-                long index = key.AsInt().opdata;
+                long index = key.ToInteger().opdata;
                 if (index < 0)
                 {
                     index = index + he.VisibleSize;
@@ -1222,7 +1222,7 @@ namespace ProtoCore.Utils
 
             if (key.IsNumeric())
             {
-                long index = key.AsInt().opdata;
+                long index = key.ToInteger().opdata;
                 if (index < 0)
                 {
                     index = index + he.VisibleSize;

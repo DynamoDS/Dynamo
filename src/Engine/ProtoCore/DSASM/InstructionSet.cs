@@ -19,7 +19,7 @@ namespace ProtoCore.DSASM
         TX = 9
     }
 
-    public enum AddressType
+    public enum AddressType: int 
     {
         Invalid,
         Register,
@@ -134,16 +134,7 @@ namespace ProtoCore.DSASM
         public AddressType optype;
         public MetaData metaData;
 
-        public StackValue ShallowClone()
-        {
-            StackValue newSv = new StackValue();
-            newSv.optype = optype;
-            newSv.opdata = opdata;
-            newSv.metaData = new MetaData { type = metaData.type };
-
-            return newSv;
-        }
-
+        #region Override functions
         public override bool Equals(object other)
         {
             if (!(other is StackValue))
@@ -167,16 +158,28 @@ namespace ProtoCore.DSASM
             {
                 return RawDoubleValue.ToString();
             }
+            else if (IsBoolean())
+            {
+                return RawBooleanValue.ToString();
+            }
             else if (IsInteger())
             {
                 return RawIntValue.ToString();
             }
             else
+            {
                 return String.Format("{0}, opdata = {1}, metaData = {2}", optype.ToString(), opdata.ToString(),
                                      metaData.type.ToString());
-
+            }
         }
 
+        public override int GetHashCode()
+        {
+            return opdata.GetHashCode() ^ optype.GetHashCode() ^ metaData.GetHashCode();
+        }
+        #endregion
+
+        #region Get raw values
         /// <summary>
         /// Get integer value without checking its type or do type conversion,
         /// so the StackValue shoule be boolean typed.
@@ -212,8 +215,9 @@ namespace ProtoCore.DSASM
                 return opdata != 0;
             }
         }
-
-        #region Some constant values
+        #endregion
+        
+        #region Constant values
         public static StackValue Null = BuildNull();
         public static StackValue True = BuildBoolean(true);
         public static StackValue False = BuildBoolean(false);
@@ -588,13 +592,12 @@ namespace ProtoCore.DSASM
 
             foreach (char ch in str)
             {
-                svchars.Add(ProtoCore.DSASM.StackValue.BuildChar(ch));
+                svchars.Add(BuildChar(ch));
             }
 
             lock (heap.cslock)
             {
                 int size = str.Length;
-
                 int ptr = heap.Allocate(size);
 
                 for (int i = 0; i < size; ++i)
@@ -602,7 +605,7 @@ namespace ProtoCore.DSASM
                     heap.Heaplist[ptr].Stack[i] = BuildChar(str[i]);
                 }
 
-                return StackValue.BuildString(ptr);
+                return BuildString(ptr);
             }
         }
 
@@ -727,6 +730,100 @@ namespace ProtoCore.DSASM
             key = (int)((ulong)value << 32 >> 32);
             return true;
         }
+
+        #region Converters
+        /// <summary>
+        /// Convert StackValue to boolean typed StackValue. Returns 
+        /// StackValue.Null if not able to do conversion.
+        /// </summary>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public StackValue ToBoolean(Core core)
+        {
+            switch (optype)
+            {
+                case AddressType.Boolean:
+                    return this;
+
+                case AddressType.Int:
+                    return BuildBoolean(opdata != 0);
+
+                case AddressType.Null:
+                    return StackValue.Null; 
+
+                case AddressType.Double:
+                    bool b = !Double.IsNaN(RawDoubleValue) && !RawDoubleValue.Equals(0.0);
+                    return BuildBoolean(b);
+
+                case AddressType.Pointer:
+                    return StackValue.BuildBoolean(true);
+
+                case AddressType.String:
+                    if (ArrayUtils.GetElementSize(this, core) == 0)
+                    {
+                        return StackValue.False;
+                    }
+                    else
+                    {
+                        return StackValue.True;
+                    }
+
+                case AddressType.Char:
+                    if (EncodingUtils.ConvertInt64ToCharacter(opdata) == 0)
+                    {
+                        return StackValue.False;
+                    }
+                    else
+                    {
+                        return StackValue.True;
+                    }
+
+                default:
+                    return StackValue.Null;
+            }
+        }
+
+        /// <summary>
+        /// Convert numeric typed StackValue to double typed StackValue. For
+        /// other types, returns StackValue.Null.
+        /// </summary>
+        /// <returns></returns>
+        public StackValue ToDouble()
+        {
+            switch (optype)
+            {
+                case AddressType.Int:
+                    return BuildDouble(RawIntValue);
+
+                case AddressType.Double:
+                    return this;
+
+                default:
+                    return StackValue.Null;
+            }
+        }
+
+        /// <summary>
+        /// Convert numeric typed StackValue to integer typed StackValue. For
+        /// other types, returns StackValue.Null.
+        /// </summary>
+        /// <returns></returns>
+        public StackValue ToInteger()
+        {
+            switch (optype)
+            {
+                case AddressType.Int:
+                    return this;
+
+                case AddressType.Double:
+                    double value = RawDoubleValue;
+                    return BuildInt((Int64)Math.Round(value, 0, MidpointRounding.AwayFromZero));
+
+                default:
+                    return StackValue.Null;
+            }
+        }
+        #endregion
     }
 
     public class Instruction

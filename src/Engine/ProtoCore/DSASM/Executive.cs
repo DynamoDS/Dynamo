@@ -1624,7 +1624,7 @@ namespace ProtoCore.DSASM
             bool isPointerModified = svGraphNode.IsObject() || svUpdateNode.IsObject();
             bool isArrayModified = svGraphNode.IsArray() || svUpdateNode.IsArray();
             bool isDataModified = svGraphNode.opdata != svUpdateNode.opdata;
-            bool isDoubleDataModified = svGraphNode.IsDouble() && svGraphNode.RawDoubleValue != svUpdateNode.AsDouble().RawDoubleValue;
+            bool isDoubleDataModified = svGraphNode.IsDouble() && svGraphNode.RawDoubleValue != svUpdateNode.ToDouble().RawDoubleValue;
             bool isTypeModified = !svGraphNode.IsInvalid() && !svUpdateNode.IsInvalid() && svGraphNode.optype != svUpdateNode.optype;
 
             // Jun Comment: an invalid optype means that the value was not set
@@ -6134,7 +6134,6 @@ namespace ProtoCore.DSASM
                 opdata1 = StackValue.Null;
             }
 
-            Nullify(ref opdata2, ref opdata1);
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
@@ -6161,7 +6160,6 @@ namespace ProtoCore.DSASM
                 opdata2 = StackValue.Null;
             }
 
-            Nullify(ref opdata2, ref opdata1);
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
@@ -6185,7 +6183,6 @@ namespace ProtoCore.DSASM
                 opdata2 = StackValue.Null;
             }
 
-            Nullify(ref opdata2, ref opdata1);
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
@@ -6206,7 +6203,6 @@ namespace ProtoCore.DSASM
                 opdata2 = StackValue.Null;
             }
 
-            Nullify(ref opdata2, ref opdata1);
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
@@ -6226,7 +6222,6 @@ namespace ProtoCore.DSASM
                 opdata2 = StackValue.Null;
             }
 
-            Nullify(ref opdata2, ref opdata1);
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
@@ -6247,7 +6242,6 @@ namespace ProtoCore.DSASM
                 opdata2 = StackValue.Null;
             }
 
-            Nullify(ref opdata2, ref opdata1);
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
@@ -6267,7 +6261,6 @@ namespace ProtoCore.DSASM
                 opdata2 = StackValue.Null;
             }
 
-            Nullify(ref opdata2, ref opdata1);
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
@@ -6305,8 +6298,8 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            opdata1 = opdata1.AsBoolean(core);
-            opdata2 = opdata2.AsBoolean(core);
+            opdata1 = opdata1.ToBoolean(core);
+            opdata2 = opdata2.ToBoolean(core);
             if (opdata1.IsNull() || opdata2.IsNull())
             {
                 opdata2 = StackValue.Null;
@@ -6315,7 +6308,6 @@ namespace ProtoCore.DSASM
             {
                 opdata2 = StackValue.BuildBoolean(opdata2.opdata != 0L && opdata1.opdata != 0L);
             }
-            //Nullify(ref opdata2, ref opdata1);
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
@@ -6326,8 +6318,8 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            opdata1 = opdata1.AsBoolean(core);
-            opdata2 = opdata2.AsBoolean(core);
+            opdata1 = opdata1.ToBoolean(core);
+            opdata2 = opdata2.ToBoolean(core);
             if (opdata1.IsNull() || opdata2.IsNull())
             {
                 opdata2 = StackValue.Null;
@@ -6337,7 +6329,6 @@ namespace ProtoCore.DSASM
                 opdata2 = StackValue.BuildBoolean(opdata2.opdata != 0L || opdata1.opdata != 0L);
             }
 
-            //Nullify(ref opdata2, ref opdata1);
             SetOperandData(instruction.op1, opdata2);
 
             ++pc;
@@ -6347,13 +6338,12 @@ namespace ProtoCore.DSASM
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
 
-            opdata1 = opdata1.AsBoolean(core);
+            opdata1 = opdata1.ToBoolean(core);
             if (!opdata1.IsNull())
             {
                 opdata1 = StackValue.BuildBoolean(opdata1.opdata == 0L ? true : false);
             }
 
-            //Nullify(ref opdata1);
             SetOperandData(instruction.op1, opdata1);
 
             ++pc;
@@ -6366,8 +6356,8 @@ namespace ProtoCore.DSASM
 
             if (opdata1.IsBoolean() || opdata2.IsBoolean())
             {
-                opdata1 = opdata1.AsBoolean(core);
-                opdata2 = opdata2.AsBoolean(core);
+                opdata1 = opdata1.ToBoolean(core);
+                opdata2 = opdata2.ToBoolean(core);
                 if (opdata1.IsNull() || opdata2.IsNull()) 
                 {
                     opdata2 = StackValue.Null;
@@ -6417,8 +6407,8 @@ namespace ProtoCore.DSASM
 
             if (opdata1.IsBoolean() || opdata2.IsBoolean())
             {
-                opdata1 = opdata1.AsBoolean(core);
-                opdata2 = opdata2.AsBoolean(core);
+                opdata1 = opdata1.ToBoolean(core);
+                opdata2 = opdata2.ToBoolean(core);
                 opdata2 = StackValue.BuildBoolean(opdata1.opdata != opdata2.opdata);
             }
             else if (opdata1.IsNumeric() && opdata2.IsNumeric())
