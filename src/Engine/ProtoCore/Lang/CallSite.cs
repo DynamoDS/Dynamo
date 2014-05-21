@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Soap;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using ProtoCore.BuildData;
 using ProtoCore.DSASM;
@@ -82,7 +82,7 @@ namespace ProtoCore
                     Byte[] data = Convert.FromBase64String(info.GetString(marker + objectID + "_Data"));
 
 
-                    IFormatter formatter = new SoapFormatter();
+                    IFormatter formatter = new BinaryFormatter();
                     MemoryStream s = new MemoryStream(data);
 
                     srtd.Data = (ISerializable) formatter.Deserialize(s);
@@ -119,7 +119,7 @@ namespace ProtoCore
                     //Serialise the object
                     using (MemoryStream s = new MemoryStream())
                     {
-                        IFormatter formatter = new SoapFormatter();
+                        IFormatter formatter = new BinaryFormatter();
                         formatter.Serialize(s, Data);
                         info.AddValue(marker + objectID + "_Data", Convert.ToBase64String(s.ToArray()));
                     }
@@ -300,7 +300,7 @@ namespace ProtoCore
 
             Byte[] data = Convert.FromBase64String(serializedTraceData);
 
-            IFormatter formatter = new SoapFormatter();
+            IFormatter formatter = new BinaryFormatter();
             MemoryStream s = new MemoryStream(data);
 
             TraceSerialiserHelper helper = (TraceSerialiserHelper)formatter.Deserialize(s);
@@ -413,7 +413,7 @@ namespace ProtoCore
             using (MemoryStream memoryStream = new MemoryStream())
             {
 
-                IFormatter formatter = new SoapFormatter();
+                IFormatter formatter = new BinaryFormatter();
                 formatter.Serialize(memoryStream, helper);
 
                 return Convert.ToBase64String(memoryStream.ToArray());
