@@ -6,17 +6,24 @@ using namespace System;
 using namespace Dynamorph;
 using namespace Dynamorph::OpenGL;
 
-INITGLPROC(PFNGLCREATESHADERPROC,        glCreateShader);
-INITGLPROC(PFNGLSHADERSOURCEPROC,        glShaderSource);
-INITGLPROC(PFNGLCOMPILESHADERPROC,       glCompileShader);
-INITGLPROC(PFNGLGETSHADERIVPROC,         glGetShaderiv);
-INITGLPROC(PFNGLGETSHADERINFOLOGPROC,    glGetShaderInfoLog);
-INITGLPROC(PFNGLCREATEPROGRAMPROC,       glCreateProgram);
-INITGLPROC(PFNGLATTACHSHADERPROC,        glAttachShader);
-INITGLPROC(PFNGLLINKPROGRAMPROC,         glLinkProgram);
-INITGLPROC(PFNGLGETPROGRAMIVPROC,        glGetProgramiv);
-INITGLPROC(PFNGLGETPROGRAMINFOLOGPROC,   glGetProgramInfoLog);
-INITGLPROC(PFNGLDELETESHADERPROC,        glDeleteShader);
+INITGLPROC(PFNGLCREATESHADERPROC,               glCreateShader);
+INITGLPROC(PFNGLSHADERSOURCEPROC,               glShaderSource);
+INITGLPROC(PFNGLCOMPILESHADERPROC,              glCompileShader);
+INITGLPROC(PFNGLGETSHADERIVPROC,                glGetShaderiv);
+INITGLPROC(PFNGLGETSHADERINFOLOGPROC,           glGetShaderInfoLog);
+INITGLPROC(PFNGLCREATEPROGRAMPROC,              glCreateProgram);
+INITGLPROC(PFNGLATTACHSHADERPROC,               glAttachShader);
+INITGLPROC(PFNGLLINKPROGRAMPROC,                glLinkProgram);
+INITGLPROC(PFNGLGETPROGRAMIVPROC,               glGetProgramiv);
+INITGLPROC(PFNGLGETPROGRAMINFOLOGPROC,          glGetProgramInfoLog);
+INITGLPROC(PFNGLDELETESHADERPROC,               glDeleteShader);
+INITGLPROC(PFNGLGENBUFFERSPROC,                 glGenBuffers);
+INITGLPROC(PFNGLBUFFERDATAPROC,                 glBufferData);
+INITGLPROC(PFNGLENABLEVERTEXATTRIBARRAYPROC,    glEnableVertexAttribArray);
+INITGLPROC(PFNGLDISABLEVERTEXATTRIBARRAYPROC,   glDisableVertexAttribArray);
+INITGLPROC(PFNGLBINDBUFFERPROC,                 glBindBuffer);
+INITGLPROC(PFNGLVERTEXATTRIBPOINTERPROC,        glVertexAttribPointer);
+INITGLPROC(PFNGLDRAWARRAYSEXTPROC,              glDrawArraysExt);
 
 // ================================================================================
 // CommonShaderBase
