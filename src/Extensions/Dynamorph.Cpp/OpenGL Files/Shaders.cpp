@@ -22,14 +22,17 @@ INITGLPROC(PFNGLDELETESHADERPROC,        glDeleteShader);
 // CommonShaderBase
 // ================================================================================
 
-CommonShaderBase::CommonShaderBase(GraphicsContext* pGraphicsContext) : 
+CommonShaderBase::CommonShaderBase(const GraphicsContext* pGraphicsContext) : 
     mpGraphicsContext(pGraphicsContext), mShaderId(0)
 {
 }
 
 CommonShaderBase::~CommonShaderBase(void)
 {
-    GL::glDeleteShader(mShaderId);
+    if (mShaderId != 0) {
+        GL::glDeleteShader(mShaderId);
+        mShaderId = 0;
+    }
 }
 
 bool CommonShaderBase::LoadFromContent(const std::string& content)
@@ -59,7 +62,7 @@ GLuint CommonShaderBase::GetShaderId(void) const
 // VertexShader
 // ================================================================================
 
-VertexShader::VertexShader(GraphicsContext* pGraphicsContext) : 
+VertexShader::VertexShader(const GraphicsContext* pGraphicsContext) : 
     CommonShaderBase(pGraphicsContext)
 {
 }
@@ -73,7 +76,7 @@ GLuint VertexShader::CreateShaderIdCore(void) const
 // FragmentShader
 // ================================================================================
 
-FragmentShader::FragmentShader(GraphicsContext* pGraphicsContext) : 
+FragmentShader::FragmentShader(const GraphicsContext* pGraphicsContext) : 
     CommonShaderBase(pGraphicsContext)
 {
 }
@@ -82,6 +85,10 @@ GLuint FragmentShader::CreateShaderIdCore(void) const
 {
     return GL::glCreateShader(GL_FRAGMENT_SHADER);
 }
+
+// ================================================================================
+// ShaderProgram
+// ================================================================================
 
 ShaderProgram::ShaderProgram(
     VertexShader* pVertexShader, FragmentShader* pFragmentShader) : 

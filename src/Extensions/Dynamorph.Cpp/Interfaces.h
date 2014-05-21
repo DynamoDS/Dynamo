@@ -6,14 +6,20 @@ namespace Dynamorph
 {
     class IVertexShader
     {
+    public:
+        virtual ~IVertexShader() { }
     };
 
     class IFragmentShader
     {
+    public:
+        virtual ~IFragmentShader() { }
     };
 
     class IShaderProgram
     {
+    public:
+        virtual ~IShaderProgram() { }
     };
 
     class IGraphicsContext

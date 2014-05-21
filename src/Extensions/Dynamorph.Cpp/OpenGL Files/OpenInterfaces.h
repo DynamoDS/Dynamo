@@ -65,7 +65,7 @@ namespace Dynamorph { namespace OpenGL {
     class CommonShaderBase
     {
     public:
-        CommonShaderBase(GraphicsContext* pGraphicsContext);
+        CommonShaderBase(const GraphicsContext* pGraphicsContext);
         virtual ~CommonShaderBase(void);
 
         bool LoadFromContent(const std::string& content);
@@ -76,22 +76,22 @@ namespace Dynamorph { namespace OpenGL {
 
     private:
         GLuint mShaderId;
-        GraphicsContext* mpGraphicsContext;
+        const GraphicsContext* mpGraphicsContext;
     };
 
     class VertexShader : public CommonShaderBase, public Dynamorph::IVertexShader
     {
     public:
-        VertexShader(GraphicsContext* pGraphicsContext);
+        VertexShader(const GraphicsContext* pGraphicsContext);
 
     protected:
         virtual GLuint CreateShaderIdCore(void) const;
     };
 
-    class FragmentShader : public CommonShaderBase, public Dynamorph::IVertexShader
+    class FragmentShader : public CommonShaderBase, public Dynamorph::IFragmentShader
     {
     public:
-        FragmentShader(GraphicsContext* pGraphicsContext);
+        FragmentShader(const GraphicsContext* pGraphicsContext);
 
     protected:
         virtual GLuint CreateShaderIdCore(void) const;

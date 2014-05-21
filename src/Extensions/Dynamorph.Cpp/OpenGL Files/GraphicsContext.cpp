@@ -67,16 +67,23 @@ void GraphicsContext::UninitializeCore(void)
 
 IVertexShader* GraphicsContext::CreateVertexShaderCore(const std::string& content) const
 {
-    return nullptr;
+    VertexShader* pVertexShader = new VertexShader(this);
+    pVertexShader->LoadFromContent(content);
+    return pVertexShader;
 }
 
 IFragmentShader* GraphicsContext::CreateFragmentShaderCore(const std::string& content) const
 {
-    return nullptr;
+    FragmentShader* pFragmentShader = new FragmentShader(this);
+    pFragmentShader->LoadFromContent(content);
+    return pFragmentShader;
 }
 
 IShaderProgram* GraphicsContext::CreateShaderProgramCore(
     IVertexShader* pVertexShader, IFragmentShader* pFragmentShader)
 {
-    return nullptr;
+    auto pvs = dynamic_cast<VertexShader *>(pVertexShader);
+    auto pfs = dynamic_cast<FragmentShader *>(pFragmentShader);
+    ShaderProgram* pShaderProgram = new ShaderProgram(pvs, pfs);
+    return pShaderProgram;
 }
