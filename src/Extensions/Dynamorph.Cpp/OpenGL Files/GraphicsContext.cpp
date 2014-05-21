@@ -87,3 +87,8 @@ IShaderProgram* GraphicsContext::CreateShaderProgramCore(
     ShaderProgram* pShaderProgram = new ShaderProgram(pvs, pfs);
     return pShaderProgram;
 }
+
+IVertexBuffer* GraphicsContext::CreateVertexBufferCore(void) const
+{
+    return new VertexBuffer();
+}

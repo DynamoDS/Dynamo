@@ -70,6 +70,11 @@ namespace Dynamorph
             return this->CreateShaderProgramCore(pVertexShader, pFragmentShader);
         }
 
+        IVertexBuffer* CreateVertexBuffer(void) const
+        {
+            return this->CreateVertexBufferCore();
+        }
+
     protected:
         virtual void InitializeCore(HWND hWndOwner) = 0;
         virtual void UninitializeCore(void) = 0;
@@ -80,6 +85,8 @@ namespace Dynamorph
             const std::string& content) const = 0;
         virtual IShaderProgram* CreateShaderProgramCore(
             IVertexShader* pVertexShader, IFragmentShader* pFragmentShader) = 0;
+
+        virtual IVertexBuffer* CreateVertexBufferCore(void) const = 0;
     };
 }
 
