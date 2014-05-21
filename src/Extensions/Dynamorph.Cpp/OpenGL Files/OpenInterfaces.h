@@ -28,6 +28,7 @@ namespace Dynamorph { namespace OpenGL {
             GETGLPROC(PFNGLGETPROGRAMINFOLOGPROC,           glGetProgramInfoLog);
             GETGLPROC(PFNGLDELETESHADERPROC,                glDeleteShader);
             GETGLPROC(PFNGLGENBUFFERSPROC,                  glGenBuffers);
+            GETGLPROC(PFNGLDELETEBUFFERSPROC,               glDeleteBuffers);
             GETGLPROC(PFNGLBUFFERDATAPROC,                  glBufferData);
             GETGLPROC(PFNGLENABLEVERTEXATTRIBARRAYPROC,     glEnableVertexAttribArray);
             GETGLPROC(PFNGLDISABLEVERTEXATTRIBARRAYPROC,    glDisableVertexAttribArray);
@@ -48,6 +49,7 @@ namespace Dynamorph { namespace OpenGL {
         DEFGLPROC(PFNGLGETPROGRAMINFOLOGPROC,           glGetProgramInfoLog);
         DEFGLPROC(PFNGLDELETESHADERPROC,                glDeleteShader);
         DEFGLPROC(PFNGLGENBUFFERSPROC,                  glGenBuffers);
+        DEFGLPROC(PFNGLDELETEBUFFERSPROC,               glDeleteBuffers);
         DEFGLPROC(PFNGLBUFFERDATAPROC,                  glBufferData);
         DEFGLPROC(PFNGLENABLEVERTEXATTRIBARRAYPROC,     glEnableVertexAttribArray);
         DEFGLPROC(PFNGLDISABLEVERTEXATTRIBARRAYPROC,    glDisableVertexAttribArray);
@@ -121,6 +123,23 @@ namespace Dynamorph { namespace OpenGL {
         GLuint mProgramId;
         VertexShader* mpVertexShader;
         FragmentShader* mpFragmentShader;
+    };
+
+    class VertexBuffer : public Dynamorph::IVertexBuffer
+    {
+    public:
+        VertexBuffer();
+        ~VertexBuffer();
+
+    protected:
+        virtual void LoadDataCore(const std::vector<float>& positions);
+        virtual void LoadDataCore(const std::vector<float>& positions,
+            const std::vector<float>& colors);
+
+    private:
+        void EnsureVertexBufferCreation(void);
+
+        GLuint mVertexBufferId;
     };
 } }
 

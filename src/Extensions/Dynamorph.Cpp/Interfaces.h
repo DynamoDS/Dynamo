@@ -22,6 +22,21 @@ namespace Dynamorph
         virtual ~IShaderProgram() { }
     };
 
+    class IVertexBuffer
+    {
+    public:
+        virtual ~IVertexBuffer() { }
+
+        void LoadData(const std::vector<float>& positions);
+        void LoadData(const std::vector<float>& positions,
+            const std::vector<float>& colors);
+
+    protected:
+        virtual void LoadDataCore(const std::vector<float>& positions) = 0;
+        virtual void LoadDataCore(const std::vector<float>& positions,
+            const std::vector<float>& colors) = 0;
+    };
+
     class IGraphicsContext
     {
     public:

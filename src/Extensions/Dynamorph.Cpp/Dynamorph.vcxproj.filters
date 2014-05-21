@@ -50,5 +50,8 @@
     <ClCompile Include="OpenGL Files\Shaders.cpp">
       <Filter>OpenGL Files</Filter>
     </ClCompile>
+    <ClCompile Include="OpenGL Files\Buffers.cpp">
+      <Filter>OpenGL Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
