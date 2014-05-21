@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Prompts;
@@ -1020,12 +1021,6 @@ namespace Dynamo.Controls
             }
 
             e.Handled = true;
-        }
-
-        //@TODO(Luke): Turn this into a dependency property
-        private void VerboseLogging_OnChecked(object sender, RoutedEventArgs e)
-        {
-            dynSettings.VerboseLogging = ((MenuItem)e.Source).IsChecked;
         }
     }
 }
