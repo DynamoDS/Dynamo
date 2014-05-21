@@ -3,6 +3,7 @@
 #include "OpenInterfaces.h"
 
 using namespace System;
+using namespace Dynamorph;
 using namespace Dynamorph::OpenGL;
 
 GraphicsContext::GraphicsContext() : 
@@ -17,6 +18,8 @@ void GraphicsContext::InitializeCore(HWND hWndOwner)
         auto message = L"'GraphicsContext::InitializeCore' called twice";
         throw gcnew InvalidOperationException(gcnew String(message));
     }
+
+    GL::Initialize(); // Initialize OpenGL extension.
 
     // TODO(Ben): This process of determining the pixel format and creation of 
     // corresponding render context is the most basic one and will likely fail 
@@ -60,4 +63,20 @@ void GraphicsContext::UninitializeCore(void)
     // Now that the default context is reset, destroy the render context.
     ::wglDeleteContext(mhRenderContext);
     mhRenderContext = nullptr;
+}
+
+IVertexShader* GraphicsContext::CreateVertexShaderCore(const std::string& content) const
+{
+    return nullptr;
+}
+
+IFragmentShader* GraphicsContext::CreateFragmentShaderCore(const std::string& content) const
+{
+    return nullptr;
+}
+
+IShaderProgram* GraphicsContext::CreateShaderProgramCore(
+    IVertexShader* pVertexShader, IFragmentShader* pFragmentShader)
+{
+    return nullptr;
 }

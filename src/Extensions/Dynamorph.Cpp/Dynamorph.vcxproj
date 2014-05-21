@@ -101,6 +101,7 @@
     </ClCompile>
     <ClCompile Include="Dynamorph.cpp" />
     <ClCompile Include="OpenGL Files\GraphicsContext.cpp" />
+    <ClCompile Include="OpenGL Files\Shaders.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
