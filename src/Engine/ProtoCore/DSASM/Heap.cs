@@ -172,7 +172,7 @@ namespace ProtoCore.DSASM
 
             second.Stack = new StackValue[Stack.Length];
             for (int i = 0; i < Stack.Length; i++)
-                second.Stack[i] = Stack[i];
+                second.Stack[i] = Stack[i].ShallowClone();
 
             return second;
         }
@@ -295,7 +295,7 @@ namespace ProtoCore.DSASM
             {
                 for (int j = 0; j < Heaplist[i].GetAllocatedSize(); ++j)
                 {
-                    if (Heaplist[i].Stack[j].IsObject())
+                    if (Heaplist[i].Stack[j].IsPointer())
                     {
                         Heaplist[i].Stack[j].opdata += offset;
                     }
@@ -439,7 +439,7 @@ namespace ProtoCore.DSASM
             for (int n = 0; n < ptrList.Length; ++n)
             {
                 StackValue svPtr = ptrList[n];
-                if (!svPtr.IsObject() && !svPtr.IsArray())
+                if (!svPtr.IsPointer() && !svPtr.IsArray())
                 {
                     continue;
                 }
@@ -465,7 +465,7 @@ namespace ProtoCore.DSASM
                 if (hs.Refcount == 0)
                 {
                     // if it is of class type, first call its destructor before clean its members
-                    if(svPtr.IsObject())
+                    if(svPtr.IsPointer())
                         GCDisposeObject(ref svPtr, exe);
 
                     if (svPtr.IsArray() && hs.Dict != null)

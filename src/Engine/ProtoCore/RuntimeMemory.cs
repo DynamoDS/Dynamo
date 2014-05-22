@@ -198,7 +198,7 @@ namespace ProtoCore
 
             public bool ValidateStackFrame()
             {
-                return Stack[GetRelative(StackFrame.kFrameIndexThisPtr)].IsObject()
+                return Stack[GetRelative(StackFrame.kFrameIndexThisPtr)].IsPointer()
                     && Stack[GetRelative(StackFrame.kFrameIndexClass)].IsInteger()
                     && Stack[GetRelative(StackFrame.kFrameIndexFunction)].IsInteger()
                     && Stack[GetRelative(StackFrame.kFrameIndexReturnAddress)].IsInteger()
@@ -428,7 +428,7 @@ namespace ProtoCore
                     return StackValue.Null;
 
                 StackValue sv = Heap.Heaplist[thisptr].Stack[offset];
-                Validity.Assert(sv.IsObject() || sv.IsArray()|| sv.IsInvalid());
+                Validity.Assert(sv.IsPointer() || sv.IsArray()|| sv.IsInvalid());
 
                 // Not initialized yet
                 if (sv.IsInvalid())
@@ -446,7 +446,7 @@ namespace ProtoCore
                 if (null != Heap.Heaplist[nextPtr].Stack && Heap.Heaplist[nextPtr].Stack.Length > 0)
                 {
                     StackValue data = Heap.Heaplist[nextPtr].Stack[0];
-                    bool isActualData = !data.IsObject() && !data.IsArray() && !data.IsInvalid(); // Invalid is an uninitialized member
+                    bool isActualData = !data.IsPointer() && !data.IsArray() && !data.IsInvalid(); 
                     if (isActualData)
                     {
                         return data;
@@ -457,12 +457,12 @@ namespace ProtoCore
 
             public StackValue GetPrimitive(StackValue op)
             {
-                if (!op.IsObject())
+                if (!op.IsPointer())
                 {
                     return op;
                 }
                 int ptr = (int)op.opdata;
-                while (Heap.Heaplist[ptr].Stack[0].IsObject())
+                while (Heap.Heaplist[ptr].Stack[0].IsPointer())
                 {
                     ptr = (int)Heap.Heaplist[ptr].Stack[0].opdata;
                 }

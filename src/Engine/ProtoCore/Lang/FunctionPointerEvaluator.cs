@@ -68,7 +68,7 @@ namespace ProtoCore.Lang
                 }
             }
 
-            if (!isValidThisPointer || (!thisPtr.IsObject() && !thisPtr.IsArray()))
+            if (!isValidThisPointer || (!thisPtr.IsPointer() && !thisPtr.IsArray()))
             {
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
                                                      WarningMessage.kDeferencingNonPointer);

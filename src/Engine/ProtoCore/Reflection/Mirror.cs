@@ -227,7 +227,7 @@ namespace ProtoCore
             private Dictionary<string, List<string>> GetType(StackValue sv)
             {
                 Dictionary<string, List<string>> asmType = new Dictionary<string, List<string>>();
-                if (sv.IsObject())
+                if (sv.IsPointer())
                 {
                     ClassNode classNode = core.ClassTable.ClassNodes[(int)sv.metaData.type];
                     //assemblyName = classNode.ExternLib;                    
@@ -510,7 +510,7 @@ namespace ProtoCore
             internal ClassMirror(StackValue svData, ProtoCore.Core core)
                 : base(core)
             {
-                Validity.Assert(svData.IsObject());
+                Validity.Assert(svData.IsPointer());
                 Validity.Assert(null != core);
                 Validity.Assert(null != core.DSExecutable.classTable);
 

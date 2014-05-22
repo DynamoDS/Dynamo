@@ -391,7 +391,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static HeapElement GetHeapElement(StackValue heapObject, Core core)
         {
-            if (!heapObject.IsArray() && !heapObject.IsString() && !heapObject.IsObject())
+            if (!heapObject.IsArray() && !heapObject.IsString() && !heapObject.IsPointer())
             {
                 return null;
             }
@@ -1263,19 +1263,19 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetNextKey(StackValue key, Core core)
         {
-            int ptr;
+            StackValue array;
             int index;
 
-            if (!key.TryGetArrayKey(out ptr, out index))
+            if (!key.TryGetArrayKey(out array, out index))
             {
                 return StackValue.Null;
             }
 
-            HeapElement he = core.Heap.Heaplist[ptr];
+            HeapElement he = GetHeapElement(array, core);
             if ((he.VisibleSize  > index + 1) ||
                 (he.Dict != null && he.Dict.Count + he.VisibleSize > index + 1))
             {
-                return StackValue.BuildArrayKey(ptr, index + 1); 
+                return StackValue.BuildArrayKey((int)array.opdata, index + 1); 
             }
 
             return StackValue.Null;

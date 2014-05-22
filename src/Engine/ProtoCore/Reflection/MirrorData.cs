@@ -120,7 +120,7 @@ namespace ProtoCore
             /// <returns></returns>
             private ClassMirror GetClass()
             {
-                if (!svData.IsObject())
+                if (!svData.IsPointer())
                     return null;
 
                 return new ClassMirror(svData, this.core);

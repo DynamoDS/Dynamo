@@ -769,7 +769,7 @@ namespace ProtoCore
                                                        List<FunctionEndPoint> feps, List<StackValue> argumentsList)
         {
             StackValue svThisPtr = stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr);
-            Validity.Assert(svThisPtr.IsObject(),
+            Validity.Assert(svThisPtr.IsPointer(),
                             "this pointer wasn't a pointer. {89635B06-AD53-4170-ADA5-065EB2AE5858}");
 
             int typeID = (int) svThisPtr.metaData.type;
@@ -946,7 +946,7 @@ namespace ProtoCore
                 //    && !fep.procedureNode.isConstructor
                 //    && !fep.procedureNode.isStatic)
 
-                if ((stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).IsObject() &&
+                if ((stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).IsPointer() &&
                      stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).opdata == -1 && fep.procedureNode != null
                      && !fep.procedureNode.isConstructor) && !fep.procedureNode.isStatic
                     && (fep.procedureNode.classScope != -1))

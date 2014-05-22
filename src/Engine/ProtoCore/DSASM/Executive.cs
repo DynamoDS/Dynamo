@@ -717,7 +717,7 @@ namespace ProtoCore.DSASM
                 }
 
                 // 
-                if (!svThisPtr.IsObject())
+                if (!svThisPtr.IsPointer())
                 {
                     string message = String.Format(WarningMessage.kInvokeMethodOnInvalidObject, fNode.name);
                     core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, message);
@@ -743,7 +743,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            if (svThisPtr.IsObject() &&
+            if (svThisPtr.IsPointer() &&
                 svThisPtr.opdata != Constants.kInvalidIndex &&
                 svThisPtr.metaData.type != Constants.kInvalidIndex)
             {
@@ -1066,7 +1066,7 @@ namespace ProtoCore.DSASM
                 arguments.Insert(0, lhs);
             }
 
-            if (!isValidThisPointer || (!thisObject.IsObject() && !thisObject.IsArray()))
+            if (!isValidThisPointer || (!thisObject.IsPointer() && !thisObject.IsArray()))
             {
                 core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
                                               WarningMessage.kDeferencingNonPointer);
@@ -1246,7 +1246,7 @@ namespace ProtoCore.DSASM
 
                 string rhs = null;
                 StackValue snode = rmem.GetStackData(blockId, index, Constants.kGlobalScope);
-                if (snode.IsObject())
+                if (snode.IsPointer())
                 {
                     int type = (int)snode.metaData.type;
                     string cname = core.ClassTable.ClassNodes[type].name;
@@ -1343,7 +1343,7 @@ namespace ProtoCore.DSASM
                 Int64 ptr = snode.opdata;
                 rhs = UnboxString((int)ptr, blockId, index);
             }
-            else if (snode.IsObject())
+            else if (snode.IsPointer())
             {
                 int type = (int)snode.metaData.type;
                 string cname = core.ClassTable.ClassNodes[type].name;
@@ -1621,7 +1621,7 @@ namespace ProtoCore.DSASM
         }
         private bool IsNodeModified(StackValue svGraphNode, StackValue svUpdateNode)
         {
-            bool isPointerModified = svGraphNode.IsObject() || svUpdateNode.IsObject();
+            bool isPointerModified = svGraphNode.IsPointer() || svUpdateNode.IsPointer();
             bool isArrayModified = svGraphNode.IsArray() || svUpdateNode.IsArray();
             bool isDataModified = svGraphNode.opdata != svUpdateNode.opdata;
             bool isDoubleDataModified = svGraphNode.IsDouble() && svGraphNode.RawDoubleValue != svUpdateNode.ToDouble().RawDoubleValue;
@@ -3974,7 +3974,7 @@ namespace ProtoCore.DSASM
 
             // Check the last pointer
             StackValue opVal = rtSymbols[n - 1].Sv;
-            if (opVal.IsObject() || opVal.IsInvalid())
+            if (opVal.IsPointer() || opVal.IsInvalid())
             {
                 /*
                   if lookahead is Not a pointer then
@@ -3991,8 +3991,7 @@ namespace ProtoCore.DSASM
                 int nextPtr = (int)opVal.opdata;
                 var data = core.Heap.Heaplist[nextPtr].Stack[0];
 
-                // Invalid is an uninitialized member
-                bool isActualData = !data.IsObject() && !data.IsArray() && !data.IsInvalid();
+                bool isActualData = !data.IsPointer() && !data.IsArray() && !data.IsInvalid();
                 if (isActualData)
                 {
                     // Move one more and get the value at the first heapstack
@@ -4391,7 +4390,7 @@ namespace ProtoCore.DSASM
                         //assuming the dimension is zero, as funtion call with nonzero dimension is not supported yet
 
                         // Check the last pointer
-                        if (fpSv.IsObject() || fpSv.IsInvalid())
+                        if (fpSv.IsPointer() || fpSv.IsInvalid())
                         {
                             /*
                               if lookahead is Not a pointer then
@@ -4408,9 +4407,9 @@ namespace ProtoCore.DSASM
                             int nextPtr = (int)fpSv.opdata;
                             var data = core.Heap.Heaplist[nextPtr].Stack[0];
 
-                            bool isActualData = !data.IsObject() && 
+                            bool isActualData = !data.IsPointer() && 
                                                 !data.IsArray() && 
-                                                !data.IsInvalid(); // Invalid is an uninitialized member
+                                                !data.IsInvalid(); 
 
                             if (isActualData)
                             {
@@ -4695,7 +4694,7 @@ namespace ProtoCore.DSASM
                 if (allowGC)
                 {
                     StackValue sv = rmem.GetAtRelative(symbol);
-                    if (sv.IsObject() || sv.IsArray())
+                    if (sv.IsPointer() || sv.IsArray())
                     {
                         ptrList.Add(sv);
                     }
@@ -4894,7 +4893,7 @@ namespace ProtoCore.DSASM
 
             if (op1.IsVariableIndex() ||
                 op1.IsMemberVariableIndex() ||
-                op1.IsObject() ||
+                op1.IsPointer() ||
                 op1.IsArray() ||
                 op1.IsStaticVariableIndex() ||
                 op1.IsFunctionPointer())
@@ -4986,7 +4985,7 @@ namespace ProtoCore.DSASM
     
             if (op1.IsVariableIndex() ||
                 op1.IsMemberVariableIndex() ||
-                op1.IsObject() ||
+                op1.IsPointer() ||
                 op1.IsArray() ||
                 op1.IsStaticVariableIndex() ||
                 op1.IsFunctionPointer())
@@ -5092,7 +5091,7 @@ namespace ProtoCore.DSASM
                 StackValue op1 = instruction.op1;
                 if (op1.IsVariableIndex() ||
                     op1.IsMemberVariableIndex() ||
-                    op1.IsObject() ||
+                    op1.IsPointer() ||
                     op1.IsArray() ||
                     op1.IsStaticVariableIndex() ||
                     op1.IsFunctionPointer())
@@ -5173,7 +5172,7 @@ namespace ProtoCore.DSASM
                 StackValue op1 = instruction.op1;
                 if (op1.IsVariableIndex() ||
                     op1.IsMemberVariableIndex() ||
-                    op1.IsObject() ||
+                    op1.IsPointer() ||
                     op1.IsArray() ||
                     op1.IsStaticVariableIndex() ||
                     op1.IsFunctionPointer())
@@ -5363,7 +5362,7 @@ namespace ProtoCore.DSASM
             bool objectIndexing = false;
 
             if (instruction.op1.IsVariableIndex() ||
-                instruction.op1.IsObject() ||
+                instruction.op1.IsPointer() ||
                 instruction.op1.IsArray())
             {
 
@@ -5434,7 +5433,7 @@ namespace ProtoCore.DSASM
                 {
                     if (!isSSANode)
                     {
-                        if (EX.IsObject() && coercedValue.IsObject())
+                        if (EX.IsPointer() && coercedValue.IsPointer())
                         {
                             if (EX.opdata != coercedValue.opdata)
                             {
@@ -5549,7 +5548,7 @@ namespace ProtoCore.DSASM
             int staticType = (int)ProtoCore.PrimitiveType.kTypeVar;
             int rank = Constants.kArbitraryRank;
             if (instruction.op1.IsVariableIndex() ||
-                instruction.op1.IsObject() ||
+                instruction.op1.IsPointer() ||
                 instruction.op1.IsArray())
             {
 
@@ -5718,7 +5717,7 @@ namespace ProtoCore.DSASM
             //==================================================
 
             StackValue svThis = rmem.GetAtRelative(rmem.GetStackIndex(StackFrame.kFrameIndexThisPtr));
-            runtimeVerify(svThis.IsObject());
+            runtimeVerify(svThis.IsPointer());
             int thisptr = (int)svThis.opdata;
             StackValue svProperty = core.Heap.Heaplist[thisptr].Stack[stackIndex];
 
@@ -5767,10 +5766,10 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            if (svProperty.IsObject() || (svProperty.IsArray() && dimensions == 0))
+            if (svProperty.IsPointer() || (svProperty.IsArray() && dimensions == 0))
             {
                 // The data to assign is already a pointer
-                if (svData.IsObject() || svData.IsArray())
+                if (svData.IsPointer() || svData.IsArray())
                 {
                     // Assign the src pointer directily to this property
                     lock (core.Heap.cslock)
@@ -5808,7 +5807,7 @@ namespace ProtoCore.DSASM
             }
             else // This property has NOT been allocated
             {
-                if (svData.IsObject() || svData.IsArray())
+                if (svData.IsPointer() || svData.IsArray())
                 {
                     lock (core.Heap.cslock)
                     {
@@ -5976,7 +5975,7 @@ namespace ProtoCore.DSASM
             { //do nothing
             }
             else if (core.Heap.Heaplist[(int)tryPointer.opdata].Stack.Length == 1 &&
-                !core.Heap.Heaplist[(int)tryPointer.opdata].Stack[0].IsObject() &&
+                !core.Heap.Heaplist[(int)tryPointer.opdata].Stack[0].IsPointer() &&
                 !core.Heap.Heaplist[(int)tryPointer.opdata].Stack[0].IsArray())
             {
                 // TODO Jun:
@@ -5990,7 +5989,7 @@ namespace ProtoCore.DSASM
                     // GCPointer(DX); No need to spawn GC here, the data been replaced is not a pointer or array
                 }
             }
-            else if (finalPointer.IsObject() || data.IsNull())
+            else if (finalPointer.IsPointer() || data.IsNull())
             {
                 if (data.IsNull())
                 {
@@ -6035,7 +6034,7 @@ namespace ProtoCore.DSASM
             int blockId = DSASM.Constants.kInvalidIndex;
             if (instruction.op2.IsVariableIndex() ||
                 instruction.op2.IsMemberVariableIndex() ||
-                instruction.op2.IsObject() ||
+                instruction.op2.IsPointer() ||
                 instruction.op2.IsArray())
             {
                 StackValue svDim = rmem.Pop();
@@ -7493,7 +7492,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                if (opdata1.IsObject())
+                if (opdata1.IsPointer())
                 {
                     pc = (int)GetOperandData(instruction.op2).opdata;
                 }

@@ -480,7 +480,7 @@ namespace ProtoCore
                 }
             }
 
-            if (sv.IsObject())
+            if (sv.IsPointer())
             {
                 StackValue ret = ClassCoerece(sv, targetType, core);
                 return ret;
@@ -498,7 +498,7 @@ namespace ProtoCore
 
                 case (int)PrimitiveType.kTypeChar:
                     {
-                        StackValue newSV = sv;
+                        StackValue newSV = sv.ShallowClone();
                         newSV.metaData = new MetaData { type = (int)PrimitiveType.kTypeChar };
                         return newSV;
                     }
@@ -516,7 +516,7 @@ namespace ProtoCore
 
                 case (int)PrimitiveType.kTypeHostEntityID:
                     {
-                        StackValue newSV = sv;
+                        StackValue newSV = sv.ShallowClone();
                         newSV.metaData = new MetaData { type = (int)PrimitiveType.kTypeHostEntityID };
                         return newSV;
                     }
@@ -552,7 +552,7 @@ namespace ProtoCore
 
                 case (int)PrimitiveType.kTypeString:
                     {
-                        StackValue newSV = sv;
+                        StackValue newSV = sv.ShallowClone();
                         newSV.metaData = new MetaData { type = (int)PrimitiveType.kTypeString };
                         if (sv.metaData.type == (int)PrimitiveType.kTypeChar)
                         {

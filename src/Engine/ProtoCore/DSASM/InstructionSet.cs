@@ -134,6 +134,21 @@ namespace ProtoCore.DSASM
         public AddressType optype;
         public MetaData metaData;
 
+        /// <summary>
+        /// Although StackValue is a struct and assignment creates a copy
+        /// of StackValue on stack, ShallowClone() has an explicit meaning
+        /// to do copy.
+        /// </summary>
+        /// <returns></returns>
+        public StackValue ShallowClone()
+        {
+            StackValue newSv = new StackValue();
+            newSv.optype = optype;
+            newSv.opdata = opdata;
+            newSv.metaData = new MetaData { type = metaData.type };
+            return newSv;
+        }
+
         #region Override functions
         public override bool Equals(object other)
         {
@@ -144,12 +159,17 @@ namespace ProtoCore.DSASM
             if (this.optype != rhs.optype || this.metaData.type != rhs.metaData.type)
                 return false;
 
-            if (this.IsDouble())
-                return MathUtils.Equals(this.RawDoubleValue, rhs.RawDoubleValue);
-            else if (this.IsBoolean())
-                return this.RawBooleanValue == rhs.RawBooleanValue;
-            else
-                return this.RawIntValue == rhs.RawIntValue;
+            switch (optype)
+            {
+                case AddressType.Double:
+                    return MathUtils.Equals(this.RawDoubleValue, rhs.RawDoubleValue);
+
+                case AddressType.Boolean:
+                    return this.RawBooleanValue == rhs.RawBooleanValue;
+
+                default:
+                    return opdata == rhs.opdata;
+            }
         }
 
         public override string ToString()
@@ -299,7 +319,7 @@ namespace ProtoCore.DSASM
             return optype == AddressType.BlockIndex;
         }
 
-        public bool IsObject()
+        public bool IsPointer()
         {
             return optype == AddressType.Pointer;
         }
@@ -371,7 +391,7 @@ namespace ProtoCore.DSASM
 
         public bool IsReferenceType()
         {
-            return opdata != Constants.kInvalidIndex && (IsArray() || IsObject() || IsString());
+            return opdata != Constants.kInvalidIndex && (IsArray() || IsPointer() || IsString());
         }
         #endregion
 
@@ -471,6 +491,10 @@ namespace ProtoCore.DSASM
             }
             else
             {
+                // Array key information is encoded in 64bits opdata. 
+                //
+                // High 32 bits: array pointer
+                // Low 32 bits : array key
                 ulong key = (ulong)rawArrayPtr;
                 key = (key << 32) | (uint)index;
                 value.opdata = (long)key;
@@ -714,20 +738,31 @@ namespace ProtoCore.DSASM
         }
         #endregion
 
-        public bool TryGetArrayKey(out int rawArrayPointer, out int key)
+        /// <summary>
+        /// Try to get the host array and key value from StackValue. The address
+        /// type of StackValue should be AddressType.ArrayKey, otherwise 
+        /// StackValue.Null will be returned.
+        /// </summary>
+        /// <param name="array">Host array</param>
+        /// <param name="key">Key value</param>
+        /// <returns></returns>
+        public bool TryGetArrayKey(out StackValue array, out int key)
         {
-            rawArrayPointer = Constants.kInvalidIndex;
+            array = StackValue.Null;
             key = Constants.kInvalidIndex;
 
             if (!this.IsArrayKey())
                 return false;
 
-            long value = opdata;
-            if (value == Constants.kInvalidIndex)
+            if (opdata == Constants.kInvalidIndex)
                 return false;
 
-            rawArrayPointer = (int)((ulong)value >> 32);
-            key = (int)((ulong)value << 32 >> 32);
+            // Array key information is encoded in 64bits opdata. 
+            // High 32 bits: array pointer
+            // Low 32 bits : array key
+            var rawArrayPointer = ((ulong)opdata >> 32);
+            array = StackValue.BuildArrayPointer((long)rawArrayPointer);
+            key = (int)((ulong)opdata << 32 >> 32);
             return true;
         }
 

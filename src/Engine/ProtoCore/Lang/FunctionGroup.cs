@@ -137,7 +137,7 @@ namespace ProtoCore
                     //    && !fep.procedureNode.isConstructor
                     //    && !fep.procedureNode.isStatic)
 
-                    if ((stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).IsObject() &&
+                    if ((stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).IsPointer() &&
                         stackFrame.GetAt(StackFrame.AbsoluteIndex.kThisPtr).opdata == -1 && fep.procedureNode != null
                         && !fep.procedureNode.isConstructor) && !fep.procedureNode.isStatic
                         && (fep.procedureNode.classScope != -1))

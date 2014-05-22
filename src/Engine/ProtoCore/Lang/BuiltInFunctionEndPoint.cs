@@ -510,7 +510,7 @@ namespace ProtoCore.Lang
                 isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(lhs, ref thisObject, core);
             }
 
-            if (!isValidThisPointer || (!thisObject.IsObject() && !thisObject.IsArray()))
+            if (!isValidThisPointer || (!thisObject.IsPointer() && !thisObject.IsArray()))
             {
                 core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, WarningMessage.kDeferencingNonPointer);
                 return StackValue.Null;
@@ -608,7 +608,7 @@ namespace ProtoCore.Lang
                 if (Constants.kInvalidIndex != memvarIndex)
                 {
                     StackValue svMemberPtr = rmem.Heap.Heaplist[thisPtr].Stack[memvarIndex];
-                    if (svMemberPtr.IsObject())
+                    if (svMemberPtr.IsPointer())
                     {
                         StackValue svFunctionPtr = rmem.Heap.Heaplist[(int)svMemberPtr.opdata].Stack[0];
                         if (svFunctionPtr.IsFunctionPointer())

@@ -696,7 +696,7 @@ namespace ProtoCore.DSASM.Mirror
         // there is no need to look up that symbol again
         public string GetType(Obj obj)
         {
-            if (obj.DsasmValue.IsObject())
+            if (obj.DsasmValue.IsPointer())
             {
                 return core.ClassTable.ClassNodes[(int)obj.DsasmValue.metaData.type].name;
             }
@@ -971,7 +971,7 @@ namespace ProtoCore.DSASM.Mirror
         // traverse an class type object to get its property
         public Dictionary<string, Obj> GetProperties(Obj obj, bool excludeStatic = false)
         {
-            if (obj == null || !obj.DsasmValue.IsObject())
+            if (obj == null || !obj.DsasmValue.IsPointer())
                 return null;
 
             Dictionary<string, Obj> ret = new Dictionary<string, Obj>();
@@ -987,9 +987,9 @@ namespace ProtoCore.DSASM.Mirror
                 StackValue val = svs[index];
 
                 // check if the members are primitive type
-                if (val.IsObject() &&
+                if (val.IsPointer() &&
                     core.Heap.Heaplist[(int)val.opdata].Stack.Length == 1 &&
-                    !core.Heap.Heaplist[(int)val.opdata].Stack[0].IsObject() &&
+                    !core.Heap.Heaplist[(int)val.opdata].Stack[0].IsPointer() &&
                     !core.Heap.Heaplist[(int)val.opdata].Stack[0].IsArray())
                     val = core.Heap.Heaplist[(int)val.opdata].Stack[0];
 
@@ -1002,7 +1002,7 @@ namespace ProtoCore.DSASM.Mirror
 
         public List<string> GetPropertyNames(Obj obj)
         {
-            if (obj == null || !obj.DsasmValue.IsObject())
+            if (obj == null || !obj.DsasmValue.IsPointer())
                 return null;
 
             List<string> ret = new List<string>();
@@ -1079,7 +1079,7 @@ namespace ProtoCore.DSASM.Mirror
 
         public string GetFirstNameFromValue(StackValue v)
         {
-            if (!v.IsObject())
+            if (!v.IsPointer())
                 throw new ArgumentException("SV to highlight must be a pointer");
 
             ProtoCore.DSASM.Executable exe = MirrorTarget.rmem.Executable;

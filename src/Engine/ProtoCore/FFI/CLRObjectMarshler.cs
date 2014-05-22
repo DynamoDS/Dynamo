@@ -620,7 +620,7 @@ namespace ProtoFFI
                 return marshaler.UnMarshal(dsObject, context, dsi, expectedCLRType);
 
             //The dsObject must be of pointer type
-            Validity.Assert(dsObject.IsObject(), string.Format("Operand type {0} not supported for marshalling", dsObject.optype));
+            Validity.Assert(dsObject.IsPointer(), string.Format("Operand type {0} not supported for marshalling", dsObject.optype));
 
             //Search in the DSObjectMap, for corresponding clrObject.
             object clrObject = null;
@@ -1164,7 +1164,7 @@ namespace ProtoFFI
         private object CreateCLRObject(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type type)
         {
             //Must be a user defined type, and expecting a var object
-            if (type == typeof(object) && dsObject.IsObject())
+            if (type == typeof(object) && dsObject.IsPointer())
             {
                 //TOD: Fix GC issue, don't know how/when this will get GCed??
                 dsi.runtime.rmem.Heap.IncRefCount(dsObject);
