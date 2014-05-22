@@ -478,7 +478,7 @@ namespace ProtoTestFx.TD
             {
                 StackValue sv = testMirror.GetRawFirstValue(dsVariable);
 
-                if (!sv.IsArray() && !sv.IsObject())
+                if (!sv.IsArray() && !sv.IsPointer())
                 {
                     if (referencCount != 0)
                     {
