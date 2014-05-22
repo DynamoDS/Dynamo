@@ -55,6 +55,7 @@ HWND Visualizer::GetWindowHandle(void)
 
 Visualizer::Visualizer() : 
     mhWndVisualizer(nullptr),
+    mpShaderProgram(nullptr),
     mpGraphicsContext(nullptr)
 {
 }
@@ -86,10 +87,36 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     auto contextType = IGraphicsContext::ContextType::OpenGL;
     mpGraphicsContext = IGraphicsContext::Create(contextType);
     mpGraphicsContext->Initialize(mhWndVisualizer);
+
+    std::string vs(
+        "#version 150                                   \n"
+        "in vec2 position;                              \n"
+        "void main()                                    \n"
+        "{                                              \n"
+        "    gl_Position = vec4(position, 0.0, 1.0);    \n"
+        "}                                              \n");
+
+    std::string fs(
+        "#version 150                                   \n"
+        "out vec4 outColor;                             \n"
+        "void main()                                    \n"
+        "{                                              \n"
+        "    outColor = vec4(1.0, 1.0, 1.0, 1.0);       \n"
+        "}                                              \n");
+
+    // Create shaders and their program.
+    auto pVrtxShader = mpGraphicsContext->CreateVertexShader(vs);
+    auto pFragShader = mpGraphicsContext->CreateFragmentShader(fs);
+    auto pProgram = mpGraphicsContext->CreateShaderProgram(pVrtxShader, pFragShader);
 }
 
 void Visualizer::Uninitialize(void)
 {
+    if (this->mpShaderProgram != nullptr) {
+        delete this->mpShaderProgram;
+        this->mpShaderProgram = nullptr;
+    }
+
     if (this->mpGraphicsContext != nullptr) {
         this->mpGraphicsContext->Uninitialize();
         this->mpGraphicsContext = nullptr;

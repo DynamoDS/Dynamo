@@ -8,6 +8,7 @@
 namespace Dynamorph
 {
     class IGraphicsContext;
+    class IShaderProgram;
 
     DYNAMORPH_API public ref class Visualizer
     {
@@ -33,5 +34,6 @@ namespace Dynamorph
         // Class instance data members.
         HWND mhWndVisualizer;
         IGraphicsContext* mpGraphicsContext;
+        IShaderProgram* mpShaderProgram;
     };
 }

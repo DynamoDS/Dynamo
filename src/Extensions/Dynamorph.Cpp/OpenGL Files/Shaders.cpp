@@ -12,7 +12,9 @@ INITGLPROC(PFNGLCOMPILESHADERPROC,              glCompileShader);
 INITGLPROC(PFNGLGETSHADERIVPROC,                glGetShaderiv);
 INITGLPROC(PFNGLGETSHADERINFOLOGPROC,           glGetShaderInfoLog);
 INITGLPROC(PFNGLCREATEPROGRAMPROC,              glCreateProgram);
+INITGLPROC(PFNGLDELETEPROGRAMPROC,              glDeleteProgram);
 INITGLPROC(PFNGLATTACHSHADERPROC,               glAttachShader);
+INITGLPROC(PFNGLDETACHSHADERPROC,               glDetachShader);
 INITGLPROC(PFNGLLINKPROGRAMPROC,                glLinkProgram);
 INITGLPROC(PFNGLGETPROGRAMIVPROC,               glGetProgramiv);
 INITGLPROC(PFNGLGETPROGRAMINFOLOGPROC,          glGetProgramInfoLog);
@@ -118,12 +120,19 @@ mProgramId(0), mpVertexShader(pVertexShader), mpFragmentShader(pFragmentShader)
 ShaderProgram::~ShaderProgram(void)
 {
     if (mpVertexShader != nullptr) {
+        GL::glDetachShader(mProgramId, mpVertexShader->GetShaderId());
         delete mpVertexShader;
         mpVertexShader = nullptr;
     }
 
     if (mpFragmentShader != nullptr) {
+        GL::glDetachShader(mProgramId, mpFragmentShader->GetShaderId());
         delete mpFragmentShader;
         mpFragmentShader = nullptr;
+    }
+
+    if (mProgramId != 0) {
+        GL::glDeleteProgram(mProgramId);
+        mProgramId = 0;
     }
 }

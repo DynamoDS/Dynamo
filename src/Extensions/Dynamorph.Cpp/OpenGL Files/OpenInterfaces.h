@@ -22,7 +22,9 @@ namespace Dynamorph { namespace OpenGL {
             GETGLPROC(PFNGLGETSHADERIVPROC,                 glGetShaderiv);
             GETGLPROC(PFNGLGETSHADERINFOLOGPROC,            glGetShaderInfoLog);
             GETGLPROC(PFNGLCREATEPROGRAMPROC,               glCreateProgram);
+            GETGLPROC(PFNGLDELETEPROGRAMPROC,               glDeleteProgram);
             GETGLPROC(PFNGLATTACHSHADERPROC,                glAttachShader);
+            GETGLPROC(PFNGLDETACHSHADERPROC,                glDetachShader);
             GETGLPROC(PFNGLLINKPROGRAMPROC,                 glLinkProgram);
             GETGLPROC(PFNGLGETPROGRAMIVPROC,                glGetProgramiv);
             GETGLPROC(PFNGLGETPROGRAMINFOLOGPROC,           glGetProgramInfoLog);
@@ -43,7 +45,9 @@ namespace Dynamorph { namespace OpenGL {
         DEFGLPROC(PFNGLGETSHADERIVPROC,                 glGetShaderiv);
         DEFGLPROC(PFNGLGETSHADERINFOLOGPROC,            glGetShaderInfoLog);
         DEFGLPROC(PFNGLCREATEPROGRAMPROC,               glCreateProgram);
+        DEFGLPROC(PFNGLDELETEPROGRAMPROC,               glDeleteProgram);
         DEFGLPROC(PFNGLATTACHSHADERPROC,                glAttachShader);
+        DEFGLPROC(PFNGLDETACHSHADERPROC,                glDetachShader);
         DEFGLPROC(PFNGLLINKPROGRAMPROC,                 glLinkProgram);
         DEFGLPROC(PFNGLGETPROGRAMIVPROC,                glGetProgramiv);
         DEFGLPROC(PFNGLGETPROGRAMINFOLOGPROC,           glGetProgramInfoLog);
