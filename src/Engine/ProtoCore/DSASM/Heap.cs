@@ -194,7 +194,7 @@ namespace ProtoCore.DSASM
 
         public int GetHashCode(StackValue value)
         {
-            if (value.IsString())
+            if (value.IsString)
             {
                 HeapElement he = ArrayUtils.GetHeapElement(value, core);
                 int length = he.VisibleSize;
@@ -295,7 +295,7 @@ namespace ProtoCore.DSASM
             {
                 for (int j = 0; j < Heaplist[i].GetAllocatedSize(); ++j)
                 {
-                    if (Heaplist[i].Stack[j].IsPointer())
+                    if (Heaplist[i].Stack[j].IsPointer)
                     {
                         Heaplist[i].Stack[j].opdata += offset;
                     }
@@ -391,7 +391,7 @@ namespace ProtoCore.DSASM
 
         public bool IsTemporaryPointer(StackValue sv)
         {
-            if (!sv.IsReferenceType())
+            if (!sv.IsReferenceType)
             {
                 return false;
             }
@@ -403,7 +403,7 @@ namespace ProtoCore.DSASM
 
         public void IncRefCount(StackValue sv)
         {
-            if (!sv.IsReferenceType())
+            if (!sv.IsReferenceType)
             {
                 return;
             }
@@ -419,7 +419,7 @@ namespace ProtoCore.DSASM
 
         public void DecRefCount(StackValue sv)
         {
-            if (!sv.IsReferenceType())
+            if (!sv.IsReferenceType)
             {
                 return;
             }
@@ -439,7 +439,7 @@ namespace ProtoCore.DSASM
             for (int n = 0; n < ptrList.Length; ++n)
             {
                 StackValue svPtr = ptrList[n];
-                if (!svPtr.IsPointer() && !svPtr.IsArray())
+                if (!svPtr.IsPointer && !svPtr.IsArray)
                 {
                     continue;
                 }
@@ -465,10 +465,10 @@ namespace ProtoCore.DSASM
                 if (hs.Refcount == 0)
                 {
                     // if it is of class type, first call its destructor before clean its members
-                    if(svPtr.IsPointer())
+                    if(svPtr.IsPointer)
                         GCDisposeObject(ref svPtr, exe);
 
-                    if (svPtr.IsArray() && hs.Dict != null)
+                    if (svPtr.IsArray && hs.Dict != null)
                     {
                         foreach (var item in hs.Dict)
                         {

@@ -327,7 +327,7 @@ namespace ProtoFFI
                 int relative = 0 - ProtoCore.DSASM.StackFrame.kStackFrameSize - locals - i - 1;
                 StackValue o = dsi.runtime.rmem.GetAtRelative(relative);
 
-                if (o.IsInteger())
+                if (o.IsInteger)
                 {
                     if (mArgTypes[i].Name == "double")
                     {
@@ -341,11 +341,11 @@ namespace ProtoFFI
                         parameters.Add(o.RawIntValue);
                     }
                 }
-                else if (o.IsDouble())
+                else if (o.IsDouble)
                 {
                     parameters.Add(o.RawDoubleValue);
                 }
-                else if (o.IsArray())
+                else if (o.IsArray)
                 {
                     int size = 0;
                     object array = GetArray(o, dsi, out size);

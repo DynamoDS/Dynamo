@@ -291,7 +291,7 @@ namespace ProtoFFI
                 {
                     Type paramType = paraminfos[i].ParameterType;
                     object param = null;
-                    if (opArg.IsDefaultArgument())
+                    if (opArg.IsDefaultArgument)
                         param = Type.Missing;
                     else 
                         param = marshaller.UnMarshal(opArg, c, dsi, paramType);
@@ -460,8 +460,8 @@ namespace ProtoFFI
             StackValue propValue = (StackValue)retVal;
             StackValue thisObject = dsi.runtime.rmem.Stack.Last();
 
-            bool isValidPointer = thisObject.IsPointer() && thisObject.opdata != Constants.kInvalidIndex;
-            if (isValidPointer && propValue.IsReferenceType())
+            bool isValidPointer = thisObject.IsPointer && thisObject.opdata != Constants.kInvalidIndex;
+            if (isValidPointer && propValue.IsReferenceType)
             {
                 int classIndex = (int)thisObject.metaData.type;
                 if (classIndex != ProtoCore.DSASM.Constants.kInvalidIndex)

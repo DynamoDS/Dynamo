@@ -174,22 +174,22 @@ namespace ProtoCore.DSASM
 
         public override string ToString()
         {
-            if (IsDouble())
+            switch (optype)
             {
-                return RawDoubleValue.ToString();
-            }
-            else if (IsBoolean())
-            {
-                return RawBooleanValue.ToString();
-            }
-            else if (IsInteger())
-            {
-                return RawIntValue.ToString();
-            }
-            else
-            {
-                return String.Format("{0}, opdata = {1}, metaData = {2}", optype.ToString(), opdata.ToString(),
-                                     metaData.type.ToString());
+                case AddressType.Double:
+                    return RawDoubleValue.ToString();
+                
+                case AddressType.Boolean:
+                    return RawBooleanValue.ToString();
+                
+                case AddressType.Int:
+                    return RawIntValue.ToString();
+
+                default:
+                    return String.Format("{0}, opdata = {1}, metaData = {2}", 
+                                         optype.ToString(), 
+                                         opdata.ToString(),
+                                         metaData.type.ToString());
             }
         }
 
@@ -244,154 +244,155 @@ namespace ProtoCore.DSASM
         #endregion
 
         #region Type checkers
-        public bool IsInvalid()
+        public bool IsInvalid
         {
-            return optype == AddressType.Invalid;
+            get { return optype == AddressType.Invalid; }
         }
 
-        public bool IsRegister()
+        public bool IsRegister
         {
-            return optype == AddressType.Register;
+            get { return optype == AddressType.Register; }
         }
 
-        public bool IsVariableIndex()
+        public bool IsVariableIndex
         {
-            return optype == AddressType.VarIndex;
+            get { return optype == AddressType.VarIndex; }
         }
 
-        public bool IsFunctionIndex()
+        public bool IsFunctionIndex
         {
-            return optype == AddressType.FunctionIndex;
+            get { return optype == AddressType.FunctionIndex; }
         }
 
-        public bool IsMemberVariableIndex()
+        public bool IsMemberVariableIndex
         {
-            return optype == AddressType.MemVarIndex;
+            get { return optype == AddressType.MemVarIndex; }
         }
 
-        public bool IsStaticVariableIndex()
+        public bool IsStaticVariableIndex
         {
-            return optype == AddressType.StaticMemVarIndex;
+            get { return optype == AddressType.StaticMemVarIndex; }
         }
 
-        public bool IsClassIndex()
+        public bool IsClassIndex
         {
-            return optype == AddressType.ClassIndex;
+            get { return optype == AddressType.ClassIndex; }
         }
 
-        public bool IsInteger()
+        public bool IsInteger
         {
-            return optype == AddressType.Int;
+            get { return optype == AddressType.Int; }
         }
 
-        public bool IsDouble()
+        public bool IsDouble
         {
-            return optype == AddressType.Double;
+            get { return optype == AddressType.Double; }
         }
 
-        public bool IsNumeric()
+        public bool IsNumeric
         {
-            return optype == AddressType.Int || optype == AddressType.Double;
+            get { return optype == AddressType.Int || optype ==
+            AddressType.Double; }
         }
 
-        public bool IsBoolean()
+        public bool IsBoolean
         {
-            return optype == AddressType.Boolean;
+            get { return optype == AddressType.Boolean; }
         }
 
-        public bool IsChar()
+        public bool IsChar
         {
-            return optype == AddressType.Char;
+            get { return optype == AddressType.Char; }
         }
 
-        public bool IsString()
+        public bool IsString
         {
-            return optype == AddressType.String;
+            get { return optype == AddressType.String; }
         }
 
-        public bool IsLabelIndex()
+        public bool IsLabelIndex
         {
-            return optype == AddressType.LabelIndex;
+            get { return optype == AddressType.LabelIndex; }
         }
 
-        public bool IsBlockIndex()
+        public bool IsBlockIndex
         {
-            return optype == AddressType.BlockIndex;
+            get { return optype == AddressType.BlockIndex; }
         }
 
-        public bool IsPointer()
+        public bool IsPointer
         {
-            return optype == AddressType.Pointer;
+            get { return optype == AddressType.Pointer; }
         }
 
-        public bool IsArray()
+        public bool IsArray
         {
-            return optype == AddressType.ArrayPointer;
+            get { return optype == AddressType.ArrayPointer; }
         }
 
-        public bool IsFunctionPointer()
+        public bool IsFunctionPointer
         {
-            return optype == AddressType.FunctionPointer;
+            get { return optype == AddressType.FunctionPointer; }
         }
 
-        public bool IsNull()
+        public bool IsNull
         {
-            return optype == AddressType.Null;
+            get { return optype == AddressType.Null; }
         }
 
-        public bool IsDefaultArgument()
+        public bool IsDefaultArgument
         {
-            return optype == AddressType.DefaultArg;
+            get { return optype == AddressType.DefaultArg; }
         }
 
-        public bool IsArrayDimension()
+        public bool IsArrayDimension
         {
-            return optype == AddressType.ArrayDim;
+            get { return optype == AddressType.ArrayDim; }
         }
 
-        public bool IsReplicationGuide()
+        public bool IsReplicationGuide
         {
-            return optype == AddressType.ReplicationGuide;
+            get { return optype == AddressType.ReplicationGuide; }
         }
 
-        public bool IsDynamic()
+        public bool IsDynamic
         {
-            return optype == AddressType.Dynamic;
+            get { return optype == AddressType.Dynamic; }
         }
 
-        public bool IsStaticType()
+        public bool IsStaticType
         {
-            return optype == AddressType.StaticType;
+            get { return optype == AddressType.StaticType; }
         }
 
-        public bool IsCallingConvention()
+        public bool IsCallingConvention
         {
-            return optype == AddressType.CallingConvention;
+            get { return optype == AddressType.CallingConvention; }
         }
 
-        public bool IsFrameType()
+        public bool IsFrameType
         {
-            return optype == AddressType.FrameType;
+            get { return optype == AddressType.FrameType; }
         }
 
-        public bool IsThisPtr()
+        public bool IsThisPtr
         {
-            return optype == AddressType.ThisPtr;
+            get { return optype == AddressType.ThisPtr; }
         }
 
-        public bool IsExplicitCall()
+        public bool IsExplicitCall
         {
-            return optype == AddressType.ExplicitCall;
+            get { return optype == AddressType.ExplicitCall; }
         }
 
-        public bool IsArrayKey()
+        public bool IsArrayKey
         {
-            return optype == AddressType.ArrayKey;
+            get { return optype == AddressType.ArrayKey; }
         }
 
-        public bool IsReferenceType()
+        public bool IsReferenceType
         {
-            return opdata != Constants.kInvalidIndex && (IsArray() || IsPointer() || IsString());
+            get { return opdata != Constants.kInvalidIndex && (IsArray || IsPointer || IsString); }
         }
         #endregion
 
@@ -751,7 +752,7 @@ namespace ProtoCore.DSASM
             array = StackValue.Null;
             key = Constants.kInvalidIndex;
 
-            if (!this.IsArrayKey())
+            if (!this.IsArrayKey)
                 return false;
 
             if (opdata == Constants.kInvalidIndex)

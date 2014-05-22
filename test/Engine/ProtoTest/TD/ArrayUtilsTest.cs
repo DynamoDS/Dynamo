@@ -498,9 +498,9 @@ rBH = {b,h};
             StackValue svA = mirror.GetRawFirstValue("a");
             StackValue svB = mirror.GetRawFirstValue("b");
             StackValue svC = mirror.GetRawFirstValue("c");
-            Assert.IsTrue(svA.IsArray());
-            Assert.IsTrue(!svB.IsArray());
-            Assert.IsTrue(svC.IsArray());
+            Assert.IsTrue(svA.IsArray);
+            Assert.IsTrue(!svB.IsArray);
+            Assert.IsTrue(svC.IsArray);
         }
 
         [Test]

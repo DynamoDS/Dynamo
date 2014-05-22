@@ -146,7 +146,7 @@ namespace ProtoCore
                     assemblyName = classNode.ExternLib;
                     
                 }
-                else if (sv.IsArray())
+                else if (sv.IsArray)
                 {
                     assemblyName = GetTypesHelper();                    
                 }
@@ -160,14 +160,14 @@ namespace ProtoCore
                 Dictionary<string, List<string>> asmTypes = new Dictionary<string, List<string>>();
                 //List<string> types = new List<string>();
 
-                Validity.Assert(svData.IsArray());
+                Validity.Assert(svData.IsArray);
 
                 int ptr = (int)svData.opdata;
                 HeapElement hs = core.Heap.Heaplist[ptr];
                 for (int n = 0; n < hs.VisibleSize; ++n)
                 {
                     StackValue sv = hs.Stack[n];
-                    if (sv.IsArray())
+                    if (sv.IsArray)
                     {
                         /*List<string> arrtypes = new List<string>();
                         arrtypes = GetArrayTypes(sv);
@@ -227,7 +227,7 @@ namespace ProtoCore
             private Dictionary<string, List<string>> GetType(StackValue sv)
             {
                 Dictionary<string, List<string>> asmType = new Dictionary<string, List<string>>();
-                if (sv.IsPointer())
+                if (sv.IsPointer)
                 {
                     ClassNode classNode = core.ClassTable.ClassNodes[(int)sv.metaData.type];
                     //assemblyName = classNode.ExternLib;                    
@@ -510,7 +510,7 @@ namespace ProtoCore
             internal ClassMirror(StackValue svData, ProtoCore.Core core)
                 : base(core)
             {
-                Validity.Assert(svData.IsPointer());
+                Validity.Assert(svData.IsPointer);
                 Validity.Assert(null != core);
                 Validity.Assert(null != core.DSExecutable.classTable);
 

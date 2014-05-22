@@ -120,7 +120,7 @@ namespace ProtoCore
             /// <returns></returns>
             private ClassMirror GetClass()
             {
-                if (!svData.IsPointer())
+                if (!svData.IsPointer)
                     return null;
 
                 return new ClassMirror(svData, this.core);
@@ -211,7 +211,7 @@ namespace ProtoCore
             {
                 get
                 {
-                    return svData.IsNull();
+                    return svData.IsNull;
                 }
             }
 
@@ -222,7 +222,7 @@ namespace ProtoCore
             {
                 get
                 {
-                    return svData.IsArray();
+                    return svData.IsArray;
                 }
             }
         }

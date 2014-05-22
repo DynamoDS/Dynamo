@@ -144,9 +144,9 @@ d;
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kFunctionAbnormalExit);
             Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 2);
-            Assert.IsTrue(mirror.GetValue("b").DsasmValue.IsNull());
+            Assert.IsTrue(mirror.GetValue("b").DsasmValue.IsNull);
             Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 4);
-            Assert.IsTrue(mirror.GetValue("d").DsasmValue.IsNull());
+            Assert.IsTrue(mirror.GetValue("d").DsasmValue.IsNull);
         }
     }
 }

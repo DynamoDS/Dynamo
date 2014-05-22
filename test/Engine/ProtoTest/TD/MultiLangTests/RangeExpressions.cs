@@ -527,7 +527,7 @@ a1;a2;a3;a4;
             Assert.IsTrue(mirror.CompareArrays("b", result4, typeof(System.Double)));
             List<Object> result5 = new List<Object> { 4.5, 5.1, 5.6999999999999993, 6.2999999999999989, 6.8999999999999986, 7.4999999999999982 };
             Assert.IsTrue(mirror.CompareArrays("c", result5, typeof(System.Double)));
-            Assert.IsTrue(mirror.GetValue("e1").DsasmValue.IsNull());
+            Assert.IsTrue(mirror.GetValue("e1").DsasmValue.IsNull);
             List<Object> result9 = new List<Object> { 4.5, 5.25, 6.0 };
             Assert.IsTrue(mirror.CompareArrays("f", result9, typeof(System.Double)));
             List<Object> result10 = new List<Object> { 2.0, 1.75, 1.5, 1.25, 1.0 };
@@ -1140,7 +1140,7 @@ a;b;
 	a = 7.5..-2..#-9;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull());
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
         }
 
         [Test]
@@ -1181,7 +1181,7 @@ a;b;
 	a = 5..1..2;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull());
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
         }
 
         [Test]
@@ -1194,7 +1194,7 @@ a;b;
 	a = 5.5..10.7..-2;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull());
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
         }
 
         [Test]

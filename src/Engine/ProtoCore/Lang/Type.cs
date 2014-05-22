@@ -332,7 +332,7 @@ namespace ProtoCore
         public int GetType(StackValue sv)
         {
             int type = (int)Constants.kInvalidIndex;
-            if (sv.IsReferenceType())
+            if (sv.IsReferenceType)
             {
                 type = (int)sv.metaData.type;
             }
@@ -384,20 +384,20 @@ namespace ProtoCore
         public static StackValue Coerce(StackValue sv, Type targetType, Core core)
         {
             //@TODO(Jun): FIX ME - abort coersion for default args
-            if (sv.IsDefaultArgument())
+            if (sv.IsDefaultArgument)
                 return sv;
 
             if (!(
                 (int)sv.metaData.type == targetType.UID ||
                 (core.ClassTable.ClassNodes[(int)sv.metaData.type].ConvertibleTo(targetType.UID))
-                || sv.IsArray()))
+                || sv.IsArray))
             {
                 core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kConversionNotPossible, ProtoCore.RuntimeData.WarningMessage.kConvertNonConvertibleTypes);
                 return StackValue.Null;
             }
 
             //if it's an array
-            if (sv.IsArray() && !targetType.IsIndexable)
+            if (sv.IsArray && !targetType.IsIndexable)
             {
                 //This is an array rank reduction
                 //this may only be performed in recursion and is illegal here
@@ -407,10 +407,10 @@ namespace ProtoCore
             }
 
 
-            if (sv.IsArray() &&
+            if (sv.IsArray &&
                 targetType.IsIndexable)
             {
-                Validity.Assert(sv.IsArray());
+                Validity.Assert(sv.IsArray);
 
                 //We're being asked to convert an array into an array
                 //walk over the structure converting each othe elements
@@ -445,7 +445,7 @@ namespace ProtoCore
                 return ArrayUtils.CopyArray(sv, newTargetType, core);
             }
 
-            if (!sv.IsArray() && !sv.IsNull() &&
+            if (!sv.IsArray && !sv.IsNull &&
                 targetType.IsIndexable &&
                 targetType.rank != DSASM.Constants.kArbitraryRank)
             {
@@ -480,7 +480,7 @@ namespace ProtoCore
                 }
             }
 
-            if (sv.IsPointer())
+            if (sv.IsPointer)
             {
                 StackValue ret = ClassCoerece(sv, targetType, core);
                 return ret;
@@ -573,7 +573,7 @@ namespace ProtoCore
                     }
 
                 default:
-                    if (sv.IsNull())
+                    if (sv.IsNull)
                         return StackValue.Null;
                     else
                         throw new NotImplementedException("Requested coercion not implemented");

@@ -1413,7 +1413,7 @@ p1 = 2;
 p2 = p1+2;
 p1 = true;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("p2", 0).DsasmValue.IsNull());
+            Assert.IsTrue(mirror.GetValue("p2", 0).DsasmValue.IsNull);
         }
 
         [Test]
@@ -1426,7 +1426,7 @@ y = a1[1] + 1;
 a1[1] = 3;
 a1 = 5;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("y", 0).DsasmValue.IsNull());
+            Assert.IsTrue(mirror.GetValue("y", 0).DsasmValue.IsNull);
         }
 
         [Test]
@@ -1484,7 +1484,7 @@ a;
 	a = x;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull());
+            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
         }
 
         [Test]
@@ -1537,7 +1537,7 @@ class A
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.Fail("1459777 - Sprint 17 : Rev 1526 : Design Issue : When class property is updated the the variables derived from the class instance should be updated ? ");
-            Assert.IsTrue(mirror.GetValue("d", 1).DsasmValue.IsNull());
+            Assert.IsTrue(mirror.GetValue("d", 1).DsasmValue.IsNull);
         }
 
         [Test]

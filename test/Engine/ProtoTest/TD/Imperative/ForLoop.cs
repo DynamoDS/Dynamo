@@ -329,7 +329,7 @@ y;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("x").DsasmValue.IsNull());
+            Assert.IsTrue(mirror.GetValue("x").DsasmValue.IsNull);
         }
 
         [Test]
@@ -357,7 +357,7 @@ y;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             Assert.IsTrue(Convert.ToInt64(mirror.GetValue("x").Payload) == -27);
-            Assert.IsTrue(mirror.GetValue("y").DsasmValue.IsNull());
+            Assert.IsTrue(mirror.GetValue("y").DsasmValue.IsNull);
         }
 
         [Test]
