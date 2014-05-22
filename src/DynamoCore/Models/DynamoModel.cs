@@ -385,6 +385,11 @@ namespace Dynamo.Models
 
         private void RemoveNodeFromMap(NodeModel n)
         {
+            if (n.WorkSpace != HomeSpace)
+            {
+                return;
+            }
+
             if (NodeMap.ContainsKey(n.GUID))
             {
                 NodeMap.Remove(n.GUID);
@@ -395,6 +400,11 @@ namespace Dynamo.Models
 
         private void AddNodeToMap(NodeModel n)
         {
+            if (n.WorkSpace != HomeSpace)
+            {
+                return;
+            }
+
             if (!NodeMap.ContainsKey(n.GUID))
             {
                 NodeMap.Add(n.GUID, n);
