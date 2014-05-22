@@ -131,6 +131,9 @@ namespace ProtoCore.DSASM
     public struct StackValue
     {
         public Int64 opdata;
+#if !OPDATA_UNIFY
+        public double opdata_d;
+#endif
         public AddressType optype;
         public MetaData metaData;
 
@@ -145,6 +148,9 @@ namespace ProtoCore.DSASM
             StackValue newSv = new StackValue();
             newSv.optype = optype;
             newSv.opdata = opdata;
+#if !OPDATA_UNIFY
+            newSv.opdata_d = opdata_d;
+#endif
             newSv.metaData = new MetaData { type = metaData.type };
             return newSv;
         }
@@ -220,7 +226,11 @@ namespace ProtoCore.DSASM
         {
             get
             {
+#if OPDATA_UNIFY
                 return BitConverter.Int64BitsToDouble(opdata);
+#else
+                return opdata_d;
+#endif
             }
         }
 
@@ -421,7 +431,11 @@ namespace ProtoCore.DSASM
         {
             StackValue value = new StackValue();
             value.optype = AddressType.Double;
+#if OPDATA_UNIFY
             value.opdata = BitConverter.DoubleToInt64Bits(data);
+#else
+            value.opdata_d = data;
+#endif
 
             MetaData mdata = new MetaData();
             mdata.type = (int)PrimitiveType.kTypeDouble;

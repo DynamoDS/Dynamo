@@ -6286,7 +6286,18 @@ namespace ProtoCore.DSASM
         private void NEG_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
-            opdata1.opdata = -opdata1.opdata;
+            if (opdata1.IsInteger)
+            {
+                opdata1 = StackValue.BuildInt(-opdata1.RawIntValue);
+            }
+            else if (opdata1.IsDouble)
+            {
+                opdata1 = StackValue.BuildDouble(-opdata1.RawDoubleValue);
+            }
+            else 
+            {
+                opdata1 = StackValue.Null;
+            }
 
             SetOperandData(instruction.op1, opdata1);
             ++pc;
