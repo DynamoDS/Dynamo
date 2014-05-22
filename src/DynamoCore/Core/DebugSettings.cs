@@ -4,28 +4,28 @@ namespace Dynamo.Core
 {
     public class DebugSettings : NotificationObject
     {
-        private bool _showDebugASTs = false;
-        private bool _verboseLogging = false;
+        private bool showDebugASTs = false;
+        private bool verboseLogging = false;
 
         /// <summary>
         /// Enable verbose logging this is a lot of data
         /// </summary>
         public bool VerboseLogging
         {
-            get { return _verboseLogging; }
+            get { return verboseLogging; }
             set
             {
-                _verboseLogging = value;
+                verboseLogging = value;
                 RaisePropertyChanged("VerboseLogging");
             }
         }
 
         public bool ShowDebugASTs
         {
-            get { return _showDebugASTs; }
+            get { return showDebugASTs; }
             set
             {
-                _showDebugASTs = value;
+                showDebugASTs = value;
                 RaisePropertyChanged("ShowDebugASTs");
             }
         }
