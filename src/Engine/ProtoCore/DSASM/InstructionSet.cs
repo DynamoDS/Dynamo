@@ -510,6 +510,9 @@ namespace ProtoCore.DSASM
                 //
                 // High 32 bits: array pointer
                 // Low 32 bits : array key
+
+                // TODO: find out a cleaner way to represent array key instead 
+                // of using this kind of hacking.
                 ulong key = (ulong)rawArrayPtr;
                 key = (key << 32) | (uint)index;
                 value.opdata = (long)key;
@@ -775,6 +778,9 @@ namespace ProtoCore.DSASM
             // Array key information is encoded in 64bits opdata. 
             // High 32 bits: array pointer
             // Low 32 bits : array key
+            //
+            // TODO: find out a cleaner way to represent array key instead of
+            // using this kind of hacking.
             var rawArrayPointer = ((ulong)opdata >> 32);
             array = StackValue.BuildArrayPointer((long)rawArrayPointer);
             key = (int)((ulong)opdata << 32 >> 32);
