@@ -199,24 +199,44 @@ b = c[w][x][y][z];";
         {
             string userText, compilableText;
             userText = "a";
-            compilableText = CodeBlockNodeModel.FormatUserText(userText);
+            compilableText = CodeBlockUtils.FormatUserText(userText);
             Assert.AreEqual("a;", compilableText);
 
             userText = "\na\n\n\n";
-            compilableText = CodeBlockNodeModel.FormatUserText(userText);
+            compilableText = CodeBlockUtils.FormatUserText(userText);
             Assert.AreEqual("a;", compilableText);
 
             userText = "a = 1; \n\n b = foo( c,\nd\n,\ne)";
-            compilableText = CodeBlockNodeModel.FormatUserText(userText);
-            Assert.AreEqual("a = 1; \n\n b = foo( c,\nd\n,\ne);", compilableText);
+            compilableText = CodeBlockUtils.FormatUserText(userText);
+            Assert.AreEqual("a = 1;\n\n b = foo( c,\nd\n,\ne);", compilableText);
 
             userText = "      a = b-c;\nx = 1+3;\n   ";
-            compilableText = CodeBlockNodeModel.FormatUserText(userText);
+            compilableText = CodeBlockUtils.FormatUserText(userText);
             Assert.AreEqual("a = b-c;\nx = 1+3;", compilableText);
 
             userText = "\n   \n   \n    \n";
-            compilableText = CodeBlockNodeModel.FormatUserText(userText);
+            compilableText = CodeBlockUtils.FormatUserText(userText);
             Assert.AreEqual("", compilableText);
+        }
+
+        [Test]
+        public void TestFormatTextScenarios()
+        {
+            var before = "1;2;";
+            var after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("1;\n2;", after);
+
+            before = "  \t\n  1;2;  \t\n   ";
+            after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("1;\n2;", after);
+
+            before = "  a = 1;    b = 2;  \n  \n  ";
+            after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("a = 1;\n    b = 2;", after);
+
+            before = "  a = 1;    \nb = 2;  \n  \n  ";
+            after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("a = 1;\nb = 2;", after);
         }
 
         [Test]
