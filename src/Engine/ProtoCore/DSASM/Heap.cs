@@ -35,7 +35,7 @@ namespace ProtoCore.DSASM
 
             for (int n = 0; n < AllocSize; ++n)
             {
-                Stack[n].optype = AddressType.Invalid;
+                Stack[n] = StackValue.BuildInvalid();
             }
         }
 

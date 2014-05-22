@@ -3818,15 +3818,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void Nullify(ref StackValue op1, ref StackValue op2)
-        {
-            if (op1.IsNull || op2.IsNull)
-            {
-                op1.optype = AddressType.Null;
-                op2.optype = AddressType.Null;
-            }
-        }
-
         protected void runtimeVerify(bool condition, string msg = "Dsasm runtime error. Exiting...\n")
         {
             // TODO Jun: hook this up to a runtime error handler            

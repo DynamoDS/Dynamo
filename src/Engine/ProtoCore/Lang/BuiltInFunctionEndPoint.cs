@@ -1321,9 +1321,7 @@ namespace ProtoCore.Lang
                             if (!value1.Equals(value2))
                                 return false;
                         }
-                        else if ((item1.opdata != item2.opdata) || 
-                                 (item1.optype != item2.optype) || 
-                                 (item1.metaData.type != item2.metaData.type))
+                        else if (!item1.Equals(item2))
                         {
                             return false;
                         }
@@ -1341,9 +1339,7 @@ namespace ProtoCore.Lang
                         return false;
                 }
 
-                return (sv1.opdata == sv2.opdata) && 
-                       (sv1.optype == sv2.optype) &&  
-                       (sv1.metaData.type == sv2.metaData.type);
+                return sv1.Equals(sv2);
             }
             else return false;
         }

@@ -484,9 +484,7 @@ namespace ProtoCore.Utils
                 }
             }
 
-            sv.optype = core.Rmem.Heap.Heaplist[ptr].Stack[0].optype;
-            sv.opdata = core.Rmem.Heap.Heaplist[ptr].Stack[0].opdata;
-            sv.metaData = core.Rmem.Heap.Heaplist[ptr].Stack[0].metaData;
+            sv = core.Rmem.Heap.Heaplist[ptr].Stack[0].ShallowClone();
             return true;
         }
 
