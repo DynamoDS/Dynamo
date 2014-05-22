@@ -480,13 +480,13 @@ namespace Dynamo.DSEngine
 
             if (AstBuilt != null)
             {
-                var node = controller.DynamoModel.Nodes.FirstOrDefault(x => x.GUID == nodeGuid);
-                if (node != null)
+                if (controller.DynamoModel.NodeMap.ContainsKey(nodeGuid))
                 {
-                    AstBuilt(this, new AstBuilder.ASTBuiltEventArgs(node, astNodes));
+                    AstBuilt(this, new AstBuilder.ASTBuiltEventArgs(controller.DynamoModel.NodeMap[nodeGuid], astNodes));
                 }
             }
         }
+        
         #endregion
 
         /// <summary>

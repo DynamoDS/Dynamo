@@ -293,7 +293,7 @@ namespace Dynamo.Models
         public string UnlockLoadPath { get; set; }
         private WorkspaceModel _cspace;
         internal string editName = "";
-        private Dictionary<string, NodeModel> nodeMap;
+        private Dictionary<Guid, NodeModel> nodeMap = new Dictionary<Guid, NodeModel>();
 
         #endregion
 
@@ -341,15 +341,6 @@ namespace Dynamo.Models
             get { return CurrentWorkspace.Nodes.ToList(); }
         }
 
-        /// <summary>
-        /// A map of all nodes in the model, keyed by their GUID.
-        /// </summary>
-        public Dictionary<string, NodeModel> NodeMap
-        {
-            get { return nodeMap; }
-            set { nodeMap = value; }
-        }
-
         public static bool RunEnabled { get; set; }
 
         public static bool RunInDebug { get; set; }
@@ -370,6 +361,16 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// A map of all nodes in the model in the home workspace
+        /// keyed by their GUID.
+        /// </summary>
+        public Dictionary<Guid, NodeModel> NodeMap
+        {
+            get { return nodeMap; }
+            set { nodeMap = value; }
+        }
+
         #endregion
 
         #region constructors
@@ -381,6 +382,31 @@ namespace Dynamo.Models
         #endregion
 
         #region internal methods
+
+        private void RemoveNodeFromMap(NodeModel n)
+        {
+            if (NodeMap.ContainsKey(n.GUID))
+            {
+                NodeMap.Remove(n.GUID);
+            }
+
+            Debug.WriteLine("Node map now contains {0} nodes.", nodeMap.Count);
+        }
+
+        private void AddNodeToMap(NodeModel n)
+        {
+            if (!NodeMap.ContainsKey(n.GUID))
+            {
+                NodeMap.Add(n.GUID, n);
+            }
+            else
+            {
+                //NodeMap[n.GUID] = n;
+                throw new Exception("Duplicate node GUID in map!");
+            }
+
+            Debug.WriteLine("Node map now contains {0} nodes.", nodeMap.Count);
+        }
 
         internal bool CanShowOpenDialogAndOpenResultCommand(object parameter)
         {
@@ -547,6 +573,8 @@ namespace Dynamo.Models
                     for (int i = port.Connectors.Count - 1; i >= 0; i--)
                         port.Connectors[i].NotifyConnectedPortsOfDeletion();
                 }
+
+                RemoveNodeFromMap(el);
             }
 
             CurrentWorkspace.Connectors.Clear();
@@ -840,6 +868,8 @@ namespace Dynamo.Models
         /// <param name="node"></param>
         public void OnNodeAdded(NodeModel node)
         {
+            AddNodeToMap(node);
+
             if (NodeAdded != null && node != null)
             {
                 NodeAdded(node);
@@ -852,6 +882,8 @@ namespace Dynamo.Models
         /// <param name="node"></param>
         public void OnNodeDeleted(NodeModel node)
         {
+            RemoveNodeFromMap(node);
+
             WorkspaceViewModel wvm = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel;
 
             if (wvm.CurrentState == WorkspaceViewModel.StateMachine.State.Connection)
