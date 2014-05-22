@@ -809,24 +809,12 @@ namespace ProtoCore.DSASM
                     return StackValue.BuildBoolean(true);
 
                 case AddressType.String:
-                    if (ArrayUtils.GetElementSize(this, core) == 0)
-                    {
-                        return StackValue.False;
-                    }
-                    else
-                    {
-                        return StackValue.True;
-                    }
+                    int size = ArrayUtils.GetElementSize(this, core);
+                    return (size == 0) ? StackValue.False : StackValue.True;
 
                 case AddressType.Char:
-                    if (EncodingUtils.ConvertInt64ToCharacter(opdata) == 0)
-                    {
-                        return StackValue.False;
-                    }
-                    else
-                    {
-                        return StackValue.True;
-                    }
+                    char c = EncodingUtils.ConvertInt64ToCharacter(opdata);
+                    return (c == 0) ? StackValue.False : StackValue.True;
 
                 default:
                     return StackValue.Null;
