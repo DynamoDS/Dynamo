@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System.IO;
+using Dynamo.Utilities;
+using NUnit.Framework;
 using RevitServices.Persistence;
 
 namespace Dynamo.Tests
@@ -17,39 +19,55 @@ namespace Dynamo.Tests
         [TestModel(@"./empty.rfa")]
         public void OpeningNewDocumentDoesNotSwitchUIDocument()
         {
-            var initialDoc = DocumentManager.Instance.CurrentUIDocument;
-            DocumentManager.Instance.CurrentUIApplication.OpenAndActivateDocument(_emptyModelPath1);
+            // a reference to the initial document
+            var initialDoc = DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument;
 
-            // Assert that the active UI document is null
-            Assert.IsNull(DocumentManager.Instance.CurrentUIDocument);
+            var newDoc = OpenAndActivateNewModel(_emptyModelPath1);
+
+            // Assert that the active UI document is
+            // still the initial document
+            Assert.AreEqual(DocumentManager.Instance.CurrentUIDocument.Document.PathName, initialDoc.Document.PathName);
         }
 
         [Test]
         [TestModel(@"./empty.rfa")]
         public void SwitchingViewAwayFromCachedDocumentDisablesRun()
         {
-            Assert.Inconclusive("Finish me!");
+            // empty.rfa will be open at test start
+            // swap documents and ensure that 
+            var initialDoc = DocumentManager.Instance.CurrentUIDocument;
+            var newDoc = OpenAndActivateNewModel(_emptyModelPath1);
+
+            Assert.False(dynSettings.Controller.DynamoViewModel.RunEnabled);
         }
 
         [Test]
         [TestModel(@"./empty.rfa")]
         public void RunIsDisabledWhenOpeningADocumentinPerspectiveView()
         {
-            Assert.Inconclusive("Finish me.");
+            // Swap to a document that only has one open perspective view
+            SwapCurrentModel(Path.Combine(_testPath, "model_with_box.rvt"));
+
+            Assert.False(dynSettings.Controller.DynamoViewModel.RunEnabled);
+
+            // Then you need to swap back because the journal's ID_FLUSH_UNDO
+            // is disabled in perspective as well
+
+            SwapCurrentModel(_emptyModelPath);
         }
 
         [Test]
         [TestModel(@"./empty.rfa")]
-        public void AttachesToOtherWhenTwoDocsAreOpenAndCachedDocumentIsClosed()
+        public void AttachesToNewDocumentWhenAllDocsWereClosed()
         {
-            Assert.Inconclusive("Finish me!");
+            Assert.Inconclusive("Cannot test. API required for allowing closing all docs.");
         }
 
         [Test]
         [TestModel(@"./empty.rfa")]
         public void WhenActiveDocumentResetIsRequiredVisualizationsAreCleared()
         {
-            Assert.Inconclusive("Finish me!");
+            Assert.Inconclusive("Cannot test. API required for allowing closing all docs.");
         }
     }
 }

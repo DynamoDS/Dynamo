@@ -84,6 +84,11 @@ namespace Dynamo.Nodes
             migratedData.AppendNode(pointAsVector0);
             string pointAsVector0Id = MigrationManager.GetGuidFromXmlElement(pointAsVector0);
 
+            //append number Node
+            XmlElement numberNode = MigrationManager.CreateCodeBlockNodeModelNode(
+                data.Document, oldNode, 4, "0;");
+            migratedData.AppendNode(numberNode);
+
             #endregion
 
             #region Move Connectors Onto the New Nodes
@@ -113,6 +118,9 @@ namespace Dynamo.Nodes
             // Connect from "SketchPlane" to the new node.
             data.CreateConnector(dsSketchPlane, 0, dsModelText, 1);
 
+            oldInPort = new PortId(oldNodeId, 3, PortType.INPUT);
+            data.RemoveFirstConnector(oldInPort);
+
             // Move connector for "depth" over to the new node.
             oldInPort = new PortId(oldNodeId, 4, PortType.INPUT);
             newInPort = new PortId(dsModelTextId, 4, PortType.INPUT);
@@ -127,6 +135,9 @@ namespace Dynamo.Nodes
 
             // Connect from "ModelTextType" to the new node.
             data.CreateConnector(dsModelTextType, 0, dsModelText, 5);
+
+            data.CreateConnector(numberNode, 0, dsModelText, 2);
+            data.CreateConnector(numberNode, 0, dsModelText, 3);
 
             #endregion
 
