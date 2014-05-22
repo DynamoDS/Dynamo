@@ -361,8 +361,8 @@ namespace Dynamo.Models
             foreach (var x in CurrentWorkspace.Connectors)
                 graph.AddEdge(x.GUID, x.Start.Owner.GUID, x.End.Owner.GUID);
 
-            var a = graph.Edges[0].StartNode;
-
+            graph.RemoveCycles();
+            graph.RemoveTransitiveEdges();
         }
 
         internal bool CanShowOpenDialogAndOpenResultCommand(object parameter)
