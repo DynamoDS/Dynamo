@@ -178,27 +178,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public override string ToString()
-        {
-            switch (optype)
-            {
-                case AddressType.Double:
-                    return RawDoubleValue.ToString();
-                
-                case AddressType.Boolean:
-                    return RawBooleanValue.ToString();
-                
-                case AddressType.Int:
-                    return RawIntValue.ToString();
-
-                default:
-                    return String.Format("{0}, opdata = {1}, metaData = {2}", 
-                                         optype.ToString(), 
-                                         opdata.ToString(),
-                                         metaData.type.ToString());
-            }
-        }
-
         public override int GetHashCode()
         {
             return opdata.GetHashCode() ^ optype.GetHashCode() ^ metaData.GetHashCode();
