@@ -1,8 +1,8 @@
-<Workspace Version="0.6.3.7993" X="95.078249126032" Y="-144.296607169038" zoom="0.865544880322054" Description="" Category="" Name="Home">
+<Workspace Version="0.6.3.7993" X="86.7777953283443" Y="0.678032794974172" zoom="0.510464166593696" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.ImageFileReader type="Dynamo.Nodes.ImageFileReader" guid="1682ef9c-8161-4697-8048-cc0cee54bbdf" nickname="Read Image File" x="154.057318379267" y="320.016839698947" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.StringFilename type="Dynamo.Nodes.StringFilename" guid="a934f1d2-0aa9-4d09-8d86-fe5b69c121b7" nickname="File Path" x="-91.5945269728118" y="249.650231029676" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="D:\FromF\DynamoProject\Graphs\MigrationDYN\StandAlone\honey-badger.jpg" />
+      <System.String value="D:\FromF\DynamoProject\Graphs\MigrationDYN\StandAlone\MAGN-2649.png" />
     </Dynamo.Nodes.StringFilename>
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="5dba839f-38b7-4afa-b6f1-8a36c4bf03de" nickname="Number" x="16.7564321459056" y="347.79421573866" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="5" />
