@@ -10,7 +10,7 @@ namespace Dynamorph
     class IGraphicsContext;
     class IShaderProgram;
 
-    DYNAMORPH_API public ref class Visualizer
+    public ref class Visualizer
     {
     public:
 

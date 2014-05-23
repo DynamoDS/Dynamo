@@ -105,9 +105,9 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
         "}                                              \n");
 
     // Create shaders and their program.
-    auto pVrtxShader = mpGraphicsContext->CreateVertexShader(vs);
-    auto pFragShader = mpGraphicsContext->CreateFragmentShader(fs);
-    auto pProgram = mpGraphicsContext->CreateShaderProgram(pVrtxShader, pFragShader);
+    auto pvs = mpGraphicsContext->CreateVertexShader(vs);
+    auto pfs = mpGraphicsContext->CreateFragmentShader(fs);
+    mpShaderProgram = mpGraphicsContext->CreateShaderProgram(pvs, pfs);
 }
 
 void Visualizer::Uninitialize(void)

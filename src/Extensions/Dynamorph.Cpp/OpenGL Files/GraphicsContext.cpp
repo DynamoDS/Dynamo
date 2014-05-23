@@ -19,8 +19,6 @@ void GraphicsContext::InitializeCore(HWND hWndOwner)
         throw gcnew InvalidOperationException(gcnew String(message));
     }
 
-    GL::Initialize(); // Initialize OpenGL extension.
-
     // TODO(Ben): This process of determining the pixel format and creation of 
     // corresponding render context is the most basic one and will likely fail 
     // on some machines. This should be updated to use more robust context creation
@@ -49,6 +47,8 @@ void GraphicsContext::InitializeCore(HWND hWndOwner)
     ::wglMakeCurrent(hDeviceContext, mhRenderContext);
 
     ::ReleaseDC(mRenderWindow, hDeviceContext); // Done with device context.
+
+    GL::Initialize(); // Initialize OpenGL extension.
 }
 
 void GraphicsContext::UninitializeCore(void)
