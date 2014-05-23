@@ -191,14 +191,6 @@ namespace Dynamo.Applications
 
                         handledCrash = false;
 
-                        dynamoView.WindowStartupLocation = WindowStartupLocation.Manual;
-
-                        Rectangle bounds = Screen.PrimaryScreen.Bounds;
-                        dynamoView.Left = bounds.X;
-                        dynamoView.Top = bounds.Y;
-                        dynamoView.Width = 1000.0;
-                        dynamoView.Height = 800.0;
-
                         dynamoView.Show();
 
                         dynamoView.Dispatcher.UnhandledException += DispatcherOnUnhandledException; 
