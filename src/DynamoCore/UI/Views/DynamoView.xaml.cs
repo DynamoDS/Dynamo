@@ -82,6 +82,26 @@ namespace Dynamo.Controls
 
             this.Loaded += DynamoView_Loaded;
             this.Unloaded += DynamoView_Unloaded;
+
+            this.SizeChanged += DynamoView_SizeChanged;
+            this.LocationChanged += DynamoView_LocationChanged;
+
+            Left = dynSettings.Controller.PreferenceSettings.WindowX;
+            Top = dynSettings.Controller.PreferenceSettings.WindowY;
+            Width = dynSettings.Controller.PreferenceSettings.WindowW;
+            Height = dynSettings.Controller.PreferenceSettings.WindowH;
+        }
+
+        void DynamoView_LocationChanged(object sender, EventArgs e)
+        {
+            dynSettings.Controller.PreferenceSettings.WindowX = Left;
+            dynSettings.Controller.PreferenceSettings.WindowY = Top;
+        }
+
+        void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            dynSettings.Controller.PreferenceSettings.WindowW = e.NewSize.Width;
+            dynSettings.Controller.PreferenceSettings.WindowH = e.NewSize.Height;
         }
 
         void InitializeShortcutBar()
