@@ -231,7 +231,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
-        public IEnumerable<NodeModel> TopologicalSort(IEnumerable<NodeModel> nodes)
+        public static IEnumerable<NodeModel> TopologicalSort(IEnumerable<NodeModel> nodes)
         {
             var sortedNodes = new Stack<NodeModel>();
             IList<NodeModel> nodeModels = nodes as IList<NodeModel> ?? nodes.ToList();
