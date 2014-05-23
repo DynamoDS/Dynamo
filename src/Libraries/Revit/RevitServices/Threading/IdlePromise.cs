@@ -32,7 +32,9 @@ namespace RevitServices.Threading
         internal static Queue<Action> ShutdownPromises = new Queue<Action>();
 
         [ThreadStatic] private static bool idle;
-        public static bool InIdleThread { get { return idle; } }
+        public static bool InIdleThread { get { return idle; }
+            set { idle = value; }
+        }
 
         private static void Application_Idling(object sender, IdlingEventArgs e)
         {
