@@ -32,11 +32,8 @@ namespace Dynamo.DSEngine
         private int shortVarCounter = 0;
         private DynamoController controller;
 
-<<<<<<< HEAD
-=======
         private Object MacroMutex = new Object();
 
->>>>>>> f490ca00c3fa7951d2f09436e4e38b939032e2c3
         internal SyncDataManager SyncDataManager
         {
             get { return syncDataManager; }
