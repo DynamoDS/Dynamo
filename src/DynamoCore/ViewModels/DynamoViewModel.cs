@@ -532,17 +532,26 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool IsDebugBuild
+        public bool VerboseLogging
         {
-            get
+            get { return Controller.DebugSettings.VerboseLogging; }
+            set
             {
-#if DEBUG
-                return true;
-#else
-                return false;
-#endif
+                Controller.DebugSettings.VerboseLogging = value;
+                RaisePropertyChanged("VerboseLogging");
             }
         }
+
+        public bool ShowDebugASTs
+        {
+            get { return IsDebugBuild && dynSettings.Controller.DebugSettings.ShowDebugASTs; }
+            set
+            {
+                Controller.DebugSettings.ShowDebugASTs = value;
+                RaisePropertyChanged("ShowDebugASTs");
+            }
+        }
+
         #endregion
 
         public DynamoViewModel(DynamoController controller, string commandFilePath)
@@ -656,6 +665,7 @@ namespace Dynamo.ViewModels
             UsageReportingManager.Instance.PropertyChanged += CollectInfoManager_PropertyChanged;
 
             WatchIsResizable = false;
+            
         }
 
         void Instance_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)

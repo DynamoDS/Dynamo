@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Threading;
 using DSNodeServices;
+using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -76,6 +77,7 @@ namespace Dynamo
         public IWatchHandler WatchHandler { get; set; }
         public IPreferences PreferenceSettings { get; set; }
         public IVisualizationManager VisualizationManager { get; set; }
+        public DebugSettings DebugSettings { get; set; }
 
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
@@ -238,6 +240,8 @@ namespace Dynamo
         public DynamoController(string context, IUpdateManager updateManager,
             IWatchHandler watchHandler, IPreferences preferences)
         {
+            DebugSettings = new DebugSettings();
+
             IsCrashing = false;
 
             dynSettings.Controller = this;
