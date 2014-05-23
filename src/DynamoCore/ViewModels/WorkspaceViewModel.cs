@@ -173,16 +173,7 @@ namespace Dynamo.ViewModels
         }
 
         private CompositeCollection _workspaceElements = new CompositeCollection();
-        public CompositeCollection WorkspaceElements
-        {
-            get { return _workspaceElements; }
-            set
-            {
-                _workspaceElements = value;
-                RaisePropertyChanged("Nodes");
-                RaisePropertyChanged("WorkspaceElements");
-            }
-        }
+        public CompositeCollection WorkspaceElements { get { return _workspaceElements; } }
 
         ObservableCollection<ConnectorViewModel> _connectors = new ObservableCollection<ConnectorViewModel>();
         private ObservableCollection<Watch3DFullscreenViewModel> _watches = new ObservableCollection<Watch3DFullscreenViewModel>();

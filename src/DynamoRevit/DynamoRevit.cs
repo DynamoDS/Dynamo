@@ -41,8 +41,8 @@ namespace Dynamo.Applications
     {
         private static readonly string assemblyName = Assembly.GetExecutingAssembly().Location;
         private static ResourceManager res;
-        internal static ControlledApplication ControlledApplication;
-        internal static List<IUpdater> Updaters = new List<IUpdater>();
+        public static ControlledApplication ControlledApplication;
+        public static List<IUpdater> Updaters = new List<IUpdater>();
         internal static PushButton dynamoButton;
 
         public Result OnStartup(UIControlledApplication application)
@@ -181,24 +181,8 @@ namespace Dynamo.Applications
                         if (context == "Vasari")
                             context = "Vasari 2014";
 
-                        BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
-                        BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
-                        BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
+                        dynamoController = CreateDynamoRevitControllerAndViewModel(Updater, logger, context);
 
-                        var updateManager = new UpdateManager.UpdateManager(logger);
-                        dynamoController = new DynamoController_Revit(Updater, context, updateManager);
-
-                        // Generate a view model to be the data context for the view
-                        dynamoController.DynamoViewModel = new DynamoRevitViewModel(dynamoController, null);
-                        dynamoController.DynamoViewModel.RequestAuthentication += ((DynamoController_Revit)dynamoController).RegisterSingleSignOn;
-                        dynamoController.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
-                        dynamoController.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = ((DynamoController_Revit)dynamoController).FindNodesFromSelection;
-                        
-                        // Register the view model to handle sign-on requests
-                        dynSettings.Controller.DynamoViewModel.RequestAuthentication += ((DynamoController_Revit)dynamoController).RegisterSingleSignOn;
-
-                        dynamoController.VisualizationManager = new VisualizationManagerRevit();
-                        
                         var dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
                         dynamoController.UIDispatcher = dynamoView.Dispatcher;
 
@@ -239,6 +223,32 @@ namespace Dynamo.Applications
             return Result.Succeeded;
         }
 
+        public static DynamoController_Revit CreateDynamoRevitControllerAndViewModel(RevitServicesUpdater updater, DynamoLogger logger, string context)
+        {
+            BaseUnit.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
+            BaseUnit.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
+            BaseUnit.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
+
+            var updateManager = new UpdateManager.UpdateManager(logger);
+            var dynamoController = new DynamoController_Revit(updater, context, updateManager);
+
+            // Generate a view model to be the data context for the view
+            dynamoController.DynamoViewModel = new DynamoRevitViewModel(dynamoController, null);
+            dynamoController.DynamoViewModel.RequestAuthentication +=
+                ((DynamoController_Revit) dynamoController).RegisterSingleSignOn;
+            dynamoController.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
+            dynamoController.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements =
+                ((DynamoController_Revit) dynamoController).FindNodesFromSelection;
+
+            // Register the view model to handle sign-on requests
+            dynSettings.Controller.DynamoViewModel.RequestAuthentication +=
+                ((DynamoController_Revit) dynamoController).RegisterSingleSignOn;
+
+            dynamoController.VisualizationManager = new VisualizationManagerRevit();
+
+            return dynamoController;
+        }
+
         /// <summary>
         /// Handler for Revit's ViewActivating event. 
         /// Addins are not available in some views in Revit, notably perspective views.
@@ -249,9 +259,14 @@ namespace Dynamo.Applications
         /// <param name="e"></param>
         private void Application_ViewActivating(object sender, ViewActivatingEventArgs e)
         {
+            SetRunEnabledBasedOnContext(e);
+        }
+
+        public static void SetRunEnabledBasedOnContext(ViewActivatingEventArgs e)
+        {
             var view = e.NewActiveView as View3D;
 
-            if (view != null 
+            if (view != null
                 && view.IsPerspective
                 && dynSettings.Controller.Context != Context.VASARI_2013
                 && dynSettings.Controller.Context != Context.VASARI_2014)
@@ -275,7 +290,8 @@ namespace Dynamo.Applications
 
                     if (dynSettings.Controller.DynamoViewModel.RunEnabled == false)
                     {
-                        dynSettings.DynamoLogger.LogWarning("Dynamo is not pointing at this document. Run will be disabled.", WarningLevel.Error);
+                        dynSettings.DynamoLogger.LogWarning("Dynamo is not pointing at this document. Run will be disabled.",
+                            WarningLevel.Error);
                     }
                 }
             }

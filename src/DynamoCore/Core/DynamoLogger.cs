@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
@@ -85,7 +86,7 @@ namespace Dynamo
         private void Log(string message, LogLevel level, bool reportModification)
         {
             //Don't overwhelm the logging system
-            if (!dynSettings.VerboseLogging)
+            if (dynSettings.Controller != null && !dynSettings.Controller.DebugSettings.VerboseLogging)
                 InstrumentationLogger.LogInfo("LogMessage-" + level.ToString(), message);                
 
             switch (level)

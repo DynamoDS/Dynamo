@@ -24,7 +24,9 @@ namespace Dynamo.Models
         public static readonly double ZOOM_MAXIMUM = 4.0;
         public static readonly double ZOOM_MINIMUM = 0.01;
 
-        #region Properties
+        public delegate void WorkspaceSavedEvent(WorkspaceModel model);
+
+        #region internal members
 
         private string _fileName;
         private string _name;
@@ -33,6 +35,25 @@ namespace Dynamo.Models
         private double _x;
         private double _y;
         private double _zoom = 1.0;
+        private DateTime _lastSaved;
+        private string _author = "None provided";
+        private string _description = "";
+        private string _category = "";
+        private bool _hasUnsavedChanges;
+        private bool _isCurrentSpace;
+        private ObservableCollection<NodeModel> _nodes;
+        private ObservableCollection<ConnectorModel> _connectors;
+
+        #endregion
+
+        #region events
+
+        public event Action OnModified;
+        public event WorkspaceSavedEvent WorkspaceSaved;
+
+        #endregion
+
+        #region Properties
 
         public bool WatchChanges
         {
@@ -54,6 +75,9 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        ///     Defines whether this is the current space in Dynamo
+        /// </summary>
         public bool IsCurrentSpace
         {
             get { return _isCurrentSpace; }
@@ -64,10 +88,6 @@ namespace Dynamo.Models
             }
         }
 
-        public event Action OnModified;
-
-
-        private string _category = "";
         public string Category
         {
             get { return _category; }
@@ -81,7 +101,6 @@ namespace Dynamo.Models
         /// <summary>
         ///     The date of the last save.
         /// </summary>
-        private DateTime _lastSaved;
         public DateTime LastSaved
         {
             get { return _lastSaved; }
@@ -95,7 +114,6 @@ namespace Dynamo.Models
         /// <summary>
         ///     A description of the workspace
         /// </summary>
-        private string _author = "None provided";
         public string Author
         {
             get { return _author; }
@@ -109,7 +127,6 @@ namespace Dynamo.Models
         /// <summary>
         ///     A description of the workspace
         /// </summary>
-        private string _description = "";
         public string Description
         {
             get { return _description; }
@@ -123,8 +140,6 @@ namespace Dynamo.Models
         /// <summary>
         ///     Are there unsaved changes in the workspace?
         /// </summary>
-        private bool _hasUnsavedChanges;
-
         public bool HasUnsavedChanges
         {
             get { return _hasUnsavedChanges; }
@@ -267,19 +282,6 @@ namespace Dynamo.Models
 
         internal Version WorkspaceVersion { get; set; }
 
-
-
-        public delegate void WorkspaceSavedEvent(WorkspaceModel model);
-        public event WorkspaceSavedEvent WorkspaceSaved;
-
-        /// <summary>
-        ///     Defines whether this is the current space in Dynamo
-        /// </summary>
-        private bool _isCurrentSpace;
-
-        private ObservableCollection<NodeModel> _nodes;
-        private ObservableCollection<ConnectorModel> _connectors;
-
         public double CenterX
         {
             get { return 0; }
@@ -349,6 +351,8 @@ namespace Dynamo.Models
 
         #endregion
 
+        #region constructors
+
         protected WorkspaceModel(
             String name, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
         {
@@ -367,6 +371,10 @@ namespace Dynamo.Models
             WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
             undoRecorder = new UndoRedoRecorder(this);
         }
+
+        #endregion
+
+        #region public methods
 
         public abstract void OnDisplayed();
 
@@ -405,6 +413,400 @@ namespace Dynamo.Models
             return SaveAs(FileName);
         }
 
+        //TODO: Replace all Modified calls with RaisePropertyChanged-style system, that way observable collections can catch any changes
+        public void DisableReporting()
+        {
+            Nodes.ToList().ForEach(x => x.DisableReporting());
+        }
+
+        public void EnableReporting()
+        {
+            Nodes.ToList().ForEach(x => x.EnableReporting());
+        }
+
+        public virtual void Modified()
+        {
+            //dynSettings.DynamoLogger.Log("Workspace modified.");
+            if (OnModified != null)
+                OnModified();
+        }
+
+        public IEnumerable<NodeModel> GetHangingNodes()
+        {
+            return Nodes.Where(x => x.OutPortData.Any() && x.OutPorts.Any(y => !y.Connectors.Any()));
+        }
+
+        public IEnumerable<NodeModel> GetTopMostNodes()
+        {
+            return Nodes.Where(IsTopMostNode);
+        }
+
+        public void ReportPosition()
+        {
+            RaisePropertyChanged("Position");
+        }
+
+        #endregion
+
+        #region private/internal methods
+
+        //If node is connected to some other node(other than Output) then it is not a 'top' node
+        private static bool IsTopMostNode(NodeModel node)
+        {
+            if (node.OutPortData.Count < 1)
+                return false;
+
+            foreach (var port in node.OutPorts.Where(port => port.Connectors.Count != 0))
+            {
+                return port.Connectors.Any(connector => connector.End.Owner is Output);
+            }
+
+            return true;
+        }
+
+        public event EventHandler Updated;
+        public void OnUpdated(EventArgs e)
+        {
+            if (Updated != null)
+                Updated(this, e);
+        }
+
+        private bool SaveInternal(string targetFilePath)
+        {
+            // Create the xml document to write to.
+            var document = new XmlDocument();
+            document.CreateXmlDeclaration("1.0", null, null);
+            document.AppendChild(document.CreateElement("Workspace"));
+
+            Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, targetFilePath);
+
+            if (!this.PopulateXmlDocument(document))
+                return false;
+
+            this.SerializeSessionData(document);
+
+            try
+            {
+                Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, string.Empty);
+                document.Save(targetFilePath);
+            }
+            catch (System.IO.IOException)
+            {
+                return false;
+            }
+
+            FileName = targetFilePath;
+            return true;
+        }
+
+        protected virtual bool PopulateXmlDocument(XmlDocument xmlDoc)
+        {
+            try
+            {
+                var root = xmlDoc.DocumentElement;
+                root.SetAttribute("Version", WorkspaceVersion.ToString());
+                root.SetAttribute("X", X.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("zoom", Zoom.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("Description", Description);
+                root.SetAttribute("Category", Category);
+                root.SetAttribute("Name", Name);
+
+                var elementList = xmlDoc.CreateElement("Elements");
+                //write the root element
+                root.AppendChild(elementList);
+
+                foreach (var el in Nodes)
+                {
+                    var typeName = el.GetType().ToString();
+
+                    var dynEl = xmlDoc.CreateElement(typeName);
+                    elementList.AppendChild(dynEl);
+
+                    //set the type attribute
+                    dynEl.SetAttribute("type", el.GetType().ToString());
+                    dynEl.SetAttribute("guid", el.GUID.ToString());
+                    dynEl.SetAttribute("nickname", el.NickName);
+                    dynEl.SetAttribute("x", el.X.ToString(CultureInfo.InvariantCulture));
+                    dynEl.SetAttribute("y", el.Y.ToString(CultureInfo.InvariantCulture));
+                    dynEl.SetAttribute("isVisible", el.IsVisible.ToString().ToLower());
+                    dynEl.SetAttribute("isUpstreamVisible", el.IsUpstreamVisible.ToString().ToLower());
+                    dynEl.SetAttribute("lacing", el.ArgumentLacing.ToString());
+
+                    el.Save(xmlDoc, dynEl, SaveContext.File);
+                }
+
+                //write only the output connectors
+                var connectorList = xmlDoc.CreateElement("Connectors");
+                //write the root element
+                root.AppendChild(connectorList);
+
+                foreach (var el in Nodes)
+                {
+                    foreach (var port in el.OutPorts)
+                    {
+                        foreach (
+                            var c in
+                                port.Connectors.Where(c => c.Start != null && c.End != null))
+                        {
+                            var connector = xmlDoc.CreateElement(c.GetType().ToString());
+                            connectorList.AppendChild(connector);
+                            connector.SetAttribute("start", c.Start.Owner.GUID.ToString());
+                            connector.SetAttribute("start_index", c.Start.Index.ToString());
+                            connector.SetAttribute("end", c.End.Owner.GUID.ToString());
+                            connector.SetAttribute("end_index", c.End.Index.ToString());
+
+                            if (c.End.PortType == PortType.INPUT)
+                                connector.SetAttribute("portType", "0");
+                        }
+                    }
+                }
+
+                //save the notes
+                var noteList = xmlDoc.CreateElement("Notes"); //write the root element
+                root.AppendChild(noteList);
+                foreach (var n in Notes)
+                {
+                    var note = xmlDoc.CreateElement(n.GetType().ToString());
+                    noteList.AppendChild(note);
+                    note.SetAttribute("text", n.Text);
+                    note.SetAttribute("x", n.X.ToString(CultureInfo.InvariantCulture));
+                    note.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                return false;
+            }
+        }
+
+        // TODO(Ben): Documentation to come before pull request.
+        protected virtual void SerializeSessionData(XmlDocument document)
+        {
+            if (document.DocumentElement == null)
+            {
+                var message = "Workspace should have been saved before this";
+                throw new InvalidOperationException(message);
+            }
+
+            try
+            {
+                ProtoCore.Core core = null;
+                if (dynSettings.Controller != null)
+                {
+                    var engine = dynSettings.Controller.EngineController;
+                    if (engine != null && (engine.LiveRunnerCore != null))
+                        core = engine.LiveRunnerCore;
+                }
+
+                if (core == null) // No execution yet as of this point.
+                    return;
+
+                // Selecting all nodes that are either a DSFunction,
+                // a DSVarArgFunction or a CodeBlockNodeModel into a list.
+                var nodeGuids = this.Nodes.Where((n) =>
+                {
+                    return (n is DSFunction
+                        || (n is DSVarArgFunction)
+                        || (n is CodeBlockNodeModel));
+
+                }).Select((n) => n.GUID);
+
+                var nodeTraceDataList = core.GetTraceDataForNodes(nodeGuids);
+
+                if (nodeTraceDataList.Count() > 0)
+                    Utils.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
+            }
+            catch (Exception exception)
+            {
+                // We'd prefer file saving process to not crash Dynamo,
+                // otherwise user will lose the last hope in retaining data.
+                dynSettings.DynamoLogger.Log(exception.Message);
+                dynSettings.DynamoLogger.Log(exception.StackTrace);
+            }
+        }
+
+        internal void SendModelEvent(Guid modelGuid, string eventName)
+        {
+            ModelBase model = this.GetModelInternal(modelGuid);
+            if (null != model)
+            {
+                RecordModelForModification(model);
+                if (!model.HandleModelEvent(eventName))
+                {
+                    string type = model.GetType().FullName;
+                    string message = string.Format(
+                        "ModelBase.HandleModelEvent call not handled.\n\n" +
+                        "Model type: {0}\n" +
+                        "Model GUID: {1}\n" +
+                        "Event name: {2}",
+                        type, modelGuid.ToString(), eventName);
+
+                    // All 'HandleModelEvent' calls must be handled by one of 
+                    // the ModelBase derived classes that the 'SendModelEvent'
+                    // is intended for.
+                    throw new InvalidOperationException(message);
+                }
+
+                this.HasUnsavedChanges = true;
+            }
+        }
+
+        internal void UpdateModelValue(Guid modelGuid, string name, string value)
+        {
+            ModelBase model = GetModelInternal(modelGuid);
+            if (null != model)
+            {
+                RecordModelForModification(model);
+                if (!model.UpdateValue(name, value))
+                {
+                    string type = model.GetType().FullName;
+                    string message = string.Format(
+                        "ModelBase.UpdateValue call not handled.\n\n" +
+                        "Model type: {0}\n" +
+                        "Model GUID: {1}\n" +
+                        "Property name: {2}\n" +
+                        "Property value: {3}",
+                        type, modelGuid.ToString(), name, value);
+
+                    // All 'UpdateValue' calls must be handled by one of the 
+                    // ModelBase derived classes that the 'UpdateModelValue'
+                    // is intended for.
+                    throw new InvalidOperationException(message);
+                }
+
+                this.HasUnsavedChanges = true;
+            }
+        }
+
+        /// <summary>
+        /// After command framework is implemented, this method should now be only 
+        /// called from a menu item (i.e. Ctrl + W). It should not be used as a 
+        /// way for any other code paths to convert nodes to code programmatically. 
+        /// For that we now have ConvertNodesToCodeInternal which takes in more 
+        /// configurable arguments.
+        /// </summary>
+        /// <param name="parameters">This is not used and should always be null,
+        /// otherwise an ArgumentException will be thrown.</param>
+        /// 
+        internal void NodeToCode(object parameters)
+        {
+            if (null != parameters) // See above for details of this exception.
+            {
+                const string message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+
+            Guid nodeID = Guid.NewGuid();
+            var command = new DynCmd.ConvertNodesToCodeCommand(nodeID);
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
+        }
+
+        internal bool CanNodeToCode(object parameters)
+        {
+            return DynamoSelection.Instance.Selection.Count > 0;
+        }
+
+        internal void ConvertNodesToCodeInternal(Guid nodeId)
+        {
+            IEnumerable<NodeModel> nodes = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.IsConvertible);
+            if (!nodes.Any())
+                return;
+
+            Dictionary<string, string> variableNameMap;
+            string code = dynSettings.Controller.EngineController.ConvertNodesToCode(nodes, out variableNameMap);
+
+            //UndoRedo Action Group----------------------------------------------
+            UndoRecorder.BeginActionGroup();
+
+            #region Step I. Delete all nodes and their connections
+            //Create two dictionarys to store the details of the external connections that have to 
+            //be recreated after the conversion
+            var externalInputConnections = new Dictionary<ConnectorModel, string>();
+            var externalOutputConnections = new Dictionary<ConnectorModel, string>();
+
+            //Also collect the average X and Y co-ordinates of the different nodes
+            var nodeList = nodes.ToList();
+            int nodeCount = nodeList.Count;
+            double totalX = 0, totalY = 0;
+
+
+            for (int i = 0; i < nodeList.Count; ++i)
+            {
+                var node = nodeList[i];
+                #region Step I.A. Delete the connections for the node
+                var connectors = node.AllConnectors as IList<ConnectorModel>;
+                if (null == connectors)
+                {
+                    connectors = node.AllConnectors.ToList();
+                }
+
+                for (int n = 0; n < connectors.Count(); ++n)
+                {
+                    var connector = connectors[n];
+                    if (!IsInternalNodeToCodeConnection(connector))
+                    {
+                        //If the connector is an external connector, the save its details
+                        //for recreation later
+                        var startNode = connector.Start.Owner;
+                        int index = startNode.OutPorts.IndexOf(connector.Start);
+                        //We use the varibleName as the connection between the port of the old Node
+                        //to the port of the new node.
+                        var variableName = startNode.GetAstIdentifierForOutputIndex(index).Value;
+                        if (variableNameMap.ContainsKey(variableName))
+                            variableName = variableNameMap[variableName];
+
+                        //Store the data in the corresponding dictionary
+                        if (startNode == node)
+                            externalOutputConnections.Add(connector, variableName);
+                        else
+                            externalInputConnections.Add(connector, variableName);
+                    }
+
+                    //Delete the connector
+                    UndoRecorder.RecordDeletionForUndo(connector);
+                    connector.NotifyConnectedPortsOfDeletion();
+                    Connectors.Remove(connector);
+                }
+                #endregion
+
+                #region Step I.B. Delete the node
+                totalX += node.X;
+                totalY += node.Y;
+                UndoRecorder.RecordDeletionForUndo(node);
+                Nodes.Remove(node);
+                #endregion
+            }
+            #endregion
+
+            #region Step II. Create the new code block node
+            var codeBlockNode = new CodeBlockNodeModel(code, nodeId, this, totalX / nodeCount, totalY / nodeCount);
+            UndoRecorder.RecordCreationForUndo(codeBlockNode);
+            Nodes.Add(codeBlockNode);
+            #endregion
+
+            #region Step III. Recreate the necessary connections
+            ReConnectInputConnections(externalInputConnections, codeBlockNode);
+            ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
+            #endregion
+
+            UndoRecorder.EndActionGroup();
+            //End UndoRedo Action Group------------------------------------------
+
+            // select node
+            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == nodeId);
+            if (placedNode != null)
+            {
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(placedNode);
+            }
+
+            Modified();
+        }
+
         /// <summary>
         ///     If there are observers for the save, notifies them
         /// </summary>
@@ -437,17 +839,8 @@ namespace Dynamo.Models
             Modified();
         }
 
-        //TODO: Replace all Modified calls with RaisePropertyChanged-style system, that way observable collections can catch any changes
-        public void DisableReporting()
-        {
-            Nodes.ToList().ForEach(x => x.DisableReporting());
-        }
-
-        public void EnableReporting()
-        {
-            Nodes.ToList().ForEach(x => x.EnableReporting());
-        }
-
+        #endregion
+        
         #region Undo/Redo Supporting Methods
 
         private UndoRedoRecorder undoRecorder = null;
@@ -748,385 +1141,6 @@ namespace Dynamo.Models
         }
 
         #endregion
-
-        public virtual void Modified()
-        {
-            //dynSettings.DynamoLogger.Log("Workspace modified.");
-            if (OnModified != null)
-                OnModified();
-        }
-
-        public IEnumerable<NodeModel> GetHangingNodes()
-        {
-            return Nodes.Where(x => x.OutPortData.Any() && x.OutPorts.Any(y => !y.Connectors.Any()));
-        }
-
-        public IEnumerable<NodeModel> GetTopMostNodes()
-        {
-            return Nodes.Where(IsTopMostNode);
-        }
-
-        //If node is connected to some other node(other than Output) then it is not a 'top' node
-        private static bool IsTopMostNode(NodeModel node)
-        {
-            if (node.OutPortData.Count < 1)
-                return false;
-
-            foreach (var port in node.OutPorts.Where(port => port.Connectors.Count != 0))
-            {
-                return port.Connectors.Any(connector => connector.End.Owner is Output);
-            }
-
-            return true;
-        }
-
-        public event EventHandler Updated;
-        public void OnUpdated(EventArgs e)
-        {
-            if (Updated != null)
-                Updated(this, e);
-        }
-
-        private bool SaveInternal(string targetFilePath)
-        {
-            // Create the xml document to write to.
-            var document = new XmlDocument();
-            document.CreateXmlDeclaration("1.0", null, null);
-            document.AppendChild(document.CreateElement("Workspace"));
-
-            Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, targetFilePath);
-
-            if (!this.PopulateXmlDocument(document))
-                return false;
-
-            this.SerializeSessionData(document);
-
-            try
-            {
-                Dynamo.Nodes.Utilities.SetDocumentXmlPath(document, string.Empty);
-                document.Save(targetFilePath);
-            }
-            catch (System.IO.IOException)
-            {
-                return false;
-            }
-
-            FileName = targetFilePath;
-            return true;
-        }
-
-        protected virtual bool PopulateXmlDocument(XmlDocument xmlDoc)
-        {
-            try
-            {
-                var root = xmlDoc.DocumentElement;
-                root.SetAttribute("Version", WorkspaceVersion.ToString());
-                root.SetAttribute("X", X.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("zoom", Zoom.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("Description", Description);
-                root.SetAttribute("Category", Category);
-                root.SetAttribute("Name", Name);
-
-                var elementList = xmlDoc.CreateElement("Elements");
-                //write the root element
-                root.AppendChild(elementList);
-
-                foreach (var el in Nodes)
-                {
-                    var typeName = el.GetType().ToString();
-
-                    var dynEl = xmlDoc.CreateElement(typeName);
-                    elementList.AppendChild(dynEl);
-
-                    //set the type attribute
-                    dynEl.SetAttribute("type", el.GetType().ToString());
-                    dynEl.SetAttribute("guid", el.GUID.ToString());
-                    dynEl.SetAttribute("nickname", el.NickName);
-                    dynEl.SetAttribute("x", el.X.ToString(CultureInfo.InvariantCulture));
-                    dynEl.SetAttribute("y", el.Y.ToString(CultureInfo.InvariantCulture));
-                    dynEl.SetAttribute("isVisible", el.IsVisible.ToString().ToLower());
-                    dynEl.SetAttribute("isUpstreamVisible", el.IsUpstreamVisible.ToString().ToLower());
-                    dynEl.SetAttribute("lacing", el.ArgumentLacing.ToString());
-
-                    el.Save(xmlDoc, dynEl, SaveContext.File);
-                }
-
-                //write only the output connectors
-                var connectorList = xmlDoc.CreateElement("Connectors");
-                //write the root element
-                root.AppendChild(connectorList);
-
-                foreach (var el in Nodes)
-                {
-                    foreach (var port in el.OutPorts)
-                    {
-                        foreach (
-                            var c in
-                                port.Connectors.Where(c => c.Start != null && c.End != null))
-                        {
-                            var connector = xmlDoc.CreateElement(c.GetType().ToString());
-                            connectorList.AppendChild(connector);
-                            connector.SetAttribute("start", c.Start.Owner.GUID.ToString());
-                            connector.SetAttribute("start_index", c.Start.Index.ToString());
-                            connector.SetAttribute("end", c.End.Owner.GUID.ToString());
-                            connector.SetAttribute("end_index", c.End.Index.ToString());
-
-                            if (c.End.PortType == PortType.INPUT)
-                                connector.SetAttribute("portType", "0");
-                        }
-                    }
-                }
-
-                //save the notes
-                var noteList = xmlDoc.CreateElement("Notes"); //write the root element
-                root.AppendChild(noteList);
-                foreach (var n in Notes)
-                {
-                    var note = xmlDoc.CreateElement(n.GetType().ToString());
-                    noteList.AppendChild(note);
-                    note.SetAttribute("text", n.Text);
-                    note.SetAttribute("x", n.X.ToString(CultureInfo.InvariantCulture));
-                    note.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                return false;
-            }
-        }
-
-        // TODO(Ben): Documentation to come before pull request.
-        protected virtual void SerializeSessionData(XmlDocument document)
-        {
-            if (document.DocumentElement == null)
-            {
-                var message = "Workspace should have been saved before this";
-                throw new InvalidOperationException(message);
-            }
-
-            try
-            {
-                ProtoCore.Core core = null;
-                if (dynSettings.Controller != null)
-                {
-                    var engine = dynSettings.Controller.EngineController;
-                    if (engine != null && (engine.LiveRunnerCore != null))
-                        core = engine.LiveRunnerCore;
-                }
-
-                if (core == null) // No execution yet as of this point.
-                    return;
-
-                // Selecting all nodes that are either a DSFunction,
-                // a DSVarArgFunction or a CodeBlockNodeModel into a list.
-                var nodeGuids = this.Nodes.Where((n) =>
-                {
-                    return (n is DSFunction 
-                        || (n is DSVarArgFunction)
-                        || (n is CodeBlockNodeModel));
-
-                }).Select((n) => n.GUID);
-
-                var nodeTraceDataList = core.GetTraceDataForNodes(nodeGuids);
-
-                if (nodeTraceDataList.Count() > 0)
-                    Utils.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
-            }
-            catch (Exception exception)
-            {
-                // We'd prefer file saving process to not crash Dynamo,
-                // otherwise user will lose the last hope in retaining data.
-                dynSettings.DynamoLogger.Log(exception.Message);
-                dynSettings.DynamoLogger.Log(exception.StackTrace);
-            }
-        }
-
-        public void ReportPosition()
-        {
-            RaisePropertyChanged("Position");
-        }
-
-        internal void SendModelEvent(Guid modelGuid, string eventName)
-        {
-            ModelBase model = this.GetModelInternal(modelGuid);
-            if (null != model)
-            {
-                RecordModelForModification(model);
-                if (!model.HandleModelEvent(eventName))
-                {
-                    string type = model.GetType().FullName;
-                    string message = string.Format(
-                        "ModelBase.HandleModelEvent call not handled.\n\n" + 
-                        "Model type: {0}\n" +
-                        "Model GUID: {1}\n" + 
-                        "Event name: {2}",
-                        type, modelGuid.ToString(), eventName);
-
-                    // All 'HandleModelEvent' calls must be handled by one of 
-                    // the ModelBase derived classes that the 'SendModelEvent'
-                    // is intended for.
-                    throw new InvalidOperationException(message);
-                }
-
-                this.HasUnsavedChanges = true;
-            }
-        }
-
-        internal void UpdateModelValue(Guid modelGuid, string name, string value)
-        {
-            ModelBase model = GetModelInternal(modelGuid);
-            if (null != model)
-            {
-                RecordModelForModification(model);
-                if (!model.UpdateValue(name, value))
-                {
-                    string type = model.GetType().FullName;
-                    string message = string.Format(
-                        "ModelBase.UpdateValue call not handled.\n\n" +
-                        "Model type: {0}\n" +
-                        "Model GUID: {1}\n" +
-                        "Property name: {2}\n" +
-                        "Property value: {3}",
-                        type, modelGuid.ToString(), name, value);
-
-                    // All 'UpdateValue' calls must be handled by one of the 
-                    // ModelBase derived classes that the 'UpdateModelValue'
-                    // is intended for.
-                    throw new InvalidOperationException(message);
-                }
-
-                this.HasUnsavedChanges = true;
-            }
-        }
-
-        /// <summary>
-        /// After command framework is implemented, this method should now be only 
-        /// called from a menu item (i.e. Ctrl + W). It should not be used as a 
-        /// way for any other code paths to convert nodes to code programmatically. 
-        /// For that we now have ConvertNodesToCodeInternal which takes in more 
-        /// configurable arguments.
-        /// </summary>
-        /// <param name="parameters">This is not used and should always be null,
-        /// otherwise an ArgumentException will be thrown.</param>
-        /// 
-        internal void NodeToCode(object parameters)
-        {
-            if (null != parameters) // See above for details of this exception.
-            {
-                const string message = "Internal error, argument must be null";
-                throw new ArgumentException(message, "parameters");
-            }
-
-            Guid nodeID = Guid.NewGuid();
-            var command = new DynCmd.ConvertNodesToCodeCommand(nodeID);
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
-        }
-
-        internal bool CanNodeToCode(object parameters)
-        {
-            return DynamoSelection.Instance.Selection.Count > 0;
-        }
-
-        internal void ConvertNodesToCodeInternal(Guid nodeId)
-        {
-            IEnumerable<NodeModel> nodes = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.IsConvertible);
-            if (!nodes.Any())
-                return;
-
-            Dictionary<string, string> variableNameMap;
-            string code = dynSettings.Controller.EngineController.ConvertNodesToCode(nodes, out variableNameMap);
-
-            //UndoRedo Action Group----------------------------------------------
-            UndoRecorder.BeginActionGroup();
-
-            #region Step I. Delete all nodes and their connections
-            //Create two dictionarys to store the details of the external connections that have to 
-            //be recreated after the conversion
-            var externalInputConnections = new Dictionary<ConnectorModel, string>();
-            var externalOutputConnections = new Dictionary<ConnectorModel, string>();
-
-            //Also collect the average X and Y co-ordinates of the different nodes
-            var nodeList = nodes.ToList();
-            int nodeCount = nodeList.Count;
-            double totalX = 0, totalY = 0;
-
-
-            for (int i = 0; i < nodeList.Count; ++i)
-            {
-                var node = nodeList[i];
-                #region Step I.A. Delete the connections for the node
-                var connectors = node.AllConnectors as IList<ConnectorModel>;
-                if (null == connectors)
-                {
-                    connectors = node.AllConnectors.ToList();
-                }
-
-                for (int n = 0; n < connectors.Count(); ++n)
-                {
-                    var connector = connectors[n];
-                    if (!IsInternalNodeToCodeConnection(connector))
-                    {
-                        //If the connector is an external connector, the save its details
-                        //for recreation later
-                        var startNode = connector.Start.Owner;
-                        int index = startNode.OutPorts.IndexOf(connector.Start);
-                        //We use the varibleName as the connection between the port of the old Node
-                        //to the port of the new node.
-                        var variableName = startNode.GetAstIdentifierForOutputIndex(index).Value;
-                        if (variableNameMap.ContainsKey(variableName))
-                            variableName = variableNameMap[variableName];
-
-                        //Store the data in the corresponding dictionary
-                        if (startNode == node)
-                            externalOutputConnections.Add(connector, variableName);
-                        else
-                            externalInputConnections.Add(connector, variableName);
-                    }
-
-                    //Delete the connector
-                    UndoRecorder.RecordDeletionForUndo(connector);
-                    connector.NotifyConnectedPortsOfDeletion();
-                    Connectors.Remove(connector);
-                }
-                #endregion
-
-                #region Step I.B. Delete the node
-                totalX += node.X;
-                totalY += node.Y;
-                UndoRecorder.RecordDeletionForUndo(node);
-                Nodes.Remove(node);
-                #endregion
-            }
-            #endregion
-
-            #region Step II. Create the new code block node
-            var codeBlockNode = new CodeBlockNodeModel(code, nodeId, this, totalX/nodeCount, totalY/nodeCount);
-            UndoRecorder.RecordCreationForUndo(codeBlockNode);
-            Nodes.Add(codeBlockNode);
-            #endregion
-
-            #region Step III. Recreate the necessary connections
-            ReConnectInputConnections(externalInputConnections, codeBlockNode);
-            ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
-            #endregion
-
-            UndoRecorder.EndActionGroup();
-            //End UndoRedo Action Group------------------------------------------
-
-            // select node
-            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == nodeId);
-            if (placedNode != null)
-            {
-                DynamoSelection.Instance.ClearSelection();
-                DynamoSelection.Instance.Selection.Add(placedNode);
-            }
-
-            Modified();
-        }
 
         #region Node To Code Reconnection
 

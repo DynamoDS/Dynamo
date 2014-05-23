@@ -14,12 +14,16 @@ using ProtoCore.DSASM.Mirror;
 
 namespace Dynamo.DSEngine
 {
+    public delegate void AstBuiltEventHandler(object sender, AstBuilder.ASTBuiltEventArgs e);
+
     /// <summary>
     /// A controller to coordinate the interactions between some DesignScript
     /// sub components like library managment, live runner and so on.
     /// </summary>
     public class EngineController: IAstNodeContainer, IDisposable
     {
+        public event AstBuiltEventHandler AstBuilt;
+
         private LiveRunnerServices liveRunnerServices;
         private LibraryServices libraryServices;
         private AstBuilder astBuilder;
@@ -27,6 +31,11 @@ namespace Dynamo.DSEngine
         private Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private int shortVarCounter = 0;
         private DynamoController controller;
+
+        internal SyncDataManager SyncDataManager
+        {
+            get { return syncDataManager; }
+        }
 
         public EngineController(DynamoController controller)
         {
@@ -468,7 +477,16 @@ namespace Dynamo.DSEngine
             {
                 syncDataManager.AddNode(nodeGuid, astNode); 
             }
+
+            if (AstBuilt != null)
+            {
+                if (controller.DynamoModel.NodeMap.ContainsKey(nodeGuid))
+                {
+                    AstBuilt(this, new AstBuilder.ASTBuiltEventArgs(controller.DynamoModel.NodeMap[nodeGuid], astNodes));
+                }
+            }
         }
+        
         #endregion
 
         /// <summary>

@@ -401,9 +401,9 @@ namespace ProtoFFI
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogSemanticError(ErrorString(ex.InnerException));
+                    dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kDefault, ErrorString(ex.InnerException));
                 }
-                dsi.LogSemanticError(ErrorString(ex));
+                dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kDefault, ErrorString(ex));
             }
 
             return dsRetValue;

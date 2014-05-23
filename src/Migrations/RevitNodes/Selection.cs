@@ -78,8 +78,9 @@ namespace Dynamo.Nodes
                 oldNode, "Dynamo.Nodes.DSEdgeSelection", "Select Edge");
             migrationData.AppendNode(newNode);
 
-            foreach (XmlElement subNode in oldNode.ChildNodes)
-                newNode.AppendChild(subNode.Clone());
+            XmlElement newChild = data.Document.CreateElement("instance");
+            newChild.SetAttribute("id", oldNode.GetAttribute("edgeRef"));
+            newNode.AppendChild(newChild);
 
             return migrationData;
         }
