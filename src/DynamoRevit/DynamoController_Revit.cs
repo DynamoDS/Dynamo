@@ -83,6 +83,8 @@ namespace Dynamo
             IronPythonEvaluator.EvaluationBegin += (a, b, c, d, e) => ElementBinder.IsEnabled = false;
             IronPythonEvaluator.EvaluationEnd += (a, b, c, d, e) => ElementBinder.IsEnabled = true;
 
+            Runner = new DynamoRunner_Revit(this);
+
         }
 
         public RevitServicesUpdater Updater { get; private set; }
@@ -281,15 +283,8 @@ namespace Dynamo
             OnRevitDocumentChanged();
         }
 
-        protected override void OnRunCancelled(bool error)
-        {
-            base.OnRunCancelled(error);
 
-            if (transaction != null && transaction.Status == TransactionStatus.Started)
-                transaction.CancelTransaction();
-        }
-
-        protected override void OnEvaluationCompleted(object sender, EventArgs e)
+        public override void OnEvaluationCompleted(object sender, EventArgs e)
         {
             //Cleanup Delegate
             Action cleanup = delegate
@@ -356,7 +351,7 @@ namespace Dynamo
             cleanup();
             rename();
             TransactionManager.Instance.ForceCloseTransaction();
-            
+
             base.OnEvaluationCompleted(sender, e);
         }
 
@@ -404,30 +399,6 @@ namespace Dynamo
             //}
         }
 
-        protected override void Evaluate()
-        {
-            //DocumentManager.Instance.CurrentDBDocument = DocumentManager.Instance.CurrentUIDocument.Document;
-
-            if (DynamoViewModel.RunInDebug)
-            {
-                TransMode = TransactionMode.Debug; //Debug transaction control
-                dynSettings.DynamoLogger.Log("Running expression in debug.");
-            }
-            else
-            {
-                // As we use a generic function node to represent all functions,
-                // we don't know if a node has something to do with Revit or 
-                // not, neither we know that the re-execution of a dirty node
-                // will trigger the update for a Revit related node. Now just
-                // run the execution in the idle thread until we find out a 
-                // way to control the execution.
-                TransMode = TransactionMode.Automatic; //Automatic transaction control
-                Debug.WriteLine("Adding a run to the idle stack.");
-            }
-
-            //Run in idle thread no matter what
-            RevThread.IdlePromise.ExecuteOnIdleSync(base.Evaluate);
-        }
         
         public override void ResetEngine()
         {
@@ -462,7 +433,7 @@ namespace Dynamo
 
         #region Revit Transaction Management
 
-        private TransactionHandle transaction;
+        internal TransactionHandle transaction;
 
         public TransactionWrapper TransactionWrapper { get; private set; }
 
