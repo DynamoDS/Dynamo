@@ -9,6 +9,7 @@ namespace Dynamorph
 {
     class IGraphicsContext;
     class IShaderProgram;
+    class IVertexBuffer;
 
     public ref class Visualizer
     {
@@ -35,5 +36,6 @@ namespace Dynamorph
         HWND mhWndVisualizer;
         IGraphicsContext* mpGraphicsContext;
         IShaderProgram* mpShaderProgram;
+        IVertexBuffer* mpVertexBuffer;
     };
 }

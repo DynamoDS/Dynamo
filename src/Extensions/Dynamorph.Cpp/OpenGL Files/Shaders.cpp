@@ -16,17 +16,21 @@ INITGLPROC(PFNGLDELETEPROGRAMPROC,              glDeleteProgram);
 INITGLPROC(PFNGLATTACHSHADERPROC,               glAttachShader);
 INITGLPROC(PFNGLDETACHSHADERPROC,               glDetachShader);
 INITGLPROC(PFNGLLINKPROGRAMPROC,                glLinkProgram);
+INITGLPROC(PFNGLUSEPROGRAMPROC,                 glUseProgram);
 INITGLPROC(PFNGLGETPROGRAMIVPROC,               glGetProgramiv);
 INITGLPROC(PFNGLGETPROGRAMINFOLOGPROC,          glGetProgramInfoLog);
 INITGLPROC(PFNGLDELETESHADERPROC,               glDeleteShader);
 INITGLPROC(PFNGLGENBUFFERSPROC,                 glGenBuffers);
 INITGLPROC(PFNGLDELETEBUFFERSPROC,              glDeleteBuffers);
 INITGLPROC(PFNGLBUFFERDATAPROC,                 glBufferData);
+INITGLPROC(PFNGLGETATTRIBLOCATIONPROC,          glGetAttribLocation);
+INITGLPROC(PFNGLGETUNIFORMLOCATIONPROC,         glGetUniformLocation);
 INITGLPROC(PFNGLENABLEVERTEXATTRIBARRAYPROC,    glEnableVertexAttribArray);
 INITGLPROC(PFNGLDISABLEVERTEXATTRIBARRAYPROC,   glDisableVertexAttribArray);
 INITGLPROC(PFNGLBINDBUFFERPROC,                 glBindBuffer);
 INITGLPROC(PFNGLVERTEXATTRIBPOINTERPROC,        glVertexAttribPointer);
-INITGLPROC(PFNGLDRAWARRAYSEXTPROC,              glDrawArraysExt);
+INITGLPROC(PFNGLDRAWARRAYSPROC,                 glDrawArrays);
+INITGLPROC(PFNGLCLEARCOLORPROC,                 glClearColor);
 
 // ================================================================================
 // CommonShaderBase
@@ -135,4 +139,9 @@ ShaderProgram::~ShaderProgram(void)
         GL::glDeleteProgram(mProgramId);
         mProgramId = 0;
     }
+}
+
+void ShaderProgram::Activate(void) const
+{
+    GL::glUseProgram(mProgramId);
 }

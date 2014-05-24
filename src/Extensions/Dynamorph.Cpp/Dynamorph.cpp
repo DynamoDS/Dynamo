@@ -56,6 +56,7 @@ HWND Visualizer::GetWindowHandle(void)
 Visualizer::Visualizer() : 
     mhWndVisualizer(nullptr),
     mpShaderProgram(nullptr),
+    mpVertexBuffer(nullptr),
     mpGraphicsContext(nullptr)
 {
 }
@@ -90,7 +91,7 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
 
     std::string vs(
         "#version 150                                   \n"
-        "in vec2 position;                              \n"
+        "in vec3 position;                              \n"
         "void main()                                    \n"
         "{                                              \n"
         "    gl_Position = vec4(position, 0.0, 1.0);    \n"
@@ -108,10 +109,23 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     auto pvs = mpGraphicsContext->CreateVertexShader(vs);
     auto pfs = mpGraphicsContext->CreateFragmentShader(fs);
     mpShaderProgram = mpGraphicsContext->CreateShaderProgram(pvs, pfs);
+
+    std::vector<float> positions;
+    float data[] = { 0.0f, 0.5f, 0.0f, 0.5, -0.5, 0.0f, -0.5f, -0.5f, 0.0f };
+    for (int index = 0; index < _countof(data); ++index)
+        positions.push_back(data[index]);
+
+    mpVertexBuffer = mpGraphicsContext->CreateVertexBuffer();
+    mpVertexBuffer->LoadData(positions);
 }
 
 void Visualizer::Uninitialize(void)
 {
+    if (this->mpVertexBuffer != nullptr) {
+        delete this->mpVertexBuffer;
+        mpVertexBuffer = nullptr;
+    }
+
     if (this->mpShaderProgram != nullptr) {
         delete this->mpShaderProgram;
         this->mpShaderProgram = nullptr;
