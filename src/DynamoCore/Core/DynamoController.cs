@@ -492,6 +492,26 @@ namespace Dynamo
 
 
                         UIDispatcher.Invoke(new Action(() =>
+                        {
+                            DynamoViewModel.RunCancelCommand runCancel = new DynamoViewModel.RunCancelCommand(false, false);
+                            DynamoViewModel.ExecuteCommand(runCancel);
+
+                        }));
+
+                        while (DynamoViewModel.Controller.Runner.Running)
+                        {
+                            Thread.Sleep(10);
+                        }
+
+                        Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
+
+                        foreach (NodeModel n in nodes)
+                        {
+                            if (n.OutPorts.Count > 0)
+                                valueMap.Add(n.GUID, n.GetValue(0).Data.ToString());
+                        }
+
+                        UIDispatcher.Invoke(new Action(() =>
                             {
                                 DynamoViewModel.DeleteModelCommand delCommand = new DynamoViewModel.DeleteModelCommand(node.GUID);
                                 DynamoViewModel.ExecuteCommand(delCommand);
@@ -508,6 +528,8 @@ namespace Dynamo
                             }));
 
                         Thread.Sleep(100);
+
+
                         
                         /*
                         UIDispatcher.Invoke(new Action(() =>
@@ -539,6 +561,28 @@ namespace Dynamo
         
                             }));
                         Thread.Sleep(100);
+
+                        while (DynamoViewModel.Controller.Runner.Running)
+                        {
+                            Thread.Sleep(10);
+                        }
+                        foreach (NodeModel n in nodes)
+                        {
+                            if (n.OutPorts.Count > 0)
+                            {
+                                String valmap = valueMap[n.GUID].ToString();
+                                String nodeVal = n.GetValue(0).Data.ToString();
+
+                                if (valmap != nodeVal)
+                                {
+                                    Debug.WriteLine("Lookup map failed to agree");
+                                    Validity.Assert(false);
+
+                                }
+                            }
+                        }
+
+
                         /*
                         UIDispatcher.Invoke(new Action(() =>
                         {
