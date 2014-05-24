@@ -5,6 +5,7 @@
 #include "../Interfaces.h"
 #include "../../../../extern/OpenGL/glcorearb.h"
 #include "../../../../extern/OpenGL/glext.h"
+#include "../../../../extern/OpenGL/wglext.h"
 
 namespace Dynamorph { namespace OpenGL {
 
@@ -25,6 +26,8 @@ namespace Dynamorph { namespace OpenGL {
         {
             OutputDebugString(L"\nBegin OpenGL Initialization...\n");
 
+            GETGLPROC(PFNGLGETSTRINGPROC,                   glGetString);
+            GETGLPROC(PFNGLGETINTEGERVPROC,                 glGetIntegerv);
             GETGLPROC(PFNGLCREATESHADERPROC,                glCreateShader);
             GETGLPROC(PFNGLSHADERSOURCEPROC,                glShaderSource);
             GETGLPROC(PFNGLCOMPILESHADERPROC,               glCompileShader);
@@ -34,6 +37,7 @@ namespace Dynamorph { namespace OpenGL {
             GETGLPROC(PFNGLDELETEPROGRAMPROC,               glDeleteProgram);
             GETGLPROC(PFNGLATTACHSHADERPROC,                glAttachShader);
             GETGLPROC(PFNGLDETACHSHADERPROC,                glDetachShader);
+            GETGLPROC(PFNGLBINDATTRIBLOCATIONPROC,          glBindAttribLocation);
             GETGLPROC(PFNGLLINKPROGRAMPROC,                 glLinkProgram);
             GETGLPROC(PFNGLUSEPROGRAMPROC,                  glUseProgram);
             GETGLPROC(PFNGLGETPROGRAMIVPROC,                glGetProgramiv);
@@ -42,19 +46,28 @@ namespace Dynamorph { namespace OpenGL {
             GETGLPROC(PFNGLGENBUFFERSPROC,                  glGenBuffers);
             GETGLPROC(PFNGLDELETEBUFFERSPROC,               glDeleteBuffers);
             GETGLPROC(PFNGLBUFFERDATAPROC,                  glBufferData);
+            GETGLPROC(PFNGLGENVERTEXARRAYSPROC,             glGenVertexArrays);
+            GETGLPROC(PFNGLDELETEVERTEXARRAYSPROC,          glDeleteVertexArrays);
+            GETGLPROC(PFNGLBINDVERTEXARRAYPROC,             glBindVertexArray);
             GETGLPROC(PFNGLGETATTRIBLOCATIONPROC,           glGetAttribLocation);
             GETGLPROC(PFNGLGETUNIFORMLOCATIONPROC,          glGetUniformLocation);
             GETGLPROC(PFNGLENABLEVERTEXATTRIBARRAYPROC,     glEnableVertexAttribArray);
             GETGLPROC(PFNGLDISABLEVERTEXATTRIBARRAYPROC,    glDisableVertexAttribArray);
             GETGLPROC(PFNGLBINDBUFFERPROC,                  glBindBuffer);
             GETGLPROC(PFNGLVERTEXATTRIBPOINTERPROC,         glVertexAttribPointer);
+            GETGLPROC(PFNGLVIEWPORTPROC,                    glViewport);
             GETGLPROC(PFNGLDRAWARRAYSPROC,                  glDrawArrays);
             GETGLPROC(PFNGLCLEARPROC,                       glClear);
             GETGLPROC(PFNGLCLEARCOLORPROC,                  glClearColor);
 
             OutputDebugString(L"\nOpenGL Initialization Completed\n");
+
+            const GLubyte *pVersionString = GL::glGetString(GL_VERSION);
+            OutputDebugStringA((const char *) pVersionString);
         }
 
+        DEFGLPROC(PFNGLGETSTRINGPROC,                   glGetString);
+        DEFGLPROC(PFNGLGETINTEGERVPROC,                 glGetIntegerv);
         DEFGLPROC(PFNGLCREATESHADERPROC,                glCreateShader);
         DEFGLPROC(PFNGLSHADERSOURCEPROC,                glShaderSource);
         DEFGLPROC(PFNGLCOMPILESHADERPROC,               glCompileShader);
@@ -64,6 +77,7 @@ namespace Dynamorph { namespace OpenGL {
         DEFGLPROC(PFNGLDELETEPROGRAMPROC,               glDeleteProgram);
         DEFGLPROC(PFNGLATTACHSHADERPROC,                glAttachShader);
         DEFGLPROC(PFNGLDETACHSHADERPROC,                glDetachShader);
+        DEFGLPROC(PFNGLBINDATTRIBLOCATIONPROC,          glBindAttribLocation);
         DEFGLPROC(PFNGLLINKPROGRAMPROC,                 glLinkProgram);
         DEFGLPROC(PFNGLUSEPROGRAMPROC,                  glUseProgram);
         DEFGLPROC(PFNGLGETPROGRAMIVPROC,                glGetProgramiv);
@@ -72,12 +86,16 @@ namespace Dynamorph { namespace OpenGL {
         DEFGLPROC(PFNGLGENBUFFERSPROC,                  glGenBuffers);
         DEFGLPROC(PFNGLDELETEBUFFERSPROC,               glDeleteBuffers);
         DEFGLPROC(PFNGLBUFFERDATAPROC,                  glBufferData);
+        DEFGLPROC(PFNGLGENVERTEXARRAYSPROC,             glGenVertexArrays);
+        DEFGLPROC(PFNGLDELETEVERTEXARRAYSPROC,          glDeleteVertexArrays);
+        DEFGLPROC(PFNGLBINDVERTEXARRAYPROC,             glBindVertexArray);
         DEFGLPROC(PFNGLGETATTRIBLOCATIONPROC,           glGetAttribLocation);
         DEFGLPROC(PFNGLGETUNIFORMLOCATIONPROC,          glGetUniformLocation);
         DEFGLPROC(PFNGLENABLEVERTEXATTRIBARRAYPROC,     glEnableVertexAttribArray);
         DEFGLPROC(PFNGLDISABLEVERTEXATTRIBARRAYPROC,    glDisableVertexAttribArray);
         DEFGLPROC(PFNGLBINDBUFFERPROC,                  glBindBuffer);
         DEFGLPROC(PFNGLVERTEXATTRIBPOINTERPROC,         glVertexAttribPointer);
+        DEFGLPROC(PFNGLVIEWPORTPROC,                    glViewport);
         DEFGLPROC(PFNGLDRAWARRAYSPROC,                  glDrawArrays);
         DEFGLPROC(PFNGLCLEARPROC,                       glClear);
         DEFGLPROC(PFNGLCLEARCOLORPROC,                  glClearColor);
@@ -172,6 +190,7 @@ namespace Dynamorph { namespace OpenGL {
         void EnsureVertexBufferCreation(void);
 
         int mVertexCount;
+        GLuint mVertexArrayId;
         GLuint mVertexBufferId;
     };
 } }

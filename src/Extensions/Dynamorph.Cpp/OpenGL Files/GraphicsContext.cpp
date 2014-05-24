@@ -6,6 +6,8 @@ using namespace System;
 using namespace Dynamorph;
 using namespace Dynamorph::OpenGL;
 
+INITGLPROC(PFNGLGETSTRINGPROC,                  glGetString);
+INITGLPROC(PFNGLGETINTEGERVPROC,                glGetIntegerv);
 INITGLPROC(PFNGLCREATESHADERPROC,               glCreateShader);
 INITGLPROC(PFNGLSHADERSOURCEPROC,               glShaderSource);
 INITGLPROC(PFNGLCOMPILESHADERPROC,              glCompileShader);
@@ -15,6 +17,7 @@ INITGLPROC(PFNGLCREATEPROGRAMPROC,              glCreateProgram);
 INITGLPROC(PFNGLDELETEPROGRAMPROC,              glDeleteProgram);
 INITGLPROC(PFNGLATTACHSHADERPROC,               glAttachShader);
 INITGLPROC(PFNGLDETACHSHADERPROC,               glDetachShader);
+INITGLPROC(PFNGLBINDATTRIBLOCATIONPROC,         glBindAttribLocation);
 INITGLPROC(PFNGLLINKPROGRAMPROC,                glLinkProgram);
 INITGLPROC(PFNGLUSEPROGRAMPROC,                 glUseProgram);
 INITGLPROC(PFNGLGETPROGRAMIVPROC,               glGetProgramiv);
@@ -23,12 +26,16 @@ INITGLPROC(PFNGLDELETESHADERPROC,               glDeleteShader);
 INITGLPROC(PFNGLGENBUFFERSPROC,                 glGenBuffers);
 INITGLPROC(PFNGLDELETEBUFFERSPROC,              glDeleteBuffers);
 INITGLPROC(PFNGLBUFFERDATAPROC,                 glBufferData);
+INITGLPROC(PFNGLGENVERTEXARRAYSPROC,            glGenVertexArrays);
+INITGLPROC(PFNGLDELETEVERTEXARRAYSPROC,         glDeleteVertexArrays);
+INITGLPROC(PFNGLBINDVERTEXARRAYPROC,            glBindVertexArray);
 INITGLPROC(PFNGLGETATTRIBLOCATIONPROC,          glGetAttribLocation);
 INITGLPROC(PFNGLGETUNIFORMLOCATIONPROC,         glGetUniformLocation);
 INITGLPROC(PFNGLENABLEVERTEXATTRIBARRAYPROC,    glEnableVertexAttribArray);
 INITGLPROC(PFNGLDISABLEVERTEXATTRIBARRAYPROC,   glDisableVertexAttribArray);
 INITGLPROC(PFNGLBINDBUFFERPROC,                 glBindBuffer);
 INITGLPROC(PFNGLVERTEXATTRIBPOINTERPROC,        glVertexAttribPointer);
+INITGLPROC(PFNGLVIEWPORTPROC,                   glViewport);
 INITGLPROC(PFNGLDRAWARRAYSPROC,                 glDrawArrays);
 INITGLPROC(PFNGLCLEARPROC,                      glClear);
 INITGLPROC(PFNGLCLEARCOLORPROC,                 glClearColor);
@@ -46,13 +53,6 @@ void GraphicsContext::InitializeCore(HWND hWndOwner)
         throw gcnew InvalidOperationException(gcnew String(message));
     }
 
-    // TODO(Ben): This process of determining the pixel format and creation of 
-    // corresponding render context is the most basic one and will likely fail 
-    // on some machines. This should be updated to use more robust context creation
-    // instead. Refer to "Proper Context Creation" in the following web page:
-    // 
-    //      http://www.opengl.org/wiki/Creating_an_OpenGL_Context_(WGL)
-    // 
     PIXELFORMATDESCRIPTOR descriptor = { 0 };
     descriptor.nSize = sizeof(PIXELFORMATDESCRIPTOR);
     descriptor.nVersion = 1;
@@ -70,12 +70,40 @@ void GraphicsContext::InitializeCore(HWND hWndOwner)
     int format = ::ChoosePixelFormat(hDeviceContext, &descriptor);
     ::SetPixelFormat(hDeviceContext, format, &descriptor);
 
-    mhRenderContext = ::wglCreateContext(hDeviceContext);
-    ::wglMakeCurrent(hDeviceContext, mhRenderContext);
-
-    ::ReleaseDC(mRenderWindow, hDeviceContext); // Done with device context.
+    HGLRC tempContext = ::wglCreateContext(hDeviceContext);
+    ::wglMakeCurrent(hDeviceContext, tempContext);
 
     GL::Initialize(); // Initialize OpenGL extension.
+
+    int major = -1, minor = -1;
+    GL::glGetIntegerv(GL_MAJOR_VERSION, &major);
+    GL::glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+    int attributes[] =
+    {
+        WGL_CONTEXT_MAJOR_VERSION_ARB, major,
+        WGL_CONTEXT_MINOR_VERSION_ARB, minor, 
+        WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+        WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+        0
+    };
+
+    auto proc = wglGetProcAddress("wglCreateContextAttribsARB");
+    PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
+    wglCreateContextAttribsARB = ((PFNWGLCREATECONTEXTATTRIBSARBPROC) proc);
+
+    if (wglCreateContextAttribsARB == nullptr)
+    {
+        mhRenderContext = tempContext;
+    }
+    else
+    {
+        mhRenderContext = wglCreateContextAttribsARB(hDeviceContext, 0, attributes);
+        wglMakeCurrent(hDeviceContext, mhRenderContext);
+        wglDeleteContext(tempContext); // Discard temporary context.
+    }
+
+    ::ReleaseDC(mRenderWindow, hDeviceContext); // Done with device context.
 }
 
 void GraphicsContext::UninitializeCore(void)
@@ -122,6 +150,10 @@ IVertexBuffer* GraphicsContext::CreateVertexBufferCore(void) const
 
 void GraphicsContext::BeginRenderFrameCore(void) const
 {
+    RECT rcClient;
+    ::GetClientRect(this->mRenderWindow, &rcClient);
+
+    GL::glViewport(0, 0, rcClient.right, rcClient.bottom);
     GL::glClearColor(0.5f, 1.0f, 0.5f, 1.0f);
     GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
@@ -131,6 +163,8 @@ void GraphicsContext::ActivateShaderProgramCore(IShaderProgram* pShaderProgram) 
     ShaderProgram* pProgram = dynamic_cast<ShaderProgram *>(pShaderProgram);
     if (pProgram == nullptr)
         return;
+
+    pProgram->Activate();
 }
 
 void GraphicsContext::RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const
