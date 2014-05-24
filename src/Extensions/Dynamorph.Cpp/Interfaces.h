@@ -82,9 +82,24 @@ namespace Dynamorph
             return this->CreateVertexBufferCore();
         }
 
+        void BeginRenderFrame(void) const
+        {
+            this->BeginRenderFrameCore();
+        }
+
         void ActivateShaderProgram(IShaderProgram* pShaderProgram) const
         {
             this->ActivateShaderProgramCore(pShaderProgram);
+        }
+
+        void RenderVertexBuffer(IVertexBuffer* pVertexBuffer) const
+        {
+            this->RenderVertexBufferCore(pVertexBuffer);
+        }
+
+        void EndRenderFrame(void) const
+        {
+            this->EndRenderFrameCore();
         }
 
     protected:
@@ -99,7 +114,10 @@ namespace Dynamorph
             IVertexShader* pVertexShader, IFragmentShader* pFragmentShader) = 0;
 
         virtual IVertexBuffer* CreateVertexBufferCore(void) const = 0;
+        virtual void BeginRenderFrameCore(void) const = 0;
         virtual void ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const = 0;
+        virtual void RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const = 0;
+        virtual void EndRenderFrameCore(void) const = 0;
     };
 }
 

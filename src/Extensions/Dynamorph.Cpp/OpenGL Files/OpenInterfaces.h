@@ -98,7 +98,10 @@ namespace Dynamorph { namespace OpenGL {
         virtual IShaderProgram* CreateShaderProgramCore(
             IVertexShader* pVertexShader, IFragmentShader* pFragmentShader);
         virtual IVertexBuffer* CreateVertexBufferCore(void) const;
+        virtual void BeginRenderFrameCore(void) const;
         virtual void ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const;
+        virtual void RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const;
+        virtual void EndRenderFrameCore(void) const;
 
     private:
         HWND mRenderWindow;

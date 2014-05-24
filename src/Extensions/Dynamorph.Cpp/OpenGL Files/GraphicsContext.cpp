@@ -120,9 +120,26 @@ IVertexBuffer* GraphicsContext::CreateVertexBufferCore(void) const
     return new VertexBuffer();
 }
 
+void GraphicsContext::BeginRenderFrameCore(void) const
+{
+    GL::glClearColor(0.5f, 1.0f, 0.5f, 1.0f);
+    GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+}
+
 void GraphicsContext::ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const
 {
     ShaderProgram* pProgram = dynamic_cast<ShaderProgram *>(pShaderProgram);
     if (pProgram == nullptr)
         return;
+}
+
+void GraphicsContext::RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const
+{
+}
+
+void GraphicsContext::EndRenderFrameCore(void) const
+{
+    HDC hContext = ::GetDC(this->mRenderWindow);
+    ::SwapBuffers(hContext);
+    ::ReleaseDC(this->mRenderWindow, hContext);
 }
