@@ -72,8 +72,8 @@ namespace Revit.GeometryConversion
             var fd = Math.Abs(fsp - fep);
 
             // these are the start and end parameters of the bound curve
-            var sp = crv.get_EndParameter(0);
-            var ep = crv.get_EndParameter(1);
+            var sp = crv.GetEndParameter(0);
+            var ep = crv.GetEndParameter(1);
 
             // get the normalized parameters for trim
             var nsp = Math.Abs(fsp - sp) / fd;
@@ -101,8 +101,8 @@ namespace Revit.GeometryConversion
             var fd = Math.Abs(fsp - fep);
 
             // these are the start and end parameters of the bound curve
-            var sp = crv.get_EndParameter(0);
-            var ep = crv.get_EndParameter(1);
+            var sp = crv.GetEndParameter(0);
+            var ep = crv.GetEndParameter(1);
 
             // get the normalized parameters for trim
             var nsp = Math.Abs(fsp - sp)/fd;

@@ -181,8 +181,8 @@ namespace Dynamo.Nodes
             //create all the springs, checking for existing particles
             foreach (var curve in curves)
             {
-                XYZ start = curve.get_EndPoint(0);
-                XYZ end = curve.get_EndPoint(1);
+                XYZ start = curve.GetEndPoint(0);
+                XYZ end = curve.GetEndPoint(1);
 
                 //find an existing particle to use
                 Particle a = ParticleSystem.getParticleByXYZ(start);

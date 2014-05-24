@@ -101,7 +101,10 @@ namespace Dynamo.Utilities
             }
             Plane p = app.Application.Create.NewPlane(norm, pt1);
 
-            SketchPlane sp = doc.Document.Create.NewSketchPlane(p);
+            //TODO: 2014->2015
+            //SketchPlane sp = doc.Document.Create.NewSketchPlane(p);
+            var sp = Autodesk.Revit.DB.SketchPlane.Create(doc.Document, p);
+
             return sp;
         }
     }

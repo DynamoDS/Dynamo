@@ -79,14 +79,16 @@ namespace Revit.Elements
 
             Autodesk.Revit.DB.SketchPlane sp;
 
-            if (Document.IsFamilyDocument)
-            {
-                sp = Document.FamilyCreate.NewSketchPlane(p);
-            }
-            else
-            {
-                sp = Document.Create.NewSketchPlane(p);
-            }
+            //TODO: 2014->2015
+            //if (Document.IsFamilyDocument)
+            //{
+            //    sp = Document.FamilyCreate.NewSketchPlane(p);
+            //}
+            //else
+            //{
+            //    sp = Document.Create.NewSketchPlane(p);
+            //}
+            sp = Autodesk.Revit.DB.SketchPlane.Create(Document, p);
 
             InternalSetSketchPlane(sp);
 
@@ -111,7 +113,7 @@ namespace Revit.Elements
 
             XYZ newOrigin = p.Origin;
             XYZ newNorm = p.Normal;
-            var oldP = sp.Plane;
+            var oldP = sp.GetPlane();
             XYZ oldOrigin = oldP.Origin;
             XYZ oldNorm = oldP.Normal;
 

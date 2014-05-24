@@ -194,7 +194,7 @@ namespace Revit.Elements
             needsSketchPlaneReset = false;
             Autodesk.Revit.DB.Plane newPlane = flattenedOnPlane != null ? flattenedOnPlane : GetPlaneFromCurve(c, false);
 
-            Autodesk.Revit.DB.Plane curPlane = mc.SketchPlane.Plane;
+            Autodesk.Revit.DB.Plane curPlane = mc.SketchPlane.GetPlane();
 
             bool resetPlane = false;
 
@@ -338,9 +338,12 @@ namespace Revit.Elements
         {
             Plane plane = GetPlaneFromCurve(c, false);
             Autodesk.Revit.DB.SketchPlane sp = null;
-            sp = Document.IsFamilyDocument ?
-                Document.FamilyCreate.NewSketchPlane(plane) :
-                Document.Create.NewSketchPlane(plane);
+
+            //TODO: 2014->2015
+            //sp = Document.IsFamilyDocument ?
+            //    Document.FamilyCreate.NewSketchPlane(plane) :
+            //    Document.Create.NewSketchPlane(plane);
+            sp = Autodesk.Revit.DB.SketchPlane.Create(Document, plane);
 
             return sp;
         }
