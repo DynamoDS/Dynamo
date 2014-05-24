@@ -8,6 +8,9 @@ using namespace Dynamorph::OpenGL;
 
 INITGLPROC(PFNGLGETSTRINGPROC,                  glGetString);
 INITGLPROC(PFNGLGETINTEGERVPROC,                glGetIntegerv);
+INITGLPROC(PFNGLENABLEPROC,                     glEnable);
+INITGLPROC(PFNGLDISABLEPROC,                    glDisable);
+INITGLPROC(PFNGLPOLYGONMODEPROC,                glPolygonMode);
 INITGLPROC(PFNGLCREATESHADERPROC,               glCreateShader);
 INITGLPROC(PFNGLSHADERSOURCEPROC,               glShaderSource);
 INITGLPROC(PFNGLCOMPILESHADERPROC,              glCompileShader);
@@ -59,8 +62,8 @@ void GraphicsContext::InitializeCore(HWND hWndOwner)
     descriptor.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
     descriptor.iPixelType = PFD_TYPE_RGBA;
     descriptor.cColorBits = 32;
-    descriptor.cDepthBits = 24;
-    descriptor.cStencilBits = 8;
+    descriptor.cDepthBits = 32;
+    // descriptor.cStencilBits = 8;
     descriptor.iLayerType = PFD_MAIN_PLANE;
 
     mRenderWindow = hWndOwner;
@@ -101,8 +104,13 @@ void GraphicsContext::InitializeCore(HWND hWndOwner)
         mhRenderContext = wglCreateContextAttribsARB(hDeviceContext, 0, attributes);
         wglMakeCurrent(hDeviceContext, mhRenderContext);
         wglDeleteContext(tempContext); // Discard temporary context.
+
+        GL::Initialize(); // Initialize OpenGL extension.
     }
 
+    GL::glDisable(GL_CULL_FACE);
+    GL::glDisable(GL_DEPTH_TEST);
+    GL::glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     ::ReleaseDC(mRenderWindow, hDeviceContext); // Done with device context.
 }
 
@@ -148,14 +156,14 @@ IVertexBuffer* GraphicsContext::CreateVertexBufferCore(void) const
     return new VertexBuffer();
 }
 
-void GraphicsContext::BeginRenderFrameCore(void) const
+void GraphicsContext::BeginRenderFrameCore(HDC deviceContext) const
 {
     RECT rcClient;
     ::GetClientRect(this->mRenderWindow, &rcClient);
 
     GL::glViewport(0, 0, rcClient.right, rcClient.bottom);
     GL::glClearColor(0.5f, 1.0f, 0.5f, 1.0f);
-    GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    GL::glClear(GL_COLOR_BUFFER_BIT /*| GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT*/);
 }
 
 void GraphicsContext::ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const

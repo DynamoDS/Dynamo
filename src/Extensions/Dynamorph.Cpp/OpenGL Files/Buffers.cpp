@@ -12,12 +12,13 @@ using namespace Dynamorph::OpenGL;
 struct VertexData
 {
     float x, y, z;
-    float nx, ny, nz;
-    float a, r, g, b;
+    // float nx, ny, nz;
+    // float a, r, g, b;
 };
 
 VertexBuffer::VertexBuffer() :
     mVertexCount(0),
+    mVertexArrayId(0),
     mVertexBufferId(0)
 {
 }
@@ -28,11 +29,16 @@ VertexBuffer::~VertexBuffer()
         GL::glDeleteBuffers(1, &mVertexBufferId);
         mVertexBufferId = 0;
     }
+
+    if (mVertexArrayId != 0) {
+        GL::glDeleteVertexArrays(1, &mVertexArrayId);
+        mVertexArrayId = 0;
+    }
 }
 
 void VertexBuffer::Render(void) const
 {
-    GL::glBindBuffer(GL_ARRAY_BUFFER, this->mVertexBufferId);
+    GL::glBindVertexArray(mVertexArrayId);
     GL::glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
 }
 
@@ -44,37 +50,33 @@ void VertexBuffer::LoadDataCore(const std::vector<float>& positions)
 
     mVertexCount = ((int) std::floor(positions.size() / 3.0));
 
-    std::vector<VertexData> intermediate(mVertexCount);
+    VertexData* pData = new VertexData[mVertexCount];
     for (int vertex = 0; vertex < mVertexCount; ++vertex)
     {
         int offset = vertex * 3;
-
-        VertexData data = {
-            positions[offset + 0],  // Position
-            positions[offset + 1],
-            positions[offset + 2],
-            1.0, 1.0, 1.0,          // Normal
-            1.0, 1.0, 1.0, 1.0      // Color (a, r, g, b)
-        };
-
-        intermediate.push_back(data);
+        pData[vertex].x = positions[offset + 0];
+        pData[vertex].y = positions[offset + 1];
+        pData[vertex].z = positions[offset + 2];
     }
 
+    GL::glBindVertexArray(mVertexArrayId);
+
+    const int bytes = mVertexCount * sizeof(VertexData);
     GL::glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferId);
-    GL::glBufferData(GL_ARRAY_BUFFER,
-        intermediate.size() * sizeof(VertexData),
-        ((const void *) &intermediate[0]), GL_STATIC_DRAW);
+    GL::glBufferData(GL_ARRAY_BUFFER, bytes, pData, GL_STATIC_DRAW);
+    delete [] pData;
 
     GL::glEnableVertexAttribArray(0);   // Position
-    GL::glEnableVertexAttribArray(1);   // Normal
-    GL::glEnableVertexAttribArray(2);   // Color
-    GL::glDisableVertexAttribArray(3);  // Disabled
+    // GL::glEnableVertexAttribArray(1);   // Normal
+    // GL::glEnableVertexAttribArray(2);   // Color
+    // GL::glDisableVertexAttribArray(3);  // Disabled
 
-    GL::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(0));
-    GL::glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(3));
-    GL::glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(6));
+    GL::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, FC2O(0));
+    // GL::glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(3));
+    // GL::glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), FC2O(6));
 
     GL::glBindBuffer(GL_ARRAY_BUFFER, 0);
+    GL::glBindVertexArray(0);
 }
 
 void VertexBuffer::LoadDataCore(const std::vector<float>& positions,
@@ -85,6 +87,9 @@ void VertexBuffer::LoadDataCore(const std::vector<float>& positions,
 
 void VertexBuffer::EnsureVertexBufferCreation(void)
 {
+    if (mVertexArrayId == 0)
+        GL::glGenVertexArrays(1, &mVertexArrayId);
+
     if (mVertexBufferId == 0)
         GL::glGenBuffers(1, &mVertexBufferId);
 }

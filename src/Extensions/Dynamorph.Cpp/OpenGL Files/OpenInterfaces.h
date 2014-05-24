@@ -28,6 +28,9 @@ namespace Dynamorph { namespace OpenGL {
 
             GETGLPROC(PFNGLGETSTRINGPROC,                   glGetString);
             GETGLPROC(PFNGLGETINTEGERVPROC,                 glGetIntegerv);
+            GETGLPROC(PFNGLENABLEPROC,                      glEnable);
+            GETGLPROC(PFNGLDISABLEPROC,                     glDisable);
+            GETGLPROC(PFNGLPOLYGONMODEPROC,                 glPolygonMode);
             GETGLPROC(PFNGLCREATESHADERPROC,                glCreateShader);
             GETGLPROC(PFNGLSHADERSOURCEPROC,                glShaderSource);
             GETGLPROC(PFNGLCOMPILESHADERPROC,               glCompileShader);
@@ -61,13 +64,13 @@ namespace Dynamorph { namespace OpenGL {
             GETGLPROC(PFNGLCLEARCOLORPROC,                  glClearColor);
 
             OutputDebugString(L"\nOpenGL Initialization Completed\n");
-
-            const GLubyte *pVersionString = GL::glGetString(GL_VERSION);
-            OutputDebugStringA((const char *) pVersionString);
         }
 
         DEFGLPROC(PFNGLGETSTRINGPROC,                   glGetString);
         DEFGLPROC(PFNGLGETINTEGERVPROC,                 glGetIntegerv);
+        DEFGLPROC(PFNGLENABLEPROC,                      glEnable);
+        DEFGLPROC(PFNGLDISABLEPROC,                     glDisable);
+        DEFGLPROC(PFNGLPOLYGONMODEPROC,                 glPolygonMode);
         DEFGLPROC(PFNGLCREATESHADERPROC,                glCreateShader);
         DEFGLPROC(PFNGLSHADERSOURCEPROC,                glShaderSource);
         DEFGLPROC(PFNGLCOMPILESHADERPROC,               glCompileShader);
@@ -116,7 +119,7 @@ namespace Dynamorph { namespace OpenGL {
         virtual IShaderProgram* CreateShaderProgramCore(
             IVertexShader* pVertexShader, IFragmentShader* pFragmentShader);
         virtual IVertexBuffer* CreateVertexBufferCore(void) const;
-        virtual void BeginRenderFrameCore(void) const;
+        virtual void BeginRenderFrameCore(HDC deviceContext) const;
         virtual void ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const;
         virtual void RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const;
         virtual void EndRenderFrameCore(HDC deviceContext) const;

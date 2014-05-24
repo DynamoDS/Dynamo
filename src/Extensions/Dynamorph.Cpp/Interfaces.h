@@ -82,9 +82,9 @@ namespace Dynamorph
             return this->CreateVertexBufferCore();
         }
 
-        void BeginRenderFrame(void) const
+        void BeginRenderFrame(HDC deviceContext) const
         {
-            this->BeginRenderFrameCore();
+            this->BeginRenderFrameCore(deviceContext);
         }
 
         void ActivateShaderProgram(IShaderProgram* pShaderProgram) const
@@ -114,7 +114,7 @@ namespace Dynamorph
             IVertexShader* pVertexShader, IFragmentShader* pFragmentShader) = 0;
 
         virtual IVertexBuffer* CreateVertexBufferCore(void) const = 0;
-        virtual void BeginRenderFrameCore(void) const = 0;
+        virtual void BeginRenderFrameCore(HDC deviceContext) const = 0;
         virtual void ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const = 0;
         virtual void RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const = 0;
         virtual void EndRenderFrameCore(HDC deviceContext) const = 0;

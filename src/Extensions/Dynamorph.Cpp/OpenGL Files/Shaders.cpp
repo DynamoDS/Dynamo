@@ -31,14 +31,12 @@ bool CommonShaderBase::LoadFromContent(const std::string& content)
     GL::glShaderSource(mShaderId, 1, &source, nullptr);
     GL::glCompileShader(mShaderId);
 
-    GLint result = GL_FALSE, infoLogLength = 0;
+    GLint result = GL_FALSE;
     GL::glGetShaderiv(mShaderId, GL_COMPILE_STATUS, &result);
-    GL::glGetShaderiv(mShaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-    std::vector<char> errorMessage(infoLogLength);
-    GL::glGetShaderInfoLog(mShaderId, infoLogLength, nullptr, &errorMessage[0]);
-
-    return true; // TODO(Ben): Make return value indicative.
+    char buffer[128] = { 0 };
+    GL::glGetShaderInfoLog(mShaderId, sizeof(buffer), nullptr, buffer);
+    return result == GL_TRUE;
 }
 
 GLuint CommonShaderBase::GetShaderId(void) const
@@ -85,14 +83,14 @@ mProgramId(0), mpVertexShader(pVertexShader), mpFragmentShader(pFragmentShader)
     mProgramId = GL::glCreateProgram();
     GL::glAttachShader(mProgramId, mpVertexShader->GetShaderId());
     GL::glAttachShader(mProgramId, mpFragmentShader->GetShaderId());
+    GL::glBindAttribLocation(mProgramId, 0, "in_position");
     GL::glLinkProgram(mProgramId);
 
-    GLint result = GL_FALSE, infoLogLength = 0;
+    GLint result = GL_FALSE;
     GL::glGetProgramiv(mProgramId, GL_LINK_STATUS, &result);
-    GL::glGetProgramiv(mProgramId, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-    std::vector<char> errorMessage(max(infoLogLength, int(1)));
-    GL::glGetProgramInfoLog(mProgramId, infoLogLength, nullptr, &errorMessage[0]);
+    char buffer[128] = { 0 };
+    GL::glGetProgramInfoLog(mProgramId, sizeof(buffer), nullptr, buffer);
 }
 
 ShaderProgram::~ShaderProgram(void)

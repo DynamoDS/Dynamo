@@ -98,19 +98,19 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     mpGraphicsContext->Initialize(mhWndVisualizer);
 
     std::string vs(
-        "#version 150                                   \n"
-        "in vec3 position;                              \n"
-        "void main()                                    \n"
+        "#version 150 core                              \n"
+        "in vec3 in_position;                           \n"
+        "void main(void)                                \n"
         "{                                              \n"
-        "    gl_Position = vec4(position, 0.0, 1.0);    \n"
+        "    gl_Position = vec4(in_position, 1.0);      \n"
         "}                                              \n");
 
     std::string fs(
-        "#version 150                                   \n"
-        "out vec4 outColor;                             \n"
-        "void main()                                    \n"
+        "#version 150 core                              \n"
+        "out vec4 out_Color;                            \n"
+        "void main(void)                                \n"
         "{                                              \n"
-        "    outColor = vec4(1.0, 1.0, 1.0, 1.0);       \n"
+        "    out_Color = vec4(1.0, 0.0, 0.0, 1.0);      \n"
         "}                                              \n");
 
     // Create shaders and their program.
@@ -158,7 +158,9 @@ LRESULT Visualizer::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lP
         {
             PAINTSTRUCT ps;
             HDC deviceContext = BeginPaint(hWnd, &ps); 
-            mpGraphicsContext->BeginRenderFrame();
+            mpGraphicsContext->BeginRenderFrame(deviceContext);
+            mpGraphicsContext->ActivateShaderProgram(mpShaderProgram);
+            mpGraphicsContext->RenderVertexBuffer(mpVertexBuffer);
             mpGraphicsContext->EndRenderFrame(deviceContext);
             EndPaint(hWnd, &ps);
             return 0L;
