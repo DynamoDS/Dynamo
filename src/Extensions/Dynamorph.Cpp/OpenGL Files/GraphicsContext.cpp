@@ -140,9 +140,7 @@ void GraphicsContext::RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const
         pBuffer->Render();
 }
 
-void GraphicsContext::EndRenderFrameCore(void) const
+void GraphicsContext::EndRenderFrameCore(HDC deviceContext) const
 {
-    HDC hContext = ::GetDC(this->mRenderWindow);
-    ::SwapBuffers(hContext);
-    ::ReleaseDC(this->mRenderWindow, hContext);
+    ::SwapBuffers(deviceContext);
 }

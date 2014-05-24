@@ -48,6 +48,14 @@ void Visualizer::Destroy(void)
     }
 }
 
+LRESULT Visualizer::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    if (Visualizer::mVisualizer == nullptr)
+        return ::DefWindowProc(hWnd, msg, wParam, lParam);
+
+    return Visualizer::mVisualizer->ProcessMessage(hWnd, msg, wParam, lParam);
+}
+
 HWND Visualizer::GetWindowHandle(void)
 {
     return this->mhWndVisualizer;
@@ -75,7 +83,7 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     // 
     windowClass.cbSize = sizeof(windowClass);
     windowClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-    windowClass.lpfnWndProc = ::DefWindowProc;
+    windowClass.lpfnWndProc = ((WNDPROC) Visualizer::WndProc);
     windowClass.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
     windowClass.hbrBackground = ::CreateSolidBrush(RGB(100, 149, 237));
     windowClass.lpszClassName = L"VisualizerClass";
@@ -140,4 +148,22 @@ void Visualizer::Uninitialize(void)
         ::DestroyWindow(this->mhWndVisualizer);
         this->mhWndVisualizer = nullptr;
     }
+}
+
+LRESULT Visualizer::ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    switch (msg)
+    {
+    case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            HDC deviceContext = BeginPaint(hWnd, &ps); 
+            mpGraphicsContext->BeginRenderFrame();
+            mpGraphicsContext->EndRenderFrame(deviceContext);
+            EndPaint(hWnd, &ps);
+            return 0L;
+        }
+    }
+
+    return ::DefWindowProc(hWnd, msg, wParam, lParam);
 }

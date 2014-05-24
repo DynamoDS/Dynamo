@@ -18,6 +18,7 @@ namespace Dynamorph
         // Static class methods
         static System::IntPtr Create(System::IntPtr hwndParent, int width, int height);
         static void Destroy(void);
+        static LRESULT _stdcall WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
         // Public class methods.
         HWND GetWindowHandle(void);
@@ -28,6 +29,7 @@ namespace Dynamorph
         Visualizer();
         void Initialize(HWND hWndParent, int width, int height);
         void Uninitialize(void);
+        LRESULT ProcessMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
         // Static class data member.
         static Visualizer^ mVisualizer = nullptr;

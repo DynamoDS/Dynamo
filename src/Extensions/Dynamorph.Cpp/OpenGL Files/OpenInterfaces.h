@@ -101,7 +101,7 @@ namespace Dynamorph { namespace OpenGL {
         virtual void BeginRenderFrameCore(void) const;
         virtual void ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const;
         virtual void RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const;
-        virtual void EndRenderFrameCore(void) const;
+        virtual void EndRenderFrameCore(HDC deviceContext) const;
 
     private:
         HWND mRenderWindow;

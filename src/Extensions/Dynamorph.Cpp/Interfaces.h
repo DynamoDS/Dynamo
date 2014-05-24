@@ -97,9 +97,9 @@ namespace Dynamorph
             this->RenderVertexBufferCore(pVertexBuffer);
         }
 
-        void EndRenderFrame(void) const
+        void EndRenderFrame(HDC deviceContext) const
         {
-            this->EndRenderFrameCore();
+            this->EndRenderFrameCore(deviceContext);
         }
 
     protected:
@@ -117,7 +117,7 @@ namespace Dynamorph
         virtual void BeginRenderFrameCore(void) const = 0;
         virtual void ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const = 0;
         virtual void RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const = 0;
-        virtual void EndRenderFrameCore(void) const = 0;
+        virtual void EndRenderFrameCore(HDC deviceContext) const = 0;
     };
 }
 
