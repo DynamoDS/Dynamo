@@ -8,15 +8,23 @@
 
 namespace Dynamorph { namespace OpenGL {
 
-#define DEFGLPROC(t, n)   static t n;
-#define GETGLPROC(t, n)   { n = ((t) wglGetProcAddress(#n)); }
-#define INITGLPROC(t, n)  t GL::n = nullptr;
+#define DEFGLPROC(t, n)     static t n;
+#define INITGLPROC(t, n)    t GL::n = nullptr;
+#define GETGLPROC(t, n)     {                                           \
+                                n = ((t) wglGetProcAddress(#n));        \
+                                if (n == nullptr) {                     \
+                                    OutputDebugStringA(#n);             \
+                                    OutputDebugStringA(" [FAILED]\n");  \
+                                }                                       \
+                            }
 
     class GL
     {
     public:
         static void Initialize()
         {
+            OutputDebugString(L"\nBegin OpenGL Initialization...\n");
+
             GETGLPROC(PFNGLCREATESHADERPROC,                glCreateShader);
             GETGLPROC(PFNGLSHADERSOURCEPROC,                glShaderSource);
             GETGLPROC(PFNGLCOMPILESHADERPROC,               glCompileShader);
@@ -41,7 +49,10 @@ namespace Dynamorph { namespace OpenGL {
             GETGLPROC(PFNGLBINDBUFFERPROC,                  glBindBuffer);
             GETGLPROC(PFNGLVERTEXATTRIBPOINTERPROC,         glVertexAttribPointer);
             GETGLPROC(PFNGLDRAWARRAYSPROC,                  glDrawArrays);
+            GETGLPROC(PFNGLCLEARPROC,                       glClear);
             GETGLPROC(PFNGLCLEARCOLORPROC,                  glClearColor);
+
+            OutputDebugString(L"\nOpenGL Initialization Completed\n");
         }
 
         DEFGLPROC(PFNGLCREATESHADERPROC,                glCreateShader);
@@ -68,6 +79,7 @@ namespace Dynamorph { namespace OpenGL {
         DEFGLPROC(PFNGLBINDBUFFERPROC,                  glBindBuffer);
         DEFGLPROC(PFNGLVERTEXATTRIBPOINTERPROC,         glVertexAttribPointer);
         DEFGLPROC(PFNGLDRAWARRAYSPROC,                  glDrawArrays);
+        DEFGLPROC(PFNGLCLEARPROC,                       glClear);
         DEFGLPROC(PFNGLCLEARCOLORPROC,                  glClearColor);
     };
 

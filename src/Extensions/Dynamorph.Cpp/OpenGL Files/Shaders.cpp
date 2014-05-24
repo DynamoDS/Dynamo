@@ -6,32 +6,6 @@ using namespace System;
 using namespace Dynamorph;
 using namespace Dynamorph::OpenGL;
 
-INITGLPROC(PFNGLCREATESHADERPROC,               glCreateShader);
-INITGLPROC(PFNGLSHADERSOURCEPROC,               glShaderSource);
-INITGLPROC(PFNGLCOMPILESHADERPROC,              glCompileShader);
-INITGLPROC(PFNGLGETSHADERIVPROC,                glGetShaderiv);
-INITGLPROC(PFNGLGETSHADERINFOLOGPROC,           glGetShaderInfoLog);
-INITGLPROC(PFNGLCREATEPROGRAMPROC,              glCreateProgram);
-INITGLPROC(PFNGLDELETEPROGRAMPROC,              glDeleteProgram);
-INITGLPROC(PFNGLATTACHSHADERPROC,               glAttachShader);
-INITGLPROC(PFNGLDETACHSHADERPROC,               glDetachShader);
-INITGLPROC(PFNGLLINKPROGRAMPROC,                glLinkProgram);
-INITGLPROC(PFNGLUSEPROGRAMPROC,                 glUseProgram);
-INITGLPROC(PFNGLGETPROGRAMIVPROC,               glGetProgramiv);
-INITGLPROC(PFNGLGETPROGRAMINFOLOGPROC,          glGetProgramInfoLog);
-INITGLPROC(PFNGLDELETESHADERPROC,               glDeleteShader);
-INITGLPROC(PFNGLGENBUFFERSPROC,                 glGenBuffers);
-INITGLPROC(PFNGLDELETEBUFFERSPROC,              glDeleteBuffers);
-INITGLPROC(PFNGLBUFFERDATAPROC,                 glBufferData);
-INITGLPROC(PFNGLGETATTRIBLOCATIONPROC,          glGetAttribLocation);
-INITGLPROC(PFNGLGETUNIFORMLOCATIONPROC,         glGetUniformLocation);
-INITGLPROC(PFNGLENABLEVERTEXATTRIBARRAYPROC,    glEnableVertexAttribArray);
-INITGLPROC(PFNGLDISABLEVERTEXATTRIBARRAYPROC,   glDisableVertexAttribArray);
-INITGLPROC(PFNGLBINDBUFFERPROC,                 glBindBuffer);
-INITGLPROC(PFNGLVERTEXATTRIBPOINTERPROC,        glVertexAttribPointer);
-INITGLPROC(PFNGLDRAWARRAYSPROC,                 glDrawArrays);
-INITGLPROC(PFNGLCLEARCOLORPROC,                 glClearColor);
-
 // ================================================================================
 // CommonShaderBase
 // ================================================================================
