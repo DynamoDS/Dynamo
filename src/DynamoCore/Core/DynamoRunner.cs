@@ -18,10 +18,38 @@ namespace Dynamo.Core
     /// </summary>
     public class DynamoRunner
     {
-        private DynamoController controller = dynSettings.Controller;
+        private readonly DynamoController controller = dynSettings.Controller;
+
+        private bool cancelSet = false;
+        private int? execInternval = null; 
+        
+        public void CancelAsync()
+        {
+            cancelSet = true;
+        }
+
+
+
+
+        #region Running
+
+        public bool Running { get; protected set; }
+
+        /// <summary>
+        /// Does the workflow need to be run again due to changes since the last run?
+        /// </summary>
+        public bool NeedsAdditionalRun { get; protected set; }
+
+        /// <summary>
+        /// Protect guard for setting the run flag
+        /// </summary>
+        public static Object runControlMutex = new object();
+
 
         public void RunExpression(int? executionInterval = null)
         {
+            this.execInternval = executionInterval;
+
             lock (runControlMutex)
             {
                 if (Running)
@@ -73,65 +101,35 @@ namespace Dynamo.Core
                 sw.Start();
 
                 Debug.WriteLine("About to enter spin lock");
-                while (evaluationWorker.IsBusy)
-                {
-                    Validity.Assert(sw.ElapsedMilliseconds < 50000, "Spin lock not being released. Race condition. Abort.");
-                }
-
-                //RunThread(evaluationWorker, new DoWorkEventArgs(executionInterval));
-
-                evaluationWorker.RunWorkerAsync(executionInterval);
+                RunAsync();
             }
             else
             {
                 //for testing, we do not want to run asynchronously, as it will finish the 
                 //test before the evaluation (and the run) is complete
-                RunThread(evaluationWorker, new DoWorkEventArgs(executionInterval));
+                //RunThread(evaluationWorker, new DoWorkEventArgs(executionInterval));
+                RunSync();
             }
         }
 
-        public void CancelAsync()
+        private void RunAsync()
         {
-            evaluationWorker.CancelAsync();
+            new Thread(RunSync).Start();
         }
 
-        #region Running
-
-        private readonly BackgroundWorker evaluationWorker = new BackgroundWorker
+        private void RunSync()
         {
-            WorkerSupportsCancellation = true
-        };
-
-        public bool Running { get; protected set; }
-
-        /// <summary>
-        /// Does the workflow need to be run again due to changes since the last run?
-        /// </summary>
-        public bool NeedsAdditionalRun { get; protected set; }
-
-        /// <summary>
-        /// Protect guard for setting the run flag
-        /// </summary>
-        public static Object runControlMutex = new object();
-
-        
-        private void RunThread(object s, DoWorkEventArgs args)
-        {
-            //Thread.CurrentThread.Name = "DynamoController.RunThread";
-
-            var bw = s as BackgroundWorker;
-
             do
             {
                 Evaluate();
 
-                if (args == null || args.Argument == null)
+                if (execInternval == null)
                     break;
 
-                var sleep = (int)args.Argument;
+                var sleep = execInternval.Value;
                 Thread.Sleep(sleep);
             }
-            while (bw != null && !bw.CancellationPending);
+            while (!cancelSet);
 
             controller.OnRunCompleted(this, false);
 
@@ -141,6 +139,7 @@ namespace Dynamo.Core
                 controller.DynamoViewModel.RunEnabled = true;
             }
         }
+
 
         protected virtual void Evaluate()
         {
