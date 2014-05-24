@@ -92,3 +92,10 @@ IVertexBuffer* GraphicsContext::CreateVertexBufferCore(void) const
 {
     return new VertexBuffer();
 }
+
+void GraphicsContext::ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const
+{
+    ShaderProgram* pProgram = dynamic_cast<ShaderProgram *>(pShaderProgram);
+    if (pProgram == nullptr)
+        return;
+}

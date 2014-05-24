@@ -3,6 +3,7 @@
 #define _OPEN_INTERFACE_H_
 
 #include "../Interfaces.h"
+#include "../../../../extern/OpenGL/glcorearb.h"
 #include "../../../../extern/OpenGL/glext.h"
 
 namespace Dynamorph { namespace OpenGL {
@@ -26,17 +27,21 @@ namespace Dynamorph { namespace OpenGL {
             GETGLPROC(PFNGLATTACHSHADERPROC,                glAttachShader);
             GETGLPROC(PFNGLDETACHSHADERPROC,                glDetachShader);
             GETGLPROC(PFNGLLINKPROGRAMPROC,                 glLinkProgram);
+            GETGLPROC(PFNGLUSEPROGRAMPROC,                  glUseProgram);
             GETGLPROC(PFNGLGETPROGRAMIVPROC,                glGetProgramiv);
             GETGLPROC(PFNGLGETPROGRAMINFOLOGPROC,           glGetProgramInfoLog);
             GETGLPROC(PFNGLDELETESHADERPROC,                glDeleteShader);
             GETGLPROC(PFNGLGENBUFFERSPROC,                  glGenBuffers);
             GETGLPROC(PFNGLDELETEBUFFERSPROC,               glDeleteBuffers);
             GETGLPROC(PFNGLBUFFERDATAPROC,                  glBufferData);
+            GETGLPROC(PFNGLGETATTRIBLOCATIONPROC,           glGetAttribLocation);
+            GETGLPROC(PFNGLGETUNIFORMLOCATIONPROC,          glGetUniformLocation);
             GETGLPROC(PFNGLENABLEVERTEXATTRIBARRAYPROC,     glEnableVertexAttribArray);
             GETGLPROC(PFNGLDISABLEVERTEXATTRIBARRAYPROC,    glDisableVertexAttribArray);
             GETGLPROC(PFNGLBINDBUFFERPROC,                  glBindBuffer);
             GETGLPROC(PFNGLVERTEXATTRIBPOINTERPROC,         glVertexAttribPointer);
-            GETGLPROC(PFNGLDRAWARRAYSEXTPROC,               glDrawArraysExt);
+            GETGLPROC(PFNGLDRAWARRAYSPROC,                  glDrawArrays);
+            GETGLPROC(PFNGLCLEARCOLORPROC,                  glClearColor);
         }
 
         DEFGLPROC(PFNGLCREATESHADERPROC,                glCreateShader);
@@ -49,17 +54,21 @@ namespace Dynamorph { namespace OpenGL {
         DEFGLPROC(PFNGLATTACHSHADERPROC,                glAttachShader);
         DEFGLPROC(PFNGLDETACHSHADERPROC,                glDetachShader);
         DEFGLPROC(PFNGLLINKPROGRAMPROC,                 glLinkProgram);
+        DEFGLPROC(PFNGLUSEPROGRAMPROC,                  glUseProgram);
         DEFGLPROC(PFNGLGETPROGRAMIVPROC,                glGetProgramiv);
         DEFGLPROC(PFNGLGETPROGRAMINFOLOGPROC,           glGetProgramInfoLog);
         DEFGLPROC(PFNGLDELETESHADERPROC,                glDeleteShader);
         DEFGLPROC(PFNGLGENBUFFERSPROC,                  glGenBuffers);
         DEFGLPROC(PFNGLDELETEBUFFERSPROC,               glDeleteBuffers);
         DEFGLPROC(PFNGLBUFFERDATAPROC,                  glBufferData);
+        DEFGLPROC(PFNGLGETATTRIBLOCATIONPROC,           glGetAttribLocation);
+        DEFGLPROC(PFNGLGETUNIFORMLOCATIONPROC,          glGetUniformLocation);
         DEFGLPROC(PFNGLENABLEVERTEXATTRIBARRAYPROC,     glEnableVertexAttribArray);
         DEFGLPROC(PFNGLDISABLEVERTEXATTRIBARRAYPROC,    glDisableVertexAttribArray);
         DEFGLPROC(PFNGLBINDBUFFERPROC,                  glBindBuffer);
         DEFGLPROC(PFNGLVERTEXATTRIBPOINTERPROC,         glVertexAttribPointer);
-        DEFGLPROC(PFNGLDRAWARRAYSEXTPROC,               glDrawArraysExt);
+        DEFGLPROC(PFNGLDRAWARRAYSPROC,                  glDrawArrays);
+        DEFGLPROC(PFNGLCLEARCOLORPROC,                  glClearColor);
     };
 
     class GraphicsContext : public Dynamorph::IGraphicsContext
@@ -77,6 +86,7 @@ namespace Dynamorph { namespace OpenGL {
         virtual IShaderProgram* CreateShaderProgramCore(
             IVertexShader* pVertexShader, IFragmentShader* pFragmentShader);
         virtual IVertexBuffer* CreateVertexBufferCore(void) const;
+        virtual void ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const;
 
     private:
         HWND mRenderWindow;
@@ -123,6 +133,7 @@ namespace Dynamorph { namespace OpenGL {
     public:
         ShaderProgram(VertexShader* pVertexShader, FragmentShader* pFragmentShader);
         ~ShaderProgram(void);
+        void Activate(void) const;
 
     private:
         GLuint mProgramId;

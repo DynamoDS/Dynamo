@@ -27,9 +27,16 @@ namespace Dynamorph
     public:
         virtual ~IVertexBuffer() { }
 
-        void LoadData(const std::vector<float>& positions);
+        void LoadData(const std::vector<float>& positions)
+        {
+            this->LoadDataCore(positions);
+        }
+
         void LoadData(const std::vector<float>& positions,
-            const std::vector<float>& colors);
+            const std::vector<float>& colors)
+        {
+            this->LoadDataCore(positions, colors);
+        }
 
     protected:
         virtual void LoadDataCore(const std::vector<float>& positions) = 0;
@@ -75,6 +82,11 @@ namespace Dynamorph
             return this->CreateVertexBufferCore();
         }
 
+        void ActivateShaderProgram(IShaderProgram* pShaderProgram) const
+        {
+            this->ActivateShaderProgramCore(pShaderProgram);
+        }
+
     protected:
         virtual void InitializeCore(HWND hWndOwner) = 0;
         virtual void UninitializeCore(void) = 0;
@@ -87,6 +99,7 @@ namespace Dynamorph
             IVertexShader* pVertexShader, IFragmentShader* pFragmentShader) = 0;
 
         virtual IVertexBuffer* CreateVertexBufferCore(void) const = 0;
+        virtual void ActivateShaderProgramCore(IShaderProgram* pShaderProgram) const = 0;
     };
 }
 
