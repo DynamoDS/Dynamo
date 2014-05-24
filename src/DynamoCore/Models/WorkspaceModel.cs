@@ -982,7 +982,8 @@ namespace Dynamo.Models
                     // "Connectors.Remove" will modify "AllConnectors", causing 
                     // the Enumerator in this "foreach" to become invalid.
                     // 
-                    foreach (var conn in node.AllConnectors.ToList())
+                    List<ConnectorModel> connectors = node.AllConnectors.ToList();
+                    foreach (var conn in connectors)
                     {
                         conn.NotifyConnectedPortsOfDeletion();
                         Connectors.Remove(conn);
