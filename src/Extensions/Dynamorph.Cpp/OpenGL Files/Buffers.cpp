@@ -16,7 +16,9 @@ struct VertexData
     float a, r, g, b;
 };
 
-VertexBuffer::VertexBuffer() : mVertexBufferId(0)
+VertexBuffer::VertexBuffer() :
+    mVertexCount(0),
+    mVertexBufferId(0)
 {
 }
 
@@ -28,16 +30,22 @@ VertexBuffer::~VertexBuffer()
     }
 }
 
+void VertexBuffer::Render(void) const
+{
+    GL::glBindBuffer(GL_ARRAY_BUFFER, this->mVertexBufferId);
+    GL::glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
+}
+
 void VertexBuffer::LoadDataCore(const std::vector<float>& positions)
 {
     // TODO(Ben): Ensure that we only get positions in 3D coordinates.
 
     EnsureVertexBufferCreation();
 
-    int vertices = ((int) std::floor(positions.size() / 3.0));
+    mVertexCount = ((int) std::floor(positions.size() / 3.0));
 
-    std::vector<VertexData> intermediate(vertices);
-    for (int vertex = 0; vertex < vertices; ++vertex)
+    std::vector<VertexData> intermediate(mVertexCount);
+    for (int vertex = 0; vertex < mVertexCount; ++vertex)
     {
         int offset = vertex * 3;
 

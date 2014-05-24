@@ -135,6 +135,9 @@ void GraphicsContext::ActivateShaderProgramCore(IShaderProgram* pShaderProgram) 
 
 void GraphicsContext::RenderVertexBufferCore(IVertexBuffer* pVertexBuffer) const
 {
+    auto pBuffer = dynamic_cast<VertexBuffer *>(pVertexBuffer);
+    if (pBuffer != nullptr)
+        pBuffer->Render();
 }
 
 void GraphicsContext::EndRenderFrameCore(void) const

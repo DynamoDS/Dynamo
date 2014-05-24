@@ -159,8 +159,9 @@ namespace Dynamorph { namespace OpenGL {
     class VertexBuffer : public Dynamorph::IVertexBuffer
     {
     public:
-        VertexBuffer();
-        ~VertexBuffer();
+        VertexBuffer(void);
+        ~VertexBuffer(void);
+        void Render(void) const;
 
     protected:
         virtual void LoadDataCore(const std::vector<float>& positions);
@@ -170,6 +171,7 @@ namespace Dynamorph { namespace OpenGL {
     private:
         void EnsureVertexBufferCreation(void);
 
+        int mVertexCount;
         GLuint mVertexBufferId;
     };
 } }
