@@ -14,6 +14,10 @@ struct VertexData
     float x, y, z;
     // float nx, ny, nz;
     // float a, r, g, b;
+
+    VertexData() : x(0), y(0), z(0)
+    {
+    }
 };
 
 VertexBuffer::VertexBuffer() :
@@ -50,21 +54,20 @@ void VertexBuffer::LoadDataCore(const std::vector<float>& positions)
 
     mVertexCount = ((int) std::floor(positions.size() / 3.0));
 
-    VertexData* pData = new VertexData[mVertexCount];
+    std::vector<VertexData> data(mVertexCount);
+    const auto bytes = data.size() * sizeof(VertexData);
+
     for (int vertex = 0; vertex < mVertexCount; ++vertex)
     {
         int offset = vertex * 3;
-        pData[vertex].x = positions[offset + 0];
-        pData[vertex].y = positions[offset + 1];
-        pData[vertex].z = positions[offset + 2];
+        data[vertex].x = positions[offset + 0];
+        data[vertex].y = positions[offset + 1];
+        data[vertex].z = positions[offset + 2];
     }
 
     GL::glBindVertexArray(mVertexArrayId);
-
-    const int bytes = mVertexCount * sizeof(VertexData);
     GL::glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferId);
-    GL::glBufferData(GL_ARRAY_BUFFER, bytes, pData, GL_STATIC_DRAW);
-    delete [] pData;
+    GL::glBufferData(GL_ARRAY_BUFFER, bytes, &data[0], GL_STATIC_DRAW);
 
     GL::glEnableVertexAttribArray(0);   // Position
     // GL::glEnableVertexAttribArray(1);   // Normal
