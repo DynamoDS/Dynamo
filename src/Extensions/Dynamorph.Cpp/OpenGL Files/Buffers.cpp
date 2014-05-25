@@ -9,17 +9,6 @@ using namespace Dynamorph::OpenGL;
 // Convert float count to offset.
 #define FC2O(x) ((const void *)(x * sizeof(float)))
 
-struct VertexData
-{
-    float x, y, z;
-    // float nx, ny, nz;
-    // float a, r, g, b;
-
-    VertexData() : x(0), y(0), z(0)
-    {
-    }
-};
-
 VertexBuffer::VertexBuffer() :
     mVertexCount(0),
     mVertexArrayId(0),
@@ -55,8 +44,6 @@ void VertexBuffer::LoadDataCore(const std::vector<float>& positions)
     mVertexCount = ((int) std::floor(positions.size() / 3.0));
 
     std::vector<VertexData> data(mVertexCount);
-    const auto bytes = data.size() * sizeof(VertexData);
-
     for (int vertex = 0; vertex < mVertexCount; ++vertex)
     {
         int offset = vertex * 3;
@@ -65,9 +52,49 @@ void VertexBuffer::LoadDataCore(const std::vector<float>& positions)
         data[vertex].z = positions[offset + 2];
     }
 
+    LoadDataInternal(data);
+}
+
+void VertexBuffer::LoadDataCore(const std::vector<float>& positions,
+                                const std::vector<float>& argbColors)
+{
+    EnsureVertexBufferCreation();
+
+    mVertexCount = ((int) std::floor(positions.size() / 3.0));
+
+    std::vector<VertexData> data(mVertexCount);
+    for (int vertex = 0; vertex < mVertexCount; ++vertex)
+    {
+        int posOffset = vertex * 3;
+        int colorOffset = vertex * 4;
+        data[vertex].x = positions[posOffset + 0];
+        data[vertex].y = positions[posOffset + 1];
+        data[vertex].z = positions[posOffset + 2];
+        data[vertex].a = positions[colorOffset + 0];
+        data[vertex].r = positions[colorOffset + 1];
+        data[vertex].g = positions[colorOffset + 2];
+        data[vertex].b = positions[colorOffset + 3];
+    }
+
+    LoadDataInternal(data);
+}
+
+void VertexBuffer::EnsureVertexBufferCreation(void)
+{
+    if (mVertexArrayId == 0)
+        GL::glGenVertexArrays(1, &mVertexArrayId);
+
+    if (mVertexBufferId == 0)
+        GL::glGenBuffers(1, &mVertexBufferId);
+}
+
+void VertexBuffer::LoadDataInternal(const std::vector<VertexData>& vertices)
+{
+    const auto bytes = vertices.size() * sizeof(VertexData);
+
     GL::glBindVertexArray(mVertexArrayId);
     GL::glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferId);
-    GL::glBufferData(GL_ARRAY_BUFFER, bytes, &data[0], GL_STATIC_DRAW);
+    GL::glBufferData(GL_ARRAY_BUFFER, bytes, &vertices[0], GL_STATIC_DRAW);
 
     GL::glEnableVertexAttribArray(0);   // Position
     // GL::glEnableVertexAttribArray(1);   // Normal
@@ -80,19 +107,4 @@ void VertexBuffer::LoadDataCore(const std::vector<float>& positions)
 
     GL::glBindBuffer(GL_ARRAY_BUFFER, 0);
     GL::glBindVertexArray(0);
-}
-
-void VertexBuffer::LoadDataCore(const std::vector<float>& positions,
-                                const std::vector<float>& colors)
-{
-    EnsureVertexBufferCreation();
-}
-
-void VertexBuffer::EnsureVertexBufferCreation(void)
-{
-    if (mVertexArrayId == 0)
-        GL::glGenVertexArrays(1, &mVertexArrayId);
-
-    if (mVertexBufferId == 0)
-        GL::glGenBuffers(1, &mVertexBufferId);
 }
