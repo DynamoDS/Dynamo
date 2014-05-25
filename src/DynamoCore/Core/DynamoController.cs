@@ -492,9 +492,10 @@ namespace Dynamo
 
             new Thread(() =>
                 {
+                    bool passed = false;
+
                     try
                     {
-
 
                         for (int i = 0; i < 1000; i++)
                         {
@@ -685,9 +686,13 @@ namespace Dynamo
 
 
                         }
+
+                        passed = true;
                     }
                     finally
                     {
+                        dynSettings.DynamoLogger.Log("Fuzz testing: " + (passed ? "pass" : "FAIL"));
+
                         writer.Flush();
                         writer.Close();
                         writer.Dispose();
