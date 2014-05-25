@@ -501,7 +501,6 @@ namespace Dynamo
                             writer.WriteLine("##### - Beginning run: " + i);
 
                             var nodes = DynamoModel.Nodes;
-                            NodeModel node = nodes[rand.Next(nodes.Count)];
 
                             writer.WriteLine("### - Beginning eval");
 
@@ -543,6 +542,9 @@ namespace Dynamo
                             writer.WriteLine("### - Readout complete");
                             writer.Flush();
                             writer.WriteLine("### - Beginning delete");
+                            NodeModel node = nodes[rand.Next(nodes.Count)];
+                            writer.WriteLine("### - Deletion target: " + node.GUID);
+
 
                             UIDispatcher.Invoke(new Action(() =>
                                 {
