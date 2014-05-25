@@ -479,89 +479,186 @@ namespace Dynamo
 
         internal void MutateTestInternal()
         {
+            Random rand = new Random(1);
+            DebugSettings.VerboseLogging = true;
+
+            String logTarget = dynSettings.DynamoLogger.LogPath + "MutationLog.log";
+
+            StreamWriter writer = new StreamWriter(logTarget);
+
+            writer.WriteLine("MutateTest Internal activate");
+
             System.Diagnostics.Debug.WriteLine("MutateTest Internal activate");
 
-             new Thread(() =>
+            new Thread(() =>
                 {
-
-                    Random rand = new Random();
-                    for (int i = 0; i < 1000; i++)
+                    try
                     {
-                        var nodes = DynamoModel.Nodes;
-                        NodeModel node = nodes[rand.Next(nodes.Count)];
 
 
-                        UIDispatcher.Invoke(new Action(() =>
+                        for (int i = 0; i < 1000; i++)
                         {
-                            DynamoViewModel.RunCancelCommand runCancel = new DynamoViewModel.RunCancelCommand(false, false);
-                            DynamoViewModel.ExecuteCommand(runCancel);
+                            writer.WriteLine("##### - Beginning run: " + i);
 
-                        }));
+                            var nodes = DynamoModel.Nodes;
+                            NodeModel node = nodes[rand.Next(nodes.Count)];
 
-                        while (DynamoViewModel.Controller.Runner.Running)
-                        {
+                            writer.WriteLine("### - Beginning eval");
+
+
+                            UIDispatcher.Invoke(new Action(() =>
+                                {
+                                    DynamoViewModel.RunCancelCommand runCancel =
+                                        new DynamoViewModel.RunCancelCommand(false, false);
+                                    DynamoViewModel.ExecuteCommand(runCancel);
+
+                                }));
+
+                            while (DynamoViewModel.Controller.Runner.Running)
+                            {
+                                Thread.Sleep(10);
+                            }
+
+                            writer.WriteLine("### - Eval complete");
+                            writer.Flush();
+                            writer.WriteLine("### - Beginning readout");
+
+
+                            Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
+
+                            foreach (NodeModel n in nodes)
+                            {
+                                if (n.OutPorts.Count > 0)
+                                {
+                                    Guid guid = n.GUID;
+                                    Object data = n.GetValue(0).Data;
+                                    String val = data != null ? data.ToString() : "null";
+                                    valueMap.Add(guid, val);
+                                    writer.WriteLine(guid + " :: " + val);
+                                    writer.Flush();
+
+                                }
+                            }
+
+                            writer.WriteLine("### - Readout complete");
+                            writer.Flush();
+                            writer.WriteLine("### - Beginning delete");
+
+                            UIDispatcher.Invoke(new Action(() =>
+                                {
+                                    DynamoViewModel.DeleteModelCommand delCommand =
+                                        new DynamoViewModel.DeleteModelCommand(node.GUID);
+                                    DynamoViewModel.ExecuteCommand(delCommand);
+
+                                }));
+
+                            Thread.Sleep(100);
+
+                            writer.WriteLine("### - delete complete");
+                            writer.Flush();
+                            writer.WriteLine("### - Beginning re-exec");
+
+
+                            UIDispatcher.Invoke(new Action(() =>
+                                {
+                                    DynamoViewModel.RunCancelCommand runCancel =
+                                        new DynamoViewModel.RunCancelCommand(false, false);
+                                    DynamoViewModel.ExecuteCommand(runCancel);
+
+                                }));
+
+                            Thread.Sleep(100);
+
+                            writer.WriteLine("### - re-exec complete");
+                            writer.Flush();
+                            writer.WriteLine("### - Beginning undo");
+
+
+                            UIDispatcher.Invoke(new Action(() =>
+                                {
+                                    DynamoViewModel.UndoRedoCommand undoCommand =
+                                        new DynamoViewModel.UndoRedoCommand(
+                                            DynamoViewModel.UndoRedoCommand.Operation.Undo);
+                                    DynamoViewModel.ExecuteCommand(undoCommand);
+
+                                }));
+
+                            Thread.Sleep(100);
+
+                            writer.WriteLine("### - undo complete");
+                            writer.Flush();
+                            writer.WriteLine("### - Beginning re-exec");
+
+                            UIDispatcher.Invoke(new Action(() =>
+                                {
+                                    DynamoViewModel.RunCancelCommand runCancel =
+                                        new DynamoViewModel.RunCancelCommand(false, false);
+
+                                    DynamoViewModel.ExecuteCommand(runCancel);
+
+                                }));
                             Thread.Sleep(10);
-                        }
 
-                        Dictionary<Guid, String> valueMap = new Dictionary<Guid, String>();
+                            while (DynamoViewModel.Controller.Runner.Running)
+                            {
+                                Thread.Sleep(10);
+                            }
 
-                        foreach (NodeModel n in nodes)
+                            writer.WriteLine("### - re-exec complete");
+                            writer.Flush();
+                            writer.WriteLine("### - Beginning readback");
+
+
+                            foreach (NodeModel n in nodes)
+                            {
+                                if (n.OutPorts.Count > 0)
+                                {
+                                    try
+                                    {
+
+
+
+                                        String valmap = valueMap[n.GUID].ToString();
+                                        Object data = n.GetValue(0).Data;
+                                        String nodeVal = data != null ? data.ToString() : "null";
+
+                                        if (valmap != nodeVal)
+                                        {
+
+                                            writer.WriteLine("!!!!!!!!!!! Read-back failed");
+                                            writer.WriteLine(n.GUID);
+
+
+                                            writer.WriteLine("Was: " + nodeVal);
+                                            writer.WriteLine("Should have been: " + valmap);
+                                            writer.Flush();
+                                            return;
+
+
+                                            Debug.WriteLine("==========> Failure on run: " + i);
+                                            Debug.WriteLine("Lookup map failed to agree");
+                                            Validity.Assert(false);
+
+                                        }
+                                    }
+                                    catch (Exception)
+                                    {
+                                        writer.WriteLine("!!!!!!!!!!! Read-back failed");
+                                        writer.Flush();
+                                        return;
+                                    }
+                                }
+                            }
+
+                            /*
+                        UIDispatcher.Invoke(new Action(() =>
                         {
-                            if (n.OutPorts.Count > 0)
-                                valueMap.Add(n.GUID, n.GetValue(0).Data.ToString());
-                        }
-
-                        UIDispatcher.Invoke(new Action(() =>
-                            {
-                                DynamoViewModel.DeleteModelCommand delCommand = new DynamoViewModel.DeleteModelCommand(node.GUID);
-                                DynamoViewModel.ExecuteCommand(delCommand);
-
-                            }));
-
-                        Thread.Sleep(100);
-                        
-                        UIDispatcher.Invoke(new Action(() =>
-                            {
-                        DynamoViewModel.RunCancelCommand runCancel = new DynamoViewModel.RunCancelCommand(false, false);
-                        DynamoViewModel.ExecuteCommand(runCancel);
-                        
-                            }));
-
-                        Thread.Sleep(100);
-
-
-                        
-                        /*
-                        UIDispatcher.Invoke(new Action(() =>
-                            {
-                        DynamoViewModel.ForceRunCancelCommand runCancelForce =
-                            new DynamoViewModel.ForceRunCancelCommand(false,
-                                                                      false);
+                            DynamoViewModel.ForceRunCancelCommand runCancelForce =
+    new DynamoViewModel.ForceRunCancelCommand(false,
+                                              false);
                         DynamoViewModel.ExecuteCommand(runCancelForce);
-                    
+    
                             }));
-                        
-                        Thread.Sleep(100);
-                        */
-                        UIDispatcher.Invoke(new Action(() =>
-                            {
-                        DynamoViewModel.UndoRedoCommand undoCommand =
-                            new DynamoViewModel.UndoRedoCommand(DynamoViewModel.UndoRedoCommand.Operation.Undo);
-                        DynamoViewModel.ExecuteCommand(undoCommand);
-            
-                            }));
-
-                        Thread.Sleep(100);
-                        
-                        UIDispatcher.Invoke(new Action(() =>
-                            {
-                                DynamoViewModel.RunCancelCommand runCancel = new DynamoViewModel.RunCancelCommand(false, false);
-
-                        DynamoViewModel.ExecuteCommand(runCancel);
-        
-                            }));
-                        Thread.Sleep(100);
-
                         while (DynamoViewModel.Controller.Runner.Running)
                         {
                             Thread.Sleep(10);
@@ -575,26 +672,29 @@ namespace Dynamo
 
                                 if (valmap != nodeVal)
                                 {
+                                    Debug.WriteLine("==========> Failure on run: " + i);
                                     Debug.WriteLine("Lookup map failed to agree");
                                     Validity.Assert(false);
 
                                 }
                             }
                         }
+                        */
 
 
-                        /*
-                        UIDispatcher.Invoke(new Action(() =>
-                        {
-                            DynamoViewModel.ForceRunCancelCommand runCancelForce =
-    new DynamoViewModel.ForceRunCancelCommand(false,
-                                              false);
-                        DynamoViewModel.ExecuteCommand(runCancelForce);
-    
-                            }));*/
-
+                        }
                     }
-                }).Start();
+                    finally
+                    {
+                        writer.Flush();
+                        writer.Close();
+                        writer.Dispose();
+                    }
+
+
+                }).
+                    Start();
+
         }
 
         public void DisplayFunction(object parameters)
