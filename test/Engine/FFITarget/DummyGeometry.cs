@@ -96,4 +96,26 @@ namespace FFITarget
         }
     }
 
+    public class DummyLine : IDisposable
+    {
+        public DummyPoint Start { get; private set; }
+        public DummyPoint End { get; private set; }
+
+        public static DummyLine ByStartPointEndPoint(DummyPoint a, DummyPoint b)
+        {
+            DummyLine ln = new DummyLine();
+            ln.Start = a;
+            ln.End = b;
+
+            return ln;
+        }
+
+        public void Dispose()
+        {
+            //Don't do anything
+        }
+        
+    }
+
+
 }

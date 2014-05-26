@@ -1,0 +1,15 @@
+<Workspace Version="0.6.3.7993" X="-272.557846628597" Y="-120.16665672868" zoom="1.59077689706107" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.ColorComponents type="Dynamo.Nodes.ColorComponents" guid="504071ca-b833-4c8e-9ef5-b0e743bf9109" nickname="Color Components" x="390.309059332498" y="154.409513811828" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Color type="Dynamo.Nodes.Color" guid="d2a44ba6-e897-4b64-8bf8-0e2ca6804f93" nickname="Color" x="251.926627140817" y="123.079189115605" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+      <PortInfo index="3" default="True" />
+    </Dynamo.Nodes.Color>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="d2a44ba6-e897-4b64-8bf8-0e2ca6804f93" start_index="0" end="504071ca-b833-4c8e-9ef5-b0e743bf9109" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

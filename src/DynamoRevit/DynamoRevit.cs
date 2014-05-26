@@ -19,6 +19,7 @@ using Autodesk.Revit.UI;
 
 using Dynamo.Applications.Properties;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoUnits;
@@ -190,14 +191,6 @@ namespace Dynamo.Applications
                         new WindowInteropHelper(dynamoView).Owner = mwHandle;
 
                         handledCrash = false;
-
-                        dynamoView.WindowStartupLocation = WindowStartupLocation.Manual;
-
-                        Rectangle bounds = Screen.PrimaryScreen.Bounds;
-                        dynamoView.Left = bounds.X;
-                        dynamoView.Top = bounds.Y;
-                        dynamoView.Width = 1000.0;
-                        dynamoView.Height = 800.0;
 
                         dynamoView.Show();
 
