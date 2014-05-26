@@ -79,6 +79,7 @@
     <Compile Include="ExecutionIntervalTests.cs" />
     <Compile Include="LibraryCustomizationTests.cs" />
     <Compile Include="MigrationManagerTests.cs" />
+    <Compile Include="MigrationTestFramework.cs" />
     <Compile Include="NodeMigrationTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="UnitTestBase.cs" />
@@ -136,6 +137,10 @@
       <Project>{01de9b06-0bcb-4d8a-862e-e8170f5d6b4f}</Project>
       <Name>IronPythonUI</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\FFITarget\FFITarget.csproj">
+      <Project>{c70fe632-5500-4c57-b3d6-9b5574137551}</Project>
+      <Name>FFITarget</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

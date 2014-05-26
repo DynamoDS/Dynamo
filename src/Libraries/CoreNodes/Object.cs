@@ -20,5 +20,14 @@ namespace DSCore
         {
             return obj == null;
         }
+
+        /// <summary>
+        ///     Returns what is passed in, doing nothing.
+        /// </summary>
+        /// <param name="obj">An object.</param>
+        public static object Identity(object obj)
+        {
+            return obj;
+        }
     }
 }

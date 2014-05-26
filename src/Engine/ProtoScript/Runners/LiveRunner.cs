@@ -40,6 +40,18 @@ namespace ProtoScript.Runners
             AstNodes = astNodes;
             ForceExecution = false;
         }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(GUID.ToString() + " " + ForceExecution + " ");
+            if (AstNodes != null)
+                AstNodes.ForEach((a) => sb.AppendLine(a.ToString()));
+            else
+                sb.AppendLine("AstNodes: null");
+            return sb.ToString();   
+
+        }
     }
 
     /// <summary>
@@ -71,6 +83,22 @@ namespace ProtoScript.Runners
             DeletedSubtrees = deleted;
             AddedSubtrees = added;
             ModifiedSubtrees = modified;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("SyncData");
+            sb.AppendLine("Deleted Subtrees: " + DeletedSubtrees.Count);
+            DeletedSubtrees.ForEach((t) => sb.AppendLine("\t" + t.ToString()));
+
+            sb.AppendLine("Added Subtrees: " + AddedSubtrees.Count);
+            AddedSubtrees.ForEach((t) => sb.AppendLine("\t" + t.ToString()));
+
+            sb.AppendLine("Modified Subtrees: " + ModifiedSubtrees.Count);
+            ModifiedSubtrees.ForEach((t) =>  sb.AppendLine("\t" +t.ToString()));
+
+            return sb.ToString();
         }
     }
 

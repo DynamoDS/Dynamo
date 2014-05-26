@@ -12,13 +12,13 @@ namespace DSRevitNodesTests.GeometryConversion
     internal class ProtoToRevitCurveTests : RevitNodeTestBase
     {
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
            HostFactory.Instance.StartUp(); 
         }
 
         [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
             HostFactory.Instance.ShutDown();
         }
@@ -117,7 +117,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             circ.CenterPoint.AssertShouldBeApproximately(revitArc.Center.ToPoint());
             circ.Radius.AssertShouldBeApproximately(revitArc.Radius);
-            circ.Normal.AssertShouldBeApproximately(revitArc.Normal.ToVector());
+            Math.Abs(circ.Normal.Dot(revitArc.Normal.ToVector())).AssertShouldBeApproximately(1);
 
         } 
 
@@ -138,7 +138,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             circ.CenterPoint.AssertShouldBeApproximately( revitArc.Center.ToPoint() );
             circ.Radius.AssertShouldBeApproximately( revitArc.Radius );
-            circ.Normal.AssertShouldBeApproximately( revitArc.Normal.ToVector() );
+            Math.Abs(circ.Normal.Dot(revitArc.Normal.ToVector())).AssertShouldBeApproximately(1);
 
         } 
 

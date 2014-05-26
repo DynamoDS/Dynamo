@@ -93,21 +93,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(classInfo.ClassName, className);
         }
 
-        private string GetVarName(string guid)
-        {
-            var model = Controller.DynamoModel;
-            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
-            Assert.IsNotNull(node);
-            return node.AstIdentifierBase;
-        }
-
-        private RuntimeMirror GetRuntimeMirror(string varName)
-        {
-            RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror = Controller.EngineController.GetMirror(varName));
-            return mirror;
-        }
-
         private void SelectivelyAssertValues(MirrorData data, Dictionary<int, object> selectedValues)
         {
             Assert.IsTrue(data.IsCollection);
@@ -709,12 +694,14 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Defect_MAGN_2375()
+        public void Defect_MAGN_2375_3487()
         {
+            // This test case is addressing the following two defects:
             // Details are available in http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2375
+            //                      and http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3487
             var model = dynSettings.Controller.DynamoModel;
 
-            RunModel(@"core\dsevaluation\Defect_MAGN_2375.dyn");
+            RunModel(@"core\dsevaluation\Defect_MAGN_2375_3487.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
@@ -783,6 +770,49 @@ namespace Dynamo.Tests
             // Function object to property method and used in apply 
             RunModel(@"core\dsevaluation\EvaluateFptrInOtherCBN.dyn");
             AssertPreviewValue("49048255-fc2c-463d-8e93-96e20f061a0d", 42);
+        }
+
+        [Test]
+        public void Test_Formula_Lacing()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\formula\formula_lacing.dyn");
+
+            AssertPreviewValue("d9b9d0a9-1fec-4b20-82c4-2d1665306509", new int[] { 4, 6, 7});
+            AssertPreviewValue("c35f1c6d-b955-4638-802f-208f93112078", new object[] { new int[] { 4, 5, 6}, new int[] { 5, 6, 7}});
+        }
+
+        [Test]
+        public void Formula_Simple()
+        {
+            
+            RunModel(@"core\dsevaluation\SimpleFormula.dyn");
+            AssertPreviewValue("6637546b-7998-4c48-bdb6-0bcf9f6ae997", new int[]{ 2, 6, 12, 20, 30 });
+        }
+        [Test]
+        public void CBNAndFormula()
+        {
+
+            RunModel(@"core\dsevaluation\CBNWithFormula.dyn");
+            AssertPreviewValue("60979b20-8089-4d5a-93bf-2cf829f74060", 3);
+        }
+        [Test]
+        public void FormulaIntegration()
+        {
+
+            RunModel(@"core\dsevaluation\FormulaIntegration1.dyn");
+            AssertPreviewValue("88d3bb73-42cd-4ffc-82e2-402c9550d5b1", new double[] { 0.000000, 0.001038, 0.002289, -0.007827, -0.035578, -0.046003, 0.034186, 0.216376, 0.315323, 0.000000 });
+        }
+
+        [Test]
+        public void Test_Formula_InputWithUnit()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\formula\formula-inputWithUnit-test.dyn");
+
+            AssertPreviewValue("152a2a64-8c73-4e8c-a418-06ceb4ac0637", 1);
         }
     }
 

@@ -1,9 +1,7 @@
 <UserControl x:Class="Dynamo.Controls.dynNodeView"
-             x:ClassModifier="public"
              x:FieldModifier="public"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:controls="clr-namespace:Dynamo.Views"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
              Height="Auto"
@@ -371,5 +369,8 @@
                 Background="Blue">
         </Canvas>
 
+        <Canvas ClipToBounds="False" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding ShowDebugASTs, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            <Label Content="{Binding ASTText}" HorizontalContentAlignment="Center"></Label>
+        </Canvas>
     </Grid>
 </UserControl>

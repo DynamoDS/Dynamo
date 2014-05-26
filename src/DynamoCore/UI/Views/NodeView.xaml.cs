@@ -373,7 +373,7 @@ namespace Dynamo.Controls
         private void OnPreviewIconMouseEnter(object sender, MouseEventArgs e)
         {
             previewInnerRect.Visibility = System.Windows.Visibility.Visible;
-            previewOuterRect.Fill = Configurations.PreviewIconHoverBrush;
+            previewOuterRect.Fill = FrozenResources.PreviewIconHoverBrush;
 
             if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
@@ -409,7 +409,7 @@ namespace Dynamo.Controls
             else if (PreviewControl.IsExpanded)
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
 
-            previewOuterRect.Fill = Configurations.PreviewIconClickedBrush;
+            previewOuterRect.Fill = FrozenResources.PreviewIconClickedBrush;
         }
 
         private void OnPreviewControlStateChanged(object sender, EventArgs e)
@@ -440,11 +440,11 @@ namespace Dynamo.Controls
                 return;
 
             if (this.previewControl.IsHidden)
-                previewOuterRect.Fill = Configurations.PreviewIconNormalBrush;
+                previewOuterRect.Fill = FrozenResources.PreviewIconNormalBrush;
             else if (this.previewControl.IsCondensed)
-                previewOuterRect.Fill = Configurations.PreviewIconHoverBrush;
+                previewOuterRect.Fill = FrozenResources.PreviewIconHoverBrush;
             else if (this.previewControl.IsExpanded)
-                previewOuterRect.Fill = Configurations.PreviewIconPinnedBrush;
+                previewOuterRect.Fill = FrozenResources.PreviewIconPinnedBrush;
             else if (this.previewControl.IsInTransition)
             {
                 // No changes, those will come after transition is done.

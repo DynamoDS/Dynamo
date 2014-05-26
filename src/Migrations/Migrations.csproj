@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="DynamoMSOffice\Excel.cs" />
     <Compile Include="DynamoPython\dynPython.cs" />
+    <Compile Include="DynamoRaaS\Nodes.cs" />
     <Compile Include="MigrationHelpers.cs" />
     <Compile Include="CoreNodes\dynBaseTypes.cs" />
     <Compile Include="CoreNodes\dynColors.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="RevitNodes\FamilyType.cs" />
     <Compile Include="RevitNodes\Floor.cs" />
     <Compile Include="RevitNodes\FreeForm.cs" />
+    <Compile Include="RevitNodes\FunctionWithRevit.cs" />
     <Compile Include="RevitNodes\Grid.cs" />
     <Compile Include="RevitNodes\HermiteSpline.cs" />
     <Compile Include="RevitNodes\Intersect.cs" />
@@ -92,6 +94,7 @@
     <Compile Include="RevitNodes\SunPath.cs" />
     <Compile Include="RevitNodes\Tesselation.cs" />
     <Compile Include="RevitNodes\Topography.cs" />
+    <Compile Include="RevitNodes\Transaction.cs" />
     <Compile Include="RevitNodes\Transform.cs" />
     <Compile Include="RevitNodes\UV.cs" />
     <Compile Include="RevitNodes\View.cs" />

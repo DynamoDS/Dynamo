@@ -28,7 +28,7 @@ namespace Dynamo
 
                 AlternateContextName = "Vasari";
 
-                VisualizationUpdateComplete += visualizationManager_VisualizationUpdateComplete;
+                RenderComplete += VisualizationManagerRenderComplete;
                 RequestAlternateContextClear += CleanupVisualizations;
                 dynSettings.Controller.DynamoModel.CleaningUp += CleanupVisualizations;
             }
@@ -57,12 +57,12 @@ namespace Dynamo
         }
 
         /// <summary>
-        ///     Handler for the visualization manager's VisualizationUpdateComplete event.
+        ///     Handler for the visualization manager's RenderComplete event.
         ///     Sends goemetry to the GeomKeeper, if available, for preview in Revit.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void visualizationManager_VisualizationUpdateComplete(object sender, EventArgs e)
+        private void VisualizationManagerRenderComplete(object sender, EventArgs e)
         {
             ////do not draw to geom keeper if the user has selected
             ////not to draw to the alternate context or if it is not available

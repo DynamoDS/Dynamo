@@ -4,6 +4,8 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Text;
+using System.Text.RegularExpressions;
 using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Models;
@@ -13,6 +15,7 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using System.Windows;
 using Dynamo.Core;
+using ProtoCore.AST.AssociativeAST;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
@@ -35,6 +38,7 @@ namespace Dynamo.ViewModels
         NodeModel nodeLogic;
         private bool isFullyConnected = false;
         private double zIndex = 3;
+        private string astText = string.Empty;
 
         #endregion
 
@@ -226,35 +230,14 @@ namespace Dynamo.ViewModels
             }
         }
 
-        // TODO: Improve this! The logic is taken from an old code but it definitely
-        // can be improved. For example, if there is no CachedValue and IsUpdated is 
-        // not true, then we may not want to show the preview icon.
-        // 
         public bool IsPreviewInsetVisible
         {
-            get
-            {
-                if (!(nodeLogic.WorkSpace is HomeWorkspaceModel))
-                    return false; // Preview only shown in Home workspace.
-
-                switch (nodeLogic.Name)
-                {
-                    case "Number":
-                    case "String":
-                    case "Watch":
-                    case "Watch 3D":
-                    case "Watch Image":
-                    case "Boolean":
-                        return false;
-                }
-
-                return true;
-            }
+            get { return nodeLogic.ShouldDisplayPreview(); }
         }
 
         public bool ShouldShowGlyphBar
         {
-            get { return IsPreviewInsetVisible && ArgumentLacing != LacingStrategy.Disabled; }
+            get { return IsPreviewInsetVisible || ArgumentLacing != LacingStrategy.Disabled; }
         }
 
         /// <summary>
@@ -279,6 +262,22 @@ namespace Dynamo.ViewModels
                     return nodeLogic.RenderPackages.Any(y => ((RenderPackage)y).IsNotEmpty());
                 }
             }
+        }
+
+        public string ASTText
+        {
+            get { return astText; }
+            set
+            {
+                astText = value;
+                RaisePropertyChanged("ASTText");
+            }
+        }
+
+        public bool ShowDebugASTs
+        {
+            get { return dynSettings.Controller.DebugSettings.ShowDebugASTs; }
+            set { dynSettings.Controller.DebugSettings.ShowDebugASTs = value; }
         }
 
         #endregion
@@ -327,7 +326,8 @@ namespace Dynamo.ViewModels
             logic.PropertyChanged += logic_PropertyChanged;
 
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
-            
+            dynSettings.Controller.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
+
             ErrorBubble = new InfoBubbleViewModel();
 
             //Do a one time setup of the initial ports on the node
@@ -335,6 +335,53 @@ namespace Dynamo.ViewModels
             //is called after the node's constructor where the ports
             //are initially registered
             SetupInitialPortViewModels();
+
+            if (IsDebugBuild)
+            {
+                dynSettings.Controller.EngineController.AstBuilt += EngineController_AstBuilt;
+            }
+        }
+
+        void DebugSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ShowDebugASTs")
+            {
+                RaisePropertyChanged("ShowDebugASTs");
+            }
+        }
+
+        /// <summary>
+        /// Handler for the EngineController's AstBuilt event.
+        /// Formats a string of AST for preview on the node.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void EngineController_AstBuilt(object sender, AstBuilder.ASTBuiltEventArgs e)
+        {
+            if (e.Node == nodeLogic)
+            {
+                var sb = new StringBuilder();
+                foreach (var assocNode in e.AstNodes)
+                {
+                    var pretty = assocNode.ToString();
+
+                    //shorten the guids
+                    var strRegex = @"([0-9a-f-]{32}).*?";
+                    var myRegex = new Regex(strRegex, RegexOptions.None);
+                    string strTargetString = assocNode.ToString();
+
+                    foreach (Match myMatch in myRegex.Matches(strTargetString))
+                    {
+                        if (myMatch.Success)
+                        {
+                            pretty = pretty.Replace(myMatch.Value, "..." + myMatch.Value.Substring(myMatch.Value.Length - 7));
+                        }
+                    }
+                    sb.AppendLine(pretty);
+                }
+
+                ASTText = sb.ToString();
+            }
         }
 
         #endregion

@@ -4077,6 +4077,118 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             AssertValue("a", 42);
         }
 
+        [Test]
+        public void ReproMAGN3551()
+        {
+            List<string> codes = new List<string>() 
+            {
+                @"import(""FFITarget.dll"");", 
+                "a = DummyPoint.ByCoordinates(0,1,2);",
+                "b = DummyPoint.ByCoordinates(1,2,3);",
+                "a_in = a; b_in = b; c = DummyLine.ByStartPointEndPoint(a,b);"
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            // Create CBN1 for import
+            Guid guid1 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Create CBN2 to create a = 
+            Guid guid2 = System.Guid.NewGuid();
+            added = new List<Subtree>();
+
+            Subtree cbn2 = CreateSubTreeFromCode(guid2, codes[1]);
+            added.Add(cbn2);
+           
+            // Create CBN3 to create b = 
+            Guid guid3 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+
+            // Create CBN4 to create c = 
+            Guid guid4 = System.Guid.NewGuid();
+            Subtree cbn4 = CreateSubTreeFromCode(guid4, codes[3]);
+            added.Add(cbn4);
+            
+            //Run
+            syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            var mirror = astLiveRunner.InspectNodeValue("a");
+            MirrorData data = mirror.GetData();
+            
+            Assert.IsTrue(data.Data.GetType() == typeof(FFITarget.DummyPoint));
+
+            //Delete a =
+            syncData = new GraphSyncData(new List<Subtree> () {cbn2}, null, null);
+            //Run            
+            astLiveRunner.UpdateGraph(syncData);
+
+
+            //Create a = 
+            syncData = new GraphSyncData(null, new List<Subtree>() { cbn2 }, null);
+
+            //Run
+            astLiveRunner.UpdateGraph(syncData);
+
+            //Delete a_in = ...
+            syncData = new GraphSyncData(new List<Subtree>() { cbn4 }, null, null);
+
+            //Run
+            astLiveRunner.UpdateGraph(syncData);
+
+            //The output of A should still be a point, but it isn't it's now the stack pointer
+            mirror = astLiveRunner.InspectNodeValue("a");
+            data = mirror.GetData();
+            Assert.IsTrue(data.Data.GetType() == typeof(FFITarget.DummyPoint));
+            
+           
+        }
+
+
+
+        [Test]
+        public void TestNestedLanguageBlockExecution()
+        {
+            List<string> codes = new List<string>() 
+            {
+               @"r = [Imperative]
+               {
+                   if (true)
+                   {
+                       return = [Associative] { return = 42; }
+                   }
+                   return = null;
+               }",
+
+               @"r = [Imperative]
+               {
+                   if (true)
+                   {
+                       return = [Associative] { return = 45; }
+                   }
+                   return = null;
+               }"
+            };
+            
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("r", 42);
+
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid1, codes[1]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("r", 43);
+        }
     }
 
 }

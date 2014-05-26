@@ -12,6 +12,9 @@ namespace Dynamo.Utilities
         private readonly Dictionary<Type, Converter<object, object>> marshalers =
             new Dictionary<Type, Converter<object, object>>();
 
+        private readonly Dictionary<Type, Converter<object, object>> cache =
+            new Dictionary<Type, Converter<object, object>>();
+
         public DataMarshaler()
         {
             RegisterMarshaler(
@@ -61,9 +64,6 @@ namespace Dynamo.Utilities
             cache.Clear();
         }
 
-        private readonly Dictionary<Type, Converter<object, object>> cache =
-            new Dictionary<Type, Converter<object, object>>();
-
         /// <summary>
         ///     Marshals data using the registered marshalers. If no marshaler exists, data is returned unmodified.
         /// </summary>
@@ -81,6 +81,7 @@ namespace Dynamo.Utilities
 
             var defaultMarshaler = new KeyValuePair<Type, Converter<object, object>>(obj.GetType(), x => x);
 
+            //Find the marshaler that operates on the closest base type of the target type.
             var dispatchedMarshaler =
                 marshalers.Where(pair => pair.Key.IsAssignableFrom(targetType))
                     .Aggregate(

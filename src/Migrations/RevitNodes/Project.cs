@@ -29,7 +29,10 @@ namespace Dynamo.Nodes
             data.ReconnectToPort(connector0, oldInPort0);
             data.ReconnectToPort(connector1, oldInPort1);
 
-            if (connector0 != null)
+            var oldDOut = new PortId(newNodeId, 2, PortType.OUTPUT);
+            var oldTOut = new PortId(newNodeId, 1, PortType.OUTPUT);
+
+            if ((connector0 != null) && (data.FindConnectors(oldDOut) != null))
             {
                 // Get the original output ports connected to input
                 var ptInputNodeId = connector0.Attributes["start"].Value;
@@ -37,7 +40,7 @@ namespace Dynamo.Nodes
 
                 // make distance to node
                 var distTo = MigrationManager.CreateFunctionNode(
-                    data.Document, oldNode, 0, "ProtoGeometry.dll",
+                    data.Document, oldNode, 1, "ProtoGeometry.dll",
                     "Geometry.DistanceTo",
                     "Geometry.DistanceTo@Geometry");
                 migrationData.AppendNode(distTo);
@@ -46,13 +49,14 @@ namespace Dynamo.Nodes
                 data.CreateConnector(newNode, 0, distTo, 0);
                 data.CreateConnectorFromId(ptInputNodeId, ptInputIndex, distToId, 1);
 
-                var oldDOut = new PortId(newNodeId, 2, PortType.OUTPUT);
                 var newDOut = new PortId(distToId, 0, PortType.OUTPUT);
                 var oldDConnectors = data.FindConnectors(oldDOut);
-                oldDConnectors.ToList().ForEach(x => data.ReconnectToPort(x, newDOut));
+
+                if (oldDConnectors != null)
+                    oldDConnectors.ToList().ForEach(x => data.ReconnectToPort(x, newDOut));
             }
 
-            if (connector1 != null)
+            if ((connector1 != null) && (data.FindConnectors(oldTOut) != null))
             {
                 var crvInputNodeId = connector1.Attributes["start"].Value;
                 var crvInputIndex = int.Parse(connector1.Attributes["start_index"].Value);
@@ -71,11 +75,10 @@ namespace Dynamo.Nodes
 
                 // reconnect remaining output ports to new nodes
                 var newTOut = new PortId(parmAtPtId, 0, PortType.OUTPUT);
-                var oldTOut = new PortId(newNodeId, 1, PortType.OUTPUT);
-
                 var oldTConnectors = data.FindConnectors(oldTOut);
 
-                oldTConnectors.ToList().ForEach(x => data.ReconnectToPort(x, newTOut));
+                if (oldTConnectors != null)
+                    oldTConnectors.ToList().ForEach(x => data.ReconnectToPort(x, newTOut));
             }
 
             return migrationData;

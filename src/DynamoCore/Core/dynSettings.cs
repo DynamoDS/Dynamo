@@ -26,6 +26,12 @@ namespace Dynamo.Utilities
 
         public static ILogger DynamoLogger { get; set; }
 
+        /// <summary>
+        /// Setting this flag enables creation of an XML in following format that records 
+        /// node mapping information - which old node has been converted to which to new node(s) 
+        /// </summary>
+        public static bool EnableMigrationLogging { get; set; }
+
         public static string FormatFileName(string filename)
         {
             return RemoveChars(

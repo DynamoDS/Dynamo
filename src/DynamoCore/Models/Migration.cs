@@ -87,6 +87,8 @@ namespace Dynamo.Models
             get { return _instance ?? (_instance = new MigrationManager()); }
         }
 
+        private MigrationReport migrationReport;
+
         /// <summary>
         /// A collection of types which contain migration methods.
         /// </summary>
@@ -136,6 +138,12 @@ namespace Dynamo.Models
 
         public void ProcessNodesInWorkspace(XmlDocument xmlDoc, Version workspaceVersion)
         {
+            if(dynSettings.EnableMigrationLogging)
+            {
+                // For each new file opened, create a new migration report
+                migrationReport = new MigrationReport();
+            }
+
             XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
             if (elNodes == null || (elNodes.Count == 0))
                 elNodes = xmlDoc.GetElementsByTagName("dynElements");
@@ -163,6 +171,12 @@ namespace Dynamo.Models
                 // Migrate the given node into one or more new nodes.
                 var migrationData = this.MigrateXmlNode(elNode, type, workspaceVersion);
                 migratedNodes.AddRange(migrationData.MigratedNodes);
+            }            
+
+            if (dynSettings.EnableMigrationLogging)
+            {
+                string dynFilePath = xmlDoc.BaseURI;
+                migrationReport.WriteToXmlFile(dynFilePath);
             }
 
             // Replace the old child nodes with the migrated nodes. Note that 
@@ -203,6 +217,12 @@ namespace Dynamo.Models
 
                 object ret = nextMigration.method.Invoke(this, new object[] { migrationData });
                 migrationData = ret as NodeMigrationData;
+
+                if(dynSettings.EnableMigrationLogging)
+                {
+                    // record migration data for successful migrations
+                    migrationReport.AddMigrationDataToNodeMap(nodeToMigrate.Name, migrationData.MigratedNodes);
+                }
                 workspaceVersion = nextMigration.To;
             }
 
@@ -590,6 +610,64 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Create a custom node as a replacement for an existing node.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="srcElement"></param>
+        /// <param name="id">The custom node id.</param>
+        /// <param name="name">The custom node name.</param>
+        /// <param name="description">The custom node's description.</param>
+        /// <param name="inputs">A list of input names.</param>
+        /// <param name="outputs">A list of output names.</param>
+        /// <returns></returns>
+        public static XmlElement CreateCustomNodeFrom(XmlDocument document, XmlElement srcElement, 
+            string id, string name, string description, List<string> inputs, List<string> outputs )
+        {
+            if (srcElement == null)
+                throw new ArgumentNullException("srcElement");
+
+            XmlElement funcEl = document.CreateElement("Dynamo.Nodes.Function");
+
+            foreach (XmlAttribute attribute in srcElement.Attributes)
+                funcEl.SetAttribute(attribute.Name, attribute.Value);
+
+            funcEl.SetAttribute("type", "Dynamo.Nodes.Function");
+
+            var idEl = document.CreateElement("ID");
+            idEl.SetAttribute("value", id);
+
+            var nameEl = document.CreateElement("Name");
+            nameEl.SetAttribute("value", name);
+
+            var descripEl = document.CreateElement("Description");
+            descripEl.SetAttribute("value", description);
+
+            var inputsEl = document.CreateElement("Inputs");
+            foreach (var input in inputs)
+            {
+                var inputEl = document.CreateElement("Input");
+                inputEl.SetAttribute("value", input);
+                inputsEl.AppendChild(inputEl);
+            }
+
+            var outputsEl = document.CreateElement("Outputs");
+            foreach (var output in outputs)
+            {
+                var outputEl = document.CreateElement("Output");
+                outputEl.SetAttribute("value", output);
+                outputsEl.AppendChild(outputEl);
+            }
+
+            funcEl.AppendChild(idEl);
+            funcEl.AppendChild(nameEl);
+            funcEl.AppendChild(descripEl);
+            funcEl.AppendChild(inputsEl);
+            funcEl.AppendChild(outputsEl);
+
+            return funcEl;
+        }
+
+        /// <summary>
         /// Call this method to create a duplicated XmlElement with 
         /// all the attributes found from the source XmlElement.
         /// </summary>
@@ -686,6 +764,7 @@ namespace Dynamo.Models
             cloned.SetAttribute("nickname", nickname);
             return cloned;
         }
+
 
         /// <summary>
         /// Call this method to create a dummy node, should a node failed to be 

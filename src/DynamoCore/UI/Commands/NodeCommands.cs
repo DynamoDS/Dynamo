@@ -15,9 +15,9 @@ namespace Dynamo.ViewModels
         private DelegateCommand _toggleIsVisibleCommand;
         private DelegateCommand _toggleIsUpstreamVisibleCommand;
         private DelegateCommand _renameCommand;
-        private DelegateCommand _showTooltipCommand;
-        private DelegateCommand _hideTooltipCommand;
-        private DelegateCommand _fadeOutTooltipCommand;
+        //private DelegateCommand _showTooltipCommand;
+        //private DelegateCommand _hideTooltipCommand;
+        //private DelegateCommand _fadeOutTooltipCommand;
         private DelegateCommand _setModelSizeCommand;
         private DelegateCommand _gotoWorkspaceCommand;
 

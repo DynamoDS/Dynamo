@@ -4,11 +4,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Microsoft.Practices.Prism.ViewModel;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
+using ProtoCore.Utils;
 using ProtoScript.Runners;
 using Type = ProtoCore.Type;
 
@@ -228,7 +231,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
-        public IEnumerable<NodeModel> TopologicalSort(IEnumerable<NodeModel> nodes)
+        public static IEnumerable<NodeModel> TopologicalSort(IEnumerable<NodeModel> nodes)
         {
             var sortedNodes = new Stack<NodeModel>();
             IList<NodeModel> nodeModels = nodes as IList<NodeModel> ?? nodes.ToList();
@@ -255,6 +258,7 @@ namespace Dynamo.DSEngine
 
         private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, bool isDeltaExecution)
         {
+
             var inputAstNodes = new List<AssociativeNode>();
             foreach (int index in Enumerable.Range(0, node.InPortData.Count))
             {
@@ -265,6 +269,11 @@ namespace Dynamo.DSEngine
                     int outputIndexOfInput = inputTuple.Item1;
                     NodeModel inputModel = inputTuple.Item2;
                     AssociativeNode inputNode = inputModel.GetAstIdentifierForOutputIndex(outputIndexOfInput);
+
+#if DEBUG
+                    Validity.Assert(inputNode != null,
+                        "Shouldn't have null nodes in the AST list");
+#endif
                     inputAstNodes.Add(inputNode);
                 }
                 else
@@ -284,7 +293,21 @@ namespace Dynamo.DSEngine
             if (isDeltaExecution)
                 OnAstNodeBuilding(node.GUID);
 
+#if DEBUG
+            Validity.Assert(!inputAstNodes.Any((n) => n == null), 
+                "Shouldn't have null nodes in the AST list");
+#endif
+
             IEnumerable<AssociativeNode> astNodes = node.BuildAst(inputAstNodes);
+            
+            if (dynSettings.Controller.DebugSettings.VerboseLogging)
+            {
+                foreach (var n in astNodes)
+                {
+                    dynSettings.DynamoLogger.Log(n.ToString());
+                }
+            }
+
             if(null == astNodes)
                 resultList.AddRange(new AssociativeNode[0]);
             else if (isDeltaExecution)
@@ -451,14 +474,14 @@ namespace Dynamo.DSEngine
 
         public class ASTBuiltEventArgs : EventArgs
         {
-            public ASTBuiltEventArgs(NodeModel node, List<AssociativeNode> astNodes)
+            public ASTBuiltEventArgs(NodeModel node, IEnumerable<AssociativeNode> astNodes)
             {
                 Node = node;
                 AstNodes = astNodes;
             }
 
             public NodeModel Node { get; private set; }
-            public List<AssociativeNode> AstNodes { get; private set; }
+            public IEnumerable<AssociativeNode> AstNodes { get; private set; }
         }
 
         private enum MarkFlag

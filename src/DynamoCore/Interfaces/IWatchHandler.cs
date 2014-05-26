@@ -76,6 +76,12 @@ namespace Dynamo.Interfaces
                 return ProcessThing(data.Data as dynamic, tag, showRawData);
             }
 
+            // MAGN-3494: If "data.Data" is null, then return a "null" string 
+            // representation instead of casting it as dynamic (that leads to 
+            // a crash).
+            if (data.Data == null)
+                return new WatchViewModel("null", tag);
+
             //Finally for all else get the string representation of data as watch content.
             return ProcessThing(data.Data as dynamic, tag, showRawData);
         }

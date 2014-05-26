@@ -9,7 +9,7 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "RevitNodes.dll",
-                "FreeForm.BySolid", "FreeForm.BySolid@Solid");
+                "ImportInstance.ByGeometries", "ImportInstance.ByGeometries@Autodesk.DesignScript.Geometry.Geometry[]");
         }
     }
 }

@@ -299,7 +299,16 @@ namespace ProtoFFI
                     //null is passed for a value type, so we must return null 
                     //rather than interpreting any value from null. fix defect 1462014 
                     if (!paramType.IsGenericType && paramType.IsValueType && param == null)
-                        throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
+                    {
+                        //This is going to cause a cast exception. This is a very frequently called problem, so we want to short-cut the execution
+
+                        dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation,
+                            string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
+                        
+                            return null;
+                        //throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
+                        
+                    }
 
                     parameters.Add(param);
                 }
@@ -401,9 +410,9 @@ namespace ProtoFFI
             {
                 if (ex.InnerException != null)
                 {
-                    dsi.LogSemanticError(ErrorString(ex.InnerException));
+                    dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kDefault, ErrorString(ex.InnerException));
                 }
-                dsi.LogSemanticError(ErrorString(ex));
+                dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kDefault, ErrorString(ex));
             }
 
             return dsRetValue;

@@ -80,35 +80,6 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// Formats user text by :
-        /// 1.Removing whitespaces form the front and back (whitespaces -> space, tab or enter)
-        /// 2.Removes unnecessary semi colons
-        /// 3.Adds a semicolon at the end if needed
-        /// </summary>
-        /// <param name="inputCode"></param>
-        /// <returns></returns>
-        internal static string FormatUserText(string inputCode)
-        {
-            if (inputCode == null)
-                return "";
-
-            inputCode = inputCode.Replace("\r", "");
-            inputCode = inputCode.Trim();
-
-            string[] statements = inputCode.Split(';');
-            inputCode = statements.Where(stmnt => stmnt.Any(c => !char.IsWhiteSpace(c)))
-                                  .Aggregate("", (current, stmnt) => current + (stmnt + ";"));
-
-            if (string.IsNullOrEmpty(inputCode))
-                return inputCode;
-
-            //Add the ';' if required
-            if (inputCode[inputCode.Length - 1] != ';')
-                return inputCode.Insert(inputCode.Length, ";");
-            return inputCode;
-        }
-
-        /// <summary>
         ///     Returns the names of all the variables defined in this code block.
         /// </summary>
         /// <returns>List containing all the names</returns>
@@ -284,7 +255,7 @@ namespace Dynamo.Nodes
                 // If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
                 // an empty Code Block Node should not be recorded, this method also checks and removes
                 // any unwanted recordings
-                value = FormatUserText(value);
+                value = CodeBlockUtils.FormatUserText(value);
                 if (value == "")
                 {
                     if (this.Code == "")
@@ -436,7 +407,7 @@ namespace Dynamo.Nodes
 
         private void ProcessCode(ref string errorMessage, ref string warningMessage)
         {
-            code = FormatUserText(code);
+            code = CodeBlockUtils.FormatUserText(code);
             codeStatements.Clear();
 
             if (string.IsNullOrEmpty(Code))

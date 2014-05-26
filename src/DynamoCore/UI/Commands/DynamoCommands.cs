@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Input;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
@@ -99,6 +98,10 @@ namespace Dynamo.ViewModels
                 command.ShowErrors, command.CancelRun);
         }
 
+        private void MutateTestImpl()
+        {
+            dynSettings.Controller.MutateTestInternal();
+        }
 
         private void CreateNodeImpl(CreateNodeCommand command)
         {
