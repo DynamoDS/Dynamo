@@ -54,6 +54,7 @@ namespace Dynamorph { namespace OpenGL {
             GETGLPROC(PFNGLBINDVERTEXARRAYPROC,             glBindVertexArray);
             GETGLPROC(PFNGLGETATTRIBLOCATIONPROC,           glGetAttribLocation);
             GETGLPROC(PFNGLGETUNIFORMLOCATIONPROC,          glGetUniformLocation);
+            GETGLPROC(PFNGLUNIFORMMATRIX4FVPROC,            glUniformMatrix4fv);
             GETGLPROC(PFNGLENABLEVERTEXATTRIBARRAYPROC,     glEnableVertexAttribArray);
             GETGLPROC(PFNGLDISABLEVERTEXATTRIBARRAYPROC,    glDisableVertexAttribArray);
             GETGLPROC(PFNGLBINDBUFFERPROC,                  glBindBuffer);
@@ -94,6 +95,7 @@ namespace Dynamorph { namespace OpenGL {
         DEFGLPROC(PFNGLBINDVERTEXARRAYPROC,             glBindVertexArray);
         DEFGLPROC(PFNGLGETATTRIBLOCATIONPROC,           glGetAttribLocation);
         DEFGLPROC(PFNGLGETUNIFORMLOCATIONPROC,          glGetUniformLocation);
+        DEFGLPROC(PFNGLUNIFORMMATRIX4FVPROC,            glUniformMatrix4fv);
         DEFGLPROC(PFNGLENABLEVERTEXATTRIBARRAYPROC,     glEnableVertexAttribArray);
         DEFGLPROC(PFNGLDISABLEVERTEXATTRIBARRAYPROC,    glDisableVertexAttribArray);
         DEFGLPROC(PFNGLBINDBUFFERPROC,                  glBindBuffer);
