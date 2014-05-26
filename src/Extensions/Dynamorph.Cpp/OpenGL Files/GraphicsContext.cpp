@@ -124,6 +124,11 @@ void GraphicsContext::UninitializeCore(void)
     mhRenderContext = nullptr;
 }
 
+ICamera* GraphicsContext::GetDefaultCameraCore(void)
+{
+    return nullptr;
+}
+
 IVertexShader* GraphicsContext::CreateVertexShaderCore(const std::string& content) const
 {
     VertexShader* pVertexShader = new VertexShader(this);

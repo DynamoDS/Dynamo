@@ -114,6 +114,7 @@ namespace Dynamorph { namespace OpenGL {
     protected:
         virtual void InitializeCore(HWND hWndOwner);
         virtual void UninitializeCore(void);
+        virtual ICamera* GetDefaultCameraCore(void);
         virtual IVertexShader* CreateVertexShaderCore(
             const std::string& content) const;
         virtual IFragmentShader* CreateFragmentShaderCore(

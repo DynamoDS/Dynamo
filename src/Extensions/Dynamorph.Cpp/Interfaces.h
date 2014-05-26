@@ -7,25 +7,33 @@ namespace Dynamorph
     class IVertexShader
     {
     public:
-        virtual ~IVertexShader() { }
+        virtual ~IVertexShader()
+        {
+        }
     };
 
     class IFragmentShader
     {
     public:
-        virtual ~IFragmentShader() { }
+        virtual ~IFragmentShader()
+        {
+        }
     };
 
     class IShaderProgram
     {
     public:
-        virtual ~IShaderProgram() { }
+        virtual ~IShaderProgram()
+        {
+        }
     };
 
     class IVertexBuffer
     {
     public:
-        virtual ~IVertexBuffer() { }
+        virtual ~IVertexBuffer()
+        {
+        }
 
         void LoadData(const std::vector<float>& positions)
         {
@@ -44,6 +52,50 @@ namespace Dynamorph
             const std::vector<float>& rgbaColors) = 0;
     };
 
+    class ITrackBall
+    {
+    public:
+        virtual ~ITrackBall()
+        {
+        }
+
+        void MousePressed(int screenX, int screenY)
+        {
+            this->MousePressedCore(screenX, screenY);
+        }
+
+        void MouseMoved(int screenX, int screenY)
+        {
+            this->MouseMovedCore(screenX, screenY);
+        }
+
+        void MouseReleased(int screenX, int screenY)
+        {
+            this->MouseReleasedCore(screenX, screenY);
+        }
+
+    protected:
+        virtual void MousePressedCore(int screenX, int screenY) = 0;
+        virtual void MouseMovedCore(int screenX, int screenY) = 0;
+        virtual void MouseReleasedCore(int screenX, int screenY) = 0;
+    };
+
+    class ICamera
+    {
+    public:
+        virtual ~ICamera()
+        {
+        }
+
+        ITrackBall* GetTrackBall() const
+        {
+            return this->GetTrackBallCore();
+        }
+
+    protected:
+        virtual ITrackBall* GetTrackBallCore() const = 0;
+    };
+
     class IGraphicsContext
     {
     public:
@@ -56,9 +108,24 @@ namespace Dynamorph
         static IGraphicsContext* Create(IGraphicsContext::ContextType contextType);
 
     public:
-        virtual ~IGraphicsContext() { }
-        void Initialize(HWND hWndOwner) { this->InitializeCore(hWndOwner); }
-        void Uninitialize(void) { this->UninitializeCore(); }
+        virtual ~IGraphicsContext()
+        {
+        }
+
+        void Initialize(HWND hWndOwner)
+        {
+            this->InitializeCore(hWndOwner);
+        }
+
+        void Uninitialize(void)
+        {
+            this->UninitializeCore();
+        }
+
+        ICamera* GetDefaultCamera()
+        {
+            return this->GetDefaultCameraCore();
+        }
 
         IVertexShader* CreateVertexShader(const std::string& content) const
         {
@@ -105,6 +172,7 @@ namespace Dynamorph
     protected:
         virtual void InitializeCore(HWND hWndOwner) = 0;
         virtual void UninitializeCore(void) = 0;
+        virtual ICamera* GetDefaultCameraCore(void) = 0;
 
         virtual IVertexShader* CreateVertexShaderCore(
             const std::string& content) const = 0;
