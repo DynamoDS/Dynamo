@@ -6,6 +6,9 @@
 #include "../../../../extern/OpenGL/glcorearb.h"
 #include "../../../../extern/OpenGL/glext.h"
 #include "../../../../extern/OpenGL/wglext.h"
+#include "../../../../extern/OpenGL/glm/glm/glm.hpp"
+#include "../../../../extern/OpenGL/glm/glm/gtc/matrix_transform.hpp"
+#include "../../../../extern/OpenGL/glm/glm/gtc/type_ptr.hpp"
 
 namespace Dynamorph { namespace OpenGL {
 
@@ -130,6 +133,39 @@ namespace Dynamorph { namespace OpenGL {
     private:
         HWND mRenderWindow;
         HGLRC mhRenderContext;
+    };
+
+    class Camera; // Forward declaration.
+
+    class TrackBall : Dynamorph::ITrackBall
+    {
+    public:
+        TrackBall(Camera* pCamera);
+
+    protected:
+        virtual void MousePressedCore(int screenX, int screenY);
+        virtual void MouseMovedCore(int screenX, int screenY);
+        virtual void MouseReleasedCore(int screenX, int screenY);
+
+    private:
+        Camera* mpCamera;
+    };
+
+    class Camera : Dynamorph::ICamera
+    {
+    public:
+        Camera();
+        void GetMatrices(glm::mat4& model, glm::mat4& view, glm::mat4& proj);
+
+    protected:
+        virtual void SetViewCore(const float* pEye, const float* pTarget, const float* pUp);
+        virtual ITrackBall* GetTrackBallCore() const;
+
+    private:
+        glm::mat4 mModelMatrix;
+        glm::mat4 mViewMatrix;
+        glm::mat4 mProjMatrix;
+        ITrackBall* mpTrackBall;
     };
 
     class CommonShaderBase

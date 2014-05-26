@@ -87,12 +87,18 @@ namespace Dynamorph
         {
         }
 
+        void SetView(const float* pEye, const float* pCenter, const float* pUp)
+        {
+            this->SetViewCore(pEye, pCenter, pUp);
+        }
+
         ITrackBall* GetTrackBall() const
         {
             return this->GetTrackBallCore();
         }
 
     protected:
+        virtual void SetViewCore(const float* pEye, const float* pCenter, const float* pUp) = 0;
         virtual ITrackBall* GetTrackBallCore() const = 0;
     };
 
