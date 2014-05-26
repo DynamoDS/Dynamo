@@ -131,9 +131,9 @@ void Visualizer::Initialize(HWND hWndParent, int width, int height)
     auto pfs = mpGraphicsContext->CreateFragmentShader(fs);
 
     mpShaderProgram = mpGraphicsContext->CreateShaderProgram(pvs, pfs);
-    mpShaderProgram->BindModelMatrixUniform("model");
-    mpShaderProgram->BindViewMatrixUniform("view");
-    mpShaderProgram->BindProjMatrixUniform("proj");
+    mpShaderProgram->BindTransformMatrix(TransMatrix::Model, "model");
+    mpShaderProgram->BindTransformMatrix(TransMatrix::View, "view");
+    mpShaderProgram->BindTransformMatrix(TransMatrix::Projection, "proj");
 
     std::vector<float> positions;
     float data[] = { 0.0f, 0.5f, 0.0f, 0.5, -0.5, 0.0f, -0.5f, -0.5f, 0.0f };

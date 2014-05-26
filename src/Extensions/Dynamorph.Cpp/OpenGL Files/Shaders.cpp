@@ -122,19 +122,22 @@ void ShaderProgram::Activate(void) const
     GL::glUseProgram(mProgramId);
 }
 
-void ShaderProgram::BindModelMatrixUniformCore(const std::string& name)
+void ShaderProgram::BindTransformMatrixCore(TransMatrix transform, const std::string& name)
 {
-    mModelMatrixUniform = GL::glGetUniformLocation(mProgramId, name.c_str());
-}
+    GLint index = GL::glGetUniformLocation(mProgramId, name.c_str());
 
-void ShaderProgram::BindViewMatrixUniformCore(const std::string& name)
-{
-    mViewMatrixUniform = GL::glGetUniformLocation(mProgramId, name.c_str());
-}
-
-void ShaderProgram::BindProjMatrixUniformCore(const std::string& name)
-{
-    mProjMatrixUniform = GL::glGetUniformLocation(mProgramId, name.c_str());
+    switch (transform)
+    {
+    case Dynamorph::TransMatrix::Model:
+        mModelMatrixUniform = index;
+        break;
+    case Dynamorph::TransMatrix::View:
+        mViewMatrixUniform = index;
+        break;
+    case Dynamorph::TransMatrix::Projection:
+        mProjMatrixUniform = index;
+        break;
+    }
 }
 
 void ShaderProgram::ApplyTransformationCore(const ICamera* pCamera) const

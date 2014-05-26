@@ -212,9 +212,7 @@ namespace Dynamorph { namespace OpenGL {
         void Activate(void) const;
 
     protected:
-        virtual void BindModelMatrixUniformCore(const std::string& name);
-        virtual void BindViewMatrixUniformCore(const std::string& name);
-        virtual void BindProjMatrixUniformCore(const std::string& name);
+        virtual void BindTransformMatrixCore(TransMatrix transform, const std::string& name);
         virtual void ApplyTransformationCore(const ICamera* pCamera) const;
 
     private:

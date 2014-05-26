@@ -70,26 +70,22 @@ namespace Dynamorph
         }
     };
 
+    enum class TransMatrix
+    {
+        Model, View, Projection
+    };
+
     class IShaderProgram
     {
+    public:
     public:
         virtual ~IShaderProgram()
         {
         }
 
-        void BindModelMatrixUniform(const std::string& name)
+        void BindTransformMatrix(TransMatrix transform, const std::string& name)
         {
-            this->BindModelMatrixUniformCore(name);
-        }
-
-        void BindViewMatrixUniform(const std::string& name)
-        {
-            this->BindViewMatrixUniformCore(name);
-        }
-
-        void BindProjMatrixUniform(const std::string& name)
-        {
-            this->BindProjMatrixUniformCore(name);
+            this->BindTransformMatrixCore(transform, name);
         }
 
         void ApplyTransformation(const ICamera* pCamera) const
@@ -97,9 +93,7 @@ namespace Dynamorph
         }
 
     protected:
-        virtual void BindModelMatrixUniformCore(const std::string& name) = 0;
-        virtual void BindViewMatrixUniformCore(const std::string& name) = 0;
-        virtual void BindProjMatrixUniformCore(const std::string& name) = 0;
+        virtual void BindTransformMatrixCore(TransMatrix transform, const std::string& name) = 0;
         virtual void ApplyTransformationCore(const ICamera* pCamera) const = 0;
     };
 
