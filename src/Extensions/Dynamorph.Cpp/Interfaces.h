@@ -90,6 +90,7 @@ namespace Dynamorph
 
         void ApplyTransformation(const ICamera* pCamera) const
         {
+            this->ApplyTransformationCore(pCamera);
         }
 
     protected:

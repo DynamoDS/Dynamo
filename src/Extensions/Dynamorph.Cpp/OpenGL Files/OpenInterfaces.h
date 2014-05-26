@@ -155,18 +155,20 @@ namespace Dynamorph { namespace OpenGL {
     class Camera : public Dynamorph::ICamera
     {
     public:
-        Camera();
+        Camera(GraphicsContext* pGraphicsContext);
         void GetMatrices(glm::mat4& model, glm::mat4& view, glm::mat4& proj) const;
+        GraphicsContext* GetGraphicsContext(void) const;
 
     protected:
         virtual void SetViewCore(const float* pEye, const float* pTarget, const float* pUp);
-        virtual ITrackBall* GetTrackBallCore() const;
+        virtual Dynamorph::ITrackBall* GetTrackBallCore() const;
 
     private:
         glm::mat4 mModelMatrix;
         glm::mat4 mViewMatrix;
         glm::mat4 mProjMatrix;
-        ITrackBall* mpTrackBall;
+        TrackBall* mpTrackBall;
+        GraphicsContext* mpGraphicsContext;
     };
 
     class CommonShaderBase

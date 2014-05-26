@@ -111,7 +111,7 @@ void GraphicsContext::InitializeCore(HWND hWndOwner)
     ::ReleaseDC(mRenderWindow, hDeviceContext); // Done with device context.
 
     // Create the default camera.
-    mpDefaultCamera = new Camera();
+    mpDefaultCamera = new Camera(this);
 }
 
 void GraphicsContext::UninitializeCore(void)
